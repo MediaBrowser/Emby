@@ -30,6 +30,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
                         return new Episode
                         {
                             IndexNumber = TVUtils.GetEpisodeNumberFromFile(args.Path, isInSeason),
+                            IndexNumberEnd = TVUtils.GetDoubleEpisodeNumberFromFile(args.Path),
                             Path = args.Path,
                             VideoType = VideoType.Dvd
                         };
@@ -39,6 +40,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
                         return new Episode
                         {
                             IndexNumber = TVUtils.GetEpisodeNumberFromFile(args.Path, isInSeason),
+                            IndexNumberEnd = TVUtils.GetDoubleEpisodeNumberFromFile(args.Path),
                             Path = args.Path,
                             VideoType = VideoType.BluRay
                         };
@@ -50,6 +52,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
                 if (episide != null)
                 {
                     episide.IndexNumber = TVUtils.GetEpisodeNumberFromFile(args.Path, isInSeason);
+                    episide.IndexNumberEnd = TVUtils.GetDoubleEpisodeNumberFromFile(args.Path);
                 }
 
                 return episide;
