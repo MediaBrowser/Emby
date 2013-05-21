@@ -62,15 +62,15 @@ namespace MediaBrowser.Controller.Library
         private static readonly Regex[] DoubleEpisodeExpressions = new[]
                                                                  {
                                                                      new Regex(
-                                                                         @".*\\[s|S]?(?<seasonnumber>\d{1,2})[x|X]\d{1,3}[x|X](?<epnumber>\d{1,3})[^\\]*$",
+                                                                         @".*\\[s|S]?(?<seasonnumber>\d{1,2})[x|X]\d{1,3}[x|X|\.|-](?<epnumber>\d{1,3})[^\\]*$",
                                                                          RegexOptions.Compiled),
                                                                      // 01x02x03 blah.avi S01x01x03 balh.avi
                                                                      new Regex(
-                                                                         @".*\\[s|S](?<seasonnumber>\d{1,2})[x,X]?[e|E]\d{1,3}[x,X]?[e|E](?<epnumber>\d{1,3})[^\\]*$",
+                                                                         @".*\\[s|S](?<seasonnumber>\d{1,2})[x,X]?[e|E]\d{1,3}[x|X|\.|-]?[e|E](?<epnumber>\d{1,3})[^\\]*$",
                                                                          RegexOptions.Compiled),
                                                                      // S01E02E03 blah.avi, S01xE01xE02 blah.avi
                                                                      new Regex(
-                                                                         @".*\\(?<seriesname>[^\\]*)[s|S]?(?<seasonnumber>\d{1,2})[x|X]\d{1,3}[x|X](?<epnumber>\d{1,3})[^\\]*$",
+                                                                         @".*\\(?<seriesname>[^\\]*)[s|S]?(?<seasonnumber>\d{1,2})[x|X]\d{1,3}[x|X|\.|-](?<epnumber>\d{1,3})[^\\]*$",
                                                                          RegexOptions.Compiled),
                                                                      // 01x02x03 blah.avi S01x01X03 balh.avi
                                                                      new Regex(
@@ -78,7 +78,7 @@ namespace MediaBrowser.Controller.Library
                                                                          RegexOptions.Compiled),
                                                                      // 01x02 01x03 blah.avi 01x02 - 01x03 blah.avi S01x02 S01x03 blah.avi S01x02 - S01x03 blah.avi
                                                                      new Regex(
-                                                                         @".*\\(?<seriesname>[^\\]*)[s|S](?<seasonnumber>\d{1,2})[x|X|\.]?[e|E]\d{1,3}[x|X|\.]?[e|E](?<epnumber>\d{1,3})[^\\]*$",
+                                                                         @".*\\(?<seriesname>[^\\]*)[s|S](?<seasonnumber>\d{1,2})[x|X|\.]?[e|E]\d{1,3}[x|X|\.|-]?[e|E](?<epnumber>\d{1,3})[^\\]*$",
                                                                          RegexOptions.Compiled)
                                                                      // S01E02-E03 blah.avi, S01xE01xE02 blah.avi
                                                                  };
