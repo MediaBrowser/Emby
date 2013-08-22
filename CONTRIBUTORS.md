@@ -13,5 +13,6 @@
  - [SivaramAdhiappan](https://github.com/shivaram1190)
  - [CWatkinsNash](https://github.com/CWatkinsNash)
  - [sfnetwork](https://github.com/sfnetwork)
- - [Logos302] (https://github.com/Logos302)
+ - [Logos302](https://github.com/Logos302)
  - [TheWorkz](https://github.com/TheWorkz)
+ - [brocass](https://github.com/brocass)
