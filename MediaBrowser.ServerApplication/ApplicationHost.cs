@@ -15,6 +15,7 @@ using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.MediaInfo;
 using MediaBrowser.Controller.Notifications;
@@ -39,6 +40,7 @@ using MediaBrowser.Server.Implementations.EntryPoints;
 using MediaBrowser.Server.Implementations.HttpServer;
 using MediaBrowser.Server.Implementations.IO;
 using MediaBrowser.Server.Implementations.Library;
+using MediaBrowser.Server.Implementations.LiveTv;
 using MediaBrowser.Server.Implementations.Localization;
 using MediaBrowser.Server.Implementations.MediaEncoder;
 using MediaBrowser.Server.Implementations.Persistence;
@@ -51,7 +53,6 @@ using MediaBrowser.ServerApplication.Native;
 using MediaBrowser.WebDashboard.Api;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -153,6 +154,8 @@ namespace MediaBrowser.ServerApplication
 
         private IIsoManager IsoManager { get; set; }
         private ISessionManager SessionManager { get; set; }
+
+        private ILiveTvManager LiveTvManager { get; set; }
 
         private ILocalizationManager LocalizationManager { get; set; }
 
@@ -285,6 +288,9 @@ namespace MediaBrowser.ServerApplication
             DtoService = new DtoService(Logger, LibraryManager, UserManager, UserDataRepository, ItemRepository, ImageProcessor);
             RegisterSingleInstance(DtoService);
 
+            LiveTvManager = new LiveTvManager();
+            RegisterSingleInstance(LiveTvManager);
+
             var displayPreferencesTask = Task.Run(async () => await ConfigureDisplayPreferencesRepositories().ConfigureAwait(false));
             var itemsTask = Task.Run(async () => await ConfigureItemRepositories().ConfigureAwait(false));
             var userdataTask = Task.Run(async () => await ConfigureUserDataRepositories().ConfigureAwait(false));
@@ -322,13 +328,9 @@ namespace MediaBrowser.ServerApplication
 
         private async Task<IUserRepository> GetUserRepository()
         {
-            var dbFile = Path.Combine(ApplicationPaths.DataPath, "users.db");
+            var repo = new SqliteUserRepository(JsonSerializer, LogManager, ApplicationPaths);
 
-            var connection = await ConnectToDb(dbFile).ConfigureAwait(false);
-
-            var repo = new SqliteUserRepository(connection, JsonSerializer, LogManager);
-
-            repo.Initialize();
+            await repo.Initialize().ConfigureAwait(false);
 
             return repo;
         }
@@ -339,13 +341,9 @@ namespace MediaBrowser.ServerApplication
         /// <returns>Task.</returns>
         private async Task ConfigureNotificationsRepository()
         {
-            var dbFile = Path.Combine(ApplicationPaths.DataPath, "notifications.db");
+            var repo = new SqliteNotificationsRepository(LogManager, ApplicationPaths);
 
-            var connection = await ConnectToDb(dbFile).ConfigureAwait(false);
-
-            var repo = new SqliteNotificationsRepository(connection, LogManager);
-
-            repo.Initialize();
+            await repo.Initialize().ConfigureAwait(false);
 
             NotificationsRepository = repo;
 
@@ -379,22 +377,6 @@ namespace MediaBrowser.ServerApplication
         private Task ConfigureUserDataRepositories()
         {
             return UserDataRepository.Initialize();
-        }
-
-        /// <summary>
-        /// Connects to db.
-        /// </summary>
-        /// <param name="dbPath">The db path.</param>
-        /// <returns>Task{IDbConnection}.</returns>
-        /// <exception cref="System.ArgumentNullException">dbPath</exception>
-        private static Task<IDbConnection> ConnectToDb(string dbPath)
-        {
-            if (string.IsNullOrEmpty(dbPath))
-            {
-                throw new ArgumentNullException("dbPath");
-            }
-
-            return Sqlite.OpenDatabase(dbPath);
         }
 
         /// <summary>
@@ -448,6 +430,8 @@ namespace MediaBrowser.ServerApplication
             SessionManager.AddParts(GetExports<ISessionRemoteController>());
 
             ImageProcessor.AddParts(GetExports<IImageEnhancer>());
+
+            LiveTvManager.AddParts(GetExports<ILiveTvService>());
         }
 
         /// <summary>
@@ -541,7 +525,7 @@ namespace MediaBrowser.ServerApplication
                 .Select(LoadAssembly)
                 .Where(a => a != null)
                 .ToList();
-            
+
             // Gets all plugin assemblies by first reading all bytes of the .dll and calling Assembly.Load against that
             // This will prevent the .dll file from getting locked, and allow us to replace it when needed
 
