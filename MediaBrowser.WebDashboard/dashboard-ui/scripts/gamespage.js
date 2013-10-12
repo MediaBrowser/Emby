@@ -14,9 +14,7 @@
         StartIndex: 0
     };
 	
-	if (localStorage.getItem('game_'+Dashboard.getCurrentUserId())) {
-        query = JSON.parse(localStorage.getItem('game_'+Dashboard.getCurrentUserId()));
-    }
+	LibraryBrowser.loadSavedQueryValues('games', query);
 
     function reloadItems(page) {
 
@@ -83,9 +81,9 @@
                 reloadItems(page);
             });
 
-            Dashboard.hideLoadingMsg();
+			LibraryBrowser.saveQueryValues('games', query);
 			
-			localStorage.setItem('game_'+Dashboard.getCurrentUserId(), JSON.stringify(query));
+            Dashboard.hideLoadingMsg();
         });
     }
 
