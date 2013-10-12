@@ -1,242 +1,249 @@
 
 (function ($, document) {
 
-    var view = "Poster";
-
-    // The base query options
-    var query = {
-
-        SortBy: "SortName",
-        SortOrder: "Ascending",
-        MediaTypes: "Game",
-        Recursive: true,
-        Fields: "Genres,Studios,PrimaryImageAspectRatio",
-        StartIndex: 0
-    };
-
-    function reloadItems(page) {
-
-        Dashboard.showLoadingMsg();
-
-        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
-
-            // Scroll back up so they can see the results from the beginning
-            $(document).scrollTop(0);
-
-            var html = '';
-
-            $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
-
-            if (view == "Backdrop") {
-                html += LibraryBrowser.getPosterDetailViewHtml({
-                    items: result.Items,
-                    preferBackdrop: true,
-                    context: "games",
-                    shape: "backdrop"
-                });
-                $('.itemsContainer', page).removeClass('timelineItemsContainer');
-            }
-            else if (view == "Poster") {
-                html += LibraryBrowser.getPosterDetailViewHtml({
-                    items: result.Items,
-                    context: "games",
-                    shape: "poster"
-                });
-                $('.itemsContainer', page).removeClass('timelineItemsContainer');
-            }
-            else if (view == "Timeline") {
-                html += LibraryBrowser.getPosterDetailViewHtml({
-                    items: result.Items,
-                    context: "games",
-                    shape: "poster",
-                    timeline: true
-                });
-                $('.itemsContainer', page).addClass('timelineItemsContainer');
-            }
+	var view = "Poster";
+
+	// The base query options
+	var query = {
+
+		SortBy: "SortName",
+		SortOrder: "Ascending",
+		MediaTypes: "Game",
+		Recursive: true,
+		Fields: "Genres,Studios,PrimaryImageAspectRatio",
+		StartIndex: 0
+	};
+
+	if (localStorage.getItem('game_'+Dashboard.getCurrentUserId())) {
+		query = JSON.parse(localStorage.getItem('game_'+Dashboard.getCurrentUserId()));
+	}
+
+	function reloadItems(page) {
+
+		Dashboard.showLoadingMsg();
 
-            html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount);
+		ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
 
-            $('#items', page).html(html).trigger('create');
+			// Scroll back up so they can see the results from the beginning
+			$(document).scrollTop(0);
+
+			var html = '';
 
-            $('.selectPage', page).on('change', function () {
-                query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
-                reloadItems(page);
-            });
+			$('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
 
-            $('.btnNextPage', page).on('click', function () {
-                query.StartIndex += query.Limit;
-                reloadItems(page);
-            });
+			if (view == "Backdrop") {
+				html += LibraryBrowser.getPosterDetailViewHtml({
+					items: result.Items,
+					preferBackdrop: true,
+					context: "games",
+					shape: "backdrop"
+				});
+				$('.itemsContainer', page).removeClass('timelineItemsContainer');
+			}
+			else if (view == "Poster") {
+				html += LibraryBrowser.getPosterDetailViewHtml({
+					items: result.Items,
+					context: "games",
+					shape: "poster"
+				});
+				$('.itemsContainer', page).removeClass('timelineItemsContainer');
+			}
+			else if (view == "Timeline") {
+				html += LibraryBrowser.getPosterDetailViewHtml({
+					items: result.Items,
+					context: "games",
+					shape: "poster",
+					timeline: true
+				});
+				$('.itemsContainer', page).addClass('timelineItemsContainer');
+			}
 
-            $('.btnPreviousPage', page).on('click', function () {
-                query.StartIndex -= query.Limit;
-                reloadItems(page);
-            });
+			html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount);
 
-            $('.selectPageSize', page).on('change', function () {
-                query.Limit = parseInt(this.value);
-                query.StartIndex = 0;
-                reloadItems(page);
-            });
+			$('#items', page).html(html).trigger('create');
 
-            Dashboard.hideLoadingMsg();
-        });
-    }
+			$('.selectPage', page).on('change', function () {
+				query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
+				reloadItems(page);
+			});
 
-    $(document).on('pageinit', "#gamesPage", function () {
+			$('.btnNextPage', page).on('click', function () {
+				query.StartIndex += query.Limit;
+				reloadItems(page);
+			});
 
-        var page = this;
+			$('.btnPreviousPage', page).on('click', function () {
+				query.StartIndex -= query.Limit;
+				reloadItems(page);
+			});
 
-        $('.radioSortBy', this).on('click', function () {
-            query.StartIndex = 0;
-            query.SortBy = this.getAttribute('data-sortby');
-            reloadItems(page);
-        });
+			$('.selectPageSize', page).on('change', function () {
+				query.Limit = parseInt(this.value);
+				query.StartIndex = 0;
+				reloadItems(page);
+			});
 
-        $('.radioSortOrder', this).on('click', function () {
-            query.StartIndex = 0;
-            query.SortOrder = this.getAttribute('data-sortorder');
-            reloadItems(page);
-        });
+			Dashboard.hideLoadingMsg();
 
-        $('.radioPlayers', this).on('click', function () {
-            
-            query.StartIndex = 0;
+			localStorage.setItem('game_'+Dashboard.getCurrentUserId(), JSON.stringify(query));
+		});
+	}
 
-            var val = this.getAttribute('data-value');
+	$(document).on('pageinit', "#gamesPage", function () {
 
-            query.MinPlayers = val == "all" ? null : val;
-            
-            reloadItems(page);
-        });
+		var page = this;
 
-        $('.chkStandardFilter', this).on('change', function () {
+		$('.radioSortBy', this).on('click', function () {
+			query.StartIndex = 0;
+			query.SortBy = this.getAttribute('data-sortby');
+			reloadItems(page);
+		});
 
-            var filterName = this.getAttribute('data-filter');
-            var filters = query.Filters || "";
+		$('.radioSortOrder', this).on('click', function () {
+			query.StartIndex = 0;
+			query.SortOrder = this.getAttribute('data-sortorder');
+			reloadItems(page);
+		});
 
-            filters = (',' + filters).replace(',' + filterName, '').substring(1);
+		$('.radioPlayers', this).on('click', function () {
 
-            if (this.checked) {
-                filters = filters ? (filters + ',' + filterName) : filterName;
-            }
+			query.StartIndex = 0;
 
-            query.StartIndex = 0;
-            query.Filters = filters;
+			var val = this.getAttribute('data-value');
 
-            reloadItems(page);
-        });
+			query.MinPlayers = val == "all" ? null : val;
 
-        $('#selectView', this).on('change', function () {
+			reloadItems(page);
+		});
 
-            view = this.value;
+		$('.chkStandardFilter', this).on('change', function () {
 
-            if (view == "Timeline") {
+			var filterName = this.getAttribute('data-filter');
+			var filters = query.Filters || "";
 
-                query.SortBy = "PremiereDate";
-                query.StartIndex = 0;
-                $('#radioPremiereDate', page)[0].click();
+			filters = (',' + filters).replace(',' + filterName, '').substring(1);
 
-            } else {
-                reloadItems(page);
-            }
-        });
+			if (this.checked) {
+				filters = filters ? (filters + ',' + filterName) : filterName;
+			}
 
-        $('#chkTrailer', this).on('change', function () {
+			query.StartIndex = 0;
+			query.Filters = filters;
 
-            query.StartIndex = 0;
-            query.HasTrailer = this.checked ? true : null;
+			reloadItems(page);
+		});
 
-            reloadItems(page);
-        });
+		$('#selectView', this).on('change', function () {
 
-        $('#chkThemeSong', this).on('change', function () {
+			view = this.value;
 
-            query.StartIndex = 0;
-            query.HasThemeSong = this.checked ? true : null;
+			if (view == "Timeline") {
 
-            reloadItems(page);
-        });
+				query.SortBy = "PremiereDate";
+				query.StartIndex = 0;
+				$('#radioPremiereDate', page)[0].click();
 
-        $('#chkThemeVideo', this).on('change', function () {
+			} else {
+				reloadItems(page);
+			}
+		});
 
-            query.StartIndex = 0;
-            query.HasThemeVideo = this.checked ? true : null;
+		$('#chkTrailer', this).on('change', function () {
 
-            reloadItems(page);
-        });
+			query.StartIndex = 0;
+			query.HasTrailer = this.checked ? true : null;
 
-        $('.alphabetPicker', this).on('alphaselect', function (e, character) {
+			reloadItems(page);
+		});
 
-            query.NameStartsWithOrGreater = character;
-            query.StartIndex = 0;
+		$('#chkThemeSong', this).on('change', function () {
 
-            reloadItems(page);
+			query.StartIndex = 0;
+			query.HasThemeSong = this.checked ? true : null;
 
-        }).on('alphaclear', function (e) {
+			reloadItems(page);
+		});
 
-            query.NameStartsWithOrGreater = '';
+		$('#chkThemeVideo', this).on('change', function () {
 
-            reloadItems(page);
-        });
+			query.StartIndex = 0;
+			query.HasThemeVideo = this.checked ? true : null;
 
-    }).on('pagebeforeshow', "#gamesPage", function () {
+			reloadItems(page);
+		});
 
-        var limit = LibraryBrowser.getDefaultPageSize();
+		$('.alphabetPicker', this).on('alphaselect', function (e, character) {
 
-        // If the default page size has changed, the start index will have to be reset
-        if (limit != query.Limit) {
-            query.Limit = limit;
-            query.StartIndex = 0;
-        }
+			query.NameStartsWithOrGreater = character;
+			query.StartIndex = 0;
 
-        reloadItems(this);
+			reloadItems(page);
 
-    }).on('pageshow', "#gamesPage", function () {
+		}).on('alphaclear', function (e) {
 
+				query.NameStartsWithOrGreater = '';
 
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
+				reloadItems(page);
+			});
 
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
+	}).on('pagebeforeshow', "#gamesPage", function () {
 
-        }).checkboxradio('refresh');
+			var limit = LibraryBrowser.getDefaultPageSize();
 
-        $('.radioSortOrder', this).each(function () {
+			// If the default page size has changed, the start index will have to be reset
+			if (limit != query.Limit) {
+				query.Limit = limit;
+				query.StartIndex = 0;
+			}
 
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
+			reloadItems(this);
 
-        }).checkboxradio('refresh');
+		}).on('pageshow', "#gamesPage", function () {
 
-        $('.radioPlayers', this).each(function () {
 
-            var val = this.getAttribute('data-value');
+			// Reset form values using the last used query
+			$('.radioSortBy', this).each(function () {
 
-            if (val == "all") {
+				this.checked = query.SortBy == this.getAttribute('data-sortby');
 
-                this.checked = query.MinPlayers == null;
-            } else {
-                this.checked = query.MinPlayers == val;
-            }
+			}).checkboxradio('refresh');
 
-        }).checkboxradio('refresh');
+			$('.radioSortOrder', this).each(function () {
 
-        $('.chkStandardFilter', this).each(function () {
+				this.checked = query.SortOrder == this.getAttribute('data-sortorder');
 
-            var filters = "," + (query.Filters || "");
-            var filterName = this.getAttribute('data-filter');
+			}).checkboxradio('refresh');
 
-            this.checked = filters.indexOf(',' + filterName) != -1;
+			$('.radioPlayers', this).each(function () {
 
-        }).checkboxradio('refresh');
+				var val = this.getAttribute('data-value');
 
-        $('#selectView', this).val(view).selectmenu('refresh');
+				if (val == "all") {
 
-        $('#chkTrailer', this).checked(query.HasTrailer == true).checkboxradio('refresh');
-        $('#chkThemeSong', this).checked(query.HasThemeSong == true).checkboxradio('refresh');
-        $('#chkThemeVideo', this).checked(query.HasThemeVideo == true).checkboxradio('refresh');
+					this.checked = query.MinPlayers == null;
+				} else {
+					this.checked = query.MinPlayers == val;
+				}
 
-        $('.alphabetPicker', this).alphaValue(query.NameStartsWith);
-    });
+			}).checkboxradio('refresh');
+
+			$('.chkStandardFilter', this).each(function () {
+
+				var filters = "," + (query.Filters || "");
+				var filterName = this.getAttribute('data-filter');
+
+				this.checked = filters.indexOf(',' + filterName) != -1;
+
+			}).checkboxradio('refresh');
+
+			$('#selectView', this).val(view).selectmenu('refresh');
+
+			$('#chkTrailer', this).checked(query.HasTrailer == true).checkboxradio('refresh');
+			$('#chkThemeSong', this).checked(query.HasThemeSong == true).checkboxradio('refresh');
+			$('#chkThemeVideo', this).checked(query.HasThemeVideo == true).checkboxradio('refresh');
+
+			$('.alphabetPicker', this).alphaValue(query.NameStartsWith);
+
+		});
 
 })(jQuery, document);
