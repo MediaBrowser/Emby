@@ -1,15 +1,29 @@
 ﻿using MediaBrowser.Model.Entities;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MediaBrowser.Model.Session
 {
-    public class SessionInfoDto
+    public class SessionInfoDto : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance can seek.
+        /// </summary>
+        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c>.</value>
+        public bool CanSeek { get; set; }
+
+        /// <summary>
+        /// Gets or sets the queueable media types.
+        /// </summary>
+        /// <value>The queueable media types.</value>
+        public List<string> QueueableMediaTypes { get; set; }
+        
         /// <summary>
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the user id.
@@ -75,8 +89,14 @@ namespace MediaBrowser.Model.Session
         /// Gets or sets a value indicating whether this instance is paused.
         /// </summary>
         /// <value><c>true</c> if this instance is paused; otherwise, <c>false</c>.</value>
-        public bool? IsPaused { get; set; }
+        public bool IsPaused { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is muted.
+        /// </summary>
+        /// <value><c>true</c> if this instance is muted; otherwise, <c>false</c>.</value>
+        public bool IsMuted { get; set; }
+        
         /// <summary>
         /// Gets or sets the now playing item.
         /// </summary>
@@ -100,5 +120,7 @@ namespace MediaBrowser.Model.Session
         /// </summary>
         /// <value><c>true</c> if [supports remote control]; otherwise, <c>false</c>.</value>
         public bool SupportsRemoteControl { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

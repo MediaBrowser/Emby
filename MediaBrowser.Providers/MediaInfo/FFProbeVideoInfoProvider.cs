@@ -79,7 +79,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             get
             {
-                return new[] { ".srt" };
+                return new[] { ".srt", ".ssa", ".ass" };
             }
         }
 
@@ -140,13 +140,24 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public override async Task<bool> FetchAsync(BaseItem item, bool force, CancellationToken cancellationToken)
         {
-            var myItem = (Video)item;
+            var video = (Video)item;
 
-            var isoMount = await MountIsoIfNeeded(myItem, cancellationToken).ConfigureAwait(false);
+            var isoMount = await MountIsoIfNeeded(video, cancellationToken).ConfigureAwait(false);
 
             try
             {
-                OnPreFetch(myItem, isoMount);
+                OnPreFetch(video, isoMount);
+
+                // If we didn't find any satisfying the min length, just take them all
+                if (video.VideoType == VideoType.Dvd || (video.IsoType.HasValue && video.IsoType == IsoType.Dvd))
+                {
+                    if (video.PlayableStreamFileNames.Count == 0)
+                    {
+                        Logger.Error("No playable vobs found in dvd structure, skipping ffprobe.");
+                        SetLastRefreshed(item, DateTime.UtcNow);
+                        return true;
+                    }
+                }
 
                 var result = await GetMediaInfo(item, isoMount, cancellationToken).ConfigureAwait(false);
 
@@ -156,9 +167,8 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await Fetch(myItem, force, cancellationToken, result, isoMount).ConfigureAwait(false);
+                await Fetch(video, force, cancellationToken, result, isoMount).ConfigureAwait(false);
 
-                SetLastRefreshed(item, DateTime.UtcNow);
             }
             finally
             {
@@ -168,6 +178,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 }
             }
 
+            SetLastRefreshed(item, DateTime.UtcNow);
             return true;
         }
 
@@ -222,7 +233,25 @@ namespace MediaBrowser.Providers.MediaInfo
 
             // Try to eliminate menus and intros by skipping all files at the front of the list that are less than the minimum size
             // Once we reach a file that is at least the minimum, return all subsequent ones
-            var files = Directory.EnumerateFiles(root, "*.vob", SearchOption.AllDirectories).SkipWhile(f => new FileInfo(f).Length < minPlayableSize).ToList();
+            var allVobs = Directory.EnumerateFiles(root, "*.vob", SearchOption.AllDirectories).ToList();
+
+            // If we didn't find any satisfying the min length, just take them all
+            if (allVobs.Count == 0)
+            {
+                Logger.Error("No vobs found in dvd structure.");
+                return;
+            }
+
+            var files = allVobs
+                .SkipWhile(f => new FileInfo(f).Length < minPlayableSize)
+                .ToList();
+
+            // If we didn't find any satisfying the min length, just take them all
+            if (files.Count == 0)
+            {
+                Logger.Warn("Vob size filter resulted in zero matches. Taking all vobs.");
+                files = allVobs;
+            }
 
             // Assuming they're named "vts_05_01", take all files whose second part matches that of the first file
             if (files.Count > 0)
@@ -240,6 +269,13 @@ namespace MediaBrowser.Providers.MediaInfo
                         return fileParts.Length == 3 && string.Equals(title, fileParts[1], StringComparison.OrdinalIgnoreCase);
 
                     }).ToList();
+
+                    // If this resulted in not getting any vobs, just take them all
+                    if (files.Count == 0)
+                    {
+                        Logger.Warn("Vob filename filter resulted in zero matches. Taking all vobs.");
+                        files = allVobs;
+                    }
                 }
             }
 
@@ -287,6 +323,8 @@ namespace MediaBrowser.Providers.MediaInfo
 
             FetchWtvInfo(video, force, data);
 
+            video.IsHD = video.MediaStreams.Any(i => i.Type == MediaStreamType.Video && i.Width.HasValue && i.Width.Value >= 1270);
+
             if (chapters.Count == 0 && video.MediaStreams.Any(i => i.Type == MediaStreamType.Video))
             {
                 AddDummyChapters(video, chapters);
@@ -294,8 +332,17 @@ namespace MediaBrowser.Providers.MediaInfo
 
             await Kernel.Instance.FFMpegManager.PopulateChapterImages(video, chapters, false, false, cancellationToken).ConfigureAwait(false);
 
-            // Only save chapters if forcing or there are not already any saved ones
-            if (force || _itemRepo.GetChapter(video.Id, 0) == null)
+
+            BaseProviderInfo providerInfo;
+            var videoFileChanged = false;
+
+            if (video.ProviderData.TryGetValue(Id, out providerInfo))
+            {
+                videoFileChanged = CompareDate(video) > providerInfo.LastRefreshed;
+            }
+
+            // Only save chapters if forcing, if the video changed, or if there are not already any saved ones
+            if (force || videoFileChanged || _itemRepo.GetChapter(video.Id, 0) == null)
             {
                 await _itemRepo.SaveChapters(video.Id, chapters, cancellationToken).ConfigureAwait(false);
             }
@@ -349,7 +396,10 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 if (!string.IsNullOrWhiteSpace(officialRating))
                 {
-                    video.OfficialRating = officialRating;
+                    if (!video.LockedFields.Contains(MetadataFields.OfficialRating))
+                    {
+                        video.OfficialRating = officialRating;
+                    }
                 }
             }
 
@@ -408,7 +458,7 @@ namespace MediaBrowser.Providers.MediaInfo
             var videoFileNameWithoutExtension = Path.GetFileNameWithoutExtension(video.Path);
 
             foreach (var file in fileSystemChildren
-                .Where(f => !f.Attributes.HasFlag(FileAttributes.Directory) && string.Equals(Path.GetExtension(f.FullName), ".srt", StringComparison.OrdinalIgnoreCase)))
+                .Where(f => !f.Attributes.HasFlag(FileAttributes.Directory) && FilestampExtensions.Contains(Path.GetExtension(f.FullName), StringComparer.OrdinalIgnoreCase)))
             {
                 var fullName = file.FullName;
 
@@ -423,7 +473,7 @@ namespace MediaBrowser.Providers.MediaInfo
                         Type = MediaStreamType.Subtitle,
                         IsExternal = true,
                         Path = fullName,
-                        Codec = "srt"
+                        Codec = Path.GetExtension(fullName).ToLower().TrimStart('.')
                     });
                 }
                 else if (fileNameWithoutExtension.StartsWith(videoFileNameWithoutExtension + ".", StringComparison.OrdinalIgnoreCase))
@@ -447,7 +497,7 @@ namespace MediaBrowser.Providers.MediaInfo
                         Type = MediaStreamType.Subtitle,
                         IsExternal = true,
                         Path = fullName,
-                        Codec = "srt",
+                        Codec = Path.GetExtension(fullName).ToLower().TrimStart('.'),
                         Language = language
                     });
                 }
@@ -565,6 +615,8 @@ namespace MediaBrowser.Providers.MediaInfo
             // Check all input for null/empty/zero
 
             video.MediaStreams = stream.MediaStreams;
+
+            video.MainFeaturePlaylistName = stream.PlaylistName;
 
             if (stream.RunTimeTicks.HasValue && stream.RunTimeTicks.Value > 0)
             {

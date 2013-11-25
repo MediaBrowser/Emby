@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
@@ -14,10 +15,12 @@ namespace MediaBrowser.Providers.Music
     class ArtistProviderFromXml : BaseMetadataProvider
     {
         public static ArtistProviderFromXml Current;
+        private readonly IFileSystem _fileSystem;
 
-        public ArtistProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager)
+        public ArtistProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -28,7 +31,7 @@ namespace MediaBrowser.Providers.Music
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         public override bool Supports(BaseItem item)
         {
-            return (item is Artist || item is MusicArtist) && item.LocationType == LocationType.FileSystem;
+            return (item is MusicArtist) && item.LocationType == LocationType.FileSystem;
         }
 
         /// <summary>
@@ -40,16 +43,17 @@ namespace MediaBrowser.Providers.Music
             get { return MetadataProviderPriority.First; }
         }
 
-        /// <summary>
-        /// Override this to return the date that should be compared to the last refresh date
-        /// to determine if this provider should be re-fetched.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>DateTime.</returns>
-        protected override DateTime CompareDate(BaseItem item)
+        private const string XmlFileName = "artist.xml";
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
-            var entry = item.MetaLocation != null ? item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "artist.xml")) : null;
-            return entry != null ? entry.LastWriteTimeUtc : DateTime.MinValue;
+            var xml = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
+
+            if (xml == null)
+            {
+                return false;
+            }
+
+            return _fileSystem.GetLastWriteTimeUtc(xml) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace MediaBrowser.Providers.Music
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "artist.xml"));
+            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
 
             if (metadataFile != null)
             {
@@ -84,16 +88,7 @@ namespace MediaBrowser.Providers.Music
 
                 try
                 {
-                    var artist = item as Artist;
-
-                    if (artist != null)
-                    {
-                        new BaseItemXmlParser<Artist>(Logger).Fetch(artist, path, cancellationToken);
-                    }
-                    else
-                    {
-                        new BaseItemXmlParser<MusicArtist>(Logger).Fetch((MusicArtist)item, path, cancellationToken);
-                    }
+                    new BaseItemXmlParser<MusicArtist>(Logger).Fetch((MusicArtist)item, path, cancellationToken);
                 }
                 finally
                 {

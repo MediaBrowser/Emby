@@ -1,6 +1,8 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
@@ -19,11 +21,13 @@ namespace MediaBrowser.Providers.TV
     {
         internal static EpisodeProviderFromXml Current { get; private set; }
         private readonly IItemRepository _itemRepo;
+        private readonly IFileSystem _fileSystem;
 
-        public EpisodeProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IItemRepository itemRepo)
+        public EpisodeProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IItemRepository itemRepo, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             _itemRepo = itemRepo;
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -59,12 +63,12 @@ namespace MediaBrowser.Providers.TV
         }
 
         /// <summary>
-        /// Override this to return the date that should be compared to the last refresh date
-        /// to determine if this provider should be re-fetched.
+        /// Needses the refresh based on compare date.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <returns>DateTime.</returns>
-        protected override DateTime CompareDate(BaseItem item)
+        /// <param name="providerInfo">The provider info.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
             var metadataFile = Path.Combine(item.MetaLocation, Path.ChangeExtension(Path.GetFileName(item.Path), ".xml"));
 
@@ -72,10 +76,10 @@ namespace MediaBrowser.Providers.TV
 
             if (file == null)
             {
-                return base.CompareDate(item);
+                return false;
             }
 
-            return file.LastWriteTimeUtc;
+            return _fileSystem.GetLastWriteTimeUtc(file) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -92,20 +96,18 @@ namespace MediaBrowser.Providers.TV
 
             var file = item.ResolveArgs.Parent.ResolveArgs.GetMetaFileByPath(metadataFile);
 
-            if (file == null)
+            if (file != null)
             {
-                return false;
-            }
+                await XmlParsingResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            await XmlParsingResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            try
-            {
-                await new EpisodeXmlParser(Logger, _itemRepo).FetchAsync((Episode)item, metadataFile, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                XmlParsingResourcePool.Release();
+                try
+                {
+                    await new EpisodeXmlParser(Logger, _itemRepo).FetchAsync((Episode)item, metadataFile, cancellationToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    XmlParsingResourcePool.Release();
+                }
             }
 
             SetLastRefreshed(item, DateTime.UtcNow);

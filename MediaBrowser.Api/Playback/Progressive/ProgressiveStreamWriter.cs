@@ -12,8 +12,8 @@ namespace MediaBrowser.Api.Playback.Progressive
     public class ProgressiveStreamWriter : IStreamWriter, IHasOptions
     {
         private string Path { get; set; }
-        private StreamState State { get; set; }
         private ILogger Logger { get; set; }
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// The _options
@@ -32,13 +32,12 @@ namespace MediaBrowser.Api.Playback.Progressive
         /// Initializes a new instance of the <see cref="ProgressiveStreamWriter" /> class.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <param name="state">The state.</param>
         /// <param name="logger">The logger.</param>
-        public ProgressiveStreamWriter(string path, StreamState state, ILogger logger)
+        public ProgressiveStreamWriter(string path, ILogger logger, IFileSystem fileSystem)
         {
             Path = path;
-            State = state;
             Logger = logger;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace MediaBrowser.Api.Playback.Progressive
             var eofCount = 0;
             long position = 0;
 
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+            using (var fs = _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
             {
                 while (eofCount < 15)
                 {

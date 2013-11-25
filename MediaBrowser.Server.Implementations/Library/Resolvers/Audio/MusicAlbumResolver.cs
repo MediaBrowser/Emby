@@ -1,11 +1,13 @@
-﻿using MediaBrowser.Controller.Entities.Audio;
+﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
 {
@@ -14,13 +16,6 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
     /// </summary>
     public class MusicAlbumResolver : ItemResolver<MusicAlbum>
     {
-        private readonly ILibraryManager _libraryManager;
-
-        public MusicAlbumResolver(ILibraryManager libraryManager)
-        {
-            _libraryManager = libraryManager;
-        }
-
         /// <summary>
         /// Gets the priority.
         /// </summary>
@@ -44,7 +39,13 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
             if (args.Parent.IsRoot) return null;
             if (args.Parent is MusicAlbum) return null;
 
-            var collectionType = args.Parent == null ? null : _libraryManager.FindCollectionType(args.Parent);
+            // Optimization
+            if (args.Parent is BoxSet || args.Parent is Series || args.Parent is Season)
+            {
+                return null;
+            }
+            
+            var collectionType = args.GetCollectionType();
 
             // If there's a collection type and it's not music, it can't be a series
             if (!string.IsNullOrEmpty(collectionType) &&
@@ -53,11 +54,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
                 return null;
             }
             
-            return IsMusicAlbum(args) ? new MusicAlbum
-            {
-                DisplayMediaType = "Album"
-
-            } : null;
+            return IsMusicAlbum(args) ? new MusicAlbum() : null;
         }
 
 
@@ -73,7 +70,16 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
 
             foreach (var fullName in Directory.EnumerateFiles(path))
             {
-                if (EntityResolutionHelper.IsAudioFile(fullName)) foundAudio++;
+                if (EntityResolutionHelper.IsAudioFile(fullName))
+                {
+                    // Don't resolve these into audio files
+                    if (string.Equals(Path.GetFileNameWithoutExtension(fullName), BaseItem.ThemeSongFilename) && EntityResolutionHelper.IsAudioFile(fullName))
+                    {
+                        continue;
+                    }
+
+                    foundAudio++;
+                }
                 if (foundAudio >= 2)
                 {
                     return true;
@@ -113,8 +119,10 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
             // If list contains at least 2 audio files or at least one and no video files consider it to contain music
             var foundAudio = 0;
 
-            foreach (var fullName in list.Select(file => file.FullName))
+            foreach (var file in list)
             {
+                var fullName = file.FullName;
+
                 if (EntityResolutionHelper.IsAudioFile(fullName)) foundAudio++;
                 if (foundAudio >= 2)
                 {

@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using MediaBrowser.Common.Configuration;
+﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
@@ -14,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -104,6 +104,7 @@ namespace MediaBrowser.Common.Implementations.Updates
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISecurityManager _securityManager;
         private readonly INetworkManager _networkManager;
+        private readonly IConfigurationManager _config;
 
         /// <summary>
         /// Gets the application host.
@@ -111,7 +112,7 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// <value>The application host.</value>
         private readonly IApplicationHost _applicationHost;
 
-        public InstallationManager(ILogger logger, IApplicationHost appHost, IApplicationPaths appPaths, IHttpClient httpClient, IJsonSerializer jsonSerializer, ISecurityManager securityManager, INetworkManager networkManager)
+        public InstallationManager(ILogger logger, IApplicationHost appHost, IApplicationPaths appPaths, IHttpClient httpClient, IJsonSerializer jsonSerializer, ISecurityManager securityManager, INetworkManager networkManager, IConfigurationManager config)
         {
             if (logger == null)
             {
@@ -127,6 +128,7 @@ namespace MediaBrowser.Common.Implementations.Updates
             _jsonSerializer = jsonSerializer;
             _securityManager = securityManager;
             _networkManager = networkManager;
+            _config = config;
             _logger = logger;
         }
 
@@ -153,25 +155,54 @@ namespace MediaBrowser.Common.Implementations.Updates
             }
         }
 
+        private Tuple<List<PackageInfo>, DateTime> _lastPackageListResult;
+
         /// <summary>
         /// Gets all available packages.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="packageType">Type of the package.</param>
-        /// <param name="applicationVersion">The application version.</param>
         /// <returns>Task{List{PackageInfo}}.</returns>
-        public async Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken,
-            PackageType? packageType = null,
-            Version applicationVersion = null)
+        public async Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken)
         {
+            if (_lastPackageListResult != null)
+            {
+                // Let dev users get results more often for testing purposes
+                var cacheLength = _config.CommonConfiguration.SystemUpdateLevel == PackageVersionClass.Dev
+                                      ? TimeSpan.FromMinutes(5)
+                                      : TimeSpan.FromHours(12);
+
+                if ((DateTime.UtcNow - _lastPackageListResult.Item2) < cacheLength)
+                {
+                    return _lastPackageListResult.Item1;
+                }
+            }
+            
             using (var json = await _httpClient.Get(Constants.Constants.MbAdminUrl + "service/MB3Packages.json", cancellationToken).ConfigureAwait(false))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var packages = _jsonSerializer.DeserializeFromStream<List<PackageInfo>>(json).ToList();
 
-                return FilterPackages(packages, packageType, applicationVersion);
+                packages = FilterPackages(packages).ToList();
+
+                _lastPackageListResult = new Tuple<List<PackageInfo>, DateTime>(packages, DateTime.UtcNow);
+
+                return _lastPackageListResult.Item1;
             }
+        }
+
+        protected IEnumerable<PackageInfo> FilterPackages(List<PackageInfo> packages)
+        {
+            foreach (var package in packages)
+            {
+                package.versions = package.versions.Where(v => !string.IsNullOrWhiteSpace(v.sourceUrl))
+                    .OrderByDescending(v => v.version).ToList();
+            }
+
+            // Remove packages with no versions
+            packages = packages.Where(p => p.versions.Any()).ToList();
+
+            return packages;
         }
 
         protected IEnumerable<PackageInfo> FilterPackages(List<PackageInfo> packages, PackageType? packageType, Version applicationVersion)
@@ -206,9 +237,9 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// Determines whether [is package version up to date] [the specified package version info].
         /// </summary>
         /// <param name="packageVersionInfo">The package version info.</param>
-        /// <param name="applicationVersion">The application version.</param>
+        /// <param name="currentServerVersion">The current server version.</param>
         /// <returns><c>true</c> if [is package version up to date] [the specified package version info]; otherwise, <c>false</c>.</returns>
-        private bool IsPackageVersionUpToDate(PackageVersionInfo packageVersionInfo, Version applicationVersion)
+        private bool IsPackageVersionUpToDate(PackageVersionInfo packageVersionInfo, Version currentServerVersion)
         {
             if (string.IsNullOrEmpty(packageVersionInfo.requiredVersionStr))
             {
@@ -217,21 +248,23 @@ namespace MediaBrowser.Common.Implementations.Updates
 
             Version requiredVersion;
 
-            return Version.TryParse(packageVersionInfo.requiredVersionStr, out requiredVersion) && applicationVersion >= requiredVersion;
+            return Version.TryParse(packageVersionInfo.requiredVersionStr, out requiredVersion) && currentServerVersion >= requiredVersion;
         }
 
         /// <summary>
         /// Gets the package.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="guid">The assembly guid</param>
         /// <param name="classification">The classification.</param>
         /// <param name="version">The version.</param>
         /// <returns>Task{PackageVersionInfo}.</returns>
-        public async Task<PackageVersionInfo> GetPackage(string name, PackageVersionClass classification, Version version)
+        public async Task<PackageVersionInfo> GetPackage(string name, string guid, PackageVersionClass classification, Version version)
         {
             var packages = await GetAvailablePackages(CancellationToken.None).ConfigureAwait(false);
 
-            var package = packages.FirstOrDefault(p => p.name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var package = packages.FirstOrDefault(p => string.Equals(p.guid, guid ?? "none", StringComparison.OrdinalIgnoreCase)) 
+                            ?? packages.FirstOrDefault(p => p.name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
             if (package == null)
             {
@@ -245,13 +278,15 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// Gets the latest compatible version.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="guid">The assembly guid if this is a plug-in</param>
+        /// <param name="currentServerVersion">The current server version.</param>
         /// <param name="classification">The classification.</param>
         /// <returns>Task{PackageVersionInfo}.</returns>
-        public async Task<PackageVersionInfo> GetLatestCompatibleVersion(string name, PackageVersionClass classification = PackageVersionClass.Release)
+        public async Task<PackageVersionInfo> GetLatestCompatibleVersion(string name, string guid, Version currentServerVersion, PackageVersionClass classification = PackageVersionClass.Release)
         {
             var packages = await GetAvailablePackages(CancellationToken.None).ConfigureAwait(false);
 
-            return GetLatestCompatibleVersion(packages, name, classification);
+            return GetLatestCompatibleVersion(packages, name, guid, currentServerVersion, classification);
         }
 
         /// <summary>
@@ -259,11 +294,13 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// </summary>
         /// <param name="availablePackages">The available packages.</param>
         /// <param name="name">The name.</param>
+        /// <param name="currentServerVersion">The current server version.</param>
         /// <param name="classification">The classification.</param>
         /// <returns>PackageVersionInfo.</returns>
-        public PackageVersionInfo GetLatestCompatibleVersion(IEnumerable<PackageInfo> availablePackages, string name, PackageVersionClass classification = PackageVersionClass.Release)
+        public PackageVersionInfo GetLatestCompatibleVersion(IEnumerable<PackageInfo> availablePackages, string name, string guid, Version currentServerVersion, PackageVersionClass classification = PackageVersionClass.Release)
         {
-            var package = availablePackages.FirstOrDefault(p => p.name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var package = availablePackages.FirstOrDefault(p => string.Equals(p.guid, guid ?? "none", StringComparison.OrdinalIgnoreCase)) 
+                            ?? availablePackages.FirstOrDefault(p => p.name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
             if (package == null)
             {
@@ -272,39 +309,40 @@ namespace MediaBrowser.Common.Implementations.Updates
 
             return package.versions
                 .OrderByDescending(v => v.version)
-                .FirstOrDefault(v => v.classification <= classification && IsPackageVersionUpToDate(v, _applicationHost.ApplicationVersion));
+                .FirstOrDefault(v => v.classification <= classification && IsPackageVersionUpToDate(v, currentServerVersion));
         }
 
         /// <summary>
         /// Gets the available plugin updates.
         /// </summary>
+        /// <param name="applicationVersion">The current server version.</param>
         /// <param name="withAutoUpdateEnabled">if set to <c>true</c> [with auto update enabled].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{IEnumerable{PackageVersionInfo}}.</returns>
-        public async Task<IEnumerable<PackageVersionInfo>> GetAvailablePluginUpdates(bool withAutoUpdateEnabled, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PackageVersionInfo>> GetAvailablePluginUpdates(Version applicationVersion, bool withAutoUpdateEnabled, CancellationToken cancellationToken)
         {
             var catalog = await GetAvailablePackagesWithoutRegistrationInfo(cancellationToken).ConfigureAwait(false);
-            return FilterCatalog(catalog, withAutoUpdateEnabled);
-        }
 
-        protected IEnumerable<PackageVersionInfo> FilterCatalog(IEnumerable<PackageInfo> catalog, bool withAutoUpdateEnabled)
-        {
-            var plugins = _applicationHost.Plugins;
+            var plugins = _applicationHost.Plugins.ToList();
 
             if (withAutoUpdateEnabled)
             {
-                plugins = plugins.Where(p => p.Configuration.EnableAutoUpdate);
+                plugins = plugins
+                    .Where(p => p.Configuration.EnableAutoUpdate)
+                    .ToList();
             }
 
             // Figure out what needs to be installed
-            return plugins.Select(p =>
+            var packages = plugins.Select(p =>
             {
-                var latestPluginInfo = GetLatestCompatibleVersion(catalog, p.Name, p.Configuration.UpdateClass);
+                var latestPluginInfo = GetLatestCompatibleVersion(catalog, p.Name, p.Id.ToString(), applicationVersion, p.Configuration.UpdateClass);
 
-                return latestPluginInfo != null && latestPluginInfo.version > p.Version ? latestPluginInfo : null;
+                return latestPluginInfo != null && latestPluginInfo.version != null && latestPluginInfo.version > p.Version ? latestPluginInfo : null;
 
-            }).Where(p => !CompletedInstallations.Any(i => string.Equals(i.Name, p.name, StringComparison.OrdinalIgnoreCase)))
-            .Where(p => p != null && !string.IsNullOrWhiteSpace(p.sourceUrl));
+            }).Where(i => i != null).ToList();
+
+            return packages
+                .Where(p => !string.IsNullOrWhiteSpace(p.sourceUrl) && !CompletedInstallations.Any(i => string.Equals(i.AssemblyGuid, p.guid, StringComparison.OrdinalIgnoreCase)));
         }
 
         /// <summary>
@@ -327,15 +365,11 @@ namespace MediaBrowser.Common.Implementations.Updates
                 throw new ArgumentNullException("progress");
             }
 
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
-            }
-
             var installationInfo = new InstallationInfo
             {
                 Id = Guid.NewGuid(),
                 Name = package.name,
+                AssemblyGuid = package.guid,
                 UpdateClass = package.classification,
                 Version = package.versionStr
             };
@@ -379,6 +413,8 @@ namespace MediaBrowser.Common.Implementations.Updates
                     CurrentInstallations.Remove(tuple);
                 }
 
+                progress.Report(100);
+
                 CompletedInstallations.Add(installationInfo);
 
                 EventHelper.QueueEventIfNotNull(PackageInstallationCompleted, this, installationEventArgs, _logger);
@@ -417,7 +453,6 @@ namespace MediaBrowser.Common.Implementations.Updates
             finally
             {
                 // Dispose the progress object and remove the installation from the in-progress list
-
                 innerProgress.Dispose();
                 tuple.Item2.Dispose();
             }
@@ -435,11 +470,14 @@ namespace MediaBrowser.Common.Implementations.Updates
             // Do the install
             await PerformPackageInstallation(progress, package, cancellationToken).ConfigureAwait(false);
 
+            var extension = Path.GetExtension(package.targetFilename) ?? "";
+
             // Do plugin-specific processing
-            if (!(Path.GetExtension(package.targetFilename) ?? "").Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(extension, ".zip", StringComparison.OrdinalIgnoreCase) && !string.Equals(extension, ".rar", StringComparison.OrdinalIgnoreCase) && !string.Equals(extension, ".7z", StringComparison.OrdinalIgnoreCase))
             {
                 // Set last update time if we were installed before
-                var plugin = _applicationHost.Plugins.FirstOrDefault(p => p.Name.Equals(package.name, StringComparison.OrdinalIgnoreCase));
+                var plugin = _applicationHost.Plugins.FirstOrDefault(p => string.Equals(p.Id.ToString(), package.guid, StringComparison.OrdinalIgnoreCase))
+                            ?? _applicationHost.Plugins.FirstOrDefault(p => p.Name.Equals(package.name, StringComparison.OrdinalIgnoreCase));
 
                 if (plugin != null)
                 {
@@ -449,7 +487,6 @@ namespace MediaBrowser.Common.Implementations.Updates
                 {
                     OnPluginInstalled(package);
                 }
-
             }
         }
 
@@ -457,7 +494,8 @@ namespace MediaBrowser.Common.Implementations.Updates
         {
             // Target based on if it is an archive or single assembly
             //  zip archives are assumed to contain directory structures relative to our ProgramDataPath
-            var isArchive = string.Equals(Path.GetExtension(package.targetFilename), ".zip", StringComparison.OrdinalIgnoreCase);
+            var extension = Path.GetExtension(package.targetFilename);
+            var isArchive = string.Equals(extension, ".zip", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".rar", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".7z", StringComparison.OrdinalIgnoreCase);
             var target = Path.Combine(isArchive ? _appPaths.TempUpdatePath : _appPaths.PluginsPath, package.targetFilename);
 
             // Download to temporary file so that, if interrupted, it won't destroy the existing installation
@@ -513,7 +551,6 @@ namespace MediaBrowser.Common.Implementations.Updates
                 _logger.ErrorException("Error deleting temp file {0]", e, tempFile);
             }
         }
-
 
         /// <summary>
         /// Uninstalls a plugin

@@ -24,7 +24,9 @@ namespace MediaBrowser.Server.Implementations.Library
             "ps3_update",
             "ps3_vprm",
             "adv_obj",
-            "extrafanart"
+            "extrafanart",
+            "extrathumbs",
+            ".actors"
 
         }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
@@ -35,6 +37,15 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         public bool ShouldIgnore(ItemResolveArgs args)
         {
+            var filename = args.FileInfo.Name;
+
+            // Handle mac .DS_Store
+            // https://github.com/MediaBrowser/MediaBrowser/issues/427
+            if (filename.IndexOf("._", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                return true;    
+            }
+
             // Ignore hidden files and folders
             if (args.IsHidden)
             {
@@ -71,8 +82,6 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (args.IsDirectory)
             {
-                var filename = args.FileInfo.Name;
-
                 // Ignore any folders in our list
                 if (IgnoreFolders.ContainsKey(filename))
                 {
@@ -100,8 +109,7 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 if (args.Parent != null)
                 {
-                    var filename = args.FileInfo.Name;
-
+                    // Don't resolve these into audio files
                     if (string.Equals(Path.GetFileNameWithoutExtension(filename), BaseItem.ThemeSongFilename) && EntityResolutionHelper.IsAudioFile(filename))
                     {
                         return true;

@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
@@ -9,13 +8,13 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -35,12 +34,8 @@ namespace MediaBrowser.Providers.Movies
         /// </summary>
         private readonly IProviderManager _providerManager;
 
-        /// <summary>
-        /// The us culture
-        /// </summary>
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
-
         internal static FanArtMovieProvider Current { get; private set; }
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FanArtMovieProvider" /> class.
@@ -50,7 +45,7 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="providerManager">The provider manager.</param>
         /// <exception cref="System.ArgumentNullException">httpClient</exception>
-        public FanArtMovieProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager)
+        public FanArtMovieProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             if (httpClient == null)
@@ -59,6 +54,7 @@ namespace MediaBrowser.Providers.Movies
             }
             HttpClient = httpClient;
             _providerManager = providerManager;
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -69,7 +65,7 @@ namespace MediaBrowser.Providers.Movies
                 return ItemUpdateType.ImageUpdate;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether [refresh on version change].
         /// </summary>
@@ -98,7 +94,7 @@ namespace MediaBrowser.Providers.Movies
         {
             get
             {
-                return MetadataProviderPriority.Fourth;
+                return MetadataProviderPriority.Fifth;
             }
         }
 
@@ -137,50 +133,24 @@ namespace MediaBrowser.Providers.Movies
                 return false;
             }
 
-            if (!ConfigurationManager.Configuration.DownloadMovieImages.Art &&
-                !ConfigurationManager.Configuration.DownloadMovieImages.Logo &&
-                !ConfigurationManager.Configuration.DownloadMovieImages.Disc &&
-                !ConfigurationManager.Configuration.DownloadMovieImages.Backdrops &&
-                !ConfigurationManager.Configuration.DownloadMovieImages.Banner &&
-                !ConfigurationManager.Configuration.DownloadMovieImages.Thumb)
-            {
-                return false;
-            }
-
-            if (item.HasImage(ImageType.Art) &&
-                item.HasImage(ImageType.Logo) &&
-                item.HasImage(ImageType.Disc) &&
-                item.HasImage(ImageType.Banner) &&
-                item.HasImage(ImageType.Thumb) &&
-                item.BackdropImagePaths.Count > 0)
-            {
-                return false;
-            }
-
             return base.NeedsRefreshInternal(item, providerInfo);
         }
 
-        protected override DateTime CompareDate(BaseItem item)
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
             var id = item.GetProviderId(MetadataProviders.Tmdb);
 
             if (!string.IsNullOrEmpty(id))
             {
                 // Process images
-                var path = GetMovieDataPath(ConfigurationManager.ApplicationPaths, id);
+                var xmlPath = GetFanartXmlPath(id);
 
-                var files = new DirectoryInfo(path)
-                    .EnumerateFiles("*.xml", SearchOption.TopDirectoryOnly)
-                    .Select(i => i.LastWriteTimeUtc)
-                    .ToArray();
+                var fileInfo = new FileInfo(xmlPath);
 
-                if (files.Length > 0)
-                {
-                    return files.Max();
-                }
+                return !fileInfo.Exists || _fileSystem.GetLastWriteTimeUtc(fileInfo) > providerInfo.LastRefreshed;
             }
 
-            return base.CompareDate(item);
+            return base.NeedsRefreshBasedOnCompareDate(item, providerInfo);
         }
 
         /// <summary>
@@ -193,11 +163,6 @@ namespace MediaBrowser.Providers.Movies
         {
             var dataPath = Path.Combine(GetMoviesDataPath(appPaths), tmdbId);
 
-            if (!Directory.Exists(dataPath))
-            {
-                Directory.CreateDirectory(dataPath);
-            }
-
             return dataPath;
         }
 
@@ -209,11 +174,6 @@ namespace MediaBrowser.Providers.Movies
         internal static string GetMoviesDataPath(IApplicationPaths appPaths)
         {
             var dataPath = Path.Combine(appPaths.DataPath, "fanart-movies");
-
-            if (!Directory.Exists(dataPath))
-            {
-                Directory.CreateDirectory(dataPath);
-            }
 
             return dataPath;
         }
@@ -233,39 +193,44 @@ namespace MediaBrowser.Providers.Movies
 
             if (!string.IsNullOrEmpty(movieId))
             {
-                var movieDataPath = GetMovieDataPath(ConfigurationManager.ApplicationPaths, movieId);
-                var xmlPath = Path.Combine(movieDataPath, "fanart.xml");
+                var xmlPath = GetFanartXmlPath(movieId);
 
                 // Only download the xml if it doesn't already exist. The prescan task will take care of getting updates
                 if (!File.Exists(xmlPath))
                 {
-                    await DownloadMovieXml(movieDataPath, movieId, cancellationToken).ConfigureAwait(false);
+                    await DownloadMovieXml(movieId, cancellationToken).ConfigureAwait(false);
                 }
 
-                if (File.Exists(xmlPath))
-                {
-                    await FetchFromXml(item, xmlPath, cancellationToken).ConfigureAwait(false);
-                }
+                var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualFanartMovieImageProvider.ProviderName).ConfigureAwait(false);
+
+                await FetchImages(item, images.ToList(), cancellationToken).ConfigureAwait(false);
             }
 
             SetLastRefreshed(item, DateTime.UtcNow);
             return true;
         }
 
+        public string GetFanartXmlPath(string tmdbId)
+        {
+            var movieDataPath = GetMovieDataPath(ConfigurationManager.ApplicationPaths, tmdbId);
+            return Path.Combine(movieDataPath, "fanart.xml");
+        }
+
         /// <summary>
         /// Downloads the movie XML.
         /// </summary>
-        /// <param name="movieDataPath">The movie data path.</param>
         /// <param name="tmdbId">The TMDB id.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        internal async Task DownloadMovieXml(string movieDataPath, string tmdbId, CancellationToken cancellationToken)
+        internal async Task DownloadMovieXml(string tmdbId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string url = string.Format(FanArtBaseUrl, ApiKey, tmdbId);
+            var url = string.Format(FanArtBaseUrl, ApiKey, tmdbId);
 
-            var xmlPath = Path.Combine(movieDataPath, "fanart.xml");
+            var xmlPath = GetFanartXmlPath(tmdbId);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(xmlPath));
 
             using (var response = await HttpClient.Get(new HttpRequestOptions
             {
@@ -275,75 +240,60 @@ namespace MediaBrowser.Providers.Movies
 
             }).ConfigureAwait(false))
             {
-                using (var xmlFileStream = new FileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                using (var xmlFileStream = _fileSystem.GetFileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                 {
                     await response.CopyToAsync(xmlFileStream).ConfigureAwait(false);
                 }
             }
         }
 
-        /// <summary>
-        /// Fetches from XML.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="xmlFilePath">The XML file path.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task FetchFromXml(BaseItem item, string xmlFilePath, CancellationToken cancellationToken)
+        private async Task FetchImages(BaseItem item, List<RemoteImageInfo> images, CancellationToken cancellationToken)
         {
-            var doc = new XmlDocument();
-            doc.Load(xmlFilePath);
-            
-            var language = ConfigurationManager.Configuration.PreferredMetadataLanguage.ToLower();
-            
             cancellationToken.ThrowIfCancellationRequested();
 
-            string path;
-            var hd = ConfigurationManager.Configuration.DownloadHDFanArt ? "hd" : "";
+            if (ConfigurationManager.Configuration.DownloadMovieImages.Primary && !item.HasImage(ImageType.Primary))
+            {
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Primary);
+
+                if (image != null)
+                {
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadMovieImages.Logo && !item.HasImage(ImageType.Logo))
             {
-                var node =
-                    doc.SelectSingleNode("//fanart/movie/movielogos/" + hd + "movielogo[@lang = \"" + language + "\"]/@url") ??
-                    doc.SelectSingleNode("//fanart/movie/movielogos/movielogo[@lang = \"" + language + "\"]/@url");
-                if (node == null && language != "en")
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Logo);
+
+                if (image != null)
                 {
-                    //maybe just couldn't find language - try just first one
-                    node = doc.SelectSingleNode("//fanart/movie/movielogos/" + hd + "movielogo/@url");
-                }
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
-                {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Logo, null, cancellationToken).ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Logo, null, cancellationToken).ConfigureAwait(false);
                 }
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadMovieImages.Art && !item.HasImage(ImageType.Art))
             {
-                var node =
-                    doc.SelectSingleNode("//fanart/movie/moviearts/" + hd + "movieart[@lang = \"" + language + "\"]/@url") ??
-                    doc.SelectSingleNode("//fanart/movie/moviearts/" + hd + "movieart/@url") ??
-                    doc.SelectSingleNode("//fanart/movie/moviearts/movieart[@lang = \"" + language + "\"]/@url") ??
-                    doc.SelectSingleNode("//fanart/movie/moviearts/movieart/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Art);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Art, null, cancellationToken)
-                                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Art, null, cancellationToken).ConfigureAwait(false);
                 }
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadMovieImages.Disc && !item.HasImage(ImageType.Disc))
             {
-                var node = doc.SelectSingleNode("//fanart/movie/moviediscs/moviedisc[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/movie/moviediscs/moviedisc/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Disc);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Disc, null, cancellationToken)
-                                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Disc, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -351,13 +301,11 @@ namespace MediaBrowser.Providers.Movies
 
             if (ConfigurationManager.Configuration.DownloadMovieImages.Banner && !item.HasImage(ImageType.Banner))
             {
-                var node = doc.SelectSingleNode("//fanart/movie/moviebanners/moviebanner[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/movie/moviebanners/moviebanner/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Banner);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Banner, null, cancellationToken)
-                                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Banner, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -365,39 +313,26 @@ namespace MediaBrowser.Providers.Movies
 
             if (ConfigurationManager.Configuration.DownloadMovieImages.Thumb && !item.HasImage(ImageType.Thumb))
             {
-                var node = doc.SelectSingleNode("//fanart/movie/moviethumbs/moviethumb[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/movie/moviethumbs/moviethumb/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Thumb);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Thumb, null, cancellationToken)
-                                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Thumb, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-            if (ConfigurationManager.Configuration.DownloadMovieImages.Backdrops && item.BackdropImagePaths.Count == 0)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var backdropLimit = ConfigurationManager.Configuration.MaxBackdrops;
+            if (ConfigurationManager.Configuration.DownloadMovieImages.Backdrops &&
+                item.BackdropImagePaths.Count < backdropLimit)
             {
-                var nodes = doc.SelectNodes("//fanart/movie/moviebackgrounds//@url");
-
-                if (nodes != null)
+                foreach (var image in images.Where(i => i.Type == ImageType.Backdrop))
                 {
-                    var numBackdrops = item.BackdropImagePaths.Count;
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Backdrop, null, cancellationToken)
+                                        .ConfigureAwait(false);
 
-                    foreach (XmlNode node in nodes)
-                    {
-                        path = node.Value;
-
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Backdrop, numBackdrops, cancellationToken)
-                                                .ConfigureAwait(false);
-
-                            numBackdrops++;
-
-                            if (item.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops) break;
-                        }
-                    }
-
+                    if (item.BackdropImagePaths.Count >= backdropLimit) break;
                 }
             }
         }

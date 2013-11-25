@@ -14,7 +14,7 @@ namespace MediaBrowser.Controller.Entities
     /// <summary>
     /// Class Video
     /// </summary>
-    public class Video : BaseItem, IHasMediaStreams
+    public class Video : BaseItem, IHasMediaStreams, IHasAspectRatio
     {
         public bool IsMultiPart { get; set; }
 
@@ -66,6 +66,12 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
+        /// Gets or sets the aspect ratio.
+        /// </summary>
+        /// <value>The aspect ratio.</value>
+        public string AspectRatio { get; set; }
+        
+        /// <summary>
         /// Should be overridden to return the proper folder where metadata lives
         /// </summary>
         /// <value>The meta location.</value>
@@ -94,6 +100,8 @@ namespace MediaBrowser.Controller.Entities
                 return VideoType == VideoType.VideoFile || VideoType == VideoType.Iso || IsMultiPart;
             }
         }
+
+        public string MainFeaturePlaylistName { get; set; }
 
         /// <summary>
         /// Gets the playable stream files.
@@ -133,6 +141,8 @@ namespace MediaBrowser.Controller.Entities
         {
             get { return Video3DFormat.HasValue; }
         }
+
+        public bool IsHD { get; set; }
 
         /// <summary>
         /// Gets the type of the media.
@@ -239,7 +249,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (dbItem != null)
                 {
-                    dbItem.ResolveArgs = video.ResolveArgs;
+                    dbItem.ResetResolveArgs(video.ResolveArgs);
                     video = dbItem;
                 }
 

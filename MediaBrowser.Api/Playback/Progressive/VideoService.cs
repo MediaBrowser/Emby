@@ -1,6 +1,8 @@
-﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
@@ -53,16 +55,8 @@ namespace MediaBrowser.Api.Playback.Progressive
     /// </summary>
     public class VideoService : BaseProgressiveStreamingService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VideoService"/> class.
-        /// </summary>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="isoManager">The iso manager.</param>
-        /// <param name="mediaEncoder">The media encoder.</param>
-        public VideoService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo)
-            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, itemRepo)
+        public VideoService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IDtoService dtoService, IImageProcessor imageProcessor, IFileSystem fileSystem)
+            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, itemRepo, dtoService, imageProcessor, fileSystem)
         {
         }
 
@@ -145,16 +139,23 @@ namespace MediaBrowser.Api.Playback.Progressive
                 return state.VideoStream != null && IsH264(state.VideoStream) ? args + " -bsf h264_mp4toannexb" : args;
             }
 
-            const string keyFrameArg = " -force_key_frames expr:if(isnan(prev_forced_t),gte(t,0),gte(t,prev_forced_t+2))";
+            const string keyFrameArg = " -force_key_frames expr:if(isnan(prev_forced_t),gte(t,.1),gte(t,prev_forced_t+5))";
 
             args += keyFrameArg;
+
+            var hasGraphicalSubs = state.SubtitleStream != null && !state.SubtitleStream.IsExternal &&
+                                   (state.SubtitleStream.Codec.IndexOf("pgs", StringComparison.OrdinalIgnoreCase) != -1 ||
+                                    state.SubtitleStream.Codec.IndexOf("dvd", StringComparison.OrdinalIgnoreCase) != -1);
 
             var request = state.VideoRequest;
 
             // Add resolution params, if specified
-            if (request.Width.HasValue || request.Height.HasValue || request.MaxHeight.HasValue || request.MaxWidth.HasValue)
+            if (!hasGraphicalSubs)
             {
-                args += GetOutputSizeParam(state, codec, performSubtitleConversion);
+                if (request.Width.HasValue || request.Height.HasValue || request.MaxHeight.HasValue || request.MaxWidth.HasValue)
+                {
+                    args += GetOutputSizeParam(state, codec, performSubtitleConversion);
+                }
             }
 
             if (request.Framerate.HasValue)
@@ -181,13 +182,10 @@ namespace MediaBrowser.Api.Playback.Progressive
                 args += " -level " + state.VideoRequest.Level;
             }
 
-            if (state.SubtitleStream != null)
+            // This is for internal graphical subs
+            if (hasGraphicalSubs)
             {
-                // This is for internal graphical subs
-                if (!state.SubtitleStream.IsExternal && (state.SubtitleStream.Codec.IndexOf("pgs", StringComparison.OrdinalIgnoreCase) != -1 || state.SubtitleStream.Codec.IndexOf("dvd", StringComparison.OrdinalIgnoreCase) != -1))
-                {
-                    args += GetInternalGraphicalSubtitleParam(state, codec);
-                }
+                args += GetInternalGraphicalSubtitleParam(state, codec);
             }
 
             return args;
@@ -217,11 +215,6 @@ namespace MediaBrowser.Api.Playback.Progressive
             }
             
             var args = "-acodec " + codec;
-
-            if (string.Equals(codec, "aac", StringComparison.OrdinalIgnoreCase))
-            {
-                args += " -strict experimental";
-            }
             
             // Add the number of audio channels
             var channels = GetNumAudioChannelsParam(request, state.AudioStream);
@@ -231,28 +224,31 @@ namespace MediaBrowser.Api.Playback.Progressive
                 args += " -ac " + channels.Value;
             }
 
-            if (request.AudioSampleRate.HasValue)
+            var bitrate = GetAudioBitrateParam(state);
+
+            if (bitrate.HasValue)
             {
-                args += " -ar " + request.AudioSampleRate.Value;
+                args += " -ab " + bitrate.Value.ToString(UsCulture);
             }
 
-            if (request.AudioBitRate.HasValue)
-            {
-                args += " -ab " + request.AudioBitRate.Value;
+                var volParam = string.Empty;
+                var AudioSampleRate = string.Empty;
+
+                // Boost volume to 200% when downsampling from 6ch to 2ch
+                if (channels.HasValue && channels.Value <= 2 && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5)
+                {
+                    volParam = ",volume=2.000000";
+                }
+                
+                if (state.Request.AudioSampleRate.HasValue)
+                {
+                    AudioSampleRate= state.Request.AudioSampleRate.Value + ":";
+                }
+
+                args += string.Format(" -af \"aresample={0}async=1000{1}\"",AudioSampleRate, volParam);
+
+                return args;
             }
-
-            var volParam = string.Empty;
-
-            // Boost volume to 200% when downsampling from 6ch to 2ch
-            if (channels.HasValue && channels.Value <= 2 && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5)
-            {
-                volParam = ",volume=2.000000";
-            }
-
-            args += string.Format(" -af \"aresample=async=1000{0}\"", volParam);
-
-            return args;
-        }
 
         /// <summary>
         /// Gets the video bitrate to specify on the command line
@@ -283,16 +279,13 @@ namespace MediaBrowser.Api.Playback.Progressive
             else if (videoCodec.Equals("mpeg4", StringComparison.OrdinalIgnoreCase))
             {
                 args = "-mbd rd -flags +mv4+aic -trellis 2 -cmp 2 -subcmp 2 -bf 2";
-            } 
-            
-            if (state.VideoRequest.VideoBitRate.HasValue)
+            }
+
+            var bitrate = GetVideoBitrateParam(state);
+
+            if (bitrate.HasValue)
             {
-                // Make sure we don't request a bitrate higher than the source
-                var currentBitrate = state.VideoStream == null ? state.VideoRequest.VideoBitRate.Value : state.VideoStream.BitRate ?? state.VideoRequest.VideoBitRate.Value;
-
-                var bitrate = Math.Min(currentBitrate, state.VideoRequest.VideoBitRate.Value);
-
-                args += " -b:v " + bitrate;
+                args += string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
             }
 
             return args.Trim();

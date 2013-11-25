@@ -20,23 +20,12 @@
             LibraryBrowser.renderParentName(item, $('.parentName', page));
 
             var context = getContext(item);
-            setInitialCollapsibleState(page, item, context);
-            renderDetails(page, item, context);
-            LibraryBrowser.renderDetailPageBackdrop(page, item);
-
-            if (item.LocationType == "Offline") {
-                $('#offlineIndicator', page).show();
-            } else {
-                $('#offlineIndicator', page).hide();
-            }
-
-            if (MediaPlayer.canPlay(item) && item.LocationType !== "Offline") {
-                $('#playButtonContainer', page).show();
-            } else {
-                $('#playButtonContainer', page).hide();
-            }
 
             Dashboard.getCurrentUser().done(function (user) {
+
+                setInitialCollapsibleState(page, item, context, user);
+                renderDetails(page, item, context);
+                LibraryBrowser.renderDetailPageBackdrop(page, item);
 
                 if (user.Configuration.IsAdministrator) {
                     $('#editButtonContainer', page).show();
@@ -46,7 +35,56 @@
 
             });
 
+            if (item.LocationType == "Offline") {
+
+                $('#offlineIndicator', page).show();
+            }
+            else {
+                $('#offlineIndicator', page).hide();
+            }
+
+            var isMissingEpisode = false;
+
+            if (item.LocationType == "Virtual" && item.Type == "Episode") {
+                try {
+                    if (item.PremiereDate && (new Date().getTime() >= parseISO8601Date(item.PremiereDate, { toLocal: true }).getTime())) {
+                        isMissingEpisode = true;
+                    }
+                } catch (err) {
+
+                }
+            }
+
+            if (isMissingEpisode) {
+
+                $('#missingIndicator', page).show();
+            }
+            else {
+                $('#missingIndicator', page).hide();
+            }
+
+            if (MediaPlayer.canPlay(item) && item.LocationType !== "Offline" && item.LocationType !== "Virtual") {
+
+                var url = MediaPlayer.getPlayUrl(item);
+
+                if (url) {
+                    $('#playExternalButtonContainer', page).show();
+                    $('#playButtonContainer', page).hide();
+                } else {
+                    $('#playButtonContainer', page).show();
+                    $('#playExternalButtonContainer', page).hide();
+                }
+
+                $('#btnPlayExternal', page).attr('href', url || '#');
+
+            } else {
+                $('#playButtonContainer', page).hide();
+                $('#playExternalButtonContainer', page).hide();
+            }
+
             $(".autoNumeric").autoNumeric('init');
+
+            setPeopleHeader(page, item);
 
             if (ApiClient.isWebSocketOpen()) {
                 ApiClient.sendWebSocketMessage("Context", [item.Type, item.Id, item.Name, context].join('|'));
@@ -54,6 +92,16 @@
 
             Dashboard.hideLoadingMsg();
         });
+    }
+
+    function setPeopleHeader(page, item) {
+
+        if (item.Type == "Audio" || item.Type == "MusicAlbum" || item.MediaType == "Book" || item.MediaType == "Photo") {
+            $('#peopleHeader', page).html('People');
+        } else {
+            $('#peopleHeader', page).html('Cast & Crew');
+        }
+
     }
 
     function getContext(item) {
@@ -66,7 +114,7 @@
         if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "BoxSet") {
             return "movies";
         }
-        if (item.Type == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist" || item.Type == "Artist" || item.Type == "MusicVideo") {
+        if (item.Type == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist" || item.Type == "MusicVideo") {
             return "music";
         }
         if (item.MediaType == "Game") {
@@ -99,7 +147,7 @@
             $('#gameTabs', page).show();
         }
 
-        if (item.Type == "GamePlatform") {
+        if (item.Type == "GameSystem") {
             $('#gameSystemTabs', page).show();
         }
 
@@ -116,11 +164,11 @@
         }
     }
 
-    function setInitialCollapsibleState(page, item, context) {
+    function setInitialCollapsibleState(page, item, context, user) {
 
         if (item.ChildCount) {
             $('#childrenCollapsible', page).removeClass('hide');
-            renderChildren(page, item);
+            renderChildren(page, item, user);
         }
         else {
             $('#childrenCollapsible', page).addClass('hide');
@@ -135,13 +183,13 @@
             $('#scenesCollapsible', page).show();
             renderScenes(page, item, 6);
         }
-        if (!item.LocalTrailerCount || item.LocalTrailerCount == 0) {
+        if (!item.LocalTrailerCount && !item.RemoteTrailers.length) {
             $('#trailersCollapsible', page).addClass('hide');
         } else {
             $('#trailersCollapsible', page).removeClass('hide');
             renderTrailers(page, item);
         }
-        if (!item.SpecialFeatureCount || item.SpecialFeatureCount == 0) {
+        if (!item.SpecialFeatureCount || item.SpecialFeatureCount == 0 || item.Type == "Series") {
             $('#specialsCollapsible', page).addClass('hide');
         } else {
             $('#specialsCollapsible', page).removeClass('hide');
@@ -151,7 +199,7 @@
             $('#castCollapsible', page).hide();
         } else {
             $('#castCollapsible', page).show();
-            renderCast(page, item, context, 10);
+            renderCast(page, item, context, 8);
         }
 
         if (!item.PartCount || item.PartCount < 2) {
@@ -201,7 +249,7 @@
             $('.itemCommunityRating', page).hide();
         }
 
-        if (item.Type != "Episode" && item.Type != "Movie") {
+        if (item.Type != "Episode" && item.Type != "Movie" && item.Type != "Series") {
             var premiereDateElem = $('#itemPremiereDate', page).show();
             LibraryBrowser.renderPremiereDate(premiereDateElem, item);
         } else {
@@ -238,8 +286,8 @@
             $('#players', page).hide();
         }
 
-        if ((item.Type == "Audio" || item.Type == "MusicVideo") && item.Artists && item.Artists.length) {
-            $('#artist', page).show().html('Artist:&nbsp;&nbsp;<a class="textlink" href="itembynamedetails.html?context=music&artist=' + ApiClient.encodeName(item.Artists[0]) + '">' + item.Artists[0] + '</a>').trigger('create');
+        if (item.Artists && item.Artists.length) {
+            $('#artist', page).show().html(getArtistLinksHtml(item.Artists)).trigger('create');
         } else {
             $('#artist', page).hide();
         }
@@ -253,12 +301,30 @@
         } else {
             detailsSection.removeClass('hide');
         }
+    }
 
-        if (item.Path) {
-            $('.itemPath', page).show().html('Path:&nbsp;&nbsp;' + '<span style="font-size:13px;">' + item.Path + '</span>');
-        } else {
-            $('.itemPath', page).hide();
+    function getArtistLinksHtml(artists) {
+
+        var html = [];
+
+        for (var i = 0, length = artists.length; i < length; i++) {
+
+            var artist = artists[i];
+
+            html.push('<a class="textlink" href="itembynamedetails.html?context=music&musicartist=' + ApiClient.encodeName(artist) + '">' + artist + '</a>');
+
         }
+
+        html = html.join(' / ');
+
+        if (artists.length == 1) {
+            return 'Artist:&nbsp;&nbsp;' + html;
+        }
+        if (artists.length > 1) {
+            return 'Artists:&nbsp;&nbsp;' + html;
+        }
+
+        return html;
     }
 
     function renderSoundtracks(page, item) {
@@ -272,7 +338,7 @@
         ApiClient.getItems(Dashboard.getCurrentUserId(), {
 
             Ids: item.SoundtrackIds.join(","),
-            ItemFields: "PrimaryImageAspectRatio,ItemCounts,DisplayMediaType,DateCreated,UserData,AudioInfo",
+            ItemFields: "PrimaryImageAspectRatio,ItemCounts,DateCreated,AudioInfo",
             SortBy: "SortName"
 
         }).done(function (result) {
@@ -393,12 +459,12 @@
             }).join(',');
         }
 
-        if (item.Studios.length) {
-            html += ' on <a class="textlink" href="itembynamedetails.html?context=' + context + '&studio=' + ApiClient.encodeName(item.Studios[0].Name) + '">' + item.Studios[0].Name + '</a>';
-        }
-
         if (item.AirTime) {
             html += ' at ' + item.AirTime;
+        }
+
+        if (item.Studios.length) {
+            html += ' on <a class="textlink" href="itembynamedetails.html?context=' + context + '&studio=' + ApiClient.encodeName(item.Studios[0].Name) + '">' + item.Studios[0].Name + '</a>';
         }
 
         if (html) {
@@ -429,17 +495,39 @@
         }
     }
 
-    function renderChildren(page, item) {
+    function renderChildren(page, item, user) {
 
         var sortBy = item.Type == "BoxSet" ? "ProductionYear,SortName" : "SortName";
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), {
-
-            ParentId: getParameterByName('id'),
+        var query = {
+            ParentId: item.Id,
             SortBy: sortBy,
-            Fields: "PrimaryImageAspectRatio,ItemCounts,DisplayMediaType,DateCreated,UserData,AudioInfo"
+            Fields: "ItemCounts,DateCreated,AudioInfo"
+        };
 
-        }).done(function (result) {
+        var promise;
+
+        if (item.Type == "Season" && item.IndexNumber != null) {
+
+            promise = ApiClient.getEpisodes(item.SeriesId, {
+
+                season: item.IndexNumber,
+                userId: Dashboard.getCurrentUserId()
+            });
+        }
+
+        if (item.Type == "Series") {
+            if (!user.Configuration.DisplayMissingEpisodes) {
+                query.IsMissing = false;
+            }
+            if (!user.Configuration.DisplayUnairedEpisodes) {
+                query.IsVirtualUnaired = false;
+            }
+        }
+
+        promise = promise || ApiClient.getItems(Dashboard.getCurrentUserId(), query);
+
+        promise.done(function (result) {
 
             if (item.Type == "MusicAlbum") {
 
@@ -456,7 +544,9 @@
                 var html = LibraryBrowser.getPosterDetailViewHtml({
                     items: result.Items,
                     useAverageAspectRatio: true,
-                    shape: shape
+                    shape: shape,
+                    showParentName: false,
+                    displayAsSpecial: item.Type == "Season" && item.IndexNumber
                 });
 
                 $('#childrenContent', page).html(html);
@@ -465,22 +555,22 @@
         });
 
         if (item.Type == "Season") {
-            $('#childrenTitle', page).html('Episodes (' + item.ChildCount + ')');
+            $('#childrenTitle', page).html('Episodes');
         }
         else if (item.Type == "Series") {
-            $('#childrenTitle', page).html('Seasons (' + item.ChildCount + ')');
+            $('#childrenTitle', page).html('Seasons');
         }
         else if (item.Type == "BoxSet") {
-            $('#childrenTitle', page).html('Movies (' + item.ChildCount + ')');
+            $('#childrenTitle', page).html('Movies');
         }
         else if (item.Type == "MusicAlbum") {
-            $('#childrenTitle', page).html('Tracks (' + item.ChildCount + ')');
+            $('#childrenTitle', page).html('Tracks');
         }
-        else if (item.Type == "GamePlatform") {
-            $('#childrenTitle', page).html('Games (' + item.ChildCount + ')');
+        else if (item.Type == "GameSystem") {
+            $('#childrenTitle', page).html('Games');
         }
         else {
-            $('#childrenTitle', page).html('Items (' + item.ChildCount + ')');
+            $('#childrenTitle', page).html('Items');
         }
     }
     function renderUserDataIcons(page, item) {
@@ -557,7 +647,7 @@
 
                 try {
 
-                    var date = parseISO8601Date(review.Date, true).toLocaleDateString();
+                    var date = parseISO8601Date(review.Date, { toLocal: true }).toLocaleDateString();
 
                     html += '<span class="reviewDate">' + date + '</span>';
                 }
@@ -606,7 +696,7 @@
             SortOrder: "Ascending",
             IncludeItemTypes: "MusicVideo",
             Recursive: true,
-            Fields: "UserData,DisplayMediaType,ItemCounts,DateCreated",
+            Fields: "DateCreated",
             Albums: item.Name
 
         }).done(function (result) {
@@ -673,7 +763,7 @@
             if (chapter.ImageTag) {
 
                 imgUrl = ApiClient.getImageUrl(item.Id, {
-                    width: 400,
+                    maxwidth: 400,
                     tag: chapter.ImageTag,
                     type: "Chapter",
                     index: i
@@ -726,37 +816,35 @@
 
             var attributes = [];
 
-            if (stream.Codec) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Codec + '</span>');
-            }
-            if (stream.Profile) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Profile + '</span>');
-            }
-            if (stream.Level) {
-                attributes.push('<span class="mediaInfoAttribute">Level ' + stream.Level + '</span>');
-            }
             if (stream.Language) {
                 attributes.push('<span class="mediaInfoAttribute">' + stream.Language + '</span>');
             }
 
-            if (stream.Width) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Width + '</span>');
+            if (stream.Codec && stream.Codec != "dca") {
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Codec + '</span>');
             }
 
-            if (stream.Height) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Height + '</span>');
+            if (stream.Profile && stream.Codec == "dca") {
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Profile + '</span>');
             }
 
-            if (stream.AspectRatio) {
+            if (stream.Width || stream.Height) {
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Width + 'x' + stream.Height + '</span>');
+            }
+
+            if (stream.AspectRatio && stream.Codec != "mjpeg") {
                 attributes.push('<span class="mediaInfoAttribute">' + stream.AspectRatio + '</span>');
             }
 
-            if (stream.BitRate) {
-                attributes.push('<span class="mediaInfoAttribute">' + (parseInt(stream.BitRate / 1000)) + ' kbps</span>');
+            if (stream.ChannelLayout) {
+                attributes.push('<span class="mediaInfoAttribute">' + stream.ChannelLayout + '</span>');
+            }
+            else if (stream.Channels) {
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Channels + ' ch</span>');
             }
 
-            if (stream.Channels) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Channels + ' ch</span>');
+            if (stream.BitRate && stream.Codec != "mjpeg") {
+                attributes.push('<span class="mediaInfoAttribute">' + (parseInt(stream.BitRate / 1000)) + ' kbps</span>');
             }
 
             if (stream.SampleRate) {
@@ -765,12 +853,8 @@
 
             var framerate = stream.AverageFrameRate || stream.RealFrameRate;
 
-            if (framerate) {
+            if (framerate && item.MediaType != "Audio") {
                 attributes.push('<span class="mediaInfoAttribute">' + framerate + '</span>');
-            }
-
-            if (stream.PixelFormat) {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.PixelFormat + '</span>');
             }
 
             if (stream.IsDefault) {
@@ -860,11 +944,34 @@
 
     function renderTrailers(page, item) {
 
-        ApiClient.getLocalTrailers(Dashboard.getCurrentUserId(), item.Id).done(function (trailers) {
+        if (item.Type == "Trailer") {
+            $('#trailerSectionHeader', page).html('More trailers');
+        } else {
+            $('#trailerSectionHeader', page).html('Trailers');
+        }
 
-            $('#trailersContent', page).html(getVideosHtml(trailers));
+        var remoteTrailersHtml = '';
 
-        });
+        for (var i = 0, length = item.RemoteTrailers.length; i < length; i++) {
+
+            var trailer = item.RemoteTrailers[i];
+
+            var id = getParameterByName('v', trailer.Url);
+
+            if (id) {
+                remoteTrailersHtml += '<iframe class="posterItem smallBackdropPosterItem" style="margin:0 3px;width:auto;" src="//www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>';
+            }
+        }
+
+        var elem = $('#trailersContent', page).html(remoteTrailersHtml);
+
+        if (item.LocalTrailerCount) {
+            ApiClient.getLocalTrailers(Dashboard.getCurrentUserId(), item.Id).done(function (trailers) {
+
+                elem.prepend(getVideosHtml(trailers));
+
+            });
+        }
     }
 
     function renderCast(page, item, context, limit) {
@@ -947,12 +1054,17 @@
             var userdata = currentItem.UserData || {};
 
             var mediaType = currentItem.MediaType;
-            
+
             if (currentItem.Type == "MusicArtist" || currentItem.Type == "MusicAlbum") {
                 mediaType = "Audio";
             }
-            
+
             LibraryBrowser.showPlayMenu(this, currentItem.Id, currentItem.Type, mediaType, userdata.PlaybackPositionTicks);
+        });
+
+        $('#btnPlayExternal', page).on('click', function () {
+
+            ApiClient.markPlayed(Dashboard.getCurrentUserId(), currentItem.Id, new Date());
         });
 
         $('#btnEdit', page).on('click', function () {

@@ -25,6 +25,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// <value>The web socket.</value>
         private System.Net.WebSockets.WebSocket WebSocket { get; set; }
 
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NativeWebSocket" /> class.
         /// </summary>
@@ -79,7 +81,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
                 try
                 {
-                    bytes = await ReceiveBytesAsync(CancellationToken.None).ConfigureAwait(false);
+                    bytes = await ReceiveBytesAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
                 }
                 catch (WebSocketException ex)
                 {
@@ -88,9 +94,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                     break;
                 }
 
-                if (OnReceiveDelegate != null)
+                if (bytes == null)
                 {
-                    OnReceiveDelegate(bytes);
+                    // Connection closed
+                    break;
+                }
+
+                if (OnReceiveBytes != null)
+                {
+                    OnReceiveBytes(bytes);
                 }
             }
         }
@@ -110,7 +122,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
             if (result.CloseStatus.HasValue)
             {
-                throw new WebSocketException("Connection closed");
+                _logger.Info("Web socket connection closed by client. Reason: {0}", result.CloseStatus.Value);
+                return null;
             }
 
             return buffer.Array;
@@ -133,7 +146,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 _logger.Warn("Unrecognized WebSocketMessageType: {0}", type.ToString());
             }
 
-            return WebSocket.SendAsync(new ArraySegment<byte>(bytes), nativeType, true, cancellationToken);
+            var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cancellationTokenSource.Token);
+
+            return WebSocket.SendAsync(new ArraySegment<byte>(bytes), nativeType, true, linkedTokenSource.Token);
         }
 
         /// <summary>
@@ -152,6 +167,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         {
             if (dispose)
             {
+                _cancellationTokenSource.Cancel();
+
                 WebSocket.Dispose();
             }
         }
@@ -160,6 +177,12 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// Gets or sets the receive action.
         /// </summary>
         /// <value>The receive action.</value>
-        public Action<byte[]> OnReceiveDelegate { get; set; }
+        public Action<byte[]> OnReceiveBytes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the on receive.
+        /// </summary>
+        /// <value>The on receive.</value>
+        public Action<string> OnReceive { get; set; }
     }
 }

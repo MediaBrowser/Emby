@@ -1,5 +1,6 @@
 using MediaBrowser.Model.Net;
 using System.Collections.Generic;
+using System.Net;
 
 namespace MediaBrowser.Common.Net
 {
@@ -24,30 +25,23 @@ namespace MediaBrowser.Common.Net
         string GetMacAddress();
 
         /// <summary>
+        /// Gets the network shares.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>IEnumerable{NetworkShare}.</returns>
+        IEnumerable<NetworkShare> GetNetworkShares(string path);
+
+        /// <summary>
         /// Gets available devices within the domain
         /// </summary>
         /// <returns>PC's in the Domain</returns>
         IEnumerable<string> GetNetworkDevices();
 
         /// <summary>
-        /// Gets the network shares.
+        /// Parses the specified endpointstring.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>IEnumerable{NetworkShare}.</returns>
-        IEnumerable<NetworkShare> GetNetworkShares(string path);
-    }
-    /// <summary>
-    /// Enum NetworkProtocol
-    /// </summary>
-    public enum NetworkProtocol
-    {
-        /// <summary>
-        /// The TCP
-        /// </summary>
-        Tcp,
-        /// <summary>
-        /// The UDP
-        /// </summary>
-        Udp
+        /// <param name="endpointstring">The endpointstring.</param>
+        /// <returns>IPEndPoint.</returns>
+        IPEndPoint Parse(string endpointstring);
     }
 }

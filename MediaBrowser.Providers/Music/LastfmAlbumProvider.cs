@@ -9,6 +9,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MoreLinq;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,17 +18,12 @@ namespace MediaBrowser.Providers.Music
 {
     public class LastfmAlbumProvider : LastfmBaseProvider
     {
-        private static readonly Task<string> BlankId = Task.FromResult("");
+        internal static LastfmAlbumProvider Current;
 
         public LastfmAlbumProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager)
             : base(jsonSerializer, httpClient, logManager, configurationManager)
         {
-        }
-
-        protected override Task<string> FindId(BaseItem item, CancellationToken cancellationToken)
-        {
-            // We don't fetch by id
-            return BlankId;
+            Current = this;
         }
 
         /// <summary>
@@ -36,7 +32,15 @@ namespace MediaBrowser.Providers.Music
         /// <value>The priority.</value>
         public override MetadataProviderPriority Priority
         {
-            get { return MetadataProviderPriority.Third; }
+            get { return MetadataProviderPriority.Fourth; }
+        }
+
+        protected override string ProviderVersion
+        {
+            get
+            {
+                return "9";
+            }
         }
 
         private bool HasAltMeta(BaseItem item)
@@ -52,14 +56,16 @@ namespace MediaBrowser.Providers.Music
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         protected override bool NeedsRefreshInternal(BaseItem item, BaseProviderInfo providerInfo)
         {
-            if (HasAltMeta(item))
+            var hasId = !string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.Musicbrainz)) &&
+                        !string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup));
+
+            if (hasId && HasAltMeta(item))
             {
                 return false;
             }
 
             // If song metadata has changed and we don't have an mbid, refresh
-            if (string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.Musicbrainz)) &&
-                GetComparisonData(item as MusicAlbum) != providerInfo.FileStamp)
+            if (!hasId && GetComparisonData(item as MusicAlbum) != providerInfo.FileStamp)
             {
                 return true;
             }
@@ -67,15 +73,26 @@ namespace MediaBrowser.Providers.Music
             return base.NeedsRefreshInternal(item, providerInfo);
         }
 
-        protected override async Task FetchLastfmData(BaseItem item, string id, CancellationToken cancellationToken)
+        /// <summary>
+        /// Fetches metadata and returns true or false indicating if any work that requires persistence was done
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="force">if set to <c>true</c> [force].</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>Task{System.Boolean}.</returns>
+        public override async Task<bool> FetchAsync(BaseItem item, bool force, CancellationToken cancellationToken)
         {
-            var result = await GetAlbumResult(item, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var album = (MusicAlbum)item;
+
+            var result = await GetAlbumResult(album, cancellationToken).ConfigureAwait(false);
 
             if (result != null && result.album != null)
             {
                 LastfmHelper.ProcessAlbumData(item, result.album);
             }
-
+            
             BaseProviderInfo data;
             if (!item.ProviderData.TryGetValue(Id, out data))
             {
@@ -83,15 +100,39 @@ namespace MediaBrowser.Providers.Music
                 item.ProviderData[Id] = data;
             }
 
-            data.FileStamp = GetComparisonData(item as MusicAlbum);
+            data.FileStamp = GetComparisonData(album);
+
+            SetLastRefreshed(item, DateTime.UtcNow);
+            return true;
         }
 
-        private async Task<LastfmGetAlbumResult> GetAlbumResult(BaseItem item, CancellationToken cancellationToken)
-        {
-            var folder = (Folder)item;
 
+        private async Task<LastfmGetAlbumResult> GetAlbumResult(MusicAlbum item, CancellationToken cancellationToken)
+        {
+            // Try album release Id
+            if (!string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.Musicbrainz)))
+            {
+                var result = await GetAlbumResult(item.GetProviderId(MetadataProviders.Musicbrainz), cancellationToken).ConfigureAwait(false);
+
+                if (result != null && result.album != null)
+                {
+                    return result;
+                }
+            }
+
+            // Try album release group Id
+            if (!string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup)))
+            {
+                var result = await GetAlbumResult(item.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup), cancellationToken).ConfigureAwait(false);
+
+                if (result != null && result.album != null)
+                {
+                    return result;
+                }
+            }
+            
             // Get each song, distinct by the combination of AlbumArtist and Album
-            var songs = folder.RecursiveChildren.OfType<Audio>().DistinctBy(i => (i.AlbumArtist ?? string.Empty) + (i.Album ?? string.Empty), StringComparer.OrdinalIgnoreCase).ToList();
+            var songs = item.RecursiveChildren.OfType<Audio>().DistinctBy(i => (i.AlbumArtist ?? string.Empty) + (i.Album ?? string.Empty), StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var song in songs.Where(song => !string.IsNullOrEmpty(song.Album) && !string.IsNullOrEmpty(song.AlbumArtist)))
             {
@@ -121,13 +162,34 @@ namespace MediaBrowser.Providers.Music
 
             }).ConfigureAwait(false))
             {
-                return JsonSerializer.DeserializeFromStream<LastfmGetAlbumResult>(json);
+                using (var reader = new StreamReader(json))
+                {
+                    var jsonText = await reader.ReadToEndAsync().ConfigureAwait(false);
+
+                    // Fix their bad json
+                    jsonText = jsonText.Replace("\"#text\"", "\"url\"");
+
+                    return JsonSerializer.DeserializeFromString<LastfmGetAlbumResult>(jsonText);
+                }
             }
         }
-        
-        protected override Task FetchData(BaseItem item, CancellationToken cancellationToken)
+
+        private async Task<LastfmGetAlbumResult> GetAlbumResult(string musicbraizId, CancellationToken cancellationToken)
         {
-            return FetchLastfmData(item, string.Empty, cancellationToken);
+            // Get albu info using artist and album name
+            var url = RootUrl + string.Format("method=album.getInfo&mbid={0}&api_key={1}&format=json", musicbraizId, ApiKey);
+
+            using (var json = await HttpClient.Get(new HttpRequestOptions
+            {
+                Url = url,
+                ResourcePool = LastfmResourcePool,
+                CancellationToken = cancellationToken,
+                EnableHttpCompression = false
+
+            }).ConfigureAwait(false))
+            {
+                return JsonSerializer.DeserializeFromStream<LastfmGetAlbumResult>(json);
+            }
         }
 
         public override bool Supports(BaseItem item)

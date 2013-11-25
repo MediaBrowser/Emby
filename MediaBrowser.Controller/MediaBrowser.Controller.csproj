@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,6 +44,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -51,12 +55,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MoreLinq, Version=1.0.16006.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -66,36 +67,57 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="MoreLinq">
+      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="Drawing\IImageProcessor.cs" />
+    <Compile Include="Drawing\ImageProcessingOptions.cs" />
+    <Compile Include="Dto\IDtoService.cs" />
     <Compile Include="Entities\AdultVideo.cs" />
-    <Compile Include="Notifications\Configuration\IServerConfigurationManager.cs" />
-    <Compile Include="Dto\SessionInfoDtoBuilder.cs" />
-    <Compile Include="Entities\Audio\MusicAlbumDisc.cs" />
+    <Compile Include="Entities\Audio\IHasAlbumArtist.cs" />
+    <Compile Include="Entities\Audio\IHasMusicGenres.cs" />
+    <Compile Include="Entities\Book.cs" />
+    <Compile Include="Configuration\IServerConfigurationManager.cs" />
     <Compile Include="Entities\Audio\MusicGenre.cs" />
+    <Compile Include="Entities\Extensions.cs" />
     <Compile Include="Entities\Game.cs" />
     <Compile Include="Entities\GameGenre.cs" />
+    <Compile Include="Entities\GameSystem.cs" />
     <Compile Include="Entities\IByReferenceItem.cs" />
+    <Compile Include="Entities\IHasAspectRatio.cs" />
+    <Compile Include="Entities\IHasCriticRating.cs" />
+    <Compile Include="Entities\IHasSoundtracks.cs" />
     <Compile Include="Entities\IItemByName.cs" />
+    <Compile Include="Entities\ILibraryItem.cs" />
+    <Compile Include="Entities\ImageSourceInfo.cs" />
     <Compile Include="Entities\LinkedChild.cs" />
     <Compile Include="Entities\MusicVideo.cs" />
     <Compile Include="Library\ILibraryPostScanTask.cs" />
     <Compile Include="Library\ILibraryPrescanTask.cs" />
     <Compile Include="Library\IMetadataSaver.cs" />
+    <Compile Include="Library\IPeoplePrescanTask.cs" />
     <Compile Include="Library\ItemUpdateType.cs" />
+    <Compile Include="Library\IUserDataManager.cs" />
+    <Compile Include="Library\UserDataSaveEventArgs.cs" />
+    <Compile Include="LiveTv\Channel.cs" />
+    <Compile Include="LiveTv\ChannelInfo.cs" />
+    <Compile Include="LiveTv\ILiveTvManager.cs" />
+    <Compile Include="LiveTv\ILiveTvService.cs" />
+    <Compile Include="LiveTv\ProgramInfo.cs" />
+    <Compile Include="LiveTv\RecordingInfo.cs" />
     <Compile Include="Localization\ILocalizationManager.cs" />
     <Compile Include="Notifications\INotificationsRepository.cs" />
     <Compile Include="Notifications\NotificationUpdateEventArgs.cs" />
+    <Compile Include="Providers\IDynamicInfoProvider.cs" />
+    <Compile Include="Providers\IImageProvider.cs" />
     <Compile Include="Session\ISessionManager.cs" />
     <Compile Include="Drawing\ImageExtensions.cs" />
-    <Compile Include="Drawing\ImageHeader.cs" />
-    <Compile Include="Drawing\ImageManager.cs" />
-    <Compile Include="Dto\UserDtoBuilder.cs" />
     <Compile Include="Entities\AggregateFolder.cs" />
-    <Compile Include="Entities\Audio\Artist.cs" />
     <Compile Include="Entities\Audio\Audio.cs" />
     <Compile Include="Entities\Audio\MusicAlbum.cs" />
     <Compile Include="Entities\Audio\MusicArtist.cs" />
@@ -123,12 +145,9 @@
     <Compile Include="Entities\Video.cs" />
     <Compile Include="Entities\CollectionFolder.cs" />
     <Compile Include="Entities\Year.cs" />
-    <Compile Include="IO\FileSystem.cs" />
     <Compile Include="IO\IDirectoryWatchers.cs" />
-    <Compile Include="IO\NativeMethods.cs" />
     <Compile Include="IServerApplicationHost.cs" />
     <Compile Include="IServerApplicationPaths.cs" />
-    <Compile Include="Dto\DtoBuilder.cs" />
     <Compile Include="Library\SearchHintInfo.cs" />
     <Compile Include="Providers\IProviderManager.cs" />
     <Compile Include="MediaInfo\MediaEncoderHelpers.cs" />
@@ -162,6 +181,10 @@
     <Compile Include="Kernel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BaseMetadataProvider.cs" />
+    <Compile Include="Session\ISessionController.cs" />
+    <Compile Include="Session\PlaybackInfo.cs" />
+    <Compile Include="Session\PlaybackProgressInfo.cs" />
+    <Compile Include="Session\PlaybackStopInfo.cs" />
     <Compile Include="Session\SessionInfo.cs" />
     <Compile Include="Sorting\IBaseItemComparer.cs" />
     <Compile Include="Sorting\IUserBaseItemComparer.cs" />
@@ -169,11 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
+      <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
       <Name>MediaBrowser.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
+      <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
       <Name>MediaBrowser.Model</Name>
     </ProjectReference>
   </ItemGroup>

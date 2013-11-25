@@ -6,6 +6,10 @@
 
         var name = item.Name;
 
+        // Channel number
+        if (item.Number) {
+            name = item.Number + " - " + name;
+        }
         if (item.IndexNumber != null && item.Type != "Season") {
             name = item.IndexNumber + " - " + name;
         }
@@ -24,6 +28,38 @@
 
         htmlName += name;
 
+        if (!item.LocalTrailerCount && item.Type == "Movie") {
+            htmlName += '<img src="css/images/editor/missingtrailer.png" title="Missing local trailer." />';
+        }
+
+        if (!item.ImageTags || !item.ImageTags.Primary) {
+            htmlName += '<img src="css/images/editor/missingprimaryimage.png" title="Missing primary image." />';
+        }
+
+        if (!item.BackdropImageTags || !item.BackdropImageTags.length) {
+            if (item.Type !== "Episode" && item.Type !== "Season" && item.MediaType !== "Audio" && item.Type !== "Channel") {
+                htmlName += '<img src="css/images/editor/missingbackdrop.png" title="Missing backdrop image." />';
+            }
+        }
+
+        if (!item.ImageTags || !item.ImageTags.Logo) {
+            if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "Series" || item.Type == "MusicArtist" || item.Type == "BoxSet") {
+                htmlName += '<img src="css/images/editor/missinglogo.png" title="Missing logo image." />';
+            }
+        }
+
+        if (item.Type == "Episode" && item.LocationType == "Virtual") {
+
+            try {
+                if (item.PremiereDate && (new Date().getTime() >= parseISO8601Date(item.PremiereDate, { toLocal: true }).getTime())) {
+                    htmlName += '<img src="css/images/editor/missing.png" title="Missing episode." />';
+                }
+            } catch (err) {
+
+            }
+
+        }
+
         htmlName += "</div>";
 
         var rel = item.IsFolder ? 'folder' : 'default';
@@ -31,26 +67,130 @@
         return { attr: { id: item.Id, rel: rel, itemtype: item.Type }, data: htmlName, state: state };
     }
 
-    function loadNode(page, node, openItems, selectedId, callback) {
+    function getLiveTvServiceNode(item, folderState) {
 
-        if (node == '-1') {
+        var state = folderState;
 
-            ApiClient.getRootFolder(Dashboard.getCurrentUserId()).done(function (folder) {
+        var name = item.Name;
 
-                callback(getNode(folder, 'open'));
+        var cssClass = "editorNode";
+
+        var htmlName = "<div class='" + cssClass + "'>";
+
+        htmlName += name;
+
+        htmlName += "</div>";
+
+        var rel = item.IsFolder ? 'folder' : 'default';
+
+        return { attr: { id: item.Name, rel: rel, itemtype: 'livetvservice' }, data: htmlName, state: state };
+    }
+
+    function loadChildrenOfRootNode(callback) {
+
+
+        var promise1 = ApiClient.getRootFolder(Dashboard.getCurrentUserId());
+
+        var promise2 = ApiClient.getLiveTvServices();
+
+        $.when(promise1, promise2).done(function (response1, response2) {
+
+            var rootFolder = response1[0];
+            var liveTvServices = response2[0];
+
+            var nodes = [];
+
+            nodes.push(getNode(rootFolder, 'open'));
+
+            if (liveTvServices.length) {
+                nodes.push({ attr: { id: 'livetv', rel: 'folder', itemtype: 'livetv' }, data: 'Live TV', state: 'open' });
+            }
+
+            callback(nodes);
+
+        });
+    }
+
+    function loadLiveTvServices(openItems, callback) {
+
+        ApiClient.getLiveTvServices().done(function (services) {
+
+            var nodes = services.map(function (i) {
+
+                var state = openItems.indexOf(i.Id) == -1 ? 'closed' : 'open';
+
+                return getLiveTvServiceNode(i, state);
 
             });
 
+            callback(nodes);
+
+        });
+
+    }
+
+    function loadLiveTvChannels(service, openItems, callback) {
+
+        ApiClient.getLiveTvChannels({ ServiceName: service }).done(function (result) {
+
+            var nodes = result.Items.map(function (i) {
+
+                var state = openItems.indexOf(i.Id) == -1 ? 'closed' : 'open';
+
+                return getNode(i, state);
+
+            });
+
+            callback(nodes);
+
+        });
+
+    }
+
+    function loadNode(page, node, openItems, selectedId, currentUser, callback) {
+
+        if (node == '-1') {
+
+            callback({ attr: { id: 'root', rel: 'folder', itemtype: 'root' }, data: 'Root', state: 'open' });
             return;
         }
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), {
+        var id = node.attr("id");
 
-            ParentId: node.attr("id"),
+        if (id == 'root') {
+
+            loadChildrenOfRootNode(callback);
+            return;
+        }
+
+        if (id == 'livetv') {
+
+            loadLiveTvServices(openItems, callback);
+            return;
+        }
+
+        var itemtype = node.attr("itemtype");
+
+        if (itemtype == 'livetvservice') {
+
+            loadLiveTvChannels(id, openItems, callback);
+            return;
+        }
+
+        var query = {
+            ParentId: id,
             SortBy: 'SortName',
             Fields: 'MetadataSettings'
+        };
 
-        }).done(function (result) {
+        if (!currentUser.Configuration.DisplayMissingEpisodes) {
+            query.IsMissing = false;
+        }
+        if (!currentUser.Configuration.DisplayUnairedEpisodes) {
+            query.IsVirtualUnaired = false;
+        }
+
+        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
 
             var nodes = result.Items.map(function (i) {
 
@@ -88,20 +228,20 @@
         $(document).scrollTop(0);
     }
 
-    function initializeTree(page, openItems, selectedId) {
+    function initializeTree(page, currentUser, openItems, selectedId) {
 
         $('.libraryTree', page).jstree({
 
             "plugins": ["themes", "ui", "json_data"],
 
             data: function (node, callback) {
-                loadNode(page, node, openItems, selectedId, callback);
+                loadNode(page, node, openItems, selectedId, currentUser, callback);
             },
 
             json_data: {
 
                 data: function (node, callback) {
-                    loadNode(page, node, openItems, selectedId, callback);
+                    loadNode(page, node, openItems, selectedId, currentUser, callback);
                 }
 
             },
@@ -132,22 +272,26 @@
 
         var page = this;
 
-        var id = MetadataEditor.currentItemId;
+        Dashboard.getCurrentUser().done(function (user) {
 
-        if (id) {
+            var id = MetadataEditor.currentItemId;
 
-            ApiClient.getAncestorItems(id, Dashboard.getCurrentUserId()).done(function (ancestors) {
+            if (id) {
 
-                var ids = ancestors.map(function (i) {
-                    return i.Id;
+                ApiClient.getAncestorItems(id, user.Id).done(function (ancestors) {
+
+                    var ids = ancestors.map(function (i) {
+                        return i.Id;
+                    });
+
+                    initializeTree(page, user, ids, id);
                 });
 
-                initializeTree(page, ids, id);
-            });
+            } else {
+                initializeTree(page, user, []);
+            }
 
-        } else {
-            initializeTree(page, []);
-        }
+        });
 
     }).on('pagebeforehide', ".metadataEditorPage", function () {
 
@@ -209,11 +353,19 @@
                 return;
             }
 
-            name = getParameterByName('artist', url);
+            name = getParameterByName('musicartist', url);
 
             if (name) {
-                self.currentItemType = "Artist";
+                self.currentItemType = "MusicArtist";
                 self.currentItemName = name;
+                return;
+            }
+
+            name = getParameterByName('channelid', url);
+
+            if (name) {
+                self.currentItemType = "Channel";
+                self.currentItemId = name;
                 return;
             }
 
@@ -230,6 +382,10 @@
             var currentItemType = self.currentItemType;
             var currentItemName = self.currentItemName;
             var currentItemId = self.currentItemId;
+
+            if (currentItemType == "Channel") {
+                return ApiClient.getLiveTvChannel(currentItemId);
+            }
 
             if (currentItemType == "Person") {
                 return ApiClient.getPerson(currentItemName, Dashboard.getCurrentUserId());
@@ -251,7 +407,7 @@
                 return ApiClient.getGameGenre(currentItemName, Dashboard.getCurrentUserId());
             }
 
-            if (currentItemType == "Artist") {
+            if (currentItemType == "MusicArtist" && currentItemName) {
                 return ApiClient.getArtist(currentItemName, Dashboard.getCurrentUserId());
             }
 
@@ -271,7 +427,7 @@
                 item.Type == "Genre" ||
                 item.Type == "MusicGenre" ||
                 item.Type == "GameGenre" ||
-                item.Type == "Artist") {
+                item.Type == "MusicArtist") {
                 query = item.Type + "=" + ApiClient.encodeName(item.Name);
 
             } else {
@@ -318,15 +474,23 @@
             }
 
             $('#btnRefresh', page).button('enable');
+            $('#btnDelete', page).button('enable');
+            $('#btnSave', page).button('enable');
 
             $('#refreshLoading', page).hide();
 
             currentItem = item;
 
             if (item.IsFolder) {
-                $('#fldRecursive', page).css("display", "inline-block")
+                $('#fldRecursive', page).css("display", "inline-block");
             } else {
                 $('#fldRecursive', page).hide();
+            }
+
+            if (item.LocationType == "Virtual" || item.LocationType == "Remote") {
+                $('#fldDelete', page).show();
+            } else {
+                $('#fldDelete', page).hide();
             }
 
             LibraryBrowser.renderName(item, $('.itemName', page), true);
@@ -336,7 +500,7 @@
             setFieldVisibilities(page, item);
             fillItemInfo(page, item);
 
-            if (item.Type == "Person" || item.Type == "Studio" || item.Type == "MusicGenre" || item.Type == "Genre" || item.Type == "Artist") {
+            if (item.Type == "Person" || item.Type == "Studio" || item.Type == "MusicGenre" || item.Type == "Genre" || item.Type == "MusicArtist" || item.Type == "GameGenre" || item.Type == "Channel") {
                 $('#btnEditPeople', page).hide();
             } else {
                 $('#btnEditPeople', page).show();
@@ -352,6 +516,12 @@
             $('#fldPath', page).show();
         } else {
             $('#fldPath', page).hide();
+        }
+
+        if (item.Type == "Series") {
+            $('#fldSeriesRuntime', page).show();
+        } else {
+            $('#fldSeriesRuntime', page).hide();
         }
 
         if (item.Type == "Series" || item.Type == "Person") {
@@ -380,13 +550,21 @@
             $('#fldGamesDb', page).hide();
         }
 
+        if (item.MediaType == "Game" && (item.GameSystem == "Nintendo" || item.GameSystem == "Super Nintendo")) {
+            $('#fldNesBoxName', page).show();
+            $('#fldNesBoxRom', page).show();
+        } else {
+            $('#fldNesBoxName', page).hide();
+            $('#fldNesBoxRom', page).hide();
+        }
+
         if (item.MediaType == "Game") {
             $('#fldPlayers', page).show();
         } else {
             $('#fldPlayers', page).hide();
         }
 
-        if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "MusicVideo") {
+        if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "MusicVideo" || item.Type == "Series" || item.Type == "Game") {
             $('#fldCriticRating', page).show();
             $('#fldCriticRatingSummary', page).show();
             $('#fldRottenTomatoes', page).show();
@@ -417,6 +595,12 @@
         }
 
         if (item.Type == "Series") {
+            $('#fldZap2It', page).show();
+        } else {
+            $('#fldZap2It', page).hide();
+        }
+
+        if (item.Type == "Series") {
             $('#fldStatus', page).show();
             $('#fldAirDays', page).show();
             $('#fldAirTime', page).show();
@@ -426,7 +610,7 @@
             $('#fldAirTime', page).hide();
         }
 
-        if (item.MediaType == "Video") {
+        if (item.MediaType == "Video" && item.Type != "Channel") {
             $('#fld3dFormat', page).show();
         } else {
             $('#fld3dFormat', page).hide();
@@ -452,7 +636,7 @@
             $('#fldImdb', page).hide();
         }
 
-        if (item.Type == "Audio" || item.Type == "Artist" || item.Type == "MusicArtist" || item.Type == "MusicAlbum") {
+        if (item.Type == "Audio" || item.Type == "MusicArtist" || item.Type == "MusicAlbum") {
             $('#fldMusicBrainz', page).show();
         } else {
             $('#fldMusicBrainz', page).hide();
@@ -464,18 +648,45 @@
             $('#fldMusicBrainzReleaseGroupId', page).hide();
         }
 
-        if (item.Type == "Person" || item.Type == "Genre" || item.Type == "Studio" || item.Type == "GameGenre" || item.Type == "MusicGenre") {
+        if (item.Type == "Person" || item.Type == "Genre" || item.Type == "Studio" || item.Type == "GameGenre" || item.Type == "MusicGenre" || item.Type == "Channel") {
             $('#fldCommunityRating', page).hide();
-            $('#fldOfficialRating', page).hide();
-            $('#fldCustomRating', page).hide();
+            $('#fldCommunityVoteCount', page).hide();
             $('#genresCollapsible', page).hide();
             $('#studiosCollapsible', page).hide();
+
+            if (item.Type == "Channel") {
+                $('#fldOfficialRating', page).show();
+            } else {
+                $('#fldOfficialRating', page).hide();
+            }
+            $('#fldCustomRating', page).hide();
         } else {
             $('#fldCommunityRating', page).show();
-            $('#fldOfficialRating', page).show();
-            $('#fldCustomRating', page).show();
+            $('#fldCommunityVoteCount', page).show();
             $('#genresCollapsible', page).show();
             $('#studiosCollapsible', page).show();
+            $('#fldOfficialRating', page).show();
+            $('#fldCustomRating', page).show();
+        }
+
+        if (item.Type == "Channel") {
+            $('#tagsCollapsible', page).hide();
+            $('#metadataSettingsCollapsible', page).hide();
+            $('#fldPremiereDate', page).hide();
+            $('#fldSortName', page).hide();
+            $('#fldDateAdded', page).hide();
+            $('#fldSourceType', page).hide();
+            $('#fldYear', page).hide();
+            $('.fldRefresh', page).hide();
+        } else {
+            $('#tagsCollapsible', page).show();
+            $('#metadataSettingsCollapsible', page).show();
+            $('#fldPremiereDate', page).show();
+            $('#fldSortName', page).show();
+            $('#fldDateAdded', page).show();
+            $('#fldSourceType', page).show();
+            $('#fldYear', page).show();
+            $('.fldRefresh', page).show();
         }
 
         if (item.Type == "Person") {
@@ -490,7 +701,7 @@
             $('#fldPlaceOfBirth', page).hide();
         }
 
-        if (item.MediaType == "Video") {
+        if (item.MediaType == "Video" && item.Type != "Channel") {
             $('#fldOriginalAspectRatio', page).show();
         } else {
             $('#fldOriginalAspectRatio', page).hide();
@@ -565,7 +776,9 @@
 
         populateListView($('#listAirDays', page), item.AirDays);
         populateListView($('#listGenres', page), item.Genres);
-        populateListView($('#listStudios', page), item.Studios.map(function (element) { return element.Name || ''; }));
+
+        populateListView($('#listStudios', page), (item.Studios || []).map(function (element) { return element.Name || ''; }));
+
         populateListView($('#listTags', page), item.Tags);
         var enableInternetProviders = (item.EnableInternetProviders || false);
         $("#enableInternetProviders", page).attr('checked', enableInternetProviders).checkboxradio('refresh');
@@ -574,7 +787,7 @@
         } else {
             $('#providerSettingsContainer', page).hide();
         }
-        populateInternetProviderSettings(page, item.LockedFields);
+        populateInternetProviderSettings(page, item, item.LockedFields);
 
         $('#txtPath', page).val(item.Path || '');
         $('#txtName', page).val(item.Name || "");
@@ -582,6 +795,7 @@
         $('#txtSortName', page).val(item.SortName || "");
         $('#txtDisplayMediaType', page).val(item.DisplayMediaType || "");
         $('#txtCommunityRating', page).val(item.CommunityRating || "");
+        $('#txtCommunityVoteCount', page).val(item.VoteCount || "");
         $('#txtHomePageUrl', page).val(item.HomePageUrl || "");
 
         $('#txtBudget', page).val(item.Budget || "");
@@ -598,9 +812,22 @@
         $('#txtAlbumArtist', page).val(item.AlbumArtist || "");
 
         var artists = item.Artists || [];
-        $('#txtArtist', page).val(artists.join(','));
+        $('#txtArtist', page).val(artists.join(';'));
 
         var date;
+
+        if (item.DateCreated) {
+            try {
+                date = parseISO8601Date(item.DateCreated, { toLocal: true });
+
+                $('#txtDateAdded', page).val(date.toISOString().slice(0, 10));
+            }
+            catch (e) {
+                $('#txtDateAdded', page).val('');
+            }
+        } else {
+            $('#txtDateAdded', page).val('');
+        }
 
         if (item.PremiereDate) {
             try {
@@ -644,9 +871,22 @@
         $('#txtTvdb', page).val(providerIds.Tvdb || "");
         $('#txtTvCom', page).val(providerIds.Tvcom || "");
         $('#txtMusicBrainz', page).val(providerIds.Musicbrainz || "");
-        $('#txtMusicBrainzReleaseGroupId', page).val(item.MusicBrainzReleaseGroupId || "");
+        $('#txtMusicBrainzReleaseGroupId', page).val(providerIds.MusicBrainzReleaseGroup || "");
         $('#txtRottenTomatoes', page).val(providerIds.RottenTomatoes || "");
+        $('#txtZap2It', page).val(providerIds.Zap2It || "");
+        $('#txtNesBoxName', page).val(providerIds.NesBox || "");
+        $('#txtNesBoxRom', page).val(providerIds.NesBoxRom || "");
 
+        if (item.RunTimeTicks) {
+
+            var minutes = item.RunTimeTicks / 600000000;
+
+            $('#txtSeriesRuntime', page).val(Math.round(minutes));
+        } else {
+            $('#txtSeriesRuntime', page).val("");
+        }
+
+        $('.txtProviderId', page).trigger('change');
     }
 
     function convertTo24HourFormat(time) {
@@ -761,23 +1001,49 @@
     function generateSliders(fields, type) {
         var html = '';
         for (var i = 0; i < fields.length; i++) {
+
             var field = fields[i];
-            var fieldTitle = $.trim(field.replace(/([A-Z])/g, ' $1'));
+            var name = field.name;
+            var value = field.value || field.name;
+            var fieldTitle = $.trim(name.replace(/([A-Z])/g, ' $1'));
             html += '<div data-role="fieldcontain">';
-            html += '<label for="lock' + field + '">' + fieldTitle + ':</label>';
-            html += '<select name="lock' + type + '" id="lock' + field + '" data-role="slider" data-mini="true">';
-            html += '<option value="' + field + '">Off</option>';
+            html += '<label for="lock' + value + '">' + fieldTitle + ':</label>';
+            html += '<select class="selectLockedField" id="lock' + value + '" data-role="slider" data-mini="true">';
+            html += '<option value="' + value + '">Off</option>';
             html += '<option value="" selected="selected">On</option>';
             html += '</select>';
             html += '</div>';
         }
         return html;
     }
-    function populateInternetProviderSettings(page, lockedFields) {
+    function populateInternetProviderSettings(page, item, lockedFields) {
         var container = $('#providerSettingsContainer', page);
         lockedFields = lockedFields || new Array();
-        var metadatafields = new Array("Name", "Overview", "Cast", "Genres", "ProductionLocations", "Studios", "Tags");
+
+        var metadatafields = [
+
+            { name: "Name" },
+            { name: "Overview" },
+            { name: "Genres" },
+            { name: "Parental Rating", value: "OfficialRating" },
+            { name: "People", value: "Cast" }
+        ];
+
+        if (item.Type == "Person") {
+            metadatafields.push({ name: "Birth location", value: "ProductionLocations" });
+        } else {
+            metadatafields.push({ name: "Production Locations", value: "ProductionLocations" });
+        }
+
+        if (item.Type == "Series") {
+            metadatafields.push({ name: "Runtime" });
+        }
+
+        metadatafields.push({ name: "Studios" });
+        metadatafields.push({ name: "Tags" });
+
         var html = '';
+
         html += "<h3>Fields</h3>";
         html += generateSliders(metadatafields, 'Fields');
         container.html(html).trigger('create');
@@ -811,7 +1077,7 @@
                 Players: $('#txtPlayers', form).val(),
                 Album: $('#txtAlbum', form).val(),
                 AlbumArtist: $('#txtAlbumArtist', form).val(),
-                Artists: [$('#txtArtist', form).val()],
+                Artists: $('#txtArtist', form).val().split(';'),
                 Overview: $('#txtOverview', form).val(),
                 Status: $('#selectStatus', form).val(),
                 AirDays: editableListViewValues($("#listAirDays", form)),
@@ -821,6 +1087,7 @@
                 Studios: editableListViewValues($("#listStudios", form)).map(function (element) { return { Name: element }; }),
 
                 PremiereDate: $('#txtPremiereDate', form).val() || null,
+                DateCreated: $('#txtDateAdded', form).val() || null,
                 EndDate: $('#txtEndDate', form).val() || null,
                 ProductionYear: $('#txtProductionYear', form).val(),
                 AspectRatio: $('#txtOriginalAspectRatio', form).val(),
@@ -831,7 +1098,7 @@
                 CustomRating: $('#selectCustomRating', form).val(),
                 People: currentItem.People,
                 EnableInternetProviders: $("#enableInternetProviders", form).prop('checked'),
-                LockedFields: $('select[name="lockFields"]', form).map(function () {
+                LockedFields: $('.selectLockedField', form).map(function () {
                     var value = $(this).val();
                     if (value != '') return value;
                 }).get(),
@@ -844,8 +1111,11 @@
                     Tvdb: $('#txtTvdb', form).val(),
                     Tvcom: $('#txtTvCom', form).val(),
                     Musicbrainz: $('#txtMusicBrainz', form).val(),
-                    MusicBrainzReleaseGroupId: $('#txtMusicBrainzReleaseGroupId', form).val(),
-                    RottenTomatoes: $('#txtRottenTomatoes', form).val()
+                    MusicBrainzReleaseGroup: $('#txtMusicBrainzReleaseGroupId', form).val(),
+                    RottenTomatoes: $('#txtRottenTomatoes', form).val(),
+                    Zap2It: $('#txtZap2It', form).val(),
+                    NesBox: $('#txtNesBoxName', form).val(),
+                    NesBoxRom: $('#txtNesBoxRom', form).val()
                 }
             };
 
@@ -856,9 +1126,16 @@
                 item.ProductionLocations = placeOfBirth ? [placeOfBirth] : [];
             }
 
+            if (currentItem.Type == "Series") {
+
+                // 600000000
+                var seriesRuntime = $('#txtSeriesRuntime', form).val();
+                item.RunTimeTicks = seriesRuntime ? (seriesRuntime * 600000000) : null;
+            }
+
             var updatePromise;
 
-            if (currentItem.Type == "Artist") {
+            if (currentItem.Type == "MusicArtist") {
                 updatePromise = ApiClient.updateArtist(item);
             }
             else if (currentItem.Type == "Genre") {
@@ -875,6 +1152,9 @@
             }
             else if (currentItem.Type == "Studio") {
                 updatePromise = ApiClient.updateStudio(item);
+            }
+            else if (currentItem.Type == "Channel") {
+                updatePromise = ApiClient.updateLiveTvChannel(item);
             }
             else {
                 updatePromise = ApiClient.updateItem(item);
@@ -927,17 +1207,156 @@
 
         var page = this;
 
+        $('#txtGamesDb', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                $('#btnOpenGamesDb', page).attr('href', 'http://thegamesdb.net/game/' + val);
+            } else {
+                $('#btnOpenGamesDb', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtNesBoxName', this).on('change', function () {
+
+            var val = this.value;
+            var urlPrefix = currentItem.GameSystem == "Nintendo" ? "http://nesbox.com/game/" : "http://snesbox.com/game/";
+
+            if (val) {
+
+                $('#btnOpenNesBox', page).attr('href', urlPrefix + val);
+            } else {
+                $('#btnOpenNesBox', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtNesBoxRom', this).on('change', function () {
+
+            var val = this.value;
+            var romName = $('#txtNesBoxName', page).val();
+            var urlPrefix = currentItem.GameSystem == "Nintendo" ? "http://nesbox.com/game/" : "http://snesbox.com/game/";
+
+            if (val && romName) {
+
+                $('#btnOpenNesBoxRom', page).attr('href', urlPrefix + romName + '/rom/' + val);
+            } else {
+                $('#btnOpenNesBoxRom', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtImdb', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                if (currentItem.Type == "Person") {
+                    $('#btnOpenImdb', page).attr('href', 'http://www.imdb.com/name/' + val);
+                } else {
+                    $('#btnOpenImdb', page).attr('href', 'http://www.imdb.com/title/' + val);
+                }
+            } else {
+                $('#btnOpenImdb', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtMusicBrainz', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                if (currentItem.Type == "MusicArtist") {
+                    $('#btnOpenMusicbrainz', page).attr('href', 'http://musicbrainz.org/artist/' + val);
+                } else {
+                    $('#btnOpenMusicbrainz', page).attr('href', 'http://musicbrainz.org/release/' + val);
+                }
+
+            } else {
+                $('#btnOpenMusicbrainz', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtMusicBrainzReleaseGroupId', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                $('#btnOpenMusicbrainzReleaseGroup', page).attr('href', 'http://musicbrainz.org/release-group/' + val);
+            } else {
+                $('#btnOpenMusicbrainzReleaseGroup', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtTmdb', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                if (currentItem.Type == "Movie" || currentItem.Type == "Trailer" || currentItem.Type == "MusicVideo")
+                    $('#btnOpenTmdb', page).attr('href', 'http://www.themoviedb.org/movie/' + val);
+                else if (currentItem.Type == "BoxSet")
+                    $('#btnOpenTmdb', page).attr('href', 'http://www.themoviedb.org/collection/' + val);
+                else if (currentItem.Type == "Person")
+                    $('#btnOpenTmdb', page).attr('href', 'http://www.themoviedb.org/person/' + val);
+
+            } else {
+                $('#btnOpenTmdb', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtTvdb', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val && currentItem.Type == "Series") {
+
+                $('#btnOpenTvdb', page).attr('href', 'http://thetvdb.com/index.php?tab=series&id=' + val);
+
+            } else {
+                $('#btnOpenTvdb', page).attr('href', '#');
+            }
+
+        });
+
+        $('#txtZap2It', this).on('change', function () {
+
+            var val = this.value;
+
+            if (val) {
+
+                $('#btnOpenZap2It', page).attr('href', 'http://tvlistings.zap2it.com/tv/dexter/' + val);
+
+            } else {
+                $('#btnOpenZap2It', page).attr('href', '#');
+            }
+
+        });
+
         $('#btnRefresh', this).on('click', function () {
 
-            $(this).button('disable');
+            $('#btnDelete', page).button('disable');
+            $('#btnRefresh', page).button('disable');
+            $('#btnSave', page).button('disable');
 
             $('#refreshLoading', page).show();
 
             var refreshPromise;
 
-            var force = $('#chkForceRefresh', page).checked();
+            var force = true;
 
-            if (currentItem.Type == "Artist") {
+            if (currentItem.Type == "MusicArtist") {
                 refreshPromise = ApiClient.refreshArtist(currentItem.Name, force);
             }
             else if (currentItem.Type == "Genre") {
@@ -964,6 +1383,33 @@
                 reload(page);
 
             });
+        });
+
+        $('#btnDelete', this).on('click', function () {
+
+            Dashboard.confirm("Are you sure you wish to delete this item?", "Confirm Deletion", function (result) {
+
+                if (result) {
+
+                    $('#btnDelete', page).button('disable');
+                    $('#btnRefresh', page).button('disable');
+                    $('#btnSave', page).button('disable');
+
+                    $('#refreshLoading', page).show();
+
+                    var parentId = currentItem.ParentId;
+
+                    ApiClient.deleteItem(currentItem.Id).done(function () {
+
+                        var elem = $('#' + parentId)[0];
+
+                        $('.libraryTree').jstree("select_node", elem, true)
+                            .jstree("delete_node", '#' + currentItem.Id);
+                    });
+                }
+
+            });
+
         });
 
         $('.libraryTree', page).on('itemclicked', function (event, data) {

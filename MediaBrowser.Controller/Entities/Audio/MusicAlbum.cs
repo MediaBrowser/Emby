@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -8,8 +9,19 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// <summary>
     /// Class MusicAlbum
     /// </summary>
-    public class MusicAlbum : Folder
+    public class MusicAlbum : Folder, IHasAlbumArtist, IHasArtist, IHasMusicGenres
     {
+        public List<Guid> SoundtrackIds { get; set; }
+        
+        public MusicAlbum()
+        {
+            Artists = new List<string>();
+            SoundtrackIds = new List<Guid>();
+        }
+
+        public string LastFmImageUrl { get; set; }
+        public string LastFmImageSize { get; set; }
+
         /// <summary>
         /// Songs will group into us so don't also include us in the index
         /// </summary>
@@ -54,48 +66,46 @@ namespace MediaBrowser.Controller.Entities.Audio
         }
 
         /// <summary>
-        /// Gets or sets the images.
-        /// </summary>
-        /// <value>The images.</value>
-        public override Dictionary<ImageType, string> Images
-        {
-            get
-            {
-                var images = base.Images;
-                string primaryImagePath;
-
-                if (!images.TryGetValue(ImageType.Primary, out primaryImagePath))
-                {
-                    var image = Children.Select(c => c.PrimaryImagePath).FirstOrDefault(c => !string.IsNullOrEmpty(c));
-
-                    if (!string.IsNullOrEmpty(image))
-                    {
-                        images[ImageType.Primary] = image;
-                    }
-                }
-
-                return images;
-            }
-            set
-            {
-                base.Images = value;
-            }
-        }
-
-        /// <summary>
         /// Determines whether the specified artist has artist.
         /// </summary>
         /// <param name="artist">The artist.</param>
         /// <returns><c>true</c> if the specified artist has artist; otherwise, <c>false</c>.</returns>
         public bool HasArtist(string artist)
         {
-            return RecursiveChildren.OfType<Audio>().Any(i => i.HasArtist(artist));
+            return string.Equals(AlbumArtist, artist, StringComparison.OrdinalIgnoreCase)
+                   || Artists.Contains(artist, StringComparer.OrdinalIgnoreCase);
         }
 
+        public string AlbumArtist { get; set; }
+
+        public List<string> Artists { get; set; }
+
         /// <summary>
-        /// Gets or sets the music brainz release group id.
+        /// Gets the user data key.
         /// </summary>
-        /// <value>The music brainz release group id.</value>
-        public string MusicBrainzReleaseGroupId { get; set; }
+        /// <returns>System.String.</returns>
+        public override string GetUserDataKey()
+        {
+            var id = this.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                return "MusicAlbum-MusicBrainzReleaseGroup-" + id;
+            }
+
+            id = this.GetProviderId(MetadataProviders.Musicbrainz);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                return "MusicAlbum-Musicbrainz-" + id;
+            }
+
+            return base.GetUserDataKey();
+        }
+    }
+
+    public class MusicAlbumDisc : Folder
+    {
+
     }
 }

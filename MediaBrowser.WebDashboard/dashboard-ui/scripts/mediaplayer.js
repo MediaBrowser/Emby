@@ -121,7 +121,7 @@
 
             clearProgressInterval();
 
-            var intervalTime = ApiClient.isWebSocketOpen() ? 5000 : 20000;
+            var intervalTime = ApiClient.isWebSocketOpen() ? 4000 : 20000;
 
             currentProgressInterval = setInterval(function () {
 
@@ -134,7 +134,7 @@
 
         function sendProgressUpdate(itemId) {
 
-            ApiClient.reportPlaybackProgress(Dashboard.getCurrentUserId(), itemId, getCurrentTicks(), currentMediaElement.paused);
+            ApiClient.reportPlaybackProgress(Dashboard.getCurrentUserId(), itemId, getCurrentTicks(), currentMediaElement.paused, currentMediaElement.volume == 0);
         }
 
         function clearProgressInterval() {
@@ -438,7 +438,7 @@
 
                 audioElement.off("play.once");
 
-                ApiClient.reportPlaybackStart(Dashboard.getCurrentUserId(), item.Id);
+                ApiClient.reportPlaybackStart(Dashboard.getCurrentUserId(), item.Id, true, item.MediaType);
 
                 startProgressInterval(item.Id);
 
@@ -493,7 +493,27 @@
                 }
 
                 else if (videoStream.Width >= 720) {
-                    baseParams.videoBitrate = 400000;
+                    baseParams.videoBitrate = 420000;
+                }
+            }
+
+            // Webm must be ahead of mp4 due to the issue of mp4 playing too fast in chrome
+            var prioritizeWebmOverH264 = $.browser.chrome || $.browser.msie;
+
+            var h264Codec = 'h264';
+            var h264AudioCodec = 'aac';
+
+            if (videoStream && videoStream.Width && videoStream.Width <= baseParams.maxWidth) {
+
+                var videoCodec = (videoStream.Codec || '').toLowerCase();
+
+                if (videoCodec.indexOf('h264') != -1 &&
+                    videoStream.Width &&
+                    videoStream.Width <= 1280 &&
+                    videoStream.BitRate &&
+                    videoStream.BitRate <= 2000000) {
+
+                    //h264Codec = 'copy';
                 }
             }
 
@@ -502,15 +522,8 @@
             }
 
             var mp4VideoUrl = ApiClient.getUrl('Videos/' + item.Id + '/stream.mp4', $.extend({}, baseParams, {
-                videoCodec: 'h264',
-                audioCodec: 'aac',
-                profile: 'baseline',
-                level: 3
-            }));
-
-            var tsVideoUrl = ApiClient.getUrl('Videos/' + item.Id + '/stream.ts', $.extend({}, baseParams, {
-                videoCodec: 'h264',
-                audioCodec: 'aac',
+                videoCodec: h264Codec,
+                audioCodec: h264AudioCodec,
                 profile: 'baseline',
                 level: 3
             }));
@@ -521,10 +534,11 @@
             }));
 
             var hlsVideoUrl = ApiClient.getUrl('Videos/' + item.Id + '/stream.m3u8', $.extend({}, baseParams, {
-                videoCodec: 'h264',
-                audioCodec: 'aac',
+                videoCodec: h264Codec,
+                audioCodec: h264AudioCodec,
                 profile: 'baseline',
-                level: 3
+                level: 3,
+                timeStampOffsetMs: 0
             }));
 
             var ogvVideoUrl = ApiClient.getUrl('Videos/' + item.Id + '/stream.ogv', $.extend({}, baseParams, {
@@ -535,9 +549,6 @@
 
             var html = '';
 
-            // HLS must be at the top for safari
-            // Webm must be ahead of mp4 due to the issue of mp4 playing too fast in chrome
-
             var requiresControls = $.browser.msie || $.browser.android || ($.browser.webkit && !$.browser.chrome);
 
             // Can't autoplay in these browsers so we need to use the full controls
@@ -547,10 +558,18 @@
                 html += '<video class="itemVideo" autoplay preload="none">';
             }
 
+            // HLS must be at the top for safari
             html += '<source type="application/x-mpegURL" src="' + hlsVideoUrl + '" />';
-            html += '<source type="video/mp2t" src="' + tsVideoUrl + '" />';
-            html += '<source type="video/webm" src="' + webmVideoUrl + '" />';
-            html += '<source type="video/mp4" src="' + mp4VideoUrl + '" />';
+
+            if (prioritizeWebmOverH264) {
+
+                html += '<source type="video/webm" src="' + webmVideoUrl + '" />';
+                html += '<source type="video/mp4" src="' + mp4VideoUrl + '" />';
+            } else {
+                html += '<source type="video/mp4" src="' + mp4VideoUrl + '" />';
+                html += '<source type="video/webm" src="' + webmVideoUrl + '" />';
+            }
+
             html += '<source type="video/ogg" src="' + ogvVideoUrl + '" />';
             html += '</video';
 
@@ -620,7 +639,7 @@
 
                 videoElement.off("play.once");
 
-                ApiClient.reportPlaybackStart(Dashboard.getCurrentUserId(), item.Id);
+                ApiClient.reportPlaybackStart(Dashboard.getCurrentUserId(), item.Id, true, item.MediaType);
 
                 startProgressInterval(item.Id);
 
@@ -651,8 +670,9 @@
 
         function getInitialAudioStreamIndex(mediaStreams, user) {
 
+            // Find all audio streams with at least one channel
             var audioStreams = mediaStreams.filter(function (stream) {
-                return stream.Type == "Audio";
+                return stream.Type == "Audio" && stream.Channels;
             });
 
             if (user.Configuration.AudioLanguagePreference) {
@@ -660,7 +680,7 @@
                 for (var i = 0, length = audioStreams.length; i < length; i++) {
                     var mediaStream = audioStreams[i];
 
-                    if (mediaStream.Type == "Audio" && mediaStream.Language == user.Configuration.AudioLanguagePreference) {
+                    if (mediaStream.Language == user.Configuration.AudioLanguagePreference) {
                         return mediaStream.Index;
                     }
 
@@ -727,10 +747,35 @@
 
         self.canPlay = function (item) {
 
-            if (item.Type == "MusicAlbum" || item.Type == "MusicArtist" || item.Type == "Artist" || item.Type == "MusicGenre") {
+            if (item.Type == "MusicAlbum" || item.Type == "MusicArtist" || item.Type == "MusicGenre") {
                 return true;
             }
+
+            if (item.GameSystem == "Nintendo" && item.MediaType == "Game" && item.ProviderIds.NesBox && item.ProviderIds.NesBoxRom) {
+                return true;
+            }
+
+            if (item.GameSystem == "Super Nintendo" && item.MediaType == "Game" && item.ProviderIds.NesBox && item.ProviderIds.NesBoxRom) {
+                return true;
+            }
+
             return self.canPlayMediaType(item.MediaType);
+        };
+
+        self.getPlayUrl = function(item) {
+
+
+            if (item.GameSystem == "Nintendo" && item.MediaType == "Game" && item.ProviderIds.NesBox && item.ProviderIds.NesBoxRom) {
+
+                return "http://nesbox.com/game/" + item.ProviderIds.NesBox + '/rom/' + item.ProviderIds.NesBoxRom;
+            }
+
+            if (item.GameSystem == "Super Nintendo" && item.MediaType == "Game" && item.ProviderIds.NesBox && item.ProviderIds.NesBoxRom) {
+
+                return "http://snesbox.com/game/" + item.ProviderIds.NesBox + '/rom/' + item.ProviderIds.NesBoxRom;
+            }
+
+            return null;
         };
 
         self.canPlayMediaType = function (mediaType) {
@@ -765,10 +810,10 @@
             Dashboard.getCurrentUser().done(function (user) {
 
                 var item = items[0];
-
+                
                 var videoType = (item.VideoType || "").toLowerCase();
 
-                var expirementalText = "This feature is expiremental. It may not work at all with some titles. Do you wish to continue?";
+                var expirementalText = "This feature is experimental. It may not work at all with some titles. Do you wish to continue?";
 
                 if (videoType == "dvd") {
 
@@ -839,16 +884,6 @@
 
             self.playlist = items;
             currentPlaylistIndex = 0;
-
-            var nowPlayingBar = $('#nowPlayingBar');
-
-            if (items.length > 1) {
-                $('#previousTrackButton', nowPlayingBar)[0].disabled = false;
-                $('#nextTrackButton', nowPlayingBar)[0].disabled = false;
-            } else {
-                $('#previousTrackButton', nowPlayingBar)[0].disabled = true;
-                $('#nextTrackButton', nowPlayingBar)[0].disabled = true;
-            }
         };
 
         self.playInternal = function (item, startPosition, user) {
@@ -936,7 +971,7 @@
             $('.nowPlayingMediaInfo', nowPlayingBar).html(html);
         };
 
-        var getItemFields = "MediaStreams,UserData,DisplayMediaType,Chapters,Path";
+        var getItemFields = "MediaStreams,Chapters,Path";
 
         self.getItemsForPlayback = function (query) {
 
@@ -1042,6 +1077,56 @@
                 Recursive: true,
                 SortBy: "Album,SortName",
                 IncludeItemTypes: "Audio"
+
+            }).done(function (result) {
+
+                self.play(result.Items);
+
+            });
+
+        };
+
+        self.shuffleArtist = function (artist) {
+
+            self.getItemsForPlayback({
+
+                Artists: artist,
+                Recursive: true,
+                SortBy: "Random",
+                IncludeItemTypes: "Audio"
+
+            }).done(function (result) {
+
+                self.play(result.Items);
+
+            });
+
+        };
+
+        self.shuffleMusicGenre = function (genre) {
+
+            self.getItemsForPlayback({
+
+                Genres: genre,
+                Recursive: true,
+                SortBy: "Random",
+                IncludeItemTypes: "Audio"
+
+            }).done(function (result) {
+
+                self.play(result.Items);
+
+            });
+
+        };
+
+        self.shuffleFolder = function (id) {
+
+            self.getItemsForPlayback({
+
+                ParentId: id,
+                Recursive: true,
+                SortBy: "Random"
 
             }).done(function (result) {
 
@@ -1188,11 +1273,41 @@
         };
 
         self.mute = function () {
-            currentMediaElement.volume = 0;
+
+            if (currentMediaElement) {
+                currentMediaElement.volume = 0;
+            }
         };
 
         self.unmute = function () {
-            currentMediaElement.volume = volumeSlider.val();
+            if (currentMediaElement) {
+                currentMediaElement.volume = volumeSlider.val();
+            }
+        };
+
+        self.toggleMute = function () {
+
+            if (currentMediaElement) {
+                currentMediaElement.volume = currentMediaElement.volume ? 0 : volumeSlider.val();
+            }
+        };
+
+        self.volumeDown = function () {
+
+            if (currentMediaElement) {
+                currentMediaElement.volume = Math.max(currentMediaElement.volume - .02, 0);
+
+                volumeSlider.val(currentMediaElement.volume);
+            }
+        };
+
+        self.volumeUp = function () {
+
+            if (currentMediaElement) {
+                currentMediaElement.volume = Math.min(currentMediaElement.volume + .02, 1);
+
+                volumeSlider.val(currentMediaElement.volume);
+            }
         };
 
         self.stop = function () {
@@ -1384,7 +1499,7 @@
                 return i.Type == "Subtitle";
             });
 
-            var currentIndex = getParameterByName('SubtitleStreamIndex', currentMediaElement.currentSrc);
+            var currentIndex = getParameterByName('SubtitleStreamIndex', currentMediaElement.currentSrc) || -1;
 
             var html = '';
 
@@ -1459,7 +1574,7 @@
                 return i.Type == "Video";
             })[0];
 
-            var currentVideoBitrate = getParameterByName('videoBitrate', currentMediaElement.currentSrc) || getParameterByName('VideoBitrate', currentMediaElement.currentSrc);
+            var currentVideoBitrate = getParameterByName('videoBitrate', currentMediaElement.currentSrc);
 
             var maxAllowedWidth = Math.max(screen.height, screen.width);
 
@@ -1468,7 +1583,7 @@
             // We have media info
             if (videoStream && videoStream.Width) {
 
-                maxAllowedWidth = Math.min(videoStream.Width, maxAllowedWidth);
+                maxAllowedWidth = videoStream.Width;
             }
 
             // Some 1080- videos are reported as 1912?
@@ -1477,13 +1592,19 @@
                 options.push({ name: '1080p', maxWidth: 1920, videoBitrate: 2500000 });
             }
 
-            if (maxAllowedWidth >= 1280) {
+            if (maxAllowedWidth >= 1270) {
                 options.push({ name: '720p+', maxWidth: 1280, videoBitrate: 2000000 });
                 options.push({ name: '720p', maxWidth: 1280, videoBitrate: 1000000 });
             }
 
             if (maxAllowedWidth >= 480) {
-                options.push({ name: '480p', maxWidth: 720, videoBitrate: 400000 });
+                options.push({ name: '480p', maxWidth: 720, videoBitrate: 420000 });
+            }
+            if (maxAllowedWidth >= 360) {
+                options.push({ name: '360p', maxWidth: 640, videoBitrate: 410000 });
+            }
+            if (maxAllowedWidth >= 240) {
+                options.push({ name: '240p', maxWidth: 426, videoBitrate: 400000 });
             }
 
             for (var i = 0, length = options.length; i < length; i++) {

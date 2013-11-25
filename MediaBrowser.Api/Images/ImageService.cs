@@ -1,12 +1,14 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
-using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using ServiceStack.ServiceHost;
@@ -27,6 +29,18 @@ namespace MediaBrowser.Api.Images
     [Route("/Items/{Id}/Images", "GET")]
     [Api(Description = "Gets information about an item's images")]
     public class GetItemImageInfos : IReturn<List<ImageInfo>>
+    {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        public string Id { get; set; }
+    }
+
+    [Route("/LiveTv/Channels/{Id}/Images", "GET")]
+    [Api(Description = "Gets information about an item's images")]
+    public class GetChannelImageInfos : IReturn<List<ImageInfo>>
     {
         /// <summary>
         /// Gets or sets the id.
@@ -66,6 +80,19 @@ namespace MediaBrowser.Api.Images
         public string Id { get; set; }
     }
 
+    [Route("/LiveTv/Channels/{Id}/Images/{Type}", "GET")]
+    [Route("/LiveTv/Channels/{Id}/Images/{Type}/{Index}", "GET")]
+    [Api(Description = "Gets an item image")]
+    public class GetChannelImage : ImageRequest
+    {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [ApiMember(Name = "Id", Description = "Channel Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        public string Id { get; set; }
+    }
+    
     /// <summary>
     /// Class UpdateItemImageIndex
     /// </summary>
@@ -140,7 +167,7 @@ namespace MediaBrowser.Api.Images
         [ApiMember(Name = "NewIndex", Description = "The new image index", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
         public int NewIndex { get; set; }
     }
-    
+
     /// <summary>
     /// Class GetPersonImage
     /// </summary>
@@ -337,21 +364,24 @@ namespace MediaBrowser.Api.Images
         private readonly IProviderManager _providerManager;
 
         private readonly IItemRepository _itemRepo;
+        private readonly IDtoService _dtoService;
+        private readonly IImageProcessor _imageProcessor;
 
+        private readonly ILiveTvManager _liveTv;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageService" /> class.
         /// </summary>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="providerManager">The provider manager.</param>
-        public ImageService(IUserManager userManager, ILibraryManager libraryManager, IApplicationPaths appPaths, IProviderManager providerManager, IItemRepository itemRepo)
+        public ImageService(IUserManager userManager, ILibraryManager libraryManager, IApplicationPaths appPaths, IProviderManager providerManager, IItemRepository itemRepo, IDtoService dtoService, IImageProcessor imageProcessor, ILiveTvManager liveTv)
         {
             _userManager = userManager;
             _libraryManager = libraryManager;
             _appPaths = appPaths;
             _providerManager = providerManager;
             _itemRepo = itemRepo;
+            _dtoService = dtoService;
+            _imageProcessor = imageProcessor;
+            _liveTv = liveTv;
         }
 
         /// <summary>
@@ -361,16 +391,25 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Get(GetItemImageInfos request)
         {
-            var item = DtoBuilder.GetItemByClientId(request.Id, _userManager, _libraryManager);
+            var item = _dtoService.GetItemByDtoId(request.Id);
 
-            var result = GetItemImageInfos(item).Result;
+            var result = GetItemImageInfos(item);
 
             return ToOptimizedResult(result);
         }
 
+        public object Get(GetChannelImageInfos request)
+        {
+            var item = _liveTv.GetChannel(request.Id);
+
+            var result = GetItemImageInfos(item);
+
+            return ToOptimizedResult(result);
+        }
+        
         public object Get(GetItemByNameImageInfos request)
         {
-            var result = GetItemByNameImageInfos(request).Result;
+            var result = GetItemByNameImageInfos(request);
 
             return ToOptimizedResult(result);
         }
@@ -380,14 +419,14 @@ namespace MediaBrowser.Api.Images
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task{List{ImageInfo}}.</returns>
-        public async Task<List<ImageInfo>> GetItemByNameImageInfos(GetItemByNameImageInfos request)
+        private List<ImageInfo> GetItemByNameImageInfos(GetItemByNameImageInfos request)
         {
             var pathInfo = PathInfo.Parse(RequestContext.PathInfo);
             var type = pathInfo.GetArgumentValue<string>(0);
 
-            var item = await GetItemByName(request.Name, type, _libraryManager).ConfigureAwait(false);
+            var item = GetItemByName(request.Name, type, _libraryManager);
 
-            return await GetItemImageInfos(item).ConfigureAwait(false);
+            return GetItemImageInfos(item);
         }
 
         /// <summary>
@@ -395,51 +434,30 @@ namespace MediaBrowser.Api.Images
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>Task{List{ImageInfo}}.</returns>
-        public async Task<List<ImageInfo>> GetItemImageInfos(BaseItem item)
+        public List<ImageInfo> GetItemImageInfos(BaseItem item)
         {
             var list = new List<ImageInfo>();
 
             foreach (var image in item.Images)
             {
-                var path = image.Value;
+                var info = GetImageInfo(image.Value, item, null, image.Key);
 
-                var fileInfo = new FileInfo(path);
-
-                var dateModified = Kernel.Instance.ImageManager.GetImageDateModified(item, path);
-
-                var size = await Kernel.Instance.ImageManager.GetImageSize(path, dateModified).ConfigureAwait(false);
-
-                list.Add(new ImageInfo
+                if (info != null)
                 {
-                    Path = path,
-                    ImageType = image.Key,
-                    ImageTag = Kernel.Instance.ImageManager.GetImageCacheTag(item, image.Key, path),
-                    Size = fileInfo.Length,
-                    Width = Convert.ToInt32(size.Width),
-                    Height = Convert.ToInt32(size.Height)
-                });
+                    list.Add(info);
+                }
             }
 
             var index = 0;
 
             foreach (var image in item.BackdropImagePaths)
             {
-                var fileInfo = new FileInfo(image);
+                var info = GetImageInfo(image, item, index, ImageType.Backdrop);
 
-                var dateModified = Kernel.Instance.ImageManager.GetImageDateModified(item, image);
-
-                var size = await Kernel.Instance.ImageManager.GetImageSize(image, dateModified).ConfigureAwait(false);
-
-                list.Add(new ImageInfo
+                if (info != null)
                 {
-                    Path = image,
-                    ImageIndex = index,
-                    ImageType = ImageType.Backdrop,
-                    ImageTag = Kernel.Instance.ImageManager.GetImageCacheTag(item, ImageType.Backdrop, image),
-                    Size = fileInfo.Length,
-                    Width = Convert.ToInt32(size.Width),
-                    Height = Convert.ToInt32(size.Height)
-                });
+                    list.Add(info);
+                }
 
                 index++;
             }
@@ -448,22 +466,12 @@ namespace MediaBrowser.Api.Images
 
             foreach (var image in item.ScreenshotImagePaths)
             {
-                var fileInfo = new FileInfo(image);
+                var info = GetImageInfo(image, item, index, ImageType.Screenshot);
 
-                var dateModified = Kernel.Instance.ImageManager.GetImageDateModified(item, image);
-
-                var size = await Kernel.Instance.ImageManager.GetImageSize(image, dateModified).ConfigureAwait(false);
-
-                list.Add(new ImageInfo
+                if (info != null)
                 {
-                    Path = image,
-                    ImageIndex = index,
-                    ImageType = ImageType.Screenshot,
-                    ImageTag = Kernel.Instance.ImageManager.GetImageCacheTag(item, ImageType.Screenshot, image),
-                    Size = fileInfo.Length,
-                    Width = Convert.ToInt32(size.Width),
-                    Height = Convert.ToInt32(size.Height)
-                });
+                    list.Add(info);
+                }
 
                 index++;
             }
@@ -480,22 +488,12 @@ namespace MediaBrowser.Api.Images
                     {
                         var image = chapter.ImagePath;
 
-                        var fileInfo = new FileInfo(image);
+                        var info = GetImageInfo(image, item, index, ImageType.Chapter);
 
-                        var dateModified = Kernel.Instance.ImageManager.GetImageDateModified(item, image);
-
-                        var size = await Kernel.Instance.ImageManager.GetImageSize(image, dateModified).ConfigureAwait(false);
-
-                        list.Add(new ImageInfo
+                        if (info != null)
                         {
-                            Path = image,
-                            ImageIndex = index,
-                            ImageType = ImageType.Chapter,
-                            ImageTag = Kernel.Instance.ImageManager.GetImageCacheTag(item, ImageType.Chapter, image),
-                            Size = fileInfo.Length,
-                            Width = Convert.ToInt32(size.Width),
-                            Height = Convert.ToInt32(size.Height)
-                        });
+                            list.Add(info);
+                        }
                     }
 
                     index++;
@@ -505,6 +503,40 @@ namespace MediaBrowser.Api.Images
             return list;
         }
 
+        private ImageInfo GetImageInfo(string path, BaseItem item, int? imageIndex, ImageType type)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(path);
+
+                var size = _imageProcessor.GetImageSize(path);
+
+                return new ImageInfo
+                {
+                    Path = path,
+                    ImageIndex = imageIndex,
+                    ImageType = type,
+                    ImageTag = _imageProcessor.GetImageCacheTag(item, type, path),
+                    Size = fileInfo.Length,
+                    Width = Convert.ToInt32(size.Width),
+                    Height = Convert.ToInt32(size.Height)
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error getting image information for {0}", ex, path);
+
+                return null;
+            }
+        }
+
+        public object Get(GetChannelImage request)
+        {
+            var item = _liveTv.GetChannel(request.Id);
+
+            return GetImage(request, item);
+        }
+
         /// <summary>
         /// Gets the specified request.
         /// </summary>
@@ -512,7 +544,7 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Get(GetItemImage request)
         {
-            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.RootFolder : DtoBuilder.GetItemByClientId(request.Id, _userManager, _libraryManager);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.RootFolder : _dtoService.GetItemByDtoId(request.Id);
 
             return GetImage(request, item);
         }
@@ -534,7 +566,7 @@ namespace MediaBrowser.Api.Images
             var pathInfo = PathInfo.Parse(RequestContext.PathInfo);
             var type = pathInfo.GetArgumentValue<string>(0);
 
-            var item = GetItemByName(request.Name, type, _libraryManager).Result;
+            var item = GetItemByName(request.Name, type, _libraryManager);
 
             return GetImage(request, item);
         }
@@ -565,13 +597,13 @@ namespace MediaBrowser.Api.Images
 
             request.Type = (ImageType)Enum.Parse(typeof(ImageType), pathInfo.GetArgumentValue<string>(3), true);
 
-            var item = GetItemByName(name, type, _libraryManager).Result;
+            var item = GetItemByName(name, type, _libraryManager);
 
             var task = PostImage(item, request.RequestStream, request.Type, RequestContext.ContentType);
 
             Task.WaitAll(task);
         }
-        
+
         /// <summary>
         /// Posts the specified request.
         /// </summary>
@@ -625,7 +657,7 @@ namespace MediaBrowser.Api.Images
             var pathInfo = PathInfo.Parse(RequestContext.PathInfo);
             var type = pathInfo.GetArgumentValue<string>(0);
 
-            var item = GetItemByName(request.Name, type, _libraryManager).Result;
+            var item = GetItemByName(request.Name, type, _libraryManager);
 
             var task = item.DeleteImage(request.Type, request.Index);
 
@@ -654,7 +686,7 @@ namespace MediaBrowser.Api.Images
             var pathInfo = PathInfo.Parse(RequestContext.PathInfo);
             var type = pathInfo.GetArgumentValue<string>(0);
 
-            var item = GetItemByName(request.Name, type, _libraryManager).Result;
+            var item = GetItemByName(request.Name, type, _libraryManager);
 
             var task = UpdateItemIndex(item, request.Type, request.Index, request.NewIndex);
 
@@ -706,11 +738,32 @@ namespace MediaBrowser.Api.Images
             var temp1 = Path.Combine(_appPaths.TempDirectory, Guid.NewGuid() + ".tmp");
             var temp2 = Path.Combine(_appPaths.TempDirectory, Guid.NewGuid() + ".tmp");
 
+            // Copying over will fail against hidden files
+            RemoveHiddenAttribute(file1);
+            RemoveHiddenAttribute(file2);
+
             File.Copy(file1, temp1);
             File.Copy(file2, temp2);
 
             File.Copy(temp1, file2, true);
             File.Copy(temp2, file1, true);
+
+            File.Delete(temp1);
+            File.Delete(temp2);
+        }
+
+        private void RemoveHiddenAttribute(string path)
+        {
+            var currentFile = new FileInfo(path);
+
+            // This will fail if the file is hidden
+            if (currentFile.Exists)
+            {
+                if ((currentFile.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    currentFile.Attributes &= ~FileAttributes.Hidden;
+                }
+            }
         }
 
         /// <summary>
@@ -723,11 +776,7 @@ namespace MediaBrowser.Api.Images
         /// </exception>
         private object GetImage(ImageRequest request, BaseItem item)
         {
-            var kernel = Kernel.Instance;
-
-            var index = request.Index ?? 0;
-
-            var imagePath = GetImagePath(kernel, request, item);
+            var imagePath = GetImagePath(request, item);
 
             if (string.IsNullOrEmpty(imagePath))
             {
@@ -735,9 +784,9 @@ namespace MediaBrowser.Api.Images
             }
 
             // See if we can avoid a file system lookup by looking for the file in ResolveArgs
-            var originalFileImageDateModified = kernel.ImageManager.GetImageDateModified(item, imagePath);
+            var originalFileImageDateModified = item.GetImageDateModified(imagePath);
 
-            var supportedImageEnhancers = request.EnableImageEnhancers ? kernel.ImageManager.ImageEnhancers.Where(i =>
+            var supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.ImageEnhancers.Where(i =>
             {
                 try
                 {
@@ -759,9 +808,9 @@ namespace MediaBrowser.Api.Images
                 throw new ResourceNotFoundException(string.Format("File not found: {0}", imagePath));
             }
 
-            var contentType = MimeTypes.GetMimeType(imagePath);
+            var contentType = GetMimeType(request.Format, imagePath);
 
-            var cacheGuid = kernel.ImageManager.GetImageCacheTag(imagePath, originalFileImageDateModified, supportedImageEnhancers, item, request.Type);
+            var cacheGuid = _imageProcessor.GetImageCacheTag(item, request.Type, imagePath, originalFileImageDateModified, supportedImageEnhancers);
 
             TimeSpan? cacheDuration = null;
 
@@ -780,23 +829,45 @@ namespace MediaBrowser.Api.Images
                 Request = currentRequest,
                 OriginalImageDateModified = originalFileImageDateModified,
                 Enhancers = supportedImageEnhancers,
-                OriginalImagePath = imagePath
+                OriginalImagePath = imagePath,
+                ImageProcessor = _imageProcessor
 
             }, contentType);
+        }
+
+        private string GetMimeType(ImageOutputFormat format, string path)
+        {
+            if (format == ImageOutputFormat.Bmp)
+            {
+                return MimeTypes.GetMimeType("i.bmp");
+            }
+            if (format == ImageOutputFormat.Gif)
+            {
+                return MimeTypes.GetMimeType("i.gif");
+            }
+            if (format == ImageOutputFormat.Jpg)
+            {
+                return MimeTypes.GetMimeType("i.jpg");
+            }
+            if (format == ImageOutputFormat.Png)
+            {
+                return MimeTypes.GetMimeType("i.png");
+            }
+
+            return MimeTypes.GetMimeType(path);
         }
 
         /// <summary>
         /// Gets the image path.
         /// </summary>
-        /// <param name="kernel">The kernel.</param>
         /// <param name="request">The request.</param>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        private string GetImagePath(Kernel kernel, ImageRequest request, BaseItem item)
+        private string GetImagePath(ImageRequest request, BaseItem item)
         {
             var index = request.Index ?? 0;
 
-            return kernel.ImageManager.GetImagePath(item, request.Type, index);
+            return item.GetImagePath(request.Type, index);
         }
 
         /// <summary>
@@ -824,25 +895,15 @@ namespace MediaBrowser.Api.Images
                     }
                 }
 
-                var memoryStream = new MemoryStream(bytes);
-
-                memoryStream.Position = 0;
-
-                var imageIndex = 0;
-
-                if (imageType == ImageType.Screenshot)
+                var memoryStream = new MemoryStream(bytes)
                 {
-                    imageIndex = entity.ScreenshotImagePaths.Count;
-                }
-                else if (imageType == ImageType.Backdrop)
-                {
-                    imageIndex = entity.BackdropImagePaths.Count;
-                }
+                    Position = 0
+                };
 
                 // Handle image/png; charset=utf-8
                 mimeType = mimeType.Split(';').FirstOrDefault();
 
-                await _providerManager.SaveImage(entity, memoryStream, mimeType, imageType, imageIndex, CancellationToken.None).ConfigureAwait(false);
+                await _providerManager.SaveImage(entity, memoryStream, mimeType, imageType, null, null, CancellationToken.None).ConfigureAwait(false);
 
                 await entity.RefreshMetadata(CancellationToken.None, forceRefresh: true, forceSave: true, allowSlowProviders: false).ConfigureAwait(false);
             }

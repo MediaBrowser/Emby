@@ -1,52 +1,57 @@
 (function ($, document) {
 
-	$(document).on('pagebeforeshow', "#gamesRecommendedPage", function () {
+    $(document).on('pagebeforeshow', "#gamesRecommendedPage", function () {
 
-		var page = this;
+        var page = this;
 
-		var options = {
+        var options = {
 
-			SortBy: "DateCreated",
-			SortOrder: "Descending",
-			MediaTypes: "Game",
-			Limit: 5,
-			Recursive: true,
-			Fields: "PrimaryImageAspectRatio",
-			Filters: "IsUnplayed"
-		};
+            SortBy: "DateCreated",
+            SortOrder: "Descending",
+            MediaTypes: "Game",
+            Limit: 5,
+            Recursive: true
+        };
 
-		ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
 
-			$('#recentlyAddedItems', page).html(LibraryBrowser.getPosterViewHtml({
-			    items: result.Items,
-			    useAverageAspectRatio: true,
-			    showNewIndicator: false,
-			    transparent: true
-			}));
+            $('#recentlyAddedItems', page).html(LibraryBrowser.getPosterViewHtml({
+                items: result.Items,
+                useAverageAspectRatio: false,
+                showNewIndicator: false,
+                transparent: true,
+                borderless: true
+            }));
 
-		});
+        });
 
-		options = {
+        options = {
 
-			SortBy: "DatePlayed",
-			SortOrder: "Descending",
-			MediaTypes: "Game",
-			Limit: 5,
-			Recursive: true,
-			Fields: "PrimaryImageAspectRatio",
-			Filters: "IsPlayed"
-		};
+            SortBy: "DatePlayed",
+            SortOrder: "Descending",
+            MediaTypes: "Game",
+            Limit: 5,
+            Recursive: true,
+            Filters: "IsPlayed"
+        };
 
-		ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
 
-			$('#resumableItems', page).html(LibraryBrowser.getPosterViewHtml({
-			    items: result.Items,
-			    useAverageAspectRatio: true,
-			    transparent: true
-			}));
+            if (result.Items.length) {
+                $('#recentlyPlayedSection', page).show();
+            } else {
+                $('#recentlyPlayedSection', page).hide();
+            }
 
-		});
+            $('#recentlyPlayedItems', page).html(LibraryBrowser.getPosterViewHtml({
+                items: result.Items,
+                useAverageAspectRatio: false,
+                transparent: true,
+                borderless: true
+            }));
 
-	});
+        });
+
+    });
 
 })(jQuery, document);

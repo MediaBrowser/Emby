@@ -48,6 +48,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>
         public IEnumerable<ITaskTrigger> GetDefaultTriggers()
         {
+            // Until we can vary these default triggers per server and MBT, we need something that makes sense for both
             return new ITaskTrigger[] { 
             
                 // At startup
@@ -67,6 +68,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         public async Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
             if (!_appHost.CanSelfUpdate) return;
+            if (!ConfigurationManager.CommonConfiguration.EnableAutoUpdate) return;
 
             EventHandler<double> innerProgressHandler = (sender, e) => progress.Report(e * .1);
 
@@ -83,6 +85,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
 
             if (!updateInfo.IsUpdateAvailable)
             {
+                Logger.Debug("No application update available.");
                 progress.Report(100);
                 return;
             }

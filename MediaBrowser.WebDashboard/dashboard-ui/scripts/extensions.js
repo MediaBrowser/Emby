@@ -1,4 +1,15 @@
-﻿// Array Remove - By John Resig (MIT Licensed)
+﻿function IsStorageEnabled() {
+    try {
+        localStorage.setItem("__test", "data");
+    } catch (err) {
+        if ((err.name).toUpperCase() == 'QUOTA_EXCEEDED_ERR') {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function (from, to) {
     var rest = this.slice((to || from) + 1 || this.length);
     this.length = from < 0 ? this.length + from : from;
@@ -111,6 +122,10 @@ var WebNotifications = {
                 });
             }
         }
+    },
+    
+    supported: function() {
+        return window.Notification || window.webkitNotifications;
     }
 };
 

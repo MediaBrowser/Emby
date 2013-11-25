@@ -11,14 +11,35 @@ namespace MediaBrowser.Controller.Entities.Movies
     /// <summary>
     /// Class Movie
     /// </summary>
-    public class Movie : Video
+    public class Movie : Video, IHasCriticRating, IHasSoundtracks
     {
         public List<Guid> SpecialFeatureIds { get; set; }
+
+        public List<Guid> SoundtrackIds { get; set; }
 
         public Movie()
         {
             SpecialFeatureIds = new List<Guid>();
+            SoundtrackIds = new List<Guid>();
         }
+
+        /// <summary>
+        /// Gets or sets the critic rating.
+        /// </summary>
+        /// <value>The critic rating.</value>
+        public float? CriticRating { get; set; }
+
+        /// <summary>
+        /// Gets or sets the critic rating summary.
+        /// </summary>
+        /// <value>The critic rating summary.</value>
+        public string CriticRatingSummary { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the TMDB collection.
+        /// </summary>
+        /// <value>The name of the TMDB collection.</value>
+        public string TmdbCollectionName { get; set; }
 
         /// <summary>
         /// Gets the user data key.
@@ -62,7 +83,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
             var itemsChanged = !SpecialFeatureIds.SequenceEqual(newItemIds);
 
-            var tasks = newItems.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders));
+            var tasks = newItems.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders, resetResolveArgs: false));
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -114,7 +135,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
                 if (dbItem != null)
                 {
-                    dbItem.ResolveArgs = video.ResolveArgs;
+                    dbItem.ResetResolveArgs(video.ResolveArgs);
                     video = dbItem;
                 }
 

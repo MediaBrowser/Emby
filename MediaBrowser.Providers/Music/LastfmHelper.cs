@@ -25,41 +25,93 @@ namespace MediaBrowser.Providers.Music
                 }
             }
 
-            artist.PremiereDate = yearFormed > 0 ? new DateTime(yearFormed, 1, 1, 0, 0, 0, DateTimeKind.Utc) : (DateTime?)null;
-            artist.ProductionYear = yearFormed;
+            if (yearFormed > 0)
+            {
+                artist.PremiereDate = new DateTime(yearFormed, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+                artist.ProductionYear = yearFormed;
+            }
+            
             if (data.tags != null && !artist.LockedFields.Contains(MetadataFields.Tags))
             {
                 AddTags(artist, data.tags);
             }
+
+            var musicArtist = artist as MusicArtist;
+
+            if (musicArtist != null)
+            {
+                string imageSize;
+                musicArtist.LastFmImageUrl = GetImageUrl(data, out imageSize);
+                musicArtist.LastFmImageSize = imageSize;
+            }
         }
 
-        public static void ProcessArtistData(MusicArtist source, Artist target)
+        private static string GetImageUrl(IHasLastFmImages data, out string size)
         {
-            target.PremiereDate = source.PremiereDate;
-            target.ProductionYear = source.ProductionYear;
-            target.Tags = source.Tags.ToList();
-            target.Overview = source.Overview;
-            target.ProductionLocations = source.ProductionLocations.ToList();
+            size = null;
+
+            if (data.image == null)
+            {
+                return null;
+            }
+
+            var validImages = data.image
+                .Where(i => !string.IsNullOrWhiteSpace(i.url))
+                .ToList();
+
+            var img = validImages
+                .FirstOrDefault(i => string.Equals(i.size, "mega", StringComparison.OrdinalIgnoreCase)) ??
+                data.image.FirstOrDefault(i => string.Equals(i.size, "extralarge", StringComparison.OrdinalIgnoreCase)) ??
+                data.image.FirstOrDefault(i => string.Equals(i.size, "large", StringComparison.OrdinalIgnoreCase)) ??
+                data.image.FirstOrDefault(i => string.Equals(i.size, "medium", StringComparison.OrdinalIgnoreCase)) ??
+                data.image.FirstOrDefault();
+
+            if (img != null)
+            {
+                size = img.size;
+                return img.url;
+            }
+
+            return null;
         }
-        
+
         public static void ProcessAlbumData(BaseItem item, LastfmAlbum data)
         {
-            if (!string.IsNullOrWhiteSpace(data.mbid)) item.SetProviderId(MetadataProviders.Musicbrainz, data.mbid);
-
             var overview = data.wiki != null ? data.wiki.content : null;
 
             if (!item.LockedFields.Contains(MetadataFields.Overview))
             {
                 item.Overview = overview;
             }
-            DateTime release;
-            DateTime.TryParse(data.releasedate, out release);
-            item.PremiereDate = release;
-            item.ProductionYear = release.Year;
+
+            // Only grab the date here if the album doesn't already have one, since id3 tags are preferred
+            if (!item.PremiereDate.HasValue)
+            {
+                DateTime release;
+
+                if (DateTime.TryParse(data.releasedate, out release))
+                {
+                    // Lastfm sends back null as sometimes 1901, other times 0
+                    if (release.Year > 1901)
+                    {
+                        item.PremiereDate = release;
+                        item.ProductionYear = release.Year;
+                    }
+                }
+            }
+
             if (data.toptags != null && !item.LockedFields.Contains(MetadataFields.Tags))
             {
                 AddTags(item, data.toptags);
             }
+
+            var album = (MusicAlbum)item;
+
+            string imageSize;
+
+            album.LastFmImageUrl = GetImageUrl(data, out imageSize);
+            album.LastFmImageSize = imageSize;
         }
 
         private static void AddTags(BaseItem item, LastfmTags tags)

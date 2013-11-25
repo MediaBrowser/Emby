@@ -1,5 +1,7 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
@@ -7,6 +9,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,9 +22,12 @@ namespace MediaBrowser.Providers
     /// </summary>
     public class ImageFromMediaLocationProvider : BaseMetadataProvider
     {
-        public ImageFromMediaLocationProvider(ILogManager logManager, IServerConfigurationManager configurationManager)
+        protected readonly IFileSystem FileSystem;
+        
+        public ImageFromMediaLocationProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
+            FileSystem = fileSystem;
         }
 
         public override ItemUpdateType ItemUpdateType
@@ -98,13 +104,13 @@ namespace MediaBrowser.Providers
             var args = GetResolveArgsContainingImages(item);
 
             // Make sure current image paths still exist
-            ValidateImages(item, args);
+            item.ValidateImages();
 
             cancellationToken.ThrowIfCancellationRequested();
 
             // Make sure current backdrop paths still exist
-            ValidateBackdrops(item, args);
-            ValidateScreenshots(item, args);
+            item.ValidateBackdrops();
+            item.ValidateScreenshots();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -126,74 +132,6 @@ namespace MediaBrowser.Providers
             }
 
             return item.ResolveArgs;
-        }
-
-        /// <summary>
-        /// Validates that images within the item are still on the file system
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="args">The args.</param>
-        private void ValidateImages(BaseItem item, ItemResolveArgs args)
-        {
-            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
-            var deletedKeys = item.Images.ToList().Where(image =>
-            {
-                var path = image.Value;
-
-                return IsInMetaLocation(item, path) && args.GetMetaFileByPath(path) == null;
-
-            }).Select(i => i.Key).ToList();
-
-            // Now remove them from the dictionary
-            foreach (var key in deletedKeys)
-            {
-                item.Images.Remove(key);
-            }
-        }
-
-        /// <summary>
-        /// Validates that backdrops within the item are still on the file system
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="args">The args.</param>
-        private void ValidateBackdrops(BaseItem item, ItemResolveArgs args)
-        {
-            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
-            var deletedImages = item.BackdropImagePaths.Where(path => IsInMetaLocation(item, path) && args.GetMetaFileByPath(path) == null).ToList();
-
-            // Now remove them from the dictionary
-            foreach (var path in deletedImages)
-            {
-                item.BackdropImagePaths.Remove(path);
-            }
-        }
-
-        /// <summary>
-        /// Validates the screenshots.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="args">The args.</param>
-        private void ValidateScreenshots(BaseItem item, ItemResolveArgs args)
-        {
-            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
-            var deletedImages = item.ScreenshotImagePaths.Where(path => IsInMetaLocation(item, path) && args.GetMetaFileByPath(path) == null).ToList();
-
-            // Now remove them from the dictionary
-            foreach (var path in deletedImages)
-            {
-                item.ScreenshotImagePaths.Remove(path);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether [is in same directory] [the specified item].
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="path">The path.</param>
-        /// <returns><c>true</c> if [is in same directory] [the specified item]; otherwise, <c>false</c>.</returns>
-        private bool IsInMetaLocation(BaseItem item, string path)
-        {
-            return string.Equals(Path.GetDirectoryName(path), item.MetaLocation, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -230,6 +168,8 @@ namespace MediaBrowser.Providers
             return Path.Combine(path, filenameWithoutExtension + extension);
         }
 
+        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
+
         /// <summary>
         /// Fills in image paths based on files win the folder
         /// </summary>
@@ -237,42 +177,14 @@ namespace MediaBrowser.Providers
         /// <param name="args">The args.</param>
         private void PopulateBaseItemImages(BaseItem item, ItemResolveArgs args)
         {
-            // Primary Image
-            var image = GetImage(item, args, "folder") ??
-                GetImage(item, args, "poster") ??
-                GetImage(item, args, "cover") ??
-                GetImage(item, args, "default");
-
-            // Look for a file with the same name as the item
-            if (image == null)
-            {
-                var name = Path.GetFileNameWithoutExtension(item.Path);
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    image = GetImage(item, args, name);
-                }
-            }
-
-            if (image != null)
-            {
-                item.SetImage(ImageType.Primary, image.FullName);
-            }
+            PopulatePrimaryImage(item, args);
 
             // Logo Image
-            image = GetImage(item, args, "logo");
+            var image = GetImage(item, args, "logo");
 
             if (image != null)
             {
                 item.SetImage(ImageType.Logo, image.FullName);
-            }
-
-            // Banner Image
-            image = GetImage(item, args, "banner");
-
-            if (image != null)
-            {
-                item.SetImage(ImageType.Banner, image.FullName);
             }
 
             // Clearart
@@ -290,14 +202,6 @@ namespace MediaBrowser.Providers
             if (image != null)
             {
                 item.SetImage(ImageType.Disc, image.FullName);
-            }
-
-            // Thumbnail Image
-            image = GetImage(item, args, "thumb");
-
-            if (image != null)
-            {
-                item.SetImage(ImageType.Thumb, image.FullName);
             }
 
             // Box Image
@@ -324,44 +228,157 @@ namespace MediaBrowser.Providers
                 item.SetImage(ImageType.Menu, image.FullName);
             }
 
+            PopulateBanner(item, args);
+            PopulateThumb(item, args);
+
             // Backdrop Image
             PopulateBackdrops(item, args);
+            PopulateScreenshots(item, args);
+        }
 
-            // Screenshot Image
-            image = GetImage(item, args, "screenshot");
+        private void PopulatePrimaryImage(BaseItem item, ItemResolveArgs args)
+        {
+            // Primary Image
+            var image = GetImage(item, args, "folder") ??
+                GetImage(item, args, "poster") ??
+                GetImage(item, args, "cover") ??
+                GetImage(item, args, "default");
 
-            var screenshotFiles = new List<string>();
+            // Support plex/xbmc convention
+            if (image == null && item is Series)
+            {
+                image = GetImage(item, args, "show");
+            }
+
+            var isFileSystemItem = item.LocationType == LocationType.FileSystem;
+
+            // Support plex/xbmc convention
+            if (image == null && item is Season && item.IndexNumber.HasValue && isFileSystemItem)
+            {
+                var seasonMarker = item.IndexNumber.Value == 0
+                                       ? "-specials"
+                                       : item.IndexNumber.Value.ToString("00", _usCulture);
+
+                // Get this one directly from the file system since we have to go up a level
+                var filename = "season" + seasonMarker + "-poster";
+
+                var path = Path.GetDirectoryName(item.Path);
+
+                path = Path.Combine(path, filename);
+
+                image = new FileInfo(path);
+
+                if (!image.Exists)
+                {
+                    image = null;
+                }
+            }
+
+            // Support plex/xbmc convention
+            if (image == null && (item is Movie || item is MusicVideo || item is AdultVideo))
+            {
+                image = GetImage(item, args, "movie");
+            }
+
+            // Look for a file with the same name as the item
+            if (image == null && isFileSystemItem)
+            {
+                var name = Path.GetFileNameWithoutExtension(item.Path);
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    image = GetImage(item, args, name) ??
+                        GetImage(item, args, name + "-poster");
+                }
+            }
 
             if (image != null)
             {
-                screenshotFiles.Add(image.FullName);
+                item.SetImage(ImageType.Primary, image.FullName);
             }
+        }
 
-            var unfound = 0;
-            for (var i = 1; i <= 20; i++)
+        /// <summary>
+        /// Populates the banner.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="args">The args.</param>
+        private void PopulateBanner(BaseItem item, ItemResolveArgs args)
+        {
+            // Banner Image
+            var image = GetImage(item, args, "banner");
+
+            if (image == null)
             {
-                // Screenshot Image
-                image = GetImage(item, args, "screenshot" + i);
-
-                if (image != null)
+                // Supprt xbmc conventions
+                if (item is Season && item.IndexNumber.HasValue && item.LocationType == LocationType.FileSystem)
                 {
-                    screenshotFiles.Add(image.FullName);
-                }
-                else
-                {
-                    unfound++;
+                    var seasonMarker = item.IndexNumber.Value == 0
+                                           ? "-specials"
+                                           : item.IndexNumber.Value.ToString("00", _usCulture);
 
-                    if (unfound >= 3)
+                    // Get this one directly from the file system since we have to go up a level
+                    var filename = "season" + seasonMarker + "-banner";
+
+                    var path = Path.GetDirectoryName(item.Path);
+
+                    path = Path.Combine(path, filename);
+
+                    image = new FileInfo(path);
+
+                    if (!image.Exists)
                     {
-                        break;
+                        image = null;
                     }
                 }
             }
 
-            if (screenshotFiles.Count > 0)
+            if (image != null)
             {
-                item.ScreenshotImagePaths = screenshotFiles;
+                item.SetImage(ImageType.Banner, image.FullName);
             }
+        }
+
+        /// <summary>
+        /// Populates the thumb.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="args">The args.</param>
+        private void PopulateThumb(BaseItem item, ItemResolveArgs args)
+        {
+            // Thumbnail Image
+            var image = GetImage(item, args, "thumb");
+
+            if (image == null)
+            {
+                // Supprt xbmc conventions
+                if (item is Season && item.IndexNumber.HasValue && item.LocationType == LocationType.FileSystem)
+                {
+                    var seasonMarker = item.IndexNumber.Value == 0
+                                           ? "-specials"
+                                           : item.IndexNumber.Value.ToString("00", _usCulture);
+
+                    // Get this one directly from the file system since we have to go up a level
+                    var filename = "season" + seasonMarker + "-landscape";
+
+                    var path = Path.GetDirectoryName(item.Path);
+
+                    path = Path.Combine(path, filename);
+
+                    image = new FileInfo(path);
+
+                    if (!image.Exists)
+                    {
+                        image = null;
+                    }
+                }
+            }
+
+            if (image != null)
+            {
+                item.SetImage(ImageType.Thumb, image.FullName);
+            }
+
         }
 
         /// <summary>
@@ -371,17 +388,96 @@ namespace MediaBrowser.Providers
         /// <param name="args">The args.</param>
         private void PopulateBackdrops(BaseItem item, ItemResolveArgs args)
         {
+            var isFileSystemItem = item.LocationType == LocationType.FileSystem;
+
             var backdropFiles = new List<string>();
 
             PopulateBackdrops(item, args, backdropFiles, "backdrop", "backdrop");
 
+            // Support {name}-fanart.ext
+            if (isFileSystemItem)
+            {
+                var name = Path.GetFileNameWithoutExtension(item.Path);
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    var image = GetImage(item, args, name + "-fanart");
+
+                    if (image != null)
+                    {
+                        backdropFiles.Add(image.FullName);
+                    }
+                }
+            }
+
             // Support plex/xbmc conventions
             PopulateBackdrops(item, args, backdropFiles, "fanart", "fanart-");
             PopulateBackdrops(item, args, backdropFiles, "background", "background-");
+            PopulateBackdrops(item, args, backdropFiles, "art", "art-");
+
+            if (item is Season && item.IndexNumber.HasValue && isFileSystemItem)
+            {
+                var seasonMarker = item.IndexNumber.Value == 0
+                                       ? "-specials"
+                                       : item.IndexNumber.Value.ToString("00", _usCulture);
+
+                // Get this one directly from the file system since we have to go up a level
+                var filename = "season" + seasonMarker + "-fanart";
+
+                var path = Path.GetDirectoryName(item.Path);
+
+                path = Path.Combine(path, filename);
+
+                var image = new FileInfo(path);
+
+                if (image.Exists)
+                {
+                    backdropFiles.Add(image.FullName);
+                }
+            }
+
+            if (isFileSystemItem)
+            {
+                PopulateBackdropsFromExtraFanart(args, backdropFiles);
+            }
 
             if (backdropFiles.Count > 0)
             {
                 item.BackdropImagePaths = backdropFiles;
+            }
+        }
+
+        /// <summary>
+        /// Populates the backdrops from extra fanart.
+        /// </summary>
+        /// <param name="args">The args.</param>
+        /// <param name="backdrops">The backdrops.</param>
+        private void PopulateBackdropsFromExtraFanart(ItemResolveArgs args, List<string> backdrops)
+        {
+            if (!args.IsDirectory)
+            {
+                return;
+            }
+
+            if (args.ContainsFileSystemEntryByName("extrafanart"))
+            {
+                var path = Path.Combine(args.Path, "extrafanart");
+
+                var imageFiles = Directory.EnumerateFiles(path, "*", SearchOption.TopDirectoryOnly)
+                    .Where(i =>
+                    {
+                        var extension = Path.GetExtension(i);
+
+                        if (string.IsNullOrEmpty(extension))
+                        {
+                            return false;
+                        }
+
+                        return BaseItem.SupportedImageExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+                    })
+                    .ToList();
+
+                backdrops.AddRange(imageFiles);
             }
         }
 
@@ -421,6 +517,82 @@ namespace MediaBrowser.Providers
                         break;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Populates the screenshots.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="args">The args.</param>
+        private void PopulateScreenshots(BaseItem item, ItemResolveArgs args)
+        {
+            // Screenshot Image
+            var image = GetImage(item, args, "screenshot");
+
+            var screenshotFiles = new List<string>();
+
+            if (image != null)
+            {
+                screenshotFiles.Add(image.FullName);
+            }
+
+            var unfound = 0;
+            for (var i = 1; i <= 20; i++)
+            {
+                // Screenshot Image
+                image = GetImage(item, args, "screenshot" + i);
+
+                if (image != null)
+                {
+                    screenshotFiles.Add(image.FullName);
+                }
+                else
+                {
+                    unfound++;
+
+                    if (unfound >= 3)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (screenshotFiles.Count > 0)
+            {
+                item.ScreenshotImagePaths = screenshotFiles;
+            }
+        }
+
+        protected FileSystemInfo GetImageFromLocation(string path, string filenameWithoutExtension)
+        {
+            try
+            {
+                var files = new DirectoryInfo(path)
+                    .EnumerateFiles()
+                    .Where(i =>
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(i.FullName);
+
+                        if (!string.Equals(fileName, filenameWithoutExtension, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
+
+                        var ext = i.Extension;
+
+                        return !string.IsNullOrEmpty(ext) &&
+                            BaseItem.SupportedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                    })
+                    .ToList();
+
+                return BaseItem.SupportedImageExtensions
+                    .Select(ext => files.FirstOrDefault(i => string.Equals(ext, i.Extension, StringComparison.OrdinalIgnoreCase)))
+                    .FirstOrDefault(file => file != null);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
             }
         }
     }

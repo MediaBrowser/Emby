@@ -25,7 +25,7 @@ namespace MediaBrowser.Api
         public string Id { get; set; }
     }
 
-    public class BaseGetSimilarItems : IReturn<ItemsResult>
+    public class BaseGetSimilarItems : IReturn<ItemsResult>, IHasItemFields
     {
         /// <summary>
         /// Gets or sets the user id.
@@ -45,36 +45,10 @@ namespace MediaBrowser.Api
         /// Fields to return within the items, in addition to basic information
         /// </summary>
         /// <value>The fields.</value>
-        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, ItemCounts, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Fields { get; set; }
-
-        /// <summary>
-        /// Gets the item fields.
-        /// </summary>
-        /// <returns>IEnumerable{ItemFields}.</returns>
-        public IEnumerable<ItemFields> GetItemFields()
-        {
-            var val = Fields;
-
-            if (string.IsNullOrEmpty(val))
-            {
-                return new ItemFields[] { };
-            }
-
-            return val.Split(',').Select(v =>
-            {
-                ItemFields value;
-
-                if (Enum.TryParse(v, true, out value))
-                {
-                    return (ItemFields?)value;
-                }
-                return null;
-
-            }).Where(i => i.HasValue).Select(i => i.Value);
-        }
     }
-    
+
     /// <summary>
     /// Class SimilarItemsHelper
     /// </summary>
@@ -87,35 +61,41 @@ namespace MediaBrowser.Api
         /// <param name="itemRepository">The item repository.</param>
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="userDataRepository">The user data repository.</param>
+        /// <param name="dtoService">The dto service.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="request">The request.</param>
         /// <param name="includeInSearch">The include in search.</param>
         /// <param name="getSimilarityScore">The get similarity score.</param>
         /// <returns>ItemsResult.</returns>
-        internal static ItemsResult GetSimilarItemsResult(IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, IUserDataRepository userDataRepository, ILogger logger, BaseGetSimilarItemsFromItem request, Func<BaseItem, bool> includeInSearch, Func<BaseItem, BaseItem, int> getSimilarityScore)
+        internal static ItemsResult GetSimilarItemsResult(IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, IUserDataManager userDataRepository, IDtoService dtoService, ILogger logger, BaseGetSimilarItemsFromItem request, Func<BaseItem, bool> includeInSearch, Func<BaseItem, BaseItem, int> getSimilarityScore)
         {
             var user = request.UserId.HasValue ? userManager.GetUserById(request.UserId.Value) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
                 (request.UserId.HasValue ? user.RootFolder :
-                (Folder)libraryManager.RootFolder) : DtoBuilder.GetItemByClientId(request.Id, userManager, libraryManager, request.UserId);
+                (Folder)libraryManager.RootFolder) : dtoService.GetItemByDtoId(request.Id, request.UserId);
 
             var fields = request.GetItemFields().ToList();
 
-            var dtoBuilder = new DtoBuilder(logger, libraryManager, userDataRepository, itemRepository);
-
             var inputItems = user == null
-                                 ? libraryManager.RootFolder.RecursiveChildren
-                                 : user.RootFolder.GetRecursiveChildren(user);
+                                 ? libraryManager.RootFolder.GetRecursiveChildren(i => i.Id != item.Id)
+                                 : user.RootFolder.GetRecursiveChildren(user, i => i.Id != item.Id);
 
             var items = GetSimilaritems(item, inputItems, includeInSearch, getSimilarityScore)
-                .ToArray();
+                .ToList();
+
+            IEnumerable<BaseItem> returnItems = items;
+
+            if (request.Limit.HasValue)
+            {
+                returnItems = returnItems.Take(request.Limit.Value);
+            }
 
             var result = new ItemsResult
             {
-                Items = items.Take(request.Limit ?? items.Length).Select(i => dtoBuilder.GetBaseItemDto(i, fields, user)).Select(t => t.Result).ToArray(),
+                Items = returnItems.Select(i => dtoService.GetBaseItemDto(i, fields, user)).ToArray(),
 
-                TotalRecordCount = items.Length
+                TotalRecordCount = items.Count
             };
 
             return result;
@@ -133,14 +113,9 @@ namespace MediaBrowser.Api
         {
             inputItems = inputItems.Where(includeInSearch);
 
-            // Avoid implicitly captured closure
-            var currentItem = item;
-
-            return inputItems.Where(i => i.Id != currentItem.Id)
-                .Select(i => new Tuple<BaseItem, int>(i, getSimilarityScore(item, i)))
+            return inputItems.Select(i => new Tuple<BaseItem, int>(i, getSimilarityScore(item, i)))
                 .Where(i => i.Item2 > 2)
                 .OrderByDescending(i => i.Item2)
-                .ThenByDescending(i => i.Item1.CriticRating ?? 0)
                 .Select(i => i.Item1);
         }
 

@@ -1,22 +1,22 @@
-﻿using System.Net;
-using System.Net.Cache;
-using System.Net.Http;
-using MediaBrowser.Api.Images;
+﻿using MediaBrowser.Api.Images;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
@@ -26,11 +26,13 @@ namespace MediaBrowser.Api.Playback.Progressive
     public abstract class BaseProgressiveStreamingService : BaseStreamingService
     {
         protected readonly IItemRepository ItemRepository;
-        
-        protected BaseProgressiveStreamingService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepository) :
-            base(appPaths, userManager, libraryManager, isoManager, mediaEncoder)
+        protected readonly IImageProcessor ImageProcessor;
+
+        protected BaseProgressiveStreamingService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepository, IDtoService dtoService, IImageProcessor imageProcessor, IFileSystem fileSystem) :
+            base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem)
         {
             ItemRepository = itemRepository;
+            ImageProcessor = imageProcessor;
         }
 
         /// <summary>
@@ -211,12 +213,12 @@ namespace MediaBrowser.Api.Playback.Progressive
 
             if (request.Static)
             {
-                return ResultFactory.GetStaticFileResult(RequestContext, state.Item.Path, responseHeaders, isHeadRequest);
+                return ResultFactory.GetStaticFileResult(RequestContext, state.Item.Path, FileShare.Read, responseHeaders, isHeadRequest);
             }
 
             if (outputPathExists && !ApiEntryPoint.Instance.HasActiveTranscodingJob(outputPath, TranscodingJobType.Progressive))
             {
-                return ResultFactory.GetStaticFileResult(RequestContext, outputPath, responseHeaders, isHeadRequest);
+                return ResultFactory.GetStaticFileResult(RequestContext, outputPath, FileShare.Read, responseHeaders, isHeadRequest);
             }
 
             return GetStreamResult(state, responseHeaders, isHeadRequest).Result;
@@ -233,11 +235,7 @@ namespace MediaBrowser.Api.Playback.Progressive
         {
             responseHeaders["Accept-Ranges"] = "none";
 
-            var httpClient = new HttpClient(new WebRequestHandler
-            {
-                CachePolicy = new RequestCachePolicy(RequestCacheLevel.BypassCache),
-                AutomaticDecompression = DecompressionMethods.None
-            });
+            var httpClient = new HttpClient();
 
             using (var message = new HttpRequestMessage(HttpMethod.Get, item.Path))
             {
@@ -309,7 +307,7 @@ namespace MediaBrowser.Api.Playback.Progressive
                 }
             }
 
-            return new ImageService(UserManager, LibraryManager, ApplicationPaths, null, ItemRepository)
+            return new ImageService(UserManager, LibraryManager, ApplicationPaths, null, ItemRepository, DtoService, ImageProcessor, null)
             {
                 Logger = Logger,
                 RequestContext = RequestContext,
@@ -349,7 +347,7 @@ namespace MediaBrowser.Api.Playback.Progressive
                 ApiEntryPoint.Instance.OnTranscodeBeginRequest(outputPath, TranscodingJobType.Progressive);
             }
 
-            var result = new ProgressiveStreamWriter(outputPath, state, Logger);
+            var result = new ProgressiveStreamWriter(outputPath, Logger, FileSystem);
 
             result.Options["Accept-Ranges"] = "none";
             result.Options["Content-Type"] = contentType;

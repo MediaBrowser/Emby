@@ -2,7 +2,7 @@
     window.MediaBrowser = {};
 }
 
-MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
+MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout, window) {
 
     /**
      * Creates a new api client instance
@@ -20,9 +20,6 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         if (!serverHostName) {
             throw new Error("Must supply serverHostName, e.g. 192.168.1.1 or myServerName");
         }
-        if (!serverPortNumber) {
-            throw new Error("Must supply a serverPortNumber");
-        }
 
         var self = this;
         var deviceName = "Web Browser";
@@ -36,14 +33,6 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         self.serverHostName = function () {
 
             return serverHostName;
-        };
-
-        /**
-         * Gets the server port number.
-         */
-        self.serverPortNumber = function () {
-
-            return serverPortNumber;
         };
 
         /**
@@ -64,20 +53,15 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             if ($.browser.chrome) {
                 name = "Chrome";
-            }
-            else if ($.browser.safari) {
+            } else if ($.browser.safari) {
                 name = "Safari";
-            }
-            else if ($.browser.webkit) {
+            } else if ($.browser.webkit) {
                 name = "WebKit";
-            }
-            else if ($.browser.msie) {
+            } else if ($.browser.msie) {
                 name = "Internet Explorer";
-            }
-            else if ($.browser.opera) {
+            } else if ($.browser.opera) {
                 name = "Opera";
-            }
-            else if ($.browser.firefox || $.browser.mozilla) {
+            } else if ($.browser.firefox || $.browser.mozilla) {
                 name = "Firefox";
             }
 
@@ -85,18 +69,15 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                 if ($.browser.version) {
                     name += " " + $.browser.version;
                 }
-            }
-            else {
+            } else {
                 name = "Web Browser";
             }
 
             if ($.browser.ipad) {
                 name += " Ipad";
-            }
-            else if ($.browser.iphone) {
+            } else if ($.browser.iphone) {
                 name += " Iphone";
-            }
-            else if ($.browser.android) {
+            } else if ($.browser.android) {
                 name += " Android";
             }
             return name;
@@ -152,7 +133,13 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                 throw new Error("Url name cannot be empty");
             }
 
-            var url = serverProtocol + "//" + serverHostName + ":" + serverPortNumber + "/mediabrowser/" + name;
+            var url = serverProtocol + "//" + serverHostName;
+
+            if (serverPortNumber) {
+                url += ":" + serverPortNumber;
+            }
+
+            url += "/mediabrowser/" + name;
 
             if (params) {
                 url += "?" + $.param(params);
@@ -175,7 +162,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             webSocket.onopen = function () {
                 setTimeout(function () {
 
-                    self.sendWebSocketMessage("Identity", clientName + "|" + deviceId + "|" + applicationVersion);
+                    self.sendWebSocketMessage("Identity", clientName + "|" + deviceId + "|" + applicationVersion + "|" + deviceName);
 
                     $(self).trigger("websocketopen");
                 }, 500);
@@ -190,6 +177,12 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                     $(self).trigger("websocketclose");
                 }, 0);
             };
+        };
+
+        self.closeWebSocket = function () {
+            if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+                webSocket.close();
+            }
         };
 
         self.sendWebSocketMessage = function (name, data) {
@@ -305,6 +298,145 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             });
         };
 
+        function getRemoteImagePrefix(options) {
+
+            var urlPrefix;
+
+            if (options.artist) {
+                urlPrefix = "Artists/" + self.encodeName(options.artist);
+                delete options.artist;
+            } else if (options.person) {
+                urlPrefix = "Persons/" + self.encodeName(options.person);
+                delete options.person;
+            } else if (options.genre) {
+                urlPrefix = "Genres/" + self.encodeName(options.genre);
+                delete options.genre;
+            } else if (options.musicGenre) {
+                urlPrefix = "MusicGenres/" + self.encodeName(options.musicGenre);
+                delete options.musicGenre;
+            } else if (options.gameGenre) {
+                urlPrefix = "GameGenres/" + self.encodeName(options.gameGenre);
+                delete options.gameGenre;
+            } else if (options.studio) {
+                urlPrefix = "Studios/" + self.encodeName(options.studio);
+                delete options.studio;
+            } else {
+                urlPrefix = "Items/" + options.itemId;
+                delete options.itemId;
+            }
+
+            return urlPrefix;
+        }
+
+        self.getRemoteImageProviders = function (options) {
+
+            if (!options) {
+                throw new Error("null options");
+            }
+
+            var urlPrefix = getRemoteImagePrefix(options);
+
+            var url = self.getUrl(urlPrefix + "/RemoteImages/Providers", options);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getAvailableRemoteImages = function (options) {
+
+            if (!options) {
+                throw new Error("null options");
+            }
+
+            var urlPrefix = getRemoteImagePrefix(options);
+
+            var url = self.getUrl(urlPrefix + "/RemoteImages", options);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.downloadRemoteImage = function (options) {
+
+            if (!options) {
+                throw new Error("null options");
+            }
+
+            var urlPrefix = getRemoteImagePrefix(options);
+
+            var url = self.getUrl(urlPrefix + "/RemoteImages/Download", options);
+
+            return self.ajax({
+                type: "POST",
+                url: url
+            });
+        };
+
+        self.getLiveTvServices = function (options) {
+
+            var url = self.getUrl("/LiveTv/Services", options || {});
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getLiveTvChannel = function (id) {
+
+            if (!id) {
+                throw new Error("null id");
+            }
+
+            var url = self.getUrl("/LiveTv/Channels/" + id);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getLiveTvChannels = function (options) {
+
+            var url = self.getUrl("/LiveTv/Channels", options || {});
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getLiveTvPrograms = function (options) {
+
+            var url = self.getUrl("/LiveTv/Programs", options || {});
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getLiveTvRecordings = function (options) {
+
+            var url = self.getUrl("/LiveTv/Recordings", options || {});
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
         /**
          * Gets the current server status
          */
@@ -355,6 +487,17 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         self.getInstantMixFromMusicGenre = function (name, options) {
 
             var url = self.getUrl("MusicGenres/" + self.encodeName(name) + "/InstantMix", options);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.getEpisodes = function (itemId, options) {
+
+            var url = self.getUrl("Shows/" + itemId + "/Episodes", options);
 
             return self.ajax({
                 type: "GET",
@@ -519,7 +662,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                 throw new Error("null installationId");
             }
 
-            var url = self.getUrl("Packages/Installing/" + id);
+            var url = self.getUrl("Packages/Installing/" + installationId);
 
             return self.ajax({
                 type: "DELETE",
@@ -537,10 +680,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Items/" + itemId + "/Refresh", {
-
                 forced: force || false,
                 recursive: recursive || false
-
             });
 
             return self.ajax({
@@ -556,9 +697,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Artists/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -574,9 +713,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Genres/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -592,9 +729,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("MusicGenres/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -610,9 +745,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("GameGenres/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -628,9 +761,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Persons/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -646,9 +777,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Studios/" + self.encodeName(name) + "/Refresh", {
-
                 forced: force || false
-
             });
 
             return self.ajax({
@@ -660,7 +789,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         /**
          * Installs or updates a new plugin
          */
-        self.installPlugin = function (name, updateClass, version) {
+        self.installPlugin = function (name, guid, updateClass, version) {
 
             if (!name) {
                 throw new Error("null name");
@@ -671,7 +800,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var options = {
-                updateClass: updateClass
+                updateClass: updateClass,
+                AssemblyGuid: guid
             };
 
             if (version) {
@@ -700,15 +830,32 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         };
 
         /**
+         * Instructs the server to perform a shutdown.
+         */
+        self.shutdownServer = function () {
+
+            var url = self.getUrl("System/Shutdown");
+
+            return self.ajax({
+                type: "POST",
+                url: url
+            });
+        };
+
+        /**
          * Gets information about an installable package
          */
-        self.getPackageInfo = function (name) {
+        self.getPackageInfo = function (name, guid) {
 
             if (!name) {
                 throw new Error("null name");
             }
 
-            var url = self.getUrl("Packages/" + name);
+            var options = {
+                AssemblyGuid: guid
+            };
+
+            var url = self.getUrl("Packages/" + name, options);
 
             return self.ajax({
                 type: "GET",
@@ -924,7 +1071,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         * Removes a virtual folder from either the default view or a user view
         * @param {String} name
         */
-        self.removeVirtualFolder = function (name, userId) {
+        self.removeVirtualFolder = function (name, userId, refreshLibrary) {
 
             if (!name) {
                 throw new Error("null name");
@@ -933,7 +1080,10 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             var url = userId ? "Users/" + userId + "/VirtualFolders" : "Library/VirtualFolders";
 
             url += "/" + name;
-            url = self.getUrl(url);
+
+            url = self.getUrl(url, {
+                refreshLibrary: refreshLibrary ? true : false
+            });
 
             return self.ajax({
                 type: "DELETE",
@@ -945,7 +1095,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
        * Adds a virtual folder to either the default view or a user view
        * @param {String} name
        */
-        self.addVirtualFolder = function (name, type, userId) {
+        self.addVirtualFolder = function (name, type, userId, refreshLibrary) {
 
             if (!name) {
                 throw new Error("null name");
@@ -956,6 +1106,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (type) {
                 options.collectionType = type;
             }
+
+            options.refreshLibrary = refreshLibrary ? true : false;
 
             var url = userId ? "Users/" + userId + "/VirtualFolders" : "Library/VirtualFolders";
 
@@ -972,7 +1124,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
        * Renames a virtual folder, within either the default view or a user view
        * @param {String} name
        */
-        self.renameVirtualFolder = function (name, newName, userId) {
+        self.renameVirtualFolder = function (name, newName, userId, refreshLibrary) {
 
             if (!name) {
                 throw new Error("null name");
@@ -982,7 +1134,10 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             url += "/" + name + "/Name";
 
-            url = self.getUrl(url, { newName: newName });
+            url = self.getUrl(url, {
+                refreshLibrary: refreshLibrary ? true : false,
+                newName: newName
+            });
 
             return self.ajax({
                 type: "POST",
@@ -994,7 +1149,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         * Adds an additional mediaPath to an existing virtual folder, within either the default view or a user view
         * @param {String} name
         */
-        self.addMediaPath = function (virtualFolderName, mediaPath, userId) {
+        self.addMediaPath = function (virtualFolderName, mediaPath, userId, refreshLibrary) {
 
             if (!virtualFolderName) {
                 throw new Error("null virtualFolderName");
@@ -1008,7 +1163,10 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             url += "/" + virtualFolderName + "/Paths";
 
-            url = self.getUrl(url, { path: mediaPath });
+            url = self.getUrl(url, {
+                refreshLibrary: refreshLibrary ? true : false,
+                path: mediaPath
+            });
 
             return self.ajax({
                 type: "POST",
@@ -1020,7 +1178,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
         * Removes a media path from a virtual folder, within either the default view or a user view
         * @param {String} name
         */
-        self.removeMediaPath = function (virtualFolderName, mediaPath, userId) {
+        self.removeMediaPath = function (virtualFolderName, mediaPath, userId, refreshLibrary) {
 
             if (!virtualFolderName) {
                 throw new Error("null virtualFolderName");
@@ -1034,7 +1192,10 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             url += "/" + virtualFolderName + "/Paths";
 
-            url = self.getUrl(url, { path: mediaPath });
+            url = self.getUrl(url, {
+                refreshLibrary: refreshLibrary ? true : false,
+                path: mediaPath
+            });
 
             return self.ajax({
                 type: "DELETE",
@@ -1102,22 +1263,20 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (itemType == "Artist") {
                 url = self.getUrl("Artists/" + self.encodeName(itemName) + "/Images");
             }
+            else if (itemType == "Channel") {
+                url = self.getUrl("LiveTv/Channels/" + itemId + "/Images");
+            }
             else if (itemType == "Genre") {
                 url = self.getUrl("Genres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "GameGenre") {
+            } else if (itemType == "GameGenre") {
                 url = self.getUrl("GameGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "MusicGenre") {
+            } else if (itemType == "MusicGenre") {
                 url = self.getUrl("MusicGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Person") {
+            } else if (itemType == "Person") {
                 url = self.getUrl("Persons/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Studio") {
+            } else if (itemType == "Studio") {
                 url = self.getUrl("Studios/" + self.encodeName(itemName) + "/Images");
-            }
-            else {
+            } else {
                 url = self.getUrl("Items/" + itemId + "/Images");
             }
 
@@ -1126,6 +1285,20 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (imageIndex != null) {
                 url += "/" + imageIndex;
             }
+
+            return self.ajax({
+                type: "DELETE",
+                url: url
+            });
+        };
+
+        self.deleteItem = function (itemId) {
+
+            if (!itemId) {
+                throw new Error("null itemId");
+            }
+
+            var url = self.getUrl("Items/" + itemId);
 
             return self.ajax({
                 type: "DELETE",
@@ -1150,22 +1323,20 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (itemType == "Artist") {
                 url = self.getUrl("Artists/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
             }
+            else if (itemType == "Channel") {
+                url = self.getUrl("LiveTv/Channels/" + itemId + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
+            }
             else if (itemType == "Genre") {
                 url = self.getUrl("Genres/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
-            }
-            else if (itemType == "GameGenre") {
+            } else if (itemType == "GameGenre") {
                 url = self.getUrl("GameGenres/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
-            }
-            else if (itemType == "MusicGenre") {
+            } else if (itemType == "MusicGenre") {
                 url = self.getUrl("MusicGenres/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
-            }
-            else if (itemType == "Person") {
+            } else if (itemType == "Person") {
                 url = self.getUrl("Persons/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
-            }
-            else if (itemType == "Studio") {
+            } else if (itemType == "Studio") {
                 url = self.getUrl("Studios/" + self.encodeName(itemName) + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
-            }
-            else {
+            } else {
                 url = self.getUrl("Items/" + itemId + "/Images/" + imageType + "/" + imageIndex + "/Index", options);
             }
 
@@ -1186,22 +1357,20 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (itemType == "Artist") {
                 url = self.getUrl("Artists/" + self.encodeName(itemName) + "/Images");
             }
+            else if (itemType == "Channel") {
+                url = self.getUrl("LiveTv/Channels/" + itemId + "/Images");
+            }
             else if (itemType == "Genre") {
                 url = self.getUrl("Genres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "GameGenre") {
+            } else if (itemType == "GameGenre") {
                 url = self.getUrl("GameGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "MusicGenre") {
+            } else if (itemType == "MusicGenre") {
                 url = self.getUrl("MusicGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Person") {
+            } else if (itemType == "Person") {
                 url = self.getUrl("Persons/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Studio") {
+            } else if (itemType == "Studio") {
                 url = self.getUrl("Studios/" + self.encodeName(itemName) + "/Images");
-            }
-            else {
+            } else {
                 url = self.getUrl("Items/" + itemId + "/Images");
             }
 
@@ -1325,22 +1494,20 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             if (itemType == "Artist") {
                 url = self.getUrl("Artists/" + self.encodeName(itemName) + "/Images");
             }
+            else if (itemType == "Channel") {
+                url = self.getUrl("LiveTv/Channels/" + itemId + "/Images");
+            }
             else if (itemType == "Genre") {
                 url = self.getUrl("Genres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "GameGenre") {
+            } else if (itemType == "GameGenre") {
                 url = self.getUrl("GameGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "MusicGenre") {
+            } else if (itemType == "MusicGenre") {
                 url = self.getUrl("MusicGenres/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Person") {
+            } else if (itemType == "Person") {
                 url = self.getUrl("Persons/" + self.encodeName(itemName) + "/Images");
-            }
-            else if (itemType == "Studio") {
+            } else if (itemType == "Studio") {
                 url = self.getUrl("Studios/" + self.encodeName(itemName) + "/Images");
-            }
-            else {
+            } else {
                 url = self.getUrl("Items/" + itemId + "/Images");
             }
 
@@ -1974,9 +2141,26 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             options.imageType = "logo";
 
-            var logoItemId = item.HasLogo ? item.Id : item.ParentLogoItemId;
+            var logoItemId = item.ImageTags && item.ImageTags.Logo ? item.Id : item.ParentLogoItemId;
 
             return logoItemId ? self.getImageUrl(logoItemId, options) : null;
+        };
+
+        self.getThumbImageUrl = function (item, options) {
+
+            if (!item) {
+                throw new Error("null item");
+            }
+
+            options = options || {
+
+            };
+
+            options.imageType = "thumb";
+
+            var itemId = item.ImageTags && item.ImageTags.Thumb ? item.Id : item.ParentThumbItemId;
+
+            return itemId ? self.getImageUrl(itemId, options) : null;
         };
 
         /**
@@ -2167,6 +2351,22 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Items/" + item.Id);
+
+            return self.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify(item),
+                contentType: "application/json"
+            });
+        };
+
+        self.updateLiveTvChannel = function (item) {
+
+            if (!item) {
+                throw new Error("null item");
+            }
+
+            var url = self.getUrl("LiveTv/Channels/" + item.Id);
 
             return self.ajax({
                 type: "POST",
@@ -2670,16 +2870,43 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             });
         };
 
-        /**
-         * Marks an item as played or unplayed
-         * This should not be used to update playstate following playback.
-         * There are separate playstate check-in methods for that. This should be used for a
-         * separate option to reset playstate.
-         * @param {String} userId
-         * @param {String} itemId
-         * @param {Boolean} wasPlayed
-         */
-        self.updatePlayedStatus = function (userId, itemId, wasPlayed) {
+        self.getDateParamValue = function (date) {
+
+            function formatDigit(i) {
+                return i < 10 ? "0" + i : i;
+            }
+
+            var d = date;
+
+            return "" + d.getFullYear() + formatDigit(d.getMonth() + 1) + formatDigit(d.getDate()) + formatDigit(d.getHours()) + formatDigit(d.getMinutes()) + formatDigit(d.getSeconds());
+        };
+
+        self.markPlayed = function (userId, itemId, date) {
+
+            if (!userId) {
+                throw new Error("null userId");
+            }
+
+            if (!itemId) {
+                throw new Error("null itemId");
+            }
+
+            var options = {};
+
+            if (date) {
+                options.DatePlayed = self.getDateParamValue(date);
+            }
+
+            var url = self.getUrl("Users/" + userId + "/PlayedItems/" + itemId, options);
+
+            return self.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+        self.markUnplayed = function (userId, itemId) {
 
             if (!userId) {
                 throw new Error("null userId");
@@ -2691,11 +2918,10 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             var url = self.getUrl("Users/" + userId + "/PlayedItems/" + itemId);
 
-            var method = wasPlayed ? "POST" : "DELETE";
-
             return self.ajax({
-                type: method,
-                url: url
+                type: "DELETE",
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2721,7 +2947,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2747,7 +2974,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2773,7 +3001,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2793,7 +3022,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2813,7 +3043,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2833,7 +3064,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2853,7 +3085,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2873,7 +3106,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: method,
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2899,7 +3133,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2919,7 +3154,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2939,7 +3175,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2959,7 +3196,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2979,7 +3217,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -2999,7 +3238,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3022,7 +3262,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3040,7 +3281,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3058,7 +3300,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3076,7 +3319,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3094,7 +3338,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3112,7 +3357,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3125,144 +3371,6 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var url = self.getUrl("Items/Counts", options);
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        /**
-            Gets a variety of item counts that a person appears in
-        */
-        self.getPersonItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("Persons/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        /**
-            Gets a variety of item counts that a genre appears in
-        */
-        self.getGenreItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("Genres/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        self.getMusicGenreItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("MusicGenres/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        self.getGameGenreItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("GameGenres/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        /**
-            Gets a variety of item counts that an artist appears in
-        */
-        self.getArtistItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("Artists/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
-
-            return self.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
-        };
-
-        /**
-            Gets a variety of item counts that a studio appears in
-        */
-        self.getStudioItemCounts = function (userId, name) {
-
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
-            if (!name) {
-                throw new Error("null name");
-            }
-
-            var url = self.getUrl("Studios/" + self.encodeName(name) + "/Counts", {
-                userId: userId
-            });
 
             return self.ajax({
                 type: "GET",
@@ -3290,7 +3398,8 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
             return self.ajax({
                 type: "DELETE",
-                url: url
+                url: url,
+                dataType: "json"
             });
         };
 
@@ -3299,7 +3408,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
          * @param {String} userId
          * @param {String} itemId
          */
-        self.reportPlaybackStart = function (userId, itemId) {
+        self.reportPlaybackStart = function (userId, itemId, canSeek, queueableMediaTypes) {
 
             if (!userId) {
                 throw new Error("null userId");
@@ -3309,17 +3418,25 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                 throw new Error("null itemId");
             }
 
+            canSeek = canSeek || false;
+            queueableMediaTypes = queueableMediaTypes || '';
+
             if (self.isWebSocketOpen()) {
 
                 var deferred = $.Deferred();
 
-                self.sendWebSocketMessage("PlaybackStart", itemId);
+                var msg = [itemId, canSeek, queueableMediaTypes];
+
+                self.sendWebSocketMessage("PlaybackStart", msg.join('|'));
 
                 deferred.resolveWith(null, []);
                 return deferred.promise();
             }
 
-            var url = self.getUrl("Users/" + userId + "/PlayingItems/" + itemId);
+            var url = self.getUrl("Users/" + userId + "/PlayingItems/" + itemId, {
+                CanSeek: canSeek,
+                QueueableMediaTypes: queueableMediaTypes
+            });
 
             return self.ajax({
                 type: "POST",
@@ -3332,7 +3449,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
          * @param {String} userId
          * @param {String} itemId
          */
-        self.reportPlaybackProgress = function (userId, itemId, positionTicks, isPaused) {
+        self.reportPlaybackProgress = function (userId, itemId, positionTicks, isPaused, isMuted) {
 
             if (!userId) {
                 throw new Error("null userId");
@@ -3346,13 +3463,17 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
 
                 var deferred = $.Deferred();
 
-                self.sendWebSocketMessage("PlaybackProgress", itemId + "|" + (positionTicks == null ? "" : positionTicks) + "|" + (isPaused == null ? "" : isPaused));
+                var msgData = itemId + "|" + (positionTicks == null ? "" : positionTicks) + "|" + (isPaused == null ? "" : isPaused) + "|" + (isMuted == null ? "" : isMuted);
+
+                self.sendWebSocketMessage("PlaybackProgress", msgData);
 
                 deferred.resolveWith(null, []);
                 return deferred.promise();
             }
 
             var params = {
+                isPaused: isPaused,
+                isMuted: isMuted
             };
 
             if (positionTicks) {
@@ -3393,6 +3514,7 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             }
 
             var params = {
+
             };
 
             if (positionTicks) {
@@ -3443,6 +3565,42 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
             });
         };
 
+        self.sendSystemCommand = function (sessionId, command) {
+
+            if (!sessionId) {
+                throw new Error("null sessionId");
+            }
+
+            if (!command) {
+                throw new Error("null command");
+            }
+
+            var url = self.getUrl("Sessions/" + sessionId + "/System/" + command);
+
+            return self.ajax({
+                type: "POST",
+                url: url
+            });
+        };
+
+        self.sendMessageCommand = function (sessionId, options) {
+
+            if (!sessionId) {
+                throw new Error("null sessionId");
+            }
+
+            if (!options) {
+                throw new Error("null options");
+            }
+
+            var url = self.getUrl("Sessions/" + sessionId + "/Message", options);
+
+            return self.ajax({
+                type: "POST",
+                url: url
+            });
+        };
+
         self.sendPlayStateCommand = function (sessionId, command, options) {
 
             if (!sessionId) {
@@ -3460,9 +3618,51 @@ MediaBrowser.ApiClient = function ($, navigator, JSON, WebSocket, setTimeout) {
                 url: url
             });
         };
-    }
 
-}(jQuery, navigator, window.JSON, window.WebSocket, setTimeout);
+        self.createPackageReview = function (review) {
+
+            var url = self.getUrl("PackageReviews/" + review.id, review);
+
+            return self.ajax({
+                type: "POST",
+                url: url,
+            });
+        };
+
+        self.getPackageReviews = function (packageId, minRating, maxRating, limit, forceTitle) {
+
+            if (!packageId) {
+                throw new Error("null packageId");
+            }
+
+            var options = {};
+
+            if (minRating) {
+                options.MinRating = minRating;
+            }
+            if (maxRating) {
+                options.MaxRating = maxRating;
+            }
+            if (limit) {
+                options.Limit = limit;
+            }
+            if (forceTitle) {
+                options.ForceTitle = true;
+            }
+
+            var url = self.getUrl("PackageReviews/" + packageId, options);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
+
+    };
+
+}(jQuery, navigator, window.JSON, window.WebSocket, setTimeout, window);
 
 /**
  * Provides a friendly way to create an api client instance using information from the browser's current url

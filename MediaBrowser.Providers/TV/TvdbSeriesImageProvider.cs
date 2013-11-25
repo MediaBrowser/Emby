@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -7,12 +7,13 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -28,6 +29,7 @@ namespace MediaBrowser.Providers.TV
         /// The _provider manager
         /// </summary>
         private readonly IProviderManager _providerManager;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TvdbSeriesImageProvider"/> class.
@@ -37,7 +39,7 @@ namespace MediaBrowser.Providers.TV
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="providerManager">The provider manager.</param>
         /// <exception cref="System.ArgumentNullException">httpClient</exception>
-        public TvdbSeriesImageProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager)
+        public TvdbSeriesImageProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             if (httpClient == null)
@@ -46,6 +48,7 @@ namespace MediaBrowser.Providers.TV
             }
             HttpClient = httpClient;
             _providerManager = providerManager;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace MediaBrowser.Providers.TV
                 return ItemUpdateType.ImageUpdate;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether [refresh on version change].
         /// </summary>
@@ -119,19 +122,28 @@ namespace MediaBrowser.Providers.TV
             if (!string.IsNullOrEmpty(seriesId))
             {
                 // Process images
-                var imagesXmlPath = Path.Combine(RemoteSeriesProvider.GetSeriesDataPath(ConfigurationManager.ApplicationPaths, seriesId), "banners.xml");
+                var imagesXmlPath = Path.Combine(TvdbSeriesProvider.GetSeriesDataPath(ConfigurationManager.ApplicationPaths, seriesId), "banners.xml");
 
                 var imagesFileInfo = new FileInfo(imagesXmlPath);
 
                 if (imagesFileInfo.Exists)
                 {
-                    return imagesFileInfo.LastWriteTimeUtc;
+                    return _fileSystem.GetLastWriteTimeUtc(imagesFileInfo);
                 }
             }
-            
+
             return base.CompareDate(item);
         }
 
+        protected override bool NeedsRefreshInternal(BaseItem item, BaseProviderInfo providerInfo)
+        {
+            if (item.HasImage(ImageType.Primary) && item.HasImage(ImageType.Banner) && item.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops)
+            {
+                return false;
+            }
+            return base.NeedsRefreshInternal(item, providerInfo);
+        }
+        
         /// <summary>
         /// Fetches metadata and returns true or false indicating if any work that requires persistence was done
         /// </summary>
@@ -143,107 +155,56 @@ namespace MediaBrowser.Providers.TV
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var series = (Series)item;
-            var seriesId = series.GetProviderId(MetadataProviders.Tvdb);
+            var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualTvdbSeriesImageProvider.ProviderName).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(seriesId))
-            {
-                // Process images
-                var imagesXmlPath = Path.Combine(RemoteSeriesProvider.GetSeriesDataPath(ConfigurationManager.ApplicationPaths, seriesId), "banners.xml");
+            const int backdropLimit = 1;
 
-                var imagesFileInfo = new FileInfo(imagesXmlPath);
+            await DownloadImages(item, images.ToList(), backdropLimit, cancellationToken).ConfigureAwait(false);
 
-                if (imagesFileInfo.Exists)
-                {
-                    if (!series.HasImage(ImageType.Primary) || !series.HasImage(ImageType.Banner) || series.BackdropImagePaths.Count == 0)
-                    {
-                        var xmlDoc = new XmlDocument();
-                        xmlDoc.Load(imagesXmlPath);
-
-                        await FetchImages(series, xmlDoc, cancellationToken).ConfigureAwait(false);
-                    }
-                }
-
-                BaseProviderInfo data;
-                if (!item.ProviderData.TryGetValue(Id, out data))
-                {
-                    data = new BaseProviderInfo();
-                    item.ProviderData[Id] = data;
-                }
-
-                SetLastRefreshed(item, DateTime.UtcNow);
-                return true;
-            }
-
-            return false;
+            SetLastRefreshed(item, DateTime.UtcNow);
+            return true;
         }
 
-        protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
-
-        /// <summary>
-        /// Fetches the images.
-        /// </summary>
-        /// <param name="series">The series.</param>
-        /// <param name="images">The images.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task FetchImages(Series series, XmlDocument images, CancellationToken cancellationToken)
+        private async Task DownloadImages(BaseItem item, List<RemoteImageInfo> images, int backdropLimit, CancellationToken cancellationToken)
         {
-            if (!series.HasImage(ImageType.Primary))
+            if (!item.HasImage(ImageType.Primary))
             {
-                var n = images.SelectSingleNode("//Banner[BannerType='poster']");
-                if (n != null)
-                {
-                    n = n.SelectSingleNode("./BannerPath");
-                    if (n != null)
-                    {
-                        var url = TVUtils.BannerUrl + n.InnerText;
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Primary);
 
-                        await _providerManager.SaveImage(series, url, RemoteSeriesProvider.Current.TvDbResourcePool, ImageType.Primary, null, cancellationToken)
-                          .ConfigureAwait(false);
-                    }
+                if (image != null)
+                {
+                    await _providerManager.SaveImage(item, image.Url, TvdbSeriesProvider.Current.TvDbResourcePool, ImageType.Primary, null, cancellationToken)
+                      .ConfigureAwait(false);
                 }
             }
 
-            if (ConfigurationManager.Configuration.DownloadSeriesImages.Banner && !series.HasImage(ImageType.Banner))
+            if (ConfigurationManager.Configuration.DownloadSeriesImages.Banner && !item.HasImage(ImageType.Banner))
             {
-                var n = images.SelectSingleNode("//Banner[BannerType='series']");
-                if (n != null)
-                {
-                    n = n.SelectSingleNode("./BannerPath");
-                    if (n != null)
-                    {
-                        var url = TVUtils.BannerUrl + n.InnerText;
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Banner);
 
-                        await _providerManager.SaveImage(series, url, RemoteSeriesProvider.Current.TvDbResourcePool, ImageType.Banner, null, cancellationToken)
-                          .ConfigureAwait(false);
-                    }
+                if (image != null)
+                {
+                    await _providerManager.SaveImage(item, image.Url, TvdbSeriesProvider.Current.TvDbResourcePool, ImageType.Banner, null, cancellationToken)
+                      .ConfigureAwait(false);
                 }
             }
 
-            if (series.BackdropImagePaths.Count == 0)
+            if (ConfigurationManager.Configuration.DownloadSeriesImages.Backdrops && item.BackdropImagePaths.Count < backdropLimit)
             {
-                var bdNo = series.BackdropImagePaths.Count;
-
-                var xmlNodeList = images.SelectNodes("//Banner[BannerType='fanart']");
-                if (xmlNodeList != null)
+                foreach (var backdrop in images.Where(i => i.Type == ImageType.Backdrop && 
+                    (!i.Width.HasValue || 
+                    i.Width.Value >= ConfigurationManager.Configuration.MinSeriesBackdropDownloadWidth)))
                 {
-                    foreach (XmlNode b in xmlNodeList)
+                    var url = backdrop.Url;
+
+                    if (item.ContainsImageWithSourceUrl(url))
                     {
-                        var p = b.SelectSingleNode("./BannerPath");
-
-                        if (p != null)
-                        {
-                            var url = TVUtils.BannerUrl + p.InnerText;
-
-                            await _providerManager.SaveImage(series, url, RemoteSeriesProvider.Current.TvDbResourcePool, ImageType.Backdrop, bdNo, cancellationToken)
-                              .ConfigureAwait(false);
-                            
-                            bdNo++;
-                        }
-
-                        if (series.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops) break;
+                        continue;
                     }
+
+                    await _providerManager.SaveImage(item, url, TvdbSeriesProvider.Current.TvDbResourcePool, ImageType.Backdrop, null, cancellationToken).ConfigureAwait(false);
+
+                    if (item.BackdropImagePaths.Count >= backdropLimit) break;
                 }
             }
         }

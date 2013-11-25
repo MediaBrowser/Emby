@@ -36,6 +36,18 @@
     border: 0;
 }
 
+.posterItemStoreText {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: none;
+    white-space: nowrap;
+    text-shadow: none;
+    padding-left: 2px;
+}
+
+
 .posterItemText {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -70,6 +82,24 @@
     .squarePosterItem .posterItemImage {
         height: 150px;
     }
+
+.storeItem {
+    display: inline-block;
+    margin: 0 15px 15px 0;
+}
+
+.storeItem, .storePosterItem {
+    width: 160px;
+}
+
+    .storePosterItem .posterItemImage {
+        height: 90px;
+    }
+
+.storeReviewCount {
+    display: none;
+}
+
 
 .backdropPosterItem {
     width: 160px;
@@ -122,6 +152,14 @@
         .backdropPosterItem .posterItemImage {
             height: 108px;
         }
+
+    .storeItem, .storePosterItem {
+        width: 192px;
+    }
+
+        .storePosterItem .posterItemImage {
+            height: 110px;
+        }
 }
 
 @media all and (min-width: 750px) {
@@ -164,6 +202,22 @@
         .smallBackdropPosterItem .posterItemImage {
             height: 105px;
         }
+
+    .storeItem, .storePosterItem {
+        width: 270px;
+    }
+
+        .storePosterItem .posterItemImage {
+            height: 154px;
+        }
+
+    .posterItemStoreText {
+        font-size: 15px;
+    }
+
+    .storeReviewCount {
+        display: inline;
+    }
 }
 
 @media all and (min-width: 1440px) {

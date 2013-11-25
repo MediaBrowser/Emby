@@ -3,13 +3,12 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Model.Dto;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using ServiceStack.ServiceHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Api
 {
@@ -18,7 +17,7 @@ namespace MediaBrowser.Api
     /// </summary>
     [Route("/Shows/NextUp", "GET")]
     [Api(("Gets a list of currently installed plugins"))]
-    public class GetNextUpEpisodes : IReturn<ItemsResult>
+    public class GetNextUpEpisodes : IReturn<ItemsResult>, IHasItemFields
     {
         /// <summary>
         /// Gets or sets the user id.
@@ -45,40 +44,45 @@ namespace MediaBrowser.Api
         /// Fields to return within the items, in addition to basic information
         /// </summary>
         /// <value>The fields.</value>
-        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, ItemCounts, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Fields { get; set; }
 
-        /// <summary>
-        /// Gets the item fields.
-        /// </summary>
-        /// <returns>IEnumerable{ItemFields}.</returns>
-        public IEnumerable<ItemFields> GetItemFields()
-        {
-            var val = Fields;
-
-            if (string.IsNullOrEmpty(val))
-            {
-                return new ItemFields[] { };
-            }
-
-            return val.Split(',').Select(v =>
-            {
-                ItemFields value;
-
-                if (Enum.TryParse(v, true, out value))
-                {
-                    return (ItemFields?)value;
-                }
-                return null;
-
-            }).Where(i => i.HasValue).Select(i => i.Value);
-        }
+        [ApiMember(Name = "SeriesId", Description = "Optional. Filter by series id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string SeriesId { get; set; }
     }
 
     [Route("/Shows/{Id}/Similar", "GET")]
     [Api(Description = "Finds tv shows similar to a given one.")]
     public class GetSimilarShows : BaseGetSimilarItemsFromItem
     {
+    }
+
+    [Route("/Shows/{Id}/Episodes", "GET")]
+    [Api(Description = "Finds tv shows similar to a given one.")]
+    public class GetEpisodes : IReturn<ItemsResult>, IHasItemFields
+    {
+        /// <summary>
+        /// Gets or sets the user id.
+        /// </summary>
+        /// <value>The user id.</value>
+        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public Guid UserId { get; set; }
+
+        /// <summary>
+        /// Fields to return within the items, in addition to basic information
+        /// </summary>
+        /// <value>The fields.</value>
+        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string Fields { get; set; }
+
+        [ApiMember(Name = "Id", Description = "The series id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public Guid Id { get; set; }
+
+        [ApiMember(Name = "Season", Description = "Optional filter by season number.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public int? Season { get; set; }
+
+        [ApiMember(Name = "ExcludeLocationTypes", Description = "Optional. If specified, results will be filtered based on LocationType. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string ExcludeLocationTypes { get; set; }
     }
 
     /// <summary>
@@ -94,26 +98,28 @@ namespace MediaBrowser.Api
         /// <summary>
         /// The _user data repository
         /// </summary>
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IUserDataManager _userDataManager;
         /// <summary>
         /// The _library manager
         /// </summary>
         private readonly ILibraryManager _libraryManager;
 
         private readonly IItemRepository _itemRepo;
-        
+        private readonly IDtoService _dtoService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TvShowsService" /> class.
         /// </summary>
         /// <param name="userManager">The user manager.</param>
-        /// <param name="userDataRepository">The user data repository.</param>
+        /// <param name="userDataManager">The user data repository.</param>
         /// <param name="libraryManager">The library manager.</param>
-        public TvShowsService(IUserManager userManager, IUserDataRepository userDataRepository, ILibraryManager libraryManager, IItemRepository itemRepo)
+        public TvShowsService(IUserManager userManager, IUserDataManager userDataManager, ILibraryManager libraryManager, IItemRepository itemRepo, IDtoService dtoService)
         {
             _userManager = userManager;
-            _userDataRepository = userDataRepository;
+            _userDataManager = userDataManager;
             _libraryManager = libraryManager;
             _itemRepo = itemRepo;
+            _dtoService = dtoService;
         }
 
         /// <summary>
@@ -126,7 +132,8 @@ namespace MediaBrowser.Api
             var result = SimilarItemsHelper.GetSimilarItemsResult(_userManager,
                 _itemRepo,
                 _libraryManager,
-                _userDataRepository,
+                _userDataManager,
+                _dtoService,
                 Logger,
                 request, item => item is Series,
                 SimilarItemsHelper.GetSimiliarityScore);
@@ -141,7 +148,7 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public object Get(GetNextUpEpisodes request)
         {
-            var result = GetNextUpEpisodes(request).Result;
+            var result = GetNextUpEpisodeItemsResult(request);
 
             return ToOptimizedResult(result);
         }
@@ -151,23 +158,52 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task{ItemsResult}.</returns>
-        private async Task<ItemsResult> GetNextUpEpisodes(GetNextUpEpisodes request)
+        private ItemsResult GetNextUpEpisodeItemsResult(GetNextUpEpisodes request)
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var itemsArray = user.RootFolder
-                .GetRecursiveChildren(user)
-                .OfType<Series>()
-                .AsParallel()
-                .Select(i => GetNextUp(i, user))
-                .ToArray();
+            var itemsList = GetNextUpEpisodes(request)
+                .ToList();
 
-            itemsArray = itemsArray
-                .Where(i => i.Item1 != null)
+            var pagedItems = ApplyPaging(request, itemsList);
+
+            var fields = request.GetItemFields().ToList();
+
+            var returnItems = pagedItems.Select(i => _dtoService.GetBaseItemDto(i, fields, user)).ToArray();
+
+            return new ItemsResult
+            {
+                TotalRecordCount = itemsList.Count,
+                Items = returnItems
+            };
+        }
+
+        public IEnumerable<Episode> GetNextUpEpisodes(GetNextUpEpisodes request)
+        {
+            var user = _userManager.GetUserById(request.UserId);
+
+            var items = user.RootFolder
+                .GetRecursiveChildren(user)
+                .OfType<Series>();
+
+            // Avoid implicitly captured closure
+            return GetNextUpEpisodes(request, items);
+        }
+
+        public IEnumerable<Episode> GetNextUpEpisodes(GetNextUpEpisodes request, IEnumerable<Series> series)
+        {
+            var user = _userManager.GetUserById(request.UserId);
+
+            // Avoid implicitly captured closure
+            var currentUser = user;
+
+            return FilterSeries(request, series)
+                .AsParallel()
+                .Select(i => GetNextUp(i, currentUser, request).Item1)
+                .Where(i => i != null)
                 .OrderByDescending(i =>
                 {
-                    var seriesUserData =
-                        _userDataRepository.GetUserData(user.Id, i.Item1.Series.GetUserDataKey());
+                    var seriesUserData = _userDataManager.GetUserData(user.Id, i.Series.GetUserDataKey());
 
                     if (seriesUserData.IsFavorite)
                     {
@@ -181,20 +217,7 @@ namespace MediaBrowser.Api
 
                     return 0;
                 })
-                .ThenByDescending(i => i.Item1.PremiereDate ?? DateTime.MinValue)
-                .ToArray();
-
-            var pagedItems = ApplyPaging(request, itemsArray.Select(i => i.Item1));
-
-            var fields = request.GetItemFields().ToList();
-
-            var returnItems = await GetItemDtos(pagedItems, user, fields).ConfigureAwait(false);
-
-            return new ItemsResult
-            {
-                TotalRecordCount = itemsArray.Length,
-                Items = returnItems
-            };
+                .ThenByDescending(i => i.PremiereDate ?? DateTime.MinValue);
         }
 
         /// <summary>
@@ -202,14 +225,17 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="series">The series.</param>
         /// <param name="user">The user.</param>
+        /// <param name="request">The request.</param>
         /// <returns>Task{Episode}.</returns>
-        private Tuple<Episode, DateTime> GetNextUp(Series series, User user)
+        private Tuple<Episode, DateTime> GetNextUp(Series series, User user, GetNextUpEpisodes request)
         {
             var allEpisodes = series.GetRecursiveChildren(user)
                 .OfType<Episode>()
                 .OrderByDescending(i => i.PremiereDate ?? DateTime.MinValue)
                 .ThenByDescending(i => i.IndexNumber ?? 0)
                 .ToList();
+
+            allEpisodes = FilterItems(request, allEpisodes).ToList();
 
             Episode lastWatched = null;
             var lastWatchedDate = DateTime.MinValue;
@@ -218,7 +244,7 @@ namespace MediaBrowser.Api
             // Go back starting with the most recent episodes
             foreach (var episode in allEpisodes)
             {
-                var userData = _userDataRepository.GetUserData(user.Id, episode.GetUserDataKey());
+                var userData = _userDataManager.GetUserData(user.Id, episode.GetUserDataKey());
 
                 if (userData.Played)
                 {
@@ -244,18 +270,25 @@ namespace MediaBrowser.Api
             return new Tuple<Episode, DateTime>(null, lastWatchedDate);
         }
 
-        /// <summary>
-        /// Gets the item dtos.
-        /// </summary>
-        /// <param name="pagedItems">The paged items.</param>
-        /// <param name="user">The user.</param>
-        /// <param name="fields">The fields.</param>
-        /// <returns>Task.</returns>
-        private Task<BaseItemDto[]> GetItemDtos(IEnumerable<BaseItem> pagedItems, User user, List<ItemFields> fields)
-        {
-            var dtoBuilder = new DtoBuilder(Logger, _libraryManager, _userDataRepository, _itemRepo);
 
-            return Task.WhenAll(pagedItems.Select(i => dtoBuilder.GetBaseItemDto(i, fields, user)));
+        private IEnumerable<Episode> FilterItems(GetNextUpEpisodes request, IEnumerable<Episode> items)
+        {
+            // Make this configurable when needed
+            items = items.Where(i => i.LocationType != LocationType.Virtual);
+
+            return items;
+        }
+
+        private IEnumerable<Series> FilterSeries(GetNextUpEpisodes request, IEnumerable<Series> items)
+        {
+            if (!string.IsNullOrWhiteSpace(request.SeriesId))
+            {
+                var id = new Guid(request.SeriesId);
+
+                items = items.Where(i => i.Id == id);
+            }
+
+            return items;
         }
 
         /// <summary>
@@ -279,6 +312,89 @@ namespace MediaBrowser.Api
             }
 
             return items;
+        }
+
+        public object Get(GetEpisodes request)
+        {
+            var user = _userManager.GetUserById(request.UserId);
+
+            var series = _libraryManager.GetItemById(request.Id) as Series;
+
+            var fields = request.GetItemFields().ToList();
+
+            var episodes = series.GetRecursiveChildren(user)
+                .OfType<Episode>();
+
+            var sortOrder = ItemSortBy.SortName;
+
+            if (request.Season.HasValue)
+            {
+                episodes = FilterEpisodesBySeason(episodes, request.Season.Value, true);
+
+                sortOrder = ItemSortBy.AiredEpisodeOrder;
+            }
+
+            var config = user.Configuration;
+
+            if (!config.DisplayMissingEpisodes)
+            {
+                episodes = episodes.Where(i => !i.IsMissingEpisode);
+            }
+            if (!config.DisplayUnairedEpisodes)
+            {
+                episodes = episodes.Where(i => !i.IsVirtualUnaired);
+            }
+
+            // ExcludeLocationTypes
+            if (!string.IsNullOrEmpty(request.ExcludeLocationTypes))
+            {
+                var vals = request.ExcludeLocationTypes.Split(',');
+                episodes = episodes.Where(f => !vals.Contains(f.LocationType.ToString(), StringComparer.OrdinalIgnoreCase));
+            }
+            
+            episodes = _libraryManager.Sort(episodes, user, new[] { sortOrder }, SortOrder.Ascending)
+                .Cast<Episode>();
+
+            var returnItems = episodes.Select(i => _dtoService.GetBaseItemDto(i, fields, user))
+                .ToArray();
+
+            return new ItemsResult
+            {
+                TotalRecordCount = returnItems.Length,
+                Items = returnItems
+            };
+        }
+
+        internal static IEnumerable<Episode> FilterEpisodesBySeason(IEnumerable<Episode> episodes, int seasonNumber, bool includeSpecials)
+        {
+            if (!includeSpecials || seasonNumber < 1)
+            {
+                return episodes.Where(i => (i.PhysicalSeasonNumber ?? -1) == seasonNumber);
+            }
+
+            var episodeList = episodes.ToList();
+
+            // We can only enforce the air date requirement if the episodes have air dates
+            var enforceAirDate = episodeList.Any(i => i.PremiereDate.HasValue);
+
+            return episodeList.Where(i =>
+            {
+                var episode = i;
+
+                if (episode != null)
+                {
+                    if (enforceAirDate && !episode.PremiereDate.HasValue)
+                    {
+                        return false;
+                    }
+
+                    var currentSeasonNumber = episode.AiredSeasonNumber;
+
+                    return currentSeasonNumber.HasValue && currentSeasonNumber.Value == seasonNumber;
+                }
+
+                return false;
+            });
         }
     }
 }

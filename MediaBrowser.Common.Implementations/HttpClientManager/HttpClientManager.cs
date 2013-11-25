@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -33,17 +31,23 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         /// </summary>
         private readonly IApplicationPaths _appPaths;
 
+        public delegate HttpClient GetHttpClientHandler(bool enableHttpCompression);
+
+        private readonly GetHttpClientHandler _getHttpClientHandler;
+        private readonly IFileSystem _fileSystem;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpClientManager" /> class.
+        /// Initializes a new instance of the <see cref="HttpClientManager"/> class.
         /// </summary>
-        /// <param name="appPaths">The kernel.</param>
+        /// <param name="appPaths">The app paths.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="getHttpClientHandler">The get HTTP client handler.</param>
         /// <exception cref="System.ArgumentNullException">
         /// appPaths
         /// or
         /// logger
         /// </exception>
-        public HttpClientManager(IApplicationPaths appPaths, ILogger logger)
+        public HttpClientManager(IApplicationPaths appPaths, ILogger logger, GetHttpClientHandler getHttpClientHandler, IFileSystem fileSystem)
         {
             if (appPaths == null)
             {
@@ -55,6 +59,8 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             }
 
             _logger = logger;
+            _getHttpClientHandler = getHttpClientHandler;
+            _fileSystem = fileSystem;
             _appPaths = appPaths;
         }
 
@@ -85,18 +91,10 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
 
             if (!_httpClients.TryGetValue(key, out client))
             {
-                var handler = new WebRequestHandler
-                {
-                    CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate),
-                    AutomaticDecompression = enableHttpCompression ? DecompressionMethods.Deflate : DecompressionMethods.None
-                };
-
                 client = new HttpClientInfo
                 {
-                    HttpClient = new HttpClient(handler)
-                    {
-                        Timeout = TimeSpan.FromSeconds(20)
-                    }
+
+                    HttpClient = _getHttpClientHandler(enableHttpCompression)
                 };
                 _httpClients.TryAdd(key, client);
             }
@@ -223,10 +221,10 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                     {
                         options.ResourcePool.Release();
                     }
-                    
+
                     throw new HttpException(string.Format("Connection to {0} timed out", options.Url)) { IsTimedOut = true };
                 }
-                
+
                 _logger.Info("HttpClientManager.Get url: {0}", options.Url);
 
                 try
@@ -421,7 +419,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                             // We're not able to track progress
                             using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                             {
-                                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                                using (var fs = _fileSystem.GetFileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                                 {
                                     await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
                                 }
@@ -431,7 +429,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                         {
                             using (var stream = ProgressStream.CreateReadProgressStream(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), options.Progress.Report, contentLength.Value))
                             {
-                                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                                using (var fs = _fileSystem.GetFileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                                 {
                                     await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
                                 }
@@ -473,14 +471,12 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         {
             var message = new HttpRequestMessage(HttpMethod.Get, options.Url);
 
-            if (!string.IsNullOrEmpty(options.UserAgent))
+            foreach (var pair in options.RequestHeaders.ToList())
             {
-                message.Headers.Add("User-Agent", options.UserAgent);
-            }
-
-            if (!string.IsNullOrEmpty(options.AcceptHeader))
-            {
-                message.Headers.Add("Accept", options.AcceptHeader);
+                if (!message.Headers.TryAddWithoutValidation(pair.Key, pair.Value))
+                {
+                    _logger.Error("Unable to add request header {0} with value {1}", pair.Key, pair.Value);
+                }
             }
 
             return message;
@@ -493,9 +489,31 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         /// <returns>System.Nullable{System.Int64}.</returns>
         private long? GetContentLength(HttpResponseMessage response)
         {
-            IEnumerable<string> lengthValues;
+            IEnumerable<string> lengthValues = null;
 
-            if (!response.Headers.TryGetValues("content-length", out lengthValues) && !response.Content.Headers.TryGetValues("content-length", out lengthValues))
+            // Seeing some InvalidOperationException here under mono
+            try
+            {
+                response.Headers.TryGetValues("content-length", out lengthValues);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.ErrorException("Error accessing response.Headers.TryGetValues Content-Length", ex);
+            }
+
+            if (lengthValues == null)
+            {
+                try
+                {
+                    response.Content.Headers.TryGetValues("content-length", out lengthValues);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    _logger.ErrorException("Error accessing response.Content.Headers.TryGetValues Content-Length", ex);
+                }
+            }
+
+            if (lengthValues == null)
             {
                 return null;
             }
@@ -520,10 +538,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             if (operationCanceledException != null)
             {
                 // Cleanup
-                if (File.Exists(tempFile))
-                {
-                    File.Delete(tempFile);
-                }
+                DeleteTempFile(tempFile);
 
                 return GetCancellationException(options.Url, options.CancellationToken, operationCanceledException);
             }
@@ -533,10 +548,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             var httpRequestException = ex as HttpRequestException;
 
             // Cleanup
-            if (File.Exists(tempFile))
-            {
-                File.Delete(tempFile);
-            }
+            DeleteTempFile(tempFile);
 
             if (httpRequestException != null)
             {
@@ -544,6 +556,18 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             }
 
             return ex;
+        }
+
+        private void DeleteTempFile(string file)
+        {
+            try
+            {
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+                // Might not have been created at all. No need to worry.
+            }
         }
 
         /// <summary>
@@ -557,11 +581,6 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             if (string.IsNullOrEmpty(url))
             {
                 throw new ArgumentNullException("url");
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
             }
         }
 

@@ -25,6 +25,12 @@ namespace MediaBrowser.Common
         bool HasPendingRestart { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance can self restart.
+        /// </summary>
+        /// <value><c>true</c> if this instance can self restart; otherwise, <c>false</c>.</value>
+        bool CanSelfRestart { get; }
+
+        /// <summary>
         /// Occurs when [has pending restart changed].
         /// </summary>
         event EventHandler HasPendingRestartChanged;
@@ -37,7 +43,7 @@ namespace MediaBrowser.Common
         /// <summary>
         /// Restarts this instance.
         /// </summary>
-        void Restart();
+        Task Restart();
 
         /// <summary>
         /// Gets the application version.
@@ -90,13 +96,6 @@ namespace MediaBrowser.Common
         Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken, IProgress<double> progress);
 
         /// <summary>
-        /// Creates an instance of type and resolves all constructor dependancies
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>System.Object.</returns>
-        object CreateInstance(Type type);
-
-        /// <summary>
         /// Resolves this instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -113,7 +112,7 @@ namespace MediaBrowser.Common
         /// <summary>
         /// Shuts down.
         /// </summary>
-        void Shutdown();
+        Task Shutdown();
 
         /// <summary>
         /// Gets the plugins.
@@ -132,5 +131,12 @@ namespace MediaBrowser.Common
         /// </summary>
         /// <returns>Task.</returns>
         Task Init();
+
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>System.Object.</returns>
+        object CreateInstance(Type type);
     }
 }

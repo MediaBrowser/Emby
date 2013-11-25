@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.MediaInfo;
+﻿using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -108,34 +109,43 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!audio.LockedFields.Contains(MetadataFields.Cast))
             {
+                audio.People.Clear();
+
                 var composer = GetDictionaryValue(tags, "composer");
 
                 if (!string.IsNullOrWhiteSpace(composer))
                 {
                     foreach (var person in Split(composer))
                     {
-                        var name = person.Trim();
-
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            audio.AddPerson(new PersonInfo { Name = name, Type = PersonType.Composer });
-                        }
+                        audio.AddPerson(new PersonInfo { Name = person, Type = PersonType.Composer });
                     }
                 }
             }
 
             audio.Album = GetDictionaryValue(tags, "album");
 
-            audio.Artist = GetDictionaryValue(tags, "artist");
+            var artist = GetDictionaryValue(tags, "artist");
+
+            if (string.IsNullOrWhiteSpace(artist))
+            {
+                audio.Artists.Clear();
+            }
+            else
+            {
+                audio.Artists = SplitArtists(artist)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+            }
 
             // Several different forms of albumartist
             audio.AlbumArtist = GetDictionaryValue(tags, "albumartist") ?? GetDictionaryValue(tags, "album artist") ?? GetDictionaryValue(tags, "album_artist");
 
             // Track number
-            audio.IndexNumber = GetDictionaryNumericValue(tags, "track");
+            audio.IndexNumber = GetDictionaryDiscValue(tags, "track");
 
             // Disc number
-            audio.ParentIndexNumber = GetDictionaryDiscValue(tags);
+            audio.ParentIndexNumber = GetDictionaryDiscValue(tags, "disc");
 
             audio.Language = GetDictionaryValue(tags, "language");
 
@@ -157,12 +167,16 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!audio.LockedFields.Contains(MetadataFields.Studios))
             {
+                audio.Studios.Clear();
+
                 // There's several values in tags may or may not be present
                 FetchStudios(audio, tags, "organization");
                 FetchStudios(audio, tags, "ensemble");
                 FetchStudios(audio, tags, "publisher");
             }
         }
+
+        private readonly char[] _nameDelimiters = new[] { '/', '|', ';', '\\' };
 
         /// <summary>
         /// Splits the specified val.
@@ -173,9 +187,27 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             // Only use the comma as a delimeter if there are no slashes or pipes. 
             // We want to be careful not to split names that have commas in them
-            var delimeter = val.IndexOf('/') == -1 && val.IndexOf('|') == -1 ? new[] { ',' } : new[] { '/', '|' };
+            var delimeter = _nameDelimiters.Any(i => val.IndexOf(i) != -1) ? _nameDelimiters : new[] { ',' };
 
-            return val.Split(delimeter, StringSplitOptions.RemoveEmptyEntries);
+            return val.Split(delimeter, StringSplitOptions.RemoveEmptyEntries)
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Select(i => i.Trim());
+        }
+
+        private const string ArtistReplaceValue = " | ";
+
+        private IEnumerable<string> SplitArtists(string val)
+        {
+            val = val.Replace(" featuring ", ArtistReplaceValue, StringComparison.OrdinalIgnoreCase)
+                .Replace(" feat. ", ArtistReplaceValue, StringComparison.OrdinalIgnoreCase);
+
+            // Only use the comma as a delimeter if there are no slashes or pipes. 
+            // We want to be careful not to split names that have commas in them
+            var delimeter = _nameDelimiters;
+
+            return val.Split(delimeter, StringSplitOptions.RemoveEmptyEntries)
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Select(i => i.Trim());
         }
 
         /// <summary>
@@ -191,17 +223,11 @@ namespace MediaBrowser.Providers.MediaInfo
             if (!string.IsNullOrEmpty(val))
             {
                 // Sometimes the artist name is listed here, account for that
-                var studios =
-                    val.Split(new[] { '/', '|' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(i => !string.IsNullOrWhiteSpace(i))
-                    .Where(i => !string.Equals(i, audio.Artist, StringComparison.OrdinalIgnoreCase) && !string.Equals(i, audio.AlbumArtist, StringComparison.OrdinalIgnoreCase));
-
-                audio.Studios.Clear();
+                var studios = Split(val).Where(i => !audio.HasArtist(i));
 
                 foreach (var studio in studios)
                 {
-                    // Account for sloppy tags by trimming
-                    audio.AddStudio(studio.Trim());
+                    audio.AddStudio(studio);
                 }
             }
         }
@@ -219,12 +245,9 @@ namespace MediaBrowser.Providers.MediaInfo
             {
                 audio.Genres.Clear();
 
-                foreach (var genre in val
-                    .Split(new[] { '/', '|' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(i => !string.IsNullOrWhiteSpace(i)))
+                foreach (var genre in Split(val))
                 {
-                    // Account for sloppy tags by trimming
-                    audio.AddGenre(genre.Trim());
+                    audio.AddGenre(genre);
                 }
             }
         }
@@ -233,10 +256,11 @@ namespace MediaBrowser.Providers.MediaInfo
         /// Gets the disc number, which is sometimes can be in the form of '1', or '1/3'
         /// </summary>
         /// <param name="tags">The tags.</param>
+        /// <param name="tagName">Name of the tag.</param>
         /// <returns>System.Nullable{System.Int32}.</returns>
-        private int? GetDictionaryDiscValue(Dictionary<string, string> tags)
+        private int? GetDictionaryDiscValue(Dictionary<string, string> tags, string tagName)
         {
-            var disc = GetDictionaryValue(tags, "disc");
+            var disc = GetDictionaryValue(tags, tagName);
 
             if (!string.IsNullOrEmpty(disc))
             {

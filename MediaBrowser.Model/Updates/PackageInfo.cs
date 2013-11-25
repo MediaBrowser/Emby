@@ -9,6 +9,12 @@ namespace MediaBrowser.Model.Updates
     public class PackageInfo
     {
         /// <summary>
+        /// The internal id of this package.
+        /// </summary>
+        /// <value>The id.</value>
+        public int id { get; set; }
+
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
@@ -103,6 +109,25 @@ namespace MediaBrowser.Model.Updates
         /// </summary>
         /// <value>The target system.</value>
         public PackageTargetSystem targetSystem { get; set; }
+
+        /// <summary>
+        /// The guid of the assembly associated with this package (if a plug-in).
+        /// This is used to identify the proper item for automatic updates.
+        /// </summary>
+        /// <value>The name.</value>
+        public string guid { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total number of ratings for this package.
+        /// </summary>
+        /// <value>The total ratings.</value>
+        public int totalRatings { get; set; }
+
+        /// <summary>
+        /// Gets or sets the average rating for this package .
+        /// </summary>
+        /// <value>The rating.</value>
+        public float avgRating { get; set; }
 
         /// <summary>
         /// Gets or sets whether or not this package is registered.

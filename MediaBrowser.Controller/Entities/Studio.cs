@@ -1,4 +1,8 @@
-﻿
+﻿using System.Runtime.Serialization;
+using MediaBrowser.Model.Dto;
+using System;
+using System.Collections.Generic;
+
 namespace MediaBrowser.Controller.Entities
 {
     /// <summary>
@@ -6,6 +10,11 @@ namespace MediaBrowser.Controller.Entities
     /// </summary>
     public class Studio : BaseItem, IItemByName
     {
+        public Studio()
+        {
+            UserItemCounts = new Dictionary<Guid, ItemByNameCounts>();
+        }
+
         /// <summary>
         /// Gets the user data key.
         /// </summary>
@@ -14,5 +23,8 @@ namespace MediaBrowser.Controller.Entities
         {
             return "Studio-" + Name;
         }
+
+        [IgnoreDataMember]
+        public Dictionary<Guid, ItemByNameCounts> UserItemCounts { get; set; }
     }
 }

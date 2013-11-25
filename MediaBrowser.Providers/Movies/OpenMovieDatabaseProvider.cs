@@ -2,12 +2,14 @@
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +46,7 @@ namespace MediaBrowser.Providers.Movies
         {
             get
             {
-                return "6";
+                return "13";
             }
         }
 
@@ -72,17 +74,6 @@ namespace MediaBrowser.Providers.Movies
             }
         }
 
-        protected override bool NeedsRefreshInternal(BaseItem item, BaseProviderInfo providerInfo)
-        {
-            // These values are now saved in movie.xml, so don't refresh if they're present
-            if (MovieDbProvider.HasAltMeta(item) && item.CriticRating.HasValue && !string.IsNullOrEmpty(item.CriticRatingSummary))
-            {
-                return false;
-            }
-
-            return base.NeedsRefreshInternal(item, providerInfo);
-        }
-
         /// <summary>
         /// Supports the specified item.
         /// </summary>
@@ -98,7 +89,7 @@ namespace MediaBrowser.Providers.Movies
                 return !trailer.IsLocalTrailer;
             }
 
-            return item is Movie || item is MusicVideo;
+            return item is Movie || item is MusicVideo || item is Series;
         }
 
         /// <summary>
@@ -115,7 +106,7 @@ namespace MediaBrowser.Providers.Movies
         }
 
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
-        
+
         public override async Task<bool> FetchAsync(BaseItem item, bool force, CancellationToken cancellationToken)
         {
             BaseProviderInfo data;
@@ -148,19 +139,32 @@ namespace MediaBrowser.Providers.Movies
             {
                 var result = JsonSerializer.DeserializeFromStream<RootObject>(stream);
 
-                int tomatoMeter;
-
-                if (!string.IsNullOrEmpty(result.tomatoMeter)
-                    && int.TryParse(result.tomatoMeter, NumberStyles.Integer, UsCulture, out tomatoMeter)
-                    && tomatoMeter >= 0)
+                var hasCriticRating = item as IHasCriticRating;
+                if (hasCriticRating != null)
                 {
-                    item.CriticRating = tomatoMeter;
+                    // Seeing some bogus RT data on omdb for series, so filter it out here
+                    // RT doesn't even have tv series
+                    int tomatoMeter;
+
+                    if (!string.IsNullOrEmpty(result.tomatoMeter)
+                        && int.TryParse(result.tomatoMeter, NumberStyles.Integer, UsCulture, out tomatoMeter)
+                        && tomatoMeter >= 0)
+                    {
+                        hasCriticRating.CriticRating = tomatoMeter;
+                    }
+
+                    if (!string.IsNullOrEmpty(result.tomatoConsensus)
+                        && !string.Equals(result.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
+                        && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasCriticRating.CriticRatingSummary = result.tomatoConsensus;
+                    }
                 }
 
                 int voteCount;
 
                 if (!string.IsNullOrEmpty(result.imdbVotes)
-                    && int.TryParse(result.imdbVotes, NumberStyles.Integer, UsCulture, out voteCount)
+                    && int.TryParse(result.imdbVotes, NumberStyles.Number, UsCulture, out voteCount)
                     && voteCount >= 0)
                 {
                     item.VoteCount = voteCount;
@@ -169,26 +173,52 @@ namespace MediaBrowser.Providers.Movies
                 float imdbRating;
 
                 if (!string.IsNullOrEmpty(result.imdbRating)
-                    && float.TryParse(result.imdbRating, NumberStyles.Number, UsCulture, out imdbRating)
+                    && float.TryParse(result.imdbRating, NumberStyles.Any, UsCulture, out imdbRating)
                     && imdbRating >= 0)
                 {
                     item.CommunityRating = imdbRating;
                 }
-                
-                if (!string.IsNullOrEmpty(result.tomatoConsensus)
-                    && !string.Equals(result.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
-                    && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.CriticRatingSummary = result.tomatoConsensus;
-                }
+
+                ParseAdditionalMetadata(item, result);
             }
-            
+
             data.LastRefreshStatus = ProviderRefreshStatus.Success;
             SetLastRefreshed(item, DateTime.UtcNow);
 
             return true;
         }
 
+        private void ParseAdditionalMetadata(BaseItem item, RootObject result)
+        {
+            // Grab series genres because imdb data is better than tvdb. Leave movies alone
+            // But only do it if english is the preferred language because this data will not be localized
+            if (!item.LockedFields.Contains(MetadataFields.Genres) &&
+                ShouldFetchGenres(item) &&
+                !string.IsNullOrWhiteSpace(result.Genre) &&
+                !string.Equals(result.Genre, "n/a", StringComparison.OrdinalIgnoreCase))
+            {
+                item.Genres.Clear();
+
+                foreach (var genre in result.Genre
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(i => i.Trim())
+                    .Where(i => !string.IsNullOrWhiteSpace(i)))
+                {
+                    item.AddGenre(genre);
+                }
+            }
+        }
+
+        private bool ShouldFetchGenres(BaseItem item)
+        {
+            // Only fetch if other providers didn't get anything
+            if (item is Trailer)
+            {
+                return item.Genres.Count == 0;
+            }
+
+            return item is Series;
+        }
 
         protected class RootObject
         {

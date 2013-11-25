@@ -57,6 +57,12 @@ namespace MediaBrowser.Server.Implementations.ServerManager
         public DateTime LastActivityDate { get; private set; }
 
         /// <summary>
+        /// Gets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        public Guid Id { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketConnection" /> class.
         /// </summary>
         /// <param name="socket">The socket.</param>
@@ -83,9 +89,11 @@ namespace MediaBrowser.Server.Implementations.ServerManager
                 throw new ArgumentNullException("logger");
             }
 
+            Id = Guid.NewGuid();
             _jsonSerializer = jsonSerializer;
             _socket = socket;
-            _socket.OnReceiveDelegate = OnReceiveInternal;
+            _socket.OnReceiveBytes = OnReceiveInternal;
+            _socket.OnReceive = OnReceiveInternal;
             RemoteEndPoint = remoteEndPoint;
             _logger = logger;
         }
@@ -127,6 +135,41 @@ namespace MediaBrowser.Server.Implementations.ServerManager
             }
         }
 
+        private void OnReceiveInternal(string message)
+        {
+            LastActivityDate = DateTime.UtcNow;
+
+            if (!message.StartsWith("{", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.Error("Received web socket message that is not a json structure: " + message);
+                return;
+            }
+
+            if (OnReceive == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var stub = (WebSocketMessage<object>)_jsonSerializer.DeserializeFromString(message, typeof(WebSocketMessage<object>));
+
+                var info = new WebSocketMessageInfo
+                {
+                    MessageType = stub.MessageType,
+                    Data = stub.Data == null ? null : stub.Data.ToString()
+                };
+
+                info.Connection = this;
+
+                OnReceive(info);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error processing web socket message", ex);
+            }
+        }
+        
         /// <summary>
         /// Sends a message asynchronously.
         /// </summary>
@@ -171,11 +214,6 @@ namespace MediaBrowser.Server.Implementations.ServerManager
             if (buffer == null)
             {
                 throw new ArgumentNullException("buffer");
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
             }
 
             cancellationToken.ThrowIfCancellationRequested();

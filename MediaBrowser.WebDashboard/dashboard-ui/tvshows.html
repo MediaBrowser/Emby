@@ -4,15 +4,16 @@
     <title>Media Browser</title>
 </head>
 <body>
-    <div id="tvShowsPage" data-role="page" class="page libraryPage" data-theme="a" data-view="tvshows">
+    <div id="tvShowsPage" data-role="page" class="page libraryPage" data-theme="a" data-view="tv">
         <div class="libraryViewNav">
             <a href="tvrecommended.html">Suggested</a>
             <a href="tvnextup.html">Next up</a>
+            <a href="tvupcoming.html">Upcoming</a>
             <a href="tvshows.html" class="ui-btn-active">Shows</a>
+            <a href="episodes.html">Episodes</a>
             <a href="tvgenres.html">Genres</a>
             <a href="tvpeople.html">Actors</a>
             <a href="tvstudios.html">Networks</a>
-            <a href="favoritetv.html">Favorites</a>
         </div>
         <div class="alphabetPicker">
         </div>
@@ -31,6 +32,7 @@
                 </div>
                 <div class="listTopPaging">
                 </div>
+                <div class="viewSummary"></div>
             </div>
             <div id="items" class="itemsContainer"></div>
         </div>
@@ -42,17 +44,17 @@
                         <strong>Sort By:</strong>
                     </legend>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
+                    <input class="radioSortBy defaultSort" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
                     <label for="radioSortName">Name</label>
 
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioCommunityRating" value="off" data-sortby="CommunityRating" data-mini="true">
-                    <label for="radioCommunityRating">Community Rating</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" data-theme="c" id="radioContentRating" value="off" data-sortby="OfficialRating" data-mini="true">
-                    <label for="radioContentRating">Content Rating</label>
+                    <label for="radioCommunityRating">IMDb Rating</label>
 
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioDateCreated" value="off" data-sortby="DateCreated" data-mini="true">
                     <label for="radioDateCreated">Date Added</label>
+
+                    <input class="radioSortBy" type="radio" name="radioSortBy" data-theme="c" id="radioContentRating" value="off" data-sortby="OfficialRating" data-mini="true">
+                    <label for="radioContentRating">Parental Rating</label>
 
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioPremiereDate" value="off" data-sortby="PremiereDate" data-mini="true">
                     <label for="radioPremiereDate">Premiere Date</label>
@@ -127,6 +129,9 @@
 
                     <input class="chkFeatureFilter" type="checkbox" data-theme="c" name="chkTrailer" id="chkTrailer" data-mini="true">
                     <label for="chkTrailer">Trailer</label>
+
+                    <input class="chkFeatureFilter" type="checkbox" data-theme="c" name="chkSpecialFeature" id="chkSpecialFeature" data-mini="true">
+                    <label for="chkSpecialFeature">Special features</label>
 
                     <input class="chkFeatureFilter" type="checkbox" data-theme="c" name="chkThemeSong" id="chkThemeSong" data-mini="true">
                     <label for="chkThemeSong">Theme song</label>

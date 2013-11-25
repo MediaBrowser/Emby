@@ -2,9 +2,9 @@
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Providers.Movies;
+using MediaBrowser.Providers.Music;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -31,8 +31,8 @@ namespace MediaBrowser.Providers.Savers
             var wasMetadataEdited = (updateType & ItemUpdateType.MetadataEdit) == ItemUpdateType.MetadataEdit;
             var wasMetadataDownloaded = (updateType & ItemUpdateType.MetadataDownload) == ItemUpdateType.MetadataDownload;
 
-            // If new metadata has been downloaded and save local is on, OR metadata was manually edited, proceed
-            if ((_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded)) || wasMetadataEdited)
+            // If new metadata has been downloaded and save local is on
+            if (_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded))
             {
                 return item is MusicAlbum;
             }
@@ -58,10 +58,10 @@ namespace MediaBrowser.Providers.Savers
 
             var xmlFilePath = GetSavePath(item);
 
-            XmlSaverHelpers.Save(builder, xmlFilePath, new string[] { });
+            XmlSaverHelpers.Save(builder, xmlFilePath, new List<string> { });
 
             // Set last refreshed so that the provider doesn't trigger after the file save
-            PersonProviderFromXml.Current.SetLastRefreshed(item, DateTime.UtcNow);
+            AlbumProviderFromXml.Current.SetLastRefreshed(item, DateTime.UtcNow);
         }
 
         /// <summary>

@@ -1,9 +1,12 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Providers.Savers;
 using System;
 using System.IO;
 using System.Threading;
@@ -18,11 +21,13 @@ namespace MediaBrowser.Providers.Movies
     {
         internal static MovieProviderFromXml Current { get; private set; }
         private readonly IItemRepository _itemRepo;
+        private readonly IFileSystem _fileSystem;
 
-        public MovieProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IItemRepository itemRepo)
+        public MovieProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IItemRepository itemRepo, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             _itemRepo = itemRepo;
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -33,6 +38,11 @@ namespace MediaBrowser.Providers.Movies
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         public override bool Supports(BaseItem item)
         {
+            if (item.LocationType != LocationType.FileSystem)
+            {
+                return false;
+            }
+
             var trailer = item as Trailer;
 
             if (trailer != null)
@@ -40,7 +50,7 @@ namespace MediaBrowser.Providers.Movies
                 return !trailer.IsLocalTrailer;
             }
 
-            return item is Movie || item is MusicVideo;
+            return item is Movie || item is MusicVideo || item is AdultVideo;
         }
 
         /// <summary>
@@ -52,16 +62,18 @@ namespace MediaBrowser.Providers.Movies
             get { return MetadataProviderPriority.First; }
         }
 
-        /// <summary>
-        /// Override this to return the date that should be compared to the last refresh date
-        /// to determine if this provider should be re-fetched.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>DateTime.</returns>
-        protected override DateTime CompareDate(BaseItem item)
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
-            var entry = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "movie.xml"));
-            return entry != null ? entry.LastWriteTimeUtc : DateTime.MinValue;
+            var savePath = MovieXmlSaver.GetMovieSavePath(item);
+
+            var xml = item.ResolveArgs.GetMetaFileByPath(savePath) ?? new FileInfo(savePath);
+
+            if (!xml.Exists)
+            {
+                return false;
+            }
+
+            return _fileSystem.GetLastWriteTimeUtc(xml) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -86,17 +98,15 @@ namespace MediaBrowser.Providers.Movies
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "movie.xml"));
+            var path = MovieXmlSaver.GetMovieSavePath(item);
 
-            if (metadataFile != null)
+            if (File.Exists(path))
             {
-                var path = metadataFile.FullName;
-
                 await XmlParsingResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 try
                 {
-                    var video = (Video) item;
+                    var video = (Video)item;
 
                     await new MovieXmlParser(Logger, _itemRepo).FetchAsync(video, path, cancellationToken).ConfigureAwait(false);
                 }
@@ -104,12 +114,11 @@ namespace MediaBrowser.Providers.Movies
                 {
                     XmlParsingResourcePool.Release();
                 }
-
-                SetLastRefreshed(item, DateTime.UtcNow);
-                return true;
             }
 
-            return false;
+            SetLastRefreshed(item, DateTime.UtcNow);
+
+            return true;
         }
     }
 }

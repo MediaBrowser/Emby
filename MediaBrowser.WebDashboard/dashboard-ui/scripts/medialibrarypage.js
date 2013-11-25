@@ -55,6 +55,11 @@
         }
     },
 
+    shouldRefreshLibraryAfterChanges: function () {
+        
+        return $($.mobile.activePage).is('#mediaLibraryPage');
+    },
+
     reloadVirtualFolders: function (page, virtualFolders) {
 
         if (virtualFolders) {
@@ -86,7 +91,7 @@
 
         html += '<h3>' + virtualFolder.Name + '</h3>';
 
-        var typeName = MediaLibraryPage.getCollectionTypeOptions().filter(function(t) {
+        var typeName = MediaLibraryPage.getCollectionTypeOptions().filter(function (t) {
 
             return t.value == virtualFolder.CollectionType;
 
@@ -143,13 +148,17 @@
 
     addVirtualFolder: function () {
 
+        $('.collectionTypeFieldDescription').show();
+
         MediaLibraryPage.getTextValue("Add Media Collection", "Name (Movies, Music, TV, etc):", "", true, function (name, type) {
 
             var userId = getParameterByName("userId");
 
             MediaLibraryPage.lastVirtualFolderName = name;
 
-            ApiClient.addVirtualFolder(name, type, userId).done(MediaLibraryPage.processOperationResult);
+            var refreshAfterChange = MediaLibraryPage.shouldRefreshLibraryAfterChanges();
+
+            ApiClient.addVirtualFolder(name, type, userId, refreshAfterChange).done(MediaLibraryPage.processOperationResult);
 
         });
     },
@@ -166,7 +175,9 @@
 
                 var userId = getParameterByName("userId");
 
-                ApiClient.addMediaPath(virtualFolder.Name, path, userId).done(MediaLibraryPage.processOperationResult);
+                var refreshAfterChange = MediaLibraryPage.shouldRefreshLibraryAfterChanges();
+
+                ApiClient.addMediaPath(virtualFolder.Name, path, userId, refreshAfterChange).done(MediaLibraryPage.processOperationResult);
             }
 
         });
@@ -193,11 +204,13 @@
 
         if (showCollectionType) {
             $('#fldCollectionType', popup).show();
+            $('#selectCollectionType', popup).attr('required', 'required').selectmenu('refresh');
         } else {
             $('#fldCollectionType', popup).hide();
+            $('#selectCollectionType', popup).removeAttr('required').selectmenu('refresh');
         }
 
-        $('#selectCollectionType', popup).html(MediaLibraryPage.getCollectionTypeOptionsHtml()).selectmenu('refresh');
+        $('#selectCollectionType', popup).html(MediaLibraryPage.getCollectionTypeOptionsHtml()).val('').selectmenu('refresh');
 
         popup.on("popupafteropen", function () {
             $('#textEntryForm input:first', this).focus();
@@ -211,7 +224,15 @@
             if (callback) {
 
                 if (showCollectionType) {
-                    callback($('#txtValue', popup).val(), $('#selectCollectionType', popup).val());
+
+                    var collectionType = $('#selectCollectionType', popup).val();
+                    
+                    // The server expects an empty value for mixed
+                    if (collectionType == 'mixed') {
+                        collectionType = '';
+                    }
+
+                    callback($('#txtValue', popup).val(), collectionType);
                 } else {
                     callback($('#txtValue', popup).val());
                 }
@@ -224,7 +245,11 @@
 
     getCollectionTypeOptionsHtml: function () {
 
-        return MediaLibraryPage.getCollectionTypeOptions().map(function (i) {
+        return MediaLibraryPage.getCollectionTypeOptions().filter(function(i) {
+
+            return i.isSelectable !== false;
+
+        }).map(function (i) {
 
             return '<option value="' + i.value + '">' + i.name + '</option>';
 
@@ -235,18 +260,19 @@
 
         return [
 
-            { name: "General or mixed content", value: "" },
-            { name: "Adult videos", value: "adultvideos" },
+            { name: "", value: "" },
+            { name: "Movies", value: "movies" },
+            { name: "Music", value: "music" },
+            { name: "TV shows", value: "tvshows" },
+            { name: "Books*", value: "books" },
             { name: "Box sets", value: "boxsets" },
             { name: "Games*", value: "games" },
             { name: "Home videos", value: "homevideos" },
-            { name: "Movies", value: "movies" },
-            { name: "Music", value: "music" },
             { name: "Music videos", value: "musicvideos" },
             { name: "Photos*", value: "photos" },
             { name: "Trailers", value: "trailers" },
-            { name: "TV shows", value: "tvshows" }
-
+            { name: "Adult videos", value: "adultvideos" },
+            { name: "Mixed content", value: "mixed" }
         ];
 
     },
@@ -258,13 +284,17 @@
 
         MediaLibraryPage.lastVirtualFolderName = virtualFolder.Name;
 
+        $('.collectionTypeFieldDescription').hide();
+
         MediaLibraryPage.getTextValue(virtualFolder.Name, "Rename " + virtualFolder.Name, virtualFolder.Name, false, function (newName) {
 
             if (virtualFolder.Name != newName) {
 
                 var userId = getParameterByName("userId");
 
-                ApiClient.renameVirtualFolder(virtualFolder.Name, newName, userId).done(MediaLibraryPage.processOperationResult);
+                var refreshAfterChange = MediaLibraryPage.shouldRefreshLibraryAfterChanges();
+
+                ApiClient.renameVirtualFolder(virtualFolder.Name, newName, userId, refreshAfterChange).done(MediaLibraryPage.processOperationResult);
             }
         });
     },
@@ -295,7 +325,9 @@
 
                 var userId = getParameterByName("userId");
 
-                ApiClient.removeVirtualFolder(virtualFolder.Name, userId).done(MediaLibraryPage.processOperationResult);
+                var refreshAfterChange = MediaLibraryPage.shouldRefreshLibraryAfterChanges();
+
+                ApiClient.removeVirtualFolder(virtualFolder.Name, userId, refreshAfterChange).done(MediaLibraryPage.processOperationResult);
             }
 
         });
@@ -318,7 +350,9 @@
 
                 var userId = getParameterByName("userId");
 
-                ApiClient.removeMediaPath(virtualFolder.Name, location, userId).done(MediaLibraryPage.processOperationResult);
+                var refreshAfterChange = MediaLibraryPage.shouldRefreshLibraryAfterChanges();
+
+                ApiClient.removeMediaPath(virtualFolder.Name, location, userId, refreshAfterChange).done(MediaLibraryPage.processOperationResult);
             }
         });
     },

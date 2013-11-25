@@ -1,15 +1,15 @@
 ﻿(function ($, document) {
 
     var view = "Poster";
-    
+
     // The base query options
     var query = {
 
-        SortBy: "SortName",
+        SortBy: "AlbumArtist,SortName",
         SortOrder: "Ascending",
         IncludeItemTypes: "MusicAlbum",
         Recursive: true,
-        Fields: "ItemCounts,DateCreated,UserData",
+        Fields: "DateCreated",
         StartIndex: 0
     };
 
@@ -25,6 +25,11 @@
             var html = '';
 
             $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
+
+            updateFilterControls(page);
+
+            var checkSortOption = $('.radioSortBy:checked', page);
+            $('.viewSummary', page).html(LibraryBrowser.getViewSummaryHtml(query, checkSortOption)).trigger('create');
 
             if (view == "Poster") {
                 html += LibraryBrowser.getPosterDetailViewHtml({
@@ -48,6 +53,14 @@
 
             $('#items', page).html(html).trigger('create');
 
+            $('.btnChangeToDefaultSort', page).on('click', function () {
+                query.StartIndex = 0;
+                query.SortOrder = 'Ascending';
+                query.SortBy = $('.defaultSort', page).data('sortby');
+
+                reloadItems(page);
+            });
+
             $('.selectPage', page).on('change', function () {
                 query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
                 reloadItems(page);
@@ -69,27 +82,61 @@
                 reloadItems(page);
             });
 
+            LibraryBrowser.saveQueryValues('musicalbums', query);
+
             Dashboard.hideLoadingMsg();
         });
+    }
+
+    function updateFilterControls(page) {
+
+        $('#selectView', page).val(view).selectmenu('refresh');
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', page).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.alphabetPicker', page).alphaValue(query.NameStartsWith);
     }
 
     $(document).on('pageinit', "#musicAlbumsPage", function () {
 
         var page = this;
 
-        $('.radioSortBy', this).on('click', function () {
+        $('.radioSortBy', page).on('click', function () {
             query.SortBy = this.getAttribute('data-sortby');
             query.StartIndex = 0;
+
+            // Clear this
+            $('.alphabetPicker', page).alphaClear();
+            query.NameStartsWithOrGreater = '';
+            query.AlbumArtistStartsWithOrGreater = '';
+
             reloadItems(page);
         });
 
-        $('.radioSortOrder', this).on('click', function () {
+        $('.radioSortOrder', page).on('click', function () {
             query.SortOrder = this.getAttribute('data-sortorder');
             query.StartIndex = 0;
+
+            // Clear this
+            $('.alphabetPicker', page).alphaClear();
+            query.NameStartsWithOrGreater = '';
+            query.AlbumArtistStartsWithOrGreater = '';
+
             reloadItems(page);
         });
 
-        $('.chkStandardFilter', this).on('change', function () {
+        $('.chkStandardFilter', page).on('change', function () {
 
             var filterName = this.getAttribute('data-filter');
             var filters = query.Filters || "";
@@ -106,7 +153,7 @@
             reloadItems(page);
         });
 
-        $('#selectView', this).on('change', function () {
+        $('#selectView', page).on('change', function () {
 
             view = this.value;
 
@@ -121,9 +168,16 @@
             }
         });
 
-        $('.alphabetPicker', this).on('alphaselect', function (e, character) {
+        $('.alphabetPicker', page).on('alphaselect', function (e, character) {
 
-            query.NameStartsWithOrGreater = character;
+            if (query.SortBy.indexOf('AlbumArtist') == -1) {
+                query.NameStartsWithOrGreater = character;
+                query.AlbumArtistStartsWithOrGreater = '';
+            } else {
+                query.AlbumArtistStartsWithOrGreater = character;
+                query.NameStartsWithOrGreater = '';
+            }
+
             query.StartIndex = 0;
 
             reloadItems(page);
@@ -131,6 +185,7 @@
         }).on('alphaclear', function (e) {
 
             query.NameStartsWithOrGreater = '';
+            query.AlbumArtistStartsWithOrGreater = '';
 
             reloadItems(page);
         });
@@ -145,26 +200,13 @@
             query.StartIndex = 0;
         }
 
+        LibraryBrowser.loadSavedQueryValues('musicalbums', query);
+
         reloadItems(this);
 
     }).on('pageshow', "#musicAlbumsPage", function () {
 
-        $('#selectView', this).val(view).selectmenu('refresh');
-
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
-
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
-
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', this).each(function () {
-
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
-
-        }).checkboxradio('refresh');
-
-        $('.alphabetPicker', this).alphaValue(query.NameStartsWith);
+        updateFilterControls(this);
     });
 
 })(jQuery, document);

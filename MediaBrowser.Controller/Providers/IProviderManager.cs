@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Providers;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -43,14 +44,33 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="mimeType">Type of the MIME.</param>
         /// <param name="type">The type.</param>
         /// <param name="imageIndex">Index of the image.</param>
+        /// <param name="sourceUrl">The source URL.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken);
+        Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, string sourceUrl, CancellationToken cancellationToken);
 
         /// <summary>
         /// Adds the metadata providers.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        void AddParts(IEnumerable<BaseMetadataProvider> providers);
+        /// <param name="imageProviders">The image providers.</param>
+        void AddParts(IEnumerable<BaseMetadataProvider> providers, IEnumerable<IImageProvider> imageProviders);
+
+        /// <summary>
+        /// Gets the available remote images.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="providerName">Name of the provider.</param>
+        /// <param name="type">The type.</param>
+        /// <returns>Task{IEnumerable{RemoteImageInfo}}.</returns>
+        Task<IEnumerable<RemoteImageInfo>> GetAvailableRemoteImages(BaseItem item, CancellationToken cancellationToken, string providerName = null, ImageType? type = null);
+
+        /// <summary>
+        /// Gets the image providers.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{IImageProvider}.</returns>
+        IEnumerable<IImageProvider> GetImageProviders(BaseItem item);
     }
 }

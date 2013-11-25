@@ -30,10 +30,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 var path = Configuration.UseCustomLibrary ? GetRootFolderPath(Name) : ConfigurationManager.ApplicationPaths.DefaultUserViewsPath;
 
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                Directory.CreateDirectory(path);
 
                 return path;
             }
@@ -168,7 +165,7 @@ namespace MediaBrowser.Controller.Entities
                 // Ensure it's been lazy loaded
                 var config = Configuration;
 
-                return File.GetLastWriteTimeUtc(ConfigurationFilePath);
+                return FileSystem.GetLastWriteTimeUtc(ConfigurationFilePath);
             }
         }
 
@@ -256,10 +253,7 @@ namespace MediaBrowser.Controller.Entities
                 {
                     _configurationDirectoryPath = GetConfigurationDirectoryPath(Name);
 
-                    if (!Directory.Exists(_configurationDirectoryPath))
-                    {
-                        Directory.CreateDirectory(_configurationDirectoryPath);
-                    }
+                    Directory.CreateDirectory(_configurationDirectoryPath);
                 }
 
                 return _configurationDirectoryPath;
@@ -312,7 +306,7 @@ namespace MediaBrowser.Controller.Entities
             if (resetResolveArgs)
             {
                 // Reload this
-                ResolveArgs = null;
+                ResetResolveArgs();
             }
 
             var updateReason = await ProviderManager.ExecuteMetadataProviders(this, cancellationToken, forceRefresh, allowSlowProviders).ConfigureAwait(false);

@@ -88,24 +88,6 @@ namespace MediaBrowser.Model.Configuration
         public string MetadataCountryCode { get; set; }
 
         /// <summary>
-        /// Gets or sets the size of the TMDB fetched poster.
-        /// </summary>
-        /// <value>The size of the TMDB fetched poster.</value>
-        public string TmdbFetchedPosterSize { get; set; }
-
-        /// <summary>
-        /// Gets or sets the size of the TMDB fetched profile.
-        /// </summary>
-        /// <value>The size of the TMDB fetched profile.</value>
-        public string TmdbFetchedProfileSize { get; set; }
-
-        /// <summary>
-        /// Gets or sets the size of the TMDB fetched backdrop.
-        /// </summary>
-        /// <value>The size of the TMDB fetched backdrop.</value>
-        public string TmdbFetchedBackdropSize { get; set; }
-
-        /// <summary>
         /// Gets or sets the max backdrops.
         /// </summary>
         /// <value>The max backdrops.</value>
@@ -135,12 +117,6 @@ namespace MediaBrowser.Model.Configuration
         /// Options for specific art to download for MusicAlbums.
         /// </summary>
         public ImageDownloadOptions DownloadMusicAlbumImages { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [download TV season backdrops].
-        /// </summary>
-        /// <value><c>true</c> if [download TV season banner]; otherwise, <c>false</c>.</value>
-        public bool DownloadHDFanArt { get; set; }
 
         /// <summary>
         /// Characters to be replaced with a ' ' in strings to create a sort name
@@ -230,6 +206,33 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable tv db updates]; otherwise, <c>false</c>.</value>
         public bool EnableTvDbUpdates { get; set; }
+        public bool EnableTmdbUpdates { get; set; }
+
+        public bool EnableVideoImageExtraction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image saving convention.
+        /// </summary>
+        /// <value>The image saving convention.</value>
+        public ImageSavingConvention ImageSavingConvention { get; set; }
+
+        /// <summary>
+        /// Gets or sets the width of the min movie backdrop.
+        /// </summary>
+        /// <value>The width of the min movie backdrop.</value>
+        public int MinMovieBackdropDownloadWidth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the width of the min series backdrop.
+        /// </summary>
+        /// <value>The width of the min series backdrop.</value>
+        public int MinSeriesBackdropDownloadWidth { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable people prefix sub folders].
+        /// </summary>
+        /// <value><c>true</c> if [enable people prefix sub folders]; otherwise, <c>false</c>.</value>
+        public bool EnablePeoplePrefixSubFolders { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
@@ -237,10 +240,12 @@ namespace MediaBrowser.Model.Configuration
         public ServerConfiguration()
             : base()
         {
+            ImageSavingConvention = ImageSavingConvention.Legacy;
             HttpServerPortNumber = 8096;
             LegacyWebSocketPortNumber = 8945;
             EnableHttpLevelLogging = true;
             EnableDashboardResponseCaching = true;
+            EnableVideoImageExtraction = true;
 
 #if (DEBUG)
             EnableDeveloperTools = true;
@@ -262,15 +267,14 @@ namespace MediaBrowser.Model.Configuration
             MetadataRefreshDays = 30;
             PreferredMetadataLanguage = "en";
             MetadataCountryCode = "US";
-            TmdbFetchedProfileSize = "original"; //w185 w45 h632 or original
-            TmdbFetchedPosterSize = "original"; //w500, w342, w185 or original
-            TmdbFetchedBackdropSize = "original"; //w1280, w780 or original
             DownloadMovieImages = new ImageDownloadOptions();
             DownloadSeriesImages = new ImageDownloadOptions();
-            DownloadSeasonImages = new ImageDownloadOptions();
+            DownloadSeasonImages = new ImageDownloadOptions
+            {
+                Backdrops = false
+            };
             DownloadMusicArtistImages = new ImageDownloadOptions();
             DownloadMusicAlbumImages = new ImageDownloadOptions();
-            DownloadHDFanArt = true;
             MaxBackdrops = 3;
 
             SortReplaceCharacters = new[] { ".", "+", "%" };
@@ -278,6 +282,15 @@ namespace MediaBrowser.Model.Configuration
             SortRemoveWords = new[] { "the", "a", "an" };
 
             SeasonZeroDisplayName = "Specials";
+
+            MinMovieBackdropDownloadWidth = 1280;
+            MinSeriesBackdropDownloadWidth = 1280;
         }
+    }
+
+    public enum ImageSavingConvention
+    {
+        Legacy,
+        Compatible
     }
 }

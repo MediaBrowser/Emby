@@ -1,12 +1,16 @@
-﻿using MediaBrowser.Controller;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using ServiceStack.ServiceHost;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.Library
 {
@@ -33,7 +37,7 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The user id.</value>
         public string UserId { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -45,6 +49,12 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The type of the collection.</value>
         public string CollectionType { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [refresh library].
+        /// </summary>
+        /// <value><c>true</c> if [refresh library]; otherwise, <c>false</c>.</value>
+        public bool RefreshLibrary { get; set; }
     }
 
     [Route("/Library/VirtualFolders/{Name}", "DELETE")]
@@ -62,6 +72,12 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [refresh library].
+        /// </summary>
+        /// <value><c>true</c> if [refresh library]; otherwise, <c>false</c>.</value>
+        public bool RefreshLibrary { get; set; }
     }
 
     [Route("/Library/VirtualFolders/{Name}/Name", "POST")]
@@ -85,6 +101,12 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The name.</value>
         public string NewName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [refresh library].
+        /// </summary>
+        /// <value><c>true</c> if [refresh library]; otherwise, <c>false</c>.</value>
+        public bool RefreshLibrary { get; set; }
     }
 
     [Route("/Library/VirtualFolders/{Name}/Paths", "POST")]
@@ -108,8 +130,14 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The name.</value>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [refresh library].
+        /// </summary>
+        /// <value><c>true</c> if [refresh library]; otherwise, <c>false</c>.</value>
+        public bool RefreshLibrary { get; set; }
     }
-    
+
     [Route("/Library/VirtualFolders/{Name}/Paths", "DELETE")]
     [Route("/Users/{UserId}/VirtualFolders/{Name}/Paths", "DELETE")]
     public class RemoveMediaPath : IReturnVoid
@@ -131,6 +159,12 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The name.</value>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [refresh library].
+        /// </summary>
+        /// <value><c>true</c> if [refresh library]; otherwise, <c>false</c>.</value>
+        public bool RefreshLibrary { get; set; }
     }
 
     /// <summary>
@@ -154,7 +188,10 @@ namespace MediaBrowser.Api.Library
         private readonly ILibraryManager _libraryManager;
 
         private readonly IDirectoryWatchers _directoryWatchers;
-        
+
+        private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryStructureService"/> class.
         /// </summary>
@@ -162,7 +199,7 @@ namespace MediaBrowser.Api.Library
         /// <param name="userManager">The user manager.</param>
         /// <param name="libraryManager">The library manager.</param>
         /// <exception cref="System.ArgumentNullException">appPaths</exception>
-        public LibraryStructureService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IDirectoryWatchers directoryWatchers)
+        public LibraryStructureService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IDirectoryWatchers directoryWatchers, IFileSystem fileSystem, ILogger logger)
         {
             if (appPaths == null)
             {
@@ -173,6 +210,8 @@ namespace MediaBrowser.Api.Library
             _appPaths = appPaths;
             _libraryManager = libraryManager;
             _directoryWatchers = directoryWatchers;
+            _fileSystem = fileSystem;
+            _logger = logger;
         }
 
         /// <summary>
@@ -204,27 +243,57 @@ namespace MediaBrowser.Api.Library
         /// <param name="request">The request.</param>
         public void Post(AddVirtualFolder request)
         {
+            var name = _fileSystem.GetValidFilename(request.Name);
+
+            string rootFolderPath;
+
+            if (string.IsNullOrEmpty(request.UserId))
+            {
+                rootFolderPath = _appPaths.DefaultUserViewsPath;
+            }
+            else
+            {
+                var user = _userManager.GetUserById(new Guid(request.UserId));
+
+                rootFolderPath = user.RootFolderPath;
+            }
+
+            var virtualFolderPath = Path.Combine(rootFolderPath, name);
+
+            if (Directory.Exists(virtualFolderPath))
+            {
+                throw new ArgumentException("There is already a media collection with the name " + name + ".");
+            }
+
             _directoryWatchers.Stop();
+            _directoryWatchers.TemporarilyIgnore(virtualFolderPath);
 
             try
             {
-                if (string.IsNullOrEmpty(request.UserId))
-                {
-                    LibraryHelpers.AddVirtualFolder(request.Name, request.CollectionType, null, _appPaths);
-                }
-                else
-                {
-                    var user = _userManager.GetUserById(new Guid(request.UserId));
+                Directory.CreateDirectory(virtualFolderPath);
 
-                    LibraryHelpers.AddVirtualFolder(request.Name, request.CollectionType, user, _appPaths);
+                if (!string.IsNullOrEmpty(request.CollectionType))
+                {
+                    var path = Path.Combine(virtualFolderPath, request.CollectionType + ".collection");
+
+                    File.Create(path);
                 }
+
+                // Need to add a delay here or directory watchers may still pick up the changes
+                var task = Task.Delay(1000);
+                // Have to block here to allow exceptions to bubble
+                Task.WaitAll(task);
             }
             finally
             {
                 _directoryWatchers.Start();
+                _directoryWatchers.RemoveTempIgnore(virtualFolderPath);
             }
 
-            _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            if (request.RefreshLibrary)
+            {
+                _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            }
         }
 
         /// <summary>
@@ -233,56 +302,116 @@ namespace MediaBrowser.Api.Library
         /// <param name="request">The request.</param>
         public void Post(RenameVirtualFolder request)
         {
+            string rootFolderPath;
+
+            if (string.IsNullOrEmpty(request.UserId))
+            {
+                rootFolderPath = _appPaths.DefaultUserViewsPath;
+            }
+            else
+            {
+                var user = _userManager.GetUserById(new Guid(request.UserId));
+
+                rootFolderPath = user.RootFolderPath;
+            }
+
+            var currentPath = Path.Combine(rootFolderPath, request.Name);
+            var newPath = Path.Combine(rootFolderPath, request.NewName);
+
+            if (!Directory.Exists(currentPath))
+            {
+                throw new DirectoryNotFoundException("The media collection does not exist");
+            }
+
+            if (!string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase) && Directory.Exists(newPath))
+            {
+                throw new ArgumentException("There is already a media collection with the name " + newPath + ".");
+            }
+
             _directoryWatchers.Stop();
+            _directoryWatchers.TemporarilyIgnore(currentPath);
+            _directoryWatchers.TemporarilyIgnore(newPath);
 
             try
             {
-                if (string.IsNullOrEmpty(request.UserId))
+                // Only make a two-phase move when changing capitalization
+                if (string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    LibraryHelpers.RenameVirtualFolder(request.Name, request.NewName, null, _appPaths);
+                    //Create an unique name
+                    var temporaryName = Guid.NewGuid().ToString();
+                    var temporaryPath = Path.Combine(rootFolderPath, temporaryName);
+                    Directory.Move(currentPath, temporaryPath);
+                    currentPath = temporaryPath;
                 }
-                else
-                {
-                    var user = _userManager.GetUserById(new Guid(request.UserId));
 
-                    LibraryHelpers.RenameVirtualFolder(request.Name, request.NewName, user, _appPaths);
-                }
+                Directory.Move(currentPath, newPath);
+
+                // Need to add a delay here or directory watchers may still pick up the changes
+                var task = Task.Delay(1000);
+                // Have to block here to allow exceptions to bubble
+                Task.WaitAll(task);
             }
             finally
             {
                 _directoryWatchers.Start();
+                _directoryWatchers.RemoveTempIgnore(currentPath);
+                _directoryWatchers.RemoveTempIgnore(newPath);
             }
 
-            _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            if (request.RefreshLibrary)
+            {
+                _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            }
         }
-        
+
         /// <summary>
         /// Deletes the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
         public void Delete(RemoveVirtualFolder request)
         {
+            string rootFolderPath;
+
+            if (string.IsNullOrEmpty(request.UserId))
+            {
+                rootFolderPath = _appPaths.DefaultUserViewsPath;
+            }
+            else
+            {
+                var user = _userManager.GetUserById(new Guid(request.UserId));
+
+                rootFolderPath = user.RootFolderPath;
+            }
+
+            var path = Path.Combine(rootFolderPath, request.Name);
+
+            if (!Directory.Exists(path))
+            {
+                throw new DirectoryNotFoundException("The media folder does not exist");
+            }
+
             _directoryWatchers.Stop();
+            _directoryWatchers.TemporarilyIgnore(path);
 
             try
             {
-                if (string.IsNullOrEmpty(request.UserId))
-                {
-                    LibraryHelpers.RemoveVirtualFolder(request.Name, null, _appPaths);
-                }
-                else
-                {
-                    var user = _userManager.GetUserById(new Guid(request.UserId));
+                Directory.Delete(path, true);
 
-                    LibraryHelpers.RemoveVirtualFolder(request.Name, user, _appPaths);
-                }
+                // Need to add a delay here or directory watchers may still pick up the changes
+                var delayTask = Task.Delay(1000);
+                // Have to block here to allow exceptions to bubble
+                Task.WaitAll(delayTask);
             }
             finally
             {
                 _directoryWatchers.Start();
+                _directoryWatchers.RemoveTempIgnore(path);
             }
 
-            _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            if (request.RefreshLibrary)
+            {
+                _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            }
         }
 
         /// <summary>
@@ -297,21 +426,29 @@ namespace MediaBrowser.Api.Library
             {
                 if (string.IsNullOrEmpty(request.UserId))
                 {
-                    LibraryHelpers.AddMediaPath(request.Name, request.Path, null, _appPaths);
+                    LibraryHelpers.AddMediaPath(_fileSystem, request.Name, request.Path, null, _appPaths);
                 }
                 else
                 {
                     var user = _userManager.GetUserById(new Guid(request.UserId));
 
-                    LibraryHelpers.AddMediaPath(request.Name, request.Path, user, _appPaths);
+                    LibraryHelpers.AddMediaPath(_fileSystem, request.Name, request.Path, user, _appPaths);
                 }
+
+                // Need to add a delay here or directory watchers may still pick up the changes
+                var task = Task.Delay(1000);
+                // Have to block here to allow exceptions to bubble
+                Task.WaitAll(task);
             }
             finally
             {
                 _directoryWatchers.Start();
             }
 
-            _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            if (request.RefreshLibrary)
+            {
+                _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            }
         }
 
         /// <summary>
@@ -326,21 +463,29 @@ namespace MediaBrowser.Api.Library
             {
                 if (string.IsNullOrEmpty(request.UserId))
                 {
-                    LibraryHelpers.RemoveMediaPath(request.Name, request.Path, null, _appPaths);
+                    LibraryHelpers.RemoveMediaPath(_fileSystem, request.Name, request.Path, null, _appPaths);
                 }
                 else
                 {
                     var user = _userManager.GetUserById(new Guid(request.UserId));
 
-                    LibraryHelpers.RemoveMediaPath(request.Name, request.Path, user, _appPaths);
+                    LibraryHelpers.RemoveMediaPath(_fileSystem, request.Name, request.Path, user, _appPaths);
                 }
+
+                // Need to add a delay here or directory watchers may still pick up the changes
+                var task = Task.Delay(1000);
+                // Have to block here to allow exceptions to bubble
+                Task.WaitAll(task);
             }
             finally
             {
                 _directoryWatchers.Start();
             }
 
-            _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            if (request.RefreshLibrary)
+            {
+                _libraryManager.ValidateMediaLibrary(new Progress<double>(), CancellationToken.None);
+            }
         }
     }
 }

@@ -29,6 +29,7 @@
                 </div>
                 <div class="listTopPaging">
                 </div>
+                <div class="viewSummary"></div>
             </div>
 
             <div id="items" class="itemsContainer"></div>
@@ -42,14 +43,11 @@
                         <strong>Sort By:</strong>
                     </legend>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
+                    <input class="radioSortBy defaultSort" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
                     <label for="radioSortName">Name</label>
 
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioCommunityRating" value="off" data-sortby="CommunityRating" data-mini="true">
                     <label for="radioCommunityRating">Community Rating</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" data-theme="c" id="radioContentRating" value="off" data-sortby="OfficialRating" data-mini="true">
-                    <label for="radioContentRating">Content Rating</label>
 
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioDateCreated" value="off" data-sortby="DateCreated" data-mini="true">
                     <label for="radioDateCreated">Date Added</label>
@@ -57,11 +55,11 @@
                     <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioDatePlayed" value="off" data-sortby="DatePlayed" data-mini="true">
                     <label for="radioDatePlayed">Date Played</label>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioPremiereDate" value="off" data-sortby="PremiereDate" data-mini="true">
-                    <label for="radioPremiereDate">Date Released</label>
+                    <input class="radioSortBy" type="radio" name="radioSortBy" data-theme="c" id="radioContentRating" value="off" data-sortby="OfficialRating" data-mini="true">
+                    <label for="radioContentRating">Parental Rating</label>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioRandom" value="off" data-sortby="Random" data-mini="true">
-                    <label for="radioRandom">Random</label>
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioPremiereDate" value="off" data-sortby="PremiereDate" data-mini="true">
+                    <label for="radioPremiereDate">Release Date</label>
                 </fieldset>
 
                 <fieldset data-role="controlgroup">
@@ -97,6 +95,24 @@
 
                     <input class="chkStandardFilter" type="checkbox" name="chkDislikes" id="chkDislikes" data-theme="c" data-filter="Dislikes" data-mini="true">
                     <label for="chkDislikes">Dislikes</label>
+                </fieldset>
+
+                <fieldset data-role="controlgroup">
+                    <legend>
+                        <strong>Players:</strong>
+                    </legend>
+
+                    <input class="radioPlayers" data-theme="c" type="radio" name="radioPlayers" id="radioAll" value="on" checked="checked" data-value="all" data-mini="true">
+                    <label for="radioAll">Any</label>
+
+                    <input class="radioPlayers" data-theme="c" type="radio" name="radioPlayers" id="radioTwo" value="off" data-value="2" data-mini="true">
+                    <label for="radioTwo">2+</label>
+
+                    <input class="radioPlayers" data-theme="c" type="radio" name="radioPlayers" id="radioThree" value="off" data-value="3" data-mini="true">
+                    <label for="radioThree">3+</label>
+
+                    <input class="radioPlayers" data-theme="c" type="radio" name="radioPlayers" id="radioFour" value="off" data-value="4" data-mini="true">
+                    <label for="radioFour">4+</label>
                 </fieldset>
 
                 <fieldset data-role="controlgroup">

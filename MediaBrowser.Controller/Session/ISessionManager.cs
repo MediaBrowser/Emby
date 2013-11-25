@@ -1,7 +1,9 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Session;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Controller.Session
@@ -42,36 +44,95 @@ namespace MediaBrowser.Controller.Session
         /// <param name="user">The user.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        Task<SessionInfo> LogConnectionActivity(string clientType, string appVersion, string deviceId, string deviceName, User user);
+        Task<SessionInfo> LogSessionActivity(string clientType, string appVersion, string deviceId, string deviceName, User user);
 
         /// <summary>
         /// Used to report that playback has started for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        Task OnPlaybackStart(BaseItem item, Guid sessionId);
+        Task OnPlaybackStart(PlaybackInfo info);
 
         /// <summary>
         /// Used to report playback progress for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="positionTicks">The position ticks.</param>
-        /// <param name="isPaused">if set to <c>true</c> [is paused].</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        Task OnPlaybackProgress(BaseItem item, long? positionTicks, bool isPaused, Guid sessionId);
+        Task OnPlaybackProgress(PlaybackProgressInfo info);
 
         /// <summary>
         /// Used to report that playback has ended for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="positionTicks">The position ticks.</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        Task OnPlaybackStopped(BaseItem item, long? positionTicks, Guid sessionId);
+        Task OnPlaybackStopped(PlaybackStopInfo info);
+
+        /// <summary>
+        /// Sends the system command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendSystemCommand(Guid sessionId, SystemCommand command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the message command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendMessageCommand(Guid sessionId, MessageCommand command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the play command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendPlayCommand(Guid sessionId, PlayRequest command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the browse command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendBrowseCommand(Guid sessionId, BrowseRequest command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the playstate command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendPlaystateCommand(Guid sessionId, PlaystateRequest command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the restart required message.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendRestartRequiredNotification(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the server shutdown notification.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendServerShutdownNotification(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends the server restart notification.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendServerRestartNotification(CancellationToken cancellationToken);
     }
 }

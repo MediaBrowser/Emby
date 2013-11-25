@@ -27,6 +27,33 @@
 
     }
 
+    function sendPlayArtistCommand(item, sessionId, popup) {
+
+        ApiClient.getItems(Dashboard.getCurrentUserId(), {
+
+            Artists: item.Name,
+            SortBy: "SortName",
+            IncludeItemTypes: "Audio",
+            Recursive: true,
+            Limit: 100
+
+        }).done(function (result) {
+
+            ApiClient.sendPlayCommand(sessionId, {
+
+                ItemIds: result.Items.map(function (i) {
+                    return i.Id;
+                }).join(','),
+
+                PlayCommand: $('#fldPlayCommand', popup).val()
+            });
+
+            popup.popup("close");
+
+        });
+
+    }
+
     function showMenuForItem(options, sessionsPromise) {
 
         var playFromRendered;
@@ -55,11 +82,13 @@
 
         html += '<p style="text-align:center;margin:.75em 0 0;">';
 
-        html += '<span id="playButtonContainer" onclick="$(\'#fldPlayCommand\').val(\'PlayNow\');" style="display:none;"><button type="submit" data-icon="play" data-theme="b" data-mini="true" data-inline="true">Play</button></span>';
+        html += '<span id="playButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'PlayNow\');" type="submit" data-icon="play" data-theme="b" data-mini="true" data-inline="true">Play</button></span>';
 
-        html += '<span id="queueButtonContainer" onclick="$(\'#fldPlayCommand\').val(\'PlayLast\');" style="display:none;"><button type="submit" data-icon="play" data-theme="b" data-mini="true" data-inline="true">Queue</button></span>';
+        html += '<span id="resumeButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'Resume\');" type="submit" data-icon="play" data-theme="b" data-mini="true" data-inline="true">Resume</button></span>';
 
-        html += '<span id="okButtonContainer"><button type="submit" data-icon="ok" data-theme="b" data-mini="true" data-inline="true">Ok</button></span>';
+        html += '<span id="queueButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'PlayLast\');" type="submit" data-icon="plus" data-theme="b" data-mini="true" data-inline="true">Queue</button></span>';
+
+        html += '<span id="browseButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'Browse\');" type="submit" data-icon="arrow-right" data-theme="b" data-mini="true" data-inline="true">Browse</button></span>';
 
         html += '<button type="button" data-icon="delete" onclick="$(\'#remoteControlFlyout\').popup(\'close\');" data-theme="a" data-mini="true" data-inline="true">Cancel</button>';
 
@@ -124,18 +153,9 @@
             var command = $('#selectCommand', popup).val();
 
             var promise;
+            var showRemoteControlMenuAfterCommand = true;
 
-            if (command == "Browse") {
-                promise = ApiClient.sendBrowseCommand(sessionIds[0], {
-
-                    ItemId: item.Id,
-                    ItemName: item.Name,
-                    ItemType: item.Type,
-                    Context: options.context
-
-                });
-            }
-            else if (command == "Play") {
+            if (command == "Play") {
 
                 if (item.IsFolder) {
 
@@ -143,13 +163,45 @@
 
                     return false;
                 }
+                if (item.Type == "MusicArtist") {
 
-                promise = ApiClient.sendPlayCommand(sessionIds[0], {
+                    sendPlayArtistCommand(item, sessionIds[0], popup);
 
-                    ItemIds: [item.Id].join(','),
-                    PlayCommand: $('#fldPlayCommand', popup).val()
+                    return false;
+                }
 
-                });
+                var playCommand = $('#fldPlayCommand', popup).val();
+
+                if (playCommand == "Resume") {
+
+                    promise = ApiClient.sendPlayCommand(sessionIds[0], {
+
+                        ItemIds: [item.Id].join(','),
+                        PlayCommand: 'PlayNow',
+                        StartPositionTicks: item.UserData.PlaybackPositionTicks
+                    });
+
+                }
+                else if (playCommand == "Browse") {
+
+                    promise = ApiClient.sendBrowseCommand(sessionIds[0], {
+
+                        ItemId: item.Id,
+                        ItemName: item.Name,
+                        ItemType: item.Type,
+                        Context: options.context
+
+                    });
+
+                    showRemoteControlMenuAfterCommand = false;
+                }
+                else {
+                    promise = ApiClient.sendPlayCommand(sessionIds[0], {
+
+                        ItemIds: [item.Id].join(','),
+                        PlayCommand: playCommand
+                    });
+                }
             }
             else if (command == "PlayFromChapter") {
 
@@ -162,15 +214,6 @@
                     ItemIds: [item.Id].join(','),
                     PlayCommand: $('#fldPlayCommand', popup).val(),
                     StartPositionTicks: ticks
-
-                });
-            }
-            else if (command == "Resume") {
-                promise = ApiClient.sendPlayCommand(sessionIds[0], {
-
-                    ItemIds: [item.Id].join(','),
-                    PlayCommand: 'PlayNow',
-                    StartPositionTicks: item.UserData.PlaybackPositionTicks
 
                 });
             }
@@ -193,6 +236,10 @@
             promise.done(function () {
 
                 popup.popup("close");
+
+                if (showRemoteControlMenuAfterCommand) {
+                    RemoteControl.showMenu();
+                }
             });
 
             return false;
@@ -209,7 +256,7 @@
                 return s.DeviceId != deviceId;
             });
 
-            renderSessionsInPlayMenu(sessions, options, elem);
+            renderSessionsInPlayMenu(sessions, options, elem, popup);
 
             if (ApiClient.isWebSocketOpen()) {
                 ApiClient.sendWebSocketMessage("SessionsStart", "1000,1000");
@@ -232,22 +279,23 @@
                 var themeVideosElem = $('.themeVideos', popup).hide();
                 var playButtonContainer = $('#playButtonContainer', popup).hide();
                 var queueButtonContainer = $('#queueButtonContainer', popup).hide();
-                var okButtonContainer = $('#okButtonContainer', popup).hide();
+                var resumeButtonContainer = $('#resumeButtonContainer', popup).hide();
+                var browseButtonContainer = $('#browseButtonContainer', popup).hide();
 
                 var value = this.value;
 
-                if (value == "Browse") {
+                if (value == "Play") {
 
-                    okButtonContainer.show();
-                }
-                else if (value == "Play") {
+                    browseButtonContainer.show();
 
-                    playButtonContainer.show();
-                    queueButtonContainer.show();
-                }
-                else if (value == "Resume") {
+                    if (item.Type != 'Person' && item.Type != 'Genre' && item.Type != 'Studio' && item.Type != 'GameGenre' && item.Type != 'MusicGenre' && item.LocationType != 'Virtual') {
+                        playButtonContainer.show();
+                        queueButtonContainer.show();
+                    }
 
-                    playButtonContainer.show();
+                    if (!item.IsFolder && item.UserData && item.UserData.PlaybackPositionTicks) {
+                        resumeButtonContainer.show();
+                    }
                 }
                 else if (value == "PlayFromChapter" && item.Chapters && item.Chapters.length) {
 
@@ -330,7 +378,7 @@
                     }
                 }
 
-            });
+            }).trigger('change');
         });
     }
 
@@ -393,7 +441,7 @@
         $('.chkSelectPlayTime:first', elem).checked(true);
     }
 
-    function renderSessionsInPlayMenu(sessions, options, elem) {
+    function renderSessionsInPlayMenu(sessions, options, elem, popup) {
 
         if (!sessions.length) {
             elem.html('<p>There are currently no available media browser sessions to control.</p>');
@@ -408,39 +456,31 @@
         html += '<div style="margin-top:0;">';
         html += '<label for="selectCommand">Select command</label>';
         html += '<select id="selectCommand" data-mini="true">';
-        html += '<option value="Browse">Browse to</label>';
 
-        if (item.Type != 'Person' && item.Type != 'Genre' && item.Type != 'Studio' && item.Type != 'Artist') {
+        if (item.LocationType == 'Virtual') {
+            html += '<option value="Play" selected>Browse</label>';
+        } else {
+            html += '<option value="Play" selected>Play</label>';
+        }
 
-            if (item.IsFolder) {
-                html += '<option value="Play">Play All</label>';
-            } else {
-                html += '<option value="Play">Play</label>';
-            }
+        if (item.Chapters && item.Chapters.length) {
+            html += '<option value="PlayFromChapter">Play from scene</label>';
+        }
 
-            if (!item.IsFolder && item.UserData && item.UserData.PlaybackPositionTicks) {
-                html += '<option value="Resume">Resume</label>';
-            }
+        if (item.LocalTrailerCount) {
+            html += '<option value="Trailer">Play trailer</label>';
+        }
 
-            if (item.Chapters && item.Chapters.length) {
-                html += '<option value="PlayFromChapter">Play from scene</label>';
-            }
+        if (item.SpecialFeatureCount) {
+            html += '<option value="SpecialFeature">Play special feature</label>';
+        }
 
-            if (item.LocalTrailerCount) {
-                html += '<option value="Trailer">Play trailer</label>';
-            }
+        if (options.themeSongs) {
+            html += '<option value="ThemeSong">Play theme song</label>';
+        }
 
-            if (item.SpecialFeatureCount) {
-                html += '<option value="SpecialFeature">Play special feature</label>';
-            }
-
-            if (options.themeSongs) {
-                html += '<option value="ThemeSong">Play theme song</label>';
-            }
-
-            if (options.themeVideos) {
-                html += '<option value="ThemeVideo">Play theme video</label>';
-            }
+        if (options.themeVideos) {
+            html += '<option value="ThemeVideo">Play theme video</label>';
         }
 
         html += '</select>';
@@ -471,7 +511,7 @@
 
             var session = sessions[i];
 
-            html += '<tr class="trSession" data-sessionid="' + session.Id + '">';
+            html += '<tr class="trSession" data-queue="' + session.QueueableMediaTypes.join(',') + '" data-sessionid="' + session.Id + '">';
 
             html += '<td class="tdSelectSession"></td>';
             html += '<td>' + session.Client + '</td>';
@@ -513,7 +553,7 @@
         elem.html(html).trigger('create');
 
         $('.tdSelectSession', elem).html('<input type="radio" class="chkClient" name="chkClient" />');
-
+        
         $('.chkClient:first', elem).checked(true);
 
         $('#remoteControlFlyout').popup("reposition", { tolerance: 0 });
@@ -643,7 +683,32 @@
 
         html += '</div>';
 
-        html += '<p style="text-align:center;margin:.75em 0 0;">';
+        html += '<p class="sessionButtons" style="text-align:center;">';
+
+        html += '<button class="btnGoHome" type="button" data-icon="home" data-mini="true" data-inline="true">Home</button>';
+        html += '<button class="btnGoToSettings" type="button" data-icon="wrench" data-mini="true" data-inline="true">Settings</button>';
+
+        html += '</p>';
+
+        html += '<div class="commandsCollapsible" data-role="collapsible" data-content-theme="c" data-collapsed="true" data-mini="true" style="margin-top: 1em;display:none;">';
+        html += '<h4>Send Message</h4>';
+        html += '<div>';
+
+        html += '<p style="text-align:center;">';
+
+        html += '<div><label for="txtMessage">Message text</label></div>';
+
+        html += '<div style="display:inline-block;width:80%;"><input id="txtMessage" name="txtMessage" type="text" /></div>';
+
+        html += '<button type="button" data-icon="envelope" class="btnSendMessage" data-theme="a" data-mini="true" data-inline="true">Send</button>';
+
+        html += '</p>';
+
+        html += '</div>';
+        html += '</div>';
+
+
+        html += '<p style="text-align:center;margin:1em 0 0;">';
 
         html += '<button type="button" data-icon="delete" onclick="$(\'#remoteControlFlyout\').popup(\'close\');" data-theme="a" data-mini="true" data-inline="true">Close</button>';
 
@@ -682,6 +747,60 @@
             });
 
         }
+
+        $('.btnGoHome', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            ApiClient.sendSystemCommand(id, 'GoHome');
+        });
+
+        $('.btnGoToSettings', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            ApiClient.sendSystemCommand(id, 'GoToSettings');
+        });
+
+        $('.btnSendMessage', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            var messageText = $('#txtMessage', popup).val();
+
+            if (messageText) {
+                Dashboard.getCurrentUser().done(function (user) {
+
+                    ApiClient.sendMessageCommand(id, {
+                        Header: "Message from " + user.Name,
+                        Text: messageText
+                    });
+                });
+            } else {
+                $('#txtMessage', popup)[0].focus();
+            }
+        });
+
+        $('.btnVolumeDown', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            ApiClient.sendSystemCommand(id, 'VolumeDown');
+        });
+
+        $('.btnVolumeUp', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            ApiClient.sendSystemCommand(id, 'VolumeUp');
+        });
+
+        $('.btnToggleMute', popup).on('click', function () {
+
+            var id = $('#selectSession', popup).val();
+
+            ApiClient.sendSystemCommand(id, 'ToggleMute');
+        });
 
         $('.btnStop', popup).on('click', function () {
 
@@ -757,7 +876,7 @@
         html += '<span class="duration"></span>';
         html += '</div>';
 
-        html += '<input type="range" name="positionSlider" id="positionSlider" min="0" max="100" value="50" step=".1" style="display:none;" />';
+        html += '<div class="positionSliderContainer"><input type="range" name="positionSlider" id="positionSlider" min="0" max="100" value="50" step=".1" style="display:none;" /></div>';
         html += '</div>';
 
         html += '<div style="text-align:center; margin: 0 0 2em;">';
@@ -766,6 +885,9 @@
         html += '<span class="btnPlayParent"><button class="btnPlay" type="button" data-icon="play" data-inline="true" data-iconpos="notext">Play</button></span>';
         html += '<button class="btnStop" type="button" data-icon="stop" data-inline="true" data-iconpos="notext">Stop</button>';
         html += '<button class="btnNextTrack" type="button" data-icon="step-forward" data-inline="true" data-iconpos="notext">Next track</button>';
+        html += '<button class="btnVolumeDown" type="button" data-icon="volume-down" data-inline="true" data-iconpos="notext">Decrease volume</button>';
+        html += '<button class="btnVolumeUp" type="button" data-icon="volume-up" data-inline="true" data-iconpos="notext">Increase volume</button>';
+        html += '<button class="btnToggleMute" type="button" data-icon="volume-off" data-inline="true" data-iconpos="notext">Toggle mute</button>';
         html += '</div>';
 
 
@@ -785,10 +907,14 @@
 
             $('.nothingPlaying', popup).hide();
             $('.nowPlaying', popup).hide();
+            $('.commandsCollapsible', popup).hide();
+            $('.sessionButtons', popup).hide();
 
         }
         else if (session.NowPlayingItem) {
 
+            $('.commandsCollapsible', popup).show();
+            $('.sessionButtons', popup).show();
             $('.nothingPlaying', popup).hide();
 
             var elem = $('.nowPlaying', popup).show();
@@ -797,6 +923,8 @@
 
         } else {
 
+            $('.sessionButtons', popup).show();
+            $('.commandsCollapsible', popup).show();
             $('.nothingPlaying', popup).show();
             $('.nowPlaying', popup).hide();
         }
@@ -829,13 +957,19 @@
             imageContainer.hide();
         }
 
+        if (session.CanSeek) {
+            $('.positionSliderContainer', elem).show();
+        } else {
+            $('.positionSliderContainer', elem).hide();
+        }
+
         var time = session.NowPlayingPositionTicks || 0;
         var duration = item.RunTimeTicks || 0;
 
         var percent = duration ? 100 * time / duration : 0;
 
         var slider = $('#positionSlider', elem);
-        
+
         if (!slider[0].isSliding) {
             slider.val(percent).slider('refresh');
         }
@@ -906,12 +1040,17 @@
 
         var self = this;
 
+        var sessionQuery = {
+            SupportsRemoteControl: true,
+            ControllableByUserId: Dashboard.getCurrentUserId()
+        };
+
         self.showMenuForItem = function (options) {
-            showMenuForItem(options, ApiClient.getSessions({ SupportsRemoteControl: true }));
+            showMenuForItem(options, ApiClient.getSessions(sessionQuery));
         };
 
         self.showMenu = function () {
-            ApiClient.getSessions({ SupportsRemoteControl: true }).done(function (sessions) {
+            ApiClient.getSessions(sessionQuery).done(function (sessions) {
 
                 showMenu(sessions);
 

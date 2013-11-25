@@ -1,5 +1,5 @@
-﻿using System;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,8 +24,7 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="userData">The user data.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveUserData(Guid userId, string key, UserItemData userData,
-                                    CancellationToken cancellationToken);
+        Task SaveUserData(Guid userId, string key, UserItemData userData, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the user data.

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 
 namespace MediaBrowser.Controller.Drawing
 {
@@ -61,7 +60,15 @@ namespace MediaBrowser.Controller.Drawing
         /// <returns>ImageCodecInfo.</returns>
         private static ImageCodecInfo GetImageCodecInfo(string mimeType)
         {
-            return Encoders.FirstOrDefault(i => i.MimeType.Equals(mimeType, StringComparison.OrdinalIgnoreCase)) ?? Encoders.FirstOrDefault();
+            foreach (var encoder in Encoders)
+            {
+                if (string.Equals(encoder.MimeType, mimeType, StringComparison.OrdinalIgnoreCase))
+                {
+                    return encoder;
+                }
+            }
+
+            return Encoders.Length == 0 ? null : Encoders[0];
         }
 
         /// <summary>
@@ -160,7 +167,7 @@ namespace MediaBrowser.Controller.Drawing
             }
 
             // Graphics.FromImage will throw an exception if the PixelFormat is Indexed, so we need to handle that here
-            var thumbnail = bmp.PixelFormat == PixelFormat.Indexed ? new Bitmap(croppedWidth, croppedHeight) : new Bitmap(croppedWidth, croppedHeight, bmp.PixelFormat);
+            var thumbnail = new Bitmap(croppedWidth, croppedHeight, PixelFormat.Format32bppPArgb);
 
             // Preserve the original resolution
             thumbnail.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
@@ -171,7 +178,7 @@ namespace MediaBrowser.Controller.Drawing
                 thumbnailGraph.SmoothingMode = SmoothingMode.HighQuality;
                 thumbnailGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 thumbnailGraph.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                thumbnailGraph.CompositingMode = CompositingMode.SourceOver;
+                thumbnailGraph.CompositingMode = CompositingMode.SourceCopy;
 
                 thumbnailGraph.DrawImage(bmp,
                   new RectangleF(0, 0, croppedWidth, croppedHeight),

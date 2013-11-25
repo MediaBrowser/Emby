@@ -1,4 +1,8 @@
-﻿
+﻿using System.Runtime.Serialization;
+using MediaBrowser.Model.Dto;
+using System;
+using System.Collections.Generic;
+
 namespace MediaBrowser.Controller.Entities
 {
     /// <summary>
@@ -6,6 +10,14 @@ namespace MediaBrowser.Controller.Entities
     /// </summary>
     public class Person : BaseItem, IItemByName
     {
+        public Person()
+        {
+            UserItemCounts = new Dictionary<Guid, ItemByNameCounts>();
+        }
+
+        [IgnoreDataMember]
+        public Dictionary<Guid, ItemByNameCounts> UserItemCounts { get; set; }
+        
         /// <summary>
         /// Gets the user data key.
         /// </summary>
@@ -36,6 +48,12 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The type.</value>
         public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sort order - ascending
+        /// </summary>
+        /// <value>The sort order.</value>
+        public int? SortOrder { get; set; }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.

@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
@@ -9,6 +8,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace MediaBrowser.Providers.Music
 {
@@ -37,6 +36,7 @@ namespace MediaBrowser.Providers.Music
         private readonly IProviderManager _providerManager;
 
         internal static FanArtArtistProvider Current;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FanArtArtistProvider"/> class.
@@ -46,7 +46,7 @@ namespace MediaBrowser.Providers.Music
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="providerManager">The provider manager.</param>
         /// <exception cref="System.ArgumentNullException">httpClient</exception>
-        public FanArtArtistProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager)
+        public FanArtArtistProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             if (httpClient == null)
@@ -55,6 +55,7 @@ namespace MediaBrowser.Providers.Music
             }
             HttpClient = httpClient;
             _providerManager = providerManager;
+            _fileSystem = fileSystem;
 
             Current = this;
         }
@@ -115,6 +116,14 @@ namespace MediaBrowser.Providers.Music
             }
         }
 
+        public override MetadataProviderPriority Priority
+        {
+            get
+            {
+                return MetadataProviderPriority.Fourth;
+            }
+        }
+
         /// <summary>
         /// Needses the refresh internal.
         /// </summary>
@@ -128,43 +137,25 @@ namespace MediaBrowser.Providers.Music
                 return false;
             }
 
-            if (!ConfigurationManager.Configuration.DownloadMusicArtistImages.Art &&
-              !ConfigurationManager.Configuration.DownloadMusicArtistImages.Backdrops &&
-              !ConfigurationManager.Configuration.DownloadMusicArtistImages.Banner &&
-              !ConfigurationManager.Configuration.DownloadMusicArtistImages.Logo &&
-              !ConfigurationManager.Configuration.DownloadMusicArtistImages.Primary &&
-
-                // The fanart album provider depends on xml downloaded here, so honor it's settings too
-                !ConfigurationManager.Configuration.DownloadMusicAlbumImages.Disc &&
-                !ConfigurationManager.Configuration.DownloadMusicAlbumImages.Primary)
-            {
-                return false;
-            }
-
             return base.NeedsRefreshInternal(item, providerInfo);
         }
 
-        protected override DateTime CompareDate(BaseItem item)
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
             var musicBrainzId = item.GetProviderId(MetadataProviders.Musicbrainz);
 
             if (!string.IsNullOrEmpty(musicBrainzId))
             {
                 // Process images
-                var path = GetArtistDataPath(ConfigurationManager.ApplicationPaths, musicBrainzId);
+                var artistXmlPath = GetArtistDataPath(ConfigurationManager.CommonApplicationPaths, musicBrainzId);
+                artistXmlPath = Path.Combine(artistXmlPath, "fanart.xml");
 
-                var files = new DirectoryInfo(path)
-                    .EnumerateFiles("*.xml", SearchOption.TopDirectoryOnly)
-                    .Select(i => i.LastWriteTimeUtc)
-                    .ToArray();
+                var file = new FileInfo(artistXmlPath);
 
-                if (files.Length > 0)
-                {
-                    return files.Max();
-                }
+                return !file.Exists || _fileSystem.GetLastWriteTimeUtc(file) > providerInfo.LastRefreshed;
             }
 
-            return base.CompareDate(item);
+            return base.NeedsRefreshBasedOnCompareDate(item, providerInfo);
         }
 
         /// <summary>
@@ -173,36 +164,26 @@ namespace MediaBrowser.Providers.Music
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         /// <summary>
-        /// Gets the series data path.
+        /// Gets the artist data path.
         /// </summary>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="musicBrainzArtistId">The music brainz artist id.</param>
+        /// <param name="appPaths">The application paths.</param>
+        /// <param name="musicBrainzArtistId">The music brainz artist identifier.</param>
         /// <returns>System.String.</returns>
         internal static string GetArtistDataPath(IApplicationPaths appPaths, string musicBrainzArtistId)
         {
-            var seriesDataPath = Path.Combine(GetArtistDataPath(appPaths), musicBrainzArtistId);
+            var dataPath = Path.Combine(GetArtistDataPath(appPaths), musicBrainzArtistId);
 
-            if (!Directory.Exists(seriesDataPath))
-            {
-                Directory.CreateDirectory(seriesDataPath);
-            }
-
-            return seriesDataPath;
+            return dataPath;
         }
 
         /// <summary>
-        /// Gets the series data path.
+        /// Gets the artist data path.
         /// </summary>
-        /// <param name="appPaths">The app paths.</param>
+        /// <param name="appPaths">The application paths.</param>
         /// <returns>System.String.</returns>
         internal static string GetArtistDataPath(IApplicationPaths appPaths)
         {
             var dataPath = Path.Combine(appPaths.DataPath, "fanart-music");
-
-            if (!Directory.Exists(dataPath))
-            {
-                Directory.CreateDirectory(dataPath);
-            }
 
             return dataPath;
         }
@@ -235,17 +216,9 @@ namespace MediaBrowser.Providers.Music
               ConfigurationManager.Configuration.DownloadMusicArtistImages.Logo ||
               ConfigurationManager.Configuration.DownloadMusicArtistImages.Primary)
             {
-                if (File.Exists(xmlPath))
-                {
-                    await FetchFromXml(item, xmlPath, cancellationToken).ConfigureAwait(false);
-                }
-            }
+                var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualFanartArtistProvider.ProviderName).ConfigureAwait(false);
 
-            BaseProviderInfo data;
-            if (!item.ProviderData.TryGetValue(Id, out data))
-            {
-                data = new BaseProviderInfo();
-                item.ProviderData[Id] = data;
+                await FetchFromXml(item, images.ToList(), cancellationToken).ConfigureAwait(false);
             }
 
             SetLastRefreshed(item, DateTime.UtcNow);
@@ -267,6 +240,8 @@ namespace MediaBrowser.Providers.Music
 
             var xmlPath = Path.Combine(artistPath, "fanart.xml");
 
+            Directory.CreateDirectory(artistPath);
+            
             using (var response = await HttpClient.Get(new HttpRequestOptions
             {
                 Url = url,
@@ -275,7 +250,7 @@ namespace MediaBrowser.Providers.Music
 
             }).ConfigureAwait(false))
             {
-                using (var xmlFileStream = new FileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                using (var xmlFileStream = _fileSystem.GetFileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                 {
                     await response.CopyToAsync(xmlFileStream).ConfigureAwait(false);
                 }
@@ -286,94 +261,71 @@ namespace MediaBrowser.Providers.Music
         /// Fetches from XML.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <param name="xmlFilePath">The XML file path.</param>
+        /// <param name="images">The images.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task FetchFromXml(BaseItem item, string xmlFilePath, CancellationToken cancellationToken)
+        private async Task FetchFromXml(BaseItem item, List<RemoteImageInfo> images , CancellationToken cancellationToken)
         {
-            var doc = new XmlDocument();
-            doc.Load(xmlFilePath);
-
             cancellationToken.ThrowIfCancellationRequested();
 
-            string path;
-            var hd = ConfigurationManager.Configuration.DownloadHDFanArt ? "hd" : "";
-            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Logo && !item.HasImage(ImageType.Logo))
+            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Primary && !item.HasImage(ImageType.Primary))
             {
-                var node =
-                    doc.SelectSingleNode("//fanart/music/musiclogos/" + hd + "musiclogo/@url") ??
-                    doc.SelectSingleNode("//fanart/music/musiclogos/musiclogo/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Primary);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Logo, null, cancellationToken)
-                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
                 }
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Backdrops && item.BackdropImagePaths.Count == 0)
+            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Logo && !item.HasImage(ImageType.Logo))
             {
-                var nodes = doc.SelectNodes("//fanart/music/artistbackgrounds//@url");
-                if (nodes != null)
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Logo);
+
+                if (image != null)
                 {
-                    var numBackdrops = 0;
-                    item.BackdropImagePaths = new List<string>();
-                    foreach (XmlNode node in nodes)
-                    {
-                        path = node.Value;
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Backdrop, numBackdrops, cancellationToken)
-                                .ConfigureAwait(false);
-                            numBackdrops++;
-                            if (numBackdrops >= ConfigurationManager.Configuration.MaxBackdrops) break;
-                        }
-                    }
-
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Logo, null, cancellationToken).ConfigureAwait(false);
                 }
-
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Art && !item.HasImage(ImageType.Art))
             {
-                var node =
-                    doc.SelectSingleNode("//fanart/music/musicarts/" + hd + "musicart/@url") ??
-                    doc.SelectSingleNode("//fanart/music/musicarts/musicart/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Art);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Art, null, cancellationToken)
-                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Art, null, cancellationToken).ConfigureAwait(false);
                 }
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Banner && !item.HasImage(ImageType.Banner))
             {
-                var node = doc.SelectSingleNode("//fanart/music/musicbanners/" + hd + "musicbanner/@url") ??
-                           doc.SelectSingleNode("//fanart/music/musicbanners/musicbanner/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Banner);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Banner, null, cancellationToken)
-                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Banner, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Artist thumbs are actually primary images (they are square/portrait)
-            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Primary && !item.HasImage(ImageType.Primary))
+            var backdropLimit = ConfigurationManager.Configuration.MaxBackdrops;
+            if (ConfigurationManager.Configuration.DownloadMusicArtistImages.Backdrops &&
+                item.BackdropImagePaths.Count < backdropLimit)
             {
-                var node = doc.SelectSingleNode("//fanart/music/artistthumbs/artistthumb/@url");
-                path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                foreach (var image in images.Where(i => i.Type == ImageType.Backdrop))
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Primary, null, cancellationToken)
-                        .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Backdrop, null, cancellationToken)
+                                        .ConfigureAwait(false);
+
+                    if (item.BackdropImagePaths.Count >= backdropLimit) break;
                 }
             }
         }

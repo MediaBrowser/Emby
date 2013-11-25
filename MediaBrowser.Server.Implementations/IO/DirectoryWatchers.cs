@@ -1,10 +1,13 @@
-﻿using MediaBrowser.Common.ScheduledTasks;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Server.Implementations.ScheduledTasks;
+using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,7 +26,7 @@ namespace MediaBrowser.Server.Implementations.IO
         /// <summary>
         /// The file system watchers
         /// </summary>
-        private readonly ConcurrentDictionary<string, FileSystemWatcher> _fileSystemWatchers = new ConcurrentDictionary<string,FileSystemWatcher>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, FileSystemWatcher> _fileSystemWatchers = new ConcurrentDictionary<string, FileSystemWatcher>(StringComparer.OrdinalIgnoreCase);
         /// <summary>
         /// The update timer
         /// </summary>
@@ -64,7 +67,9 @@ namespace MediaBrowser.Server.Implementations.IO
         public async void RemoveTempIgnore(string path)
         {
             // This is an arbitraty amount of time, but delay it because file system writes often trigger events after RemoveTempIgnore has been called. 
-            await Task.Delay(1000).ConfigureAwait(false);
+            // Seeing long delays in some situations, especially over the network.
+            // Seeing delays up to 40 seconds, but not going to ignore changes for that long.
+            await Task.Delay(20000).ConfigureAwait(false);
 
             string val;
             _tempIgnoredPaths.TryRemove(path, out val);
@@ -85,10 +90,12 @@ namespace MediaBrowser.Server.Implementations.IO
         private ILibraryManager LibraryManager { get; set; }
         private IServerConfigurationManager ConfigurationManager { get; set; }
 
+        private readonly IFileSystem _fileSystem;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectoryWatchers" /> class.
         /// </summary>
-        public DirectoryWatchers(ILogManager logManager, ITaskManager taskManager, ILibraryManager libraryManager, IServerConfigurationManager configurationManager)
+        public DirectoryWatchers(ILogManager logManager, ITaskManager taskManager, ILibraryManager libraryManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
         {
             if (taskManager == null)
             {
@@ -99,6 +106,20 @@ namespace MediaBrowser.Server.Implementations.IO
             TaskManager = taskManager;
             Logger = logManager.GetLogger("DirectoryWatchers");
             ConfigurationManager = configurationManager;
+            _fileSystem = fileSystem;
+
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        /// <summary>
+        /// Handles the PowerModeChanged event of the SystemEvents control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="PowerModeChangedEventArgs"/> instance containing the event data.</param>
+        void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            Stop();
+            Start();
         }
 
         /// <summary>
@@ -111,7 +132,11 @@ namespace MediaBrowser.Server.Implementations.IO
 
             var pathsToWatch = new List<string> { LibraryManager.RootFolder.Path };
 
-            var paths = LibraryManager.RootFolder.Children.OfType<Folder>()
+            var paths = LibraryManager
+                .RootFolder
+                .Children
+                .OfType<Folder>()
+                .Where(i => i.LocationType != LocationType.Remote && i.LocationType != LocationType.Virtual)
                 .SelectMany(f =>
                     {
                         try
@@ -125,7 +150,10 @@ namespace MediaBrowser.Server.Implementations.IO
                         }
 
                     })
-                .Where(Path.IsPathRooted);
+                .Where(Path.IsPathRooted)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(i => i)
+                .ToList();
 
             foreach (var path in paths)
             {
@@ -280,47 +308,14 @@ namespace MediaBrowser.Server.Implementations.IO
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="ErrorEventArgs" /> instance containing the event data.</param>
-        async void watcher_Error(object sender, ErrorEventArgs e)
+        void watcher_Error(object sender, ErrorEventArgs e)
         {
             var ex = e.GetException();
             var dw = (FileSystemWatcher)sender;
 
             Logger.ErrorException("Error in Directory watcher for: " + dw.Path, ex);
 
-            //Network either dropped or, we are coming out of sleep and it hasn't reconnected yet - wait and retry
-            var retries = 0;
-            var success = false;
-            while (!success && retries < 10)
-            {
-                await Task.Delay(500).ConfigureAwait(false);
-
-                try
-                {
-                    dw.EnableRaisingEvents = false;
-                    dw.EnableRaisingEvents = true;
-                    success = true;
-                }
-                catch (ObjectDisposedException)
-                {
-                    RemoveWatcherFromList(dw);
-                    return;
-                }
-                catch (IOException)
-                {
-                    Logger.Warn("Network still unavailable...");
-                    retries++;
-                }
-                catch (ApplicationException)
-                {
-                    Logger.Warn("Network still unavailable...");
-                    retries++;
-                }
-            }
-            if (!success)
-            {
-                Logger.Warn("Unable to access network. Giving up.");
-                DisposeWatcher(dw);
-            }
+            DisposeWatcher(dw);
         }
 
         /// <summary>
@@ -329,6 +324,18 @@ namespace MediaBrowser.Server.Implementations.IO
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="FileSystemEventArgs" /> instance containing the event data.</param>
         void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                OnWatcherChanged(e);
+            }
+            catch (IOException ex)
+            {
+                Logger.ErrorException("IOException in watcher changed. Path: {0}", ex, e.FullPath);
+            }
+        }
+
+        private void OnWatcherChanged(FileSystemEventArgs e)
         {
             var name = e.Name;
 
@@ -340,7 +347,7 @@ namespace MediaBrowser.Server.Implementations.IO
 
             var nameFromFullPath = Path.GetFileName(e.FullPath);
             // Ignore certain files
-            if (!string.IsNullOrEmpty(nameFromFullPath) &&  _alwaysIgnoreFiles.Contains(nameFromFullPath, StringComparer.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(nameFromFullPath) && _alwaysIgnoreFiles.Contains(nameFromFullPath, StringComparer.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -353,18 +360,45 @@ namespace MediaBrowser.Server.Implementations.IO
 
             var tempIgnorePaths = _tempIgnoredPaths.Keys.ToList();
 
-            if (e.ChangeType == WatcherChangeTypes.Changed)
+            // If the parent of an ignored path has a change event, ignore that too
+            if (tempIgnorePaths.Any(i =>
             {
-                // If the parent of an ignored path has a change event, ignore that too
-                if (tempIgnorePaths.Any(i => string.Equals(Path.GetDirectoryName(i), e.FullPath, StringComparison.OrdinalIgnoreCase) || string.Equals(i, e.FullPath, StringComparison.OrdinalIgnoreCase)))
+                if (string.Equals(i, e.FullPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    return;
+                    Logger.Debug("Watcher ignoring change to {0}", e.FullPath);
+                    return true;
                 }
-            }
 
-            if (tempIgnorePaths.Contains(e.FullPath, StringComparer.OrdinalIgnoreCase))
+                // Go up a level
+                var parent = Path.GetDirectoryName(i);
+                if (string.Equals(parent, e.FullPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Debug("Watcher ignoring change to {0}", e.FullPath);
+                    return true;
+                }
+
+                // Go up another level
+                if (!string.IsNullOrEmpty(parent))
+                {
+                    parent = Path.GetDirectoryName(i);
+                    if (string.Equals(parent, e.FullPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Watcher ignoring change to {0}", e.FullPath);
+                        return true;
+                    }
+                }
+
+                if (i.StartsWith(e.FullPath, StringComparison.OrdinalIgnoreCase) || 
+                    e.FullPath.StartsWith(i, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Debug("Watcher ignoring change to {0}", e.FullPath);
+                    return true;
+                }
+
+                return false;
+
+            }))
             {
-                Logger.Debug("Watcher requested to ignore change to " + e.FullPath);
                 return;
             }
 
@@ -429,7 +463,7 @@ namespace MediaBrowser.Server.Implementations.IO
         {
             try
             {
-                var data = FileSystem.GetFileSystemInfo(path);
+                var data = _fileSystem.GetFileSystemInfo(path);
 
                 if (!data.Exists
                     || data.Attributes.HasFlag(FileAttributes.Directory)
@@ -445,7 +479,7 @@ namespace MediaBrowser.Server.Implementations.IO
 
             try
             {
-                using (new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                using (_fileSystem.GetFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     //file is not locked
                     return false;

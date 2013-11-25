@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,9 @@ namespace MediaBrowser.Server.Implementations.Providers
         /// <value>The metadata providers enumerable.</value>
         private BaseMetadataProvider[] MetadataProviders { get; set; }
 
+        private IImageProvider[] ImageProviders { get; set; }
+        private readonly IFileSystem _fileSystem;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProviderManager" /> class.
         /// </summary>
@@ -55,22 +59,25 @@ namespace MediaBrowser.Server.Implementations.Providers
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="directoryWatchers">The directory watchers.</param>
         /// <param name="logManager">The log manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        public ProviderManager(IHttpClient httpClient, IServerConfigurationManager configurationManager, IDirectoryWatchers directoryWatchers, ILogManager logManager, ILibraryManager libraryManager)
+        public ProviderManager(IHttpClient httpClient, IServerConfigurationManager configurationManager, IDirectoryWatchers directoryWatchers, ILogManager logManager, IFileSystem fileSystem)
         {
             _logger = logManager.GetLogger("ProviderManager");
             _httpClient = httpClient;
             ConfigurationManager = configurationManager;
             _directoryWatchers = directoryWatchers;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
         /// Adds the metadata providers.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public void AddParts(IEnumerable<BaseMetadataProvider> providers)
+        /// <param name="imageProviders">The image providers.</param>
+        public void AddParts(IEnumerable<BaseMetadataProvider> providers, IEnumerable<IImageProvider> imageProviders)
         {
             MetadataProviders = providers.OrderBy(e => e.Priority).ToArray();
+
+            ImageProviders = imageProviders.OrderByDescending(i => i.Priority).ToArray();
         }
 
         /// <summary>
@@ -92,13 +99,21 @@ namespace MediaBrowser.Server.Implementations.Providers
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            var enableInternetProviders = ConfigurationManager.Configuration.EnableInternetProviders;
+            var excludeTypes = ConfigurationManager.Configuration.InternetProviderExcludeTypes;
+
             // Run the normal providers sequentially in order of priority
-            foreach (var provider in MetadataProviders.Where(p => ProviderSupportsItem(p, item)))
+            foreach (var provider in MetadataProviders)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (!ProviderSupportsItem(provider, item))
+                {
+                    continue;
+                }
+
                 // Skip if internet providers are currently disabled
-                if (provider.RequiresInternet && !ConfigurationManager.Configuration.EnableInternetProviders)
+                if (provider.RequiresInternet && !enableInternetProviders)
                 {
                     continue;
                 }
@@ -110,14 +125,17 @@ namespace MediaBrowser.Server.Implementations.Providers
                 }
 
                 // Skip if internet provider and this type is not allowed
-                if (provider.RequiresInternet && ConfigurationManager.Configuration.EnableInternetProviders && ConfigurationManager.Configuration.InternetProviderExcludeTypes.Contains(item.GetType().Name, StringComparer.OrdinalIgnoreCase))
+                if (provider.RequiresInternet &&
+                    enableInternetProviders &&
+                    excludeTypes.Length > 0 &&
+                    excludeTypes.Contains(item.GetType().Name, StringComparer.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
                 // Put this check below the await because the needs refresh of the next tier of providers may depend on the previous ones running
                 //  This is the case for the fan art provider which depends on the movie and tv providers having run before them
-                if (provider.RequiresInternet && item.DontFetchMeta)
+                if (provider.RequiresInternet && item.DontFetchMeta && provider.EnforceDontFetchMetadata)
                 {
                     continue;
                 }
@@ -189,7 +207,11 @@ namespace MediaBrowser.Server.Implementations.Providers
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            _logger.Debug("Running {0} for {1}", provider.GetType().Name, item.Path ?? item.Name ?? "--Unknown--");
+            // Don't clog up the log with these providers
+            if (!(provider is IDynamicInfoProvider))
+            {
+                _logger.Debug("Running {0} for {1}", provider.GetType().Name, item.Path ?? item.Name ?? "--Unknown--");
+            }
 
             // This provides the ability to cancel just this one provider
             var innerCancellationTokenSource = new CancellationTokenSource();
@@ -219,7 +241,7 @@ namespace MediaBrowser.Server.Implementations.Providers
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("{0} failed refreshing {1}", ex, provider.GetType().Name, item.Name);
+                _logger.ErrorException("{0} failed refreshing {1} {2}", ex, provider.GetType().Name, item.Name, item.Path ?? string.Empty);
 
                 provider.SetLastRefreshed(item, DateTime.UtcNow, ProviderRefreshStatus.Failure);
 
@@ -254,10 +276,6 @@ namespace MediaBrowser.Server.Implementations.Providers
             {
                 throw new ArgumentNullException();
             }
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException();
-            }
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -277,7 +295,7 @@ namespace MediaBrowser.Server.Implementations.Providers
             {
                 using (dataToSave)
                 {
-                    using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                    using (var fs = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                     {
                         await dataToSave.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, cancellationToken).ConfigureAwait(false);
                     }
@@ -314,7 +332,7 @@ namespace MediaBrowser.Server.Implementations.Providers
 
             }).ConfigureAwait(false);
 
-            await SaveImage(item, response.Content, response.ContentType, type, imageIndex, cancellationToken)
+            await SaveImage(item, response.Content, response.ContentType, type, imageIndex, url, cancellationToken)
                     .ConfigureAwait(false);
         }
 
@@ -326,11 +344,92 @@ namespace MediaBrowser.Server.Implementations.Providers
         /// <param name="mimeType">Type of the MIME.</param>
         /// <param name="type">The type.</param>
         /// <param name="imageIndex">Index of the image.</param>
+        /// <param name="sourceUrl">The source URL.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken)
+        public Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, string sourceUrl, CancellationToken cancellationToken)
         {
-            return new ImageSaver(ConfigurationManager, _directoryWatchers).SaveImage(item, source, mimeType, type, imageIndex, cancellationToken);
+            return new ImageSaver(ConfigurationManager, _directoryWatchers, _fileSystem, _logger).SaveImage(item, source, mimeType, type, imageIndex, sourceUrl, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets the available remote images.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="providerName">Name of the provider.</param>
+        /// <param name="type">The type.</param>
+        /// <returns>Task{IEnumerable{RemoteImageInfo}}.</returns>
+        public async Task<IEnumerable<RemoteImageInfo>> GetAvailableRemoteImages(BaseItem item, CancellationToken cancellationToken, string providerName = null, ImageType? type = null)
+        {
+            var providers = GetImageProviders(item);
+
+            if (!string.IsNullOrEmpty(providerName))
+            {
+                providers = providers.Where(i => string.Equals(i.Name, providerName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var preferredLanguage = ConfigurationManager.Configuration.PreferredMetadataLanguage;
+
+            var tasks = providers.Select(i => Task.Run(async () =>
+            {
+                try
+                {
+                    if (type.HasValue)
+                    {
+                        var result = await i.GetImages(item, type.Value, cancellationToken).ConfigureAwait(false);
+
+                        return FilterImages(result, preferredLanguage);
+                    }
+                    else
+                    {
+                        var result = await i.GetAllImages(item, cancellationToken).ConfigureAwait(false);
+                        return FilterImages(result, preferredLanguage);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("{0} failed in GetImages for type {1}", ex, i.GetType().Name, item.GetType().Name);
+                    return new List<RemoteImageInfo>();
+                }
+
+            }, cancellationToken));
+
+            var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            return results.SelectMany(i => i);
+        }
+
+        private IEnumerable<RemoteImageInfo> FilterImages(IEnumerable<RemoteImageInfo> images, string preferredLanguage)
+        {
+            if (string.Equals(preferredLanguage, "en", StringComparison.OrdinalIgnoreCase))
+            {
+                images = images.Where(i => string.IsNullOrEmpty(i.Language) ||
+                                           string.Equals(i.Language, "en", StringComparison.OrdinalIgnoreCase));
+            }
+
+            return images;
+        }
+
+        /// <summary>
+        /// Gets the supported image providers.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{IImageProvider}.</returns>
+        public IEnumerable<IImageProvider> GetImageProviders(BaseItem item)
+        {
+            return ImageProviders.Where(i =>
+            {
+                try
+                {
+                    return i.Supports(item);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("{0} failed in Supports for type {1}", ex, i.GetType().Name, item.GetType().Name);
+                    return false;
+                }
+            });
         }
     }
 }

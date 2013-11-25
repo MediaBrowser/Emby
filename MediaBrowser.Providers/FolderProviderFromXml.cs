@@ -1,5 +1,7 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
@@ -16,10 +18,12 @@ namespace MediaBrowser.Providers
     public class FolderProviderFromXml : BaseMetadataProvider
     {
         public static FolderProviderFromXml Current;
+        private readonly IFileSystem _fileSystem;
 
-        public FolderProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager)
+        public FolderProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -30,7 +34,7 @@ namespace MediaBrowser.Providers
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         public override bool Supports(BaseItem item)
         {
-            return item is Folder && item.LocationType == LocationType.FileSystem;
+            return item.IsFolder && item.LocationType == LocationType.FileSystem;
         }
 
         /// <summary>
@@ -42,16 +46,17 @@ namespace MediaBrowser.Providers
             get { return MetadataProviderPriority.First; }
         }
 
-        /// <summary>
-        /// Override this to return the date that should be compared to the last refresh date
-        /// to determine if this provider should be re-fetched.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>DateTime.</returns>
-        protected override DateTime CompareDate(BaseItem item)
+        private const string XmlFileName = "folder.xml";
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
-            var entry = item.MetaLocation != null ? item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "folder.xml")) : null;
-            return entry != null ? entry.LastWriteTimeUtc : DateTime.MinValue;
+            var xml = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
+
+            if (xml == null)
+            {
+                return false;
+            }
+
+            return _fileSystem.GetLastWriteTimeUtc(xml) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -76,7 +81,7 @@ namespace MediaBrowser.Providers
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "folder.xml"));
+            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
 
             if (metadataFile != null)
             {

@@ -1,5 +1,7 @@
 ﻿using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
 using System;
@@ -18,9 +20,10 @@ namespace MediaBrowser.Server.Implementations.Library
         /// </summary>
         /// <param name="item">The item.</param>
         /// <param name="args">The args.</param>
-        public static void SetInitialItemValues(BaseItem item, ItemResolveArgs args)
+        /// <param name="fileSystem">The file system.</param>
+        public static void SetInitialItemValues(BaseItem item, ItemResolveArgs args, IFileSystem fileSystem)
         {
-            item.ResolveArgs = args;
+            item.ResetResolveArgs(args);
 
             // If the resolver didn't specify this
             if (string.IsNullOrEmpty(item.Path))
@@ -48,7 +51,7 @@ namespace MediaBrowser.Server.Implementations.Library
             item.DontFetchMeta = item.Path.IndexOf("[dontfetchmeta]", StringComparison.OrdinalIgnoreCase) != -1;
 
             // Make sure DateCreated and DateModified have values
-            EntityResolutionHelper.EnsureDates(item, args, true);
+            EntityResolutionHelper.EnsureDates(fileSystem, item, args, true);
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <summary>
         /// The MB name regex
         /// </summary>
-        private static readonly Regex MBNameRegex = new Regex("(\\[.*\\])", RegexOptions.Compiled);
+        private static readonly Regex MBNameRegex = new Regex(@"(\[.*?\])", RegexOptions.Compiled);
 
         /// <summary>
         /// Strip out attribute items and return just the name we will use for items
@@ -82,9 +85,14 @@ namespace MediaBrowser.Server.Implementations.Library
             var fn = isDirectory ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
 
             //now - strip out anything inside brackets
-            fn = MBNameRegex.Replace(fn, string.Empty);
+            fn = StripBrackets(fn);
 
             return fn;
+        }
+
+        public static string StripBrackets(string inputString) {
+            var output = MBNameRegex.Replace(inputString, string.Empty).Trim();
+            return Regex.Replace(output, @"\s+", " ");
         }
 
     }

@@ -43,7 +43,7 @@ namespace MediaBrowser.Model.Querying
         /// </summary>
         /// <value>The artists.</value>
         public string[] Artists { get; set; }
-        
+
         /// <summary>
         /// The sort order to return results with
         /// </summary>
@@ -92,6 +92,12 @@ namespace MediaBrowser.Model.Querying
         /// <value>The genres.</value>
         public string[] Genres { get; set; }
 
+        /// <summary>
+        /// Limit results to items containing specific genres
+        /// </summary>
+        /// <value>The genres.</value>
+        public string[] AllGenres { get; set; }
+        
         /// <summary>
         /// Limit results to items containing specific studios
         /// </summary>
@@ -177,11 +183,103 @@ namespace MediaBrowser.Model.Querying
         public string MaxOfficialRating { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemQuery"/> class.
+        /// Gets or sets the min index number.
+        /// </summary>
+        /// <value>The min index number.</value>
+        public int? MinIndexNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has parental rating.
+        /// </summary>
+        /// <value><c>null</c> if [has parental rating] contains no value, <c>true</c> if [has parental rating]; otherwise, <c>false</c>.</value>
+        public bool? HasParentalRating { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is HD.
+        /// </summary>
+        /// <value><c>null</c> if [is HD] contains no value, <c>true</c> if [is HD]; otherwise, <c>false</c>.</value>
+        public bool? IsHD { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent index number.
+        /// </summary>
+        /// <value>The parent index number.</value>
+        public int? ParentIndexNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the min players.
+        /// </summary>
+        /// <value>The min players.</value>
+        public int? MinPlayers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the max players.
+        /// </summary>
+        /// <value>The max players.</value>
+        public int? MaxPlayers { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the name starts with or greater.
+        /// </summary>
+        /// <value>The name starts with or greater.</value>
+        public string NameStartsWithOrGreater { get; set; }
+
+        /// <summary>
+        /// Gets or sets the album artist starts with or greater.
+        /// </summary>
+        /// <value>The album artist starts with or greater.</value>
+        public string AlbumArtistStartsWithOrGreater { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [include index containers].
+        /// </summary>
+        /// <value><c>true</c> if [include index containers]; otherwise, <c>false</c>.</value>
+        public bool IncludeIndexContainers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the location types.
+        /// </summary>
+        /// <value>The location types.</value>
+        public LocationType[] LocationTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is missing episode.
+        /// </summary>
+        /// <value><c>null</c> if [is missing episode] contains no value, <c>true</c> if [is missing episode]; otherwise, <c>false</c>.</value>
+        public bool? IsMissing { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is unaired episode.
+        /// </summary>
+        /// <value><c>null</c> if [is unaired episode] contains no value, <c>true</c> if [is unaired episode]; otherwise, <c>false</c>.</value>
+        public bool? IsUnaired { get; set; }
+
+        public bool? IsVirtualUnaired { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the exclude location types.
+        /// </summary>
+        /// <value>The exclude location types.</value>
+        public LocationType[] ExcludeLocationTypes { get; set; }
+
+        public double? MinCommunityRating { get; set; }
+        public double? MinCriticRating { get; set; }
+
+        public int? AiredDuringSeason { get; set; }
+
+        public DateTime? MinPremiereDate { get; set; }
+
+        public DateTime? MaxPremiereDate { get; set; }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemQuery" /> class.
         /// </summary>
         public ItemQuery()
         {
-            SortBy = new string[] {};
+            LocationTypes = new LocationType[] { };
+            ExcludeLocationTypes = new LocationType[] { };
+            
+            SortBy = new string[] { };
 
             Filters = new ItemFilter[] {};
 

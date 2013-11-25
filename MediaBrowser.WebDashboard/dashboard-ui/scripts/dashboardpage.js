@@ -75,21 +75,26 @@
 
         var html = '';
 
-        if (!dashboardInfo.ActiveConnections.length) {
-            html += '<p>There are no users currently connected.</p>';
-            $('#divConnections', page).html(html).trigger('create');
-            return;
-        }
+        var table = $('.tblConnections', page);
 
-        html += '<table class="tblConnections" style="border-collapse:collapse;">';
+        $('.trSession', table).addClass('deadSession');
 
         for (var i = 0, length = dashboardInfo.ActiveConnections.length; i < length; i++) {
 
             var connection = dashboardInfo.ActiveConnections[i];
 
-            html += '<tr>';
+            var rowId = 'trSession' + connection.Id;
 
-            html += '<td style="text-align:center;">';
+            var elem = $('#' + rowId, page);
+
+            if (elem.length) {
+                DashboardPage.updateSession(elem, connection);
+                continue;
+            }
+
+            html += '<tr class="trSession" id="' + rowId + '">';
+
+            html += '<td class="clientType" style="text-align:center;">';
             html += DashboardPage.getClientType(connection);
             html += '</td>';
 
@@ -99,25 +104,49 @@
             html += '<div>' + connection.DeviceName + '</div>';
             html += '</td>';
 
-            html += '<td>';
+            html += '<td class="username">';
             html += connection.UserName || '';
             html += '</td>';
 
-            html += '<td>';
-            html += DashboardPage.getNowPlayingImage(connection.NowPlayingItem);
+            var nowPlayingItem = connection.NowPlayingItem;
+
+            html += '<td class="nowPlayingImage">';
+            html += DashboardPage.getNowPlayingImage(nowPlayingItem);
             html += '</td>';
 
-            html += '<td>';
-            html += DashboardPage.getNowPlayingText(connection, connection.NowPlayingItem);
+            html += '<td class="nowPlayingText">';
+            html += DashboardPage.getNowPlayingText(connection, nowPlayingItem);
             html += '</td>';
 
             html += '</tr>';
 
         }
 
-        html += '</table>';
+        table.append(html).trigger('create');
 
-        $('#divConnections', page).html(html);
+        $('.deadSession', table).remove();
+    },
+
+    updateSession: function (row, session) {
+
+        row.removeClass('deadSession');
+
+        $('.username', row).html(session.UserName || '');
+
+        var nowPlayingItem = session.NowPlayingItem;
+
+        $('.nowPlayingText', row).html(DashboardPage.getNowPlayingText(session, nowPlayingItem)).trigger('create');
+
+        var imageRow = $('.nowPlayingImage', row);
+
+        var image = $('img', imageRow)[0];
+
+        var nowPlayingItemId = nowPlayingItem ? nowPlayingItem.Id : null;
+        var nowPlayingItemImageTag = nowPlayingItem ? nowPlayingItem.PrimaryImageTag : null;
+
+        if (!image || image.getAttribute('data-itemid') != nowPlayingItemId || image.getAttribute('data-tag') != nowPlayingItemImageTag) {
+            imageRow.html(DashboardPage.getNowPlayingImage(nowPlayingItem));
+        }
     },
 
     getClientType: function (connection) {
@@ -190,18 +219,16 @@
 
     getNowPlayingImage: function (item) {
 
-        if (item) {
+        if (item && item.PrimaryImageTag) {
+            var url = ApiClient.getImageUrl(item.Id, {
+                type: "Primary",
+                height: 100,
+                tag: item.PrimaryImageTag
+            });
 
-            if (item.PrimaryImageTag) {
+            url += "&xxx=" + new Date().getTime();
 
-                var url = ApiClient.getImageUrl(item.Id, {
-                    type: "Primary",
-                    height: 100,
-                    tag: item.PrimaryImageTag
-                });
-
-                return "<img class='clientNowPlayingImage' src='" + url + "' alt='" + item.Name + "' title='" + item.Name + "' />";
-            }
+            return "<img data-itemid='" + item.Id + "' data-tag='" + item.PrimaryImageTag + "' class='clientNowPlayingImage' src='" + url + "' alt='" + item.Name + "' title='" + item.Name + "' />";
         }
 
         return "";
@@ -213,7 +240,7 @@
 
         if (item) {
 
-            html += "<div>" + item.Name + "</div>";
+            html += "<div><a href='itemdetails.html?id=" + item.Id + "'>" + item.Name + "</a></div>";
 
             html += "<div>";
 
@@ -237,6 +264,9 @@
 
         if (!dashboardInfo.RunningTasks.length) {
             html += '<p>No tasks are currently running.</p>';
+            $('#runningTasksCollapsible', page).hide();
+        } else {
+            $('#runningTasksCollapsible', page).show();
         }
 
         for (var i = 0, length = dashboardInfo.RunningTasks.length; i < length; i++) {
@@ -288,7 +318,7 @@
 
         $('#appVersionNumber', page).html(dashboardInfo.SystemInfo.Version);
 
-        var port = ApiClient.serverPortNumber();
+        var port = dashboardInfo.SystemInfo.HttpServerPortNumber;
 
         if (port == dashboardInfo.SystemInfo.WebSocketPortNumber) {
             $('#ports', page).html('Running on port <b>' + port + '</b>');
@@ -314,6 +344,12 @@
         } else {
             $('#btnUpdateApplication', page).button('enable');
         }
+        
+        if (dashboardInfo.SystemInfo.CanSelfRestart) {
+            $('.btnRestartContainer', page).removeClass('hide');
+        } else {
+            $('.btnRestartContainer', page).addClass('hide');
+        }
 
         DashboardPage.renderApplicationUpdateInfo(dashboardInfo);
         DashboardPage.renderPluginUpdateInfo(dashboardInfo);
@@ -326,7 +362,7 @@
 
         $('#updateFail', page).hide();
 
-        if (dashboardInfo.SystemInfo.IsNetworkDeployed && !dashboardInfo.SystemInfo.HasPendingRestart) {
+        if (!dashboardInfo.SystemInfo.HasPendingRestart) {
 
             // Only check once every 10 mins
             if (DashboardPage.lastAppUpdateCheck && (new Date().getTime() - DashboardPage.lastAppUpdateCheck) < 600000) {
@@ -346,6 +382,14 @@
                     $('#pUpToDate', page).hide();
 
                     $('#pUpdateNow', page).show();
+                    
+                    if (dashboardInfo.SystemInfo.CanSelfUpdate) {
+                        $('#btnUpdateApplicationContainer', page).show();
+                        $('#btnManualUpdateContainer', page).hide();
+                    } else {
+                        $('#btnUpdateApplicationContainer', page).hide();
+                        $('#btnManualUpdateContainer', page).show();
+                    }
 
                     $('#newVersionNumber', page).html("Version " + version.versionStr + " is now available for download.");
                 }
@@ -426,7 +470,7 @@
 
                 html += '<p><strong>A new version of ' + update.name + ' is available!</strong></p>';
 
-                html += '<button type="button" data-icon="download" data-theme="b" onclick="DashboardPage.installPluginUpdate(this);" data-name="' + update.name + '" data-version="' + update.versionStr + '" data-classification="' + update.classification + '">Update Now</button>';
+                html += '<button type="button" data-icon="download" data-theme="b" onclick="DashboardPage.installPluginUpdate(this);" data-name="' + update.name + '" data-guid="' + update.guid + '" data-version="' + update.versionStr + '" data-classification="' + update.classification + '">Update Now</button>';
             }
 
             elem.html(html).trigger('create');
@@ -443,12 +487,13 @@
         $(button).button('disable');
 
         var name = button.getAttribute('data-name');
+        var guid = button.getAttribute('data-guid');
         var version = button.getAttribute('data-version');
         var classification = button.getAttribute('data-classification');
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.installPlugin(name, classification, version).done(function () {
+        ApiClient.installPlugin(name, guid, classification, version).done(function () {
 
             Dashboard.hideLoadingMsg();
         });
@@ -477,14 +522,28 @@
         });
 
     },
-    
+
     restart: function () {
 
         Dashboard.confirm("Are you sure you wish to restart Media Browser Server?", "Restart", function (result) {
-            
+
             if (result) {
                 $('#btnRestartServer').button('disable');
+                $('#btnShutdown').button('disable');
                 Dashboard.restartServer();
+            }
+
+        });
+    },
+
+    shutdown: function () {
+
+        Dashboard.confirm("Are you sure you wish to shutdown Media Browser Server?", "Shutdown", function (result) {
+
+            if (result) {
+                $('#btnRestartServer').button('disable');
+                $('#btnShutdown').button('disable');
+                ApiClient.shutdownServer();
             }
 
         });

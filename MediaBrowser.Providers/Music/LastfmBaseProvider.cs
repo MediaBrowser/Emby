@@ -1,15 +1,12 @@
 ﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Providers.Music
 {
@@ -18,7 +15,7 @@ namespace MediaBrowser.Providers.Music
     /// </summary>
     public abstract class LastfmBaseProvider : BaseMetadataProvider
     {
-        protected static readonly SemaphoreSlim LastfmResourcePool = new SemaphoreSlim(4, 4);
+        internal static readonly SemaphoreSlim LastfmResourcePool = new SemaphoreSlim(4, 4);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LastfmBaseProvider" /> class.
@@ -47,7 +44,7 @@ namespace MediaBrowser.Providers.Music
         {
             get
             {
-                return "5";
+                return "8";
             }
         }
 
@@ -95,36 +92,6 @@ namespace MediaBrowser.Providers.Music
         protected static string ApiKey = "7b76553c3eb1d341d642755aecc40a33";
 
         /// <summary>
-        /// Fetches the items data.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Task.</returns>
-        protected virtual async Task FetchData(BaseItem item, CancellationToken cancellationToken)
-        {
-            var id = item.GetProviderId(MetadataProviders.Musicbrainz) ?? await FindId(item, cancellationToken).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                Logger.Debug("LastfmProvider - getting info for {0}", item.Name);
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                item.SetProviderId(MetadataProviders.Musicbrainz, id);
-
-                await FetchLastfmData(item, id, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                Logger.Info("LastfmProvider could not find " + item.Name + ". Check name on Last.fm.");
-            }
-            
-        }
-
-        protected abstract Task<string> FindId(BaseItem item, CancellationToken cancellationToken);
-
-        protected abstract Task FetchLastfmData(BaseItem item, string id, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Encodes an URL.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -132,22 +99,6 @@ namespace MediaBrowser.Providers.Music
         protected static string UrlEncode(string name)
         {
             return WebUtility.UrlEncode(name);
-        }
-
-        /// <summary>
-        /// Fetches metadata and returns true or false indicating if any work that requires persistence was done
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="force">if set to <c>true</c> [force].</param>
-        /// <param name="cancellationToken">The cancellation token</param>
-        /// <returns>Task{System.Boolean}.</returns>
-        public override async Task<bool> FetchAsync(BaseItem item, bool force, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            await FetchData(item, cancellationToken).ConfigureAwait(false);
-            SetLastRefreshed(item, DateTime.UtcNow);
-            return true;
         }
     }
 
@@ -187,7 +138,13 @@ namespace MediaBrowser.Providers.Music
         public List<LastfmFormationInfo> formationlist { get; set; }
     }
 
-    public class LastfmArtist
+    public class LastFmImage
+    {
+        public string url { get; set; }
+        public string size { get; set; }
+    }
+
+    public class LastfmArtist : IHasLastFmImages
     {
         public string name { get; set; }
         public string mbid { get; set; }
@@ -198,10 +155,11 @@ namespace MediaBrowser.Providers.Music
         public List<LastfmArtist> similar { get; set; }
         public LastfmTags tags { get; set; }
         public LastFmBio bio { get; set; }
+        public List<LastFmImage> image { get; set; }
     }
 
 
-    public class LastfmAlbum
+    public class LastfmAlbum : IHasLastFmImages
     {
         public string name { get; set; }
         public string artist { get; set; }
@@ -212,6 +170,12 @@ namespace MediaBrowser.Providers.Music
         public int playcount { get; set; }
         public LastfmTags toptags { get; set; }
         public LastFmBio wiki { get; set; }
+        public List<LastFmImage> image { get; set; }
+    }
+
+    public interface IHasLastFmImages
+    {
+        List<LastFmImage> image { get; set; }
     }
 
     public class LastfmGetAlbumResult

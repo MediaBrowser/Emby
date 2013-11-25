@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace MediaBrowser.Controller.Entities.Audio
@@ -8,11 +9,12 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// <summary>
     /// Class Audio
     /// </summary>
-    public class Audio : BaseItem, IHasMediaStreams
+    public class Audio : BaseItem, IHasMediaStreams, IHasAlbumArtist, IHasArtist, IHasMusicGenres
     {
         public Audio()
         {
             MediaStreams = new List<MediaStream>();
+            Artists = new List<string>();
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// <summary>
         /// The unknown album
         /// </summary>
-        private static readonly MusicAlbum UnknownAlbum = new MusicAlbum {Name = "<Unknown>"};
+        private static readonly MusicAlbum UnknownAlbum = new MusicAlbum { Name = "<Unknown>" };
         /// <summary>
         /// Override this to return the folder that should be used to construct a container
         /// for this item in an index.  GroupInIndex should be true as well.
@@ -49,7 +51,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             get
             {
-                return Parent is MusicAlbum ? Parent : Album != null ? new MusicAlbum {Name = Album, PrimaryImagePath = PrimaryImagePath } : UnknownAlbum;
+                return Parent is MusicAlbum ? Parent : Album != null ? new MusicAlbum { Name = Album, PrimaryImagePath = PrimaryImagePath } : UnknownAlbum;
             }
         }
 
@@ -57,7 +59,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// Gets or sets the artist.
         /// </summary>
         /// <value>The artist.</value>
-        public string Artist { get; set; }
+        public List<string> Artists { get; set; }
 
         /// <summary>
         /// Gets or sets the album.
@@ -99,7 +101,31 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// <returns><c>true</c> if the specified name has artist; otherwise, <c>false</c>.</returns>
         public bool HasArtist(string name)
         {
-            return string.Equals(Artist, name, StringComparison.OrdinalIgnoreCase) || string.Equals(AlbumArtist, name, StringComparison.OrdinalIgnoreCase);
+            return Artists.Contains(name, StringComparer.OrdinalIgnoreCase) || string.Equals(AlbumArtist, name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Gets the user data key.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public override string GetUserDataKey()
+        {
+            var parent = Parent as MusicAlbum;
+
+            if (parent != null)
+            {
+                var parentKey = parent.GetUserDataKey();
+
+                if (IndexNumber.HasValue)
+                {
+                    var songKey = (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("0000 - ") : "")
+                                  + (IndexNumber.Value.ToString("0000 - "));
+
+                    return parentKey + songKey;
+                }
+            }
+
+            return base.GetUserDataKey();
         }
     }
 }

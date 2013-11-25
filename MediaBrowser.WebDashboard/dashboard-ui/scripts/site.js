@@ -72,9 +72,9 @@ var Dashboard = {
         if (header.length) {
             // Re-render the header
             header.remove();
-            
+
             if (Dashboard.getUserPromise) {
-                Dashboard.getUserPromise.done(function(user) {
+                Dashboard.getUserPromise.done(function (user) {
                     Dashboard.ensureHeader(page, user);
                 });
             } else {
@@ -158,7 +158,7 @@ var Dashboard = {
             Dashboard.getCurrentUser().done(function (currentUser) {
 
                 if (currentUser.Configuration.IsAdministrator) {
-                    Dashboard.showServerRestartWarning();
+                    Dashboard.showServerRestartWarning(info);
                 }
             });
 
@@ -252,10 +252,13 @@ var Dashboard = {
 
     },
 
-    showServerRestartWarning: function () {
+    showServerRestartWarning: function (systemInfo) {
 
         var html = '<span style="margin-right: 1em;">Please restart Media Browser Server to finish updating.</span>';
-        html += '<button type="button" data-icon="refresh" onclick="$(this).button(\'disable\');Dashboard.restartServer();" data-theme="b" data-inline="true" data-mini="true">Restart Server</button>';
+        
+        if (systemInfo.CanSelfRestart) {
+            html += '<button type="button" data-icon="refresh" onclick="$(this).button(\'disable\');Dashboard.restartServer();" data-theme="b" data-inline="true" data-mini="true">Restart Server</button>';
+        }
 
         Dashboard.showFooterNotification({ id: "serverRestartWarning", html: html, forceShow: true, allowHide: false });
     },
@@ -275,7 +278,15 @@ var Dashboard = {
 
     reloadPage: function () {
 
-        window.location.href = window.location.href;
+        var currentUrl = window.location.toString().toLowerCase();
+        
+        // If they're on a plugin config page just go back to the dashboard
+        // The plugin may not have been loaded yet, or could have been uninstalled
+        if (currentUrl.indexOf('configurationpage') != -1) {
+            window.location.href = "dashboard.html";
+        } else {
+            window.location.href = window.location.href;
+        }
     },
 
     hideDashboardVersionWarning: function () {
@@ -518,6 +529,7 @@ var Dashboard = {
 
     resetPluginSecurityInfo: function () {
         Dashboard.getPluginSecurityInfoPromise = null;
+        Dashboard.validateCurrentUser();
     },
 
     ensureHeader: function (page, user) {
@@ -700,8 +712,6 @@ var Dashboard = {
         systemInfo = systemInfo || Dashboard.lastSystemInfo;
 
         ApiClient.openWebSocket(systemInfo.WebSocketPortNumber);
-
-        $(ApiClient).on("websocketmessage", Dashboard.onWebSocketMessageReceived);
     },
 
     onWebSocketMessageReceived: function (e, data) {
@@ -710,6 +720,12 @@ var Dashboard = {
 
         if (msg.MessageType === "LibraryChanged") {
             Dashboard.processLibraryUpdateNotification(msg.Data);
+        }
+        else if (msg.MessageType === "ServerShuttingDown") {
+            Dashboard.hideServerRestartWarning();
+        }
+        else if (msg.MessageType === "ServerRestarting") {
+            Dashboard.hideServerRestartWarning();
         }
         else if (msg.MessageType === "UserDeleted") {
             Dashboard.validateCurrentUser();
@@ -812,6 +828,49 @@ var Dashboard = {
                 MediaPlayer.previousTrack();
             }
         }
+        else if (msg.MessageType === "SystemCommand") {
+
+            if (msg.Data === 'GoHome') {
+                Dashboard.navigate('index.html');
+            }
+            else if (msg.Data === 'GoToSettings') {
+                Dashboard.navigate('dashboard.html');
+            }
+            else if (msg.Data === 'Mute') {
+                MediaPlayer.mute();
+            }
+            else if (msg.Data === 'Unmute') {
+                MediaPlayer.unmute();
+            }
+            else if (msg.Data === 'VolumeUp') {
+                MediaPlayer.volumeUp();
+            }
+            else if (msg.Data === 'VolumeDown') {
+                MediaPlayer.volumeDown();
+            }
+            else if (msg.Data === 'ToggleMute') {
+                MediaPlayer.toggleMute();
+            }
+        }
+        else if (msg.MessageType === "MessageCommand") {
+
+            var cmd = msg.Data;
+
+            if (cmd.TimeoutMs && WebNotifications.supported()) {
+                var notification = {
+                    title: cmd.Header,
+                    body: cmd.Text,
+                    timeout: cmd.TimeoutMs
+                };
+
+                WebNotifications.show(notification);
+            }
+            else {
+                Dashboard.showFooterNotification({ html: "<b>" + cmd.Header + ":&nbsp;&nbsp;&nbsp;</b>" + cmd.Text, timeout: cmd.TimeoutMs });
+            }
+
+        }
+
     },
 
     onBrowseCommand: function (cmd) {
@@ -837,8 +896,8 @@ var Dashboard = {
         else if (type == "person") {
             url = "itembynamedetails.html?person=" + ApiClient.encodeName(cmd.ItemName) + "&context=" + context;
         }
-        else if (type == "artist") {
-            url = "itembynamedetails.html?artist=" + ApiClient.encodeName(cmd.ItemName) + "&context=" + (context || "music");
+        else if (type == "musicartist") {
+            url = "itembynamedetails.html?musicartist=" + ApiClient.encodeName(cmd.ItemName) + "&context=" + (context || "music");
         }
 
         if (url) {
@@ -1061,12 +1120,68 @@ var Dashboard = {
         parts.push(seconds);
 
         return parts.join(':');
+    },
+    
+    ratePackage: function(link) {
+        var id = link.getAttribute('data-id');
+        var name = link.getAttribute('data-name');
+        var rating = link.getAttribute('data-rating');
+
+        var dialog = new RatingDialog($.mobile.activePage);
+        dialog.show({
+            header: "Rate and review " + name,
+            id: id,
+            rating: rating,
+            callback: function(review) {
+                console.log(review);
+                dialog.close();
+
+                ApiClient.createPackageReview(review).done(function() {
+                    Dashboard.alert("Thank you for your review");
+                });
+            }
+        });
+    },
+    
+    getStoreRatingHtml: function(rating, id, name, noLinks) {
+
+        var html = "<div style='margin-left: 5px; margin-right: 5px; display: inline-block'>";
+        if (!rating) rating = 0;
+
+        for (var i = 1; i <= 5; i++) {
+            var title = noLinks ? rating + " stars" : "Rate " + i + (i > 1 ? " stars" : " star");
+            
+            html += noLinks ? "" : "<a href='#' data-id=" + id + " data-name='" + name + "' data-rating=" + i + " onclick='Dashboard.ratePackage(this);' >";
+            if (rating <= i - 1) {
+                html += "<div class='storeStarRating emptyStarRating' title='" + title + "'></div>";
+            } else if (rating < i) {
+                html += "<div class='storeStarRating halfStarRating' title='" + title + "'></div>";
+            } else {
+                html += "<div class='storeStarRating' title='" + title + "'></div>";
+            }
+            html += noLinks ? "" : "</a>";
+        }
+
+        html += "</div>";
+
+        return html;
     }
-
-
 };
 
+if (!window.WebSocket) {
+
+    alert("This browser does not support web sockets. For a better experience, try a newer browser such as Chrome (android, desktop), Firefox, IE10, Safari (iOS) or Opera.");
+}
+
+if (!IsStorageEnabled()) {
+    alert("This browser does not support local storage or is running in private mode. For a better experience, try a newer browser such as Chrome (android, desktop), Firefox, IE10, Safari (iOS) or Opera.");
+}
+
+
 var ApiClient = MediaBrowser.ApiClient.create("Dashboard", window.dashboardVersion);
+
+$(ApiClient).on("websocketmessage", Dashboard.onWebSocketMessageReceived);
+
 
 $(function () {
 
@@ -1109,10 +1224,13 @@ $(function () {
 
     $(document.body).append(footerHtml);
 
-    if (!window.WebSocket) {
+    $(window).on("beforeunload", function () {
 
-        alert("This browser does not support web sockets. For a better experience, try a newer browser such as Chrome (android, desktop), Firefox, IE10, Safari (iOS) or Opera.");
-    }
+        // Close the connection gracefully when possible
+        if (ApiClient.isWebSocketOpen() && !MediaPlayer.isPlaying()) {
+            ApiClient.closeWebSocket();
+        }
+    });
 });
 
 Dashboard.jQueryMobileInit();
@@ -1131,10 +1249,9 @@ $(document).on('pagebeforeshow', ".page", function () {
             Dashboard.logout();
             return;
         }
-        
+
         Dashboard.ensureHeader(page);
         Dashboard.ensurePageTitle(page);
-        Dashboard.refreshSystemInfoFromServer();
     }
 
     else {
@@ -1143,13 +1260,17 @@ $(document).on('pagebeforeshow', ".page", function () {
 
             if (user.Configuration.IsAdministrator) {
                 Dashboard.ensureToolsMenu(page);
+            } else if (page.hasClass('adminPage')) {
+                window.location.replace("index.html");
             }
 
             Dashboard.ensureHeader(page, user);
             Dashboard.ensurePageTitle(page);
         });
-
-        Dashboard.refreshSystemInfoFromServer();
     }
 
+    if (!ApiClient.isWebSocketOpen()) {
+        Dashboard.refreshSystemInfoFromServer();
+    }
 });
+

@@ -5,11 +5,39 @@
         TargetSystems: 'Server'
     };
 
+    function getApps() {
+
+        var apps = [];
+
+        apps.push({
+            type: "UserInstalled",
+            name: "MBKinect",
+            category: "Voice Control",
+            isApp: true,
+            tileColor: "#050810",
+            thumbImage: "https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/images/mbkinect/thumb.png",
+            externalUrl: "http://mediabrowser3.com/community/index.php?/topic/850-media-browser-kinect-sensor-plug-in-support/",
+            isPremium: false
+        });
+
+        return apps;
+    }
+
+    function getAppsPromise() {
+
+        var deferred = $.Deferred();
+
+        deferred.resolveWith(null, [[getApps()]]);
+
+        return deferred.promise();
+    }
+
     function reloadList(page) {
 
         Dashboard.showLoadingMsg();
 
-        var promise1 = ApiClient.getAvailablePlugins(query);
+        var promise1 = query.TargetSystems == "Apps" ? getAppsPromise() : ApiClient.getAvailablePlugins(query);
+
         var promise2 = ApiClient.getInstalledPlugins();
 
         $.when(promise1, promise2).done(function (response1, response2) {
@@ -42,16 +70,19 @@
             var plugin = availablePlugins[i];
 
             var category = plugin.category || "General";
-            
+
             if (category != currentCategory) {
                 html += '<h2 style="margin: .5em 0 0;">' + category + '</h2>';
                 currentCategory = category;
             }
 
-            html += "<a class='posterItem smallBackdropPosterItem transparentPosterItem borderlessPosterItem' href='addPlugin.html?name=" + encodeURIComponent(plugin.name) + "'>";
+            var href = plugin.externalUrl ? plugin.externalUrl : "addPlugin.html?name=" + encodeURIComponent(plugin.name) + "&guid=" + plugin.guid;
+            var target = plugin.externalUrl ? ' target="_blank"' : '';
+
+            html += "<div class='storeItem'><a class='posterItem storePosterItem transparentPosterItem borderlessPosterItem' style='background: #D4D4D4!important' href='" + href + "' " + target + ">";
 
             if (plugin.thumbImage) {
-                html += '<div class="posterItemImage" style="background-image:url(\'' + plugin.thumbImage + '\');"></div>';
+                html += '<div class="posterItemImage" style="background-image:url(\'' + plugin.thumbImage + '\');background-size:cover;"></div>';
             } else {
                 html += '<div class="posterItemImage defaultPosterItemImage" style="background-image:url(\'css/images/items/list/collection.png\');"></div>';
             }
@@ -64,23 +95,32 @@
                 }
             }
 
-            var color = plugin.tileColor || LibraryBrowser.getMetroColor(plugin.name);
+            html += "</a>";
 
-            html += "<div class='posterItemText posterItemTextCentered' style='background:" + color + "'>";
+            html += "<div class='posterItemStoreText' style='font-weight: bold'>";
 
-            var installedPlugin = installedPlugins.filter(function (ip) {
+            var installedPlugin = plugin.isApp ? null : installedPlugins.filter(function (ip) {
                 return ip.Name == plugin.name;
             })[0];
 
             if (installedPlugin) {
-                html += "<span class='installedPluginTitle'>" + plugin.name + "</span> (Installed)";
+                html += plugin.name + " (Installed)";
             } else {
                 html += plugin.name;
             }
-
+            
             html += "</div>";
 
-            html += "</a>";
+            html += "<div class='posterItemStoreText' >";
+            html += plugin.price > 0 ? "$" + plugin.price.toFixed(2) : "Free";
+            html += Dashboard.getStoreRatingHtml(plugin.avgRating, plugin.id, plugin.name);
+
+            html += "<span class='storeReviewCount'>";
+            html += " " + plugin.totalRatings + " Reviews";
+            html += "</span>";
+
+            html += "</div>";
+            html += "</div>";
 
             pluginhtml += html;
 
@@ -95,7 +135,6 @@
         Dashboard.hideLoadingMsg();
     }
 
-
     $(document).on('pageinit', "#pluginCatalogPage", function () {
 
         var page = this;
@@ -105,7 +144,7 @@
         $('.chkPremiumFilter', page).on('change', function () {
 
             if (this.checked) {
-                query.IsPremium = true;
+                query.IsPremium = false;
             } else {
                 query.IsPremium = null;
             }
@@ -121,6 +160,8 @@
     }).on('pageshow', "#pluginCatalogPage", function () {
 
         var page = this;
+
+        $('#selectTargetSystem', page).val(query.TargetSystems).selectmenu('refresh');
 
         // Reset form values using the last used query
         $('.chkPremiumFilter', page).each(function () {

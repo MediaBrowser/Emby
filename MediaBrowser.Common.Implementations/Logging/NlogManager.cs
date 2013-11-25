@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using MediaBrowser.Model.Logging;
+﻿using MediaBrowser.Model.Logging;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace MediaBrowser.Common.Implementations.Logging
 {
@@ -43,6 +42,41 @@ namespace MediaBrowser.Common.Implementations.Logging
         {
             LogDirectory = logDirectory;
             LogFilePrefix = logFileNamePrefix;
+        }
+
+        private LogSeverity _severity = LogSeverity.Debug;
+        public LogSeverity LogSeverity
+        {
+            get
+            {
+                return _severity;
+            }
+            set
+            {
+                var changed = _severity != value;
+
+                _severity = value;
+
+                if (changed)
+                {
+                    UpdateLogLevel(value);
+                }
+            }
+        }
+
+        private void UpdateLogLevel(LogSeverity newLevel)
+        {
+            var level = GetLogLevel(newLevel);
+
+            var rules = LogManager.Configuration.LoggingRules;
+
+            foreach (var rule in rules)
+            {
+                if (!rule.IsLoggingEnabledForLevel(level))
+                {
+                    rule.EnableLoggingForLevel(level);
+                }
+            }
         }
 
         /// <summary>
@@ -154,20 +188,27 @@ namespace MediaBrowser.Common.Implementations.Logging
 
             AddFileTarget(LogFilePath, level);
 
+            LogSeverity = level;
+
             if (LoggerLoaded != null)
             {
-                Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        LoggerLoaded(this, EventArgs.Empty);
-                    }
-                    catch (Exception ex)
-                    {
-                        GetLogger("Logger").ErrorException("Error in LoggerLoaded event", ex);
-                    }
-                });
+                    LoggerLoaded(this, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    GetLogger("Logger").ErrorException("Error in LoggerLoaded event", ex);
+                }
             }
+        }
+
+        /// <summary>
+        /// Flushes this instance.
+        /// </summary>
+        public void Flush()
+        {
+            LogManager.Flush();
         }
     }
 }

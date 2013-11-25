@@ -28,6 +28,8 @@ namespace MediaBrowser.Server.Implementations.WebSocket
         /// </summary>
         private readonly ILogger _logger;
 
+        private bool _hasStopped;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AlchemyServer" /> class.
         /// </summary>
@@ -54,13 +56,24 @@ namespace MediaBrowser.Server.Implementations.WebSocket
         /// <param name="portNumber">The port number.</param>
         public void Start(int portNumber)
         {
-            WebSocketServer = new WebSocketServer(portNumber, IPAddress.Any)
-            {
-                OnConnected = OnAlchemyWebSocketClientConnected,
-                TimeOut = TimeSpan.FromHours(12)
-            };
+            _logger.Info("Starting Alchemy web socket server on port {0}", portNumber);
 
-            WebSocketServer.Start();
+            try
+            {
+                WebSocketServer = new WebSocketServer(portNumber, IPAddress.Any)
+                {
+                    OnConnected = OnAlchemyWebSocketClientConnected,
+                    TimeOut = TimeSpan.FromHours(24)
+                };
+
+                WebSocketServer.Start();
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("The web socket server is unable to start on port {0} due to a Socket error. This can occasionally happen when the operating system takes longer than usual to release the IP bindings from the previous session. This can take up to five minutes. Please try waiting or rebooting the system.", ex, portNumber);
+
+                throw;
+            }
 
             Port = portNumber;
 
@@ -73,6 +86,11 @@ namespace MediaBrowser.Server.Implementations.WebSocket
         /// <param name="context">The context.</param>
         private void OnAlchemyWebSocketClientConnected(UserContext context)
         {
+            if (_hasStopped)
+            {
+                return;
+            }
+
             if (WebSocketConnected != null)
             {
                 var socket = new AlchemyWebSocket(context, _logger);
@@ -90,6 +108,10 @@ namespace MediaBrowser.Server.Implementations.WebSocket
         /// </summary>
         public void Stop()
         {
+            if (WebSocketServer != null)
+            {
+                WebSocketServer.Stop();
+            }
         }
 
         /// <summary>
@@ -101,13 +123,26 @@ namespace MediaBrowser.Server.Implementations.WebSocket
             GC.SuppressFinalize(this);
         }
 
+        private readonly object _syncLock = new object();
+
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="dispose"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool dispose)
         {
-            
+            _hasStopped = true;
+
+            lock (_syncLock)
+            {
+                if (WebSocketServer != null)
+                {
+                    // Calling dispose will also call stop
+                    _logger.Debug("Disposing alchemy server");
+                    WebSocketServer.Stop();
+                    WebSocketServer = null;
+                }
+            }
         }
     }
 }

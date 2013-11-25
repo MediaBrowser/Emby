@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.Logging;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -118,43 +118,44 @@ namespace MediaBrowser.Server.Implementations.ServerManager
             _jsonSerializer = jsonSerializer;
             _applicationHost = applicationHost;
             ConfigurationManager = configurationManager;
-
-            ConfigurationManager.ConfigurationUpdated += ConfigurationUpdated;
         }
 
         /// <summary>
         /// Starts this instance.
         /// </summary>
-        public void Start()
+        public void Start(string urlPrefix, bool enableHttpLogging)
         {
-            ReloadHttpServer();
+            ReloadHttpServer(urlPrefix, enableHttpLogging);
+        }
 
+        public void StartWebSocketServer()
+        {
             if (!SupportsNativeWebSocket)
             {
-                ReloadExternalWebSocketServer();
+                ReloadExternalWebSocketServer(ConfigurationManager.Configuration.LegacyWebSocketPortNumber);
             }
         }
 
         /// <summary>
         /// Starts the external web socket server.
         /// </summary>
-        private void ReloadExternalWebSocketServer()
+        private void ReloadExternalWebSocketServer(int portNumber)
         {
             DisposeExternalWebSocketServer();
 
             ExternalWebSocketServer = _applicationHost.Resolve<IWebSocketServer>();
 
-            ExternalWebSocketServer.Start(ConfigurationManager.Configuration.LegacyWebSocketPortNumber);
+            ExternalWebSocketServer.Start(portNumber);
             ExternalWebSocketServer.WebSocketConnected += HttpServer_WebSocketConnected;
         }
 
         /// <summary>
         /// Restarts the Http Server, or starts it if not currently running
         /// </summary>
-        private void ReloadHttpServer()
+        private void ReloadHttpServer(string urlPrefix, bool enableHttpLogging)
         {
             // Only reload if the port has changed, so that we don't disconnect any active users
-            if (HttpServer != null && HttpServer.UrlPrefix.Equals(_applicationHost.HttpServerUrlPrefix, StringComparison.OrdinalIgnoreCase))
+            if (HttpServer != null && HttpServer.UrlPrefix.Equals(urlPrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -166,8 +167,14 @@ namespace MediaBrowser.Server.Implementations.ServerManager
             try
             {
                 HttpServer = _applicationHost.Resolve<IHttpServer>();
-                HttpServer.EnableHttpRequestLogging = ConfigurationManager.Configuration.EnableHttpLevelLogging;
-                HttpServer.Start(_applicationHost.HttpServerUrlPrefix);
+                HttpServer.EnableHttpRequestLogging = enableHttpLogging;
+                HttpServer.Start(urlPrefix);
+            }
+            catch (SocketException ex)
+            {
+                _logger.ErrorException("The http server is unable to start due to a Socket error. This can occasionally happen when the operating system takes longer than usual to release the IP bindings from the previous session. This can take up to five minutes. Please try waiting or rebooting the system.", ex);
+
+                throw;
             }
             catch (HttpListenerException ex)
             {
@@ -186,7 +193,10 @@ namespace MediaBrowser.Server.Implementations.ServerManager
         /// <param name="e">The <see cref="WebSocketConnectEventArgs" /> instance containing the event data.</param>
         void HttpServer_WebSocketConnected(object sender, WebSocketConnectEventArgs e)
         {
-            var connection = new WebSocketConnection(e.WebSocket, e.Endpoint, _jsonSerializer, _logger) { OnReceive = ProcessWebSocketMessageReceived };
+            var connection = new WebSocketConnection(e.WebSocket, e.Endpoint, _jsonSerializer, _logger)
+            {
+                OnReceive = ProcessWebSocketMessageReceived
+            };
 
             _webSocketConnections.Add(connection);
         }
@@ -263,7 +273,7 @@ namespace MediaBrowser.Server.Implementations.ServerManager
         /// dataFunction
         /// or
         /// cancellationToken</exception>
-        public async Task SendWebSocketMessageAsync<T>(string messageType, Func<T> dataFunction, IEnumerable<IWebSocketConnection> connections, CancellationToken cancellationToken)
+        private async Task SendWebSocketMessageAsync<T>(string messageType, Func<T> dataFunction, IEnumerable<IWebSocketConnection> connections, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(messageType))
             {
@@ -273,11 +283,6 @@ namespace MediaBrowser.Server.Implementations.ServerManager
             if (dataFunction == null)
             {
                 throw new ArgumentNullException("dataFunction");
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -364,17 +369,6 @@ namespace MediaBrowser.Server.Implementations.ServerManager
                 _logger.Info("Disposing {0}", ExternalWebSocketServer.GetType().Name);
                 ExternalWebSocketServer.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Handles the ConfigurationUpdated event of the _kernel control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        void ConfigurationUpdated(object sender, EventArgs e)
-        {
-            HttpServer.EnableHttpRequestLogging = ConfigurationManager.Configuration.EnableHttpLevelLogging;
         }
 
         /// <summary>

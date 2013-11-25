@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Implementations.NetworkManagement;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.Logging;
 using System;
@@ -8,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.Udp
@@ -261,7 +259,7 @@ namespace MediaBrowser.Server.Implementations.Udp
                 throw new ArgumentNullException("remoteEndPoint");
             }
 
-            await _udpClient.SendAsync(bytes, bytes.Length, new NetworkManager().Parse(remoteEndPoint)).ConfigureAwait(false);
+            await _udpClient.SendAsync(bytes, bytes.Length, _networkManager.Parse(remoteEndPoint)).ConfigureAwait(false);
 
             _logger.Info("Udp message sent to {0}", remoteEndPoint);
         }

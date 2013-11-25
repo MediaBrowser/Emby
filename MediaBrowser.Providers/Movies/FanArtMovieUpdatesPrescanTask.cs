@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
@@ -32,15 +33,17 @@ namespace MediaBrowser.Providers.Movies
         /// </summary>
         private readonly IServerConfigurationManager _config;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IFileSystem _fileSystem;
 
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        public FanArtMovieUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient)
+        public FanArtMovieUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _config = config;
             _logger = logger;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -59,12 +62,14 @@ namespace MediaBrowser.Providers.Movies
 
             var path = FanArtMovieProvider.GetMoviesDataPath(_config.CommonApplicationPaths);
 
+            Directory.CreateDirectory(path);
+            
             var timestampFile = Path.Combine(path, "time.txt");
 
             var timestampFileInfo = new FileInfo(timestampFile);
 
-            // Don't check for tvdb updates anymore frequently than 24 hours
-            if (timestampFileInfo.Exists && (DateTime.UtcNow - timestampFileInfo.LastWriteTimeUtc).TotalDays < 1)
+            // Don't check for updates every single time
+            if (timestampFileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(timestampFileInfo)).TotalDays < 3)
             {
                 return;
             }
@@ -81,7 +86,7 @@ namespace MediaBrowser.Providers.Movies
 
                 progress.Report(5);
 
-                await UpdateMovies(moviesToUpdate, path, progress, cancellationToken).ConfigureAwait(false);
+                await UpdateMovies(moviesToUpdate, progress, cancellationToken).ConfigureAwait(false);
             }
 
             var newUpdateTime = Convert.ToInt64(DateTimeToUnixTimestamp(DateTime.UtcNow)).ToString(UsCulture);
@@ -122,14 +127,16 @@ namespace MediaBrowser.Providers.Movies
             }
         }
 
-        private async Task UpdateMovies(IEnumerable<string> idList, string moviesDataPath, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task UpdateMovies(IEnumerable<string> idList, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var list = idList.ToList();
             var numComplete = 0;
 
             foreach (var id in list)
             {
-                await UpdateMovie(id, moviesDataPath, cancellationToken).ConfigureAwait(false);
+                _logger.Info("Updating movie " + id);
+
+                await FanArtMovieProvider.Current.DownloadMovieXml(id, cancellationToken).ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;
@@ -138,20 +145,6 @@ namespace MediaBrowser.Providers.Movies
 
                 progress.Report(percent + 5);
             }
-        }
-
-        private Task UpdateMovie(string tmdbId, string movieDataPath, CancellationToken cancellationToken)
-        {
-            _logger.Info("Updating movie " + tmdbId);
-
-            movieDataPath = Path.Combine(movieDataPath, tmdbId);
-
-            if (!Directory.Exists(movieDataPath))
-            {
-                Directory.CreateDirectory(movieDataPath);
-            }
-
-            return FanArtMovieProvider.Current.DownloadMovieXml(movieDataPath, tmdbId, cancellationToken);
         }
 
         /// <summary>

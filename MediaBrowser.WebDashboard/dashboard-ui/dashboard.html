@@ -4,7 +4,7 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <div id="dashboardPage" data-role="page" class="page type-interior">
+    <div id="dashboardPage" data-role="page" class="page type-interior adminPage">
 
         <div data-role="content">
             <div class="content-primary">
@@ -23,12 +23,16 @@
                             <div id="pUpdateNow" style="display: none;">
                                 <p><strong>A new version of Media Browser Server is available!</strong></p>
                                 <p id="newVersionNumber"></p>
-                                <button id="btnUpdateApplication" type="button" data-icon="download" data-theme="b" onclick="DashboardPage.updateApplication();">Update Now</button>
+                                <div id="btnUpdateApplicationContainer">
+                                    <button id="btnUpdateApplication" type="button" data-icon="download" data-theme="b" onclick="DashboardPage.updateApplication();">Update Now</button>
+                                </div>
+                                <div id="btnManualUpdateContainer">
+                                    Please shutdown the server and <a href="http://www.mediabrowser3.com/download" target="_blank">update manually.</a>
+                                </div>
                             </div>
                             <div id="updateFail" style="color: #cc0000; display: none;">There was an error connecting to the remote Media Browser repository.</div>
                             <p id="ports"></p>
                             <p>Program data path: <span id="programDataPath"></span></p>
-                            <p>Bookmark url: <a id="bookmarkUrl" href="#" data-ajax="false" onclick="return !DashboardPage.bookmarkPageIfSupported(this.href);"></a></p>
                             <div id="pPluginUpdates"></div>
                         </div>
                     </div>
@@ -39,16 +43,20 @@
                         <div id="pendingInstallations">
                         </div>
                         <p>Please restart the server to finish applying updates.</p>
-                        <button type="button" data-icon="refresh" data-theme="b" onclick="Dashboard.restartServer();">Restart Now</button>
-                    </div>
-
-                    <div data-role="collapsible" data-content-theme="c" data-collapsed="false" style="margin-top: 2em;">
-                        <h3>Active Connections</h3>
-                        <div id="divConnections">
+                        <div class="btnRestartContainer hide">
+                            <button type="button" data-icon="refresh" data-theme="b" onclick="Dashboard.restartServer();">Restart Now</button>
                         </div>
                     </div>
 
                     <div data-role="collapsible" data-content-theme="c" data-collapsed="false" style="margin-top: 2em;">
+                        <h3>Active Connections</h3>
+                        <div>
+                            <table class="tblConnections" style="border-collapse: collapse;">
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="runningTasksCollapsible" data-role="collapsible" data-content-theme="c" data-collapsed="false" style="margin-top: 2em; display: none;">
                         <h3>Running Tasks</h3>
                         <div id="divRunningTasks">
                         </div>
@@ -56,7 +64,24 @@
                     </div>
 
                     <div style="margin-top: 2em;">
-                        <button id="btnRestartServer" type="button" data-icon="refresh" data-mini="true" data-inline="true" onclick="DashboardPage.restart();">Restart MB Server</button>
+                        <div style="display: inline-block;">
+                            <div class="btnRestartContainer hide">
+                                <button id="btnRestartServer" type="button" data-icon="refresh" data-mini="true" data-inline="true" onclick="DashboardPage.restart();">Restart MB Server</button>
+                            </div>
+                        </div>
+                        <div style="display: inline-block;">
+                            <button id="btnShutdown" type="button" data-icon="delete" data-mini="true" data-inline="true" onclick="DashboardPage.shutdown();">Shutdown MB Server</button>
+                        </div>
+                    </div>
+
+                    <div data-role="collapsible" data-content-theme="c" data-collapsed="false" style="margin-top: 2em;">
+                        <h3>Links</h3>
+                        <div>
+                            <p><a href="http://mediabrowser3.com/community" target="_blank">Community</a></p>
+                            <p><a href="https://github.com/MediaBrowser/MediaBrowser" target="_blank">Github</a></p>
+                            <p><a href="../swagger-ui/index.html" target="_blank">Interactive Api Documentation</a></p>
+                            <p>Server bookmark: <a id="bookmarkUrl" href="#" data-ajax="false" onclick="return !DashboardPage.bookmarkPageIfSupported(this.href);"></a></p>
+                        </div>
                     </div>
 
                     <div style="display: none; margin-top: 4em;" id="contribute">

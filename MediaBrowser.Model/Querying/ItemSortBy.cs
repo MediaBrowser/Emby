@@ -6,6 +6,7 @@ namespace MediaBrowser.Model.Querying
     /// </summary>
     public static class ItemSortBy
     {
+        public const string AiredEpisodeOrder = "AiredEpisodeOrder";
         /// <summary>
         /// The album
         /// </summary>
@@ -46,6 +47,7 @@ namespace MediaBrowser.Model.Querying
         /// The sort name
         /// </summary>
         public const string SortName = "SortName";
+        public const string Name = "Name";
         /// <summary>
         /// The random
         /// </summary>
@@ -70,6 +72,18 @@ namespace MediaBrowser.Model.Querying
         /// The critic rating
         /// </summary>
         public const string CriticRating = "CriticRating";
-
+        public const string IsFolder = "IsFolder";
+        public const string IsUnplayed = "IsUnplayed";
+        public const string IsPlayed = "IsPlayed";
+        public const string TrailerCount = "TrailerCount";
+        public const string MovieCount = "MovieCount";
+        public const string SeriesCount = "SeriesCount";
+        public const string EpisodeCount = "EpisodeCount";
+        public const string SongCount = "SongCount";
+        public const string AlbumCount = "AlbumCount";
+        public const string MusicVideoCount = "MusicVideoCount";
+        public const string SeriesSortName = "SeriesSortName";
+        public const string VideoBitRate = "VideoBitRate";
+        public const string AirTime = "AirTime";
     }
 }

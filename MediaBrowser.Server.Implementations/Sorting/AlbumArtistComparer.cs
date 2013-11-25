@@ -29,9 +29,9 @@ namespace MediaBrowser.Server.Implementations.Sorting
         /// <returns>System.String.</returns>
         private string GetValue(BaseItem x)
         {
-            var audio = x as Audio;
+            var audio = x as IHasAlbumArtist;
 
-            return audio == null ? string.Empty : audio.AlbumArtist;
+            return audio != null ? audio.AlbumArtist : null;
         }
 
         /// <summary>

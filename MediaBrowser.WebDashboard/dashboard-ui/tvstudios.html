@@ -4,15 +4,16 @@
     <title>Media Browser</title>
 </head>
 <body>
-    <div id="tvStudiosPage" data-role="page" class="page libraryPage" data-theme="a" data-view="tvshows">
+    <div id="tvStudiosPage" data-role="page" class="page libraryPage" data-theme="a" data-view="tv">
         <div class="libraryViewNav">
             <a href="tvrecommended.html">Suggested</a>
             <a href="tvnextup.html">Next up</a>
+            <a href="tvupcoming.html">Upcoming</a>
             <a href="tvshows.html">Shows</a>
+            <a href="episodes.html">Episodes</a>
             <a href="tvgenres.html">Genres</a>
             <a href="tvpeople.html">Actors</a>
             <a href="tvstudios.html" class="ui-btn-active">Networks</a>
-            <a href="favoritetv.html">Favorites</a>
         </div>
         <div data-role="content">
             <div class="viewSettings">
@@ -22,6 +23,7 @@
                 </div>
                 <div class="listTopPaging">
                 </div>
+                <div class="viewSummary"></div>
             </div>
             <div id="items" class="itemsContainer"></div>
         </div>
@@ -33,8 +35,14 @@
                         <strong>Sort By:</strong>
                     </legend>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
+                    <input class="radioSortBy defaultSort" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
                     <label for="radioSortName">Name</label>
+
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSeriesCount" value="on" checked="checked" data-sortby="SeriesCount,SortName" data-mini="true">
+                    <label for="radioSeriesCount">Series count</label>
+
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioEpisodeCount" value="on" checked="checked" data-sortby="EpisodeCount,SortName" data-mini="true">
+                    <label for="radioEpisodeCount">Episode count</label>
                 </fieldset>
 
                 <fieldset data-role="controlgroup">

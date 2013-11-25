@@ -1,4 +1,6 @@
 ﻿using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Model.Entities;
@@ -13,13 +15,6 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
     /// </summary>
     public class MusicArtistResolver : ItemResolver<MusicArtist>
     {
-        private readonly ILibraryManager _libraryManager;
-
-        public MusicArtistResolver(ILibraryManager libraryManager)
-        {
-            _libraryManager = libraryManager;
-        }
-
         /// <summary>
         /// Gets the priority.
         /// </summary>
@@ -48,7 +43,13 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
                 return null;
             }
 
-            var collectionType = args.Parent == null ? null : _libraryManager.FindCollectionType(args.Parent);
+            // Optimization
+            if (args.Parent is BoxSet || args.Parent is Series || args.Parent is Season)
+            {
+                return null;
+            }
+
+            var collectionType = args.GetCollectionType();
 
             // If there's a collection type and it's not music, it can't be a series
             if (!string.IsNullOrEmpty(collectionType) &&

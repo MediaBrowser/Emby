@@ -1,24 +1,24 @@
-﻿using System.Globalization;
-using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaInfo;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.IO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -31,32 +31,35 @@ namespace MediaBrowser.Api.Playback
         /// Gets or sets the application paths.
         /// </summary>
         /// <value>The application paths.</value>
-        protected IServerApplicationPaths ApplicationPaths { get; set; }
+        protected IServerApplicationPaths ApplicationPaths { get; private set; }
 
         /// <summary>
         /// Gets or sets the user manager.
         /// </summary>
         /// <value>The user manager.</value>
-        protected IUserManager UserManager { get; set; }
+        protected IUserManager UserManager { get; private set; }
 
         /// <summary>
         /// Gets or sets the library manager.
         /// </summary>
         /// <value>The library manager.</value>
-        protected ILibraryManager LibraryManager { get; set; }
+        protected ILibraryManager LibraryManager { get; private set; }
 
         /// <summary>
         /// Gets or sets the iso manager.
         /// </summary>
         /// <value>The iso manager.</value>
-        protected IIsoManager IsoManager { get; set; }
+        protected IIsoManager IsoManager { get; private set; }
 
         /// <summary>
         /// Gets or sets the media encoder.
         /// </summary>
         /// <value>The media encoder.</value>
-        protected IMediaEncoder MediaEncoder { get; set; }
+        protected IMediaEncoder MediaEncoder { get; private set; }
+        protected IDtoService DtoService { get; private set; }
 
+        protected IFileSystem FileSystem { get; private set; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseStreamingService" /> class.
         /// </summary>
@@ -65,8 +68,10 @@ namespace MediaBrowser.Api.Playback
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="isoManager">The iso manager.</param>
         /// <param name="mediaEncoder">The media encoder.</param>
-        protected BaseStreamingService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder)
+        protected BaseStreamingService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem)
         {
+            FileSystem = fileSystem;
+            DtoService = dtoService;
             ApplicationPaths = appPaths;
             UserManager = userManager;
             LibraryManager = libraryManager;
@@ -114,7 +119,7 @@ namespace MediaBrowser.Api.Playback
         }
 
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
-        
+
         /// <summary>
         /// The fast seek offset seconds
         /// </summary>
@@ -227,6 +232,12 @@ namespace MediaBrowser.Api.Playback
                 }
             }
 
+            if (returnFirstIfNoIndex && type == MediaStreamType.Audio)
+            {
+                return streams.FirstOrDefault(i => i.Channels.HasValue && i.Channels.Value > 0) ??
+                       streams.FirstOrDefault();
+            }
+
             // Just return the first one
             return returnFirstIfNoIndex ? streams.FirstOrDefault() : null;
         }
@@ -248,7 +259,10 @@ namespace MediaBrowser.Api.Playback
 
             if (state.SubtitleStream != null)
             {
-                if (state.SubtitleStream.Codec.IndexOf("srt", StringComparison.OrdinalIgnoreCase) != -1 || state.SubtitleStream.Codec.IndexOf("subrip", StringComparison.OrdinalIgnoreCase) != -1)
+                if (state.SubtitleStream.Codec.IndexOf("srt", StringComparison.OrdinalIgnoreCase) != -1 ||
+                    state.SubtitleStream.Codec.IndexOf("subrip", StringComparison.OrdinalIgnoreCase) != -1 ||
+                    string.Equals(state.SubtitleStream.Codec, "ass", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(state.SubtitleStream.Codec, "ssa", StringComparison.OrdinalIgnoreCase))
                 {
                     assSubtitleParam = GetTextSubtitleParam((Video)state.Item, state.SubtitleStream, request.StartTimeTicks, performTextSubtitleConversion);
                 }
@@ -257,7 +271,7 @@ namespace MediaBrowser.Api.Playback
             // If fixed dimensions were supplied
             if (request.Width.HasValue && request.Height.HasValue)
             {
-                return string.Format(" -vf \"scale={0}:{1}{2}\"", request.Width.Value, request.Height.Value, assSubtitleParam);
+                return string.Format(" -vf \"scale=trunc({0}/2)*2:trunc({1}/2)*2{2}\"", request.Width.Value, request.Height.Value, assSubtitleParam);
             }
 
             var isH264Output = outputVideoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase);
@@ -270,12 +284,28 @@ namespace MediaBrowser.Api.Playback
                     string.Format(" -vf \"scale={0}:-1{1}\"", request.Width.Value, assSubtitleParam);
             }
 
+            // If a fixed height was requested
+            if (request.Height.HasValue)
+            {
+                return isH264Output ?
+                    string.Format(" -vf \"scale=trunc(oh*a*2)/2:{0}{1}\"", request.Height.Value, assSubtitleParam) :
+                    string.Format(" -vf \"scale=-1:{0}{1}\"", request.Height.Value, assSubtitleParam);
+            }
+
             // If a max width was requested
             if (request.MaxWidth.HasValue && (!request.MaxHeight.HasValue || state.VideoStream == null))
             {
                 return isH264Output ?
                     string.Format(" -vf \"scale=min(iw\\,{0}):trunc(ow/a/2)*2{1}\"", request.MaxWidth.Value, assSubtitleParam) :
                     string.Format(" -vf \"scale=min(iw\\,{0}):-1{1}\"", request.MaxWidth.Value, assSubtitleParam);
+            }
+
+            // If a max height was requested
+            if (request.MaxHeight.HasValue && (!request.MaxWidth.HasValue || state.VideoStream == null))
+            {
+                return isH264Output ?
+                    string.Format(" -vf \"scale=trunc(oh*a*2)/2:min(ih\\,{0}){1}\"", request.MaxHeight.Value, assSubtitleParam) :
+                    string.Format(" -vf \"scale=-1:min(ih\\,{0}){1}\"", request.MaxHeight.Value, assSubtitleParam);
             }
 
             if (state.VideoStream == null)
@@ -336,7 +366,7 @@ namespace MediaBrowser.Api.Playback
 
             var path = Kernel.Instance.FFMpegManager.GetSubtitleCachePath(video, subtitleStream.Index, offset, ".ass");
 
-            if (performConversion && !File.Exists(path))
+            if (performConversion)
             {
                 InputType type;
 
@@ -346,10 +376,7 @@ namespace MediaBrowser.Api.Playback
                 {
                     var parentPath = Path.GetDirectoryName(path);
 
-                    if (!Directory.Exists(parentPath))
-                    {
-                        Directory.CreateDirectory(parentPath);
-                    }
+                    Directory.CreateDirectory(parentPath);
 
                     var task = MediaEncoder.ExtractTextSubtitle(inputPath, type, subtitleStream.Index, offset, path, CancellationToken.None);
 
@@ -374,20 +401,23 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         private string GetConvertedAssPath(Video video, MediaStream subtitleStream, long? startTimeTicks, bool performConversion)
         {
+            // If it's already ass, no conversion neccessary
+            //if (string.Equals(Path.GetExtension(subtitleStream.Path), ".ass", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    return subtitleStream.Path;
+            //}
+
             var offset = TimeSpan.FromTicks(startTimeTicks ?? 0);
 
             var path = Kernel.Instance.FFMpegManager.GetSubtitleCachePath(video, subtitleStream.Index, offset, ".ass");
 
-            if (performConversion && !File.Exists(path))
+            if (performConversion)
             {
                 try
                 {
                     var parentPath = Path.GetDirectoryName(path);
 
-                    if (!Directory.Exists(parentPath))
-                    {
-                        Directory.CreateDirectory(parentPath);
-                    }
+                    Directory.CreateDirectory(parentPath);
 
                     var task = MediaEncoder.ConvertTextSubtitleToAss(subtitleStream.Path, path, subtitleStream.Language, offset, CancellationToken.None);
 
@@ -431,7 +461,23 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         protected string GetProbeSizeArgument(BaseItem item)
         {
-            return MediaEncoder.GetProbeSizeArgument(MediaEncoderHelpers.GetInputType(item));
+            var type = InputType.AudioFile;
+
+            if (item is Audio)
+            {
+                type = MediaEncoderHelpers.GetInputType(item.Path, null, null);
+            }
+            else
+            {
+                var video = item as Video;
+
+                if (video != null)
+                {
+                    type = MediaEncoderHelpers.GetInputType(item.Path, video.VideoType, video.IsoType);
+                }
+            }
+
+            return MediaEncoder.GetProbeSizeArgument(type);
         }
 
         /// <summary>
@@ -442,12 +488,15 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.Nullable{System.Int32}.</returns>
         protected int? GetNumAudioChannelsParam(StreamRequest request, MediaStream audioStream)
         {
-            if (audioStream.Channels > 2 && request.AudioCodec.HasValue)
+            if (audioStream != null)
             {
-                if (request.AudioCodec.Value == AudioCodecs.Wma)
+                if (audioStream.Channels > 2 && request.AudioCodec.HasValue)
                 {
-                    // wmav2 currently only supports two channel output
-                    return 2;
+                    if (request.AudioCodec.Value == AudioCodecs.Wma)
+                    {
+                        // wmav2 currently only supports two channel output
+                        return 2;
+                    }
                 }
             }
 
@@ -478,7 +527,7 @@ namespace MediaBrowser.Api.Playback
             {
                 if (codec == AudioCodecs.Aac)
                 {
-                    return "aac";
+                    return "aac -strict experimental";
                 }
                 if (codec == AudioCodecs.Mp3)
                 {
@@ -568,10 +617,7 @@ namespace MediaBrowser.Api.Playback
         {
             var parentPath = Path.GetDirectoryName(outputPath);
 
-            if (!Directory.Exists(parentPath))
-            {
-                Directory.CreateDirectory(parentPath);
-            }
+            Directory.CreateDirectory(parentPath);
 
             var video = state.Item as Video;
 
@@ -602,14 +648,14 @@ namespace MediaBrowser.Api.Playback
                 EnableRaisingEvents = true
             };
 
-            ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath, TranscodingJobType, process, video != null, state.Request.StartTimeTicks);
+            ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath, TranscodingJobType, process, video != null, state.Request.StartTimeTicks, state.Item.Path, state.Request.DeviceId);
 
             Logger.Info(process.StartInfo.FileName + " " + process.StartInfo.Arguments);
 
             var logFilePath = Path.Combine(ApplicationPaths.LogDirectoryPath, "ffmpeg-" + Guid.NewGuid() + ".txt");
 
             // FFMpeg writes debug/error info to stderr. This is useful when debugging so let's put it in the log directory.
-            state.LogFileStream = new FileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous);
+            state.LogFileStream = FileSystem.GetFileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true);
 
             process.Exited += (sender, args) => OnFfMpegProcessExited(process, state);
 
@@ -617,7 +663,7 @@ namespace MediaBrowser.Api.Playback
             {
                 process.Start();
             }
-            catch (Win32Exception ex)
+            catch (Exception ex)
             {
                 Logger.ErrorException("Error starting ffmpeg", ex);
 
@@ -639,6 +685,36 @@ namespace MediaBrowser.Api.Playback
             {
                 await Task.Delay(100).ConfigureAwait(false);
             }
+
+            // Allow a small amount of time to buffer a little
+            if (state.Item is Video)
+            {
+                await Task.Delay(500).ConfigureAwait(false);
+            }
+
+            // This is arbitrary, but add a little buffer time when internet streaming
+            if (state.Item.LocationType == LocationType.Remote)
+            {
+                await Task.Delay(2000).ConfigureAwait(false);
+            }
+        }
+
+        protected int? GetVideoBitrateParam(StreamState state)
+        {
+            return state.VideoRequest.VideoBitRate;
+        }
+
+        protected int? GetAudioBitrateParam(StreamState state)
+        {
+            if (state.Request.AudioBitRate.HasValue)
+            {
+                // Make sure we don't request a bitrate higher than the source
+                var currentBitrate = state.AudioStream == null ? state.Request.AudioBitRate.Value : state.AudioStream.BitRate ?? state.Request.AudioBitRate.Value;
+
+                return Math.Min(currentBitrate, state.Request.AudioBitRate.Value);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -667,7 +743,7 @@ namespace MediaBrowser.Api.Playback
         {
             if (item.Path.IndexOf("apple.com", StringComparison.OrdinalIgnoreCase) != -1)
             {
-                return "QuickTime/7.6.2";
+                return "QuickTime/7.7.4";
             }
 
             return string.Empty;
@@ -707,7 +783,7 @@ namespace MediaBrowser.Api.Playback
         /// <returns>StreamState.</returns>
         protected StreamState GetState(StreamRequest request)
         {
-            var item = DtoBuilder.GetItemByClientId(request.Id, UserManager, LibraryManager);
+            var item = DtoService.GetItemByDtoId(request.Id);
 
             var media = (IHasMediaStreams)item;
 

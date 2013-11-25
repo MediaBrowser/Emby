@@ -1,16 +1,36 @@
 ﻿(function ($, document) {
 
+    var defaultSortBy = "Album,SortName";
+
     // The base query options
     var query = {
 
-        SortBy: "Album,SortName",
+        SortBy: defaultSortBy,
         SortOrder: "Ascending",
         IncludeItemTypes: "Audio",
         Recursive: true,
-        Fields: "ItemCounts,DateCreated,UserData,AudioInfo,ParentId",
+        Fields: "DateCreated,AudioInfo,ParentId",
         Limit: 200,
         StartIndex: 0
     };
+	
+	LibraryBrowser.loadSavedQueryValues('songs', query);
+
+    function updateFilterControls(page) {
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', this).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
+    }
 
     function reloadItems(page) {
 
@@ -25,14 +45,30 @@
 
             $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
 
+            updateFilterControls(page);
+            
+            var checkSortOption = $('.radioSortBy:checked', page);
+            $('.viewSummary', page).html(LibraryBrowser.getViewSummaryHtml(query, checkSortOption)).trigger('create');
+
             html += LibraryBrowser.getSongTableHtml(result.Items, {
                 showAlbum: true,
-                showArtist: true
+                showArtist: true,
+                enableColumnSorting: true,
+                sortBy: query.SortBy,
+                sortOrder: query.SortOrder
             });
 
             html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount);
 
             $('#items', page).html(html).trigger('create');
+
+            $('.btnChangeToDefaultSort', page).on('click', function () {
+                query.StartIndex = 0;
+                query.SortOrder = 'Ascending';
+                query.SortBy = $('.defaultSort', page).data('sortby');
+
+                reloadItems(page);
+            });
 
             $('.selectPage', page).on('change', function () {
                 query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
@@ -54,6 +90,36 @@
                 query.StartIndex = 0;
                 reloadItems(page);
             });
+
+            $('.lnkColumnSort', page).on('click', function () {
+
+                var order = this.getAttribute('data-sortfield');
+
+                if (query.SortBy == order) {
+
+                    if (query.SortOrder == "Descending") {
+
+                        query.SortOrder = "Ascending";
+                        query.SortBy = defaultSortBy;
+
+                    } else {
+
+                        query.SortOrder = "Descending";
+                        query.SortBy = order;
+                    }
+
+                } else {
+
+                    query.SortOrder = "Ascending";
+                    query.SortBy = order;
+                }
+
+                query.StartIndex = 0;
+
+                reloadItems(page);
+            });
+			
+			LibraryBrowser.saveQueryValues('songs', query);
 
             Dashboard.hideLoadingMsg();
         });
@@ -98,18 +164,8 @@
 
     }).on('pageshow', "#songsPage", function () {
 
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
+        updateFilterControls(this);
 
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
-
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', this).each(function () {
-
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
-
-        }).checkboxradio('refresh');
     });
 
 })(jQuery, document);

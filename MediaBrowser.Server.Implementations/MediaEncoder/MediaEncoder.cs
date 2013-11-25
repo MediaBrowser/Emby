@@ -1,19 +1,17 @@
-﻿using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,12 +23,6 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
     /// </summary>
     public class MediaEncoder : IMediaEncoder, IDisposable
     {
-        /// <summary>
-        /// Gets or sets the zip client.
-        /// </summary>
-        /// <value>The zip client.</value>
-        private readonly IZipClient _zipClient;
-
         /// <summary>
         /// The _logger
         /// </summary>
@@ -55,61 +47,30 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
         /// <summary>
         /// The audio image resource pool
         /// </summary>
-        private readonly SemaphoreSlim _audioImageResourcePool = new SemaphoreSlim(1, 1);
-
-        /// <summary>
-        /// The _subtitle extraction resource pool
-        /// </summary>
-        private readonly SemaphoreSlim _subtitleExtractionResourcePool = new SemaphoreSlim(2, 2);
+        private readonly SemaphoreSlim _audioImageResourcePool = new SemaphoreSlim(2, 2);
 
         /// <summary>
         /// The FF probe resource pool
         /// </summary>
         private readonly SemaphoreSlim _ffProbeResourcePool = new SemaphoreSlim(2, 2);
+        private readonly IFileSystem _fileSystem;
 
-        /// <summary>
-        /// Gets or sets the versioned directory path.
-        /// </summary>
-        /// <value>The versioned directory path.</value>
-        private string VersionedDirectoryPath { get; set; }
+        public string FFMpegPath { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MediaEncoder" /> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="zipClient">The zip client.</param>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="jsonSerializer">The json serializer.</param>
-        public MediaEncoder(ILogger logger, IZipClient zipClient, IApplicationPaths appPaths,
-                            IJsonSerializer jsonSerializer)
+        public string FFProbePath { get; private set; }
+
+        public string Version { get; private set; }
+
+        public MediaEncoder(ILogger logger, IApplicationPaths appPaths,
+                            IJsonSerializer jsonSerializer, string ffMpegPath, string ffProbePath, string version, IFileSystem fileSystem)
         {
             _logger = logger;
-            _zipClient = zipClient;
             _appPaths = appPaths;
             _jsonSerializer = jsonSerializer;
-
-            // Not crazy about this but it's the only way to suppress ffmpeg crash dialog boxes
-            SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT |
-                         ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
-
-            Task.Run(() => VersionedDirectoryPath = GetVersionedDirectoryPath());
-        }
-
-        /// <summary>
-        /// Gets the media tools path.
-        /// </summary>
-        /// <param name="create">if set to <c>true</c> [create].</param>
-        /// <returns>System.String.</returns>
-        private string GetMediaToolsPath(bool create)
-        {
-            var path = Path.Combine(_appPaths.ProgramDataPath, "ffmpeg");
-
-            if (create && !Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            return path;
+            Version = version;
+            _fileSystem = fileSystem;
+            FFProbePath = ffProbePath;
+            FFMpegPath = ffMpegPath;
         }
 
         /// <summary>
@@ -122,160 +83,20 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
         }
 
         /// <summary>
-        /// The _ FF MPEG path
+        /// The _semaphoreLocks
         /// </summary>
-        private string _FFMpegPath;
+        private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphoreLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
 
         /// <summary>
-        /// Gets the path to ffmpeg.exe
+        /// Gets the lock.
         /// </summary>
-        /// <value>The FF MPEG path.</value>
-        public string FFMpegPath
+        /// <param name="filename">The filename.</param>
+        /// <returns>System.Object.</returns>
+        private SemaphoreSlim GetLock(string filename)
         {
-            get { return _FFMpegPath ?? (_FFMpegPath = Path.Combine(VersionedDirectoryPath, "ffmpeg.exe")); }
+            return _semaphoreLocks.GetOrAdd(filename, key => new SemaphoreSlim(1, 1));
         }
-
-        /// <summary>
-        /// The _ FF probe path
-        /// </summary>
-        private string _FFProbePath;
-
-        /// <summary>
-        /// Gets the path to ffprobe.exe
-        /// </summary>
-        /// <value>The FF probe path.</value>
-        private string FFProbePath
-        {
-            get { return _FFProbePath ?? (_FFProbePath = Path.Combine(VersionedDirectoryPath, "ffprobe.exe")); }
-        }
-
-        /// <summary>
-        /// Gets the version.
-        /// </summary>
-        /// <value>The version.</value>
-        public string Version
-        {
-            get { return Path.GetFileNameWithoutExtension(VersionedDirectoryPath); }
-        }
-
-        /// <summary>
-        /// Gets the versioned directory path.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        private string GetVersionedDirectoryPath()
-        {
-            var assembly = GetType().Assembly;
-
-            var prefix = GetType().Namespace + ".";
-
-            var srch = prefix + "ffmpeg";
-
-            var resource = assembly.GetManifestResourceNames().First(r => r.StartsWith(srch));
-
-            var filename =
-                resource.Substring(resource.IndexOf(prefix, StringComparison.OrdinalIgnoreCase) + prefix.Length);
-
-            var versionedDirectoryPath = Path.Combine(GetMediaToolsPath(true),
-                                                      Path.GetFileNameWithoutExtension(filename));
-
-            if (!Directory.Exists(versionedDirectoryPath))
-            {
-                Directory.CreateDirectory(versionedDirectoryPath);
-            }
-
-            ExtractTools(assembly, resource, versionedDirectoryPath);
-
-            return versionedDirectoryPath;
-        }
-
-        /// <summary>
-        /// Extracts the tools.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="zipFileResourcePath">The zip file resource path.</param>
-        /// <param name="targetPath">The target path.</param>
-        private void ExtractTools(Assembly assembly, string zipFileResourcePath, string targetPath)
-        {
-            using (var resourceStream = assembly.GetManifestResourceStream(zipFileResourcePath))
-            {
-                _zipClient.ExtractAll(resourceStream, targetPath, false);
-            }
-
-            ExtractFonts(assembly, targetPath);
-        }
-
-        /// <summary>
-        /// Extracts the fonts.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="targetPath">The target path.</param>
-        private async void ExtractFonts(Assembly assembly, string targetPath)
-        {
-            var fontsDirectory = Path.Combine(targetPath, "fonts");
-
-            if (!Directory.Exists(fontsDirectory))
-            {
-                Directory.CreateDirectory(fontsDirectory);
-            }
-
-            const string fontFilename = "ARIALUNI.TTF";
-
-            var fontFile = Path.Combine(fontsDirectory, fontFilename);
-
-            if (!File.Exists(fontFile))
-            {
-                using (var stream = assembly.GetManifestResourceStream(GetType().Namespace + ".fonts." + fontFilename))
-                {
-                    using (
-                        var fileStream = new FileStream(fontFile, FileMode.Create, FileAccess.Write, FileShare.Read,
-                                                        StreamDefaults.DefaultFileStreamBufferSize,
-                                                        FileOptions.Asynchronous))
-                    {
-                        await stream.CopyToAsync(fileStream).ConfigureAwait(false);
-                    }
-                }
-            }
-
-            await ExtractFontConfigFile(assembly, fontsDirectory).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Extracts the font config file.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="fontsDirectory">The fonts directory.</param>
-        /// <returns>Task.</returns>
-        private async Task ExtractFontConfigFile(Assembly assembly, string fontsDirectory)
-        {
-            const string fontConfigFilename = "fonts.conf";
-            var fontConfigFile = Path.Combine(fontsDirectory, fontConfigFilename);
-
-            if (!File.Exists(fontConfigFile))
-            {
-                using (
-                    var stream = assembly.GetManifestResourceStream(GetType().Namespace + ".fonts." + fontConfigFilename)
-                    )
-                {
-                    using (var streamReader = new StreamReader(stream))
-                    {
-                        var contents = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-
-                        contents = contents.Replace("<dir></dir>", "<dir>" + fontsDirectory + "</dir>");
-
-                        var bytes = Encoding.UTF8.GetBytes(contents);
-
-                        using (
-                            var fileStream = new FileStream(fontConfigFile, FileMode.Create, FileAccess.Write,
-                                                            FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize,
-                                                            FileOptions.Asynchronous))
-                        {
-                            await fileStream.WriteAsync(bytes, 0, bytes.Length);
-                        }
-                    }
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Gets the media info.
         /// </summary>
@@ -560,12 +381,41 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
         /// <param name="offset">The offset.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
+        public async Task ConvertTextSubtitleToAss(string inputPath, string outputPath, string language, TimeSpan offset,
+                                                   CancellationToken cancellationToken)
+        {
+            var semaphore = GetLock(outputPath);
+
+            await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                if (!File.Exists(outputPath))
+                {
+                    await ConvertTextSubtitleToAssInternal(inputPath, outputPath, language, offset).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        private const int FastSeekOffsetSeconds = 1;
+
+        /// <summary>
+        /// Converts the text subtitle to ass.
+        /// </summary>
+        /// <param name="inputPath">The input path.</param>
+        /// <param name="outputPath">The output path.</param>
+        /// <param name="language">The language.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">inputPath
         /// or
         /// outputPath</exception>
         /// <exception cref="System.ApplicationException"></exception>
-        public async Task ConvertTextSubtitleToAss(string inputPath, string outputPath, string language, TimeSpan offset,
-                                                   CancellationToken cancellationToken)
+        private async Task ConvertTextSubtitleToAssInternal(string inputPath, string outputPath, string language, TimeSpan offset)
         {
             if (string.IsNullOrEmpty(inputPath))
             {
@@ -577,11 +427,8 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
                 throw new ArgumentNullException("outputPath");
             }
 
-            var fastSeekSeconds = offset.TotalSeconds >= 1 ? offset.TotalSeconds - 1 : 0;
-            var slowSeekSeconds = offset.TotalSeconds >= 1 ? 1 : 0;
-
-            var fastSeekParam = fastSeekSeconds > 0 ? "-ss " + fastSeekSeconds.ToString(UsCulture) + " " : string.Empty;
-            var slowSeekParam = slowSeekSeconds > 0 ? " -ss " + slowSeekSeconds.ToString(UsCulture) : string.Empty;
+            var slowSeekParam = GetSlowSeekCommandLineParameter(offset);
+            var fastSeekParam = GetFastSeekCommandLineParameter(offset);
 
             var encodingParam = string.IsNullOrEmpty(language) ? string.Empty :
                 GetSubtitleLanguageEncodingParam(language) + " ";
@@ -597,8 +444,13 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
                             UseShellExecute = false,
                             FileName = FFMpegPath,
                             Arguments =
-                                string.Format("{0}{1}-i \"{2}\"{3} \"{4}\"", encodingParam, fastSeekParam, inputPath, slowSeekParam,
-                                              outputPath),
+                                string.Format("{0}{1}-i \"{2}\"{3} \"{4}\"", 
+                                fastSeekParam, 
+                                encodingParam, 
+                                inputPath, 
+                                slowSeekParam,
+                                outputPath),
+
                             WindowStyle = ProcessWindowStyle.Hidden,
                             ErrorDialog = false
                         }
@@ -606,12 +458,9 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
 
             _logger.Debug("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
 
-            await _subtitleExtractionResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-
             var logFilePath = Path.Combine(_appPaths.LogDirectoryPath, "ffmpeg-sub-convert-" + Guid.NewGuid() + ".txt");
 
-            var logFileStream = new FileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read,
-                                               StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous);
+            var logFileStream = _fileSystem.GetFileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true);
 
             try
             {
@@ -619,8 +468,6 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             }
             catch (Exception ex)
             {
-                _subtitleExtractionResourcePool.Release();
-
                 logFileStream.Dispose();
 
                 _logger.ErrorException("Error starting ffmpeg", ex);
@@ -636,7 +483,7 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             {
                 try
                 {
-                    _logger.Info("Killing ffmpeg process");
+                    _logger.Info("Killing ffmpeg subtitle conversion process");
 
                     process.Kill();
 
@@ -644,23 +491,13 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
 
                     await logTask.ConfigureAwait(false);
                 }
-                catch (Win32Exception ex)
+                catch (Exception ex)
                 {
-                    _logger.ErrorException("Error killing process", ex);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    _logger.ErrorException("Error killing process", ex);
-                }
-                catch (NotSupportedException ex)
-                {
-                    _logger.ErrorException("Error killing process", ex);
+                    _logger.ErrorException("Error killing subtitle conversion process", ex);
                 }
                 finally
                 {
-
                     logFileStream.Dispose();
-                    _subtitleExtractionResourcePool.Release();
                 }
             }
 
@@ -703,6 +540,28 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             await SetAssFont(outputPath).ConfigureAwait(false);
         }
 
+        protected string GetFastSeekCommandLineParameter(TimeSpan offset)
+        {
+            var seconds = offset.TotalSeconds - FastSeekOffsetSeconds;
+
+            if (seconds > 0)
+            {
+                return string.Format("-ss {0} ", seconds.ToString(UsCulture));
+            }
+
+            return string.Empty;
+        }
+
+        protected string GetSlowSeekCommandLineParameter(TimeSpan offset)
+        {
+            if (offset.TotalSeconds - FastSeekOffsetSeconds > 0)
+            {
+                return string.Format(" -ss {0}", FastSeekOffsetSeconds.ToString(UsCulture));
+            }
+
+            return string.Empty;
+        }
+        
         /// <summary>
         /// Gets the subtitle language encoding param.
         /// </summary>
@@ -742,6 +601,8 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
                     return "-sub_charenc windows-1251";
                 case "vie":
                     return "-sub_charenc windows-1258";
+                case "kor":
+                		return "-sub_charenc cp949";
                 default:
                     return "-sub_charenc windows-1252";
             }
@@ -758,9 +619,23 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">Must use inputPath list overload</exception>
-        public Task ExtractTextSubtitle(string[] inputFiles, InputType type, int subtitleStreamIndex, TimeSpan offset, string outputPath, CancellationToken cancellationToken)
+        public async Task ExtractTextSubtitle(string[] inputFiles, InputType type, int subtitleStreamIndex, TimeSpan offset, string outputPath, CancellationToken cancellationToken)
         {
-            return ExtractTextSubtitleInternal(GetInputArgument(inputFiles, type), subtitleStreamIndex, offset, outputPath, cancellationToken);
+            var semaphore = GetLock(outputPath);
+
+            await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                if (!File.Exists(outputPath))
+                {
+                    await ExtractTextSubtitleInternal(GetInputArgument(inputFiles, type), subtitleStreamIndex, offset, outputPath, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         /// <summary>
@@ -790,16 +665,7 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
                 throw new ArgumentNullException("outputPath");
             }
 
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
-            }
-
-            var fastSeekSeconds = offset.TotalSeconds >= 1 ? offset.TotalSeconds - 1 : 0;
-            var slowSeekSeconds = offset.TotalSeconds >= 1 ? 1 : 0;
-
-            var fastSeekParam = fastSeekSeconds > 0 ? "-ss " + fastSeekSeconds.ToString(UsCulture) + " " : string.Empty;
-            var slowSeekParam = slowSeekSeconds > 0 ? " -ss " + slowSeekSeconds.ToString(UsCulture) : string.Empty;
+            var slowSeekParam = offset.TotalSeconds > 0 ? " -ss " + offset.TotalSeconds.ToString(UsCulture) : string.Empty;
 
             var process = new Process
             {
@@ -812,7 +678,7 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
                     RedirectStandardError = true,
 
                     FileName = FFMpegPath,
-                    Arguments = string.Format("{0}-i {1}{2} -map 0:{3} -an -vn -c:s ass \"{4}\"", fastSeekParam, inputPath, slowSeekParam, subtitleStreamIndex, outputPath),
+                    Arguments = string.Format("-i {0}{1} -map 0:{2} -an -vn -c:s ass \"{3}\"", inputPath, slowSeekParam, subtitleStreamIndex, outputPath),
                     WindowStyle = ProcessWindowStyle.Hidden,
                     ErrorDialog = false
                 }
@@ -820,11 +686,9 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
 
             _logger.Debug("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
 
-            await _subtitleExtractionResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-
             var logFilePath = Path.Combine(_appPaths.LogDirectoryPath, "ffmpeg-sub-extract-" + Guid.NewGuid() + ".txt");
 
-            var logFileStream = new FileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous);
+            var logFileStream = _fileSystem.GetFileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true);
 
             try
             {
@@ -832,8 +696,6 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             }
             catch (Exception ex)
             {
-                _subtitleExtractionResourcePool.Release();
-
                 logFileStream.Dispose();
 
                 _logger.ErrorException("Error starting ffmpeg", ex);
@@ -849,28 +711,19 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             {
                 try
                 {
-                    _logger.Info("Killing ffmpeg process");
+                    _logger.Info("Killing ffmpeg subtitle extraction process");
 
                     process.Kill();
 
                     process.WaitForExit(1000);
                 }
-                catch (Win32Exception ex)
+                catch (Exception ex)
                 {
-                    _logger.ErrorException("Error killing process", ex);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    _logger.ErrorException("Error killing process", ex);
-                }
-                catch (NotSupportedException ex)
-                {
-                    _logger.ErrorException("Error killing process", ex);
+                    _logger.ErrorException("Error killing subtitle extraction process", ex);
                 }
                 finally
                 {
                     logFileStream.Dispose();
-                    _subtitleExtractionResourcePool.Release();
                 }
             }
 
@@ -904,11 +757,17 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
 
             if (failed)
             {
-                var msg = string.Format("ffmpeg subtitle extraction failed for {0}", inputPath);
+                var msg = string.Format("ffmpeg subtitle extraction failed for {0} to {1}", inputPath, outputPath);
 
                 _logger.Error(msg);
 
                 throw new ApplicationException(msg);
+            }
+            else
+            {
+                var msg = string.Format("ffmpeg subtitle extraction completed for {0} to {1}", inputPath, outputPath);
+
+                _logger.Info(msg);
             }
 
             await SetAssFont(outputPath).ConfigureAwait(false);
@@ -921,6 +780,8 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
         /// <returns>Task.</returns>
         private async Task SetAssFont(string file)
         {
+            _logger.Info("Setting ass font within {0}", file);
+
             string text;
             Encoding encoding;
 
@@ -1189,44 +1050,6 @@ namespace MediaBrowser.Server.Implementations.MediaEncoder
             {
                 _videoImageResourcePool.Dispose();
             }
-
-            SetErrorMode(ErrorModes.SYSTEM_DEFAULT);
-        }
-
-        /// <summary>
-        /// Sets the error mode.
-        /// </summary>
-        /// <param name="uMode">The u mode.</param>
-        /// <returns>ErrorModes.</returns>
-        [DllImport("kernel32.dll")]
-        static extern ErrorModes SetErrorMode(ErrorModes uMode);
-
-        /// <summary>
-        /// Enum ErrorModes
-        /// </summary>
-        [Flags]
-        public enum ErrorModes : uint
-        {
-            /// <summary>
-            /// The SYSTE m_ DEFAULT
-            /// </summary>
-            SYSTEM_DEFAULT = 0x0,
-            /// <summary>
-            /// The SE m_ FAILCRITICALERRORS
-            /// </summary>
-            SEM_FAILCRITICALERRORS = 0x0001,
-            /// <summary>
-            /// The SE m_ NOALIGNMENTFAULTEXCEPT
-            /// </summary>
-            SEM_NOALIGNMENTFAULTEXCEPT = 0x0004,
-            /// <summary>
-            /// The SE m_ NOGPFAULTERRORBOX
-            /// </summary>
-            SEM_NOGPFAULTERRORBOX = 0x0002,
-            /// <summary>
-            /// The SE m_ NOOPENFILEERRORBOX
-            /// </summary>
-            SEM_NOOPENFILEERRORBOX = 0x8000
         }
     }
 }

@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Providers.TV;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -29,8 +30,8 @@ namespace MediaBrowser.Providers.Savers
             var wasMetadataEdited = (updateType & ItemUpdateType.MetadataEdit) == ItemUpdateType.MetadataEdit;
             var wasMetadataDownloaded = (updateType & ItemUpdateType.MetadataDownload) == ItemUpdateType.MetadataDownload;
 
-            // If new metadata has been downloaded and save local is on, OR metadata was manually edited, proceed
-            if ((_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded)) || wasMetadataEdited)
+            // If new metadata has been downloaded and save local is on
+            if (_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded))
             {
                 return item is Episode;
             }
@@ -70,6 +71,24 @@ namespace MediaBrowser.Providers.Savers
                 builder.Append("<EpisodeNumber>" + SecurityElement.Escape(episode.IndexNumber.Value.ToString(_usCulture)) + "</EpisodeNumber>");
             }
 
+            if (episode.IndexNumberEnd.HasValue)
+            {
+                builder.Append("<EpisodeNumberEnd>" + SecurityElement.Escape(episode.IndexNumberEnd.Value.ToString(_usCulture)) + "</EpisodeNumberEnd>");
+            }
+
+            if (episode.AirsAfterSeasonNumber.HasValue)
+            {
+                builder.Append("<airsafter_season>" + SecurityElement.Escape(episode.AirsAfterSeasonNumber.Value.ToString(_usCulture)) + "</airsafter_season>");
+            }
+            if (episode.AirsBeforeEpisodeNumber.HasValue)
+            {
+                builder.Append("<airsbefore_episode>" + SecurityElement.Escape(episode.AirsBeforeEpisodeNumber.Value.ToString(_usCulture)) + "</airsbefore_episode>");
+            }
+            if (episode.AirsBeforeSeasonNumber.HasValue)
+            {
+                builder.Append("<airsbefore_season>" + SecurityElement.Escape(episode.AirsBeforeSeasonNumber.Value.ToString(_usCulture)) + "</airsbefore_season>");
+            }
+   
             if (episode.ParentIndexNumber.HasValue)
             {
                 builder.Append("<SeasonNumber>" + SecurityElement.Escape(episode.ParentIndexNumber.Value.ToString(_usCulture)) + "</SeasonNumber>");
@@ -81,19 +100,22 @@ namespace MediaBrowser.Providers.Savers
             }
 
             XmlSaverHelpers.AddCommonNodes(item, builder);
-            XmlSaverHelpers.AddMediaInfo(episode, builder);
-            XmlSaverHelpers.AddChapters((Video)item, builder, _itemRepository);
+            XmlSaverHelpers.AddMediaInfo(episode, builder, _itemRepository);
 
             builder.Append("</Item>");
 
             var xmlFilePath = GetSavePath(item);
 
-            XmlSaverHelpers.Save(builder, xmlFilePath, new[]
+            XmlSaverHelpers.Save(builder, xmlFilePath, new List<string>
                 {
                     "FirstAired",
                     "SeasonNumber",
                     "EpisodeNumber",
-                    "EpisodeName"
+                    "EpisodeName",
+                    "EpisodeNumberEnd",
+                    "airsafter_season",
+                    "airsbefore_episode",
+                    "airsbefore_season"
                 });
 
             // Set last refreshed so that the provider doesn't trigger after the file save

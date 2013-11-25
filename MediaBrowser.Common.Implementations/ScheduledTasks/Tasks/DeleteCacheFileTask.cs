@@ -1,5 +1,7 @@
 ﻿using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.ScheduledTasks;
+using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,13 +22,19 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         /// <value>The application paths.</value>
         private IApplicationPaths ApplicationPaths { get; set; }
 
+        private readonly ILogger _logger;
+
+        private readonly IFileSystem _fileSystem;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCacheFileTask" /> class.
         /// </summary>
         /// <param name="appPaths">The app paths.</param>
-        public DeleteCacheFileTask(IApplicationPaths appPaths)
+        public DeleteCacheFileTask(IApplicationPaths appPaths, ILogger logger, IFileSystem fileSystem)
         {
             ApplicationPaths = appPaths;
+            _logger = logger;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -35,9 +43,15 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>
         public IEnumerable<ITaskTrigger> GetDefaultTriggers()
         {
-            var trigger = new DailyTrigger { TimeOfDay = TimeSpan.FromHours(2) }; //2am
+            // Until we can vary these default triggers per server and MBT, we need something that makes sense for both
+            return new ITaskTrigger[] { 
+            
+                // At startup
+                new StartupTrigger (),
 
-            return new[] { trigger };
+                // Every so often
+                new IntervalTrigger { Interval = TimeSpan.FromHours(24)}
+            };
         }
 
         /// <summary>
@@ -48,12 +62,29 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         /// <returns>Task.</returns>
         public Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            return Task.Run(() =>
-            {
-                var minDateModified = DateTime.UtcNow.AddDays(-30);
+            var minDateModified = DateTime.UtcNow.AddDays(-30);
 
+            try
+            {
                 DeleteCacheFilesFromDirectory(cancellationToken, ApplicationPaths.CachePath, minDateModified, progress);
-            });
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // No biggie here. Nothing to delete
+            }
+
+            progress.Report(90);
+
+            try
+            {
+                DeleteCacheFilesFromDirectory(cancellationToken, ApplicationPaths.TempDirectory, DateTime.MaxValue, progress);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // No biggie here. Nothing to delete
+            }
+
+            return Task.FromResult(true);
         }
 
 
@@ -66,8 +97,8 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
         /// <param name="progress">The progress.</param>
         private void DeleteCacheFilesFromDirectory(CancellationToken cancellationToken, string directory, DateTime minDateModified, IProgress<double> progress)
         {
-            var filesToDelete = new DirectoryInfo(directory).EnumerateFileSystemInfos("*", SearchOption.AllDirectories)
-                .Where(f => !f.Attributes.HasFlag(FileAttributes.Directory) && f.LastWriteTimeUtc < minDateModified)
+            var filesToDelete = new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories)
+                .Where(f => _fileSystem.GetLastWriteTimeUtc(f) < minDateModified)
                 .ToList();
 
             var index = 0;
@@ -81,12 +112,24 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                File.Delete(file.FullName);
+                DeleteFile(file.FullName);
 
                 index++;
             }
 
             progress.Report(100);
+        }
+
+        private void DeleteFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (IOException ex)
+            {
+                _logger.ErrorException("Error deleting file {0}", ex, path);
+            }
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.Logging;
 using ServiceStack.Common;
 using ServiceStack.Common.Web;
@@ -25,13 +26,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// The _logger
         /// </summary>
         private readonly ILogger _logger;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpResultFactory"/> class.
         /// </summary>
         /// <param name="logManager">The log manager.</param>
-        public HttpResultFactory(ILogManager logManager)
+        public HttpResultFactory(ILogManager logManager, IFileSystem fileSystem)
         {
+            _fileSystem = fileSystem;
             _logger = logManager.GetLogger("HttpResultFactory");
         }
 
@@ -92,7 +95,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             {
                 AddResponseHeaders(result, responseHeaders);
             }
-            
+
             return result;
         }
 
@@ -271,32 +274,39 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// </summary>
         /// <param name="requestContext">The request context.</param>
         /// <param name="path">The path.</param>
+        /// <param name="fileShare">The file share.</param>
         /// <param name="responseHeaders">The response headers.</param>
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="System.ArgumentNullException">path</exception>
-        public object GetStaticFileResult(IRequestContext requestContext, string path, IDictionary<string, string> responseHeaders = null, bool isHeadRequest = false)
+        public object GetStaticFileResult(IRequestContext requestContext, string path, FileShare fileShare = FileShare.Read, IDictionary<string, string> responseHeaders = null, bool isHeadRequest = false)
         {
             if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }
 
-            var dateModified = File.GetLastWriteTimeUtc(path);
+            if (fileShare != FileShare.Read && fileShare != FileShare.ReadWrite)
+            {
+                throw new ArgumentException("FileShare must be either Read or ReadWrite");
+            }
+
+            var dateModified = _fileSystem.GetLastWriteTimeUtc(path);
 
             var cacheKey = path + dateModified.Ticks;
 
-            return GetStaticResult(requestContext, cacheKey.GetMD5(), dateModified, null, MimeTypes.GetMimeType(path), () => Task.FromResult(GetFileStream(path)), responseHeaders, isHeadRequest);
+            return GetStaticResult(requestContext, cacheKey.GetMD5(), dateModified, null, MimeTypes.GetMimeType(path), () => Task.FromResult(GetFileStream(path, fileShare)), responseHeaders, isHeadRequest);
         }
 
         /// <summary>
         /// Gets the file stream.
         /// </summary>
         /// <param name="path">The path.</param>
+        /// <param name="fileShare">The file share.</param>
         /// <returns>Stream.</returns>
-        private Stream GetFileStream(string path)
+        private Stream GetFileStream(string path, FileShare fileShare)
         {
-            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous);
+            return _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, fileShare, true);
         }
 
         /// <summary>

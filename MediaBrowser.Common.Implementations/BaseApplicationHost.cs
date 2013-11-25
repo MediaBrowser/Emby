@@ -1,16 +1,18 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Implementations.Logging;
-using MediaBrowser.Common.Implementations.NetworkManagement;
+using MediaBrowser.Common.Implementations.Archiving;
+using MediaBrowser.Common.Implementations.IO;
 using MediaBrowser.Common.Implementations.ScheduledTasks;
 using MediaBrowser.Common.Implementations.Security;
 using MediaBrowser.Common.Implementations.Serialization;
 using MediaBrowser.Common.Implementations.Updates;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Common.Security;
 using MediaBrowser.Common.Updates;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Updates;
@@ -19,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +74,7 @@ namespace MediaBrowser.Common.Implementations
         /// Gets the application paths.
         /// </summary>
         /// <value>The application paths.</value>
-        protected TApplicationPathsType ApplicationPaths = new TApplicationPathsType();
+        protected TApplicationPathsType ApplicationPaths { get; private set; }
 
         /// <summary>
         /// The container
@@ -147,16 +151,27 @@ namespace MediaBrowser.Common.Implementations
         /// Gets or sets the installation manager.
         /// </summary>
         /// <value>The installation manager.</value>
-        protected IInstallationManager InstallationManager { get; set; }
+        protected IInstallationManager InstallationManager { get; private set; }
+
+        protected IFileSystem FileSystemManager { get; private set; }
         
+        /// <summary>
+        /// Gets or sets the zip client.
+        /// </summary>
+        /// <value>The zip client.</value>
+        protected IZipClient ZipClient { get; private set; }
+
+        protected IIsoManager IsoManager { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseApplicationHost{TApplicationPathsType}"/> class.
         /// </summary>
-        protected BaseApplicationHost()
+        protected BaseApplicationHost(TApplicationPathsType applicationPaths, ILogManager logManager)
         {
             FailedAssemblies = new List<string>();
 
-            LogManager = new NlogManager(ApplicationPaths.LogDirectoryPath, LogFilePrefixName);
+            ApplicationPaths = applicationPaths;
+            LogManager = logManager;
 
             ConfigurationManager = GetConfigurationManager();
         }
@@ -171,21 +186,75 @@ namespace MediaBrowser.Common.Implementations
 
             Logger = LogManager.GetLogger("App");
 
-            LogManager.ReloadLogger(ConfigurationManager.CommonConfiguration.EnableDebugLevelLogging ? LogSeverity.Debug : LogSeverity.Info);
+            LogManager.LogSeverity = ConfigurationManager.CommonConfiguration.EnableDebugLevelLogging
+                                         ? LogSeverity.Debug
+                                         : LogSeverity.Info;
+
             OnLoggerLoaded();
 
             DiscoverTypes();
 
             Logger.Info("Version {0} initializing", ApplicationVersion);
 
+            SetHttpLimit();
+
             await RegisterResources().ConfigureAwait(false);
 
             FindParts();
+
+            await InstallIsoMounters(CancellationToken.None).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Called when [logger loaded].
+        /// </summary>
         protected virtual void OnLoggerLoaded()
         {
-            
+
+        }
+
+        private void SetHttpLimit()
+        {
+            try
+            {
+                // Increase the max http request limit
+                ServicePointManager.DefaultConnectionLimit = Math.Max(48, ServicePointManager.DefaultConnectionLimit);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error setting http limit", ex);
+            }
+        }
+        
+        /// <summary>
+        /// Installs the iso mounters.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        private async Task InstallIsoMounters(CancellationToken cancellationToken)
+        {
+            var list = new List<IIsoMounter>();
+
+            foreach (var isoMounter in GetExports<IIsoMounter>())
+            {
+                try
+                {
+                    if (isoMounter.RequiresInstallation && !isoMounter.IsInstalled)
+                    {
+                        Logger.Info("Installing {0}", isoMounter.Name);
+
+                        await isoMounter.Install(cancellationToken).ConfigureAwait(false);
+                    }
+
+                    list.Add(isoMounter);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException("{0} failed to load.", ex, isoMounter.Name);
+                }
+            }
+
+            IsoManager.AddParts(list);
         }
 
         /// <summary>
@@ -198,10 +267,25 @@ namespace MediaBrowser.Common.Implementations
             {
                 Resolve<ITaskManager>().AddTasks(GetExports<IScheduledTask>(false));
 
-                Task.Run(() => ConfigureAutoRunAtStartup());
+                Task.Run(() => ConfigureAutorun());
 
                 ConfigurationManager.ConfigurationUpdated += OnConfigurationUpdated;
             });
+        }
+
+        /// <summary>
+        /// Configures the autorun.
+        /// </summary>
+        private void ConfigureAutorun()
+        {
+            try
+            {
+                ConfigureAutoRunAtStartup(ConfigurationManager.CommonConfiguration.RunAtStartup);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error configuring autorun", ex);
+            }
         }
 
         /// <summary>
@@ -209,12 +293,6 @@ namespace MediaBrowser.Common.Implementations
         /// </summary>
         /// <returns>IEnumerable{Assembly}.</returns>
         protected abstract IEnumerable<Assembly> GetComposablePartAssemblies();
-
-        /// <summary>
-        /// Gets the name of the log file prefix.
-        /// </summary>
-        /// <value>The name of the log file prefix.</value>
-        protected abstract string LogFilePrefixName { get; }
 
         /// <summary>
         /// Gets the configuration manager.
@@ -237,7 +315,7 @@ namespace MediaBrowser.Common.Implementations
         {
             FailedAssemblies.Clear();
 
-            var assemblies = GetComposablePartAssemblies().ToArray();
+            var assemblies = GetComposablePartAssemblies().ToList();
 
             foreach (var assembly in assemblies)
             {
@@ -272,19 +350,35 @@ namespace MediaBrowser.Common.Implementations
 
                 RegisterSingleInstance(TaskManager);
 
-                HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, Logger);
+                FileSystemManager = CreateFileSystemManager();
+                RegisterSingleInstance(FileSystemManager);
+
+                HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, Logger, CreateHttpClient, FileSystemManager);
                 RegisterSingleInstance(HttpClient);
 
-                NetworkManager = new NetworkManager();
+                NetworkManager = CreateNetworkManager();
                 RegisterSingleInstance(NetworkManager);
 
-                SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths);
+                SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, NetworkManager);
                 RegisterSingleInstance(SecurityManager);
 
-                InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, NetworkManager);
+                InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, NetworkManager, ConfigurationManager);
                 RegisterSingleInstance(InstallationManager);
+
+                ZipClient = new ZipClient();
+                RegisterSingleInstance(ZipClient);
+
+                IsoManager = new IsoManager();
+                RegisterSingleInstance(IsoManager);
             });
         }
+
+        protected virtual IFileSystem CreateFileSystemManager()
+        {
+            return new CommonFileSystem(Logger, true);
+        }
+
+        protected abstract HttpClient CreateHttpClient(bool enableHttpCompression);
 
         /// <summary>
         /// Gets a list of types within an assembly
@@ -311,6 +405,8 @@ namespace MediaBrowser.Common.Implementations
             }
         }
 
+        protected abstract INetworkManager CreateNetworkManager();
+
         /// <summary>
         /// Creates an instance of type and resolves all constructor dependancies
         /// </summary>
@@ -327,6 +423,30 @@ namespace MediaBrowser.Common.Implementations
                 Logger.Error("Error creating {0}", ex, type.Name);
 
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates the instance safe.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>System.Object.</returns>
+        protected object CreateInstanceSafe(Type type)
+        {
+            try
+            {
+                return Container.GetInstance(type);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Error creating {0}", ex, type.Name);
+
+#if DEBUG
+                throw;
+#endif
+
+                // Don't blow up in release mode
+                return null;
             }
         }
 
@@ -428,7 +548,11 @@ namespace MediaBrowser.Common.Implementations
         /// <returns>IEnumerable{``0}.</returns>
         public IEnumerable<T> GetExports<T>(bool manageLiftime = true)
         {
-            var parts = GetExportTypes<T>().Select(CreateInstance).Cast<T>().ToArray();
+            var parts = GetExportTypes<T>()
+                .Select(CreateInstanceSafe)
+                .Where(i => i != null)
+                .Cast<T>()
+                .ToList();
 
             if (manageLiftime)
             {
@@ -454,11 +578,6 @@ namespace MediaBrowser.Common.Implementations
         }
 
         /// <summary>
-        /// Defines the full path to our shortcut in the start menu
-        /// </summary>
-        protected abstract string ProductShortcutPath { get; }
-
-        /// <summary>
         /// Handles the ConfigurationUpdated event of the ConfigurationManager control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -466,32 +585,10 @@ namespace MediaBrowser.Common.Implementations
         /// <exception cref="System.NotImplementedException"></exception>
         protected virtual void OnConfigurationUpdated(object sender, EventArgs e)
         {
-            ConfigureAutoRunAtStartup();
+            ConfigureAutorun();
         }
-        
-        /// <summary>
-        /// Configures the auto run at startup.
-        /// </summary>
-        private void ConfigureAutoRunAtStartup()
-        {
-            if (ConfigurationManager.CommonConfiguration.RunAtStartup)
-            {
-                //Copy our shortut into the startup folder for this user
-                File.Copy(ProductShortcutPath, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup),Path.GetFileName(ProductShortcutPath) ?? "MBstartup.lnk"), true);
-            }
-            else
-            {
-                //Remove our shortcut from the startup folder for this user
-                try
-                {
-                    File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), Path.GetFileName(ProductShortcutPath) ?? "MBstartup.lnk"));
-                }
-                catch (FileNotFoundException)
-                {
-                    //This is okay - trying to remove it anyway
-                }
-            }
-        }
+
+        protected abstract void ConfigureAutoRunAtStartup(bool autorun);
 
         /// <summary>
         /// Removes the plugin.
@@ -503,6 +600,12 @@ namespace MediaBrowser.Common.Implementations
             list.Remove(plugin);
             Plugins = list;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance can self restart.
+        /// </summary>
+        /// <value><c>true</c> if this instance can self restart; otherwise, <c>false</c>.</value>
+        public abstract bool CanSelfRestart { get; }
 
         /// <summary>
         /// Notifies that the kernel that a change has been made that requires a restart
@@ -549,7 +652,7 @@ namespace MediaBrowser.Common.Implementations
         /// <summary>
         /// Restarts this instance.
         /// </summary>
-        public abstract void Restart();
+        public abstract Task Restart();
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance can self update.
@@ -557,59 +660,14 @@ namespace MediaBrowser.Common.Implementations
         /// <value><c>true</c> if this instance can self update; otherwise, <c>false</c>.</value>
         public abstract bool CanSelfUpdate { get; }
 
-        private Tuple<CheckForUpdateResult, DateTime> _lastUpdateCheckResult;
-
         /// <summary>
         /// Checks for update.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="progress">The progress.</param>
         /// <returns>Task{CheckForUpdateResult}.</returns>
-        public async Task<CheckForUpdateResult> CheckForApplicationUpdate(CancellationToken cancellationToken,
-                                                                    IProgress<double> progress)
-        {
-            if (_lastUpdateCheckResult != null)
-            {
-                // Let dev users get results more often for testing purposes
-                var cacheLength = ConfigurationManager.CommonConfiguration.SystemUpdateLevel == PackageVersionClass.Dev
-                                      ? TimeSpan.FromHours(1)
-                                      : TimeSpan.FromHours(12);
-
-                if ((DateTime.UtcNow - _lastUpdateCheckResult.Item2) < cacheLength)
-                {
-                    return _lastUpdateCheckResult.Item1;
-                }
-            }
-
-            var result = await CheckForApplicationUpdateInternal(cancellationToken, progress).ConfigureAwait(false);
-
-            _lastUpdateCheckResult = new Tuple<CheckForUpdateResult, DateTime>(result, DateTime.UtcNow);
-
-            return _lastUpdateCheckResult.Item1;
-        }
-
-        /// <summary>
-        /// Checks for application update internal.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="progress">The progress.</param>
-        /// <returns>Task{CheckForUpdateResult}.</returns>
-        private async Task<CheckForUpdateResult> CheckForApplicationUpdateInternal(CancellationToken cancellationToken,
-                                                                   IProgress<double> progress)
-        {
-            var availablePackages = await InstallationManager.GetAvailablePackagesWithoutRegistrationInfo(CancellationToken.None).ConfigureAwait(false);
-
-            var version = InstallationManager.GetLatestCompatibleVersion(availablePackages, ApplicationUpdatePackageName, ConfigurationManager.CommonConfiguration.SystemUpdateLevel);
-
-            return version != null ? new CheckForUpdateResult { AvailableVersion = version.version, IsUpdateAvailable = version.version > ApplicationVersion, Package = version } :
-                       new CheckForUpdateResult { AvailableVersion = ApplicationVersion, IsUpdateAvailable = false };
-        }
-
-        /// <summary>
-        /// Gets the name of the application update package.
-        /// </summary>
-        /// <value>The name of the application update package.</value>
-        protected abstract string ApplicationUpdatePackageName { get; }
+        public abstract Task<CheckForUpdateResult> CheckForApplicationUpdate(CancellationToken cancellationToken,
+                                                                          IProgress<double> progress);
 
         /// <summary>
         /// Updates the application.
@@ -618,18 +676,25 @@ namespace MediaBrowser.Common.Implementations
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="progress">The progress.</param>
         /// <returns>Task.</returns>
-        public async Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken, IProgress<double> progress)
-        {
-            await InstallationManager.InstallPackage(package, progress, cancellationToken).ConfigureAwait(false);
-
-            EventHelper.QueueEventIfNotNull(ApplicationUpdated, this, new GenericEventArgs<Version> { Argument = package.version }, Logger);
-
-            NotifyPendingRestart();
-        }
+        public abstract Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken,
+                                            IProgress<double> progress);
 
         /// <summary>
         /// Shuts down.
         /// </summary>
-        public abstract void Shutdown();
+        public abstract Task Shutdown();
+
+        /// <summary>
+        /// Called when [application updated].
+        /// </summary>
+        /// <param name="newVersion">The new version.</param>
+        protected void OnApplicationUpdated(Version newVersion)
+        {
+            Logger.Info("Application has been updated to version {0}", newVersion);
+
+            EventHelper.QueueEventIfNotNull(ApplicationUpdated, this, new GenericEventArgs<Version> { Argument = newVersion }, Logger);
+
+            NotifyPendingRestart();
+        }
     }
 }

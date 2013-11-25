@@ -181,6 +181,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// <param name="dto">The dto.</param>
         private void FilterResponse(IHttpRequest req, IHttpResponse res, object dto)
         {
+            // Try to prevent compatibility view
+            res.AddHeader("X-UA-Compatible", "IE=Edge");
+            
             var exception = dto as Exception;
 
             if (exception != null)
@@ -314,6 +317,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// <param name="context">The CTX.</param>
         private async void ProcessHttpRequestAsync(HttpListenerContext context)
         {
+            var date = DateTime.Now;
+
             LogHttpRequest(context);
 
             if (context.Request.IsWebSocketRequest)
@@ -355,7 +360,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             {
                 try
                 {
+                    var url = context.Request.Url.ToString();
+                    var endPoint = context.Request.RemoteEndPoint;
+
                     ProcessRequest(context);
+
+                    var duration = DateTime.Now - date;
+
+                    LogResponse(context, url, endPoint, duration);
+
                 }
                 catch (Exception ex)
                 {
@@ -372,22 +385,23 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// <returns>Task.</returns>
         private async Task ProcessWebSocketRequest(HttpListenerContext ctx)
         {
+            #if __MonoCS__
+            #else
             try
-            {
-                var webSocketContext = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
-
-                if (WebSocketConnected != null)
-                {
-                    WebSocketConnected(this, new WebSocketConnectEventArgs { WebSocket = new NativeWebSocket(webSocketContext.WebSocket, _logger), Endpoint = ctx.Request.RemoteEndPoint.ToString() });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("AcceptWebSocketAsync error", ex);
-
-                ctx.Response.StatusCode = 500;
-                ctx.Response.Close();
-            }
+              {
+               var webSocketContext = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
+               if (WebSocketConnected != null)
+               {
+                WebSocketConnected(this, new WebSocketConnectEventArgs { WebSocket = new NativeWebSocket(webSocketContext.WebSocket, _logger), Endpoint = ctx.Request.RemoteEndPoint.ToString() });
+               }
+              }
+              catch (Exception ex)
+              {
+               _logger.ErrorException("AcceptWebSocketAsync error", ex);
+               ctx.Response.StatusCode = 500;
+               ctx.Response.Close();
+              }
+            #endif
         }
 
         /// <summary>
@@ -433,9 +447,6 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             var httpRes = new HttpListenerResponseWrapper(context.Response);
             var handler = ServiceStackHttpHandlerFactory.GetHandler(httpReq);
 
-            var url = context.Request.Url.ToString();
-            var endPoint = context.Request.RemoteEndPoint;
-
             var serviceStackHandler = handler as IServiceStackHttpHandler;
 
             if (serviceStackHandler != null)
@@ -446,7 +457,6 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                     httpReq.OperationName = operationName = restHandler.RestPath.RequestType.Name;
                 }
                 serviceStackHandler.ProcessRequest(httpReq, httpRes, operationName);
-                LogResponse(context, url, endPoint);
                 return;
             }
 
@@ -459,14 +469,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// <param name="ctx">The CTX.</param>
         /// <param name="url">The URL.</param>
         /// <param name="endPoint">The end point.</param>
-        private void LogResponse(HttpListenerContext ctx, string url, IPEndPoint endPoint)
+        /// <param name="duration">The duration.</param>
+        private void LogResponse(HttpListenerContext ctx, string url, IPEndPoint endPoint, TimeSpan duration)
         {
             if (!EnableHttpRequestLogging)
             {
                 return;
             }
 
-            var statusode = ctx.Response.StatusCode;
+            var statusCode = ctx.Response.StatusCode;
 
             var log = new StringBuilder();
 
@@ -474,7 +485,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
             log.AppendLine("Headers: " + string.Join(",", ctx.Response.Headers.AllKeys.Select(k => k + "=" + ctx.Response.Headers[k])));
 
-            var msg = "Http Response Sent (" + statusode + ") to " + endPoint;
+            var responseTime = string.Format(". Response time: {0} ms", duration.TotalMilliseconds);
+
+            var msg = "Response code " + statusCode + " sent to " + endPoint + responseTime;
 
             _logger.LogMultiline(msg, LogSeverity.Debug, log);
         }
@@ -523,7 +536,12 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         {
             get
             {
-                if (!_supportsNativeWebSocket.HasValue)
+				#if __MonoCS__
+				return false;
+				#else
+				#endif
+
+				if (!_supportsNativeWebSocket.HasValue)
                 {
                     try
                     {

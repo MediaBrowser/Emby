@@ -8,13 +8,14 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -31,8 +32,9 @@ namespace MediaBrowser.Providers.TV
         protected IHttpClient HttpClient { get; private set; }
 
         private readonly IProviderManager _providerManager;
+        private readonly IFileSystem _fileSystem;
 
-        public FanArtTvProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager)
+        public FanArtTvProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             if (httpClient == null)
@@ -41,12 +43,22 @@ namespace MediaBrowser.Providers.TV
             }
             HttpClient = httpClient;
             _providerManager = providerManager;
+            _fileSystem = fileSystem;
             Current = this;
         }
 
         public override bool Supports(BaseItem item)
         {
             return item is Series;
+        }
+
+        /// <summary>
+        /// Gets the priority.
+        /// </summary>
+        /// <value>The priority.</value>
+        public override MetadataProviderPriority Priority
+        {
+            get { return MetadataProviderPriority.Third; }
         }
 
         public override ItemUpdateType ItemUpdateType
@@ -70,48 +82,24 @@ namespace MediaBrowser.Providers.TV
                 return false;
             }
 
-            if (!ConfigurationManager.Configuration.DownloadSeriesImages.Art &&
-                !ConfigurationManager.Configuration.DownloadSeriesImages.Logo &&
-                !ConfigurationManager.Configuration.DownloadSeriesImages.Thumb &&
-                !ConfigurationManager.Configuration.DownloadSeriesImages.Backdrops &&
-                !ConfigurationManager.Configuration.DownloadSeriesImages.Banner)
-            {
-                return false;
-            }
-
-            if (item.HasImage(ImageType.Art) &&
-                item.HasImage(ImageType.Logo) &&
-                item.HasImage(ImageType.Banner) &&
-                item.HasImage(ImageType.Thumb) &&
-                item.BackdropImagePaths.Count > 0)
-            {
-                return false;
-            }
-
             return base.NeedsRefreshInternal(item, providerInfo);
         }
 
-        protected override DateTime CompareDate(BaseItem item)
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
             var id = item.GetProviderId(MetadataProviders.Tvdb);
 
             if (!string.IsNullOrEmpty(id))
             {
                 // Process images
-                var path = GetSeriesDataPath(ConfigurationManager.ApplicationPaths, id);
+                var xmlPath = GetFanartXmlPath(id);
 
-                var files = new DirectoryInfo(path)
-                    .EnumerateFiles("*.xml", SearchOption.TopDirectoryOnly)
-                    .Select(i => i.LastWriteTimeUtc)
-                    .ToArray();
+                var fileInfo = new FileInfo(xmlPath);
 
-                if (files.Length > 0)
-                {
-                    return files.Max();
-                }
+                return !fileInfo.Exists || _fileSystem.GetLastWriteTimeUtc(fileInfo) > providerInfo.LastRefreshed;
             }
 
-            return base.CompareDate(item);
+            return base.NeedsRefreshBasedOnCompareDate(item, providerInfo);
         }
 
         /// <summary>
@@ -148,11 +136,6 @@ namespace MediaBrowser.Providers.TV
         {
             var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
 
-            if (!Directory.Exists(seriesDataPath))
-            {
-                Directory.CreateDirectory(seriesDataPath);
-            }
-
             return seriesDataPath;
         }
 
@@ -165,12 +148,13 @@ namespace MediaBrowser.Providers.TV
         {
             var dataPath = Path.Combine(appPaths.DataPath, "fanart-tv");
 
-            if (!Directory.Exists(dataPath))
-            {
-                Directory.CreateDirectory(dataPath);
-            }
-
             return dataPath;
+        }
+
+        public string GetFanartXmlPath(string tvdbId)
+        {
+            var dataPath = GetSeriesDataPath(ConfigurationManager.ApplicationPaths, tvdbId);
+            return Path.Combine(dataPath, "fanart.xml");
         }
         
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
@@ -183,19 +167,17 @@ namespace MediaBrowser.Providers.TV
 
             if (!string.IsNullOrEmpty(seriesId))
             {
-                var seriesDataPath = GetSeriesDataPath(ConfigurationManager.ApplicationPaths, seriesId);
-                var xmlPath = Path.Combine(seriesDataPath, "fanart.xml");
+                var xmlPath = GetFanartXmlPath(seriesId);
 
                 // Only download the xml if it doesn't already exist. The prescan task will take care of getting updates
                 if (!File.Exists(xmlPath))
                 {
-                    await DownloadSeriesXml(seriesDataPath, seriesId, cancellationToken).ConfigureAwait(false);
+                    await DownloadSeriesXml(seriesId, cancellationToken).ConfigureAwait(false);
                 }
 
-                if (File.Exists(xmlPath))
-                {
-                    await FetchFromXml(item, xmlPath, cancellationToken).ConfigureAwait(false);
-                }
+                var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualFanartSeriesImageProvider.ProviderName).ConfigureAwait(false);
+
+                await FetchFromXml(item, images.ToList(), cancellationToken).ConfigureAwait(false);
             }
 
             SetLastRefreshed(item, DateTime.UtcNow);
@@ -207,47 +189,44 @@ namespace MediaBrowser.Providers.TV
         /// Fetches from XML.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <param name="xmlFilePath">The XML file path.</param>
+        /// <param name="images">The images.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task FetchFromXml(BaseItem item, string xmlFilePath, CancellationToken cancellationToken)
+        private async Task FetchFromXml(BaseItem item, List<RemoteImageInfo> images, CancellationToken cancellationToken)
         {
-            var doc = new XmlDocument();
-            doc.Load(xmlFilePath);
-
             cancellationToken.ThrowIfCancellationRequested();
 
-            var language = ConfigurationManager.Configuration.PreferredMetadataLanguage.ToLower();
-            
-            var hd = ConfigurationManager.Configuration.DownloadHDFanArt ? "hdtv" : "clear";
-            if (ConfigurationManager.Configuration.DownloadSeriesImages.Logo && !item.HasImage(ImageType.Logo))
+            if (ConfigurationManager.Configuration.DownloadSeriesImages.Primary && !item.HasImage(ImageType.Primary))
             {
-                var node = doc.SelectSingleNode("//fanart/series/" + hd + "logos/" + hd + "logo[@lang = \"" + language + "\"]/@url") ??
-                            doc.SelectSingleNode("//fanart/series/clearlogos/clearlogo[@lang = \"" + language + "\"]/@url") ??
-                            doc.SelectSingleNode("//fanart/series/" + hd + "logos/" + hd + "logo/@url") ??
-                            doc.SelectSingleNode("//fanart/series/clearlogos/clearlogo/@url");
-                var path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Primary);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Logo, null, cancellationToken)
-                          .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            hd = ConfigurationManager.Configuration.DownloadHDFanArt ? "hd" : "";
+            if (ConfigurationManager.Configuration.DownloadSeriesImages.Logo && !item.HasImage(ImageType.Logo))
+            {
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Logo);
+
+                if (image != null)
+                {
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Logo, null, cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (ConfigurationManager.Configuration.DownloadSeriesImages.Art && !item.HasImage(ImageType.Art))
             {
-                var node = doc.SelectSingleNode("//fanart/series/" + hd + "cleararts/" + hd + "clearart[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/series/cleararts/clearart[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/series/" + hd + "cleararts/" + hd + "clearart/@url") ??
-                           doc.SelectSingleNode("//fanart/series/cleararts/clearart/@url");
-                var path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Art);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Art, null, cancellationToken)
-                          .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Art, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -255,51 +234,38 @@ namespace MediaBrowser.Providers.TV
 
             if (ConfigurationManager.Configuration.DownloadSeriesImages.Thumb && !item.HasImage(ImageType.Thumb))
             {
-                var node = doc.SelectSingleNode("//fanart/series/tvthumbs/tvthumb[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/series/tvthumbs/tvthumb/@url");
-                var path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Thumb);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Thumb, null, cancellationToken)
-                          .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Thumb, null, cancellationToken).ConfigureAwait(false);
                 }
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (ConfigurationManager.Configuration.DownloadSeriesImages.Banner && !item.HasImage(ImageType.Banner))
             {
-                var node = doc.SelectSingleNode("//fanart/series/tbbanners/tvbanner[@lang = \"" + language + "\"]/@url") ??
-                           doc.SelectSingleNode("//fanart/series/tbbanners/tvbanner/@url");
-                var path = node != null ? node.Value : null;
-                if (!string.IsNullOrEmpty(path))
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Banner);
+
+                if (image != null)
                 {
-                    await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Banner, null, cancellationToken)
-                          .ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Banner, null, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-            if (ConfigurationManager.Configuration.DownloadMovieImages.Backdrops && item.BackdropImagePaths.Count == 0)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var backdropLimit = ConfigurationManager.Configuration.MaxBackdrops;
+            if (ConfigurationManager.Configuration.DownloadSeriesImages.Backdrops &&
+                item.BackdropImagePaths.Count < backdropLimit)
             {
-                var nodes = doc.SelectNodes("//fanart/series/showbackgrounds//@url");
-
-                if (nodes != null)
+                foreach (var image in images.Where(i => i.Type == ImageType.Backdrop))
                 {
-                    var numBackdrops = item.BackdropImagePaths.Count;
+                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Backdrop, null, cancellationToken)
+                                        .ConfigureAwait(false);
 
-                    foreach (XmlNode node in nodes)
-                    {
-                        var path = node.Value;
-
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            await _providerManager.SaveImage(item, path, FanArtResourcePool, ImageType.Backdrop, numBackdrops, cancellationToken)
-                                  .ConfigureAwait(false);
-
-                            numBackdrops++;
-
-                            if (item.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops) break;
-                        }
-                    }
-
+                    if (item.BackdropImagePaths.Count >= backdropLimit) break;
                 }
             }
 
@@ -308,17 +274,18 @@ namespace MediaBrowser.Providers.TV
         /// <summary>
         /// Downloads the series XML.
         /// </summary>
-        /// <param name="seriesDataPath">The series data path.</param>
         /// <param name="tvdbId">The TVDB id.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        internal async Task DownloadSeriesXml(string seriesDataPath, string tvdbId, CancellationToken cancellationToken)
+        internal async Task DownloadSeriesXml(string tvdbId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string url = string.Format(FanArtBaseUrl, ApiKey, tvdbId);
+            var url = string.Format(FanArtBaseUrl, ApiKey, tvdbId);
 
-            var xmlPath = Path.Combine(seriesDataPath, "fanart.xml");
+            var xmlPath = GetFanartXmlPath(tvdbId);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(xmlPath));
 
             using (var response = await HttpClient.Get(new HttpRequestOptions
             {
@@ -328,7 +295,7 @@ namespace MediaBrowser.Providers.TV
 
             }).ConfigureAwait(false))
             {
-                using (var xmlFileStream = new FileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                using (var xmlFileStream = _fileSystem.GetFileStream(xmlPath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                 {
                     await response.CopyToAsync(xmlFileStream).ConfigureAwait(false);
                 }

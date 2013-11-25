@@ -17,12 +17,12 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
     /// </summary>
     public class MovieResolver : BaseVideoResolver<Video>
     {
-        private IServerApplicationPaths ApplicationPaths { get; set; }
+        private readonly IServerApplicationPaths _applicationPaths;
         private readonly ILibraryManager _libraryManager;
 
         public MovieResolver(IServerApplicationPaths appPaths, ILibraryManager libraryManager)
         {
-            ApplicationPaths = appPaths;
+            _applicationPaths = appPaths;
             _libraryManager = libraryManager;
         }
 
@@ -83,7 +83,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
                 }
             }
 
-            var collectionType = args.Parent == null ? null : _libraryManager.FindCollectionType(args.Parent);
+            var collectionType = args.GetCollectionType();
 
             // Find movies with their own folders
             if (isDirectory)
@@ -106,14 +106,14 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
                     return FindMovie<AdultVideo>(args.Path, args.FileSystemChildren);
                 }
 
-                if (!string.IsNullOrEmpty(collectionType) &&
-                    !string.Equals(collectionType, CollectionType.Movies, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(collectionType, CollectionType.BoxSets, StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(collectionType) ||
+                    string.Equals(collectionType, CollectionType.Movies, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(collectionType, CollectionType.BoxSets, StringComparison.OrdinalIgnoreCase))
                 {
-                    return null;
+                    return FindMovie<Movie>(args.Path, args.FileSystemChildren);
                 }
 
-                return FindMovie<Movie>(args.Path, args.FileSystemChildren);
+                return null;
             }
 
             // Find movies that are mixed in the same folder
@@ -234,7 +234,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
                     continue;
                 }
 
-                var childArgs = new ItemResolveArgs(ApplicationPaths)
+                var childArgs = new ItemResolveArgs(_applicationPaths, _libraryManager)
                 {
                     FileInfo = child,
                     Path = child.FullName
@@ -345,18 +345,9 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
         /// <returns><c>true</c> if [is DVD directory] [the specified directory name]; otherwise, <c>false</c>.</returns>
         private bool IsDvdDirectory(string directoryName)
         {
-            return directoryName.Equals("video_ts", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(directoryName, "video_ts", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Determines whether [is hd DVD directory] [the specified directory name].
-        /// </summary>
-        /// <param name="directoryName">Name of the directory.</param>
-        /// <returns><c>true</c> if [is hd DVD directory] [the specified directory name]; otherwise, <c>false</c>.</returns>
-        private bool IsHdDvdDirectory(string directoryName)
-        {
-            return directoryName.Equals("hvdvd_ts", StringComparison.OrdinalIgnoreCase);
-        }
         /// <summary>
         /// Determines whether [is blu ray directory] [the specified directory name].
         /// </summary>
@@ -364,7 +355,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Movies
         /// <returns><c>true</c> if [is blu ray directory] [the specified directory name]; otherwise, <c>false</c>.</returns>
         private bool IsBluRayDirectory(string directoryName)
         {
-            return directoryName.Equals("bdmv", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(directoryName, "bdmv", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

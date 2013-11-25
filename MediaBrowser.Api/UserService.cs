@@ -20,7 +20,7 @@ namespace MediaBrowser.Api
     [Api(Description = "Gets a list of users")]
     public class GetUsers : IReturn<List<UserDto>>
     {
-        [ApiMember(Name = "IsHidden", Description="Optional filter by IsHidden=true or false", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        [ApiMember(Name = "IsHidden", Description = "Optional filter by IsHidden=true or false", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? IsHidden { get; set; }
 
         [ApiMember(Name = "IsDisabled", Description = "Optional filter by IsDisabled=true or false", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
@@ -32,7 +32,7 @@ namespace MediaBrowser.Api
     public class GetPublicUsers : IReturn<List<UserDto>>
     {
     }
-    
+
     /// <summary>
     /// Class GetUser
     /// </summary>
@@ -171,16 +171,15 @@ namespace MediaBrowser.Api
         /// The _user manager
         /// </summary>
         private readonly IUserManager _userManager;
-        private readonly ILibraryManager _libraryManager;
+        private readonly IDtoService _dtoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService" /> class.
         /// </summary>
         /// <param name="xmlSerializer">The XML serializer.</param>
         /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
         /// <exception cref="System.ArgumentNullException">xmlSerializer</exception>
-        public UserService(IXmlSerializer xmlSerializer, IUserManager userManager, ILibraryManager libraryManager)
+        public UserService(IXmlSerializer xmlSerializer, IUserManager userManager, IDtoService dtoService)
             : base()
         {
             if (xmlSerializer == null)
@@ -190,7 +189,7 @@ namespace MediaBrowser.Api
 
             _xmlSerializer = xmlSerializer;
             _userManager = userManager;
-            _libraryManager = libraryManager;
+            _dtoService = dtoService;
         }
 
         public object Get(GetPublicUsers request)
@@ -209,8 +208,6 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public object Get(GetUsers request)
         {
-            var dtoBuilder = new UserDtoBuilder(Logger);
-
             var users = _userManager.Users;
 
             if (request.IsDisabled.HasValue)
@@ -223,9 +220,12 @@ namespace MediaBrowser.Api
                 users = users.Where(i => i.Configuration.IsHidden == request.IsHidden.Value);
             }
 
-            var tasks = users.OrderBy(u => u.Name).Select(dtoBuilder.GetUserDto).Select(i => i.Result);
+            var result = users
+                .OrderBy(u => u.Name)
+                .Select(_dtoService.GetUserDto)
+                .ToList();
 
-            return ToOptimizedResult(tasks.ToList());
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -242,9 +242,7 @@ namespace MediaBrowser.Api
                 throw new ResourceNotFoundException("User not found");
             }
 
-            var dtoBuilder = new UserDtoBuilder(Logger);
-
-            var result = dtoBuilder.GetUserDto(user).Result;
+            var result = _dtoService.GetUserDto(user);
 
             return ToOptimizedResult(result);
         }
@@ -310,7 +308,7 @@ namespace MediaBrowser.Api
 
             var result = new AuthenticationResult
             {
-                User = await new UserDtoBuilder(Logger).GetUserDto(user).ConfigureAwait(false)
+                User = _dtoService.GetUserDto(user)
             };
 
             return result;
@@ -409,9 +407,7 @@ namespace MediaBrowser.Api
 
             newUser.UpdateConfiguration(dtoUser.Configuration, _xmlSerializer);
 
-            var dtoBuilder = new UserDtoBuilder(Logger);
-
-            var result = dtoBuilder.GetUserDto(newUser).Result;
+            var result = _dtoService.GetUserDto(newUser);
 
             return ToOptimizedResult(result);
         }

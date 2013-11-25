@@ -1,30 +1,49 @@
 ﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Providers.Extensions;
+using MediaBrowser.Model.Providers;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
     public class TvdbPersonImageProvider : BaseMetadataProvider
     {
-        private readonly ILibraryManager _library;
         private readonly IProviderManager _providerManager;
 
-        public TvdbPersonImageProvider(ILogManager logManager, IServerConfigurationManager configurationManager, ILibraryManager library, IProviderManager providerManager)
+        public TvdbPersonImageProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager)
             : base(logManager, configurationManager)
         {
-            _library = library;
             _providerManager = providerManager;
+        }
+
+        protected override bool RefreshOnVersionChange
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        protected override string ProviderVersion
+        {
+            get
+            {
+                return "2";
+            }
+        }
+
+        public override bool RequiresInternet
+        {
+            get
+            {
+                return true;
+            }
         }
 
         public override bool Supports(BaseItem item)
@@ -43,85 +62,36 @@ namespace MediaBrowser.Providers.TV
         {
             if (string.IsNullOrEmpty(item.PrimaryImagePath))
             {
-                var seriesWithPerson = _library.RootFolder
-                    .RecursiveChildren
-                    .OfType<Series>()
-                    .Where(i => !string.IsNullOrEmpty(i.GetProviderId(MetadataProviders.Tvdb)) && i.People.Any(p => string.Equals(p.Name, item.Name, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                foreach (var series in seriesWithPerson)
-                {
-                    try
-                    {
-                        await DownloadImageFromSeries(item, series, cancellationToken).ConfigureAwait(false);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        // No biggie
-                        continue;
-                    }
+                var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualTvdbPersonImageProvider.ProviderName).ConfigureAwait(false);
 
-                    // break once we have an image
-                    if (!string.IsNullOrEmpty(item.PrimaryImagePath))
-                    {
-                        break;
-                    }
-                }
+                await DownloadImages(item, images.ToList(), cancellationToken).ConfigureAwait(false);
 
+                SetLastRefreshed(item, DateTime.UtcNow);
+                return true;
             }
 
             SetLastRefreshed(item, DateTime.UtcNow);
             return true;
         }
-
-        /// <summary>
-        /// Downloads the image from series.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="series">The series.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task DownloadImageFromSeries(BaseItem item, Series series, CancellationToken cancellationToken)
+        private async Task DownloadImages(BaseItem item, List<RemoteImageInfo> images, CancellationToken cancellationToken)
         {
-            var tvdbPath = RemoteSeriesProvider.GetSeriesDataPath(ConfigurationManager.ApplicationPaths, series.GetProviderId(MetadataProviders.Tvdb));
-
-            var actorXmlPath = Path.Combine(tvdbPath, "actors.xml");
-
-            var xmlDoc = new XmlDocument();
-
-            xmlDoc.Load(actorXmlPath);
-
-            var actorNodes = xmlDoc.SelectNodes("//Actor");
-
-            if (actorNodes == null)
+            if (!item.HasImage(ImageType.Primary))
             {
-                return;
-            }
+                var image = images.FirstOrDefault(i => i.Type == ImageType.Primary);
 
-            foreach (var actorNode in actorNodes.OfType<XmlNode>())
-            {
-                var name = actorNode.SafeGetString("Name");
-
-                if (string.Equals(item.Name, name, StringComparison.OrdinalIgnoreCase))
+                if (image != null)
                 {
-                    var image = actorNode.SafeGetString("Image");
-
-                    if (!string.IsNullOrEmpty(image))
-                    {
-                        var url = TVUtils.BannerUrl + image;
-
-                        await _providerManager.SaveImage(item, url, RemoteSeriesProvider.Current.TvDbResourcePool,
-                                                       ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
-                    }
-
-                    break;
+                    await _providerManager.SaveImage(item, image.Url, TvdbSeriesProvider.Current.TvDbResourcePool, ImageType.Primary, null, cancellationToken)
+                      .ConfigureAwait(false);
                 }
             }
         }
 
         public override MetadataProviderPriority Priority
         {
-            get { return MetadataProviderPriority.Third; }
+            get { return MetadataProviderPriority.Fourth; }
         }
     }
 }

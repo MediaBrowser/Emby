@@ -1,12 +1,10 @@
-﻿using MahApps.Metro.Controls;
-using MediaBrowser.Common;
+﻿using MediaBrowser.Common;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
@@ -29,7 +27,7 @@ namespace MediaBrowser.ServerApplication
     /// <summary>
     /// Interaction logic for LibraryExplorer.xaml
     /// </summary>
-    public partial class LibraryExplorer : MetroWindow
+    public partial class LibraryExplorer : Window
     {
         private readonly ILogger _logger;
 
@@ -239,7 +237,6 @@ namespace MediaBrowser.ServerApplication
                                        {
                                            previews.Add(new PreviewItem(item.GetImage(ImageType.Thumb), "Thumb"));
                                        }
-                                       if (item.BackdropImagePaths != null)
                                            previews.AddRange(
                                                item.BackdropImagePaths.Select(
                                                    image => new PreviewItem(image, "Backdrop")));

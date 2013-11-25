@@ -1,12 +1,36 @@
-﻿using System.Runtime.Serialization;
+﻿using MediaBrowser.Model.Entities;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
     /// <summary>
     /// Class Trailer
     /// </summary>
-    public class Trailer : Video
+    public class Trailer : Video, IHasCriticRating, IHasSoundtracks
     {
+        public List<Guid> SoundtrackIds { get; set; }
+        
+        public Trailer()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            Taglines = new List<string>();
+            SoundtrackIds = new List<Guid>();
+        }
+
+        /// <summary>
+        /// Gets or sets the critic rating.
+        /// </summary>
+        /// <value>The critic rating.</value>
+        public float? CriticRating { get; set; }
+
+        /// <summary>
+        /// Gets or sets the critic rating summary.
+        /// </summary>
+        /// <value>The critic rating summary.</value>
+        public string CriticRatingSummary { get; set; }
+
         /// <summary>
         /// Gets a value indicating whether this instance is local trailer.
         /// </summary>
@@ -46,6 +70,18 @@ namespace MediaBrowser.Controller.Entities
         protected override bool UseParentPathToCreateResolveArgs
         {
             get { return !IsLocalTrailer; }
+        }
+
+        public override string GetUserDataKey()
+        {
+            var key = this.GetProviderId(MetadataProviders.Tmdb) ?? this.GetProviderId(MetadataProviders.Tvdb) ?? this.GetProviderId(MetadataProviders.Imdb) ?? this.GetProviderId(MetadataProviders.Tvcom);
+
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                return key + "-trailer";
+            }
+
+            return base.GetUserDataKey();
         }
     }
 }

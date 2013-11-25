@@ -2,6 +2,7 @@
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +39,8 @@ namespace MediaBrowser.Providers.TV
             }
         }
 
+        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
+        
         /// <summary>
         /// Fetches the data from XML node.
         /// </summary>
@@ -49,7 +52,7 @@ namespace MediaBrowser.Providers.TV
             {
                 case "Chapters":
 
-                    _chaptersTask = FetchChaptersFromXmlNode(item, reader.ReadSubtree(), _itemRepo, CancellationToken.None);
+                    //_chaptersTask = FetchChaptersFromXmlNode(item, reader.ReadSubtree(), _itemRepo, CancellationToken.None);
                     break;
 
                 case "Episode":
@@ -120,6 +123,76 @@ namespace MediaBrowser.Providers.TV
                                 item.IndexNumber = num;
                             }
                         }
+                        break;
+                    }
+
+                case "EpisodeNumberEnd":
+                    {
+                        var number = reader.ReadElementContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(number))
+                        {
+                            int num;
+
+                            if (int.TryParse(number, out num))
+                            {
+                                item.IndexNumberEnd = num;
+                            }
+                        }
+                        break;
+                    }
+
+                case "airsbefore_episode":
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                            int rval;
+
+                            // int.TryParse is local aware, so it can be probamatic, force us culture
+                            if (int.TryParse(val, NumberStyles.Integer, UsCulture, out rval))
+                            {
+                                item.AirsBeforeEpisodeNumber = rval;
+                            }
+                        }
+
+                        break;
+                    }
+
+                case "airsafter_season":
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                            int rval;
+
+                            // int.TryParse is local aware, so it can be probamatic, force us culture
+                            if (int.TryParse(val, NumberStyles.Integer, UsCulture, out rval))
+                            {
+                                item.AirsAfterSeasonNumber = rval;
+                            }
+                        }
+
+                        break;
+                    }
+
+                case "airsbefore_season":
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                            int rval;
+
+                            // int.TryParse is local aware, so it can be probamatic, force us culture
+                            if (int.TryParse(val, NumberStyles.Integer, UsCulture, out rval))
+                            {
+                                item.AirsBeforeSeasonNumber = rval;
+                            }
+                        }
+
                         break;
                     }
 

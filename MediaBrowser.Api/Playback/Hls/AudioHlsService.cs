@@ -1,12 +1,12 @@
 ﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.IO;
 using ServiceStack.ServiceHost;
 using System;
-using System.IO;
 
 namespace MediaBrowser.Api.Playback.Hls
 {
@@ -18,27 +18,6 @@ namespace MediaBrowser.Api.Playback.Hls
     public class GetHlsAudioStream : StreamRequest
     {
 
-    }
-
-    /// <summary>
-    /// Class GetHlsAudioSegment
-    /// </summary>
-    [Route("/Audio/{Id}/segments/{SegmentId}/stream.mp3", "GET")]
-    [Route("/Audio/{Id}/segments/{SegmentId}/stream.aac", "GET")]
-    [Api(Description = "Gets an Http live streaming segment file. Internal use only.")]
-    public class GetHlsAudioSegment
-    {
-        /// <summary>
-        /// Gets or sets the id.
-        /// </summary>
-        /// <value>The id.</value>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the segment id.
-        /// </summary>
-        /// <value>The segment id.</value>
-        public string SegmentId { get; set; }
     }
 
     /// <summary>
@@ -54,23 +33,9 @@ namespace MediaBrowser.Api.Playback.Hls
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="isoManager">The iso manager.</param>
         /// <param name="mediaEncoder">The media encoder.</param>
-        public AudioHlsService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder)
-            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder)
+        public AudioHlsService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem)
+            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem)
         {
-        }
-
-        /// <summary>
-        /// Gets the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>System.Object.</returns>
-        public object Get(GetHlsAudioSegment request)
-        {
-            var file = SegmentFilePrefix + request.SegmentId + Path.GetExtension(RequestContext.PathInfo);
-
-            file = Path.Combine(ApplicationPaths.EncodedMediaCachePath, file);
-
-            return ResultFactory.GetStaticFileResult(RequestContext, file);
         }
 
         /// <summary>
@@ -94,11 +59,6 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var args = "-codec:a " + codec;
 
-            if (string.Equals(codec, "aac", StringComparison.OrdinalIgnoreCase))
-            {
-                args += " -strict experimental";
-            }
-            
             var channels = GetNumAudioChannelsParam(state.Request, state.AudioStream);
 
             if (channels.HasValue)

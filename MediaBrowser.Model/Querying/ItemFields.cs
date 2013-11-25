@@ -52,11 +52,6 @@ namespace MediaBrowser.Model.Querying
         HomePageUrl,
 
         /// <summary>
-        /// Child count, recursive child count, etc
-        /// </summary>
-        ItemCounts,
-
-        /// <summary>
         /// The fields that the server supports indexing on
         /// </summary>
         IndexOptions,
@@ -115,6 +110,11 @@ namespace MediaBrowser.Model.Querying
         /// The revenue
         /// </summary>
         Revenue,
+
+        /// <summary>
+        /// The screenshot image tags
+        /// </summary>
+        ScreenshotImageTags,
 
         /// <summary>
         /// The soundtrack ids

@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -7,10 +7,9 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Providers;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -24,24 +23,11 @@ namespace MediaBrowser.Providers.Movies
     public class MovieDbImagesProvider : BaseMetadataProvider
     {
         /// <summary>
-        /// The get images
-        /// </summary>
-        private const string GetImages = @"http://api.themoviedb.org/3/{2}/{0}/images?api_key={1}";
-
-        /// <summary>
         /// The _provider manager
         /// </summary>
         private readonly IProviderManager _providerManager;
 
-        /// <summary>
-        /// The _json serializer
-        /// </summary>
-        private readonly IJsonSerializer _jsonSerializer;
-
-        /// <summary>
-        /// The _HTTP client
-        /// </summary>
-        private readonly IHttpClient _httpClient;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MovieDbImagesProvider"/> class.
@@ -49,14 +35,11 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="logManager">The log manager.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="providerManager">The provider manager.</param>
-        /// <param name="jsonSerializer">The json serializer.</param>
-        /// <param name="httpClient">The HTTP client.</param>
-        public MovieDbImagesProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IJsonSerializer jsonSerializer, IHttpClient httpClient)
+        public MovieDbImagesProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             _providerManager = providerManager;
-            _jsonSerializer = jsonSerializer;
-            _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -65,7 +48,7 @@ namespace MediaBrowser.Providers.Movies
         /// <value>The priority.</value>
         public override MetadataProviderPriority Priority
         {
-            get { return MetadataProviderPriority.Fifth; }
+            get { return MetadataProviderPriority.Fourth; }
         }
 
         /// <summary>
@@ -74,6 +57,11 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="item">The item.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
         public override bool Supports(BaseItem item)
+        {
+            return SupportsItem(item);
+        }
+
+        public static bool SupportsItem(BaseItem item)
         {
             var trailer = item as Trailer;
 
@@ -144,12 +132,29 @@ namespace MediaBrowser.Providers.Movies
             }
 
             // Don't refresh if we already have both poster and backdrop and we're not refreshing images
-            if (item.HasImage(ImageType.Primary) && item.BackdropImagePaths.Count > 0)
+            if (item.HasImage(ImageType.Primary) && item.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops)
             {
                 return false;
             }
 
             return base.NeedsRefreshInternal(item, providerInfo);
+        }
+
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
+        {
+            var path = MovieDbProvider.Current.GetImagesDataFilePath(item);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                var fileInfo = new FileInfo(path);
+
+                if (fileInfo.Exists)
+                {
+                    return _fileSystem.GetLastWriteTimeUtc(fileInfo) > providerInfo.LastRefreshed;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -161,41 +166,12 @@ namespace MediaBrowser.Providers.Movies
         /// <returns>Task{System.Boolean}.</returns>
         public override async Task<bool> FetchAsync(BaseItem item, bool force, CancellationToken cancellationToken)
         {
-            BaseProviderInfo data;
+            var images = await _providerManager.GetAvailableRemoteImages(item, cancellationToken, ManualMovieDbImageProvider.ProviderName).ConfigureAwait(false);
 
-            if (!item.ProviderData.TryGetValue(Id, out data))
-            {
-                data = new BaseProviderInfo();
-                item.ProviderData[Id] = data;
-            }
+            await ProcessImages(item, images.ToList(), cancellationToken).ConfigureAwait(false);
 
-            var images = await FetchImages(item, item.GetProviderId(MetadataProviders.Tmdb), cancellationToken).ConfigureAwait(false);
-
-            var status = await ProcessImages(item, images, cancellationToken).ConfigureAwait(false);
-
-            SetLastRefreshed(item, DateTime.UtcNow, status);
+            SetLastRefreshed(item, DateTime.UtcNow);
             return true;
-        }
-
-        /// <summary>
-        /// Fetches the images.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="id">The id.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{MovieImages}.</returns>
-        private async Task<MovieImages> FetchImages(BaseItem item, string id, CancellationToken cancellationToken)
-        {
-            using (var json = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
-            {
-                Url = string.Format(GetImages, id, MovieDbProvider.ApiKey, item is BoxSet ? "collection" : "movie"),
-                CancellationToken = cancellationToken,
-                AcceptHeader = MovieDbProvider.AcceptHeader
-
-            }).ConfigureAwait(false))
-            {
-                return _jsonSerializer.DeserializeFromStream<MovieImages>(json);
-            }
         }
 
         /// <summary>
@@ -205,191 +181,66 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="images">The images.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task.</returns>
-        protected virtual async Task<ProviderRefreshStatus> ProcessImages(BaseItem item, MovieImages images, CancellationToken cancellationToken)
+        private async Task ProcessImages(BaseItem item, List<RemoteImageInfo> images, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var status = ProviderRefreshStatus.Success;
+            var eligiblePosters = images
+                .Where(i => i.Type == ImageType.Primary)
+                .ToList();
 
             //        poster
-            if (images.posters != null && images.posters.Count > 0 && !item.HasImage(ImageType.Primary))
+            if (eligiblePosters.Count > 0 && !item.HasImage(ImageType.Primary))
             {
-                var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
+                var poster = eligiblePosters[0];
 
-                var tmdbImageUrl = tmdbSettings.images.base_url + ConfigurationManager.Configuration.TmdbFetchedPosterSize;
-                // get highest rated poster for our language
+                var url = poster.Url;
 
-                var postersSortedByVote = images.posters.OrderByDescending(i => i.vote_average);
-
-                var poster = postersSortedByVote.FirstOrDefault(p => p.iso_639_1 != null && p.iso_639_1.Equals(ConfigurationManager.Configuration.PreferredMetadataLanguage, StringComparison.OrdinalIgnoreCase));
-                if (poster == null && !ConfigurationManager.Configuration.PreferredMetadataLanguage.Equals("en"))
+                var img = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
                 {
-                    // couldn't find our specific language, find english (if that wasn't our language)
-                    poster = postersSortedByVote.FirstOrDefault(p => p.iso_639_1 != null && p.iso_639_1.Equals("en", StringComparison.OrdinalIgnoreCase));
-                }
-                if (poster == null)
-                {
-                    //still couldn't find it - try highest rated null one
-                    poster = postersSortedByVote.FirstOrDefault(p => p.iso_639_1 == null);
-                }
-                if (poster == null)
-                {
-                    //finally - just get the highest rated one
-                    poster = postersSortedByVote.FirstOrDefault();
-                }
-                if (poster != null)
-                {
-                    var img = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
-                    {
-                        Url = tmdbImageUrl + poster.file_path,
-                        CancellationToken = cancellationToken
+                    Url = url,
+                    CancellationToken = cancellationToken
 
-                    }).ConfigureAwait(false);
+                }).ConfigureAwait(false);
 
-                    await _providerManager.SaveImage(item, img, MimeTypes.GetMimeType(poster.file_path), ImageType.Primary, null, cancellationToken)
-                                        .ConfigureAwait(false);
-
-                }
+                await _providerManager.SaveImage(item, img, MimeTypes.GetMimeType(url), ImageType.Primary, null, url, cancellationToken)
+                                    .ConfigureAwait(false);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            var eligibleBackdrops = images
+                .Where(i => i.Type == ImageType.Backdrop && i.Width.HasValue && i.Width.Value >= ConfigurationManager.Configuration.MinMovieBackdropDownloadWidth)
+                .ToList();
+
+            var backdropLimit = ConfigurationManager.Configuration.MaxBackdrops;
+
             // backdrops - only download if earlier providers didn't find any (fanart)
-            if (images.backdrops != null && images.backdrops.Count > 0 && ConfigurationManager.Configuration.DownloadMovieImages.Backdrops && item.BackdropImagePaths.Count == 0)
+            if (eligibleBackdrops.Count > 0 && ConfigurationManager.Configuration.DownloadMovieImages.Backdrops && item.BackdropImagePaths.Count < backdropLimit)
             {
-                var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
-
-                var tmdbImageUrl = tmdbSettings.images.base_url + ConfigurationManager.Configuration.TmdbFetchedBackdropSize;
-
-                for (var i = 0; i < images.backdrops.Count; i++)
+                for (var i = 0; i < eligibleBackdrops.Count; i++)
                 {
-                    var bdName = "backdrop" + (i == 0 ? "" : i.ToString(CultureInfo.InvariantCulture));
+                    var url = eligibleBackdrops[i].Url;
 
-                    var hasLocalBackdrop = item.LocationType == LocationType.FileSystem && ConfigurationManager.Configuration.SaveLocalMeta ? item.HasLocalImage(bdName) : item.BackdropImagePaths.Count > i;
-
-                    if (!hasLocalBackdrop)
+                    if (!item.ContainsImageWithSourceUrl(url))
                     {
                         var img = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
                         {
-                            Url = tmdbImageUrl + images.backdrops[i].file_path,
+                            Url = url,
                             CancellationToken = cancellationToken
 
                         }).ConfigureAwait(false);
 
-                        await _providerManager.SaveImage(item, img, MimeTypes.GetMimeType(images.backdrops[i].file_path), ImageType.Backdrop, item.BackdropImagePaths.Count, cancellationToken)
+                        await _providerManager.SaveImage(item, img, MimeTypes.GetMimeType(url), ImageType.Backdrop, null, url, cancellationToken)
                           .ConfigureAwait(false);
                     }
 
-                    if (item.BackdropImagePaths.Count >= ConfigurationManager.Configuration.MaxBackdrops)
+                    if (item.BackdropImagePaths.Count >= backdropLimit)
                     {
                         break;
                     }
                 }
             }
-
-            return status;
         }
-
-        /// <summary>
-        /// Class Backdrop
-        /// </summary>
-        protected class Backdrop
-        {
-            /// <summary>
-            /// Gets or sets the file_path.
-            /// </summary>
-            /// <value>The file_path.</value>
-            public string file_path { get; set; }
-            /// <summary>
-            /// Gets or sets the width.
-            /// </summary>
-            /// <value>The width.</value>
-            public int width { get; set; }
-            /// <summary>
-            /// Gets or sets the height.
-            /// </summary>
-            /// <value>The height.</value>
-            public int height { get; set; }
-            /// <summary>
-            /// Gets or sets the iso_639_1.
-            /// </summary>
-            /// <value>The iso_639_1.</value>
-            public string iso_639_1 { get; set; }
-            /// <summary>
-            /// Gets or sets the aspect_ratio.
-            /// </summary>
-            /// <value>The aspect_ratio.</value>
-            public double aspect_ratio { get; set; }
-            /// <summary>
-            /// Gets or sets the vote_average.
-            /// </summary>
-            /// <value>The vote_average.</value>
-            public double vote_average { get; set; }
-            /// <summary>
-            /// Gets or sets the vote_count.
-            /// </summary>
-            /// <value>The vote_count.</value>
-            public int vote_count { get; set; }
-        }
-
-        /// <summary>
-        /// Class Poster
-        /// </summary>
-        protected class Poster
-        {
-            /// <summary>
-            /// Gets or sets the file_path.
-            /// </summary>
-            /// <value>The file_path.</value>
-            public string file_path { get; set; }
-            /// <summary>
-            /// Gets or sets the width.
-            /// </summary>
-            /// <value>The width.</value>
-            public int width { get; set; }
-            /// <summary>
-            /// Gets or sets the height.
-            /// </summary>
-            /// <value>The height.</value>
-            public int height { get; set; }
-            /// <summary>
-            /// Gets or sets the iso_639_1.
-            /// </summary>
-            /// <value>The iso_639_1.</value>
-            public string iso_639_1 { get; set; }
-            /// <summary>
-            /// Gets or sets the aspect_ratio.
-            /// </summary>
-            /// <value>The aspect_ratio.</value>
-            public double aspect_ratio { get; set; }
-            /// <summary>
-            /// Gets or sets the vote_average.
-            /// </summary>
-            /// <value>The vote_average.</value>
-            public double vote_average { get; set; }
-            /// <summary>
-            /// Gets or sets the vote_count.
-            /// </summary>
-            /// <value>The vote_count.</value>
-            public int vote_count { get; set; }
-        }
-
-        /// <summary>
-        /// Class MovieImages
-        /// </summary>
-        protected class MovieImages
-        {
-            /// <summary>
-            /// Gets or sets the backdrops.
-            /// </summary>
-            /// <value>The backdrops.</value>
-            public List<Backdrop> backdrops { get; set; }
-            /// <summary>
-            /// Gets or sets the posters.
-            /// </summary>
-            /// <value>The posters.</value>
-            public List<Poster> posters { get; set; }
-        }
-
     }
 }

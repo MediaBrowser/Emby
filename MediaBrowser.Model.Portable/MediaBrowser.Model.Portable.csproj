@@ -48,7 +48,7 @@
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.16\lib\portable-net40+sl4+win8+wp71\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged">
-      <HintPath>..\packages\PropertyChanged.Fody.1.40.3\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
+      <HintPath>..\packages\PropertyChanged.Fody.1.41.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime">
@@ -68,6 +68,12 @@
     <Compile Include="..\MediaBrowser.Model\ApiClient\IApiClient.cs">
       <Link>ApiClient\IApiClient.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\IServerEvents.cs">
+      <Link>ApiClient\IServerEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\ServerEventArgs.cs">
+      <Link>ApiClient\ServerEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Configuration\BaseApplicationConfiguration.cs">
       <Link>Configuration\BaseApplicationConfiguration.cs</Link>
     </Compile>
@@ -83,6 +89,9 @@
     <Compile Include="..\MediaBrowser.Model\Drawing\DrawingUtils.cs">
       <Link>Drawing\DrawingUtils.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Drawing\ImageOutputFormat.cs">
+      <Link>Drawing\ImageOutputFormat.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\BaseItemDto.cs">
       <Link>Dto\BaseItemDto.cs</Link>
     </Compile>
@@ -91,6 +100,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ChapterInfoDto.cs">
       <Link>Dto\ChapterInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\GameSystemSummary.cs">
+      <Link>Dto\GameSystemSummary.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\IItemDto.cs">
       <Link>Dto\IItemDto.cs</Link>
@@ -106,6 +118,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ItemCounts.cs">
       <Link>Dto\ItemCounts.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\ItemIndex.cs">
+      <Link>Dto\ItemIndex.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\StreamOptions.cs">
       <Link>Dto\StreamOptions.cs</Link>
@@ -194,6 +209,9 @@
     <Compile Include="..\MediaBrowser.Model\Extensions\ModelExtensions.cs">
       <Link>Extensions\ModelExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Games\GameSystem.cs">
+      <Link>Games\GameSystem.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Globalization\CountryInfo.cs">
       <Link>Globalization\CountryInfo.cs</Link>
     </Compile>
@@ -205,6 +223,30 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\IO\IZipClient.cs">
       <Link>IO\IZipClient.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelInfoDto.cs">
+      <Link>LiveTv\ChannelInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelQuery.cs">
+      <Link>LiveTv\ChannelQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelType.cs">
+      <Link>LiveTv\ChannelType.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\LiveTvServiceInfo.cs">
+      <Link>LiveTv\LiveTvServiceInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ProgramInfoDto.cs">
+      <Link>LiveTv\ProgramInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ProgramQuery.cs">
+      <Link>LiveTv\ProgramQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\RecordingInfoDto.cs">
+      <Link>LiveTv\RecordingInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\RecordingQuery.cs">
+      <Link>LiveTv\RecordingQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Logging\ILogger.cs">
       <Link>Logging\ILogger.cs</Link>
@@ -260,8 +302,23 @@
     <Compile Include="..\MediaBrowser.Model\Plugins\PluginInfo.cs">
       <Link>Plugins\PluginInfo.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\ImageProviderInfo.cs">
+      <Link>Providers\ImageProviderInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\RemoteImageInfo.cs">
+      <Link>Providers\RemoteImageInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\RemoteImageResult.cs">
+      <Link>Providers\RemoteImageResult.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ArtistsQuery.cs">
       <Link>Querying\ArtistsQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\EpisodeQuery.cs">
+      <Link>Querying\EpisodeQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\ItemCountsQuery.cs">
+      <Link>Querying\ItemCountsQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemFields.cs">
       <Link>Querying\ItemFields.cs</Link>
@@ -271,9 +328,6 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemQuery.cs">
       <Link>Querying\ItemQuery.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Querying\ItemReviewsResult.cs">
-      <Link>Querying\ItemReviewsResult.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemsByNameQuery.cs">
       <Link>Querying\ItemsByNameQuery.cs</Link>
@@ -289,6 +343,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\PersonsQuery.cs">
       <Link>Querying\PersonsQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\QueryResult.cs">
+      <Link>Querying\QueryResult.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\SessionQuery.cs">
+      <Link>Querying\SessionQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\SimilarItemsQuery.cs">
       <Link>Querying\SimilarItemsQuery.cs</Link>
@@ -314,6 +374,9 @@
     <Compile Include="..\MediaBrowser.Model\Session\BrowseRequest.cs">
       <Link>Session\BrowseRequest.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\MessageCommand.cs">
+      <Link>Session\MessageCommand.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Session\PlayRequest.cs">
       <Link>Session\PlayRequest.cs</Link>
     </Compile>
@@ -322,6 +385,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Session\SessionInfoDto.cs">
       <Link>Session\SessionInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\SystemCommand.cs">
+      <Link>Session\SystemCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\UserDataChangeInfo.cs">
+      <Link>Session\UserDataChangeInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\System\SystemInfo.cs">
       <Link>System\SystemInfo.cs</Link>

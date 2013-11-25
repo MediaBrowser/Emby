@@ -1,9 +1,10 @@
-﻿using System.Linq;
-using MediaBrowser.Controller.Dto;
+﻿using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using ServiceStack.ServiceHost;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,16 +89,16 @@ namespace MediaBrowser.Api
         [ApiMember(Name = "Name", Description = "Name", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string Name { get; set; }
     }
-    
+
     public class ItemRefreshService : BaseApiService
     {
         private readonly ILibraryManager _libraryManager;
-        private readonly IUserManager _userManager;
+        private readonly IDtoService _dtoService;
 
-        public ItemRefreshService(ILibraryManager libraryManager, IUserManager userManager)
+        public ItemRefreshService(ILibraryManager libraryManager, IDtoService dtoService)
         {
             _libraryManager = libraryManager;
-            _userManager = userManager;
+            _dtoService = dtoService;
         }
 
         public void Post(RefreshArtist request)
@@ -109,11 +110,28 @@ namespace MediaBrowser.Api
 
         private async Task RefreshArtist(RefreshArtist request)
         {
-            var item = await GetArtist(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetArtist(request.Name, _libraryManager);
+
+            var cancellationToken = CancellationToken.None;
+
+            var albums = _libraryManager.RootFolder
+                                        .RecursiveChildren
+                                        .OfType<MusicAlbum>()
+                                        .Where(i => i.HasArtist(item.Name))
+                                        .ToList();
+
+            var musicArtists = albums
+                .Select(i => i.Parent)
+                .OfType<MusicArtist>()
+                .ToList();
+
+            var musicArtistRefreshTasks = musicArtists.Select(i => i.ValidateChildren(new Progress<double>(), cancellationToken, true, request.Forced));
+
+            await Task.WhenAll(musicArtistRefreshTasks).ConfigureAwait(false);
 
             try
             {
-                await item.RefreshMetadata(CancellationToken.None, forceRefresh: request.Forced).ConfigureAwait(false);
+                await item.RefreshMetadata(cancellationToken, forceRefresh: request.Forced).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -130,7 +148,7 @@ namespace MediaBrowser.Api
 
         private async Task RefreshGenre(RefreshGenre request)
         {
-            var item = await GetGenre(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetGenre(request.Name, _libraryManager);
 
             try
             {
@@ -151,7 +169,7 @@ namespace MediaBrowser.Api
 
         private async Task RefreshMusicGenre(RefreshMusicGenre request)
         {
-            var item = await GetMusicGenre(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetMusicGenre(request.Name, _libraryManager);
 
             try
             {
@@ -172,7 +190,7 @@ namespace MediaBrowser.Api
 
         private async Task RefreshGameGenre(RefreshGameGenre request)
         {
-            var item = await GetGameGenre(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetGameGenre(request.Name, _libraryManager);
 
             try
             {
@@ -193,7 +211,7 @@ namespace MediaBrowser.Api
 
         private async Task RefreshPerson(RefreshPerson request)
         {
-            var item = await GetPerson(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetPerson(request.Name, _libraryManager);
 
             try
             {
@@ -214,7 +232,7 @@ namespace MediaBrowser.Api
 
         private async Task RefreshStudio(RefreshStudio request)
         {
-            var item = await GetStudio(request.Name, _libraryManager).ConfigureAwait(false);
+            var item = GetStudio(request.Name, _libraryManager);
 
             try
             {
@@ -236,7 +254,7 @@ namespace MediaBrowser.Api
 
             Task.WaitAll(task);
         }
-        
+
         /// <summary>
         /// Refreshes the item.
         /// </summary>
@@ -244,18 +262,16 @@ namespace MediaBrowser.Api
         /// <returns>Task.</returns>
         private async Task RefreshItem(RefreshItem request)
         {
-            var item = DtoBuilder.GetItemByClientId(request.Id, _userManager, _libraryManager);
-
-            var folder = item as Folder;
+            var item = _dtoService.GetItemByDtoId(request.Id);
 
             try
             {
                 await item.RefreshMetadata(CancellationToken.None, forceRefresh: request.Forced).ConfigureAwait(false);
 
-                if (folder != null)
+                if (item.IsFolder)
                 {
                     // Collection folders don't validate their children so we'll have to simulate that here
-                    var collectionFolder = folder as CollectionFolder;
+                    var collectionFolder = item as CollectionFolder;
 
                     if (collectionFolder != null)
                     {
@@ -263,6 +279,8 @@ namespace MediaBrowser.Api
                     }
                     else
                     {
+                        var folder = (Folder)item;
+
                         await folder.ValidateChildren(new Progress<double>(), CancellationToken.None, request.Recursive, request.Forced).ConfigureAwait(false);
                     }
                 }
@@ -285,10 +303,10 @@ namespace MediaBrowser.Api
             {
                 await child.RefreshMetadata(CancellationToken.None, forceRefresh: request.Forced).ConfigureAwait(false);
 
-                var folder = child as Folder;
-
-                if (folder != null)
+                if (child.IsFolder)
                 {
+                    var folder = (Folder)child;
+
                     await folder.ValidateChildren(new Progress<double>(), CancellationToken.None, request.Recursive, request.Forced).ConfigureAwait(false);
                 }
             }

@@ -1,13 +1,13 @@
 ﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.IO;
 using ServiceStack.ServiceHost;
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
@@ -41,16 +41,8 @@ namespace MediaBrowser.Api.Playback.Progressive
     /// </summary>
     public class AudioService : BaseProgressiveStreamingService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AudioService"/> class.
-        /// </summary>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="isoManager">The iso manager.</param>
-        /// <param name="mediaEncoder">The media encoder.</param>
-        public AudioService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo)
-            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, itemRepo)
+        public AudioService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IDtoService dtoService, IImageProcessor imageProcessor, IFileSystem fileSystem)
+            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, itemRepo, dtoService, imageProcessor, fileSystem)
         {
         }
 
@@ -88,14 +80,11 @@ namespace MediaBrowser.Api.Playback.Progressive
 
             var audioTranscodeParams = new List<string>();
 
-            if (string.Equals(Path.GetExtension(outputPath), ".aac", StringComparison.OrdinalIgnoreCase))
-            {
-                audioTranscodeParams.Add("-strict experimental");
-            }
+            var bitrate = GetAudioBitrateParam(state);
 
-            if (request.AudioBitRate.HasValue)
+            if (bitrate.HasValue)
             {
-                audioTranscodeParams.Add("-ab " + request.AudioBitRate.Value);
+                audioTranscodeParams.Add("-ab " + bitrate.Value.ToString(UsCulture));
             }
 
             var channels = GetNumAudioChannelsParam(request, state.AudioStream);
@@ -104,7 +93,7 @@ namespace MediaBrowser.Api.Playback.Progressive
             {
                 audioTranscodeParams.Add("-ac " + channels.Value);
             }
-
+            
             if (request.AudioSampleRate.HasValue)
             {
                 audioTranscodeParams.Add("-ar " + request.AudioSampleRate.Value);

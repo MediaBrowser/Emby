@@ -4,17 +4,18 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Constants;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Implementations;
-using MediaBrowser.Common.Implementations.IO;
 using MediaBrowser.Common.Implementations.ScheduledTasks;
-using MediaBrowser.Common.Implementations.Updates;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.MediaInfo;
 using MediaBrowser.Controller.Notifications;
@@ -24,17 +25,21 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Controller.Sorting;
-using MediaBrowser.IsoMounter;
-using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.System;
+using MediaBrowser.Model.Updates;
 using MediaBrowser.Providers;
 using MediaBrowser.Server.Implementations;
 using MediaBrowser.Server.Implementations.BdInfo;
 using MediaBrowser.Server.Implementations.Configuration;
+using MediaBrowser.Server.Implementations.Drawing;
+using MediaBrowser.Server.Implementations.Dto;
+using MediaBrowser.Server.Implementations.EntryPoints;
 using MediaBrowser.Server.Implementations.HttpServer;
 using MediaBrowser.Server.Implementations.IO;
 using MediaBrowser.Server.Implementations.Library;
+using MediaBrowser.Server.Implementations.LiveTv;
 using MediaBrowser.Server.Implementations.Localization;
 using MediaBrowser.Server.Implementations.MediaEncoder;
 using MediaBrowser.Server.Implementations.Persistence;
@@ -42,15 +47,18 @@ using MediaBrowser.Server.Implementations.Providers;
 using MediaBrowser.Server.Implementations.ServerManager;
 using MediaBrowser.Server.Implementations.Session;
 using MediaBrowser.Server.Implementations.WebSocket;
-using MediaBrowser.ServerApplication.Implementations;
+using MediaBrowser.ServerApplication.FFMpeg;
+using MediaBrowser.ServerApplication.IO;
+using MediaBrowser.ServerApplication.Native;
+using MediaBrowser.ServerApplication.Networking;
 using MediaBrowser.WebDashboard.Api;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.ServerApplication
@@ -60,8 +68,6 @@ namespace MediaBrowser.ServerApplication
     /// </summary>
     public class ApplicationHost : BaseApplicationHost<ServerApplicationPaths>, IServerApplicationHost
     {
-        internal const int UdpServerPort = 7359;
-
         /// <summary>
         /// Gets the server kernel.
         /// </summary>
@@ -75,15 +81,6 @@ namespace MediaBrowser.ServerApplication
         public IServerConfigurationManager ServerConfigurationManager
         {
             get { return (IServerConfigurationManager)ConfigurationManager; }
-        }
-
-        /// <summary>
-        /// Gets the name of the log file prefix.
-        /// </summary>
-        /// <value>The name of the log file prefix.</value>
-        protected override string LogFilePrefixName
-        {
-            get { return "server"; }
         }
 
         /// <summary>
@@ -143,15 +140,12 @@ namespace MediaBrowser.ServerApplication
         /// <value>The provider manager.</value>
         private IProviderManager ProviderManager { get; set; }
         /// <summary>
-        /// Gets or sets the zip client.
-        /// </summary>
-        /// <value>The zip client.</value>
-        private IZipClient ZipClient { get; set; }
-        /// <summary>
         /// Gets or sets the HTTP server.
         /// </summary>
         /// <value>The HTTP server.</value>
         private IHttpServer HttpServer { get; set; }
+        private IDtoService DtoService { get; set; }
+        private IImageProcessor ImageProcessor { get; set; }
 
         /// <summary>
         /// Gets or sets the media encoder.
@@ -159,7 +153,9 @@ namespace MediaBrowser.ServerApplication
         /// <value>The media encoder.</value>
         private IMediaEncoder MediaEncoder { get; set; }
 
-        private IIsoManager IsoManager { get; set; }
+        private ISessionManager SessionManager { get; set; }
+
+        private ILiveTvManager LiveTvManager { get; set; }
 
         private ILocalizationManager LocalizationManager { get; set; }
 
@@ -167,21 +163,33 @@ namespace MediaBrowser.ServerApplication
         /// Gets or sets the user data repository.
         /// </summary>
         /// <value>The user data repository.</value>
-        private IUserDataRepository UserDataRepository { get; set; }
+        private IUserDataManager UserDataManager { get; set; }
         private IUserRepository UserRepository { get; set; }
         internal IDisplayPreferencesRepository DisplayPreferencesRepository { get; set; }
         private IItemRepository ItemRepository { get; set; }
         private INotificationsRepository NotificationsRepository { get; set; }
 
+        private Task<IHttpServer> _httpServerCreationTask;
+
         /// <summary>
-        /// The full path to our startmenu shortcut
+        /// Initializes a new instance of the <see cref="ApplicationHost"/> class.
         /// </summary>
-        protected override string ProductShortcutPath
+        /// <param name="applicationPaths">The application paths.</param>
+        /// <param name="logManager">The log manager.</param>
+        public ApplicationHost(ServerApplicationPaths applicationPaths, ILogManager logManager)
+            : base(applicationPaths, logManager)
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Media Browser 3", "Media Browser Server.lnk"); }
+
         }
 
-        private Task<IHttpServer> _httpServerCreationTask;
+        /// <summary>
+        /// Gets a value indicating whether this instance can self restart.
+        /// </summary>
+        /// <value><c>true</c> if this instance can self restart; otherwise, <c>false</c>.</value>
+        public override bool CanSelfRestart
+        {
+            get { return NativeApp.CanSelfRestart; }
+        }
 
         /// <summary>
         /// Runs the startup tasks.
@@ -228,7 +236,7 @@ namespace MediaBrowser.ServerApplication
 
             await base.RegisterResources().ConfigureAwait(false);
 
-            RegisterSingleInstance<IHttpResultFactory>(new HttpResultFactory(LogManager));
+            RegisterSingleInstance<IHttpResultFactory>(new HttpResultFactory(LogManager, FileSystemManager));
 
             RegisterSingleInstance<IServerApplicationHost>(this);
             RegisterSingleInstance<IServerApplicationPaths>(ApplicationPaths);
@@ -238,16 +246,12 @@ namespace MediaBrowser.ServerApplication
 
             RegisterSingleInstance<IWebSocketServer>(() => new AlchemyServer(Logger));
 
-            IsoManager = new IsoManager();
-            RegisterSingleInstance(IsoManager);
-            
             RegisterSingleInstance<IBlurayExaminer>(() => new BdInfoExaminer());
 
-            ZipClient = new DotNetZipClient();
-            RegisterSingleInstance(ZipClient);
+            var mediaEncoderTask = RegisterMediaEncoder();
 
-            UserDataRepository = new SqliteUserDataRepository(ApplicationPaths, JsonSerializer, LogManager);
-            RegisterSingleInstance(UserDataRepository);
+            UserDataManager = new UserDataManager(LogManager);
+            RegisterSingleInstance(UserDataManager);
 
             UserRepository = await GetUserRepository().ConfigureAwait(false);
             RegisterSingleInstance(UserRepository);
@@ -261,22 +265,19 @@ namespace MediaBrowser.ServerApplication
             UserManager = new UserManager(Logger, ServerConfigurationManager, UserRepository);
             RegisterSingleInstance(UserManager);
 
-            LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataRepository, () => DirectoryWatchers);
+            LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => DirectoryWatchers, FileSystemManager);
             RegisterSingleInstance(LibraryManager);
 
-            DirectoryWatchers = new DirectoryWatchers(LogManager, TaskManager, LibraryManager, ServerConfigurationManager);
+            DirectoryWatchers = new DirectoryWatchers(LogManager, TaskManager, LibraryManager, ServerConfigurationManager, FileSystemManager);
             RegisterSingleInstance(DirectoryWatchers);
 
-            ProviderManager = new ProviderManager(HttpClient, ServerConfigurationManager, DirectoryWatchers, LogManager, LibraryManager);
+            ProviderManager = new ProviderManager(HttpClient, ServerConfigurationManager, DirectoryWatchers, LogManager, FileSystemManager);
             RegisterSingleInstance(ProviderManager);
 
             RegisterSingleInstance<ILibrarySearchEngine>(() => new LuceneSearchEngine(ApplicationPaths, LogManager, LibraryManager));
 
-            MediaEncoder = new MediaEncoder(LogManager.GetLogger("MediaEncoder"), ZipClient, ApplicationPaths, JsonSerializer);
-            RegisterSingleInstance(MediaEncoder);
-
-            var clientConnectionManager = new SessionManager(UserDataRepository, ServerConfigurationManager, Logger, UserRepository);
-            RegisterSingleInstance<ISessionManager>(clientConnectionManager);
+            SessionManager = new SessionManager(UserDataManager, ServerConfigurationManager, Logger, UserRepository, LibraryManager);
+            RegisterSingleInstance(SessionManager);
 
             HttpServer = await _httpServerCreationTask.ConfigureAwait(false);
             RegisterSingleInstance(HttpServer, false);
@@ -284,8 +285,17 @@ namespace MediaBrowser.ServerApplication
             ServerManager = new ServerManager(this, JsonSerializer, Logger, ServerConfigurationManager);
             RegisterSingleInstance(ServerManager);
 
-            LocalizationManager = new LocalizationManager(ServerConfigurationManager);
+            LocalizationManager = new LocalizationManager(ServerConfigurationManager, FileSystemManager);
             RegisterSingleInstance(LocalizationManager);
+
+            ImageProcessor = new ImageProcessor(Logger, ServerConfigurationManager.ApplicationPaths, FileSystemManager, JsonSerializer);
+            RegisterSingleInstance(ImageProcessor);
+
+            DtoService = new DtoService(Logger, LibraryManager, UserManager, UserDataManager, ItemRepository, ImageProcessor);
+            RegisterSingleInstance(DtoService);
+
+            LiveTvManager = new LiveTvManager(ApplicationPaths, FileSystemManager, Logger, ItemRepository, ImageProcessor);
+            RegisterSingleInstance(LiveTvManager);
 
             var displayPreferencesTask = Task.Run(async () => await ConfigureDisplayPreferencesRepositories().ConfigureAwait(false));
             var itemsTask = Task.Run(async () => await ConfigureItemRepositories().ConfigureAwait(false));
@@ -293,9 +303,31 @@ namespace MediaBrowser.ServerApplication
 
             await ConfigureNotificationsRepository().ConfigureAwait(false);
 
-            await Task.WhenAll(itemsTask, displayPreferencesTask, userdataTask).ConfigureAwait(false);
+            await Task.WhenAll(itemsTask, displayPreferencesTask, userdataTask, mediaEncoderTask).ConfigureAwait(false);
 
             SetKernelProperties();
+        }
+
+        protected override INetworkManager CreateNetworkManager()
+        {
+            return new NetworkManager();
+        }
+
+        protected override IFileSystem CreateFileSystemManager()
+        {
+            return FileSystemFactory.CreateFileSystemManager(LogManager);
+        }
+
+        /// <summary>
+        /// Registers the media encoder.
+        /// </summary>
+        /// <returns>Task.</returns>
+        private async Task RegisterMediaEncoder()
+        {
+            var info = await new FFMpegDownloader(Logger, ApplicationPaths, HttpClient, ZipClient, FileSystemManager).GetFFMpegInfo().ConfigureAwait(false);
+
+            MediaEncoder = new MediaEncoder(LogManager.GetLogger("MediaEncoder"), ApplicationPaths, JsonSerializer, info.Path, info.ProbePath, info.Version, FileSystemManager);
+            RegisterSingleInstance(MediaEncoder);
         }
 
         /// <summary>
@@ -303,25 +335,22 @@ namespace MediaBrowser.ServerApplication
         /// </summary>
         private void SetKernelProperties()
         {
-            ServerKernel.ImageManager = new ImageManager(LogManager.GetLogger("ImageManager"),
-                                                         ApplicationPaths, ItemRepository);
             Parallel.Invoke(
-                 () => ServerKernel.FFMpegManager = new FFMpegManager(ApplicationPaths, MediaEncoder, LibraryManager, Logger, ItemRepository),
-                 () => ServerKernel.ImageManager.ImageEnhancers = GetExports<IImageEnhancer>().OrderBy(e => e.Priority).ToArray(),
+                 () => ServerKernel.FFMpegManager = new FFMpegManager(ApplicationPaths, MediaEncoder, Logger, ItemRepository, FileSystemManager),
                  () => LocalizedStrings.StringFiles = GetExports<LocalizedStringData>(),
                  SetStaticProperties
                  );
         }
 
+        /// <summary>
+        /// Gets the user repository.
+        /// </summary>
+        /// <returns>Task{IUserRepository}.</returns>
         private async Task<IUserRepository> GetUserRepository()
         {
-            var dbFile = Path.Combine(ApplicationPaths.DataPath, "users.db");
+            var repo = new SqliteUserRepository(JsonSerializer, LogManager, ApplicationPaths);
 
-            var connection = await ConnectToDb(dbFile).ConfigureAwait(false);
-
-            var repo = new SqliteUserRepository(connection, ApplicationPaths, JsonSerializer, LogManager);
-
-            repo.Initialize();
+            await repo.Initialize().ConfigureAwait(false);
 
             return repo;
         }
@@ -332,19 +361,15 @@ namespace MediaBrowser.ServerApplication
         /// <returns>Task.</returns>
         private async Task ConfigureNotificationsRepository()
         {
-            var dbFile = Path.Combine(ApplicationPaths.DataPath, "notifications.db");
+            var repo = new SqliteNotificationsRepository(LogManager, ApplicationPaths);
 
-            var connection = await ConnectToDb(dbFile).ConfigureAwait(false);
-
-            var repo = new SqliteNotificationsRepository(connection, LogManager);
-
-            repo.Initialize();
+            await repo.Initialize().ConfigureAwait(false);
 
             NotificationsRepository = repo;
 
             RegisterSingleInstance(NotificationsRepository);
         }
-        
+
         /// <summary>
         /// Configures the repositories.
         /// </summary>
@@ -369,38 +394,13 @@ namespace MediaBrowser.ServerApplication
         /// Configures the user data repositories.
         /// </summary>
         /// <returns>Task.</returns>
-        private Task ConfigureUserDataRepositories()
+        private async Task ConfigureUserDataRepositories()
         {
-            return UserDataRepository.Initialize();
-        }       
-        
-        /// <summary>
-        /// Connects to db.
-        /// </summary>
-        /// <param name="dbPath">The db path.</param>
-        /// <returns>Task{IDbConnection}.</returns>
-        /// <exception cref="System.ArgumentNullException">dbPath</exception>
-        private static async Task<SQLiteConnection> ConnectToDb(string dbPath)
-        {
-            if (string.IsNullOrEmpty(dbPath))
-            {
-                throw new ArgumentNullException("dbPath");
-            }
+            var repo = new SqliteUserDataRepository(ApplicationPaths, JsonSerializer, LogManager);
 
-            var connectionstr = new SQLiteConnectionStringBuilder
-            {
-                PageSize = 4096,
-                CacheSize = 4096,
-                SyncMode = SynchronizationModes.Normal,
-                DataSource = dbPath,
-                JournalMode = SQLiteJournalModeEnum.Wal
-            };
+            await repo.Initialize().ConfigureAwait(false);
 
-            var connection = new SQLiteConnection(connectionstr.ConnectionString);
-
-            await connection.OpenAsync().ConfigureAwait(false);
-
-            return connection;
+            ((UserDataManager)UserDataManager).Repository = repo;
         }
 
         /// <summary>
@@ -418,6 +418,8 @@ namespace MediaBrowser.ServerApplication
             User.XmlSerializer = XmlSerializer;
             User.UserManager = UserManager;
             LocalizedStrings.ApplicationPaths = ApplicationPaths;
+            Folder.UserManager = UserManager;
+            BaseItem.FileSystem = FileSystemManager;
         }
 
         /// <summary>
@@ -445,11 +447,14 @@ namespace MediaBrowser.ServerApplication
                                     GetExports<IBaseItemComparer>(),
                                     GetExports<ILibraryPrescanTask>(),
                                     GetExports<ILibraryPostScanTask>(),
+                                    GetExports<IPeoplePrescanTask>(),
                                     GetExports<IMetadataSaver>());
 
-            ProviderManager.AddParts(GetExports<BaseMetadataProvider>().ToArray());
+            ProviderManager.AddParts(GetExports<BaseMetadataProvider>(), GetExports<IImageProvider>());
 
-            IsoManager.AddParts(GetExports<IIsoMounter>().ToArray());
+            ImageProcessor.AddParts(GetExports<IImageEnhancer>());
+
+            LiveTvManager.AddParts(GetExports<ILiveTvService>());
         }
 
         /// <summary>
@@ -460,10 +465,12 @@ namespace MediaBrowser.ServerApplication
         {
             try
             {
-                ServerManager.Start();
+                ServerManager.Start(HttpServerUrlPrefix, ServerConfigurationManager.Configuration.EnableHttpLevelLogging);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.ErrorException("Error starting http server", ex);
+
                 if (retryOnFailure)
                 {
                     RegisterServerWithAdministratorAccess();
@@ -475,6 +482,8 @@ namespace MediaBrowser.ServerApplication
                     throw;
                 }
             }
+
+            ServerManager.StartWebSocketServer();
         }
 
         /// <summary>
@@ -486,6 +495,8 @@ namespace MediaBrowser.ServerApplication
         {
             base.OnConfigurationUpdated(sender, e);
 
+            HttpServer.EnableHttpRequestLogging = ServerConfigurationManager.Configuration.EnableHttpLevelLogging;
+
             if (!string.Equals(HttpServer.UrlPrefix, HttpServerUrlPrefix, StringComparison.OrdinalIgnoreCase))
             {
                 NotifyPendingRestart();
@@ -495,15 +506,28 @@ namespace MediaBrowser.ServerApplication
             {
                 NotifyPendingRestart();
             }
-
         }
 
         /// <summary>
         /// Restarts this instance.
         /// </summary>
-        public override void Restart()
+        public override async Task Restart()
         {
-            App.Instance.Restart();
+            if (!CanSelfRestart)
+            {
+                throw new InvalidOperationException("The server is unable to self-restart. Please restart manually.");
+            }
+
+            try
+            {
+                await SessionManager.SendServerRestartNotification(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error sending server restart notification", ex);
+            }
+
+            NativeApp.Restart();
         }
 
         /// <summary>
@@ -517,7 +541,7 @@ namespace MediaBrowser.ServerApplication
 #if DEBUG
                 return false;
 #endif
-                return ConfigurationManager.CommonConfiguration.EnableAutoUpdate;
+                return NativeApp.CanSelfUpdate;
             }
         }
 
@@ -527,44 +551,44 @@ namespace MediaBrowser.ServerApplication
         /// <returns>IEnumerable{Assembly}.</returns>
         protected override IEnumerable<Assembly> GetComposablePartAssemblies()
         {
+            var list = Directory.EnumerateFiles(ApplicationPaths.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly)
+                .Select(LoadAssembly)
+                .Where(a => a != null)
+                .ToList();
+
             // Gets all plugin assemblies by first reading all bytes of the .dll and calling Assembly.Load against that
             // This will prevent the .dll file from getting locked, and allow us to replace it when needed
-            foreach (var pluginAssembly in Directory
-                .EnumerateFiles(ApplicationPaths.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly)
-                .Select(LoadAssembly).Where(a => a != null))
-            {
-                yield return pluginAssembly;
-            }
 
             // Include composable parts in the Api assembly 
-            yield return typeof(ApiEntryPoint).Assembly;
+            list.Add(typeof(ApiEntryPoint).Assembly);
 
             // Include composable parts in the Dashboard assembly 
-            yield return typeof(DashboardInfo).Assembly;
+            list.Add(typeof(DashboardInfo).Assembly);
 
             // Include composable parts in the Model assembly 
-            yield return typeof(SystemInfo).Assembly;
+            list.Add(typeof(SystemInfo).Assembly);
 
             // Include composable parts in the Common assembly 
-            yield return typeof(IApplicationHost).Assembly;
+            list.Add(typeof(IApplicationHost).Assembly);
 
             // Include composable parts in the Controller assembly 
-            yield return typeof(Kernel).Assembly;
+            list.Add(typeof(Kernel).Assembly);
 
             // Include composable parts in the Providers assembly 
-            yield return typeof(ImagesByNameProvider).Assembly;
+            list.Add(typeof(ImagesByNameProvider).Assembly);
 
             // Common implementations
-            yield return typeof(TaskManager).Assembly;
+            list.Add(typeof(TaskManager).Assembly);
 
             // Server implementations
-            yield return typeof(ServerApplicationPaths).Assembly;
+            list.Add(typeof(ServerApplicationPaths).Assembly);
 
-            // Pismo
-            yield return typeof(PismoIsoManager).Assembly;
-            
+            list.AddRange(Assemblies.GetAssembliesWithParts());
+
             // Include composable parts in the running assembly
-            yield return GetType().Assembly;
+            list.Add(GetType().Assembly);
+
+            return list;
         }
 
         private readonly string _systemId = Environment.MachineName.GetMD5().ToString();
@@ -582,12 +606,16 @@ namespace MediaBrowser.ServerApplication
                 IsNetworkDeployed = CanSelfUpdate,
                 WebSocketPortNumber = ServerManager.WebSocketPortNumber,
                 SupportsNativeWebSocket = ServerManager.SupportsNativeWebSocket,
-                FailedPluginAssemblies = FailedAssemblies.ToArray(),
-                InProgressInstallations = InstallationManager.CurrentInstallations.Select(i => i.Item1).ToArray(),
-                CompletedInstallations = InstallationManager.CompletedInstallations.ToArray(),
+                FailedPluginAssemblies = FailedAssemblies.ToList(),
+                InProgressInstallations = InstallationManager.CurrentInstallations.Select(i => i.Item1).ToList(),
+                CompletedInstallations = InstallationManager.CompletedInstallations.ToList(),
                 Id = _systemId,
                 ProgramDataPath = ApplicationPaths.ProgramDataPath,
-                MacAddress = GetMacAddress()
+                MacAddress = GetMacAddress(),
+                HttpServerPortNumber = ServerConfigurationManager.Configuration.HttpServerPortNumber,
+                OperatingSystem = Environment.OSVersion.ToString(),
+                CanSelfRestart = CanSelfRestart,
+                CanSelfUpdate = CanSelfUpdate
             };
         }
 
@@ -611,9 +639,18 @@ namespace MediaBrowser.ServerApplication
         /// <summary>
         /// Shuts down.
         /// </summary>
-        public override void Shutdown()
+        public override async Task Shutdown()
         {
-            App.Instance.Dispatcher.Invoke(App.Instance.Shutdown);
+            try
+            {
+                await SessionManager.SendServerShutdownNotification(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error sending server shutdown notification", ex);
+            }
+
+            NativeApp.Shutdown();
         }
 
         /// <summary>
@@ -623,42 +660,63 @@ namespace MediaBrowser.ServerApplication
         {
             Logger.Info("Requesting administrative access to authorize http server");
 
-            // Create a temp file path to extract the bat file to
-            var tmpFile = Path.Combine(ConfigurationManager.CommonApplicationPaths.TempDirectory, Guid.NewGuid() + ".bat");
-
-            // Extract the bat file
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaBrowser.ServerApplication.RegisterServer.bat"))
+            try
             {
-                using (var fileStream = File.Create(tmpFile))
-                {
-                    stream.CopyTo(fileStream);
-                }
+                ServerAuthorization.AuthorizeServer(ServerConfigurationManager.Configuration.HttpServerPortNumber,
+                    HttpServerUrlPrefix, ServerConfigurationManager.Configuration.LegacyWebSocketPortNumber,
+                    UdpServerEntryPoint.PortNumber,
+                    ConfigurationManager.CommonApplicationPaths.TempDirectory);
             }
-
-            var startInfo = new ProcessStartInfo
+            catch (Exception ex)
             {
-                FileName = tmpFile,
-
-                Arguments = string.Format("{0} {1} {2} {3}", ServerConfigurationManager.Configuration.HttpServerPortNumber,
-                HttpServerUrlPrefix,
-                UdpServerPort,
-                ServerConfigurationManager.Configuration.LegacyWebSocketPortNumber),
-
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                Verb = "runas",
-                ErrorDialog = false
-            };
-
-            using (var process = Process.Start(startInfo))
-            {
-                process.WaitForExit();
+                Logger.ErrorException("Error authorizing server", ex);
             }
         }
 
-        protected override string ApplicationUpdatePackageName
+        /// <summary>
+        /// Checks for update.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task{CheckForUpdateResult}.</returns>
+        public override async Task<CheckForUpdateResult> CheckForApplicationUpdate(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            get { return Constants.MbServerPkgName; }
+            var availablePackages = await InstallationManager.GetAvailablePackagesWithoutRegistrationInfo(cancellationToken).ConfigureAwait(false);
+
+            var version = InstallationManager.GetLatestCompatibleVersion(availablePackages, Constants.MbServerPkgName, null, ApplicationVersion,
+                                                           ConfigurationManager.CommonConfiguration.SystemUpdateLevel);
+
+            return version != null ? new CheckForUpdateResult { AvailableVersion = version.version, IsUpdateAvailable = version.version > ApplicationVersion, Package = version } :
+                       new CheckForUpdateResult { AvailableVersion = ApplicationVersion, IsUpdateAvailable = false };
+        }
+
+        /// <summary>
+        /// Updates the application.
+        /// </summary>
+        /// <param name="package">The package that contains the update</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task.</returns>
+        public override async Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            await InstallationManager.InstallPackage(package, progress, cancellationToken).ConfigureAwait(false);
+
+            OnApplicationUpdated(package.version);
+        }
+
+        /// <summary>
+        /// Creates the HTTP client.
+        /// </summary>
+        /// <param name="enableHttpCompression">if set to <c>true</c> [enable HTTP compression].</param>
+        /// <returns>HttpClient.</returns>
+        protected override HttpClient CreateHttpClient(bool enableHttpCompression)
+        {
+            return HttpClientFactory.GetHttpClient(enableHttpCompression);
+        }
+
+        protected override void ConfigureAutoRunAtStartup(bool autorun)
+        {
+            Autorun.Configure(autorun);
         }
     }
 }

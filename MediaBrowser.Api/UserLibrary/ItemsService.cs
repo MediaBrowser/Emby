@@ -1,18 +1,17 @@
-﻿using MediaBrowser.Controller.Dto;
+﻿using System.Globalization;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using ServiceStack.ServiceHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.UserLibrary
 {
@@ -36,13 +35,6 @@ namespace MediaBrowser.Api.UserLibrary
         /// <value>The person.</value>
         [ApiMember(Name = "Person", Description = "Optional. If specified, results will be filtered to include only those containing the specified person.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string Person { get; set; }
-
-        /// <summary>
-        /// What to sort the results by
-        /// </summary>
-        /// <value>The sort by.</value>
-        [ApiMember(Name = "SortBy", Description = "Optional. Specify one or more sort orders, comma delimeted. Options: Album, AlbumArtist, Artist, Budget, CommunityRating, CriticRating, DateCreated, DatePlayed, PlayCount, PremiereDate, ProductionYear, SortName, Random, Revenue, Runtime", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string SortBy { get; set; }
 
         /// <summary>
         /// If the Person filter is used, this can also be used to restrict to a specific person type
@@ -71,6 +63,9 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "Genres", Description = "Optional. If specified, results will be filtered based on genre. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Genres { get; set; }
 
+        [ApiMember(Name = "AllGenres", Description = "Optional. If specified, results will be filtered based on genre. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string AllGenres { get; set; }
+
         /// <summary>
         /// Limit results to items containing specific studios
         /// </summary>
@@ -87,20 +82,13 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "Albums", Description = "Optional. If specified, results will be filtered based on album. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Albums { get; set; }
-        
+
         /// <summary>
         /// Limit results to items containing specific years
         /// </summary>
         /// <value>The years.</value>
         [ApiMember(Name = "Years", Description = "Optional. If specified, results will be filtered based on production year. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Years { get; set; }
-
-        /// <summary>
-        /// Gets or sets the image types.
-        /// </summary>
-        /// <value>The image types.</value>
-        [ApiMember(Name = "ImageTypes", Description = "Optional. If specified, results will be filtered based on those containing image types. This allows multiple, comma delimited.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string ImageTypes { get; set; }
 
         /// <summary>
         /// Gets or sets the item ids.
@@ -132,6 +120,9 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "NameStartsWithOrGreater", Description = "Optional filter by items whose name is sorted equally or greater than a given input string.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string NameStartsWithOrGreater { get; set; }
+
+        [ApiMember(Name = "AlbumArtistStartsWithOrGreater", Description = "Optional filter by items whose album artist is sorted equally or greater than a given input string.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string AlbumArtistStartsWithOrGreater { get; set; }
 
         /// <summary>
         /// Gets or sets the air days.
@@ -172,21 +163,55 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "AdjacentTo", Description = "Optional. Return items that are siblings of a supplied item.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string AdjacentTo { get; set; }
 
-        /// <summary>
-        /// Gets the order by.
-        /// </summary>
-        /// <returns>IEnumerable{ItemSortBy}.</returns>
-        public IEnumerable<string> GetOrderBy()
-        {
-            var val = SortBy;
+        [ApiMember(Name = "MinIndexNumber", Description = "Optional filter by minimum index number.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? MinIndexNumber { get; set; }
 
-            if (string.IsNullOrEmpty(val))
-            {
-                return new string[] { };
-            }
+        [ApiMember(Name = "MinPlayers", Description = "Optional filter by minimum number of game players.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? MinPlayers { get; set; }
 
-            return val.Split(',');
-        }
+        [ApiMember(Name = "MaxPlayers", Description = "Optional filter by maximum number of game players.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? MaxPlayers { get; set; }
+
+        [ApiMember(Name = "ParentIndexNumber", Description = "Optional filter by parent index number.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? ParentIndexNumber { get; set; }
+
+        [ApiMember(Name = "HasParentalRating", Description = "Optional filter by items that have or do not have a parental rating", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? HasParentalRating { get; set; }
+
+        [ApiMember(Name = "IsHD", Description = "Optional filter by items that are HD or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? IsHD { get; set; }
+
+        [ApiMember(Name = "LocationTypes", Description = "Optional. If specified, results will be filtered based on LocationType. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string LocationTypes { get; set; }
+
+        [ApiMember(Name = "ExcludeLocationTypes", Description = "Optional. If specified, results will be filtered based on LocationType. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string ExcludeLocationTypes { get; set; }
+
+        public bool IncludeIndexContainers { get; set; }
+
+        [ApiMember(Name = "IsMissing", Description = "Optional filter by items that are missing episodes or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? IsMissing { get; set; }
+
+        [ApiMember(Name = "IsUnaired", Description = "Optional filter by items that are unaired episodes or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? IsUnaired { get; set; }
+
+        [ApiMember(Name = "IsVirtualUnaired", Description = "Optional filter by items that are virtual unaired episodes or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? IsVirtualUnaired { get; set; }
+
+        [ApiMember(Name = "MinCommunityRating", Description = "Optional filter by minimum community rating.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public double? MinCommunityRating { get; set; }
+
+        [ApiMember(Name = "MinCriticRating", Description = "Optional filter by minimum critic rating.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public double? MinCriticRating { get; set; }
+
+        [ApiMember(Name = "AiredDuringSeason", Description = "Gets all episodes that aired during a season, including specials.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? AiredDuringSeason { get; set; }
+
+        [ApiMember(Name = "MinPremiereDate", Description = "Optional. The minimum premiere date. Format = yyyyMMddHHmmss", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MinPremiereDate { get; set; }
+
+        [ApiMember(Name = "MaxPremiereDate", Description = "Optional. The maximum premiere date. Format = yyyyMMddHHmmss", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MaxPremiereDate { get; set; }
     }
 
     /// <summary>
@@ -198,7 +223,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// The _user manager
         /// </summary>
         private readonly IUserManager _userManager;
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IUserDataManager _userDataRepository;
 
         /// <summary>
         /// The _library manager
@@ -207,8 +232,8 @@ namespace MediaBrowser.Api.UserLibrary
         private readonly ILibrarySearchEngine _searchEngine;
         private readonly ILocalizationManager _localization;
 
-        private readonly IItemRepository _itemRepo;
-        
+        private readonly IDtoService _dtoService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemsService" /> class.
         /// </summary>
@@ -216,14 +241,14 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="searchEngine">The search engine.</param>
         /// <param name="userDataRepository">The user data repository.</param>
-        public ItemsService(IUserManager userManager, ILibraryManager libraryManager, ILibrarySearchEngine searchEngine, IUserDataRepository userDataRepository, ILocalizationManager localization, IItemRepository itemRepo)
+        public ItemsService(IUserManager userManager, ILibraryManager libraryManager, ILibrarySearchEngine searchEngine, IUserDataManager userDataRepository, ILocalizationManager localization, IDtoService dtoService)
         {
             _userManager = userManager;
             _libraryManager = libraryManager;
             _searchEngine = searchEngine;
             _userDataRepository = userDataRepository;
             _localization = localization;
-            _itemRepo = itemRepo;
+            _dtoService = dtoService;
         }
 
         /// <summary>
@@ -233,7 +258,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetItems request)
         {
-            var result = GetItems(request).Result;
+            var result = GetItems(request);
 
             return ToOptimizedResult(result);
         }
@@ -243,7 +268,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task{ItemsResult}.</returns>
-        private async Task<ItemsResult> GetItems(GetItems request)
+        private ItemsResult GetItems(GetItems request)
         {
             var user = _userManager.GetUserById(request.UserId);
 
@@ -260,25 +285,25 @@ namespace MediaBrowser.Api.UserLibrary
                 items = ApplyFilter(items, filter, user, _userDataRepository);
             }
 
+            items = FilterVirtualEpisodes(request, items, user);
+
             items = items.AsEnumerable();
 
             items = ApplySearchTerm(request, items);
 
             items = ApplySortOrder(request, items, user, _libraryManager);
 
-            var itemsArray = items.ToArray();
+            var itemsArray = items.ToList();
 
             var pagedItems = ApplyPaging(request, itemsArray);
 
             var fields = request.GetItemFields().ToList();
 
-            var dtoBuilder = new DtoBuilder(Logger, _libraryManager, _userDataRepository, _itemRepo);
-
-            var returnItems = await Task.WhenAll(pagedItems.Select(i => dtoBuilder.GetBaseItemDto(i, fields, user))).ConfigureAwait(false);
+            var returnItems = pagedItems.Select(i => _dtoService.GetBaseItemDto(i, fields, user)).ToArray();
 
             return new ItemsResult
             {
-                TotalRecordCount = itemsArray.Length,
+                TotalRecordCount = itemsArray.Count,
                 Items = returnItems
             };
         }
@@ -292,23 +317,40 @@ namespace MediaBrowser.Api.UserLibrary
         /// <exception cref="System.InvalidOperationException"></exception>
         private IEnumerable<BaseItem> GetItemsToSerialize(GetItems request, User user)
         {
-            var item = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : DtoBuilder.GetItemByClientId(request.ParentId, _userManager, _libraryManager, user.Id);
+            var item = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : _dtoService.GetItemByDtoId(request.ParentId, user.Id);
 
             // Default list type = children
+            IEnumerable<BaseItem> items;
 
             if (!string.IsNullOrEmpty(request.Ids))
             {
                 var idList = request.Ids.Split(',').ToList();
 
-                return idList.Select(i => DtoBuilder.GetItemByClientId(i, _userManager, _libraryManager, user.Id));
+                items = idList.Select(i => _dtoService.GetItemByDtoId(i, user.Id));
             }
 
-            if (request.Recursive)
+            else if (request.Recursive)
             {
-                return ((Folder)item).GetRecursiveChildren(user);
+                items = ((Folder)item).GetRecursiveChildren(user);
+            }
+            else
+            {
+                items = ((Folder)item).GetChildren(user, true, request.IndexBy);
             }
 
-            return ((Folder)item).GetChildren(user, true, request.IndexBy);
+            if (request.IncludeIndexContainers)
+            {
+                var list = items.ToList();
+
+                var containers = list.Select(i => i.IndexContainer)
+                    .Where(i => i != null);
+
+                list.AddRange(containers);
+
+                return list.Distinct();
+            }
+
+            return items;
         }
 
         /// <summary>
@@ -319,11 +361,11 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="user">The user.</param>
         /// <param name="libraryManager">The library manager.</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
-        internal static IEnumerable<BaseItem> ApplySortOrder(GetItems request, IEnumerable<BaseItem> items, User user, ILibraryManager libraryManager)
+        internal static IEnumerable<BaseItem> ApplySortOrder(BaseItemsRequest request, IEnumerable<BaseItem> items, User user, ILibraryManager libraryManager)
         {
-            var orderBy = request.GetOrderBy().ToArray();
+            var orderBy = request.GetOrderBy().ToList();
 
-            return orderBy.Length == 0 ? items : libraryManager.Sort(items, user, orderBy, request.SortOrder ?? SortOrder.Ascending);
+            return orderBy.Count == 0 ? items : libraryManager.Sort(items, user, orderBy, request.SortOrder ?? SortOrder.Ascending);
         }
 
         /// <summary>
@@ -334,7 +376,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="user">The user.</param>
         /// <param name="repository">The repository.</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
-        internal static IEnumerable<BaseItem> ApplyFilter(IEnumerable<BaseItem> items, ItemFilter filter, User user, IUserDataRepository repository)
+        internal static IEnumerable<BaseItem> ApplyFilter(IEnumerable<BaseItem> items, ItemFilter filter, User user, IUserDataManager repository)
         {
             switch (filter)
             {
@@ -415,6 +457,121 @@ namespace MediaBrowser.Api.UserLibrary
             return items;
         }
 
+        private IEnumerable<BaseItem> FilterVirtualEpisodes(GetItems request, IEnumerable<BaseItem> items, User user)
+        {
+            items = FilterVirtualSeasons(request, items, user);
+
+            if (request.IsMissing.HasValue)
+            {
+                var val = request.IsMissing.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Episode;
+                    if (e != null)
+                    {
+                        return e.IsMissingEpisode == val;
+                    }
+                    return true;
+                });
+            }
+
+            if (request.IsUnaired.HasValue)
+            {
+                var val = request.IsUnaired.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Episode;
+                    if (e != null)
+                    {
+                        return e.IsUnaired == val;
+                    }
+                    return true;
+                });
+            }
+
+            if (request.IsVirtualUnaired.HasValue)
+            {
+                var val = request.IsVirtualUnaired.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Episode;
+                    if (e != null)
+                    {
+                        return e.IsVirtualUnaired == val;
+                    }
+                    return true;
+                });
+            }
+
+            return items;
+        }
+
+        private IEnumerable<BaseItem> FilterVirtualSeasons(GetItems request, IEnumerable<BaseItem> items, User user)
+        {
+            if (request.IsMissing.HasValue && request.IsVirtualUnaired.HasValue)
+            {
+                var isMissing = request.IsMissing.Value;
+                var isVirtualUnaired = request.IsVirtualUnaired.Value;
+
+                if (!isMissing && !isVirtualUnaired)
+                {
+                    return items.Where(i =>
+                    {
+                        var e = i as Season;
+                        if (e != null)
+                        {
+                            return !e.IsMissingOrVirtualUnaired;
+                        }
+                        return true;
+                    });
+                }
+            }
+
+            if (request.IsMissing.HasValue)
+            {
+                var val = request.IsMissing.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Season;
+                    if (e != null)
+                    {
+                        return e.IsMissingSeason == val;
+                    }
+                    return true;
+                });
+            }
+
+            if (request.IsUnaired.HasValue)
+            {
+                var val = request.IsUnaired.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Season;
+                    if (e != null)
+                    {
+                        return e.IsUnaired == val;
+                    }
+                    return true;
+                });
+            }
+
+            if (request.IsVirtualUnaired.HasValue)
+            {
+                var val = request.IsVirtualUnaired.Value;
+                items = items.Where(i =>
+                {
+                    var e = i as Season;
+                    if (e != null)
+                    {
+                        return e.IsVirtualUnaired == val;
+                    }
+                    return true;
+                });
+            }
+
+            return items;
+        }
+
         /// <summary>
         /// Applies the additional filters.
         /// </summary>
@@ -423,6 +580,30 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>IEnumerable{BaseItem}.</returns>
         private IEnumerable<BaseItem> ApplyAdditionalFilters(GetItems request, IEnumerable<BaseItem> items, User user)
         {
+            if (request.MinCommunityRating.HasValue)
+            {
+                var val = request.MinCommunityRating.Value;
+
+                items = items.Where(i => i.CommunityRating.HasValue && i.CommunityRating >= val);
+            }
+
+            if (request.MinCriticRating.HasValue)
+            {
+                var val = request.MinCriticRating.Value;
+
+                items = items.Where(i =>
+                {
+                    var hasCriticRating = i as IHasCriticRating;
+
+                    if (hasCriticRating != null)
+                    {
+                        return hasCriticRating.CriticRating.HasValue && hasCriticRating.CriticRating >= val;
+                    }
+
+                    return false;
+                });
+            }
+
             // Artists
             if (!string.IsNullOrEmpty(request.Artists))
             {
@@ -430,28 +611,9 @@ namespace MediaBrowser.Api.UserLibrary
 
                 items = items.Where(i =>
                 {
-                    var audio = i as Audio;
+                    var audio = i as IHasArtist;
 
-                    if (audio != null)
-                    {
-                        return artists.Any(audio.HasArtist);
-                    }
-
-                    var album = i as MusicAlbum;
-
-                    if (album != null)
-                    {
-                        return artists.Any(album.HasArtist);
-                    }
-
-                    var musicVideo = i as MusicVideo;
-
-                    if (musicVideo != null)
-                    {
-                        return artists.Any(musicVideo.HasArtist);
-                    }
-
-                    return false;
+                    return audio != null && artists.Any(audio.HasArtist);
                 });
             }
 
@@ -489,7 +651,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             if (!string.IsNullOrEmpty(request.AdjacentTo))
             {
-                var item = DtoBuilder.GetItemByClientId(request.AdjacentTo, _userManager, _libraryManager);
+                var item = _dtoService.GetItemByDtoId(request.AdjacentTo);
 
                 var allSiblings = item.Parent.GetChildren(user, true).OrderBy(i => i.SortName).ToList();
 
@@ -511,6 +673,12 @@ namespace MediaBrowser.Api.UserLibrary
                 items = items.Where(i => i.Id == previousId || i.Id == nextId);
             }
 
+            // Min index number
+            if (request.MinIndexNumber.HasValue)
+            {
+                items = items.Where(i => i.IndexNumber.HasValue && i.IndexNumber.Value >= request.MinIndexNumber.Value);
+            }
+
             // Min official rating
             if (!string.IsNullOrEmpty(request.MinOfficialRating))
             {
@@ -520,7 +688,12 @@ namespace MediaBrowser.Api.UserLibrary
                 {
                     items = items.Where(i =>
                     {
-                        var rating = i.CustomRating ?? i.OfficialRating;
+                        var rating = i.CustomRating;
+
+                        if (string.IsNullOrEmpty(rating))
+                        {
+                            rating = i.OfficialRating;
+                        }
 
                         if (string.IsNullOrEmpty(rating))
                         {
@@ -537,13 +710,18 @@ namespace MediaBrowser.Api.UserLibrary
             // Max official rating
             if (!string.IsNullOrEmpty(request.MaxOfficialRating))
             {
-                var level = _localization.GetRatingLevel(request.MinOfficialRating);
+                var level = _localization.GetRatingLevel(request.MaxOfficialRating);
 
                 if (level.HasValue)
                 {
                     items = items.Where(i =>
                     {
-                        var rating = i.CustomRating ?? i.OfficialRating;
+                        var rating = i.CustomRating;
+
+                        if (string.IsNullOrEmpty(rating))
+                        {
+                            rating = i.OfficialRating;
+                        }
 
                         if (string.IsNullOrEmpty(rating))
                         {
@@ -571,9 +749,30 @@ namespace MediaBrowser.Api.UserLibrary
                 items = items.Where(f => vals.Contains(f.GetType().Name, StringComparer.OrdinalIgnoreCase));
             }
 
+            // LocationTypes
+            if (!string.IsNullOrEmpty(request.LocationTypes))
+            {
+                var vals = request.LocationTypes.Split(',');
+                items = items.Where(f => vals.Contains(f.LocationType.ToString(), StringComparer.OrdinalIgnoreCase));
+            }
+
+            // ExcludeLocationTypes
+            if (!string.IsNullOrEmpty(request.ExcludeLocationTypes))
+            {
+                var vals = request.ExcludeLocationTypes.Split(',');
+                items = items.Where(f => !vals.Contains(f.LocationType.ToString(), StringComparer.OrdinalIgnoreCase));
+            }
+
             if (!string.IsNullOrEmpty(request.NameStartsWithOrGreater))
             {
                 items = items.Where(i => string.Compare(request.NameStartsWithOrGreater, i.SortName, StringComparison.CurrentCultureIgnoreCase) < 1);
+            }
+
+            if (!string.IsNullOrEmpty(request.AlbumArtistStartsWithOrGreater))
+            {
+                items = items.OfType<IHasAlbumArtist>()
+                    .Where(i => string.Compare(request.AlbumArtistStartsWithOrGreater, i.AlbumArtist, StringComparison.CurrentCultureIgnoreCase) < 1)
+                    .Cast<BaseItem>();
             }
 
             // Filter by Series Status
@@ -613,49 +812,48 @@ namespace MediaBrowser.Api.UserLibrary
                 items = items.Where(i => !string.IsNullOrEmpty(i.MediaType) && types.Contains(i.MediaType, StringComparer.OrdinalIgnoreCase));
             }
 
-            var imageTypes = GetImageTypes(request).ToArray();
-            if (imageTypes.Length > 0)
+            var imageTypes = request.GetImageTypes().ToList();
+            if (imageTypes.Count > 0)
             {
                 items = items.Where(item => imageTypes.Any(imageType => HasImage(item, imageType)));
             }
 
-            var genres = request.Genres;
+            // Apply genre filter
+            if (!string.IsNullOrEmpty(request.Genres))
+            {
+                var vals = request.Genres.Split(',');
+                items = items.Where(f => vals.Any(v => f.Genres.Contains(v, StringComparer.OrdinalIgnoreCase)));
+            }
 
             // Apply genre filter
-            if (!string.IsNullOrEmpty(genres))
+            if (!string.IsNullOrEmpty(request.AllGenres))
             {
-                var vals = genres.Split(',');
-                items = items.Where(f => f.Genres != null && vals.Any(v => f.Genres.Contains(v, StringComparer.OrdinalIgnoreCase)));
+                var vals = request.AllGenres.Split(',');
+                items = items.Where(f => vals.All(v => f.Genres.Contains(v, StringComparer.OrdinalIgnoreCase)));
             }
-
-            var studios = request.Studios;
 
             // Apply studio filter
-            if (!string.IsNullOrEmpty(studios))
+            if (!string.IsNullOrEmpty(request.Studios))
             {
-                var vals = studios.Split(',');
-                items = items.Where(f => f.Studios != null && vals.Any(v => f.Studios.Contains(v, StringComparer.OrdinalIgnoreCase)));
+                var vals = request.Studios.Split(',');
+                items = items.Where(f => vals.Any(v => f.Studios.Contains(v, StringComparer.OrdinalIgnoreCase)));
             }
 
-            var years = request.Years;
-
             // Apply year filter
-            if (!string.IsNullOrEmpty(years))
+            if (!string.IsNullOrEmpty(request.Years))
             {
-                var vals = years.Split(',').Select(int.Parse);
+                var vals = request.Years.Split(',').Select(int.Parse).ToList();
                 items = items.Where(f => f.ProductionYear.HasValue && vals.Contains(f.ProductionYear.Value));
             }
 
-            var personName = request.Person;
-
             // Apply person filter
-            if (!string.IsNullOrEmpty(personName))
+            if (!string.IsNullOrEmpty(request.Person))
             {
                 var personTypes = request.PersonTypes;
 
                 if (string.IsNullOrEmpty(personTypes))
                 {
-                    items = items.Where(item => item.People != null && item.People.Any(p => string.Equals(p.Name, personName, StringComparison.OrdinalIgnoreCase)));
+                    items = items.Where(item => item.People.Any(p => string.Equals(p.Name, request.Person, StringComparison.OrdinalIgnoreCase)));
                 }
                 else
                 {
@@ -664,7 +862,7 @@ namespace MediaBrowser.Api.UserLibrary
                     items = items.Where(item =>
                             item.People != null &&
                             item.People.Any(p =>
-                                p.Name.Equals(personName, StringComparison.OrdinalIgnoreCase) && (types.Contains(p.Type, StringComparer.OrdinalIgnoreCase) || types.Contains(p.Role, StringComparer.OrdinalIgnoreCase))));
+                                p.Name.Equals(request.Person, StringComparison.OrdinalIgnoreCase) && (types.Contains(p.Type, StringComparer.OrdinalIgnoreCase) || types.Contains(p.Role, StringComparer.OrdinalIgnoreCase))));
                 }
             }
 
@@ -683,9 +881,70 @@ namespace MediaBrowser.Api.UserLibrary
                 items = items.Where(i => request.HasThemeVideo.Value ? i.ThemeVideoIds.Count > 0 : i.ThemeVideoIds.Count == 0);
             }
 
+            if (request.MinPlayers.HasValue)
+            {
+                var filterValue = request.MinPlayers.Value;
+
+                items = items.Where(i =>
+                {
+                    var game = i as Game;
+
+                    if (game != null)
+                    {
+                        var players = game.PlayersSupported ?? 1;
+
+                        return players >= filterValue;
+                    }
+
+                    return false;
+                });
+            }
+
+            if (request.MaxPlayers.HasValue)
+            {
+                var filterValue = request.MaxPlayers.Value;
+
+                items = items.Where(i =>
+                {
+                    var game = i as Game;
+
+                    if (game != null)
+                    {
+                        var players = game.PlayersSupported ?? 1;
+
+                        return players <= filterValue;
+                    }
+
+                    return false;
+                });
+            }
+
             if (request.HasSpecialFeature.HasValue)
             {
-                items = items.OfType<Movie>().Where(i => request.HasSpecialFeature.Value ? i.SpecialFeatureIds.Count > 0 : i.SpecialFeatureIds.Count == 0);
+                var filterValue = request.HasSpecialFeature.Value;
+
+                items = items.Where(i =>
+                {
+                    var movie = i as Movie;
+
+                    if (movie != null)
+                    {
+                        return filterValue
+                                   ? movie.SpecialFeatureIds.Count > 0
+                                   : movie.SpecialFeatureIds.Count == 0;
+                    }
+
+                    var series = i as Series;
+
+                    if (series != null)
+                    {
+                        return filterValue
+                                   ? series.SpecialFeatureIds.Count > 0
+                                   : series.SpecialFeatureIds.Count == 0;
+                    }
+
+                    return false;
+                });
             }
 
             if (request.HasSubtitles.HasValue)
@@ -701,6 +960,75 @@ namespace MediaBrowser.Api.UserLibrary
                 });
             }
 
+            if (request.HasParentalRating.HasValue)
+            {
+                items = items.Where(i =>
+                {
+                    var rating = i.CustomRating;
+
+                    if (string.IsNullOrEmpty(rating))
+                    {
+                        rating = i.OfficialRating;
+                    }
+
+                    if (request.HasParentalRating.Value)
+                    {
+                        return !string.IsNullOrEmpty(rating);
+                    }
+
+                    return string.IsNullOrEmpty(rating);
+                });
+            }
+
+            if (request.IsHD.HasValue)
+            {
+                var val = request.IsHD.Value;
+                items = items.OfType<Video>().Where(i => i.IsHD == val);
+            }
+
+            if (request.ParentIndexNumber.HasValue)
+            {
+                var filterValue = request.ParentIndexNumber.Value;
+
+                items = items.Where(i =>
+                {
+                    var episode = i as Episode;
+
+                    if (episode != null)
+                    {
+                        return episode.ParentIndexNumber.HasValue && episode.ParentIndexNumber.Value == filterValue;
+                    }
+
+                    var song = i as Audio;
+
+                    if (song != null)
+                    {
+                        return song.ParentIndexNumber.HasValue && song.ParentIndexNumber.Value == filterValue;
+                    }
+
+                    return true;
+                });
+            }
+
+            if (request.AiredDuringSeason.HasValue)
+            {
+                items = TvShowsService.FilterEpisodesBySeason(items.OfType<Episode>(), request.AiredDuringSeason.Value, true);
+            }
+
+            if (!string.IsNullOrEmpty(request.MinPremiereDate))
+            {
+                var date = DateTime.ParseExact(request.MinPremiereDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+                items = items.Where(i => i.PremiereDate.HasValue && i.PremiereDate.Value >= date);
+            }
+
+            if (!string.IsNullOrEmpty(request.MaxPremiereDate))
+            {
+                var date = DateTime.ParseExact(request.MaxPremiereDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+                items = items.Where(i => i.PremiereDate.HasValue && i.PremiereDate.Value <= date);
+            }
+
             return items;
         }
 
@@ -710,16 +1038,16 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="item">The item.</param>
         /// <param name="imageType">Type of the image.</param>
         /// <returns><c>true</c> if the specified item has image; otherwise, <c>false</c>.</returns>
-        private static bool HasImage(BaseItem item, ImageType imageType)
+        internal static bool HasImage(BaseItem item, ImageType imageType)
         {
             if (imageType == ImageType.Backdrop)
             {
-                return item.BackdropImagePaths != null && item.BackdropImagePaths.Count > 0;
+                return item.BackdropImagePaths.Count > 0;
             }
 
             if (imageType == ImageType.Screenshot)
             {
-                return item.ScreenshotImagePaths != null && item.ScreenshotImagePaths.Count > 0;
+                return item.ScreenshotImagePaths.Count > 0;
             }
 
             return item.HasImage(imageType);
@@ -764,23 +1092,6 @@ namespace MediaBrowser.Api.UserLibrary
             }
 
             return items;
-        }
-
-        /// <summary>
-        /// Gets the image types.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>IEnumerable{ImageType}.</returns>
-        private static IEnumerable<ImageType> GetImageTypes(GetItems request)
-        {
-            var val = request.ImageTypes;
-
-            if (string.IsNullOrEmpty(val))
-            {
-                return new ImageType[] { };
-            }
-
-            return val.Split(',').Select(v => (ImageType)Enum.Parse(typeof(ImageType), v, true));
         }
     }
 

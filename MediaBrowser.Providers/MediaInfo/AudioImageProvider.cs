@@ -39,21 +39,14 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly IMediaEncoder _mediaEncoder;
 
         /// <summary>
-        /// The _library manager
-        /// </summary>
-        private readonly ILibraryManager _libraryManager;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="BaseMetadataProvider" /> class.
         /// </summary>
         /// <param name="logManager">The log manager.</param>
         /// <param name="configurationManager">The configuration manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
         /// <param name="mediaEncoder">The media encoder.</param>
-        public AudioImageProvider(ILogManager logManager, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IMediaEncoder mediaEncoder)
+        public AudioImageProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IMediaEncoder mediaEncoder)
             : base(logManager, configurationManager)
         {
-            _libraryManager = libraryManager;
             _mediaEncoder = mediaEncoder;
 
             ImageCache = new FileSystemRepository(Kernel.Instance.FFMpegManager.AudioImagesDataPath);
@@ -162,7 +155,7 @@ namespace MediaBrowser.Providers.MediaInfo
             var album = item.Parent as MusicAlbum;
 
             var filename = item.Album ?? string.Empty;
-            filename += item.Artist ?? string.Empty;
+            filename += item.Artists.FirstOrDefault() ?? string.Empty;
             filename += album == null ? item.Id.ToString("N") + item.DateModified.Ticks : album.Id.ToString("N") + album.DateModified.Ticks;
 
             var path = ImageCache.GetResourcePath(filename + "_primary", ".jpg");
@@ -181,10 +174,7 @@ namespace MediaBrowser.Providers.MediaInfo
                     {
                         var parentPath = Path.GetDirectoryName(path);
 
-                        if (!Directory.Exists(parentPath))
-                        {
-                            Directory.CreateDirectory(parentPath);
-                        }
+                        Directory.CreateDirectory(parentPath);
 
                         await _mediaEncoder.ExtractImage(new[] { item.Path }, InputType.AudioFile, null, null, path, cancellationToken).ConfigureAwait(false);
                     }

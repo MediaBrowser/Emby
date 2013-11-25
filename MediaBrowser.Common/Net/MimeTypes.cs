@@ -112,12 +112,30 @@ namespace MediaBrowser.Common.Net
                 return "application/xml";
             }
 
+            // Type document
+            if (ext.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                return "application/pdf";
+            }
+            if (ext.Equals(".mobi", StringComparison.OrdinalIgnoreCase))
+            {
+                return "application/x-mobipocket-ebook";
+            }
+            if (ext.Equals(".epub", StringComparison.OrdinalIgnoreCase))
+            {
+                return "application/epub+zip";
+            }
+            if (ext.Equals(".cbz", StringComparison.OrdinalIgnoreCase) || ext.Equals(".cbr", StringComparison.OrdinalIgnoreCase))
+            {
+                return "application/x-cdisplay";
+            }
+
             // Type image
             if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
             {
                 return "image/gif";
             }
-            if (ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) || ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+            if (ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) || ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) || ext.Equals(".tbn", StringComparison.OrdinalIgnoreCase))
             {
                 return "image/jpeg";
             }

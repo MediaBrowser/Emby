@@ -26,10 +26,6 @@
                             <label for="chkSaveLocal">Save metadata within media folders </label>
                         </li>
                         <li>
-                            <label for="txtRefreshDays">Metadata refresh period (days): </label>
-                            <input type="number" id="txtRefreshDays" name="txtRefreshDays" pattern="[0-9]*" required="required" min="1" />
-                        </li>
-                        <li>
                             <label for="selectLanguage">Preferred language: </label>
                             <select name="selectLanguage" id="selectLanguage"></select>
                         </li>
@@ -38,8 +34,13 @@
                             <select name="selectCountry" id="selectCountry"></select>
                         </li>
                         <li>
+                            <input type="checkbox" id="chkEnableTmdbPersonUpdates" name="chkEnableTmdbPersonUpdates" />
+                            <label for="chkEnableTmdbPersonUpdates">Enable automatic tmdb updates</label>
+                            <div class="fieldDescription">If enabled, movies and people will be updated automatically as they are updated on the themoviedb.org.</div>
+                        </li>
+                        <li>
                             <input type="checkbox" id="chkEnableTvdbUpdates" name="chkEnableTvdbUpdates" />
-                            <label for="chkEnableTvdbUpdates">Enable tvdb updates</label>
+                            <label for="chkEnableTvdbUpdates">Enable automatic tvdb updates</label>
                             <div class="fieldDescription">If enabled, tv series and episodes will be updated automatically as they are updated on the tvdb.com.</div>
                         </li>
                         <li>

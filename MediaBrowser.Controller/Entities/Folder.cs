@@ -1,12 +1,11 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Model.Entities;
+using MoreLinq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -24,6 +23,8 @@ namespace MediaBrowser.Controller.Entities
     /// </summary>
     public class Folder : BaseItem
     {
+        public static IUserManager UserManager { get; set; }
+
         public Folder()
         {
             LinkedChildren = new List<LinkedChild>();
@@ -66,21 +67,6 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        /// <summary>
-        /// Return the id that should be used to key display prefs for this item.
-        /// Default is based on the type for everything except actual generic folders.
-        /// </summary>
-        /// <value>The display prefs id.</value>
-        [IgnoreDataMember]
-        public virtual Guid DisplayPreferencesId
-        {
-            get
-            {
-                var thisType = GetType();
-                return thisType == typeof(Folder) ? Id : thisType.FullName.GetMD5();
-            }
-        }
-
         public virtual List<LinkedChild> LinkedChildren { get; set; }
 
         protected virtual bool SupportsShortcutChildren
@@ -104,6 +90,11 @@ namespace MediaBrowser.Controller.Entities
                 item.Id = item.Path.GetMBId(item.GetType());
             }
 
+            if (_children.Any(i => i.Id == item.Id))
+            {
+                throw new ArgumentException(string.Format("A child with the Id {0} already exists.", item.Id));
+            }
+
             if (item.DateCreated == DateTime.MinValue)
             {
                 item.DateCreated = DateTime.UtcNow;
@@ -113,14 +104,46 @@ namespace MediaBrowser.Controller.Entities
                 item.DateModified = DateTime.UtcNow;
             }
 
-            if (!_children.TryAdd(item.Id, item))
-            {
-                throw new InvalidOperationException("Unable to add " + item.Name);
-            }
+            AddChildInternal(item);
 
             await LibraryManager.CreateItem(item, cancellationToken).ConfigureAwait(false);
 
-            await ItemRepository.SaveChildren(Id, _children.Values.ToList().Select(i => i.Id), cancellationToken).ConfigureAwait(false);
+            await ItemRepository.SaveChildren(Id, _children.Select(i => i.Id).ToList(), cancellationToken).ConfigureAwait(false);
+        }
+
+        protected void AddChildrenInternal(IEnumerable<BaseItem> children)
+        {
+            lock (_childrenSyncLock)
+            {
+                var newChildren = _children.ToList();
+                newChildren.AddRange(children);
+                _children = newChildren;
+            }
+        }
+        protected void AddChildInternal(BaseItem child)
+        {
+            lock (_childrenSyncLock)
+            {
+                var newChildren = _children.ToList();
+                newChildren.Add(child);
+                _children = newChildren;
+            }
+        }
+
+        protected void RemoveChildrenInternal(IEnumerable<BaseItem> children)
+        {
+            lock (_childrenSyncLock)
+            {
+                _children = _children.Except(children).ToList();
+            }
+        }
+
+        protected void ClearChildrenInternal()
+        {
+            lock (_childrenSyncLock)
+            {
+                _children = new List<BaseItem>();
+            }
         }
 
         /// <summary>
@@ -149,18 +172,32 @@ namespace MediaBrowser.Controller.Entities
         /// <exception cref="System.InvalidOperationException">Unable to remove  + item.Name</exception>
         public Task RemoveChild(BaseItem item, CancellationToken cancellationToken)
         {
-            BaseItem removed;
-
-            if (!_children.TryRemove(item.Id, out removed))
-            {
-                throw new InvalidOperationException("Unable to remove " + item.Name);
-            }
+            RemoveChildrenInternal(new[] { item });
 
             item.Parent = null;
 
             LibraryManager.ReportItemRemoved(item);
 
-            return ItemRepository.SaveChildren(Id, _children.Values.ToList().Select(i => i.Id), cancellationToken);
+            return ItemRepository.SaveChildren(Id, ActualChildren.Select(i => i.Id).ToList(), cancellationToken);
+        }
+
+        /// <summary>
+        /// Clears the children.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task ClearChildren(CancellationToken cancellationToken)
+        {
+            var items = ActualChildren.ToList();
+
+            ClearChildrenInternal();
+
+            foreach (var item in items)
+            {
+                LibraryManager.ReportItemRemoved(item);
+            }
+
+            return ItemRepository.SaveChildren(Id, ActualChildren.Select(i => i.Id).ToList(), cancellationToken);
         }
 
         #region Indexing
@@ -249,7 +286,7 @@ namespace MediaBrowser.Controller.Entities
                     {
                         try
                         {
-                            return LibraryManager.GetPerson(i).Result;
+                            return LibraryManager.GetPerson(i);
                         }
                         catch (IOException ex)
                         {
@@ -271,13 +308,13 @@ namespace MediaBrowser.Controller.Entities
                 {
                     var songs = recursiveChildren.OfType<Audio.Audio>().ToList();
 
-                    indexFolders = songs.Select(i => i.Artist ?? string.Empty)
+                    indexFolders = songs.SelectMany(i => i.Artists)
                         .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Select(i =>
                     {
                         try
                         {
-                            return LibraryManager.GetArtist(i).Result;
+                            return LibraryManager.GetArtist(i);
                         }
                         catch (IOException ex)
                         {
@@ -292,7 +329,7 @@ namespace MediaBrowser.Controller.Entities
                     })
                     .Where(i => i != null)
                     .Select(a => new IndexFolder(us, a,
-                                        songs.Where(i => string.Equals(i.Artist, a.Name, StringComparison.OrdinalIgnoreCase)
+                                        songs.Where(i => i.Artists.Contains(a.Name, StringComparer.OrdinalIgnoreCase)
                                         ), currentIndexName)).Concat(indexFolders);
                 }
 
@@ -321,7 +358,7 @@ namespace MediaBrowser.Controller.Entities
                     {
                         try
                         {
-                            return LibraryManager.GetStudio(i).Result;
+                            return LibraryManager.GetStudio(i);
                         }
                         catch (IOException ex)
                         {
@@ -356,19 +393,14 @@ namespace MediaBrowser.Controller.Entities
                 var candidates = GetRecursiveChildren(user).Where(i => i.IncludeInIndex).ToList();
 
                 return candidates.AsParallel().SelectMany(i => i.AllGenres)
-                    .Distinct()
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Select(i =>
                         {
                             try
                             {
-                                return LibraryManager.GetGenre(i).Result;
+                                return LibraryManager.GetGenre(i);
                             }
-                            catch (IOException ex)
-                            {
-                                Logger.ErrorException("Error getting genre {0}", ex, i);
-                                return null;
-                            }
-                            catch (AggregateException ex)
+                            catch (Exception ex)
                             {
                                 Logger.ErrorException("Error getting genre {0}", ex, i);
                                 return null;
@@ -402,7 +434,7 @@ namespace MediaBrowser.Controller.Entities
                     {
                         try
                         {
-                            return LibraryManager.GetYear(i).Result;
+                            return LibraryManager.GetYear(i);
                         }
                         catch (IOException ex)
                         {
@@ -430,9 +462,13 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>IEnumerable{BaseItem}.</returns>
         private IEnumerable<BaseItem> GetIndexedChildren(User user, string indexBy)
         {
-            List<BaseItem> result;
+            List<BaseItem> result = null;
             var cacheKey = user.Name + indexBy;
-            IndexCache.TryGetValue(cacheKey, out result);
+
+            if (IndexCache != null)
+            {
+                IndexCache.TryGetValue(cacheKey, out result);
+            }
 
             if (result == null)
             {
@@ -457,7 +493,7 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// The index cache
         /// </summary>
-        protected ConcurrentDictionary<string, List<BaseItem>> IndexCache = new ConcurrentDictionary<string, List<BaseItem>>(StringComparer.OrdinalIgnoreCase);
+        protected ConcurrentDictionary<string, List<BaseItem>> IndexCache;
 
         /// <summary>
         /// Builds the index.
@@ -468,6 +504,11 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>List{BaseItem}.</returns>
         protected virtual List<BaseItem> BuildIndex(string indexKey, Func<User, IEnumerable<BaseItem>> indexFunction, User user)
         {
+            if (IndexCache == null)
+            {
+                IndexCache = new ConcurrentDictionary<string, List<BaseItem>>();
+            }
+
             return indexFunction != null
                        ? IndexCache[user.Name + indexKey] = indexFunction(user).ToList()
                        : null;
@@ -478,35 +519,26 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// The children
         /// </summary>
-        private ConcurrentDictionary<Guid, BaseItem> _children;
-        /// <summary>
-        /// The _children initialized
-        /// </summary>
-        private bool _childrenInitialized;
+        private IReadOnlyList<BaseItem> _children = new List<BaseItem>();
         /// <summary>
         /// The _children sync lock
         /// </summary>
-        private object _childrenSyncLock = new object();
+        private readonly object _childrenSyncLock = new object();
         /// <summary>
         /// Gets or sets the actual children.
         /// </summary>
         /// <value>The actual children.</value>
-        protected virtual ConcurrentDictionary<Guid, BaseItem> ActualChildren
+        protected virtual IEnumerable<BaseItem> ActualChildren
         {
             get
             {
-                LazyInitializer.EnsureInitialized(ref _children, ref _childrenInitialized, ref _childrenSyncLock, LoadChildren);
                 return _children;
             }
-            private set
-            {
-                _children = value;
+        }
 
-                if (value == null)
-                {
-                    _childrenInitialized = false;
-                }
-            }
+        public void LoadSavedChildren()
+        {
+            _children = LoadChildrenInternal();
         }
 
         /// <summary>
@@ -516,10 +548,7 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public IEnumerable<BaseItem> Children
         {
-            get
-            {
-                return ActualChildren.Values.ToList();
-            }
+            get { return ActualChildren; }
         }
 
         /// <summary>
@@ -529,35 +558,22 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public IEnumerable<BaseItem> RecursiveChildren
         {
-            get
-            {
-                foreach (var item in Children)
-                {
-                    yield return item;
-
-                    if (item.IsFolder)
-                    {
-                        var subFolder = (Folder)item;
-
-                        foreach (var subitem in subFolder.RecursiveChildren)
-                        {
-                            yield return subitem;
-                        }
-                    }
-                }
-            }
+            get { return GetRecursiveChildren(); }
         }
 
+        private List<BaseItem> LoadChildrenInternal()
+        {
+            return LoadChildren().ToList();
+        }
 
         /// <summary>
         /// Loads our children.  Validation will occur externally.
         /// We want this sychronous.
         /// </summary>
-        /// <returns>ConcurrentBag{BaseItem}.</returns>
-        protected virtual ConcurrentDictionary<Guid, BaseItem> LoadChildren()
+        protected virtual IEnumerable<BaseItem> LoadChildren()
         {
             //just load our children from the repo - the library will be validated and maintained in other processes
-            return new ConcurrentDictionary<Guid, BaseItem>(GetCachedChildren().ToDictionary(i => i.Id));
+            return GetCachedChildren();
         }
 
         /// <summary>
@@ -657,31 +673,26 @@ namespace MediaBrowser.Controller.Entities
             progress.Report(5);
 
             //build a dictionary of the current children we have now by Id so we can compare quickly and easily
-            var currentChildren = ActualChildren;
+            var currentChildren = ActualChildren.ToDictionary(i => i.Id);
 
             //create a list for our validated children
-            var validChildren = new ConcurrentBag<Tuple<BaseItem, bool>>();
-            var newItems = new ConcurrentBag<BaseItem>();
+            var validChildren = new List<Tuple<BaseItem, bool>>();
+            var newItems = new List<BaseItem>();
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var options = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 20
-            };
-
-            Parallel.ForEach(nonCachedChildren, options, child =>
+            foreach (var child in nonCachedChildren)
             {
                 BaseItem currentChild;
 
                 if (currentChildren.TryGetValue(child.Id, out currentChild))
                 {
-                    currentChild.ResolveArgs = child.ResolveArgs;
+                    currentChild.ResetResolveArgs(child.ResolveArgs);
 
                     //existing item - check if it has changed
                     if (currentChild.HasChanged(child))
                     {
-                        EntityResolutionHelper.EnsureDates(currentChild, child.ResolveArgs, false);
+                        EntityResolutionHelper.EnsureDates(FileSystem, currentChild, child.ResolveArgs, false);
 
                         validChildren.Add(new Tuple<BaseItem, bool>(currentChild, true));
                     }
@@ -699,59 +710,61 @@ namespace MediaBrowser.Controller.Entities
 
                     validChildren.Add(new Tuple<BaseItem, bool>(child, true));
                 }
-            });
+            }
 
             // If any items were added or removed....
-            if (!newItems.IsEmpty || currentChildren.Count != validChildren.Count)
+            if (newItems.Count > 0 || currentChildren.Count != validChildren.Count)
             {
                 var newChildren = validChildren.Select(c => c.Item1).ToList();
 
-                //that's all the new and changed ones - now see if there are any that are missing
+                // That's all the new and changed ones - now see if there are any that are missing
                 var itemsRemoved = currentChildren.Values.Except(newChildren).ToList();
+
+                var actualRemovals = new List<BaseItem>();
 
                 foreach (var item in itemsRemoved)
                 {
-                    if (IsRootPathAvailable(item.Path))
+                    if (item.LocationType == LocationType.Virtual ||
+                        item.LocationType == LocationType.Remote)
                     {
-                        item.IsOffline = false;
-
-                        BaseItem removed;
-
-                        if (!_children.TryRemove(item.Id, out removed))
-                        {
-                            Logger.Error("Failed to remove {0}", item.Name);
-                        }
-                        else
-                        {
-                            LibraryManager.ReportItemRemoved(item);
-                        }
+                        // Don't remove these because there's no way to accurately validate them.
+                        continue;
                     }
-                    else
+                    
+                    if (!string.IsNullOrEmpty(item.Path) && IsPathOffline(item.Path))
                     {
                         item.IsOffline = true;
 
                         validChildren.Add(new Tuple<BaseItem, bool>(item, false));
                     }
+                    else
+                    {
+                        item.IsOffline = false;
+                        actualRemovals.Add(item);
+                    }
+                }
+
+                if (actualRemovals.Count > 0)
+                {
+                    RemoveChildrenInternal(actualRemovals);
+
+                    foreach (var item in actualRemovals)
+                    {
+                        LibraryManager.ReportItemRemoved(item);
+                    }
                 }
 
                 await LibraryManager.CreateItems(newItems, cancellationToken).ConfigureAwait(false);
 
-                foreach (var item in newItems)
-                {
-                    if (!_children.TryAdd(item.Id, item))
-                    {
-                        Logger.Error("Failed to add {0}", item.Name);
-                    }
-                    else
-                    {
-                        Logger.Debug("** " + item.Name + " Added to library.");
-                    }
-                }
+                AddChildrenInternal(newItems);
 
-                await ItemRepository.SaveChildren(Id, _children.Values.ToList().Select(i => i.Id), cancellationToken).ConfigureAwait(false);
+                await ItemRepository.SaveChildren(Id, _children.Select(i => i.Id).ToList(), cancellationToken).ConfigureAwait(false);
 
                 //force the indexes to rebuild next time
-                IndexCache.Clear();
+                if (IndexCache != null)
+                {
+                    IndexCache.Clear();
+                }
             }
 
             progress.Report(10);
@@ -772,17 +785,17 @@ namespace MediaBrowser.Controller.Entities
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         /// <param name="forceRefreshMetadata">if set to <c>true</c> [force refresh metadata].</param>
         /// <returns>Task.</returns>
-        private async Task RefreshChildren(IEnumerable<Tuple<BaseItem, bool>> children, IProgress<double> progress, CancellationToken cancellationToken, bool? recursive, bool forceRefreshMetadata = false)
+        private async Task RefreshChildren(IList<Tuple<BaseItem, bool>> children, IProgress<double> progress, CancellationToken cancellationToken, bool? recursive, bool forceRefreshMetadata = false)
         {
-            var list = children.ToList();
+            var list = children;
 
-            var percentages = new Dictionary<Guid, double>();
+            var percentages = new Dictionary<Guid, double>(list.Count);
 
             var tasks = new List<Task>();
 
             foreach (var tuple in list)
             {
-                if (tasks.Count > 8)
+                if (tasks.Count > 10)
                 {
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
@@ -794,9 +807,15 @@ namespace MediaBrowser.Controller.Entities
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var child = currentTuple.Item1;
-
-                    //refresh it
-                    await child.RefreshMetadata(cancellationToken, forceSave: currentTuple.Item2, forceRefresh: forceRefreshMetadata, resetResolveArgs: false).ConfigureAwait(false);
+                    try
+                    {
+                        //refresh it
+                        await child.RefreshMetadata(cancellationToken, forceSave: currentTuple.Item2, forceRefresh: forceRefreshMetadata, resetResolveArgs: false).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        Logger.ErrorException("Error refreshing {0}", ex, child.Path ?? child.Name);
+                    }
 
                     // Refresh children if a folder and the item changed or recursive is set to true
                     var refreshChildren = child.IsFolder && (currentTuple.Item2 || (recursive.HasValue && recursive.Value));
@@ -831,8 +850,15 @@ namespace MediaBrowser.Controller.Entities
 
                         await ((Folder)child).ValidateChildren(innerProgress, cancellationToken, recursive, forceRefreshMetadata).ConfigureAwait(false);
 
-                        // Some folder providers are unable to refresh until children have been refreshed.
-                        await child.RefreshMetadata(cancellationToken, resetResolveArgs: false).ConfigureAwait(false);
+                        try
+                        {
+                            // Some folder providers are unable to refresh until children have been refreshed.
+                            await child.RefreshMetadata(cancellationToken, resetResolveArgs: false).ConfigureAwait(false);
+                        }
+                        catch (IOException ex)
+                        {
+                            Logger.ErrorException("Error refreshing {0}", ex, child.Path ?? child.Name);
+                        }
                     }
                     else
                     {
@@ -846,7 +872,8 @@ namespace MediaBrowser.Controller.Entities
                             progress.Report((90 * percent) + 10);
                         }
                     }
-                }));
+
+                }, cancellationToken));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -855,29 +882,52 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
-        /// Determines if a path's root is available or not
+        /// Determines whether the specified path is offline.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool IsRootPathAvailable(string path)
+        /// <param name="path">The path.</param>
+        /// <returns><c>true</c> if the specified path is offline; otherwise, <c>false</c>.</returns>
+        private bool IsPathOffline(string path)
         {
             if (File.Exists(path))
             {
-                return true;
+                return false;
             }
+
+            var originalPath = path;
 
             // Depending on whether the path is local or unc, it may return either null or '\' at the top
             while (!string.IsNullOrEmpty(path) && path.Length > 1)
             {
                 if (Directory.Exists(path))
                 {
-                    return true;
+                    return false;
                 }
 
                 path = System.IO.Path.GetDirectoryName(path);
             }
 
-            return false;
+            if (ContainsPath(LibraryManager.GetDefaultVirtualFolders(), originalPath))
+            {
+                return true;
+            }
+
+            return UserManager.Users.Any(user => ContainsPath(LibraryManager.GetVirtualFolders(user), originalPath));
+        }
+
+        /// <summary>
+        /// Determines whether the specified folders contains path.
+        /// </summary>
+        /// <param name="folders">The folders.</param>
+        /// <param name="path">The path.</param>
+        /// <returns><c>true</c> if the specified folders contains path; otherwise, <c>false</c>.</returns>
+        private bool ContainsPath(IEnumerable<VirtualFolderInfo> folders, string path)
+        {
+            return folders.SelectMany(i => i.Locations).Any(i => ContainsPath(i, path));
+        }
+
+        private bool ContainsPath(string parent, string path)
+        {
+            return string.Equals(parent, path, StringComparison.OrdinalIgnoreCase) || path.IndexOf(parent.TrimEnd(System.IO.Path.DirectorySeparatorChar) + System.IO.Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) != -1;
         }
 
         /// <summary>
@@ -886,13 +936,14 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>IEnumerable{BaseItem}.</returns>
         protected virtual IEnumerable<BaseItem> GetNonCachedChildren()
         {
+            var resolveArgs = ResolveArgs;
 
-            if (ResolveArgs == null || ResolveArgs.FileSystemDictionary == null)
+            if (resolveArgs == null || resolveArgs.FileSystemDictionary == null)
             {
-                Logger.Error("Null for {0}", Path);
+                Logger.Error("ResolveArgs null for {0}", Path);
             }
 
-            return LibraryManager.ResolvePaths<BaseItem>(ResolveArgs.FileSystemChildren, this);
+            return LibraryManager.ResolvePaths<BaseItem>(resolveArgs.FileSystemChildren, this);
         }
 
         /// <summary>
@@ -956,17 +1007,70 @@ namespace MediaBrowser.Controller.Entities
                 return result;
             }
 
-            var children = Children;
+            var initialCount = _children.Count;
+            var list = new List<BaseItem>(initialCount);
+
+            AddChildrenToList(user, includeLinkedChildren, list, false, null);
+
+            return list;
+        }
+
+        /// <summary>
+        /// Adds the children to list.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="includeLinkedChildren">if set to <c>true</c> [include linked children].</param>
+        /// <param name="list">The list.</param>
+        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
+        private bool AddChildrenToList(User user, bool includeLinkedChildren, List<BaseItem> list, bool recursive, Func<BaseItem, bool> filter)
+        {
+            var hasLinkedChildren = false;
+
+            foreach (var child in Children)
+            {
+                if (child.IsVisible(user))
+                {
+                    if (filter == null || filter(child))
+                    {
+                        list.Add(child);
+                    }
+                }
+
+                if (recursive && child.IsFolder)
+                {
+                    var folder = (Folder)child;
+
+                    if (folder.AddChildrenToList(user, includeLinkedChildren, list, true, filter))
+                    {
+                        hasLinkedChildren = true;
+                    }
+                }
+            }
 
             if (includeLinkedChildren)
             {
-                children = children.Concat(GetLinkedChildren());
+                foreach (var child in GetLinkedChildren())
+                {
+                    if (filter != null && !filter(child))
+                    {
+                        continue;
+                    }
+
+                    if (child.IsVisible(user))
+                    {
+                        hasLinkedChildren = true;
+
+                        list.Add(child);
+                    }
+                }
             }
 
-            // If indexed is false or the indexing function is null
-            return children.Where(c => c.IsVisible(user));
+            return hasLinkedChildren;
         }
 
+        private int _lastRecursiveCount;
         /// <summary>
         /// Gets allowed recursive children of an item
         /// </summary>
@@ -974,28 +1078,84 @@ namespace MediaBrowser.Controller.Entities
         /// <param name="includeLinkedChildren">if set to <c>true</c> [include linked children].</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public IEnumerable<BaseItem> GetRecursiveChildren(User user, bool includeLinkedChildren = false)
+        public IEnumerable<BaseItem> GetRecursiveChildren(User user, bool includeLinkedChildren = true)
+        {
+            return GetRecursiveChildren(user, null, includeLinkedChildren);
+        }
+
+        /// <summary>
+        /// Gets the recursive children.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="includeLinkedChildren">if set to <c>true</c> [include linked children].</param>
+        /// <returns>IList{BaseItem}.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public IList<BaseItem> GetRecursiveChildren(User user, Func<BaseItem, bool> filter, bool includeLinkedChildren = true)
         {
             if (user == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("user");
             }
 
-            foreach (var item in GetChildren(user, includeLinkedChildren))
+            var initialCount = _lastRecursiveCount == 0 ? _children.Count : _lastRecursiveCount;
+            var list = new List<BaseItem>(initialCount);
+
+            var hasLinkedChildren = AddChildrenToList(user, includeLinkedChildren, list, true, filter);
+
+            _lastRecursiveCount = list.Count;
+
+            return hasLinkedChildren ? list.DistinctBy(i => i.Id).ToList() : list;
+        }
+
+        /// <summary>
+        /// Gets the recursive children.
+        /// </summary>
+        /// <returns>IList{BaseItem}.</returns>
+        public IList<BaseItem> GetRecursiveChildren()
+        {
+            return GetRecursiveChildren(i => true);
+        }
+
+        /// <summary>
+        /// Gets the recursive children.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns>IEnumerable{BaseItem}.</returns>
+        public IList<BaseItem> GetRecursiveChildren(Func<BaseItem, bool> filter)
+        {
+            var initialCount = _lastRecursiveCount == 0 ? _children.Count : _lastRecursiveCount;
+            var list = new List<BaseItem>(initialCount);
+
+            AddChildrenToList(list, true, filter);
+
+            return list;
+        }
+
+        /// <summary>
+        /// Adds the children to list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
+        /// <param name="filter">The filter.</param>
+        private void AddChildrenToList(List<BaseItem> list, bool recursive, Func<BaseItem, bool> filter)
+        {
+            foreach (var child in Children)
             {
-                yield return item;
-
-                var subFolder = item as Folder;
-
-                if (subFolder != null)
+                if (filter == null || filter(child))
                 {
-                    foreach (var subitem in subFolder.GetRecursiveChildren(user, includeLinkedChildren))
-                    {
-                        yield return subitem;
-                    }
+                    list.Add(child);
+                }
+
+                if (recursive && child.IsFolder)
+                {
+                    var folder = (Folder)child;
+
+                    folder.AddChildrenToList(list, true, filter);
                 }
             }
         }
+
 
         /// <summary>
         /// Gets the linked children.
@@ -1015,11 +1175,34 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>BaseItem.</returns>
         private BaseItem GetLinkedChild(LinkedChild info)
         {
-            var item = LibraryManager.RootFolder.FindByPath(info.Path);
+            if (string.IsNullOrEmpty(info.Path))
+            {
+                throw new ArgumentException("Encountered linked child with empty path.");
+            }
 
+            BaseItem item = null;
+
+            // First get using the cached Id
+            if (info.ItemId != Guid.Empty)
+            {
+                item = LibraryManager.GetItemById(info.ItemId);
+            }
+
+            // If still null, search by path
+            if (item == null)
+            {
+                item = LibraryManager.RootFolder.FindByPath(info.Path);
+            }
+
+            // If still null, log
             if (item == null)
             {
                 Logger.Warn("Unable to find linked item at {0}", info.Path);
+            }
+            else
+            {
+                // Cache the id for next time
+                info.ItemId = item.Id;
             }
 
             return item;
@@ -1065,12 +1248,21 @@ namespace MediaBrowser.Controller.Entities
                     try
                     {
                         Logger.Debug("Found shortcut at {0}", i.FullName);
-                        
-                        return new LinkedChild
+
+                        var resolvedPath = FileSystem.ResolveShortcut(i.FullName);
+
+                        if (!string.IsNullOrEmpty(resolvedPath))
                         {
-                            Path = FileSystem.ResolveShortcut(i.FullName),
-                            Type = LinkedChildType.Shortcut
-                        };
+                            return new LinkedChild
+                            {
+                                Path = resolvedPath,
+                                Type = LinkedChildType.Shortcut
+                            };
+                        }
+
+                        Logger.Error("Error resolving shortcut {0}", i.FullName);
+
+                        return null;
                     }
                     catch (IOException ex)
                     {
@@ -1081,7 +1273,7 @@ namespace MediaBrowser.Controller.Entities
                 .Where(i => i != null)
                 .ToList();
 
-            if (!newShortcutLinks.SequenceEqual(currentShortcutLinks))
+            if (!newShortcutLinks.SequenceEqual(currentShortcutLinks, new LinkedChildComparer()))
             {
                 Logger.Info("Shortcut links have changed for {0}", Path);
 
@@ -1107,16 +1299,30 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
-        /// Marks the item as either played or unplayed
+        /// Marks the played.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="wasPlayed">if set to <c>true</c> [was played].</param>
+        /// <param name="datePlayed">The date played.</param>
         /// <param name="userManager">The user manager.</param>
         /// <returns>Task.</returns>
-        public override async Task SetPlayedStatus(User user, bool wasPlayed, IUserDataRepository userManager)
+        public override async Task MarkPlayed(User user, DateTime? datePlayed, IUserDataManager userManager)
         {
             // Sweep through recursively and update status
-            var tasks = GetRecursiveChildren(user, true).Where(i => !i.IsFolder).Select(c => c.SetPlayedStatus(user, wasPlayed, userManager));
+            var tasks = GetRecursiveChildren(user, true).Where(i => !i.IsFolder && i.LocationType != LocationType.Virtual).Select(c => c.MarkPlayed(user, datePlayed, userManager));
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Marks the unplayed.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="userManager">The user manager.</param>
+        /// <returns>Task.</returns>
+        public override async Task MarkUnplayed(User user, IUserDataManager userManager)
+        {
+            // Sweep through recursively and update status
+            var tasks = GetRecursiveChildren(user, true).Where(i => !i.IsFolder && i.LocationType != LocationType.Virtual).Select(c => c.MarkUnplayed(user, userManager));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
@@ -1136,7 +1342,14 @@ namespace MediaBrowser.Controller.Entities
 
             try
             {
-                if (ResolveArgs.PhysicalLocations.Contains(path, StringComparer.OrdinalIgnoreCase))
+                var locationType = LocationType;
+
+                if (locationType == LocationType.Remote && string.Equals(Path, path, StringComparison.OrdinalIgnoreCase))
+                {
+                    return this;
+                }
+
+                if (locationType != LocationType.Virtual && ResolveArgs.PhysicalLocations.Contains(path, StringComparer.OrdinalIgnoreCase))
                 {
                     return this;
                 }
@@ -1147,8 +1360,13 @@ namespace MediaBrowser.Controller.Entities
             }
 
             //this should be functionally equivilent to what was here since it is IEnum and works on a thread-safe copy
-            return RecursiveChildren.FirstOrDefault(i =>
+            return RecursiveChildren.Where(i => i.LocationType != LocationType.Virtual).FirstOrDefault(i =>
             {
+                if (i.LocationType == LocationType.Remote)
+                {
+                    return string.Equals(i.Path, path, StringComparison.OrdinalIgnoreCase);
+                }
+
                 try
                 {
                     return i.ResolveArgs.PhysicalLocations.Contains(path, StringComparer.OrdinalIgnoreCase);

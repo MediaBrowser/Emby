@@ -9,7 +9,7 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "Series",
         Recursive: true,
-        Fields: "DisplayMediaType,SeriesInfo,ItemCounts,DateCreated,UserData",
+        Fields: "SeriesInfo,DateCreated",
         StartIndex: 0
     };
 
@@ -25,6 +25,11 @@
             var html = '';
 
             $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
+
+            updateFilterControls(page);
+
+            var checkSortOption = $('.radioSortBy:checked', page);
+            $('.viewSummary', page).html(LibraryBrowser.getViewSummaryHtml(query, checkSortOption)).trigger('create');
 
             if (view == "Backdrop") {
                 html += LibraryBrowser.getPosterDetailViewHtml({
@@ -54,6 +59,14 @@
 
             $('#items', page).html(html).trigger('create');
 
+            $('.btnChangeToDefaultSort', page).on('click', function () {
+                query.StartIndex = 0;
+                query.SortOrder = 'Ascending';
+                query.SortBy = $('.defaultSort', page).data('sortby');
+
+                reloadItems(page);
+            });
+
             $('.selectPage', page).on('change', function () {
                 query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
                 reloadItems(page);
@@ -75,8 +88,62 @@
                 reloadItems(page);
             });
 
+            LibraryBrowser.saveQueryValues('tvshows', query);
+
             Dashboard.hideLoadingMsg();
         });
+    }
+
+    function updateFilterControls(page) {
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', page).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.chkStatus', page).each(function () {
+
+            var filters = "," + (query.SeriesStatus || "");
+            var filterName = this.getAttribute('data-filter');
+
+            this.checked = filters.indexOf(',' + filterName) != -1;
+
+        }).checkboxradio('refresh');
+
+        $('.chkStandardFilter', page).each(function () {
+
+            var filters = "," + (query.Filters || "");
+            var filterName = this.getAttribute('data-filter');
+
+            this.checked = filters.indexOf(',' + filterName) != -1;
+
+        }).checkboxradio('refresh');
+
+        $('.chkAirDays', page).each(function () {
+
+            var filters = "," + (query.AirDays || "");
+            var filterName = this.getAttribute('data-filter');
+
+            this.checked = filters.indexOf(',' + filterName) != -1;
+
+        }).checkboxradio('refresh');
+
+        $('#selectView', page).val(view).selectmenu('refresh');
+
+        $('#chkTrailer', page).checked(query.HasTrailer == true).checkboxradio('refresh');
+        $('#chkThemeSong', page).checked(query.HasThemeSong == true).checkboxradio('refresh');
+        $('#chkThemeVideo', page).checked(query.HasThemeVideo == true).checkboxradio('refresh');
+        $('#chkSpecialFeature', page).checked(query.HasSpecialFeature == true).checkboxradio('refresh');
+
+        $('.alphabetPicker', page).alphaValue(query.NameStartsWith);
     }
 
     $(document).on('pageinit', "#tvShowsPage", function () {
@@ -174,6 +241,14 @@
             reloadItems(page);
         });
 
+        $('#chkSpecialFeature', this).on('change', function () {
+
+            query.StartIndex = 0;
+            query.HasSpecialFeature = this.checked ? true : null;
+
+            reloadItems(page);
+        });
+
         $('#chkThemeVideo', this).on('change', function () {
 
             query.StartIndex = 0;
@@ -206,57 +281,13 @@
             query.StartIndex = 0;
         }
 
+        LibraryBrowser.loadSavedQueryValues('tvshows', query);
+
         reloadItems(this);
 
     }).on('pageshow', "#tvShowsPage", function () {
 
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
-
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
-
-        }).checkboxradio('refresh');
-
-        $('.chkStatus', this).each(function () {
-
-            var filters = "," + (query.SeriesStatus || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', this).each(function () {
-
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
-
-        }).checkboxradio('refresh');
-
-        $('.chkStandardFilter', this).each(function () {
-
-            var filters = "," + (query.Filters || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('.chkAirDays', this).each(function () {
-
-            var filters = "," + (query.AirDays || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('#selectView', this).val(view).selectmenu('refresh');
-
-        $('#chkTrailer', this).checked(query.HasTrailer == true).checkboxradio('refresh');
-        $('#chkThemeSong', this).checked(query.HasThemeSong == true).checkboxradio('refresh');
-        $('#chkThemeVideo', this).checked(query.HasThemeVideo == true).checkboxradio('refresh');
-
-        $('.alphabetPicker', this).alphaValue(query.NameStartsWith);
+        updateFilterControls(this);
     });
 
 })(jQuery, document);

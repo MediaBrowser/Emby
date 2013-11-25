@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using MediaBrowser.Common.IO;
+﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -31,29 +31,28 @@ namespace MediaBrowser.Controller.MediaInfo
         /// <value>The subtitle cache.</value>
         internal FileSystemRepository SubtitleCache { get; set; }
 
-        private readonly ILibraryManager _libraryManager;
-
         private readonly IServerApplicationPaths _appPaths;
         private readonly IMediaEncoder _encoder;
         private readonly ILogger _logger;
         private readonly IItemRepository _itemRepo;
+
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FFMpegManager" /> class.
         /// </summary>
         /// <param name="appPaths">The app paths.</param>
         /// <param name="encoder">The encoder.</param>
-        /// <param name="libraryManager">The library manager.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="itemRepo">The item repo.</param>
         /// <exception cref="System.ArgumentNullException">zipClient</exception>
-        public FFMpegManager(IServerApplicationPaths appPaths, IMediaEncoder encoder, ILibraryManager libraryManager, ILogger logger, IItemRepository itemRepo)
+        public FFMpegManager(IServerApplicationPaths appPaths, IMediaEncoder encoder, ILogger logger, IItemRepository itemRepo, IFileSystem fileSystem)
         {
             _appPaths = appPaths;
             _encoder = encoder;
-            _libraryManager = libraryManager;
             _logger = logger;
             _itemRepo = itemRepo;
+            _fileSystem = fileSystem;
 
             VideoImageCache = new FileSystemRepository(VideoImagesDataPath);
             SubtitleCache = new FileSystemRepository(SubtitleCachePath);
@@ -164,10 +163,7 @@ namespace MediaBrowser.Controller.MediaInfo
                         {
                             var parentPath = Path.GetDirectoryName(path);
 
-                            if (!Directory.Exists(parentPath))
-                            {
-                                Directory.CreateDirectory(parentPath);
-                            }
+                            Directory.CreateDirectory(parentPath);
                             
                             await _encoder.ExtractImage(inputPath, type, video.Video3DFormat, time, path, cancellationToken).ConfigureAwait(false);
                             chapter.ImagePath = path;
@@ -211,7 +207,7 @@ namespace MediaBrowser.Controller.MediaInfo
 
             if (stream.IsExternal)
             {
-                ticksParam += File.GetLastWriteTimeUtc(stream.Path).Ticks;
+                ticksParam += _fileSystem.GetLastWriteTimeUtc(stream.Path).Ticks;
             }
 
             return SubtitleCache.GetResourcePath(input.Id + "_" + subtitleStreamIndex + "_" + input.DateModified.Ticks + ticksParam, outputExtension);

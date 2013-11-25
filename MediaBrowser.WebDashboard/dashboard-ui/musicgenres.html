@@ -9,6 +9,7 @@
             <a href="musicrecommended.html">Suggested</a>
             <a href="songs.html">Songs</a>
             <a href="musicalbums.html">Albums</a>
+            <a href="musicalbumartists.html">Album Artists</a>
             <a href="musicartists.html">Artists</a>
             <a href="musicgenres.html" class="ui-btn-active">Genres</a>
             <a href="musicvideos.html">Music Videos</a>
@@ -21,6 +22,7 @@
                 </div>
                 <div class="listTopPaging">
                 </div>
+                <div class="viewSummary"></div>
             </div>
             <div id="items" class="itemsContainer"></div>
         </div>
@@ -32,8 +34,17 @@
                         <strong>Sort By:</strong>
                     </legend>
 
-                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
+                    <input class="radioSortBy defaultSort" data-theme="c" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
                     <label for="radioSortName">Name</label>
+
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioAlbumCount" value="on" checked="checked" data-sortby="AlbumCount,SortName" data-mini="true">
+                    <label for="radioAlbumCount">Album count</label>
+
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioMusicVideoCount" value="on" checked="checked" data-sortby="MusicVideoCount,SortName" data-mini="true">
+                    <label for="radioMusicVideoCount">Music video count</label>
+
+                    <input class="radioSortBy" data-theme="c" type="radio" name="radioSortBy" id="radioSongCount" value="on" checked="checked" data-sortby="SongCount,SortName" data-mini="true">
+                    <label for="radioSongCount">Song count</label>
                 </fieldset>
 
                 <fieldset data-role="controlgroup">

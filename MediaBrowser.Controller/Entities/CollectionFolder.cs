@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -61,71 +60,88 @@ namespace MediaBrowser.Controller.Entities
         {
             //we don't directly validate our children
             //but we do need to clear out the index cache...
-            IndexCache = new ConcurrentDictionary<string, List<BaseItem>>(StringComparer.OrdinalIgnoreCase);
+            if (IndexCache != null)
+            {
+                IndexCache.Clear();
+            }
+
+            ResetDynamicChildren();
 
             return NullTaskResult;
         }
 
+        private List<LinkedChild> _linkedChildren;
+        
         /// <summary>
         /// Our children are actually just references to the ones in the physical root...
         /// </summary>
         /// <value>The linked children.</value>
         public override List<LinkedChild> LinkedChildren
         {
-            get
-            {
-                Dictionary<string, string> locationsDicionary;
-
-                try
-                {
-                    locationsDicionary = ResolveArgs.PhysicalLocations.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
-                }
-                catch (IOException ex)
-                {
-                    Logger.ErrorException("Error getting ResolveArgs for {0}", ex, Path);
-                    return new List<LinkedChild>();
-                }
-
-                return LibraryManager.RootFolder.Children
-                    .OfType<Folder>()
-                    .Where(i => i.Path != null && locationsDicionary.ContainsKey(i.Path))
-                    .SelectMany(c => c.LinkedChildren).ToList();
-
-            }
+            get { return _linkedChildren ?? (_linkedChildren = GetLinkedChildrenInternal()); }
             set
             {
                 base.LinkedChildren = value;
             }
         }
+        private List<LinkedChild> GetLinkedChildrenInternal()
+        {
+            Dictionary<string, string> locationsDicionary;
+
+            try
+            {
+                locationsDicionary = ResolveArgs.PhysicalLocations.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
+            }
+            catch (IOException ex)
+            {
+                Logger.ErrorException("Error getting ResolveArgs for {0}", ex, Path);
+                return new List<LinkedChild>();
+            }
+
+            return LibraryManager.RootFolder.Children
+                .OfType<Folder>()
+                .Where(i => i.Path != null && locationsDicionary.ContainsKey(i.Path))
+                .SelectMany(c => c.LinkedChildren)
+                .ToList();
+        }
+
+        private IEnumerable<BaseItem> _actualChildren;
 
         /// <summary>
         /// Our children are actually just references to the ones in the physical root...
         /// </summary>
         /// <value>The actual children.</value>
-        protected override ConcurrentDictionary<Guid, BaseItem> ActualChildren
+        protected override IEnumerable<BaseItem> ActualChildren
         {
-            get
+            get { return _actualChildren ?? (_actualChildren = GetActualChildren()); }
+        }
+
+        private IEnumerable<BaseItem> GetActualChildren()
+        {
+            Dictionary<string, string> locationsDicionary;
+
+            try
             {
-                Dictionary<string, string> locationsDicionary;
-
-                try
-                {
-                    locationsDicionary = ResolveArgs.PhysicalLocations.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
-                }
-                catch (IOException ex)
-                {
-                    Logger.ErrorException("Error getting ResolveArgs for {0}", ex, Path);
-                    return new ConcurrentDictionary<Guid, BaseItem>();
-                }
-
-                var ourChildren =
-                    LibraryManager.RootFolder.Children
-                    .OfType<Folder>()
-                    .Where(i => i.Path != null && locationsDicionary.ContainsKey(i.Path))
-                    .SelectMany(c => c.Children);
-
-                return new ConcurrentDictionary<Guid, BaseItem>(ourChildren.ToDictionary(i => i.Id));
+                locationsDicionary = ResolveArgs.PhysicalLocations.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
             }
+            catch (IOException ex)
+            {
+                Logger.ErrorException("Error getting ResolveArgs for {0}", ex, Path);
+                return new BaseItem[] { };
+            }
+
+            return
+                LibraryManager.RootFolder.Children
+                .OfType<Folder>()
+                .Where(i => i.Path != null && locationsDicionary.ContainsKey(i.Path))
+                .SelectMany(c => c.Children)
+                .ToList();
+        }
+
+        public void ResetDynamicChildren()
+        {
+            _actualChildren = null;
+            _linkedChildren = null;
         }
     }
 }

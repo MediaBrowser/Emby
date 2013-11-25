@@ -7,7 +7,6 @@ using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,12 +19,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
     /// </summary>
     public class SqliteItemRepository : IItemRepository
     {
-        private SQLiteConnection _connection;
+        private IDbConnection _connection;
 
         private readonly ILogger _logger;
 
-        private TypeMapper _typeMapper = new TypeMapper();
-        
+        private readonly TypeMapper _typeMapper = new TypeMapper();
+
         /// <summary>
         /// Gets the name of the repository
         /// </summary>
@@ -52,15 +51,15 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <summary>
         /// The _save item command
         /// </summary>
-        private SQLiteCommand _saveItemCommand;
+        private IDbCommand _saveItemCommand;
 
         private readonly string _criticReviewsPath;
 
         private SqliteChapterRepository _chapterRepository;
 
-        private SQLiteCommand _deleteChildrenCommand;
-        private SQLiteCommand _saveChildrenCommand;
-        
+        private IDbCommand _deleteChildrenCommand;
+        private IDbCommand _saveChildrenCommand;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
         /// </summary>
@@ -92,7 +91,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var chapterDbFile = Path.Combine(_appPaths.DataPath, "chapters.db");
 
-            var chapterConnection = SqliteExtensions.ConnectToDb(chapterDbFile).Result;
+            var chapterConnection = SqliteExtensions.ConnectToDb(chapterDbFile, _logger).Result;
 
             _chapterRepository = new SqliteChapterRepository(chapterConnection, logManager);
         }
@@ -104,8 +103,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public async Task Initialize()
         {
             var dbFile = Path.Combine(_appPaths.DataPath, "library.db");
-            
-            _connection = await SqliteExtensions.ConnectToDb(dbFile).ConfigureAwait(false);
+
+            _connection = await SqliteExtensions.ConnectToDb(dbFile, _logger).ConfigureAwait(false);
 
             string[] queries = {
 
@@ -136,29 +135,20 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// </summary>
         private void PrepareStatements()
         {
-            _saveItemCommand = new SQLiteCommand
-            {
-                CommandText = "replace into TypedBaseItems (guid, type, data) values (@1, @2, @3)"
-            };
+            _saveItemCommand = _connection.CreateCommand();
+            _saveItemCommand.CommandText = "replace into TypedBaseItems (guid, type, data) values (@1, @2, @3)";
+            _saveItemCommand.Parameters.Add(_saveItemCommand, "@1");
+            _saveItemCommand.Parameters.Add(_saveItemCommand, "@2");
+            _saveItemCommand.Parameters.Add(_saveItemCommand, "@3");
 
-            _saveItemCommand.Parameters.Add(new SQLiteParameter("@1"));
-            _saveItemCommand.Parameters.Add(new SQLiteParameter("@2"));
-            _saveItemCommand.Parameters.Add(new SQLiteParameter("@3"));
+            _deleteChildrenCommand = _connection.CreateCommand();
+            _deleteChildrenCommand.CommandText = "delete from ChildrenIds where ParentId=@ParentId";
+            _deleteChildrenCommand.Parameters.Add(_deleteChildrenCommand, "@ParentId");
 
-            _deleteChildrenCommand = new SQLiteCommand
-            {
-                CommandText = "delete from ChildrenIds where ParentId=@ParentId"
-            };
-
-            _deleteChildrenCommand.Parameters.Add(new SQLiteParameter("@ParentId"));
-
-            _saveChildrenCommand = new SQLiteCommand
-            {
-                CommandText = "replace into ChildrenIds (ParentId, ItemId) values (@ParentId, @ItemId)"
-            };
-
-            _saveChildrenCommand.Parameters.Add(new SQLiteParameter("@ParentId"));
-            _saveChildrenCommand.Parameters.Add(new SQLiteParameter("@ItemId"));
+            _saveChildrenCommand = _connection.CreateCommand();
+            _saveChildrenCommand.CommandText = "replace into ChildrenIds (ParentId, ItemId) values (@ParentId, @ItemId)";
+            _saveChildrenCommand.Parameters.Add(_saveChildrenCommand, "@ParentId");
+            _saveChildrenCommand.Parameters.Add(_saveChildrenCommand, "@ItemId");
         }
 
         /// <summary>
@@ -196,16 +186,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 throw new ArgumentNullException("items");
             }
 
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
-            }
-
             cancellationToken.ThrowIfCancellationRequested();
 
             await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            SQLiteTransaction transaction = null;
+            IDbTransaction transaction = null;
 
             try
             {
@@ -215,13 +200,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    _saveItemCommand.Parameters[0].Value = item.Id;
-                    _saveItemCommand.Parameters[1].Value = item.GetType().FullName;
-                    _saveItemCommand.Parameters[2].Value = _jsonSerializer.SerializeToBytes(item);
+                    _saveItemCommand.GetParameter(0).Value = item.Id;
+                    _saveItemCommand.GetParameter(1).Value = item.GetType().FullName;
+                    _saveItemCommand.GetParameter(2).Value = _jsonSerializer.SerializeToBytes(item);
 
                     _saveItemCommand.Transaction = transaction;
 
-                    await _saveItemCommand.ExecuteNonQueryAsync(cancellationToken);
+                    _saveItemCommand.ExecuteNonQuery();
                 }
 
                 transaction.Commit();
@@ -274,8 +259,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             using (var cmd = _connection.CreateCommand())
             {
                 cmd.CommandText = "select type,data from TypedBaseItems where guid = @guid";
-                var guidParam = cmd.Parameters.Add("@guid", DbType.Guid);
-                guidParam.Value = id;
+                cmd.Parameters.Add(cmd, "@guid", DbType.Guid).Value = id;
 
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow))
                 {
@@ -307,27 +291,22 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// </summary>
         /// <param name="itemId">The item id.</param>
         /// <returns>Task{IEnumerable{ItemReview}}.</returns>
-        public Task<IEnumerable<ItemReview>> GetCriticReviews(Guid itemId)
+        public IEnumerable<ItemReview> GetCriticReviews(Guid itemId)
         {
-            return Task.Run<IEnumerable<ItemReview>>(() =>
+            try
             {
+                var path = Path.Combine(_criticReviewsPath, itemId + ".json");
 
-                try
-                {
-                    var path = Path.Combine(_criticReviewsPath, itemId + ".json");
-
-                    return _jsonSerializer.DeserializeFromFile<List<ItemReview>>(path);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    return new List<ItemReview>();
-                }
-                catch (FileNotFoundException)
-                {
-                    return new List<ItemReview>();
-                }
-
-            });
+                return _jsonSerializer.DeserializeFromFile<List<ItemReview>>(path);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new List<ItemReview>();
+            }
+            catch (FileNotFoundException)
+            {
+                return new List<ItemReview>();
+            }
         }
 
         /// <summary>
@@ -338,17 +317,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <returns>Task.</returns>
         public Task SaveCriticReviews(Guid itemId, IEnumerable<ItemReview> criticReviews)
         {
-            return Task.Run(() =>
-            {
-                if (!Directory.Exists(_criticReviewsPath))
-                {
-                    Directory.CreateDirectory(_criticReviewsPath);
-                }
+            Directory.CreateDirectory(_criticReviewsPath);
 
-                var path = Path.Combine(_criticReviewsPath, itemId + ".json");
+            var path = Path.Combine(_criticReviewsPath, itemId + ".json");
 
-                _jsonSerializer.SerializeToFile(criticReviews.ToList(), path);
-            });
+            _jsonSerializer.SerializeToFile(criticReviews.ToList(), path);
+
+            return Task.FromResult(true);
         }
 
         /// <summary>
@@ -452,7 +427,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 cmd.CommandText = "select ItemId from ChildrenIds where ParentId = @ParentId";
 
-                cmd.Parameters.Add("@ParentId", DbType.Guid).Value = parentId;
+                cmd.Parameters.Add(cmd, "@ParentId", DbType.Guid).Value = parentId;
 
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
                 {
@@ -476,36 +451,32 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 throw new ArgumentNullException("children");
             }
 
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
-            }
-
             cancellationToken.ThrowIfCancellationRequested();
 
             await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            SQLiteTransaction transaction = null;
+            IDbTransaction transaction = null;
 
             try
             {
                 transaction = _connection.BeginTransaction();
 
                 // First delete 
-                _deleteChildrenCommand.Parameters[0].Value = parentId;
+                _deleteChildrenCommand.GetParameter(0).Value = parentId;
                 _deleteChildrenCommand.Transaction = transaction;
-                await _deleteChildrenCommand.ExecuteNonQueryAsync(cancellationToken);
+
+                _deleteChildrenCommand.ExecuteNonQuery();
 
                 foreach (var id in children)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    _saveChildrenCommand.Parameters[0].Value = parentId;
-                    _saveChildrenCommand.Parameters[1].Value = id;
+                    _saveChildrenCommand.GetParameter(0).Value = parentId;
+                    _saveChildrenCommand.GetParameter(1).Value = id;
 
                     _saveChildrenCommand.Transaction = transaction;
 
-                    await _saveChildrenCommand.ExecuteNonQueryAsync(cancellationToken);
+                    _saveChildrenCommand.ExecuteNonQuery();
                 }
 
                 transaction.Commit();

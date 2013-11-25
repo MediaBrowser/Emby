@@ -10,6 +10,7 @@
             <div class="content-primary">
                 <div data-role="controlgroup" data-type="horizontal" class="localnav" id="userProfileNavigation" style="display: none;" data-mini="true">
                     <a href="#" data-role="button" class="ui-btn-active">Profile</a>
+                    <a href="#" data-role="button" onclick="Dashboard.navigate('usersettings.html', true);">Settings</a>
                     <a href="#" data-role="button" onclick="Dashboard.navigate('userimage.html', true);">Image</a>
                     <a href="#" data-role="button" onclick="Dashboard.navigate('updatepassword.html', true);">Password</a>
                     <a href="#" data-role="button" onclick="Dashboard.navigate('library.html', true);" class="lnkMediaLibrary" style="display: none;">Media Library</a>
@@ -23,6 +24,10 @@
                         <li id="fldIsAdmin" style="display: none;">
                             <input type="checkbox" id="chkIsAdmin" name="chkIsAdmin" />
                             <label for="chkIsAdmin">Allow this user to manage the server</label>
+                        </li>
+                        <li id="fldEnableRemoteControlOtherUsers" style="display: none;">
+                            <input type="checkbox" id="chkEnableRemoteControlOtherUsers" name="chkEnableRemoteControlOtherUsers" />
+                            <label for="chkEnableRemoteControlOtherUsers">Allow this user to remote control sessions from other users</label>
                         </li>
                     </ul>
                     <div id="accessControlDiv" style="display: none">
@@ -52,20 +57,7 @@
                             </li>
                         </ul>
                     </div>
-                    <h2>Video Playback Settings</h2>
                     <ul data-role="listview" class="ulForm">
-                        <li>
-                            <label for="selectAudioLanguage">Audio language preference: </label>
-                            <select name="selectAudioLanguage" id="selectAudioLanguage"></select>
-                        </li>
-                        <li>
-                            <label for="selectSubtitleLanguage">Subtitle language preference: </label>
-                            <select name="selectSubtitleLanguage" id="selectSubtitleLanguage"></select>
-                        </li>
-                        <li>
-                            <input type="checkbox" id="chkForcedSubtitlesOnly" name="chkForcedSubtitlesOnly" />
-                            <label for="chkForcedSubtitlesOnly">Display only forced subtitles</label>
-                        </li>
                         <li>
                             <button type="submit" data-theme="b" data-icon="ok">
                                 Save

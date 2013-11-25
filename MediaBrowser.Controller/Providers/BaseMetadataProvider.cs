@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +24,7 @@ namespace MediaBrowser.Controller.Providers
         /// </summary>
         /// <value>The logger.</value>
         protected ILogger Logger { get; set; }
+
         protected ILogManager LogManager { get; set; }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace MediaBrowser.Controller.Providers
         /// The true task result
         /// </summary>
         protected static readonly Task<bool> TrueTaskResult = Task.FromResult(true);
+
         protected static readonly Task<bool> FalseTaskResult = Task.FromResult(false);
 
         protected static readonly SemaphoreSlim XmlParsingResourcePool = new SemaphoreSlim(5, 5);
@@ -132,7 +134,8 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="providerVersion">The provider version.</param>
         /// <param name="status">The status.</param>
         /// <exception cref="System.ArgumentNullException">item</exception>
-        public virtual void SetLastRefreshed(BaseItem item, DateTime value, string providerVersion, ProviderRefreshStatus status = ProviderRefreshStatus.Success)
+        public virtual void SetLastRefreshed(BaseItem item, DateTime value, string providerVersion,
+            ProviderRefreshStatus status = ProviderRefreshStatus.Success)
         {
             if (item == null)
             {
@@ -172,7 +175,8 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="item">The item.</param>
         /// <param name="value">The value.</param>
         /// <param name="status">The status.</param>
-        public void SetLastRefreshed(BaseItem item, DateTime value, ProviderRefreshStatus status = ProviderRefreshStatus.Success)
+        public void SetLastRefreshed(BaseItem item, DateTime value,
+            ProviderRefreshStatus status = ProviderRefreshStatus.Success)
         {
             SetLastRefreshed(item, value, ProviderVersion, status);
         }
@@ -203,6 +207,18 @@ namespace MediaBrowser.Controller.Providers
         }
 
         /// <summary>
+        /// Gets a value indicating whether [enforce dont fetch metadata].
+        /// </summary>
+        /// <value><c>true</c> if [enforce dont fetch metadata]; otherwise, <c>false</c>.</value>
+        public virtual bool EnforceDontFetchMetadata
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Needses the refresh internal.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -221,22 +237,18 @@ namespace MediaBrowser.Controller.Providers
                 throw new ArgumentNullException("providerInfo");
             }
 
-            if (CompareDate(item) > providerInfo.LastRefreshed)
+            if (NeedsRefreshBasedOnCompareDate(item, providerInfo))
             {
                 return true;
             }
 
-            if (RefreshOnFileSystemStampChange && item.LocationType == LocationType.FileSystem && HasFileSystemStampChanged(item, providerInfo))
+            if (RefreshOnFileSystemStampChange && item.LocationType == LocationType.FileSystem &&
+                HasFileSystemStampChanged(item, providerInfo))
             {
                 return true;
             }
 
             if (RefreshOnVersionChange && !String.Equals(ProviderVersion, providerInfo.ProviderVersion))
-            {
-                return true;
-            }
-
-            if (RequiresInternet && DateTime.UtcNow > (providerInfo.LastRefreshed.AddDays(ConfigurationManager.Configuration.MetadataRefreshDays)))
             {
                 return true;
             }
@@ -247,6 +259,17 @@ namespace MediaBrowser.Controller.Providers
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Needses the refresh based on compare date.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="providerInfo">The provider info.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
+        protected virtual bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
+        {
+            return CompareDate(item) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -330,12 +353,24 @@ namespace MediaBrowser.Controller.Providers
             return GetFileSystemStamp(item);
         }
 
+        private Dictionary<string, string> _fileStampExtensionsDictionary;
+
+        private Dictionary<string, string> FileStampExtensionsDictionary
+        {
+            get
+            {
+                return _fileStampExtensionsDictionary ??
+                       (_fileStampExtensionsDictionary =
+                           FilestampExtensions.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase));
+            }
+        }
+
         /// <summary>
         /// Gets the file system stamp.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>Guid.</returns>
-        private Guid GetFileSystemStamp(BaseItem item)
+        protected virtual Guid GetFileSystemStamp(BaseItem item)
         {
             // If there's no path or the item is a file, there's nothing to do
             if (item.LocationType != LocationType.FileSystem)
@@ -362,51 +397,69 @@ namespace MediaBrowser.Controller.Providers
 
             var sb = new StringBuilder();
 
-            var extensionsList = FilestampExtensions;
-            var extensions = extensionsList.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
+            var extensions = FileStampExtensionsDictionary;
+            var numExtensions = FilestampExtensions.Length;
 
             // Record the name of each file 
             // Need to sort these because accoring to msdn docs, our i/o methods are not guaranteed in any order
-            foreach (var file in resolveArgs.FileSystemChildren
-                .Where(i => IncludeInFileStamp(i, extensions, extensionsList.Length))
-                .OrderBy(f => f.Name))
-            {
-                sb.Append(file.Name);
-            }
+            AddFiles(sb, resolveArgs.FileSystemChildren, extensions, numExtensions);
+            AddFiles(sb, resolveArgs.MetadataFiles, extensions, numExtensions);
 
-            foreach (var file in resolveArgs.MetadataFiles
-                .Where(i => IncludeInFileStamp(i, extensions, extensionsList.Length))
-                .OrderBy(f => f.Name))
-            {
-                sb.Append(file.Name);
-            }
+            return sb.ToString().GetMD5();
+        }
+
+        private static readonly Dictionary<string, string> FoldersToMonitor = new[] { "extrafanart", "extrathumbs" }
+            .ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
+
+        protected Guid GetFileSystemStamp(IEnumerable<FileSystemInfo> files)
+        {
+            var sb = new StringBuilder();
+
+            var extensions = FileStampExtensionsDictionary;
+            var numExtensions = FilestampExtensions.Length;
+
+            // Record the name of each file 
+            // Need to sort these because accoring to msdn docs, our i/o methods are not guaranteed in any order
+            AddFiles(sb, files, extensions, numExtensions);
 
             return sb.ToString().GetMD5();
         }
 
         /// <summary>
-        /// Includes the in file stamp.
+        /// Adds the files.
         /// </summary>
-        /// <param name="file">The file.</param>
+        /// <param name="sb">The sb.</param>
+        /// <param name="files">The files.</param>
         /// <param name="extensions">The extensions.</param>
         /// <param name="numExtensions">The num extensions.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private bool IncludeInFileStamp(FileSystemInfo file, Dictionary<string,string> extensions, int numExtensions)
+        private void AddFiles(StringBuilder sb, IEnumerable<FileSystemInfo> files, Dictionary<string, string> extensions, int numExtensions)
         {
-            try
+            foreach (var file in files
+                .OrderBy(f => f.Name))
             {
-                if ((file.Attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                try
                 {
-                    return false;
+                    if ((file.Attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
+                        if (FoldersToMonitor.ContainsKey(file.Name))
+                        {
+                            sb.Append(file.Name);
+
+                            var children = ((DirectoryInfo)file).EnumerateFiles("*", SearchOption.TopDirectoryOnly).ToList();
+                            AddFiles(sb, children, extensions, numExtensions);
+                        }
+                    }
+
+                    // It's a file
+                    else if (numExtensions == 0 || extensions.ContainsKey(file.Extension))
+                    {
+                        sb.Append(file.Name);
+                    }
                 }
-
-                return numExtensions == 0 || extensions.ContainsKey(file.Extension);
-            }
-            catch (IOException ex)
-            {
-                Logger.ErrorException("Error accessing file attributes for {0}", ex, file.FullName);
-
-                return false;
+                catch (IOException ex)
+                {
+                    Logger.ErrorException("Error accessing file attributes for {0}", ex, file.FullName);
+                }
             }
         }
     }

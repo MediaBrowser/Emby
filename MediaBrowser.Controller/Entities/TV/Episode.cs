@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -32,6 +33,14 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         /// <summary>
+        /// Gets the season in which it aired.
+        /// </summary>
+        /// <value>The aired season.</value>
+        public int? AirsBeforeSeasonNumber { get; set; }
+        public int? AirsAfterSeasonNumber { get; set; }
+        public int? AirsBeforeEpisodeNumber { get; set; }
+
+        /// <summary>
         /// We want to group into series not show individually in an index
         /// </summary>
         /// <value><c>true</c> if [group in index]; otherwise, <c>false</c>.</value>
@@ -39,6 +48,33 @@ namespace MediaBrowser.Controller.Entities.TV
         public override bool GroupInIndex
         {
             get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public int? AiredSeasonNumber
+        {
+            get
+            {
+                return AirsAfterSeasonNumber ?? AirsBeforeSeasonNumber ?? PhysicalSeasonNumber;
+            }
+        }
+
+        [IgnoreDataMember]
+        public int? PhysicalSeasonNumber
+        {
+            get
+            {
+                var value = ParentIndexNumber;
+
+                if (value.HasValue)
+                {
+                    return value;
+                }
+
+                var season = Parent as Season;
+
+                return season != null ? season.IndexNumber : null;
+            }
         }
 
         /// <summary>
@@ -170,6 +206,47 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("000-") : "")
                     + (IndexNumber != null ? IndexNumber.Value.ToString("0000 - ") : "") + Name;
+        }
+
+        /// <summary>
+        /// Determines whether [contains episode number] [the specified number].
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <returns><c>true</c> if [contains episode number] [the specified number]; otherwise, <c>false</c>.</returns>
+        public bool ContainsEpisodeNumber(int number)
+        {
+            if (IndexNumber.HasValue)
+            {
+                if (IndexNumberEnd.HasValue)
+                {
+                    return number >= IndexNumber.Value && number <= IndexNumberEnd.Value;
+                }
+
+                return IndexNumber.Value == number;
+            }
+
+            return false;
+        }
+
+        [IgnoreDataMember]
+        public bool IsMissingEpisode
+        {
+            get
+            {
+                return LocationType == Model.Entities.LocationType.Virtual && PremiereDate.HasValue && PremiereDate.Value < DateTime.UtcNow;
+            }
+        }
+
+        [IgnoreDataMember]
+        public bool IsUnaired
+        {
+            get { return PremiereDate.HasValue && PremiereDate.Value.ToLocalTime().Date >= DateTime.Now.Date; }
+        }
+
+        [IgnoreDataMember]
+        public bool IsVirtualUnaired
+        {
+            get { return LocationType == Model.Entities.LocationType.Virtual && IsUnaired; }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
@@ -32,15 +33,17 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         private readonly IServerConfigurationManager _config;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IFileSystem _fileSystem;
 
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        public FanArtTvUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient)
+        public FanArtTvUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _config = config;
             _logger = logger;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -59,12 +62,14 @@ namespace MediaBrowser.Providers.TV
 
             var path = FanArtTvProvider.GetSeriesDataPath(_config.CommonApplicationPaths);
 
+            Directory.CreateDirectory(path);
+            
             var timestampFile = Path.Combine(path, "time.txt");
 
             var timestampFileInfo = new FileInfo(timestampFile);
 
-            // Don't check for tvdb updates anymore frequently than 24 hours
-            if (timestampFileInfo.Exists && (DateTime.UtcNow - timestampFileInfo.LastWriteTimeUtc).TotalDays < 1)
+            // Don't check for updates every single time
+            if (timestampFileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(timestampFileInfo)).TotalDays < 3)
             {
                 return;
             }
@@ -81,7 +86,7 @@ namespace MediaBrowser.Providers.TV
 
                 progress.Report(5);
 
-                await UpdateSeries(seriesToUpdate, path, progress, cancellationToken).ConfigureAwait(false);
+                await UpdateSeries(seriesToUpdate, progress, cancellationToken).ConfigureAwait(false);
             }
 
             var newUpdateTime = Convert.ToInt64(DateTimeToUnixTimestamp(DateTime.UtcNow)).ToString(UsCulture);
@@ -133,18 +138,19 @@ namespace MediaBrowser.Providers.TV
         /// Updates the series.
         /// </summary>
         /// <param name="idList">The id list.</param>
-        /// <param name="seriesDataPath">The artists data path.</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task UpdateSeries(IEnumerable<string> idList, string seriesDataPath, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task UpdateSeries(IEnumerable<string> idList, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var list = idList.ToList();
             var numComplete = 0;
 
             foreach (var id in list)
             {
-                await UpdateSeries(id, seriesDataPath, cancellationToken).ConfigureAwait(false);
+                _logger.Info("Updating series " + id);
+                
+                await FanArtTvProvider.Current.DownloadSeriesXml(id, cancellationToken).ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;
@@ -153,20 +159,6 @@ namespace MediaBrowser.Providers.TV
 
                 progress.Report(percent + 5);
             }
-        }
-
-        private Task UpdateSeries(string tvdbId, string seriesDataPath, CancellationToken cancellationToken)
-        {
-            _logger.Info("Updating series " + tvdbId);
-
-            seriesDataPath = Path.Combine(seriesDataPath, tvdbId);
-
-            if (!Directory.Exists(seriesDataPath))
-            {
-                Directory.CreateDirectory(seriesDataPath);
-            }
-
-            return FanArtTvProvider.Current.DownloadSeriesXml(seriesDataPath, tvdbId, cancellationToken);
         }
 
         /// <summary>

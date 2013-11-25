@@ -1,4 +1,6 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Globalization;
@@ -30,13 +32,16 @@ namespace MediaBrowser.Server.Implementations.Localization
         private readonly ConcurrentDictionary<string, Dictionary<string, ParentalRating>> _allParentalRatings =
             new ConcurrentDictionary<string, Dictionary<string, ParentalRating>>(StringComparer.OrdinalIgnoreCase);
 
+        private readonly IFileSystem _fileSystem;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalizationManager"/> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
-        public LocalizationManager(IServerConfigurationManager configurationManager)
+        public LocalizationManager(IServerConfigurationManager configurationManager, IFileSystem fileSystem)
         {
             _configurationManager = configurationManager;
+            _fileSystem = fileSystem;
 
             ExtractAll();
         }
@@ -48,10 +53,7 @@ namespace MediaBrowser.Server.Implementations.Localization
 
             var localizationPath = LocalizationPath;
 
-            if (!Directory.Exists(localizationPath))
-            {
-                Directory.CreateDirectory(localizationPath);
-            }
+            Directory.CreateDirectory(localizationPath);
 
             var existingFiles = Directory.EnumerateFiles(localizationPath, "ratings-*.txt", SearchOption.TopDirectoryOnly)
                 .Select(Path.GetFileName)
@@ -68,7 +70,7 @@ namespace MediaBrowser.Server.Implementations.Localization
                 {
                     using (var stream = type.Assembly.GetManifestResourceStream(resource))
                     {
-                        using (var fs = new FileStream(Path.Combine(localizationPath, filename), FileMode.Create, FileAccess.Write, FileShare.Read))
+                        using (var fs = _fileSystem.GetFileStream(Path.Combine(localizationPath, filename), FileMode.Create, FileAccess.Write, FileShare.Read))
                         {
                             stream.CopyTo(fs);
                         }
@@ -204,7 +206,7 @@ namespace MediaBrowser.Server.Implementations.Localization
 
             })
             .Where(i => i != null)
-            .ToDictionary(i => i.Name);
+            .ToDictionary(i => i.Name, StringComparer.OrdinalIgnoreCase);
 
             var countryCode = Path.GetFileNameWithoutExtension(file).Split('-').Last();
 

@@ -1,4 +1,7 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
@@ -20,15 +23,13 @@ namespace MediaBrowser.Controller.Entities
     /// <summary>
     /// Class BaseItem
     /// </summary>
-    public abstract class BaseItem : IHasProviderIds
+    public abstract class BaseItem : IHasProviderIds, ILibraryItem
     {
         protected BaseItem()
         {
             Genres = new List<string>();
-            RemoteTrailers = new List<MediaUrl>();
             Studios = new List<string>();
             People = new List<PersonInfo>();
-            Taglines = new List<string>();
             ScreenshotImagePaths = new List<string>();
             BackdropImagePaths = new List<string>();
             ProductionLocations = new List<string>();
@@ -39,12 +40,15 @@ namespace MediaBrowser.Controller.Entities
             ThemeVideoIds = new List<Guid>();
             LocalTrailerIds = new List<Guid>();
             LockedFields = new List<MetadataFields>();
+            Taglines = new List<string>();
+            RemoteTrailers = new List<MediaUrl>();
+            ImageSources = new List<ImageSourceInfo>();
         }
 
         /// <summary>
         /// The supported image extensions
         /// </summary>
-        public static readonly string[] SupportedImageExtensions = new[] { ".png", ".jpg", ".jpeg" };
+        public static readonly string[] SupportedImageExtensions = new[] { ".png", ".jpg", ".jpeg", ".tbn" };
 
         /// <summary>
         /// The trailer folder name
@@ -56,7 +60,7 @@ namespace MediaBrowser.Controller.Entities
         public const string XbmcTrailerFileSuffix = "-trailer";
 
         public bool IsInMixedFolder { get; set; }
-        
+
         private string _name;
         /// <summary>
         /// Gets or sets the name.
@@ -82,6 +86,45 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The id.</value>
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the budget.
+        /// </summary>
+        /// <value>The budget.</value>
+        public double? Budget { get; set; }
+
+        /// <summary>
+        /// Gets or sets the taglines.
+        /// </summary>
+        /// <value>The taglines.</value>
+        public List<string> Taglines { get; set; }
+
+        /// <summary>
+        /// Gets or sets the revenue.
+        /// </summary>
+        /// <value>The revenue.</value>
+        public double? Revenue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the trailer URL.
+        /// </summary>
+        /// <value>The trailer URL.</value>
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
+        /// <summary>
+        /// Return the id that should be used to key display prefs for this item.
+        /// Default is based on the type for everything except actual generic folders.
+        /// </summary>
+        /// <value>The display prefs id.</value>
+        [IgnoreDataMember]
+        public virtual Guid DisplayPreferencesId
+        {
+            get
+            {
+                var thisType = GetType();
+                return thisType == typeof(Folder) ? Id : thisType.FullName.GetMD5();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the path.
@@ -129,7 +172,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets or sets the images.
         /// </summary>
         /// <value>The images.</value>
-        public virtual Dictionary<ImageType, string> Images { get; set; }
+        public Dictionary<ImageType, string> Images { get; set; }
 
         /// <summary>
         /// Gets or sets the date created.
@@ -152,6 +195,7 @@ namespace MediaBrowser.Controller.Entities
         public static IProviderManager ProviderManager { get; set; }
         public static ILocalizationManager LocalizationManager { get; set; }
         public static IItemRepository ItemRepository { get; set; }
+        public static IFileSystem FileSystem { get; set; }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -173,23 +217,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The locked fields.</value>
         public List<MetadataFields> LockedFields { get; set; }
-
-        /// <summary>
-        /// Determines whether the item has a saved local image of the specified name (jpg or png).
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns><c>true</c> if [has local image] [the specified item]; otherwise, <c>false</c>.</returns>
-        /// <exception cref="System.ArgumentNullException">name</exception>
-        public bool HasLocalImage(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException("name");
-            }
-
-            return ResolveArgs.ContainsMetaFileByName(name + ".jpg") ||
-                ResolveArgs.ContainsMetaFileByName(name + ".png");
-        }
 
         /// <summary>
         /// Should be overridden to return the proper folder where metadata lives
@@ -245,14 +272,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         private ItemResolveArgs _resolveArgs;
         /// <summary>
-        /// The _resolve args initialized
-        /// </summary>
-        private bool _resolveArgsInitialized;
-        /// <summary>
-        /// The _resolve args sync lock
-        /// </summary>
-        private object _resolveArgsSyncLock = new object();
-        /// <summary>
         /// We attach these to the item so that we only ever have to hit the file system once
         /// (this includes the children of the containing folder)
         /// </summary>
@@ -262,17 +281,20 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                try
+                if (_resolveArgs == null)
                 {
-                    LazyInitializer.EnsureInitialized(ref _resolveArgs, ref _resolveArgsInitialized, ref _resolveArgsSyncLock, () => CreateResolveArgs());
-                }
-                catch (IOException ex)
-                {
-                    Logger.ErrorException("Error creating resolve args for {0}", ex, Path);
+                    try
+                    {
+                        _resolveArgs = CreateResolveArgs();
+                    }
+                    catch (IOException ex)
+                    {
+                        Logger.ErrorException("Error creating resolve args for {0}", ex, Path);
 
-                    IsOffline = true;
+                        IsOffline = true;
 
-                    throw;
+                        throw;
+                    }
                 }
 
                 return _resolveArgs;
@@ -280,7 +302,6 @@ namespace MediaBrowser.Controller.Entities
             set
             {
                 _resolveArgs = value;
-                _resolveArgsInitialized = value != null;
             }
         }
 
@@ -290,7 +311,24 @@ namespace MediaBrowser.Controller.Entities
         /// <param name="pathInfo">The path info.</param>
         public void ResetResolveArgs(FileSystemInfo pathInfo)
         {
-            ResolveArgs = CreateResolveArgs(pathInfo);
+            ResetResolveArgs(CreateResolveArgs(pathInfo));
+        }
+
+        /// <summary>
+        /// Resets the resolve args.
+        /// </summary>
+        public void ResetResolveArgs()
+        {
+            _resolveArgs = null;
+        }
+
+        /// <summary>
+        /// Resets the resolve args.
+        /// </summary>
+        /// <param name="args">The args.</param>
+        public void ResetResolveArgs(ItemResolveArgs args)
+        {
+            _resolveArgs = args;
         }
 
         /// <summary>
@@ -303,9 +341,12 @@ namespace MediaBrowser.Controller.Entities
         {
             var path = Path;
 
-            if (LocationType == LocationType.Remote || LocationType == LocationType.Virtual)
+            var locationType = LocationType;
+
+            if (locationType == LocationType.Remote ||
+                locationType == LocationType.Virtual)
             {
-                return new ItemResolveArgs(ConfigurationManager.ApplicationPaths);
+                return new ItemResolveArgs(ConfigurationManager.ApplicationPaths, LibraryManager);
             }
 
             var isDirectory = false;
@@ -323,7 +364,7 @@ namespace MediaBrowser.Controller.Entities
                 throw new IOException("Unable to retrieve file system info for " + path);
             }
 
-            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths)
+            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths, LibraryManager)
             {
                 FileInfo = pathInfo,
                 Path = path,
@@ -338,7 +379,7 @@ namespace MediaBrowser.Controller.Entities
                 // When resolving the root, we need it's grandchildren (children of user views)
                 var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
 
-                args.FileSystemDictionary = FileData.GetFilteredFileSystemEntries(args.Path, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
+                args.FileSystemDictionary = FileData.GetFilteredFileSystemEntries(args.Path, FileSystem, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
 
                 // Need to remove subpaths that may have been resolved from shortcuts
                 // Example: if \\server\movies exists, then strip out \\server\movies\action
@@ -356,7 +397,7 @@ namespace MediaBrowser.Controller.Entities
             }
 
             //update our dates
-            EntityResolutionHelper.EnsureDates(this, args, false);
+            EntityResolutionHelper.EnsureDates(FileSystem, this, args, false);
 
             IsOffline = false;
 
@@ -393,7 +434,12 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                return ForcedSortName ?? _sortName ?? (_sortName = CreateSortName());
+                if (!string.IsNullOrEmpty(ForcedSortName))
+                {
+                    return ForcedSortName;
+                }
+
+                return _sortName ?? (_sortName = CreateSortName());
             }
         }
 
@@ -437,6 +483,22 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public Folder Parent { get; set; }
 
+        [IgnoreDataMember]
+        public IEnumerable<Folder> Parents
+        {
+            get
+            {
+                var parent = Parent;
+
+                while (parent != null)
+                {
+                    yield return parent;
+
+                    parent = parent.Parent;
+                }
+            }
+        }
+
         /// <summary>
         /// When the item first debuted. For movies this could be premiere date, episodes would be first aired
         /// </summary>
@@ -460,6 +522,12 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The backdrop image paths.</value>
         public List<string> BackdropImagePaths { get; set; }
+
+        /// <summary>
+        /// Gets or sets the backdrop image sources.
+        /// </summary>
+        /// <value>The backdrop image sources.</value>
+        public List<ImageSourceInfo> ImageSources { get; set; }
 
         /// <summary>
         /// Gets or sets the screenshot image paths.
@@ -495,11 +563,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The overview.</value>
         public string Overview { get; set; }
-        /// <summary>
-        /// Gets or sets the taglines.
-        /// </summary>
-        /// <value>The taglines.</value>
-        public List<string> Taglines { get; set; }
 
         /// <summary>
         /// Gets or sets the people.
@@ -554,34 +617,10 @@ namespace MediaBrowser.Controller.Entities
         public string HomePageUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the budget.
-        /// </summary>
-        /// <value>The budget.</value>
-        public double? Budget { get; set; }
-
-        /// <summary>
-        /// Gets or sets the revenue.
-        /// </summary>
-        /// <value>The revenue.</value>
-        public double? Revenue { get; set; }
-
-        /// <summary>
         /// Gets or sets the production locations.
         /// </summary>
         /// <value>The production locations.</value>
         public List<string> ProductionLocations { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating.
-        /// </summary>
-        /// <value>The critic rating.</value>
-        public float? CriticRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating summary.
-        /// </summary>
-        /// <value>The critic rating summary.</value>
-        public string CriticRatingSummary { get; set; }
 
         /// <summary>
         /// Gets or sets the community rating.
@@ -606,11 +645,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The original run time ticks.</value>
         public long? OriginalRunTimeTicks { get; set; }
-        /// <summary>
-        /// Gets or sets the aspect ratio.
-        /// </summary>
-        /// <value>The aspect ratio.</value>
-        public string AspectRatio { get; set; }
         /// <summary>
         /// Gets or sets the production year.
         /// </summary>
@@ -714,7 +748,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (dbItem != null)
                 {
-                    dbItem.ResolveArgs = video.ResolveArgs;
+                    dbItem.ResetResolveArgs(video.ResolveArgs);
                     video = dbItem;
                 }
 
@@ -775,7 +809,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (dbItem != null)
                 {
-                    dbItem.ResolveArgs = audio.ResolveArgs;
+                    dbItem.ResetResolveArgs(audio.ResolveArgs);
                     audio = dbItem;
                 }
 
@@ -833,7 +867,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (dbItem != null)
                 {
-                    dbItem.ResolveArgs = item.ResolveArgs;
+                    dbItem.ResetResolveArgs(item.ResolveArgs);
                     item = dbItem;
                 }
 
@@ -852,10 +886,10 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>true if a provider reports we changed</returns>
         public virtual async Task<bool> RefreshMetadata(CancellationToken cancellationToken, bool forceSave = false, bool forceRefresh = false, bool allowSlowProviders = true, bool resetResolveArgs = true)
         {
-            if (resetResolveArgs)
+            if (resetResolveArgs || ResolveArgs == null)
             {
                 // Reload this
-                ResolveArgs = null;
+                ResetResolveArgs();
             }
 
             // Refresh for the item
@@ -902,7 +936,7 @@ namespace MediaBrowser.Controller.Entities
 
             var itemsChanged = !LocalTrailerIds.SequenceEqual(newItemIds);
 
-            var tasks = newItems.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders));
+            var tasks = newItems.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders, resetResolveArgs: false));
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -918,7 +952,7 @@ namespace MediaBrowser.Controller.Entities
 
             var themeVideosChanged = !ThemeVideoIds.SequenceEqual(newThemeVideoIds);
 
-            var tasks = newThemeVideos.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders));
+            var tasks = newThemeVideos.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders, resetResolveArgs: false));
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -937,7 +971,7 @@ namespace MediaBrowser.Controller.Entities
 
             var themeSongsChanged = !ThemeSongIds.SequenceEqual(newThemeSongIds);
 
-            var tasks = newThemeSongs.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders));
+            var tasks = newThemeSongs.Select(i => i.RefreshMetadata(cancellationToken, forceSave, forceRefresh, allowSlowProviders, resetResolveArgs: false));
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -945,12 +979,6 @@ namespace MediaBrowser.Controller.Entities
 
             return themeSongsChanged || results.Contains(true);
         }
-
-        /// <summary>
-        /// Gets or sets the trailer URL.
-        /// </summary>
-        /// <value>The trailer URL.</value>
-        public List<MediaUrl> RemoteTrailers { get; set; }
 
         /// <summary>
         /// Gets or sets the provider ids.
@@ -1013,7 +1041,9 @@ namespace MediaBrowser.Controller.Entities
                 throw new ArgumentNullException("user");
             }
 
-            if (user.Configuration.MaxParentalRating == null)
+            var maxAllowedRating = user.Configuration.MaxParentalRating;
+
+            if (maxAllowedRating == null)
             {
                 return true;
             }
@@ -1038,7 +1068,7 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            return value.Value <= user.Configuration.MaxParentalRating.Value;
+            return value.Value <= maxAllowedRating.Value;
         }
 
         /// <summary>
@@ -1115,6 +1145,11 @@ namespace MediaBrowser.Controller.Entities
             return changed;
         }
 
+        public virtual string GetClientTypeName()
+        {
+            return GetType().Name;
+        }
+
         /// <summary>
         /// Determines if the item is considered new based on user settings
         /// </summary>
@@ -1168,6 +1203,7 @@ namespace MediaBrowser.Controller.Entities
                 if (existing != null)
                 {
                     existing.Type = PersonType.GuestStar;
+                    existing.SortOrder = person.SortOrder ?? existing.SortOrder;
                     return;
                 }
             }
@@ -1184,16 +1220,47 @@ namespace MediaBrowser.Controller.Entities
                 else
                 {
                     // Was there, if no role and we have one - fill it in
-                    if (string.IsNullOrWhiteSpace(existing.Role) && !string.IsNullOrWhiteSpace(person.Role)) existing.Role = person.Role;
+                    if (string.IsNullOrWhiteSpace(existing.Role) && !string.IsNullOrWhiteSpace(person.Role))
+                    {
+                        existing.Role = person.Role;
+                    }
+
+                    existing.SortOrder = person.SortOrder ?? existing.SortOrder;
                 }
             }
             else
             {
+                var existing = People.FirstOrDefault(p =>
+                            string.Equals(p.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(p.Type, person.Type, StringComparison.OrdinalIgnoreCase));
+
                 // Check for dupes based on the combination of Name and Type
-                if (!People.Any(p => p.Name.Equals(person.Name, StringComparison.OrdinalIgnoreCase) && p.Type.Equals(person.Type, StringComparison.OrdinalIgnoreCase)))
+                if (existing == null)
                 {
                     People.Add(person);
                 }
+                else
+                {
+                    existing.SortOrder = person.SortOrder ?? existing.SortOrder;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the tagline.
+        /// </summary>
+        /// <param name="tagline">The tagline.</param>
+        /// <exception cref="System.ArgumentNullException">tagline</exception>
+        public void AddTagline(string tagline)
+        {
+            if (string.IsNullOrWhiteSpace(tagline))
+            {
+                throw new ArgumentNullException("tagline");
+            }
+
+            if (!Taglines.Contains(tagline, StringComparer.OrdinalIgnoreCase))
+            {
+                Taglines.Add(tagline);
             }
         }
 
@@ -1225,53 +1292,6 @@ namespace MediaBrowser.Controller.Entities
             if (!Tags.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
                 Tags.Add(name);
-            }
-        }
-
-        /// <summary>
-        /// Adds a tagline to the item
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public void AddTagline(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentNullException("name");
-            }
-
-            if (!Taglines.Contains(name, StringComparer.OrdinalIgnoreCase))
-            {
-                Taglines.Add(name);
-            }
-        }
-
-        /// <summary>
-        /// Adds a TrailerUrl to the item
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <param name="isDirectLink">if set to <c>true</c> [is direct link].</param>
-        /// <exception cref="System.ArgumentNullException">url</exception>
-        public void AddTrailerUrl(string url, bool isDirectLink)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentNullException("url");
-            }
-
-            var current = RemoteTrailers.FirstOrDefault(i => string.Equals(i.Url, url, StringComparison.OrdinalIgnoreCase));
-
-            if (current != null)
-            {
-                current.IsDirectLink = isDirectLink;
-            }
-            else
-            {
-                RemoteTrailers.Add(new MediaUrl
-                {
-                    Url = url,
-                    IsDirectLink = isDirectLink
-                });
             }
         }
 
@@ -1312,14 +1332,14 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
-        /// Marks the item as either played or unplayed
+        /// Marks the played.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="wasPlayed">if set to <c>true</c> [was played].</param>
+        /// <param name="datePlayed">The date played.</param>
         /// <param name="userManager">The user manager.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public virtual async Task SetPlayedStatus(User user, bool wasPlayed, IUserDataRepository userManager)
+        public virtual async Task MarkPlayed(User user, DateTime? datePlayed, IUserDataManager userManager)
         {
             if (user == null)
             {
@@ -1330,28 +1350,48 @@ namespace MediaBrowser.Controller.Entities
 
             var data = userManager.GetUserData(user.Id, key);
 
-            if (wasPlayed)
+            if (datePlayed.HasValue)
             {
-                data.PlayCount = Math.Max(data.PlayCount, 1);
-
-                if (!data.LastPlayedDate.HasValue)
-                {
-                    data.LastPlayedDate = DateTime.UtcNow;
-                }
-            }
-            else
-            {
-                //I think it is okay to do this here.
-                // if this is only called when a user is manually forcing something to un-played
-                // then it probably is what we want to do...
-                data.PlayCount = 0;
-                data.PlaybackPositionTicks = 0;
-                data.LastPlayedDate = null;
+                // Incremenet
+                data.PlayCount++;
             }
 
-            data.Played = wasPlayed;
+            // Ensure it's at least one
+            data.PlayCount = Math.Max(data.PlayCount, 1);
 
-            await userManager.SaveUserData(user.Id, key, data, CancellationToken.None).ConfigureAwait(false);
+            data.LastPlayedDate = datePlayed ?? data.LastPlayedDate;
+            data.Played = true;
+
+            await userManager.SaveUserData(user.Id, this, data, UserDataSaveReason.TogglePlayed, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Marks the unplayed.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="userManager">The user manager.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public virtual async Task MarkUnplayed(User user, IUserDataManager userManager)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var key = GetUserDataKey();
+
+            var data = userManager.GetUserData(user.Id, key);
+
+            //I think it is okay to do this here.
+            // if this is only called when a user is manually forcing something to un-played
+            // then it probably is what we want to do...
+            data.PlayCount = 0;
+            data.PlaybackPositionTicks = 0;
+            data.LastPlayedDate = null;
+            data.Played = false;
+
+            await userManager.SaveUserData(user.Id, this, data, UserDataSaveReason.TogglePlayed, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1481,8 +1521,10 @@ namespace MediaBrowser.Controller.Entities
 
                 BackdropImagePaths.Remove(file);
 
+                RemoveImageSourceForPath(file);
+
                 // Delete the source file
-                File.Delete(file);
+                DeleteImagePath(file);
             }
             else if (type == ImageType.Screenshot)
             {
@@ -1496,19 +1538,233 @@ namespace MediaBrowser.Controller.Entities
                 ScreenshotImagePaths.Remove(file);
 
                 // Delete the source file
-                File.Delete(file);
+                DeleteImagePath(file);
             }
             else
             {
                 // Delete the source file
-                File.Delete(GetImage(type));
+                DeleteImagePath(GetImage(type));
 
                 // Remove it from the item
                 SetImage(type, null);
             }
 
             // Refresh metadata
-            return RefreshMetadata(CancellationToken.None, forceSave: true);
+            // Need to disable slow providers or the image might get re-downloaded
+            return RefreshMetadata(CancellationToken.None, forceSave: true, allowSlowProviders: false);
+        }
+
+        /// <summary>
+        /// Deletes the image path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        private void DeleteImagePath(string path)
+        {
+            var currentFile = new FileInfo(path);
+
+            // This will fail if the file is hidden
+            if (currentFile.Exists)
+            {
+                if ((currentFile.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    currentFile.Attributes &= ~FileAttributes.Hidden;
+                }
+
+                currentFile.Delete();
+            }
+        }
+
+        /// <summary>
+        /// Validates that images within the item are still on the file system
+        /// </summary>
+        public void ValidateImages()
+        {
+            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
+            var deletedKeys = Images
+                .Where(image => !File.Exists(image.Value))
+                .Select(i => i.Key)
+                .ToList();
+
+            // Now remove them from the dictionary
+            foreach (var key in deletedKeys)
+            {
+                Images.Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// Validates that backdrops within the item are still on the file system
+        /// </summary>
+        public void ValidateBackdrops()
+        {
+            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
+            var deletedImages = BackdropImagePaths
+                .Where(path => !File.Exists(path))
+                .ToList();
+
+            // Now remove them from the dictionary
+            foreach (var path in deletedImages)
+            {
+                BackdropImagePaths.Remove(path);
+
+                RemoveImageSourceForPath(path);
+            }
+        }
+
+        /// <summary>
+        /// Adds the image source.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="url">The URL.</param>
+        public void AddImageSource(string path, string url)
+        {
+            RemoveImageSourceForPath(path);
+
+            var pathMd5 = path.ToLower().GetMD5();
+
+            ImageSources.Add(new ImageSourceInfo
+            {
+                ImagePathMD5 = pathMd5,
+                ImageUrlMD5 = url.ToLower().GetMD5()
+            });
+        }
+
+        /// <summary>
+        /// Gets the image source info.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>ImageSourceInfo.</returns>
+        public ImageSourceInfo GetImageSourceInfo(string path)
+        {
+            if (ImageSources.Count == 0)
+            {
+                return null;
+            }
+
+            var pathMd5 = path.ToLower().GetMD5();
+
+            return ImageSources.FirstOrDefault(i => i.ImagePathMD5 == pathMd5);
+        }
+
+        /// <summary>
+        /// Removes the image source for path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        public void RemoveImageSourceForPath(string path)
+        {
+            if (ImageSources.Count == 0)
+            {
+                return;
+            }
+
+            var pathMd5 = path.ToLower().GetMD5();
+
+            // Remove existing
+            foreach (var entry in ImageSources
+                .Where(i => i.ImagePathMD5 == pathMd5)
+                .ToList())
+            {
+                ImageSources.Remove(entry);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether [contains image with source URL] [the specified URL].
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <returns><c>true</c> if [contains image with source URL] [the specified URL]; otherwise, <c>false</c>.</returns>
+        public bool ContainsImageWithSourceUrl(string url)
+        {
+            if (ImageSources.Count == 0)
+            {
+                return false;
+            }
+
+            var md5 = url.ToLower().GetMD5();
+
+            return ImageSources.Any(i => i.ImageUrlMD5 == md5);
+        }
+
+        /// <summary>
+        /// Validates the screenshots.
+        /// </summary>
+        public void ValidateScreenshots()
+        {
+            // Only validate paths from the same directory - need to copy to a list because we are going to potentially modify the collection below
+            var deletedImages = ScreenshotImagePaths
+                .Where(path => !File.Exists(path))
+                .ToList();
+
+            // Now remove them from the dictionary
+            foreach (var path in deletedImages)
+            {
+                ScreenshotImagePaths.Remove(path);
+            }
+        }
+
+        /// <summary>
+        /// Gets the image path.
+        /// </summary>
+        /// <param name="imageType">Type of the image.</param>
+        /// <param name="imageIndex">Index of the image.</param>
+        /// <returns>System.String.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">item</exception>
+        public string GetImagePath(ImageType imageType, int imageIndex)
+        {
+            if (imageType == ImageType.Backdrop)
+            {
+                return BackdropImagePaths[imageIndex];
+            }
+
+            if (imageType == ImageType.Screenshot)
+            {
+                return ScreenshotImagePaths[imageIndex];
+            }
+
+            if (imageType == ImageType.Chapter)
+            {
+                return ItemRepository.GetChapter(Id, imageIndex).ImagePath;
+            }
+
+            return GetImage(imageType);
+        }
+
+        /// <summary>
+        /// Gets the image date modified.
+        /// </summary>
+        /// <param name="imagePath">The image path.</param>
+        /// <returns>DateTime.</returns>
+        /// <exception cref="System.ArgumentNullException">item</exception>
+        public DateTime GetImageDateModified(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                throw new ArgumentNullException("imagePath");
+            }
+
+            var locationType = LocationType;
+
+            if (locationType == LocationType.Remote ||
+                locationType == LocationType.Virtual)
+            {
+                return FileSystem.GetLastWriteTimeUtc(imagePath);
+            }
+
+            var metaFileEntry = ResolveArgs.GetMetaFileByPath(imagePath);
+
+            // If we didn't the metafile entry, check the Season
+            if (metaFileEntry == null)
+            {
+                if (Parent != null)
+                {
+                    metaFileEntry = Parent.ResolveArgs.GetMetaFileByPath(imagePath);
+                }
+            }
+
+            // See if we can avoid a file system lookup by looking for the file in ResolveArgs
+            return metaFileEntry == null ? FileSystem.GetLastWriteTimeUtc(imagePath) : FileSystem.GetLastWriteTimeUtc(metaFileEntry);
         }
     }
 }

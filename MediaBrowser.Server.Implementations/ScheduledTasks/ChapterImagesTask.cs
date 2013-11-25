@@ -5,7 +5,6 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -21,8 +20,6 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
     /// </summary>
     class ChapterImagesTask : IScheduledTask
     {
-        private readonly IJsonSerializer _jsonSerializer;
-
         /// <summary>
         /// The _kernel
         /// </summary>
@@ -54,14 +51,12 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
         /// <param name="kernel">The kernel.</param>
         /// <param name="logManager">The log manager.</param>
         /// <param name="libraryManager">The library manager.</param>
-        /// <param name="jsonSerializer">The json serializer.</param>
         /// <param name="itemRepo">The item repo.</param>
-        public ChapterImagesTask(Kernel kernel, ILogManager logManager, ILibraryManager libraryManager, IJsonSerializer jsonSerializer, IItemRepository itemRepo)
+        public ChapterImagesTask(Kernel kernel, ILogManager logManager, ILibraryManager libraryManager, IItemRepository itemRepo)
         {
             _kernel = kernel;
             _logger = logManager.GetLogger(GetType().Name);
             _libraryManager = libraryManager;
-            _jsonSerializer = jsonSerializer;
             _itemRepo = itemRepo;
 
             libraryManager.ItemAdded += libraryManager_ItemAdded;
@@ -128,6 +123,8 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>
         public IEnumerable<ITaskTrigger> GetDefaultTriggers()
         {
+            // IMPORTANT: Make sure to update the dashboard "wizardsettings" page if this default ever changes
+            
             return new ITaskTrigger[]
                 {
                     new DailyTrigger { TimeOfDay = TimeSpan.FromHours(4) }
@@ -162,6 +159,10 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
             {
                 previouslyFailedImages = new List<string>();
             }
+            catch (DirectoryNotFoundException)
+            {
+                previouslyFailedImages = new List<string>();
+            }
 
             foreach (var video in videos)
             {
@@ -181,10 +182,7 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
 
                     var parentPath = Path.GetDirectoryName(failHistoryPath);
 
-                    if (!Directory.Exists(parentPath))
-                    {
-                        Directory.CreateDirectory(parentPath);
-                    }
+                    Directory.CreateDirectory(parentPath);
 
                     File.WriteAllText(failHistoryPath, string.Join("|", previouslyFailedImages.ToArray()));
                 }
@@ -203,7 +201,11 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
         /// <value>The name.</value>
         public string Name
         {
-            get { return "Chapter image extraction"; }
+            get
+            {
+                // IMPORTANT: Make sure to update the dashboard "wizardsettings" page if this name ever changes
+                return "Chapter image extraction";
+            }
         }
 
         /// <summary>

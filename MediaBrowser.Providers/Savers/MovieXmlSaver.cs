@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Providers.Movies;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -38,8 +39,8 @@ namespace MediaBrowser.Providers.Savers
             var wasMetadataEdited = (updateType & ItemUpdateType.MetadataEdit) == ItemUpdateType.MetadataEdit;
             var wasMetadataDownloaded = (updateType & ItemUpdateType.MetadataDownload) == ItemUpdateType.MetadataDownload;
 
-            // If new metadata has been downloaded and save local is on, OR metadata was manually edited, proceed
-            if ((_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded)) || wasMetadataEdited)
+            // If new metadata has been downloaded and save local is on
+            if (_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded))
             {
                 var trailer = item as Trailer;
 
@@ -95,22 +96,31 @@ namespace MediaBrowser.Providers.Savers
                 }
             }
 
+            var movie = item as Movie;
+
+            if (movie != null)
+            {
+                if (!string.IsNullOrEmpty(movie.TmdbCollectionName))
+                {
+                    builder.Append("<TmdbCollectionName>" + SecurityElement.Escape(movie.TmdbCollectionName) + "</TmdbCollectionName>");
+                }
+            }
+            
             var video = (Video)item;
 
-            XmlSaverHelpers.AddMediaInfo(video, builder);
-
-            XmlSaverHelpers.AddChapters(video, builder, _itemRepository);
+            XmlSaverHelpers.AddMediaInfo(video, builder, _itemRepository);
 
             builder.Append("</Title>");
 
             var xmlFilePath = GetSavePath(item);
 
-            XmlSaverHelpers.Save(builder, xmlFilePath, new[]
+            XmlSaverHelpers.Save(builder, xmlFilePath, new List<string>
                 {
                     "IMDBrating",
                     "Description",
                     "Artist",
-                    "Album"
+                    "Album",
+                    "TmdbCollectionName"
                 });
 
             // Set last refreshed so that the provider doesn't trigger after the file save
@@ -119,11 +129,17 @@ namespace MediaBrowser.Providers.Savers
 
         public string GetSavePath(BaseItem item)
         {
-            var video = (Video)item;
+            return GetMovieSavePath(item);
+        }
 
-            return video.IsInMixedFolder ?
-                Path.ChangeExtension(item.Path, ".xml") :
-                Path.Combine(item.MetaLocation, "movie.xml");
+        public static string GetMovieSavePath(BaseItem item)
+        {
+            if (item.IsInMixedFolder)
+            {
+                return Path.ChangeExtension(item.Path, ".xml");
+            }
+
+            return Path.Combine(item.MetaLocation, "movie.xml");
         }
     }
 }

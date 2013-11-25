@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -65,6 +66,8 @@ namespace MediaBrowser.Api
         /// </summary>
         private readonly ILibrarySearchEngine _searchEngine;
         private readonly ILibraryManager _libraryManager;
+        private readonly IDtoService _dtoService;
+        private readonly IImageProcessor _imageProcessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchService" /> class.
@@ -72,11 +75,13 @@ namespace MediaBrowser.Api
         /// <param name="userManager">The user manager.</param>
         /// <param name="searchEngine">The search engine.</param>
         /// <param name="libraryManager">The library manager.</param>
-        public SearchService(IUserManager userManager, ILibrarySearchEngine searchEngine, ILibraryManager libraryManager)
+        public SearchService(IUserManager userManager, ILibrarySearchEngine searchEngine, ILibraryManager libraryManager, IDtoService dtoService, IImageProcessor imageProcessor)
         {
             _userManager = userManager;
             _searchEngine = searchEngine;
             _libraryManager = libraryManager;
+            _dtoService = dtoService;
+            _imageProcessor = imageProcessor;
         }
 
         /// <summary>
@@ -98,22 +103,11 @@ namespace MediaBrowser.Api
         /// <returns>Task{IEnumerable{SearchHintResult}}.</returns>
         private async Task<SearchHintResult> GetSearchHintsAsync(GetSearchHints request)
         {
-            IEnumerable<BaseItem> inputItems;
-
-            if (request.UserId.HasValue)
-            {
-                var user = _userManager.GetUserById(request.UserId.Value);
-
-                inputItems = user.RootFolder.GetRecursiveChildren(user);
-            }
-            else
-            {
-                inputItems = _libraryManager.RootFolder.RecursiveChildren;
-            }
+            var inputItems = GetAllLibraryItems(request.UserId, _userManager, _libraryManager);
 
             var results = await _searchEngine.GetSearchHints(inputItems, request.SearchTerm).ConfigureAwait(false);
 
-            var searchResultArray = results.ToArray();
+            var searchResultArray = results.ToList();
 
             IEnumerable<SearchHintInfo> returnResults = searchResultArray;
 
@@ -129,7 +123,7 @@ namespace MediaBrowser.Api
 
             return new SearchHintResult
             {
-                TotalRecordCount = searchResultArray.Length,
+                TotalRecordCount = searchResultArray.Count,
 
                 SearchHints = returnResults.Select(GetSearchHintResult).ToArray()
             };
@@ -149,8 +143,8 @@ namespace MediaBrowser.Api
                 Name = item.Name,
                 IndexNumber = item.IndexNumber,
                 ParentIndexNumber = item.ParentIndexNumber,
-                ItemId = DtoBuilder.GetClientItemId(item),
-                Type = item.GetType().Name,
+                ItemId = _dtoService.GetDtoId(item),
+                Type = item.GetClientTypeName(),
                 MediaType = item.MediaType,
                 MatchedTerm = hintInfo.MatchedTerm,
                 DisplayMediaType = item.DisplayMediaType,
@@ -159,7 +153,7 @@ namespace MediaBrowser.Api
 
             if (item.HasImage(ImageType.Primary))
             {
-                result.PrimaryImageTag = Kernel.Instance.ImageManager.GetImageCacheTag(item, ImageType.Primary, item.GetImage(ImageType.Primary));
+                result.PrimaryImageTag = _imageProcessor.GetImageCacheTag(item, ImageType.Primary, item.GetImage(ImageType.Primary));
             }
 
             var episode = item as Episode;
@@ -175,28 +169,25 @@ namespace MediaBrowser.Api
             {
                 result.Series = season.Series.Name;
 
-                result.EpisodeCount = season.RecursiveChildren.OfType<Episode>().Count();
+                result.EpisodeCount = season.GetRecursiveChildren(i => i is Episode).Count;
             }
 
             var series = item as Series;
 
             if (series != null)
             {
-                result.EpisodeCount = series.RecursiveChildren.OfType<Episode>().Count();
+                result.EpisodeCount = series.GetRecursiveChildren(i => i is Episode).Count;
             }
 
             var album = item as MusicAlbum;
 
             if (album != null)
             {
-                var songs = album.RecursiveChildren.OfType<Audio>().ToList();
+                var songs = album.GetRecursiveChildren().OfType<Audio>().ToList();
 
                 result.SongCount = songs.Count;
                 
-                result.Artists = songs
-                    .Select(i => i.Artist)
-                    .Where(i => !string.IsNullOrEmpty(i))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                result.Artists = _libraryManager.GetAllArtists(songs)
                     .ToArray();
 
                 result.AlbumArtist = songs.Select(i => i.AlbumArtist).FirstOrDefault(i => !string.IsNullOrEmpty(i));
@@ -208,7 +199,7 @@ namespace MediaBrowser.Api
             {
                 result.Album = song.Album;
                 result.AlbumArtist = song.AlbumArtist;
-                result.Artists = !string.IsNullOrEmpty(song.Artist) ? new[] { song.Artist } : new string[] { };
+                result.Artists = song.Artists.ToArray();
             }
 
             return result;

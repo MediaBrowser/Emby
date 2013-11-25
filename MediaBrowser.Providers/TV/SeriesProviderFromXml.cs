@@ -1,13 +1,15 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -17,10 +19,12 @@ namespace MediaBrowser.Providers.TV
     public class SeriesProviderFromXml : BaseMetadataProvider
     {
         internal static SeriesProviderFromXml Current { get; private set; }
-        
-        public SeriesProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager)
+        private readonly IFileSystem _fileSystem;
+
+        public SeriesProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -43,16 +47,17 @@ namespace MediaBrowser.Providers.TV
             get { return MetadataProviderPriority.First; }
         }
 
-        /// <summary>
-        /// Override this to return the date that should be compared to the last refresh date
-        /// to determine if this provider should be re-fetched.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>DateTime.</returns>
-        protected override DateTime CompareDate(BaseItem item)
+        private const string XmlFileName = "series.xml";
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
-            var entry = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "series.xml"));
-            return entry != null ? entry.LastWriteTimeUtc : DateTime.MinValue;
+            var xml = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
+
+            if (xml == null)
+            {
+                return false;
+            }
+
+            return _fileSystem.GetLastWriteTimeUtc(xml) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -77,7 +82,7 @@ namespace MediaBrowser.Providers.TV
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "series.xml"));
+            var metadataFile = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, XmlFileName));
 
             if (metadataFile != null)
             {

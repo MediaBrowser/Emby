@@ -62,7 +62,7 @@ namespace MediaBrowser.Api
         {
             var jobCount = _activeTranscodingJobs.Count;
 
-            Parallel.ForEach(_activeTranscodingJobs, OnTranscodeKillTimerStopped);
+            Parallel.ForEach(_activeTranscodingJobs, KillTranscodingJob);
 
             // Try to allow for some time to kill the ffmpeg processes and delete the partial stream files
             if (jobCount > 0)
@@ -84,7 +84,9 @@ namespace MediaBrowser.Api
         /// <param name="process">The process.</param>
         /// <param name="isVideo">if set to <c>true</c> [is video].</param>
         /// <param name="startTimeTicks">The start time ticks.</param>
-        public void OnTranscodeBeginning(string path, TranscodingJobType type, Process process, bool isVideo, long? startTimeTicks)
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="deviceId">The device id.</param>
+        public void OnTranscodeBeginning(string path, TranscodingJobType type, Process process, bool isVideo, long? startTimeTicks, string sourcePath, string deviceId)
         {
             lock (_activeTranscodingJobs)
             {
@@ -95,7 +97,9 @@ namespace MediaBrowser.Api
                     Process = process,
                     ActiveRequestCount = 1,
                     IsVideo = isVideo,
-                    StartTimeTicks = startTimeTicks
+                    StartTimeTicks = startTimeTicks,
+                    SourcePath = sourcePath,
+                    DeviceId = deviceId
                 });
             }
         }
@@ -178,7 +182,8 @@ namespace MediaBrowser.Api
 
                 if (job.ActiveRequestCount == 0)
                 {
-                    var timerDuration = type == TranscodingJobType.Progressive ? 1000 : 60000;
+                    // The HLS kill timer is long - 1/2 hr. clients should use the manual kill command when stopping.
+                    var timerDuration = type == TranscodingJobType.Progressive ? 1000 : 1800000;
 
                     if (job.KillTimer == null)
                     {
@@ -196,10 +201,47 @@ namespace MediaBrowser.Api
         /// Called when [transcode kill timer stopped].
         /// </summary>
         /// <param name="state">The state.</param>
-        private async void OnTranscodeKillTimerStopped(object state)
+        private void OnTranscodeKillTimerStopped(object state)
         {
             var job = (TranscodingJob)state;
 
+            KillTranscodingJob(job);
+        }
+
+        /// <summary>
+        /// Kills the single transcoding job.
+        /// </summary>
+        /// <param name="deviceId">The device id.</param>
+        /// <param name="isVideo">if set to <c>true</c> [is video].</param>
+        /// <exception cref="System.ArgumentNullException">sourcePath</exception>
+        internal void KillTranscodingJobs(string deviceId, bool isVideo)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
+            }
+
+            var jobs = new List<TranscodingJob>();
+
+            lock (_activeTranscodingJobs)
+            {
+                // This is really only needed for HLS. 
+                // Progressive streams can stop on their own reliably
+                jobs.AddRange(_activeTranscodingJobs.Where(i => isVideo == i.IsVideo && string.Equals(deviceId, i.DeviceId, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            foreach (var job in jobs)
+            {
+                KillTranscodingJob(job);
+            }
+        }
+
+        /// <summary>
+        /// Kills the transcoding job.
+        /// </summary>
+        /// <param name="job">The job.</param>
+        private async void KillTranscodingJob(TranscodingJob job)
+        {
             lock (_activeTranscodingJobs)
             {
                 _activeTranscodingJobs.Remove(job);
@@ -219,15 +261,7 @@ namespace MediaBrowser.Api
             {
                 hasExited = process.HasExited;
             }
-            catch (Win32Exception ex)
-            {
-                Logger.ErrorException("Error determining if ffmpeg process has exited for {0}", ex, job.Path);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.ErrorException("Error determining if ffmpeg process has exited for {0}", ex, job.Path);
-            }
-            catch (NotSupportedException ex)
+            catch (Exception ex)
             {
                 Logger.ErrorException("Error determining if ffmpeg process has exited for {0}", ex, job.Path);
             }
@@ -373,6 +407,8 @@ namespace MediaBrowser.Api
 
         public bool IsVideo { get; set; }
         public long? StartTimeTicks { get; set; }
+        public string SourcePath { get; set; }
+        public string DeviceId { get; set; }
     }
 
     /// <summary>

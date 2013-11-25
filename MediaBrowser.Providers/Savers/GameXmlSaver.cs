@@ -1,8 +1,10 @@
 ﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Providers.Movies;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -34,8 +36,8 @@ namespace MediaBrowser.Providers.Savers
             var wasMetadataEdited = (updateType & ItemUpdateType.MetadataEdit) == ItemUpdateType.MetadataEdit;
             var wasMetadataDownloaded = (updateType & ItemUpdateType.MetadataDownload) == ItemUpdateType.MetadataDownload;
 
-            // If new metadata has been downloaded and save local is on, OR metadata was manually edited, proceed
-            if ((_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded)) || wasMetadataEdited)
+            // If new metadata has been downloaded and save local is on
+            if (_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded))
             {
                 return item is Game;
             }
@@ -66,19 +68,35 @@ namespace MediaBrowser.Providers.Savers
 
             if (!string.IsNullOrEmpty(game.GameSystem))
             {
-                builder.Append("<GameSystem><![CDATA[" + game.GameSystem + "]]></GameSystem>");
+                builder.Append("<GameSystem>" + SecurityElement.Escape(game.GameSystem) + "</GameSystem>");
             }
-            
+
+            var val = game.GetProviderId(MetadataProviders.NesBox);
+
+            if (!string.IsNullOrEmpty(val))
+            {
+                builder.Append("<NesBox>" + SecurityElement.Escape(val) + "</NesBox>");
+            }
+
+            val = game.GetProviderId(MetadataProviders.NesBoxRom);
+
+            if (!string.IsNullOrEmpty(val))
+            {
+                builder.Append("<NesBoxRom>" + SecurityElement.Escape(val) + "</NesBoxRom>");
+            }
+
             XmlSaverHelpers.AddCommonNodes(item, builder);
 
             builder.Append("</Item>");
 
             var xmlFilePath = GetSavePath(item);
 
-            XmlSaverHelpers.Save(builder, xmlFilePath, new[]
+            XmlSaverHelpers.Save(builder, xmlFilePath, new List<string>
                 {
                     "Players",
-                    "GameSystem"
+                    "GameSystem",
+                    "NesBox",
+                    "NesBoxRom"
                 });
 
             // Set last refreshed so that the provider doesn't trigger after the file save
@@ -87,6 +105,16 @@ namespace MediaBrowser.Providers.Savers
 
         public string GetSavePath(BaseItem item)
         {
+            return GetGameSavePath(item);
+        }
+
+        public static string GetGameSavePath(BaseItem item)
+        {
+            if (item.IsInMixedFolder)
+            {
+                return Path.ChangeExtension(item.Path, ".xml");
+            }
+
             return Path.Combine(item.MetaLocation, "game.xml");
         }
     }

@@ -13,12 +13,9 @@
 
     load: function (page, config) {
 
-        $('#selectTmdbPersonImageDownloadSize', page).val(config.TmdbFetchedProfileSize).selectmenu("refresh");
-        $('#selectTmdbPosterDownloadSize', page).val(config.TmdbFetchedPosterSize).selectmenu("refresh");
-        $('#selectTmdbBackdropDownloadSize', page).val(config.TmdbFetchedBackdropSize).selectmenu("refresh");
-        
-        $('#chkRefreshItemImages', page).checked(!config.RefreshItemImages).checkboxradio("refresh");
         $('#txtNumbackdrops', page).val(config.MaxBackdrops);
+        $('#txtMinMovieBackdropDownloadWidth', page).val(config.MinMovieBackdropDownloadWidth);
+        $('#txtMinSeriesBackdropDownloadWidth', page).val(config.MinSeriesBackdropDownloadWidth);
 
         $('#chkDownloadMovieArt', page).checked(config.DownloadMovieImages.Art).checkboxradio("refresh");
         $('#chkDownloadMovieBackdrops', page).checked(config.DownloadMovieImages.Backdrops).checkboxradio("refresh");
@@ -46,6 +43,10 @@
         $('#chkDownloadAlbumBackdrops', page).checked(config.DownloadMusicAlbumImages.Backdrops).checkboxradio("refresh");
         $('#chkMusicAlbumDisc', page).checked(config.DownloadMusicAlbumImages.Disc).checkboxradio("refresh");
 
+        $('#chkVIdeoImages', page).checked(config.EnableVideoImageExtraction).checkboxradio("refresh");
+
+        $('#selectImageSavingConvention', page).val(config.ImageSavingConvention).selectmenu("refresh");
+
         Dashboard.hideLoadingMsg();
     },
 
@@ -56,12 +57,11 @@
 
         ApiClient.getServerConfiguration().done(function (config) {
 
-            config.TmdbFetchedProfileSize = $('#selectTmdbPersonImageDownloadSize', form).val();
-            config.TmdbFetchedPosterSize = $('#selectTmdbPosterDownloadSize', form).val();
-            config.TmdbFetchedBackdropSize = $('#selectTmdbBackdropDownloadSize', form).val();
-
-            config.RefreshItemImages = !$('#chkRefreshItemImages', form).checked();
+            config.ImageSavingConvention = $('#selectImageSavingConvention', form).val();
+            
             config.MaxBackdrops = $('#txtNumbackdrops', form).val();
+            config.MinMovieBackdropDownloadWidth = $('#txtMinMovieBackdropDownloadWidth', form).val();
+            config.MinSeriesBackdropDownloadWidth = $('#txtMinSeriesBackdropDownloadWidth', form).val();
 
             config.DownloadMovieImages.Art = $('#chkDownloadMovieArt', form).checked();
             config.DownloadMovieImages.Backdrops = $('#chkDownloadMovieBackdrops', form).checked();
@@ -88,6 +88,8 @@
             config.DownloadMusicAlbumImages.Primary = $('#chkDownloadAlbumPrimary', form).checked();
             config.DownloadMusicAlbumImages.Backdrops = $('#chkDownloadAlbumBackdrops', form).checked();
             config.DownloadMusicAlbumImages.Disc = $('#chkMusicAlbumDisc', form).checked();
+
+            config.EnableVideoImageExtraction = $('#chkVIdeoImages', form).checked();
 
             ApiClient.updateServerConfiguration(config).done(Dashboard.processServerConfigurationUpdateResult);
         });

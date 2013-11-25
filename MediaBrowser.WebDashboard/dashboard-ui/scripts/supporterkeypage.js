@@ -45,10 +45,44 @@
             };
 
             ApiClient.updatePluginSecurityInfo(info).done(function () {
+                
                 Dashboard.resetPluginSecurityInfo();
                 Dashboard.hideLoadingMsg();
+
                 SupporterKeyPage.load();
             });
+
+        return false;
+    },
+    
+    linkSupporterKeys: function () {
+
+        Dashboard.showLoadingMsg();
+        var page = $.mobile.activePage;
+        
+        var email = $('#txtNewEmail', page).val();
+        var newkey = $('#txtNewKey', page).val();
+        var oldkey = $('#txtOldKey', page).val();
+
+        var info = {
+            email: email,
+            newkey: newkey,
+            oldkey: oldkey
+        };
+
+        var url = "http://mb3admin.com/admin/service/supporter/linkKeys";
+        console.log(url);
+        $.post(url, info).done(function (res) {
+            var result = JSON.parse(res);
+            Dashboard.hideLoadingMsg();
+            if (result.Success) {
+                Dashboard.alert("Keys Linked.");
+            } else {
+                Dashboard.showError(result.ErrorMessage);
+            }
+            console.log(result);
+
+        });
 
         return false;
     },

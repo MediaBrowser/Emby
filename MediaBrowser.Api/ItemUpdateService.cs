@@ -3,6 +3,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using ServiceStack.ServiceHost;
@@ -13,6 +14,14 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Api
 {
+    [Route("/LiveTv/Channels/{ChannelId}", "POST")]
+    [Api(("Updates an item"))]
+    public class UpdateChannel : BaseItemDto, IReturnVoid
+    {
+        [ApiMember(Name = "ChannelId", Description = "The id of the channel", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string ChannelId { get; set; }
+    }
+
     [Route("/Items/{ItemId}", "POST")]
     [Api(("Updates an item"))]
     public class UpdateItem : BaseItemDto, IReturnVoid
@@ -72,12 +81,14 @@ namespace MediaBrowser.Api
     public class ItemUpdateService : BaseApiService
     {
         private readonly ILibraryManager _libraryManager;
-        private readonly IUserManager _userManager;
+        private readonly IDtoService _dtoService;
+        private readonly ILiveTvManager _liveTv;
 
-        public ItemUpdateService(ILibraryManager libraryManager, IUserManager userManager)
+        public ItemUpdateService(ILibraryManager libraryManager, IDtoService dtoService, ILiveTvManager liveTv)
         {
             _libraryManager = libraryManager;
-            _userManager = userManager;
+            _dtoService = dtoService;
+            _liveTv = liveTv;
         }
 
         public void Post(UpdateItem request)
@@ -87,9 +98,16 @@ namespace MediaBrowser.Api
             Task.WaitAll(task);
         }
 
+        public void Post(UpdateChannel request)
+        {
+            var task = UpdateItem(request);
+
+            Task.WaitAll(task);
+        }
+
         private Task UpdateItem(UpdateItem request)
         {
-            var item = DtoBuilder.GetItemByClientId(request.ItemId, _userManager, _libraryManager);
+            var item = _dtoService.GetItemByDtoId(request.ItemId);
 
             UpdateItem(request, item);
 
@@ -105,7 +123,16 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdatePerson request)
         {
-            var item = await GetPerson(request.PersonName, _libraryManager).ConfigureAwait(false);
+            var item = GetPerson(request.PersonName, _libraryManager);
+
+            UpdateItem(request, item);
+
+            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private async Task UpdateItem(UpdateChannel request)
+        {
+            var item = _liveTv.GetChannel(request.Id);
 
             UpdateItem(request, item);
 
@@ -121,7 +148,7 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateArtist request)
         {
-            var item = await GetArtist(request.ArtistName, _libraryManager).ConfigureAwait(false);
+            var item = GetArtist(request.ArtistName, _libraryManager);
 
             UpdateItem(request, item);
 
@@ -137,7 +164,7 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateStudio request)
         {
-            var item = await GetStudio(request.StudioName, _libraryManager).ConfigureAwait(false);
+            var item = GetStudio(request.StudioName, _libraryManager);
 
             UpdateItem(request, item);
 
@@ -153,7 +180,7 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateMusicGenre request)
         {
-            var item = await GetMusicGenre(request.GenreName, _libraryManager).ConfigureAwait(false);
+            var item = GetMusicGenre(request.GenreName, _libraryManager);
 
             UpdateItem(request, item);
 
@@ -169,7 +196,7 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateGameGenre request)
         {
-            var item = await GetGameGenre(request.GenreName, _libraryManager).ConfigureAwait(false);
+            var item = GetGameGenre(request.GenreName, _libraryManager);
 
             UpdateItem(request, item);
 
@@ -185,7 +212,7 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateGenre request)
         {
-            var item = await GetGenre(request.GenreName, _libraryManager).ConfigureAwait(false);
+            var item = GetGenre(request.GenreName, _libraryManager);
 
             UpdateItem(request, item);
 
@@ -207,29 +234,54 @@ namespace MediaBrowser.Api
                 item.ForcedSortName = request.SortName;
             }
 
-            item.DisplayMediaType = request.DisplayMediaType;
-            item.CommunityRating = request.CommunityRating;
-            item.HomePageUrl = request.HomePageUrl;
             item.Budget = request.Budget;
             item.Revenue = request.Revenue;
-            item.CriticRating = request.CriticRating;
-            item.CriticRatingSummary = request.CriticRatingSummary;
+
+            var hasCriticRating = item as IHasCriticRating;
+            if (hasCriticRating != null)
+            {
+                hasCriticRating.CriticRating = request.CriticRating;
+                hasCriticRating.CriticRatingSummary = request.CriticRatingSummary;
+            }
+
+            item.DisplayMediaType = request.DisplayMediaType;
+            item.CommunityRating = request.CommunityRating;
+            item.VoteCount = request.VoteCount;
+            item.HomePageUrl = request.HomePageUrl;
             item.IndexNumber = request.IndexNumber;
             item.ParentIndexNumber = request.ParentIndexNumber;
             item.Overview = request.Overview;
             item.Genres = request.Genres;
             item.Tags = request.Tags;
-            item.Studios = request.Studios.Select(x => x.Name).ToList();
-            item.People = request.People.Select(x => new PersonInfo { Name = x.Name, Role = x.Role, Type = x.Type }).ToList();
+
+            if (request.Studios != null)
+            {
+                item.Studios = request.Studios.Select(x => x.Name).ToList();
+            }
+
+            if (request.People != null)
+            {
+                item.People = request.People.Select(x => new PersonInfo { Name = x.Name, Role = x.Role, Type = x.Type }).ToList();
+            }
+
+            if (request.DateCreated.HasValue)
+            {
+                item.DateCreated = request.DateCreated.Value.ToUniversalTime();
+            }
 
             item.EndDate = request.EndDate.HasValue ? request.EndDate.Value.ToUniversalTime() : (DateTime?)null;
             item.PremiereDate = request.PremiereDate.HasValue ? request.PremiereDate.Value.ToUniversalTime() : (DateTime?)null;
             item.ProductionYear = request.ProductionYear;
             item.ProductionLocations = request.ProductionLocations;
-            item.AspectRatio = request.AspectRatio;
             item.Language = request.Language;
             item.OfficialRating = request.OfficialRating;
             item.CustomRating = request.CustomRating;
+
+            var hasAspectRatio = item as IHasAspectRatio;
+            if (hasAspectRatio != null)
+            {
+                hasAspectRatio.AspectRatio = request.AspectRatio;
+            }
             
             item.DontFetchMeta = !(request.EnableInternetProviders ?? true);
             if (request.EnableInternetProviders ?? true)
@@ -239,6 +291,12 @@ namespace MediaBrowser.Api
             else
             {
                 item.LockedFields.Clear();
+            }
+
+            // Only allow this for series. Runtimes for media comes from ffprobe.
+            if (item is Series)
+            {
+                item.RunTimeTicks = request.RunTimeTicks;
             }
 
             foreach (var pair in request.ProviderIds.ToList())
@@ -256,7 +314,7 @@ namespace MediaBrowser.Api
             {
                 video.Video3DFormat = request.Video3DFormat;
             }
-            
+
             var game = item as Game;
 
             if (game != null)
@@ -270,14 +328,7 @@ namespace MediaBrowser.Api
             {
                 song.Album = request.Album;
                 song.AlbumArtist = request.AlbumArtist;
-                song.Artist = request.Artists[0];
-            }
-
-            var musicAlbum = item as MusicAlbum;
-
-            if (musicAlbum != null)
-            {
-                musicAlbum.MusicBrainzReleaseGroupId = request.GetProviderId("MusicBrainzReleaseGroupId");
+                song.Artists = request.Artists.ToList();
             }
 
             var musicVideo = item as MusicVideo;

@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
@@ -31,15 +32,17 @@ namespace MediaBrowser.Providers.Music
         /// </summary>
         private readonly IServerConfigurationManager _config;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IFileSystem _fileSystem;
 
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        public FanArtUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient)
+        public FanArtUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _config = config;
             _logger = logger;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -58,12 +61,14 @@ namespace MediaBrowser.Providers.Music
 
             var path = FanArtArtistProvider.GetArtistDataPath(_config.CommonApplicationPaths);
 
+            Directory.CreateDirectory(path);
+
             var timestampFile = Path.Combine(path, "time.txt");
 
             var timestampFileInfo = new FileInfo(timestampFile);
 
-            // Don't check for tvdb updates anymore frequently than 24 hours
-            if (timestampFileInfo.Exists && (DateTime.UtcNow - timestampFileInfo.LastWriteTimeUtc).TotalDays < 1)
+            // Don't check for updates every single time
+            if (timestampFileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(timestampFileInfo)).TotalDays < 3)
             {
                 return;
             }
@@ -167,10 +172,7 @@ namespace MediaBrowser.Providers.Music
 
             artistsDataPath = Path.Combine(artistsDataPath, musicBrainzId);
 
-            if (!Directory.Exists(artistsDataPath))
-            {
-                Directory.CreateDirectory(artistsDataPath);
-            }
+            Directory.CreateDirectory(artistsDataPath);
 
             return FanArtArtistProvider.Current.DownloadArtistXml(artistsDataPath, musicBrainzId, cancellationToken);
         }

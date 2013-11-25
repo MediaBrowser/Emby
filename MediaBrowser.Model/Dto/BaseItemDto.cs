@@ -31,6 +31,12 @@ namespace MediaBrowser.Model.Dto
         public DateTime? DateCreated { get; set; }
 
         /// <summary>
+        /// Gets or sets the special season number.
+        /// </summary>
+        /// <value>The special season number.</value>
+        public int? SpecialSeasonNumber { get; set; }
+        
+        /// <summary>
         /// Gets or sets the name of the sort.
         /// </summary>
         /// <value>The name of the sort.</value>
@@ -109,6 +115,12 @@ namespace MediaBrowser.Model.Dto
         public float? CommunityRating { get; set; }
 
         /// <summary>
+        /// Gets or sets the vote count.
+        /// </summary>
+        /// <value>The vote count.</value>
+        public int? VoteCount { get; set; }
+
+        /// <summary>
         /// Gets or sets the original run time ticks.
         /// </summary>
         /// <value>The original run time ticks.</value>
@@ -138,6 +150,12 @@ namespace MediaBrowser.Model.Dto
         /// <value>The production year.</value>
         public int? ProductionYear { get; set; }
 
+        /// <summary>
+        /// Gets or sets the season count.
+        /// </summary>
+        /// <value>The season count.</value>
+        public int? SeasonCount { get; set; }
+        
         /// <summary>
         /// Gets or sets the players supported by a game.
         /// </summary>
@@ -186,6 +204,12 @@ namespace MediaBrowser.Model.Dto
         /// <value>The language.</value>
         public string Language { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is HD.
+        /// </summary>
+        /// <value><c>null</c> if [is HD] contains no value, <c>true</c> if [is HD]; otherwise, <c>false</c>.</value>
+        public bool? IsHD { get; set; }
+        
         /// <summary>
         /// Gets or sets a value indicating whether this instance is folder.
         /// </summary>
@@ -346,7 +370,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the artists.
         /// </summary>
         /// <value>The artists.</value>
-        public string[] Artists { get; set; }
+        public List<string> Artists { get; set; }
 
         /// <summary>
         /// Gets or sets the album.
@@ -365,6 +389,12 @@ namespace MediaBrowser.Model.Dto
         /// <value>The album image tag.</value>
         public Guid? AlbumPrimaryImageTag { get; set; }
 
+        /// <summary>
+        /// Gets or sets the series primary image tag.
+        /// </summary>
+        /// <value>The series primary image tag.</value>
+        public Guid? SeriesPrimaryImageTag { get; set; }
+        
         /// <summary>
         /// Gets or sets the album artist.
         /// </summary>
@@ -450,6 +480,30 @@ namespace MediaBrowser.Model.Dto
         /// </summary>
         /// <value>The parent art image tag.</value>
         public Guid? ParentArtImageTag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the series thumb image tag.
+        /// </summary>
+        /// <value>The series thumb image tag.</value>
+        public Guid? SeriesThumbImageTag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the series studio.
+        /// </summary>
+        /// <value>The series studio.</value>
+        public string SeriesStudio { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the parent thumb item id.
+        /// </summary>
+        /// <value>The parent thumb item id.</value>
+        public string ParentThumbItemId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent thumb image tag.
+        /// </summary>
+        /// <value>The parent thumb image tag.</value>
+        public Guid? ParentThumbImageTag { get; set; }
         
         /// <summary>
         /// Gets or sets the chapters.
@@ -517,6 +571,48 @@ namespace MediaBrowser.Model.Dto
         /// <value>The locked fields.</value>
         public List<MetadataFields> LockedFields { get; set; }
 
+        public int? AdultVideoCount { get; set; }
+        /// <summary>
+        /// Gets or sets the movie count.
+        /// </summary>
+        /// <value>The movie count.</value>
+        public int? MovieCount { get; set; }
+        /// <summary>
+        /// Gets or sets the series count.
+        /// </summary>
+        /// <value>The series count.</value>
+        public int? SeriesCount { get; set; }
+        /// <summary>
+        /// Gets or sets the episode count.
+        /// </summary>
+        /// <value>The episode count.</value>
+        public int? EpisodeCount { get; set; }
+        /// <summary>
+        /// Gets or sets the game count.
+        /// </summary>
+        /// <value>The game count.</value>
+        public int? GameCount { get; set; }
+        /// <summary>
+        /// Gets or sets the trailer count.
+        /// </summary>
+        /// <value>The trailer count.</value>
+        public int? TrailerCount { get; set; }
+        /// <summary>
+        /// Gets or sets the song count.
+        /// </summary>
+        /// <value>The song count.</value>
+        public int? SongCount { get; set; }
+        /// <summary>
+        /// Gets or sets the album count.
+        /// </summary>
+        /// <value>The album count.</value>
+        public int? AlbumCount { get; set; }
+        /// <summary>
+        /// Gets or sets the music video count.
+        /// </summary>
+        /// <value>The music video count.</value>
+        public int? MusicVideoCount { get; set; }
+        
         /// <summary>
         /// Gets or sets a value indicating whether [enable internet providers].
         /// </summary>

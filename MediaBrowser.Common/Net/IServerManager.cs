@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Common.Net
 {
+    /// <summary>
+    /// Interface IServerManager
+    /// </summary>
     public interface IServerManager : IDisposable
     {
         /// <summary>
@@ -22,7 +25,14 @@ namespace MediaBrowser.Common.Net
         /// <summary>
         /// Starts this instance.
         /// </summary>
-        void Start();
+        /// <param name="urlPrefix">The URL prefix.</param>
+        /// <param name="enableHttpLogging">if set to <c>true</c> [enable HTTP logging].</param>
+        void Start(string urlPrefix, bool enableHttpLogging);
+
+        /// <summary>
+        /// Starts the web socket server.
+        /// </summary>
+        void StartWebSocketServer();
 
         /// <summary>
         /// Sends a message to all clients currently connected via a web socket
@@ -52,17 +62,6 @@ namespace MediaBrowser.Common.Net
         /// <exception cref="System.ArgumentNullException">messageType</exception>
         Task SendWebSocketMessageAsync<T>(string messageType, Func<T> dataFunction, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Sends the web socket message async.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="messageType">Type of the message.</param>
-        /// <param name="dataFunction">The data function.</param>
-        /// <param name="connections">The connections.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendWebSocketMessageAsync<T>(string messageType, Func<T> dataFunction, IEnumerable<IWebSocketConnection> connections, CancellationToken cancellationToken);
-        
         /// <summary>
         /// Adds the web socket listeners.
         /// </summary>

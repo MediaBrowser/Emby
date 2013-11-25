@@ -3,12 +3,16 @@ using MediaBrowser.Common.IO;
 using MediaBrowser.Common.MediaInfo;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Dto;
+using MediaBrowser.Model.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Api.Playback.Hls
 {
@@ -17,18 +21,13 @@ namespace MediaBrowser.Api.Playback.Hls
     /// </summary>
     public abstract class BaseHlsService : BaseStreamingService
     {
-        /// <summary>
-        /// The segment file prefix
-        /// </summary>
-        public const string SegmentFilePrefix = "hls-";
-
         protected override string GetOutputFilePath(StreamState state)
         {
             var folder = ApplicationPaths.EncodedMediaCachePath;
 
             var outputFileExtension = GetOutputFileExtension(state);
 
-            return Path.Combine(folder, SegmentFilePrefix + GetCommandLineArguments("dummy\\dummy", state, false).GetMD5() + (outputFileExtension ?? string.Empty).ToLower());
+            return Path.Combine(folder, GetCommandLineArguments("dummy\\dummy", state, false).GetMD5() + (outputFileExtension ?? string.Empty).ToLower());
         }
 
         /// <summary>
@@ -39,8 +38,8 @@ namespace MediaBrowser.Api.Playback.Hls
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="isoManager">The iso manager.</param>
         /// <param name="mediaEncoder">The media encoder.</param>
-        protected BaseHlsService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder)
-            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder)
+        protected BaseHlsService(IServerApplicationPaths appPaths, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem)
+            : base(appPaths, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem)
         {
         }
 
@@ -93,6 +92,15 @@ namespace MediaBrowser.Api.Playback.Hls
         /// <returns>Task{System.Object}.</returns>
         public async Task<object> ProcessRequestAsync(StreamState state)
         {
+            if (!state.VideoRequest.VideoBitRate.HasValue && (!state.VideoRequest.VideoCodec.HasValue || state.VideoRequest.VideoCodec.Value != VideoCodecs.Copy))
+            {
+                throw new ArgumentException("A video bitrate is required");
+            }
+            if (!state.Request.AudioBitRate.HasValue && (!state.Request.AudioCodec.HasValue || state.Request.AudioCodec.Value != AudioCodecs.Copy))
+            {
+                throw new ArgumentException("An audio bitrate is required");
+            }
+
             var playlist = GetOutputFilePath(state);
             var isPlaylistNewlyCreated = false;
 
@@ -107,8 +115,26 @@ namespace MediaBrowser.Api.Playback.Hls
                 ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlist, TranscodingJobType.Hls);
             }
 
-            // Get the current playlist text and convert to bytes
-            var playlistText = await GetPlaylistFileText(playlist, isPlaylistNewlyCreated).ConfigureAwait(false);
+            if (isPlaylistNewlyCreated)
+            {
+                await WaitForMinimumSegmentCount(playlist, 3).ConfigureAwait(false);
+            }
+
+            int audioBitrate;
+            int videoBitrate;
+            GetPlaylistBitrates(state, out audioBitrate, out videoBitrate);
+
+            var appendBaselineStream = false;
+            var baselineStreamBitrate = 64000;
+
+            var hlsVideoRequest = state.VideoRequest as GetHlsVideoStream;
+            if (hlsVideoRequest != null)
+            {
+                appendBaselineStream = hlsVideoRequest.AppendBaselineStream;
+                baselineStreamBitrate = hlsVideoRequest.BaselineStreamAudioBitRate ?? baselineStreamBitrate;
+            }
+
+            var playlistText = GetMasterPlaylistFileText(playlist, videoBitrate + audioBitrate, appendBaselineStream, baselineStreamBitrate);
 
             try
             {
@@ -121,19 +147,69 @@ namespace MediaBrowser.Api.Playback.Hls
         }
 
         /// <summary>
-        /// Gets the current playlist text
+        /// Gets the playlist bitrates.
         /// </summary>
-        /// <param name="playlist">The path to the playlist</param>
-        /// <param name="waitForMinimumSegments">Whether or not we should wait until it contains three segments</param>
-        /// <returns>Task{System.String}.</returns>
-        private async Task<string> GetPlaylistFileText(string playlist, bool waitForMinimumSegments)
+        /// <param name="state">The state.</param>
+        /// <param name="audioBitrate">The audio bitrate.</param>
+        /// <param name="videoBitrate">The video bitrate.</param>
+        private void GetPlaylistBitrates(StreamState state, out int audioBitrate, out int videoBitrate)
         {
-            string fileText;
+            var audioBitrateParam = GetAudioBitrateParam(state);
+            var videoBitrateParam = GetVideoBitrateParam(state);
 
+            if (!audioBitrateParam.HasValue)
+            {
+                if (state.AudioStream != null)
+                {
+                    audioBitrateParam = state.AudioStream.BitRate;
+                }
+            }
+
+            if (!videoBitrateParam.HasValue)
+            {
+                if (state.VideoStream != null)
+                {
+                    videoBitrateParam = state.VideoStream.BitRate;
+                }
+            }
+
+            audioBitrate = audioBitrateParam ?? 0;
+            videoBitrate = videoBitrateParam ?? 0;
+        }
+
+        private string GetMasterPlaylistFileText(string firstPlaylist, int bitrate, bool includeBaselineStream, int baselineStreamBitrate)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("#EXTM3U");
+
+            // Pad a little to satisfy the apple hls validator
+            var paddedBitrate = Convert.ToInt32(bitrate * 1.05);
+
+            // Main stream
+            builder.AppendLine("#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=" + paddedBitrate.ToString(UsCulture));
+            var playlistUrl = "hls/" + Path.GetFileName(firstPlaylist).Replace(".m3u8", "/stream.m3u8");
+            builder.AppendLine(playlistUrl);
+
+            // Low bitrate stream
+            if (includeBaselineStream)
+            {
+                builder.AppendLine("#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=" + baselineStreamBitrate.ToString(UsCulture));
+                playlistUrl = "hls/" + Path.GetFileName(firstPlaylist).Replace(".m3u8", "-low/stream.m3u8");
+                builder.AppendLine(playlistUrl);
+            }
+
+            return builder.ToString();
+        }
+
+        private async Task WaitForMinimumSegmentCount(string playlist, int segmentCount)
+        {
             while (true)
             {
+                string fileText;
+
                 // Need to use FileShare.ReadWrite because we're reading the file at the same time it's being written
-                using (var fileStream = new FileStream(playlist, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, StreamDefaults.DefaultFileStreamBufferSize, FileOptions.Asynchronous))
+                using (var fileStream = FileSystem.GetFileStream(playlist, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
                 {
                     using (var reader = new StreamReader(fileStream))
                     {
@@ -141,23 +217,13 @@ namespace MediaBrowser.Api.Playback.Hls
                     }
                 }
 
-                if (!waitForMinimumSegments || CountStringOccurrences(fileText, "#EXTINF:") >= 3)
+                if (CountStringOccurrences(fileText, "#EXTINF:") >= segmentCount)
                 {
                     break;
                 }
 
                 await Task.Delay(25).ConfigureAwait(false);
             }
-
-            fileText = fileText.Replace(SegmentFilePrefix, "segments/").Replace(".ts", "/stream.ts").Replace(".aac", "/stream.aac").Replace(".mp3", "/stream.mp3");
-
-            // It's considered live while still encoding (EVENT). Once the encoding has finished, it's video on demand (VOD).
-            var playlistType = fileText.IndexOf("#EXT-X-ENDLIST", StringComparison.OrdinalIgnoreCase) == -1 ? "EVENT" : "VOD";
-
-            // Add event type at the top
-            //fileText = fileText.Replace(allowCacheAttributeName, "#EXT-X-PLAYLIST-TYPE:" + playlistType + Environment.NewLine + allowCacheAttributeName);
-
-            return fileText;
         }
 
         /// <summary>
@@ -190,7 +256,16 @@ namespace MediaBrowser.Api.Playback.Hls
         {
             var probeSize = GetProbeSizeArgument(state.Item);
 
-            return string.Format("{0} {1} {2} -i {3}{4} -threads 0 {5} {6} {7} -hls_time 10 -start_number 0 -hls_list_size 1440 \"{8}\"",
+            var hlsVideoRequest = state.VideoRequest as GetHlsVideoStream;
+
+            var itsOffsetMs = hlsVideoRequest == null
+                                       ? 0
+                                       : ((GetHlsVideoStream) state.VideoRequest).TimeStampOffsetMs;
+
+            var itsOffset = itsOffsetMs == 0 ? string.Empty : string.Format("-itsoffset {0} ", TimeSpan.FromMilliseconds(itsOffsetMs).TotalSeconds);
+
+            var args = string.Format("{0}{1} {2} {3} -i {4}{5} -threads 0 {6} {7} -sc_threshold 0 {8} -hls_time 10 -start_number 0 -hls_list_size 1440 \"{9}\"",
+                itsOffset,
                 probeSize,
                 GetUserAgentParam(state.Item),
                 GetFastSeekCommandLineParameter(state.Request),
@@ -201,6 +276,24 @@ namespace MediaBrowser.Api.Playback.Hls
                 GetAudioArguments(state),
                 outputPath
                 ).Trim();
+
+            if (hlsVideoRequest != null)
+            {
+                if (hlsVideoRequest.AppendBaselineStream && state.Item is Video)
+                {
+                    var lowBitratePath = Path.Combine(Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath) + "-low.m3u8");
+
+                    var bitrate = hlsVideoRequest.BaselineStreamAudioBitRate ?? 64000;
+
+                    var lowBitrateParams = string.Format(" -threads 0 -vn -codec:a:0 libmp3lame -ac 2 -ab {1} -hls_time 10 -start_number 0 -hls_list_size 1440 \"{0}\"",
+                        lowBitratePath,
+                        bitrate / 2);
+
+                    args += " " + lowBitrateParams;
+                }
+            }
+
+            return args;
         }
     }
 }

@@ -19,21 +19,71 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Model.ApiClient
 {
+    /// <summary>
+    /// Interface IApiClient
+    /// </summary>
     public interface IApiClient : IDisposable
     {
+        /// <summary>
+        /// Occurs when [server location changed].
+        /// </summary>
+        event EventHandler ServerLocationChanged;
+
         /// <summary>
         /// Occurs when [HTTP response received].
         /// </summary>
         event EventHandler<HttpResponseEventArgs> HttpResponseReceived;
 
         /// <summary>
+        /// Gets the API URL.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <returns>System.String.</returns>
+        string GetApiUrl(string handler);
+
+        /// <summary>
+        /// Gets the game system summaries async.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{List{GameSystemSummary}}.</returns>
+        Task<List<GameSystemSummary>> GetGameSystemSummariesAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the async.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url">The URL.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{``0}.</returns>
+        Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
+            where T : class;
+
+        /// <summary>
+        /// Gets the index of the game players.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{List{ItemIndex}}.</returns>
+        Task<List<ItemIndex>> GetGamePlayerIndex(string userId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the index of the year.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="includeItemTypes">The include item types.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{List{ItemIndex}}.</returns>
+        Task<List<ItemIndex>> GetYearIndex(string userId, string[] includeItemTypes, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the critic reviews.
         /// </summary>
         /// <param name="itemId">The item id.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="startIndex">The start index.</param>
         /// <param name="limit">The limit.</param>
         /// <returns>Task{ItemReviewsResult}.</returns>
-        Task<ItemReviewsResult> GetCriticReviews(string itemId, CancellationToken cancellationToken, int? startIndex = null, int? limit = null);
+        Task<QueryResult<ItemReview>> GetCriticReviews(string itemId, CancellationToken cancellationToken, int? startIndex = null, int? limit = null);
 
         /// <summary>
         /// Gets the theme songs async.
@@ -41,6 +91,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user id.</param>
         /// <param name="itemId">The item id.</param>
         /// <param name="inheritFromParents">if set to <c>true</c> [inherit from parents].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{ThemeMediaResult}.</returns>
         Task<ThemeMediaResult> GetThemeSongsAsync(string userId, string itemId, bool inheritFromParents, CancellationToken cancellationToken);
 
@@ -61,6 +112,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user id.</param>
         /// <param name="itemId">The item id.</param>
         /// <param name="inheritFromParents">if set to <c>true</c> [inherit from parents].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{ThemeMediaResult}.</returns>
         Task<ThemeMediaResult> GetThemeVideosAsync(string userId, string itemId, bool inheritFromParents, CancellationToken cancellationToken);
 
@@ -70,6 +122,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user id.</param>
         /// <param name="itemId">The item id.</param>
         /// <param name="inheritFromParents">if set to <c>true</c> [inherit from parents].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{AllThemeMediaResult}.</returns>
         Task<AllThemeMediaResult> GetAllThemeMediaAsync(string userId, string itemId, bool inheritFromParents, CancellationToken cancellationToken);
 
@@ -133,9 +186,8 @@ namespace MediaBrowser.Model.ApiClient
         /// </summary>
         /// <param name="itemId">The item id.</param>
         /// <param name="userId">The user id.</param>
-        /// <returns>Task{System.String[]}.</returns>
-        /// <exception cref="ArgumentNullException">id</exception>
-        Task<string[]> GetIntrosAsync(string itemId, string userId);
+        /// <returns>Task{ItemsResult}.</returns>
+        Task<ItemsResult> GetIntrosAsync(string itemId, string userId);
 
         /// <summary>
         /// Gets a BaseItem
@@ -148,28 +200,38 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Gets the users async.
         /// </summary>
+        /// <param name="query">The query.</param>
         /// <returns>Task{UserDto[]}.</returns>
         Task<UserDto[]> GetUsersAsync(UserQuery query);
 
         /// <summary>
         /// Gets the public users async.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{UserDto[]}.</returns>
         Task<UserDto[]> GetPublicUsersAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets active client sessions.
         /// </summary>
+        /// <param name="query">The query.</param>
         /// <returns>Task{SessionInfoDto[]}.</returns>
-        Task<SessionInfoDto[]> GetClientSessionsAsync();
+        Task<SessionInfoDto[]> GetClientSessionsAsync(SessionQuery query);
 
         /// <summary>
         /// Gets the item counts async.
         /// </summary>
-        /// <param name="userId">The user id.</param>
+        /// <param name="query">The query.</param>
         /// <returns>Task{ItemCounts}.</returns>
-        Task<ItemCounts> GetItemCountsAsync(string userId);
+        Task<ItemCounts> GetItemCountsAsync(ItemCountsQuery query);
 
+        /// <summary>
+        /// Gets the episodes asynchronous.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>Task{ItemsResult}.</returns>
+        Task<ItemsResult> GetEpisodesAsync(EpisodeQuery query);
+        
         /// <summary>
         /// Queries for items
         /// </summary>
@@ -427,17 +489,21 @@ namespace MediaBrowser.Model.ApiClient
         Task<CountryInfo[]> GetCountriesAsync();
 
         /// <summary>
-        /// Marks an item as played or unplayed.
-        /// This should not be used to update playstate following playback.
-        /// There are separate playstate check-in methods for that. This should be used for a
-        /// separate option to reset playstate.
+        /// Marks the played async.
         /// </summary>
         /// <param name="itemId">The item id.</param>
         /// <param name="userId">The user id.</param>
-        /// <param name="wasPlayed">if set to <c>true</c> [was played].</param>
-        /// <returns>Task.</returns>
-        /// <exception cref="ArgumentNullException">itemId</exception>
-        Task UpdatePlayedStatusAsync(string itemId, string userId, bool wasPlayed);
+        /// <param name="datePlayed">The date played.</param>
+        /// <returns>Task{UserItemDataDto}.</returns>
+        Task<UserItemDataDto> MarkPlayedAsync(string itemId, string userId, DateTime? datePlayed);
+
+        /// <summary>
+        /// Marks the unplayed async.
+        /// </summary>
+        /// <param name="itemId">The item id.</param>
+        /// <param name="userId">The user id.</param>
+        /// <returns>Task{UserItemDataDto}.</returns>
+        Task<UserItemDataDto> MarkUnplayedAsync(string itemId, string userId);
 
         /// <summary>
         /// Updates the favorite status async.
@@ -447,16 +513,18 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="isFavorite">if set to <c>true</c> [is favorite].</param>
         /// <returns>Task.</returns>
         /// <exception cref="ArgumentNullException">itemId</exception>
-        Task UpdateFavoriteStatusAsync(string itemId, string userId, bool isFavorite);
+        Task<UserItemDataDto> UpdateFavoriteStatusAsync(string itemId, string userId, bool isFavorite);
 
         /// <summary>
         /// Reports to the server that the user has begun playing an item
         /// </summary>
         /// <param name="itemId">The item id.</param>
         /// <param name="userId">The user id.</param>
+        /// <param name="isSeekable">if set to <c>true</c> [is seekable].</param>
+        /// <param name="queueableMediaTypes">The list of media types that the client is capable of queuing onto the playlist. See MediaType class.</param>
         /// <returns>Task{UserItemDataDto}.</returns>
         /// <exception cref="ArgumentNullException">itemId</exception>
-        Task ReportPlaybackStartAsync(string itemId, string userId);
+        Task ReportPlaybackStartAsync(string itemId, string userId, bool isSeekable, List<string> queueableMediaTypes);
 
         /// <summary>
         /// Reports playback progress to the server
@@ -465,9 +533,10 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user id.</param>
         /// <param name="positionTicks">The position ticks.</param>
         /// <param name="isPaused">if set to <c>true</c> [is paused].</param>
+        /// <param name="isMuted">if set to <c>true</c> [is muted].</param>
         /// <returns>Task{UserItemDataDto}.</returns>
         /// <exception cref="ArgumentNullException">itemId</exception>
-        Task ReportPlaybackProgressAsync(string itemId, string userId, long? positionTicks, bool isPaused);
+        Task ReportPlaybackProgressAsync(string itemId, string userId, long? positionTicks, bool isPaused, bool isMuted);
 
         /// <summary>
         /// Reports to the server that the user has stopped playing an item
@@ -504,12 +573,26 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="sessionId">The session id.</param>
         /// <param name="request">The request.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// sessionId
+        /// <exception cref="ArgumentNullException">sessionId
         /// or
-        /// request
-        /// </exception>
+        /// request</exception>
         Task SendPlayCommandAsync(string sessionId, PlayRequest request);
+
+        /// <summary>
+        /// Sends a system command to the client
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <returns>Task.</returns>
+        Task SendSystemCommandAsync(string sessionId, SystemCommand command);
+
+        /// <summary>
+        /// Instructs the client to display a message to the user
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <returns>Task.</returns>
+        Task SendMessageCommandAsync(string sessionId, MessageCommand command);
 
         /// <summary>
         /// Clears a user's rating for an item
@@ -518,7 +601,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user id.</param>
         /// <returns>Task{UserItemDataDto}.</returns>
         /// <exception cref="ArgumentNullException">itemId</exception>
-        Task ClearUserItemRatingAsync(string itemId, string userId);
+        Task<UserItemDataDto> ClearUserItemRatingAsync(string itemId, string userId);
 
         /// <summary>
         /// Updates a user's rating for an item, based on likes or dislikes
@@ -528,7 +611,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="likes">if set to <c>true</c> [likes].</param>
         /// <returns>Task.</returns>
         /// <exception cref="ArgumentNullException">itemId</exception>
-        Task UpdateUserItemRatingAsync(string itemId, string userId, bool likes);
+        Task<UserItemDataDto> UpdateUserItemRatingAsync(string itemId, string userId, bool likes);
 
         /// <summary>
         /// Authenticates a user and returns the result
@@ -562,17 +645,20 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="id">The id.</param>
         /// <param name="userId">The user id.</param>
         /// <param name="client">The client.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{BaseItemDto}.</returns>
         Task<DisplayPreferences> GetDisplayPreferencesAsync(string id, string userId, string client, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates display preferences for a user
         /// </summary>
-        /// <param name="id">The id.</param>
         /// <param name="displayPreferences">The display preferences.</param>
+        /// <param name="userId">The user id.</param>
+        /// <param name="client">The client.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{DisplayPreferences}.</returns>
         /// <exception cref="System.ArgumentNullException">userId</exception>
-        Task UpdateDisplayPreferencesAsync(DisplayPreferences displayPreferences, string userId, string client);
+        Task UpdateDisplayPreferencesAsync(DisplayPreferences displayPreferences, string userId, string client, CancellationToken cancellationToken);
 
         /// <summary>
         /// Posts a set of data to a url, and deserializes the return stream into T
@@ -601,13 +687,20 @@ namespace MediaBrowser.Model.ApiClient
         /// Gets or sets the server host name (myserver or 192.168.x.x)
         /// </summary>
         /// <value>The name of the server host.</value>
-        string ServerHostName { get; set; }
+        string ServerHostName { get; }
 
         /// <summary>
         /// Gets or sets the port number used by the API
         /// </summary>
         /// <value>The server API port.</value>
-        int ServerApiPort { get; set; }
+        int ServerApiPort { get; }
+
+        /// <summary>
+        /// Changes the server location.
+        /// </summary>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="apiPort">The API port.</param>
+        void ChangeServerLocation(string hostName, int apiPort);
 
         /// <summary>
         /// Gets or sets the type of the client.
@@ -773,6 +866,14 @@ namespace MediaBrowser.Model.ApiClient
         /// <returns>System.String.</returns>
         string GetArtImageUrl(BaseItemDto item, ImageOptions options);
 
+        /// <summary>
+        /// Gets the thumb image URL.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>System.String.</returns>
+        string GetThumbImageUrl(BaseItemDto item, ImageOptions options);
+        
         /// <summary>
         /// Gets the url needed to stream an audio file
         /// </summary>

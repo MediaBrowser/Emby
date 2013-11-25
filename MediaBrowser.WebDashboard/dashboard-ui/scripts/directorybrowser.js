@@ -1,8 +1,14 @@
 ﻿(function (window, document, $) {
 
-    function refreshDirectoryBrowser(page, path) {
-        
+    function refreshDirectoryBrowser(page, path, fileOptions) {
+
         Dashboard.showLoadingMsg();
+
+        if (path) {
+            $('.networkHeadline').hide();
+        } else {
+            $('.networkHeadline').show();
+        }
 
         var promise;
 
@@ -10,7 +16,7 @@
             promise = ApiClient.getNetworkDevices();
         }
         else if (path) {
-            promise = ApiClient.getDirectoryContents(path, { includeDirectories: true });
+            promise = ApiClient.getDirectoryContents(path, fileOptions);
         } else {
             promise = ApiClient.getDrives();
         }
@@ -40,18 +46,20 @@
                     parentPath = "Network";
                 }
 
-                html += '<li><a class="lnkDirectory" data-path="' + parentPath + '" href="#">..</a></li>';
+                html += '<li><a class="lnkPath lnkDirectory" data-path="' + parentPath + '" href="#">..</a></li>';
             }
 
             for (var i = 0, length = folders.length; i < length; i++) {
 
                 var folder = folders[i];
 
-                html += '<li><a class="lnkDirectory" data-path="' + folder.Path + '" href="#">' + folder.Name + '</a></li>';
+                var cssClass = folder.Type == "File" ? "lnkPath lnkFile" : "lnkPath lnkDirectory";
+
+                html += '<li><a class="' + cssClass + '" data-path="' + folder.Path + '" href="#">' + folder.Name + '</a></li>';
             }
 
             if (!path) {
-                html += '<li><a class="lnkDirectory" data-path="Network" href="#">Network</a></li>';
+                html += '<li><a class="lnkPath lnkDirectory" data-path="Network" href="#">Network</a></li>';
             }
 
             $('#ulDirectoryPickerList', page).html(html).listview('refresh');
@@ -66,14 +74,26 @@
             Dashboard.hideLoadingMsg();
         });
     }
-    
-    window.DirectoryBrowser = function(page) {
+
+    window.DirectoryBrowser = function (page) {
 
         var self = this;
 
         self.show = function (options) {
 
             options = options || {};
+
+            var fileOptions = {
+                includeDirectories: true
+            };
+
+            if (options.includeDirectories != null) {
+                fileOptions.includeDirectories = options.includeDirectories;
+            }
+
+            if (options.includeFiles != null) {
+                fileOptions.includeFiles = options.includeFiles;
+            }
 
             options.header = options.header || "Select Media Path";
             options.instruction = options.instruction || "Any path will do, but for optimal playback of bluray, dvd folders, and games, <b>network paths (UNC)</b> are recommended.";
@@ -88,14 +108,20 @@
             html += '<form>';
             html += '<p class="directoryPickerHeadline">' + options.instruction + '</p>';
 
-            html += '<div data-role="fieldcontain" style="margin:0;">';
-            html += '<label for="txtDirectoryPickerPath" class="lblDirectoryPickerPath">Current Folder:</label>';
-            html += '<input id="txtDirectoryPickerPath" name="txtDirectoryPickerPath" type="text" required="required" style="font-weight:bold;" />';
+            html += '<div style="margin:0;">';
+            html += '<label for="txtDirectoryPickerPath" class="lblDirectoryPickerPath">Current Path:</label>';
+            html += '<div style="width:92%;display:inline-block;"><input id="txtDirectoryPickerPath" name="txtDirectoryPickerPath" type="text" required="required" style="font-weight:bold;" /></div>';
+            html += '<button class="btnRefreshDirectories" type="button" data-icon="refresh" data-inline="true" data-mini="true" data-iconpos="notext">Refresh</button>';
             html += '</div>';
+
+            html += '<div class="directoryPickerHeadline networkHeadline" style="margin:5px 0 1em;padding:.5em;max-width:95%;">Network paths <b>can be entered manually</b> in the event the Network button fails to locate your devices. For example, <b>\\\\my-server</b> or <b>\\\\192.168.1.101</b>.</div>';
 
             html += '<div style="height: 320px; overflow-y: auto;">';
             html += '<ul id="ulDirectoryPickerList" data-role="listview" data-inset="true" data-auto-enhanced="false"></ul>';
+
+
             html += '</div>';
+
 
             html += '<p>';
             html += '<button type="submit" data-theme="b" data-icon="ok">OK</button>';
@@ -108,24 +134,35 @@
             $(page).append(html);
 
             var popup = $('#popupDirectoryPicker').popup().trigger('create').on("popupafteropen", function () {
-                
+
                 $('#popupDirectoryPicker input:first', this).focus();
-                
+
             }).popup("open").on("popupafterclose", function () {
 
                 $('form', this).off("submit");
-                
+
                 $(this).off("click").off("change").off("popupafterclose").remove();
 
-            }).on("click", ".lnkDirectory", function () {
+            }).on("click", ".lnkPath", function () {
 
                 var path = this.getAttribute('data-path');
 
-                refreshDirectoryBrowser(page, path);
-                
+                if ($(this).hasClass('lnkFile')) {
+                    $('#txtDirectoryPickerPath', page).val(path);
+                } else {
+                    refreshDirectoryBrowser(page, path, fileOptions);
+                }
+
+
+            }).on("click", ".btnRefreshDirectories", function () {
+
+                var path = $('#txtDirectoryPickerPath', page).val();
+
+                refreshDirectoryBrowser(page, path, fileOptions);
+
             }).on("change", "#txtDirectoryPickerPath", function () {
 
-                refreshDirectoryBrowser(page, this.value);
+                refreshDirectoryBrowser(page, this.value, fileOptions);
             });
 
             var txtCurrentPath = $('#txtDirectoryPickerPath', popup);
@@ -147,7 +184,7 @@
 
         };
 
-        self.close = function() {
+        self.close = function () {
             $('#popupDirectoryPicker', page).popup("close");
         };
     };

@@ -105,6 +105,12 @@ namespace MediaBrowser.Api
                 throw new ArgumentNullException("Path");
             }
 
+            // If it's not a drive trim trailing slashes.
+            if (!path.EndsWith(":\\"))
+            {
+                path = path.TrimEnd('\\');
+            }
+
             if (path.StartsWith(NetworkPrefix, StringComparison.OrdinalIgnoreCase) && path.LastIndexOf('\\') == 1)
             {
                 return ToOptimizedResult(GetNetworkShares(path).OrderBy(i => i.Path).ToList());
@@ -132,18 +138,6 @@ namespace MediaBrowser.Api
         }
 
         /// <summary>
-        /// Gets the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>System.Object.</returns>
-        public object Get(GetNetworkDevices request)
-        {
-            var result = GetNetworkDevices().OrderBy(i => i.Path).ToList();
-
-            return ToOptimizedResult(result);
-        }
-
-        /// <summary>
         /// Gets the list that is returned when an empty path is supplied
         /// </summary>
         /// <returns>IEnumerable{FileSystemEntryInfo}.</returns>
@@ -157,6 +151,18 @@ namespace MediaBrowser.Api
                 Type = FileSystemEntryType.Directory
 
             });
+        }
+
+        /// <summary>
+        /// Gets the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>System.Object.</returns>
+        public object Get(GetNetworkDevices request)
+        {
+            var result = GetNetworkDevices().OrderBy(i => i.Path).ToList();
+
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

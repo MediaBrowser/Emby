@@ -1,4 +1,6 @@
 ﻿using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
@@ -13,13 +15,6 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
     /// </summary>
     public class SeriesResolver : FolderResolver<Series>
     {
-        private readonly ILibraryManager _libraryManager;
-
-        public SeriesResolver(ILibraryManager libraryManager)
-        {
-            _libraryManager = libraryManager;
-        }
-
         /// <summary>
         /// Gets the priority.
         /// </summary>
@@ -48,16 +43,17 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
                 }
                 
                 // Optimization to avoid running these tests against Seasons
-                if (args.Parent is Series)
+                if (args.Parent is Series || args.Parent is MusicArtist || args.Parent is MusicAlbum)
                 {
                     return null;
                 }
 
-                var collectionType = args.Parent == null ? null : _libraryManager.FindCollectionType(args.Parent);
+                var collectionType = args.GetCollectionType();
 
                 // If there's a collection type and it's not tv, it can't be a series
                 if (!string.IsNullOrEmpty(collectionType) &&
-                    !string.Equals(collectionType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase))
+                    !string.Equals(collectionType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(collectionType, CollectionType.BoxSets, StringComparison.OrdinalIgnoreCase))
                 {
                     return null;
                 }

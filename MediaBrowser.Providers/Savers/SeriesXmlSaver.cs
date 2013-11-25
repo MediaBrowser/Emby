@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Providers.TV;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Text;
@@ -32,8 +33,8 @@ namespace MediaBrowser.Providers.Savers
             var wasMetadataEdited = (updateType & ItemUpdateType.MetadataEdit) == ItemUpdateType.MetadataEdit;
             var wasMetadataDownloaded = (updateType & ItemUpdateType.MetadataDownload) == ItemUpdateType.MetadataDownload;
 
-            // If new metadata has been downloaded and save local is on, OR metadata was manually edited, proceed
-            if ((_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded)) || wasMetadataEdited)
+            // If new metadata has been downloaded and save local is on
+            if (_config.Configuration.SaveLocalMeta && (wasMetadataEdited || wasMetadataDownloaded))
             {
                 return item is Series;
             }
@@ -105,7 +106,7 @@ namespace MediaBrowser.Providers.Savers
 
             var xmlFilePath = GetSavePath(item);
 
-            XmlSaverHelpers.Save(builder, xmlFilePath, new[]
+            XmlSaverHelpers.Save(builder, xmlFilePath, new List<string>
                 {
                     "id", 
                     "SeriesName",
@@ -113,7 +114,10 @@ namespace MediaBrowser.Providers.Savers
                     "Network",
                     "Airs_Time",
                     "Airs_DayOfWeek",
-                    "FirstAired"
+                    "FirstAired",
+
+                    // Don't preserve old series node
+                    "Series"
                 });
 
             // Set last refreshed so that the provider doesn't trigger after the file save

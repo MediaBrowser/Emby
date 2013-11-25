@@ -1,12 +1,14 @@
 ﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Net;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Session;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,7 +26,7 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <summary>
         /// The _user data repository
         /// </summary>
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IUserDataManager _userDataRepository;
 
         /// <summary>
         /// The _user repository
@@ -36,6 +38,8 @@ namespace MediaBrowser.Server.Implementations.Session
         /// </summary>
         private readonly ILogger _logger;
 
+        private readonly ILibraryManager _libraryManager;
+        
         /// <summary>
         /// Gets or sets the configuration manager.
         /// </summary>
@@ -62,18 +66,20 @@ namespace MediaBrowser.Server.Implementations.Session
         public event EventHandler<PlaybackProgressEventArgs> PlaybackStopped;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SessionManager"/> class.
+        /// Initializes a new instance of the <see cref="SessionManager" /> class.
         /// </summary>
         /// <param name="userDataRepository">The user data repository.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="userRepository">The user repository.</param>
-        public SessionManager(IUserDataRepository userDataRepository, IServerConfigurationManager configurationManager, ILogger logger, IUserRepository userRepository)
+        /// <param name="libraryManager">The library manager.</param>
+        public SessionManager(IUserDataManager userDataRepository, IServerConfigurationManager configurationManager, ILogger logger, IUserRepository userRepository, ILibraryManager libraryManager)
         {
             _userDataRepository = userDataRepository;
             _configurationManager = configurationManager;
             _logger = logger;
             _userRepository = userRepository;
+            _libraryManager = libraryManager;
         }
 
         /// <summary>
@@ -86,11 +92,6 @@ namespace MediaBrowser.Server.Implementations.Session
         }
 
         /// <summary>
-        /// The _true task result
-        /// </summary>
-        private readonly Task _trueTaskResult = Task.FromResult(true);
-
-        /// <summary>
         /// Logs the user activity.
         /// </summary>
         /// <param name="clientType">Type of the client.</param>
@@ -101,7 +102,7 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <returns>Task.</returns>
         /// <exception cref="System.UnauthorizedAccessException"></exception>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        public async Task<SessionInfo> LogConnectionActivity(string clientType, string appVersion, string deviceId, string deviceName, User user)
+        public async Task<SessionInfo> LogSessionActivity(string clientType, string appVersion, string deviceId, string deviceName, User user)
         {
             if (string.IsNullOrEmpty(clientType))
             {
@@ -128,7 +129,7 @@ namespace MediaBrowser.Server.Implementations.Session
             var activityDate = DateTime.UtcNow;
 
             var session = GetSessionInfo(clientType, appVersion, deviceId, deviceName, user);
-            
+
             session.LastActivityDate = activityDate;
 
             if (user == null)
@@ -159,8 +160,9 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <param name="item">The item.</param>
         /// <param name="isPaused">if set to <c>true</c> [is paused].</param>
         /// <param name="currentPositionTicks">The current position ticks.</param>
-        private void UpdateNowPlayingItem(SessionInfo session, BaseItem item, bool isPaused, long? currentPositionTicks = null)
+        private void UpdateNowPlayingItem(SessionInfo session, BaseItem item, bool isPaused, bool isMuted, long? currentPositionTicks = null)
         {
+            session.IsMuted = isMuted;
             session.IsPaused = isPaused;
             session.NowPlayingPositionTicks = currentPositionTicks;
             session.NowPlayingItem = item;
@@ -174,11 +176,16 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <param name="item">The item.</param>
         private void RemoveNowPlayingItem(SessionInfo session, BaseItem item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
+
             if (session.NowPlayingItem != null && session.NowPlayingItem.Id == item.Id)
             {
                 session.NowPlayingItem = null;
                 session.NowPlayingPositionTicks = null;
-                session.IsPaused = null;
+                session.IsPaused = false;
             }
         }
 
@@ -212,25 +219,33 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <summary>
         /// Used to report that playback has started for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task OnPlaybackStart(BaseItem item, Guid sessionId)
+        /// <exception cref="System.ArgumentNullException">info</exception>
+        public async Task OnPlaybackStart(PlaybackInfo info)
         {
-            if (item == null)
+            if (info == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("info");
+            }
+            if (info.SessionId == Guid.Empty)
+            {
+                throw new ArgumentNullException("info");
             }
 
-            var session = Sessions.First(i => i.Id.Equals(sessionId));
+            var session = Sessions.First(i => i.Id.Equals(info.SessionId));
 
-            UpdateNowPlayingItem(session, item, false);
+            var item = info.Item;
+
+            UpdateNowPlayingItem(session, item, false, false);
+
+            session.CanSeek = info.CanSeek;
+            session.QueueableMediaTypes = info.QueueableMediaTypes;
 
             var key = item.GetUserDataKey();
 
             var user = session.User;
-            
+
             var data = _userDataRepository.GetUserData(user.Id, key);
 
             data.PlayCount++;
@@ -241,7 +256,7 @@ namespace MediaBrowser.Server.Implementations.Session
                 data.Played = true;
             }
 
-            await _userDataRepository.SaveUserData(user.Id, key, data, CancellationToken.None).ConfigureAwait(false);
+            await _userDataRepository.SaveUserData(user.Id, info.Item, data, UserDataSaveReason.PlaybackStart, CancellationToken.None).ConfigureAwait(false);
 
             // Nothing to save here
             // Fire events to inform plugins
@@ -255,46 +270,44 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <summary>
         /// Used to report playback progress for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="positionTicks">The position ticks.</param>
-        /// <param name="isPaused">if set to <c>true</c> [is paused].</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.ArgumentOutOfRangeException">positionTicks</exception>
-        public async Task OnPlaybackProgress(BaseItem item, long? positionTicks, bool isPaused, Guid sessionId)
+        public async Task OnPlaybackProgress(PlaybackProgressInfo info)
         {
-            if (item == null)
+            if (info == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("info");
             }
 
-            if (positionTicks.HasValue && positionTicks.Value < 0)
+            if (info.PositionTicks.HasValue && info.PositionTicks.Value < 0)
             {
                 throw new ArgumentOutOfRangeException("positionTicks");
             }
 
-            var session = Sessions.First(i => i.Id.Equals(sessionId));
+            var session = Sessions.First(i => i.Id.Equals(info.SessionId));
 
-            UpdateNowPlayingItem(session, item, isPaused, positionTicks);
+            UpdateNowPlayingItem(session, info.Item, info.IsPaused, info.IsMuted, info.PositionTicks);
 
-            var key = item.GetUserDataKey();
+            var key = info.Item.GetUserDataKey();
 
             var user = session.User;
 
-            if (positionTicks.HasValue)
+            if (info.PositionTicks.HasValue)
             {
                 var data = _userDataRepository.GetUserData(user.Id, key);
 
-                UpdatePlayState(item, data, positionTicks.Value);
-                await _userDataRepository.SaveUserData(user.Id, key, data, CancellationToken.None).ConfigureAwait(false);
+                UpdatePlayState(info.Item, data, info.PositionTicks.Value);
+
+                await _userDataRepository.SaveUserData(user.Id, info.Item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None).ConfigureAwait(false);
             }
 
             EventHelper.QueueEventIfNotNull(PlaybackProgress, this, new PlaybackProgressEventArgs
             {
-                Item = item,
+                Item = info.Item,
                 User = user,
-                PlaybackPositionTicks = positionTicks
+                PlaybackPositionTicks = info.PositionTicks
 
             }, _logger);
         }
@@ -302,51 +315,61 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <summary>
         /// Used to report that playback has ended for an item
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="positionTicks">The position ticks.</param>
-        /// <param name="sessionId">The session id.</param>
+        /// <param name="info">The info.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task OnPlaybackStopped(BaseItem item, long? positionTicks, Guid sessionId)
+        /// <exception cref="System.ArgumentNullException">info</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">positionTicks</exception>
+        public async Task OnPlaybackStopped(PlaybackStopInfo info)
         {
-            if (item == null)
+            if (info == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("info");
             }
 
-            if (positionTicks.HasValue && positionTicks.Value < 0)
+            if (info.Item == null)
+            {
+                throw new ArgumentException("PlaybackStopInfo.Item cannot be null");
+            }
+
+            if (info.SessionId == Guid.Empty)
+            {
+                throw new ArgumentException("PlaybackStopInfo.SessionId cannot be Guid.Empty");
+            }
+            
+            if (info.PositionTicks.HasValue && info.PositionTicks.Value < 0)
             {
                 throw new ArgumentOutOfRangeException("positionTicks");
             }
-            
-            var session = Sessions.First(i => i.Id.Equals(sessionId));
 
-            RemoveNowPlayingItem(session, item);
+            var session = Sessions.First(i => i.Id.Equals(info.SessionId));
 
-            var key = item.GetUserDataKey();
+            RemoveNowPlayingItem(session, info.Item);
+
+            var key = info.Item.GetUserDataKey();
 
             var user = session.User;
-            
+
             var data = _userDataRepository.GetUserData(user.Id, key);
 
-            if (positionTicks.HasValue)
+            if (info.PositionTicks.HasValue)
             {
-                UpdatePlayState(item, data, positionTicks.Value);
+                UpdatePlayState(info.Item, data, info.PositionTicks.Value);
             }
             else
             {
                 // If the client isn't able to report this, then we'll just have to make an assumption
                 data.PlayCount++;
                 data.Played = true;
+                data.PlaybackPositionTicks = 0;
             }
 
-            await _userDataRepository.SaveUserData(user.Id, key, data, CancellationToken.None).ConfigureAwait(false);
+            await _userDataRepository.SaveUserData(user.Id, info.Item, data, UserDataSaveReason.PlaybackFinished, CancellationToken.None).ConfigureAwait(false);
 
             EventHelper.QueueEventIfNotNull(PlaybackStopped, this, new PlaybackProgressEventArgs
             {
-                Item = item,
+                Item = info.Item,
                 User = user,
-                PlaybackPositionTicks = positionTicks
+                PlaybackPositionTicks = info.PositionTicks
             }, _logger);
         }
 
@@ -403,6 +426,195 @@ namespace MediaBrowser.Server.Implementations.Session
             }
 
             data.PlaybackPositionTicks = positionTicks;
+        }
+
+        /// <summary>
+        /// Gets the session for remote control.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <returns>SessionInfo.</returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        private SessionInfo GetSessionForRemoteControl(Guid sessionId)
+        {
+            var session = Sessions.First(i => i.Id.Equals(sessionId));
+
+            if (session == null)
+            {
+                throw new ResourceNotFoundException(string.Format("Session {0} not found.", sessionId));
+            }
+
+            if (!session.SupportsRemoteControl)
+            {
+                throw new ArgumentException(string.Format("Session {0} does not support remote control.", session.Id));
+            }
+
+            return session;
+        }
+
+        /// <summary>
+        /// Sends the system command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendSystemCommand(Guid sessionId, SystemCommand command, CancellationToken cancellationToken)
+        {
+            var session = GetSessionForRemoteControl(sessionId);
+
+            return session.SessionController.SendSystemCommand(command, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the message command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendMessageCommand(Guid sessionId, MessageCommand command, CancellationToken cancellationToken)
+        {
+            var session = GetSessionForRemoteControl(sessionId);
+
+            return session.SessionController.SendMessageCommand(command, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the play command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendPlayCommand(Guid sessionId, PlayRequest command, CancellationToken cancellationToken)
+        {
+            var session = GetSessionForRemoteControl(sessionId);
+
+            var items = command.ItemIds.Select(i => _libraryManager.GetItemById(new Guid(i)))
+                .ToList();
+
+            if (items.Any(i => i.LocationType == LocationType.Virtual))
+            {
+                throw new ArgumentException("Virtual items are not playable.");
+            }
+            
+            if (command.PlayCommand != PlayCommand.PlayNow)
+            {
+                if (items.Any(i => !session.QueueableMediaTypes.Contains(i.MediaType, StringComparer.OrdinalIgnoreCase)))
+                {
+                    throw new ArgumentException(string.Format("Session {0} is unable to queue the requested media type.", session.Id));
+                }
+            }
+            
+            return session.SessionController.SendPlayCommand(command, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the browse command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendBrowseCommand(Guid sessionId, BrowseRequest command, CancellationToken cancellationToken)
+        {
+            var session = GetSessionForRemoteControl(sessionId);
+
+            return session.SessionController.SendBrowseCommand(command, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the playstate command.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendPlaystateCommand(Guid sessionId, PlaystateRequest command, CancellationToken cancellationToken)
+        {
+            var session = GetSessionForRemoteControl(sessionId);
+
+            if (command.Command == PlaystateCommand.Seek && !session.CanSeek)
+            {
+                throw new ArgumentException(string.Format("Session {0} is unable to seek.", session.Id));
+            }
+
+            return session.SessionController.SendPlaystateCommand(command, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the restart required message.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendRestartRequiredNotification(CancellationToken cancellationToken)
+        {
+            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+
+            var tasks = sessions.Select(session => Task.Run(async () =>
+            {
+                try
+                {
+                    await session.SessionController.SendRestartRequiredNotification(cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error in SendRestartRequiredNotification.", ex);
+                }
+
+            }));
+
+            return Task.WhenAll(tasks);
+        }
+
+        /// <summary>
+        /// Sends the server shutdown notification.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendServerShutdownNotification(CancellationToken cancellationToken)
+        {
+            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+
+            var tasks = sessions.Select(session => Task.Run(async () =>
+            {
+                try
+                {
+                    await session.SessionController.SendServerShutdownNotification(cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error in SendServerShutdownNotification.", ex);
+                }
+
+            }));
+
+            return Task.WhenAll(tasks);
+        }
+
+        /// <summary>
+        /// Sends the server restart notification.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public Task SendServerRestartNotification(CancellationToken cancellationToken)
+        {
+            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+
+            var tasks = sessions.Select(session => Task.Run(async () =>
+            {
+                try
+                {
+                    await session.SessionController.SendServerRestartNotification(cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error in SendServerRestartNotification.", ex);
+                }
+
+            }));
+
+            return Task.WhenAll(tasks);
         }
     }
 }

@@ -107,13 +107,6 @@ namespace MediaBrowser.Providers.Music
                 }
             }
 
-            var year = songs.Select(i => i.ProductionYear ?? 1800).FirstOrDefault(i => i != 1800);
-
-            if (year != 1800)
-            {
-                album.ProductionYear = year;
-            }
-
             if (!item.LockedFields.Contains(MetadataFields.Studios))
             {
                 album.Studios = songs.SelectMany(i => i.Studios)

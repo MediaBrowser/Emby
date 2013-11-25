@@ -139,17 +139,25 @@ namespace MediaBrowser.Controller.Providers
 
                         break;
                     }
+
                 case "CriticRating":
                     {
                         var text = reader.ReadElementContentAsString();
-                        float value;
-                        if (float.TryParse(text, NumberStyles.Any, _usCulture, out value))
+
+                        var hasCriticRating = item as IHasCriticRating;
+
+                        if (hasCriticRating != null && !string.IsNullOrEmpty(text))
                         {
-                            item.CriticRating = value;
+                            float value;
+                            if (float.TryParse(text, NumberStyles.Any, _usCulture, out value))
+                            {
+                                hasCriticRating.CriticRating = value;
+                            }
                         }
 
                         break;
                     }
+
                 case "Budget":
                     {
                         var text = reader.ReadElementContentAsString();
@@ -161,6 +169,7 @@ namespace MediaBrowser.Controller.Providers
 
                         break;
                     }
+
                 case "Revenue":
                     {
                         var text = reader.ReadElementContentAsString();
@@ -172,9 +181,18 @@ namespace MediaBrowser.Controller.Providers
 
                         break;
                     }
+
                 case "SortTitle":
-                    item.ForcedSortName = reader.ReadElementContentAsString();
-                    break;
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                            item.ForcedSortName = val;
+                        }
+
+                        break;
+                    }
 
                 case "Overview":
                 case "Description":
@@ -195,7 +213,12 @@ namespace MediaBrowser.Controller.Providers
 
                         if (!string.IsNullOrWhiteSpace(val))
                         {
-                            item.CriticRatingSummary = val;
+                            var hasCriticRating = item as IHasCriticRating;
+
+                            if (hasCriticRating != null)
+                            {
+                                hasCriticRating.CriticRatingSummary = val;
+                            }
                         }
 
                         break;
@@ -352,9 +375,10 @@ namespace MediaBrowser.Controller.Providers
                     {
                         var val = reader.ReadElementContentAsString();
 
-                        if (!string.IsNullOrWhiteSpace(val))
+                        var hasAspectRatio = item as IHasAspectRatio;
+                        if (!string.IsNullOrWhiteSpace(val) && hasAspectRatio != null)
                         {
-                            item.AspectRatio = val;
+                            hasAspectRatio.AspectRatio = val;
                         }
                         break;
                     }
@@ -458,6 +482,7 @@ namespace MediaBrowser.Controller.Providers
                         break;
                     }
 
+                case "ReleaseYear":
                 case "ProductionYear":
                     {
                         var val = reader.ReadElementContentAsString();
@@ -503,7 +528,7 @@ namespace MediaBrowser.Controller.Providers
                         {
                             DateTime airDate;
 
-                            if (DateTime.TryParse(firstAired, out airDate) && airDate.Year > 1850)
+                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out airDate) && airDate.Year > 1850)
                             {
                                 item.PremiereDate = airDate.ToUniversalTime();
                                 item.ProductionYear = airDate.Year;
@@ -522,7 +547,7 @@ namespace MediaBrowser.Controller.Providers
                         {
                             DateTime airDate;
 
-                            if (DateTime.TryParse(firstAired, out airDate) && airDate.Year > 1850)
+                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out airDate) && airDate.Year > 1850)
                             {
                                 item.EndDate = airDate.ToUniversalTime();
                             }
@@ -539,22 +564,38 @@ namespace MediaBrowser.Controller.Providers
                     }
                     break;
 
-                case "GamesDbId":
-                    var gamesdbId = reader.ReadElementContentAsString();
-                    if (!string.IsNullOrWhiteSpace(gamesdbId))
+                case "VoteCount":
                     {
-                        item.SetProviderId(MetadataProviders.Gamesdb, gamesdbId);
-                    }
-                    break;
+                        var val = reader.ReadElementContentAsString();
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                            int num;
 
+                            if (int.TryParse(val, NumberStyles.Integer, _usCulture, out num))
+                            {
+                                item.VoteCount = num;
+                            }
+                        }
+                        break;
+                    }
                 case "MusicbrainzId":
-                    var mbz = reader.ReadElementContentAsString();
-                    if (!string.IsNullOrWhiteSpace(mbz))
                     {
-                        item.SetProviderId(MetadataProviders.Musicbrainz, mbz);
+                        var mbz = reader.ReadElementContentAsString();
+                        if (!string.IsNullOrWhiteSpace(mbz))
+                        {
+                            item.SetProviderId(MetadataProviders.Musicbrainz, mbz);
+                        }
+                        break;
                     }
-                    break;
-
+                case "MusicBrainzReleaseGroupId":
+                    {
+                        var mbz = reader.ReadElementContentAsString();
+                        if (!string.IsNullOrWhiteSpace(mbz))
+                        {
+                            item.SetProviderId(MetadataProviders.MusicBrainzReleaseGroup, mbz);
+                        }
+                        break;
+                    }
                 case "RottenTomatoesId":
                     var rtId = reader.ReadElementContentAsString();
                     if (!string.IsNullOrWhiteSpace(rtId))
@@ -584,6 +625,14 @@ namespace MediaBrowser.Controller.Providers
                     if (!string.IsNullOrWhiteSpace(TVcomId))
                     {
                         item.SetProviderId(MetadataProviders.Tvcom, TVcomId);
+                    }
+                    break;
+
+                case "Zap2ItId":
+                    var zap2ItId = reader.ReadElementContentAsString();
+                    if (!string.IsNullOrWhiteSpace(zap2ItId))
+                    {
+                        item.SetProviderId(MetadataProviders.Zap2It, zap2ItId);
                     }
                     break;
 
@@ -1023,9 +1072,10 @@ namespace MediaBrowser.Controller.Providers
         /// <returns>IEnumerable{PersonInfo}.</returns>
         private IEnumerable<PersonInfo> GetPersonsFromXmlNode(XmlReader reader)
         {
-            var names = new List<string>();
+            var name = string.Empty;
             var type = "Actor";  // If type is not specified assume actor
             var role = string.Empty;
+            int? sortOrder = null;
 
             reader.MoveToContent();
 
@@ -1036,7 +1086,7 @@ namespace MediaBrowser.Controller.Providers
                     switch (reader.Name)
                     {
                         case "Name":
-                            names.AddRange(SplitNames(reader.ReadElementContentAsString()));
+                            name = reader.ReadElementContentAsString() ?? string.Empty;
                             break;
 
                         case "Type":
@@ -1060,6 +1110,20 @@ namespace MediaBrowser.Controller.Providers
                                 }
                                 break;
                             }
+                        case "SortOrder":
+                            {
+                                var val = reader.ReadElementContentAsString();
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    int intVal;
+                                    if (int.TryParse(val, NumberStyles.Integer, _usCulture, out intVal))
+                                    {
+                                        sortOrder = intVal;
+                                    }
+                                }
+                                break;
+                            }
 
                         default:
                             reader.Skip();
@@ -1068,7 +1132,15 @@ namespace MediaBrowser.Controller.Providers
                 }
             }
 
-            return names.Select(n => new PersonInfo { Name = n.Trim(), Role = role, Type = type });
+            var personInfo = new PersonInfo
+            {
+                Name = name.Trim(), 
+                Role = role, 
+                Type = type, 
+                SortOrder = sortOrder
+            };
+
+            return new[] { personInfo };
         }
 
         /// <summary>

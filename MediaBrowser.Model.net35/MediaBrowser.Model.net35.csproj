@@ -12,6 +12,9 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <FodyPath>..\packages\Fody.1.17.0.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\HttpResponseEventArgs.cs">
+      <Link>ApiClient\HttpResponseEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\IServerEvents.cs">
+      <Link>ApiClient\IServerEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\ServerEventArgs.cs">
+      <Link>ApiClient\ServerEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Configuration\BaseApplicationConfiguration.cs">
       <Link>Configuration\BaseApplicationConfiguration.cs</Link>
     </Compile>
@@ -64,6 +76,9 @@
     <Compile Include="..\MediaBrowser.Model\Drawing\DrawingUtils.cs">
       <Link>Drawing\DrawingUtils.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Drawing\ImageOutputFormat.cs">
+      <Link>Drawing\ImageOutputFormat.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\BaseItemDto.cs">
       <Link>Dto\BaseItemDto.cs</Link>
     </Compile>
@@ -72,6 +87,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ChapterInfoDto.cs">
       <Link>Dto\ChapterInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\GameSystemSummary.cs">
+      <Link>Dto\GameSystemSummary.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\IItemDto.cs">
       <Link>Dto\IItemDto.cs</Link>
@@ -87,6 +105,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ItemCounts.cs">
       <Link>Dto\ItemCounts.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\ItemIndex.cs">
+      <Link>Dto\ItemIndex.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\StreamOptions.cs">
       <Link>Dto\StreamOptions.cs</Link>
@@ -175,6 +196,9 @@
     <Compile Include="..\MediaBrowser.Model\Extensions\ModelExtensions.cs">
       <Link>Extensions\ModelExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Games\GameSystem.cs">
+      <Link>Games\GameSystem.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Globalization\CountryInfo.cs">
       <Link>Globalization\CountryInfo.cs</Link>
     </Compile>
@@ -186,6 +210,30 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\IO\IZipClient.cs">
       <Link>IO\IZipClient.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelInfoDto.cs">
+      <Link>LiveTv\ChannelInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelQuery.cs">
+      <Link>LiveTv\ChannelQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelType.cs">
+      <Link>LiveTv\ChannelType.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\LiveTvServiceInfo.cs">
+      <Link>LiveTv\LiveTvServiceInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ProgramInfoDto.cs">
+      <Link>LiveTv\ProgramInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\ProgramQuery.cs">
+      <Link>LiveTv\ProgramQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\RecordingInfoDto.cs">
+      <Link>LiveTv\RecordingInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\RecordingQuery.cs">
+      <Link>LiveTv\RecordingQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Logging\ILogger.cs">
       <Link>Logging\ILogger.cs</Link>
@@ -241,8 +289,23 @@
     <Compile Include="..\MediaBrowser.Model\Plugins\PluginInfo.cs">
       <Link>Plugins\PluginInfo.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\ImageProviderInfo.cs">
+      <Link>Providers\ImageProviderInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\RemoteImageInfo.cs">
+      <Link>Providers\RemoteImageInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Providers\RemoteImageResult.cs">
+      <Link>Providers\RemoteImageResult.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ArtistsQuery.cs">
       <Link>Querying\ArtistsQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\EpisodeQuery.cs">
+      <Link>Querying\EpisodeQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\ItemCountsQuery.cs">
+      <Link>Querying\ItemCountsQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemFields.cs">
       <Link>Querying\ItemFields.cs</Link>
@@ -252,9 +315,6 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemQuery.cs">
       <Link>Querying\ItemQuery.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Querying\ItemReviewsResult.cs">
-      <Link>Querying\ItemReviewsResult.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\ItemsByNameQuery.cs">
       <Link>Querying\ItemsByNameQuery.cs</Link>
@@ -270,6 +330,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\PersonsQuery.cs">
       <Link>Querying\PersonsQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\QueryResult.cs">
+      <Link>Querying\QueryResult.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\SessionQuery.cs">
+      <Link>Querying\SessionQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\SimilarItemsQuery.cs">
       <Link>Querying\SimilarItemsQuery.cs</Link>
@@ -295,6 +361,9 @@
     <Compile Include="..\MediaBrowser.Model\Session\BrowseRequest.cs">
       <Link>Session\BrowseRequest.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\MessageCommand.cs">
+      <Link>Session\MessageCommand.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Session\PlayRequest.cs">
       <Link>Session\PlayRequest.cs</Link>
     </Compile>
@@ -303,6 +372,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Session\SessionInfoDto.cs">
       <Link>Session\SessionInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\SystemCommand.cs">
+      <Link>Session\SystemCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Session\UserDataChangeInfo.cs">
+      <Link>Session\UserDataChangeInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\System\SystemInfo.cs">
       <Link>System\SystemInfo.cs</Link>
@@ -363,13 +438,16 @@
   <ItemGroup>
     <None Include="MediaBrowser.Model.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\dlls\net35\" /y /d /r /i
 )</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

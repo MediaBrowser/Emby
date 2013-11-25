@@ -42,11 +42,12 @@
             <div class="libraryViewNav">
                 <a href="tvrecommended.html">Suggested</a>
                 <a href="tvnextup.html">Next up</a>
+                <a href="tvupcoming.html">Upcoming</a>
                 <a href="tvshows.html" class="ui-btn-active">Shows</a>
+                <a href="episodes.html">Episodes</a>
                 <a href="tvgenres.html">Genres</a>
                 <a href="tvpeople.html">Actors</a>
                 <a href="tvstudios.html">Networks</a>
-                <a href="favoritetv.html">Favorites</a>
             </div>
         </div>
         <div id="songTabs" class="itemTabs" style="display: none;">
@@ -54,6 +55,7 @@
                 <a href="musicrecommended.html">Suggested</a>
                 <a href="songs.html" class="ui-btn-active">Songs</a>
                 <a href="musicalbums.html">Albums</a>
+                <a href="musicalbumartists.html">Album Artists</a>
                 <a href="musicartists.html">Artists</a>
                 <a href="musicgenres.html">Genres</a>
                 <a href="musicvideos.html">Music Videos</a>
@@ -64,6 +66,7 @@
                 <a href="musicrecommended.html">Suggested</a>
                 <a href="songs.html">Songs</a>
                 <a href="musicalbums.html" class="ui-btn-active">Albums</a>
+                <a href="musicalbumartists.html">Album Artists</a>
                 <a href="musicartists.html">Artists</a>
                 <a href="musicgenres.html">Genres</a>
                 <a href="musicvideos.html">Music Videos</a>
@@ -74,6 +77,7 @@
                 <a href="musicrecommended.html">Suggested</a>
                 <a href="songs.html">Songs</a>
                 <a href="musicalbums.html">Albums</a>
+                <a href="musicalbumartists.html">Album Artists</a>
                 <a href="musicartists.html">Artists</a>
                 <a href="musicgenres.html">Genres</a>
                 <a href="musicvideos.html" class="ui-btn-active">Music Videos</a>
@@ -127,11 +131,17 @@
             <a href="#" id="lnkNextItem" class="lnkNextItem lnkSibling hide">Next →</a>
         </div>
         <div class="ui-body-a" style="text-align: center; padding: .25em 0 .5em;">
+            <span id="missingIndicator" style="margin-left: .5em; display: none;">
+                <span style="background: #cc3333; padding: 5px 1em; border-radius: 5px;">MISSING</span>
+            </span>
             <span id="offlineIndicator" style="margin-left: .5em; display: none;">
                 <span style="background: #cc3333; padding: 5px 1em; border-radius: 5px;">OFFLINE</span>
             </span>
             <span id="playButtonContainer" style="display: none;">
                 <button id="btnPlay" type="button" data-icon="play" data-inline="true" data-mini="true">Play</button>
+            </span>
+            <span id="playExternalButtonContainer" style="display: none;">
+                <a id="btnPlayExternal" data-role="button" data-icon="play" data-inline="true" data-mini="true" href="#" target="_blank">Play</a>
             </span>
             <span>
                 <button id="btnRemote" type="button" data-icon="hand-up" data-inline="true" data-mini="true">Remote</button>
@@ -143,7 +153,7 @@
         <div data-role="content">
             <div class="detailPageContent">
 
-                <div id="detailsSection" class="detailSection inlineDetailSection hide">
+                <div id="detailsSection" class="detailSection hide">
                     <div class="detailSectionHeader" style="margin-top: 0;">
                         Details
                     </div>
@@ -159,36 +169,35 @@
                         <p class="itemExternalLinks"></p>
                         <div class="mediaInfo"></div>
                         <p class="itemTags"></p>
-                        <p class="itemPath"></p>
                     </div>
                 </div>
-                <div id="childrenCollapsible" class="hide detailSection inlineDetailSection">
+                <div id="trailersCollapsible" class="detailSection hide">
+                    <div id="trailerSectionHeader" class="detailSectionHeader">
+                        Trailers
+                    </div>
+                    <div id="trailersContent" class="detailSectionContent"></div>
+                </div>
+                <div id="childrenCollapsible" class="hide detailSection">
                     <div class="detailSectionHeader"><span id="childrenTitle"></span></div>
                     <div id="childrenContent" class="detailSectionContent"></div>
                 </div>
-                <div id="additionalPartsCollapsible" class="detailSection inlineDetailSection hide">
+                <div id="additionalPartsCollapsible" class="detailSection hide">
                     <div class="detailSectionHeader">
                         Additional Parts
                     </div>
                     <div id="additionalPartsContent" class="detailSectionContent"></div>
                 </div>
-                <div id="trailersCollapsible" class="detailSection inlineDetailSection hide">
-                    <div class="detailSectionHeader">
-                        Trailers
+                <div id="castCollapsible" style="display: none;" class="detailSection">
+                    <div id="peopleHeader" class="detailSectionHeader">
+                        Cast & Crew
                     </div>
-                    <div id="trailersContent" class="detailSectionContent"></div>
+                    <div id="castContent" class="detailSectionContent"></div>
                 </div>
-                <div id="specialsCollapsible" class="detailSection inlineDetailSection hide">
+                <div id="specialsCollapsible" class="detailSection hide">
                     <div class="detailSectionHeader">
                         Special Features
                     </div>
                     <div id="specialsContent" class="detailSectionContent"></div>
-                </div>
-                <div id="castCollapsible" style="display: none;" class="detailSection">
-                    <div class="detailSectionHeader">
-                        Cast & Crew
-                    </div>
-                    <div id="castContent" class="detailSectionContent"></div>
                 </div>
                 <div id="musicVideosCollapsible" style="display: none;" class="detailSection">
                     <div class="detailSectionHeader">

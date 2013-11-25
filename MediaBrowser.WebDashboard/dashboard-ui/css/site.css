@@ -221,6 +221,19 @@ form, .readOnlyContent {
     padding-left: 5px;
 }
 
+.warningFieldDescription {
+    padding: 5px;
+    border: 1px solid #f4c63f;
+    background: #fadb4e;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#ffefaa),to(#ffe155));
+    background-image: -webkit-linear-gradient(#ffefaa,#ffe155);
+    background-image: -moz-linear-gradient(#ffefaa,#ffe155);
+    background-image: -ms-linear-gradient(#ffefaa,#ffe155);
+    background-image: -o-linear-gradient(#ffefaa,#ffe155);
+    background-image: linear-gradient(#ffefaa,#ffe155);
+    border-radius: 5px;
+}
+
 .ulForm {
     margin-bottom: 20px!important;
 }
@@ -708,6 +721,10 @@ progress {
         opacity: .5;
     }
 
+.imgPlayed, .imgPlayedOff {
+    border-radius: 4px;
+}
+
 /* Now playing bar */
 #nowPlayingBar {
     padding: 6px .5em;
@@ -992,39 +1009,19 @@ input[type="range"]::-ms-fill-upper {
     padding-left: 5px;
 }
 
-.installedPluginTitle {
-    max-width: 85px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
-}
-
 @media (min-width: 750px) {
-    .installedPluginTitle {
-        max-width: 110px;
-    }
-
     .itemVideo:not(.fullscreenVideo) {
         width: 320px;
     }
 }
 
 @media (min-width: 1200px) {
-    .installedPluginTitle {
-        max-width: 110px;
-    }
-
     .itemVideo:not(.fullscreenVideo) {
         width: 320px;
     }
 }
 
 @media (min-width: 1440px) {
-    .installedPluginTitle {
-        max-width: 110px;
-    }
-
     .itemVideo:not(.fullscreenVideo) {
         width: 400px;
     }

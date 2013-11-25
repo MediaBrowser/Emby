@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Logging;
@@ -6,6 +6,7 @@ using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
 
         private IDbConnection _connection;
+        private readonly IServerApplicationPaths _appPaths;
 
         /// <summary>
         /// Gets the name of the repository
@@ -41,32 +43,21 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private readonly IJsonSerializer _jsonSerializer;
 
         /// <summary>
-        /// The _app paths
-        /// </summary>
-        private readonly IApplicationPaths _appPaths;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="SqliteUserRepository" /> class.
         /// </summary>
-        /// <param name="connection">The connection.</param>
-        /// <param name="appPaths">The app paths.</param>
         /// <param name="jsonSerializer">The json serializer.</param>
         /// <param name="logManager">The log manager.</param>
+        /// <param name="appPaths">The app paths.</param>
         /// <exception cref="System.ArgumentNullException">appPaths</exception>
-        public SqliteUserRepository(IDbConnection connection, IApplicationPaths appPaths, IJsonSerializer jsonSerializer, ILogManager logManager)
+        public SqliteUserRepository(IJsonSerializer jsonSerializer, ILogManager logManager, IServerApplicationPaths appPaths)
         {
-            if (appPaths == null)
-            {
-                throw new ArgumentNullException("appPaths");
-            }
             if (jsonSerializer == null)
             {
                 throw new ArgumentNullException("jsonSerializer");
             }
 
-            _connection = connection;
-            _appPaths = appPaths;
             _jsonSerializer = jsonSerializer;
+            _appPaths = appPaths;
 
             _logger = logManager.GetLogger(GetType().Name);
         }
@@ -75,8 +66,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// Opens the connection to the database
         /// </summary>
         /// <returns>Task.</returns>
-        public void Initialize()
+        public async Task Initialize()
         {
+            var dbFile = Path.Combine(_appPaths.DataPath, "users.db");
+
+            _connection = await SqliteExtensions.ConnectToDb(dbFile, _logger).ConfigureAwait(false);
+            
             string[] queries = {
 
                                 "create table if not exists users (guid GUID primary key, data BLOB)",
@@ -101,11 +96,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (user == null)
             {
                 throw new ArgumentNullException("user");
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -202,11 +192,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (user == null)
             {
                 throw new ArgumentNullException("user");
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException("cancellationToken");
             }
 
             cancellationToken.ThrowIfCancellationRequested();

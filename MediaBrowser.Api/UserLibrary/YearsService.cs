@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.UserLibrary
 {
@@ -49,13 +48,8 @@ namespace MediaBrowser.Api.UserLibrary
     /// </summary>
     public class YearsService : BaseItemsByNameService<Year>
     {
-        /// <summary>
-        /// The us culture
-        /// </summary>
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
-
-        public YearsService(IUserManager userManager, ILibraryManager libraryManager, IUserDataRepository userDataRepository, IItemRepository itemRepo)
-            : base(userManager, libraryManager, userDataRepository, itemRepo)
+        public YearsService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IDtoService dtoService)
+            : base(userManager, libraryManager, userDataRepository, itemRepo, dtoService)
         {
         }
 
@@ -66,7 +60,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetYear request)
         {
-            var result = GetItem(request).Result;
+            var result = GetItem(request);
 
             return ToOptimizedResult(result);
         }
@@ -76,23 +70,21 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task{BaseItemDto}.</returns>
-        private async Task<BaseItemDto> GetItem(GetYear request)
+        private BaseItemDto GetItem(GetYear request)
         {
-            var item = await LibraryManager.GetYear(request.Year).ConfigureAwait(false);
+            var item = LibraryManager.GetYear(request.Year);
 
             // Get everything
             var fields = Enum.GetNames(typeof(ItemFields)).Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true));
-
-            var builder = new DtoBuilder(Logger, LibraryManager, UserDataRepository, ItemRepository);
 
             if (request.UserId.HasValue)
             {
                 var user = UserManager.GetUserById(request.UserId.Value);
 
-                return await builder.GetBaseItemDto(item, fields.ToList(), user).ConfigureAwait(false);
+                return DtoService.GetBaseItemDto(item, fields.ToList(), user);
             }
 
-            return await builder.GetBaseItemDto(item, fields.ToList()).ConfigureAwait(false);
+            return DtoService.GetBaseItemDto(item, fields.ToList());
         }
 
         /// <summary>
@@ -102,7 +94,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetYears request)
         {
-            var result = GetResult(request).Result;
+            var result = GetResult(request);
 
             return ToOptimizedResult(result);
         }
@@ -113,24 +105,14 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         /// <param name="items">The items.</param>
         /// <returns>IEnumerable{Tuple{System.StringFunc{System.Int32}}}.</returns>
-        protected override IEnumerable<IbnStub<Year>> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
+        protected override IEnumerable<Year> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
         {
             var itemsList = items.Where(i => i.ProductionYear != null).ToList();
 
             return itemsList
                 .Select(i => i.ProductionYear.Value)
                 .Distinct()
-                .Select(year => new IbnStub<Year>(year.ToString(UsCulture), () => itemsList.Where(i => i.ProductionYear.HasValue && i.ProductionYear.Value == year), GetEntity));
-        }
-
-        /// <summary>
-        /// Gets the entity.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>Task{Studio}.</returns>
-        protected Task<Year> GetEntity(string name)
-        {
-            return LibraryManager.GetYear(int.Parse(name, UsCulture));
+                .Select(year => LibraryManager.GetYear(year));
         }
     }
 }

@@ -56,46 +56,48 @@ namespace MediaBrowser.Common.Updates
         /// Gets all available packages from a static resource.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="packageType">Type of the package.</param>
-        /// <param name="applicationVersion">The application version.</param>
         /// <returns>Task{List{PackageInfo}}.</returns>
-        Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken,
-            PackageType? packageType = null,
-            Version applicationVersion = null);
-        
+        Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken);
+
         /// <summary>
         /// Gets the package.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="guid">The assembly guid</param>
         /// <param name="classification">The classification.</param>
         /// <param name="version">The version.</param>
         /// <returns>Task{PackageVersionInfo}.</returns>
-        Task<PackageVersionInfo> GetPackage(string name, PackageVersionClass classification, Version version);
+        Task<PackageVersionInfo> GetPackage(string name, string guid, PackageVersionClass classification, Version version);
 
         /// <summary>
         /// Gets the latest compatible version.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="guid">The assembly guid</param>
+        /// <param name="currentServerVersion">The current server version.</param>
         /// <param name="classification">The classification.</param>
         /// <returns>Task{PackageVersionInfo}.</returns>
-        Task<PackageVersionInfo> GetLatestCompatibleVersion(string name, PackageVersionClass classification = PackageVersionClass.Release);
+        Task<PackageVersionInfo> GetLatestCompatibleVersion(string name, string guid, Version currentServerVersion, PackageVersionClass classification = PackageVersionClass.Release);
 
         /// <summary>
         /// Gets the latest compatible version.
         /// </summary>
         /// <param name="availablePackages">The available packages.</param>
         /// <param name="name">The name.</param>
+        /// <param name="guid">The assembly guid</param>
+        /// <param name="currentServerVersion">The current server version.</param>
         /// <param name="classification">The classification.</param>
         /// <returns>PackageVersionInfo.</returns>
-        PackageVersionInfo GetLatestCompatibleVersion(IEnumerable<PackageInfo> availablePackages, string name, PackageVersionClass classification = PackageVersionClass.Release);
+        PackageVersionInfo GetLatestCompatibleVersion(IEnumerable<PackageInfo> availablePackages, string name, string guid, Version currentServerVersion, PackageVersionClass classification = PackageVersionClass.Release);
 
         /// <summary>
         /// Gets the available plugin updates.
         /// </summary>
+        /// <param name="applicationVersion">The current server version.</param>
         /// <param name="withAutoUpdateEnabled">if set to <c>true</c> [with auto update enabled].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{IEnumerable{PackageVersionInfo}}.</returns>
-        Task<IEnumerable<PackageVersionInfo>> GetAvailablePluginUpdates(bool withAutoUpdateEnabled, CancellationToken cancellationToken);
+        Task<IEnumerable<PackageVersionInfo>> GetAvailablePluginUpdates(Version applicationVersion, bool withAutoUpdateEnabled, CancellationToken cancellationToken);
 
         /// <summary>
         /// Installs the package.

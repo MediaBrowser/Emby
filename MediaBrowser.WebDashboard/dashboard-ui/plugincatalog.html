@@ -9,23 +9,31 @@
         <div data-role="content">
             <div class="content-primary">
                 <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-                    <a href="plugins.html" data-role="button">Installed Plugins</a>
+                    <a href="plugins.html" data-role="button">Installed Server Plugins</a>
                     <a href="plugincatalog.html" data-role="button" class="ui-btn-active">Plugin Catalog</a>
                     <a href="pluginupdates.html" data-role="button">Automatic Updates</a>
                 </div>
+                <p style="margin: 2em 0;">
+                    Types: <a data-rel="popup" data-position-to="origin" href="#freePlugins">Free</a>, 
+                        <a data-rel="popup" data-position-to="origin" href="#supporterPlugins">Supporter-Only</a>, and <a data-rel="popup" data-position-to="origin" href="#premiumPlugins">Premium</a>.
+                </p>
 
-                <div style="margin: .75em 0;">
+                <div style="display: inline-block;">
+                    <label for="selectTargetSystem">Show</label>
+                </div>
 
-                    <div style="display: inline-block; margin-right: 1em;">
-                        <label for="selectTargetSystem">Show plugins for</label>
-                        <select id="selectTargetSystem" data-role="none" style="margin-left: .5em;">
-                            <option value="Server">MB Server</option>
-                            <option value="MBTheater">MB Theater</option>
-                            <option value="MBClassic">MB Classic</option>
-                        </select>
-                    </div>
+                <div style="display: inline-block;">
+                    <select id="selectTargetSystem" data-mini="true" data-inline="true" style="margin-left: .5em;">
+                        <option value="Server">MB Server plugins</option>
+                        <option value="MBTheater">MB Theater plugins</option>
+                        <option value="MBClassic">MB Classic plugins</option>
+                        <option value="Apps">Apps</option>
+                    </select>
+                </div>
 
-                    <button data-mini="true" data-icon="filter" data-inline="true" onclick="$('#filterPanel', $.mobile.activePage).panel( 'toggle' );">Filter</button>
+                <div style="display: inline-block; vertical-align: bottom; margin-left: 1em;">
+                    <input class="chkPremiumFilter" type="checkbox" data-mini="true" data-inline="true" name="chkPremium" id="chkPremium" data-theme="c" data-filter="IsPremium">
+                    <label for="chkPremium">Free Only</label>
                 </div>
 
                 <div id="noPlugins" class="hide">
@@ -37,16 +45,32 @@
             </div>
         </div>
 
-        <div data-role="panel" id="filterPanel" data-position="right" data-display="overlay" data-theme="b" data-position-fixed="true">
-            <form>
-                <fieldset data-role="controlgroup">
-                    <legend>
-                        <h3>Pricing:</h3>
-                    </legend>
-                    <input class="chkPremiumFilter" type="checkbox" name="chkPremium" id="chkPremium" data-theme="c" data-filter="IsPremium">
-                    <label for="chkPremium">Premium</label>
-                </fieldset>
-            </form>
+        <div data-role="popup" class="ui-content" id="freePlugins" data-theme="e" data-overlay-theme="a" style="max-width: 50%">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+            <p>
+                Free plug-ins can be installed and used by anyone for free. They will appear in the catalog without any banners.<p>
+        </div>
+
+        <div data-role="popup" class="ui-content" id="supporterPlugins" data-theme="e" data-overlay-theme="a" style="max-width: 50%">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+            <p>Supporter-Only plug-ins are free for anyone who is an <strong>MB3 Supporter</strong> (with a valid MB3 key who has donated the minimum amount to the overall project).</p>
+            <p>
+                Anyone can install them and enjoy a free trial period of 14 days in most instances.  The trial period may commence as soon as you install the plug-in.<p>
+            <p>These plug-ins will appear in the catalog with a "Supporter" banner.</p>
+        </div>
+
+        <div data-role="popup" class="ui-content" id="premiumPlugins" data-theme="e" data-overlay-theme="a" style="max-width: 50%">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+            <p>
+                Premium plug-ins are developed by third-parties and require that you be an <strong>MB3 Supporter <em>and</em> also register the plug-in with its creator.</strong>
+                The cost of registering these plug-ins is set for each one by its creator and all revenues go to that person.
+            </p>
+            <p>Anyone can install them and enjoy a free trial period of 14 days in most instances.  The trial period may commence as soon as you install the plug-in.</p>
+            <p>
+                You should install premium plug-ins without registering them first to take advantage of this trial period.  Then, if you find the functionality useful,
+                                                                                                                                                                         you can register it via its detail page here in the catalog.
+            </p>
+            <p>These plug-ins will appear in the catalog with a "Premium" banner.</p>
         </div>
     </div>
 </body>

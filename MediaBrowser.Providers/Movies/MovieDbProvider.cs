@@ -1,4 +1,6 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -6,13 +8,13 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Providers.Savers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +33,7 @@ namespace MediaBrowser.Providers.Movies
         /// <summary>
         /// The movie db
         /// </summary>
-        private readonly SemaphoreSlim _movieDbResourcePool = new SemaphoreSlim(1, 1);
+        internal readonly SemaphoreSlim MovieDbResourcePool = new SemaphoreSlim(1, 1);
 
         internal static MovieDbProvider Current { get; private set; }
 
@@ -46,6 +48,7 @@ namespace MediaBrowser.Providers.Movies
         /// </summary>
         /// <value>The HTTP client.</value>
         protected IHttpClient HttpClient { get; private set; }
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MovieDbProvider" /> class.
@@ -55,12 +58,13 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="jsonSerializer">The json serializer.</param>
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="providerManager">The provider manager.</param>
-        public MovieDbProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IJsonSerializer jsonSerializer, IHttpClient httpClient, IProviderManager providerManager)
+        public MovieDbProvider(ILogManager logManager, IServerConfigurationManager configurationManager, IJsonSerializer jsonSerializer, IHttpClient httpClient, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             JsonSerializer = jsonSerializer;
             HttpClient = httpClient;
             ProviderManager = providerManager;
+            _fileSystem = fileSystem;
             Current = this;
         }
 
@@ -72,7 +76,7 @@ namespace MediaBrowser.Providers.Movies
         {
             if (dispose)
             {
-                _movieDbResourcePool.Dispose();
+                MovieDbResourcePool.Dispose();
             }
         }
 
@@ -127,7 +131,7 @@ namespace MediaBrowser.Providers.Movies
         {
             get
             {
-                return "2";
+                return "3";
             }
         }
 
@@ -151,15 +155,14 @@ namespace MediaBrowser.Providers.Movies
 
             await _tmdbSettingsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            // Check again in case it got populated while we were waiting.
-            if (_tmdbSettings != null)
-            {
-                _tmdbSettingsSemaphore.Release();
-                return _tmdbSettings;
-            }
-
             try
             {
+                // Check again in case it got populated while we were waiting.
+                if (_tmdbSettings != null)
+                {
+                    return _tmdbSettings;
+                }
+
                 using (var json = await GetMovieDbResponse(new HttpRequestOptions
                 {
                     Url = string.Format(TmdbConfigUrl, ApiKey),
@@ -180,33 +183,73 @@ namespace MediaBrowser.Providers.Movies
         }
 
         private const string TmdbConfigUrl = "http://api.themoviedb.org/3/configuration?api_key={0}";
-        private const string Search3 = @"http://api.themoviedb.org/3/search/movie?api_key={1}&query={0}&language={2}";
-        private const string AltTitleSearch = @"http://api.themoviedb.org/3/movie/{0}/alternative_titles?api_key={1}&country={2}";
-        private const string GetMovieInfo3 = @"http://api.themoviedb.org/3/movie/{0}?api_key={1}&language={2}&append_to_response=casts,releases,images,keywords,trailers";
-        private const string GetBoxSetInfo3 = @"http://api.themoviedb.org/3/collection/{0}?api_key={1}&language={2}&append_to_response=images";
+        private const string Search3 = @"http://api.themoviedb.org/3/search/{3}?api_key={1}&query={0}&language={2}";
+        private const string GetMovieInfo3 = @"http://api.themoviedb.org/3/movie/{0}?api_key={1}&append_to_response=casts,releases,images,keywords,trailers";
+        private const string GetBoxSetInfo3 = @"http://api.themoviedb.org/3/collection/{0}?api_key={1}&append_to_response=images";
 
         internal static string ApiKey = "f6bd687ffa63cd282b6ff2c6877f2669";
         internal static string AcceptHeader = "application/json,image/*";
 
         static readonly Regex[] NameMatches = new[] {
             new Regex(@"(?<name>.*)\((?<year>\d{4})\)"), // matches "My Movie (2001)" and gives us the name and the year
+            new Regex(@"(?<name>.*)(\.(?<year>\d{4})(\.|$)).*$"), 
             new Regex(@"(?<name>.*)") // last resort matches the whole string as the name
         };
 
-        public const string AltMetaFileName = "movie.xml";
-
         protected override bool NeedsRefreshInternal(BaseItem item, BaseProviderInfo providerInfo)
         {
-            if (HasAltMeta(item))
-                return false;
-
-            // Boxsets require two passes because we need the children to be refreshed
-            if (item is BoxSet && string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.TmdbCollection)))
+            if (string.IsNullOrEmpty(item.GetProviderId(MetadataProviders.Tmdb)))
             {
                 return true;
             }
 
             return base.NeedsRefreshInternal(item, providerInfo);
+        }
+
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
+        {
+            var path = GetDataFilePath(item);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                var imagesFilePath = GetImagesDataFilePath(item);
+
+                var fileInfo = new FileInfo(path);
+                var imagesFileInfo = new FileInfo(imagesFilePath);
+
+                return !fileInfo.Exists || _fileSystem.GetLastWriteTimeUtc(fileInfo) > providerInfo.LastRefreshed ||
+                    !imagesFileInfo.Exists || _fileSystem.GetLastWriteTimeUtc(imagesFileInfo) > providerInfo.LastRefreshed;
+            }
+
+            return base.NeedsRefreshBasedOnCompareDate(item, providerInfo);
+        }
+
+        /// <summary>
+        /// Gets the movie data path.
+        /// </summary>
+        /// <param name="appPaths">The app paths.</param>
+        /// <param name="isBoxSet">if set to <c>true</c> [is box set].</param>
+        /// <param name="tmdbId">The TMDB id.</param>
+        /// <returns>System.String.</returns>
+        internal static string GetMovieDataPath(IApplicationPaths appPaths, bool isBoxSet, string tmdbId)
+        {
+            var dataPath = isBoxSet ? GetBoxSetsDataPath(appPaths) : GetMoviesDataPath(appPaths);
+
+            return Path.Combine(dataPath, tmdbId);
+        }
+
+        internal static string GetMoviesDataPath(IApplicationPaths appPaths)
+        {
+            var dataPath = Path.Combine(appPaths.DataPath, "tmdb-movies");
+
+            return dataPath;
+        }
+
+        internal static string GetBoxSetsDataPath(IApplicationPaths appPaths)
+        {
+            var dataPath = Path.Combine(appPaths.DataPath, "tmdb-collections");
+
+            return dataPath;
         }
 
         /// <summary>
@@ -220,7 +263,24 @@ namespace MediaBrowser.Providers.Movies
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await FetchMovieData(item, cancellationToken).ConfigureAwait(false);
+            var id = item.GetProviderId(MetadataProviders.Tmdb);
+
+            if (string.IsNullOrEmpty(id))
+            {
+                id = item.GetProviderId(MetadataProviders.Imdb);
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                id = await FindId(item, cancellationToken).ConfigureAwait(false);
+            }
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await FetchMovieData(item, id, force, cancellationToken).ConfigureAwait(false);
+            }
 
             SetLastRefreshed(item, DateTime.UtcNow);
             return true;
@@ -237,30 +297,16 @@ namespace MediaBrowser.Providers.Movies
             {
                 return item.LocationType == LocationType.FileSystem && item.ResolveArgs.ContainsMetaFileByName("collection.xml");
             }
-            return item.LocationType == LocationType.FileSystem && item.ResolveArgs.ContainsMetaFileByName(AltMetaFileName);
-        }
 
-        /// <summary>
-        /// Fetches the movie data.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Task.</returns>
-        private async Task FetchMovieData(BaseItem item, CancellationToken cancellationToken)
-        {
-            string id = item.GetProviderId(MetadataProviders.Tmdb) ?? await FindId(item, item.ProductionYear, cancellationToken).ConfigureAwait(false);
-            if (id != null)
+            var path = MovieXmlSaver.GetMovieSavePath(item);
+
+            if (item.LocationType == LocationType.FileSystem)
             {
-                Logger.Debug("MovieDbProvider - getting movie info with id: " + id);
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await FetchMovieData(item, id, cancellationToken).ConfigureAwait(false);
+                // If mixed with multiple movies in one folder, resolve args won't have the file system children
+                return item.ResolveArgs.ContainsMetaFileByName(Path.GetFileName(path)) || File.Exists(path);
             }
-            else
-            {
-                Logger.Info("MovieDBProvider could not find " + item.Name + ". Check name on themoviedb.org.");
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -269,7 +315,7 @@ namespace MediaBrowser.Providers.Movies
         /// <param name="name">The name.</param>
         /// <param name="justName">Name of the just.</param>
         /// <param name="year">The year.</param>
-        protected void ParseName(string name, out string justName, out int? year)
+        public static void ParseName(string name, out string justName, out int? year)
         {
             justName = null;
             year = null;
@@ -291,41 +337,41 @@ namespace MediaBrowser.Providers.Movies
         /// Finds the id.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <param name="productionYear">The production year.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task{System.String}.</returns>
-        public async Task<string> FindId(BaseItem item, int? productionYear, CancellationToken cancellationToken)
+        public async Task<string> FindId(BaseItem item, CancellationToken cancellationToken)
         {
-            int? year;
+            int? yearInName;
             string name = item.Name;
-            ParseName(name, out name, out year);
+            ParseName(name, out name, out yearInName);
 
-            if (year == null && productionYear != null)
-            {
-                year = productionYear;
-            }
+            var year = item.ProductionYear ?? yearInName;
 
-            Logger.Info("MovieDbProvider: Finding id for movie: " + name);
+            Logger.Info("MovieDbProvider: Finding id for item: " + name);
             string language = ConfigurationManager.Configuration.PreferredMetadataLanguage.ToLower();
 
             //if we are a boxset - look at our first child
             var boxset = item as BoxSet;
             if (boxset != null)
             {
-               // See if any movies have a collection id already
-                return boxset.Children.Concat(boxset.GetLinkedChildren()).OfType<Video>()
+                // See if any movies have a collection id already
+                var collId = boxset.Children.Concat(boxset.GetLinkedChildren()).OfType<Video>()
                     .Select(i => i.GetProviderId(MetadataProviders.TmdbCollection))
                    .FirstOrDefault(i => i != null);
+
+                if (collId != null) return collId;
+
             }
 
             //nope - search for it
-            var id = await AttemptFindId(name, year, language, cancellationToken).ConfigureAwait(false);
+            var searchType = item is BoxSet ? "collection" : "movie";
+            var id = await AttemptFindId(name, searchType, year, language, cancellationToken).ConfigureAwait(false);
             if (id == null)
             {
                 //try in english if wasn't before
                 if (language != "en")
                 {
-                    id = await AttemptFindId(name, year, "en", cancellationToken).ConfigureAwait(false);
+                    id = await AttemptFindId(name, searchType, year, "en", cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -335,17 +381,17 @@ namespace MediaBrowser.Providers.Movies
                     name = name.Replace(",", " ");
                     name = name.Replace(".", " ");
                     name = name.Replace("_", " ");
-                    name = name.Replace("-", "");
+                    name = name.Replace("-", " ");
 
                     // Search again if the new name is different
                     if (!string.Equals(name, originalName))
                     {
-                        id = await AttemptFindId(name, year, language, cancellationToken).ConfigureAwait(false);
+                        id = await AttemptFindId(name, searchType, year, language, cancellationToken).ConfigureAwait(false);
 
                         if (id == null && language != "en")
                         {
                             //one more time, in english
-                            id = await AttemptFindId(name, year, "en", cancellationToken).ConfigureAwait(false);
+                            id = await AttemptFindId(name, searchType, year, "en", cancellationToken).ConfigureAwait(false);
 
                         }
                     }
@@ -359,7 +405,7 @@ namespace MediaBrowser.Providers.Movies
                         if (!string.Equals(pathName, name, StringComparison.OrdinalIgnoreCase)
                             && !string.Equals(pathName, originalName, StringComparison.OrdinalIgnoreCase))
                         {
-                            id = await AttemptFindId(pathName, year, "en", cancellationToken).ConfigureAwait(false);
+                            id = await AttemptFindId(pathName, searchType, year, "en", cancellationToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -372,13 +418,14 @@ namespace MediaBrowser.Providers.Movies
         /// Attempts the find id.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="type">movie or collection</param>
         /// <param name="year">The year.</param>
         /// <param name="language">The language.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task{System.String}.</returns>
-        private async Task<string> AttemptFindId(string name, int? year, string language, CancellationToken cancellationToken)
+        private async Task<string> AttemptFindId(string name, string type, int? year, string language, CancellationToken cancellationToken)
         {
-            string url3 = string.Format(Search3, UrlEncode(name), ApiKey, language);
+            string url3 = string.Format(Search3, UrlEncode(name), ApiKey, language, type);
             TmdbMovieSearchResults searchResult = null;
 
             using (Stream json = await GetMovieDbResponse(new HttpRequestOptions
@@ -392,95 +439,12 @@ namespace MediaBrowser.Providers.Movies
                 searchResult = JsonSerializer.DeserializeFromStream<TmdbMovieSearchResults>(json);
             }
 
-            if (searchResult == null || searchResult.results.Count == 0)
-            {
-                //try replacing numbers
-                foreach (var pair in ReplaceStartNumbers)
-                {
-                    if (name.StartsWith(pair.Key))
-                    {
-                        name = name.Remove(0, pair.Key.Length);
-                        name = pair.Value + name;
-                    }
-                }
-                foreach (var pair in ReplaceEndNumbers)
-                {
-                    if (name.EndsWith(pair.Key))
-                    {
-                        name = name.Remove(name.IndexOf(pair.Key), pair.Key.Length);
-                        name = name + pair.Value;
-                    }
-                }
-                Logger.Info("MovieDBProvider - No results.  Trying replacement numbers: " + name);
-                url3 = string.Format(Search3, UrlEncode(name), ApiKey, language);
-
-                using (var json = await GetMovieDbResponse(new HttpRequestOptions
-                {
-                    Url = url3,
-                    CancellationToken = cancellationToken,
-                    AcceptHeader = AcceptHeader
-
-                }).ConfigureAwait(false))
-                {
-                    searchResult = JsonSerializer.DeserializeFromStream<TmdbMovieSearchResults>(json);
-                }
-            }
             if (searchResult != null)
             {
-                string compName = GetComparableName(name, Logger);
                 foreach (var possible in searchResult.results)
                 {
-                    string matchedName = null;
+                    string matchedName = possible.title ?? possible.name;
                     string id = possible.id.ToString(CultureInfo.InvariantCulture);
-                    string n = possible.title;
-                    if (GetComparableName(n, Logger) == compName)
-                    {
-                        matchedName = n;
-                    }
-                    else
-                    {
-                        n = possible.original_title;
-                        if (GetComparableName(n, Logger) == compName)
-                        {
-                            matchedName = n;
-                        }
-                    }
-
-                    Logger.Debug("MovieDbProvider - " + compName + " didn't match " + n);
-                    //if main title matches we don't have to look for alternatives
-                    if (matchedName == null)
-                    {
-                        //that title didn't match - look for alternatives
-                        url3 = string.Format(AltTitleSearch, id, ApiKey, ConfigurationManager.Configuration.MetadataCountryCode);
-
-                        using (var json = await GetMovieDbResponse(new HttpRequestOptions
-                        {
-                            Url = url3,
-                            CancellationToken = cancellationToken,
-                            AcceptHeader = AcceptHeader
-
-                        }).ConfigureAwait(false))
-                        {
-                            var response = JsonSerializer.DeserializeFromStream<TmdbAltTitleResults>(json);
-
-                            if (response != null && response.titles != null)
-                            {
-                                foreach (var title in response.titles)
-                                {
-                                    var t = GetComparableName(title.title, Logger);
-                                    if (t == compName)
-                                    {
-                                        Logger.Debug("MovieDbProvider - " + compName +
-                                                            " matched " + t);
-                                        matchedName = t;
-                                        break;
-                                    }
-                                    Logger.Debug("MovieDbProvider - " + compName +
-                                                        " did not match " + t);
-                                }
-                            }
-                        }
-                    }
 
                     if (matchedName != null)
                     {
@@ -519,83 +483,156 @@ namespace MediaBrowser.Providers.Movies
             return WebUtility.UrlEncode(name);
         }
 
-        /// <summary>
-        /// Gets the boxset id from movie.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="year">The year.</param>
-        /// <param name="language">The language.</param>
-        /// <param name="cancellationToken">The cancellation token</param>
-        /// <returns>Task{System.String}.</returns>
-        protected async Task<string> GetBoxsetIdFromMovie(string name, int? year, string language, CancellationToken cancellationToken)
-        {
-            string id = null;
-            string childId = await AttemptFindId(name, year, language, cancellationToken).ConfigureAwait(false);
-            if (childId != null)
-            {
-                string url = string.Format(GetMovieInfo3, childId, ApiKey, language);
-
-                using (Stream json = await GetMovieDbResponse(new HttpRequestOptions
-                {
-                    Url = url,
-                    CancellationToken = cancellationToken,
-                    AcceptHeader = AcceptHeader
-
-                }).ConfigureAwait(false))
-                {
-                    var movieResult = JsonSerializer.DeserializeFromStream<CompleteMovieData>(json);
-
-                    if (movieResult != null && movieResult.belongs_to_collection != null)
-                    {
-                        id = movieResult.belongs_to_collection.id.ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        Logger.Error("Unable to obtain boxset id.");
-                    }
-                }
-            }
-            return id;
-        }
+        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
         /// <summary>
         /// Fetches the movie data.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <param name="id">The id.</param>
+        /// <param name="isForcedRefresh">if set to <c>true</c> [is forced refresh].</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task.</returns>
-        protected async Task FetchMovieData(BaseItem item, string id, CancellationToken cancellationToken)
+        private async Task FetchMovieData(BaseItem item, string id, bool isForcedRefresh, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            // Id could be ImdbId or TmdbId
 
-            if (String.IsNullOrEmpty(id))
+            var language = ConfigurationManager.Configuration.PreferredMetadataLanguage;
+
+            var dataFilePath = GetDataFilePath(item);
+
+            var tmdbId = item.GetProviderId(MetadataProviders.Tmdb);
+
+            if (string.IsNullOrEmpty(dataFilePath) || !File.Exists(dataFilePath) || !File.Exists(GetImagesDataFilePath(item)))
             {
-                Logger.Info("MoviedbProvider: Ignoring " + item.Name + " because ID forced blank.");
-                return;
-            }
-            
-            item.SetProviderId(MetadataProviders.Tmdb, id);
+                var isBoxSet = item is BoxSet;
 
-            var mainResult = await FetchMainResult(item, id, cancellationToken).ConfigureAwait(false);
+                var mainResult = await FetchMainResult(id, isBoxSet, language, cancellationToken).ConfigureAwait(false);
+
+                if (mainResult == null) return;
+
+                tmdbId = mainResult.id.ToString(_usCulture);
+
+                var movieDataPath = GetMovieDataPath(ConfigurationManager.ApplicationPaths, isBoxSet, tmdbId);
+
+                dataFilePath = Path.Combine(movieDataPath, language + ".json");
+
+                var directory = Path.GetDirectoryName(dataFilePath);
+
+                Directory.CreateDirectory(directory);
+
+                JsonSerializer.SerializeToFile(mainResult, dataFilePath);
+
+                // Now get the language-less version
+                mainResult = await FetchMainResult(id, isBoxSet, null, cancellationToken).ConfigureAwait(false);
+
+                dataFilePath = Path.Combine(movieDataPath, "default.json");
+
+                JsonSerializer.SerializeToFile(mainResult, dataFilePath);
+            }
+
+            if (isForcedRefresh || ConfigurationManager.Configuration.EnableTmdbUpdates || !HasAltMeta(item))
+            {
+                dataFilePath = GetDataFilePath(item, tmdbId);
+
+                if (!string.IsNullOrEmpty(dataFilePath))
+                {
+                    var mainResult = JsonSerializer.DeserializeFromFile<CompleteMovieData>(dataFilePath);
+
+                    ProcessMainInfo(item, mainResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Downloads the movie info.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="isBoxSet">if set to <c>true</c> [is box set].</param>
+        /// <param name="dataPath">The data path.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        internal async Task DownloadMovieInfo(string id, bool isBoxSet, string dataPath, CancellationToken cancellationToken)
+        {
+            var language = ConfigurationManager.Configuration.PreferredMetadataLanguage;
+
+            var mainResult = await FetchMainResult(id, isBoxSet, language, cancellationToken).ConfigureAwait(false);
 
             if (mainResult == null) return;
 
-            ProcessMainInfo(item, mainResult);
+            var dataFilePath = Path.Combine(dataPath, language + ".json");
+
+            Directory.CreateDirectory(dataPath);
+
+            JsonSerializer.SerializeToFile(mainResult, dataFilePath);
+
+            // Now get the language-less version
+            mainResult = await FetchMainResult(id, isBoxSet, null, cancellationToken).ConfigureAwait(false);
+
+            dataFilePath = Path.Combine(dataPath, "default.json");
+
+            JsonSerializer.SerializeToFile(mainResult, dataFilePath);
+        }
+
+        /// <summary>
+        /// Gets the data file path.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>System.String.</returns>
+        internal string GetDataFilePath(BaseItem item)
+        {
+            var id = item.GetProviderId(MetadataProviders.Tmdb);
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return null;
+            }
+
+            return GetDataFilePath(item, id);
+        }
+
+        internal string GetDataFilePath(BaseItem item, string tmdbId)
+        {
+            var language = ConfigurationManager.Configuration.PreferredMetadataLanguage;
+
+            var path = GetMovieDataPath(ConfigurationManager.ApplicationPaths, item is BoxSet, tmdbId);
+
+            path = Path.Combine(path, language + ".json");
+
+            return path;
+        }
+        
+        internal string GetImagesDataFilePath(BaseItem item)
+        {
+            var path = GetDataFilePath(item);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = Path.Combine(Path.GetDirectoryName(path), "default.json");
+            }
+
+            return path;
         }
 
         /// <summary>
         /// Fetches the main result.
         /// </summary>
-        /// <param name="item">The item.</param>
         /// <param name="id">The id.</param>
+        /// <param name="isBoxSet">if set to <c>true</c> [is box set].</param>
+        /// <param name="language">The language.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task{CompleteMovieData}.</returns>
-        protected async Task<CompleteMovieData> FetchMainResult(BaseItem item, string id, CancellationToken cancellationToken)
+        private async Task<CompleteMovieData> FetchMainResult(string id, bool isBoxSet, string language, CancellationToken cancellationToken)
         {
-            var baseUrl = item is BoxSet ? GetBoxSetInfo3 : GetMovieInfo3;
+            var baseUrl = isBoxSet ? GetBoxSetInfo3 : GetMovieInfo3;
 
-            string url = string.Format(baseUrl, id, ApiKey, ConfigurationManager.Configuration.PreferredMetadataLanguage);
+            var url = string.Format(baseUrl, id, ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+            {
+                url += "&language=" + language;
+            }
+
             CompleteMovieData mainResult;
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -615,13 +652,13 @@ namespace MediaBrowser.Providers.Movies
 
             if (mainResult != null && string.IsNullOrEmpty(mainResult.overview))
             {
-                if (ConfigurationManager.Configuration.PreferredMetadataLanguage.ToLower() != "en")
+                if (!string.IsNullOrEmpty(language) && !string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("MovieDbProvider couldn't find meta for language " + ConfigurationManager.Configuration.PreferredMetadataLanguage + ". Trying English...");
+                    Logger.Info("MovieDbProvider couldn't find meta for language " + language + ". Trying English...");
 
                     url = string.Format(baseUrl, id, ApiKey, "en");
 
-                    using (Stream json = await GetMovieDbResponse(new HttpRequestOptions
+                    using (var json = await GetMovieDbResponse(new HttpRequestOptions
                     {
                         Url = url,
                         CancellationToken = cancellationToken,
@@ -634,7 +671,7 @@ namespace MediaBrowser.Providers.Movies
 
                     if (String.IsNullOrEmpty(mainResult.overview))
                     {
-                        Logger.Error("MovieDbProvider - Unable to find information for " + item.Name + " (id:" + id + ")");
+                        Logger.Error("MovieDbProvider - Unable to find information for (id:" + id + ")");
                         return null;
                     }
                 }
@@ -647,56 +684,74 @@ namespace MediaBrowser.Providers.Movies
         /// </summary>
         /// <param name="movie">The movie.</param>
         /// <param name="movieData">The movie data.</param>
-        protected virtual void ProcessMainInfo(BaseItem movie, CompleteMovieData movieData)
+        private void ProcessMainInfo(BaseItem movie, CompleteMovieData movieData)
         {
-            if (movie != null && movieData != null)
+            if (!movie.LockedFields.Contains(MetadataFields.Name))
             {
-                if (!movie.LockedFields.Contains(MetadataFields.Name))
+                movie.Name = movieData.title ?? movieData.original_title ?? movieData.name ?? movie.Name;
+            }
+            if (!movie.LockedFields.Contains(MetadataFields.Overview))
+            {
+                movie.Overview = WebUtility.HtmlDecode(movieData.overview);
+                movie.Overview = movie.Overview != null ? movie.Overview.Replace("\n\n", "\n") : null;
+            }
+            movie.HomePageUrl = movieData.homepage;
+
+            movie.Budget = movieData.budget;
+            movie.Revenue = movieData.revenue;
+
+            if (!string.IsNullOrEmpty(movieData.tagline))
+            {
+                movie.Taglines.Clear();
+                movie.AddTagline(movieData.tagline);
+            }
+
+            movie.SetProviderId(MetadataProviders.Tmdb, movieData.id.ToString(_usCulture));
+            movie.SetProviderId(MetadataProviders.Imdb, movieData.imdb_id);
+
+            if (movieData.belongs_to_collection != null)
+            {
+                movie.SetProviderId(MetadataProviders.TmdbCollection,
+                                    movieData.belongs_to_collection.id.ToString(CultureInfo.InvariantCulture));
+
+                var movieItem = movie as Movie;
+
+                if (movieItem != null)
                 {
-                    movie.Name = movieData.title ?? movieData.original_title ?? movieData.name ?? movie.Name;
+                    movieItem.TmdbCollectionName = movieData.belongs_to_collection.name;
                 }
-                if (!movie.LockedFields.Contains(MetadataFields.Overview))
-                {
-                    movie.Overview = WebUtility.HtmlDecode(movieData.overview);
-                    movie.Overview = movie.Overview != null ? movie.Overview.Replace("\n\n", "\n") : null;
-                }
-                movie.HomePageUrl = movieData.homepage;
-                movie.Budget = movieData.budget;
-                movie.Revenue = movieData.revenue;
+            }
+            else
+            {
+                movie.SetProviderId(MetadataProviders.TmdbCollection, null); // clear out any old entry
+            }
 
-                if (!string.IsNullOrEmpty(movieData.tagline))
-                {
-                    movie.Taglines.Clear();
-                    movie.AddTagline(movieData.tagline);
-                }
+            float rating;
+            string voteAvg = movieData.vote_average.ToString(CultureInfo.InvariantCulture);
 
-                movie.SetProviderId(MetadataProviders.Imdb, movieData.imdb_id);
+            // tmdb appears to have unified their numbers to always report "7.3" regardless of country
+            // so I removed the culture-specific processing here because it was not working for other countries -ebr
+            // Movies get this from imdb
+            if (movie is BoxSet && float.TryParse(voteAvg, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
+            {
+                movie.CommunityRating = rating;
+            }
 
-                if (movieData.belongs_to_collection != null)
-                {
-                    movie.SetProviderId(MetadataProviders.TmdbCollection, movieData.belongs_to_collection.id.ToString(CultureInfo.InvariantCulture));
-                }
-                else
-                {
-                    movie.SetProviderId(MetadataProviders.TmdbCollection, null); // clear out any old entry
-                }
-
-                float rating;
-                string voteAvg = movieData.vote_average.ToString(CultureInfo.InvariantCulture);
-
-                //tmdb appears to have unified their numbers to always report "7.3" regardless of country
-                // so I removed the culture-specific processing here because it was not working for other countries -ebr
-                if (float.TryParse(voteAvg, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
-                    movie.CommunityRating = rating;
-
+            // Movies get this from imdb
+            if (movie is BoxSet)
+            {
                 movie.VoteCount = movieData.vote_count;
+            }
 
-                //release date and certification are retrieved based on configured country and we fall back on US if not there and to minimun release date if still no match
-                if (movieData.releases != null && movieData.releases.countries != null)
+            //release date and certification are retrieved based on configured country and we fall back on US if not there and to minimun release date if still no match
+            if (movieData.releases != null && movieData.releases.countries != null)
+            {
+                var ourRelease = movieData.releases.countries.FirstOrDefault(c => c.iso_3166_1.Equals(ConfigurationManager.Configuration.MetadataCountryCode, StringComparison.OrdinalIgnoreCase)) ?? new Country();
+                var usRelease = movieData.releases.countries.FirstOrDefault(c => c.iso_3166_1.Equals("US", StringComparison.OrdinalIgnoreCase)) ?? new Country();
+                var minimunRelease = movieData.releases.countries.OrderBy(c => c.release_date).FirstOrDefault() ?? new Country();
+
+                if (!movie.LockedFields.Contains(MetadataFields.OfficialRating))
                 {
-                    var ourRelease = movieData.releases.countries.FirstOrDefault(c => c.iso_3166_1.Equals(ConfigurationManager.Configuration.MetadataCountryCode, StringComparison.OrdinalIgnoreCase)) ?? new Country();
-                    var usRelease = movieData.releases.countries.FirstOrDefault(c => c.iso_3166_1.Equals("US", StringComparison.OrdinalIgnoreCase)) ?? new Country();
-                    var minimunRelease = movieData.releases.countries.OrderBy(c => c.release_date).FirstOrDefault() ?? new Country();
                     var ratingPrefix = ConfigurationManager.Configuration.MetadataCountryCode.Equals("us", StringComparison.OrdinalIgnoreCase) ? "" : ConfigurationManager.Configuration.MetadataCountryCode + "-";
                     movie.OfficialRating = !string.IsNullOrEmpty(ourRelease.certification)
                                                ? ratingPrefix + ourRelease.certification
@@ -705,70 +760,76 @@ namespace MediaBrowser.Providers.Movies
                                                      : !string.IsNullOrEmpty(minimunRelease.certification)
                                                            ? minimunRelease.iso_3166_1 + "-" + minimunRelease.certification
                                                            : null;
-
-                    if (ourRelease.release_date != default(DateTime))
-                    {
-                        if (ourRelease.release_date.Year != 1)
-                        {
-                            movie.PremiereDate = ourRelease.release_date.ToUniversalTime();
-                            movie.ProductionYear = ourRelease.release_date.Year;
-                        }
-                    }
-                    else if (usRelease.release_date != default(DateTime))
-                    {
-                        if (usRelease.release_date.Year != 1)
-                        {
-                            movie.PremiereDate = usRelease.release_date.ToUniversalTime();
-                            movie.ProductionYear = usRelease.release_date.Year;
-                        }
-                    }
-                    else if (minimunRelease.release_date != default(DateTime))
-                    {
-                        if (minimunRelease.release_date.Year != 1)
-                        {
-
-                            movie.PremiereDate = minimunRelease.release_date.ToUniversalTime();
-                            movie.ProductionYear = minimunRelease.release_date.Year;
-                        }
-                    }
                 }
-                else
+
+                if (ourRelease.release_date != default(DateTime))
                 {
-                    if (movieData.release_date.Year != 1)
+                    if (ourRelease.release_date.Year != 1)
                     {
-                        //no specific country release info at all
-                        movie.PremiereDate = movieData.release_date.ToUniversalTime();
-                        movie.ProductionYear = movieData.release_date.Year;
+                        movie.PremiereDate = ourRelease.release_date.ToUniversalTime();
+                        movie.ProductionYear = ourRelease.release_date.Year;
                     }
                 }
-
-                //if that didn't find a rating and we are a boxset, use the one from our first child
-                if (movie.OfficialRating == null && movie is BoxSet)
+                else if (usRelease.release_date != default(DateTime))
                 {
-                    var boxset = movie as BoxSet;
-                    Logger.Info("MovieDbProvider - Using rating of first child of boxset...");
-
-                    var firstChild = boxset.Children.Concat(boxset.GetLinkedChildren()).FirstOrDefault();
-
-                    boxset.OfficialRating = firstChild != null ? firstChild.OfficialRating : null;
-                }
-
-                if (movieData.runtime > 0)
-                    movie.OriginalRunTimeTicks = TimeSpan.FromMinutes(movieData.runtime).Ticks;
-
-                //studios
-                if (movieData.production_companies != null && !movie.LockedFields.Contains(MetadataFields.Studios))
-                {
-                    movie.Studios.Clear();
-
-                    foreach (var studio in movieData.production_companies.Select(c => c.name))
+                    if (usRelease.release_date.Year != 1)
                     {
-                        movie.AddStudio(studio);
+                        movie.PremiereDate = usRelease.release_date.ToUniversalTime();
+                        movie.ProductionYear = usRelease.release_date.Year;
                     }
                 }
+                else if (minimunRelease.release_date != default(DateTime))
+                {
+                    if (minimunRelease.release_date.Year != 1)
+                    {
 
-                //genres
-                if (movieData.genres != null && !movie.LockedFields.Contains(MetadataFields.Genres))
+                        movie.PremiereDate = minimunRelease.release_date.ToUniversalTime();
+                        movie.ProductionYear = minimunRelease.release_date.Year;
+                    }
+                }
+            }
+            else
+            {
+                if (movieData.release_date.Year != 1)
+                {
+                    //no specific country release info at all
+                    movie.PremiereDate = movieData.release_date.ToUniversalTime();
+                    movie.ProductionYear = movieData.release_date.Year;
+                }
+            }
+
+            //if that didn't find a rating and we are a boxset, use the one from our first child
+            if (movie.OfficialRating == null && movie is BoxSet && !movie.LockedFields.Contains(MetadataFields.OfficialRating))
+            {
+                var boxset = movie as BoxSet;
+                Logger.Info("MovieDbProvider - Using rating of first child of boxset...");
+
+                var firstChild = boxset.Children.Concat(boxset.GetLinkedChildren()).FirstOrDefault();
+
+                boxset.OfficialRating = firstChild != null ? firstChild.OfficialRating : null;
+            }
+
+            if (movieData.runtime > 0)
+                movie.OriginalRunTimeTicks = TimeSpan.FromMinutes(movieData.runtime).Ticks;
+
+            //studios
+            if (movieData.production_companies != null && !movie.LockedFields.Contains(MetadataFields.Studios))
+            {
+                movie.Studios.Clear();
+
+                foreach (var studio in movieData.production_companies.Select(c => c.name))
+                {
+                    movie.AddStudio(studio);
+                }
+            }
+
+            // genres
+            // Movies get this from imdb
+            if (movieData.genres != null && !movie.LockedFields.Contains(MetadataFields.Genres))
+            {
+                // Only grab them if a boxset or there are no genres.
+                // For movies and trailers we'll use imdb via omdb
+                if (movie is BoxSet || movie.Genres.Count == 0)
                 {
                     movie.Genres.Clear();
 
@@ -777,44 +838,43 @@ namespace MediaBrowser.Providers.Movies
                         movie.AddGenre(genre);
                     }
                 }
+            }
 
-                if (!movie.LockedFields.Contains(MetadataFields.Cast))
+            if (!movie.LockedFields.Contains(MetadataFields.Cast))
+            {
+                movie.People.Clear();
+
+                //Actors, Directors, Writers - all in People
+                //actors come from cast
+                if (movieData.casts != null && movieData.casts.cast != null)
                 {
-                    movie.People.Clear();
-
-                    //Actors, Directors, Writers - all in People
-                    //actors come from cast
-                    if (movieData.casts != null && movieData.casts.cast != null)
-                    {
-                        foreach (var actor in movieData.casts.cast.OrderBy(a => a.order)) movie.AddPerson(new PersonInfo { Name = actor.name.Trim(), Role = actor.character, Type = PersonType.Actor });
-                    }
-
-                    //and the rest from crew
-                    if (movieData.casts != null && movieData.casts.crew != null)
-                    {
-                        foreach (var person in movieData.casts.crew) movie.AddPerson(new PersonInfo { Name = person.name.Trim(), Role = person.job, Type = person.department });
-                    }
+                    foreach (var actor in movieData.casts.cast.OrderBy(a => a.order)) movie.AddPerson(new PersonInfo { Name = actor.name.Trim(), Role = actor.character, Type = PersonType.Actor, SortOrder = actor.order });
                 }
 
-                if (movieData.keywords != null && movieData.keywords.keywords != null && !movie.LockedFields.Contains(MetadataFields.Tags))
+                //and the rest from crew
+                if (movieData.casts != null && movieData.casts.crew != null)
                 {
-                    movie.Tags = movieData.keywords.keywords.Select(i => i.name).ToList();
-                }
-
-                if (movieData.trailers != null && movieData.trailers.youtube != null &&
-                    movieData.trailers.youtube.Count > 0)
-                {
-                    movie.RemoteTrailers = movieData.trailers.youtube.Select(i => new MediaUrl
-                    {
-                        Url = string.Format("http://www.youtube.com/watch?v={0}", i.source),
-                        IsDirectLink = false,
-                        Name = i.name,
-                        VideoSize = string.Equals("hd", i.size, StringComparison.OrdinalIgnoreCase) ? VideoSize.HighDefinition : VideoSize.StandardDefinition
-
-                    }).ToList();
+                    foreach (var person in movieData.casts.crew) movie.AddPerson(new PersonInfo { Name = person.name.Trim(), Role = person.job, Type = person.department });
                 }
             }
 
+            if (movieData.keywords != null && movieData.keywords.keywords != null && !movie.LockedFields.Contains(MetadataFields.Tags))
+            {
+                movie.Tags = movieData.keywords.keywords.Select(i => i.name).ToList();
+            }
+
+            if (movieData.trailers != null && movieData.trailers.youtube != null &&
+                movieData.trailers.youtube.Count > 0)
+            {
+                movie.RemoteTrailers = movieData.trailers.youtube.Select(i => new MediaUrl
+                {
+                    Url = string.Format("http://www.youtube.com/watch?v={0}", i.source),
+                    IsDirectLink = false,
+                    Name = i.name,
+                    VideoSize = string.Equals("hd", i.size, StringComparison.OrdinalIgnoreCase) ? VideoSize.HighDefinition : VideoSize.StandardDefinition
+
+                }).ToList();
+            }
         }
 
         private DateTime _lastRequestDate = DateTime.MinValue;
@@ -826,7 +886,7 @@ namespace MediaBrowser.Providers.Movies
         {
             var cancellationToken = options.CancellationToken;
 
-            await _movieDbResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await MovieDbResourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -846,137 +906,19 @@ namespace MediaBrowser.Providers.Movies
             {
                 _lastRequestDate = DateTime.Now;
 
-                _movieDbResourcePool.Release();
+                MovieDbResourcePool.Release();
             }
         }
 
-        /// <summary>
-        /// The remove
-        /// </summary>
-        const string Remove = "\"'!`?";
-        // "Face/Off" support.
-        /// <summary>
-        /// The spacers
-        /// </summary>
-        const string Spacers = "/,.:;\\(){}[]+-_=–*";  // (there are not actually two - in the they are different char codes)
-        /// <summary>
-        /// The replace start numbers
-        /// </summary>
-        static readonly Dictionary<string, string> ReplaceStartNumbers = new Dictionary<string, string> {
-            {"1 ","one "},
-            {"2 ","two "},
-            {"3 ","three "},
-            {"4 ","four "},
-            {"5 ","five "},
-            {"6 ","six "},
-            {"7 ","seven "},
-            {"8 ","eight "},
-            {"9 ","nine "},
-            {"10 ","ten "},
-            {"11 ","eleven "},
-            {"12 ","twelve "},
-            {"13 ","thirteen "},
-            {"100 ","one hundred "},
-            {"101 ","one hundred one "}
-        };
-
-        /// <summary>
-        /// The replace end numbers
-        /// </summary>
-        static readonly Dictionary<string, string> ReplaceEndNumbers = new Dictionary<string, string> {
-            {" 1"," i"},
-            {" 2"," ii"},
-            {" 3"," iii"},
-            {" 4"," iv"},
-            {" 5"," v"},
-            {" 6"," vi"},
-            {" 7"," vii"},
-            {" 8"," viii"},
-            {" 9"," ix"},
-            {" 10"," x"}
-        };
-
-        /// <summary>
-        /// Gets the name of the comparable.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="logger">The logger.</param>
-        /// <returns>System.String.</returns>
-        internal static string GetComparableName(string name, ILogger logger)
+        public void Dispose()
         {
-            name = name.ToLower();
-            name = name.Replace("á", "a");
-            name = name.Replace("é", "e");
-            name = name.Replace("í", "i");
-            name = name.Replace("ó", "o");
-            name = name.Replace("ú", "u");
-            name = name.Replace("ü", "u");
-            name = name.Replace("ñ", "n");
-            foreach (var pair in ReplaceStartNumbers)
-            {
-                if (name.StartsWith(pair.Key))
-                {
-                    name = name.Remove(0, pair.Key.Length);
-                    name = pair.Value + name;
-                    logger.Info("MovieDbProvider - Replaced Start Numbers: " + name);
-                }
-            }
-            foreach (var pair in ReplaceEndNumbers)
-            {
-                if (name.EndsWith(pair.Key))
-                {
-                    name = name.Remove(name.IndexOf(pair.Key), pair.Key.Length);
-                    name = name + pair.Value;
-                    logger.Info("MovieDbProvider - Replaced End Numbers: " + name);
-                }
-            }
-            name = name.Normalize(NormalizationForm.FormKD);
-            var sb = new StringBuilder();
-            foreach (var c in name)
-            {
-                if (c >= 0x2B0 && c <= 0x0333)
-                {
-                    // skip char modifier and diacritics 
-                }
-                else if (Remove.IndexOf(c) > -1)
-                {
-                    // skip chars we are removing
-                }
-                else if (Spacers.IndexOf(c) > -1)
-                {
-                    sb.Append(" ");
-                }
-                else if (c == '&')
-                {
-                    sb.Append(" and ");
-                }
-                else
-                {
-                    sb.Append(c);
-                }
-            }
-            name = sb.ToString();
-            name = name.Replace(", the", "");
-            name = name.Replace(" the ", " ");
-            name = name.Replace("the ", "");
-
-            string prev_name;
-            do
-            {
-                prev_name = name;
-                name = name.Replace("  ", " ");
-            } while (name.Length != prev_name.Length);
-
-            return name.Trim();
+            Dispose(true);
         }
-
-        #region Result Objects
-
 
         /// <summary>
         /// Class TmdbTitle
         /// </summary>
-        protected class TmdbTitle
+        internal class TmdbTitle
         {
             /// <summary>
             /// Gets or sets the iso_3166_1.
@@ -993,7 +935,7 @@ namespace MediaBrowser.Providers.Movies
         /// <summary>
         /// Class TmdbAltTitleResults
         /// </summary>
-        protected class TmdbAltTitleResults
+        internal class TmdbAltTitleResults
         {
             /// <summary>
             /// Gets or sets the id.
@@ -1010,7 +952,7 @@ namespace MediaBrowser.Providers.Movies
         /// <summary>
         /// Class TmdbMovieSearchResult
         /// </summary>
-        protected class TmdbMovieSearchResult
+        internal class TmdbMovieSearchResult
         {
             /// <summary>
             /// Gets or sets a value indicating whether this <see cref="TmdbMovieSearchResult" /> is adult.
@@ -1058,6 +1000,10 @@ namespace MediaBrowser.Providers.Movies
             /// <value>The vote_average.</value>
             public double vote_average { get; set; }
             /// <summary>
+            /// For collection search results
+            /// </summary>
+            public string name { get; set; }
+            /// <summary>
             /// Gets or sets the vote_count.
             /// </summary>
             /// <value>The vote_count.</value>
@@ -1067,7 +1013,7 @@ namespace MediaBrowser.Providers.Movies
         /// <summary>
         /// Class TmdbMovieSearchResults
         /// </summary>
-        protected class TmdbMovieSearchResults
+        internal class TmdbMovieSearchResults
         {
             /// <summary>
             /// Gets or sets the page.
@@ -1091,7 +1037,7 @@ namespace MediaBrowser.Providers.Movies
             public int total_results { get; set; }
         }
 
-        protected class BelongsToCollection
+        internal class BelongsToCollection
         {
             public int id { get; set; }
             public string name { get; set; }
@@ -1099,31 +1045,31 @@ namespace MediaBrowser.Providers.Movies
             public string backdrop_path { get; set; }
         }
 
-        protected class GenreItem
+        internal class GenreItem
         {
             public int id { get; set; }
             public string name { get; set; }
         }
 
-        protected class ProductionCompany
+        internal class ProductionCompany
         {
             public string name { get; set; }
             public int id { get; set; }
         }
 
-        protected class ProductionCountry
+        internal class ProductionCountry
         {
             public string iso_3166_1 { get; set; }
             public string name { get; set; }
         }
 
-        protected class SpokenLanguage
+        internal class SpokenLanguage
         {
             public string iso_639_1 { get; set; }
             public string name { get; set; }
         }
 
-        protected class Cast
+        internal class Cast
         {
             public int id { get; set; }
             public string name { get; set; }
@@ -1133,7 +1079,7 @@ namespace MediaBrowser.Providers.Movies
             public string profile_path { get; set; }
         }
 
-        protected class Crew
+        internal class Crew
         {
             public int id { get; set; }
             public string name { get; set; }
@@ -1142,36 +1088,77 @@ namespace MediaBrowser.Providers.Movies
             public string profile_path { get; set; }
         }
 
-        protected class Casts
+        internal class Casts
         {
             public List<Cast> cast { get; set; }
             public List<Crew> crew { get; set; }
         }
 
-        protected class Country
+        internal class Country
         {
             public string iso_3166_1 { get; set; }
             public string certification { get; set; }
             public DateTime release_date { get; set; }
         }
 
-        protected class Releases
+        internal class Releases
         {
             public List<Country> countries { get; set; }
         }
 
-        protected class Keyword
+        internal class Backdrop
+        {
+            public string file_path { get; set; }
+            public int width { get; set; }
+            public int height { get; set; }
+            public object iso_639_1 { get; set; }
+            public double aspect_ratio { get; set; }
+            public double vote_average { get; set; }
+            public int vote_count { get; set; }
+        }
+
+        internal class Poster
+        {
+            public string file_path { get; set; }
+            public int width { get; set; }
+            public int height { get; set; }
+            public string iso_639_1 { get; set; }
+            public double aspect_ratio { get; set; }
+            public double vote_average { get; set; }
+            public int vote_count { get; set; }
+        }
+
+        internal class Images
+        {
+            public List<Backdrop> backdrops { get; set; }
+            public List<Poster> posters { get; set; }
+        }
+
+        internal class Keyword
         {
             public int id { get; set; }
             public string name { get; set; }
         }
 
-        protected class Keywords
+        internal class Keywords
         {
             public List<Keyword> keywords { get; set; }
         }
 
-        protected class CompleteMovieData
+        internal class Youtube
+        {
+            public string name { get; set; }
+            public string size { get; set; }
+            public string source { get; set; }
+        }
+
+        internal class Trailers
+        {
+            public List<object> quicktime { get; set; }
+            public List<Youtube> youtube { get; set; }
+        }
+
+        internal class CompleteMovieData
         {
             public bool adult { get; set; }
             public string backdrop_path { get; set; }
@@ -1181,7 +1168,6 @@ namespace MediaBrowser.Providers.Movies
             public string homepage { get; set; }
             public int id { get; set; }
             public string imdb_id { get; set; }
-            public string name { get; set; }
             public string original_title { get; set; }
             public string overview { get; set; }
             public double popularity { get; set; }
@@ -1195,27 +1181,17 @@ namespace MediaBrowser.Providers.Movies
             public string status { get; set; }
             public string tagline { get; set; }
             public string title { get; set; }
+            public string name { get; set; }
             public double vote_average { get; set; }
             public int vote_count { get; set; }
             public Casts casts { get; set; }
             public Releases releases { get; set; }
+            public Images images { get; set; }
             public Keywords keywords { get; set; }
             public Trailers trailers { get; set; }
         }
 
-        public class Trailers
-        {
-            public List<Youtube> youtube { get; set; }
-        }
-
-        public class Youtube
-        {
-            public string name { get; set; }
-            public string size { get; set; }
-            public string source { get; set; }
-        }
-
-        public class TmdbImageSettings
+        internal class TmdbImageSettings
         {
             public List<string> backdrop_sizes { get; set; }
             public string base_url { get; set; }
@@ -1223,15 +1199,9 @@ namespace MediaBrowser.Providers.Movies
             public List<string> profile_sizes { get; set; }
         }
 
-        public class TmdbSettingsResult
+        internal class TmdbSettingsResult
         {
             public TmdbImageSettings images { get; set; }
-        }
-        #endregion
-
-        public void Dispose()
-        {
-            Dispose(true);
         }
     }
 }

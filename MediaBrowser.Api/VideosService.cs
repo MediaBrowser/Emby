@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Querying;
 using ServiceStack.ServiceHost;
 using System;
@@ -26,18 +25,15 @@ namespace MediaBrowser.Api
     
     public class VideosService : BaseApiService
     {
-        private readonly IItemRepository _itemRepo;
-
         private readonly ILibraryManager _libraryManager;
         private readonly IUserManager _userManager;
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IDtoService _dtoService;
 
-        public VideosService(IItemRepository itemRepo, ILibraryManager libraryManager, IUserManager userManager, IUserDataRepository userDataRepository)
+        public VideosService( ILibraryManager libraryManager, IUserManager userManager, IDtoService dtoService)
         {
-            _itemRepo = itemRepo;
             _libraryManager = libraryManager;
             _userManager = userManager;
-            _userDataRepository = userDataRepository;
+            _dtoService = dtoService;
         }
 
         /// <summary>
@@ -53,21 +49,18 @@ namespace MediaBrowser.Api
                            ? (request.UserId.HasValue
                                   ? user.RootFolder
                                   : (Folder)_libraryManager.RootFolder)
-                           : DtoBuilder.GetItemByClientId(request.Id, _userManager, _libraryManager, request.UserId);
+                           : _dtoService.GetItemByDtoId(request.Id, request.UserId);
 
             // Get everything
             var fields = Enum.GetNames(typeof(ItemFields))
                     .Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true))
                     .ToList();
 
-            var dtoBuilder = new DtoBuilder(Logger, _libraryManager, _userDataRepository, _itemRepo);
-
             var video = (Video)item;
 
-            var items = video.AdditionalPartIds.Select(_itemRepo.RetrieveItem)
+            var items = video.AdditionalPartIds.Select(_libraryManager.GetItemById)
                          .OrderBy(i => i.SortName)
-                         .Select(i => dtoBuilder.GetBaseItemDto(i, fields, user, video))
-                         .Select(t => t.Result)
+                         .Select(i => _dtoService.GetBaseItemDto(i, fields, user, video))
                          .ToArray();
 
             var result = new ItemsResult

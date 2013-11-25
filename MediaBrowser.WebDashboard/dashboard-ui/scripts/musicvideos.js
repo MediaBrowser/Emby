@@ -9,7 +9,7 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "MusicVideo",
         Recursive: true,
-        Fields: "UserData,DisplayMediaType,ItemCounts,DateCreated",
+        Fields: "DateCreated",
         StartIndex: 0
     };
 
@@ -25,6 +25,11 @@
             var html = '';
 
             $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
+
+            updateFilterControls(page);
+            
+            var checkSortOption = $('.radioSortBy:checked', page);
+            $('.viewSummary', page).html(LibraryBrowser.getViewSummaryHtml(query, checkSortOption)).trigger('create');
 
             if (view == "Backdrop") {
                 html += LibraryBrowser.getPosterDetailViewHtml({
@@ -57,6 +62,14 @@
 
             $('#items', page).html(html).trigger('create');
 
+            $('.btnChangeToDefaultSort', page).on('click', function () {
+                query.StartIndex = 0;
+                query.SortOrder = 'Ascending';
+                query.SortBy = $('.defaultSort', page).data('sortby');
+
+                reloadItems(page);
+            });
+
             $('.selectPage', page).on('change', function () {
                 query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
                 reloadItems(page);
@@ -78,8 +91,55 @@
                 reloadItems(page);
             });
 
+			LibraryBrowser.saveQueryValues('musicvideos', query);
+			
             Dashboard.hideLoadingMsg();
         });
+    }
+
+    function updateFilterControls(page) {
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', page).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.chkStandardFilter', page).each(function () {
+
+            var filters = "," + (query.Filters || "");
+            var filterName = this.getAttribute('data-filter');
+
+            this.checked = filters.indexOf(',' + filterName) != -1;
+
+        }).checkboxradio('refresh');
+
+        $('.chkVideoTypeFilter', page).each(function () {
+
+            var filters = "," + (query.VideoTypes || "");
+            var filterName = this.getAttribute('data-filter');
+
+            this.checked = filters.indexOf(',' + filterName) != -1;
+
+        }).checkboxradio('refresh');
+
+        $('#selectView', page).val(view).selectmenu('refresh');
+
+        $('#chk3D', page).checked(query.Is3D == true).checkboxradio('refresh');
+
+        $('#chkSubtitle', page).checked(query.HasSubtitles == true).checkboxradio('refresh');
+        $('#chkTrailer', page).checked(query.HasTrailer == true).checkboxradio('refresh');
+        $('#chkThemeSong', page).checked(query.HasThemeSong == true).checkboxradio('refresh');
+        $('#chkThemeVideo', page).checked(query.HasThemeVideo == true).checkboxradio('refresh');
+
+        $('.alphabetPicker', page).alphaValue(query.NameStartsWithOrGreater);
     }
 
     $(document).on('pageinit', "#musicVideosPage", function () {
@@ -213,52 +273,13 @@
             query.StartIndex = 0;
         }
 
+        LibraryBrowser.loadSavedQueryValues('musicvideos', query);
+
         reloadItems(this);
 
     }).on('pageshow', "#musicVideosPage", function () {
 
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
-
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
-
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', this).each(function () {
-
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
-
-        }).checkboxradio('refresh');
-
-        $('.chkStandardFilter', this).each(function () {
-
-            var filters = "," + (query.Filters || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('.chkVideoTypeFilter', this).each(function () {
-
-            var filters = "," + (query.VideoTypes || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('#selectView', this).val(view).selectmenu('refresh');
-
-        $('#chk3D', this).checked(query.Is3D == true).checkboxradio('refresh');
-
-        $('#chkSubtitle', this).checked(query.HasSubtitles == true).checkboxradio('refresh');
-        $('#chkTrailer', this).checked(query.HasTrailer == true).checkboxradio('refresh');
-        $('#chkThemeSong', this).checked(query.HasThemeSong == true).checkboxradio('refresh');
-        $('#chkThemeVideo', this).checked(query.HasThemeVideo == true).checkboxradio('refresh');
-
-        $('.alphabetPicker', this).alphaValue(query.NameStartsWithOrGreater);
-
+        updateFilterControls(this);
     });
 
 })(jQuery, document);

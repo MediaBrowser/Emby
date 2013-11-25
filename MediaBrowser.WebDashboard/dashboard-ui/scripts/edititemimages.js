@@ -3,6 +3,10 @@
     var currentItem;
     var currentFile;
 
+    var browsableImagePageSize = 10;
+    var browsableImageStartIndex = 0;
+    var browsableImageType = 'Primary';
+
     function updateTabs(page, item) {
 
         var query = MetadataEditor.getEditQueryString(item);
@@ -11,6 +15,262 @@
         $('#btnEditMetadata', page).attr('href', 'edititemmetadata.html?' + query);
     }
 
+    function getBaseRemoteOptions() {
+        var options = {};
+
+        if (currentItem.Type == "Year") {
+            options.year = currentItem.Name;
+        }
+        else if (currentItem.Type == "MusicArtist") {
+            options.artist = currentItem.Name;
+        }
+        else if (currentItem.Type == "Person") {
+            options.person = currentItem.Name;
+        }
+        else if (currentItem.Type == "Genre") {
+            options.genre = currentItem.Name;
+        }
+        else if (currentItem.Type == "GameGenre") {
+            options.gameGenre = currentItem.Name;
+        }
+        else if (currentItem.Type == "MusicGenre") {
+            options.musicGenre = currentItem.Name;
+        }
+        else if (currentItem.Type == "Studio") {
+            options.studio = currentItem.Name;
+        }
+        else {
+            options.itemId = currentItem.Id;
+        }
+
+        return options;
+    }
+
+    function reloadBrowsableImages(page) {
+
+        Dashboard.showLoadingMsg();
+
+        var options = getBaseRemoteOptions();
+
+        options.type = browsableImageType;
+        options.startIndex = browsableImageStartIndex;
+        options.limit = browsableImagePageSize;
+
+        var provider = $('#selectImageProvider', page).val();
+
+        if (provider) {
+            options.ProviderName = provider;
+        }
+
+        ApiClient.getAvailableRemoteImages(options).done(function (result) {
+
+            renderRemoteImages(page, currentItem, result, browsableImageType, options.startIndex, options.limit);
+
+            $('#selectBrowsableImageType', page).val(browsableImageType).selectmenu('refresh');
+
+            var providersHtml = result.Providers.map(function (p) {
+                return '<option value="' + p + '">' + p + '</option>';
+            });
+
+            $('#selectImageProvider', page).html('<option value="">All</option>' + providersHtml).val(provider).selectmenu('refresh');
+
+            Dashboard.hideLoadingMsg();
+        });
+
+    }
+
+    function renderRemoteImages(page, item, imagesResult, imageType, startIndex, limit) {
+
+        $('.availableImagesPaging', page).html(getPagingHtml(startIndex, limit, imagesResult.TotalRecordCount)).trigger('create');
+
+        var html = '';
+
+        for (var i = 0, length = imagesResult.Images.length; i < length; i++) {
+
+            html += getRemoteImageHtml(imagesResult.Images[i], imageType);
+        }
+
+        $('.availableImagesList', page).html(html).trigger('create');
+
+        $('.selectPage', page).on('change', function () {
+            browsableImageStartIndex = (parseInt(this.value) - 1) * browsableImagePageSize;
+            reloadBrowsableImages(page);
+        });
+
+        $('.btnNextPage', page).on('click', function () {
+            browsableImageStartIndex += browsableImagePageSize;
+            reloadBrowsableImages(page);
+        });
+
+        $('.btnPreviousPage', page).on('click', function () {
+            browsableImageStartIndex -= browsableImagePageSize;
+            reloadBrowsableImages(page);
+        });
+
+        $('.btnDownloadRemoteImage', page).on('click', function () {
+
+            downloadRemoteImage(page, this.getAttribute('data-imageurl'), this.getAttribute('data-imagetype'), this.getAttribute('data-imageprovider'));
+        });
+
+    }
+
+    function downloadRemoteImage(page, url, type, provider) {
+
+        var options = getBaseRemoteOptions();
+
+        options.Type = type;
+        options.ImageUrl = url;
+        options.ProviderName = provider;
+
+        Dashboard.showLoadingMsg();
+
+        ApiClient.downloadRemoteImage(options).done(function () {
+
+            $('#popupDownload', page).popup("close");
+            reload(page);
+        });
+    }
+
+    function getDisplayUrl(url) {
+        return ApiClient.getUrl("Images/Remote", { url: url });
+    }
+
+    function getRemoteImageHtml(image, imageType) {
+
+        var html = '';
+
+        html += '<div class="remoteImageContainer">';
+
+        var cssClass = "remoteImage";
+
+        if (imageType == "Backdrop" || imageType == "Art" || imageType == "Thumb" || imageType == "Logo") {
+            cssClass += " remoteBackdropImage";
+        }
+        else if (imageType == "Banner") {
+            cssClass += " remoteBannerImage";
+        }
+        else if (imageType == "Disc") {
+            cssClass += " remoteDiscImage";
+        }
+        else {
+            
+            if (currentItem.Type == "Episode") {
+                cssClass += " remoteBackdropImage";
+            }
+            else if (currentItem.Type == "MusicAlbum" || currentItem.Type == "MusicArtist") {
+                cssClass += " remoteDiscImage";
+            }
+            else {
+                cssClass += " remotePosterImage";
+            }
+        }
+
+        var displayUrl = getDisplayUrl(image.ThumbnailUrl || image.Url);
+
+        html += '<a target="_blank" href="' + getDisplayUrl(image.Url) + '" class="' + cssClass + '" style="background-image:url(\'' + displayUrl + '\');">';
+        html += '</a>';
+
+        html += '<div class="remoteImageDetails">';
+        html += image.ProviderName;
+        html += '</div>';
+
+        if (image.Width || image.Height || image.Language) {
+
+            html += '<div class="remoteImageDetails">';
+
+            if (image.Width || image.Height) {
+                html += image.Width + ' x ' + image.Height;
+
+                if (image.Language) {
+
+                    html += ' • ' + image.Language;
+                }
+            } else {
+                if (image.Language) {
+
+                    html += image.Language;
+                }
+            }
+
+            html += '</div>';
+        }
+
+        if (image.CommunityRating != null) {
+
+            html += '<div class="remoteImageDetails">';
+
+            if (image.RatingType == "Likes") {
+                html += image.CommunityRating + (image.CommunityRating == 1 ? " like" : " likes");
+            } else {
+
+                if (image.CommunityRating) {
+                    html += image.CommunityRating.toFixed(1);
+
+                    if (image.VoteCount) {
+                        html += ' • ' + image.VoteCount + (image.VoteCount == 1 ? " vote" : " votes");
+                    }
+                } else {
+                    html += "Unrated";
+                }
+            }
+
+            html += '</div>';
+        }
+
+        html += '<div><button class="btnDownloadRemoteImage" data-imageprovider="' + image.ProviderName + '" data-imageurl="' + image.Url + '" data-imagetype="' + image.Type + '" type="button" data-icon="save" data-mini="true">Download</button></div>';
+
+        html += '</div>';
+
+        return html;
+    }
+
+    function getPagingHtml(startIndex, limit, totalRecordCount) {
+
+        var html = '';
+
+        var pageCount = Math.ceil(totalRecordCount / limit);
+        var pageNumber = (startIndex / limit) + 1;
+
+        var dropdownHtml = '<select class="selectPage" data-enhance="false" data-role="none">';
+        for (var i = 1; i <= pageCount; i++) {
+
+            if (i == pageNumber) {
+                dropdownHtml += '<option value="' + i + '" selected="selected">' + i + '</option>';
+            } else {
+                dropdownHtml += '<option value="' + i + '">' + i + '</option>';
+            }
+        }
+        dropdownHtml += '</select>';
+
+        var recordsEnd = Math.min(startIndex + limit, totalRecordCount);
+
+        // 20 is the minimum page size
+        var showControls = totalRecordCount > limit;
+
+        html += '<div class="listPaging">';
+
+        html += '<span style="margin-right: 10px;">';
+
+        var startAtDisplay = totalRecordCount ? startIndex + 1 : 0;
+        html += startAtDisplay + '-' + recordsEnd + ' of ' + totalRecordCount;
+
+        if (showControls) {
+            html += ', page ' + dropdownHtml + ' of ' + pageCount;
+        }
+
+        html += '</span>';
+
+        if (showControls) {
+            html += '<button data-icon="arrow-left" data-iconpos="notext" data-inline="true" data-mini="true" class="btnPreviousPage" ' + (startIndex ? '' : 'disabled') + '>Previous Page</button>';
+
+            html += '<button data-icon="arrow-right" data-iconpos="notext" data-inline="true" data-mini="true" class="btnNextPage" ' + (startIndex + limit > totalRecordCount ? 'disabled' : '') + '>Next Page</button>';
+        }
+
+        html += '</div>';
+
+        return html;
+    }
+    
     function reload(page) {
 
         Dashboard.showLoadingMsg();
@@ -19,26 +279,37 @@
 
             currentItem = item;
 
+            ApiClient.getRemoteImageProviders(getBaseRemoteOptions()).done(function(providers) {
+                
+                if (providers.length) {
+                    $('.lnkBrowseAllImages', page).removeClass('hide');
+                } else {
+                    $('.lnkBrowseAllImages', page).addClass('hide');
+                }
+                
+                ApiClient.getItemImageInfos(currentItem.Id, currentItem.Type, currentItem.Name).done(function (imageInfos) {
+
+                    renderStandardImages(page, item, imageInfos, providers);
+                    renderBackdrops(page, item, imageInfos, providers);
+                    renderScreenshots(page, item, imageInfos, providers);
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
             LibraryBrowser.renderName(item, $('.itemName', page), true);
 
             updateTabs(page, item);
 
-            if (item.Type == "Person" || item.Type == "Studio" || item.Type == "MusicGenre" || item.Type == "Genre" || item.Type == "Artist" || item.Type == "GameGenre") {
+            if (item.Type == "Person" || item.Type == "Studio" || item.Type == "MusicGenre" || item.Type == "Genre" || item.Type == "MusicArtist" || item.Type == "GameGenre" || item.Type == "Channel") {
                 $('#btnEditPeople', page).hide();
             } else {
                 $('#btnEditPeople', page).show();
             }
 
-            ApiClient.getItemImageInfos(currentItem.Id, currentItem.Type, currentItem.Name).done(function (imageInfos) {
-                renderStandardImages(page, item, imageInfos);
-                renderBackdrops(page, item, imageInfos);
-                renderScreenshots(page, item, imageInfos);
-                Dashboard.hideLoadingMsg();
-            });
         });
     }
 
-    function renderImages(page, item, images, elem) {
+    function renderImages(page, item, images, imageProviders, elem) {
 
         var html = '';
 
@@ -76,6 +347,10 @@
 
             html += '<button type="button" data-icon="delete" data-mini="true" data-inline="true" data-iconpos="notext" onclick="EditItemImagesPage.deleteImage(\'' + image.ImageType + '\', ' + (image.ImageIndex != null ? image.ImageIndex : "null") + ');">Delete</button>';
 
+            if (imageProviders.length) {
+                html += '<button type="button" data-icon="cloud" data-mini="true" data-inline="true" data-iconpos="notext" onclick="EditItemImagesPage.showDownloadMenu(\'' + image.ImageType + '\');">Browse Online Images</button>';
+            }
+
             html += '</p>';
 
             html += '</div>';
@@ -86,7 +361,7 @@
         elem.html(html).trigger('create');
     }
 
-    function renderStandardImages(page, item, imageInfos) {
+    function renderStandardImages(page, item, imageInfos, imageProviders) {
 
         var images = imageInfos.filter(function (i) {
             return i.ImageType != "Screenshot" && i.ImageType != "Backdrop" && i.ImageType != "Chapter";
@@ -94,13 +369,13 @@
 
         if (images.length) {
             $('#imagesContainer', page).show();
-            renderImages(page, item, images, $('#images', page));
+            renderImages(page, item, images, imageProviders, $('#images', page));
         } else {
             $('#imagesContainer', page).hide();
         }
     }
 
-    function renderBackdrops(page, item, imageInfos) {
+    function renderBackdrops(page, item, imageInfos, imageProviders) {
 
         var images = imageInfos.filter(function (i) {
             return i.ImageType == "Backdrop";
@@ -111,13 +386,13 @@
 
         if (images.length) {
             $('#backdropsContainer', page).show();
-            renderImages(page, item, images, $('#backdrops', page));
+            renderImages(page, item, images, imageProviders, $('#backdrops', page));
         } else {
             $('#backdropsContainer', page).hide();
         }
     }
 
-    function renderScreenshots(page, item, imageInfos) {
+    function renderScreenshots(page, item, imageInfos, imageProviders) {
 
         var images = imageInfos.filter(function (i) {
             return i.ImageType == "Screenshot";
@@ -128,7 +403,7 @@
 
         if (images.length) {
             $('#screenshotsContainer', page).show();
-            renderImages(page, item, images, $('#screenshots', page));
+            renderImages(page, item, images, imageProviders, $('#screenshots', page));
         } else {
             $('#screenshotsContainer', page).hide();
         }
@@ -261,6 +536,12 @@
 
 
         };
+
+        self.showDownloadMenu = function (type) {
+            browsableImageStartIndex = 0;
+            browsableImageType = type;
+            $('.lnkBrowseImages').trigger('click');
+        };
     }
 
     window.EditItemImagesPage = new editItemImages();
@@ -273,7 +554,7 @@
         $('.libraryTree', page).on('itemclicked', function (event, data) {
 
             if (data.id != currentItem.Id) {
-                
+
                 MetadataEditor.currentItemId = data.id;
                 MetadataEditor.currentItemName = data.itemName;
                 MetadataEditor.currentItemType = data.itemType;
@@ -282,8 +563,31 @@
                 $.mobile.urlHistory.ignoreNextHashChange = true;
                 window.location.hash = 'editItemImagesPage?id=' + data.id;
 
+                browsableImageStartIndex = 0;
+                browsableImageType = 'Primary';
+
                 reload(page);
             }
+        });
+
+        $('.lnkBrowseImages', page).on('click', function () {
+
+            reloadBrowsableImages(page);
+        });
+
+        $('#selectBrowsableImageType', page).on('change', function () {
+
+            browsableImageType = this.value;
+            browsableImageStartIndex = 0;
+
+            reloadBrowsableImages(page);
+        });
+
+        $('#selectImageProvider', page).on('change', function () {
+
+            browsableImageStartIndex = 0;
+
+            reloadBrowsableImages(page);
         });
 
     }).on('pageshow', "#editItemImagesPage", function () {
@@ -291,6 +595,9 @@
         var page = this;
 
         reload(page);
+
+        browsableImageStartIndex = 0;
+        browsableImageType = 'Primary';
 
         $('#uploadImage', page).on("change", function () {
             setFiles(page, this.files);
@@ -325,3 +632,26 @@
     });
 
 })(jQuery, document, window, window.FileReader, escape);
+
+function onMouseOver() {
+    
+}
+function onMouseOut() {
+    
+}
+
+function bindEvents() {
+
+    var document = 1;
+    
+    var parentDiv = document.createElement('div');
+    var childDiv = document.createElement('div');
+
+    document.body.appendChild(parentDiv);
+    parentDiv.appendChild(childDiv);
+    var myObj = '';
+    
+    var div = document.getElementById('id');
+    myObj.element = div;
+    div.obj = myObj;
+}

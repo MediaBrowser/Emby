@@ -2,7 +2,6 @@
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,7 +31,7 @@ namespace MediaBrowser.Controller.Persistence
         /// </summary>
         /// <param name="itemId">The item id.</param>
         /// <returns>Task{IEnumerable{ItemReview}}.</returns>
-        Task<IEnumerable<ItemReview>> GetCriticReviews(Guid itemId);
+        IEnumerable<ItemReview> GetCriticReviews(Guid itemId);
 
         /// <summary>
         /// Saves the critic reviews.

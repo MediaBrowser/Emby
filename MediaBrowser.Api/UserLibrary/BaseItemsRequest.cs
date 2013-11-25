@@ -7,7 +7,7 @@ using System;
 
 namespace MediaBrowser.Api.UserLibrary
 {
-    public abstract class BaseItemsRequest
+    public abstract class BaseItemsRequest : IHasItemFields
     {
         /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
@@ -48,7 +48,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// Fields to return within the items, in addition to basic information
         /// </summary>
         /// <value>The fields.</value>
-        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, ItemCounts, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Fields { get; set; }
 
         /// <summary>
@@ -80,6 +80,20 @@ namespace MediaBrowser.Api.UserLibrary
         public string MediaTypes { get; set; }
 
         /// <summary>
+        /// Gets or sets the image types.
+        /// </summary>
+        /// <value>The image types.</value>
+        [ApiMember(Name = "ImageTypes", Description = "Optional. If specified, results will be filtered based on those containing image types. This allows multiple, comma delimited.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string ImageTypes { get; set; }
+
+        /// <summary>
+        /// What to sort the results by
+        /// </summary>
+        /// <value>The sort by.</value>
+        [ApiMember(Name = "SortBy", Description = "Optional. Specify one or more sort orders, comma delimeted. Options: Album, AlbumArtist, Artist, Budget, CommunityRating, CriticRating, DateCreated, DatePlayed, PlayCount, PremiereDate, ProductionYear, SortName, Random, Revenue, Runtime", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        public string SortBy { get; set; }
+
+        /// <summary>
         /// Gets the filters.
         /// </summary>
         /// <returns>IEnumerable{ItemFilter}.</returns>
@@ -96,29 +110,35 @@ namespace MediaBrowser.Api.UserLibrary
         }
 
         /// <summary>
-        /// Gets the item fields.
+        /// Gets the image types.
         /// </summary>
-        /// <returns>IEnumerable{ItemFields}.</returns>
-        public IEnumerable<ItemFields> GetItemFields()
+        /// <returns>IEnumerable{ImageType}.</returns>
+        public IEnumerable<ImageType> GetImageTypes()
         {
-            var val = Fields;
+            var val = ImageTypes;
 
             if (string.IsNullOrEmpty(val))
             {
-                return new ItemFields[] { };
+                return new ImageType[] { };
             }
 
-            return val.Split(',').Select(v =>
+            return val.Split(',').Select(v => (ImageType)Enum.Parse(typeof(ImageType), v, true));
+        }
+
+        /// <summary>
+        /// Gets the order by.
+        /// </summary>
+        /// <returns>IEnumerable{ItemSortBy}.</returns>
+        public IEnumerable<string> GetOrderBy()
+        {
+            var val = SortBy;
+
+            if (string.IsNullOrEmpty(val))
             {
-                ItemFields value;
+                return new string[] { };
+            }
 
-                if (Enum.TryParse(v, true, out value))
-                {
-                    return (ItemFields?)value;
-                }
-                return null;
-
-            }).Where(i => i.HasValue).Select(i => i.Value);
+            return val.Split(',');
         }
     }
 }

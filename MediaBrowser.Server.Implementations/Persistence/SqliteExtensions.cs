@@ -1,7 +1,11 @@
 ﻿using MediaBrowser.Model.Logging;
 using System;
 using System.Data;
+#if __MonoCS__
+using Mono.Data.Sqlite;
+#else 
 using System.Data.SQLite;
+#endif
 using System.IO;
 using System.Threading.Tasks;
 
@@ -12,40 +16,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
     /// </summary>
     static class SqliteExtensions
     {
-        /// <summary>
-        /// Adds the param.
-        /// </summary>
-        /// <param name="cmd">The CMD.</param>
-        /// <param name="param">The param.</param>
-        /// <returns>SQLiteParameter.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public static SQLiteParameter AddParam(this SQLiteCommand cmd, string param)
-        {
-            if (string.IsNullOrEmpty(param))
-            {
-                throw new ArgumentNullException();
-            }
-
-            var sqliteParam = new SQLiteParameter(param);
-            cmd.Parameters.Add(sqliteParam);
-            return sqliteParam;
-        }
-
-        /// <summary>
-        /// Adds the param.
-        /// </summary>
-        /// <param name="cmd">The CMD.</param>
-        /// <param name="param">The param.</param>
-        /// <param name="data">The data.</param>
-        /// <returns>SQLiteParameter.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public static SQLiteParameter AddParam(this SQLiteCommand cmd, string param, object data)
-        {
-            var sqliteParam = AddParam(cmd, param);
-            sqliteParam.Value = data;
-            return sqliteParam;
-        }
-
         /// <summary>
         /// Determines whether the specified conn is open.
         /// </summary>
@@ -158,15 +128,30 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// Connects to db.
         /// </summary>
         /// <param name="dbPath">The db path.</param>
+        /// <param name="logger">The logger.</param>
         /// <returns>Task{IDbConnection}.</returns>
         /// <exception cref="System.ArgumentNullException">dbPath</exception>
-        public static async Task<SQLiteConnection> ConnectToDb(string dbPath)
+        public static async Task<IDbConnection> ConnectToDb(string dbPath, ILogger logger)
         {
             if (string.IsNullOrEmpty(dbPath))
             {
                 throw new ArgumentNullException("dbPath");
             }
 
+            logger.Info("Opening {0}", dbPath);
+
+			#if __MonoCS__
+			var connectionstr = new SqliteConnectionStringBuilder
+			{
+				PageSize = 4096,
+				CacheSize = 4096,
+				SyncMode = SynchronizationModes.Normal,
+				DataSource = dbPath,
+				JournalMode = SQLiteJournalModeEnum.Off
+			};
+
+			var connection = new SqliteConnection(connectionstr.ConnectionString);
+#else
             var connectionstr = new SQLiteConnectionStringBuilder
             {
                 PageSize = 4096,
@@ -177,7 +162,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             };
 
             var connection = new SQLiteConnection(connectionstr.ConnectionString);
-
+#endif
             await connection.OpenAsync().ConfigureAwait(false);
 
             return connection;

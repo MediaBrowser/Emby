@@ -62,6 +62,86 @@
             selectmenu.val(val).selectmenu('refresh');
         }
     }
+    
+    function populateReviews(id, page) {
+        // Get the latest positive and negative reviews
+        var promise1 = ApiClient.getPackageReviews(id, 4, null, 3, true);
+        var promise2 = ApiClient.getPackageReviews(id, null, 2, 3, true);
+
+        $.when(promise1, promise2).done(function (response1, response2) {
+            //positive
+            var html = '<div data-role="collapsible" data-content-theme="c" data-collapsed="true" style="margin-top: 2em;" >';
+            html += '<h3>Latest Outstanding Reviews</h3>';
+            var positive = response1[0];
+            var hasReviews = false;
+            if (positive && positive.length > 0) {
+                for (var i = 0; i < positive.length; i++) {
+                    var review = positive[i];
+                    if (review.title) {
+                        hasReviews = true;
+                        html += "<div>";
+                        html += "<span class='storeItemReviewText'>";
+                        html += new Date(review.timestamp).toDateString();
+                        html += " " + Dashboard.getStoreRatingHtml(review.rating, review.id, review.name, true);
+                        html += " " + review.title;
+                        html += "</span>";
+                        if (review.review) {
+                            html += "<p class='storeItemReviewText'>";
+                            html += review.review;
+                            html += "</p>";
+                        }
+
+                        html += "</div>";
+                        html += "<hr/>";
+                    }
+                }
+            }
+            if (!hasReviews) {
+                html += "<p>No Outstanding Reviews with additional information</p>";
+            }
+
+            html += "</div>";
+
+            //negative
+            html += '<div data-role="collapsible" data-content-theme="c" data-collapsed="true" style="margin-top: 2em;" >';
+            html += '<h3>Latest Negative Reviews</h3>';
+            var negative = response2[0];
+            hasReviews = false;
+            if (negative && negative.length > 0) {
+                for (var i = 0; i < negative.length; i++) {
+                    review = negative[i];
+                    if (review.title) {
+                        hasReviews = true;
+                        html += "<div>";
+                        html += "<span class='storeItemReviewText'>";
+                        html += new Date(review.timestamp).toDateString();
+                        html += " " + Dashboard.getStoreRatingHtml(review.rating, review.id, review.name, true);
+                        html += " " + review.title;
+                        html += "</span>";
+                        if (review.review) {
+                            html += "<p class='storeItemReviewText'>";
+                            html += review.review;
+                            html += "</p>";
+                        }
+
+                        html += "</div>";
+                        html += "<hr/>";
+                    }
+                }
+            }
+            
+            if (!hasReviews) {
+                html += "<p>No Negative Reviews with additional information</p>";
+            }
+
+            html += "</div>";
+
+
+            $('#latestReviews', page).html(html).trigger('create');
+
+        });
+
+    }
 
     function renderPackage(pkg, installedPlugins, pluginSecurityInfo, page) {
 
@@ -71,7 +151,8 @@
 
         populateVersions(pkg, page, installedPlugin);
         populateHistory(pkg, page);
-
+        if (pkg.totalRatings > 0) populateReviews(pkg.id, page);
+        
         Dashboard.setPageTitle(pkg.name);
 
         if (pkg.targetSystem == 'Server') {
@@ -112,7 +193,6 @@
                 regStatus += "You are currently registered for this feature";
             } else {
                 if (new Date(pkg.expDate).getTime() < new Date(1970, 1, 1).getTime()) {
-                    regStatus += "This feature has no registration information";
                 } else {
                     if (new Date(pkg.expDate).getTime() <= new Date().getTime()) {
                         regStatus += "The trial period for this feature has expired";
@@ -149,13 +229,24 @@
                     $('.premiumHasPrice', page).hide();
                 }
             } else {
-                $('#regInfo', page).html("You must be a <a href='supporter.html'>Media Browser Supporter</a> in order to gain access to this feature.").trigger('create');
+
+                var pluginTypeHtml = pkg.price ? 'This is a <a data-rel="popup" data-position-to="window" href="#premiumPlugins">premium</a> plugin.' : 'This is a <a data-rel="popup" data-position-to="window" href="#supporterPlugins">supporter-only</a> plugin.';
+
+                $('#regInfo', page).html(pluginTypeHtml + '<br/><br/>It will require a <a href="supporter.html">supporter key</a> in order to register after the <strong>14-day free trial</strong>.').trigger('create');
                 $('#ppButton', page).hide();
             }
 
         } else {
             $('.premiumPackage', page).hide();
         }
+        
+        //Ratings and Reviews
+        var ratingHtml = "<strong>Overall </strong>" + Dashboard.getStoreRatingHtml(pkg.avgRating, pkg.id, pkg.name);
+        ratingHtml += "<span class='storeReviewCount'>";
+        ratingHtml += " " + pkg.totalRatings + " Reviews";
+        ratingHtml += "</span>";
+
+        $('#ratingLine', page).html(ratingHtml);
 
         if (pkg.richDescUrl) {
             $('#pViewWebsite', page).show();
@@ -190,8 +281,9 @@
         Dashboard.showLoadingMsg();
 
         var name = getParameterByName('name');
+        var guid = getParameterByName('guid');
 
-        var promise1 = ApiClient.getPackageInfo(name);
+        var promise1 = ApiClient.getPackageInfo(name, guid);
         var promise2 = ApiClient.getInstalledPlugins();
         var promise3 = ApiClient.getPluginSecurityInfo();
 
@@ -203,9 +295,9 @@
 
     });
 
-    function performInstallation(packageName, updateClass, version) {
+    function performInstallation(packageName, guid, updateClass, version) {
 
-        ApiClient.installPlugin(packageName, updateClass, version).done(function () {
+        ApiClient.installPlugin(packageName, guid, updateClass, version).done(function () {
 
             Dashboard.hideLoadingMsg();
         });
@@ -224,6 +316,7 @@
             $('#btnInstall', page).button('disable');
 
             var name = getParameterByName('name');
+            var guid = getParameterByName('guid');
 
             ApiClient.getInstalledPlugins().done(function (plugins) {
 
@@ -244,14 +337,14 @@
                         if (confirmResult) {
 
                             Dashboard.showLoadingMsg();
-                            performInstallation(name, vals[1], version);
+                            performInstallation(name, guid, vals[1], version);
                         } else {
                             $('#btnInstall', page).button('enable');
                         }
 
                     });
                 } else {
-                    performInstallation(name, vals[1], version);
+                    performInstallation(name, guid, vals[1], version);
                 }
             });
 

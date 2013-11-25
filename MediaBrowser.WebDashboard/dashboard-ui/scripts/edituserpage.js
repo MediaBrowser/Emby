@@ -1,21 +1,5 @@
 ﻿(function ($, window, document) {
 
-    function populateLanguages(select, allCultures) {
-
-        var html = "";
-
-        html += "<option value=''>None</option>";
-
-        for (var i = 0, length = allCultures.length; i < length; i++) {
-
-            var culture = allCultures[i];
-
-            html += "<option value='" + culture.ThreeLetterISOLanguageName + "'>" + culture.DisplayName + "</option>";
-        }
-
-        select.html(html).selectmenu("refresh");
-    }
-
     function populateRatings(allParentalRatings, page) {
 
         var html = "";
@@ -32,7 +16,7 @@
             if (ratings.length) {
 
                 var lastRating = ratings[ratings.length - 1];
-                
+
                 if (lastRating.Value === rating.Value) {
 
                     lastRating.Name += "/" + rating.Name;
@@ -54,16 +38,18 @@
         $('#selectMaxParentalRating', page).html(html).selectmenu("refresh");
     }
 
-    function loadUser(page, user, loggedInUser, parentalRatingsPromise, allCulturesPromise) {
+    function loadUser(page, user, loggedInUser, parentalRatingsPromise) {
 
         if (!loggedInUser.Configuration.IsAdministrator) {
             $('#parentalControlDiv', page).hide();
             $('#fldIsAdmin', page).hide();
+            $('#fldEnableRemoteControlOtherUsers', page).hide();
             $('#accessControlDiv', page).hide();
         } else {
             $('#parentalControlDiv', page).show();
             $('#accessControlDiv', page).show();
             $('#fldIsAdmin', page).show();
+            $('#fldEnableRemoteControlOtherUsers', page).show();
         }
 
         Dashboard.setPageTitle(user.Name || "Add User");
@@ -91,21 +77,12 @@
             $('#selectMaxParentalRating', page).val(ratingValue).selectmenu("refresh");
         });
 
-        allCulturesPromise.done(function (allCultures) {
-
-            populateLanguages($('#selectAudioLanguage', page), allCultures);
-            populateLanguages($('#selectSubtitleLanguage', page), allCultures);
-
-            $('#selectAudioLanguage', page).val(user.Configuration.AudioLanguagePreference || "").selectmenu("refresh");
-            $('#selectSubtitleLanguage', page).val(user.Configuration.SubtitleLanguagePreference || "").selectmenu("refresh");
-        });
-
-        $('#chkForcedSubtitlesOnly', page).checked(user.Configuration.UseForcedSubtitlesOnly || false).checkboxradio("refresh");
         $('#chkIsAdmin', page).checked(user.Configuration.IsAdministrator || false).checkboxradio("refresh");
         $('#chkBlockNotRated', page).checked(user.Configuration.BlockNotRated || false).checkboxradio("refresh");
 
         $('#chkDisabled', page).checked(user.Configuration.IsDisabled || false).checkboxradio("refresh");
         $('#chkIsHidden', page).checked(user.Configuration.IsHidden || false).checkboxradio("refresh");
+        $('#chkEnableRemoteControlOtherUsers', page).checked(user.Configuration.EnableRemoteControlOfOtherUsers || false).checkboxradio("refresh");
 
         Dashboard.hideLoadingMsg();
     }
@@ -132,13 +109,11 @@
 
         user.Configuration.IsAdministrator = $('#chkIsAdmin', page).checked();
 
-        user.Configuration.AudioLanguagePreference = $('#selectAudioLanguage', page).val();
-        user.Configuration.SubtitleLanguagePreference = $('#selectSubtitleLanguage', page).val();
-        user.Configuration.UseForcedSubtitlesOnly = $('#chkForcedSubtitlesOnly', page).checked();
         user.Configuration.BlockNotRated = $('#chkBlockNotRated', page).checked();
 
         user.Configuration.IsHidden = $('#chkIsHidden', page).checked();
         user.Configuration.IsDisabled = $('#chkDisabled', page).checked();
+        user.Configuration.EnableRemoteControlOfOtherUsers = $('#chkEnableRemoteControlOtherUsers', page).checked();
 
         var userId = getParameterByName("userId");
 
@@ -231,11 +206,9 @@
 
         var parentalRatingsPromise = ApiClient.getParentalRatings();
 
-        var allCulturesPromise = ApiClient.getCultures();
-
         $.when(promise1, promise2).done(function (response1, response2) {
 
-            loadUser(page, response1[0] || response1, response2[0], parentalRatingsPromise, allCulturesPromise);
+            loadUser(page, response1[0] || response1, response2[0], parentalRatingsPromise);
 
         });
 

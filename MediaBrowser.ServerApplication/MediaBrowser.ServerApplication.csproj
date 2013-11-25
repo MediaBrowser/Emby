@@ -57,7 +57,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>MediaBrowser.ServerApplication.App</StartupObject>
+    <StartupObject>MediaBrowser.ServerApplication.MainStartup</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Images\icon.ico</ApplicationIcon>
@@ -119,40 +119,29 @@
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.Wpf.TaskbarNotification.1.0.4.0\lib\net40\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+    <Reference Include="MediaBrowser.IsoMounter, Version=1.0.5025.12100, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.IsoMounting.3.0.61\lib\net45\MediaBrowser.IsoMounter.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.11.0.17-ALPHA\lib\net45\MahApps.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="MediaBrowser.IsoMounter, Version=1.0.4969.36586, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NLog, Version=2.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MediaBrowser.IsoMounting.3.0.56\lib\net45\MediaBrowser.IsoMounter.dll</HintPath>
-    </Reference>
-    <Reference Include="MoreLinq, Version=1.0.16006.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=2.0.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="pfmclrapi, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MediaBrowser.IsoMounting.3.0.56\lib\net45\pfmclrapi.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.IsoMounting.3.0.61\lib\net45\pfmclrapi.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack, Version=3.9.58.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack, Version=3.9.60.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ServiceStack.3.9.58\lib\net35\ServiceStack.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.3.9.62\lib\net35\ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common, Version=3.9.58.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Common, Version=3.9.60.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ServiceStack.Common.3.9.58\lib\net35\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Common.3.9.62\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=3.9.58.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Interfaces, Version=3.9.60.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ServiceStack.Common.3.9.58\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Common.3.9.62\lib\net35\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.OrmLite.SqlServer">
       <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.44\lib\ServiceStack.OrmLite.SqlServer.dll</HintPath>
@@ -160,35 +149,27 @@
     <Reference Include="ServiceStack.Redis">
       <HintPath>..\packages\ServiceStack.Redis.3.9.44\lib\net35\ServiceStack.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.58.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.60.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ServiceStack.3.9.58\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.3.9.62\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.9.58.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Text, Version=3.9.59.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ServiceStack.Text.3.9.58\lib\net35\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Text.3.9.62\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleInjector, Version=2.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+    <Reference Include="SimpleInjector, Version=2.3.6.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SimpleInjector.2.3.0\lib\net40-client\SimpleInjector.dll</HintPath>
+      <HintPath>..\packages\SimpleInjector.2.3.6\lib\net40-client\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.88.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.x86.1.0.88.0\lib\net45\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.88.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.x86.1.0.88.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.0.11.0.17-ALPHA\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -201,8 +182,28 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackgroundService.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="EntryPoints\StartupWizard.cs" />
-    <Compile Include="EntryPoints\UdpServerEntryPoint.cs" />
+    <Compile Include="FFMpeg\FFMpegDownloadInfo.cs" />
+    <Compile Include="FFMpeg\FFMpegInfo.cs" />
+    <Compile Include="IO\FileSystemFactory.cs" />
+    <Compile Include="Native\Assemblies.cs" />
+    <Compile Include="Native\HttpClientFactory.cs" />
+    <Compile Include="Native\NativeApp.cs" />
+    <Compile Include="IO\NativeFileSystem.cs" />
+    <Compile Include="Native\ServerAuthorization.cs" />
+    <Compile Include="Native\Autorun.cs" />
+    <Compile Include="Native\BrowserLauncher.cs" />
+    <Compile Include="FFMpeg\FFMpegDownloader.cs" />
+    <Compile Include="MainStartup.cs" />
+    <Compile Include="BackgroundServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Networking\NativeMethods.cs" />
+    <Compile Include="Networking\NetworkManager.cs" />
+    <Compile Include="Networking\NetworkShares.cs" />
     <Compile Include="Splash\SplashWindow.xaml.cs">
       <DependentUpon>SplashWindow.xaml</DependentUpon>
     </Compile>
@@ -230,7 +231,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ApplicationHost.cs" />
-    <Compile Include="Implementations\DotNetZipClient.cs" />
     <Compile Include="LibraryExplorer.xaml.cs">
       <DependentUpon>LibraryExplorer.xaml</DependentUpon>
     </Compile>
@@ -266,13 +266,15 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="FFMpeg\ARIALUNI.7z" />
+    <None Include="FFMpeg\ffmpeg-20130904-git-f974289-win32-static.7z" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <EmbeddedResource Include="RegisterServer.bat" />
+    <EmbeddedResource Include="Native\RegisterServer.bat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -335,11 +337,6 @@
     <Resource Include="Resources\Images\audio.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\starEmpty.png" />
-    <Resource Include="Resources\Images\starFull.png" />
-    <Resource Include="Resources\Images\starHalf.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\artist.png" />
   </ItemGroup>
   <ItemGroup>
@@ -356,8 +353,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\folder.jpg" />
-    <Resource Include="Resources\Images\mblogoblackfull.png" />
-    <Resource Include="Resources\Images\mblogowhitefull.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -390,15 +385,11 @@
 rmdir "$(SolutionDir)..\Deploy\Server\System" /s /q
 mkdir "$(SolutionDir)..\Deploy\Server\System"
 rmdir "$(SolutionDir)..\Deploy\Server\Pismo" /s /q
-mkdir "$(SolutionDir)..\Deploy\Server\Pismo"
 xcopy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)..\Deploy\Server\System\" /y
 xcopy "$(SolutionDir)Installation\MediaBrowser.Uninstaller.exe.config" "$(SolutionDir)..\Deploy\Server\System\" /y
 xcopy "$(SolutionDir)Installation\MediaBrowser.Uninstaller.exe" "$(SolutionDir)..\Deploy\Server\System\" /y
 xcopy "$(SolutionDir)Installation\MediaBrowser.InstallUtil.dll" "$(SolutionDir)..\Deploy\Server\System\" /y
 xcopy "$(SolutionDir)Installation\MediaBrowser.Updater.exe" "$(SolutionDir)..\Deploy\Server\System\" /y
-
-//Pismo
-"$(SolutionDir)ThirdParty\7zip\7za" x  "$(SolutionDir)ThirdParty\Pismo-Install\pfm-168-mediabrowser-win.zip" -o"$(SolutionDir)..\Deploy\Server\Pismo\" -y 
 
 mkdir "$(SolutionDir)..\Deploy\Server\System\swagger-ui"
 xcopy "$(TargetDir)swagger-ui" "$(SolutionDir)..\Deploy\Server\System\swagger-ui" /y /s
@@ -411,7 +402,7 @@ mkdir "$(SolutionDir)..\Deploy\Server\System\dashboard-ui"
 xcopy "$(TargetDir)dashboard-ui" "$(SolutionDir)..\Deploy\Server\System\dashboard-ui" /y /s
 
 del "$(SolutionDir)..\Deploy\MBServer.zip"
-"$(SolutionDir)ThirdParty\7zip\7za" a -tzip "$(SolutionDir)..\Deploy\MBServer.zip" "$(SolutionDir)..\Deploy\Server\*"
+"$(SolutionDir)ThirdParty\7zip\7za" a -mx9 "$(SolutionDir)..\Deploy\MBServer.zip" "$(SolutionDir)..\Deploy\Server\*"
 )</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

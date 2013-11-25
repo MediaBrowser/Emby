@@ -11,11 +11,19 @@ namespace MediaBrowser.Controller.Entities.TV
     /// <summary>
     /// Class Series
     /// </summary>
-    public class Series : Folder
+    public class Series : Folder, IHasSoundtracks
     {
+        public List<Guid> SpecialFeatureIds { get; set; }
+        public List<Guid> SoundtrackIds { get; set; }
+
+        public int SeasonCount { get; set; }
+
         public Series()
         {
             AirDays = new List<DayOfWeek>();
+
+            SpecialFeatureIds = new List<Guid>();
+            SoundtrackIds = new List<Guid>();
         }
 
         /// <summary>
@@ -33,6 +41,12 @@ namespace MediaBrowser.Controller.Entities.TV
         /// </summary>
         /// <value>The air time.</value>
         public string AirTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date last episode added.
+        /// </summary>
+        /// <value>The date last episode added.</value>
+        public DateTime DateLastEpisodeAdded { get; set; }
 
         /// <summary>
         /// Series aren't included directly in indices - Their Episodes will roll up to them

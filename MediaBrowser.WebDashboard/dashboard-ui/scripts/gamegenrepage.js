@@ -6,7 +6,7 @@
         SortBy: "SortName",
         SortOrder: "Ascending",
         Recursive: true,
-        Fields: "ItemCounts,DateCreated,UserData",
+        Fields: "DateCreated",
         StartIndex: 0
     };
 
@@ -23,16 +23,27 @@
 
             $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
 
+            updateFilterControls(page);
+
+            var checkSortOption = $('.radioSortBy:checked', page);
+            $('.viewSummary', page).html(LibraryBrowser.getViewSummaryHtml(query, checkSortOption)).trigger('create');
+
             html += LibraryBrowser.getPosterDetailViewHtml({
                 items: result.Items,
-                countNameSingular: "Game",
-                countNamePlural: "Games",
                 context: "games"
             });
 
             html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount);
 
             $('#items', page).html(html).trigger('create');
+
+            $('.btnChangeToDefaultSort', page).on('click', function () {
+                query.StartIndex = 0;
+                query.SortOrder = 'Ascending';
+                query.SortBy = $('.defaultSort', page).data('sortby');
+
+                reloadItems(page);
+            });
 
             $('.selectPage', page).on('change', function () {
                 query.StartIndex = (parseInt(this.value) - 1) * query.Limit;
@@ -55,8 +66,26 @@
                 reloadItems(page);
             });
 
+            LibraryBrowser.saveQueryValues('gamegenres', query);
+
             Dashboard.hideLoadingMsg();
         });
+    }
+
+    function updateFilterControls(page) {
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', page).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
     }
 
     $(document).on('pageinit', "#gameGenresPage", function () {
@@ -102,22 +131,13 @@
             query.StartIndex = 0;
         }
 
+        LibraryBrowser.loadSavedQueryValues('gamegenres', query);
+
         reloadItems(this);
 
     }).on('pageshow', "#gameGenresPage", function () {
 
-        // Reset form values using the last used query
-        $('.radioSortBy', this).each(function () {
-
-            this.checked = query.SortBy == this.getAttribute('data-sortby');
-
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', this).each(function () {
-
-            this.checked = query.SortOrder == this.getAttribute('data-sortorder');
-
-        }).checkboxradio('refresh');
+        updateFilterControls(this);
     });
 
 })(jQuery, document);

@@ -1,9 +1,11 @@
-﻿using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using ServiceStack.ServiceHost;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MediaBrowser.Api
@@ -24,19 +26,21 @@ namespace MediaBrowser.Api
         /// <summary>
         /// The _user data repository
         /// </summary>
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IUserDataManager _userDataRepository;
         /// <summary>
         /// The _library manager
         /// </summary>
         private readonly ILibraryManager _libraryManager;
         private readonly IItemRepository _itemRepo;
+        private readonly IDtoService _dtoService;
 
-        public AlbumsService(IUserManager userManager, IUserDataRepository userDataRepository, ILibraryManager libraryManager, IItemRepository itemRepo)
+        public AlbumsService(IUserManager userManager, IUserDataManager userDataRepository, ILibraryManager libraryManager, IItemRepository itemRepo, IDtoService dtoService)
         {
             _userManager = userManager;
             _userDataRepository = userDataRepository;
             _libraryManager = libraryManager;
             _itemRepo = itemRepo;
+            _dtoService = dtoService;
         }
 
         /// <summary>
@@ -50,6 +54,7 @@ namespace MediaBrowser.Api
                 _itemRepo,
                 _libraryManager,
                 _userDataRepository,
+                _dtoService,
                 Logger,
                 request, item => item is MusicAlbum,
                 GetAlbumSimilarityScore);
@@ -70,17 +75,37 @@ namespace MediaBrowser.Api
             var album1 = (MusicAlbum)item1;
             var album2 = (MusicAlbum)item2;
 
-            var artists1 = album1.RecursiveChildren
+            var artists1 = album1.GetRecursiveChildren()
                 .OfType<Audio>()
-                .SelectMany(i => new[] { i.AlbumArtist, i.Artist })
-                .Where(i => !string.IsNullOrEmpty(i))
+                .SelectMany(i =>
+                {
+                    var list = new List<string>();
+
+                    if (!string.IsNullOrEmpty(i.AlbumArtist))
+                    {
+                        list.Add(i.AlbumArtist);
+                    }
+                    list.AddRange(i.Artists);
+
+                    return list;
+                })
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            var artists2 = album2.RecursiveChildren
+            var artists2 = album2.GetRecursiveChildren()
                 .OfType<Audio>()
-                .SelectMany(i => new[] { i.AlbumArtist, i.Artist })
-                .Where(i => !string.IsNullOrEmpty(i))
+                .SelectMany(i =>
+                {
+                    var list = new List<string>();
+
+                    if (!string.IsNullOrEmpty(i.AlbumArtist))
+                    {
+                        list.Add(i.AlbumArtist);
+                    }
+                    list.AddRange(i.Artists);
+
+                    return list;
+                })
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 

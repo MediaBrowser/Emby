@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
@@ -13,8 +14,8 @@ using MediaBrowser.Controller.Sorting;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Server.Implementations.Library.Validators;
 using MediaBrowser.Server.Implementations.ScheduledTasks;
-using MoreLinq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -44,6 +45,12 @@ namespace MediaBrowser.Server.Implementations.Library
         private IEnumerable<ILibraryPrescanTask> PrescanTasks { get; set; }
 
         /// <summary>
+        /// Gets or sets the people prescan tasks.
+        /// </summary>
+        /// <value>The people prescan tasks.</value>
+        private IEnumerable<IPeoplePrescanTask> PeoplePrescanTasks { get; set; }
+
+        /// <summary>
         /// Gets the intro providers.
         /// </summary>
         /// <value>The intro providers.</value>
@@ -53,25 +60,25 @@ namespace MediaBrowser.Server.Implementations.Library
         /// Gets the list of entity resolution ignore rules
         /// </summary>
         /// <value>The entity resolution ignore rules.</value>
-        private IEnumerable<IResolverIgnoreRule> EntityResolutionIgnoreRules { get; set; }
+        private IResolverIgnoreRule[] EntityResolutionIgnoreRules { get; set; }
 
         /// <summary>
         /// Gets the list of BasePluginFolders added by plugins
         /// </summary>
         /// <value>The plugin folders.</value>
-        private IEnumerable<IVirtualFolderCreator> PluginFolderCreators { get; set; }
+        private IVirtualFolderCreator[] PluginFolderCreators { get; set; }
 
         /// <summary>
         /// Gets the list of currently registered entity resolvers
         /// </summary>
         /// <value>The entity resolvers enumerable.</value>
-        private IEnumerable<IItemResolver> EntityResolvers { get; set; }
+        private IItemResolver[] EntityResolvers { get; set; }
 
         /// <summary>
         /// Gets or sets the comparers.
         /// </summary>
         /// <value>The comparers.</value>
-        private IEnumerable<IBaseItemComparer> Comparers { get; set; }
+        private IBaseItemComparer[] Comparers { get; set; }
 
         /// <summary>
         /// Gets the active item repository
@@ -112,7 +119,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <summary>
         /// The _user data repository
         /// </summary>
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IUserDataManager _userDataRepository;
 
         /// <summary>
         /// Gets or sets the configuration manager.
@@ -163,6 +170,8 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly ConcurrentDictionary<string, UserRootFolder> _userRootFolders =
             new ConcurrentDictionary<string, UserRootFolder>();
 
+        private readonly IFileSystem _fileSystem;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryManager" /> class.
         /// </summary>
@@ -171,7 +180,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="userManager">The user manager.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="userDataRepository">The user data repository.</param>
-        public LibraryManager(ILogger logger, ITaskManager taskManager, IUserManager userManager, IServerConfigurationManager configurationManager, IUserDataRepository userDataRepository, Func<IDirectoryWatchers> directoryWatchersFactory)
+        public LibraryManager(ILogger logger, ITaskManager taskManager, IUserManager userManager, IServerConfigurationManager configurationManager, IUserDataManager userDataRepository, Func<IDirectoryWatchers> directoryWatchersFactory, IFileSystem fileSystem)
         {
             _logger = logger;
             _taskManager = taskManager;
@@ -179,6 +188,7 @@ namespace MediaBrowser.Server.Implementations.Library
             ConfigurationManager = configurationManager;
             _userDataRepository = userDataRepository;
             _directoryWatchersFactory = directoryWatchersFactory;
+            _fileSystem = fileSystem;
             ByReferenceItems = new ConcurrentDictionary<Guid, BaseItem>();
 
             ConfigurationManager.ConfigurationUpdated += ConfigurationUpdated;
@@ -196,6 +206,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="itemComparers">The item comparers.</param>
         /// <param name="prescanTasks">The prescan tasks.</param>
         /// <param name="postscanTasks">The postscan tasks.</param>
+        /// <param name="peoplePrescanTasks">The people prescan tasks.</param>
         /// <param name="savers">The savers.</param>
         public void AddParts(IEnumerable<IResolverIgnoreRule> rules,
             IEnumerable<IVirtualFolderCreator> pluginFolders,
@@ -204,15 +215,17 @@ namespace MediaBrowser.Server.Implementations.Library
             IEnumerable<IBaseItemComparer> itemComparers,
             IEnumerable<ILibraryPrescanTask> prescanTasks,
             IEnumerable<ILibraryPostScanTask> postscanTasks,
+            IEnumerable<IPeoplePrescanTask> peoplePrescanTasks,
             IEnumerable<IMetadataSaver> savers)
         {
-            EntityResolutionIgnoreRules = rules;
-            PluginFolderCreators = pluginFolders;
+            EntityResolutionIgnoreRules = rules.ToArray();
+            PluginFolderCreators = pluginFolders.ToArray();
             EntityResolvers = resolvers.OrderBy(i => i.Priority).ToArray();
             IntroProviders = introProviders;
-            Comparers = itemComparers;
+            Comparers = itemComparers.ToArray();
             PrescanTasks = prescanTasks;
             PostscanTasks = postscanTasks;
+            PeoplePrescanTasks = peoplePrescanTasks;
             _savers = savers;
         }
 
@@ -251,14 +264,6 @@ namespace MediaBrowser.Server.Implementations.Library
         }
 
         /// <summary>
-        /// The _internet providers enabled
-        /// </summary>
-        private bool _internetProvidersEnabled;
-        /// <summary>
-        /// The _people image fetching enabled
-        /// </summary>
-        private bool _peopleImageFetchingEnabled;
-        /// <summary>
         /// The _items by name path
         /// </summary>
         private string _itemsByNamePath;
@@ -275,8 +280,6 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             _seasonZeroDisplayName = ConfigurationManager.Configuration.SeasonZeroDisplayName;
             _itemsByNamePath = ConfigurationManager.ApplicationPaths.ItemsByNamePath;
-            _internetProvidersEnabled = configuration.EnableInternetProviders;
-            _peopleImageFetchingEnabled = configuration.InternetProviderExcludeTypes == null || !configuration.InternetProviderExcludeTypes.Contains(typeof(Person).Name, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -346,17 +349,20 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>ConcurrentDictionary{GuidBaseItem}.</returns>
         private ConcurrentDictionary<Guid, BaseItem> CreateLibraryItemsCache()
         {
-            var items = RootFolder.RecursiveChildren.ToList();
+            var items = RootFolder.GetRecursiveChildren();
 
             items.Add(RootFolder);
 
-            // Need to use DistinctBy Id because there could be multiple instances with the same id
+            // Need to use Distinct because there could be multiple instances with the same id
             // due to sharing the default library
             var userRootFolders = _userManager.Users.Select(i => i.RootFolder)
                 .Distinct()
                 .ToList();
 
-            items.AddRange(userRootFolders);
+            foreach (var folder in userRootFolders)
+            {
+                items.Add(folder);
+            }
 
             // Get all user collection folders
             // Skip BasePluginFolders because we already got them from RootFolder.RecursiveChildren
@@ -364,11 +370,19 @@ namespace MediaBrowser.Server.Implementations.Library
                             .Where(i => !(i is BasePluginFolder))
                             .ToList();
 
-            items.AddRange(userFolders);
+            foreach (var folder in userFolders)
+            {
+                items.Add(folder);
+            }
 
-            var disctinctItems = items.DistinctBy(i => i.Id).ToList();
+            var dictionary = new ConcurrentDictionary<Guid, BaseItem>();
 
-            return new ConcurrentDictionary<Guid, BaseItem>(disctinctItems.ToDictionary(i => i.Id));
+            foreach (var item in items)
+            {
+                dictionary[item.Id] = item;
+            }
+
+            return dictionary;
         }
 
         /// <summary>
@@ -377,10 +391,23 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="item">The item.</param>
         private void UpdateItemInLibraryCache(BaseItem item)
         {
-            if (!(item is IItemByName))
+            if (item is IItemByName)
             {
-                LibraryItemsCache.AddOrUpdate(item.Id, item, delegate { return item; });
+                var hasDualAccess = item as IHasDualAccess;
+                if (hasDualAccess != null)
+                {
+                    if (hasDualAccess.IsAccessedByName)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
+
+            LibraryItemsCache.AddOrUpdate(item.Id, item, delegate { return item; });
         }
 
         /// <summary>
@@ -407,7 +434,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (item != null)
             {
-                ResolverHelper.SetInitialItemValues(item, args);
+                ResolverHelper.SetInitialItemValues(item, args, _fileSystem);
 
                 // Now handle the issue with posibly having the same item referenced from multiple physical
                 // places within the library.  Be sure we always end up with just one instance.
@@ -451,7 +478,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("fileInfo");
             }
 
-            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths)
+            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths, this)
             {
                 Parent = parent,
                 Path = fileInfo.FullName,
@@ -472,7 +499,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 // When resolving the root, we need it's grandchildren (children of user views)
                 var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
 
-                args.FileSystemDictionary = FileData.GetFilteredFileSystemEntries(args.Path, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
+                args.FileSystemDictionary = FileData.GetFilteredFileSystemEntries(args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
 
                 // Need to remove subpaths that may have been resolved from shortcuts
                 // Example: if \\server\movies exists, then strip out \\server\movies\action
@@ -525,16 +552,13 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 try
                 {
-                    if (f.Exists)
-                    {
-                        var item = ResolvePath(f, parent) as T;
+                    var item = ResolvePath(f, parent) as T;
 
-                        if (item != null)
+                    if (item != null)
+                    {
+                        lock (list)
                         {
-                            lock (list)
-                            {
-                                list.Add(item);
-                            }
+                            list.Add(item);
                         }
                     }
                 }
@@ -590,96 +614,59 @@ namespace MediaBrowser.Server.Implementations.Library
                 (UserRootFolder)ResolvePath(new DirectoryInfo(userRootPath)));
         }
 
-        /// <summary>
-        /// Gets a Person
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
-        /// <returns>Task{Person}.</returns>
-        public Task<Person> GetPerson(string name, bool allowSlowProviders = false)
+        public Person GetPersonSync(string name)
         {
-            return GetPerson(name, CancellationToken.None, allowSlowProviders);
+            return GetItemByName<Person>(ConfigurationManager.ApplicationPaths.PeoplePath, name);
         }
 
         /// <summary>
         /// Gets a Person
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
-        /// <param name="forceCreation">if set to <c>true</c> [force creation].</param>
         /// <returns>Task{Person}.</returns>
-        private Task<Person> GetPerson(string name, CancellationToken cancellationToken, bool allowSlowProviders = false, bool forceCreation = false)
+        public Person GetPerson(string name)
         {
-            return GetItemByName<Person>(ConfigurationManager.ApplicationPaths.PeoplePath, name, cancellationToken, allowSlowProviders, forceCreation);
+            return GetItemByName<Person>(ConfigurationManager.ApplicationPaths.PeoplePath, name);
         }
 
         /// <summary>
         /// Gets a Studio
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{Studio}.</returns>
-        public Task<Studio> GetStudio(string name, bool allowSlowProviders = false)
+        public Studio GetStudio(string name)
         {
-            return GetItemByName<Studio>(ConfigurationManager.ApplicationPaths.StudioPath, name, CancellationToken.None, allowSlowProviders);
+            return GetItemByName<Studio>(ConfigurationManager.ApplicationPaths.StudioPath, name);
         }
 
         /// <summary>
         /// Gets a Genre
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{Genre}.</returns>
-        public Task<Genre> GetGenre(string name, bool allowSlowProviders = false)
+        public Genre GetGenre(string name)
         {
-            return GetItemByName<Genre>(ConfigurationManager.ApplicationPaths.GenrePath, name, CancellationToken.None, allowSlowProviders);
+            return GetItemByName<Genre>(ConfigurationManager.ApplicationPaths.GenrePath, name);
         }
 
         /// <summary>
         /// Gets the genre.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{MusicGenre}.</returns>
-        public Task<MusicGenre> GetMusicGenre(string name, bool allowSlowProviders = false)
+        public MusicGenre GetMusicGenre(string name)
         {
-            return GetItemByName<MusicGenre>(ConfigurationManager.ApplicationPaths.MusicGenrePath, name, CancellationToken.None, allowSlowProviders);
+            return GetItemByName<MusicGenre>(ConfigurationManager.ApplicationPaths.MusicGenrePath, name);
         }
 
         /// <summary>
         /// Gets the game genre.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{GameGenre}.</returns>
-        public Task<GameGenre> GetGameGenre(string name, bool allowSlowProviders = false)
+        public GameGenre GetGameGenre(string name)
         {
-            return GetItemByName<GameGenre>(ConfigurationManager.ApplicationPaths.GameGenrePath, name, CancellationToken.None, allowSlowProviders);
-        }
-
-        /// <summary>
-        /// Gets a Genre
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
-        /// <returns>Task{Genre}.</returns>
-        public Task<Artist> GetArtist(string name, bool allowSlowProviders = false)
-        {
-            return GetArtist(name, CancellationToken.None, allowSlowProviders);
-        }
-
-        /// <summary>
-        /// Gets the artist.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
-        /// <param name="forceCreation">if set to <c>true</c> [force creation].</param>
-        /// <returns>Task{Artist}.</returns>
-        private Task<Artist> GetArtist(string name, CancellationToken cancellationToken, bool allowSlowProviders = false, bool forceCreation = false)
-        {
-            return GetItemByName<Artist>(ConfigurationManager.ApplicationPaths.ArtistsPath, name, cancellationToken, allowSlowProviders, forceCreation);
+            return GetItemByName<GameGenre>(ConfigurationManager.ApplicationPaths.GameGenrePath, name);
         }
 
         /// <summary>
@@ -691,17 +678,26 @@ namespace MediaBrowser.Server.Implementations.Library
         /// Gets a Year
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{Year}.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
-        public Task<Year> GetYear(int value, bool allowSlowProviders = false)
+        public Year GetYear(int value)
         {
             if (value <= 0)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            return GetItemByName<Year>(ConfigurationManager.ApplicationPaths.YearPath, value.ToString(UsCulture), CancellationToken.None, allowSlowProviders);
+            return GetItemByName<Year>(ConfigurationManager.ApplicationPaths.YearPath, value.ToString(UsCulture));
+        }
+
+        /// <summary>
+        /// Gets a Genre
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>Task{Genre}.</returns>
+        public MusicArtist GetArtist(string name)
+        {
+            return GetItemByName<MusicArtist>(ConfigurationManager.ApplicationPaths.ArtistsPath, name);
         }
 
         /// <summary>
@@ -709,44 +705,41 @@ namespace MediaBrowser.Server.Implementations.Library
         /// </summary>
         private readonly ConcurrentDictionary<string, BaseItem> _itemsByName = new ConcurrentDictionary<string, BaseItem>(StringComparer.OrdinalIgnoreCase);
 
-        /// <summary>
-        /// Generically retrieves an IBN item
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path">The path.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
-        /// <param name="forceCreation">if set to <c>true</c> [force creation].</param>
-        /// <returns>Task{``0}.</returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// </exception>
-        private async Task<T> GetItemByName<T>(string path, string name, CancellationToken cancellationToken, bool allowSlowProviders = true, bool forceCreation = false)
+        private T GetItemByName<T>(string path, string name)
             where T : BaseItem, new()
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("path");
             }
 
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("name");
             }
 
-            var key = Path.Combine(path, FileSystem.GetValidFilename(name));
+            var validFilename = _fileSystem.GetValidFilename(name).Trim();
+
+            string subFolderPrefix = null;
+
+            if (typeof(T) == typeof(Person) && ConfigurationManager.Configuration.EnablePeoplePrefixSubFolders)
+            {
+                subFolderPrefix = validFilename.Substring(0, 1);
+            }
+
+            var key = string.IsNullOrEmpty(subFolderPrefix) ?
+                Path.Combine(path, validFilename) :
+                Path.Combine(path, subFolderPrefix, validFilename);
 
             BaseItem obj;
 
             if (!_itemsByName.TryGetValue(key, out obj))
             {
-                obj = await CreateItemByName<T>(path, name, cancellationToken, allowSlowProviders).ConfigureAwait(false);
+                var tuple = CreateItemByName<T>(key, name);
+
+                obj = tuple.Item2;
 
                 _itemsByName.AddOrUpdate(key, obj, (keyName, oldValue) => obj);
-            }
-            else if (forceCreation)
-            {
-                await obj.RefreshMetadata(cancellationToken, false, allowSlowProviders: allowSlowProviders).ConfigureAwait(false);
             }
 
             return obj as T;
@@ -758,16 +751,24 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <typeparam name="T"></typeparam>
         /// <param name="path">The path.</param>
         /// <param name="name">The name.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="allowSlowProviders">if set to <c>true</c> [allow slow providers].</param>
         /// <returns>Task{``0}.</returns>
         /// <exception cref="System.IO.IOException">Path not created:  + path</exception>
-        private async Task<T> CreateItemByName<T>(string path, string name, CancellationToken cancellationToken, bool allowSlowProviders = true)
+        private Tuple<bool, T> CreateItemByName<T>(string path, string name)
             where T : BaseItem, new()
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            var isArtist = typeof(T) == typeof(MusicArtist);
 
-            path = Path.Combine(path, FileSystem.GetValidFilename(name));
+            if (isArtist)
+            {
+                var existing = RootFolder.RecursiveChildren
+                    .OfType<T>()
+                    .FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+
+                if (existing != null)
+                {
+                    return new Tuple<bool, T>(false, existing);
+                }
+            }
 
             var fileInfo = new DirectoryInfo(path);
 
@@ -786,36 +787,34 @@ namespace MediaBrowser.Server.Implementations.Library
                 isNew = true;
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             var type = typeof(T);
 
             var id = path.GetMBId(type);
 
             var item = RetrieveItem(id) as T;
+
             if (item == null)
             {
                 item = new T
                 {
                     Name = name,
                     Id = id,
-                    DateCreated = fileInfo.CreationTimeUtc,
-                    DateModified = fileInfo.LastWriteTimeUtc,
+                    DateCreated = _fileSystem.GetCreationTimeUtc(fileInfo),
+                    DateModified = _fileSystem.GetLastWriteTimeUtc(fileInfo),
                     Path = path
                 };
                 isNew = true;
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
+            if (isArtist)
+            {
+                (item as MusicArtist).IsAccessedByName = true;
+            }
 
             // Set this now so we don't cause additional file system access during provider executions
             item.ResetResolveArgs(fileInfo);
 
-            await item.RefreshMetadata(cancellationToken, isNew, allowSlowProviders: allowSlowProviders).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return item;
+            return new Tuple<bool, T>(isNew, item);
         }
 
         /// <summary>
@@ -825,67 +824,9 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="progress">The progress.</param>
         /// <returns>Task.</returns>
-        public async Task ValidatePeople(CancellationToken cancellationToken, IProgress<double> progress)
+        public Task ValidatePeople(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            const int maxTasks = 15;
-
-            var tasks = new List<Task>();
-
-            var includedPersonTypes = new[] { PersonType.Actor, PersonType.Director, PersonType.GuestStar, PersonType.Writer, PersonType.Producer }
-                .ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
-
-            var people = RootFolder.RecursiveChildren
-                .Where(c => c.People != null)
-                .SelectMany(c => c.People.Where(p => includedPersonTypes.ContainsKey(p.Type ?? string.Empty) || includedPersonTypes.ContainsKey(p.Role ?? string.Empty)))
-                .DistinctBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            var numComplete = 0;
-
-            foreach (var person in people)
-            {
-                if (tasks.Count > maxTasks)
-                {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-                    tasks.Clear();
-
-                    // Safe cancellation point, when there are no pending tasks
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
-                // Avoid accessing the foreach variable within the closure
-                var currentPerson = person;
-
-                tasks.Add(Task.Run(async () =>
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    try
-                    {
-                        await GetPerson(currentPerson.Name, cancellationToken, true, true).ConfigureAwait(false);
-                    }
-                    catch (IOException ex)
-                    {
-                        _logger.ErrorException("Error validating IBN entry {0}", ex, currentPerson.Name);
-                    }
-
-                    // Update progress
-                    lock (progress)
-                    {
-                        numComplete++;
-                        double percent = numComplete;
-                        percent /= people.Count;
-
-                        progress.Report(100 * percent);
-                    }
-                }));
-            }
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            progress.Report(100);
-
-            _logger.Info("People validation complete");
+            return new PeopleValidator(this, PeoplePrescanTasks, _logger).ValidatePeople(cancellationToken, progress);
         }
 
         /// <summary>
@@ -894,78 +835,53 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="progress">The progress.</param>
         /// <returns>Task.</returns>
-        public async Task ValidateArtists(CancellationToken cancellationToken, IProgress<double> progress)
+        public Task ValidateArtists(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            const int maxTasks = 25;
+            return new ArtistsValidator(this, _userManager, _logger).Run(progress, cancellationToken);
+        }
 
-            var tasks = new List<Task>();
+        /// <summary>
+        /// Validates the music genres.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task.</returns>
+        public Task ValidateMusicGenres(CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            return new MusicGenresValidator(this, _userManager, _logger).Run(progress, cancellationToken);
+        }
 
-            var artists = RootFolder.RecursiveChildren
-                .OfType<Audio>()
-                .SelectMany(c =>
-                {
-                    var list = new List<string>();
+        /// <summary>
+        /// Validates the game genres.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task.</returns>
+        public Task ValidateGameGenres(CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            return new GameGenresValidator(this, _userManager, _logger).Run(progress, cancellationToken);
+        }
 
-                    if (!string.IsNullOrEmpty(c.AlbumArtist))
-                    {
-                        list.Add(c.AlbumArtist);
-                    }
-                    if (!string.IsNullOrEmpty(c.Artist))
-                    {
-                        list.Add(c.Artist);
-                    }
+        /// <summary>
+        /// Validates the studios.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task.</returns>
+        public Task ValidateStudios(CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            return new StudiosValidator(this, _userManager, _logger).Run(progress, cancellationToken);
+        }
 
-                    return list;
-                })
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            var numComplete = 0;
-
-            foreach (var artist in artists)
-            {
-                if (tasks.Count > maxTasks)
-                {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-                    tasks.Clear();
-
-                    // Safe cancellation point, when there are no pending tasks
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
-                // Avoid accessing the foreach variable within the closure
-                var currentArtist = artist;
-
-                tasks.Add(Task.Run(async () =>
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    try
-                    {
-                        await GetArtist(currentArtist, cancellationToken, true, true).ConfigureAwait(false);
-                    }
-                    catch (IOException ex)
-                    {
-                        _logger.ErrorException("Error validating Artist {0}", ex, currentArtist);
-                    }
-
-                    // Update progress
-                    lock (progress)
-                    {
-                        numComplete++;
-                        double percent = numComplete;
-                        percent /= artists.Count;
-
-                        progress.Report(100 * percent);
-                    }
-                }));
-            }
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            progress.Report(100);
-
-            _logger.Info("Artist validation complete");
+        /// <summary>
+        /// Validates the genres.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="progress">The progress.</param>
+        /// <returns>Task.</returns>
+        public Task ValidateGenres(CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            return new GenresValidator(this, _userManager, _logger).Run(progress, cancellationToken);
         }
 
         /// <summary>
@@ -977,7 +893,9 @@ namespace MediaBrowser.Server.Implementations.Library
         public Task ValidateMediaLibrary(IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Just run the scheduled task so that the user can see it
-            return Task.Run(() => _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>());
+            _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
+
+            return Task.FromResult(true);
         }
 
         /// <summary>
@@ -1006,24 +924,36 @@ namespace MediaBrowser.Server.Implementations.Library
 
             progress.Report(2);
 
+            var innerProgress = new ActionableProgress<double>();
+
+            innerProgress.RegisterAction(pct => progress.Report(2 + pct * .13));
+
             // Run prescan tasks
-            await RunPrescanTasks(progress, cancellationToken).ConfigureAwait(false);
+            await RunPrescanTasks(innerProgress, cancellationToken).ConfigureAwait(false);
 
             progress.Report(15);
 
-            var innerProgress = new ActionableProgress<double>();
+            innerProgress = new ActionableProgress<double>();
 
-            innerProgress.RegisterAction(pct => progress.Report(15 + pct * .65));
+            innerProgress.RegisterAction(pct => progress.Report(15 + pct * .6));
 
             // Now validate the entire media library
             await RootFolder.ValidateChildren(innerProgress, cancellationToken, recursive: true).ConfigureAwait(false);
 
-            progress.Report(80);
+            progress.Report(75);
+
+            innerProgress = new ActionableProgress<double>();
+
+            innerProgress.RegisterAction(pct => progress.Report(75 + pct * .25));
 
             // Run post-scan tasks
-            await RunPostScanTasks(progress, cancellationToken).ConfigureAwait(false);
+            await RunPostScanTasks(innerProgress, cancellationToken).ConfigureAwait(false);
 
             progress.Report(100);
+
+            // Bad practice, i know. But we keep a lot in memory, unfortunately.
+            GC.Collect(2, GCCollectionMode.Forced, true);
+            GC.Collect(2, GCCollectionMode.Forced, true);
         }
 
         /// <summary>
@@ -1034,37 +964,45 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         private async Task RunPrescanTasks(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var prescanTasks = PrescanTasks.ToList();
-            var progressDictionary = new Dictionary<ILibraryPrescanTask, double>();
+            var tasks = PrescanTasks.ToList();
 
-            var tasks = prescanTasks.Select(i => Task.Run(async () =>
+            var numComplete = 0;
+            var numTasks = tasks.Count;
+
+            foreach (var task in tasks)
             {
                 var innerProgress = new ActionableProgress<double>();
 
+                // Prevent access to modified closure
+                var currentNumComplete = numComplete;
+
                 innerProgress.RegisterAction(pct =>
                 {
-                    lock (progressDictionary)
-                    {
-                        progressDictionary[i] = pct;
-
-                        double percent = progressDictionary.Values.Sum();
-                        percent /= prescanTasks.Count;
-
-                        progress.Report(2 + percent * .13);
-                    }
+                    double innerPercent = (currentNumComplete * 100) + pct;
+                    innerPercent /= numTasks;
+                    progress.Report(innerPercent);
                 });
 
                 try
                 {
-                    await i.Run(innerProgress, cancellationToken);
+                    await task.Run(innerProgress, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.Info("Pre-scan task cancelled: {0}", task.GetType().Name);
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error running prescan task", ex);
+                    _logger.ErrorException("Error running pre-scan task", ex);
                 }
-            }));
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+                numComplete++;
+                double percent = numComplete;
+                percent /= numTasks;
+                progress.Report(percent * 100);
+            }
+
+            progress.Report(100);
         }
 
         /// <summary>
@@ -1075,37 +1013,45 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         private async Task RunPostScanTasks(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var postscanTasks = PostscanTasks.ToList();
-            var progressDictionary = new Dictionary<ILibraryPostScanTask, double>();
+            var tasks = PostscanTasks.ToList();
 
-            var tasks = postscanTasks.Select(i => Task.Run(async () =>
+            var numComplete = 0;
+            var numTasks = tasks.Count;
+
+            foreach (var task in tasks)
             {
                 var innerProgress = new ActionableProgress<double>();
 
+                // Prevent access to modified closure
+                var currentNumComplete = numComplete;
+
                 innerProgress.RegisterAction(pct =>
                 {
-                    lock (progressDictionary)
-                    {
-                        progressDictionary[i] = pct;
-
-                        double percent = progressDictionary.Values.Sum();
-                        percent /= postscanTasks.Count;
-
-                        progress.Report(80 + percent * .2);
-                    }
+                    double innerPercent = (currentNumComplete * 100) + pct;
+                    innerPercent /= numTasks;
+                    progress.Report(innerPercent);
                 });
 
                 try
                 {
-                    await i.Run(innerProgress, cancellationToken);
+                    await task.Run(innerProgress, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.Info("Post-scan task cancelled: {0}", task.GetType().Name);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error running postscan task", ex);
                 }
-            }));
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+                numComplete++;
+                double percent = numComplete;
+                percent /= numTasks;
+                progress.Report(percent * 100);
+            }
+
+            progress.Report(100);
         }
 
         /// <summary>
@@ -1155,8 +1101,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 {
                     Name = Path.GetFileName(dir),
 
-                    Locations = Directory.EnumerateFiles(dir, "*.lnk", SearchOption.TopDirectoryOnly)
-                                .Select(FileSystem.ResolveShortcut)
+                    Locations = Directory.EnumerateFiles(dir, "*.mblink", SearchOption.TopDirectoryOnly)
+                                .Select(_fileSystem.ResolveShortcut)
                                 .OrderBy(i => i)
                                 .ToList(),
 
@@ -1200,9 +1146,75 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="item">The item.</param>
         /// <param name="user">The user.</param>
         /// <returns>IEnumerable{System.String}.</returns>
-        public IEnumerable<string> GetIntros(BaseItem item, User user)
+        public IEnumerable<Video> GetIntros(BaseItem item, User user)
         {
-            return IntroProviders.SelectMany(i => i.GetIntros(item, user));
+            return IntroProviders.SelectMany(i => i.GetIntros(item, user))
+                .Select(ResolveIntro)
+                .Where(i => i != null);
+        }
+
+        /// <summary>
+        /// Gets all intro files.
+        /// </summary>
+        /// <returns>IEnumerable{System.String}.</returns>
+        public IEnumerable<string> GetAllIntroFiles()
+        {
+            return IntroProviders.SelectMany(i => i.GetAllIntroFiles());
+        }
+
+        /// <summary>
+        /// Resolves the intro.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <returns>Video.</returns>
+        private Video ResolveIntro(IntroInfo info)
+        {
+            Video video = null;
+
+            if (info.ItemId.HasValue)
+            {
+                // Get an existing item by Id
+                video = GetItemById(info.ItemId.Value) as Video;
+
+                if (video == null)
+                {
+                    _logger.Error("Unable to locate item with Id {0}.", info.ItemId.Value);
+                }
+            }
+            else if (!string.IsNullOrEmpty(info.Path))
+            {
+                try
+                {
+                    // Try to resolve the path into a video 
+                    video = ResolvePath(_fileSystem.GetFileSystemInfo(info.Path)) as Video;
+
+                    if (video == null)
+                    {
+                        _logger.Error("Intro resolver returned null for {0}.", info.Path);
+                    }
+                    else
+                    {
+                        // Pull the saved db item that will include metadata
+                        var dbItem = GetItemById(video.Id) as Video;
+
+                        if (dbItem != null)
+                        {
+                            dbItem.ResetResolveArgs(video.ResolveArgs);
+                            video = dbItem;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error resolving path {0}.", ex, info.Path);
+                }
+            }
+            else
+            {
+                _logger.Error("IntroProvider returned an IntroInfo with null Path and ItemId.");
+            }
+
+            return video;
         }
 
         /// <summary>
@@ -1292,6 +1304,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 UpdateItemInLibraryCache(item);
             }
 
+            UpdateCollectionFolders();
+
             if (ItemAdded != null)
             {
                 foreach (var item in list)
@@ -1317,20 +1331,24 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         public async Task UpdateItem(BaseItem item, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
-            await ItemRepository.SaveItem(item, cancellationToken).ConfigureAwait(false);
-
-            UpdateItemInLibraryCache(item);
-
             if (item.LocationType == LocationType.FileSystem)
             {
                 await SaveMetadata(item, updateReason).ConfigureAwait(false);
             }
 
+            await ItemRepository.SaveItem(item, cancellationToken).ConfigureAwait(false);
+
+            UpdateItemInLibraryCache(item);
+
             if (ItemUpdated != null)
             {
                 try
                 {
-                    ItemUpdated(this, new ItemChangeEventArgs { Item = item });
+                    ItemUpdated(this, new ItemChangeEventArgs
+                    {
+                        Item = item,
+                        UpdateReason = updateReason
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -1345,6 +1363,8 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="item">The item.</param>
         public void ReportItemRemoved(BaseItem item)
         {
+            UpdateCollectionFolders();
+
             if (ItemRemoved != null)
             {
                 try
@@ -1358,6 +1378,14 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
+        private void UpdateCollectionFolders()
+        {
+            foreach (var folder in _userManager.Users.SelectMany(i => i.RootFolder.Children).OfType<CollectionFolder>().ToList())
+            {
+                folder.ResetDynamicChildren();
+            }
+        }
+
         /// <summary>
         /// Retrieves the item.
         /// </summary>
@@ -1365,7 +1393,19 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>BaseItem.</returns>
         public BaseItem RetrieveItem(Guid id)
         {
-            return ItemRepository.RetrieveItem(id);
+            var item = ItemRepository.RetrieveItem(id);
+
+            if (item != null && item.IsFolder)
+            {
+                LoadSavedChildren(item as Folder);
+            }
+
+            return item;
+        }
+
+        private void LoadSavedChildren(Folder item)
+        {
+            item.LoadSavedChildren();
         }
 
         private readonly ConcurrentDictionary<string, SemaphoreSlim> _fileLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
@@ -1376,8 +1416,14 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="item">The item.</param>
         /// <param name="updateType">Type of the update.</param>
         /// <returns>Task.</returns>
-        private async Task SaveMetadata(BaseItem item, ItemUpdateType updateType)
+        public async Task SaveMetadata(BaseItem item, ItemUpdateType updateType)
         {
+            var locationType = item.LocationType;
+            if (locationType == LocationType.Remote || locationType == LocationType.Virtual)
+            {
+                throw new ArgumentException("Only file-system based items can save metadata.");
+            }
+
             foreach (var saver in _savers.Where(i => i.IsEnabledFor(item, updateType)))
             {
                 var path = saver.GetSavePath(item);
@@ -1429,10 +1475,22 @@ namespace MediaBrowser.Server.Implementations.Library
                 .OfType<CollectionFolder>()
                 .Where(i =>
                 {
+                    var locationType = i.LocationType;
+
+                    if (locationType == LocationType.Remote || locationType == LocationType.Virtual)
+                    {
+                        return false;
+                    }
+
+                    if (string.Equals(i.Path, item.Path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+
                     try
                     {
-                        return i.LocationType != LocationType.Remote && i.LocationType != LocationType.Virtual &&
-                               i.ResolveArgs.PhysicalLocations.Contains(item.Path);
+
+                        return i.ResolveArgs.PhysicalLocations.Contains(item.Path);
                     }
                     catch (IOException ex)
                     {
@@ -1446,6 +1504,31 @@ namespace MediaBrowser.Server.Implementations.Library
                 .ToList();
 
             return collectionTypes.Count == 1 ? collectionTypes[0] : null;
+        }
+
+
+        public IEnumerable<string> GetAllArtists()
+        {
+            return GetAllArtists(RootFolder.RecursiveChildren);
+        }
+
+        public IEnumerable<string> GetAllArtists(IEnumerable<BaseItem> items)
+        {
+            return items
+                .OfType<Audio>()
+                .SelectMany(i =>
+                {
+                    var list = new List<string>();
+
+                    if (!string.IsNullOrEmpty(i.AlbumArtist))
+                    {
+                        list.Add(i.AlbumArtist);
+                    }
+                    list.AddRange(i.Artists);
+
+                    return list;
+                })
+                .Distinct(StringComparer.OrdinalIgnoreCase);
         }
     }
 }

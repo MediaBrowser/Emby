@@ -1,8 +1,19 @@
-﻿
+﻿using MediaBrowser.Model.Entities;
+using System;
+using System.Collections.Generic;
+
 namespace MediaBrowser.Controller.Entities
 {
-    public class Game : BaseItem
+    public class Game : BaseItem, IHasSoundtracks
     {
+        public List<Guid> SoundtrackIds { get; set; }
+        
+        public Game()
+        {
+            MultiPartGameFiles = new List<string>();
+            SoundtrackIds = new List<Guid>();
+        }
+
         /// <summary>
         /// Gets the type of the media.
         /// </summary>
@@ -17,6 +28,12 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The players supported.</value>
         public int? PlayersSupported { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is installed on client.
+        /// </summary>
+        /// <value><c>true</c> if this instance is installed on client; otherwise, <c>false</c>.</value>
+        public bool IsInstalledOnClient { get; set; }
 
         /// <summary>
         /// Gets or sets the game system.
@@ -36,6 +53,17 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is multi part.
+        /// </summary>
+        /// <value><c>true</c> if this instance is multi part; otherwise, <c>false</c>.</value>
+        public bool IsMultiPart { get; set; }
+
+        /// <summary>
+        /// Holds the paths to the game files in the event this is a multipart game
+        /// </summary>
+        public List<string> MultiPartGameFiles { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         protected override bool UseParentPathToCreateResolveArgs
@@ -44,6 +72,17 @@ namespace MediaBrowser.Controller.Entities
             {
                 return !IsInMixedFolder;
             }
+        }
+
+        public override string GetUserDataKey()
+        {
+            var id = this.GetProviderId(MetadataProviders.Gamesdb);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                return "Game-Gamesdb-" + id;
+            }
+            return base.GetUserDataKey();
         }
     }
 }

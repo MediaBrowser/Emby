@@ -1,17 +1,19 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using MediaBrowser.Providers.Extensions;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -42,6 +44,7 @@ namespace MediaBrowser.Providers.TV
         /// The _config
         /// </summary>
         private readonly IServerConfigurationManager _config;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TvdbPrescanTask"/> class.
@@ -49,12 +52,15 @@ namespace MediaBrowser.Providers.TV
         /// <param name="logger">The logger.</param>
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="config">The config.</param>
-        public TvdbPrescanTask(ILogger logger, IHttpClient httpClient, IServerConfigurationManager config)
+        public TvdbPrescanTask(ILogger logger, IHttpClient httpClient, IServerConfigurationManager config, IFileSystem fileSystem)
         {
             _logger = logger;
             _httpClient = httpClient;
             _config = config;
+            _fileSystem = fileSystem;
         }
+
+        protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         /// <summary>
         /// Runs the specified progress.
@@ -64,20 +70,23 @@ namespace MediaBrowser.Providers.TV
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            if (!_config.Configuration.EnableInternetProviders)
+            if (!_config.Configuration.EnableInternetProviders || 
+                _config.Configuration.InternetProviderExcludeTypes.Contains(typeof(Series).Name, StringComparer.OrdinalIgnoreCase))
             {
                 progress.Report(100);
                 return;
             }
 
-            var path = RemoteSeriesProvider.GetSeriesDataPath(_config.CommonApplicationPaths);
+            var path = TvdbSeriesProvider.GetSeriesDataPath(_config.CommonApplicationPaths);
+
+            Directory.CreateDirectory(path);
 
             var timestampFile = Path.Combine(path, "time.txt");
 
             var timestampFileInfo = new FileInfo(timestampFile);
 
             // Don't check for tvdb updates anymore frequently than 24 hours
-            if (timestampFileInfo.Exists && (DateTime.UtcNow - timestampFileInfo.LastWriteTimeUtc).TotalDays < 1)
+            if (timestampFileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(timestampFileInfo)).TotalDays < 1)
             {
                 return;
             }
@@ -98,18 +107,14 @@ namespace MediaBrowser.Providers.TV
                     Url = ServerTimeUrl,
                     CancellationToken = cancellationToken,
                     EnableHttpCompression = true,
-                    ResourcePool = RemoteSeriesProvider.Current.TvDbResourcePool
+                    ResourcePool = TvdbSeriesProvider.Current.TvDbResourcePool
 
                 }).ConfigureAwait(false))
                 {
-                    var doc = new XmlDocument();
-
-                    doc.Load(stream);
-
-                    newUpdateTime = doc.SafeGetString("//Time");
+                    newUpdateTime = GetUpdateTime(stream);
                 }
 
-                await UpdateSeries(existingDirectories, path, progress, cancellationToken).ConfigureAwait(false);
+                await UpdateSeries(existingDirectories, path, null, progress, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -117,11 +122,62 @@ namespace MediaBrowser.Providers.TV
 
                 newUpdateTime = seriesToUpdate.Item2;
 
-                await UpdateSeries(seriesToUpdate.Item1, path, progress, cancellationToken).ConfigureAwait(false);
+                long lastUpdateValue;
+
+                long.TryParse(lastUpdateTime, NumberStyles.Any, UsCulture, out lastUpdateValue);
+
+                var nullableUpdateValue = lastUpdateValue == 0 ? (long?)null : lastUpdateValue;
+
+                await UpdateSeries(seriesToUpdate.Item1, path, nullableUpdateValue, progress, cancellationToken).ConfigureAwait(false);
             }
 
             File.WriteAllText(timestampFile, newUpdateTime, Encoding.UTF8);
             progress.Report(100);
+        }
+
+        /// <summary>
+        /// Gets the update time.
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns>System.String.</returns>
+        private string GetUpdateTime(Stream response)
+        {
+            var settings = new XmlReaderSettings
+            {
+                CheckCharacters = false,
+                IgnoreProcessingInstructions = true,
+                IgnoreComments = true,
+                ValidationType = ValidationType.None
+            };
+
+            using (var streamReader = new StreamReader(response, Encoding.UTF8))
+            {
+                // Use XmlReader for best performance
+                using (var reader = XmlReader.Create(streamReader, settings))
+                {
+                    reader.MoveToContent();
+
+                    // Loop through each element
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            switch (reader.Name)
+                            {
+                                case "Time":
+                                    {
+                                        return (reader.ReadElementContentAsString() ?? string.Empty).Trim();
+                                    }
+                                default:
+                                    reader.Skip();
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -139,27 +195,69 @@ namespace MediaBrowser.Providers.TV
                 Url = string.Format(UpdatesUrl, lastUpdateTime),
                 CancellationToken = cancellationToken,
                 EnableHttpCompression = true,
-                ResourcePool = RemoteSeriesProvider.Current.TvDbResourcePool
+                ResourcePool = TvdbSeriesProvider.Current.TvDbResourcePool
 
             }).ConfigureAwait(false))
             {
-                var doc = new XmlDocument();
-
-                doc.Load(stream);
-
-                var newUpdateTime = doc.SafeGetString("//Time");
-
-                var seriesNodes = doc.SelectNodes("//Series");
+                var data = GetUpdatedSeriesIdList(stream);
 
                 var existingDictionary = existingSeriesIds.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-                var seriesList = seriesNodes == null ? new string[] { } :
-                    seriesNodes.Cast<XmlNode>()
-                    .Select(i => i.InnerText)
+                var seriesList = data.Item1
                     .Where(i => !string.IsNullOrWhiteSpace(i) && existingDictionary.ContainsKey(i));
 
-                return new Tuple<IEnumerable<string>, string>(seriesList, newUpdateTime);
+                return new Tuple<IEnumerable<string>, string>(seriesList, data.Item2);
             }
+        }
+
+        private Tuple<List<string>, string> GetUpdatedSeriesIdList(Stream stream)
+        {
+            string updateTime = null;
+            var idList = new List<string>();
+
+            var settings = new XmlReaderSettings
+            {
+                CheckCharacters = false,
+                IgnoreProcessingInstructions = true,
+                IgnoreComments = true,
+                ValidationType = ValidationType.None
+            };
+
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8))
+            {
+                // Use XmlReader for best performance
+                using (var reader = XmlReader.Create(streamReader, settings))
+                {
+                    reader.MoveToContent();
+
+                    // Loop through each element
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            switch (reader.Name)
+                            {
+                                case "Time":
+                                    {
+                                        updateTime = (reader.ReadElementContentAsString() ?? string.Empty).Trim();
+                                        break;
+                                    }
+                                case "Series":
+                                    {
+                                        var id = (reader.ReadElementContentAsString() ?? string.Empty).Trim();
+                                        idList.Add(id);
+                                        break;
+                                    }
+                                default:
+                                    reader.Skip();
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new Tuple<List<string>, string>(idList, updateTime);
         }
 
         /// <summary>
@@ -167,10 +265,11 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         /// <param name="seriesIds">The series ids.</param>
         /// <param name="seriesDataPath">The series data path.</param>
+        /// <param name="lastTvDbUpdateTime">The last tv db update time.</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task UpdateSeries(IEnumerable<string> seriesIds, string seriesDataPath, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task UpdateSeries(IEnumerable<string> seriesIds, string seriesDataPath, long? lastTvDbUpdateTime, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var list = seriesIds.ToList();
             var numComplete = 0;
@@ -179,7 +278,7 @@ namespace MediaBrowser.Providers.TV
             {
                 try
                 {
-                    await UpdateSeries(seriesId, seriesDataPath, cancellationToken).ConfigureAwait(false);
+                    await UpdateSeries(seriesId, seriesDataPath, lastTvDbUpdateTime, cancellationToken).ConfigureAwait(false);
                 }
                 catch (HttpException ex)
                 {
@@ -205,20 +304,18 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         /// <param name="id">The id.</param>
         /// <param name="seriesDataPath">The series data path.</param>
+        /// <param name="lastTvDbUpdateTime">The last tv db update time.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private Task UpdateSeries(string id, string seriesDataPath, CancellationToken cancellationToken)
+        private Task UpdateSeries(string id, string seriesDataPath, long? lastTvDbUpdateTime, CancellationToken cancellationToken)
         {
             _logger.Info("Updating series " + id);
 
             seriesDataPath = Path.Combine(seriesDataPath, id);
 
-            if (!Directory.Exists(seriesDataPath))
-            {
-                Directory.CreateDirectory(seriesDataPath);
-            }
-            
-            return RemoteSeriesProvider.Current.DownloadSeriesZip(id, seriesDataPath, cancellationToken);
+            Directory.CreateDirectory(seriesDataPath);
+
+            return TvdbSeriesProvider.Current.DownloadSeriesZip(id, seriesDataPath, lastTvDbUpdateTime, cancellationToken);
         }
     }
 }

@@ -5,6 +5,7 @@ using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Model.Logging;
@@ -117,6 +118,8 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly IServerConfigurationManager _serverConfigurationManager;
 
         private readonly ISessionManager _sessionManager;
+        private readonly IDtoService _dtoService;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
@@ -125,12 +128,14 @@ namespace MediaBrowser.WebDashboard.Api
         /// <param name="appHost">The app host.</param>
         /// <param name="serverConfigurationManager">The server configuration manager.</param>
         /// <param name="sessionManager">The session manager.</param>
-        public DashboardService(ITaskManager taskManager, IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, ISessionManager sessionManager)
+        public DashboardService(ITaskManager taskManager, IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, ISessionManager sessionManager, IDtoService dtoService, IFileSystem fileSystem)
         {
             _taskManager = taskManager;
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
             _sessionManager = sessionManager;
+            _dtoService = dtoService;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -159,7 +164,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>System.String.</returns>
         private string GetDashboardResourcePath(string virtualPath)
         {
-            return Path.Combine(DashboardUIPath, virtualPath.Replace('/', '\\'));
+            return Path.Combine(DashboardUIPath, virtualPath.Replace('/', Path.DirectorySeparatorChar));
         }
 
         /// <summary>
@@ -169,7 +174,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>System.Object.</returns>
         public object Get(GetDashboardInfo request)
         {
-            var result = GetDashboardInfo(_appHost, _taskManager, _sessionManager);
+            var result = GetDashboardInfo(_appHost, _taskManager, _sessionManager, _dtoService);
 
             return ResultFactory.GetOptimizedResult(RequestContext, result);
         }
@@ -183,9 +188,9 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>DashboardInfo.</returns>
         public static DashboardInfo GetDashboardInfo(IServerApplicationHost appHost,
             ITaskManager taskManager,
-            ISessionManager connectionManager)
+            ISessionManager connectionManager, IDtoService dtoService)
         {
-            var connections = connectionManager.Sessions.Where(i => i.IsActive).ToArray();
+            var connections = connectionManager.Sessions.Where(i => i.IsActive).ToList();
 
             return new DashboardInfo
             {
@@ -193,11 +198,11 @@ namespace MediaBrowser.WebDashboard.Api
 
                 RunningTasks = taskManager.ScheduledTasks.Where(i => i.State == TaskState.Running || i.State == TaskState.Cancelling)
                                      .Select(ScheduledTaskHelpers.GetTaskInfo)
-                                     .ToArray(),
+                                     .ToList(),
 
                 ApplicationUpdateTaskId = taskManager.ScheduledTasks.First(t => t.ScheduledTask.GetType().Name.Equals("SystemUpdateTask", StringComparison.OrdinalIgnoreCase)).Id,
 
-                ActiveConnections = connections.Select(SessionInfoDtoBuilder.GetSessionInfoDto).ToArray()
+                ActiveConnections = connections.Select(dtoService.GetSessionInfoDto).ToList()
             };
         }
 
@@ -322,7 +327,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>Task{Stream}.</returns>
         private Stream GetRawResourceStream(string path)
         {
-            return new FileStream(GetDashboardResourcePath(path), FileMode.Open, FileAccess.Read, FileShare.ReadWrite, StreamDefaults.DefaultFileStreamBufferSize, true);
+            return _fileSystem.GetFileStream(GetDashboardResourcePath(path), FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
         }
 
         /// <summary>
@@ -370,6 +375,7 @@ namespace MediaBrowser.WebDashboard.Api
         {
             var sb = new StringBuilder();
 
+            sb.Append("<meta http-equiv=\"X-UA-Compatibility\" content=\"IE=Edge\">");
             sb.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");
             sb.Append("<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">");
             //sb.Append("<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">");
@@ -412,6 +418,11 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>System.String.</returns>
         private static string GetCommonJavascript(Version version)
         {
+            var builder = new StringBuilder();
+
+            builder.Append("<script type=\"text/javascript\">if (navigator.userAgent.toLowerCase().indexOf('compatible; msie 7')!=-1){alert(\"Please ensure you're running at least IE10 and that compatibility mode is disabled.\");}");
+            builder.Append("</script>");
+
             var versionString = "?v=" + version;
 
             var files = new[]
@@ -424,7 +435,9 @@ namespace MediaBrowser.WebDashboard.Api
 
             var tags = files.Select(s => string.Format("<script src=\"{0}\"></script>", s)).ToArray();
 
-            return string.Join(string.Empty, tags);
+            builder.Append(string.Join(string.Empty, tags));
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -440,7 +453,7 @@ namespace MediaBrowser.WebDashboard.Api
                                       "extensions.js",
                                       "site.js",
                                       "librarybrowser.js",
-
+                                      "ratingdialog.js",
                                       "aboutpage.js",
                                       "allusersettings.js",
                                       "alphapicker.js",
@@ -455,7 +468,6 @@ namespace MediaBrowser.WebDashboard.Api
                                       "edititempeople.js",
                                       "edititemimages.js",
                                       "edituserpage.js",
-                                      "favoritetv.js",
                                       "gamesrecommendedpage.js",
                                       "gamesystemspage.js",
                                       "gamespage.js",
@@ -467,6 +479,10 @@ namespace MediaBrowser.WebDashboard.Api
                                       "itemgallery.js",
                                       "itemlistpage.js",
                                       "librarysettings.js",
+                                      "livetvchannel.js",
+                                      "livetvchannels.js",
+                                      "livetvguide.js",
+                                      "livetvrecordings.js",
                                       "loginpage.js",
                                       "logpage.js",
                                       "medialibrarypage.js",
@@ -480,6 +496,7 @@ namespace MediaBrowser.WebDashboard.Api
                                       "moviestudios.js",
                                       "movietrailers.js",
                                       "musicalbums.js",
+                                      "musicalbumartists.js",
                                       "musicartists.js",
                                       "musicgenres.js",
                                       "musicrecommended.js",
@@ -496,17 +513,22 @@ namespace MediaBrowser.WebDashboard.Api
                                       "songs.js",
                                       "supporterkeypage.js",
                                       "supporterpage.js",
+                                      "episodes.js",
                                       "tvgenres.js",
                                       "tvnextup.js",
                                       "tvpeople.js",
                                       "tvrecommended.js",
                                       "tvshows.js",
                                       "tvstudios.js",
+                                      "tvupcoming.js",
                                       "updatepasswordpage.js",
                                       "userimagepage.js",
                                       "userprofilespage.js",
+                                      "usersettings.js",
                                       "wizardfinishpage.js",
+                                      "wizardservice.js",
                                       "wizardstartpage.js",
+                                      "wizardsettings.js",
                                       "wizarduserpage.js"
                                   };
 
@@ -597,7 +619,7 @@ namespace MediaBrowser.WebDashboard.Api
         {
             path = GetDashboardResourcePath(path);
 
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, StreamDefaults.DefaultFileStreamBufferSize, true))
+            using (var fs = _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
             {
                 using (var streamReader = new StreamReader(fs))
                 {

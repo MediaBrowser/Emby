@@ -1,6 +1,6 @@
-﻿using MediaBrowser.Controller;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.IO;
 using System;
 using System.IO;
 using System.Linq;
@@ -13,102 +13,24 @@ namespace MediaBrowser.Api.Library
     public static class LibraryHelpers
     {
         /// <summary>
-        /// Adds the virtual folder.
+        /// The shortcut file extension
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="collectionType">Type of the collection.</param>
-        /// <param name="user">The user.</param>
-        /// <param name="appPaths">The app paths.</param>
-        /// <exception cref="System.ArgumentException">There is already a media collection with the name  + name + .</exception>
-        public static void AddVirtualFolder(string name, string collectionType, User user, IServerApplicationPaths appPaths)
-        {
-            name = FileSystem.GetValidFilename(name);
-
-            var rootFolderPath = user != null ? user.RootFolderPath : appPaths.DefaultUserViewsPath;
-            var virtualFolderPath = Path.Combine(rootFolderPath, name);
-
-            if (Directory.Exists(virtualFolderPath))
-            {
-                throw new ArgumentException("There is already a media collection with the name " + name + ".");
-            }
-
-            Directory.CreateDirectory(virtualFolderPath);
-
-            if (!string.IsNullOrEmpty(collectionType))
-            {
-                var path = Path.Combine(virtualFolderPath, collectionType + ".collection");
-
-                File.Create(path);
-            }
-        }
-
+        private const string ShortcutFileExtension = ".mblink";
         /// <summary>
-        /// Removes the virtual folder.
+        /// The shortcut file search
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="user">The user.</param>
-        /// <param name="appPaths">The app paths.</param>
-        /// <exception cref="System.IO.DirectoryNotFoundException">The media folder does not exist</exception>
-        public static void RemoveVirtualFolder(string name, User user, IServerApplicationPaths appPaths)
-        {
-            var rootFolderPath = user != null ? user.RootFolderPath : appPaths.DefaultUserViewsPath;
-            var path = Path.Combine(rootFolderPath, name);
-
-            if (!Directory.Exists(path))
-            {
-                throw new DirectoryNotFoundException("The media folder does not exist");
-            }
-
-            Directory.Delete(path, true);
-        }
-
-        /// <summary>
-        /// Renames the virtual folder.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="newName">The new name.</param>
-        /// <param name="user">The user.</param>
-        /// <param name="appPaths">The app paths.</param>
-        /// <exception cref="System.IO.DirectoryNotFoundException">The media collection does not exist</exception>
-        /// <exception cref="System.ArgumentException">There is already a media collection with the name  + newPath + .</exception>
-        public static void RenameVirtualFolder(string name, string newName, User user, IServerApplicationPaths appPaths)
-        {
-            var rootFolderPath = user != null ? user.RootFolderPath : appPaths.DefaultUserViewsPath;
-
-            var currentPath = Path.Combine(rootFolderPath, name);
-            var newPath = Path.Combine(rootFolderPath, newName);
-
-            if (!Directory.Exists(currentPath))
-            {
-                throw new DirectoryNotFoundException("The media collection does not exist");
-            }
-
-            if (!string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase) && Directory.Exists(newPath))
-            {
-                throw new ArgumentException("There is already a media collection with the name " + newPath + ".");
-            }
-            //Only make a two-phase move when changing capitalization
-            if (string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase))
-            {
-                //Create an unique name
-                var temporaryName = Guid.NewGuid().ToString();
-                var temporaryPath = Path.Combine(rootFolderPath, temporaryName);
-                Directory.Move(currentPath,temporaryPath);
-                currentPath = temporaryPath;
-            }
-
-            Directory.Move(currentPath, newPath);
-        }
+        private const string ShortcutFileSearch = "*" + ShortcutFileExtension;
 
         /// <summary>
         /// Deletes a shortcut from within a virtual folder, within either the default view or a user view
         /// </summary>
+        /// <param name="fileSystem">The file system.</param>
         /// <param name="virtualFolderName">Name of the virtual folder.</param>
         /// <param name="mediaPath">The media path.</param>
         /// <param name="user">The user.</param>
         /// <param name="appPaths">The app paths.</param>
         /// <exception cref="System.IO.DirectoryNotFoundException">The media folder does not exist</exception>
-        public static void RemoveMediaPath(string virtualFolderName, string mediaPath, User user, IServerApplicationPaths appPaths)
+        public static void RemoveMediaPath(IFileSystem fileSystem, string virtualFolderName, string mediaPath, User user, IServerApplicationPaths appPaths)
         {
             var rootFolderPath = user != null ? user.RootFolderPath : appPaths.DefaultUserViewsPath;
             var path = Path.Combine(rootFolderPath, virtualFolderName);
@@ -118,7 +40,7 @@ namespace MediaBrowser.Api.Library
                 throw new DirectoryNotFoundException(string.Format("The media collection {0} does not exist", virtualFolderName));
             }
 
-            var shortcut = Directory.EnumerateFiles(path, "*.lnk", SearchOption.AllDirectories).FirstOrDefault(f => FileSystem.ResolveShortcut(f).Equals(mediaPath, StringComparison.OrdinalIgnoreCase));
+            var shortcut = Directory.EnumerateFiles(path, ShortcutFileSearch, SearchOption.AllDirectories).FirstOrDefault(f => fileSystem.ResolveShortcut(f).Equals(mediaPath, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(shortcut))
             {
@@ -129,13 +51,14 @@ namespace MediaBrowser.Api.Library
         /// <summary>
         /// Adds an additional mediaPath to an existing virtual folder, within either the default view or a user view
         /// </summary>
+        /// <param name="fileSystem">The file system.</param>
         /// <param name="virtualFolderName">Name of the virtual folder.</param>
         /// <param name="path">The path.</param>
         /// <param name="user">The user.</param>
         /// <param name="appPaths">The app paths.</param>
         /// <exception cref="System.ArgumentException">The path is not valid.</exception>
         /// <exception cref="System.IO.DirectoryNotFoundException">The path does not exist.</exception>
-        public static void AddMediaPath(string virtualFolderName, string path, User user, IServerApplicationPaths appPaths)
+        public static void AddMediaPath(IFileSystem fileSystem, string virtualFolderName, string path, User user, IServerApplicationPaths appPaths)
         {
             if (!Path.IsPathRooted(path))
             {
@@ -157,32 +80,34 @@ namespace MediaBrowser.Api.Library
             var rootFolderPath = user != null ? user.RootFolderPath : appPaths.DefaultUserViewsPath;
             var virtualFolderPath = Path.Combine(rootFolderPath, virtualFolderName);
 
-            ValidateNewMediaPath(rootFolderPath, path, appPaths);
+            ValidateNewMediaPath(fileSystem, rootFolderPath, path, appPaths);
 
             var shortcutFilename = Path.GetFileNameWithoutExtension(path);
 
-            var lnk = Path.Combine(virtualFolderPath, shortcutFilename + ".lnk");
+            var lnk = Path.Combine(virtualFolderPath, shortcutFilename + ShortcutFileExtension);
 
             while (File.Exists(lnk))
             {
                 shortcutFilename += "1";
-                lnk = Path.Combine(virtualFolderPath, shortcutFilename + ".lnk");
+                lnk = Path.Combine(virtualFolderPath, shortcutFilename + ShortcutFileExtension);
             }
 
-            FileSystem.CreateShortcut(lnk, path);
+            fileSystem.CreateShortcut(lnk, path);
         }
 
         /// <summary>
         /// Validates that a new media path can be added
         /// </summary>
+        /// <param name="fileSystem">The file system.</param>
         /// <param name="currentViewRootFolderPath">The current view root folder path.</param>
         /// <param name="mediaPath">The media path.</param>
         /// <param name="appPaths">The app paths.</param>
-        /// <exception cref="System.ArgumentException"></exception>
-        private static void ValidateNewMediaPath(string currentViewRootFolderPath, string mediaPath, IServerApplicationPaths appPaths)
+        /// <exception cref="System.ArgumentException">
+        /// </exception>
+        private static void ValidateNewMediaPath(IFileSystem fileSystem, string currentViewRootFolderPath, string mediaPath, IServerApplicationPaths appPaths)
         {
-            var duplicate = Directory.EnumerateFiles(appPaths.RootFolderPath, "*.lnk", SearchOption.AllDirectories)
-                .Select(FileSystem.ResolveShortcut)
+            var duplicate = Directory.EnumerateFiles(appPaths.RootFolderPath, ShortcutFileSearch, SearchOption.AllDirectories)
+                .Select(fileSystem.ResolveShortcut)
                 .FirstOrDefault(p => !IsNewPathValid(mediaPath, p, false));
 
             if (!string.IsNullOrEmpty(duplicate))
@@ -192,8 +117,8 @@ namespace MediaBrowser.Api.Library
 
             // Don't allow duplicate sub-paths within the same user library, or it will result in duplicate items
             // See comments in IsNewPathValid
-            duplicate = Directory.EnumerateFiles(currentViewRootFolderPath, "*.lnk", SearchOption.AllDirectories)
-              .Select(FileSystem.ResolveShortcut)
+            duplicate = Directory.EnumerateFiles(currentViewRootFolderPath, ShortcutFileSearch, SearchOption.AllDirectories)
+              .Select(fileSystem.ResolveShortcut)
               .FirstOrDefault(p => !IsNewPathValid(mediaPath, p, true));
 
             if (!string.IsNullOrEmpty(duplicate))
@@ -202,8 +127,8 @@ namespace MediaBrowser.Api.Library
             }
             
             // Make sure the current root folder doesn't already have a shortcut to the same path
-            duplicate = Directory.EnumerateFiles(currentViewRootFolderPath, "*.lnk", SearchOption.AllDirectories)
-                .Select(FileSystem.ResolveShortcut)
+            duplicate = Directory.EnumerateFiles(currentViewRootFolderPath, ShortcutFileSearch, SearchOption.AllDirectories)
+                .Select(fileSystem.ResolveShortcut)
                 .FirstOrDefault(p => mediaPath.Equals(p, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(duplicate))

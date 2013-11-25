@@ -10,6 +10,12 @@ namespace MediaBrowser.Model.Querying
         public string UserId { get; set; }
 
         /// <summary>
+        /// Gets or sets the series id.
+        /// </summary>
+        /// <value>The series id.</value>
+        public string SeriesId { get; set; }
+        
+        /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
         /// </summary>
         /// <value>The start index.</value>

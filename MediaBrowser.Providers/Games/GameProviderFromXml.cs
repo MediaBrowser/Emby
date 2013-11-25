@@ -1,8 +1,10 @@
-﻿using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Providers.Savers;
 using System;
 using System.IO;
 using System.Threading;
@@ -12,15 +14,17 @@ namespace MediaBrowser.Providers.Games
 {
     public class GameProviderFromXml : BaseMetadataProvider
     {
+        private readonly IFileSystem _fileSystem;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logManager"></param>
         /// <param name="configurationManager"></param>
-        public GameProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager)
+        public GameProviderFromXml(ILogManager logManager, IServerConfigurationManager configurationManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
-
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -33,10 +37,18 @@ namespace MediaBrowser.Providers.Games
             return item is Game;
         }
 
-        protected override DateTime CompareDate(BaseItem item)
+        protected override bool NeedsRefreshBasedOnCompareDate(BaseItem item, BaseProviderInfo providerInfo)
         {
-            var xml = item.ResolveArgs.GetMetaFileByPath(Path.Combine(item.MetaLocation, "game.xml"));
-            return xml != null ? FileSystem.GetLastWriteTimeUtc(xml, Logger) : DateTime.MinValue;
+            var savePath = GameXmlSaver.GetGameSavePath(item);
+
+            var xml = item.ResolveArgs.GetMetaFileByPath(savePath) ?? new FileInfo(savePath);
+
+            if (!xml.Exists)
+            {
+                return false;
+            }
+
+            return _fileSystem.GetLastWriteTimeUtc(xml) > providerInfo.LastRefreshed;
         }
 
         /// <summary>
@@ -61,7 +73,7 @@ namespace MediaBrowser.Providers.Games
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var metaFile = Path.Combine(game.MetaLocation, "game.xml");
+            var metaFile = GameXmlSaver.GetGameSavePath(game);
 
             if (File.Exists(metaFile))
             {
@@ -69,13 +81,12 @@ namespace MediaBrowser.Providers.Games
 
                 try
                 {
-                    new BaseItemXmlParser<Game>(Logger).Fetch(game, metaFile, cancellationToken);
+                    new GameXmlParser(Logger).Fetch(game, metaFile, cancellationToken);
                 }
                 finally
                 {
                     XmlParsingResourcePool.Release();
                 }
-
             }
 
             SetLastRefreshed(game, DateTime.UtcNow);
@@ -87,7 +98,7 @@ namespace MediaBrowser.Providers.Games
         /// </summary>
         public override MetadataProviderPriority Priority
         {
-            get { return MetadataProviderPriority.First; }
+            get { return MetadataProviderPriority.Second; }
         }
     }
 }

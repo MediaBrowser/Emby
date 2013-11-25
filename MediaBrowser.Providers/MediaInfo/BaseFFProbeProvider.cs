@@ -10,6 +10,7 @@ using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -201,6 +202,8 @@ namespace MediaBrowser.Providers.MediaInfo
                 {
                     stream.SampleRate = int.Parse(streamInfo.sample_rate, UsCulture);
                 }
+
+                stream.ChannelLayout = ParseChannelLayout(streamInfo.channel_layout);
             }
             else if (string.Equals(streamInfo.codec_type, "subtitle", StringComparison.OrdinalIgnoreCase))
             {
@@ -212,8 +215,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 stream.Width = streamInfo.width;
                 stream.Height = streamInfo.height;
-                stream.PixelFormat = streamInfo.pix_fmt;
-                stream.AspectRatio = streamInfo.display_aspect_ratio;
+                stream.AspectRatio = GetAspectRatio(streamInfo);
 
                 stream.AverageFrameRate = GetFrameRate(streamInfo.avg_frame_rate);
                 stream.RealFrameRate = GetFrameRate(streamInfo.r_frame_rate);
@@ -226,14 +228,21 @@ namespace MediaBrowser.Providers.MediaInfo
             // Get stream bitrate
             if (stream.Type != MediaStreamType.Subtitle)
             {
+                var bitrate = 0;
+
                 if (!string.IsNullOrEmpty(streamInfo.bit_rate))
                 {
-                    stream.BitRate = int.Parse(streamInfo.bit_rate, UsCulture);
+                    bitrate = int.Parse(streamInfo.bit_rate, UsCulture);
                 }
                 else if (formatInfo != null && !string.IsNullOrEmpty(formatInfo.bit_rate))
                 {
                     // If the stream info doesn't have a bitrate get the value from the media format info
-                    stream.BitRate = int.Parse(formatInfo.bit_rate, UsCulture);
+                    bitrate = int.Parse(formatInfo.bit_rate, UsCulture);
+                }
+
+                if (bitrate > 0)
+                {
+                    stream.BitRate = bitrate;
                 }
             }
 
@@ -248,6 +257,93 @@ namespace MediaBrowser.Providers.MediaInfo
             }
 
             return stream;
+        }
+
+        private string ParseChannelLayout(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            return input.Split('(').FirstOrDefault();
+        }
+
+        private string GetAspectRatio(MediaStreamInfo info)
+        {
+            var original = info.display_aspect_ratio;
+
+            int height;
+            int width;
+
+            var parts = (original ?? string.Empty).Split(':');
+            if (!(parts.Length == 2 &&
+                int.TryParse(parts[0], NumberStyles.Any, UsCulture, out width) &&
+                int.TryParse(parts[1], NumberStyles.Any, UsCulture, out height) &&
+                width > 0 &&
+                height > 0))
+            {
+                width = info.width;
+                height = info.height;
+            }
+
+            if (width > 0 && height > 0)
+            {
+                double ratio = width;
+                ratio /= height;
+
+                if (IsClose(ratio, 1.777777778, .03))
+                {
+                    return "16:9";
+                }
+
+                if (IsClose(ratio, 1.3333333333, .05))
+                {
+                    return "4:3";
+                }
+
+                if (IsClose(ratio, 1.41))
+                {
+                    return "1.41:1";
+                }
+
+                if (IsClose(ratio, 1.5))
+                {
+                    return "1.5:1";
+                }
+
+                if (IsClose(ratio, 1.6))
+                {
+                    return "1.6:1";
+                }
+
+                if (IsClose(ratio, 1.66666666667))
+                {
+                    return "5:3";
+                }
+
+                if (IsClose(ratio, 1.85, .02))
+                {
+                    return "1.85:1";
+                }
+
+                if (IsClose(ratio, 2.35, .025))
+                {
+                    return "2.35:1";
+                }
+
+                if (IsClose(ratio, 2.4, .025))
+                {
+                    return "2.40:1";
+                }
+            }
+
+            return original;
+        }
+
+        private bool IsClose(double d1, double d2, double variance = .005)
+        {
+            return Math.Abs(d1 - d2) <= variance;
         }
 
         /// <summary>

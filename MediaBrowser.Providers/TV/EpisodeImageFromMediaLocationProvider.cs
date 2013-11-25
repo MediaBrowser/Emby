@@ -4,11 +4,11 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -29,7 +29,7 @@ namespace MediaBrowser.Providers.TV
                 return ItemUpdateType.ImageUpdate;
             }
         }
-        
+
         /// <summary>
         /// Supportses the specified item.
         /// </summary>
@@ -72,7 +72,7 @@ namespace MediaBrowser.Providers.TV
                 return BaseItem.SupportedImageExtensions;
             }
         }
-        
+
         /// <summary>
         /// Fetches metadata and returns true or false indicating if any work that requires persistence was done
         /// </summary>
@@ -90,7 +90,7 @@ namespace MediaBrowser.Providers.TV
 
             var parent = item.ResolveArgs.Parent;
 
-            ValidateImage(episode, item.MetaLocation);
+            ValidateImage(episode);
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -104,9 +104,8 @@ namespace MediaBrowser.Providers.TV
         /// Validates the primary image path still exists
         /// </summary>
         /// <param name="episode">The episode.</param>
-        /// <param name="metadataFolderPath">The metadata folder path.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private void ValidateImage(Episode episode, string metadataFolderPath)
+        private void ValidateImage(Episode episode)
         {
             var path = episode.PrimaryImagePath;
 
@@ -115,13 +114,7 @@ namespace MediaBrowser.Providers.TV
                 return;
             }
 
-            // Only validate images in the season/metadata folder
-            if (!string.Equals(Path.GetDirectoryName(path), metadataFolderPath, StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            if (episode.Parent.ResolveArgs.GetMetaFileByPath(path) == null)
+            if (!File.Exists(path))
             {
                 episode.PrimaryImagePath = null;
             }
@@ -136,18 +129,34 @@ namespace MediaBrowser.Providers.TV
         /// <param name="episodeFileName">Name of the episode file.</param>
         private void SetPrimaryImagePath(Episode item, Folder parent, string metadataFolder, string episodeFileName)
         {
-            // Look for the image file in the metadata folder, and if found, set PrimaryImagePath
-            var imageFiles = new[] {
-                Path.Combine(metadataFolder, Path.ChangeExtension(episodeFileName, ".jpg")),
-                Path.Combine(metadataFolder, Path.ChangeExtension(episodeFileName, ".png"))
-            };
-
-            var file = parent.ResolveArgs.GetMetaFileByPath(imageFiles[0]) ??
-                       parent.ResolveArgs.GetMetaFileByPath(imageFiles[1]);
-
-            if (file != null)
+            foreach (var extension in BaseItem.SupportedImageExtensions)
             {
-                item.PrimaryImagePath = file.FullName;
+                var path = Path.Combine(metadataFolder, Path.ChangeExtension(episodeFileName, extension));
+
+                var file = parent.ResolveArgs.GetMetaFileByPath(path);
+
+                if (file != null)
+                {
+                    item.PrimaryImagePath = file.FullName;
+                    return;
+                }
+            }
+
+            var seasonFolder = Path.GetDirectoryName(item.Path);
+
+            foreach (var extension in BaseItem.SupportedImageExtensions)
+            {
+                var imageFilename = Path.GetFileNameWithoutExtension(episodeFileName) + "-thumb" + extension;
+
+                var path = Path.Combine(seasonFolder, imageFilename);
+
+                var file = parent.ResolveArgs.GetMetaFileByPath(path);
+
+                if (file != null)
+                {
+                    item.PrimaryImagePath = file.FullName;
+                    return;
+                }
             }
         }
     }
