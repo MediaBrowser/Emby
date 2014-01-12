@@ -52,7 +52,7 @@ namespace MediaBrowser.ServerApplication.FFMpeg
                             case "FFProbeFilename":
                                 return "ffprobe";
                             case "ArchiveType":
-                                return "gz";
+                                return "7z";
                         }
                         break;
                     }
