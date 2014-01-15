@@ -12,7 +12,7 @@ namespace MediaBrowser.Controller.Entities.Movies
     /// <summary>
     /// Class Movie
     /// </summary>
-    public class Movie : Video, IHasCriticRating, IHasSoundtracks, IHasBudget, IHasTrailers, IHasThemeMedia, IHasTaglines, IHasTags, IHasPreferredMetadataLanguage
+    public class Movie : Video, IHasCriticRating, IHasSoundtracks, IHasBudget, IHasKeywords, IHasTrailers, IHasThemeMedia, IHasTaglines, IHasTags, IHasPreferredMetadataLanguage
     {
         public List<Guid> SpecialFeatureIds { get; set; }
 
@@ -39,10 +39,12 @@ namespace MediaBrowser.Controller.Entities.Movies
             ThemeVideoIds = new List<Guid>();
             Taglines = new List<string>();
             Tags = new List<string>();
+            Keywords = new List<string>();
         }
 
         public List<Guid> LocalTrailerIds { get; set; }
-        
+        public List<string> Keywords { get; set; }
+    
         public List<MediaUrl> RemoteTrailers { get; set; }
 
         /// <summary>
@@ -177,7 +179,7 @@ namespace MediaBrowser.Controller.Entities.Movies
             return LibraryManager.ResolvePaths<Video>(files, null).Select(video =>
             {
                 // Try to retrieve it from the db. If we don't find it, use the resolved version
-                var dbItem = LibraryManager.RetrieveItem(video.Id) as Video;
+                var dbItem = LibraryManager.GetItemById(video.Id) as Video;
 
                 if (dbItem != null)
                 {

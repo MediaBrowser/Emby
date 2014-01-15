@@ -91,18 +91,18 @@
 
         var promise1 = ApiClient.getRootFolder(Dashboard.getCurrentUserId());
 
-        var promise2 = ApiClient.getLiveTvServices();
+        var promise2 = ApiClient.getLiveTvInfo();
 
         $.when(promise1, promise2).done(function (response1, response2) {
 
             var rootFolder = response1[0];
-            var liveTvServices = response2[0];
+            var liveTvInfo = response2[0];
 
             var nodes = [];
 
             nodes.push(getNode(rootFolder, 'open'));
 
-            if (liveTvServices.length) {
+            if (liveTvInfo.Services.length) {
                 nodes.push({ attr: { id: 'livetv', rel: 'folder', itemtype: 'livetv' }, data: 'Live TV', state: 'open' });
             }
 
@@ -113,9 +113,9 @@
 
     function loadLiveTvServices(openItems, callback) {
 
-        ApiClient.getLiveTvServices().done(function (services) {
+        ApiClient.getLiveTvInfo().done(function (info) {
 
-            var nodes = services.map(function (i) {
+            var nodes = info.Services.map(function (i) {
 
                 var state = openItems.indexOf(i.Id) == -1 ? 'closed' : 'open';
 
@@ -716,6 +716,12 @@
             $('.fldRefresh', page).show();
         }
 
+        if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "BoxSet") {
+            $('#keywordsCollapsible', page).show();
+        } else {
+            $('#keywordsCollapsible', page).hide();
+        }
+
         if (item.MediaType == "Video" && item.Type != "Channel") {
             $('#fldSourceType', page).hide();
         } else {
@@ -831,6 +837,8 @@
         populateListView($('#listStudios', page), (item.Studios || []).map(function (element) { return element.Name || ''; }));
 
         populateListView($('#listTags', page), item.Tags);
+        populateListView($('#listKeywords', page), item.Keywords);
+
         var enableInternetProviders = (item.EnableInternetProviders || false);
         $("#enableInternetProviders", page).attr('checked', enableInternetProviders).checkboxradio('refresh');
         if (enableInternetProviders) {
@@ -1091,6 +1099,7 @@
 
         metadatafields.push({ name: "Studios" });
         metadatafields.push({ name: "Tags" });
+        metadatafields.push({ name: "Keywords" });
         metadatafields.push({ name: "Images" });
         metadatafields.push({ name: "Backdrops" });
 
@@ -1150,6 +1159,7 @@
                 AirTime: convertTo12HourFormat($('#txtAirTime', form).val()),
                 Genres: editableListViewValues($("#listGenres", form)),
                 Tags: editableListViewValues($("#listTags", form)),
+                Keywords: editableListViewValues($("#listKeywords", form)),
                 Studios: editableListViewValues($("#listStudios", form)).map(function (element) { return { Name: element }; }),
 
                 PremiereDate: $('#txtPremiereDate', form).val() || null,
@@ -1220,9 +1230,6 @@
             }
             else if (currentItem.Type == "Studio") {
                 updatePromise = ApiClient.updateStudio(item);
-            }
-            else if (currentItem.Type == "Channel") {
-                updatePromise = ApiClient.updateLiveTvChannel(item);
             }
             else {
                 updatePromise = ApiClient.updateItem(item);

@@ -14,6 +14,11 @@
     transition: all 500ms ease;
 }
 
+.posterItemOverlayTarget {
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
 
 .smallBackdropPosterItem, .smallPosterItem {
     margin: 5px;
@@ -27,11 +32,11 @@
     position: relative;
 }
 
-    .posterItem:hover .posterItemImage {
-        -moz-box-shadow: 0 0 12px 7px #2572EB;
-        -webkit-box-shadow: 0 0 12px 7px #2572EB;
-        box-shadow: 0 0 12px 7px #2572EB;
-    }
+.posterItem:hover .posterItemImage {
+    -moz-box-shadow: 0 0 12px 7px #2572EB;
+    -webkit-box-shadow: 0 0 12px 7px #2572EB;
+    box-shadow: 0 0 12px 7px #2572EB;
+}
 
 .coveredPosterItemImage {
     background-size: cover;
@@ -163,10 +168,10 @@
     z-index: 10;
 }
 
-.miniPosterItemProgress .itemProgressBar {
-    height: 7px;
-    opacity: 1;
-}
+    .miniPosterItemProgress .itemProgressBar {
+        height: 7px;
+        opacity: 1;
+    }
 
 @media all and (max-width: 600px) {
 

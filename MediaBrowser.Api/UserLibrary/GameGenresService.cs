@@ -109,5 +109,10 @@ namespace MediaBrowser.Api.UserLibrary
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Select(name => LibraryManager.GetGameGenre(name));
         }
+
+        protected override IEnumerable<BaseItem> GetLibraryItems(GameGenre item, IEnumerable<BaseItem> libraryItems)
+        {
+            return libraryItems.Where(i => (i is Game) && i.Genres.Contains(item.Name, StringComparer.OrdinalIgnoreCase));
+        }
     }
 }

@@ -45,9 +45,9 @@
 
             localStorage.setItem(key + '_' + Dashboard.getCurrentUserId(), JSON.stringify(values));
         },
-        
-        saveViewSetting: function(key, value) {
-            
+
+        saveViewSetting: function (key, value) {
+
             localStorage.setItem(key + '_' + Dashboard.getCurrentUserId() + '_view', value);
         },
 
@@ -502,7 +502,7 @@
             var isPlaying = MediaPlayer.isPlaying();
 
             if (!isPlaying && !resumePositionTicks && mediaType != "Audio") {
-                MediaPlayer.playById(itemId, itemType);
+                MediaPlayer.playById(itemId);
                 return;
             }
 
@@ -516,7 +516,7 @@
             if (itemType == "MusicArtist") {
                 html += '<li><a href="#" onclick="MediaPlayer.playArtist(\'' + itemId + '\');LibraryBrowser.closePlayMenu();">Play</a></li>';
             } else if (itemType != "MusicGenre") {
-                html += '<li><a href="#" onclick="MediaPlayer.playById(\'' + itemId + '\', \'' + itemType + '\');LibraryBrowser.closePlayMenu();">Play</a></li>';
+                html += '<li><a href="#" onclick="MediaPlayer.playById(\'' + itemId + '\');LibraryBrowser.closePlayMenu();">Play</a></li>';
             }
 
             if (itemType == "Audio") {
@@ -536,7 +536,7 @@
             }
 
             if (resumePositionTicks) {
-                html += '<li><a href="#" onclick="MediaPlayer.playById(\'' + itemId + '\', \'' + itemType + '\', ' + resumePositionTicks + ');LibraryBrowser.closePlayMenu();">Resume</a></li>';
+                html += '<li><a href="#" onclick="MediaPlayer.playById(\'' + itemId + '\', ' + resumePositionTicks + ');LibraryBrowser.closePlayMenu();">Resume</a></li>';
             }
 
             if (isPlaying) {
@@ -899,7 +899,7 @@
 
                 cssClass += ' ' + options.shape + 'PosterItem';
 
-                html += '<a class="' + cssClass + '" href="' + LibraryBrowser.getHref(item, options.context) + '">';
+                html += '<a data-itemid="' + item.Id + '" class="' + cssClass + '" href="' + LibraryBrowser.getHref(item, options.context) + '">';
 
                 var style = "";
 
@@ -915,6 +915,8 @@
                 if (options.coverImage) {
                     imageCssClass += " coveredPosterItemImage";
                 }
+
+                html += '<div class="posterItemOverlayTarget"></div>';
 
                 var progressHtml = LibraryBrowser.getItemProgressBarHtml(item);
 
@@ -954,18 +956,18 @@
                     html += '<div class="posterItemTextOverlay">';
                 }
 
-                var cssclass = options.centerText ? "posterItemText posterItemTextCentered" : "posterItemText";
+                cssClass = options.centerText ? "posterItemText posterItemTextCentered" : "posterItemText";
 
                 if (options.showParentTitle) {
 
-                    html += "<div class='" + cssclass + "'>";
+                    html += "<div class='" + cssClass + "'>";
                     html += item.EpisodeTitle ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || "&nbsp;");
                     html += "</div>";
                 }
 
                 if (options.showTitle || forceName) {
 
-                    html += "<div class='" + cssclass + "'>";
+                    html += "<div class='" + cssClass + " posterItemName'>";
                     html += name;
                     html += "</div>";
                 }
@@ -975,7 +977,7 @@
                     var itemCountHtml = LibraryBrowser.getItemCountsHtml(options, item);
 
                     if (itemCountHtml) {
-                        html += "<div class='" + cssclass + "'>";
+                        html += "<div class='" + cssClass + "'>";
                         html += itemCountHtml;
                         html += "</div>";
                     }
@@ -1482,7 +1484,7 @@
                 }
 
                 pageSizes = pageSizes || [20, 50, 100, 200, 300, 400, 500];
-                
+
                 for (var j = 0, length = pageSizes.length; j < length; j++) {
                     options += getOption(pageSizes[j]);
                 }
@@ -1532,6 +1534,12 @@
 
         getItemProgressBarHtml: function (item) {
 
+
+            if (item.Type == "Recording" && item.CompletionPercentage) {
+                
+                return '<progress class="itemProgressBar recordingProgressBar" min="0" max="100" value="' + item.CompletionPercentage + '"></progress>';
+            }
+            
             if (item.UserData && item.UserData.PlaybackPositionTicks && item.RunTimeTicks) {
 
                 var tooltip = Dashboard.getDisplayTime(item.UserData.PlaybackPositionTicks) + " / " + Dashboard.getDisplayTime(item.RunTimeTicks);
@@ -2412,3 +2420,195 @@
     };
 
 })(window, document, jQuery, screen, localStorage);
+
+(function ($, document, window) {
+
+    var showOverlayTimeout;
+    var hideOverlayTimeout;
+    var currentPosterItem;
+
+    function onOverlayMouseOver() {
+
+        if (hideOverlayTimeout) {
+            clearTimeout(hideOverlayTimeout);
+            hideOverlayTimeout = null;
+        }
+    }
+
+    function onOverlayMouseOut() {
+
+        startHideOverlayTimer();
+    }
+
+    function getOverlayHtml(item) {
+
+        var html = '';
+
+        html += '<div class="itemOverlayContent">';
+
+        html += '<p class="itemMiscInfo">';
+        html += LibraryBrowser.getMiscInfoHtml(item);
+        html += '</p>';
+
+        html += '<p style="margin: 1.25em 0;">';
+        html += '<span class="itemCommunityRating">';
+        html += LibraryBrowser.getRatingHtml(item);
+        html += '</span>';
+        html += '</p>';
+
+        html += '<p style="margin: 1.25em 0;">';
+        html += '<span class="userDataIcons">';
+        html += LibraryBrowser.getUserDataIconsHtml(item);
+        html += '</span>';
+        html += '</p>';
+
+        html += '<p class="itemOverlayHtml">';
+        html += (item.OverviewHtml || item.Overview || '');
+        html += '</p>';
+
+        html += '<p>';
+
+        html += '<button type="button" data-mini="true" data-inline="true" data-icon="play" data-iconpos="notext">Play</button>';
+        html += '<button type="button" data-mini="true" data-inline="true" data-icon="video" data-iconpos="notext">Play</button>';
+        html += '<button type="button" data-mini="true" data-inline="true" data-icon="remote" data-iconpos="notext">Play</button>';
+        html += '<button type="button" data-mini="true" data-inline="true" data-icon="edit" data-iconpos="notext">Play</button>';
+
+        html += '</p>';
+
+        html += '</div>';
+
+        return html;
+    }
+
+    function showOverlay(elem, item) {
+
+        $('.itemFlyout').popup('close').remove();
+
+        var html = '<div data-role="popup" class="itemFlyout" data-theme="b" data-arrow="true" data-history="false">';
+
+        html += '<div class="ui-bar-b" style="text-align:center;">';
+        html += '<h3 style="margin: .5em 0;padding:0 1em;font-weight:normal;">' + LibraryBrowser.getPosterViewDisplayName(item, true) + '</h3>';
+        html += '</div>';
+
+        html += '<div style="padding: 1em;">';
+        html += getOverlayHtml(item);
+        html += '</div>';
+
+        html += '</div>';
+
+        $('.itemFlyout').popup('close').popup('destroy').remove();
+
+        $(document.body).append(html);
+
+        var popup = $('.itemFlyout').on('mouseenter', onOverlayMouseOver).on('mouseleave', onOverlayMouseOut).popup({
+
+            positionTo: $('.posterItemOverlayTarget', elem)
+            
+        }).trigger('create').popup("open").on("popupafterclose", function () {
+
+            $(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
+        });
+
+        popup.parents().prev('.ui-popup-screen').remove();
+        currentPosterItem = elem;
+    }
+
+    function onPosterItemClicked() {
+
+        if (showOverlayTimeout) {
+            clearTimeout(showOverlayTimeout);
+            showOverlayTimeout = null;
+        }
+
+        if (hideOverlayTimeout) {
+            clearTimeout(hideOverlayTimeout);
+            hideOverlayTimeout = null;
+        }
+
+        hideOverlay();
+    }
+
+    function hideOverlay() {
+
+        $('.itemFlyout').popup('close').remove();
+
+        if (currentPosterItem) {
+
+            $(currentPosterItem).off('click.overlay');
+            currentPosterItem = null;
+        }
+    }
+
+    function startHideOverlayTimer() {
+
+        if (hideOverlayTimeout) {
+            clearTimeout(hideOverlayTimeout);
+            hideOverlayTimeout = null;
+        }
+
+        hideOverlayTimeout = setTimeout(hideOverlay, 400);
+    }
+
+    function onHoverOut() {
+
+        if (showOverlayTimeout) {
+            clearTimeout(showOverlayTimeout);
+            showOverlayTimeout = null;
+        }
+
+        startHideOverlayTimer();
+    }
+
+    $.fn.createPosterItemHoverMenu = function () {
+
+        function onShowTimerExpired(elem) {
+
+            var id = elem.getAttribute('data-itemid');
+
+            ApiClient.getItem(Dashboard.getCurrentUserId(), id).done(function (item) {
+
+                showOverlay(elem, item);
+
+            });
+        }
+
+        function onHoverIn() {
+
+            if (showOverlayTimeout) {
+                clearTimeout(showOverlayTimeout);
+                showOverlayTimeout = null;
+            }
+
+            if (hideOverlayTimeout) {
+                clearTimeout(hideOverlayTimeout);
+                hideOverlayTimeout = null;
+            }
+
+            var elem = this;
+
+            if (currentPosterItem && currentPosterItem == elem) {
+                return;
+            }
+
+            showOverlayTimeout = setTimeout(function () {
+
+                onShowTimerExpired(elem);
+
+            }, 500);
+        }
+
+        // https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/
+        
+        if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
+            /* browser with either Touch Events of Pointer Events
+               running on touch-capable device */
+            return this;
+        }
+
+        return this.on('mouseenter', '.posterItem', onHoverIn)
+            .on('mouseleave', '.posterItem', onHoverOut)
+            .on('click', '.posterItem', onPosterItemClicked);
+    };
+
+})(jQuery, document, window);
+
