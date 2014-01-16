@@ -91,6 +91,19 @@
     font-weight: 400;
 }
 
+.userPosterItemText {
+    text-align: center;
+    color: black;
+    font-weight: 700;
+}
+
+.userPosterItemBiggerText {
+    text-align: center;
+    color: black;
+    font-weight: 700;
+    font-size: 16px;
+}
+
 .posterItemTextOverlay {
     position: absolute;
     bottom: 0;
