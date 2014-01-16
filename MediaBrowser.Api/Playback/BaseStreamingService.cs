@@ -287,9 +287,9 @@ namespace MediaBrowser.Api.Playback
                 case EncodingQuality.HighSpeed:
                     return 2;
                 case EncodingQuality.HighQuality:
-                    return isWebm ? Math.Min(3, Environment.ProcessorCount - 1) : 2;
+                    return 2;
                 case EncodingQuality.MaxQuality:
-                    return isWebm ? Math.Max(2, Environment.ProcessorCount - 1) : 0;
+                    return isWebm ? 2 : 0;
                 default:
                     throw new Exception("Unrecognized MediaEncodingQuality value.");
             }
@@ -318,7 +318,17 @@ namespace MediaBrowser.Api.Playback
 
             if (videoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase))
             {
-                return "-preset superfast";
+                switch (GetQualitySetting())
+                {
+                    case EncodingQuality.HighSpeed:
+                        return "-preset ultrafast";
+                    case EncodingQuality.HighQuality:
+                        return "-preset superfast";
+                    case EncodingQuality.MaxQuality:
+                        return "-preset superfast";
+                    default:
+                        throw new Exception("Unrecognized MediaEncodingQuality value.");
+                }
             }
 
             if (videoCodec.Equals("mpeg4", StringComparison.OrdinalIgnoreCase))
@@ -365,12 +375,13 @@ namespace MediaBrowser.Api.Playback
                 }
             }
 
-            return string.Format("-af \"{0}aresample={1}async=1{2}{3}\"", 
+            return string.Format("-af \"{0}aresample={1}async={4}{2}{3}\"", 
 
                 adelay,
                 audioSampleRate, 
                 volParam,
-                pts);
+                pts,
+                state.AudioSync.ToString(UsCulture));
         }
 
         /// <summary>
@@ -1044,6 +1055,7 @@ namespace MediaBrowser.Api.Playback
 
                 //state.RunTimeTicks = recording.RunTimeTicks;
                 state.SendInputOverStandardInput = recording.RecordingInfo.Status == RecordingStatus.InProgress;
+                state.AudioSync = 1000;
             }
             else if (item is LiveTvChannel)
             {
@@ -1069,6 +1081,7 @@ namespace MediaBrowser.Api.Playback
                 }
 
                 state.SendInputOverStandardInput = true;
+                state.AudioSync = 1000;
             }
             else
             {

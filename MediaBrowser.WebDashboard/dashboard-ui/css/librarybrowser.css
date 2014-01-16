@@ -156,10 +156,8 @@
 }
 
 .detailButtonsContainer {
-    padding: .5em 0 .5em;
+    padding: .35em 0 .35em;
     text-align: center;
-    border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
 }
 
 .viewSettings {
@@ -232,6 +230,13 @@
     background-position: right center;
 }
 
+.starRatingValue {
+    display: inline-block;
+    margin-left: 1px;
+    position: relative;
+    top: -1px;
+}
+
 .rottentomatoesicon {
     display: inline-block;
     width: 17px;
@@ -244,12 +249,8 @@
     top: -1px;
 }
 
-.starRating + .rottentomatoesicon {
+.starRatingValue + .rottentomatoesicon {
     margin-left: 1em;
-}
-
-.smallPosterTileItem .starRating + .rottentomatoesicon {
-    margin-left: .5em;
 }
 
 .fresh {
@@ -258,6 +259,34 @@
 
 .rotten {
     background-image: url(images/rotten.png);
+}
+
+.metascore {
+    font-family: Arial;
+    color: #fff;
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    padding: 2px 4px;
+    position: relative;
+    top: -1px;
+    border-radius: 2px;
+}
+
+.metascorehigh {
+    background-color: rgba(102, 204, 51, .7);
+}
+
+.metascoremid {
+    background-color: rgba(255, 204, 51, .7);
+}
+
+.metascorelow {
+    background-color: rgba(240, 0, 0, .7);
+}
+
+.criticRating + .metascore, .starRatingValue + .metascore {
+    margin-left: 1em;
 }
 
 .criticReview {
@@ -277,11 +306,10 @@
     }
 
 .criticRating {
-    color: #ccc;
-    vertical-align: top;
-    margin-left: 5px;
     display: inline-block;
-    vertical-align: top;
+    margin-left: 1px;
+    position: relative;
+    top: -1px;
 }
 
 .criticRatingSummary {
@@ -346,7 +374,7 @@ a.itemTag:hover {
 }
 
 .itemCommunityRating + .userDataIcons {
-    margin-left: 1.5em;
+    margin-left: 1.25em;
 }
 
 .itemBackdrop {
@@ -742,7 +770,7 @@ a.itemTag:hover {
     }
 
     .primaryDetailPageContent {
-        max-width: 900px;
+        max-width: 850px;
     }
 }
 
@@ -943,24 +971,10 @@ a.itemTag:hover {
     top: 3px;
 }
 
-.userDataIcons .itemProgressText {
-    vertical-align: top;
-    margin-right: 1.5em;
-}
-
 .tileItem .itemProgressBar {
     top: 2px;
     width: 40px;
     margin-right: 1em;
-}
-
-.itemProgressText {
-    color: #ddd;
-    vertical-align: middle;
-}
-
-.tileItem .itemProgressText {
-    display: none;
 }
 
 .timelineHeader {
