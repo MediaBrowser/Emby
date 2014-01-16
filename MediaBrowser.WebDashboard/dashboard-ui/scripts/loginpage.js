@@ -113,9 +113,9 @@
             var linkId = "lnkUser" + i;
 
             if (user.HasPassword) {
-                html += "<a class='posterItem squarePosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;' \">";
+                html += "<a class='posterItem squarePosterItem transparentPosterItem borderlessPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;' \">";
             } else {
-                html += "<a class='posterItem squarePosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#' onclick='LoginPage.authenticateUserLink(this);' \">";
+                html += "<a class='posterItem squarePosterItem transparentPosterItem borderlessPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#' onclick='LoginPage.authenticateUserLink(this);' \">";
             }
 
             if (user.PrimaryImageTag) {
@@ -135,9 +135,9 @@
                 html += '<div class="posterItemImage" style="background-color:' + background + ';"></div>';
             }
 
-            html += '<div class="posterItemText" style="color:#000;">' + user.Name + '</div>';
+            html += '<div class="posterItemText userPosterItemBiggerText" style="color:#000;">' + user.Name + '</div>';
 
-            html += '<div class="posterItemText" style="color:#000;">';
+            html += '<div class="posterItemText userPosterItemText" style="color:#000;">';
             var lastSeen = LoginPage.getLastSeenText(user.LastActivityDate);
             if (lastSeen != "") {
                 html += lastSeen;
