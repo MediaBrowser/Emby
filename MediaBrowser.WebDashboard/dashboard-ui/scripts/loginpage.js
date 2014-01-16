@@ -113,7 +113,7 @@
             var linkId = "lnkUser" + i;
 
             if (user.HasPassword) {
-                html += "<a class='posterItem squarePosterItem transparentPosterItem borderlessPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;' \">";
+                html += "<a class='posterItem squarePosterItem transparentPosterItem borderlessPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;setTimeout(function(){$(\"#pw\").focus();}, 300);' \">";
             } else {
                 html += "<a class='posterItem squarePosterItem transparentPosterItem borderlessPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#' onclick='LoginPage.authenticateUserLink(this);' \">";
             }
