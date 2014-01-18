@@ -113,9 +113,9 @@
             var linkId = "lnkUser" + i;
 
             if (user.HasPassword) {
-                html += "<a class='posterItem squarePosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;setTimeout(function(){$(\"#pw\").focus();}, 300);' \">";
+                html += "<a class='posterItem squarePosterItem transparentPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#popupLogin' data-rel='popup' onclick='LoginPage.authenticatingLinkId=this.id;setTimeout(function(){$(\"#pw\").focus();}, 300);' \">";
             } else {
-                html += "<a class='posterItem squarePosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#' onclick='LoginPage.authenticateUserLink(this);' \">";
+                html += "<a class='posterItem squarePosterItem transparentPosterItem' id='" + linkId + "' data-userid='" + user.Id + "' href='#' onclick='LoginPage.authenticateUserLink(this);' \">";
             }
 
             if (user.PrimaryImageTag) {
