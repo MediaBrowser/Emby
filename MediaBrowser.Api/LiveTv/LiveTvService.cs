@@ -5,7 +5,6 @@ using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Querying;
 using ServiceStack;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -83,7 +82,7 @@ namespace MediaBrowser.Api.LiveTv
 
         [ApiMember(Name = "Status", Description = "Optional filter by recordings that are in progress, or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? IsInProgress { get; set; }
-        
+
         [ApiMember(Name = "SeriesTimerId", Description = "Optional filter by recordings belonging to a series timer", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string SeriesTimerId { get; set; }
     }
@@ -295,25 +294,22 @@ namespace MediaBrowser.Api.LiveTv
 
         public object Get(GetLiveTvInfo request)
         {
-            var services = _liveTvManager.Services
-                .Select(GetServiceInfo)
-                .ToList();
+            var services = _liveTvManager.GetServiceInfos(CancellationToken.None).Result;
+            var servicesList = services.ToList();
+
+            var activeServiceInfo = _liveTvManager.ActiveService == null ? null :
+                servicesList.FirstOrDefault(i => string.Equals(i.Name, _liveTvManager.ActiveService.Name, StringComparison.OrdinalIgnoreCase));
 
             var info = new LiveTvInfo
             {
-                Services = services,
-                ActiveServiceName = _liveTvManager.ActiveService == null ? null : _liveTvManager.ActiveService.Name
+                Services = servicesList.ToList(),
+                ActiveServiceName = activeServiceInfo == null ? null : activeServiceInfo.Name,
+                IsEnabled = _liveTvManager.ActiveService != null,
+                Status = activeServiceInfo == null ? LiveTvServiceStatus.Unavailable : activeServiceInfo.Status,
+                StatusMessage = activeServiceInfo == null ? null : activeServiceInfo.StatusMessage
             };
 
             return ToOptimizedResult(info);
-        }
-
-        private LiveTvServiceInfo GetServiceInfo(ILiveTvService service)
-        {
-            return new LiveTvServiceInfo
-            {
-                Name = service.Name
-            };
         }
 
         public object Get(GetChannels request)

@@ -422,7 +422,10 @@
 
                 html += '<tr>';
 
-                html += '<td><button class="btnPlay" data-icon="play" type="button" data-iconpos="notext" onclick="LibraryBrowser.showPlayMenu(this, \'' + item.Id + '\', \'Audio\', \'Audio\');">Play</button></td>';
+                html += '<td class="detailTableButtonsCell">';
+                html += '<button class="btnPlay" data-icon="play" type="button" data-iconpos="notext" onclick="LibraryBrowser.showPlayMenu(this, \'' + item.Id + '\', \'Audio\', \'Audio\');" data-inline="true" title="Play">Play</button>';
+                html += '<button class="btnQueue" data-icon="plus" type="button" data-iconpos="notext" onclick="MediaPlayer.queue(\'' + item.Id + '\');" data-inline="true" title="Queue">Queue</button>';
+                html += '</td>';
 
                 var num = item.IndexNumber;
 
@@ -1498,7 +1501,7 @@
             return html;
         },
 
-        getRatingHtml: function (item) {
+        getRatingHtml: function (item, metascore) {
 
             var html = "";
 
@@ -1508,20 +1511,8 @@
                 html += '<div class="starRatingValue">';
                 html += item.CommunityRating.toFixed(1);
                 html += '</div>';
-                
-                //var rating = item.CommunityRating / 2;
-
-                //for (var i = 1; i <= 5; i++) {
-                //    if (rating <= i - 1) {
-                //        html += "<div class='starRating emptyStarRating' title='" + item.CommunityRating + "'></div>";
-                //    }
-                //    else if (rating < i) {
-                //        html += "<div class='starRating halfStarRating' title='" + item.CommunityRating + "'></div>";
-                //    }
-                //    else {
-                //        html += "<div class='starRating' title='" + item.CommunityRating + "'></div>";
-                //    }
-                //}
+            } else {
+                html += '<div style="display:inline-block;margin-left:-1.25em;"></div>';
             }
 
             if (item.CriticRating != null) {
@@ -1535,7 +1526,7 @@
                 html += '<div class="criticRating">' + item.CriticRating + '%</div>';
             }
 
-            if (item.Metascore) {
+            if (item.Metascore && metascore !== false) {
 
                 if (item.Metascore >= 60) {
                     html += '<div class="metascore metascorehigh" title="Metascore">' + item.Metascore + '</div>';
@@ -1810,7 +1801,7 @@
 
             var url;
 
-            var imageHeight = 510;
+            var imageHeight = 440;
 
             if (imageTags.Primary) {
 
@@ -2235,6 +2226,7 @@
 
         renderBudget: function (elem, item) {
             if (item.Budget) {
+
                 elem.show().html('Budget:&nbsp;&nbsp;$<span class="autoNumeric" data-a-pad="false">' + item.Budget + '</span>');
             } else {
                 elem.hide();
@@ -2243,7 +2235,16 @@
 
         renderRevenue: function (elem, item) {
             if (item.Revenue) {
+
                 elem.show().html('Revenue:&nbsp;&nbsp;$<span class="autoNumeric" data-a-pad="false">' + item.Revenue + '</span>');
+            } else {
+                elem.hide();
+            }
+        },
+
+        renderAwardSummary: function (elem, item) {
+            if (item.AwardSummary) {
+                elem.show().html('Awards:&nbsp;&nbsp;' + item.AwardSummary);
             } else {
                 elem.hide();
             }
@@ -2442,197 +2443,6 @@
 (function ($, document, window) {
 
     var showOverlayTimeout;
-    var hideOverlayTimeout;
-    var currentPosterItem;
-
-    function onOverlayMouseOver() {
-
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
-    }
-
-    function onOverlayMouseOut() {
-
-        startHideOverlayTimer();
-    }
-
-    function getOverlayHtml(item) {
-
-        var html = '';
-
-        html += '<div class="itemOverlayContent">';
-
-        html += '<p class="itemMiscInfo">';
-        html += LibraryBrowser.getMiscInfoHtml(item);
-        html += '</p>';
-
-        html += '<p style="margin: 1.25em 0;">';
-        html += '<span class="itemCommunityRating">';
-        html += LibraryBrowser.getRatingHtml(item);
-        html += '</span>';
-        html += '</p>';
-
-        html += '<p style="margin: 1.25em 0;">';
-        html += '<span class="userDataIcons">';
-        html += LibraryBrowser.getUserDataIconsHtml(item);
-        html += '</span>';
-        html += '</p>';
-
-        html += '<p class="itemOverlayHtml">';
-        html += (item.OverviewHtml || item.Overview || '');
-        html += '</p>';
-
-        html += '<p>';
-
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="play" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="video" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="remote" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="edit" data-iconpos="notext">Play</button>';
-
-        html += '</p>';
-
-        html += '</div>';
-
-        return html;
-    }
-
-    function showOverlay(elem, item) {
-
-        $('.itemFlyout').popup('close').remove();
-
-        var html = '<div data-role="popup" class="itemFlyout" data-theme="b" data-arrow="true" data-history="false">';
-
-        html += '<div class="ui-bar-b" style="text-align:center;">';
-        html += '<h3 style="margin: .5em 0;padding:0 1em;font-weight:normal;">' + LibraryBrowser.getPosterViewDisplayName(item, true) + '</h3>';
-        html += '</div>';
-
-        html += '<div style="padding: 1em;">';
-        html += getOverlayHtml(item);
-        html += '</div>';
-
-        html += '</div>';
-
-        $('.itemFlyout').popup('close').popup('destroy').remove();
-
-        $(document.body).append(html);
-
-        var popup = $('.itemFlyout').on('mouseenter', onOverlayMouseOver).on('mouseleave', onOverlayMouseOut).popup({
-
-            positionTo: $('.posterItemOverlayTarget', elem)
-
-        }).trigger('create').popup("open").on("popupafterclose", function () {
-
-            $(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
-        });
-
-        popup.parents().prev('.ui-popup-screen').remove();
-        currentPosterItem = elem;
-    }
-
-    function onPosterItemClicked() {
-
-        if (showOverlayTimeout) {
-            clearTimeout(showOverlayTimeout);
-            showOverlayTimeout = null;
-        }
-
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
-
-        hideOverlay();
-    }
-
-    function hideOverlay() {
-
-        $('.itemFlyout').popup('close').remove();
-
-        if (currentPosterItem) {
-
-            $(currentPosterItem).off('click.overlay');
-            currentPosterItem = null;
-        }
-    }
-
-    function startHideOverlayTimer() {
-
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
-
-        hideOverlayTimeout = setTimeout(hideOverlay, 400);
-    }
-
-    function onHoverOut() {
-
-        if (showOverlayTimeout) {
-            clearTimeout(showOverlayTimeout);
-            showOverlayTimeout = null;
-        }
-
-        startHideOverlayTimer();
-    }
-
-    $.fn.createPosterItemHoverMenu = function () {
-
-        function onShowTimerExpired(elem) {
-
-            var id = elem.getAttribute('data-itemid');
-
-            ApiClient.getItem(Dashboard.getCurrentUserId(), id).done(function (item) {
-
-                showOverlay(elem, item);
-
-            });
-        }
-
-        function onHoverIn() {
-
-            if (showOverlayTimeout) {
-                clearTimeout(showOverlayTimeout);
-                showOverlayTimeout = null;
-            }
-
-            if (hideOverlayTimeout) {
-                clearTimeout(hideOverlayTimeout);
-                hideOverlayTimeout = null;
-            }
-
-            var elem = this;
-
-            if (currentPosterItem && currentPosterItem == elem) {
-                return;
-            }
-
-            showOverlayTimeout = setTimeout(function () {
-
-                onShowTimerExpired(elem);
-
-            }, 300);
-        }
-
-        // https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/
-
-        if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
-            /* browser with either Touch Events of Pointer Events
-               running on touch-capable device */
-            return this;
-        }
-
-        return this.on('mouseenter', '.posterItem', onHoverIn)
-            .on('mouseleave', '.posterItem', onHoverOut)
-            .on('click', '.posterItem', onPosterItemClicked);
-    };
-
-})(jQuery, document, window);
-
-(function ($, document, window) {
-
-    var showOverlayTimeout;
 
     function onHoverOut() {
 
@@ -2645,7 +2455,7 @@
 
             var elem = this;
 
-            $(this).animate({ "height": "0" }, function () {
+            $(this).animate({ "height": "0" }, "fast", function () {
 
                 $(elem).hide();
 
@@ -2659,45 +2469,144 @@
 
         });
     }
-    
-    function getOverlayHtml(item) {
+
+    function getOverlayHtml(item, currentUser, posterItem) {
 
         var html = '';
 
         html += '<div class="posterItemOverlayInner">';
 
-        html += '<div style="font-weight:bold;margin-bottom:1.5em;">';
-        html += LibraryBrowser.getPosterViewDisplayName(item, true);
+        var isSmallItem = $(posterItem).hasClass('smallBackdropPosterItem');
+        var isPortrait = $(posterItem).hasClass('portraitPosterItem');
+        var isSquare = $(posterItem).hasClass('squarePosterItem');
+
+        var parentName = isSmallItem || isPortrait ? null : item.SeriesName;
+        var name = LibraryBrowser.getPosterViewDisplayName(item, true);
+
+        html += '<div style="font-weight:bold;margin-bottom:1em;">';
+        var logoHeight = isSmallItem ? 20 : 26;
+        var maxLogoWidth = isPortrait ? 100 : 200;
+        var imgUrl;
+
+        if (parentName && item.ParentLogoItemId) {
+
+            imgUrl = ApiClient.getImageUrl(item.ParentLogoItemId, {
+                height: logoHeight * 2,
+                type: 'logo',
+                tag: item.ParentLogoImageTag
+            });
+
+            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:' + maxLogoWidth + 'px;" />';
+
+        }
+        else if (item.ImageTags.Logo) {
+
+            imgUrl = LibraryBrowser.getImageUrl(item, 'Logo', 0, {
+                height: logoHeight * 2,
+            });
+
+            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:' + maxLogoWidth + 'px;" />';
+        }
+        else {
+            html += parentName || name;
+        }
         html += '</div>';
 
-        //html += '<p class="itemMiscInfo">';
-        //html += LibraryBrowser.getMiscInfoHtml(item);
-        //html += '</p>';
+        if (parentName) {
+            html += '<p>';
+            html += name;
+            html += '</p>';
+        } else if (!isSmallItem) {
+            html += '<p class="itemMiscInfo" style="white-space:nowrap;">';
+            html += LibraryBrowser.getMiscInfoHtml(item);
+            html += '</p>';
+        }
 
-        html += '<p>';
+        html += '<p style="margin:1.25em 0;">';
         html += '<span class="itemCommunityRating">';
-        html += LibraryBrowser.getRatingHtml(item);
+        html += LibraryBrowser.getRatingHtml(item, false);
         html += '</span>';
-        html += '</p>';
 
-        html += '<p>';
-        html += '<span class="userDataIcons">';
-        html += LibraryBrowser.getUserDataIconsHtml(item);
-        html += '</span>';
+        if (isPortrait) {
+            html += '<span class="userDataIcons" style="margin-left:0;display:block;margin:1.25em 0;">';
+            html += LibraryBrowser.getUserDataIconsHtml(item);
+            html += '</span>';
+        } else {
+            html += '<span class="userDataIcons" style="margin-left:1em;">';
+            html += LibraryBrowser.getUserDataIconsHtml(item);
+            html += '</span>';
+        }
         html += '</p>';
 
         //html += '<p class="itemOverlayHtml">';
         //html += (item.OverviewHtml || item.Overview || '');
         //html += '</p>';
 
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="play" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="video" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="remote" data-iconpos="notext">Play</button>';
-        html += '<button type="button" data-mini="true" data-inline="true" data-icon="edit" data-iconpos="notext">Play</button>';
+        html += '<div>';
+
+        var buttonMargin = isPortrait || isSquare ? "margin:0 7px 0 0;" : "margin:0 10px 0 0;";
+
+        var buttonCount = 0;
+
+        if (MediaPlayer.canPlay(item)) {
+
+            var resumePosition = (item.UserData || {}).PlaybackPositionTicks || 0;
+            var onPlayClick = 'LibraryBrowser.showPlayMenu(this, \'' + item.Id + '\', \'' + item.Type + '\', \'' + item.MediaType + '\', ' + resumePosition + ');return false;';
+
+            html += '<button type="button" data-mini="true" data-inline="true" data-icon="play" data-iconpos="notext" title="Play" onclick="' + onPlayClick + '" style="' + buttonMargin + '">Play</button>';
+            buttonCount++;
+
+            if (item.MediaType == "Audio" || item.Type == "MusicAlbum") {
+                html += '<button type="button" data-mini="true" data-inline="true" data-icon="plus" data-iconpos="notext" title="Queue" onclick="MediaPlayer.queue(\'' + item.Id + '\');return false;" style="' + buttonMargin + '">Queue</button>';
+                buttonCount++;
+            }
+        }
+
+        if (item.LocalTrailerCount) {
+            html += '<button type="button" data-mini="true" data-inline="true" data-icon="video" data-iconpos="notext" class="btnPlayTrailer" data-itemid="' + item.Id + '" title="Play Trailer" style="' + buttonMargin + '">Play Trailer</button>';
+            buttonCount++;
+        }
+
+        if (currentUser.Configuration.IsAdministrator && item.Type != "Recording" && item.Type != "Program") {
+            html += '<button type="button" data-mini="true" data-inline="true" data-icon="edit" data-iconpos="notext" title="Edit" onclick="Dashboard.navigate(\'edititemmetadata.html?id=' + item.Id + '\');return false;" style="' + buttonMargin + '">Edit</button>';
+            buttonCount++;
+        }
+
+        if (!isPortrait || buttonCount < 3) {
+            html += '<button type="button" data-mini="true" data-inline="true" data-icon="wireless" data-iconpos="notext" title="Remote" class="btnRemoteControl" data-itemid="' + item.Id + '" style="' + buttonMargin + '">Remote</button>';
+        }
+
+        html += '</div>';
 
         html += '</div>';
 
         return html;
+    }
+
+    function onTrailerButtonClick() {
+
+        var id = this.getAttribute('data-itemid');
+
+        ApiClient.getLocalTrailers(Dashboard.getCurrentUserId(), id).done(function (trailers) {
+            MediaPlayer.play(trailers);
+        });
+
+        return false;
+    }
+
+    function onRemoteControlButtonClick() {
+
+        var id = this.getAttribute('data-itemid');
+
+        ApiClient.getItem(Dashboard.getCurrentUserId(), id).done(function (item) {
+
+            RemoteControl.showMenuForItem({
+                item: item
+            });
+
+        });
+
+        return false;
     }
 
     $.fn.createPosterItemHoverMenu = function () {
@@ -2707,16 +2616,25 @@
             var innerElem = $('.posterItemOverlayTarget', elem);
             var id = elem.getAttribute('data-itemid');
 
-            ApiClient.getItem(Dashboard.getCurrentUserId(), id).done(function (item) {
+            var promise1 = ApiClient.getItem(Dashboard.getCurrentUserId(), id);
+            var promise2 = Dashboard.getCurrentUser();
 
-                innerElem.html(getOverlayHtml(item)).trigger('create');
+            $.when(promise1, promise2).done(function (response1, response2) {
+
+                var item = response1[0];
+                var user = response2[0];
+
+                innerElem.html(getOverlayHtml(item, user, elem)).trigger('create');
+
+                $('.btnPlayTrailer', innerElem).on('click', onTrailerButtonClick);
+                $('.btnRemoteControl', innerElem).on('click', onRemoteControlButtonClick);
             });
 
             innerElem.show().each(function () {
 
                 this.style.height = 0;
 
-            }).animate({ "height": "100%" });
+            }).animate({ "height": "100%" }, "fast");
         }
 
         function onHoverIn() {
@@ -2732,7 +2650,7 @@
 
                 onShowTimerExpired(elem);
 
-            }, 600);
+            }, 1000);
         }
 
         // https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/
@@ -2742,8 +2660,8 @@
                running on touch-capable device */
             return this;
         }
-        return this;
-        return this.on('mouseenter', '.posterItem', onHoverIn).on('mouseleave', '.posterItem', onHoverOut);
+
+        return this.on('mouseenter', '.backdropPosterItem,.smallBackdropPosterItem,.portraitPosterItem,.squarePosterItem', onHoverIn).on('mouseleave', '.backdropPosterItem,.smallBackdropPosterItem,.portraitPosterItem,.squarePosterItem', onHoverOut);
     };
 
 })(jQuery, document, window);

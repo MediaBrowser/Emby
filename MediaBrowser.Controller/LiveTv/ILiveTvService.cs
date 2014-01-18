@@ -27,6 +27,19 @@ namespace MediaBrowser.Controller.LiveTv
         string Name { get; }
 
         /// <summary>
+        /// Gets the home page URL.
+        /// </summary>
+        /// <value>The home page URL.</value>
+        string HomePageUrl { get; }
+
+        /// <summary>
+        /// Gets the status information asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{LiveTvServiceStatusInfo}.</returns>
+        Task<LiveTvServiceStatusInfo> GetStatusInfoAsync(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the channels async.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>

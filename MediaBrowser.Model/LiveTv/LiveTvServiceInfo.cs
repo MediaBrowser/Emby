@@ -13,6 +13,36 @@ namespace MediaBrowser.Model.LiveTv
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the home page URL.
+        /// </summary>
+        /// <value>The home page URL.</value>
+        public string HomePageUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>The status.</value>
+        public LiveTvServiceStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status message.
+        /// </summary>
+        /// <value>The status message.</value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public string Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has update available.
+        /// </summary>
+        /// <value><c>true</c> if this instance has update available; otherwise, <c>false</c>.</value>
+        public bool HasUpdateAvailable { get; set; }
     }
 
     public class GuideInfo
@@ -44,9 +74,33 @@ namespace MediaBrowser.Model.LiveTv
         /// <value>The name of the active service.</value>
         public string ActiveServiceName { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is enabled.
+        /// </summary>
+        /// <value><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</value>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>The status.</value>
+        public LiveTvServiceStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status message.
+        /// </summary>
+        /// <value>The status message.</value>
+        public string StatusMessage { get; set; }
+
         public LiveTvInfo()
         {
             Services = new List<LiveTvServiceInfo>();
         }
+    }
+
+    public enum LiveTvServiceStatus
+    {
+        Ok = 0,
+        Unavailable = 1
     }
 }

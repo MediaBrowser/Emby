@@ -1,11 +1,14 @@
-﻿using MediaBrowser.Model.Dto;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
 
 namespace MediaBrowser.Model.LiveTv
 {
-    public class ProgramInfoDto
+    [DebuggerDisplay("Name = {Name}, StartTime = {StartDate}, EndTime = {EndDate}")]
+    public class ProgramInfoDto : INotifyPropertyChanged
     {
         /// <summary>
         /// Id of the program.
@@ -35,6 +38,12 @@ namespace MediaBrowser.Model.LiveTv
         /// </summary>
         /// <value>The channel identifier.</value>
         public string ChannelId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the channel primary image tag.
+        /// </summary>
+        /// <value>The channel primary image tag.</value>
+        public Guid? ChannelPrimaryImageTag { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the channel.
@@ -186,6 +195,8 @@ namespace MediaBrowser.Model.LiveTv
             Genres = new List<string>();
             ImageTags = new Dictionary<ImageType, Guid>();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public enum ProgramAudio

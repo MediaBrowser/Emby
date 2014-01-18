@@ -211,7 +211,7 @@
             $('#castCollapsible', page).hide();
         } else {
             $('#castCollapsible', page).show();
-            renderCast(page, item, context, 8);
+            renderCast(page, item, context, 6);
         }
 
         if (!item.PartCount || item.PartCount < 2) {
@@ -255,11 +255,7 @@
 
         LibraryBrowser.renderOverview($('.itemOverview', page), item);
 
-        if (item.CommunityRating || item.CriticRating) {
-            $('.itemCommunityRating', page).html(LibraryBrowser.getRatingHtml(item)).show();
-        } else {
-            $('.itemCommunityRating', page).hide();
-        }
+        $('.itemCommunityRating', page).html(LibraryBrowser.getRatingHtml(item));
 
         if (item.Type != "Episode" && item.Type != "Movie" && item.Type != "Series") {
             var premiereDateElem = $('#itemPremiereDate', page).show();
@@ -270,6 +266,7 @@
 
         LibraryBrowser.renderBudget($('#itemBudget', page), item);
         LibraryBrowser.renderRevenue($('#itemRevenue', page), item);
+        LibraryBrowser.renderAwardSummary($('#awardSummary', page), item);
 
         $('.itemMiscInfo', page).html(LibraryBrowser.getMiscInfoHtml(item));
 
@@ -430,7 +427,7 @@
 
         var options = {
             userId: Dashboard.getCurrentUserId(),
-            limit: item.Type == "MusicAlbum" ? 5 : 5,
+            limit: item.Type == "MusicAlbum" ? 4 : 5,
             fields: "PrimaryImageAspectRatio,DateCreated,UserData"
         };
 
@@ -475,7 +472,7 @@
                 borderless: item.Type == "Game"
             });
 
-            $('#similarContent', page).html(html);
+            $('#similarContent', page).html(html).createPosterItemHoverMenu();
         });
     }
 
@@ -891,16 +888,16 @@
 
             var attributes = [];
 
-            if (stream.Language) {
+            if (stream.Language && stream.Type != "Video") {
                 attributes.push('<span class="mediaInfoAttribute">' + stream.Language + '</span>');
             }
 
             if (stream.Codec && stream.Codec != "dca") {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Codec + '</span>');
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Codec.toUpperCase() + '</span>');
             }
 
             if (stream.Profile && stream.Codec == "dca") {
-                attributes.push('<span class="mediaInfoAttribute">' + stream.Profile + '</span>');
+                attributes.push('<span class="mediaInfoAttribute">' + stream.Profile.toUpperCase() + '</span>');
             }
 
             if (stream.Width || stream.Height) {
@@ -922,7 +919,7 @@
                 attributes.push('<span class="mediaInfoAttribute">' + (parseInt(stream.BitRate / 1000)) + ' kbps</span>');
             }
 
-            if (stream.IsDefault) {
+            if (stream.IsDefault && stream.Type != "Video") {
                 attributes.push('<span class="mediaInfoAttribute">Default</span>');
             }
             if (stream.IsForced) {
@@ -1133,16 +1130,7 @@
             
             ApiClient.getLocalTrailers(Dashboard.getCurrentUserId(), currentItem.Id).done(function (trailers) {
 
-                var trailer = trailers[0];
-                var userdata = trailer.UserData || {};
-
-                var mediaType = trailer.MediaType;
-
-                if (trailer.Type == "MusicArtist" || trailer.Type == "MusicAlbum") {
-                    mediaType = "Audio";
-                }
-
-                LibraryBrowser.showPlayMenu(this, trailer.Id, trailer.Type, mediaType, userdata.PlaybackPositionTicks);
+                MediaPlayer.play(trailers);
 
             });
         });

@@ -1,11 +1,14 @@
-﻿using MediaBrowser.Model.Dto;
+﻿using System.Diagnostics;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MediaBrowser.Model.LiveTv
 {
-    public class RecordingInfoDto
+    [DebuggerDisplay("Name = {Name}, ChannelName = {ChannelName}")]
+    public class RecordingInfoDto : INotifyPropertyChanged
     {
         /// <summary>
         /// Id of the recording.
@@ -34,6 +37,12 @@ namespace MediaBrowser.Model.LiveTv
         /// ChannelId of the recording.
         /// </summary>
         public string ChannelId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the channel primary image tag.
+        /// </summary>
+        /// <value>The channel primary image tag.</value>
+        public Guid? ChannelPrimaryImageTag { get; set; }
 
         /// <summary>
         /// ChannelName of the recording.
@@ -226,5 +235,7 @@ namespace MediaBrowser.Model.LiveTv
             Genres = new List<string>();
             ImageTags = new Dictionary<ImageType, Guid>();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

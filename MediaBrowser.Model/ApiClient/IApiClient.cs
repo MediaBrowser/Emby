@@ -764,6 +764,14 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="options">The options.</param>
         /// <returns>System.String.</returns>
         string GetImageUrl(RecordingInfoDto item, ImageOptions options);
+
+        /// <summary>
+        /// Gets the image URL.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>System.String.</returns>
+        string GetImageUrl(ProgramInfoDto item, ImageOptions options);
         
         /// <summary>
         /// Gets an image url that can be used to download an image from the api
@@ -952,6 +960,15 @@ namespace MediaBrowser.Model.ApiClient
         Task<QueryResult<ChannelInfoDto>> GetLiveTvChannelsAsync(ChannelQuery query, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the live tv channel asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{ChannelInfoDto}.</returns>
+        Task<ChannelInfoDto> GetLiveTvChannelAsync(string id, string userId, CancellationToken cancellationToken);
+        
+        /// <summary>
         /// Gets the live tv recordings asynchronous.
         /// </summary>
         /// <param name="query">The query.</param>
@@ -960,11 +977,101 @@ namespace MediaBrowser.Model.ApiClient
         Task<QueryResult<RecordingInfoDto>> GetLiveTvRecordingsAsync(RecordingQuery query, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the live tv recording asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{RecordingInfoDto}.</returns>
+        Task<RecordingInfoDto> GetLiveTvRecordingAsync(string id, string userId, CancellationToken cancellationToken);
+        
+        /// <summary>
         /// Gets the live tv recording groups asynchronous.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{QueryResult{RecordingGroupDto}}.</returns>
         Task<QueryResult<RecordingGroupDto>> GetLiveTvRecordingGroupsAsync(RecordingGroupQuery query, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the live tv recording group asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{RecordingGroupDto}.</returns>
+        Task<RecordingGroupDto> GetLiveTvRecordingGroupAsync(string id, string userId, CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Gets the live tv timers asynchronous.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{QueryResult{TimerInfoDto}}.</returns>
+        Task<QueryResult<TimerInfoDto>> GetLiveTvTimersAsync(TimerQuery query, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the live tv programs asynchronous.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{QueryResult{ProgramInfoDto}}.</returns>
+        Task<QueryResult<ProgramInfoDto>> GetLiveTvProgramsAsync(ProgramQuery query, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the recommended live tv programs asynchronous.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{QueryResult{ProgramInfoDto}}.</returns>
+        Task<QueryResult<ProgramInfoDto>> GetRecommendedLiveTvProgramsAsync(RecommendedProgramQuery query, CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Gets the live tv timer asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{TimerInfoDto}.</returns>
+        Task<TimerInfoDto> GetLiveTvTimerAsync(string id, CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Gets the live tv series timers asynchronous.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{QueryResult{SeriesTimerInfoDto}}.</returns>
+        Task<QueryResult<SeriesTimerInfoDto>> GetLiveTvSeriesTimersAsync(SeriesTimerQuery query, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the live tv series timer asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{SeriesTimerInfoDto}.</returns>
+        Task<SeriesTimerInfoDto> GetLiveTvSeriesTimerAsync(string id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Cancels the live tv timer asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task CancelLiveTvTimerAsync(string id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Cancels the live tv series timer asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task CancelLiveTvSeriesTimerAsync(string id, CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Deletes the live tv recording asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task DeleteLiveTvRecordingAsync(string id, CancellationToken cancellationToken);
     }
 }

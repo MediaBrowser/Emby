@@ -64,7 +64,7 @@
 
         var item = options.item;
 
-        var html = '<div data-role="popup" id="remoteControlFlyout" data-transition="slidefade" data-theme="a">';
+        var html = '<div data-role="popup" id="remoteControlFlyout" data-transition="slidedown" data-theme="a">';
 
         html += '<a href="#" data-rel="back" data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn-right" data-theme="b">Close</a>';
 
@@ -90,7 +90,7 @@
 
         html += '<span id="queueButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'PlayLast\');" type="submit" data-icon="plus" data-mini="true" data-inline="true">Queue</button></span>';
 
-        html += '<span id="browseButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'Browse\');" type="submit" data-icon="eye" data-mini="true" data-inline="true">Browse</button></span>';
+        html += '<span id="browseButtonContainer" style="display:none;"><button onclick="$(\'#fldPlayCommand\').val(\'Browse\');" type="submit" data-icon="eye" data-mini="true" data-inline="true">View</button></span>';
 
         html += '</p>';
 
@@ -385,7 +385,6 @@
     function renderPlayFromOptions(elem, item) {
 
         var html = '';
-        var html = '';
 
         html += '<h4 style="margin: 1em 0 .5em;">Play from scene</h4>';
 
@@ -455,14 +454,25 @@
         var html = '';
 
         html += '<div style="margin-top:0;">';
-        html += '<label for="selectCommand">Select command</label>';
         html += '<select id="selectCommand" data-mini="true">';
 
-        if (item.LocationType == 'Virtual') {
-            html += '<option value="Play" selected>Browse</label>';
-        } else {
-            html += '<option value="Play" selected>Play</label>';
-        }
+        // Default for virtual & IBN types
+        var playLabel = 'View';
+
+        if (item.LocationType != "Virtual") {
+            
+            if (item.IsFolder) {
+                playLabel = "Play All";
+            }
+            else if (item.MediaType == "Video") {
+                playLabel = "Play from beginning";
+            }
+            else if (item.MediaType) {
+                playLabel = "Play";
+            }
+    }
+
+        html += '<option value="Play" selected>' + playLabel + '</label>';
 
         if (item.Chapters && item.Chapters.length) {
             html += '<option value="PlayFromChapter">Play from scene</label>';
@@ -632,7 +642,7 @@
 
     function showMenu(sessions, options) {
 
-        var html = '<div data-role="popup" data-transition="slidefade" id="remoteControlFlyout" data-theme="a">';
+        var html = '<div data-role="popup" data-transition="slidedown" id="remoteControlFlyout" data-theme="a">';
 
         html += '<a href="#" data-rel="back" data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn-right" data-theme="b">Close</a>';
 
@@ -645,7 +655,7 @@
         html += '<div class="sessionsPopupContent">';
 
         // Add controls here
-        html += '<div><label for="selectSession">Select session to control</label>';
+        html += '<div>';
         html += '<select id="selectSession" name="selectSession" data-mini="true"></select></div>';
 
         html += '</div>';
@@ -662,16 +672,16 @@
 
         html += '</div>';
 
+        html += '<div class="commandsCollapsible" data-role="collapsible" data-collapsed="true" data-mini="true" style="margin-top: 1em;display:none;">';
+        html += '<h4>Send Command</h4>';
+        html += '<div>';
+
         html += '<p class="sessionButtons" style="text-align:center;">';
 
-        html += '<button class="btnGoHome" type="button" data-icon="home" data-mini="true" data-inline="true">Home</button>';
-        html += '<button class="btnGoToSettings" type="button" data-icon="gear" data-mini="true" data-inline="true">Settings</button>';
+        html += '<button class="btnGoHome" type="button" data-icon="home" data-mini="true" data-inline="true">Go Home</button>';
+        html += '<button class="btnGoToSettings" type="button" data-icon="gear" data-mini="true" data-inline="true">View Settings</button>';
 
         html += '</p>';
-
-        html += '<div class="commandsCollapsible" data-role="collapsible" data-collapsed="true" data-mini="true" style="margin-top: 1em;display:none;">';
-        html += '<h4>Send Message</h4>';
-        html += '<div>';
 
         html += '<p style="text-align:center;">';
 
@@ -679,7 +689,7 @@
 
         html += '<input id="txtMessage" name="txtMessage" type="text" />';
 
-        html += '<button type="button" data-icon="mail" class="btnSendMessage" data-mini="true">Send</button>';
+        html += '<button type="button" data-icon="mail" class="btnSendMessage" data-mini="true">Send Message</button>';
 
         html += '</p>';
 
@@ -880,13 +890,11 @@
             $('.nothingPlaying', popup).hide();
             $('.nowPlaying', popup).hide();
             $('.commandsCollapsible', popup).hide();
-            $('.sessionButtons', popup).hide();
 
         }
         else if (session.NowPlayingItem) {
 
             $('.commandsCollapsible', popup).show();
-            $('.sessionButtons', popup).show();
             $('.nothingPlaying', popup).hide();
 
             var elem = $('.nowPlaying', popup).show();
@@ -895,7 +903,6 @@
 
         } else {
 
-            $('.sessionButtons', popup).show();
             $('.commandsCollapsible', popup).show();
             $('.nothingPlaying', popup).show();
             $('.nowPlaying', popup).hide();

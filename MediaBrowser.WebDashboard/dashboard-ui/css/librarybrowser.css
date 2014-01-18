@@ -381,7 +381,7 @@ a.itemTag:hover {
     background-size: cover;
     background-position: center 15%;
     background-repeat: no-repeat;
-    height: 540px;
+    height: 580px;
     border-bottom: 1px solid #111;
     position: relative;
 }
@@ -436,7 +436,7 @@ a.itemTag:hover {
 }
 
 .itemDetailImage {
-    max-height: 240px;
+    max-height: 220px;
     max-width: 320px;
     -moz-box-shadow: 0px 0 20px #000;
     -webkit-box-shadow: 0px 0 20px #000;
@@ -481,6 +481,10 @@ a.itemTag:hover {
     /*max-height: 120px;
     overflow-y: auto;*/
     text-overflow: ellipsis;
+}
+
+.desktopOverview {
+    min-width: 500px;
 }
 
 .mobileOverview {
@@ -550,7 +554,7 @@ a.itemTag:hover {
     .libraryPanelHeader span {
         color: #fff;
         vertical-align: middle;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 300;
     }
 
@@ -751,7 +755,7 @@ a.itemTag:hover {
     }
 
     .detailPageContent {
-        max-width: 900px;
+        max-width: 850px;
     }
 
     .primaryDetailPageContent {
@@ -763,10 +767,6 @@ a.itemTag:hover {
 
     .ehsContent {
         max-width: 950px;
-    }
-
-    .detailPageContent {
-        max-width: 1000px;
     }
 
     .primaryDetailPageContent {
@@ -852,9 +852,9 @@ a.itemTag:hover {
     right: 5px;
     text-align: center;
     vertical-align: middle;
-    width: 26px;
-    height: 21px;
-    padding-top: 5px;
+    width: 24px;
+    height: 19px;
+    padding-top: 3px;
     border-radius: 50%;
     color: #fff;
     background: rgb(82, 181, 75);
