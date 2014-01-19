@@ -797,7 +797,21 @@ var Dashboard = {
 
         systemInfo = systemInfo || Dashboard.lastSystemInfo;
 
-        ApiClient.openWebSocket(systemInfo.WebSocketPortNumber);
+        var location = window.location;
+
+        var webSocketUrl = "ws://" + location.hostname;
+        
+        if (systemInfo.HttpServerPortNumber != systemInfo.WebSocketPortNumber) {
+
+            if (location.port) {
+                webSocketUrl += ':' + location.port;
+            }
+
+        } else {
+            webSocketUrl += ':' + systemInfo.WebSocketPortNumber;
+        }
+
+        ApiClient.openWebSocket(webSocketUrl);
     },
 
     onWebSocketMessageReceived: function (e, data) {
@@ -1360,7 +1374,7 @@ $(function () {
     footerHtml += '<button onclick="MediaPlayer.showChannelsFlyout();" id="channelsButton" class="mediaButton channelsButton" title="TV Channels" type="button" data-icon="tv" data-iconpos="notext" data-inline="true">TV Channels</button>';
     footerHtml += '<div class="mediaFlyoutContainer"><div id="channelsFlyout" style="display:none;" class="mediaPlayerFlyout channelsFlyout"></div></div>';
 
-    footerHtml += '<button onclick="MediaPlayer.showSendMediaMenu();" id="sendMediaButton" class="mediaButton sendMediaButton" title="Send to Device" type="button" data-icon="wireless" data-iconpos="notext" data-inline="true">Send to Device</button>';
+    footerHtml += '<button onclick="MediaPlayer.showSendMediaMenu();" id="sendMediaButton" class="mediaButton sendMediaButton" title="Remote" type="button" data-icon="wireless" data-iconpos="notext" data-inline="true">Remote</button>';
 
     footerHtml += '</div>';
 

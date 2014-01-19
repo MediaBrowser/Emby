@@ -206,38 +206,72 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             return await GetRecording(recording, service.Name, cancellationToken).ConfigureAwait(false);
         }
 
+        private readonly SemaphoreSlim _liveStreamSemaphore = new SemaphoreSlim(1, 1);
+
         public async Task<LiveStreamInfo> GetRecordingStream(string id, CancellationToken cancellationToken)
         {
-            var service = ActiveService;
+            await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            var recordings = await service.GetRecordingsAsync(cancellationToken).ConfigureAwait(false);
-
-            var recording = recordings.First(i => _tvDtoService.GetInternalRecordingId(service.Name, i.Id) == new Guid(id));
-
-            var result = await service.GetRecordingStream(recording.Id, cancellationToken).ConfigureAwait(false);
-
-            if (!string.IsNullOrEmpty(result.Id))
+            try
             {
-                _openStreams.AddOrUpdate(result.Id, result, (key, info) => result);
-            }
+                var service = ActiveService;
 
-            return result;
+                var recordings = await service.GetRecordingsAsync(cancellationToken).ConfigureAwait(false);
+
+                var recording = recordings.First(i => _tvDtoService.GetInternalRecordingId(service.Name, i.Id) == new Guid(id));
+
+                var result = await service.GetRecordingStream(recording.Id, cancellationToken).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(result.Id))
+                {
+                    _openStreams.AddOrUpdate(result.Id, result, (key, info) => result);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error getting recording stream", ex);
+
+                throw;
+            }
+            finally
+            {
+                _liveStreamSemaphore.Release();
+            }
         }
 
         public async Task<LiveStreamInfo> GetChannelStream(string id, CancellationToken cancellationToken)
         {
-            var service = ActiveService;
+            await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            var channel = GetInternalChannel(id);
-
-            var result = await service.GetChannelStream(channel.ChannelInfo.Id, cancellationToken).ConfigureAwait(false);
-
-            if (!string.IsNullOrEmpty(result.Id))
+            try
             {
-                _openStreams.AddOrUpdate(result.Id, result, (key, info) => result);
-            }
+                var service = ActiveService;
 
-            return result;
+                var channel = GetInternalChannel(id);
+
+                _logger.Info("Opening channel stream from {0}, external channel Id: {1}", service.Name, channel.ChannelInfo.Id);
+
+                var result = await service.GetChannelStream(channel.ChannelInfo.Id, cancellationToken).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(result.Id))
+                {
+                    _openStreams.AddOrUpdate(result.Id, result, (key, info) => result);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error getting channel stream", ex);
+
+                throw;
+            }
+            finally
+            {
+                _liveStreamSemaphore.Release();
+            }
         }
 
         private async Task<LiveTvChannel> GetChannel(ChannelInfo channelInfo, string serviceName, CancellationToken cancellationToken)
@@ -389,9 +423,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             var channel = GetChannel(program);
 
-            var channelName = channel == null ? null : channel.ChannelInfo.Name;
-
-            var dto = _tvDtoService.GetProgramInfoDto(program, channelName, user);
+            var dto = _tvDtoService.GetProgramInfoDto(program, channel, user);
 
             await AddRecordingInfo(new[] { dto }, cancellationToken).ConfigureAwait(false);
 
@@ -459,9 +491,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 {
                     var channel = GetChannel(i);
 
-                    var channelName = channel == null ? null : channel.ChannelInfo.Name;
-
-                    return _tvDtoService.GetProgramInfoDto(i, channelName, user);
+                    return _tvDtoService.GetProgramInfoDto(i, channel, user);
                 })
                 .ToArray();
 
@@ -521,9 +551,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 {
                     var channel = GetChannel(i);
 
-                    var channelName = channel == null ? null : channel.ChannelInfo.Name;
-
-                    return _tvDtoService.GetProgramInfoDto(i, channelName, user);
+                    return _tvDtoService.GetProgramInfoDto(i, channel, user);
                 })
                 .ToArray();
 
@@ -731,7 +759,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             var programsPerDay = channelCount * 48;
 
-            const int maxPrograms = 32000;
+            const int maxPrograms = 24000;
 
             var days = Math.Round(((double)maxPrograms) / programsPerDay);
 
@@ -1243,9 +1271,28 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             };
         }
 
-        public Task CloseLiveStream(string id, CancellationToken cancellationToken)
+        public async Task CloseLiveStream(string id, CancellationToken cancellationToken)
         {
-            return ActiveService.CloseLiveStream(id, cancellationToken);
+            await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            var service = ActiveService;
+
+            _logger.Info("Closing live stream from {0}, stream Id: {1}", service.Name, id);
+
+            try
+            {
+                await service.CloseLiveStream(id, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error closing live stream", ex);
+
+                throw;
+            }
+            finally
+            {
+                _liveStreamSemaphore.Release();
+            }
         }
 
         public GuideInfo GetGuideInfo()
@@ -1313,6 +1360,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
                 info.Status = statusInfo.Status;
                 info.StatusMessage = statusInfo.StatusMessage;
+                info.Version = statusInfo.Version;
+                info.HasUpdateAvailable = statusInfo.HasUpdateAvailable;
+                info.HomePageUrl = service.HomePageUrl;
             }
             catch (Exception ex)
             {

@@ -327,7 +327,7 @@ h1 .imageLink {
 }
 
 .appLinks img {
-    height: 32px;
+    height: 30px;
 }
 
 @media all and (min-width: 450px) {
@@ -779,4 +779,70 @@ progress {
 
 #editItemMetadataPage #txtOverview {
     height: 70px;
+}
+
+
+.latestNewsItems {
+    min-height: 100px;
+    min-width: 200px;
+}
+
+.newsItem {
+    padding: 1em 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.newsItemDescription {
+    max-height: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.newsItemHeader {
+    font-size: 15px;
+    text-decoration: none !important;
+}
+
+.newsItemDate {
+    margin: .25em 0;
+    color: green;
+}
+
+@media all and (max-width: 1440px) {
+
+    .dashboardHomeRightColumn {
+        margin-top: 2em;
+    }
+}
+
+.dashboardContent {
+    max-width: 1000px;
+    margin-top: -10px;
+}
+
+@media all and (min-width: 1440px) {
+
+    .dashboardHomeLeftColumn {
+        width: 600px;
+        float: left;
+    }
+
+    .latestNewsItems {
+        max-width: 300px;
+    }
+
+    .dashboardHomeRightColumn {
+        float: right;
+    }
+}
+
+@media all and (min-width: 1600px) {
+
+    .latestNewsItems {
+        max-width: 400px;
+    }
+
+    .dashboardContent {
+        max-width: 1100px;
+    }
 }

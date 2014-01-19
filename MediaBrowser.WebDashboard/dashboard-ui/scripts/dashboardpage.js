@@ -21,6 +21,37 @@
             }
 
         });
+
+        DashboardPage.reloadNews(page);
+    },
+
+    reloadNews: function (page) {
+
+        ApiClient.getProductNews({
+
+            limit: 6
+
+        }).done(function (result) {
+
+            var html = result.Items.map(function (item) {
+
+                var itemHtml = '';
+
+                itemHtml += '<div class="newsItem">';
+                itemHtml += '<a class="newsItemHeader" href="' + item.Link + '" target="_blank">' + item.Title + '</a>';
+
+                var date = parseISO8601Date(item.Date, { toLocal: true });
+                itemHtml += '<div class="newsItemDate">' + date.toLocaleDateString() + '</div>';
+
+                itemHtml += '<div class="newsItemDescription">' + item.DescriptionHtml + '</div>';
+                itemHtml += '</div>';
+
+                return itemHtml;
+            });
+
+            $('.latestNewsItems', page).html(html.join(''));
+        });
+
     },
 
     onPageHide: function () {
@@ -347,15 +378,6 @@
             $('#ports', page).html('Running on ports <b>' + port + '</b> and <b>' + dashboardInfo.SystemInfo.WebSocketPortNumber + '</b>');
         }
 
-        $('#logPath', page).html(dashboardInfo.SystemInfo.LogPath);
-        $('#imagesByNamePath', page).html(dashboardInfo.SystemInfo.ItemsByNamePath);
-
-        var host = ApiClient.serverHostName();
-
-        var url = "http://" + host + ":" + port + "/mediabrowser";
-
-        $('#bookmarkUrl', page).html(url).attr("href", url);
-
         if (dashboardInfo.RunningTasks.filter(function (task) {
 
             return task.Id == dashboardInfo.ApplicationUpdateTaskId;
@@ -371,15 +393,6 @@
             $('.btnRestartContainer', page).removeClass('hide');
         } else {
             $('.btnRestartContainer', page).addClass('hide');
-        }
-
-        if (dashboardInfo.SystemInfo.WanAddress) {
-
-            var externalUrl = dashboardInfo.SystemInfo.WanAddress + "/mediabrowser";
-
-            $('.externalUrl', page).html('External url: <a href="' + externalUrl + '" target="_blank">' + externalUrl + '</a>').show().trigger('create');
-        } else {
-            $('.externalUrl', page).hide();
         }
 
         DashboardPage.renderApplicationUpdateInfo(dashboardInfo);
