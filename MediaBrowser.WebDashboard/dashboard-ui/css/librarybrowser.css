@@ -171,7 +171,7 @@
 }
 
 .labelPageSize {
-    margin-left: 1em;
+    margin-left: 1em!important;
 }
 
 
@@ -331,7 +331,7 @@
 
 .itemTag {
     display: inline-block;
-    background-color: #555;
+    background-color: #181818;
     border-radius: 4px;
     padding: 5px 7px;
     font-size: 13px;
@@ -373,7 +373,7 @@ a.itemTag:hover {
     left: .8em;
 }
 
-.itemCommunityRating + .userDataIcons {
+.itemCommunityRating:not(:empty) + .userDataIcons {
     margin-left: 1.25em;
 }
 
@@ -523,11 +523,24 @@ a.itemTag:hover {
 }
 
 .detailSectionHeader {
-    padding: .5em .75em;
+    background-clip: border-box;
+    background-color: rgb(51, 51, 51);
+    border-bottom-color: rgb(31, 31, 31);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: rgb(31, 31, 31);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgb(31, 31, 31);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: rgb(31, 31, 31);
+    border-top-style: solid;
+    border-top-width: 1px;
     font-size: 16px;
-    font-weight: normal;
-    border: 1px solid #1b1b1b;
-    background: #1d1d1d;
+    font-weight: 400;
+    padding: .7em 0 .7em 1em;
+    border-radius: 4px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -586,7 +599,7 @@ a.itemTag:hover {
 
 .detailImageProgressContainer {
     position: absolute;
-    bottom: 6px;
+    bottom: 7px;
     right: 0;
     left: 0;
     text-align: center;
@@ -595,7 +608,7 @@ a.itemTag:hover {
     .detailImageProgressContainer progress {
         width: 100%;
         margin: 0 auto;
-        height: 6px;
+        height: 7px;
     }
 
 @media all and (max-width: 550px) {
@@ -963,12 +976,6 @@ a.itemTag:hover {
 
 .recordingProgressBar[aria-valuenow]:before {
     background-color: #cc3333;
-}
-
-.userDataIcons .itemProgressBar {
-    vertical-align: top;
-    position: relative;
-    top: 3px;
 }
 
 .tileItem .itemProgressBar {
