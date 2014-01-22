@@ -622,7 +622,7 @@ namespace MediaBrowser.Api.Playback
         /// <param name="videoType">Type of the video.</param>
         /// <param name="isoType">Type of the iso.</param>
         /// <returns>System.String.</returns>
-        protected string GetProbeSizeArgument(string mediaPath, bool isVideo, VideoType? videoType, IsoType? isoType)
+        private string GetProbeSizeArgument(string mediaPath, bool isVideo, VideoType? videoType, IsoType? isoType)
         {
             var type = !isVideo ? MediaEncoderHelpers.GetInputType(null, null) :
                 MediaEncoderHelpers.GetInputType(videoType, isoType);
@@ -918,7 +918,7 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>System.String.</returns>
-        protected string GetUserAgentParam(string path)
+        private string GetUserAgentParam(string path)
         {
             var useragent = GetUserAgent(path);
 
@@ -1059,9 +1059,10 @@ namespace MediaBrowser.Api.Playback
                 }
 
                 //state.RunTimeTicks = recording.RunTimeTicks;
-                state.SendInputOverStandardInput = recording.RecordingInfo.Status == RecordingStatus.InProgress;
+                state.ReadInputAtNativeFramerate = recording.RecordingInfo.Status == RecordingStatus.InProgress;
                 state.AudioSync = 1000;
                 state.DeInterlace = true;
+                state.InputFormat = "mpegts";
             }
             else if (item is LiveTvChannel)
             {
@@ -1087,8 +1088,12 @@ namespace MediaBrowser.Api.Playback
                 }
 
                 state.SendInputOverStandardInput = true;
+                state.ReadInputAtNativeFramerate = true;
                 state.AudioSync = 1000;
                 state.DeInterlace = true;
+                state.InputFormat = "mpegts";
+
+                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -1138,6 +1143,48 @@ namespace MediaBrowser.Api.Playback
             state.HasMediaStreams = mediaStreams.Count > 0;
 
             return state;
+        }
+
+        protected string GetInputModifier(StreamState state)
+        {
+            var inputModifier = string.Empty;
+
+            var probeSize = GetProbeSizeArgument(state.MediaPath, state.IsInputVideo, state.VideoType, state.IsoType);
+            inputModifier += " " + probeSize;
+            inputModifier = inputModifier.Trim();
+         
+            inputModifier += " " + GetUserAgentParam(state.MediaPath);
+            inputModifier = inputModifier.Trim();
+
+            inputModifier += " " + GetFastSeekCommandLineParameter(state.Request);
+            inputModifier = inputModifier.Trim();
+
+            if (state.VideoRequest != null)
+            {
+                inputModifier += " -fflags genpts";
+            }
+
+            if (!string.IsNullOrEmpty(state.InputFormat))
+            {
+                inputModifier += " -f " + state.InputFormat;
+            }
+
+            if (!string.IsNullOrEmpty(state.InputVideoCodec))
+            {
+                inputModifier += " -vcodec " + state.InputVideoCodec;
+            }
+
+            if (!string.IsNullOrEmpty(state.InputAudioCodec))
+            {
+                inputModifier += " -acodec " + state.InputAudioCodec;
+            }
+
+            if (state.ReadInputAtNativeFramerate)
+            {
+                inputModifier += " -re";
+            }
+
+            return inputModifier;
         }
 
         /// <summary>

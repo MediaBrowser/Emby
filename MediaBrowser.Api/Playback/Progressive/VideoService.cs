@@ -91,8 +91,6 @@ namespace MediaBrowser.Api.Playback.Progressive
         /// <returns>System.String.</returns>
         protected override string GetCommandLineArguments(string outputPath, StreamState state, bool performSubtitleConversions)
         {
-            var probeSize = GetProbeSizeArgument(state.MediaPath, state.IsInputVideo, state.VideoType, state.IsoType);
-
             // Get the output codec name
             var videoCodec = GetVideoCodec(state.VideoRequest);
 
@@ -106,10 +104,10 @@ namespace MediaBrowser.Api.Playback.Progressive
 
             var threads = GetNumberOfThreads(string.Equals(videoCodec, "libvpx", StringComparison.OrdinalIgnoreCase));
 
-            return string.Format("{0} {1} {2} -fflags genpts -i {3}{4}{5} {6} {7} -map_metadata -1 -threads {8} {9}{10} \"{11}\"",
-                probeSize,
-                GetUserAgentParam(state.MediaPath),
-                GetFastSeekCommandLineParameter(state.Request),
+            var inputModifier = GetInputModifier(state);
+
+            return string.Format("{0} -i {1}{2}{3} {4} {5} -map_metadata -1 -threads {6} {7}{8} \"{9}\"",
+                inputModifier,
                 GetInputArgument(state),
                 GetSlowSeekCommandLineParameter(state.Request),
                 keyFrame,
