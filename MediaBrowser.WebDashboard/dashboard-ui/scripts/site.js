@@ -393,9 +393,9 @@ var Dashboard = {
 
     confirmInternal: function (message, title, showCancel, callback) {
 
-        $('#confirmFlyout').popup("close").remove();
+        $('.confirmFlyout').popup("close").remove();
 
-        var html = '<div data-role="popup" data-transition="slidefade" id="confirmFlyout" style="max-width:500px;" data-theme="a">';
+        var html = '<div data-role="popup" data-transition="slidefade" class="confirmFlyout" style="max-width:500px;" data-theme="a">';
 
         html += '<div class="ui-bar-a" style="text-align:center;">';
         html += '<h3>' + title + '</h3>';
@@ -407,10 +407,10 @@ var Dashboard = {
         html += message;
         html += '</div>';
 
-        html += '<p><button type="button" data-icon="check" onclick="$(\'#confirmFlyout\')[0].confirm=true;$(\'#confirmFlyout\').popup(\'close\');" data-theme="b">Ok</button></p>';
+        html += '<p><button type="button" data-icon="check" onclick="$(\'.confirmFlyout\')[0].confirm=true;$(\'.confirmFlyout\').popup(\'close\');" data-theme="b">Ok</button></p>';
 
         if (showCancel) {
-            html += '<p><button type="button" data-icon="delete" onclick="$(\'#confirmFlyout\').popup(\'close\');" data-theme="a">Cancel</button></p>';
+            html += '<p><button type="button" data-icon="delete" onclick="$(\'.confirmFlyout\').popup(\'close\');" data-theme="a">Cancel</button></p>';
         }
 
         html += '</div>';
@@ -419,7 +419,7 @@ var Dashboard = {
 
         $(document.body).append(html);
 
-        $('#confirmFlyout').popup({ history: false }).trigger('create').popup("open").on("popupafterclose", function () {
+        $('.confirmFlyout').popup({ history: false }).trigger('create').popup("open").on("popupafterclose", function () {
 
             if (callback) {
                 callback(this.confirm == true);
@@ -750,12 +750,16 @@ var Dashboard = {
             href: "metadata.html",
             selected: pageElem.id == "metadataConfigurationPage" || pageElem.id == "advancedMetadataConfigurationPage" || pageElem.id == "metadataImagesConfigurationPage"
         }, {
+            name: "Auto-Organize",
+            href: "autoorganizelog.html",
+            selected: page.hasClass("organizePage")
+        }, {
             name: "Plugins",
             href: "plugins.html",
             selected: page.hasClass("pluginConfigurationPage")
         }, {
             name: "Live TV",
-            href: "livetvsettings.html",
+            href: "livetvstatus.html",
             selected: page.hasClass("liveTvSettingsPage")
         }, {
             name: "Users",
@@ -801,7 +805,7 @@ var Dashboard = {
 
         var webSocketUrl = "ws://" + location.hostname;
         
-        if (systemInfo.HttpServerPortNumber != systemInfo.WebSocketPortNumber) {
+        if (systemInfo.HttpServerPortNumber == systemInfo.WebSocketPortNumber) {
 
             if (location.port) {
                 webSocketUrl += ':' + location.port;

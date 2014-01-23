@@ -684,7 +684,7 @@
 
             var html = "";
 
-            var primaryImageAspectRatio = options.useAverageAspectRatio || options.shape == 'auto' ? LibraryBrowser.getAveragePrimaryImageAspectRatio(items) : null;
+            var primaryImageAspectRatio = options.shape == 'auto' ? LibraryBrowser.getAveragePrimaryImageAspectRatio(items) : null;
 
             if (options.shape == 'auto') {
 
@@ -699,13 +699,11 @@
                 }
             }
 
-            if (!options.useAverageAspectRatio) {
-                primaryImageAspectRatio = null;
-            }
-
             for (var i = 0, length = items.length; i < length; i++) {
 
                 var item = items[i];
+
+                primaryImageAspectRatio = options.useAverageAspectRatio ? LibraryBrowser.getAveragePrimaryImageAspectRatio([item]) : null;
 
                 var futureDateText;
 
@@ -1170,7 +1168,7 @@
             if (item.Type == "Channel") {
                 return '';
             }
-            if (item.Type == "Series" || item.Type == "Season" || item.Type == "BoxSet" || item.MediaType == "Video") {
+            if (item.Type == "Series" || item.Type == "Season" || item.Type == "BoxSet" || item.MediaType == "Video" || item.MediaType == "Game" || item.MediaType == "Book") {
                 if (item.RecursiveUnplayedItemCount) {
                     return '<div class="unplayedIndicator">' + item.RecursiveUnplayedItemCount + '</div>';
                 }
@@ -1434,20 +1432,6 @@
 
             var html = '';
 
-            var pageCount = Math.ceil(totalRecordCount / query.Limit);
-            var pageNumber = (query.StartIndex / query.Limit) + 1;
-
-            var dropdownHtml = '<select class="selectPage" data-enhance="false" data-role="none">';
-            for (var i = 1; i <= pageCount; i++) {
-
-                if (i == pageNumber) {
-                    dropdownHtml += '<option value="' + i + '" selected="selected">' + i + '</option>';
-                } else {
-                    dropdownHtml += '<option value="' + i + '">' + i + '</option>';
-                }
-            }
-            dropdownHtml += '</select>';
-
             var recordsEnd = Math.min(query.StartIndex + query.Limit, totalRecordCount);
 
             // 20 is the minimum page size
@@ -1460,10 +1444,6 @@
             var startAtDisplay = totalRecordCount ? query.StartIndex + 1 : 0;
             html += startAtDisplay + '-' + recordsEnd + ' of ' + totalRecordCount;
 
-            if (showControls) {
-                //html += ', page ' + dropdownHtml + ' of ' + pageCount;
-            }
-
             html += '</span>';
 
             if (showControls) {
@@ -1471,7 +1451,7 @@
                 html += '<div data-role="controlgroup" data-type="horizontal" style="display:inline-block;">';
                 html += '<button data-icon="arrow-l" data-iconpos="notext" data-inline="true" data-mini="true" class="btnPreviousPage" ' + (query.StartIndex ? '' : 'disabled') + '>Previous Page</button>';
 
-                html += '<button data-icon="arrow-r" data-iconpos="notext" data-inline="true" data-mini="true" class="btnNextPage" ' + (query.StartIndex + query.Limit > totalRecordCount ? 'disabled' : '') + '>Next Page</button>';
+                html += '<button data-icon="arrow-r" data-iconpos="notext" data-inline="true" data-mini="true" class="btnNextPage" ' + (query.StartIndex + query.Limit >= totalRecordCount ? 'disabled' : '') + '>Next Page</button>';
                 html += '</div>';
 
                 if (showLimit !== false) {
@@ -1497,7 +1477,7 @@
                     }
 
                     // Add styles to defeat jquery mobile
-                    html += '<label style="display:inline;font-size:inherit;" class="labelPageSize" for="' + id + '">Limit: </label><select class="selectPageSize" id="' + id + '" data-enhance="false" data-role="none">' + options + '</select>';
+                    html += '<div class="pageSizeContainer"><label style="font-size:inherit;" class="labelPageSize" for="' + id + '">Limit: </label><select class="selectPageSize" id="' + id + '" data-inline="true" data-mini="true">' + options + '</select></div>';
                 }
             }
 
@@ -1516,7 +1496,7 @@
                 html += '<div class="starRatingValue">';
                 html += item.CommunityRating.toFixed(1);
                 html += '</div>';
-            } 
+            }
 
             if (item.CriticRating != null) {
 
@@ -2547,7 +2527,7 @@
 
         var buttonCount = 0;
 
-        if (MediaPlayer.canPlay(item)) {
+        if (MediaPlayer.canPlay(item, currentUser)) {
 
             var resumePosition = (item.UserData || {}).PlaybackPositionTicks || 0;
             var onPlayClick = 'LibraryBrowser.showPlayMenu(this, \'' + item.Id + '\', \'' + item.Type + '\', \'' + item.MediaType + '\', ' + resumePosition + ');return false;';
@@ -2561,7 +2541,7 @@
             }
         }
 
-        if (item.LocalTrailerCount) {
+        if (item.LocalTrailerCount && currentUser.Configuration.EnableMediaPlayback) {
             html += '<button type="button" data-mini="true" data-inline="true" data-icon="video" data-iconpos="notext" class="btnPlayTrailer" data-itemid="' + item.Id + '" title="Play Trailer" style="' + buttonMargin + '">Play Trailer</button>';
             buttonCount++;
         }

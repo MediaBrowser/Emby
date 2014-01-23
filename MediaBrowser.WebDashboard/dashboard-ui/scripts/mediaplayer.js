@@ -180,6 +180,11 @@
                 currentProgressInterval = null;
             }
         }
+        
+        function canPlayWebm() {
+            
+            return testableVideoElement.canPlayType('video/webm').replace(/no/, '');
+        }
 
         function getTranscodingExtension() {
 
@@ -192,7 +197,7 @@
             }
 
             // Chrome or IE with plugin installed
-            if (media.canPlayType('video/webm').replace(/no/, '') && !$.browser.mozilla) {
+            if (canPlayWebm() && !$.browser.mozilla) {
                 return '.webm';
             }
 
@@ -706,7 +711,6 @@
                 SubtitleStreamIndex: getInitialSubtitleStreamIndex(mediaStreams, user),
                 AudioStreamIndex: getInitialAudioStreamIndex(mediaStreams, user),
                 deviceId: ApiClient.deviceId(),
-                Type: item.Type,
                 Static: false
             };
 
@@ -995,8 +999,12 @@
             }, 4000);
         }
 
-        self.canPlay = function (item) {
+        self.canPlay = function (item, user) {
 
+            if (!user.Configuration.EnableMediaPlayback) {
+                return false;
+            }
+            
             if (item.LocationType == "Virtual") {
                 return false;
             }
@@ -1079,12 +1087,6 @@
                         return;
                     }
                 }
-                else if ($.browser.msie && videoType) {
-
-                    self.playWithWarning(items, startPosition, user, "iewebmplugin", "Internet Explorer Playback", "For optimal video playback of Internet Explorer desktop edition, please install google's webm plugin for IE.<br/><br/><a target='_blank' href='https://tools.google.com/dlpage/webmmf'>https://tools.google.com/dlpage/webmmf</a>");
-                    return;
-
-                }
 
                 self.playInternal(items[0], startPosition, user);
                 self.onPlaybackStarted(items);
@@ -1093,7 +1095,9 @@
 
         self.playWithWarning = function (items, startPosition, user, localStorageKeyName, header, text) {
 
-            localStorageKeyName += new Date().getMonth();
+            // Increment this version when changes are made and we want users to see the prompts again
+            var warningVersion = "2";
+            localStorageKeyName += new Date().getMonth() + warningVersion;
 
             if (localStorage.getItem(localStorageKeyName) == "1") {
 

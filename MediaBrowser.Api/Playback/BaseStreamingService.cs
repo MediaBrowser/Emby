@@ -1007,6 +1007,13 @@ namespace MediaBrowser.Api.Playback
                 throw new InvalidOperationException("You asked for a debug error, you got one.");
             }
 
+            var user = AuthorizationRequestFilterAttribute.GetCurrentUser(Request, UserManager);
+
+            if (user != null && !user.Configuration.EnableMediaPlayback)
+            {
+                throw new ArgumentException(string.Format("{0} is not allowed to play media.", user.Name));
+            }
+
             var url = Request.PathInfo;
 
             if (!request.AudioCodec.HasValue)
@@ -1060,9 +1067,9 @@ namespace MediaBrowser.Api.Playback
 
                 //state.RunTimeTicks = recording.RunTimeTicks;
                 state.ReadInputAtNativeFramerate = recording.RecordingInfo.Status == RecordingStatus.InProgress;
+                state.SendInputOverStandardInput = recording.RecordingInfo.Status == RecordingStatus.InProgress;
                 state.AudioSync = 1000;
                 state.DeInterlace = true;
-                state.InputFormat = "mpegts";
             }
             else if (item is LiveTvChannel)
             {
@@ -1091,9 +1098,6 @@ namespace MediaBrowser.Api.Playback
                 state.ReadInputAtNativeFramerate = true;
                 state.AudioSync = 1000;
                 state.DeInterlace = true;
-                state.InputFormat = "mpegts";
-
-                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             }
             else
             {

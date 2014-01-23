@@ -172,11 +172,15 @@
 
 .labelPageSize {
     margin-left: 1em!important;
+    display: inline !important;
 }
 
+.pageSizeContainer {
+    display: inline-block;
+}
 
 @media all and (max-width: 650px) {
-    .labelPageSize, .selectPageSize {
+    .pageSizeContainer {
         display: none!important;
     }
 }
@@ -381,7 +385,7 @@ a.itemTag:hover {
     background-size: cover;
     background-position: center 15%;
     background-repeat: no-repeat;
-    height: 580px;
+    height: 600px;
     border-bottom: 1px solid #111;
     position: relative;
 }
