@@ -1101,7 +1101,7 @@
             return day;
         },
 
-        getPosterViewDisplayName: function (item, displayAsSpecial) {
+        getPosterViewDisplayName: function (item, displayAsSpecial, includeParentInfo) {
 
             var name = item.EpisodeTitle || item.Name;
 
@@ -1117,7 +1117,11 @@
 
                 var displayIndexNumber = item.IndexNumber;
 
-                var number = "S" + item.ParentIndexNumber + ", E" + displayIndexNumber;
+                var number = "E" + displayIndexNumber;
+                
+                if (includeParentInfo !== false) {
+                    number = "S" + item.ParentIndexNumber + ", " + number;
+                }
 
                 if (item.IndexNumberEnd) {
 
@@ -1127,14 +1131,6 @@
 
                 name = number + " - " + name;
 
-            }
-            else {
-                if (item.IndexNumber != null && item.Type !== "Season") {
-                    name = item.IndexNumber + " - " + name;
-                }
-                if (item.ParentIndexNumber != null && item.Type != "Episode") {
-                    name = item.ParentIndexNumber + "." + name;
-                }
             }
 
             return name;
@@ -1219,22 +1215,22 @@
                 result = (values[half - 1] + values[half]) / 2.0;
 
             // If really close to 2:3 (poster image), just return 2:3
-            if (Math.abs(0.66666666667 - result) <= .05) {
+            if (Math.abs(0.66666666667 - result) <= .15) {
                 return 0.66666666667;
             }
 
             // If really close to 16:9 (episode image), just return 16:9
-            if (Math.abs(1.777777778 - result) <= .05) {
+            if (Math.abs(1.777777778 - result) <= .15) {
                 return 1.777777778;
             }
 
             // If really close to 1 (square image), just return 1
-            if (Math.abs(1 - result) <= .05) {
+            if (Math.abs(1 - result) <= .15) {
                 return 1;
             }
 
             // If really close to 4:3 (poster image), just return 2:3
-            if (Math.abs(1.33333333333 - result) <= .05) {
+            if (Math.abs(1.33333333333 - result) <= .15) {
                 return 1.33333333333;
             }
 
@@ -1269,7 +1265,7 @@
 
         renderName: function (item, nameElem, linkToElement) {
 
-            var name = LibraryBrowser.getPosterViewDisplayName(item);
+            var name = LibraryBrowser.getPosterViewDisplayName(item, false, false);
 
             Dashboard.setPageTitle(name);
 

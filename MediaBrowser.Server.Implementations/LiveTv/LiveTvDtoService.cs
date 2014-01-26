@@ -74,7 +74,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             if (channel != null)
             {
-                dto.ChannelName = channel.ChannelInfo.Name;
+                dto.ChannelName = channel.Name;
             }
 
             return dto;
@@ -224,7 +224,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
                 MediaStreams = _itemRepo.GetMediaStreams(new MediaStreamQuery
                 {
-                     ItemId = recording.Id
+                    ItemId = recording.Id
 
                 }).ToList()
             };
@@ -271,6 +271,32 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             return dto;
         }
 
+        public LiveTvTunerInfoDto GetTunerInfoDto(string serviceName, LiveTvTunerInfo info, string channelName)
+        {
+            var dto = new LiveTvTunerInfoDto
+            {
+                Name = info.Name,
+                Id = info.Id,
+                Clients = info.Clients,
+                ProgramName = info.ProgramName,
+                SourceType = info.SourceType,
+                Status = info.Status,
+                ChannelName = channelName
+            };
+
+            if (!string.IsNullOrEmpty(info.ChannelId))
+            {
+                dto.ChannelId = GetInternalChannelId(serviceName, info.ChannelId).ToString("N");
+            }
+
+            if (!string.IsNullOrEmpty(info.RecordingId))
+            {
+                dto.RecordingId = GetInternalRecordingId(serviceName, info.RecordingId).ToString("N");
+            }
+
+            return dto;
+        }
+
         /// <summary>
         /// Gets the channel info dto.
         /// </summary>
@@ -280,18 +306,16 @@ namespace MediaBrowser.Server.Implementations.LiveTv
         /// <returns>ChannelInfoDto.</returns>
         public ChannelInfoDto GetChannelInfoDto(LiveTvChannel info, LiveTvProgram currentProgram, User user = null)
         {
-            var channelInfo = info.ChannelInfo;
-
             var dto = new ChannelInfoDto
             {
                 Name = info.Name,
                 ServiceName = info.ServiceName,
-                ChannelType = channelInfo.ChannelType,
-                Number = channelInfo.Number,
+                ChannelType = info.ChannelType,
+                Number = info.Number,
                 Type = info.GetClientTypeName(),
                 Id = info.Id.ToString("N"),
                 MediaType = info.MediaType,
-                ExternalId = channelInfo.Id
+                ExternalId = info.ExternalId
             };
 
             if (user != null)
@@ -316,36 +340,39 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         public ProgramInfoDto GetProgramInfoDto(LiveTvProgram item, LiveTvChannel channel, User user = null)
         {
-            var program = item.ProgramInfo;
-
             var dto = new ProgramInfoDto
             {
-                Id = GetInternalProgramId(item.ServiceName, program.Id).ToString("N"),
-                ChannelId = GetInternalChannelId(item.ServiceName, program.ChannelId).ToString("N"),
-                Overview = program.Overview,
-                EndDate = program.EndDate,
-                Genres = program.Genres,
-                ExternalId = program.Id,
-                Name = program.Name,
+                Id = GetInternalProgramId(item.ServiceName, item.ExternalId).ToString("N"),
+                ChannelId = GetInternalChannelId(item.ServiceName, item.ExternalChannelId).ToString("N"),
+                Overview = item.Overview,
+                Genres = item.Genres,
+                ExternalId = item.ExternalId,
+                Name = item.Name,
                 ServiceName = item.ServiceName,
-                StartDate = program.StartDate,
-                OfficialRating = program.OfficialRating,
-                IsHD = program.IsHD,
-                OriginalAirDate = program.OriginalAirDate,
-                Audio = program.Audio,
-                CommunityRating = GetClientCommunityRating(program.CommunityRating),
-                IsRepeat = program.IsRepeat,
-                EpisodeTitle = program.EpisodeTitle,
-                IsMovie = program.IsMovie,
-                IsSeries = program.IsSeries,
-                IsSports = program.IsSports,
-                IsLive = program.IsLive,
-                IsNews = program.IsNews,
-                IsKids = program.IsKids,
-                IsPremiere = program.IsPremiere,
-                RunTimeTicks = (program.EndDate - program.StartDate).Ticks,
+                StartDate = item.StartDate,
+                OfficialRating = item.OfficialRating,
+                IsHD = item.IsHD,
+                OriginalAirDate = item.PremiereDate,
+                Audio = item.Audio,
+                CommunityRating = GetClientCommunityRating(item.CommunityRating),
+                IsRepeat = item.IsRepeat,
+                EpisodeTitle = item.EpisodeTitle,
+                IsMovie = item.IsMovie,
+                IsSeries = item.IsSeries,
+                IsSports = item.IsSports,
+                IsLive = item.IsLive,
+                IsNews = item.IsNews,
+                IsKids = item.IsKids,
+                IsPremiere = item.IsPremiere,
                 Type = "Program"
             };
+
+            if (item.EndDate.HasValue)
+            {
+                dto.EndDate = item.EndDate.Value;
+
+                dto.RunTimeTicks = (item.EndDate.Value - item.StartDate).Ticks;
+            }
 
             if (channel != null)
             {

@@ -166,6 +166,12 @@ namespace MediaBrowser.Common.Implementations
         protected IIsoManager IsoManager { get; private set; }
 
         /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public abstract string Name { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="BaseApplicationHost{TApplicationPathsType}"/> class.
         /// </summary>
         protected BaseApplicationHost(TApplicationPathsType applicationPaths, ILogManager logManager)
@@ -383,7 +389,7 @@ namespace MediaBrowser.Common.Implementations
                 NetworkManager = CreateNetworkManager();
                 RegisterSingleInstance(NetworkManager);
 
-                SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, NetworkManager);
+                SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, NetworkManager, LogManager);
                 RegisterSingleInstance(SecurityManager);
 
                 InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, NetworkManager, ConfigurationManager);
