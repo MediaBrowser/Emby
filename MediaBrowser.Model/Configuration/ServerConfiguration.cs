@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.Weather;
+﻿using System.Collections.Generic;
+using MediaBrowser.Model.Weather;
 using System;
 
 namespace MediaBrowser.Model.Configuration
@@ -165,7 +166,7 @@ namespace MediaBrowser.Model.Configuration
         /// different directories and files.
         /// </summary>
         /// <value>The file watcher delay.</value>
-        public int FileWatcherDelay { get; set; }
+        public int RealtimeWatcherDelay { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable dashboard response caching].
@@ -227,6 +228,9 @@ namespace MediaBrowser.Model.Configuration
         public TvFileOrganizationOptions TvFileOrganizationOptions { get; set; }
         public LiveTvOptions LiveTvOptions { get; set; }
 
+        public bool EnableRealtimeMonitor { get; set; }
+        public PathSubstitution[] PathSubstitutions { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
         /// </summary>
@@ -250,13 +254,14 @@ namespace MediaBrowser.Model.Configuration
             MaxResumePct = 90;
             MinResumeDurationSeconds = Convert.ToInt32(TimeSpan.FromMinutes(5).TotalSeconds);
 
-            FileWatcherDelay = 8;
+            RealtimeWatcherDelay = 20;
 
             RecentItemDays = 10;
 
             EnableInternetProviders = true; //initial installs will need these
 
             ManualLoginClients = new ManualLoginCategory[] { };
+            PathSubstitutions = new PathSubstitution[] { };
 
             MetadataRefreshDays = 30;
             PreferredMetadataLanguage = "en";
@@ -294,6 +299,8 @@ namespace MediaBrowser.Model.Configuration
             LiveTvOptions = new LiveTvOptions();
 
             TvFileOrganizationOptions = new TvFileOrganizationOptions();
+
+            EnableRealtimeMonitor = true;
         }
     }
 
@@ -347,5 +354,11 @@ namespace MediaBrowser.Model.Configuration
             SeasonFolderPattern = "Season %s";
             SeasonZeroFolderName = "Season 0";
         }
+    }
+
+    public class PathSubstitution
+    {
+        public string From { get; set; }
+        public string To { get; set; }
     }
 }

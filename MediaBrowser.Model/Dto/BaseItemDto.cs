@@ -117,6 +117,12 @@ namespace MediaBrowser.Model.Dto
         public string Overview { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the TMDB collection.
+        /// </summary>
+        /// <value>The name of the TMDB collection.</value>
+        public string TmdbCollectionName { get; set; }
+        
+        /// <summary>
         /// Gets or sets the taglines.
         /// </summary>
         /// <value>The taglines.</value>
@@ -128,6 +134,12 @@ namespace MediaBrowser.Model.Dto
         /// <value>The genres.</value>
         public List<string> Genres { get; set; }
 
+        /// <summary>
+        /// Gets or sets the mapped paths.
+        /// </summary>
+        /// <value>The mapped paths.</value>
+        public List<string> MappedPaths { get; set; }
+        
         /// <summary>
         /// Gets or sets the community rating.
         /// </summary>
