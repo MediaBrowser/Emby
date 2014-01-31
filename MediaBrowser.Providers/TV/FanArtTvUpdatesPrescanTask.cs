@@ -54,7 +54,7 @@ namespace MediaBrowser.Providers.TV
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            if (!_config.Configuration.EnableInternetProviders)
+            if (!_config.Configuration.EnableInternetProviders || !_config.Configuration.EnableFanArtUpdates)
             {
                 progress.Report(100);
                 return;
@@ -108,10 +108,10 @@ namespace MediaBrowser.Providers.TV
             // First get last time
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
-                Url = string.Format(UpdatesUrl, FanartBaseProvider.ApiKey, lastUpdateTime),
+                Url = string.Format(UpdatesUrl, FanartArtistProvider.ApiKey, lastUpdateTime),
                 CancellationToken = cancellationToken,
                 EnableHttpCompression = true,
-                ResourcePool = FanartBaseProvider.FanArtResourcePool
+                ResourcePool = FanartArtistProvider.FanArtResourcePool
 
             }).ConfigureAwait(false))
             {
@@ -127,7 +127,7 @@ namespace MediaBrowser.Providers.TV
 
                     var existingDictionary = existingSeriesIds.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-                    var updates = _jsonSerializer.DeserializeFromString<List<FanArtUpdatesPrescanTask.FanArtUpdate>>(json);
+                    var updates = _jsonSerializer.DeserializeFromString<List<FanartUpdatesPrescanTask.FanArtUpdate>>(json);
 
                     return updates.Select(i => i.id).Where(existingDictionary.ContainsKey);
                 }

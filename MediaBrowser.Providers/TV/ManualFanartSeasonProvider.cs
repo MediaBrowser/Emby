@@ -15,10 +15,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using MediaBrowser.Providers.Music;
 
 namespace MediaBrowser.Providers.TV
 {
-    public class ManualFanartSeasonImageProvider : IRemoteImageProvider
+    public class ManualFanartSeasonImageProvider : IRemoteImageProvider, IHasOrder
     {
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
         private readonly IServerConfigurationManager _config;
@@ -268,7 +269,7 @@ namespace MediaBrowser.Providers.TV
             {
                 CancellationToken = cancellationToken,
                 Url = url,
-                ResourcePool = FanartBaseProvider.FanArtResourcePool
+                ResourcePool = FanartArtistProvider.FanArtResourcePool
             });
         }
     }

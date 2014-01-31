@@ -17,13 +17,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Net;
 using System.Net;
+using MediaBrowser.Providers.Music;
 
 namespace MediaBrowser.Providers.Movies
 {
     /// <summary>
     /// Class FanArtMovieProvider
     /// </summary>
-    class FanArtMovieProvider : FanartBaseProvider
+    class FanartMovieProvider : BaseMetadataProvider
     {
         /// <summary>
         /// Gets the HTTP client.
@@ -36,18 +37,18 @@ namespace MediaBrowser.Providers.Movies
         /// </summary>
         private readonly IProviderManager _providerManager;
 
-        internal static FanArtMovieProvider Current { get; private set; }
+        internal static FanartMovieProvider Current { get; private set; }
         private readonly IFileSystem _fileSystem;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FanArtMovieProvider" /> class.
+        /// Initializes a new instance of the <see cref="FanartMovieProvider" /> class.
         /// </summary>
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="logManager">The log manager.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="providerManager">The provider manager.</param>
         /// <exception cref="System.ArgumentNullException">httpClient</exception>
-        public FanArtMovieProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
+        public FanartMovieProvider(IHttpClient httpClient, ILogManager logManager, IServerConfigurationManager configurationManager, IProviderManager providerManager, IFileSystem fileSystem)
             : base(logManager, configurationManager)
         {
             if (httpClient == null)
@@ -228,7 +229,7 @@ namespace MediaBrowser.Providers.Movies
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var url = string.Format(FanArtBaseUrl, ApiKey, tmdbId);
+            var url = string.Format(FanArtBaseUrl, FanartArtistProvider.ApiKey, tmdbId);
 
             var xmlPath = GetFanartXmlPath(tmdbId);
 
@@ -237,7 +238,7 @@ namespace MediaBrowser.Providers.Movies
             using (var response = await HttpClient.Get(new HttpRequestOptions
             {
                 Url = url,
-                ResourcePool = FanArtResourcePool,
+                ResourcePool = FanartArtistProvider.FanArtResourcePool,
                 CancellationToken = cancellationToken
 
             }).ConfigureAwait(false))
@@ -318,7 +319,7 @@ namespace MediaBrowser.Providers.Movies
             {
                 foreach (var image in images.Where(i => i.Type == ImageType.Backdrop))
                 {
-                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, ImageType.Backdrop, null, cancellationToken)
+                    await _providerManager.SaveImage(item, image.Url, FanartArtistProvider.FanArtResourcePool, ImageType.Backdrop, null, cancellationToken)
                                         .ConfigureAwait(false);
 
                     if (item.BackdropImagePaths.Count >= backdropLimit) break;
@@ -332,7 +333,7 @@ namespace MediaBrowser.Providers.Movies
             {
                 try
                 {
-                    await _providerManager.SaveImage(item, image.Url, FanArtResourcePool, type, null, cancellationToken).ConfigureAwait(false);
+                    await _providerManager.SaveImage(item, image.Url, FanartArtistProvider.FanArtResourcePool, type, null, cancellationToken).ConfigureAwait(false);
                     break;
                 }
                 catch (HttpException ex)

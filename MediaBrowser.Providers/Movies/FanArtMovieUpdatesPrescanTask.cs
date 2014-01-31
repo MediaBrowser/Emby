@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Providers.Movies
 {
-    class FanArtMovieUpdatesPrescanTask : ILibraryPostScanTask
+    class FanartMovieUpdatesPrescanTask : ILibraryPostScanTask
     {
         private const string UpdatesUrl = "http://api.fanart.tv/webservice/newmovies/{0}/{1}/";
 
@@ -37,7 +37,7 @@ namespace MediaBrowser.Providers.Movies
 
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        public FanArtMovieUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
+        public FanartMovieUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _config = config;
@@ -54,13 +54,13 @@ namespace MediaBrowser.Providers.Movies
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            if (!_config.Configuration.EnableInternetProviders)
+            if (!_config.Configuration.EnableInternetProviders || !_config.Configuration.EnableFanArtUpdates)
             {
                 progress.Report(100);
                 return;
             }
 
-            var path = FanArtMovieProvider.GetMoviesDataPath(_config.CommonApplicationPaths);
+            var path = FanartMovieProvider.GetMoviesDataPath(_config.CommonApplicationPaths);
 
             Directory.CreateDirectory(path);
             
@@ -101,24 +101,24 @@ namespace MediaBrowser.Providers.Movies
             // First get last time
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
-                Url = string.Format(UpdatesUrl, FanartBaseProvider.ApiKey, lastUpdateTime),
+                Url = string.Format(UpdatesUrl, FanartArtistProvider.ApiKey, lastUpdateTime),
                 CancellationToken = cancellationToken,
                 EnableHttpCompression = true,
-                ResourcePool = FanartBaseProvider.FanArtResourcePool
+                ResourcePool = FanartArtistProvider.FanArtResourcePool
 
             }).ConfigureAwait(false))
             {
-                // If empty fanart will return a string of "null", rather than an empty list
                 using (var reader = new StreamReader(stream))
                 {
                     var json = await reader.ReadToEndAsync().ConfigureAwait(false);
 
+                    // If empty fanart will return a string of "null", rather than an empty list
                     if (string.Equals(json, "null", StringComparison.OrdinalIgnoreCase))
                     {
                         return new List<string>();
                     }
 
-                    var updates = _jsonSerializer.DeserializeFromString<List<FanArtUpdatesPrescanTask.FanArtUpdate>>(json);
+                    var updates = _jsonSerializer.DeserializeFromString<List<FanartUpdatesPrescanTask.FanArtUpdate>>(json);
 
                     var existingDictionary = existingIds.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
@@ -136,7 +136,7 @@ namespace MediaBrowser.Providers.Movies
             {
                 _logger.Info("Updating movie " + id);
 
-                await FanArtMovieProvider.Current.DownloadMovieXml(id, cancellationToken).ConfigureAwait(false);
+                await FanartMovieProvider.Current.DownloadMovieXml(id, cancellationToken).ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;

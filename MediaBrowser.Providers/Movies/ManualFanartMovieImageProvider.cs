@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -15,19 +16,22 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using MediaBrowser.Providers.Music;
 
 namespace MediaBrowser.Providers.Movies
 {
-    public class ManualFanartMovieImageProvider : IRemoteImageProvider
+    public class ManualFanartMovieImageProvider : IRemoteImageProvider, IHasChangeMonitor, IHasOrder
     {
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
+        private readonly IFileSystem _fileSystem;
 
-        public ManualFanartMovieImageProvider(IServerConfigurationManager config, IHttpClient httpClient)
+        public ManualFanartMovieImageProvider(IServerConfigurationManager config, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _config = config;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         public string Name
@@ -82,9 +86,9 @@ namespace MediaBrowser.Providers.Movies
 
             if (!string.IsNullOrEmpty(movieId))
             {
-                await FanArtMovieProvider.Current.EnsureMovieXml(movieId, cancellationToken).ConfigureAwait(false);
+                await FanartMovieProvider.Current.EnsureMovieXml(movieId, cancellationToken).ConfigureAwait(false);
 
-                var xmlPath = FanArtMovieProvider.Current.GetFanartXmlPath(movieId);
+                var xmlPath = FanartMovieProvider.Current.GetFanartXmlPath(movieId);
 
                 try
                 {
@@ -329,8 +333,25 @@ namespace MediaBrowser.Providers.Movies
             {
                 CancellationToken = cancellationToken,
                 Url = url,
-                ResourcePool = FanartBaseProvider.FanArtResourcePool
+                ResourcePool = FanartArtistProvider.FanArtResourcePool
             });
+        }
+
+        public bool HasChanged(IHasMetadata item, DateTime date)
+        {
+            var id = item.GetProviderId(MetadataProviders.Tmdb);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                // Process images
+                var xmlPath = FanartMovieProvider.Current.GetFanartXmlPath(id);
+
+                var fileInfo = new FileInfo(xmlPath);
+
+                return fileInfo.Exists && _fileSystem.GetLastWriteTimeUtc(fileInfo) > date;
+            }
+
+            return false;
         }
     }
 }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Providers.Music
 {
-    class FanArtUpdatesPrescanTask : ILibraryPostScanTask
+    class FanartUpdatesPrescanTask : ILibraryPostScanTask
     {
         private const string UpdatesUrl = "http://api.fanart.tv/webservice/newmusic/{0}/{1}/";
 
@@ -36,7 +36,7 @@ namespace MediaBrowser.Providers.Music
 
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        public FanArtUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
+        public FanartUpdatesPrescanTask(IJsonSerializer jsonSerializer, IServerConfigurationManager config, ILogger logger, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _config = config;
@@ -53,13 +53,13 @@ namespace MediaBrowser.Providers.Music
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            if (!_config.Configuration.EnableInternetProviders)
+            if (!_config.Configuration.EnableInternetProviders || !_config.Configuration.EnableFanArtUpdates)
             {
                 progress.Report(100);
                 return;
             }
 
-            var path = FanArtArtistProvider.GetArtistDataPath(_config.CommonApplicationPaths);
+            var path = FanartArtistProvider.GetArtistDataPath(_config.CommonApplicationPaths);
 
             Directory.CreateDirectory(path);
 
@@ -85,7 +85,7 @@ namespace MediaBrowser.Providers.Music
 
                 progress.Report(5);
 
-                await UpdateArtists(artistsToUpdate, path, progress, cancellationToken).ConfigureAwait(false);
+                await UpdateArtists(artistsToUpdate, progress, cancellationToken).ConfigureAwait(false);
             }
 
             var newUpdateTime = Convert.ToInt64(DateTimeToUnixTimestamp(DateTime.UtcNow)).ToString(UsCulture);
@@ -107,10 +107,10 @@ namespace MediaBrowser.Providers.Music
             // First get last time
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
-                Url = string.Format(UpdatesUrl, FanartBaseProvider.ApiKey, lastUpdateTime),
+                Url = string.Format(UpdatesUrl, FanartArtistProvider.ApiKey, lastUpdateTime),
                 CancellationToken = cancellationToken,
                 EnableHttpCompression = true,
-                ResourcePool = FanartBaseProvider.FanArtResourcePool
+                ResourcePool = FanartArtistProvider.FanArtResourcePool
 
             }).ConfigureAwait(false))
             {
@@ -137,18 +137,17 @@ namespace MediaBrowser.Providers.Music
         /// Updates the artists.
         /// </summary>
         /// <param name="idList">The id list.</param>
-        /// <param name="artistsDataPath">The artists data path.</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task UpdateArtists(IEnumerable<string> idList, string artistsDataPath, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task UpdateArtists(IEnumerable<string> idList, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var list = idList.ToList();
             var numComplete = 0;
 
             foreach (var id in list)
             {
-                await UpdateArtist(id, artistsDataPath, cancellationToken).ConfigureAwait(false);
+                await UpdateArtist(id, cancellationToken).ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;
@@ -163,18 +162,13 @@ namespace MediaBrowser.Providers.Music
         /// Updates the artist.
         /// </summary>
         /// <param name="musicBrainzId">The musicBrainzId.</param>
-        /// <param name="artistsDataPath">The artists data path.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private Task UpdateArtist(string musicBrainzId, string artistsDataPath, CancellationToken cancellationToken)
+        private Task UpdateArtist(string musicBrainzId, CancellationToken cancellationToken)
         {
             _logger.Info("Updating artist " + musicBrainzId);
 
-            artistsDataPath = Path.Combine(artistsDataPath, musicBrainzId);
-
-            Directory.CreateDirectory(artistsDataPath);
-
-            return FanArtArtistProvider.Current.DownloadArtistXml(artistsDataPath, musicBrainzId, cancellationToken);
+            return FanartArtistProvider.Current.DownloadArtistXml(musicBrainzId, cancellationToken);
         }
 
         /// <summary>
