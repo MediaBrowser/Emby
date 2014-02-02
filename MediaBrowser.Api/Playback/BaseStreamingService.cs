@@ -311,9 +311,9 @@ namespace MediaBrowser.Api.Playback
             }
 
             // asf/wmv
-            if (videoCodec.Equals("wmv2", StringComparison.OrdinalIgnoreCase))
+            if (videoCodec.Equals("msmpeg4", StringComparison.OrdinalIgnoreCase))
             {
-                return " -qmin 2 ";
+                return " -mbd 2";
             }
 
             if (videoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase))
@@ -723,7 +723,7 @@ namespace MediaBrowser.Api.Playback
                 }
                 if (codec == VideoCodecs.Wmv)
                 {
-                    return "wmv2";
+                    return "msmpeg4";
                 }
                 if (codec == VideoCodecs.Theora)
                 {
