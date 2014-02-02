@@ -307,13 +307,13 @@ namespace MediaBrowser.Api.Playback
             if (videoCodec.Equals("libvpx", StringComparison.OrdinalIgnoreCase))
             {
                 // http://www.webmproject.org/docs/encoder-parameters/
-                return "-speed 16 -quality good -profile:v 0 -slices 8 -crf 18";
+                return "-speed 16 -quality good -profile:v 0 -slices 8 ";
             }
 
             // asf/wmv
-            if (videoCodec.Equals("wmv2", StringComparison.OrdinalIgnoreCase))
+            if (videoCodec.Equals("msmpeg4", StringComparison.OrdinalIgnoreCase))
             {
-                return "-g 100 -qmax 15";
+                return " -mbd 2";
             }
 
             if (videoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase))
@@ -723,7 +723,7 @@ namespace MediaBrowser.Api.Playback
                 }
                 if (codec == VideoCodecs.Wmv)
                 {
-                    return "wmv2";
+                    return "msmpeg4";
                 }
                 if (codec == VideoCodecs.Theora)
                 {

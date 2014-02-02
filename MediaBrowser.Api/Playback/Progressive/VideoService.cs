@@ -170,13 +170,16 @@ namespace MediaBrowser.Api.Playback.Progressive
             {
                 if (string.Equals(codec, "libvpx", StringComparison.OrdinalIgnoreCase))
                 {
+                	qualityParam += string.Format(" -b:v {0} -minrate:v ({0}*.90) -maxrate:v ({0}*1.10) -bufsize:v {0}", bitrate.Value <= 8872000 ? bitrate.Value.ToString(UsCulture) : "8872000");
+                //keep total webm stream under 9000000 to avoid Libvpx saturating the bitrate resulting in constant constant bit rate encoding. Improvement will have to be done to subtract requested audio birtate above 128000
+                }
+                else if (string.Equals(codec, "msmpeg4", StringComparison.OrdinalIgnoreCase))
+                {
                     qualityParam += string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
                 }
                 else
                 {
-                    qualityParam += string.Format(" -maxrate {0} -bufsize {1}", 
-                        bitrate.Value.ToString(UsCulture),
-                        (bitrate.Value * 2).ToString(UsCulture));
+                    qualityParam += string.Format(" -maxrate {0} -bufsize {1}", bitrate.Value.ToString(UsCulture), (bitrate.Value * 2).ToString(UsCulture));
                 }
             }
 
