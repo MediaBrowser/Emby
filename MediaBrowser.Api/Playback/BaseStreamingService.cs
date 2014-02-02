@@ -313,7 +313,7 @@ namespace MediaBrowser.Api.Playback
             // asf/wmv
             if (videoCodec.Equals("wmv2", StringComparison.OrdinalIgnoreCase))
             {
-                return "-g 100 -q:v 2";
+                return " -qmin 2 ";
             }
 
             if (videoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase))
