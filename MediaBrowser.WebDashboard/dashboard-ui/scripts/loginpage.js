@@ -22,6 +22,7 @@
 
                 $('.visualLoginForm', '#loginPage').hide();
                 $('#manualLoginForm', '#loginPage').show();
+                $('#txtManualName').focus();
 
             } else {
 
@@ -29,6 +30,12 @@
                 $('#manualLoginForm', '#loginPage').hide();
 
                 LoginPage.loadUserList(users);
+                
+                $( "#popupLogin" ).popup({
+                    afteropen: function( event, ui ) {
+                        $('#pw').focus();
+                    }
+                });
             }
 
             Dashboard.hideLoadingMsg();
