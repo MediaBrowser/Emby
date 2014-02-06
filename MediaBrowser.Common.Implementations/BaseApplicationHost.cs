@@ -18,8 +18,8 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Updates;
+using Ninject;
 using ServiceStack;
-using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +81,7 @@ namespace MediaBrowser.Common.Implementations
         /// <summary>
         /// The container
         /// </summary>
-        protected readonly Container Container = new Container();
+        protected readonly IKernel Container = new StandardKernel();
 
         /// <summary>
         /// The json serializer
@@ -450,7 +450,7 @@ namespace MediaBrowser.Common.Implementations
         {
             try
             {
-                return Container.GetInstance(type);
+                return Container.Get(type);
             }
             catch (Exception ex)
             {
@@ -469,7 +469,7 @@ namespace MediaBrowser.Common.Implementations
         {
             try
             {
-                return Container.GetInstance(type);
+                return Container.Get(type);
             }
             catch (Exception ex)
             {
@@ -484,21 +484,10 @@ namespace MediaBrowser.Common.Implementations
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj">The obj.</param>
-        /// <param name="manageLifetime">if set to <c>true</c> [manage lifetime].</param>
-        protected void RegisterSingleInstance<T>(T obj, bool manageLifetime = true)
+        protected void RegisterSingleInstance<T>(T obj)
             where T : class
         {
-            Container.RegisterSingle(obj);
-
-            if (manageLifetime)
-            {
-                var disposable = obj as IDisposable;
-
-                if (disposable != null)
-                {
-                    DisposableParts.Add(disposable);
-                }
-            }
+            Container.Bind<T>().ToConstant(obj);
         }
 
         /// <summary>
@@ -509,7 +498,7 @@ namespace MediaBrowser.Common.Implementations
         protected void RegisterSingleInstance<T>(Func<T> func)
             where T : class
         {
-            Container.RegisterSingle(func);
+            Container.Bind<T>().ToMethod(context => func());
         }
 
         /// <summary>
@@ -519,7 +508,7 @@ namespace MediaBrowser.Common.Implementations
         /// <returns>``0.</returns>
         public T Resolve<T>()
         {
-            return (T)Container.GetRegistration(typeof(T), true).GetInstance();
+            return (T)Container.Get(typeof(T));
         }
 
         /// <summary>
@@ -529,13 +518,14 @@ namespace MediaBrowser.Common.Implementations
         /// <returns>``0.</returns>
         public T TryResolve<T>()
         {
-            var result = Container.GetRegistration(typeof(T), false);
+            var result = Container.TryGet(typeof(T));
 
             if (result == null)
             {
                 return default(T);
             }
-            return (T)result.GetInstance();
+
+            return (T)result;
         }
 
         /// <summary>
@@ -665,6 +655,9 @@ namespace MediaBrowser.Common.Implementations
                 var type = GetType();
 
                 Logger.Info("Disposing " + type.Name);
+
+                if (!Container.IsDisposed)
+                    Container.Dispose();
 
                 var parts = DisposableParts.Distinct().Where(i => i.GetType() != type).ToList();
                 DisposableParts.Clear();
