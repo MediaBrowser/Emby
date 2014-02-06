@@ -297,7 +297,7 @@ namespace MediaBrowser.ServerApplication
             RegisterSingleInstance(SessionManager);
 
             HttpServer = ServerFactory.CreateServer(this, LogManager, "Media Browser", "mediabrowser", "dashboard/index.html");
-            RegisterSingleInstance(HttpServer, false);
+            RegisterSingleInstance(HttpServer);
             progress.Report(10);
 
             ServerManager = new ServerManager(this, JsonSerializer, Logger, ServerConfigurationManager);
