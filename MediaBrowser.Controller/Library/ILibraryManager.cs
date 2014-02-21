@@ -41,7 +41,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="parent">The parent.</param>
         /// <returns>BaseItem.</returns>
         BaseItem ResolvePath(FileSystemInfo fileInfo, Folder parent = null);
-        
+
         /// <summary>
         /// Resolves a set of files into a list of BaseItem
         /// </summary>
@@ -202,9 +202,8 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Gets the user root folder.
         /// </summary>
-        /// <param name="userRootPath">The user root path.</param>
         /// <returns>UserRootFolder.</returns>
-        UserRootFolder GetUserRootFolder(string userRootPath);
+        Folder GetUserRootFolder();
 
         /// <summary>
         /// Creates the item.
@@ -330,5 +329,24 @@ namespace MediaBrowser.Controller.Library
         /// </summary>
         /// <param name="item">The item.</param>
         void RegisterItem(BaseItem item);
+
+        /// <summary>
+        /// Deletes the item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>Task.</returns>
+        Task DeleteItem(BaseItem item, DeleteOptions options);
+    }
+
+    public static class LibraryManagerExtensions
+    {
+        public static Task DeleteItem(this ILibraryManager manager, BaseItem item)
+        {
+            return manager.DeleteItem(item, new DeleteOptions
+            {
+                DeleteFileLocation = true
+            });
+        }
     }
 }

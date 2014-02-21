@@ -153,12 +153,6 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        /// <summary>
-        /// The _user root folders
-        /// </summary>
-        private readonly ConcurrentDictionary<string, UserRootFolder> _userRootFolders =
-            new ConcurrentDictionary<string, UserRootFolder>();
-
         private readonly IFileSystem _fileSystem;
 
         /// <summary>
@@ -408,6 +402,88 @@ namespace MediaBrowser.Server.Implementations.Library
             LibraryItemsCache.AddOrUpdate(item.Id, item, delegate { return item; });
         }
 
+        public async Task DeleteItem(BaseItem item, DeleteOptions options)
+        {
+            _logger.Debug("Deleting item, Type: {0}, Name: {1}, Path: {2}, Id: {3}",
+                item.GetType().Name,
+                item.Name,
+                item.Path ?? string.Empty,
+                item.Id);
+
+            var parent = item.Parent;
+
+            var locationType = item.LocationType;
+
+            var children = item.IsFolder
+                ? ((Folder)item).RecursiveChildren.ToList()
+                : new List<BaseItem>();
+
+            foreach (var metadataPath in GetMetadataPaths(item, children))
+            {
+                _logger.Debug("Deleting path {0}", metadataPath);
+
+                try
+                {
+                    Directory.Delete(metadataPath, true);
+                }
+                catch (DirectoryNotFoundException)
+                {
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error deleting {0}", ex, metadataPath);
+                }
+            }
+
+            if (options.DeleteFileLocation && (locationType == LocationType.FileSystem || locationType == LocationType.Offline))
+            {
+                foreach (var path in item.GetDeletePaths().ToList())
+                {
+                    if (Directory.Exists(path))
+                    {
+                        _logger.Debug("Deleting path {0}", path);
+                        Directory.Delete(path, true);
+                    }
+                    else if (File.Exists(path))
+                    {
+                        _logger.Debug("Deleting path {0}", path);
+                        File.Delete(path);
+                    }
+                }
+
+                if (parent != null)
+                {
+                    await parent.ValidateChildren(new Progress<double>(), CancellationToken.None)
+                              .ConfigureAwait(false);
+                }
+            }
+            else if (parent != null)
+            {
+                await parent.RemoveChild(item, CancellationToken.None).ConfigureAwait(false);
+            }
+
+            await ItemRepository.DeleteItem(item.Id, CancellationToken.None).ConfigureAwait(false);
+            foreach (var child in children)
+            {
+                await ItemRepository.DeleteItem(child.Id, CancellationToken.None).ConfigureAwait(false);
+            }
+
+            ReportItemRemoved(item);
+        }
+
+        private IEnumerable<string> GetMetadataPaths(BaseItem item, IEnumerable<BaseItem> children)
+        {
+            var list = new List<string>
+            {
+                ConfigurationManager.ApplicationPaths.GetInternalMetadataPath(item.Id)
+            };
+
+            list.AddRange(children.Select(i => ConfigurationManager.ApplicationPaths.GetInternalMetadataPath(i.Id)));
+
+            return list;
+        }
+
         /// <summary>
         /// Resolves the item.
         /// </summary>
@@ -504,7 +580,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
 
                 var fileSystemDictionary = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
-
+                
                 // Need to remove subpaths that may have been resolved from shortcuts
                 // Example: if \\server\movies exists, then strip out \\server\movies\action
                 if (isPhysicalRoot)
@@ -619,20 +695,18 @@ namespace MediaBrowser.Server.Implementations.Library
             return rootFolder;
         }
 
-        /// <summary>
-        /// Gets the user root folder.
-        /// </summary>
-        /// <param name="userRootPath">The user root path.</param>
-        /// <returns>UserRootFolder.</returns>
-        public UserRootFolder GetUserRootFolder(string userRootPath)
+        private UserRootFolder _userRootFolder;
+        public Folder GetUserRootFolder()
         {
-            return _userRootFolders.GetOrAdd(userRootPath, key => RetrieveItem(userRootPath.GetMBId(typeof(UserRootFolder))) as UserRootFolder ??
-                (UserRootFolder)ResolvePath(new DirectoryInfo(userRootPath)));
-        }
+            if (_userRootFolder == null)
+            {
+                var userRootPath = ConfigurationManager.ApplicationPaths.DefaultUserViewsPath;
 
-        public Person GetPersonSync(string name)
-        {
-            return GetItemByName<Person>(ConfigurationManager.ApplicationPaths.PeoplePath, name);
+                _userRootFolder = RetrieveItem(userRootPath.GetMBId(typeof(UserRootFolder))) as UserRootFolder ??
+                                  (UserRootFolder)ResolvePath(new DirectoryInfo(userRootPath));
+            }
+
+            return _userRootFolder;
         }
 
         /// <summary>
@@ -919,7 +993,7 @@ namespace MediaBrowser.Server.Implementations.Library
             // Just run the scheduled task so that the user can see it
             _taskManager.QueueScheduledTask<RefreshMediaLibraryTask>();
         }
-        
+
         /// <summary>
         /// Validates the media library internal.
         /// </summary>
@@ -953,18 +1027,14 @@ namespace MediaBrowser.Server.Implementations.Library
 
             progress.Report(1);
 
-            foreach (var folder in _userManager.Users.Select(u => u.RootFolder).Distinct())
-            {
-                await ValidateCollectionFolders(folder, cancellationToken).ConfigureAwait(false);
-            }
+            var userRoot = GetUserRootFolder();
 
+            await userRoot.RefreshMetadata(cancellationToken).ConfigureAwait(false);
+
+            await userRoot.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(), recursive: false).ConfigureAwait(false);
             progress.Report(2);
 
             var innerProgress = new ActionableProgress<double>();
-
-            innerProgress.RegisterAction(pct => progress.Report(2 + pct * .13));
-
-            innerProgress = new ActionableProgress<double>();
 
             innerProgress.RegisterAction(pct => progress.Report(2 + pct * .73));
 
@@ -1037,22 +1107,6 @@ namespace MediaBrowser.Server.Implementations.Library
         }
 
         /// <summary>
-        /// Validates only the collection folders for a User and goes no further
-        /// </summary>
-        /// <param name="userRootFolder">The user root folder.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task ValidateCollectionFolders(UserRootFolder userRootFolder, CancellationToken cancellationToken)
-        {
-            _logger.Info("Validating collection folders within {0}", userRootFolder.Path);
-            await userRootFolder.RefreshMetadata(cancellationToken).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            await userRootFolder.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(), recursive: false).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Gets the default view.
         /// </summary>
         /// <returns>IEnumerable{VirtualFolderInfo}.</returns>
@@ -1068,7 +1122,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>IEnumerable{VirtualFolderInfo}.</returns>
         public IEnumerable<VirtualFolderInfo> GetVirtualFolders(User user)
         {
-            return GetView(user.RootFolderPath);
+            return GetDefaultVirtualFolders();
         }
 
         /// <summary>
@@ -1317,7 +1371,7 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 await _providerManagerFactory().SaveMetadata(item, updateReason).ConfigureAwait(false);
             }
-            
+
             item.DateLastSaved = DateTime.UtcNow;
 
             _logger.Debug("Saving {0} to database.", item.Path ?? item.Name);

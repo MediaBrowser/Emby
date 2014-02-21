@@ -17,7 +17,7 @@ using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.MediaInfo;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.News;
 using MediaBrowser.Controller.Notifications;
@@ -161,6 +161,8 @@ namespace MediaBrowser.ServerApplication
 
         private ILocalizationManager LocalizationManager { get; set; }
 
+        private IEncodingManager EncodingManager { get; set; }
+        
         /// <summary>
         /// Gets or sets the user data repository.
         /// </summary>
@@ -252,6 +254,14 @@ namespace MediaBrowser.ServerApplication
         {
             try
             {
+                MigrateUserFolders();
+            }
+            catch (IOException ex)
+            {
+            }
+
+            try
+            {
                 File.Delete(Path.Combine(ApplicationPaths.PluginsPath, "MBPhoto.dll"));
             }
             catch (IOException)
@@ -264,6 +274,15 @@ namespace MediaBrowser.ServerApplication
                 try
                 {
                     Directory.Delete(Path.Combine(ApplicationPaths.DataPath, "remote-images"), true);
+                }
+                catch (IOException)
+                {
+                    // Not there, no big deal
+                }
+
+                try
+                {
+                    Directory.Delete(Path.Combine(ApplicationPaths.DataPath, "chapter-images"), true);
                 }
                 catch (IOException)
                 {
@@ -287,7 +306,54 @@ namespace MediaBrowser.ServerApplication
                 {
                     // Not there, no big deal
                 }
+
+                try
+                {
+                    Directory.Delete(Path.Combine(ApplicationPaths.DataPath, "tmdb-tv"), true);
+                }
+                catch (IOException)
+                {
+                    // Not there, no big deal
+                }
+
+                try
+                {
+                    Directory.Delete(Path.Combine(ApplicationPaths.DataPath, "tmdb-collections"), true);
+                }
+                catch (IOException)
+                {
+                    // Not there, no big deal
+                }
             });
+        }
+
+        private void MigrateUserFolders()
+        {
+            var rootPath = ApplicationPaths.RootFolderPath;
+
+            var folders = new DirectoryInfo(rootPath).EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Where(i => !string.Equals(i.Name, "default", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var folder in folders)
+            {
+                MigrateUserFolder(folder);
+            }
+        }
+
+        private void MigrateUserFolder(DirectoryInfo folder)
+        {
+            var foldersInDefault = new DirectoryInfo(ApplicationPaths.DefaultUserViewsPath).EnumerateDirectories("*", SearchOption.TopDirectoryOnly).ToList();
+
+            var foldersInUserView = folder.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).ToList();
+
+            var foldersToMove = foldersInUserView.Where(i => !foldersInDefault.Any(f => string.Equals(f.Name, i.Name, StringComparison.OrdinalIgnoreCase))).ToList();
+
+            foreach (var folderToMove in foldersToMove)
+            {
+                folderToMove.MoveTo(Path.Combine(ApplicationPaths.DefaultUserViewsPath, folderToMove.Name));
+            }
+
+            Directory.Delete(folder.FullName, true);
         }
 
         /// <summary>
@@ -336,7 +402,7 @@ namespace MediaBrowser.ServerApplication
             LibraryMonitor = new LibraryMonitor(LogManager, TaskManager, LibraryManager, ServerConfigurationManager, FileSystemManager);
             RegisterSingleInstance(LibraryMonitor);
 
-            ProviderManager = new ProviderManager(HttpClient, ServerConfigurationManager, LibraryMonitor, LogManager, FileSystemManager, ProviderRepository);
+            ProviderManager = new ProviderManager(HttpClient, ServerConfigurationManager, LibraryMonitor, LogManager, FileSystemManager);
             RegisterSingleInstance(ProviderManager);
 
             RegisterSingleInstance<ISearchEngine>(() => new SearchEngine(LogManager, LibraryManager, UserManager));
@@ -357,13 +423,13 @@ namespace MediaBrowser.ServerApplication
             ImageProcessor = new ImageProcessor(Logger, ServerConfigurationManager.ApplicationPaths, FileSystemManager, JsonSerializer);
             RegisterSingleInstance(ImageProcessor);
 
-            DtoService = new DtoService(Logger, LibraryManager, UserManager, UserDataManager, ItemRepository, ImageProcessor, ServerConfigurationManager, FileSystemManager);
+            DtoService = new DtoService(Logger, LibraryManager, UserManager, UserDataManager, ItemRepository, ImageProcessor, ServerConfigurationManager, FileSystemManager, ProviderManager);
             RegisterSingleInstance(DtoService);
 
             var newsService = new Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);
             RegisterSingleInstance<INewsService>(newsService);
 
-            var fileOrganizationService = new FileOrganizationService(TaskManager, FileOrganizationRepository, Logger, LibraryMonitor, LibraryManager, ServerConfigurationManager, FileSystemManager);
+            var fileOrganizationService = new FileOrganizationService(TaskManager, FileOrganizationRepository, Logger, LibraryMonitor, LibraryManager, ServerConfigurationManager, FileSystemManager, ProviderManager);
             RegisterSingleInstance<IFileOrganizationService>(fileOrganizationService);
 
             progress.Report(15);
@@ -373,6 +439,10 @@ namespace MediaBrowser.ServerApplication
 
             await RegisterMediaEncoder(innerProgress).ConfigureAwait(false);
             progress.Report(90);
+
+            EncodingManager = new EncodingManager(ServerConfigurationManager, FileSystemManager, Logger, ItemRepository,
+                MediaEncoder);
+            RegisterSingleInstance(EncodingManager);
 
             LiveTvManager = new LiveTvManager(ServerConfigurationManager, FileSystemManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, MediaEncoder, TaskManager);
             RegisterSingleInstance(LiveTvManager);
@@ -419,8 +489,6 @@ namespace MediaBrowser.ServerApplication
         /// </summary>
         private void SetKernelProperties()
         {
-            new FFMpegManager(MediaEncoder, Logger, ItemRepository, FileSystemManager, ServerConfigurationManager);
-
             LocalizedStrings.StringFiles = GetExports<LocalizedStringData>();
 
             SetStaticProperties();
@@ -548,7 +616,9 @@ namespace MediaBrowser.ServerApplication
                                     GetExports<ILibraryPostScanTask>());
 
             ProviderManager.AddParts(GetExports<IImageProvider>(), GetExports<IMetadataService>(), GetExports<IMetadataProvider>(),
-                                    GetExports<IMetadataSaver>());
+                                    GetExports<IMetadataSaver>(),
+                                    GetExports<IImageSaver>(),
+                                    GetExports<IExternalId>());
 
             ImageProcessor.AddParts(GetExports<IImageEnhancer>());
 

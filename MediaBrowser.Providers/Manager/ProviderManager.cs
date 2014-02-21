@@ -52,11 +52,12 @@ namespace MediaBrowser.Providers.Manager
 
         private readonly IFileSystem _fileSystem;
 
-        private readonly IProviderRepository _providerRepo;
-
         private IMetadataService[] _metadataServices = { };
         private IMetadataProvider[] _metadataProviders = { };
         private IEnumerable<IMetadataSaver> _savers;
+        private IImageSaver[] _imageSavers;
+
+        private IExternalId[] _externalIds;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProviderManager" /> class.
@@ -66,15 +67,13 @@ namespace MediaBrowser.Providers.Manager
         /// <param name="libraryMonitor">The directory watchers.</param>
         /// <param name="logManager">The log manager.</param>
         /// <param name="fileSystem">The file system.</param>
-        /// <param name="providerRepo">The provider repo.</param>
-        public ProviderManager(IHttpClient httpClient, IServerConfigurationManager configurationManager, ILibraryMonitor libraryMonitor, ILogManager logManager, IFileSystem fileSystem, IProviderRepository providerRepo)
+        public ProviderManager(IHttpClient httpClient, IServerConfigurationManager configurationManager, ILibraryMonitor libraryMonitor, ILogManager logManager, IFileSystem fileSystem)
         {
             _logger = logManager.GetLogger("ProviderManager");
             _httpClient = httpClient;
             ConfigurationManager = configurationManager;
             _libraryMonitor = libraryMonitor;
             _fileSystem = fileSystem;
-            _providerRepo = providerRepo;
         }
 
         /// <summary>
@@ -84,13 +83,19 @@ namespace MediaBrowser.Providers.Manager
         /// <param name="metadataServices">The metadata services.</param>
         /// <param name="metadataProviders">The metadata providers.</param>
         /// <param name="metadataSavers">The metadata savers.</param>
-        public void AddParts(IEnumerable<IImageProvider> imageProviders, IEnumerable<IMetadataService> metadataServices, IEnumerable<IMetadataProvider> metadataProviders, IEnumerable<IMetadataSaver> metadataSavers)
+        /// <param name="imageSavers">The image savers.</param>
+        /// <param name="externalIds">The external ids.</param>
+        public void AddParts(IEnumerable<IImageProvider> imageProviders, IEnumerable<IMetadataService> metadataServices, IEnumerable<IMetadataProvider> metadataProviders, IEnumerable<IMetadataSaver> metadataSavers,
+            IEnumerable<IImageSaver> imageSavers,
+            IEnumerable<IExternalId> externalIds)
         {
             ImageProviders = imageProviders.ToArray();
 
             _metadataServices = metadataServices.OrderBy(i => i.Order).ToArray();
             _metadataProviders = metadataProviders.ToArray();
             _savers = metadataSavers.ToArray();
+            _imageSavers = imageSavers.ToArray();
+            _externalIds = externalIds.OrderBy(i => i.Name).ToArray();
         }
 
         public Task RefreshMetadata(IHasMetadata item, MetadataRefreshOptions options, CancellationToken cancellationToken)
@@ -106,72 +111,6 @@ namespace MediaBrowser.Providers.Manager
             return Task.FromResult(true);
         }
 
-        /// <summary>
-        /// Saves to library filesystem.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="dataToSave">The data to save.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task SaveToLibraryFilesystem(BaseItem item, string path, Stream dataToSave, CancellationToken cancellationToken)
-        {
-            if (item == null)
-            {
-                throw new ArgumentNullException();
-            }
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException();
-            }
-            if (dataToSave == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                dataToSave.Dispose();
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            //Tell the watchers to ignore
-            _libraryMonitor.ReportFileSystemChangeBeginning(path);
-
-            if (dataToSave.CanSeek)
-            {
-                dataToSave.Position = 0;
-            }
-
-            try
-            {
-                using (dataToSave)
-                {
-                    using (var fs = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, true))
-                    {
-                        await dataToSave.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, cancellationToken).ConfigureAwait(false);
-                    }
-                }
-            }
-            finally
-            {
-                //Remove the ignore
-                _libraryMonitor.ReportFileSystemChangeComplete(path, false);
-            }
-        }
-
-
-        /// <summary>
-        /// Saves the image.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="url">The URL.</param>
-        /// <param name="resourcePool">The resource pool.</param>
-        /// <param name="type">The type.</param>
-        /// <param name="imageIndex">Index of the image.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
         public async Task SaveImage(IHasImages item, string url, SemaphoreSlim resourcePool, ImageType type, int? imageIndex, CancellationToken cancellationToken)
         {
             var response = await _httpClient.GetResponse(new HttpRequestOptions
@@ -186,28 +125,11 @@ namespace MediaBrowser.Providers.Manager
                     .ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Saves the image.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="source">The source.</param>
-        /// <param name="mimeType">Type of the MIME.</param>
-        /// <param name="type">The type.</param>
-        /// <param name="imageIndex">Index of the image.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
         public Task SaveImage(IHasImages item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken)
         {
             return new ImageSaver(ConfigurationManager, _libraryMonitor, _fileSystem, _logger).SaveImage(item, source, mimeType, type, imageIndex, cancellationToken);
         }
 
-        /// <summary>
-        /// Gets the available remote images.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="query">The query.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{IEnumerable{RemoteImageInfo}}.</returns>
         public async Task<IEnumerable<RemoteImageInfo>> GetAvailableRemoteImages(IHasImages item, RemoteImageQuery query, CancellationToken cancellationToken)
         {
             var providers = GetRemoteImageProviders(item, query.IncludeDisabledProviders);
@@ -252,25 +174,19 @@ namespace MediaBrowser.Providers.Manager
                     result = result.Where(i => i.Type == type.Value);
                 }
 
-                return string.IsNullOrEmpty(preferredLanguage) ? result :
-                    FilterImages(result, preferredLanguage);
+                if (string.Equals(preferredLanguage, "en", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = result.Where(i => string.IsNullOrEmpty(i.Language) ||
+                                               string.Equals(i.Language, "en", StringComparison.OrdinalIgnoreCase));
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.ErrorException("{0} failed in GetImageInfos for type {1}", ex, provider.GetType().Name, item.GetType().Name);
                 return new List<RemoteImageInfo>();
             }
-        }
-
-        private IEnumerable<RemoteImageInfo> FilterImages(IEnumerable<RemoteImageInfo> images, string preferredLanguage)
-        {
-            if (string.Equals(preferredLanguage, "en", StringComparison.OrdinalIgnoreCase))
-            {
-                images = images.Where(i => string.IsNullOrEmpty(i.Language) ||
-                                           string.Equals(i.Language, "en", StringComparison.OrdinalIgnoreCase));
-            }
-
-            return images;
         }
 
         /// <summary>
@@ -294,13 +210,16 @@ namespace MediaBrowser.Providers.Manager
 
         private IEnumerable<IImageProvider> GetImageProviders(IHasImages item, MetadataOptions options, bool includeDisabled)
         {
+            // Avoid implicitly captured closure
+            var currentOptions = options;
+
             return ImageProviders.Where(i => CanRefresh(i, item, options, includeDisabled))
             .OrderBy(i =>
             {
                 // See if there's a user-defined order
                 if (!(i is ILocalImageProvider))
                 {
-                    var index = Array.IndexOf(options.ImageFetcherOrder, i.Name);
+                    var index = Array.IndexOf(currentOptions.ImageFetcherOrder, i.Name);
 
                     if (index != -1)
                     {
@@ -325,36 +244,13 @@ namespace MediaBrowser.Providers.Manager
         private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(IHasMetadata item, MetadataOptions options, bool includeDisabled)
             where T : IHasMetadata
         {
+            // Avoid implicitly captured closure
+            var currentOptions = options;
+
             return _metadataProviders.OfType<IMetadataProvider<T>>()
-                .Where(i => CanRefresh(i, item, options, includeDisabled))
-                .OrderBy(i =>
-                {
-                    // See if there's a user-defined order
-                    if (i is ILocalMetadataProvider)
-                    {
-                        var index = Array.IndexOf(options.LocalMetadataReaderOrder, i.Name);
-
-                        if (index != -1)
-                        {
-                            return index;
-                        }
-                    }
-
-                    // See if there's a user-defined order
-                    if (i is IRemoteMetadataProvider)
-                    {
-                        var index = Array.IndexOf(options.MetadataFetcherOrder, i.Name);
-
-                        if (index != -1)
-                        {
-                            return index;
-                        }
-                    }
-
-                    // Not configured. Just return some high number to put it at the end.
-                    return 100;
-                })
-                .ThenBy(GetOrder);
+                .Where(i => CanRefresh(i, item, currentOptions, includeDisabled))
+                .OrderBy(i => GetConfiguredOrder(i, options))
+                .ThenBy(GetDefaultOrder);
         }
 
         private IEnumerable<IRemoteImageProvider> GetRemoteImageProviders(IHasImages item, bool includeDisabled)
@@ -368,6 +264,12 @@ namespace MediaBrowser.Providers.Manager
         {
             if (!includeDisabled)
             {
+                // If locked only allow local providers
+                if (item.IsLocked && !(provider is ILocalMetadataProvider) && !(provider is IForcedProvider))
+                {
+                    return false;
+                }
+
                 if (provider is IRemoteMetadataProvider)
                 {
                     if (Array.IndexOf(options.DisabledMetadataFetchers, provider.Name) != -1)
@@ -398,6 +300,12 @@ namespace MediaBrowser.Providers.Manager
         {
             if (!includeDisabled)
             {
+                // If locked only allow local providers
+                if (item.IsLocked && !(provider is ILocalImageProvider))
+                {
+                    return false;
+                }
+
                 if (provider is IRemoteImageProvider)
                 {
                     if (Array.IndexOf(options.DisabledImageFetchers, provider.Name) != -1)
@@ -440,12 +348,35 @@ namespace MediaBrowser.Providers.Manager
             return hasOrder.Order;
         }
 
-        /// <summary>
-        /// Gets the order.
-        /// </summary>
-        /// <param name="provider">The provider.</param>
-        /// <returns>System.Int32.</returns>
-        private int GetOrder(IMetadataProvider provider)
+        private int GetConfiguredOrder(IMetadataProvider provider, MetadataOptions options)
+        {
+            // See if there's a user-defined order
+            if (provider is ILocalMetadataProvider)
+            {
+                var index = Array.IndexOf(options.LocalMetadataReaderOrder, provider.Name);
+
+                if (index != -1)
+                {
+                    return index;
+                }
+            }
+
+            // See if there's a user-defined order
+            if (provider is IRemoteMetadataProvider)
+            {
+                var index = Array.IndexOf(options.MetadataFetcherOrder, provider.Name);
+
+                if (index != -1)
+                {
+                    return index;
+                }
+            }
+
+            // Not configured. Just return some high number to put it at the end.
+            return 100;
+        }
+
+        private int GetDefaultOrder(IMetadataProvider provider)
         {
             var hasOrder = provider as IHasOrder;
 
@@ -578,6 +509,7 @@ namespace MediaBrowser.Providers.Manager
         }
 
         private readonly ConcurrentDictionary<string, SemaphoreSlim> _fileLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
+
         /// <summary>
         /// Saves the metadata.
         /// </summary>
@@ -657,6 +589,100 @@ namespace MediaBrowser.Providers.Manager
                 _logger.ErrorException("Error in {0}.IsEnabledFor", ex, saver.Name);
                 return false;
             }
+        }
+
+        public async Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(RemoteSearchQuery<TLookupType> searchInfo,
+            CancellationToken cancellationToken)
+            where TItemType : BaseItem, new()
+            where TLookupType : ItemLookupInfo
+        {
+            // Give it a dummy path just so that it looks like a file system item
+            var dummy = new TItemType
+            {
+                Path = "C:\\",
+
+                // Dummy this up to fool the local trailer check
+                Parent = new Folder()
+            };
+
+            var options = GetMetadataOptions(dummy);
+
+            var providers = GetMetadataProvidersInternal<TItemType>(dummy, options, searchInfo.IncludeDisabledProviders)
+                .OfType<IRemoteSearchProvider<TLookupType>>();
+
+            if (!string.IsNullOrEmpty(searchInfo.SearchProviderName))
+            {
+                providers = providers.Where(i => string.Equals(i.Name, searchInfo.SearchProviderName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            foreach (var provider in providers)
+            {
+                var results = await provider.GetSearchResults(searchInfo.SearchInfo, cancellationToken).ConfigureAwait(false);
+
+                var list = results.ToList();
+
+                if (list.Count > 0)
+                {
+                    return list;
+                }
+            }
+
+            // Nothing found
+            return new List<RemoteSearchResult>();
+        }
+
+        public IEnumerable<IExternalId> GetExternalIds(IHasProviderIds item)
+        {
+            return _externalIds.Where(i =>
+            {
+                try
+                {
+                    return i.Supports(item);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error in {0}.Suports", ex, i.GetType().Name);
+                    return false;
+                }
+            });
+        }
+
+        public IEnumerable<ExternalUrl> GetExternalUrls(IHasProviderIds item)
+        {
+            return GetExternalIds(item)
+                .Select(i =>
+            {
+                if (string.IsNullOrEmpty(i.UrlFormatString))
+                {
+                    return null;
+                }
+
+                var value = item.GetProviderId(i.Key);
+
+                if (string.IsNullOrEmpty(value))
+                {
+                    return null;
+                }
+
+                return new ExternalUrl
+                {
+                    Name = i.Name,
+                    Url = string.Format(i.UrlFormatString, value)
+                };
+
+            }).Where(i => i != null);
+        }
+
+        public IEnumerable<ExternalIdInfo> GetExternalIdInfos(IHasProviderIds item)
+        {
+            return GetExternalIds(item)
+                .Select(i => new ExternalIdInfo
+                {
+                    Name = i.Name,
+                    Key = i.Key,
+                    UrlFormatString = i.UrlFormatString
+
+                });
         }
     }
 }

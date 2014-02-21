@@ -55,8 +55,12 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="metadataServices">The metadata services.</param>
         /// <param name="metadataProviders">The metadata providers.</param>
         /// <param name="savers">The savers.</param>
+        /// <param name="imageSavers">The image savers.</param>
+        /// <param name="externalIds">The external ids.</param>
         void AddParts(IEnumerable<IImageProvider> imageProviders, IEnumerable<IMetadataService> metadataServices, IEnumerable<IMetadataProvider> metadataProviders,
-            IEnumerable<IMetadataSaver> savers);
+            IEnumerable<IMetadataSaver> savers,
+            IEnumerable<IImageSaver> imageSavers,
+            IEnumerable<IExternalId> externalIds);
 
         /// <summary>
         /// Gets the available remote images.
@@ -81,6 +85,20 @@ namespace MediaBrowser.Controller.Providers
         IEnumerable<MetadataPluginSummary> GetAllMetadataPlugins();
 
         /// <summary>
+        /// Gets the external urls.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{ExternalUrl}.</returns>
+        IEnumerable<ExternalUrl> GetExternalUrls(IHasProviderIds item);
+
+        /// <summary>
+        /// Gets the external identifier infos.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{ExternalIdInfo}.</returns>
+        IEnumerable<ExternalIdInfo> GetExternalIdInfos(IHasProviderIds item);
+
+        /// <summary>
         /// Saves the metadata.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -94,5 +112,19 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="item">The item.</param>
         /// <returns>MetadataOptions.</returns>
         MetadataOptions GetMetadataOptions(IHasImages item);
+
+        /// <summary>
+        /// Gets the remote search results.
+        /// </summary>
+        /// <typeparam name="TItemType">The type of the t item type.</typeparam>
+        /// <typeparam name="TLookupType">The type of the t lookup type.</typeparam>
+        /// <param name="searchInfo">The search information.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{IEnumerable{SearchResult{``1}}}.</returns>
+        Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(
+            RemoteSearchQuery<TLookupType> searchInfo,
+            CancellationToken cancellationToken)
+            where TItemType : BaseItem, new()
+            where TLookupType : ItemLookupInfo;
     }
 }

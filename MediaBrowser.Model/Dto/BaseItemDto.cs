@@ -1,9 +1,11 @@
 ﻿using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Library;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Model.Dto
 {
@@ -75,6 +77,12 @@ namespace MediaBrowser.Model.Dto
         /// </summary>
         /// <value>The premiere date.</value>
         public DateTime? PremiereDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the external urls.
+        /// </summary>
+        /// <value>The external urls.</value>
+        public ExternalUrl[] ExternalUrls { get; set; }
 
         /// <summary>
         /// Gets or sets the critic rating.
@@ -153,6 +161,12 @@ namespace MediaBrowser.Model.Dto
         /// </summary>
         /// <value>The cumulative run time ticks.</value>
         public long? CumulativeRunTimeTicks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the original run time ticks.
+        /// </summary>
+        /// <value>The original run time ticks.</value>
+        public long? OriginalRunTimeTicks { get; set; }
         
         /// <summary>
         /// Gets or sets the run time ticks.
@@ -160,6 +174,12 @@ namespace MediaBrowser.Model.Dto
         /// <value>The run time ticks.</value>
         public long? RunTimeTicks { get; set; }
 
+        /// <summary>
+        /// Gets or sets the play access.
+        /// </summary>
+        /// <value>The play access.</value>
+        public PlayAccess PlayAccess { get; set; }
+        
         /// <summary>
         /// Gets or sets the aspect ratio.
         /// </summary>
@@ -657,7 +677,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets a value indicating whether [enable internet providers].
         /// </summary>
         /// <value><c>true</c> if [enable internet providers]; otherwise, <c>false</c>.</value>
-        public bool? EnableInternetProviders { get; set; }
+        public bool? LockData { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance can resume.

@@ -137,9 +137,11 @@ namespace MediaBrowser.Controller.Entities
 
         protected void RemoveChildrenInternal(IEnumerable<BaseItem> children)
         {
+            var ids = children.Select(i => i.Id).ToList();
+
             lock (_childrenSyncLock)
             {
-                _children = ActualChildren.Except(children).ToList();
+                _children = ActualChildren.Where(i => !ids.Contains(i.Id)).ToList();
             }
         }
 
@@ -181,8 +183,6 @@ namespace MediaBrowser.Controller.Entities
 
             item.Parent = null;
 
-            LibraryManager.ReportItemRemoved(item);
-
             return ItemRepository.SaveChildren(Id, ActualChildren.Select(i => i.Id).ToList(), cancellationToken);
         }
 
@@ -220,7 +220,6 @@ namespace MediaBrowser.Controller.Entities
                 {LocalizedStrings.Instance.GetString("GenreDispPref")},
                 {LocalizedStrings.Instance.GetString("DirectorDispPref")},
                 {LocalizedStrings.Instance.GetString("YearDispPref")},
-                //{LocalizedStrings.Instance.GetString("OfficialRatingDispPref"), null},
                 {LocalizedStrings.Instance.GetString("StudioDispPref")}
             };
 
@@ -276,6 +275,19 @@ namespace MediaBrowser.Controller.Entities
         public IEnumerable<BaseItem> RecursiveChildren
         {
             get { return GetRecursiveChildren(); }
+        }
+
+        public override bool IsVisible(User user)
+        {
+            if (this is ICollectionFolder)
+            {
+                if (user.Configuration.BlockedMediaFolders.Contains(Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            return base.IsVisible(user);
         }
 
         private List<BaseItem> LoadChildrenInternal()
@@ -521,7 +533,7 @@ namespace MediaBrowser.Controller.Entities
 
             foreach (var child in children)
             {
-                if (tasks.Count >= 4)
+                if (tasks.Count >= 3)
                 {
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                     tasks.Clear();
@@ -763,15 +775,15 @@ namespace MediaBrowser.Controller.Entities
                     {
                         list.Add(child);
                     }
-                }
 
-                if (recursive && child.IsFolder)
-                {
-                    var folder = (Folder)child;
-
-                    if (folder.AddChildrenToList(user, includeLinkedChildren, list, true, filter))
+                    if (recursive && child.IsFolder)
                     {
-                        hasLinkedChildren = true;
+                        var folder = (Folder)child;
+
+                        if (folder.AddChildrenToList(user, includeLinkedChildren, list, true, filter))
+                        {
+                            hasLinkedChildren = true;
+                        }
                     }
                 }
             }

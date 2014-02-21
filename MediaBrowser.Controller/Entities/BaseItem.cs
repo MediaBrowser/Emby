@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Library;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
@@ -216,7 +217,17 @@ namespace MediaBrowser.Controller.Entities
         /// Returns true if this item should not attempt to fetch metadata
         /// </summary>
         /// <value><c>true</c> if [dont fetch meta]; otherwise, <c>false</c>.</value>
+        [Obsolete("Please use IsLocked instead of DontFetchMeta")]
         public bool DontFetchMeta { get; set; }
+
+        [IgnoreDataMember]
+        public bool IsLocked
+        {
+            get
+            {
+                return DontFetchMeta;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the locked fields.
@@ -466,6 +477,21 @@ namespace MediaBrowser.Controller.Entities
 
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gets the play access.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>PlayAccess.</returns>
+        public PlayAccess GetPlayAccess(User user)
+        {
+            if (!user.Configuration.EnableMediaPlayback)
+            {
+                return PlayAccess.None;
+            }
+
+            return PlayAccess.Full;
         }
 
         /// <summary>
@@ -869,7 +895,7 @@ namespace MediaBrowser.Controller.Entities
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         protected virtual bool GetBlockUnratedValue(UserConfiguration config)
         {
-            return config.BlockNotRated;
+            return config.BlockUnratedItems.Contains(UnratedItem.Other);
         }
 
         /// <summary>
@@ -900,32 +926,6 @@ namespace MediaBrowser.Controller.Entities
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Determine if we have changed vs the passed in copy
-        /// </summary>
-        /// <param name="copy">The copy.</param>
-        /// <returns><c>true</c> if the specified copy has changed; otherwise, <c>false</c>.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public virtual bool HasChanged(BaseItem copy)
-        {
-            if (copy == null)
-            {
-                throw new ArgumentNullException();
-            }
-            if (IsInMixedFolder != copy.IsInMixedFolder)
-            {
-                Logger.Debug(Name + " changed due to different value for IsInMixedFolder.");
-                return true;
-            }
-
-            var changed = copy.DateModified != DateModified;
-            if (changed)
-            {
-                Logger.Debug(Name + " changed - original creation: " + DateCreated + " new creation: " + copy.DateCreated + " original modified: " + DateModified + " new modified: " + copy.DateModified);
-            }
-            return changed;
         }
 
         public virtual string GetClientTypeName()

@@ -3,7 +3,7 @@ using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
-using MediaBrowser.Controller.MediaInfo;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
@@ -151,7 +151,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public string Name
         {
-            get { return "Embedded Image"; }
+            get { return "Image Extractor"; }
         }
 
         public bool Supports(IHasImages item)

@@ -57,7 +57,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
         protected override bool GetBlockUnratedValue(UserConfiguration config)
         {
-            return config.BlockUnratedMovies;
+            return config.BlockUnratedItems.Contains(UnratedItem.Movie);
         }
 
         public override IEnumerable<BaseItem> GetChildren(User user, bool includeLinkedChildren)
@@ -99,7 +99,7 @@ namespace MediaBrowser.Controller.Entities.Movies
             // Refresh songs
             foreach (var item in items)
             {
-                if (tasks.Count >= 4)
+                if (tasks.Count >= 3)
                 {
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                     tasks.Clear();

@@ -45,11 +45,13 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BDInfo">
-      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.7\lib\net35\BDInfo.dll</HintPath>
+    <Reference Include="BDInfo, Version=1.0.5165.30944, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.8\lib\net35\BDInfo.dll</HintPath>
     </Reference>
-    <Reference Include="DvdLib">
-      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.7\lib\net35\DvdLib.dll</HintPath>
+    <Reference Include="DvdLib, Version=1.0.5165.30944, Culture=neutral, PublicKeyToken=7a2f3f5ec8d93575, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.8\lib\net35\DvdLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -99,6 +101,7 @@
     <Compile Include="MediaInfo\FFProbeProvider.cs" />
     <Compile Include="MediaInfo\FFProbeVideoInfo.cs" />
     <Compile Include="Movies\MovieDbTrailerProvider.cs" />
+    <Compile Include="Movies\MovieExternalIds.cs" />
     <Compile Include="Movies\TrailerMetadataService.cs" />
     <Compile Include="Movies\GenericMovieDbInfo.cs" />
     <Compile Include="Movies\MovieDbSearch.cs" />
@@ -123,11 +126,13 @@
     <Compile Include="Music\AudioDbAlbumProvider.cs" />
     <Compile Include="Music\AudioDbArtistImageProvider.cs" />
     <Compile Include="Music\AudioDbArtistProvider.cs" />
+    <Compile Include="Music\AudioDbExternalIds.cs" />
     <Compile Include="Music\AudioMetadataService.cs" />
     <Compile Include="Music\Extensions.cs" />
     <Compile Include="Music\LastfmArtistProvider.cs" />
     <Compile Include="Music\MovieDbMusicVideoProvider.cs" />
     <Compile Include="Music\MusicBrainzArtistProvider.cs" />
+    <Compile Include="Music\MusicExternalIds.cs" />
     <Compile Include="Music\MusicVideoMetadataService.cs" />
     <Compile Include="Music\MusicVideoXmlProvider.cs" />
     <Compile Include="Omdb\OmdbProvider.cs" />
@@ -196,8 +201,10 @@
     <Compile Include="TV\SeriesXmlProvider.cs" />
     <Compile Include="TV\SeriesXmlParser.cs" />
     <Compile Include="TV\TvdbPrescanTask.cs" />
+    <Compile Include="TV\TvExternalIds.cs" />
     <Compile Include="Users\UserMetadataService.cs" />
     <Compile Include="Videos\VideoMetadataService.cs" />
+    <Compile Include="Xbmc\XbmcImageSaver.cs" />
     <Compile Include="Years\YearMetadataService.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -38,9 +38,74 @@
         $('#selectMaxParentalRating', page).html(html).selectmenu("refresh");
     }
 
-    function loadUser(page, user, loggedInUser, allParentalRatings) {
+    function loadMediaFolders(page, user, mediaFolders) {
+
+        var html = '';
+
+        html += '<fieldset data-role="controlgroup">';
+
+        html += '<legend>Media Folders</legend>';
+
+        for (var i = 0, length = mediaFolders.length; i < length; i++) {
+
+            var folder = mediaFolders[i];
+
+            var id = 'mediaFolder' + i;
+
+            var checkedAttribute = user.Configuration.BlockedMediaFolders.indexOf(folder.Name) == -1 ? ' checked="checked"' : '';
+
+            html += '<input class="chkMediaFolder" data-foldername="' + folder.Name + '" type="checkbox" data-mini="true" id="' + id + '"' + checkedAttribute + ' />';
+            html += '<label for="' + id + '">' + folder.Name + '</label>';
+        }
+
+        html += '</fieldset>';
+
+        $('.libraryAccess', page).html(html).trigger('create');
+    }
+
+    function loadUnratedItems(page, user) {
+
+        var items = [
+            { name: 'Books', value: 'Book' },
+            { name: 'Games', value: 'Game' },
+            { name: 'Live TV Channels', value: 'LiveTvChannel' },
+            { name: 'Live TV Programs', value: 'LiveTvProgram' },
+            { name: 'Movies', value: 'Movie' },
+            { name: 'Music', value: 'Music' },
+            { name: 'Trailers', value: 'Trailer' },
+            { name: 'TV Shows', value: 'Series' },
+            { name: 'Others', value: 'Other' }
+        ];
+
+        var html = '';
+
+        html += '<fieldset data-role="controlgroup">';
+
+        html += '<legend>Block items with no rating information:</legend>';
+
+        for (var i = 0, length = items.length; i < length; i++) {
+
+            var item = items[i];
+
+            var id = 'unratedItem' + i;
+
+            var checkedAttribute = user.Configuration.BlockUnratedItems.indexOf(item.value) != -1 ? ' checked="checked"' : '';
+
+            html += '<input class="chkUnratedItem" data-itemtype="' + item.value + '" type="checkbox" data-mini="true" id="' + id + '"' + checkedAttribute + ' />';
+            html += '<label for="' + id + '">' + item.name + '</label>';
+        }
+
+        html += '</fieldset>';
+
+        $('.blockUnratedItems', page).html(html).trigger('create');
+    }
+
+    function loadUser(page, user, loggedInUser, allParentalRatings, mediaFolders) {
 
         Dashboard.setPageTitle(user.Name);
+
+        loadMediaFolders(page, user, mediaFolders);
+        loadUnratedItems(page, user);
 
         populateRatings(allParentalRatings, page);
 
@@ -60,15 +125,6 @@
 
         $('#selectMaxParentalRating', page).val(ratingValue).selectmenu("refresh");
 
-        $('#chkBlockNotRated', page).checked(user.Configuration.BlockNotRated || false).checkboxradio("refresh");
-        
-        $('#chkHideUnratedMovies', page).checked(user.Configuration.BlockUnratedMovies || false).checkboxradio("refresh");
-        $('#chkHideUnratedTrailers', page).checked(user.Configuration.BlockUnratedTrailers || false).checkboxradio("refresh");
-        $('#chkHideUnratedSeries', page).checked(user.Configuration.BlockUnratedSeries || false).checkboxradio("refresh");
-        $('#chkHideUnratedMusic', page).checked(user.Configuration.BlockUnratedMusic || false).checkboxradio("refresh");
-        $('#chkHideUnratedGames', page).checked(user.Configuration.BlockUnratedGames || false).checkboxradio("refresh");
-        $('#chkHideUnratedBooks', page).checked(user.Configuration.BlockUnratedBooks || false).checkboxradio("refresh");
-
         Dashboard.hideLoadingMsg();
     }
 
@@ -85,14 +141,17 @@
 
         user.Configuration.MaxParentalRating = $('#selectMaxParentalRating', page).val() || null;
 
-        user.Configuration.BlockNotRated = $('#chkBlockNotRated', page).checked();
+        user.Configuration.BlockedMediaFolders = $('.chkMediaFolder:not(:checked)', page).map(function () {
 
-        user.Configuration.BlockUnratedMovies = $('#chkHideUnratedMovies', page).checked();
-        user.Configuration.BlockUnratedTrailers = $('#chkHideUnratedTrailers', page).checked();
-        user.Configuration.BlockUnratedSeries = $('#chkHideUnratedSeries', page).checked();
-        user.Configuration.BlockUnratedMusic = $('#chkHideUnratedMusic', page).checked();
-        user.Configuration.BlockUnratedGames = $('#chkHideUnratedGames', page).checked();
-        user.Configuration.BlockUnratedBooks = $('#chkHideUnratedBooks', page).checked();
+            return this.getAttribute('data-foldername');
+
+        }).get();
+
+        user.Configuration.BlockUnratedItems = $('.chkUnratedItem:checked', page).map(function () {
+
+            return this.getAttribute('data-itemtype');
+
+        }).get();
 
         ApiClient.updateUser(user).done(function () {
             onSaveComplete(page);
@@ -146,9 +205,11 @@
 
         var promise3 = ApiClient.getParentalRatings();
 
-        $.when(promise1, promise2, promise3).done(function (response1, response2, response3) {
+        var promise4 = $.getJSON(ApiClient.getUrl("Library/MediaFolders"));
 
-            loadUser(page, response1[0] || response1, response2[0], response3[0]);
+        $.when(promise1, promise2, promise3, promise4).done(function (response1, response2, response3, response4) {
+
+            loadUser(page, response1[0] || response1, response2[0], response3[0], response4[0].Items);
 
         });
     });

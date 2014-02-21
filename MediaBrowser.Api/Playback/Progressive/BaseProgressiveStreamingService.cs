@@ -5,10 +5,11 @@ using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.MediaInfo;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.IO;
+using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,11 +26,11 @@ namespace MediaBrowser.Api.Playback.Progressive
         protected readonly IImageProcessor ImageProcessor;
         protected readonly IHttpClient HttpClient;
 
-        protected BaseProgressiveStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IImageProcessor imageProcessor, IHttpClient httpClient)
-            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem, itemRepository, liveTvManager)
+        protected BaseProgressiveStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IEncodingManager encodingManager, IHttpClient httpClient, IImageProcessor imageProcessor)
+            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem, itemRepository, liveTvManager, encodingManager)
         {
-            ImageProcessor = imageProcessor;
             HttpClient = httpClient;
+            ImageProcessor = imageProcessor;
         }
 
         /// <summary>
@@ -145,10 +146,14 @@ namespace MediaBrowser.Api.Playback.Progressive
             {
                 contentFeatures = "DLNA.ORG_PN=AVC_MP4_MP_HD_720p_AAC";
             }
-            //else if (string.Equals(extension, ".mpeg", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    contentFeatures = "DLNA.ORG_PN=MPEG_PS_PAL";
-            //}
+            else if (string.Equals(extension, ".mpeg", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=MPEG_PS_PAL";
+            }
+            else if (string.Equals(extension, ".ts", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=MPEG_PS_PAL";
+            }
             //else if (string.Equals(extension, ".wmv", StringComparison.OrdinalIgnoreCase))
             //{
             //    contentFeatures = "DLNA.ORG_PN=WMVHIGH_BASE";
@@ -240,6 +245,13 @@ namespace MediaBrowser.Api.Playback.Progressive
 
             responseHeaders["Accept-Ranges"] = "none";
 
+            var length = response.Headers["Content-Length"];
+
+            if (!string.IsNullOrEmpty(length))
+            {
+                responseHeaders["Content-Length"] = length;
+            }
+
             if (isHeadRequest)
             {
                 using (response.Content)
@@ -273,14 +285,23 @@ namespace MediaBrowser.Api.Playback.Progressive
             // Use the command line args with a dummy playlist path
             var outputPath = GetOutputFilePath(state);
 
+            responseHeaders["Accept-Ranges"] = "none";
+
             var contentType = MimeTypes.GetMimeType(outputPath);
 
             // Headers only
             if (isHeadRequest)
             {
-                responseHeaders["Accept-Ranges"] = "none";
-
-                return ResultFactory.GetResult(new byte[] { }, contentType, responseHeaders);
+                var streamResult = ResultFactory.GetResult(new byte[] { }, contentType, responseHeaders);
+                var hasOptions = streamResult as IHasOptions;
+                if (hasOptions != null)
+                {
+                    if (hasOptions.Options.ContainsKey("Content-Length"))
+                    {
+                        hasOptions.Options.Remove("Content-Length");
+                    }
+                }
+                return streamResult;
             }
 
             if (!File.Exists(outputPath))
@@ -294,7 +315,6 @@ namespace MediaBrowser.Api.Playback.Progressive
 
             var result = new ProgressiveStreamWriter(outputPath, Logger, FileSystem);
 
-            result.Options["Accept-Ranges"] = "none";
             result.Options["Content-Type"] = contentType;
 
             // Add the response headers to the result object

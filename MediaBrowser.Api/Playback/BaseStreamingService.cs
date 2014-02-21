@@ -5,13 +5,14 @@ using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.MediaInfo;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Library;
 using MediaBrowser.Model.LiveTv;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,7 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <value>The media encoder.</value>
         protected IMediaEncoder MediaEncoder { get; private set; }
+        protected IEncodingManager EncodingManager { get; private set; }
         protected IDtoService DtoService { get; private set; }
 
         protected IFileSystem FileSystem { get; private set; }
@@ -76,8 +78,9 @@ namespace MediaBrowser.Api.Playback
         /// <param name="dtoService">The dto service.</param>
         /// <param name="fileSystem">The file system.</param>
         /// <param name="itemRepository">The item repository.</param>
-        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager)
+        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IEncodingManager encodingManager)
         {
+            EncodingManager = encodingManager;
             LiveTvManager = liveTvManager;
             ItemRepository = itemRepository;
             FileSystem = fileSystem;
@@ -602,8 +605,8 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         private string GetExtractedAssPath(StreamState state, bool performConversion)
         {
-            var path = FFMpegManager.Instance.GetSubtitleCachePath(state.MediaPath, state.SubtitleStream, ".ass");
-
+            var path = EncodingManager.GetSubtitleCachePath(state.MediaPath, state.SubtitleStream.Index, ".ass");
+            
             if (performConversion)
             {
                 InputType type;
@@ -642,7 +645,7 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         private string GetConvertedAssPath(string mediaPath, MediaStream subtitleStream, bool performConversion)
         {
-            var path = FFMpegManager.Instance.GetSubtitleCachePath(mediaPath, subtitleStream, ".ass");
+            var path = EncodingManager.GetSubtitleCachePath(subtitleStream.Path, ".ass");
 
             if (performConversion)
             {
@@ -1279,11 +1282,6 @@ namespace MediaBrowser.Api.Playback
 
             var user = AuthorizationRequestFilterAttribute.GetCurrentUser(Request, UserManager);
 
-            if (user != null && !user.Configuration.EnableMediaPlayback)
-            {
-                throw new ArgumentException(string.Format("{0} is not allowed to play media.", user.Name));
-            }
-
             var url = Request.PathInfo;
 
             if (!request.AudioCodec.HasValue)
@@ -1298,6 +1296,11 @@ namespace MediaBrowser.Api.Playback
             };
 
             var item = DtoService.GetItemByDtoId(request.Id);
+
+            if (user != null && item.GetPlayAccess(user) != PlayAccess.Full)
+            {
+                throw new ArgumentException(string.Format("{0} is not allowed to play media.", user.Name));
+            }
 
             if (item is ILiveTvRecording)
             {

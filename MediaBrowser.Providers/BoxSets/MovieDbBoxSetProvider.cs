@@ -3,15 +3,18 @@ using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Providers.Movies;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,14 +31,21 @@ namespace MediaBrowser.Providers.BoxSets
         private readonly IJsonSerializer _json;
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
+        private readonly ILocalizationManager _localization;
 
-        public MovieDbBoxSetProvider(ILogger logger, IJsonSerializer json, IServerConfigurationManager config, IFileSystem fileSystem)
+        public MovieDbBoxSetProvider(ILogger logger, IJsonSerializer json, IServerConfigurationManager config, IFileSystem fileSystem, ILocalizationManager localization)
         {
             _logger = logger;
             _json = json;
             _config = config;
             _fileSystem = fileSystem;
+            _localization = localization;
             Current = this;
+        }
+
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(BoxSetInfo searchInfo, CancellationToken cancellationToken)
+        {
+            return new List<RemoteSearchResult>();
         }
 
         public async Task<MetadataResult<BoxSet>> GetMetadata(BoxSetInfo id, CancellationToken cancellationToken)
@@ -116,21 +126,28 @@ namespace MediaBrowser.Providers.BoxSets
 
         private async Task<RootObject> FetchMainResult(string id, string language, CancellationToken cancellationToken)
         {
-            var url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey);
+            var url = string.Format(GetCollectionInfo3, id, MovieDbProvider.ApiKey);
 
-            // Get images in english and with no language
-            url += "&include_image_language=en,null";
+            var imageLanguages = _localization.GetCultures()
+                .Select(i => i.TwoLetterISOLanguageName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            imageLanguages.Add("null");
 
             if (!string.IsNullOrEmpty(language))
             {
                 // If preferred language isn't english, get those images too
-                if (!string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
+                if (imageLanguages.Contains(language, StringComparer.OrdinalIgnoreCase))
                 {
-                    url += string.Format(",{0}", language);
+                    imageLanguages.Add(language);
                 }
 
                 url += string.Format("&language={0}", language);
             }
+
+            // Get images in english and with no language
+            url += "&include_image_language=" + string.Join(",", imageLanguages.ToArray());
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -219,7 +236,7 @@ namespace MediaBrowser.Providers.BoxSets
 
         private static string GetCollectionsDataPath(IApplicationPaths appPaths)
         {
-            var dataPath = Path.Combine(appPaths.DataPath, "tmdb-collections");
+            var dataPath = Path.Combine(appPaths.CachePath, "tmdb-collections");
 
             return dataPath;
         }
@@ -270,6 +287,11 @@ namespace MediaBrowser.Providers.BoxSets
             public string backdrop_path { get; set; }
             public List<Part> parts { get; set; }
             public Images images { get; set; }
+        }
+
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

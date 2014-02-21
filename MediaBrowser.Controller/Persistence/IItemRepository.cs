@@ -27,6 +27,14 @@ namespace MediaBrowser.Controller.Persistence
         Task SaveItem(BaseItem item, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Deletes the item.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task DeleteItem(Guid id, CancellationToken cancellationToken);
+        
+        /// <summary>
         /// Gets the critic reviews.
         /// </summary>
         /// <param name="itemId">The item id.</param>
@@ -87,6 +95,13 @@ namespace MediaBrowser.Controller.Persistence
         /// <returns>IEnumerable{ChildDefinition}.</returns>
         IEnumerable<Guid> GetChildren(Guid parentId);
 
+        /// <summary>
+        /// Gets the type of the items of.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>IEnumerable{Guid}.</returns>
+        IEnumerable<BaseItem> GetItemsOfType(Type type);
+        
         /// <summary>
         /// Saves the children.
         /// </summary>

@@ -123,7 +123,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         protected override bool GetBlockUnratedValue(UserConfiguration config)
         {
-            return config.BlockUnratedMusic;
+            return config.BlockUnratedItems.Contains(UnratedItem.Music);
         }
 
         public async Task RefreshAllMetadata(MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
@@ -179,7 +179,7 @@ namespace MediaBrowser.Controller.Entities.Audio
             // Refresh all non-songs
             foreach (var item in others)
             {
-                if (tasks.Count > 3)
+                if (tasks.Count >= 3)
                 {
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                     tasks.Clear();
