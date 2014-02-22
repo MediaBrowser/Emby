@@ -524,7 +524,8 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (primaryTitle != null)
             {
-                titleNumber = primaryTitle.TitleNumber;
+                titleNumber = primaryTitle.VideoTitleSetNumber;
+                // previously this was returning title 1 (correct) but then it was assuming that vts_01 was always main movie (not correct)
             }
 
             item.PlayableStreamFileNames = GetPrimaryPlaylistVobFiles(item, mount, titleNumber)
@@ -599,9 +600,11 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (titleNumber.HasValue)
             {
+            	 _logger.Debug("VTS_0{0} looks to be main movie using DvdLib. ", titleNumber);
                 var prefix = string.Format("VTS_0{0}_", titleNumber.Value.ToString(_usCulture));
-                var vobs = allVobs.Where(i => Path.GetFileName(i).StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
-
+                // this should drop the first vob if it is under 300 meg
+                var vobs = allVobs.Where(i => Path.GetFileName(i).StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).SkipWhile(f => new FileInfo(f).Length < minPlayableSize).ToList();
+								
                 if (vobs.Count > 0)
                 {
                     return vobs;
