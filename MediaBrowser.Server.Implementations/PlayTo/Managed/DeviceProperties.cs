@@ -18,7 +18,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo.Managed
             }
         }
 
-        private string _name = string.Empty;
+        private string _name = "MB PlayTo 1.0.0.0";
         public string Name
         {
             get

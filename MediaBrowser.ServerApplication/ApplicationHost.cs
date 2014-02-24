@@ -267,7 +267,7 @@ namespace MediaBrowser.ServerApplication
             catch (IOException)
             {
                 // Not there, no big deal
-            }
+            }           
 
             Task.Run(() =>
             {

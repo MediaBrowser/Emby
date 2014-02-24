@@ -10,8 +10,7 @@ using System.Linq;
 namespace MediaBrowser.Server.Implementations.PlayTo
 {
     public class PlayToControllerFactory : ISessionControllerFactory
-    {
-        private readonly IServerApplicationHost _appHost;
+    {        
         private readonly ISessionManager _sessionManager;
         private readonly IItemRepository _itemRepository;
         private readonly ILibraryManager _libraryManager;
@@ -19,9 +18,8 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         private readonly ILogger _logger;
         private readonly string _ipAddress;
 
-        public PlayToControllerFactory(IServerApplicationHost appHost, ISessionManager sessionManager, IItemRepository itemRepository, ILibraryManager libraryManager, INetworkManager networkManager,IUserManager userManager, ILogger logger)
-        {                                                            
-            _appHost = appHost;
+        public PlayToControllerFactory(ISessionManager sessionManager, IItemRepository itemRepository, ILibraryManager libraryManager, INetworkManager networkManager,IUserManager userManager, ILogger logger)
+        {            
             _itemRepository = itemRepository;
             _sessionManager = sessionManager;
             _libraryManager = libraryManager;
@@ -32,7 +30,8 @@ namespace MediaBrowser.Server.Implementations.PlayTo
 
         public ISessionController GetSessionController(SessionInfo session)
         {            
-            return new PlayToController(session, _sessionManager,_userManager, _itemRepository, _libraryManager, _logger, _ipAddress);
+            
+            return new PlayToController(session, _sessionManager, _userManager, _itemRepository, _libraryManager, _logger, _ipAddress);
         }
     }
 }

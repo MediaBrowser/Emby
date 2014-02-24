@@ -59,7 +59,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         #region Constructor & Initializer
 
         public PlayToController(SessionInfo session, ISessionManager sessionManager, IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, ILogger logger, string ipAddress)
-        {
+        {           
             _session = session;
             _itemRepository = itemRepository;
             _sessionManager = sessionManager;
@@ -67,7 +67,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
             _userManager = userManager;
             _logger = logger;
             _ipAddress = ipAddress;
-            _port = PlayToConfiguration.Port; //TODO Luke, provide the correct API port
+            _port = 8096; //TODO Luke, provide the correct API port            
             _defaultUserId = _session.UserId.Value;
         }
 
@@ -79,7 +79,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
             _device.CurrentIdChanged += Device_CurrentIdChanged;
             _device.Start();
 
-            _updateTimer = new Timer(5000);
+            _updateTimer = new Timer(1000);
             _updateTimer.Elapsed += updateTimer_Elapsed;         
             _updateTimer.Start();
         }    

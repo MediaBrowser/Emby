@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace MediaBrowser.DlnaClientLibrary.Helpers
+namespace MediaBrowser.Server.Implementations.PlayTo.Helpers
 {
     internal sealed class SsdpHelper
     {

@@ -220,6 +220,7 @@
     <Compile Include="PlayTo\Managed\Transport\StateVariable.cs" />
     <Compile Include="PlayTo\Managed\Transport\TransportCommands.cs" />
     <Compile Include="PlayTo\Managed\uPnpNamespaces.cs" />
+    <Compile Include="PlayTo\PlayToManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roku\RokuControllerFactory.cs" />
     <Compile Include="ScheduledTasks\PeopleValidationTask.cs" />

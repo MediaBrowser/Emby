@@ -296,7 +296,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo.Managed
 
             var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1));
             await Task.Delay(50);
-            count = 5;
+            count = 4;
             return true;
         }
 
