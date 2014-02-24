@@ -33,15 +33,18 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         private IUserManager _userManager;        
         private IXmlSerializer _xmlSerializer;        
         private PlayToManager _manager;
+        private ILogManager _logManager;
+        private ISessionManager _sessionManager;
         
         #endregion
 
         public PlayToServerEntryPoint(ILogManager logManager, ISessionManager sessionManager, IUserManager userManager, IXmlSerializer xmlSerializer)
         {
-            _manager = new PlayToManager(logManager.GetLogger("PlayTo"), sessionManager);
-            
+            _logManager = logManager;
+            _sessionManager = sessionManager;
             _userManager = userManager;
-            _xmlSerializer = xmlSerializer;            
+            _xmlSerializer = xmlSerializer;
+            _manager = new PlayToManager(_logManager.GetLogger("PlayTo"), _sessionManager);
         }
 
         /// <summary>

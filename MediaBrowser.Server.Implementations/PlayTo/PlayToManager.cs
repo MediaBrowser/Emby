@@ -35,10 +35,11 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         public PlayToManager(ILogger logger, ISessionManager sessionManager)
         {
             _activeTasks = new List<Task>();
-            _logger = logger;
-            _sessionManager = sessionManager;
             _locations = new ConcurrentDictionary<string, DateTime>();
             _tokenSource = new CancellationTokenSource();
+
+            _logger = logger;
+            _sessionManager = sessionManager;           
 
         }
 
@@ -218,12 +219,16 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
         private async Task CreateController(Uri uri)
-        {                       
+        {
+            if (!IsUriValid(uri))
+                return;
+
             var device = await Device.CreateuPnpDeviceAsync(uri);
 
-            if (device != null && device.RendererCommands != null && _sessionManager.Sessions != null && _sessionManager.Sessions.Where(s => s.RemoteEndPoint == uri.OriginalString && s.IsActive).Any() == false)
+            if (device != null && device.RendererCommands != null && !_sessionManager.Sessions.Where(s => s.DeviceId == device.Properties.UUID && s.IsActive).Any())
             {
-                var transcodeProfiles = TranscodeSettings.GetProfileSettings(device.Properties);              
+                var transcodeProfiles = TranscodeSettings.GetProfileSettings(device.Properties);      
+        
                 var sessionInfo = await _sessionManager.LogSessionActivity(device.Properties.ClientType, device.Properties.Name, device.Properties.UUID, device.Properties.DisplayName, uri.OriginalString, _defualtUser);
                 if (sessionInfo != null)
                 {

@@ -267,6 +267,15 @@ namespace MediaBrowser.ServerApplication
             catch (IOException)
             {
                 // Not there, no big deal
+            }    
+
+            try
+            {
+                File.Delete(Path.Combine(ApplicationPaths.PluginsPath, "MediaBrowser.Plugins.DlnaClient.dll"));
+            }
+            catch (IOException)
+            {
+                // Not there, no big deal
             }           
 
             Task.Run(() =>

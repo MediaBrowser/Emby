@@ -32,8 +32,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         private readonly IUserManager _userManager;
         private readonly ILogger _logger;
         int _port;       
-        private bool playbackStarted = false;
-        private Guid _defaultUserId;
+        private bool playbackStarted = false;        
 
         #endregion
 
@@ -59,7 +58,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         #region Constructor & Initializer
 
         public PlayToController(SessionInfo session, ISessionManager sessionManager, IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, ILogger logger, string ipAddress)
-        {           
+        {                   
             _session = session;
             _itemRepository = itemRepository;
             _sessionManager = sessionManager;
@@ -67,8 +66,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
             _userManager = userManager;
             _logger = logger;
             _ipAddress = ipAddress;
-            _port = 8096; //TODO Luke, provide the correct API port            
-            _defaultUserId = _session.UserId.Value;
+            _port = 8096; //TODO Luke, provide the correct API port                       
         }
 
         public void Init(Device device, TranscodeSettings[] transcodeSettings)
@@ -119,7 +117,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
 
                     if (item != null)
                     {
-                        _logger.Log(LogSeverity.Debug, "{0} - CurrentId {1}", this._session.DeviceName, item.Id);
+                        _logger.Debug("{0} - CurrentId {1}", this._session.DeviceName, item.Id);
                         _currentItem = item;
                         playbackStarted = false;
                         await ReportProgress();
@@ -127,7 +125,7 @@ namespace MediaBrowser.Server.Implementations.PlayTo
                 }
                 catch
                 {
-                    _logger.Log(LogSeverity.Debug, "{0} - libraryManager.GetItemById failed . ItemId: {1}", this._session.DeviceName, e.Id);
+                    _logger.Debug("{0} - libraryManager.GetItemById failed . ItemId: {1}", this._session.DeviceName, e.Id);
                 }
             }
 

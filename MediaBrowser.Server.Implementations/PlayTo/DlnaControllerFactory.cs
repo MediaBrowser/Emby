@@ -18,19 +18,18 @@ namespace MediaBrowser.Server.Implementations.PlayTo
         private readonly ILogger _logger;
         private readonly string _ipAddress;
 
-        public PlayToControllerFactory(ISessionManager sessionManager, IItemRepository itemRepository, ILibraryManager libraryManager, INetworkManager networkManager,IUserManager userManager, ILogger logger)
+        public PlayToControllerFactory(ISessionManager sessionManager, IItemRepository itemRepository, ILibraryManager libraryManager, INetworkManager networkManager,IUserManager userManager, ILogManager logManager)
         {            
             _itemRepository = itemRepository;
             _sessionManager = sessionManager;
             _libraryManager = libraryManager;
-            _logger = logger;
+            _logger = logManager.GetLogger("PlayTo");
             _ipAddress = networkManager.GetLocalIpAddresses().FirstOrDefault();            
             _userManager = userManager;
         }
 
         public ISessionController GetSessionController(SessionInfo session)
         {            
-            
             return new PlayToController(session, _sessionManager, _userManager, _itemRepository, _libraryManager, _logger, _ipAddress);
         }
     }
