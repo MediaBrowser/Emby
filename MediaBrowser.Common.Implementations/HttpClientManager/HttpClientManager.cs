@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿using System.Collections.Specialized;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
@@ -114,7 +115,11 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             }
 
             request.AutomaticDecompression = enableHttpCompression ? DecompressionMethods.Deflate : DecompressionMethods.None;
-            request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate);
+
+            request.CachePolicy = options.CachePolicy == Net.HttpRequestCachePolicy.None ?
+                new RequestCachePolicy(RequestCacheLevel.BypassCache) :
+                new RequestCachePolicy(RequestCacheLevel.Revalidate);
+
             request.ConnectionGroupName = GetHostFromUrl(options.Url);
             request.KeepAlive = true;
             request.Method = method;
@@ -144,7 +149,11 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
             }
 
             request.AutomaticDecompression = enableHttpCompression ? DecompressionMethods.Deflate : DecompressionMethods.None;
-            request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate);
+            
+            request.CachePolicy = options.CachePolicy == Net.HttpRequestCachePolicy.None ?
+                new RequestCachePolicy(RequestCacheLevel.BypassCache) :
+                new RequestCachePolicy(RequestCacheLevel.Revalidate);
+            
             request.ConnectionGroupName = GetHostFromUrl(options.Url);
             request.KeepAlive = true;
             request.Method = method;
@@ -285,17 +294,8 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                     EnsureSuccessStatusCode(httpResponse);
 
                     options.CancellationToken.ThrowIfCancellationRequested();
-                    
-                    return new HttpResponseInfo
-                    {
-                        Content = httpResponse.GetResponseStream(),
 
-                        StatusCode = httpResponse.StatusCode,
-
-                        ContentType = httpResponse.ContentType,
-
-                        Headers = httpResponse.Headers
-                    };
+                    return GetResponseInfo(httpResponse, httpResponse.GetResponseStream(), GetContentLength(httpResponse));
                 }
                 
                 using (var response = await httpWebRequest.GetResponseAsync().ConfigureAwait(false))
@@ -314,16 +314,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
 
                         memoryStream.Position = 0;
 
-                        return new HttpResponseInfo
-                        {
-                            Content = memoryStream,
-
-                            StatusCode = httpResponse.StatusCode,
-
-                            ContentType = httpResponse.ContentType,
-
-                            Headers = httpResponse.Headers
-                        };
+                        return GetResponseInfo(httpResponse, memoryStream, memoryStream.Length);
                     }
                 }
             }
@@ -365,6 +356,38 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                     options.ResourcePool.Release();
                 }
             }
+        }
+
+        private HttpResponseInfo GetResponseInfo(HttpWebResponse httpResponse, Stream content, long? contentLength)
+        {
+            return new HttpResponseInfo
+            {
+                Content = content,
+
+                StatusCode = httpResponse.StatusCode,
+
+                ContentType = httpResponse.ContentType,
+
+                Headers = new NameValueCollection(httpResponse.Headers),
+
+                ContentLength = contentLength
+            };
+        }
+
+        private HttpResponseInfo GetResponseInfo(HttpWebResponse httpResponse, string tempFile, long? contentLength)
+        {
+            return new HttpResponseInfo
+            {
+                TempFilePath = tempFile,
+
+                StatusCode = httpResponse.StatusCode,
+
+                ContentType = httpResponse.ContentType,
+
+                Headers = httpResponse.Headers,
+
+                ContentLength = contentLength
+            };
         }
 
         public Task<HttpResponseInfo> Post(HttpRequestOptions options)
@@ -493,16 +516,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
 
                     options.Progress.Report(100);
 
-                    return new HttpResponseInfo
-                    {
-                        TempFilePath = tempFile,
-
-                        StatusCode = httpResponse.StatusCode,
-
-                        ContentType = httpResponse.ContentType,
-
-                        Headers = httpResponse.Headers
-                    };
+                    return GetResponseInfo(httpResponse, tempFile, contentLength);
                 }
             }
             catch (OperationCanceledException ex)
