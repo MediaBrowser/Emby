@@ -191,7 +191,7 @@ namespace MediaBrowser.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, value))
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, value))
                 .ConfigureAwait(false);
             Volume = value;
             return true;
@@ -210,7 +210,7 @@ namespace MediaBrowser.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, String.Format("{0:hh}:{0:mm}:{0:ss}", value), "REL_TIME"))
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, String.Format("{0:hh}:{0:mm}:{0:ss}", value), "REL_TIME"))
                 .ConfigureAwait(false);
 
             return value;
@@ -241,7 +241,7 @@ namespace MediaBrowser.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, url, dictionary), header)
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, url, dictionary), header)
                 .ConfigureAwait(false);
 
             if (!IsPlaying)
@@ -284,7 +284,7 @@ namespace MediaBrowser.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, value, dictionary), header)
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, value, dictionary), header)
                 .ConfigureAwait(false);
 
             await Task.Delay(100).ConfigureAwait(false);
@@ -305,7 +305,7 @@ namespace MediaBrowser.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1))
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1))
                 .ConfigureAwait(false);
 
             _count = 5;
@@ -320,7 +320,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             var service = Properties.Services.FirstOrDefault(s => s.ServiceId == ServiceAvtransportId);
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1))
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1))
                 .ConfigureAwait(false);
 
             await Task.Delay(50).ConfigureAwait(false);
@@ -336,7 +336,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             var service = Properties.Services.FirstOrDefault(s => s.ServiceId == ServiceAvtransportId);
 
-            var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 0))
+            var result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 0))
                 .ConfigureAwait(false);
 
             await Task.Delay(50).ConfigureAwait(false);
@@ -348,7 +348,8 @@ namespace MediaBrowser.Dlna.PlayTo
 
         #region Get data
 
-        // TODO: What is going on here
+        // TODO: Answered: What is going on here
+        // A badly named int to keep track of the update timer. :)        
         int _count = 5;
 
         async void dt_Elapsed(object sender, ElapsedEventArgs e)
@@ -359,7 +360,11 @@ namespace MediaBrowser.Dlna.PlayTo
             ((Timer)sender).Stop();
             var hasTrack = await GetPositionInfo().ConfigureAwait(false);
 
-            // TODO: Why make these requests if hasTrack==false?
+            // TODO: Answered: Why make these requests if hasTrack==false?
+            // hasTrack can be false and still a track exists. Some vendors requires use of GetMediaInfo instead
+            // but we don't want to pull the device for that data to often.
+            // If track data is not included in the position info request, only get the data every 5th time the timer elpases           
+
             if (_count > 4)
             {
                 await GetTransportInfo().ConfigureAwait(false);
@@ -394,7 +399,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             try
             {
-                result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
+                result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
                    .ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -435,7 +440,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             try
             {
-                result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
+                result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
                    .ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -475,7 +480,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             try
             {
-                result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
+                result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
                    .ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -526,7 +531,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             try
             {
-                result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
+                result = await SsdpHttpClient.SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType))
                    .ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -593,9 +598,9 @@ namespace MediaBrowser.Dlna.PlayTo
             if (!url.StartsWith("/"))
                 url = "/" + url;
 
-            var httpClient = new SsdpHttpClient(_httpClient);
-            var document = await httpClient.GetDataAsync(new Uri(Properties.BaseUrl + url));
-
+            var httpClient = new SsdpHttpClient();
+            var stream = await httpClient.GetDataAsync(new Uri(Properties.BaseUrl + url));
+            var document = httpClient.ParseStream(stream);
             AvCommands = TransportCommands.Create(document);
         }
 
@@ -611,8 +616,9 @@ namespace MediaBrowser.Dlna.PlayTo
             if (!url.StartsWith("/"))
                 url = "/" + url;
 
-            var httpClient = new SsdpHttpClient(_httpClient);
-            var document = await httpClient.GetDataAsync(new Uri(Properties.BaseUrl + url));
+            var httpClient = new SsdpHttpClient();
+            var stream = await httpClient.GetDataAsync(new Uri(Properties.BaseUrl + url));
+            var document = httpClient.ParseStream(stream);
 
             RendererCommands = TransportCommands.Create(document);
         }
@@ -631,9 +637,10 @@ namespace MediaBrowser.Dlna.PlayTo
 
         public static async Task<Device> CreateuPnpDeviceAsync(Uri url, IHttpClient httpClient, ILogger logger)
         {
-            var ssdpHttpClient = new SsdpHttpClient(httpClient);
+            var ssdpHttpClient = new SsdpHttpClient();
 
-            var document = await ssdpHttpClient.GetDataAsync(url).ConfigureAwait(false);
+            var stream = await ssdpHttpClient.GetDataAsync(url);
+            var document = ssdpHttpClient.ParseStream(stream);
 
             var deviceProperties = new DeviceProperties();
 

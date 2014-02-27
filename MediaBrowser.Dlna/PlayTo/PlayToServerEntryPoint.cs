@@ -47,9 +47,9 @@ namespace MediaBrowser.Dlna.PlayTo
 
         public async void Run()
         {
-            //var defaultUser = await CreateUserIfNeeded().ConfigureAwait(false);
+            var defaultUser = await CreateUserIfNeeded().ConfigureAwait(false);
 
-            //_manager.Start(defaultUser);            
+            _manager.Start(defaultUser);            
         }
      
         #region Dispose
