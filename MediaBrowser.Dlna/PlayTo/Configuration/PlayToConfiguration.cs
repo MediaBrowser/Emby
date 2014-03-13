@@ -39,6 +39,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                 TranscodeSettings = new[]
                 {
                     new TranscodeSetting {Container = "mkv", MimeType = "x-mkv"},
+                    new TranscodeSetting {Container = "avi", MimeType = "x-msvideo"},
                     new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
                     new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
                 }
@@ -53,6 +54,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                 TranscodeSettings = new[]
                 {
                     new TranscodeSetting {Container = "mkv", MimeType = "x-mkv"},
+                    new TranscodeSetting {Container = "avi", MimeType = "x-msvideo"},
                     new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
                     new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
                 }
@@ -67,6 +69,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                 TranscodeSettings = new[]
                 {
                     new TranscodeSetting {Container = "mkv", MimeType = "x-mkv"},
+                    new TranscodeSetting {Container = "avi", MimeType = "x-msvideo"},
                     new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
                     new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
                 }
@@ -80,6 +83,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                 TranscodeSettings = new[]
                 {
                     new TranscodeSetting {Container = "mkv", TargetContainer = "ts"},
+                    new TranscodeSetting {Container = "avi", MimeType = "x-msvideo"},
                     new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
                     new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
                 }
@@ -94,6 +98,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                 TranscodeSettings = new[]
                 {
                     new TranscodeSetting {Container = "mkv", TargetContainer = "ts"},
+                    new TranscodeSetting {Container = "avi", MimeType = "x-msvideo"},
                     new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
                     new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
                 }
@@ -102,9 +107,15 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
             var profile5 = new DlnaProfile
             {
                 Name = "Sony Bravia TV (2012)",
-                ClientType = "TV",
+                ClientType = "DLNA",
                 FriendlyName = @"BRAVIA KDL-\d{2}[A-Z]X\d5(\d|G).*",
-                TranscodeSettings = TranscodeSetting.GetDefaultTranscodingSettings()
+                TranscodeSettings = new[]
+                {
+                    new TranscodeSetting {Container = "mkv", TargetContainer = "ts"},
+                    new TranscodeSetting {Container = "avi", MimeType = "avi"},
+                    new TranscodeSetting {Container = "flac", TargetContainer = "mp3"},
+                    new TranscodeSetting {Container = "m4a", TargetContainer = "mp3"}
+                }   
             };
 
             //WDTV does not need any transcoding of the formats we support statically
@@ -123,7 +134,7 @@ namespace MediaBrowser.Dlna.PlayTo.Configuration
                ClientType = "DLNA",
                ModelName = "DMA2100us",
                TranscodeSettings = new TranscodeSetting[] { }
-           };
+           };   
 
             return new[] 
             {
