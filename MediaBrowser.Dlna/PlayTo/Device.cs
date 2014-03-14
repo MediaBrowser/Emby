@@ -269,11 +269,10 @@ namespace MediaBrowser.Dlna.PlayTo
             var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, url, dictionary), header)
                 .ConfigureAwait(false);
 
-            if (!IsPlaying)
-            {
-                await Task.Delay(50).ConfigureAwait(false);
-                await SetPlay().ConfigureAwait(false);
-            }
+           
+            await Task.Delay(50).ConfigureAwait(false);
+            await SetPlay().ConfigureAwait(false);
+           
 
             _lapsCount = GetLapsCount();
             RestartTimer();
@@ -349,9 +348,8 @@ namespace MediaBrowser.Dlna.PlayTo
             var service = Properties.Services.FirstOrDefault(s => s.ServiceId == ServiceAvtransportId);
 
             var result = await new SsdpHttpClient(_httpClient).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, 1))
-                .ConfigureAwait(false);
-
-            await Task.Delay(50).ConfigureAwait(false);
+                .ConfigureAwait(false);            
+            await Task.Delay(50).ConfigureAwait(false);            
             return true;
         }
 
