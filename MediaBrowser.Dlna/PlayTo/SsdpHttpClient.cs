@@ -38,26 +38,7 @@ namespace MediaBrowser.Dlna.PlayTo
                     return XDocument.Parse(reader.ReadToEnd(), LoadOptions.PreserveWhitespace);
                 }
             }
-        }
-
-        public async Task SubscribeAsync(Uri url, string ip, int port, string localIp, int eventport, int timeOut = 3600)
-        {
-            var options = new HttpRequestOptions
-            {
-                Url = url.ToString(),
-                UserAgent = USERAGENT
-            };
-
-            options.RequestHeaders["HOST"] = ip + ":" + port;
-            options.RequestHeaders["CALLBACK"] = "<" + localIp + ":" + eventport + ">";
-            options.RequestHeaders["NT"] = "upnp:event";
-            options.RequestHeaders["TIMEOUT"] = "Second - " + timeOut;
-            //request.CookieContainer = Container;
-
-            using (await _httpClient.Get(options).ConfigureAwait(false))
-            {
-            }
-        }
+        }      
 
         public async Task RespondAsync(Uri url, string ip, int port, string localIp, int eventport, int timeOut = 20000)
         {
@@ -121,7 +102,7 @@ namespace MediaBrowser.Dlna.PlayTo
             options.RequestContentType = "text/xml; charset=\"utf-8\"";
             options.RequestContent = postData;
 
-            return _httpClient.Post(options);
+            return _httpClient.Post(options, Model.Logging.LogSeverity.Debug);
         }
     }
 }
