@@ -80,6 +80,13 @@ namespace MediaBrowser.Common.Net
         Task<HttpResponseInfo> Post(HttpRequestOptions options);
 
         /// <summary>
+        /// Posts the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <returns>Task{HttpResponseInfo}.</returns>
+        Task<HttpResponseInfo> Post(HttpRequestOptions options, MediaBrowser.Model.Logging.LogSeverity logSeverity);
+
+        /// <summary>
         /// Downloads the contents of a given url into a temporary location
         /// </summary>
         /// <param name="options">The options.</param>

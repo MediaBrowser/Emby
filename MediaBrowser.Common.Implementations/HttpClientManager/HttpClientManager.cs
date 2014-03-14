@@ -166,7 +166,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         /// </exception>
         public Task<HttpResponseInfo> GetResponse(HttpRequestOptions options)
         {
-            return SendAsync(options, "GET");
+            return SendAsync(options, "GET", LogSeverity.Info);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         /// <returns>Task{HttpResponseInfo}.</returns>
         /// <exception cref="HttpException">
         /// </exception>
-        private async Task<HttpResponseInfo> SendAsync(HttpRequestOptions options, string httpMethod)
+        private async Task<HttpResponseInfo> SendAsync(HttpRequestOptions options, string httpMethod, LogSeverity logSeverity)
         {
             ValidateParams(options);
 
@@ -259,7 +259,7 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                 throw new HttpException(string.Format("Connection to {0} timed out", options.Url)) { IsTimedOut = true };
             }
 
-            _logger.Info("HttpClientManager {0}: {1}", httpMethod.ToUpper(), options.Url);
+            _logger.Log(logSeverity, "HttpClientManager {0}: {1}", httpMethod.ToUpper(), options.Url);
 
             try
             {
@@ -372,7 +372,12 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
 
         public Task<HttpResponseInfo> Post(HttpRequestOptions options)
         {
-            return SendAsync(options, "POST");
+            return SendAsync(options, "POST", LogSeverity.Info);
+        }
+
+        public Task<HttpResponseInfo> Post(HttpRequestOptions options, LogSeverity logSeverity)
+        {
+            return SendAsync(options, "POST", logSeverity);
         }
 
         /// <summary>
