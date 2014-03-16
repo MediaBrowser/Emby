@@ -20,7 +20,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
             var orgCi = item.Transcode ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
 
-            const string dlnaflags = ";DLNA.ORG_FLAGS=01500000000000000000000000000000";
+            const string dlnaflags = ";DLNA.ORG_FLAGS=01700000000000000000000000000000";
 
             var contentFeatures = string.Empty;
 

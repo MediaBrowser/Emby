@@ -120,7 +120,7 @@ namespace MediaBrowser.Api.Playback.Progressive
             // 0 = native, 1 = transcoded
             var orgCi = isStaticallyStreamed ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
 
-            const string dlnaflags = ";DLNA.ORG_FLAGS=01500000000000000000000000000000";
+            const string dlnaflags = ";DLNA.ORG_FLAGS=01700000000000000000000000000000";
 
             if (string.Equals(extension, ".mp3", StringComparison.OrdinalIgnoreCase))
             {
