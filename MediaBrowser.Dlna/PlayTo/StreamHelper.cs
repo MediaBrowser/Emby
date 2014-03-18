@@ -16,9 +16,9 @@ namespace MediaBrowser.Dlna.PlayTo
         /// <returns></returns>
         internal static string GetDlnaHeaders(PlaylistItem item)
         {
-            var orgOp = item.Transcode ? ";DLNA.ORG_OP=00" : ";DLNA.ORG_OP=01";
+            var orgOp = item.Transcode ? ";DLNA.ORG_OP=00" : ";DLNA.ORG_OP=10";
 
-            var orgCi = item.Transcode ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
+            var orgCi = item.Transcode ? ";DLNA.ORG_CI=1" : ";DLNA.ORG_CI=0";
 
             const string dlnaflags = ";DLNA.ORG_FLAGS=01500000000000000000000000000000";
 
@@ -31,6 +31,14 @@ namespace MediaBrowser.Dlna.PlayTo
             else if (string.Equals(item.FileFormat, "wma", StringComparison.OrdinalIgnoreCase))
             {
                 contentFeatures = "DLNA.ORG_PN=WMABASE";
+            }
+            else if (string.Equals(item.FileFormat, "wmw", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=WMVMED_BASE";
+            }
+            else if (string.Equals(item.FileFormat, "asf", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=WMVMED_BASE";
             }
             else if (string.Equals(item.FileFormat, "avi", StringComparison.OrdinalIgnoreCase))
             {
