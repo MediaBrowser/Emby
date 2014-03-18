@@ -219,6 +219,11 @@ namespace MediaBrowser.Dlna
                         Containers = new[]{"avi"}, 
                         MimeType = "avi", 
                         Type = DlnaProfileType.Video
+                    },
+                    new DirectPlayProfile
+                    {
+                        Containers = new[]{"mp4"},                         
+                        Type = DlnaProfileType.Video
                     }
                 }
             });
@@ -244,7 +249,7 @@ namespace MediaBrowser.Dlna
                     new TranscodingProfile
                     {
                         Container = "ts", 
-                        Type = DlnaProfileType.Video
+                        Type = DlnaProfileType.Video                        
                     }
                 },
 
@@ -300,7 +305,13 @@ namespace MediaBrowser.Dlna
                         Containers = new[]{"avi"}, 
                         Type = DlnaProfileType.Video,
                         MimeType = "avi"
-                    }
+                    },
+                     new DirectPlayProfile
+                    {
+                        Containers = new[]{"asf"}, 
+                        Type = DlnaProfileType.Audio,
+                        MimeType = "x-ms-wmv"
+                    }, 
                 }
             });
 
@@ -341,7 +352,13 @@ namespace MediaBrowser.Dlna
                         Containers = new[]{"wma"}, 
                         Type = DlnaProfileType.Audio,
                         MimeType = "x-ms-wma"
-                    },                    
+                    }, 
+                    new DirectPlayProfile
+                    {
+                        Containers = new[]{"asf"}, 
+                        Type = DlnaProfileType.Audio,
+                        MimeType = "x-ms-wmv"
+                    }, 
                     new DirectPlayProfile
                     {
                         Containers = new[]{"avi"}, 

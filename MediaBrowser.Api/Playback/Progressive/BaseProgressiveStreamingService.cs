@@ -115,7 +115,7 @@ namespace MediaBrowser.Api.Playback.Progressive
             var extension = GetOutputFileExtension(state);
 
             // first bit means Time based seek supported, second byte range seek supported (not sure about the order now), so 01 = only byte seek, 10 = time based, 11 = both, 00 = none
-            var orgOp = isStaticallyStreamed ? ";DLNA.ORG_OP=01" : ";DLNA.ORG_OP=00";
+            var orgOp = isStaticallyStreamed ? ";DLNA.ORG_OP=10" : ";DLNA.ORG_OP=00";
 
             // 0 = native, 1 = transcoded
             var orgCi = isStaticallyStreamed ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
@@ -154,15 +154,14 @@ namespace MediaBrowser.Api.Playback.Progressive
             {
                 contentFeatures = "DLNA.ORG_PN=MPEG_PS_PAL";
             }
-            //else if (string.Equals(extension, ".wmv", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    contentFeatures = "DLNA.ORG_PN=WMVHIGH_BASE";
-            //}
-            //else if (string.Equals(extension, ".asf", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    // ??
-            //    contentFeatures = "DLNA.ORG_PN=WMVHIGH_BASE";
-            //}
+            else if (string.Equals(extension, ".wmv", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=WMVMED_BASE";
+            }
+            else if (string.Equals(extension, ".asf", StringComparison.OrdinalIgnoreCase))
+            {
+                contentFeatures = "DLNA.ORG_PN=WMVMED_BASE";
+            }
 
 
             if (!string.IsNullOrEmpty(contentFeatures))
