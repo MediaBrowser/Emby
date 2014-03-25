@@ -6,9 +6,10 @@ namespace MediaBrowser.Dlna.Profiles
     {
         public DefaultProfile()
         {
+            Name = "Generic Device";
+
             ProtocolInfo = "DLNA";
 
-            ClientType = "DLNA";
             Manufacturer = "Media Browser";
             ModelDescription = "Media Browser";
             ModelName = "Media Browser";
@@ -34,7 +35,6 @@ namespace MediaBrowser.Dlna.Profiles
 
                     Settings = new []
                     {
-                        new TranscodingSetting {Name = TranscodingSettingType.VideoLevel, Value = "3"},
                         new TranscodingSetting {Name = TranscodingSettingType.VideoProfile, Value = "baseline"}
                     }
                 }
@@ -52,6 +52,24 @@ namespace MediaBrowser.Dlna.Profiles
                 {
                     Container = "avi,mp4",
                     Type = DlnaProfileType.Video
+                }
+            };
+
+            CodecProfiles = new[]
+            {
+                new CodecProfile
+                {
+                    Type = CodecType.VideoCodec,
+                    Conditions = new []
+                    {
+                        new ProfileCondition
+                        {
+                            Condition = ProfileConditionType.LessThanEqual,
+                            Property = ProfileConditionValue.VideoLevel,
+                            Value = "3",
+                            IsRequired = false
+                        }
+                    }
                 }
             };
         }
