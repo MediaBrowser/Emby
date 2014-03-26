@@ -14,7 +14,8 @@ namespace MediaBrowser.Dlna.PlayTo
             }
             else
             {
-                Id = new Guid(id);
+                var guid = new Guid();
+                Id = Guid.TryParse(id, out guid) ? guid : Guid.Empty;                
             }
         }
     }

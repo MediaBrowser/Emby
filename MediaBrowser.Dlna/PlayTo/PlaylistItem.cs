@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.PlayTo
         public string ItemId { get; set; }
 
         public string MediaSourceId { get; set; }
+
+        public string DlnaProfileId { get; set; }
         
         public bool Transcode { get; set; }
 

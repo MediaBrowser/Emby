@@ -47,6 +47,7 @@ namespace MediaBrowser.Dlna.PlayTo
             {
                 deviceProperties.UUID ?? string.Empty,
                 item.MediaSourceId ?? string.Empty,
+                item.DlnaProfileId ?? string.Empty,
                 (!item.Transcode).ToString().ToLower(),
                 item.VideoCodec ?? string.Empty,
                 item.AudioCodec ?? string.Empty,

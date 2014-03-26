@@ -6,11 +6,23 @@ namespace MediaBrowser.Controller.Dlna
 {
     public class DeviceProfile
     {
+        public string ProfileId
+        { get; set; }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the supported media types.
+        /// </summary>
+        /// <value>
+        /// The supported media types.
+        /// </value>
+        public string[] SupportedMediaTypes
+        { get; set; }
 
         /// <summary>
         /// Gets or sets the transcoding profiles.

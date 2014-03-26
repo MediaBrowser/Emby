@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         {
             Name = "Sony Bravia (2012)";
 
+            ProfileId = "sony2012";
+
             Identification = new DeviceIdentification
             {
                 FriendlyName = @"KDL-\d{2}[A-Z]X\d5(\d|G).*",

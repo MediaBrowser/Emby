@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         {
             Name = "LG Smart TV";
 
+            ProfileId = "lgtv";
+
             TimelineOffsetSeconds = 10;
 
             Identification = new DeviceIdentification

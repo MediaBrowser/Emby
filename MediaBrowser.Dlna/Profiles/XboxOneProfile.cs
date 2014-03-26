@@ -7,6 +7,8 @@ namespace MediaBrowser.Dlna.Profiles
         public XboxOneProfile()
         {
             Name = "Xbox One";
+            
+            ProfileId = "xb1";
 
             Identification = new DeviceIdentification
             {

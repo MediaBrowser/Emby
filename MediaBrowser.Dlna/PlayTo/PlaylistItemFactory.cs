@@ -19,7 +19,8 @@ namespace MediaBrowser.Dlna.PlayTo
             var playlistItem = new PlaylistItem
             {
                 ItemId = item.Id.ToString("N"),
-                MediaType = DlnaProfileType.Audio
+                MediaType = DlnaProfileType.Audio,
+                DlnaProfileId = profile.ProfileId
             };
 
             var audioStream = mediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
@@ -68,7 +69,8 @@ namespace MediaBrowser.Dlna.PlayTo
             var playlistItem = new PlaylistItem
             {
                 ItemId = item.Id.ToString("N"),
-                MediaType = DlnaProfileType.Photo
+                MediaType = DlnaProfileType.Photo,
+                DlnaProfileId = profile.ProfileId
             };
 
             var directPlay = profile.DirectPlayProfiles
@@ -100,7 +102,8 @@ namespace MediaBrowser.Dlna.PlayTo
             var playlistItem = new PlaylistItem
             {
                 ItemId = item.Id.ToString("N"),
-                MediaType = DlnaProfileType.Video
+                MediaType = DlnaProfileType.Video,
+                DlnaProfileId = profile.ProfileId
             };
 
             var audioStream = mediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);

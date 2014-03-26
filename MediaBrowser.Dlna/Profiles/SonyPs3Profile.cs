@@ -12,6 +12,8 @@ namespace MediaBrowser.Dlna.Profiles
             {
                 FriendlyName = "PLAYSTATION 3",
 
+                //Profilename not needed since PS3 does not support DMR               
+
                 Headers = new[]
                 {
                     new HttpHeaderInfo

@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         {
             Name = "WDTV Live";
 
+            ProfileId = "wdtv";
+
             TimelineOffsetSeconds = 5;
             IgnoreTranscodeByteRangeRequests = true;
 
