@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         {
             Name = "Denon AVR";
 
+            ProfileId = "denonavr";
+
             Identification = new DeviceIdentification
             {
                 FriendlyName = @"Denon:\[AVR:.*",

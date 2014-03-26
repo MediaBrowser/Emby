@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
        {
            Name = "Panasonic Viera";
 
+           ProfileId = "viera";
+
            Identification = new DeviceIdentification
            {
                FriendlyName = @"VIERA",

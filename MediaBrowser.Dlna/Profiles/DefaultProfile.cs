@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Controller.Dlna;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Dlna.Profiles
 {
@@ -7,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         public DefaultProfile()
         {
             Name = "Media Browser";
+
+            ProfileId = "";
 
             ProtocolInfo = "DLNA";
 
@@ -38,6 +41,13 @@ namespace MediaBrowser.Dlna.Profiles
                         new TranscodingSetting {Name = TranscodingSettingType.VideoProfile, Value = "baseline"}
                     }
                 }
+            };
+
+            SupportedMediaTypes = new[]
+            {
+                MediaType.Audio, 
+                MediaType.Video, 
+                MediaType.Photo
             };
 
             DirectPlayProfiles = new[]

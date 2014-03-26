@@ -159,5 +159,12 @@ namespace MediaBrowser.Dlna
 
             return false;
         }
+
+
+        public DeviceProfile GetProfile(string profileId)
+        {
+            return GetProfiles().FirstOrDefault(i => profileId == i.ProfileId) ??
+                GetDefaultProfile();
+        }
     }
 }

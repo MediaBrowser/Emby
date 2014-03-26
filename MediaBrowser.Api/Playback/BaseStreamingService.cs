@@ -1218,77 +1218,81 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 2)
                 {
-                    request.Static = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                    request.DlnaProfileId = val;
                 }
                 else if (i == 3)
+                {
+                    request.Static = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                }
+                else if (i == 4)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.VideoCodec = val;
                     }
                 }
-                else if (i == 4)
+                else if (i == 5)
                 {
                     request.AudioCodec = val;
                 }
-                else if (i == 5)
+                else if (i == 6)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.AudioStreamIndex = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 6)
+                else if (i == 7)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.SubtitleStreamIndex = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 7)
+                else if (i == 8)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.VideoBitRate = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 8)
+                else if (i == 9)
                 {
                     request.AudioBitRate = int.Parse(val, UsCulture);
                 }
-                else if (i == 9)
+                else if (i == 10)
                 {
                     request.MaxAudioChannels = int.Parse(val, UsCulture);
                 }
-                else if (i == 10)
+                else if (i == 11)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.MaxWidth = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 11)
+                else if (i == 12)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.MaxHeight = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 12)
+                else if (i == 13)
                 {
                     if (videoRequest != null)
                     {
                         videoRequest.Framerate = int.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 13)
+                else if (i == 14)
                 {
                     if (videoRequest != null)
                     {
                         request.StartTimeTicks = long.Parse(val, UsCulture);
                     }
                 }
-                else if (i == 14)
+                else if (i == 15)
                 {
                     if (videoRequest != null)
                     {
@@ -1474,21 +1478,30 @@ namespace MediaBrowser.Api.Playback
             state.SegmentLength = state.ReadInputAtNativeFramerate ? 5 : 10;
             state.HlsListSize = state.ReadInputAtNativeFramerate ? 100 : 1440;
 
-            ApplyDeviceProfileSettings(state);
+            ApplyDeviceProfileSettings(request, state);
 
             return state;
         }
 
-        private void ApplyDeviceProfileSettings(StreamState state)
-        {
-            var headers = new Dictionary<string, string>();
+        private void ApplyDeviceProfileSettings(StreamRequest request, StreamState state)
+        {            
 
-            foreach (var key in Request.Headers.AllKeys)
+            DeviceProfile profile;
+
+            if (!string.IsNullOrWhiteSpace(request.DlnaProfileId))
             {
-                headers[key] = Request.Headers[key];
+                profile = DlnaManager.GetProfile(request.DlnaProfileId);
             }
+            else
+            {
+                var headers = new Dictionary<string, string>();
 
-            var profile = DlnaManager.GetProfile(headers);
+                foreach (var key in Request.Headers.AllKeys)
+                {
+                    headers[key] = Request.Headers[key];
+                }
+                profile = DlnaManager.GetProfile(headers);
+            }
 
             var container = Path.GetExtension(state.RequestedUrl);
 
@@ -1536,13 +1549,13 @@ namespace MediaBrowser.Api.Playback
                     switch (setting.Name)
                     {
                         case TranscodingSettingType.VideoProfile:
-                        {
-                            if (state.VideoRequest != null && string.IsNullOrWhiteSpace(state.VideoRequest.Profile))
                             {
-                                state.VideoRequest.Profile = setting.Value;
+                                if (state.VideoRequest != null && string.IsNullOrWhiteSpace(state.VideoRequest.Profile))
+                                {
+                                    state.VideoRequest.Profile = setting.Value;
+                                }
+                                break;
                             }
-                            break;
-                        }
                         default:
                             throw new ArgumentException("Unrecognized TranscodingSettingType");
                     }

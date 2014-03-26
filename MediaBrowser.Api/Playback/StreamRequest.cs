@@ -20,6 +20,9 @@ namespace MediaBrowser.Api.Playback
         [ApiMember(Name = "DeviceId", Description = "The device id of the client requesting. Used to stop encoding processes when needed.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string DeviceId { get; set; }
 
+        [ApiMember(Name = "DlnaProfileId", Description = "The dlna profileid of the client requesting. Used to infer on encoding when needed.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string DlnaProfileId { get; set; }
+
         /// <summary>
         /// Gets or sets the audio codec.
         /// </summary>

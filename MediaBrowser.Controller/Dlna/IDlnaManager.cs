@@ -23,6 +23,14 @@ namespace MediaBrowser.Controller.Dlna
         /// <returns>DeviceProfile.</returns>
         DeviceProfile GetProfile(IDictionary<string,string> headers);
 
+
+        /// <summary>
+        /// Gets the profile.
+        /// </summary>
+        /// <param name="profileId">The profile identifier.</param>
+        /// <returns>DeviceProfile</returns>
+        DeviceProfile GetProfile(string profileId);
+
         /// <summary>
         /// Gets the profile.
         /// </summary>

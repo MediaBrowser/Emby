@@ -8,6 +8,8 @@ namespace MediaBrowser.Dlna.Profiles
         {
             Name = "Xbox 360";
 
+            ProfileId = "xb360";
+
             ModelName = "Windows Media Player Sharing";
             ModelNumber = "12.0";
             ModelUrl = "http://www.microsoft.com/";
