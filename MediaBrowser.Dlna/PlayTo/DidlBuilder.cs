@@ -49,26 +49,28 @@ namespace MediaBrowser.Dlna.PlayTo
             else
                 response += DIDL_AUDIOCLASS;
 
-            var imageUrl = GetImageUrl(dto, serverAddress);
 
-            if (!string.IsNullOrWhiteSpace(imageUrl))
-            {
-                response += string.Format(DIDL_IMAGE, imageUrl);
-            }
-            response += string.Format(DIDL_RELEASEDATE, GetDateString(dto.PremiereDate));
+            //var imageUrl = GetImageUrl(dto, serverAddress);
+
+            //if (!string.IsNullOrWhiteSpace(imageUrl))
+            //{
+            //    response += string.Format(DIDL_IMAGE, imageUrl);
+            //}
+            
+            //response += string.Format(DIDL_RELEASEDATE, GetDateString(dto.PremiereDate));
 
             //TODO Add genres to didl;
-            response += string.Format(DIDL_GENRE, UNKNOWN);
+            //response += string.Format(DIDL_GENRE, UNKNOWN);
 
             if (IsVideo(dto))
             {
                 response += string.Format(DESCRIPTION, UNKNOWN);
                 response += GetVideoDIDL(dto, streamUrl, streams);
 
-                if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    response += string.Format(DIDL_IMAGE_RES, imageUrl);
-                }
+                //if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
+                //{
+                //    response += string.Format(DIDL_IMAGE_RES, imageUrl);
+                //}
             }
             else
             {
@@ -84,10 +86,10 @@ namespace MediaBrowser.Dlna.PlayTo
 
                 response += GetAudioDIDL(dto, streamUrl, streams);
 
-                if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    response += string.Format(DIDL_ALBUMIMAGE_RES, imageUrl);
-                }
+                //if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
+                //{
+                //    response += string.Format(DIDL_ALBUMIMAGE_RES, imageUrl);
+                //}
             }
 
             response += DIDL_END;
