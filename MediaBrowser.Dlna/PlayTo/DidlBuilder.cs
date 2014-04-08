@@ -24,8 +24,8 @@ namespace MediaBrowser.Dlna.PlayTo
         const string DIDL_RELEASEDATE = @"  <dc:date xmlns:dc=""http://purl.org/dc/elements/1.1/"">{0}</dc:date>" + CRLF;
         const string DIDL_GENRE = @"  <upnp:genre xmlns:upnp=""urn:schemas-upnp-org:metadata-1-0/upnp/"">{0}</upnp:genre>" + CRLF;
         const string DESCRIPTION = @"  <dc:description xmlns:dc=""http://purl.org/dc/elements/1.1/"">{0}</dc:description>" + CRLF;
-        const string DIDL_VIDEO_RES = @"  <res bitrate=""{0}"" duration=""{1}"" protocolInfo=""http-get:*:video/x-msvideo:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000"" resolution=""{2}x{3}"" size=""0"">{4}</res>" + CRLF;
-        const string DIDL_AUDIO_RES = @"  <res bitrate=""{0}"" duration=""{1}"" nrAudioChannels=""2"" protocolInfo=""http-get:*:audio/mp3:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000"" sampleFrequency=""{2}"" size=""0"">{3}</res>" + CRLF;
+        const string DIDL_VIDEO_RES = @"  <res bitrate=""{0}"" duration=""{1}"" protocolInfo=""http-get:*:video/x-msvideo:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000"" resolution=""{2}x{3}"" size=""{4}"">{5}</res>" + CRLF;
+        const string DIDL_AUDIO_RES = @"  <res bitrate=""{0}"" duration=""{1}"" nrAudioChannels=""2"" protocolInfo=""http-get:*:audio/mp3:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000"" sampleFrequency=""{2}"" size=""{3}"">{4}</res>" + CRLF;
         const string DIDL_IMAGE_RES = @"  <res protocolInfo=""http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN;DLNA.ORG_OP=00;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=00D00000000000000000000000000000"" resolution=""212x320"">{0}</res>" + CRLF;
         const string DIDL_ALBUMIMAGE_RES = @"  <res protocolInfo=""http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN;DLNA.ORG_OP=00;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=00D00000000000000000000000000000"" resolution=""320x320"">{0}</res>" + CRLF;
         const string DIDL_RATING = @"  <upnp:rating xmlns:upnp=""urn:schemas-upnp-org:metadata-1-0/upnp/"">{0}</upnp:rating>" + CRLF;
@@ -43,36 +43,35 @@ namespace MediaBrowser.Dlna.PlayTo
         public static string Build(BaseItem dto, string userId, string serverAddress, string streamUrl, IEnumerable<MediaStream> streams, bool includeImageRes)
         {
             string response = string.Format(DIDL_START, dto.Id, userId);
-            response += string.Format(DIDL_TITLE, dto.Name.Replace("&", "and"));
-            if (IsVideo(dto))
-                response += DIDL_VIDEOCLASS;
-            else
-                response += DIDL_AUDIOCLASS;
-
-            var imageUrl = GetImageUrl(dto, serverAddress);
-
-            if (!string.IsNullOrWhiteSpace(imageUrl))
-            {
-                response += string.Format(DIDL_IMAGE, imageUrl);
-            }
-            response += string.Format(DIDL_RELEASEDATE, GetDateString(dto.PremiereDate));
-
-            //TODO Add genres to didl;
-            response += string.Format(DIDL_GENRE, UNKNOWN);
+            response += string.Format(DIDL_TITLE, dto.Name.Replace("&", "and"));                                  
 
             if (IsVideo(dto))
             {
-                response += string.Format(DESCRIPTION, UNKNOWN);
+                
                 response += GetVideoDIDL(dto, streamUrl, streams);
+                response += DIDL_VIDEOCLASS;
+                
+                //response += string.Format(DESCRIPTION, UNKNOWN);
+                //var imageUrl = GetImageUrl(dto, serverAddress);
 
-                if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    response += string.Format(DIDL_IMAGE_RES, imageUrl);
-                }
+                //if (!string.IsNullOrWhiteSpace(imageUrl))
+                //{
+                //    response += string.Format(DIDL_IMAGE, imageUrl);
+                //}
+                //response += string.Format(DIDL_RELEASEDATE, GetDateString(dto.PremiereDate));
+
+                //TODO Add genres to didl;
+                //response += string.Format(DIDL_GENRE, UNKNOWN);
+
+                //if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
+                //{
+                //    response += string.Format(DIDL_IMAGE_RES, imageUrl);
+                //}
             }
             else
             {
                 var audio = dto as Audio;
+                response += GetAudioDIDL(dto, streamUrl, streams);
 
                 if (audio != null)
                 {
@@ -81,13 +80,13 @@ namespace MediaBrowser.Dlna.PlayTo
 
                     response += string.Format(DIDL_TRACKNUM, audio.IndexNumber ?? 0);
                 }
+                response += DIDL_AUDIOCLASS;
+                
 
-                response += GetAudioDIDL(dto, streamUrl, streams);
-
-                if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    response += string.Format(DIDL_ALBUMIMAGE_RES, imageUrl);
-                }
+                //if (includeImageRes && !string.IsNullOrWhiteSpace(imageUrl))
+                //{
+                //    response += string.Format(DIDL_ALBUMIMAGE_RES, imageUrl);
+                //}
             }
 
             response += DIDL_END;
@@ -98,14 +97,23 @@ namespace MediaBrowser.Dlna.PlayTo
         private static string GetVideoDIDL(BaseItem dto, string streamUrl, IEnumerable<MediaStream> streams)
         {
             var videostream = streams.Where(stream => stream.Type == MediaStreamType.Video).OrderBy(s => s.IsDefault ? 0 : 1).FirstOrDefault();
-
+            
             if (videostream == null)
             {
                 // TOOD: ???
                 return string.Empty;
             }
 
-            return string.Format(DIDL_VIDEO_RES, videostream.BitRate.HasValue ? videostream.BitRate.Value / 10 : 0, GetDurationString(dto), videostream.Width ?? 0, videostream.Height ?? 0, streamUrl);
+            long fileSize = 0;
+            try
+            {
+                System.IO.FileInfo info = new System.IO.FileInfo(dto.Path);
+                fileSize = info.Length;
+            }
+            catch
+            { }
+
+            return string.Format(DIDL_VIDEO_RES, videostream.BitRate.HasValue ? videostream.BitRate.Value / 10 : 0, GetDurationString(dto), videostream.Width ?? 0, videostream.Height ?? 0, fileSize, streamUrl);
         }
 
         private static string GetAudioDIDL(BaseItem dto, string streamUrl, IEnumerable<MediaStream> streams)
@@ -118,7 +126,17 @@ namespace MediaBrowser.Dlna.PlayTo
                 return string.Empty;
             }
 
-            return string.Format(DIDL_AUDIO_RES, audiostream.BitRate.HasValue ? audiostream.BitRate.Value / 10 : 16000, GetDurationString(dto), audiostream.SampleRate ?? 0, streamUrl);
+            long fileSize = 0;
+            try
+            {
+                System.IO.FileInfo info = new System.IO.FileInfo(dto.Path);
+                fileSize = info.Length;
+            }
+            catch
+            { }
+            
+
+            return string.Format(DIDL_AUDIO_RES, audiostream.BitRate.HasValue ? audiostream.BitRate.Value / 10 : 16000, GetDurationString(dto), audiostream.SampleRate ?? 0, fileSize, streamUrl);
         }
 
         private static string GetImageUrl(BaseItem dto, string serverAddress)

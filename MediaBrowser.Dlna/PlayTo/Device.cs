@@ -569,9 +569,9 @@ namespace MediaBrowser.Dlna.PlayTo
 
             var track = result.Document.Descendants("TrackMetaData").FirstOrDefault();
 
-            if (track == null)
+            if (track == null || string.Equals((string)track, "NOT_IMPLEMENTED", StringComparison.OrdinalIgnoreCase))
             {
-                //If track is null, some vendors do this, use GetMediaInfo instead                    
+                //If track is null or not implemented, some vendors do this, use GetMediaInfo instead                    
                 return false;
             }
 
@@ -585,8 +585,10 @@ namespace MediaBrowser.Dlna.PlayTo
             }
             catch
             {
+                //this might happen, but if we've gotten this far, we just cant find the didl data
+                //return false and try with mediainfo instead.                
                 _logger.Error("Unable to parse xml {0}", trackString);
-                throw;
+                return false;                
             }
 
             var e = uPnpResponse.Element(uPnpNamespaces.items);
