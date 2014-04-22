@@ -244,7 +244,7 @@
      * Loads media into a running receiver application
      * @param {Number} mediaIndex An index number to indicate current media content
      */
-    CastPlayer.prototype.loadMedia = function (user, item, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex) {
+    CastPlayer.prototype.loadMedia = function (user, item, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreams) {
 
         if (!this.session) {
             console.log("no session");
@@ -254,14 +254,23 @@
         this.currentMediaOffset = startTimeTicks || 0;
 
         var maxBitrate = 12000000;
+
+        var subtitleStreamIndex;
+
+        if (subtitleStreams.length > 0) {
+            subtitleStreamIndex = subtitleStreams[0].Index;
+        }
+
         var mediaInfo = getMediaSourceInfo(user, item, maxBitrate, mediaSourceId, audioStreamIndex, subtitleStreamIndex);
 
         var streamUrl = getStreamUrl(item, mediaInfo, startTimeTicks, maxBitrate);
 
         var castMediaInfo = new chrome.cast.media.MediaInfo(streamUrl);
 
-        castMediaInfo.customData = getCustomData(item, mediaInfo.mediaSource.Id, startTimeTicks);
+        castMediaInfo.customData = getCustomData(item, mediaInfo.mediaSource.Id, startTimeTicks, subtitleStreams);
         castMediaInfo.metadata = getMetadata(item);
+
+        console.log("custom", castMediaInfo.customData);
 
         if (mediaInfo.streamContainer == 'm3u8') {
             castMediaInfo.contentType = 'application/x-mpegURL';
@@ -287,7 +296,7 @@
      */
     CastPlayer.prototype.onMediaDiscovered = function (how, mediaSession) {
 
-        console.log("chromecast new media session ID:" + mediaSession.mediaSessionId + ' (' + how + ')');
+        console.log("chromecast new media session ID:" + mediaSession.mediaSessionId + ' (' + how + ')', mediaSession);
         this.currentMediaSession = mediaSession;
         this.currentMediaTime = mediaSession.currentTime;
 
@@ -307,7 +316,7 @@
         }
 
         this.currentMediaSession.addUpdateListener(this.onMediaStatusUpdate.bind(this));
-        this.currentMediaDuration = mediaSession.media.customData.runTimeTicks;
+        this.currentMediaDuration = mediaSession.media.duration * 10000000;
     };
 
     /**
@@ -538,12 +547,18 @@
      * Update progress bar based on timer  
      */
     CastPlayer.prototype.updateProgressBarByTimer = function () {
+        var currentMedia = this.session.media[0];
+
         if (!this.currentMediaTime) {
-            this.currentMediaDuration = this.session.media[0].currentTime;
+            this.currentMediaTime = currentMedia.currentTime;
         }
 
         if (!this.currentMediaDuration) {
-            this.currentMediaDuration = this.session.media[0].media.customData.runTimeTicks;
+            if (currentMedia.media.streamType != "live") {
+                this.currentMediaDuration = currentMedia.media.duration;
+            } else {
+                this.currentMediaDuration = currentMedia.media.customData.runtimeTicks;
+            }
         }
 
         var pp = 0;
@@ -784,17 +799,25 @@
         };
     }
 
-    function getCustomData(item, mediaSourceId, startTimeTicks) {
+    function getCustomData(item, mediaSourceId, startTimeTicks, subtitleStreams) {
+        var subtitles = [];
+        if (subtitleStreams.length > 0) {
+            $.each(subtitleStreams, function(i, d) {
+                subtitles.push({ src: ApiClient.serverAddress() + '/mediabrowser/videos/' + item.Id + '/subtitles/' + d.Index });
+            });
+        }
 
         return {
-
             serverAddress: ApiClient.serverAddress(),
             itemId: item.Id,
             userId: Dashboard.getCurrentUserId(),
             deviceName: ApiClient.deviceName(),
-            //deviceId: ApiClient.deviceId(),
             startTimeTicks: startTimeTicks || 0,
-            runTimeTicks: item.RunTimeTicks
+            runtimeTicks: item.RunTimeTicks,
+            subtitles: {
+                tracks: subtitles,
+                active: 0
+            }
         };
 
     }
@@ -1075,7 +1098,20 @@
                 castPlayer.playMedia();
             } else if (options.items) {
                 Dashboard.getCurrentUser().done(function (user) {
-                    castPlayer.loadMedia(user, options.items[self.playlistIndex++], options.startPositionTicks);
+                    var item = options.items[self.playlistIndex++];
+
+                    var audioStream = item.MediaSources[0].MediaStreams.filter(function (i) {
+                        return i.Type == "Audio";
+                    });
+                    var audioStreamIndex = item.MediaSources[0].MediaStreams.indexOf(audioStream[0]);
+
+                    var subtitleStreams = item.MediaSources[0].MediaStreams.filter(function (d) {
+                        return d.Codec == "vtt";
+                    });
+
+                    console.log("options", options, audioStreamIndex, subtitleStreams);
+
+                    castPlayer.loadMedia(user, item, options.startPositionTicks, item.Id, audioStreamIndex, subtitleStreams);
                 });
             } else {
                 var userId = Dashboard.getCurrentUserId();
