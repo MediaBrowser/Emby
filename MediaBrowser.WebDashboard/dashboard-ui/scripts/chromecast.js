@@ -1332,7 +1332,11 @@
             self.currentTimeElement.html(timeText);
         };
 
-        self.changeStream = self.seek = function (position) {
+        self.changeStream = function (position) {
+            castPlayer.seekMedia(position);
+        };
+
+        self.seek = function (position) {
             castPlayer.seekMedia(position);
         };
 
