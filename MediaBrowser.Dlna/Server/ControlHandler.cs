@@ -297,7 +297,7 @@ namespace MediaBrowser.Dlna.Server
                     }
                     else
                     {
-                        Browse_AddItem(result, i, user, deviceId, filter);
+                        Browse_AddItem(result, i, deviceId, filter);
                     }
                 }
             }
@@ -372,7 +372,7 @@ namespace MediaBrowser.Dlna.Server
                 }
                 else
                 {
-                    Browse_AddItem(result, i, user, deviceId, filter);
+                    Browse_AddItem(result, i, deviceId, filter);
                 }
             }
 
@@ -515,7 +515,7 @@ namespace MediaBrowser.Dlna.Server
             }
         }
 
-        private void Browse_AddItem(XmlDocument result, BaseItem item, User user, string deviceId, Filter filter)
+        private void Browse_AddItem(XmlDocument result, BaseItem item, string deviceId, Filter filter)
         {
             var element = result.CreateElement(string.Empty, "item", NS_DIDL);
             element.SetAttribute("restricted", "1");
@@ -590,22 +590,12 @@ namespace MediaBrowser.Dlna.Server
                 }
             }
 
-            var videoStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Video && !string.Equals(i.Codec, "mjpeg", StringComparison.OrdinalIgnoreCase));
-
-            var targetAudioBitrate = streamInfo.TargetAudioBitrate;
+            var totalBitrate = streamInfo.TotalOutputBitrate;
             var targetSampleRate = streamInfo.TargetAudioSampleRate;
             var targetChannels = streamInfo.TargetAudioChannels;
 
-            var targetWidth = streamInfo.MaxWidth ?? (videoStream == null ? null : videoStream.Width);
-            var targetHeight = streamInfo.MaxHeight ?? (videoStream == null ? null : videoStream.Height);
-
-            var targetVideoCodec = streamInfo.IsDirectStream
-                ? (videoStream == null ? null : videoStream.Codec)
-                : streamInfo.VideoCodec;
-
-            var targetAudioCodec = streamInfo.TargetAudioCodec;
-
-            var targetBitrate = maxBitrateSetting ?? mediaSource.Bitrate;
+            var targetWidth = streamInfo.TargetWidth;
+            var targetHeight = streamInfo.TargetHeight;
 
             if (targetChannels.HasValue)
             {
@@ -625,32 +615,36 @@ namespace MediaBrowser.Dlna.Server
                 res.SetAttribute("sampleFrequency", targetSampleRate.Value.ToString(_usCulture));
             }
 
-            if (targetAudioBitrate.HasValue)
+            if (totalBitrate.HasValue)
             {
-                res.SetAttribute("bitrate", targetAudioBitrate.Value.ToString(_usCulture));
+                res.SetAttribute("bitrate", totalBitrate.Value.ToString(_usCulture));
             }
 
-            var formatProfile = new MediaFormatProfileResolver().ResolveVideoFormat(streamInfo.Container,
-                targetVideoCodec,
-                targetAudioCodec,
-                targetWidth,
-                targetHeight,
-                targetBitrate,
-                TransportStreamTimestamp.NONE);
+            var mediaProfile = _profile.GetVideoMediaProfile(streamInfo.Container,
+                streamInfo.AudioCodec,
+                streamInfo.VideoCodec);
 
             var filename = url.Substring(0, url.IndexOf('?'));
 
-            var orgOpValue = DlnaMaps.GetOrgOpValue(mediaSource.RunTimeTicks.HasValue, streamInfo.IsDirectStream, streamInfo.TranscodeSeekInfo);
+            var mimeType = mediaProfile == null || string.IsNullOrEmpty(mediaProfile.MimeType)
+               ? MimeTypes.GetMimeType(filename)
+               : mediaProfile.MimeType;
 
-            var orgCi = streamInfo.IsDirectStream ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
-
+            var contentFeatures = new ContentFeatureBuilder(_profile).BuildVideoHeader(streamInfo.Container,
+                streamInfo.VideoCodec,
+                streamInfo.AudioCodec,
+                targetWidth,
+                targetHeight,
+                totalBitrate,
+                streamInfo.TargetTimestamp,
+                streamInfo.IsDirectStream,
+                streamInfo.RunTimeTicks,
+                streamInfo.TranscodeSeekInfo);
+            
             res.SetAttribute("protocolInfo", String.Format(
-                "http-get:*:{0}:DLNA.ORG_PN={1};DLNA.ORG_OP={2};DLNA.ORG_CI={3};DLNA.ORG_FLAGS={4}",
-                MimeTypes.GetMimeType(filename),
-                formatProfile,
-                orgOpValue,
-                orgCi,
-                DlnaMaps.DefaultStreaming
+                "http-get:*:{0}:{1}",
+                mimeType,
+                contentFeatures
                 ));
 
             container.AppendChild(res);
@@ -712,21 +706,28 @@ namespace MediaBrowser.Dlna.Server
                 res.SetAttribute("bitrate", targetAudioBitrate.Value.ToString(_usCulture));
             }
 
-            var formatProfile = new MediaFormatProfileResolver().ResolveAudioFormat(streamInfo.Container, targetAudioBitrate, targetSampleRate, targetChannels);
+            var mediaProfile = _profile.GetAudioMediaProfile(streamInfo.Container,
+                streamInfo.AudioCodec);
 
             var filename = url.Substring(0, url.IndexOf('?'));
 
-            var orgOpValue = DlnaMaps.GetOrgOpValue(mediaSource.RunTimeTicks.HasValue, streamInfo.IsDirectStream, streamInfo.TranscodeSeekInfo);
+            var mimeType = mediaProfile == null || string.IsNullOrEmpty(mediaProfile.MimeType)
+                ? MimeTypes.GetMimeType(filename)
+                : mediaProfile.MimeType;
 
-            var orgCi = streamInfo.IsDirectStream ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
-
+            var contentFeatures = new ContentFeatureBuilder(_profile).BuildAudioHeader(streamInfo.Container,
+                streamInfo.TargetAudioCodec,
+                targetAudioBitrate,
+                targetSampleRate,
+                targetChannels,
+                streamInfo.IsDirectStream,
+                streamInfo.RunTimeTicks,
+                streamInfo.TranscodeSeekInfo);
+            
             res.SetAttribute("protocolInfo", String.Format(
-                "http-get:*:{0}:DLNA.ORG_PN={1};DLNA.ORG_OP={2};DLNA.ORG_CI={3};DLNA.ORG_FLAGS={4}",
-                MimeTypes.GetMimeType(filename),
-                formatProfile,
-                orgOpValue,
-                orgCi,
-                DlnaMaps.DefaultStreaming
+                "http-get:*:{0}:{1}",
+                mimeType,
+                contentFeatures
                 ));
 
             container.AppendChild(res);
@@ -744,11 +745,11 @@ namespace MediaBrowser.Dlna.Server
                 {
                     if (item is MusicAlbum)
                     {
-                        classType = "object.container.musicAlbum";
+                        classType = "object.container.album.musicAlbum";
                     }
                     if (item is MusicArtist)
                     {
-                        classType = "object.container.musicArtist";
+                        classType = "object.container.person.musicArtist";
                     }
                 }
 
@@ -815,7 +816,7 @@ namespace MediaBrowser.Dlna.Server
             }
 
             element.AppendChild(CreateObjectClass(element.OwnerDocument, item));
-            
+
             if (filter.Contains("dc:date"))
             {
                 if (item.PremiereDate.HasValue)
@@ -962,9 +963,13 @@ namespace MediaBrowser.Dlna.Server
 
             var mediaProfile = new MediaFormatProfileResolver().ResolveImageFormat("jpg", width, height);
 
+            var orgPn = mediaProfile.HasValue ? "DLNA.ORG_PN=:" + mediaProfile.Value + ";" : string.Empty;
+
             res.SetAttribute("protocolInfo", string.Format(
-                "http-get:*:{1}DLNA.ORG_PN=:{0};DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS={2}",
-                mediaProfile, "image/jpeg", DlnaMaps.DefaultStreaming
+                "http-get:*:{1}:{0}DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS={2}",
+                orgPn,
+                "image/jpeg",
+                DlnaMaps.DefaultStreaming
                 ));
 
             if (width.HasValue && height.HasValue)
