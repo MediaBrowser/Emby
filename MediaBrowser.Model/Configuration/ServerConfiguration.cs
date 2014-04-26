@@ -168,8 +168,6 @@ namespace MediaBrowser.Model.Configuration
         /// <value>The dashboard source path.</value>
         public string DashboardSourcePath { get; set; }
 
-        public ManualLoginCategory[] ManualLoginClients { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether [enable tv db updates].
         /// </summary>
@@ -177,6 +175,9 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableTvDbUpdates { get; set; }
         public bool EnableTmdbUpdates { get; set; }
         public bool EnableFanArtUpdates { get; set; }
+
+        public bool RequireManualLoginForMobileApps { get; set; }
+        public bool RequireManualLoginForOtherApps { get; set; }
 
         /// <summary>
         /// Gets or sets the image saving convention.
@@ -224,6 +225,8 @@ namespace MediaBrowser.Model.Configuration
 
         public double DownMixAudioBoost { get; set; }
 
+        public NotificationOptions NotificationOptions { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
         /// </summary>
@@ -256,7 +259,6 @@ namespace MediaBrowser.Model.Configuration
 
             EnableInternetProviders = true; //initial installs will need these
 
-            ManualLoginClients = new ManualLoginCategory[] { };
             PathSubstitutions = new PathSubstitution[] { };
 
             MetadataRefreshDays = 30;
@@ -288,6 +290,8 @@ namespace MediaBrowser.Model.Configuration
             DlnaOptions = new DlnaOptions();
 
             UICulture = "en-us";
+
+            NotificationOptions = new NotificationOptions();
         }
     }
 
@@ -314,5 +318,23 @@ namespace MediaBrowser.Model.Configuration
     {
         public string From { get; set; }
         public string To { get; set; }
+    }
+
+    public class NotificationOptions
+    {
+        public bool SendOnUpdates { get; set; }
+        public bool SendOnVideoPlayback { get; set; }
+        public bool SendOnAudioPlayback { get; set; }
+        public bool SendOnGamePlayback { get; set; }
+        public bool SendOnFailedTasks { get; set; }
+        public bool SendOnNewLibraryContent { get; set; }
+        public bool SendOnServerRestartRequired { get; set; }
+
+        public NotificationOptions()
+        {
+            SendOnUpdates = true;
+            SendOnFailedTasks = true;
+            SendOnServerRestartRequired = true;
+        }
     }
 }

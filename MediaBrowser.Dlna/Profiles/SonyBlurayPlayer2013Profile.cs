@@ -1,6 +1,5 @@
-﻿using System.Xml.Serialization;
-using MediaBrowser.Controller.Dlna;
-using MediaBrowser.Model.Dlna;
+﻿using MediaBrowser.Model.Dlna;
+using System.Xml.Serialization;
 
 namespace MediaBrowser.Dlna.Profiles
 {
@@ -18,7 +17,7 @@ namespace MediaBrowser.Dlna.Profiles
                 ModelNumber = "BDP-2013"
             };
 
-            ContentDirectoryRootAttributes = new[]
+            XmlRootAttributes = new[]
             {
                 new XmlAttribute
                 {

@@ -1,5 +1,7 @@
 ﻿using DvdLib.Ifo;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
@@ -18,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Extensions;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -33,10 +34,11 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly IApplicationPaths _appPaths;
         private readonly IJsonSerializer _json;
         private readonly IEncodingManager _encodingManager;
+        private readonly IFileSystem _fileSystem;
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
-        public FFProbeVideoInfo(ILogger logger, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager)
+        public FFProbeVideoInfo(ILogger logger, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem)
         {
             _logger = logger;
             _isoManager = isoManager;
@@ -47,6 +49,7 @@ namespace MediaBrowser.Providers.MediaInfo
             _appPaths = appPaths;
             _json = json;
             _encodingManager = encodingManager;
+            _fileSystem = fileSystem;
         }
 
         public async Task<ItemUpdateType> ProbeVideo<T>(T item, IDirectoryService directoryService, CancellationToken cancellationToken)
@@ -214,6 +217,8 @@ namespace MediaBrowser.Providers.MediaInfo
             video.DefaultVideoStreamIndex = videoStream == null ? (int?)null : videoStream.Index;
 
             video.HasSubtitles = mediaStreams.Any(i => i.Type == MediaStreamType.Subtitle);
+
+            ExtractTimestamp(video);
 
             await _encodingManager.RefreshChapterImages(new ChapterImageRefreshOptions
             {
@@ -566,6 +571,56 @@ namespace MediaBrowser.Providers.MediaInfo
             {
                 item.PlayableStreamFileNames = blurayDiscInfo.Files.ToList();
             }
+        }
+
+        private void ExtractTimestamp(Video video)
+        {
+            if (video.VideoType == VideoType.VideoFile)
+            {
+                if (string.Equals(video.Container, "mpeg2ts", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(video.Container, "m2ts", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(video.Container, "ts", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        video.Timestamp = GetMpegTimestamp(video.Path);
+
+                        _logger.Debug("Video has {0} timestamp", video.Timestamp);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error extracting timestamp info from {0}", ex, video.Path);
+                        video.Timestamp = null;
+                    }
+                }
+            }
+        }
+
+        private TransportStreamTimestamp GetMpegTimestamp(string path)
+        {
+            var packetBuffer = new byte['Å'];
+
+            using (var fs = _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                fs.Read(packetBuffer, 0, packetBuffer.Length);
+            }
+
+            if (packetBuffer[0] == 71)
+            {
+                return TransportStreamTimestamp.None;
+            }
+
+            if ((packetBuffer[4] == 71) && (packetBuffer['Ä'] == 71))
+            {
+                if ((packetBuffer[0] == 0) && (packetBuffer[1] == 0) && (packetBuffer[2] == 0) && (packetBuffer[3] == 0))
+                {
+                    return TransportStreamTimestamp.Zero;
+                }
+
+                return TransportStreamTimestamp.Valid;
+            }
+
+            return TransportStreamTimestamp.None;
         }
 
         private void FetchFromDvdLib(Video item, IIsoMount mount)

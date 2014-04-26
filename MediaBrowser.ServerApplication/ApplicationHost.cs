@@ -2,6 +2,7 @@
 using MediaBrowser.Common;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Constants;
+using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Implementations;
 using MediaBrowser.Common.Implementations.ScheduledTasks;
@@ -56,6 +57,7 @@ using MediaBrowser.Server.Implementations.Library;
 using MediaBrowser.Server.Implementations.LiveTv;
 using MediaBrowser.Server.Implementations.Localization;
 using MediaBrowser.Server.Implementations.MediaEncoder;
+using MediaBrowser.Server.Implementations.Notifications;
 using MediaBrowser.Server.Implementations.Persistence;
 using MediaBrowser.Server.Implementations.ServerManager;
 using MediaBrowser.Server.Implementations.Session;
@@ -188,6 +190,8 @@ namespace MediaBrowser.ServerApplication
         private INotificationsRepository NotificationsRepository { get; set; }
         private IFileOrganizationRepository FileOrganizationRepository { get; set; }
         private IProviderRepository ProviderRepository { get; set; }
+
+        private INotificationManager NotificationManager { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationHost"/> class.
@@ -523,6 +527,9 @@ namespace MediaBrowser.ServerApplication
             LiveTvManager = new LiveTvManager(ServerConfigurationManager, FileSystemManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, TaskManager);
             RegisterSingleInstance(LiveTvManager);
 
+            NotificationManager = new NotificationManager(LogManager, UserManager);
+            RegisterSingleInstance(NotificationManager);
+
             var displayPreferencesTask = Task.Run(async () => await ConfigureDisplayPreferencesRepositories().ConfigureAwait(false));
             var itemsTask = Task.Run(async () => await ConfigureItemRepositories().ConfigureAwait(false));
             var userdataTask = Task.Run(async () => await ConfigureUserDataRepositories().ConfigureAwait(false));
@@ -705,6 +712,8 @@ namespace MediaBrowser.ServerApplication
             SessionManager.AddParts(GetExports<ISessionControllerFactory>());
 
             ChannelManager.AddParts(GetExports<IChannel>());
+
+            NotificationManager.AddParts(GetExports<INotificationService>());
         }
 
         /// <summary>
@@ -896,7 +905,7 @@ namespace MediaBrowser.ServerApplication
                 CanSelfRestart = CanSelfRestart,
                 CanSelfUpdate = CanSelfUpdate,
                 WanAddress = GetWanAddress(),
-                HasUpdateAvailable = _hasUpdateAvailable,
+                HasUpdateAvailable = HasUpdateAvailable,
                 SupportsAutoRunAtStartup = SupportsAutoRunAtStartup,
                 TranscodingTempPath = ApplicationPaths.TranscodingTempPath,
                 IsRunningAsService = IsRunningAsService,
@@ -989,7 +998,25 @@ namespace MediaBrowser.ServerApplication
             }
         }
 
+        public event EventHandler HasUpdateAvailableChanged;
+
         private bool _hasUpdateAvailable;
+        public bool HasUpdateAvailable
+        {
+            get { return _hasUpdateAvailable; }
+            set
+            {
+                var fireEvent = value && !_hasUpdateAvailable;
+
+                _hasUpdateAvailable = value;
+
+                if (fireEvent)
+                {
+                    EventHelper.FireEventIfNotNull(HasUpdateAvailableChanged, this, EventArgs.Empty, Logger);
+                }
+            }
+        }
+
         /// <summary>
         /// Checks for update.
         /// </summary>
@@ -1003,7 +1030,7 @@ namespace MediaBrowser.ServerApplication
             var version = InstallationManager.GetLatestCompatibleVersion(availablePackages, Constants.MbServerPkgName, null, ApplicationVersion,
                                                            ConfigurationManager.CommonConfiguration.SystemUpdateLevel);
 
-            _hasUpdateAvailable = version != null;
+            HasUpdateAvailable = version != null;
 
             return version != null ? new CheckForUpdateResult { AvailableVersion = version.version, IsUpdateAvailable = version.version > ApplicationVersion, Package = version } :
                        new CheckForUpdateResult { AvailableVersion = ApplicationVersion, IsUpdateAvailable = false };
@@ -1020,7 +1047,7 @@ namespace MediaBrowser.ServerApplication
         {
             await InstallationManager.InstallPackage(package, progress, cancellationToken).ConfigureAwait(false);
 
-            _hasUpdateAvailable = false;
+            HasUpdateAvailable = false;
 
             OnApplicationUpdated(package.version);
         }

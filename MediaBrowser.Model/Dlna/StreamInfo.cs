@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Model.Dlna
 {
@@ -297,7 +298,7 @@ namespace MediaBrowser.Model.Dlna
             {
                 if (IsDirectStream)
                 {
-                    return MediaSource.Bitrate;
+                    return MediaSource.Size;
                 }
 
                 if (RunTimeTicks.HasValue)
@@ -339,11 +340,13 @@ namespace MediaBrowser.Model.Dlna
         {
             get
             {
-                var stream = TargetVideoStream;
-
+                var defaultValue = string.Equals(Container, "m2ts", StringComparison.OrdinalIgnoreCase)
+                    ? TransportStreamTimestamp.Valid
+                    : TransportStreamTimestamp.None;
+                
                 return !IsDirectStream
-                    ? TransportStreamTimestamp.VALID
-                    : stream == null ? TransportStreamTimestamp.VALID : stream.Timestamp;
+                    ? defaultValue
+                    : MediaSource == null ? defaultValue : MediaSource.Timestamp ?? TransportStreamTimestamp.None;
             }
         }
 

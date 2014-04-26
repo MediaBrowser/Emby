@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -1335,8 +1336,8 @@ namespace MediaBrowser.Api.Playback
             }
 
             var item = string.IsNullOrEmpty(request.MediaSourceId) ?
-                DtoService.GetItemByDtoId(request.Id) :
-                DtoService.GetItemByDtoId(request.MediaSourceId);
+                LibraryManager.GetItemById(request.Id) :
+                LibraryManager.GetItemById(request.MediaSourceId);
 
             if (user != null && item.GetPlayAccess(user) != PlayAccess.Full)
             {
@@ -1435,6 +1436,9 @@ namespace MediaBrowser.Api.Playback
                     state.PlayableStreamFileNames = video.PlayableStreamFileNames == null
                         ? new List<string>()
                         : video.PlayableStreamFileNames.ToList();
+
+                    state.DeInterlace = string.Equals(video.Container, "wtv", StringComparison.OrdinalIgnoreCase);
+                    state.InputTimestamp = video.Timestamp ?? TransportStreamTimestamp.None;
                 }
 
                 state.RunTimeTicks = item.RunTimeTicks;

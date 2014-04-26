@@ -3,7 +3,9 @@
   <Name>Samsung Smart TV</Name>
   <Identification>
     <ModelUrl>samsung.com</ModelUrl>
-    <Headers />
+    <Headers>
+      <HttpHeaderInfo name="User-Agent" value="SEC_" match="Substring" />
+    </Headers>
   </Identification>
   <FriendlyName>Media Browser</FriendlyName>
   <Manufacturer>Media Browser</Manufacturer>
@@ -26,9 +28,9 @@
   <TimelineOffsetSeconds>0</TimelineOffsetSeconds>
   <RequiresPlainVideoItems>false</RequiresPlainVideoItems>
   <RequiresPlainFolders>false</RequiresPlainFolders>
-  <ContentDirectoryRootAttributes>
+  <XmlRootAttributes>
     <XmlAttribute name="xmlns:sec" value="http://www.sec.co.kr/" />
-  </ContentDirectoryRootAttributes>
+  </XmlRootAttributes>
   <DirectPlayProfiles>
     <DirectPlayProfile container="asf" audioCodec="mp3,ac3,wmav2,wmapro,wmavoice" videoCodec="h264,mpeg4,mjpeg" type="Video" />
     <DirectPlayProfile container="avi" audioCodec="mp3,ac3,dca" videoCodec="h264,mpeg4,mjpeg" type="Video" />

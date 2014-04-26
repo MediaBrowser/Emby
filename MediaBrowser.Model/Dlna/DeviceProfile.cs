@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Model.Dlna
 {
@@ -70,7 +72,7 @@ namespace MediaBrowser.Model.Dlna
         public bool RequiresPlainVideoItems { get; set; }
         public bool RequiresPlainFolders { get; set; }
 
-        public XmlAttribute[] ContentDirectoryRootAttributes { get; set; }
+        public XmlAttribute[] XmlRootAttributes { get; set; }
 
         /// <summary>
         /// Gets or sets the direct play profiles.
@@ -97,7 +99,7 @@ namespace MediaBrowser.Model.Dlna
             CodecProfiles = new CodecProfile[] { };
             ContainerProfiles = new ContainerProfile[] { };
 
-            ContentDirectoryRootAttributes = new XmlAttribute[] { };
+            XmlRootAttributes = new XmlAttribute[] { };
             
             SupportedMediaTypes = "Audio,Photo,Video";
         }
