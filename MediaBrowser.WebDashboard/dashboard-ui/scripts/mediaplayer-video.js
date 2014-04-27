@@ -22,11 +22,8 @@
         var fullscreenExited = false;
         var idleState = true;
         var remoteFullscreen = false;
-
         var muteButton = null;
         var unmuteButton = null;
-        var volumeSlider = null;
-        var positionSlider;
         var isPositionSliderActive;
         var currentTimeElement;
 
@@ -181,13 +178,13 @@
             unmuteButton = $('.unmuteButton', parent);
             currentTimeElement = $('.currentTime', parent);
 
-            positionSlider = $(".positionSlider", parent).on('slidestart', function (e) {
+            self.positionSlider = $(".positionSlider", parent).on('slidestart', function (e) {
 
                 isPositionSliderActive = true;
 
             }).on('slidestop', onPositionSliderChange);
 
-            volumeSlider = $('.volumeSlider', parent).on('slidestop', function () {
+            self.volumeSlider = $('.volumeSlider', parent).on('slidestop', function () {
 
                 var vol = this.value;
 
@@ -249,35 +246,6 @@
 
                 idleHandler(this);
 
-            });
-
-            var trackChange = false;
-
-            var tooltip = $('<div id="slider-tooltip"></div>');
-
-            $("#videoControls .positionSliderContainer .slider").on("change", function (e) {
-                if (!trackChange) return;
-
-                var pct = $(this).val();
-
-                var time = self.currentDurationTicks * (Number(pct) * .01);
-
-                var tooltext = Dashboard.getDisplayTime(time)
-
-                tooltip.text(tooltext);
-
-                console.log("slidin", pct, self.currentDurationTicks, time);
-
-            }).on("slidestart", function (e) {
-                trackChange = true;
-
-                var handle = $("#videoControls .positionSliderContainer .ui-slider-handle");
-
-                handle.after(tooltip);
-            }).on("slidestop", function (e) {
-                trackChange = false;
-
-                tooltip.remove();
             });
         });
 
@@ -937,7 +905,7 @@
                 this.volume = initialVolume;
             });
 
-            volumeSlider.val(initialVolume).slider('refresh');
+            self.volumeSlider.val(initialVolume).slider('refresh');
             updateVolumeButtons(initialVolume);
 
             video.on("volumechange", function (e) {
@@ -980,7 +948,7 @@
 
                 if (!isPositionSliderActive) {
 
-                    self.setCurrentTime(self.getCurrentTicks(this), positionSlider, currentTimeElement);
+                    self.setCurrentTime(self.getCurrentTicks(this), self.positionSlider, currentTimeElement);
                 }
 
             }).on("error", function () {
