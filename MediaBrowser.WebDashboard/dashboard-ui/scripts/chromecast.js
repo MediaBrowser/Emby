@@ -77,6 +77,11 @@
         // Playback display element id
         this.playback = "playTime";
 
+        // bind once - commit 2ebffc2271da0bc5e8b13821586aee2a2e3c7753
+        this.errorHandler = this.onError.bind(this);
+        this.incrementMediaTimeHandler = this.incrementMediaTime.bind(this);
+        this.mediaStatusUpdateHandler = this.onMediaStatusUpdate.bind(this);
+
         this.initializeCastPlayer();
     };
 
@@ -110,7 +115,8 @@
 
         console.log('chromecast.initialize');
 
-        chrome.cast.initialize(apiConfig, this.onInitSuccess.bind(this), this.onError.bind(this));
+        chrome.cast.initialize(apiConfig, this.onInitSuccess.bind(this), this.errorHandler);
+
     };
 
     /**
@@ -225,7 +231,7 @@
      */
     CastPlayer.prototype.stopApp = function () {
         this.session.stop(this.onStopAppSuccess.bind(this, 'Session stopped'),
-            this.onError.bind(this));
+            this.errorHandler);
 
     };
 
@@ -244,7 +250,7 @@
      * Loads media into a running receiver application
      * @param {Number} mediaIndex An index number to indicate current media content
      */
-    CastPlayer.prototype.loadMedia = function (user, item, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex) {
+    CastPlayer.prototype.loadMedia = function (user, item, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreams) {
 
         if (!this.session) {
             console.log("no session");
@@ -254,14 +260,23 @@
         this.currentMediaOffset = startTimeTicks || 0;
 
         var maxBitrate = 12000000;
+
+        var subtitleStreamIndex;
+
+        if (subtitleStreams.length > 0) {
+            subtitleStreamIndex = subtitleStreams[0].Index;
+        }
+
         var mediaInfo = getMediaSourceInfo(user, item, maxBitrate, mediaSourceId, audioStreamIndex, subtitleStreamIndex);
 
         var streamUrl = getStreamUrl(item, mediaInfo, startTimeTicks, maxBitrate);
 
         var castMediaInfo = new chrome.cast.media.MediaInfo(streamUrl);
 
-        castMediaInfo.customData = getCustomData(item, mediaInfo.mediaSource.Id, startTimeTicks);
+        castMediaInfo.customData = getCustomData(item, mediaInfo.mediaSource.Id, startTimeTicks, subtitleStreams);
         castMediaInfo.metadata = getMetadata(item);
+
+        console.log("custom", castMediaInfo.customData);
 
         if (mediaInfo.streamContainer == 'm3u8') {
             castMediaInfo.contentType = 'application/x-mpegURL';
@@ -287,14 +302,14 @@
      */
     CastPlayer.prototype.onMediaDiscovered = function (how, mediaSession) {
 
-        console.log("chromecast new media session ID:" + mediaSession.mediaSessionId + ' (' + how + ')');
+        console.log("chromecast new media session ID:" + mediaSession.mediaSessionId + ' (' + how + ')', mediaSession);
         this.currentMediaSession = mediaSession;
         this.currentMediaTime = mediaSession.currentTime;
 
         if (how == 'loadMedia') {
             this.castPlayerState = PLAYER_STATE.PLAYING;
             clearInterval(this.timer);
-            this.startProgressTimer(this.incrementMediaTime);
+            this.startProgressTimer();
         }
 
         if (how == 'activeSession') {
@@ -303,11 +318,11 @@
 
         if (this.castPlayerState == PLAYER_STATE.PLAYING) {
             // start progress timer
-            this.startProgressTimer(this.incrementMediaTime);
+            this.startProgressTimer();
         }
 
-        this.currentMediaSession.addUpdateListener(this.onMediaStatusUpdate.bind(this));
-        this.currentMediaDuration = mediaSession.media.customData.runTimeTicks;
+        this.currentMediaSession.addUpdateListener(this.mediaStatusUpdateHandler);
+        this.currentMediaDuration = mediaSession.media.duration * 10000000;
     };
 
     /**
@@ -362,18 +377,18 @@
             case PLAYER_STATE.PAUSED:
                 this.currentMediaSession.play(null,
                   this.mediaCommandSuccessCallback.bind(this, "playing started for " + this.currentMediaSession.sessionId),
-                  this.onError.bind(this));
-                this.currentMediaSession.addUpdateListener(this.onMediaStatusUpdate.bind(this));
+                  this.errorHandler);
+                this.currentMediaSession.addUpdateListener(this.mediaStatusUpdateHandler);
                 this.castPlayerState = PLAYER_STATE.PLAYING;
                 // start progress timer
                 clearInterval(this.timer);
-                this.startProgressTimer(this.incrementMediaTime);
+                this.startProgressTimer();
                 break;
             case PLAYER_STATE.IDLE:
             case PLAYER_STATE.LOADING:
             case PLAYER_STATE.STOPPED:
                 this.loadMedia(this.currentMediaIndex);
-                this.currentMediaSession.addUpdateListener(this.onMediaStatusUpdate.bind(this));
+                this.currentMediaSession.addUpdateListener(this.mediaStatusUpdateHandler);
                 this.castPlayerState = PLAYER_STATE.PLAYING;
                 break;
             default:
@@ -394,7 +409,7 @@
             this.castPlayerState = PLAYER_STATE.PAUSED;
             this.currentMediaSession.pause(null,
               this.mediaCommandSuccessCallback.bind(this, "paused " + this.currentMediaSession.sessionId),
-              this.onError.bind(this));
+              this.errorHandler);
             clearInterval(this.timer);
         }
     };
@@ -410,7 +425,7 @@
 
         this.currentMediaSession.stop(null,
           this.mediaCommandSuccessCallback.bind(this, "stopped " + this.currentMediaSession.sessionId),
-          this.onError.bind(this));
+          this.errorHandler);
         this.castPlayerState = PLAYER_STATE.STOPPED;
         clearInterval(this.timer);
     };
@@ -429,12 +444,12 @@
             this.currentVolume = vol || 1;
             this.session.setReceiverVolumeLevel(this.currentVolume,
               this.mediaCommandSuccessCallback.bind(this),
-              this.onError.bind(this));
+              this.errorHandler);
         }
         else {
             this.session.setReceiverMuted(true,
               this.mediaCommandSuccessCallback.bind(this),
-              this.onError.bind(this));
+              this.errorHandler);
         }
     };
 
@@ -487,7 +502,7 @@
         request.currentTime = this.currentMediaTime;
         this.currentMediaSession.seek(request,
           this.onSeekSuccess.bind(this, 'media seek done'),
-          this.onError.bind(this));
+          this.errorHandler);
         this.castPlayerState = PLAYER_STATE.SEEKING;
     };
 
@@ -538,12 +553,18 @@
      * Update progress bar based on timer  
      */
     CastPlayer.prototype.updateProgressBarByTimer = function () {
+        var currentMedia = this.session.media[0];
+
         if (!this.currentMediaTime) {
-            this.currentMediaDuration = this.session.media[0].currentTime;
+            this.currentMediaTime = currentMedia.currentTime;
         }
 
         if (!this.currentMediaDuration) {
-            this.currentMediaDuration = this.session.media[0].media.customData.runTimeTicks;
+            if (currentMedia.media.streamType != "live") {
+                this.currentMediaDuration = currentMedia.media.duration;
+            } else {
+                this.currentMediaDuration = currentMedia.media.customData.runtimeTicks;
+            }
         }
 
         var pp = 0;
@@ -571,14 +592,14 @@
     /**
     * @param {function} A callback function for the fucntion to start timer 
     */
-    CastPlayer.prototype.startProgressTimer = function(callback) {
+    CastPlayer.prototype.startProgressTimer = function() {
         if(this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
 
         // start progress timer
-        this.timer = setInterval(callback.bind(this), this.timerStep);
+        this.timer = setInterval(this.incrementMediaTimeHandler, this.timerStep);
     };
 
     var castPlayer = new CastPlayer();
@@ -784,17 +805,25 @@
         };
     }
 
-    function getCustomData(item, mediaSourceId, startTimeTicks) {
+    function getCustomData(item, mediaSourceId, startTimeTicks, subtitleStreams) {
+        var subtitles = [];
+        if (subtitleStreams.length > 0) {
+            $.each(subtitleStreams, function(i, d) {
+                subtitles.push({ src: ApiClient.serverAddress() + '/mediabrowser/videos/' + item.Id + '/subtitles/' + d.Index });
+            });
+        }
 
         return {
-
             serverAddress: ApiClient.serverAddress(),
             itemId: item.Id,
             userId: Dashboard.getCurrentUserId(),
             deviceName: ApiClient.deviceName(),
-            //deviceId: ApiClient.deviceId(),
             startTimeTicks: startTimeTicks || 0,
-            runTimeTicks: item.RunTimeTicks
+            runtimeTicks: item.RunTimeTicks,
+            subtitles: {
+                tracks: subtitles,
+                active: 0
+            }
         };
 
     }
@@ -1075,7 +1104,20 @@
                 castPlayer.playMedia();
             } else if (options.items) {
                 Dashboard.getCurrentUser().done(function (user) {
-                    castPlayer.loadMedia(user, options.items[self.playlistIndex++], options.startPositionTicks);
+                    var item = options.items[self.playlistIndex++];
+
+                    var audioStream = item.MediaSources[0].MediaStreams.filter(function (i) {
+                        return i.Type == "Audio";
+                    });
+                    var audioStreamIndex = item.MediaSources[0].MediaStreams.indexOf(audioStream[0]);
+
+                    var subtitleStreams = item.MediaSources[0].MediaStreams.filter(function (d) {
+                        return d.Codec == "vtt";
+                    });
+
+                    console.log("options", options, audioStreamIndex, subtitleStreams);
+
+                    castPlayer.loadMedia(user, item, options.startPositionTicks, item.Id, audioStreamIndex, subtitleStreams);
                 });
             } else {
                 var userId = Dashboard.getCurrentUserId();
@@ -1257,14 +1299,14 @@
         self.getCurrentTargetInfo = function () {
             
             var appName = null;
-            if (castPlayer.session && castPlayer.session.receiver && castPlayer.session.friendlyName) {
-                appName = castPlayer.session.friendlyName;
+            if (castPlayer.session && castPlayer.session.receiver && castPlayer.session.receiver.friendlyName) {
+                appName = castPlayer.session.receiver.friendlyName;
             }
 
             return {
                 name: PlayerName,
                 id: PlayerName,
-                playerName: self.name,
+                playerName: self.name, // TODO: PlayerName == self.name, so do we need to use either/or?
                 playableMediaTypes: ["Audio", "Video"],
                 isLocalPlayer: false,
                 appName: appName,
@@ -1296,7 +1338,11 @@
             self.currentTimeElement.html(timeText);
         };
 
-        self.changeStream = self.seek = function (position) {
+        self.changeStream = function (position) {
+            castPlayer.seekMedia(position);
+        };
+
+        self.seek = function (position) {
             castPlayer.seekMedia(position);
         };
 

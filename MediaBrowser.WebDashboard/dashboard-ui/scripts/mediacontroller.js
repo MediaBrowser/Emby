@@ -52,6 +52,10 @@
         var currentPlayer;
         var currentTargetInfo;
         var players = [];
+        var isPaused = true;
+        var keyEvent = "keydown";
+        var keyOther = "keypress keyup";
+        var keys = new bindKeys(self);
 
         self.registerPlayer = function (player) {
 
@@ -60,6 +64,10 @@
             if (player.isLocalPlayer) {
                 monitorPlayer(player);
             }
+        };
+
+        self.activePlayer = function () {
+            return currentPlayer;
         };
 
         self.getPlayerInfo = function () {
@@ -145,6 +153,11 @@
             return deferred.promise();
         };
 
+        self.getPlayerState = function() {
+
+            return currentPlayer.getPlayerState();
+        };
+
         self.play = function (options) {
 
             if (typeof (options) === 'string') {
@@ -152,6 +165,9 @@
             }
 
             currentPlayer.play(options);
+
+            $(window).on(keyEvent, keys.keyBinding);
+            $(window).on(keyOther, keys.keyPrevent);
         };
 
         self.shuffle = function (id) {
@@ -236,6 +252,9 @@
 
         self.stop = function () {
             currentPlayer.stop();
+
+            $(window).off(keyEvent, keys.keyBinding);
+            $(window).off(keyOther, keys.keyPrevent);
         };
 
         self.unpause = function () {
@@ -284,6 +303,10 @@
 
         self.shuffle = function (id) {
             currentPlayer.shuffle(id);
+        };
+
+        self.getVolume = function () {
+            return localStorage.getItem("volume") || 0.5;
         };
     }
 
@@ -482,6 +505,291 @@
         });
     }
 
+    function positionSliderTooltip() {
+        var trackChange = false;
+
+        var slider = $(".positionSliderContainer");
+
+        var tooltip;
+
+        if (!slider) return;
+
+        $(".slider", slider).on("change", function (e) {
+
+            if (!trackChange) return;
+
+            var player = MediaController.activePlayer();
+
+            var ticks = player.currentDurationTicks;
+
+            var pct = $(this).slider().val();
+
+            var time = ticks * (Number(pct) * .01);
+
+            var tooltext = Dashboard.getDisplayTime(time)
+
+            tooltip.text(tooltext);
+
+        }).on("slidestart", function (e) {
+
+            trackChange = true;
+
+            var handle = $(".ui-slider-handle", slider);
+
+            tooltip = createTooltip(handle);
+            
+        }).on("slidestop", function (e) {
+
+            trackChange = false;
+
+            tooltip.remove();
+        });
+    }
+
+    function createTooltip(handle) {
+        var tooltip = $('<div id="slider-tooltip"></div>');
+
+        handle.after(tooltip);
+
+        return tooltip;
+    }
+
+    function bindKeys(controller) {
+
+        var self = this;
+
+        var position = 0;
+        var newPosition = 0;
+        var seek;
+        var tooltip;
+        var slideVol = null;
+
+        self.keyBinding = function (e) {
+
+            if (bypass()) return;
+
+            console.log("keyCode", e.keyCode);
+
+            if (keyResult[e.keyCode]) {
+                e.preventDefault();
+                keyResult[e.keyCode](e);
+            }
+        }
+
+        self.keyPrevent = function (e) {
+
+            if (bypass()) return;
+
+            var codes = [ 32, 38, 40, 37, 39, 81, 77, 65, 84, 83, 70 ];
+
+            if (codes.indexOf(e.keyCode) != -1) {
+                e.preventDefault();
+            }
+        }
+
+        var keyResult = {};
+        keyResult[32] = function () { // spacebar
+
+            controller.getPlayerState().then(function (result) {
+
+                    var state = result.PlayState;
+
+                    if (!state) return;
+
+                    if (state.IsPaused) {
+                        controller.unpause();
+                    } else {
+                        controller.pause();
+                    }
+                });
+        }
+
+        keyResult[38] = function() { // up arrow
+            controller.volumeUp();
+            var vol = controller.getVolume();
+            setVolume(vol);
+        }
+
+        keyResult[40] = function() { // down arrow
+            controller.volumeDown();
+            var vol = controller.getVolume();
+            setVolume(vol);
+        }
+
+        keyResult[37] = function(e) { // left
+            setPosition(37, e.shiftKey);
+        }
+
+        keyResult[39] = function(e) { // right arrow
+            setPosition(39, e.shiftKey);
+        }
+
+        keyResult[81] = function(e) { // q
+            var supported = checkSupport("GoToSettings");
+            
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showQualityFlyout();
+            } catch (err) {}
+        }
+
+        keyResult[77] = function(e) { // m
+            var supported = checkSupport("Mute") && checkSupport("Unmute");
+            
+            if (!supported) return;
+
+            toggleMute();
+        }
+
+        keyResult[65] = function(e) { // a
+            var supported = checkSupport("SetAudioStreamIndex");
+            
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showAudioTracksFlyout();
+            } catch (err) {}
+        }
+
+        keyResult[84] = function(e) { // t
+            var supported = checkSupport("SetSubtitleStreamIndex");
+            
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showSubtitleMenu();
+            } catch (err) {}
+        }
+
+        keyResult[83] = function(e) { // s
+            var supported = checkSupport("DisplayContent");
+            
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showChaptersFlyout();
+            } catch (err) {}
+        }
+
+        keyResult[70] = function(e) { // f
+            var supported = checkSupport("ToggleFullscreen");
+            
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.toggleFullscreen();
+            } catch (err) {}
+        }
+
+        var bypass = function () {
+            // Get active elem to see what type it is
+            var active = document.activeElement;
+            var type = active.type || active.tagName.toLowerCase();
+            return (type === "text" || type === "select" || type === "textarea");
+        } 
+
+        function getPlayer() {
+            var player;
+
+            try {
+                player = controller.activePlayer();
+            } catch (err) {}
+
+            return player;
+        }
+
+        function setVolume(vol) {
+            var player = getPlayer();
+            if (!player) return;
+
+            var slider = player.volumeSlider;
+
+            if (slider) {
+                slider.val(vol).slider("refresh");
+            }            
+        }
+
+        function setPosition(code, shift) {
+            var player = getPlayer();
+            if (!player) return;
+
+            if (newPosition == 0) {
+                position = player.getCurrentTicks();
+                newPosition = position;
+            }
+
+            clearTimeout(seek);
+            
+            if (!tooltip) {
+                tooltip = createTooltip(player.positionSlider);
+            }
+
+            var seconds = 10;
+            
+            if (shift) {
+                seconds = 60;
+            }
+
+            if (code == 39) {
+               newPosition += (10000000 * seconds);
+            } else if (code == 37) {
+               newPosition -= (10000000 * seconds);
+            } else {
+                cleanupTooltip();
+                return;
+            }
+
+            tooltip.text(Dashboard.getDisplayTime(newPosition));
+
+            seek = setTimeout(function () {
+                controller.seek(newPosition);
+                cleanupTooltip();
+            }, 500);
+        }
+
+        function cleanupTooltip() {
+            tooltip.remove();
+            tooltip = null;
+            position = 0;
+            newPosition = 0;
+        }
+
+        function toggleMute() {
+            var vol = controller.getVolume();
+
+            if (slideVol == null) slideVol = vol;
+
+            if (slideVol == 0) {
+                controller.unMute();
+                slideVol = vol;
+            } else {
+                controller.mute();
+                slideVol = 0;
+            }
+
+            setVolume(slideVol);
+        }
+
+        function checkSupport(type) {
+            var info = controller.getPlayerInfo();
+
+            if (!info) return;
+
+            return info.supportedCommands.indexOf(type) != -1;
+        }
+    }
+
     $(document).on('headercreated', ".libraryPage", function () {
 
         var page = this;
@@ -507,6 +815,10 @@
         if (enableMirrorMode) {
             mirrorItem(info);
         }
+    });
+
+    $(function () {
+        positionSliderTooltip();
     });
 
 })(jQuery, window);

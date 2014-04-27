@@ -451,3 +451,13 @@
     overflow: hidden;
     padding-left: 5px;
 }
+
+::cue {
+    -webkit-stroke-width: 2px;
+    -webkit-stroke-color: #000;
+    -webkit-fill-color: #ffdd00;
+    color: #ffdd00;
+    font: 1.1em sans-serif;
+    background-color: transparent;
+    text-shadow: 0 0 10px #000;
+}
