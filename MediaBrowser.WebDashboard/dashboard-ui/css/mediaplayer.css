@@ -21,7 +21,7 @@
     display: inline-block;
     font-weight: normal;
     position: relative;
-    top: -7px;
+    top: -12px;
     margin: 0 10px 0 3px;
     max-width: 200px;
     overflow: hidden;
@@ -40,7 +40,7 @@
     .nowPlayingImage img {
         height: 40px;
         margin-right: .5em;
-        vertical-align: bottom;
+        vertical-align: baseline;
     }
 
 .mediaButton img {
@@ -75,8 +75,19 @@
     width: 130px;
 }
 
+#nowPlayingBar {
+    padding-bottom: 10px;
+}
+
 #nowPlayingBar .sliderContainer {
     margin-top: 14px;
+}
+
+#nowPlayingBar .positionSliderContainer {
+    margin-top: 0;
+    display: block;
+    width: 100%;
+    height: 20px;
 }
 
 .volumeSliderContainer {

@@ -21,7 +21,13 @@
         var html = '';
 
         html += '<div id="nowPlayingBar" class="nowPlayingBar" style="display:none;">';
-        html += '<div style="display:inline-block;width:12px;"></div>';
+
+        html += '<div class="positionSliderContainer sliderContainer">';
+        html += '<input type="range" class="mediaSlider positionSlider slider" step=".001" min="0" max="100" value="0" style="display:none;" data-mini="true" data-theme="a" data-highlight="true" />';
+        html += '</div>';
+
+        html += '<div style="display:inline-block;width:10px;"></div>';
+
         html += '<a id="playlistButton" class="mediaButton playlistButton" href="playlist.html" data-role="button" data-icon="bullets" data-iconpos="notext" data-inline="true" title="Playlist">Playlist</a>';
         html += '<button id="previousTrackButton" class="mediaButton previousTrackButton" title="Previous Track" type="button" data-icon="previous-track" data-iconpos="notext" data-inline="true">Previous Track</button>';
         html += '<button id="playButton" class="mediaButton unpauseButton" title="Play" type="button" data-icon="play" data-iconpos="notext" data-inline="true">Play</button>';
@@ -31,10 +37,6 @@
         html += '<button id="nextTrackButton" class="mediaButton nextTrackButton" title="Next Track" type="button" data-icon="next-track" data-iconpos="notext" data-inline="true">Next Track</button>';
 
         html += '<div id="mediaElement"></div>';
-
-        html += '<div class="positionSliderContainer sliderContainer">';
-        html += '<input type="range" class="mediaSlider positionSlider slider" step=".001" min="0" max="100" value="0" style="display:none;" data-mini="true" data-theme="a" data-highlight="true" />';
-        html += '</div>';
 
         html += '<div class="currentTime"></div>';
         html += '<div class="nowPlayingImage"></div>';
