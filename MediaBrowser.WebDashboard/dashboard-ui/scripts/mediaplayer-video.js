@@ -849,6 +849,12 @@
 
             })) + seekParam;
 
+            var vttSubtitleStreams = item.MediaSources[0].MediaStreams.filter(function (d) {
+                return d.Codec == "vtt";
+            });
+
+            console.log("vtt", vttSubtitleStreams);
+
             //======================================================================================>
 
             // Show loading animation
@@ -884,6 +890,13 @@
             }
 
             html += '<source type="video/mp4" src="' + mp4VideoUrl + '" />';
+
+            for (var i = 0; i < vttSubtitleStreams.length; i++) {
+                var vtt = vttSubtitleStreams[i];
+                var url = ApiClient.getUrl('videos/' + item.Id + '/subtitles/' + vtt.Index);
+
+                html += '<track src="' + url + '" />';
+            }
 
             html += '</video>';
 
