@@ -405,7 +405,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             get
             {
-                return new[] { ".srt", ".ssa", ".ass" };
+                return new[] { ".srt", ".ssa", ".ass", ".vtt" };
             }
         }
 

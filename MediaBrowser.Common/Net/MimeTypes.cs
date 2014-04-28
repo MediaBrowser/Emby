@@ -222,6 +222,10 @@ namespace MediaBrowser.Common.Net
             {
                 return "text/plain";
             }
+            if (ext.Equals(".vtt", StringComparison.OrdinalIgnoreCase))
+            {
+                return "text/vtt";
+            }
 
             throw new ArgumentException("Argument not supported: " + path);
         }
