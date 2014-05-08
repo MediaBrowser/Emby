@@ -102,6 +102,7 @@
     <Compile Include="Security\PluginSecurityManager.cs" />
     <Compile Include="Serialization\JsonSerializer.cs" />
     <Compile Include="Serialization\XmlSerializer.cs" />
+    <Compile Include="SystemHelper\SystemHelper.cs" />
     <Compile Include="Updates\InstallationManager.cs" />
     <Compile Include="Security\UsageReporter.cs" />
   </ItemGroup>

@@ -227,6 +227,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 // The EndGetContext() method, as with all Begin/End asynchronous methods in the .NET Framework,
                 // blocks until there is a request to be processed or some type of data is available.
                 context = listener.EndGetContext(asyncResult);
+
+                //reset the system idle timer so the PC doesn't go into standby
+                MediaBrowser.Common.Implementations.SystemHelper.SystemHelper.ResetStandbyTimer();
             }
             catch (Exception ex)
             {
