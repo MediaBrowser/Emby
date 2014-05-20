@@ -717,7 +717,31 @@
 
                 var mediaSourceCount = item.MediaSourceCount || 1;
 
-                var href = options.linkItem === false ? '#' : LibraryBrowser.getHref(item, options.context);
+                var hrefItem = item;
+
+                // If the item is grouped we need to fudge a bit
+                if (isGrouped) {
+                    if (!options.groupType) {
+                        if (item.MediaType == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist") {
+                            options.groupType = "MusicAlbum";
+                        } else if (item.MediaType == "Video" || item.Type == "Season" || item.Type == "Series") {
+                            options.groupType = "Season";
+                        }
+                    }
+
+                    switch (options.groupType) {
+                        case "Season":
+                            hrefItem.Type = "Season";
+                            hrefItem.Id = hrefItem.SeasonId;
+                            break;
+                        case "MusicAlbum":
+                            hrefItem.Type = "MusicAlbum";
+                            hrefItem.Id = hrefItem.AlbumId;
+                            break;
+                    }
+                }
+
+                var href = options.linkItem === false ? '#' : LibraryBrowser.getHref(hrefItem, options.context);
 
                 html += '<a data-itemid="' + item.Id + '" class="' + cssClass + '" data-mediasourcecount="' + mediaSourceCount + '" href="' + href + '">';
 
@@ -1991,7 +2015,7 @@
         groupItmes: function (individualItems, limit) {
 
             var results = individualItems;
-            var series = {};
+            var group = {};
             var items = [], list = [];
             var cur;
 
@@ -2002,14 +2026,28 @@
                 }
 
                 cur = results[i];
-                if (cur.Type != "Episode") {
-                    series[cur.Name] = { item: cur, count: 1 };
-                    list.push(series[cur.Name]);
-                } else if (!(cur.SeriesName in series)) {
-                    series[cur.SeriesName] = { item: cur, count: 1 };
-                    list.push(series[cur.SeriesName]);
+
+                var name;
+                switch (cur.Type) {
+                    case "Episode":
+                        name = cur.SeriesName;
+                        break;
+                    case "Audio":
+                        name = cur.Album;
+                        break;
+                }
+
+                if (!name) {
+                    // Not music/series, so just add it
+                    group[cur.Name] = { item: cur, count: 1 };
+                    list.push(group[cur.Name]);
+                } else if (!(cur.SeriesName in group)) {
+                    // Add a new series/album
+                    group[name] = { item: cur, count: 1 };
+                    list.push(group[name]);
                 } else {
-                    series[cur.SeriesName].count += 1;
+                    // Increment counter for item
+                    group[name].count += 1;
                 }
             }
 
