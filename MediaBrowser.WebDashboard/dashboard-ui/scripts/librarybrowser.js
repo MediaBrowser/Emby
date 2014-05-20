@@ -538,6 +538,7 @@
                 var background = null;
                 var width = null;
                 var height = null;
+                var isGrouped = (item.Type == "Episode" && item.MediaSourceCount > 1);
 
                 var forceName = false;
 
@@ -595,7 +596,7 @@
 
                     forceName = true;
                 }
-                else if (item.ImageTags && item.ImageTags.Primary) {
+                else if (item.ImageTags && item.ImageTags.Primary && !isGrouped) {
 
                     height = 400;
                     width = primaryImageAspectRatio ? Math.round(height * primaryImageAspectRatio) : null;
@@ -653,6 +654,15 @@
                     imgUrl = ApiClient.getThumbImageUrl(item, {
                         type: "Thumb",
                         maxwidth: 576
+                    });
+
+                }
+                else if (item.ParentBackdropImageTags && item.ParentBackdropImageTags.length) {
+
+                    imgUrl = ApiClient.getImageUrl(item.ParentBackdropItemId, {
+                        type: "Backdrop",
+                        maxwidth: 576,
+                        tag: item.ParentBackdropImageTags[0]
                     });
 
                 }
@@ -797,7 +807,7 @@
                     lines.push(item.EpisodeTitle ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || ""));
                 }
 
-                if (options.showTitle || forceName) {
+                if ((options.showTitle && !isGrouped) || forceName) {
 
                     lines.push(name);
                 }
@@ -1976,6 +1986,41 @@
             html += '</div>';
 
             return html;
+        },
+
+        groupItmes: function (individualItems, limit) {
+
+            var results = individualItems;
+            var series = {};
+            var items = [], list = [];
+            var cur;
+
+            // Get a list and counts of each
+            for (var i = 0, j = results.length; i < j; i++) {
+                if (list.length == limit) {
+                    break;
+                }
+
+                cur = results[i];
+                if (cur.Type != "Episode") {
+                    series[cur.Name] = { item: cur, count: 1 };
+                    list.push(series[cur.Name]);
+                } else if (!(cur.SeriesName in series)) {
+                    series[cur.SeriesName] = { item: cur, count: 1 };
+                    list.push(series[cur.SeriesName]);
+                } else {
+                    series[cur.SeriesName].count += 1;
+                }
+            }
+
+            // Put the items into the list to pass to the library browser
+            for (var i = 0, j = list.length; i < j; i++) {
+                var item = list[i].item;
+                item.MediaSourceCount = list[i].count;
+                items.push(item);
+            }
+
+            return items;
         }
 
     };

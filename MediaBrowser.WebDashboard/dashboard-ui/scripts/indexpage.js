@@ -247,11 +247,13 @@
 
         });
 
+        var limit = screenWidth >= 2400 ? 30 : (screenWidth >= 1920 ? 20 : (screenWidth >= 1440 ? 12 : (screenWidth >= 800 ? 12 : 8)));
+
         options = {
 
             SortBy: "DateCreated",
             SortOrder: "Descending",
-            Limit: screenWidth >= 2400 ? 30 : (screenWidth >= 1920 ? 20 : (screenWidth >= 1440 ? 12 : (screenWidth >= 800 ? 12 : 8))),
+            Limit: 200, // want a larger number in case of grouping, but not too large to slow things down
             Recursive: true,
             Fields: "PrimaryImageAspectRatio",
             Filters: "IsUnplayed,IsNotFolder",
@@ -261,9 +263,11 @@
 
         ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
 
+            var items = LibraryBrowser.groupItmes(result.Items, limit);
+
             $('#recentlyAddedItems', page).html(LibraryBrowser.getPosterViewHtml({
 
-                items: result.Items,
+                items: items,
                 preferThumb: true,
                 shape: 'backdrop',
                 showTitle: true,
