@@ -538,6 +538,7 @@
                 var background = null;
                 var width = null;
                 var height = null;
+                var isGrouped = (item.Type == "Episode" && item.MediaSourceCount > 1);
 
                 var forceName = false;
 
@@ -595,7 +596,7 @@
 
                     forceName = true;
                 }
-                else if (item.ImageTags && item.ImageTags.Primary) {
+                else if (item.ImageTags && item.ImageTags.Primary && !isGrouped) {
 
                     height = 400;
                     width = primaryImageAspectRatio ? Math.round(height * primaryImageAspectRatio) : null;
@@ -656,6 +657,15 @@
                     });
 
                 }
+                else if (item.ParentBackdropImageTags && item.ParentBackdropImageTags.length) {
+
+                    imgUrl = ApiClient.getImageUrl(item.ParentBackdropItemId, {
+                        type: "Backdrop",
+                        maxwidth: 576,
+                        tag: item.ParentBackdropImageTags[0]
+                    });
+
+                }
                 else if (item.MediaType == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist") {
 
                     if (item.Name && options.showTitle) {
@@ -707,7 +717,31 @@
 
                 var mediaSourceCount = item.MediaSourceCount || 1;
 
-                var href = options.linkItem === false ? '#' : LibraryBrowser.getHref(item, options.context);
+                var hrefItem = item;
+
+                // If the item is grouped we need to fudge a bit
+                if (isGrouped) {
+                    if (!options.groupType) {
+                        if (item.MediaType == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist") {
+                            options.groupType = "MusicAlbum";
+                        } else if (item.MediaType == "Video" || item.Type == "Season" || item.Type == "Series") {
+                            options.groupType = "Season";
+                        }
+                    }
+
+                    switch (options.groupType) {
+                        case "Season":
+                            hrefItem.Type = "Season";
+                            hrefItem.Id = hrefItem.SeasonId;
+                            break;
+                        case "MusicAlbum":
+                            hrefItem.Type = "MusicAlbum";
+                            hrefItem.Id = hrefItem.AlbumId;
+                            break;
+                    }
+                }
+
+                var href = options.linkItem === false ? '#' : LibraryBrowser.getHref(hrefItem, options.context);
 
                 html += '<a data-itemid="' + item.Id + '" class="' + cssClass + '" data-mediasourcecount="' + mediaSourceCount + '" href="' + href + '">';
 
@@ -797,7 +831,7 @@
                     lines.push(item.EpisodeTitle ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || ""));
                 }
 
-                if (options.showTitle || forceName) {
+                if ((options.showTitle && !isGrouped) || forceName) {
 
                     lines.push(name);
                 }
@@ -1976,6 +2010,55 @@
             html += '</div>';
 
             return html;
+        },
+
+        groupItmes: function (individualItems, limit) {
+
+            var results = individualItems;
+            var group = {};
+            var items = [], list = [];
+            var cur;
+
+            // Get a list and counts of each
+            for (var i = 0, j = results.length; i < j; i++) {
+                if (list.length == limit) {
+                    break;
+                }
+
+                cur = results[i];
+
+                var name;
+                switch (cur.Type) {
+                    case "Episode":
+                        name = cur.SeriesName;
+                        break;
+                    case "Audio":
+                        name = cur.Album;
+                        break;
+                }
+
+                if (!name) {
+                    // Not music/series, so just add it
+                    group[cur.Name] = { item: cur, count: 1 };
+                    list.push(group[cur.Name]);
+                } else if (!(cur.SeriesName in group)) {
+                    // Add a new series/album
+                    group[name] = { item: cur, count: 1 };
+                    list.push(group[name]);
+                } else {
+                    // Increment counter for item
+                    group[name].count += 1;
+                }
+            }
+
+            // Put the items into the list to pass to the library browser
+            for (var i = 0, j = list.length; i < j; i++) {
+                var item = list[i].item;
+                item.MediaSourceCount = list[i].count;
+                items.push(item);
+            }
+
+            return items;
         }
 
     };
