@@ -115,54 +115,61 @@
         }
 
         query.folderId = folderId;
-        
-        $.getJSON(ApiClient.getUrl("Channels/" + channelId + "/Items", query)).done(function (result) {
 
-            // Scroll back up so they can see the results from the beginning
-            $(document).scrollTop(0);
+        $.getJSON(ApiClient.getUrl("Channels/" + channelId + "/Features", query)).done(function (result) {
 
-            var html = '';
+            if (query.Limit > result.MaxPageSize) query.Limit = result.MaxPageSize;
 
-            $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, false, getPageSizes())).trigger('create');
+            $.getJSON(ApiClient.getUrl("Channels/" + channelId + "/Items", query)).done(function (result) {
 
-            updateFilterControls(page);
+                // Scroll back up so they can see the results from the beginning
+                $(document).scrollTop(0);
 
-            html = LibraryBrowser.getPosterViewHtml({
-                items: result.Items,
-                shape: "auto",
-                context: 'channels',
-                showTitle: true,
-                centerText: true,
-                coverImage: true
+                var html = '';
+
+                $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, false, getPageSizes())).trigger('create');
+
+                updateFilterControls(page);
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "auto",
+                    context: 'channels',
+                    showTitle: true,
+                    centerText: true,
+                    coverImage: true
+                });
+
+                html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, false, getPageSizes());
+
+                $('#items', page).html(html).trigger('create').createPosterItemMenus();
+
+                $('.btnNextPage', page).on('click', function () {
+                    query.StartIndex += query.Limit;
+                    reloadItems(page);
+                });
+
+                $('.btnPreviousPage', page).on('click', function () {
+                    query.StartIndex -= query.Limit;
+                    reloadItems(page);
+                });
+
+                $('.selectPageSize', page).on('change', function () {
+                    query.Limit = parseInt(this.value);
+                    query.StartIndex = 0;
+                    reloadItems(page);
+                });
+
+                LibraryBrowser.saveQueryValues(getSavedQueryId(), query);
+
+
+            }).always(function () {
+
+                hideLoadingMessage(page);
             });
 
-            html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, false, getPageSizes());
-
-            $('#items', page).html(html).trigger('create').createPosterItemMenus();
-
-            $('.btnNextPage', page).on('click', function () {
-                query.StartIndex += query.Limit;
-                reloadItems(page);
-            });
-
-            $('.btnPreviousPage', page).on('click', function () {
-                query.StartIndex -= query.Limit;
-                reloadItems(page);
-            });
-
-            $('.selectPageSize', page).on('change', function () {
-                query.Limit = parseInt(this.value);
-                query.StartIndex = 0;
-                reloadItems(page);
-            });
-
-            LibraryBrowser.saveQueryValues(getSavedQueryId(), query);
-
-
-        }).always(function () {
-
-            hideLoadingMessage(page);
         });
+        
     }
 
     function updateFilterControls(page) {
