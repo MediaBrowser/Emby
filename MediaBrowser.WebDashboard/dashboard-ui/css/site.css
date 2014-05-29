@@ -167,6 +167,9 @@ pre, textarea.pre {
     margin-left: 5px;
 }
 
+.ui-popup-screen {
+    cursor: wait;
+}
 
 .ui-popup-container {
     z-index: 99999;
