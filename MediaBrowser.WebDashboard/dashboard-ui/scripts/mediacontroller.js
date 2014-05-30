@@ -565,6 +565,8 @@
         var bypass = function() {
             // Get active elem to see what type it is
             var active = document.activeElement;
+            if (!active) return false;
+
             var type = active.type || active.tagName.toLowerCase();
             return (type === "text" || type === "select" || type === "textarea" || type == "password");
         };

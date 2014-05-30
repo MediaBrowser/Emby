@@ -2,6 +2,9 @@
 
     $(document).on("pagebeforeshow", ".page", function () {
 
+        // If there is no user logged in there can be no notifications
+        if (!Dashboard.getCurrentUserId()) return;
+
         var elem = $(".notificationsList");
         var btn = $(".btnMarkReadContainer");
         var startIndex = 0;
