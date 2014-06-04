@@ -271,6 +271,9 @@
     <Compile Include="..\MediaBrowser.Model\Dto\IItemDto.cs">
       <Link>Dto\IItemDto.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\ImageByNameInfo.cs">
+      <Link>Dto\ImageByNameInfo.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ImageInfo.cs">
       <Link>Dto\ImageInfo.cs</Link>
     </Compile>
@@ -415,6 +418,15 @@
     <Compile Include="..\MediaBrowser.Model\Events\GenericEventArgs.cs">
       <Link>Events\GenericEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Extensions\DoubleHelper.cs">
+      <Link>Extensions\DoubleHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Extensions\IntHelper.cs">
+      <Link>Extensions\IntHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Extensions\StringHelper.cs">
+      <Link>Extensions\StringHelper.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\FileOrganization\EpisodeFileOrganizationRequest.cs">
       <Link>FileOrganization\EpisodeFileOrganizationRequest.cs</Link>
     </Compile>
@@ -463,9 +475,6 @@
     <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelInfoDto.cs">
       <Link>LiveTv\ChannelInfoDto.cs</Link>
     </Compile>
-    <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelQuery.cs">
-      <Link>LiveTv\ChannelQuery.cs</Link>
-    </Compile>
     <Compile Include="..\MediaBrowser.Model\LiveTv\ChannelType.cs">
       <Link>LiveTv\ChannelType.cs</Link>
     </Compile>
@@ -474,6 +483,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\LiveTv\GuideInfo.cs">
       <Link>LiveTv\GuideInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\LiveTv\LiveTvChannelQuery.cs">
+      <Link>LiveTv\LiveTvChannelQuery.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\LiveTv\LiveTvInfo.cs">
       <Link>LiveTv\LiveTvInfo.cs</Link>

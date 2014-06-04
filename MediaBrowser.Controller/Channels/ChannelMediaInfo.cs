@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.Channels
 {
@@ -17,12 +18,17 @@ namespace MediaBrowser.Controller.Channels
         public int? Width { get; set; }
         public int? Height { get; set; }
         public int? AudioChannels { get; set; }
+        public int? AudioSampleRate { get; set; }
 
         public bool IsRemote { get; set; }
 
+        public string VideoProfile { get; set; }
+        public float? VideoLevel { get; set; }
+        public float? Framerate { get; set; }
+
         public ChannelMediaInfo()
         {
-            RequiredHttpHeaders = new Dictionary<string, string>();
+            RequiredHttpHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             IsRemote = true;
         }
     }

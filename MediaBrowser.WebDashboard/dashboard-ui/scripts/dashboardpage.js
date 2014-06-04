@@ -13,9 +13,7 @@
         DashboardPage.startInterval();
 
         $(ApiClient).on("websocketmessage", DashboardPage.onWebSocketMessage)
-            .on("websocketopen", DashboardPage.onWebSocketConnectionChange)
-            .on("websocketerror", DashboardPage.onWebSocketConnectionChange)
-            .on("websocketclose", DashboardPage.onWebSocketConnectionChange);
+            .on("websocketopen", DashboardPage.onWebSocketOpen);
 
         DashboardPage.lastAppUpdateCheck = null;
         DashboardPage.lastPluginUpdateCheck = null;
@@ -167,10 +165,10 @@
             DashboardPage.renderHasPendingRestart(page, true);
         }
         else if (msg.MessageType == "ServerShuttingDown") {
-            DashboardPage.renderHasPendingRestart(page, false);
+            DashboardPage.renderHasPendingRestart(page, true);
         }
         else if (msg.MessageType == "ServerRestarting") {
-            DashboardPage.renderHasPendingRestart(page, false);
+            DashboardPage.renderHasPendingRestart(page, true);
         }
         else if (msg.MessageType == "ScheduledTasksInfo") {
 
@@ -180,9 +178,8 @@
         }
     },
 
-    onWebSocketConnectionChange: function () {
+    onWebSocketOpen: function () {
 
-        DashboardPage.stopInterval();
         DashboardPage.startInterval();
     },
 
@@ -191,6 +188,10 @@
         ApiClient.getSessions().done(function (sessions) {
 
             DashboardPage.renderInfo(page, sessions);
+        });
+        ApiClient.getScheduledTasks().done(function (tasks) {
+
+            DashboardPage.renderRunningTasks(page, tasks);
         });
     },
 
@@ -630,14 +631,12 @@
         }
 
         if (!tasks.length) {
-            html += '<p>No tasks are currently running.</p>';
             $('#runningTasksCollapsible', page).hide();
         } else {
             $('#runningTasksCollapsible', page).show();
         }
 
         for (var i = 0, length = tasks.length; i < length; i++) {
-
 
             var task = tasks[i];
 

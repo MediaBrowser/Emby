@@ -4,7 +4,7 @@ namespace MediaBrowser.Model.LiveTv
     /// <summary>
     /// Class ChannelQuery.
     /// </summary>
-    public class ChannelQuery
+    public class LiveTvChannelQuery
     {
         /// <summary>
         /// Gets or sets the type of the channel.

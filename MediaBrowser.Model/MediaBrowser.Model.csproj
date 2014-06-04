@@ -125,6 +125,7 @@
     <Compile Include="Dto\ChapterInfoDto.cs" />
     <Compile Include="Dto\GameSystemSummary.cs" />
     <Compile Include="Dto\IItemDto.cs" />
+    <Compile Include="Dto\ImageByNameInfo.cs" />
     <Compile Include="Dto\ImageInfo.cs" />
     <Compile Include="Dto\ItemByNameCounts.cs" />
     <Compile Include="Dto\ItemCounts.cs" />
@@ -144,6 +145,9 @@
     <Compile Include="Entities\SortOrder.cs" />
     <Compile Include="Entities\VideoSize.cs" />
     <Compile Include="Events\GenericEventArgs.cs" />
+    <Compile Include="Extensions\DoubleHelper.cs" />
+    <Compile Include="Extensions\IntHelper.cs" />
+    <Compile Include="Extensions\StringHelper.cs" />
     <Compile Include="FileOrganization\EpisodeFileOrganizationRequest.cs" />
     <Compile Include="FileOrganization\FileOrganizationResult.cs" />
     <Compile Include="FileOrganization\FileOrganizationResultQuery.cs" />
@@ -154,7 +158,7 @@
     <Compile Include="Library\PlayAccess.cs" />
     <Compile Include="LiveTv\BaseTimerInfoDto.cs" />
     <Compile Include="LiveTv\ChannelInfoDto.cs" />
-    <Compile Include="LiveTv\ChannelQuery.cs" />
+    <Compile Include="LiveTv\LiveTvChannelQuery.cs" />
     <Compile Include="LiveTv\DayPattern.cs" />
     <Compile Include="LiveTv\GuideInfo.cs" />
     <Compile Include="LiveTv\LiveTvInfo.cs" />

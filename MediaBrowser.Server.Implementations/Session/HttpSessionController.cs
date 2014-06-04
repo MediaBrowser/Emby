@@ -6,6 +6,7 @@ using MediaBrowser.Model.Session;
 using MediaBrowser.Model.System;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -39,6 +40,14 @@ namespace MediaBrowser.Server.Implementations.Session
             _pingTimer = new Timer(PingTimerCallback, null, Timeout.Infinite, Timeout.Infinite);
 
             ResetPingTimer();
+        }
+
+        private string PostUrl
+        {
+            get
+            {
+                return string.Format("http://{0}{1}", Session.RemoteEndPoint, _postUrl);
+            }
         }
 
         public bool IsSessionActive
@@ -96,7 +105,7 @@ namespace MediaBrowser.Server.Implementations.Session
             Dictionary<string, string> args, 
             CancellationToken cancellationToken)
         {
-            var url = _postUrl + "/" + name + ToQueryString(args);
+            var url = PostUrl + "/" + name + ToQueryString(args);
 
             await _httpClient.Post(new HttpRequestOptions
             {
@@ -125,13 +134,16 @@ namespace MediaBrowser.Server.Implementations.Session
 
         public Task SendPlayCommand(PlayRequest command, CancellationToken cancellationToken)
         {
-            return Task.FromResult(true);
-            //return SendMessage(new WebSocketMessage<PlayRequest>
-            //{
-            //    MessageType = "Play",
-            //    Data = command
+            var dict = new Dictionary<string, string>();
 
-            //}, cancellationToken);
+            dict["ItemIds"] = string.Join(",", command.ItemIds);
+
+            if (command.StartPositionTicks.HasValue)
+            {
+                dict["StartPositionTicks"] = command.StartPositionTicks.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            return SendMessage(command.PlayCommand.ToString(), dict, cancellationToken);
         }
 
         public Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
@@ -140,7 +152,12 @@ namespace MediaBrowser.Server.Implementations.Session
 
             if (command.Command == PlaystateCommand.Seek)
             {
+                if (!command.SeekPositionTicks.HasValue)
+                {
+                    throw new ArgumentException("SeekPositionTicks cannot be null");
+                }
 
+                args["StartPositionTicks"] = command.SeekPositionTicks.Value.ToString(CultureInfo.InvariantCulture);
             }
 
             return SendMessage(command.Command.ToString(), cancellationToken);

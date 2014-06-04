@@ -128,6 +128,11 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
                 request.Host = options.Host;
             }
 
+            if (!string.IsNullOrEmpty(options.Referer))
+            {
+                request.Referer = options.Referer;
+            }
+
 #if !__MonoCS__
             if (options.EnableKeepAlive)
             {
@@ -371,7 +376,9 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
 
                 Headers = new NameValueCollection(httpResponse.Headers),
 
-                ContentLength = contentLength
+                ContentLength = contentLength,
+
+                ResponseUrl = httpResponse.ResponseUri.ToString()
             };
         }
 

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -142,6 +143,16 @@ namespace MediaBrowser.Server.Implementations.Session
                 SessionInfo = info
 
             }, _logger);
+
+            if (!string.IsNullOrWhiteSpace(info.DeviceId))
+            {
+                var capabilities = GetSavedCapabilities(info.DeviceId);
+
+                if (capabilities != null)
+                {
+                    ReportCapabilities(info, capabilities, false);
+                }
+            }
         }
 
         private async void OnSessionEnded(SessionInfo info)
@@ -237,7 +248,7 @@ namespace MediaBrowser.Server.Implementations.Session
             {
                 return session;
             }
-            
+
             // Save this directly. No need to fire off all the events for this.
             await _userRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
 
@@ -256,7 +267,7 @@ namespace MediaBrowser.Server.Implementations.Session
 
             try
             {
-                var session = GetSession(sessionId);
+                var session = GetSession(sessionId, false);
 
                 if (session != null)
                 {
@@ -471,7 +482,8 @@ namespace MediaBrowser.Server.Implementations.Session
                 MediaSourceId = info.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client
+                ClientName = session.Client,
+                DeviceId = session.DeviceId
 
             }, _logger);
 
@@ -542,7 +554,8 @@ namespace MediaBrowser.Server.Implementations.Session
                 MediaSourceId = session.PlayState.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client
+                ClientName = session.Client,
+                DeviceId = session.DeviceId
 
             }, _logger);
         }
@@ -614,7 +627,8 @@ namespace MediaBrowser.Server.Implementations.Session
                 MediaSourceId = info.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client
+                ClientName = session.Client,
+                DeviceId = session.DeviceId
 
             }, _logger);
 
@@ -707,13 +721,14 @@ namespace MediaBrowser.Server.Implementations.Session
         /// Gets the session.
         /// </summary>
         /// <param name="sessionId">The session identifier.</param>
+        /// <param name="throwOnMissing">if set to <c>true</c> [throw on missing].</param>
         /// <returns>SessionInfo.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        private SessionInfo GetSession(string sessionId)
+        private SessionInfo GetSession(string sessionId, bool throwOnMissing = true)
         {
-            var session = Sessions.First(i => string.Equals(i.Id, sessionId));
+            var session = Sessions.FirstOrDefault(i => string.Equals(i.Id, sessionId));
 
-            if (session == null)
+            if (session == null && throwOnMissing)
             {
                 throw new ResourceNotFoundException(string.Format("Session {0} not found.", sessionId));
             }
@@ -968,6 +983,8 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <returns>Task.</returns>
         public Task SendServerRestartNotification(CancellationToken cancellationToken)
         {
+            _logger.Debug("Beginning SendServerRestartNotification");
+
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
@@ -1144,18 +1161,23 @@ namespace MediaBrowser.Server.Implementations.Session
         {
             var session = GetSession(sessionId);
 
+            ReportCapabilities(session, capabilities, true);
+        }
+
+        private async void ReportCapabilities(SessionInfo session,
+            SessionCapabilities capabilities,
+            bool saveCapabilities)
+        {
             session.PlayableMediaTypes = capabilities.PlayableMediaTypes;
             session.SupportedCommands = capabilities.SupportedCommands;
 
             if (!string.IsNullOrWhiteSpace(capabilities.MessageCallbackUrl))
             {
-                var postUrl = string.Format("http://{0}{1}", session.RemoteEndPoint, capabilities.MessageCallbackUrl);
-
                 var controller = session.SessionController as HttpSessionController;
 
                 if (controller == null)
                 {
-                    session.SessionController = new HttpSessionController(_httpClient, _jsonSerializer, session, postUrl, this);
+                    session.SessionController = new HttpSessionController(_httpClient, _jsonSerializer, session, capabilities.MessageCallbackUrl, this);
                 }
             }
 
@@ -1164,6 +1186,59 @@ namespace MediaBrowser.Server.Implementations.Session
                 SessionInfo = session
 
             }, _logger);
+
+            if (saveCapabilities)
+            {
+                await SaveCapabilities(session.DeviceId, capabilities).ConfigureAwait(false);
+            }
+        }
+
+        private string GetCapabilitiesFilePath(string deviceId)
+        {
+            var filename = deviceId.GetMD5().ToString("N") + ".json";
+
+            return Path.Combine(_configurationManager.ApplicationPaths.CachePath, "devices", filename);
+        }
+
+        private SessionCapabilities GetSavedCapabilities(string deviceId)
+        {
+            var path = GetCapabilitiesFilePath(deviceId);
+
+            try
+            {
+                return _jsonSerializer.DeserializeFromFile<SessionCapabilities>(path);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error getting saved capabilities", ex);
+                return null;
+            }
+        }
+
+        private readonly SemaphoreSlim _capabilitiesLock = new SemaphoreSlim(1, 1);
+        private async Task SaveCapabilities(string deviceId, SessionCapabilities capabilities)
+        {
+            var path = GetCapabilitiesFilePath(deviceId);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            await _capabilitiesLock.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+                _jsonSerializer.SerializeToFile(capabilities, path);
+            }
+            finally
+            {
+                _capabilitiesLock.Release();
+            }
         }
 
         public SessionInfoDto GetSessionInfoDto(SessionInfo session)

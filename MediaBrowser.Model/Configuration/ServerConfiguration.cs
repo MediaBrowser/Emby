@@ -226,6 +226,8 @@ namespace MediaBrowser.Model.Configuration
         [Obsolete]
         public string[] ManualLoginClients { get; set; }
 
+        public ChannelOptions ChannelOptions { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
         /// </summary>
@@ -293,6 +295,24 @@ namespace MediaBrowser.Model.Configuration
             NotificationOptions = new NotificationOptions();
 
             SubtitleOptions = new SubtitleOptions();
+
+            ChannelOptions = new ChannelOptions();
+        }
+    }
+
+    public class ChannelOptions
+    {
+        public int? PreferredStreamingWidth { get; set; }
+
+        public string DownloadPath { get; set; }
+        public int? MaxDownloadAge { get; set; }
+
+        public string[] DownloadingChannels { get; set; }
+
+        public ChannelOptions()
+        {
+            DownloadingChannels = new string[] { };
+            MaxDownloadAge = 30;
         }
     }
 }

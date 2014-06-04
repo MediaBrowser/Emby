@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dlna;
@@ -13,6 +14,7 @@ using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Drawing;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Library;
@@ -72,20 +74,14 @@ namespace MediaBrowser.Api.Playback
         protected ILiveTvManager LiveTvManager { get; private set; }
         protected IDlnaManager DlnaManager { get; private set; }
         protected IChannelManager ChannelManager { get; private set; }
+        protected IHttpClient HttpClient { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseStreamingService" /> class.
         /// </summary>
-        /// <param name="serverConfig">The server configuration.</param>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="isoManager">The iso manager.</param>
-        /// <param name="mediaEncoder">The media encoder.</param>
-        /// <param name="dtoService">The dto service.</param>
-        /// <param name="fileSystem">The file system.</param>
-        /// <param name="itemRepository">The item repository.</param>
-        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IEncodingManager encodingManager, IDlnaManager dlnaManager, IChannelManager channelManager)
+        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IEncodingManager encodingManager, IDlnaManager dlnaManager, IChannelManager channelManager, IHttpClient httpClient)
         {
+            HttpClient = httpClient;
             ChannelManager = channelManager;
             DlnaManager = dlnaManager;
             EncodingManager = encodingManager;
@@ -367,11 +363,11 @@ namespace MediaBrowser.Api.Playback
                 switch (qualitySetting)
                 {
                     case EncodingQuality.HighSpeed:
-                        crf = "14";
+                        crf = "16";
                         profileScore = 2;
                         break;
                     case EncodingQuality.HighQuality:
-                        crf = "8";
+                        crf = "10";
                         profileScore = 1;
                         break;
                     case EncodingQuality.MaxQuality:
@@ -483,8 +479,12 @@ namespace MediaBrowser.Api.Playback
         /// <param name="state">The state.</param>
         /// <param name="outputVideoCodec">The output video codec.</param>
         /// <param name="performTextSubtitleConversion">if set to <c>true</c> [perform text subtitle conversion].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>System.String.</returns>
-        protected string GetOutputSizeParam(StreamState state, string outputVideoCodec, bool performTextSubtitleConversion)
+        protected string GetOutputSizeParam(StreamState state,
+            string outputVideoCodec,
+            bool performTextSubtitleConversion,
+            CancellationToken cancellationToken)
         {
             // http://sonnati.wordpress.com/2012/10/19/ffmpeg-the-swiss-army-knife-of-internet-streaming-part-vi/
 
@@ -496,7 +496,7 @@ namespace MediaBrowser.Api.Playback
 
             if (state.SubtitleStream != null && !state.SubtitleStream.IsGraphicalSubtitleStream)
             {
-                assSubtitleParam = GetTextSubtitleParam(state, performTextSubtitleConversion);
+                assSubtitleParam = GetTextSubtitleParam(state, performTextSubtitleConversion, cancellationToken);
                 copyTsParam = " -copyts";
             }
 
@@ -518,16 +518,12 @@ namespace MediaBrowser.Api.Playback
                 return string.Format("{4} -vf \"{0}scale=trunc(min(iw\\,{1})/2)*2:trunc(min((iw/dar)\\,{2})/2)*2{3}\"", yadifParam, maxWidthParam, maxHeightParam, assSubtitleParam, copyTsParam);
             }
 
-            var isH264Output = outputVideoCodec.Equals("libx264", StringComparison.OrdinalIgnoreCase);
-
             // If a fixed width was requested
             if (request.Width.HasValue)
             {
                 var widthParam = request.Width.Value.ToString(UsCulture);
 
-                return isH264Output ?
-                    string.Format("{3} -vf \"{0}scale={1}:trunc(ow/a/2)*2{2}\"", yadifParam, widthParam, assSubtitleParam, copyTsParam) :
-                    string.Format("{3} -vf \"{0}scale={1}:-1{2}\"", yadifParam, widthParam, assSubtitleParam, copyTsParam);
+                return string.Format("{3} -vf \"{0}scale={1}:trunc(ow/a/2)*2{2}\"", yadifParam, widthParam, assSubtitleParam, copyTsParam);
             }
 
             // If a fixed height was requested
@@ -535,9 +531,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var heightParam = request.Height.Value.ToString(UsCulture);
 
-                return isH264Output ?
-                    string.Format("{3} -vf \"{0}scale=trunc(oh*a*2)/2:{1}{2}\"", yadifParam, heightParam, assSubtitleParam, copyTsParam) :
-                    string.Format("{3} -vf \"{0}scale=-1:{1}{2}\"", yadifParam, heightParam, assSubtitleParam, copyTsParam);
+                return string.Format("{3} -vf \"{0}scale=trunc(oh*a*2)/2:{1}{2}\"", yadifParam, heightParam, assSubtitleParam, copyTsParam);
             }
 
             // If a max width was requested
@@ -545,9 +539,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
 
-                return isH264Output ?
-                    string.Format("{3} -vf \"{0}scale=min(iw\\,{1}):trunc(ow/dar/2)*2{2}\"", yadifParam, maxWidthParam, assSubtitleParam, copyTsParam) :
-                    string.Format("{3} -vf \"{0}scale=min(iw\\,{1}):-1{2}\"", yadifParam, maxWidthParam, assSubtitleParam, copyTsParam);
+                return string.Format("{3} -vf \"{0}scale=min(iw\\,{1}):trunc(ow/dar/2)*2{2}\"", yadifParam, maxWidthParam, assSubtitleParam, copyTsParam);
             }
 
             // If a max height was requested
@@ -555,9 +547,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                return isH264Output ?
-                    string.Format("{3} -vf \"{0}scale=trunc(oh*a*2)/2:min(ih\\,{1}){2}\"", yadifParam, maxHeightParam, assSubtitleParam, copyTsParam) :
-                    string.Format("{3} -vf \"{0}scale=-1:min(ih\\,{1}){2}\"", yadifParam, maxHeightParam, assSubtitleParam, copyTsParam);
+                return string.Format("{3} -vf \"{0}scale=trunc(oh*a*2)/2:min(ih\\,{1}){2}\"", yadifParam, maxHeightParam, assSubtitleParam, copyTsParam);
             }
 
             if (state.VideoStream == null)
@@ -574,17 +564,10 @@ namespace MediaBrowser.Api.Playback
 
             var outputSize = DrawingUtils.Resize(currentWidth, currentHeight, request.Width, request.Height, request.MaxWidth, request.MaxHeight);
 
-            // If we're encoding with libx264, it can't handle odd numbered widths or heights, so we'll have to fix that
-            if (isH264Output)
-            {
-                var widthParam = outputSize.Width.ToString(UsCulture);
-                var heightParam = outputSize.Height.ToString(UsCulture);
+            var manualWidthParam = outputSize.Width.ToString(UsCulture);
+            var manualHeightParam = outputSize.Height.ToString(UsCulture);
 
-                return string.Format("{4} -vf \"{0}scale=trunc({1}/2)*2:trunc({2}/2)*2{3}\"", yadifParam, widthParam, heightParam, assSubtitleParam, copyTsParam);
-            }
-
-            // Otherwise use -vf scale since ffmpeg will ensure internally that the aspect ratio is preserved
-            return string.Format("{3} -vf \"{0}scale={1}:-1{2}\"", yadifParam, Convert.ToInt32(outputSize.Width), assSubtitleParam, copyTsParam);
+            return string.Format("{4} -vf \"{0}scale=trunc({1}/2)*2:trunc({2}/2)*2{3}\"", yadifParam, manualWidthParam, manualHeightParam, assSubtitleParam, copyTsParam);
         }
 
         /// <summary>
@@ -592,11 +575,15 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <param name="state">The state.</param>
         /// <param name="performConversion">if set to <c>true</c> [perform conversion].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>System.String.</returns>
-        protected string GetTextSubtitleParam(StreamState state, bool performConversion)
+        protected string GetTextSubtitleParam(StreamState state,
+            bool performConversion,
+            CancellationToken cancellationToken)
         {
-            var path = state.SubtitleStream.IsExternal ? GetConvertedAssPath(state.MediaPath, state.SubtitleStream, performConversion) :
-                GetExtractedAssPath(state, performConversion);
+            var path = state.SubtitleStream.IsExternal ?
+                GetConvertedAssPath(state.SubtitleStream, performConversion, cancellationToken) :
+                GetExtractedAssPath(state, performConversion, cancellationToken);
 
             if (string.IsNullOrEmpty(path))
             {
@@ -615,8 +602,11 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <param name="state">The state.</param>
         /// <param name="performConversion">if set to <c>true</c> [perform conversion].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>System.String.</returns>
-        private string GetExtractedAssPath(StreamState state, bool performConversion)
+        private string GetExtractedAssPath(StreamState state,
+            bool performConversion,
+            CancellationToken cancellationToken)
         {
             var path = EncodingManager.GetSubtitleCachePath(state.MediaPath, state.SubtitleStream.Index, ".ass");
 
@@ -636,7 +626,7 @@ namespace MediaBrowser.Api.Playback
                     // See https://lists.ffmpeg.org/pipermail/ffmpeg-cvslog/2013-April/063616.html
                     var isAssSubtitle = string.Equals(state.SubtitleStream.Codec, "ass", StringComparison.OrdinalIgnoreCase) || string.Equals(state.SubtitleStream.Codec, "ssa", StringComparison.OrdinalIgnoreCase);
 
-                    var task = MediaEncoder.ExtractTextSubtitle(inputPath, type, state.SubtitleStream.Index, isAssSubtitle, path, CancellationToken.None);
+                    var task = MediaEncoder.ExtractTextSubtitle(inputPath, type, state.SubtitleStream.Index, isAssSubtitle, path, cancellationToken);
 
                     Task.WaitAll(task);
                 }
@@ -652,11 +642,13 @@ namespace MediaBrowser.Api.Playback
         /// <summary>
         /// Gets the converted ass path.
         /// </summary>
-        /// <param name="mediaPath">The media path.</param>
         /// <param name="subtitleStream">The subtitle stream.</param>
         /// <param name="performConversion">if set to <c>true</c> [perform conversion].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>System.String.</returns>
-        private string GetConvertedAssPath(string mediaPath, MediaStream subtitleStream, bool performConversion)
+        private string GetConvertedAssPath(MediaStream subtitleStream,
+            bool performConversion,
+            CancellationToken cancellationToken)
         {
             var path = EncodingManager.GetSubtitleCachePath(subtitleStream.Path, ".ass");
 
@@ -668,7 +660,7 @@ namespace MediaBrowser.Api.Playback
 
                     Directory.CreateDirectory(parentPath);
 
-                    var task = MediaEncoder.ConvertTextSubtitleToAss(subtitleStream.Path, path, subtitleStream.Language, CancellationToken.None);
+                    var task = MediaEncoder.ConvertTextSubtitleToAss(subtitleStream.Path, path, subtitleStream.Language, cancellationToken);
 
                     Task.WaitAll(task);
                 }
@@ -696,7 +688,7 @@ namespace MediaBrowser.Api.Playback
             // Add resolution params, if specified
             if (request.Width.HasValue || request.Height.HasValue || request.MaxHeight.HasValue || request.MaxWidth.HasValue)
             {
-                outputSizeParam = GetOutputSizeParam(state, outputVideoCodec, false).TrimEnd('"');
+                outputSizeParam = GetOutputSizeParam(state, outputVideoCodec, false, CancellationToken.None).TrimEnd('"');
                 outputSizeParam = "," + outputSizeParam.Substring(outputSizeParam.IndexOf("scale", StringComparison.OrdinalIgnoreCase));
             }
 
@@ -842,7 +834,7 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         protected string GetInputArgument(StreamState state)
         {
-            var type = InputType.File;
+            var type = state.IsRemote ? InputType.Url : InputType.File;
 
             var inputPath = new[] { state.MediaPath };
 
@@ -862,8 +854,10 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <param name="state">The state.</param>
         /// <param name="outputPath">The output path.</param>
+        /// <param name="cancellationTokenSource">The cancellation token source.</param>
         /// <returns>Task.</returns>
-        protected async Task StartFfMpeg(StreamState state, string outputPath)
+        /// <exception cref="System.InvalidOperationException">ffmpeg was not found at  + MediaEncoder.EncoderPath</exception>
+        protected async Task StartFfMpeg(StreamState state, string outputPath, CancellationTokenSource cancellationTokenSource)
         {
             if (!File.Exists(MediaEncoder.EncoderPath))
             {
@@ -874,7 +868,7 @@ namespace MediaBrowser.Api.Playback
 
             if (state.IsInputVideo && state.VideoType == VideoType.Iso && state.IsoType.HasValue && IsoManager.CanMount(state.MediaPath))
             {
-                state.IsoMount = await IsoManager.Mount(state.MediaPath, CancellationToken.None).ConfigureAwait(false);
+                state.IsoMount = await IsoManager.Mount(state.MediaPath, cancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             var commandLineArgs = GetCommandLineArguments(outputPath, state, true);
@@ -906,7 +900,7 @@ namespace MediaBrowser.Api.Playback
                 EnableRaisingEvents = true
             };
 
-            ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath, TranscodingJobType, process, state.Request.StartTimeTicks, state.MediaPath, state.Request.DeviceId);
+            ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath, TranscodingJobType, process, state.Request.StartTimeTicks, state.MediaPath, state.Request.DeviceId, cancellationTokenSource);
 
             var commandLineLogMessage = process.StartInfo.FileName + " " + process.StartInfo.Arguments;
             Logger.Info(commandLineLogMessage);
@@ -918,7 +912,7 @@ namespace MediaBrowser.Api.Playback
             state.LogFileStream = FileSystem.GetFileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true);
 
             var commandLineLogMessageBytes = Encoding.UTF8.GetBytes(commandLineLogMessage + Environment.NewLine + Environment.NewLine);
-            await state.LogFileStream.WriteAsync(commandLineLogMessageBytes, 0, commandLineLogMessageBytes.Length).ConfigureAwait(false);
+            await state.LogFileStream.WriteAsync(commandLineLogMessageBytes, 0, commandLineLogMessageBytes.Length, cancellationTokenSource.Token).ConfigureAwait(false);
 
             process.Exited += (sender, args) => OnFfMpegProcessExited(process, state);
 
@@ -946,19 +940,19 @@ namespace MediaBrowser.Api.Playback
             // Wait for the file to exist before proceeeding
             while (!File.Exists(outputPath))
             {
-                await Task.Delay(100).ConfigureAwait(false);
+                await Task.Delay(100, cancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             // Allow a small amount of time to buffer a little
             if (state.IsInputVideo)
             {
-                await Task.Delay(500).ConfigureAwait(false);
+                await Task.Delay(500, cancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             // This is arbitrary, but add a little buffer time when internet streaming
             if (state.IsRemote)
             {
-                await Task.Delay(3000).ConfigureAwait(false);
+                await Task.Delay(3000, cancellationTokenSource.Token).ConfigureAwait(false);
             }
         }
 
@@ -1050,13 +1044,20 @@ namespace MediaBrowser.Api.Playback
         /// <summary>
         /// Gets the user agent param.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="state">The state.</param>
         /// <returns>System.String.</returns>
-        private string GetUserAgentParam(string path)
+        private string GetUserAgentParam(StreamState state)
         {
-            var useragent = GetUserAgent(path);
+            string useragent = null;
 
-            if (!string.IsNullOrEmpty(useragent))
+            state.RemoteHttpHeaders.TryGetValue("User-Agent", out useragent);
+
+            if (string.IsNullOrWhiteSpace(useragent))
+            {
+                useragent = GetUserAgent(state.MediaPath);
+            }
+
+            if (!string.IsNullOrWhiteSpace(useragent))
             {
                 return "-user-agent \"" + useragent + "\"";
             }
@@ -1337,9 +1338,7 @@ namespace MediaBrowser.Api.Playback
                 state.Request.AudioCodec = state.SupportedAudioCodecs.FirstOrDefault();
             }
 
-            var item = string.IsNullOrEmpty(request.MediaSourceId) ?
-                LibraryManager.GetItemById(request.Id) :
-                LibraryManager.GetItemById(request.MediaSourceId);
+            var item = LibraryManager.GetItemById(request.Id);
 
             if (user != null && item.GetPlayAccess(user) != PlayAccess.Full)
             {
@@ -1427,20 +1426,24 @@ namespace MediaBrowser.Api.Playback
             }
             else if (item is IChannelMediaItem)
             {
-                var channelMediaSources = await ChannelManager.GetChannelItemMediaSources(request.Id, CancellationToken.None).ConfigureAwait(false);
-
-                var source = channelMediaSources.First();
+                var source = await GetChannelMediaInfo(request.Id, request.MediaSourceId, cancellationToken).ConfigureAwait(false);
                 state.IsInputVideo = string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase);
-                state.IsRemote = source.IsRemote;
+                state.IsRemote = source.LocationType == LocationType.Remote;
                 state.MediaPath = source.Path;
                 state.RunTimeTicks = item.RunTimeTicks;
+                state.RemoteHttpHeaders = source.RequiredHttpHeaders;
+                mediaStreams = source.MediaStreams;
             }
             else
             {
-                state.MediaPath = item.Path;
-                state.IsRemote = item.LocationType == LocationType.Remote;
+                var mediaSource = string.IsNullOrWhiteSpace(request.MediaSourceId)
+                    ? item
+                    : LibraryManager.GetItemById(request.MediaSourceId);
 
-                var video = item as Video;
+                state.MediaPath = mediaSource.Path;
+                state.IsRemote = mediaSource.LocationType == LocationType.Remote;
+
+                var video = mediaSource as Video;
 
                 if (video != null)
                 {
@@ -1462,45 +1465,24 @@ namespace MediaBrowser.Api.Playback
                     state.InputContainer = video.Container;
                 }
 
-                var audio = item as Audio;
+                var audio = mediaSource as Audio;
                 if (audio != null)
                 {
                     state.InputContainer = audio.Container;
                 }
 
-                state.RunTimeTicks = item.RunTimeTicks;
+                state.RunTimeTicks = mediaSource.RunTimeTicks;
             }
 
             var videoRequest = request as VideoStreamRequest;
 
             mediaStreams = mediaStreams ?? ItemRepository.GetMediaStreams(new MediaStreamQuery
             {
-                ItemId = item.Id
+                ItemId = new Guid(string.IsNullOrWhiteSpace(request.MediaSourceId) ? request.Id : request.MediaSourceId)
 
             }).ToList();
 
-            if (videoRequest != null)
-            {
-                if (string.IsNullOrEmpty(videoRequest.VideoCodec))
-                {
-                    videoRequest.VideoCodec = InferVideoCodec(url);
-                }
-
-                state.VideoStream = GetMediaStream(mediaStreams, videoRequest.VideoStreamIndex, MediaStreamType.Video);
-                state.SubtitleStream = GetMediaStream(mediaStreams, videoRequest.SubtitleStreamIndex, MediaStreamType.Subtitle, false);
-                state.AudioStream = GetMediaStream(mediaStreams, videoRequest.AudioStreamIndex, MediaStreamType.Audio);
-
-                if (state.VideoStream != null && state.VideoStream.IsInterlaced)
-                {
-                    state.DeInterlace = true;
-                }
-
-                EnforceResolutionLimit(state, videoRequest);
-            }
-            else
-            {
-                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio, true);
-            }
+            AttachMediaStreamInfo(state, mediaStreams, videoRequest, url);
 
             state.SegmentLength = state.ReadInputAtNativeFramerate ? 5 : 10;
             state.HlsListSize = state.ReadInputAtNativeFramerate ? 100 : 1440;
@@ -1536,6 +1518,63 @@ namespace MediaBrowser.Api.Playback
             }
 
             return state;
+        }
+
+        private void AttachMediaStreamInfo(StreamState state,
+            List<MediaStream> mediaStreams,
+            VideoStreamRequest videoRequest,
+            string requestedUrl)
+        {
+            if (videoRequest != null)
+            {
+                if (string.IsNullOrEmpty(videoRequest.VideoCodec))
+                {
+                    videoRequest.VideoCodec = InferVideoCodec(requestedUrl);
+                }
+
+                state.VideoStream = GetMediaStream(mediaStreams, videoRequest.VideoStreamIndex, MediaStreamType.Video);
+                state.SubtitleStream = GetMediaStream(mediaStreams, videoRequest.SubtitleStreamIndex, MediaStreamType.Subtitle, false);
+                state.AudioStream = GetMediaStream(mediaStreams, videoRequest.AudioStreamIndex, MediaStreamType.Audio);
+
+                if (state.VideoStream != null && state.VideoStream.IsInterlaced)
+                {
+                    state.DeInterlace = true;
+                }
+
+                EnforceResolutionLimit(state, videoRequest);
+            }
+            else
+            {
+                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio, true);
+            }
+        }
+
+        private async Task<MediaSourceInfo> GetChannelMediaInfo(string id,
+            string mediaSourceId,
+            CancellationToken cancellationToken)
+        {
+            var channelMediaSources = await ChannelManager.GetChannelItemMediaSources(id, cancellationToken)
+                .ConfigureAwait(false);
+
+            var list = channelMediaSources.ToList();
+
+            if (!string.IsNullOrWhiteSpace(mediaSourceId))
+            {
+                var source = list
+                    .FirstOrDefault(i => string.Equals(mediaSourceId, i.Id));
+
+                if (source != null)
+                {
+                    return source;
+                }
+
+                Logger.Warn("Invalid channel MediaSourceId requested, defaulting to first. Item: {0}. Requested MediaSourceId: {1}.",
+                    id,
+                    mediaSourceId
+                    );
+            }
+
+            return list.First();
         }
 
         private bool CanStreamCopyVideo(VideoStreamRequest request, MediaStream videoStream)
@@ -1629,7 +1668,11 @@ namespace MediaBrowser.Api.Playback
             // Video bitrate must fall within requested value
             if (request.AudioBitRate.HasValue)
             {
-                if (!audioStream.BitRate.HasValue || audioStream.BitRate.Value > request.AudioBitRate.Value)
+                if (!audioStream.BitRate.HasValue || audioStream.BitRate.Value <= 0)
+                {
+                    return false;
+                }
+                if (audioStream.BitRate.Value > request.AudioBitRate.Value)
                 {
                     return false;
                 }
@@ -1639,7 +1682,11 @@ namespace MediaBrowser.Api.Playback
             var channels = request.AudioChannels ?? request.MaxAudioChannels;
             if (channels.HasValue)
             {
-                if (!audioStream.Channels.HasValue || audioStream.Channels.Value > channels.Value)
+                if (!audioStream.Channels.HasValue || audioStream.Channels.Value <= 0)
+                {
+                    return false;
+                }
+                if (audioStream.Channels.Value > channels.Value)
                 {
                     return false;
                 }
@@ -1648,7 +1695,11 @@ namespace MediaBrowser.Api.Playback
             // Sample rate must fall within requested value
             if (request.AudioSampleRate.HasValue)
             {
-                if (!audioStream.SampleRate.HasValue || audioStream.SampleRate.Value > request.AudioSampleRate.Value)
+                if (!audioStream.SampleRate.HasValue || audioStream.SampleRate.Value <= 0)
+                {
+                    return false;
+                }
+                if (audioStream.SampleRate.Value > request.AudioSampleRate.Value)
                 {
                     return false;
                 }
@@ -1852,7 +1903,16 @@ namespace MediaBrowser.Api.Playback
             inputModifier += " " + probeSize;
             inputModifier = inputModifier.Trim();
 
-            inputModifier += " " + GetUserAgentParam(state.MediaPath);
+            if (state.IsRemote)
+            {
+                var userAgentParam = GetUserAgentParam(state);
+
+                if (!string.IsNullOrWhiteSpace(userAgentParam))
+                {
+                    inputModifier += " " + userAgentParam;
+                }
+            }
+
             inputModifier = inputModifier.Trim();
 
             inputModifier += " " + GetFastSeekCommandLineParameter(state.Request);

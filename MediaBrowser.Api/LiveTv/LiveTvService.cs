@@ -294,7 +294,7 @@ namespace MediaBrowser.Api.LiveTv
 
         public object Get(GetChannels request)
         {
-            var result = _liveTvManager.GetChannels(new ChannelQuery
+            var result = _liveTvManager.GetChannels(new LiveTvChannelQuery
             {
                 ChannelType = request.Type,
                 UserId = request.UserId,

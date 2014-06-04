@@ -1,6 +1,6 @@
 ﻿(function ($, document, Notifications) {
 
-    $(document).on("pagebeforeshow", ".page", function () {
+    $(document).on("pageinit", ".page", function () {
 
         // If there is no user logged in there can be no notifications
         if (!Dashboard.getCurrentUserId()) return;
