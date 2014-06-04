@@ -291,6 +291,10 @@
             currentPlayer.shuffle(id);
         };
 
+        self.playlist = function() {
+            return currentPlayer.playlist || [];
+        };
+
         self.sendCommand = function (cmd, player) {
 
             player = player || self.getLocalPlayer();
@@ -565,6 +569,8 @@
         var bypass = function () {
             // Get active elem to see what type it is
             var active = document.activeElement;
+            if (!active) return false;
+
             var type = active.type || active.tagName.toLowerCase();
             return (type === "text" || type === "select" || type === "textarea" || type == "password");
         };
