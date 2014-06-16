@@ -86,6 +86,14 @@
     font-weight: 400;
 }
 
+    #scenesContent .posterItemText {
+        text-shadow:
+            -1px -1px 0 #000,  
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000 !important;
+    }
+
 .posterItemTextOverlay {
     position: absolute;
     bottom: 0;
