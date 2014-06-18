@@ -46,6 +46,11 @@
         background-position-y: center;
     }
 
+.homePageSection .posterItemImage {
+    background-size: cover;
+    background-position: center center;
+}
+
 .posterItem:hover .posterItemImage {
     -moz-box-shadow: 0 0 12px 7px #38c;
     -webkit-box-shadow: 0 0 12px 7px #38c;
