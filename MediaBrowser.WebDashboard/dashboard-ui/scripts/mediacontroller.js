@@ -554,16 +554,105 @@
 
             player.getPlayerState().done(function (result) {
 
-                var state = result;
+                var state = result.PlayState;
 
-                if (state.NowPlayingItem && state.PlayState) {
-                    if (state.PlayState.IsPaused) {
-                        player.unpause();
-                    } else {
-                        player.pause();
-                    }
+                if (!state) return;
+
+                if (state.IsPaused) {
+                    controller.unpause();
+                } else {
+                    controller.pause();
                 }
             });
+        }
+
+        keyResult[38] = function() { // up arrow
+            controller.volumeUp();
+            var vol = controller.getVolume();
+            setVolume(vol);
+        }
+
+        keyResult[40] = function() { // down arrow
+            controller.volumeDown();
+            var vol = controller.getVolume();
+            setVolume(vol);
+        }
+
+        keyResult[37] = function(e) { // left
+            setPosition(37, e.shiftKey);
+        }
+
+        keyResult[39] = function(e) { // right arrow
+            setPosition(39, e.shiftKey);
+        }
+
+        keyResult[81] = function(e) { // q
+            var supported = checkSupport("GoToSettings");
+
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showQualityFlyout();
+            } catch (err) {}
+        };
+
+        keyResult[77] = function(e) { // m
+            var supported = checkSupport("Mute") && checkSupport("Unmute");
+
+            if (!supported) return;
+
+            toggleMute();
+        };
+
+        keyResult[65] = function(e) { // a
+            var supported = checkSupport("SetAudioStreamIndex");
+
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showAudioTracksFlyout();
+            } catch (err) {}
+        };
+
+        keyResult[84] = function(e) { // t
+            var supported = checkSupport("SetSubtitleStreamIndex");
+
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showSubtitleMenu();
+            } catch (err) {}
+        };
+
+        keyResult[83] = function(e) { // s
+            var supported = checkSupport("DisplayContent");
+
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.showChaptersFlyout();
+            } catch (err) {}
+        };
+
+        keyResult[70] = function(e) { // f
+            var supported = checkSupport("ToggleFullscreen");
+
+            if (!supported) return;
+
+            var player = getPlayer();
+
+            try {
+                player.toggleFullscreen();
+            } catch (err) {}
+>>>>>>> bcfce6d... Fix for spacebar un/pause playback
         };
 
         var bypass = function () {
