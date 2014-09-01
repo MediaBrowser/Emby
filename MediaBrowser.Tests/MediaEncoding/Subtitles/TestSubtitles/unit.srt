@@ -43,7 +43,7 @@ Greater than (<) and less than (>) are shown
 
 11
 00:00:38,000 --> 00:00:38,999
-This text is <font color="blue">BLUE</ font> and has not an extra whitespace in closingtag.
+This text is <font color="blue">BLUE</ font> and has an extra whitespace in closingtag.
 
 
 

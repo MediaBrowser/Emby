@@ -94,7 +94,7 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
                                                                                                                     StartPositionTicks = 380000000,
                                                                                                                     EndPositionTicks = 389990000,
                                                                                                                     Text =
-                                                                                                                        "This text is <font color=\"blue\">BLUE</ font> and has not an extra whitespace in closingtag."
+                                                                                                                        "This text is <font color=\"blue\">BLUE</ font> and has an extra whitespace in closingtag."
                                                                                                                 },
 
                                                                                      }
