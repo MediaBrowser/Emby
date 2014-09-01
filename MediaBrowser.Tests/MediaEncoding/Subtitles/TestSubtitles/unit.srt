@@ -41,4 +41,9 @@ Multiple {\pos(142,120)\b1}SSA tags are stripped
 00:00:37,000 --> 00:00:37,999
 Greater than (<) and less than (>) are shown
 
+11
+00:00:38,000 --> 00:00:38,999
+This text is <font color="blue">BLUE</ font> and has not an extra whitespace in closingtag.
+
+
 

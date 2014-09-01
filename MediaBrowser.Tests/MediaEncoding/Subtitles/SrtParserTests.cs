@@ -88,7 +88,15 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
                                                                                                                     EndPositionTicks = 379990000,
                                                                                                                     Text =
                                                                                                                         "Greater than (&lt;) and less than (&gt;) are shown"
-                                                                                                                }
+                                                                                                                },
+                                                                                         new SubtitleTrackEvent {
+                                                                                                                    Id = "11",
+                                                                                                                    StartPositionTicks = 380000000,
+                                                                                                                    EndPositionTicks = 389990000,
+                                                                                                                    Text =
+                                                                                                                        "This text is <font color=\"blue\">BLUE</ font> and has not an extra whitespace in closingtag."
+                                                                                                                },
+
                                                                                      }
                 };
 
