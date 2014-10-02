@@ -154,7 +154,9 @@ namespace MediaBrowser.Providers.Movies
             {
                 Url = string.Format(TmdbConfigUrl, ApiKey),
                 CancellationToken = cancellationToken,
-                AcceptHeader = AcceptHeader
+                AcceptHeader = AcceptHeader,
+                CacheMode = CacheMode.Unconditional,
+                CacheLength = TimeSpan.FromDays(3)
 
             }).ConfigureAwait(false))
             {
@@ -199,7 +201,7 @@ namespace MediaBrowser.Providers.Movies
         /// <returns>Task.</returns>
         internal async Task DownloadMovieInfo(string id, string preferredMetadataLanguage, CancellationToken cancellationToken)
         {
-            var mainResult = await FetchMainResult(id, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
+            var mainResult = await FetchMainResult(id, true, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
 
             if (mainResult == null) return;
 
@@ -261,10 +263,11 @@ namespace MediaBrowser.Providers.Movies
         /// Fetches the main result.
         /// </summary>
         /// <param name="id">The id.</param>
+        /// <param name="isTmdbId">if set to <c>true</c> [is TMDB identifier].</param>
         /// <param name="language">The language.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>Task{CompleteMovieData}.</returns>
-        internal async Task<CompleteMovieData> FetchMainResult(string id, string language, CancellationToken cancellationToken)
+        internal async Task<CompleteMovieData> FetchMainResult(string id, bool isTmdbId, string language, CancellationToken cancellationToken)
         {
             var url = string.Format(GetMovieInfo3, id, ApiKey);
 
@@ -294,11 +297,17 @@ namespace MediaBrowser.Providers.Movies
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            // Cache if not using a tmdbId because we won't have the tmdb cache directory structure. So use the lower level cache.
+            var cacheMode = isTmdbId ? CacheMode.None : CacheMode.Unconditional;
+            var cacheLength = TimeSpan.FromDays(3);
+
             using (var json = await GetMovieDbResponse(new HttpRequestOptions
             {
                 Url = url,
                 CancellationToken = cancellationToken,
-                AcceptHeader = AcceptHeader
+                AcceptHeader = AcceptHeader,
+                CacheMode = cacheMode,
+                CacheLength = cacheLength
 
             }).ConfigureAwait(false))
             {
@@ -319,7 +328,9 @@ namespace MediaBrowser.Providers.Movies
                     {
                         Url = url,
                         CancellationToken = cancellationToken,
-                        AcceptHeader = AcceptHeader
+                        AcceptHeader = AcceptHeader,
+                        CacheMode = cacheMode,
+                        CacheLength = cacheLength
 
                     }).ConfigureAwait(false))
                     {
@@ -344,8 +355,7 @@ namespace MediaBrowser.Providers.Movies
 
             try
             {
-                // Limit to three requests per second
-                var diff = 340 - (DateTime.Now - _lastRequestDate).TotalMilliseconds;
+                var diff = 100 - (DateTime.Now - _lastRequestDate).TotalMilliseconds;
 
                 if (diff > 0)
                 {

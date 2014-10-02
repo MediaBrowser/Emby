@@ -36,7 +36,7 @@ namespace MediaBrowser.Controller.Channels
                     SortBy = query.SortBy,
                     SortOrder = query.SortOrder
 
-                }, CancellationToken.None);
+                }, new Progress<double>(), CancellationToken.None);
             }
             catch
             {
@@ -46,6 +46,11 @@ namespace MediaBrowser.Controller.Channels
 
                 };
             }
+        }
+
+        protected override string GetInternalMetadataPath(string basePath)
+        {
+            return System.IO.Path.Combine(basePath, "channels", Id.ToString("N"), "metadata");
         }
     }
 }

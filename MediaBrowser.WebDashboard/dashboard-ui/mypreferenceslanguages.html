@@ -46,8 +46,20 @@
                     <div class="fieldDescription subtitlesNoneHelp subtitlesHelp" style="display: none;">${OptionNoSubtitlesHelp}</div>
                 </li>
             </ul>
+            <div class="cinemaModeOptions" style="display:none;">
+                <br />
+                <div class="detailSectionHeader" style="margin: 0 .5em;">
+                    ${HeaderCinemaMode}
+                </div>
+                <ul data-role="listview" class="ulForm">
+                    <li>
+                        <input type="checkbox" id="chkEnableCinemaMode" data-mini="true" />
+                        <label for="chkEnableCinemaMode">${LabelEnableCinemaMode}</label>
 
-            <br />
+                        <div class="fieldDescription">${CinemaModeConfigurationHelp}</div>
+                    </li>
+                </ul>
+            </div>
             <ul data-role="listview" class="ulForm">
                 <li>
                     <button type="submit" data-theme="a" data-icon="check" data-mini="true">

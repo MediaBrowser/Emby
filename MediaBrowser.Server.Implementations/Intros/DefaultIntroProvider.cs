@@ -79,7 +79,7 @@ namespace MediaBrowser.Server.Implementations.Intros
                       {
                           if (i is Movie)
                           {
-                              return true;
+                              return !IsDuplicate(item, i);
                           }
                       }
                       return false;
@@ -95,12 +95,29 @@ namespace MediaBrowser.Server.Implementations.Intros
                 }));
             }
 
-            if (config.EnableIntrosFromUpcomingTrailers && IsSupporter)
+            var trailerTypes = new List<TrailerType>();
+
+            if (config.EnableIntrosFromUpcomingTrailers)
+            {
+                trailerTypes.Add(TrailerType.ComingSoonToTheaters);
+            }
+            if (config.EnableIntrosFromUpcomingDvdMovies)
+            {
+                trailerTypes.Add(TrailerType.ComingSoonToDvd);
+            }
+            if (config.EnableIntrosFromUpcomingStreamingMovies)
+            {
+                trailerTypes.Add(TrailerType.ComingSoonToStreaming);
+            }
+
+            if (trailerTypes.Count > 0 && IsSupporter)
             {
                 var channelTrailers = await _channelManager.GetAllMediaInternal(new AllChannelMediaQuery
                 {
-                    ContentTypes = new[] { ChannelMediaContentType.Trailer },
-                    UserId = user.Id.ToString("N")
+                    ContentTypes = new[] { ChannelMediaContentType.MovieExtra },
+                    ExtraTypes = new[] { ExtraType.Trailer },
+                    UserId = user.Id.ToString("N"),
+                    TrailerTypes = trailerTypes.ToArray()
 
                 }, CancellationToken.None);
 
@@ -123,7 +140,7 @@ namespace MediaBrowser.Server.Implementations.Intros
                 }));
             }
 
-            var customIntros = config.EnableCustomIntro ?
+            var customIntros = !string.IsNullOrWhiteSpace(config.CustomIntroPath) ?
                 GetCustomIntros(item) :
                 new List<IntroInfo>();
 
@@ -145,7 +162,7 @@ namespace MediaBrowser.Server.Implementations.Intros
                 {
                     return false;
                 }
-                return true;
+                return !IsDuplicate(item, i.Item);
             })
                 .OrderByDescending(i => i.Score)
                 .ThenBy(i => Guid.NewGuid())
@@ -153,6 +170,23 @@ namespace MediaBrowser.Server.Implementations.Intros
                 .Select(i => i.IntroInfo)
                 .Take(trailerLimit)
                 .Concat(customIntros.Take(1));
+        }
+
+        private bool IsDuplicate(BaseItem playingContent, BaseItem test)
+        {
+            var id = playingContent.GetProviderId(MetadataProviders.Imdb);
+            if (!string.IsNullOrWhiteSpace(id) && string.Equals(id, test.GetProviderId(MetadataProviders.Imdb), StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            id = playingContent.GetProviderId(MetadataProviders.Tmdb);
+            if (!string.IsNullOrWhiteSpace(id) && string.Equals(id, test.GetProviderId(MetadataProviders.Tmdb), StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private CinemaModeConfiguration GetOptions()

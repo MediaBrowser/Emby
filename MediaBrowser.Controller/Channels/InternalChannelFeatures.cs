@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.Channels;
+﻿using System;
+using MediaBrowser.Model.Channels;
 using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.Channels
@@ -32,6 +33,17 @@ namespace MediaBrowser.Controller.Channels
         /// Indicates if a sort ascending/descending toggle is supported or not.
         /// </summary>
         public bool SupportsSortOrderToggle { get; set; }
+        /// <summary>
+        /// Gets or sets the automatic refresh levels.
+        /// </summary>
+        /// <value>The automatic refresh levels.</value>
+        public int? AutoRefreshLevels { get; set; }
+
+        /// <summary>
+        /// Gets or sets the daily download limit.
+        /// </summary>
+        /// <value>The daily download limit.</value>
+        public int? DailyDownloadLimit { get; set; }
 
         public InternalChannelFeatures()
         {
@@ -39,6 +51,15 @@ namespace MediaBrowser.Controller.Channels
             ContentTypes = new List<ChannelMediaContentType>();
 
             DefaultSortFields = new List<ChannelItemSortField>();
+        }
+    }
+
+    public class ChannelDownloadException : Exception
+    {
+        public ChannelDownloadException(string message)
+            : base(message)
+        {
+
         }
     }
 }

@@ -449,10 +449,10 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var list = new List<string>
             {
-                ConfigurationManager.ApplicationPaths.GetInternalMetadataPath(item.Id)
+                item.GetInternalMetadataPath()
             };
 
-            list.AddRange(children.Select(i => ConfigurationManager.ApplicationPaths.GetInternalMetadataPath(i.Id)));
+            list.AddRange(children.Select(i => i.GetInternalMetadataPath()));
 
             return list;
         }
@@ -1424,7 +1424,8 @@ namespace MediaBrowser.Server.Implementations.Library
 
             item.DateLastSaved = DateTime.UtcNow;
 
-            _logger.Debug("Saving {0} to database.", item.Path ?? item.Name);
+            var logName = item.LocationType == LocationType.Remote ? item.Name ?? item.Path : item.Path ?? item.Name;
+            _logger.Debug("Saving {0} to database.", logName);
 
             await ItemRepository.SaveItem(item, cancellationToken).ConfigureAwait(false);
 

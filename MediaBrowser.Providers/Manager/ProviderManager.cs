@@ -357,11 +357,6 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            if (!item.SupportsLocalMetadata && provider is ILocalImageProvider)
-            {
-                return false;
-            }
-
             try
             {
                 return provider.Supports(item);
@@ -451,7 +446,6 @@ namespace MediaBrowser.Providers.Manager
                 GetPluginSummary<Studio>(),
                 GetPluginSummary<GameGenre>(),
                 GetPluginSummary<MusicGenre>(),
-                GetPluginSummary<AdultVideo>(),
                 GetPluginSummary<MusicVideo>(),
                 GetPluginSummary<Video>(),
                 GetPluginSummary<LiveTvChannel>(),

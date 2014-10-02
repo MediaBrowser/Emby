@@ -91,6 +91,9 @@ namespace MediaBrowser.Common.Net
         public bool LogErrorResponseBody { get; set; }
         public bool EnableKeepAlive { get; set; }
 
+        public CacheMode CacheMode { get; set; }
+        public TimeSpan CacheLength { get; set; }
+
         private string GetHeaderValue(string name)
         {
             string value;
@@ -121,5 +124,11 @@ namespace MediaBrowser.Common.Net
             RequestContent = postContent;
             RequestContentType = "application/x-www-form-urlencoded";
         }
+    }
+
+    public enum CacheMode
+    {
+        None = 1,
+        Unconditional = 2
     }
 }

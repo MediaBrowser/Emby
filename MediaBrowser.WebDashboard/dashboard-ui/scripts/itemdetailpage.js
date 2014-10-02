@@ -39,7 +39,7 @@
         renderHeader(page, item, context);
 
         LibraryBrowser.renderName(item, $('.itemName', page), false, context);
-        LibraryBrowser.renderParentName(item, $('.parentName', page));
+        LibraryBrowser.renderParentName(item, $('.parentName', page), context);
 
         Dashboard.getCurrentUser().done(function (user) {
 
@@ -242,6 +242,11 @@
             elem = $('.homeTabs', page).show();
             $('a', elem).removeClass('ui-btn-active');
             $('.lnkHomeUpcoming', page).addClass('ui-btn-active');
+        }
+        else if (context == 'home-latest') {
+            elem = $('.homeTabs', page).show();
+            $('a', elem).removeClass('ui-btn-active');
+            $('.lnkHomeLatest', page).addClass('ui-btn-active');
         }
         else if (context == 'movies' || item.Type == 'Movie') {
             elem = $('#movieTabs', page).show();
@@ -1285,7 +1290,7 @@
             //html += '<div><span class="mediaInfoLabel">'+Globalize.translate('MediaInfoFormat')+'</span><span class="mediaInfoAttribute">' + version.Formats.join(',') + '</span></div>';
         }
 
-        if (version.Path) {
+        if (version.Path && version.Protocol != 'Http') {
             html += '<div style="max-width:600px;overflow:hidden;"><span class="mediaInfoLabel">' + Globalize.translate('MediaInfoPath') + '</span><span class="mediaInfoAttribute">' + version.Path + '</span></div>';
         }
 

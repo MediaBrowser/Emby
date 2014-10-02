@@ -47,7 +47,6 @@
                 case "trailers":
                     imgUrl = "css/images/items/folders/movies.png";
                     break;
-                case "adultvideos":
                 case "homevideos":
                     imgUrl = "css/images/items/folders/homevideos.png";
                     break;
@@ -122,7 +121,7 @@
         });
     }
 
-    function loadRecentlyAdded(elem, userId) {
+    function loadRecentlyAdded(elem, userId, context) {
 
         var screenWidth = $(window).width();
 
@@ -144,10 +143,10 @@
                     items: items,
                     preferThumb: true,
                     shape: 'homePageBackdrop',
-                    context: 'home',
+                    context: context || 'home',
                     showUnplayedIndicator: false,
                     showChildCountIndicator: true,
-                    lazy: true
+                    lazy: true,
                 });
                 html += '</div>';
             }
@@ -354,7 +353,7 @@
 
         var options = {
 
-            Limit: screenWidth >= 1600 ? 5 : (screenWidth >= 1440 ? 5 : (screenWidth >= 800 ? 6 : 6)),
+            Limit: screenWidth >= 1600 ? 6 : (screenWidth >= 1440 ? 5 : (screenWidth >= 800 ? 6 : 6)),
             Fields: "PrimaryImageAspectRatio",
             Filters: "IsUnplayed",
             UserId: Dashboard.getCurrentUserId(),
