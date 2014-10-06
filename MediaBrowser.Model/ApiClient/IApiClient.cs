@@ -2,6 +2,7 @@
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Notifications;
@@ -25,13 +26,18 @@ namespace MediaBrowser.Model.ApiClient
     /// <summary>
     /// Interface IApiClient
     /// </summary>
-    public interface IApiClient : IDisposable
+    public interface IApiClient : IServerEvents, IDisposable
     {
         /// <summary>
-        /// Occurs when [HTTP response received].
+        /// Occurs when [remote logged out].
         /// </summary>
-        event EventHandler<HttpResponseEventArgs> HttpResponseReceived;
+        event EventHandler<EventArgs> RemoteLoggedOut;
 
+        /// <summary>
+        /// Occurs when [authenticated].
+        /// </summary>
+        event EventHandler<GenericEventArgs<AuthenticationResult>> Authenticated;
+        
         /// <summary>
         /// Gets the API URL.
         /// </summary>
@@ -782,13 +788,6 @@ namespace MediaBrowser.Model.ApiClient
         string ServerAddress { get; }
 
         /// <summary>
-        /// Changes the server location.
-        /// </summary>
-        /// <param name="address">The address.</param>
-        /// <param name="keepExistingAuth">Don't clear any existing authentication</param>
-        void ChangeServerLocation(string address, bool keepExistingAuth = false);
-
-        /// <summary>
         /// Gets or sets the type of the client.
         /// </summary>
         /// <value>The type of the client.</value>
@@ -1288,5 +1287,17 @@ namespace MediaBrowser.Model.ApiClient
         /// <exception cref="ArgumentNullException">options</exception>
         [Obsolete]
         string GetHlsVideoStreamUrl(VideoStreamOptions options);
+
+        /// <summary>
+        /// Sends the context message asynchronous.
+        /// </summary>
+        /// <param name="itemType">Type of the item.</param>
+        /// <param name="itemId">The item identifier.</param>
+        /// <param name="itemName">Name of the item.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SendContextMessageAsync(string itemType, string itemId, string itemName, string context,
+            CancellationToken cancellationToken);
     }
 }
