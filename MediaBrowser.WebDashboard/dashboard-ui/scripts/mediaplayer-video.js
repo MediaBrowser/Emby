@@ -896,7 +896,8 @@
             options.push({ name: '480p - 420kbps', maxWidth: 720, bitrate: 420000 });
             options.push({ name: '360p', maxWidth: 640, bitrate: 400000 });
             options.push({ name: '240p', maxWidth: 426, bitrate: 320000 });
-
+            options.push({ name: '144p', maxWidth: 222, bitrate: 192000 });
+            
             var i, length, option;
             var selectedIndex = -1;
             for (i = 0, length = options.length; i < length; i++) {
