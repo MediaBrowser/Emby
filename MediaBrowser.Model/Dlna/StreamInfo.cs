@@ -91,6 +91,13 @@ namespace MediaBrowser.Model.Dlna
                 throw new ArgumentNullException(baseUrl);
             }
 
+            if (IsDirectStream && MediaSource != null && MediaSource.Protocol == MediaProtocol.Http)
+            {
+                if (MediaSource.RequiredHttpHeaders.Count == 0)
+                {
+                }
+            }
+
             string dlnaCommand = BuildDlnaParam(this);
 
             string extension = string.IsNullOrEmpty(Container) ? string.Empty : "." + Container;
@@ -135,6 +142,7 @@ namespace MediaBrowser.Model.Dlna
             list.Add(item.IsDirectStream ? string.Empty : DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
             list.Add(item.MaxRefFrames.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxRefFrames.Value) : string.Empty);
             list.Add(item.MaxVideoBitDepth.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxVideoBitDepth.Value) : string.Empty);
+            list.Add(item.VideoProfile ?? string.Empty);
 
             return string.Format("Params={0}", string.Join(";", list.ToArray()));
         }
@@ -506,34 +514,5 @@ namespace MediaBrowser.Model.Dlna
                 return MaxHeight;
             }
         }
-    }
-
-    public enum SubtitleDeliveryMethod
-    {
-        /// <summary>
-        /// The encode
-        /// </summary>
-        Encode = 0,
-        /// <summary>
-        /// The embed
-        /// </summary>
-        Embed = 1,
-        /// <summary>
-        /// The external
-        /// </summary>
-        External = 2,
-        /// <summary>
-        /// The HLS
-        /// </summary>
-        Hls = 3
-    }
-
-    public class SubtitleStreamInfo
-    {
-        public string Url { get; set; }
-        public string Language { get; set; }
-        public string Name { get; set; }
-        public bool IsForced { get; set; }
-        public string Format { get; set; }
     }
 }

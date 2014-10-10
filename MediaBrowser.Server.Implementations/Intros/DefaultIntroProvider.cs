@@ -109,6 +109,10 @@ namespace MediaBrowser.Server.Implementations.Intros
             {
                 trailerTypes.Add(TrailerType.ComingSoonToStreaming);
             }
+            if (config.EnableIntrosFromSimilarMovies)
+            {
+                trailerTypes.Add(TrailerType.Archive);
+            }
 
             if (trailerTypes.Count > 0 && IsSupporter)
             {
@@ -144,7 +148,7 @@ namespace MediaBrowser.Server.Implementations.Intros
                 GetCustomIntros(item) :
                 new List<IntroInfo>();
 
-            var trailerLimit = 2;
+            var trailerLimit = config.TrailerLimit;
             if (customIntros.Count > 0)
             {
                 trailerLimit--;

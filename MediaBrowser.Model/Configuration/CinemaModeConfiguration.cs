@@ -9,13 +9,17 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableIntrosFromUpcomingTrailers { get; set; }
         public bool EnableIntrosFromMoviesInLibrary { get; set; }
         public bool EnableIntrosParentalControl { get; set; }
+        public bool EnableIntrosFromSimilarMovies { get; set; }
         public string CustomIntroPath { get; set; }
         public bool EnableIntrosFromUpcomingDvdMovies { get; set; }
         public bool EnableIntrosFromUpcomingStreamingMovies { get; set; }
 
+        public int TrailerLimit { get; set; }
+        
         public CinemaModeConfiguration()
         {
             EnableIntrosParentalControl = true;
+            TrailerLimit = 2;
         }
     }
 }

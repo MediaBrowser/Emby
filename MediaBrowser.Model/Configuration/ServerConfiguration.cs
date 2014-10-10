@@ -1,6 +1,4 @@
 ﻿using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.FileOrganization;
-using MediaBrowser.Model.LiveTv;
 
 namespace MediaBrowser.Model.Configuration
 {
@@ -14,6 +12,12 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable u pn p]; otherwise, <c>false</c>.</value>
         public bool EnableUPnP { get; set; }
+
+        /// <summary>
+        /// Gets or sets the public mapped port.
+        /// </summary>
+        /// <value>The public mapped port.</value>
+        public int PublicPort { get; set; }
 
         /// <summary>
         /// Gets or sets the HTTP server port number.
@@ -167,19 +171,14 @@ namespace MediaBrowser.Model.Configuration
 
         public string UICulture { get; set; }
 
-        public DlnaOptions DlnaOptions { get; set; }
-
         public double DownMixAudioBoost { get; set; }
 
-        public bool DefaultMetadataSettingsApplied { get; set; }
-
         public PeopleMetadataOptions PeopleMetadataOptions { get; set; }
+        public bool FindInternetTrailers { get; set; }
 
-        public string[] SecureApps2 { get; set; }
+        public string[] InsecureApps { get; set; }
 
         public bool SaveMetadataHidden { get; set; }
-
-        public bool FindInternetTrailers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
@@ -189,6 +188,7 @@ namespace MediaBrowser.Model.Configuration
         {
             MediaEncodingQuality = EncodingQuality.Auto;
             ImageSavingConvention = ImageSavingConvention.Compatible;
+            PublicPort = 8096;
             HttpServerPortNumber = 8096;
             EnableDashboardResponseCaching = true;
 
@@ -226,15 +226,12 @@ namespace MediaBrowser.Model.Configuration
 
             PeopleMetadataOptions = new PeopleMetadataOptions();
 
-            SecureApps2 = new[]
+            InsecureApps = new[]
             {
-                "Dashboard",
-                "MBKinect",
-                "NuVue",
-                "Media Browser Theater",
-
-                //"Chrome Companion",
-                "MB-Classic"
+                "Roku",
+                "Chromecast",
+                "iOS",
+                "Android"
             };
 
             MetadataOptions = new[]
@@ -294,23 +291,6 @@ namespace MediaBrowser.Model.Configuration
 
                 new MetadataOptions(0, 1280) {ItemType = "Season"}
             };
-        }
-    }
-
-    public class PeopleMetadataOptions
-    {
-        public bool DownloadActorMetadata { get; set; }
-        public bool DownloadDirectorMetadata { get; set; }
-        public bool DownloadProducerMetadata { get; set; }
-        public bool DownloadWriterMetadata { get; set; }
-        public bool DownloadComposerMetadata { get; set; }
-        public bool DownloadOtherPeopleMetadata { get; set; }
-        public bool DownloadGuestStarMetadata { get; set; }
-
-        public PeopleMetadataOptions()
-        {
-            DownloadActorMetadata = true;
-            DownloadDirectorMetadata = true;
         }
     }
 }

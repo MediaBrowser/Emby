@@ -1387,6 +1387,13 @@ namespace MediaBrowser.Api.Playback
                         videoRequest.MaxVideoBitDepth = int.Parse(val, UsCulture);
                     }
                 }
+                else if (i == 19)
+                {
+                    if (videoRequest != null)
+                    {
+                        videoRequest.Profile = val;
+                    }
+                }
             }
         }
 
@@ -1645,6 +1652,17 @@ namespace MediaBrowser.Api.Playback
             {
                 state.OutputVideoCodec = GetVideoCodec(videoRequest);
                 state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream);
+
+                if (state.OutputVideoBitrate.HasValue)
+                {
+                    var resolution = ResolutionNormalizer.Normalize(state.OutputVideoBitrate.Value,
+                        state.OutputVideoCodec,
+                        videoRequest.MaxWidth,
+                        videoRequest.MaxHeight);
+
+                    videoRequest.MaxWidth = resolution.MaxWidth;
+                    videoRequest.MaxHeight = resolution.MaxHeight;
+                }
             }
 
             ApplyDeviceProfileSettings(state);
@@ -1707,7 +1725,7 @@ namespace MediaBrowser.Api.Playback
             string mediaSourceId,
             CancellationToken cancellationToken)
         {
-            var channelMediaSources = await ChannelManager.GetChannelItemMediaSources(id, cancellationToken)
+            var channelMediaSources = await ChannelManager.GetChannelItemMediaSources(id, true, cancellationToken)
                 .ConfigureAwait(false);
 
             var list = channelMediaSources.ToList();

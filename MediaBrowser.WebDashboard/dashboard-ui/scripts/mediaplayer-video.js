@@ -60,7 +60,7 @@
 
         self.resetEnhancements = function () {
             $("#mediaPlayer").hide();
-            $('#videoPlayer').removeClass('fullscreenVideo');
+            $('#videoPlayer').removeClass('fullscreenVideo').removeClass('idlePlayer');
             $('.hiddenOnIdle').removeClass("inactive");
             $("video").remove();
         };
@@ -497,6 +497,7 @@
 
             if (idleState == true) {
                 $('.hiddenOnIdle').removeClass("inactive");
+                $('#videoPlayer').removeClass('idlePlayer');
             }
 
             idleState = false;
@@ -504,6 +505,7 @@
             timeout = window.setTimeout(function () {
                 idleState = true;
                 $('.hiddenOnIdle').addClass("inactive");
+                $('#videoPlayer').addClass('idlePlayer');
             }, 4000);
         }
 
@@ -847,7 +849,7 @@
 
             var bitrateSetting = AppSettings.maxStreamingBitrate();
 
-            var maxAllowedWidth = Math.max(screen.height, screen.width);
+            var maxAllowedWidth = self.getMaxPlayableWidth();
 
             var options = [];
 
@@ -1063,6 +1065,10 @@
                 EnableAutoStreamCopy: false
             }));
 
+            if (isStatic && mediaSource.Protocol == 'Http' && !mediaSource.RequiredHttpHeaders.length) {
+                mp4VideoUrl = mediaSource.Path;
+            }
+
             if (isStatic) {
                 mp4VideoUrl += seekParam;
             } else {
@@ -1217,6 +1223,8 @@
             updateVolumeButtons(initialVolume);
 
             video.one("loadedmetadata.mediaplayerevent", function (e) {
+
+                // TODO: This is not working in chrome. Is it too early?
 
                 // Appending #t=xxx to the query string doesn't seem to work with HLS
                 if (startPositionInSeekParam && this.currentSrc && this.currentSrc.toLowerCase().indexOf('.m3u8') != -1) {

@@ -218,9 +218,12 @@ namespace MediaBrowser.ServerApplication
         private IAuthenticationRepository AuthenticationRepository { get; set; }
         private ISyncRepository SyncRepository { get; set; }
         private ITVSeriesManager TVSeriesManager { get; set; }
+        private ICollectionManager CollectionManager { get; set; }
 
         private readonly StartupOptions _startupOptions;
         private readonly string _remotePackageName;
+
+        private readonly bool _supportsNativeWebSocket;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationHost" /> class.
@@ -230,16 +233,21 @@ namespace MediaBrowser.ServerApplication
         /// <param name="supportsRunningAsService">if set to <c>true</c> [supports running as service].</param>
         /// <param name="isRunningAsService">if set to <c>true</c> [is running as service].</param>
         /// <param name="options">The options.</param>
+        /// <param name="fileSystem">The file system.</param>
         /// <param name="remotePackageName">Name of the remote package.</param>
         public ApplicationHost(ServerApplicationPaths applicationPaths, 
             ILogManager logManager, 
             bool supportsRunningAsService, 
             bool isRunningAsService,
-            StartupOptions options, string remotePackageName)
-            : base(applicationPaths, logManager)
+            StartupOptions options, 
+            IFileSystem fileSystem,
+            string remotePackageName, 
+            bool supportsNativeWebSocket)
+            : base(applicationPaths, logManager, fileSystem)
         {
             _startupOptions = options;
             _remotePackageName = remotePackageName;
+            _supportsNativeWebSocket = supportsNativeWebSocket;
             _isRunningAsService = isRunningAsService;
             SupportsRunningAsService = supportsRunningAsService;
         }
@@ -433,7 +441,7 @@ namespace MediaBrowser.ServerApplication
 
             RegisterSingleInstance<ISearchEngine>(() => new SearchEngine(LogManager, LibraryManager, UserManager));
 
-            HttpServer = ServerFactory.CreateServer(this, LogManager, "Media Browser", WebApplicationName, "dashboard/index.html");
+            HttpServer = ServerFactory.CreateServer(this, LogManager, "Media Browser", WebApplicationName, "dashboard/index.html", _supportsNativeWebSocket);
             RegisterSingleInstance(HttpServer, false);
             progress.Report(10);
 
@@ -487,8 +495,8 @@ namespace MediaBrowser.ServerApplication
             var connectionManager = new ConnectionManager(dlnaManager, ServerConfigurationManager, LogManager.GetLogger("UpnpConnectionManager"), HttpClient);
             RegisterSingleInstance<IConnectionManager>(connectionManager);
 
-            var collectionManager = new CollectionManager(LibraryManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("CollectionManager"));
-            RegisterSingleInstance<ICollectionManager>(collectionManager);
+            CollectionManager = new CollectionManager(LibraryManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("CollectionManager"));
+            RegisterSingleInstance(CollectionManager);
 
             var playlistManager = new PlaylistManager(LibraryManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("PlaylistManager"), UserManager);
             RegisterSingleInstance<IPlaylistManager>(playlistManager);
@@ -546,11 +554,6 @@ namespace MediaBrowser.ServerApplication
         protected override INetworkManager CreateNetworkManager(ILogger logger)
         {
             return new NetworkManager(logger);
-        }
-
-        protected override IFileSystem CreateFileSystemManager()
-        {
-            return FileSystemFactory.CreateFileSystemManager(LogManager);
         }
 
         /// <summary>
@@ -698,6 +701,7 @@ namespace MediaBrowser.ServerApplication
             BaseItem.LiveTvManager = LiveTvManager;
             Folder.UserViewManager = UserViewManager;
             UserView.TVSeriesManager = TVSeriesManager;
+            BaseItem.CollectionManager = CollectionManager;
         }
 
         /// <summary>

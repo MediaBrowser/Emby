@@ -15,15 +15,15 @@ namespace MediaBrowser.Controller.Entities
 
         public static ITVSeriesManager TVSeriesManager;
 
-        public override Task<QueryResult<BaseItem>> GetUserItems(UserItemsQuery query)
+        public override Task<QueryResult<BaseItem>> GetItems(InternalItemsQuery query)
         {
-            return new UserViewBuilder(UserViewManager, LiveTvManager, ChannelManager, LibraryManager, Logger, UserDataManager, TVSeriesManager)
+            return new UserViewBuilder(UserViewManager, LiveTvManager, ChannelManager, LibraryManager, Logger, UserDataManager, TVSeriesManager, CollectionManager)
                 .GetUserItems(this, ViewType, query);
         }
 
         public override IEnumerable<BaseItem> GetChildren(User user, bool includeLinkedChildren)
         {
-            var result = GetUserItems(new UserItemsQuery
+            var result = GetItems(new InternalItemsQuery
             {
                 User = user
 
@@ -34,7 +34,7 @@ namespace MediaBrowser.Controller.Entities
 
         public override IEnumerable<BaseItem> GetRecursiveChildren(User user, bool includeLinkedChildren = true)
         {
-            var result = GetUserItems(new UserItemsQuery
+            var result = GetItems(new InternalItemsQuery
             {
                 User = user,
                 Recursive = true

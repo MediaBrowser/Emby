@@ -145,6 +145,10 @@ namespace MediaBrowser.Model.Dlna
 
             switch (condition.Condition)
             {
+                case ProfileConditionType.EqualsAny:
+                {
+                    return ListHelper.ContainsIgnoreCase(expected.Split('|'), currentValue);
+                }
                 case ProfileConditionType.Equals:
                     return StringHelper.EqualsIgnoreCase(currentValue, expected);
                 case ProfileConditionType.NotEquals:
