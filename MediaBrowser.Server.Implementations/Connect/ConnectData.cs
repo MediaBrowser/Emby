@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaBrowser.Model.Connect;
+using System;
 using System.Collections.Generic;
 
 namespace MediaBrowser.Server.Implementations.Connect
@@ -20,22 +21,17 @@ namespace MediaBrowser.Server.Implementations.Connect
         /// Gets or sets the authorizations.
         /// </summary>
         /// <value>The authorizations.</value>
-        public List<ConnectAuthorization> Authorizations { get; set; }
+        public List<ConnectAuthorization> PendingAuthorizations { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last authorizations refresh.
+        /// </summary>
+        /// <value>The last authorizations refresh.</value>
+        public DateTime LastAuthorizationsRefresh { get; set; }
 
         public ConnectData()
         {
-            Authorizations = new List<ConnectAuthorization>();
-        }
-    }
-
-    public class ConnectAuthorization
-    {
-        public string LocalUserId { get; set; }
-        public string AccessToken { get; set; }
-
-        public ConnectAuthorization()
-        {
-            AccessToken = new Guid().ToString("N");
+            PendingAuthorizations = new List<ConnectAuthorization>();
         }
     }
 }

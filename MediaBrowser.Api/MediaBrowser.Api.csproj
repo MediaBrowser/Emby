@@ -71,9 +71,11 @@
     <Compile Include="BrandingService.cs" />
     <Compile Include="ChannelService.cs" />
     <Compile Include="ConnectService.cs" />
+    <Compile Include="Devices\DeviceService.cs" />
     <Compile Include="Dlna\DlnaServerService.cs" />
     <Compile Include="Dlna\DlnaService.cs" />
     <Compile Include="Library\ChapterService.cs" />
+    <Compile Include="Playback\Hls\MpegDashService.cs" />
     <Compile Include="PlaylistService.cs" />
     <Compile Include="Subtitles\SubtitleService.cs" />
     <Compile Include="Movies\CollectionService.cs" />

@@ -308,6 +308,8 @@ namespace MediaBrowser.Api.Playback.Progressive
             string useragent = null;
             state.RemoteHttpHeaders.TryGetValue("User-Agent", out useragent);
 
+            var trySupportSeek = false;
+
             var options = new HttpRequestOptions
             {
                 Url = state.MediaPath,
@@ -316,20 +318,39 @@ namespace MediaBrowser.Api.Playback.Progressive
                 CancellationToken = cancellationTokenSource.Token
             };
 
+            if (trySupportSeek)
+            {
+                if (!string.IsNullOrWhiteSpace(Request.QueryString["Range"]))
+                {
+                    options.RequestHeaders["Range"] = Request.QueryString["Range"];
+                }
+            }
             var response = await HttpClient.GetResponse(options).ConfigureAwait(false);
 
-            responseHeaders["Accept-Ranges"] = "none";
-
-            var length = response.Headers["Content-Length"];
-
-            if (!string.IsNullOrEmpty(length))
+            if (trySupportSeek)
             {
-                responseHeaders["Content-Length"] = length;
+                foreach (var name in new[] {"Content-Range", "Accept-Ranges"})
+                {
+                    var val = response.Headers[name];
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        responseHeaders[name] = val;
+                    }
+                }
             }
-
+            else
+            {
+                responseHeaders["Accept-Ranges"] = "none";
+            }
+            
+            if (response.ContentLength.HasValue)
+            {
+                responseHeaders["Content-Length"] = response.ContentLength.Value.ToString(UsCulture);
+            }
+            
             if (isHeadRequest)
             {
-                using (response.Content)
+                using (response)
                 {
                     return ResultFactory.GetResult(new byte[] { }, response.ContentType, responseHeaders);
                 }

@@ -146,6 +146,10 @@ namespace MediaBrowser.Common.Net
             {
                 return "video/mp2t";
             }
+            if (ext.Equals(".mpd", StringComparison.OrdinalIgnoreCase))
+            {
+                return "video/vnd.mpeg.dash.mpd";
+            }
 
             // Catch-all for all video types that don't require specific mime types
             if (VideoFileExtensionsDictionary.ContainsKey(ext))
@@ -314,6 +318,21 @@ namespace MediaBrowser.Common.Net
             }
 
             throw new ArgumentException("Argument not supported: " + path);
+        }
+
+        private static readonly Dictionary<string, string> MimeExtensions =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"image/jpeg", "jpg"},
+                {"image/jpg", "jpg"},
+                {"image/png", "png"},
+                {"image/gif", "gif"},
+                {"image/webp", "webp"}
+            };
+
+        public static string ToExtension(string mimeType)
+        {
+            return "." + MimeExtensions[mimeType];
         }
     }
 }

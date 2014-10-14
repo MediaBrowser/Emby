@@ -14,6 +14,7 @@ using MediaBrowser.Controller.Chapters;
 using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Connect;
+using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
@@ -59,6 +60,7 @@ using MediaBrowser.Server.Implementations.Channels;
 using MediaBrowser.Server.Implementations.Collections;
 using MediaBrowser.Server.Implementations.Configuration;
 using MediaBrowser.Server.Implementations.Connect;
+using MediaBrowser.Server.Implementations.Devices;
 using MediaBrowser.Server.Implementations.Drawing;
 using MediaBrowser.Server.Implementations.Dto;
 using MediaBrowser.Server.Implementations.EntryPoints;
@@ -212,6 +214,7 @@ namespace MediaBrowser.ServerApplication
         private INotificationManager NotificationManager { get; set; }
         private ISubtitleManager SubtitleManager { get; set; }
         private IChapterManager ChapterManager { get; set; }
+        private IDeviceManager DeviceManager { get; set; }
 
         internal IUserViewManager UserViewManager { get; set; }
 
@@ -316,23 +319,11 @@ namespace MediaBrowser.ServerApplication
             PerformVersionMigration();
 
             await base.Init(progress).ConfigureAwait(false);
-
-            MigrateModularConfigurations();
         }
 
         private void PerformVersionMigration()
         {
             DeleteDeprecatedModules();
-        }
-
-        private void MigrateModularConfigurations()
-        {
-            var saveConfig = false;
-
-            if (saveConfig)
-            {
-                ServerConfigurationManager.SaveConfiguration();
-            }
         }
 
         private void DeleteDeprecatedModules()
@@ -421,7 +412,7 @@ namespace MediaBrowser.ServerApplication
             //SyncRepository = await GetSyncRepository().ConfigureAwait(false);
             //RegisterSingleInstance(SyncRepository);
 
-            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService);
+            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager);
             RegisterSingleInstance(UserManager);
 
             LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => LibraryMonitor, FileSystemManager, () => ProviderManager);
@@ -466,10 +457,13 @@ namespace MediaBrowser.ServerApplication
             var encryptionManager = new EncryptionManager();
             RegisterSingleInstance<IEncryptionManager>(encryptionManager);
 
-            ConnectManager = new ConnectManager(LogManager.GetLogger("Connect"), ApplicationPaths, JsonSerializer, encryptionManager, HttpClient, this, ServerConfigurationManager, UserManager);
+            ConnectManager = new ConnectManager(LogManager.GetLogger("Connect"), ApplicationPaths, JsonSerializer, encryptionManager, HttpClient, this, ServerConfigurationManager, UserManager, ProviderManager);
             RegisterSingleInstance(ConnectManager);
 
-            SessionManager = new SessionManager(UserDataManager, ServerConfigurationManager, Logger, UserRepository, LibraryManager, UserManager, musicManager, DtoService, ImageProcessor, ItemRepository, JsonSerializer, this, HttpClient, AuthenticationRepository);
+            DeviceManager = new DeviceManager(new DeviceRepository(ApplicationPaths, JsonSerializer), UserManager, FileSystemManager, LibraryMonitor, ConfigurationManager, LogManager.GetLogger("DeviceManager"));
+            RegisterSingleInstance(DeviceManager);
+
+            SessionManager = new SessionManager(UserDataManager, ServerConfigurationManager, Logger, UserRepository, LibraryManager, UserManager, musicManager, DtoService, ImageProcessor, ItemRepository, JsonSerializer, this, HttpClient, AuthenticationRepository, DeviceManager);
             RegisterSingleInstance(SessionManager);
 
             var newsService = new Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);

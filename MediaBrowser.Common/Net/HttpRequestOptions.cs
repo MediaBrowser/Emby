@@ -114,6 +114,7 @@ namespace MediaBrowser.Common.Net
             RequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             LogRequest = true;
+            CacheMode = CacheMode.None;
         }
 
         public void SetPostData(IDictionary<string,string> values)
@@ -128,7 +129,7 @@ namespace MediaBrowser.Common.Net
 
     public enum CacheMode
     {
-        None = 1,
-        Unconditional = 2
+        None = 0,
+        Unconditional = 1
     }
 }

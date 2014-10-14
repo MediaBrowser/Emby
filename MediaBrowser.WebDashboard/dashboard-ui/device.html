@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>${TitleDevices}</title>
+</head>
+<body>
+    <div id="devicePage" data-role="page" class="page type-interior devicesPage">
+
+        <div data-role="content">
+            <div class="content-primary">
+
+                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
+                    <a href="devices.html" data-role="button" class="ui-btn-active">${TabDevices}</a>
+                    <a href="devicesupload.html" data-role="button">${TabCameraUpload}</a>
+                </div>
+
+                <div class="readOnlyContent">
+
+                    <form class="deviceForm">
+
+                        <ul data-role="listview" class="ulForm">
+                            <li>
+                                <label for="txtCustomName">${LabelCustomDeviceDisplayName}</label>
+                                <input type="text" id="txtCustomName" data-mini="true" />
+                                <div class="fieldDescription">${LabelCustomDeviceDisplayNameHelp}</div>
+                            </li>
+                            <li id="fldCameraUploadPath" style="display:none;">
+                                <label for="txtUploadPath">${LabelCameraUploadPath}</label>
+                                <div style="display: inline-block; width: 92%;">
+                                    <input type="text" id="txtUploadPath" data-mini="true" />
+                                </div>
+                                <button id="btnSelectUploadPath" type="button" data-icon="search" data-iconpos="notext" data-inline="true">${ButtonSelectDirectory}</button>
+                                <div class="fieldDescription">${LabelCameraUploadPathHelp}</div>
+                            </li>
+
+                        </ul><br />
+                        <ul data-role="listview" class="ulForm">
+                            <li>
+                                <button type="submit" data-theme="b" data-icon="check">
+                                    ${ButtonSave}
+                                </button>
+                                <button type="button" onclick="Dashboard.navigate('devices.html');" data-icon="delete">
+                                    ${ButtonCancel}
+                                </button>
+                            </li>
+                        </ul>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $('.deviceForm').off('submit', DevicePage.onSubmit).on('submit', DevicePage.onSubmit);
+        </script>
+    </div>
+</body>
+</html>

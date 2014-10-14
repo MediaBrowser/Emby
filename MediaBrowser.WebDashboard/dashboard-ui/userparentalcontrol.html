@@ -11,25 +11,12 @@
                 <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
                     <a href="#" data-role="button" onclick="Dashboard.navigate('useredit.html', true);">${TabProfile}</a>
                     <a href="#" data-role="button" onclick="Dashboard.navigate('userimage.html', true);">${TabImage}</a>
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('userparentalcontrol.html', true);" class="ui-btn-active">${TabLibraryAccess}</a>
+                    <a href="#" data-role="button" onclick="Dashboard.navigate('userlibraryaccess.html', true);">${TabLibraryAccess}</a>
+                    <a href="#" data-role="button" onclick="Dashboard.navigate('userparentalcontrol.html', true);" class="ui-btn-active">${TabParentalControl}</a>
                     <a href="#" data-role="button" onclick="Dashboard.navigate('userpassword.html', true);">${TabPassword}</a>
                 </div>
                 <form class="userParentalControlForm">
 
-                    <div>
-                        <div class="mediaFolderAccess">
-                        </div>
-                        <div class="fieldDescription">${LibraryAccessHelp}</div>
-                    </div>
-                    <br />
-
-                    <div class="channelAccessContainer">
-                        <div class="channelAccess">
-                        </div>
-                        <div class="fieldDescription">${ChannelAccessHelp}</div>
-                        <br />
-                    </div>
-                    <br />
                     <ul data-role="listview" class="ulForm">
                         <li>
                             <label for="selectMaxParentalRating">${LabelMaxParentalRating}</label>
@@ -49,9 +36,6 @@
                             <button type="submit" data-theme="b" data-icon="check">
                                 ${ButtonSave}
                             </button>
-                            <a data-role="button" href="userprofiles.html" data-icon="delete" style="text-align:center;">
-                                ${ButtonCancel}
-                            </a>
                         </li>
                     </ul>
                 </form>

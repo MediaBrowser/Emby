@@ -20,10 +20,16 @@
             $('.lnkEditUserPreferencesContainer', page).show();
         }
 
-        if (user.Id && loggedInUser.Configuration.IsAdministrator) {
-            $('#fldConnectInfo', page).hide();
+        if (user.Id && loggedInUser.Configuration.IsAdministrator && user.ConnectLinkType != 'Guest') {
+            $('#fldConnectInfo', page).show();
         } else {
             $('#fldConnectInfo', page).hide();
+        }
+
+        if (user.ConnectLinkType == 'Guest') {
+            $('#txtUserName', page).prop("disabled", "disabled");
+        } else {
+            $('#txtUserName', page).prop("disabled", "").removeAttr('disabled');
         }
 
         if (!loggedInUser.Configuration.IsAdministrator || !user.Id) {
@@ -254,8 +260,6 @@
         var page = this;
 
         loadData(page);
-
-        $("form input:first", page).focus();
     });
 
 })(jQuery, window, document);

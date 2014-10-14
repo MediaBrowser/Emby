@@ -986,7 +986,7 @@ namespace MediaBrowser.Api.Playback
             StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream);
 
             // Wait for the file to exist before proceeeding
-            while (!File.Exists(outputPath))
+            while (!File.Exists(outputPath) && !transcodingJob.HasExited)
             {
                 await Task.Delay(100, cancellationTokenSource.Token).ConfigureAwait(false);
             }
@@ -1591,7 +1591,9 @@ namespace MediaBrowser.Api.Playback
                 state.InputFileSize = mediaSource.Size;
                 state.InputBitrate = mediaSource.Bitrate;
 
-                if (item is Video)
+                var video = item as Video;
+
+                if (video != null)
                 {
                     state.IsInputVideo = true;
 
@@ -1607,6 +1609,11 @@ namespace MediaBrowser.Api.Playback
                     if (mediaSource.Timestamp.HasValue)
                     {
                         state.InputTimestamp = mediaSource.Timestamp.Value;
+                    }
+
+                    if (video.IsShortcut)
+                    {
+                        state.MediaPath = File.ReadAllText(video.Path);
                     }
                 }
 

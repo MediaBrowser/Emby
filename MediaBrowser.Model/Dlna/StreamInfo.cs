@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using MediaBrowser.Model.Drawing;
+﻿using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
@@ -7,6 +6,7 @@ using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Session;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace MediaBrowser.Model.Dlna
 {
@@ -76,7 +76,10 @@ namespace MediaBrowser.Model.Dlna
 
         public bool IsDirectStream
         {
-            get { return PlayMethod == PlayMethod.DirectStream; }
+            get { 
+                return PlayMethod == PlayMethod.DirectStream ||
+                    PlayMethod == PlayMethod.DirectPlay;
+            }
         }
 
         public string ToUrl(string baseUrl)
@@ -86,16 +89,14 @@ namespace MediaBrowser.Model.Dlna
 
         public string ToDlnaUrl(string baseUrl)
         {
+            if (PlayMethod == PlayMethod.DirectPlay)
+            {
+                return MediaSource.Path;
+            }
+
             if (string.IsNullOrEmpty(baseUrl))
             {
                 throw new ArgumentNullException(baseUrl);
-            }
-
-            if (IsDirectStream && MediaSource != null && MediaSource.Protocol == MediaProtocol.Http)
-            {
-                if (MediaSource.RequiredHttpHeaders.Count == 0)
-                {
-                }
             }
 
             string dlnaCommand = BuildDlnaParam(this);
