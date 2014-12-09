@@ -235,6 +235,25 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
+        [IgnoreDataMember]
+        public override string FileNameWithoutExtension
+        {
+            get
+            {
+                if (LocationType == LocationType.FileSystem)
+                {
+                    if (VideoType == VideoType.BluRay || VideoType == VideoType.Dvd || VideoType == VideoType.HdDvd)
+                    {
+                        return System.IO.Path.GetFileName(Path);
+                    }
+                    
+                    return System.IO.Path.GetFileNameWithoutExtension(Path);
+                }
+
+                return null;
+            }
+        }
+
         internal override bool IsValidFromResolver(BaseItem newItem)
         {
             var current = this;
