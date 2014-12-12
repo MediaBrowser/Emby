@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Model.Updates;
-using System;
+﻿using System;
 
 namespace MediaBrowser.Model.Plugins
 {

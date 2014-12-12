@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Controller;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Notifications;
-using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Notifications;
 using System;
 using System.Collections.Generic;

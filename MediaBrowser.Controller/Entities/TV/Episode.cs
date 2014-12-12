@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Providers;
+﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using System;

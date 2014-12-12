@@ -8,11 +8,11 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Providers.Manager;
 using System.Collections.Generic;
 
-namespace MediaBrowser.Providers.Games
+namespace MediaBrowser.Providers.Movies
 {
-    public class GameSystemMetadataService : MetadataService<GameSystem, GameSystemInfo>
+    public class TrailerMetadataService : MetadataService<Trailer, TrailerInfo>
     {
-        public GameSystemMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, IUserDataManager userDataManager) : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem, userDataManager)
+        public TrailerMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, IUserDataManager userDataManager) : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem, userDataManager)
         {
         }
 
@@ -24,14 +24,9 @@ namespace MediaBrowser.Providers.Games
         /// <param name="lockedFields">The locked fields.</param>
         /// <param name="replaceData">if set to <c>true</c> [replace data].</param>
         /// <param name="mergeMetadataSettings">if set to <c>true</c> [merge metadata settings].</param>
-        protected override void MergeData(GameSystem source, GameSystem target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+        protected override void MergeData(Trailer source, Trailer target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
         {
             ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
-
-            if (replaceData || string.IsNullOrEmpty(target.GameSystemName))
-            {
-                target.GameSystemName = source.GameSystemName;
-            }
         }
     }
 }

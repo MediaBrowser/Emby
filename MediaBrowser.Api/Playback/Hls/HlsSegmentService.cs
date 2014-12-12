@@ -1,9 +1,6 @@
 ﻿using MediaBrowser.Controller;
 using ServiceStack;
-using System;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.Playback.Hls
 {

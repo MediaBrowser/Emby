@@ -4,8 +4,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Controller.Resolvers;
-using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.Logging;
@@ -16,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Server.Implementations.Library;
 using MediaBrowser.Server.Implementations.Library.Resolvers.TV;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization

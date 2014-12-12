@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;

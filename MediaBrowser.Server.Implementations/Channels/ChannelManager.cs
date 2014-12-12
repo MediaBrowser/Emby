@@ -10,7 +10,6 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -26,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Server.Implementations.Library;
 
 namespace MediaBrowser.Server.Implementations.Channels
 {

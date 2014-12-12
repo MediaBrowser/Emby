@@ -1,4 +1,3 @@
-using MediaBrowser.Controller.Library;
 using MediaBrowser.Server.Implementations.Library.Resolvers.TV;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

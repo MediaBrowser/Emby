@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.MediaEncoding;
-using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.IO;
 using System;
 using System.Collections.Generic;

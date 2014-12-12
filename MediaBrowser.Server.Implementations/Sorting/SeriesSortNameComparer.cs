@@ -2,7 +2,6 @@
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Sorting;
 using MediaBrowser.Model.Querying;
-using System;
 
 namespace MediaBrowser.Server.Implementations.Sorting
 {

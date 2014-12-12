@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Model.Logging;
 using System;
-using System.Net;
 using System.Text;
 
 namespace MediaBrowser.Server.Implementations.HttpServer
