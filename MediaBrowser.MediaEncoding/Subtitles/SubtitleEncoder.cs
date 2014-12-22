@@ -58,23 +58,13 @@ namespace MediaBrowser.MediaEncoding.Subtitles
 
             try
             {
-                // Return the original without any conversions, if possible
-                if (startTimeTicks == 0 &&
-                    !endTimeTicks.HasValue &&
-                    string.Equals(inputFormat, outputFormat, StringComparison.OrdinalIgnoreCase))
-                {
-                    await stream.CopyToAsync(ms, 81920, cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    var trackInfo = await GetTrackInfo(stream, inputFormat, cancellationToken).ConfigureAwait(false);
+                var trackInfo = await GetTrackInfo(stream, inputFormat, cancellationToken).ConfigureAwait(false);
 
-                    FilterEvents(trackInfo, startTimeTicks, endTimeTicks, false);
+                FilterEvents(trackInfo, startTimeTicks, endTimeTicks, false);
 
-                    var writer = GetWriter(outputFormat);
+                var writer = GetWriter(outputFormat);
 
-                    writer.Write(trackInfo, ms, cancellationToken);
-                }
+                writer.Write(trackInfo, ms, cancellationToken);
                 ms.Position = 0;
             }
             catch
@@ -239,10 +229,10 @@ namespace MediaBrowser.MediaEncoding.Subtitles
                 await ConvertTextSubtitleToSrt(subtitleStream.Path, outputPath, subtitleStream.Language, cancellationToken)
                         .ConfigureAwait(false);
 
-                return new Tuple<string, string, bool>(outputPath, "srt", false);
+                return new Tuple<string, string, bool>(outputPath, "srt", true);
             }
 
-            return new Tuple<string, string, bool>(subtitleStream.Path, currentFormat, false);
+            return new Tuple<string, string, bool>(subtitleStream.Path, currentFormat, true);
         }
 
         private async Task<SubtitleTrackInfo> GetTrackInfo(Stream stream,
@@ -560,7 +550,7 @@ namespace MediaBrowser.MediaEncoding.Subtitles
                 }
             };
 
-            _logger.Debug("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
+            _logger.Info("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
 
             var logFilePath = Path.Combine(_appPaths.LogDirectoryPath, "ffmpeg-sub-extract-" + Guid.NewGuid() + ".txt");
             Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
@@ -614,17 +604,18 @@ namespace MediaBrowser.MediaEncoding.Subtitles
             {
                 failed = true;
 
-                if (File.Exists(outputPath))
+                try
                 {
-                    try
-                    {
-                        _logger.Info("Deleting extracted subtitle due to failure: ", outputPath);
-                        File.Delete(outputPath);
-                    }
-                    catch (IOException ex)
-                    {
-                        _logger.ErrorException("Error deleting extracted subtitle {0}", ex, outputPath);
-                    }
+                    _logger.Info("Deleting extracted subtitle due to failure: {0}", outputPath);
+                    File.Delete(outputPath);
+                }
+                catch (FileNotFoundException)
+                {
+                    
+                }
+                catch (IOException ex)
+                {
+                    _logger.ErrorException("Error deleting extracted subtitle {0}", ex, outputPath);
                 }
             }
             else if (!File.Exists(outputPath))

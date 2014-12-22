@@ -66,15 +66,21 @@
 
             clearProgressInterval();
 
-            var intervalTime = ApiClient.isWebSocketOpen() ? 1200 : 20000;
+            var intervalTime = ApiClient.isWebSocketOpen() ? 1200 : 5000;
+            self.lastProgressReport = 0;
 
             currentProgressInterval = setInterval(function () {
 
                 if (self.currentMediaElement) {
-                    sendProgressUpdate();
+
+                    if ((new Date().getTime() - self.lastProgressReport) > intervalTime) {
+
+                        self.lastProgressReport = new Date().getTime();
+                        sendProgressUpdate();
+                    }
                 }
 
-            }, intervalTime);
+            }, 250);
         };
 
         self.getCurrentMediaExtension = function (currentSrc) {
@@ -537,34 +543,34 @@
                 self.stop();
             }
 
-            var mediaElement;
-
             if (item.MediaType === "Video") {
 
-                self.currentItem = item;
-                self.currentMediaSource = getOptimalMediaSource(item.MediaType, item.MediaSources);
+                ApiClient.getJSON(ApiClient.getUrl('Items/' + item.Id + '/MediaInfo', {
+                    userId: Dashboard.getCurrentUserId()
 
-                mediaElement = self.playVideo(item, self.currentMediaSource, startPosition);
-                self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
+                })).done(function(result) {
+                    
+                    self.currentItem = item;
+                    self.currentMediaSource = getOptimalMediaSource(item.MediaType, result.MediaSources);
+
+                    self.currentMediaElement = self.playVideo(item, self.currentMediaSource, startPosition);
+                    self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
+
+                    self.updateNowPlayingInfo(item);
+                });
+
 
             } else if (item.MediaType === "Audio") {
 
                 self.currentItem = item;
                 self.currentMediaSource = getOptimalMediaSource(item.MediaType, item.MediaSources);
 
-                mediaElement = playAudio(item, self.currentMediaSource, startPosition);
+                self.currentMediaElement = playAudio(item, self.currentMediaSource, startPosition);
 
                 self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
 
             } else {
                 throw new Error("Unrecognized media type");
-            }
-
-            self.currentMediaElement = mediaElement;
-
-            if (item.MediaType === "Video") {
-
-                self.updateNowPlayingInfo(item);
             }
         };
 
@@ -779,7 +785,7 @@
             self.setVolume(self.getSavedVolume() * 100);
         };
 
-        self.volume = function() {
+        self.volume = function () {
             return self.currentMediaElement.volume * 100;
         };
 
@@ -846,7 +852,7 @@
                 var query = {
                     UserId: userId,
                     Fields: getItemFields,
-                    Limit: 50,
+                    Limit: 100,
                     Filters: "IsNotFolder",
                     Recursive: true,
                     SortBy: "Random"
@@ -889,13 +895,14 @@
             ApiClient.getItem(userId, id).done(function (item) {
 
                 var promise;
+                var itemLimit = 100;
 
                 if (item.Type == "MusicArtist") {
 
                     promise = ApiClient.getInstantMixFromArtist({
                         UserId: Dashboard.getCurrentUserId(),
                         Fields: getItemFields,
-                        Limit: 50,
+                        Limit: itemLimit,
                         Id: id
                     });
 
@@ -905,7 +912,7 @@
                     promise = ApiClient.getInstantMixFromMusicGenre({
                         UserId: Dashboard.getCurrentUserId(),
                         Fields: getItemFields,
-                        Limit: 50,
+                        Limit: itemLimit,
                         Id: id
                     });
 
@@ -915,7 +922,16 @@
                     promise = ApiClient.getInstantMixFromAlbum(id, {
                         UserId: Dashboard.getCurrentUserId(),
                         Fields: getItemFields,
-                        Limit: 50
+                        Limit: itemLimit
+                    });
+
+                }
+                else if (item.Type == "Playlist") {
+
+                    promise = ApiClient.getInstantMixFromPlaylist(id, {
+                        UserId: Dashboard.getCurrentUserId(),
+                        Fields: getItemFields,
+                        Limit: itemLimit
                     });
 
                 }
@@ -924,7 +940,7 @@
                     promise = ApiClient.getInstantMixFromSong(id, {
                         UserId: Dashboard.getCurrentUserId(),
                         Fields: getItemFields,
-                        Limit: 50
+                        Limit: itemLimit
                     });
 
                 }
@@ -1332,11 +1348,17 @@
 
                 self.onPlaystateChange(this);
 
+                // In the event timeupdate isn't firing, at least we can update when this happens
+                self.setCurrentTime(self.getCurrentTicks());
+
             }).on("playing.mediaplayerevent", function () {
 
                 console.log('audio element event: playing');
 
                 self.onPlaystateChange(this);
+
+                // In the event timeupdate isn't firing, at least we can update when this happens
+                self.setCurrentTime(self.getCurrentTicks());
 
             }).on("timeupdate.mediaplayerevent", function () {
 

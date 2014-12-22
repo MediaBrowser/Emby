@@ -88,6 +88,11 @@ namespace MediaBrowser.Server.Implementations.Connect
             }
         }
 
+        private string XApplicationValue
+        {
+            get { return "Media Browser Server/" + _appHost.ApplicationVersion; }
+        }
+
         public ConnectManager(ILogger logger,
             IApplicationPaths appPaths,
             IJsonSerializer json,
@@ -184,6 +189,11 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private async Task CreateServerRegistration(string wanApiAddress, string localAddress)
         {
+            if (string.IsNullOrWhiteSpace(wanApiAddress))
+            {
+                throw new ArgumentNullException("wanApiAddress");
+            }
+            
             var url = "Servers";
             url = GetConnectUrl(url);
 
@@ -199,9 +209,18 @@ namespace MediaBrowser.Server.Implementations.Connect
                 postData["localAddress"] = localAddress;
             }
 
-            using (var stream = await _httpClient.Post(url, postData, CancellationToken.None).ConfigureAwait(false))
+            var options = new HttpRequestOptions
             {
-                var data = _json.DeserializeFromStream<ServerRegistrationResponse>(stream);
+                Url = url,
+                CancellationToken = CancellationToken.None
+            };
+
+            options.SetPostData(postData);
+            SetApplicationHeader(options);
+
+            using (var response = await _httpClient.Post(options).ConfigureAwait(false))
+            {
+                var data = _json.DeserializeFromStream<ServerRegistrationResponse>(response.Content);
 
                 _data.ServerId = data.Id;
                 _data.AccessKey = data.AccessKey;
@@ -212,6 +231,16 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private async Task UpdateServerRegistration(string wanApiAddress, string localAddress)
         {
+            if (string.IsNullOrWhiteSpace(wanApiAddress))
+            {
+                throw new ArgumentNullException("wanApiAddress");
+            }
+
+            if (string.IsNullOrWhiteSpace(ConnectServerId))
+            {
+                throw new ArgumentNullException("ConnectServerId");
+            }
+
             var url = "Servers";
             url = GetConnectUrl(url);
             url += "?id=" + ConnectServerId;
@@ -237,6 +266,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             options.SetPostData(postData);
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             // No need to examine the response
             using (var stream = (await _httpClient.Post(options).ConfigureAwait(false)).Content)
@@ -331,14 +361,22 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private async Task<UserLinkResult> LinkUserInternal(string userId, string connectUsername)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentNullException("userId");
+            }
             if (string.IsNullOrWhiteSpace(connectUsername))
             {
                 throw new ArgumentNullException("connectUsername");
             }
+            if (string.IsNullOrWhiteSpace(ConnectServerId))
+            {
+                throw new ArgumentNullException("ConnectServerId");
+            }
 
             var connectUser = await GetConnectUser(new ConnectUserQuery
             {
-                Name = connectUsername
+                NameOrEmail = connectUsername
 
             }, CancellationToken.None).ConfigureAwait(false);
 
@@ -375,6 +413,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             options.SetPostData(postData);
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             var result = new UserLinkResult();
 
@@ -425,6 +464,18 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 throw new ArgumentNullException("connectUsername");
             }
+            if (string.IsNullOrWhiteSpace(ConnectServerId))
+            {
+                throw new ArgumentNullException("ConnectServerId");
+            }
+
+            var sendingUser = GetUser(sendingUserId);
+            var requesterUserName = sendingUser.ConnectUserName;
+
+            if (string.IsNullOrWhiteSpace(requesterUserName))
+            {
+                throw new ArgumentException("A Connect account is required in order to send invitations.");
+            }
 
             string connectUserId = null;
             var result = new UserLinkResult();
@@ -433,7 +484,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 var connectUser = await GetConnectUser(new ConnectUserQuery
                 {
-                    Name = connectUsername
+                    NameOrEmail = connectUsername
 
                 }, CancellationToken.None).ConfigureAwait(false);
 
@@ -453,14 +504,6 @@ namespace MediaBrowser.Server.Implementations.Connect
                 {
                     throw;
                 }
-            }
-
-            var sendingUser = GetUser(sendingUserId);
-            var requesterUserName = sendingUser.ConnectUserName;
-
-            if (string.IsNullOrWhiteSpace(requesterUserName))
-            {
-                requesterUserName = sendingUser.Name;
             }
 
             if (string.IsNullOrWhiteSpace(connectUserId))
@@ -490,6 +533,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             options.SetPostData(postData);
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             // No need to examine the response
             using (var stream = (await _httpClient.Post(options).ConfigureAwait(false)).Content)
@@ -498,7 +542,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
                 result.IsPending = string.Equals(response.AcceptStatus, "waiting", StringComparison.OrdinalIgnoreCase);
 
-                _data.PendingAuthorizations.Add(new ConnectAuthorization
+                _data.PendingAuthorizations.Add(new ConnectAuthorizationInternal
                 {
                     ConnectUserId = response.UserId,
                     Id = response.Id,
@@ -506,7 +550,8 @@ namespace MediaBrowser.Server.Implementations.Connect
                     UserName = response.UserName,
                     ExcludedLibraries = request.ExcludedLibraries,
                     ExcludedChannels = request.ExcludedChannels,
-                    EnableLiveTv = request.EnableLiveTv
+                    EnableLiveTv = request.EnableLiveTv,
+                    AccessToken = accessToken
                 });
 
                 CacheData();
@@ -534,6 +579,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             };
 
             options.SetPostData(postData);
+            SetApplicationHeader(options);
 
             // No need to examine the response
             using (var stream = (await _httpClient.Post(options).ConfigureAwait(false)).Content)
@@ -577,6 +623,10 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 url = url + "?id=" + WebUtility.UrlEncode(query.Id);
             }
+            else if (!string.IsNullOrWhiteSpace(query.NameOrEmail))
+            {
+                url = url + "?nameOrEmail=" + WebUtility.UrlEncode(query.NameOrEmail);
+            }
             else if (!string.IsNullOrWhiteSpace(query.Name))
             {
                 url = url + "?name=" + WebUtility.UrlEncode(query.Name);
@@ -584,6 +634,10 @@ namespace MediaBrowser.Server.Implementations.Connect
             else if (!string.IsNullOrWhiteSpace(query.Email))
             {
                 url = url + "?name=" + WebUtility.UrlEncode(query.Email);
+            }
+            else
+            {
+                throw new ArgumentException("Empty ConnectUserQuery supplied");
             }
 
             var options = new HttpRequestOptions
@@ -593,6 +647,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             };
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             using (var stream = await _httpClient.Get(options).ConfigureAwait(false))
             {
@@ -609,8 +664,18 @@ namespace MediaBrowser.Server.Implementations.Connect
             }
         }
 
+        private void SetApplicationHeader(HttpRequestOptions options)
+        {
+            options.RequestHeaders.Add("X-Application", XApplicationValue);
+        }
+
         private void SetServerAccessToken(HttpRequestOptions options)
         {
+            if (string.IsNullOrWhiteSpace(ConnectAccessKey))
+            {
+                throw new ArgumentNullException("ConnectAccessKey");
+            }
+            
             options.RequestHeaders.Add("X-Connect-Token", ConnectAccessKey);
         }
 
@@ -630,6 +695,11 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private async Task RefreshAuthorizationsInternal(bool refreshImages, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(ConnectServerId))
+            {
+                throw new ArgumentNullException("ConnectServerId");
+            }
+            
             var url = GetConnectUrl("ServerAuthorizations");
 
             url += "?serverId=" + ConnectServerId;
@@ -641,6 +711,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             };
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             try
             {
@@ -704,7 +775,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             }
 
             var currentPendingList = _data.PendingAuthorizations.ToList();
-            var newPendingList = new List<ConnectAuthorization>();
+            var newPendingList = new List<ConnectAuthorizationInternal>();
 
             foreach (var connectEntry in list)
             {
@@ -735,6 +806,7 @@ namespace MediaBrowser.Server.Implementations.Connect
                             user.Configuration.EnableLiveTvManagement = false;
                             user.Configuration.EnableContentDeletion = false;
                             user.Configuration.EnableRemoteControlOfOtherUsers = false;
+                            user.Configuration.EnableSharedDeviceControl = false;
                             user.Configuration.IsAdministrator = false;
 
                             if (currentPendingEntry != null)
@@ -749,12 +821,13 @@ namespace MediaBrowser.Server.Implementations.Connect
                     }
                     else if (string.Equals(connectEntry.AcceptStatus, "waiting", StringComparison.OrdinalIgnoreCase))
                     {
-                        currentPendingEntry = currentPendingEntry ?? new ConnectAuthorization();
+                        currentPendingEntry = currentPendingEntry ?? new ConnectAuthorizationInternal();
 
                         currentPendingEntry.ConnectUserId = connectEntry.UserId;
                         currentPendingEntry.ImageUrl = connectEntry.UserImageUrl;
                         currentPendingEntry.UserName = connectEntry.UserName;
                         currentPendingEntry.Id = connectEntry.Id;
+                        currentPendingEntry.AccessToken = connectEntry.AccessToken;
 
                         newPendingList.Add(currentPendingEntry);
                     }
@@ -860,7 +933,17 @@ namespace MediaBrowser.Server.Implementations.Connect
                 }
             }
 
-            return _data.PendingAuthorizations.ToList();
+            return _data.PendingAuthorizations.Select(i => new ConnectAuthorization
+            {
+                ConnectUserId = i.ConnectUserId,
+                EnableLiveTv = i.EnableLiveTv,
+                ExcludedChannels = i.ExcludedChannels,
+                ExcludedLibraries = i.ExcludedLibraries,
+                Id = i.Id,
+                ImageUrl = i.ImageUrl,
+                UserName = i.UserName
+
+            }).ToList();
         }
 
         public async Task CancelAuthorization(string id)
@@ -890,6 +973,15 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private async Task CancelAuthorizationByConnectUserId(string connectUserId)
         {
+            if (string.IsNullOrWhiteSpace(connectUserId))
+            {
+                throw new ArgumentNullException("connectUserId");
+            }
+            if (string.IsNullOrWhiteSpace(ConnectServerId))
+            {
+                throw new ArgumentNullException("ConnectServerId");
+            }
+     
             var url = GetConnectUrl("ServerAuthorizations");
 
             var options = new HttpRequestOptions
@@ -907,6 +999,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             options.SetPostData(postData);
 
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             try
             {
@@ -930,19 +1023,31 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         public async Task Authenticate(string username, string passwordMd5)
         {
-            var request = new HttpRequestOptions
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException("username");
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordMd5))
+            {
+                throw new ArgumentNullException("passwordMd5");
+            }
+
+            var options = new HttpRequestOptions
             {
                 Url = GetConnectUrl("user/authenticate")
             };
 
-            request.SetPostData(new Dictionary<string, string>
+            options.SetPostData(new Dictionary<string, string>
                 {
                     {"userName",username},
                     {"password",passwordMd5}
                 });
 
+            SetApplicationHeader(options);
+            
             // No need to examine the response
-            using (var stream = (await _httpClient.SendAsync(request, "POST").ConfigureAwait(false)).Content)
+            using (var response = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
             {
             }
         }
@@ -951,11 +1056,16 @@ namespace MediaBrowser.Server.Implementations.Connect
         {
             var user = e.Argument;
 
-            //await TryUploadUserPreferences(user, CancellationToken.None).ConfigureAwait(false);
+            await TryUploadUserPreferences(user, CancellationToken.None).ConfigureAwait(false);
         }
 
         private async Task TryUploadUserPreferences(User user, CancellationToken cancellationToken)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            
             if (string.IsNullOrEmpty(user.ConnectUserId))
             {
                 return;
@@ -965,9 +1075,6 @@ namespace MediaBrowser.Server.Implementations.Connect
                 return;
             }
 
-            var obj = ConnectUserPreferences.FromUserConfiguration(user.Configuration);
-            var json = _json.SerializeToString(new UserPreferencesDto<ConnectUserPreferences> { data = obj });
-
             var url = GetConnectUrl("user/preferences");
             url += "?userId=" + user.ConnectUserId;
             url += "&key=userpreferences";
@@ -975,12 +1082,15 @@ namespace MediaBrowser.Server.Implementations.Connect
             var options = new HttpRequestOptions
             {
                 Url = url,
-                CancellationToken = cancellationToken,
-                RequestContent = json,
-                RequestContentType = "application/json"
+                CancellationToken = cancellationToken
             };
 
+            var postData = new Dictionary<string, string>();
+            postData["data"] = _json.SerializeToString(ConnectUserPreferences.FromUserConfiguration(user.Configuration));
+            options.SetPostData(postData);
+
             SetServerAccessToken(options);
+            SetApplicationHeader(options);
 
             try
             {
@@ -998,6 +1108,31 @@ namespace MediaBrowser.Server.Implementations.Connect
         private async Task DownloadUserPreferences(User user, CancellationToken cancellationToken)
         {
 
+        }
+
+        public async Task<User> GetLocalUser(string connectUserId)
+        {
+            var user = _userManager.Users
+                .FirstOrDefault(i => string.Equals(i.ConnectUserId, connectUserId, StringComparison.OrdinalIgnoreCase));
+
+            if (user == null)
+            {
+                await RefreshAuthorizations(CancellationToken.None).ConfigureAwait(false);
+            }
+
+            return _userManager.Users
+                .FirstOrDefault(i => string.Equals(i.ConnectUserId, connectUserId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool IsAuthorizationTokenValid(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new ArgumentNullException("token");
+            }
+
+            return _userManager.Users.Any(u => string.Equals(token, u.ConnectAccessKey, StringComparison.OrdinalIgnoreCase)) ||
+                _data.PendingAuthorizations.Select(i => i.AccessToken).Contains(token, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

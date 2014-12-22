@@ -26,7 +26,7 @@ namespace MediaBrowser.Controller.Entities
             }
 
             return new UserViewBuilder(UserViewManager, LiveTvManager, ChannelManager, LibraryManager, Logger, UserDataManager, TVSeriesManager, CollectionManager)
-                .GetUserItems(parent, ViewType, query);
+                .GetUserItems(parent, this, ViewType, query);
         }
 
         public override IEnumerable<BaseItem> GetChildren(User user, bool includeLinkedChildren)
@@ -61,11 +61,9 @@ namespace MediaBrowser.Controller.Entities
         {
             var standaloneTypes = new List<string>
             {
-                CollectionType.AdultVideos,
                 CollectionType.Books,
                 CollectionType.HomeVideos,
-                CollectionType.Photos,
-                CollectionType.Trailers
+                CollectionType.Photos
             };
 
             var collectionFolder = folder as ICollectionFolder;

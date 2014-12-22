@@ -26,11 +26,7 @@
             // Chrome seems to have virtualization built-in and can handle large lists easily
             var isChrome = $.browser.chrome;
 
-            if (getWindowUrl().toString().toLowerCase().indexOf('localhost') != -1) {
-                return isChrome ? 200 : 100;
-            }
-
-            return isChrome ? 100 : 50;
+            return isChrome ? 200 : 100;
         },
 
         getDefaultItemsView: function (view, mobileView) {
@@ -344,6 +340,10 @@
             }
 
             commands.push('refresh');
+
+            if (SyncManager.isAvailable(item)) {
+                commands.push('sync');
+            }
 
             return commands;
         },
@@ -919,6 +919,15 @@
                 itemCommands.push('queuefromhere');
             }
 
+            // There's no detail page with a dedicated delete function
+            if (item.Type == 'Playlist') {
+                itemCommands.push('delete');
+            }
+
+            if (SyncManager.isAvailable(item)) {
+                itemCommands.push('sync');
+            }
+
             return itemCommands;
         },
 
@@ -1195,9 +1204,7 @@
                     cssClass += ' ' + LibraryBrowser.getUserDataCssClass(item.UserData.Key);
                 }
 
-                // The click through hasn't been working on chrome android
-                // The > 1 can be removed once this is resolved
-                if (options.showChildCountIndicator && item.ChildCount > 1) {
+                if (options.showChildCountIndicator && item.ChildCount) {
                     cssClass += ' groupedCard';
 
                     if (item.Type == 'Series') {
@@ -1213,11 +1220,7 @@
 
                 var defaultActionAttribute = options.defaultAction ? (' data-action="' + options.defaultAction + '"') : '';
 
-                if (options.defaultAction) {
-                    cssClass += ' itemWithAction';
-                }
-
-                html += '<a' + dataAttributes + ' class="' + cssClass + '" href="' + href + '"' + defaultActionAttribute + '>';
+                html += '<div' + dataAttributes + ' class="' + cssClass + '">';
 
                 var style = "";
 
@@ -1241,11 +1244,23 @@
                     dataSrc = ' data-src="' + imgUrl + '"';
                 }
 
-                html += '<div class="cardBox">';
+                var cardboxCssClass = 'cardBox';
+
+                if (options.cardLayout) {
+                    cardboxCssClass += ' visualCardBox visualCardBox-b';
+                }
+                html += '<div class="' + cardboxCssClass + '">';
                 html += '<div class="cardScalable">';
 
                 html += '<div class="cardPadder"></div>';
-                html += '<div class="cardContent">';
+
+                var anchorCssClass = "cardContent";
+
+                if (options.defaultAction) {
+                    anchorCssClass += ' itemWithAction';
+                }
+
+                html += '<a class="' + anchorCssClass + '" href="' + href + '"' + defaultActionAttribute + '>';
                 html += '<div class="' + imageCssClass + '" style="' + style + '"' + dataSrc + '></div>';
 
                 html += '<div class="cardOverlayTarget"></div>';
@@ -1265,13 +1280,6 @@
                 }
                 if (item.IsUnidentified) {
                     html += '<div class="unidentifiedIndicator"><div class="ui-icon-alert ui-btn-icon-notext"></div></div>';
-                }
-
-                if (options.selectionPanel) {
-                    var chkItemSelectId = 'chkItemSelect' + i;
-
-                    // Render this pre-enhanced to save on jquery mobile dom manipulation
-                    html += '<div class="itemSelectionPanel" onclick="return false;" style="display:none;"><div class="ui-checkbox ui-mini"><label class="ui-btn ui-corner-all ui-btn-inherit ui-btn-icon-left ui-checkbox-off" for="' + chkItemSelectId + '">Select</label><input id="' + chkItemSelectId + '" type="checkbox" class="chkItemSelect" data-enhanced="true" /></div></div>';
                 }
 
                 var progressHtml = options.showProgress === false || item.IsFolder ? '' : LibraryBrowser.getItemProgressBarHtml((item.Type == 'Recording' ? item : item.UserData));
@@ -1294,7 +1302,7 @@
                 }
 
                 // cardContent
-                html += '</div>';
+                html += '</a>';
 
                 // cardScalable
                 html += '</div>';
@@ -1306,7 +1314,7 @@
                 // cardBox
                 html += '</div>';
 
-                html += "</a>";
+                html += "</div>";
 
             }
 
@@ -1318,6 +1326,12 @@
             var html = '';
 
             html += '<div class="' + footerClass + '">';
+
+            if (options.cardLayout) {
+                html += '<div class="cardText" style="text-align:right; float:right;">';
+                html += '<button class="listviewMenuButton" type="button" data-inline="true" data-iconpos="notext" data-icon="ellipsis-v" style="margin: 4px 0 0;"></button>';
+                html += "</div>";
+            }
 
             var name = LibraryBrowser.getPosterViewDisplayName(item, options.displayAsSpecial);
 
@@ -1348,6 +1362,19 @@
                 lines.push(itemCountHtml);
             }
 
+            if (options.showSongCount) {
+
+                var songLine = '';
+
+                if (item.SongCount) {
+                    songLine = item.SongCount == 1 ?
+					Globalize.translate('ValueOneSong') :
+					Globalize.translate('ValueSongCount', item.SongCount);
+                }
+
+                lines.push(songLine);
+            }
+
             if (options.showPremiereDate && item.PremiereDate) {
 
                 try {
@@ -1363,6 +1390,18 @@
             if (options.showYear) {
 
                 lines.push(item.ProductionYear || '');
+            }
+
+            if (options.showSeriesYear) {
+
+                if (item.Status == "Continuing") {
+
+                    lines.push(Globalize.translate('ValueSeriesYearToPresent', item.ProductionYear || ''));
+
+                } else {
+                    lines.push(item.ProductionYear || '');
+                }
+
             }
 
             html += LibraryBrowser.getCardTextLines(lines, cssClass, !options.overlayText);
@@ -1540,7 +1579,7 @@
                 }
 
                 if (item.Type != 'TvChannel') {
-                    if (item.UserData.PlayedPercentage >= 100 || (item.UserData && item.UserData.Played)) {
+                    if (item.UserData.PlayedPercentage && item.UserData.PlayedPercentage >= 100 || (item.UserData && item.UserData.Played)) {
                         return '<div class="playedIndicator"><div class="ui-icon-check ui-btn-icon-notext"></div></div>';
                     }
                 }

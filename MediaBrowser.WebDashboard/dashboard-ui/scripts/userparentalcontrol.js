@@ -76,11 +76,12 @@
         $('.blockUnratedItems', page).html(html).trigger('create');
     }
 
-    function loadUser(page, user, loggedInUser, allParentalRatings) {
+    function loadUser(page, user, allParentalRatings) {
 
         Dashboard.setPageTitle(user.Name);
 
         loadUnratedItems(page, user);
+        loadTags(page, user.Configuration.BlockedTags);
 
         populateRatings(allParentalRatings, page);
 
@@ -111,10 +112,38 @@
         Dashboard.hideLoadingMsg();
     }
 
-    function getDisplayTime(hour) {
+    function loadTags(page, tags) {
 
-        return new Date(2000, 1, 1, hour, 0, 0, 0).toLocaleTimeString();
+        var html = '<ul data-role="listview" data-inset="true" data-split-icon="delete">' + tags.map(function (h) {
 
+            var li = '<li>';
+
+            li += '<a href="#">';
+
+            li += '<div style="font-weight:normal;">' + h + '</div>';
+
+            li += '</a>';
+
+            li += '<a class="blockedTag btnDeleteTag" href="#" data-tag="' + h + '"></a>';
+
+            li += '</li>';
+
+            return li;
+
+        }).join('') + '</ul>';
+
+        var elem = $('.blockedTags', page).html(html).trigger('create');
+
+        $('.btnDeleteTag', elem).on('click', function () {
+
+            var tag = this.getAttribute('data-tag');
+
+            var newTags = tags.filter(function (t) {
+                return t != tag;
+            });
+
+            loadTags(page, newTags);
+        });
     }
 
     function deleteAccessSchedule(page, schedules, index) {
@@ -180,6 +209,8 @@
 
         user.Configuration.AccessSchedules = getSchedulesFromPage(page);
 
+        user.Configuration.BlockedTags = getTagsFromPage(page);
+
         ApiClient.updateUser(user).done(function () {
             onSaveComplete(page);
         });
@@ -211,8 +242,31 @@
 
             // Disable default form submission
             return false;
+        },
+
+        onTagFormSubmit: function() {
+            
+            var page = $(this).parents('.page');
+
+            saveTag(page);
+
+            // Disable default form submission
+            return false;
         }
     };
+
+    function getDisplayTime(hours) {
+
+        var minutes = 0;
+
+        var pct = hours % 1;
+
+        if (pct) {
+            minutes = parseInt(pct * 60);
+        }
+
+        return new Date(2000, 1, 1, hours, minutes, 0, 0).toLocaleTimeString();
+    }
 
     function populateHours(page) {
 
@@ -222,6 +276,8 @@
 
             html += '<option value="' + i + '">' + getDisplayTime(i) + '</option>';
         }
+
+        html += '<option value="24">' + getDisplayTime(0) + '</option>';
 
         $('#selectStart', page).html(html).selectmenu('refresh');
         $('#selectEnd', page).html(html).selectmenu('refresh');
@@ -270,6 +326,19 @@
         $('#popupSchedule', page).popup('close');
     }
 
+    function saveTag(page) {
+
+        var tag = $('#txtTag', page).val();
+        var tags = getTagsFromPage(page);
+
+        if (tags.indexOf(tag) == -1) {
+            tags.push(tag);
+            loadTags(page, tags);
+        }
+
+        $('#popupTag', page).popup('close');
+    }
+
     function getSchedulesFromPage(page) {
 
         return $('.liSchedule', page).map(function () {
@@ -283,6 +352,21 @@
         }).get();
     }
 
+    function getTagsFromPage(page) {
+
+        return $('.blockedTag', page).map(function () {
+
+            return this.getAttribute('data-tag');
+
+        }).get();
+    }
+
+    function showTagPopup(page) {
+
+        $('#popupTag', page).popup('open');
+        $('#txtTag', page).val('').focus();
+    }
+
     $(document).on('pageinit', "#userParentalControlPage", function () {
 
         var page = this;
@@ -290,7 +374,13 @@
 
         $('.btnAddSchedule', page).on('click', function () {
 
-            showSchedulePopup(page, {},  -1);
+            showSchedulePopup(page, {}, -1);
+        });
+
+
+        $('.btnAddTag', page).on('click', function () {
+
+            showTagPopup(page);
         });
 
         populateHours(page);
@@ -319,13 +409,11 @@
             promise1 = ApiClient.getUser(userId);
         }
 
-        var promise2 = Dashboard.getCurrentUser();
+        var promise2 = ApiClient.getParentalRatings();
 
-        var promise3 = ApiClient.getParentalRatings();
+        $.when(promise1, promise2).done(function (response1, response2) {
 
-        $.when(promise1, promise2, promise3).done(function (response1, response2, response3) {
-
-            loadUser(page, response1[0] || response1, response2[0], response3[0]);
+            loadUser(page, response1[0] || response1, response2[0]);
 
         });
     });

@@ -1,21 +1,19 @@
 ﻿using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Devices;
+using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Session;
 using ServiceStack;
 using ServiceStack.Web;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.Devices
 {
     [Route("/Devices", "GET", Summary = "Gets all devices")]
-    public class GetDevices : IReturn<List<DeviceInfo>>
+    [Authenticated(Roles = "Admin")]
+    public class GetDevices : DeviceQuery, IReturn<QueryResult<DeviceInfo>>
     {
-        [ApiMember(Name = "SupportsContentUploading", Description = "SupportsContentUploading", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public bool? SupportsContentUploading { get; set; }
     }
 
     [Route("/Devices", "DELETE", Summary = "Deletes a device")]
@@ -26,6 +24,7 @@ namespace MediaBrowser.Api.Devices
     }
 
     [Route("/Devices/CameraUploads", "GET", Summary = "Gets camera upload history for a device")]
+    [Authenticated]
     public class GetCameraUploads : IReturn<ContentUploadHistory>
     {
         [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
@@ -33,6 +32,7 @@ namespace MediaBrowser.Api.Devices
     }
 
     [Route("/Devices/CameraUploads", "POST", Summary = "Uploads content")]
+    [Authenticated]
     public class PostCameraUpload : IRequiresRequestStream, IReturnVoid
     {
         [ApiMember(Name = "DeviceId", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
@@ -51,6 +51,7 @@ namespace MediaBrowser.Api.Devices
     }
 
     [Route("/Devices/Info", "GET", Summary = "Gets device info")]
+    [Authenticated]
     public class GetDeviceInfo : IReturn<DeviceInfo>
     {
         [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
@@ -58,6 +59,7 @@ namespace MediaBrowser.Api.Devices
     }
 
     [Route("/Devices/Capabilities", "GET", Summary = "Gets device capabilities")]
+    [Authenticated]
     public class GetDeviceCapabilities : IReturn<ClientCapabilities>
     {
         [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
@@ -65,13 +67,13 @@ namespace MediaBrowser.Api.Devices
     }
 
     [Route("/Devices/Options", "POST", Summary = "Updates device options")]
+    [Authenticated(Roles = "Admin")]
     public class PostDeviceOptions : DeviceOptions, IReturnVoid
     {
         [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
         public string Id { get; set; }
     }
-    
-    [Authenticated]
+
     public class DeviceService : BaseApiService
     {
         private readonly IDeviceManager _deviceManager;
@@ -104,16 +106,7 @@ namespace MediaBrowser.Api.Devices
 
         public object Get(GetDevices request)
         {
-            var devices = _deviceManager.GetDevices();
-
-            if (request.SupportsContentUploading.HasValue)
-            {
-                var val = request.SupportsContentUploading.Value;
-
-                devices = devices.Where(i => _deviceManager.GetCapabilities(i.Id).SupportsContentUploading == val);
-            }
-
-            return ToOptimizedResult(devices.ToList());
+            return ToOptimizedResult(_deviceManager.GetDevices(request));
         }
 
         public object Get(GetCameraUploads request)

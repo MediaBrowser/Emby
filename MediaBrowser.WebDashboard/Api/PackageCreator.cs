@@ -87,9 +87,7 @@ namespace MediaBrowser.WebDashboard.Api
                     return _config.Configuration.DashboardSourcePath;
                 }
 
-                var runningDirectory = Path.GetDirectoryName(_config.ApplicationPaths.ApplicationPath);
-
-                return Path.Combine(runningDirectory, "dashboard-ui");
+                return Path.Combine(_config.ApplicationPaths.ApplicationResourcesPath, "dashboard-ui");
             }
         }
 
@@ -172,7 +170,9 @@ namespace MediaBrowser.WebDashboard.Api
             sb.Append("<meta name=\"application-name\" content=\"Media Browser\">");
             //sb.Append("<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">");
 
-            sb.Append("<link rel=\"icon\" sizes=\"114x114\" href=\"css/images/touchicon114.png\" />");
+            sb.Append("<meta name=\"application-name\" content=\"Media Browser\">");
+
+            sb.Append("<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
 
             // http://developer.apple.com/library/ios/#DOCUMENTATION/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html
             sb.Append("<link rel=\"apple-touch-icon\" href=\"css/images/touchicon.png\" />");
@@ -195,7 +195,7 @@ namespace MediaBrowser.WebDashboard.Api
 
             var files = new[]
                             {
-                                "thirdparty/jquerymobile-1.4.4/jquery.mobile-1.4.4.min.css",
+                                "thirdparty/jquerymobile-1.4.5/jquery.mobile-1.4.5.min.css",
                                 "thirdparty/swipebox-master/css/swipebox.min.css" + versionString,
                                 "css/all.css" + versionString
                             };
@@ -241,7 +241,7 @@ namespace MediaBrowser.WebDashboard.Api
 
             // jQuery + jQuery mobile
             await AppendResource(memoryStream, "thirdparty/jquery-2.1.1.min.js", newLineBytes).ConfigureAwait(false);
-            await AppendResource(memoryStream, "thirdparty/jquerymobile-1.4.4/jquery.mobile-1.4.4.min.js", newLineBytes).ConfigureAwait(false);
+            await AppendResource(memoryStream, "thirdparty/jquerymobile-1.4.5/jquery.mobile-1.4.5.min.js", newLineBytes).ConfigureAwait(false);
 
             await AppendResource(memoryStream, "thirdparty/jquery.unveil-custom.js", newLineBytes).ConfigureAwait(false);
 
@@ -269,6 +269,7 @@ namespace MediaBrowser.WebDashboard.Api
                 "thirdparty/apiclient/device.js",
                 "thirdparty/apiclient/credentials.js",
                 "thirdparty/apiclient/mediabrowser.apiclient.js",
+                "thirdparty/apiclient/connectservice.js",
                 "thirdparty/apiclient/connectionmanager.js"
             })
             {
@@ -353,7 +354,6 @@ namespace MediaBrowser.WebDashboard.Api
                                 "connectlogin.js",
                                 "dashboardgeneral.js",
                                 "dashboardpage.js",
-                                "dashboardsync.js",
                                 "device.js",
                                 "devices.js",
                                 "devicesupload.js",
@@ -373,6 +373,8 @@ namespace MediaBrowser.WebDashboard.Api
 
                                 "externalplayer.js",
                                 "favorites.js",
+                                "forgotpassword.js",
+                                "forgotpasswordpin.js",
                                 "gamesrecommendedpage.js",
                                 "gamesystemspage.js",
                                 "gamespage.js",
@@ -448,6 +450,8 @@ namespace MediaBrowser.WebDashboard.Api
                                 "songs.js",
                                 "supporterkeypage.js",
                                 "supporterpage.js",
+                                "syncactivity.js",
+                                "syncsettings.js",
                                 "episodes.js",
                                 "thememediaplayer.js",
                                 "tvgenres.js",

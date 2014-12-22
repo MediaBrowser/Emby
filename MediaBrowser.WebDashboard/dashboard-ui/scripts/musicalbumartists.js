@@ -2,7 +2,7 @@
 
     var pageSizeKey = 'people';
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('PosterCard', 'PosterCard');
 
     // The base query options
     var query = {
@@ -10,8 +10,10 @@
         SortBy: "SortName",
         SortOrder: "Ascending",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName,DateCreated",
-        StartIndex: 0
+        Fields: "PrimaryImageAspectRatio,SortName,DateCreated,SyncInfo",
+        StartIndex: 0,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -60,9 +62,22 @@
                     showTitle: true,
                     coverImage: true,
                     centerText: true,
-                    lazy: true,
-                    selectionPanel: true
+                    lazy: true
                 });
+            }
+            else if (view == "PosterCard") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "square",
+                    context: 'music',
+                    showTitle: true,
+                    coverImage: true,
+                    lazy: true,
+                    cardLayout: true,
+                    showSongCount: true
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
 
             html += pagingHtml;
@@ -102,9 +117,28 @@
         $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
     }
 
+    var filtersLoaded;
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
+    }
+
     $(document).on('pageinit', "#musicAlbumArtistsPage", function () {
 
         var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+
+            reloadFiltersIfNeeded(page);
+        });
 
         $('.chkStandardFilter', this).on('change', function () {
 
@@ -168,6 +202,7 @@
         var viewkey = getSavedQueryKey();
 
         LibraryBrowser.loadSavedQueryValues(viewkey, query);
+        QueryFilters.onPageShow(page, query);
 
         LibraryBrowser.getSavedViewSetting(viewkey).done(function (val) {
 

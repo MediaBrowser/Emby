@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using MediaBrowser.Controller.Collections;
+﻿using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -8,15 +7,12 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Net;
-using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,13 +46,6 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "PersonTypes", Description = "Optional. If specified, along with Person, results will be filtered to include only those containing the specified person and PersonType. Allows multiple, comma-delimited", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string PersonTypes { get; set; }
 
-        /// <summary>
-        /// Limit results to items containing specific genres
-        /// </summary>
-        /// <value>The genres.</value>
-        [ApiMember(Name = "Genres", Description = "Optional. If specified, results will be filtered based on genre. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string Genres { get; set; }
-
         [ApiMember(Name = "AllGenres", Description = "Optional. If specified, results will be filtered based on genre. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string AllGenres { get; set; }
 
@@ -76,13 +65,6 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "Albums", Description = "Optional. If specified, results will be filtered based on album. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Albums { get; set; }
-
-        /// <summary>
-        /// Limit results to items containing specific years
-        /// </summary>
-        /// <value>The years.</value>
-        [ApiMember(Name = "Years", Description = "Optional. If specified, results will be filtered based on production year. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string Years { get; set; }
 
         /// <summary>
         /// Gets or sets the item ids.
@@ -251,11 +233,6 @@ namespace MediaBrowser.Api.UserLibrary
             return (AllGenres ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public string[] GetGenres()
-        {
-            return (Genres ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
         public string[] GetStudios()
         {
             return (Studios ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -264,11 +241,6 @@ namespace MediaBrowser.Api.UserLibrary
         public string[] GetPersonTypes()
         {
             return (PersonTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public int[] GetYears()
-        {
-            return (Years ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
         }
 
         public IEnumerable<VideoType> GetVideoTypes()
@@ -349,19 +321,18 @@ namespace MediaBrowser.Api.UserLibrary
             var result = await GetItemsToSerialize(request, user, parentItem).ConfigureAwait(false);
 
             var isFiltered = result.Item2;
+            var dtoOptions = request.GetDtoOptions();
 
             if (isFiltered)
             {
-                var currentFields = request.GetItemFields().ToList();
-
                 return new ItemsResult
                 {
                     TotalRecordCount = result.Item1.TotalRecordCount,
-                    Items = result.Item1.Items.Select(i => _dtoService.GetBaseItemDto(i, currentFields, user)).ToArray()
+                    Items = result.Item1.Items.Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user)).ToArray()
                 };
             }
 
-            var items = result.Item1.Items.Where(i => ApplyAdditionalFilters(request, i, user, false));
+            var items = result.Item1.Items.Where(i => ApplyAdditionalFilters(request, i, user, false, _libraryManager));
 
             // Apply filters
             // Run them starting with the ones that are likely to reduce the list the most
@@ -391,9 +362,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var pagedItems = ApplyPaging(request, itemsArray);
 
-            var fields = request.GetItemFields().ToList();
-
-            var returnItems = pagedItems.Select(i => _dtoService.GetBaseItemDto(i, fields, user)).ToArray();
+            var returnItems = pagedItems.Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user)).ToArray();
 
             return new ItemsResult
             {
@@ -495,7 +464,7 @@ namespace MediaBrowser.Api.UserLibrary
                 SortBy = request.GetOrderBy(),
                 SortOrder = request.SortOrder ?? SortOrder.Ascending,
 
-                Filter = (i, u) => ApplyAdditionalFilters(request, i, u, true),
+                Filter = (i, u) => ApplyAdditionalFilters(request, i, u, true, _libraryManager),
 
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
@@ -524,6 +493,8 @@ namespace MediaBrowser.Api.UserLibrary
                 HasThemeSong = request.HasThemeSong,
                 HasThemeVideo = request.HasThemeVideo,
                 HasTrailer = request.HasTrailer,
+                Tags = request.GetTags(),
+                OfficialRatings = request.GetOfficialRatings(),
                 Genres = request.GetGenres(),
                 AllGenres = request.GetAllGenres(),
                 Studios = request.GetStudios(),
@@ -661,7 +632,7 @@ namespace MediaBrowser.Api.UserLibrary
             return items;
         }
 
-        private bool ApplyAdditionalFilters(GetItems request, BaseItem i, User user, bool isPreFiltered)
+        private bool ApplyAdditionalFilters(GetItems request, BaseItem i, User user, bool isPreFiltered, ILibraryManager libraryManager)
         {
             if (!isPreFiltered)
             {
@@ -799,7 +770,7 @@ namespace MediaBrowser.Api.UserLibrary
                 {
                     var filterValue = request.IsYearMismatched.Value;
 
-                    if (UserViewBuilder.IsYearMismatched(i) != filterValue)
+                    if (UserViewBuilder.IsYearMismatched(i, libraryManager) != filterValue)
                     {
                         return false;
                     }
@@ -906,7 +877,7 @@ namespace MediaBrowser.Api.UserLibrary
                     var hasTrailers = i as IHasTrailers;
                     if (hasTrailers != null)
                     {
-                        trailerCount = hasTrailers.LocalTrailerIds.Count;
+                        trailerCount = hasTrailers.GetTrailerIds().Count;
                     }
 
                     var ok = val ? trailerCount > 0 : trailerCount == 0;
@@ -953,6 +924,28 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return false;
                     }
+                }
+
+                // Apply tag filter
+                var tags = request.GetTags();
+                if (tags.Length > 0)
+                {
+                    var hasTags = i as IHasTags;
+                    if (hasTags == null)
+                    {
+                        return false;
+                    }
+                    if (!(tags.Any(v => hasTags.Tags.Contains(v, StringComparer.OrdinalIgnoreCase))))
+                    {
+                        return false;
+                    }
+                }
+
+                // Apply official rating filter
+                var officialRatings = request.GetOfficialRatings();
+                if (officialRatings.Length > 0 && !officialRatings.Contains(i.OfficialRating ?? string.Empty))
+                {
+                    return false;
                 }
 
                 // Apply genre filter

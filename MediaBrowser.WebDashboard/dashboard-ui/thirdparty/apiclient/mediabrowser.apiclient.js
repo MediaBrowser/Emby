@@ -192,7 +192,7 @@
                 url: url + "/mediabrowser/system/info/public",
                 dataType: "json",
 
-                timeout: 3000
+                timeout: 15000
 
             }).done(function () {
 
@@ -254,7 +254,7 @@
 
             console.log("Requesting " + request.url);
 
-            request.timeout = 3000;
+            request.timeout = 15000;
 
             $.ajax(request).done(function (response) {
 
@@ -286,6 +286,14 @@
                     onRetryRequestFail(request);
                     deferred.reject();
                 }
+            });
+        };
+
+        self.get = function (url) {
+
+            return self.ajax({
+                type: "GET",
+                url: url
             });
         };
 
@@ -1096,6 +1104,17 @@
             });
         };
 
+        self.getInstantMixFromPlaylist = function (itemId, options) {
+
+            var url = self.getUrl("Playlists/" + itemId + "/InstantMix", options);
+
+            return self.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json"
+            });
+        };
+
         self.getEpisodes = function (itemId, options) {
 
             var url = self.getUrl("Shows/" + itemId + "/Episodes", options);
@@ -1889,11 +1908,13 @@
 
         self.reportCapabilities = function (options) {
 
-            var url = self.getUrl("Sessions/Capabilities", options);
+            var url = self.getUrl("Sessions/Capabilities/Full");
 
             return self.ajax({
                 type: "POST",
-                url: url
+                url: url,
+                data: JSON.stringify(options),
+                contentType: "application/json"
             });
         };
 
@@ -2285,15 +2306,6 @@
             });
         };
 
-        var supportsWebP = false;
-        self.supportsWebP = function (val) {
-
-            if (val != null) {
-                supportsWebP = val;
-            }
-            return supportsWebP;
-        };
-
         function normalizeImageOptions(options) {
 
             var ratio = devicePixelRatio || 1;
@@ -2319,10 +2331,6 @@
             }
 
             options.quality = options.quality || (options.type.toLowerCase() == 'backdrop' ? 80 : 90);
-
-            if (self.supportsWebP()) {
-                options.format = 'webp';
-            }
         }
 
         /**
@@ -2396,10 +2404,6 @@
             delete options.type;
             delete options.index;
 
-            if (self.supportsWebP()) {
-                options.format = 'webp';
-            }
-
             return self.getUrl(url, options);
         };
 
@@ -2458,7 +2462,7 @@
             var url = self.getUrl("Users/authenticatebyname");
 
             var postData = {
-                password: sha1(password || ""),
+                password: CryptoJS.SHA1(password || "").toString(),
                 Username: name
             };
 
@@ -2490,20 +2494,13 @@
 
             var url = self.getUrl("Users/" + userId + "/Password");
 
-            var postData = {
-
-            };
-
-            postData.currentPassword = sha1(currentPassword);
-
-            if (newPassword) {
-                postData.newPassword = newPassword;
-            }
-
             return self.ajax({
                 type: "POST",
                 url: url,
-                data: postData
+                data: {
+                    currentPassword: CryptoJS.SHA1(currentPassword).toString(),
+                    newPassword: CryptoJS.SHA1(newPassword).toString()
+                }
             });
         };
 

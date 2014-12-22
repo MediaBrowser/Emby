@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Server.Implementations.Library;
 
 namespace MediaBrowser.Server.Implementations.Channels
 {
@@ -318,13 +319,13 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 if (string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
                 {
-                    files = files.Where(i => EntityResolutionHelper.IsVideoFile(i.FullName));
+                    files = files.Where(i => _libraryManager.IsVideoFile(i.FullName));
                 }
                 else
                 {
-                    files = files.Where(i => EntityResolutionHelper.IsAudioFile(i.FullName));
+                    files = files.Where(i => _libraryManager.IsAudioFile(i.FullName));
                 }
-
+                
                 var file = files
                     .FirstOrDefault(i => i.Name.StartsWith(filenamePrefix, StringComparison.OrdinalIgnoreCase));
 
@@ -532,6 +533,15 @@ namespace MediaBrowser.Server.Implementations.Channels
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
+            var limit = query.Limit;
+
+            // See below about parental control
+            if (user != null)
+            {
+                query.StartIndex = null;
+                query.Limit = null;
+            }
+
             var internalResult = await GetLatestChannelItemsInternal(query, cancellationToken).ConfigureAwait(false);
 
             // Get everything
@@ -539,13 +549,27 @@ namespace MediaBrowser.Server.Implementations.Channels
                     .Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true))
                     .ToList();
 
-            var returnItems = internalResult.Items.Select(i => _dtoService.GetBaseItemDto(i, fields, user))
+            var items = internalResult.Items;
+            var totalRecordCount = internalResult.TotalRecordCount;
+
+            // Supporting parental control is a hack because it has to be done after querying the remote data source
+            // This will get screwy if apps try to page, so limit to 10 results in an attempt to always keep them on the first page
+            if (user != null)
+            {
+                items = items.Where(i => i.IsVisible(user))
+                    .Take(limit ?? 10)
+                    .ToArray();
+
+                totalRecordCount = items.Length;
+            }
+
+            var returnItems = items.Select(i => _dtoService.GetBaseItemDto(i, fields, user))
                 .ToArray();
 
             var result = new QueryResult<BaseItemDto>
             {
                 Items = returnItems,
-                TotalRecordCount = internalResult.TotalRecordCount
+                TotalRecordCount = totalRecordCount
             };
 
             return result;

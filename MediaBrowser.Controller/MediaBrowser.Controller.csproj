@@ -27,7 +27,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -39,7 +39,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -48,13 +48,13 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="Microsoft.CSharp" />
@@ -105,7 +105,6 @@
     <Compile Include="Devices\IDeviceRepository.cs" />
     <Compile Include="Dlna\ControlRequest.cs" />
     <Compile Include="Dlna\ControlResponse.cs" />
-    <Compile Include="Dlna\DlnaIconResponse.cs" />
     <Compile Include="Dlna\EventSubscriptionResponse.cs" />
     <Compile Include="Dlna\IConnectionManager.cs" />
     <Compile Include="Dlna\IContentDirectory.cs" />
@@ -113,9 +112,9 @@
     <Compile Include="Dlna\IEventManager.cs" />
     <Compile Include="Dlna\IUpnpService.cs" />
     <Compile Include="Drawing\IImageProcessor.cs" />
-    <Compile Include="Drawing\ImageFormat.cs" />
     <Compile Include="Drawing\ImageProcessingOptions.cs" />
     <Compile Include="Drawing\ImageProcessorExtensions.cs" />
+    <Compile Include="Drawing\ImageStream.cs" />
     <Compile Include="Dto\IDtoService.cs" />
     <Compile Include="Entities\AdultVideo.cs" />
     <Compile Include="Entities\Audio\IHasAlbumArtist.cs" />
@@ -163,6 +162,7 @@
     <Compile Include="Entities\IHasAwards.cs" />
     <Compile Include="Entities\Photo.cs" />
     <Compile Include="Entities\PhotoAlbum.cs" />
+    <Compile Include="Entities\Share.cs" />
     <Compile Include="Entities\UserView.cs" />
     <Compile Include="Entities\UserViewBuilder.cs" />
     <Compile Include="FileOrganization\IFileOrganizationService.cs" />
@@ -191,7 +191,6 @@
     <Compile Include="LiveTv\LiveTvException.cs" />
     <Compile Include="LiveTv\LiveTvServiceStatusInfo.cs" />
     <Compile Include="LiveTv\LiveTvTunerInfo.cs" />
-    <Compile Include="LiveTv\StreamResponseInfo.cs" />
     <Compile Include="LiveTv\LiveTvProgram.cs" />
     <Compile Include="LiveTv\LiveTvVideoRecording.cs" />
     <Compile Include="LiveTv\ProgramInfo.cs" />
@@ -219,8 +218,12 @@
     <Compile Include="Net\IHttpResultFactory.cs" />
     <Compile Include="Net\IHttpServer.cs" />
     <Compile Include="Net\IRestfulService.cs" />
+    <Compile Include="Net\IServerManager.cs" />
+    <Compile Include="Net\IServiceRequest.cs" />
     <Compile Include="Net\ISessionContext.cs" />
     <Compile Include="Net\LoggedAttribute.cs" />
+    <Compile Include="Net\SecurityException.cs" />
+    <Compile Include="Net\ServiceStackServiceRequest.cs" />
     <Compile Include="Net\StaticResultOptions.cs" />
     <Compile Include="News\INewsService.cs" />
     <Compile Include="Notifications\INotificationManager.cs" />
@@ -262,11 +265,9 @@
     <Compile Include="Providers\ItemIdentities.cs" />
     <Compile Include="Providers\ItemLookupInfo.cs" />
     <Compile Include="Providers\MetadataRefreshOptions.cs" />
-    <Compile Include="Providers\NameParser.cs" />
     <Compile Include="Providers\MetadataStatus.cs" />
     <Compile Include="Providers\ISeriesOrderManager.cs" />
     <Compile Include="Session\ISessionManager.cs" />
-    <Compile Include="Drawing\ImageExtensions.cs" />
     <Compile Include="Entities\AggregateFolder.cs" />
     <Compile Include="Entities\Audio\Audio.cs" />
     <Compile Include="Entities\Audio\MusicAlbum.cs" />
@@ -302,7 +303,6 @@
     <Compile Include="MediaEncoding\MediaEncoderHelpers.cs" />
     <Compile Include="Providers\MetadataProviderPriority.cs" />
     <Compile Include="Resolvers\BaseItemResolver.cs" />
-    <Compile Include="Resolvers\BaseVideoResolver.cs" />
     <Compile Include="Resolvers\IItemResolver.cs" />
     <Compile Include="Library\ILibraryManager.cs" />
     <Compile Include="Library\IUserManager.cs" />
@@ -321,7 +321,6 @@
     <Compile Include="Providers\IImageEnhancer.cs" />
     <Compile Include="Providers\ProviderRefreshStatus.cs" />
     <Compile Include="Resolvers\IResolverIgnoreRule.cs" />
-    <Compile Include="Resolvers\EntityResolutionHelper.cs" />
     <Compile Include="Resolvers\ResolverPriority.cs" />
     <Compile Include="Library\TVUtils.cs" />
     <Compile Include="Library\ItemResolveArgs.cs" />
@@ -361,13 +360,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(ConfigurationName)' != 'Release Mono' ">if '$(ConfigurationName)' == 'Release' (
-xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\dlls\" /y /d /r /i
-)</PostBuildEvent>
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

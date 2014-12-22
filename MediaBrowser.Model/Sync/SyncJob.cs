@@ -21,6 +21,16 @@ namespace MediaBrowser.Model.Sync
         /// <value>The quality.</value>
         public SyncQuality Quality { get; set; }
         /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
+        /// <value>The category.</value>
+        public SyncCategory? Category { get; set; }
+        /// <summary>
+        /// Gets or sets the parent identifier.
+        /// </summary>
+        /// <value>The parent identifier.</value>
+        public string ParentId { get; set; }
+        /// <summary>
         /// Gets or sets the current progress.
         /// </summary>
         /// <value>The current progress.</value>
@@ -46,25 +56,20 @@ namespace MediaBrowser.Model.Sync
         /// <value><c>true</c> if [unwatched only]; otherwise, <c>false</c>.</value>
         public bool UnwatchedOnly { get; set; }
         /// <summary>
-        /// Gets or sets the limit.
+        /// Gets or sets a value indicating whether [synchronize new content].
         /// </summary>
-        /// <value>The limit.</value>
-        public long? Limit { get; set; }
+        /// <value><c>true</c> if [synchronize new content]; otherwise, <c>false</c>.</value>
+        public bool SyncNewContent { get; set; }
         /// <summary>
-        /// Gets or sets the type of the limit.
+        /// Gets or sets the item limit.
         /// </summary>
-        /// <value>The type of the limit.</value>
-        public SyncLimitType? LimitType { get; set; }
+        /// <value>The item limit.</value>
+        public int? ItemLimit { get; set; }
         /// <summary>
         /// Gets or sets the requested item ids.
         /// </summary>
         /// <value>The requested item ids.</value>
         public List<string> RequestedItemIds { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is dynamic.
-        /// </summary>
-        /// <value><c>true</c> if this instance is dynamic; otherwise, <c>false</c>.</value>
-        public bool IsDynamic { get; set; }
         /// <summary>
         /// Gets or sets the date created.
         /// </summary>

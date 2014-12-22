@@ -57,7 +57,7 @@
                 tag: item.ParentLogoImageTag
             });
 
-            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:' + maxLogoWidth + 'px;" />';
+            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:100%;" />';
 
         }
         else if (item.ImageTags.Logo) {
@@ -68,7 +68,7 @@
                 tag: item.ImageTags.Logo
             });
 
-            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:' + maxLogoWidth + 'px;" />';
+            html += '<img src="' + imgUrl + '" style="max-height:' + logoHeight + 'px;max-width:100%;" />';
         }
         else {
             html += parentName || name;
@@ -234,6 +234,33 @@
         return false;
     }
 
+    function onDeleteButtonClick() {
+
+        var id = this.getAttribute('data-itemid');
+
+        closeContextMenu();
+
+        LibraryBrowser.deleteItem(id);
+
+        return false;
+    }
+
+    function onSyncButtonClick() {
+
+        var id = this.getAttribute('data-itemid');
+
+        closeContextMenu();
+
+        SyncManager.showMenu({
+            items: [
+            {
+                Id: id
+            }]
+        });
+
+        return false;
+    }
+
     function onExternalPlayerButtonClick() {
 
         closeContextMenu();
@@ -319,7 +346,7 @@
         var displayContextItem = card;
 
         if ($(card).hasClass('listviewMenuButton')) {
-            card = $(card).parents('.listItem')[0];
+            card = $(card).parents('.listItem,.card')[0];
         }
 
         var itemId = card.getAttribute('data-itemid');
@@ -342,7 +369,7 @@
             html += '<ul data-role="listview" style="min-width: 240px;">';
             html += '<li data-role="list-divider">' + Globalize.translate('HeaderMenu') + '</li>';
 
-            var href = card.getAttribute('data-href') || card.href;
+            var href = card.getAttribute('data-href') || card.href || $('a', card).attr('href');
 
             if (commands.indexOf('playlist') != -1) {
                 html += '<li data-icon="plus"><a href="#" class="btnAddToPlaylist" data-itemid="' + itemId + '">' + Globalize.translate('ButtonAddToPlaylist') + '</a></li>';
@@ -398,6 +425,14 @@
                 html += '<li data-icon="delete"><a href="#" class="btnRemoveFromPlaylist" data-playlistitemid="' + playlistItemId + '">' + Globalize.translate('ButtonRemoveFromPlaylist') + '</a></li>';
             }
 
+            if (commands.indexOf('sync') != -1) {
+                html += '<li data-icon="refresh"><a href="#" class="btnSync" data-itemId="' + itemId + '">' + Globalize.translate('ButtonSync') + '</a></li>';
+            }
+
+            if (commands.indexOf('delete') != -1) {
+                html += '<li data-icon="delete"><a href="#" class="btnDelete" data-itemId="' + itemId + '">' + Globalize.translate('ButtonDelete') + '</a></li>';
+            }
+
             html += '</ul>';
 
             html += '</div>';
@@ -421,6 +456,8 @@
             $('.btnPlayAllFromHere', elem).on('click', onPlayAllFromHereButtonClick);
             $('.btnQueueAllFromHere', elem).on('click', onQueueAllFromHereButtonClick);
             $('.btnExternalPlayer', elem).on('click', onExternalPlayerButtonClick);
+            $('.btnDelete', elem).on('click', onDeleteButtonClick);
+            $('.btnSync', elem).on('click', onSyncButtonClick);
         });
     }
 
@@ -557,6 +594,8 @@
 
         function onShowTimerExpired(elem) {
 
+            elem = $('a', elem)[0];
+
             if ($(elem).hasClass('hasContextMenu')) {
                 return;
             }
@@ -566,8 +605,14 @@
             }
 
             var innerElem = $('.cardOverlayTarget', elem);
-            var id = elem.getAttribute('data-itemid');
-            var commands = elem.getAttribute('data-commands').split(',');
+
+            var dataElement = elem;
+            while (!dataElement.getAttribute('data-itemid')) {
+                dataElement = dataElement.parentNode;
+            }
+
+            var id = dataElement.getAttribute('data-itemid');
+            var commands = dataElement.getAttribute('data-commands').split(',');
 
             var promise1 = ApiClient.getItem(Dashboard.getCurrentUserId(), id);
             var promise2 = Dashboard.getCurrentUser();
@@ -646,7 +691,20 @@
 
             selectionCommands.show();
 
-            $('.itemSelectionPanel', page).show();
+            var panels = $('.itemSelectionPanel', page).show();
+
+            if (!panels.length) {
+
+                var index = 0;
+                $('.cardContent', page).each(function () {
+                    var chkItemSelectId = 'chkItemSelect' + index;
+
+                    $(this).append('<div class="itemSelectionPanel" onclick="return false;"><div class="ui-checkbox"><label class="ui-btn ui-corner-all ui-btn-inherit ui-btn-icon-left ui-checkbox-off" for="' + chkItemSelectId + '">Select</label><input id="' + chkItemSelectId + '" type="checkbox" class="chkItemSelect" data-enhanced="true" /></div></div>');
+                    index++;
+                });
+
+                $('.itemsContainer', page).trigger('create');
+            }
 
             $('.chkItemSelect:checked', page).checked(false).checkboxradio('refresh');
         }
@@ -671,6 +729,30 @@
                 return this.getAttribute('data-itemid');
 
             }).get();
+    }
+
+    function sync(page) {
+
+        var selection = getSelectedItems(page);
+
+        if (selection.length < 1) {
+
+            Dashboard.alert({
+                message: Globalize.translate('MessagePleaseSelectOneItem'),
+                title: Globalize.translate('HeaderError')
+            });
+
+            return;
+        }
+
+        SyncManager.showMenu({
+            items: selection
+        });
+
+        $(SyncManager).off('jobsubmit.librarylist').on('jobsubmit.librarylist', function () {
+
+            hideSelections(page);
+        });
     }
 
     function combineVersions(page) {
@@ -754,11 +836,18 @@
         PlaylistManager.showPanel(selection);
     }
 
-    function onItemWithActionClick() {
+    function onItemWithActionClick(e) {
 
         var elem = this;
+
         var action = elem.getAttribute('data-action');
-        var elemWithAttributes = elem.getAttribute('data-itemid') ? elem : elem.parentNode;
+        var elemWithAttributes = elem;
+
+        if (action) {
+            while (!elemWithAttributes.getAttribute('data-itemid')) {
+                elemWithAttributes = elemWithAttributes.parentNode;
+            }
+        }
 
         var index;
         var itemsContainer;
@@ -778,6 +867,10 @@
             itemsContainer.trigger('playallfromhere', [index]);
         }
         else if (action == 'photoslideshow') {
+
+            if (!$(elem).hasClass('card')) {
+                elem = $(elem).parents('.card')[0];
+            }
 
             itemsContainer = $(elem).parents('.itemsContainer');
             index = $('.card', itemsContainer).get().indexOf(elem);
@@ -802,6 +895,10 @@
             combineVersions(page);
         });
 
+        $('.btnSyncItems', page).on('click', function () {
+            sync(page);
+        });
+
         $('.btnAddToCollection', page).on('click', function () {
             addToCollection(page);
         });
@@ -815,7 +912,7 @@
             $('.' + this.getAttribute('data-tab'), page).show();
         });
 
-        var viewPanel = $('.viewPanel', page).panel('option', 'classes.modalOpen', 'viewPanelModelOpen ui-panel-dismiss-open');
+        var viewPanel = $('.viewPanel', page);
 
         $('#selectPageSize', viewPanel).html(LibraryBrowser.getDefaultPageSizeSelections().map(function (i) {
 

@@ -1,7 +1,5 @@
 ﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Resolvers;
-using MediaBrowser.Model.Entities;
 using System.Linq;
 
 namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
@@ -11,6 +9,10 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
     /// </summary>
     public class EpisodeResolver : BaseVideoResolver<Episode>
     {
+        public EpisodeResolver(ILibraryManager libraryManager) : base(libraryManager)
+        {
+        }
+
         /// <summary>
         /// Resolves the specified args.
         /// </summary>
@@ -37,32 +39,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
             // If the parent is a Season or Series, then this is an Episode if the VideoResolver returns something
             if (season != null || parent is Series || parent.Parents.OfType<Series>().Any())
             {
-                Episode episode = null;
-
-                if (args.IsDirectory)
-                {
-                    if (args.ContainsFileSystemEntryByName("video_ts"))
-                    {
-                        episode = new Episode
-                        {
-                            Path = args.Path,
-                            VideoType = VideoType.Dvd
-                        };
-                    }
-                    if (args.ContainsFileSystemEntryByName("bdmv"))
-                    {
-                        episode = new Episode
-                        {
-                            Path = args.Path,
-                            VideoType = VideoType.BluRay
-                        };
-                    }
-                }
-
-                if (episode == null)
-                {
-                    episode = base.Resolve(args);
-                }
+                var episode = ResolveVideo<Episode>(args, false);
 
                 if (episode != null)
                 {
@@ -73,7 +50,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
 
                     if (episode.ParentIndexNumber == null)
                     {
-                        episode.ParentIndexNumber = TVUtils.GetSeasonNumberFromEpisodeFile(args.Path);
+                        episode.ParentIndexNumber = SeriesResolver.GetSeasonNumberFromEpisodeFile(args.Path);
                     }
                 }
 

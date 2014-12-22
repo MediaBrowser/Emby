@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
@@ -25,13 +24,15 @@ namespace MediaBrowser.Server.Implementations.Intros
         private readonly IChannelManager _channelManager;
         private readonly ILocalizationManager _localization;
         private readonly IConfigurationManager _serverConfig;
+        private readonly ILibraryManager _libraryManager;
 
-        public DefaultIntroProvider(ISecurityManager security, IChannelManager channelManager, ILocalizationManager localization, IConfigurationManager serverConfig)
+        public DefaultIntroProvider(ISecurityManager security, IChannelManager channelManager, ILocalizationManager localization, IConfigurationManager serverConfig, ILibraryManager libraryManager)
         {
             _security = security;
             _channelManager = channelManager;
             _localization = localization;
             _serverConfig = serverConfig;
+            _libraryManager = libraryManager;
         }
 
         public async Task<IEnumerable<IntroInfo>> GetIntros(BaseItem item, User user)
@@ -58,7 +59,7 @@ namespace MediaBrowser.Server.Implementations.Intros
             }
 
             var ratingLevel = string.IsNullOrWhiteSpace(item.OfficialRating)
-                ? (int?)null
+                ? null
                 : _localization.GetRatingLevel(item.OfficialRating);
 
             var libaryItems = user.RootFolder.GetRecursiveChildren(user, false)
@@ -129,15 +130,6 @@ namespace MediaBrowser.Server.Implementations.Intros
                 {
                     Item = i,
                     Type = ItemWithTrailerType.ChannelTrailer,
-                    User = user,
-                    WatchingItem = item,
-                    Random = random
-                }));
-
-                candidates.AddRange(libaryItems.Where(i => i is Trailer).Select(i => new ItemWithTrailer
-                {
-                    Item = i,
-                    Type = ItemWithTrailerType.LibraryTrailer,
                     User = user,
                     WatchingItem = item,
                     Random = random
@@ -226,7 +218,7 @@ namespace MediaBrowser.Server.Implementations.Intros
             }
 
             return Directory.EnumerateFiles(options.CustomIntroPath, "*", SearchOption.AllDirectories)
-                .Where(EntityResolutionHelper.IsVideoFile);
+                .Where(_libraryManager.IsVideoFile);
         }
 
         private bool FilterByParentalRating(int? ratingLevel, BaseItem item)

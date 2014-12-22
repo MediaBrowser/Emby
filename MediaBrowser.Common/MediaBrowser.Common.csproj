@@ -27,7 +27,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -36,7 +36,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -57,12 +57,10 @@
     <Compile Include="Configuration\ConfigurationUpdateEventArgs.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
     <Compile Include="Configuration\IConfigurationFactory.cs" />
-    <Compile Include="Constants\Constants.cs" />
     <Compile Include="Events\EventHelper.cs" />
     <Compile Include="Extensions\BaseExtensions.cs" />
     <Compile Include="Extensions\ResourceNotFoundException.cs" />
     <Compile Include="IDependencyContainer.cs" />
-    <Compile Include="IO\FileSystemRepository.cs" />
     <Compile Include="IO\IFileSystem.cs" />
     <Compile Include="IO\ProgressStream.cs" />
     <Compile Include="IO\StreamDefaults.cs" />
@@ -70,7 +68,6 @@
     <Compile Include="Configuration\IApplicationPaths.cs" />
     <Compile Include="Net\HttpRequestOptions.cs" />
     <Compile Include="Net\HttpResponseInfo.cs" />
-    <Compile Include="Net\IServerManager.cs" />
     <Compile Include="Net\IWebSocketListener.cs" />
     <Compile Include="IApplicationHost.cs" />
     <Compile Include="Net\IHttpClient.cs" />
@@ -105,9 +102,6 @@
     <Compile Include="Updates\InstallationFailedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
       <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
       <Name>MediaBrowser.Model</Name>
@@ -116,9 +110,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(ConfigurationName)' != 'Release Mono' ">if '$(ConfigurationName)' == 'Release' (
-xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\dlls\" /y /d /r /i
-)</PostBuildEvent>
+    <PostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

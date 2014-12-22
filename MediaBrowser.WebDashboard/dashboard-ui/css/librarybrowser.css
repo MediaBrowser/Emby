@@ -85,14 +85,6 @@
     top: 8px;
 }
 
-.viewPanel {
-    width: 250px;
-}
-
-.viewPanelModelOpen {
-    right: 250px !important;
-}
-
 .viewPanelTabs {
     margin-bottom: 2em;
 }
@@ -106,6 +98,21 @@
 
 .firstListHeader + .sectionHeaderButton {
     top: 3px;
+}
+
+@media all and (min-width: 500px) {
+
+    .ehsContent {
+        width: 95%;
+    }
+}
+
+@media all and (min-width: 600px) {
+
+    .itemsContainer:not(.fullWidthItemsContainer):not(.smallItemsContainer) {
+        padding: 0 .8em;
+        margin-right: 10px;
+    }
 }
 
 @media all and (min-width: 1200px) {
@@ -908,6 +915,7 @@ a.itemTag:hover {
 
 .itemsContainer {
     text-align: center;
+    margin: 0 auto;
 }
 
 .timelineItemsContainer {
@@ -970,7 +978,7 @@ a.itemTag:hover {
 }
 
     .itemSelectionPanel .ui-checkbox {
-        max-width: 90px;
+        max-width: 130px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -1030,24 +1038,6 @@ a.itemTag:hover {
     .viewCollageImage {
         width: 32.95%;
     }
-}
-
-.playerSelectionPanel {
-    width: 250px;
-}
-
-    .playerSelectionPanel + .ui-panel-dismiss {
-        right: 250px;
-    }
-
-@media all and (min-width: 600px) {
-    .playerSelectionPanel {
-        width: 300px;
-    }
-
-        .playerSelectionPanel + .ui-panel-dismiss {
-            right: 300px;
-        }
 }
 
 .spotlight {

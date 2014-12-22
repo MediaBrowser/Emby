@@ -7,7 +7,7 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "Audio,MusicVideo",
         Recursive: true,
-        Fields: "DateCreated",
+        Fields: "DateCreated,SyncInfo",
         StartIndex: 0
     };
 
@@ -47,8 +47,7 @@
                 context: 'music',
                 showItemCounts: true,
                 centerText: true,
-                lazy: true,
-                selectionPanel: true
+                lazy: true
             });
 
             html += pagingHtml;

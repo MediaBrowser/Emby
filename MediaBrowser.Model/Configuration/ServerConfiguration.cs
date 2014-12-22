@@ -56,6 +56,12 @@ namespace MediaBrowser.Model.Configuration
         public bool SaveLocalMeta { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [enable localized guids].
+        /// </summary>
+        /// <value><c>true</c> if [enable localized guids]; otherwise, <c>false</c>.</value>
+        public bool EnableLocalizedGuids { get; set; }
+        
+        /// <summary>
         /// Gets or sets the preferred metadata language.
         /// </summary>
         /// <value>The preferred metadata language.</value>
@@ -84,12 +90,6 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value>The sort remove words.</value>
         public string[] SortRemoveWords { get; set; }
-
-        /// <summary>
-        /// Show an output log window for debugging
-        /// </summary>
-        /// <value><c>true</c> if [show log window]; otherwise, <c>false</c>.</value>
-        public bool ShowLogWindow { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum percentage of an item that must be played in order for playstate to be updated.
@@ -176,7 +176,7 @@ namespace MediaBrowser.Model.Configuration
         public PeopleMetadataOptions PeopleMetadataOptions { get; set; }
         public bool FindInternetTrailers { get; set; }
 
-        public string[] InsecureApps3 { get; set; }
+        public string[] InsecureApps7 { get; set; }
 
         public bool SaveMetadataHidden { get; set; }
 
@@ -228,14 +228,16 @@ namespace MediaBrowser.Model.Configuration
 
             PeopleMetadataOptions = new PeopleMetadataOptions();
 
-            InsecureApps3 = new[]
+            InsecureApps7 = new[]
             {
-                "Roku",
                 "Chromecast",
                 "iOS",
-                "Windows Phone",
-                "Windows RT",
-                "Xbmc"
+                "Unknown app",
+                "MediaPortal",
+                "Media Portal",
+                "iPad",
+                "iPhone",
+                "Roku"
             };
 
             MetadataOptions = new[]

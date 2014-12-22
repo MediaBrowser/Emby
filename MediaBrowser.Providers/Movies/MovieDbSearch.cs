@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
@@ -24,11 +25,13 @@ namespace MediaBrowser.Providers.Movies
         
         private readonly ILogger _logger;
         private readonly IJsonSerializer _json;
+        private readonly ILibraryManager _libraryManager;
 
-        public MovieDbSearch(ILogger logger, IJsonSerializer json)
+        public MovieDbSearch(ILogger logger, IJsonSerializer json, ILibraryManager libraryManager)
         {
             _logger = logger;
             _json = json;
+            _libraryManager = libraryManager;
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo idInfo, CancellationToken cancellationToken)
@@ -50,13 +53,14 @@ namespace MediaBrowser.Providers.Movies
         {
             var name = idInfo.Name;
             var year = idInfo.Year;
-            int? yearInName = null;
 
             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
             var tmdbImageUrl = tmdbSettings.images.base_url + "original";
-            
-            NameParser.ParseName(name, out name, out yearInName);
+
+            var parsedName = _libraryManager.ParseName(name);
+            var yearInName = parsedName.Year;
+            name = parsedName.Name;
 
             year = year ?? yearInName;
 

@@ -120,7 +120,6 @@ namespace MediaBrowser.Api.Playback.Hls
 
             if (File.Exists(segmentPath))
             {
-                job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                 return await GetSegmentResult(playlistPath, segmentPath, index, segmentLength, job, cancellationToken).ConfigureAwait(false);
             }
 
@@ -129,7 +128,6 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 if (File.Exists(segmentPath))
                 {
-                    job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                     return await GetSegmentResult(playlistPath, segmentPath, index, segmentLength, job, cancellationToken).ConfigureAwait(false);
                 }
                 else
@@ -195,32 +193,37 @@ namespace MediaBrowser.Api.Playback.Hls
             return int.Parse(indexString, NumberStyles.Integer, UsCulture);
         }
 
-        private void DeleteLastFile(string path, string segmentExtension, int retryCount)
+        private void DeleteLastFile(string playlistPath, string segmentExtension, int retryCount)
+        {
+            var file = GetLastTranscodingFile(playlistPath, segmentExtension, FileSystem);
+
+            if (file != null)
+            {
+                DeleteFile(file, retryCount);
+            }
+        }
+
+        private void DeleteFile(FileInfo file, int retryCount)
         {
             if (retryCount >= 5)
             {
                 return;
             }
 
-            var file = GetLastTranscodingFile(path, segmentExtension, FileSystem);
-
-            if (file != null)
+            try
             {
-                try
-                {
-                    File.Delete(file.FullName);
-                }
-                catch (IOException ex)
-                {
-                    Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
+                File.Delete(file.FullName);
+            }
+            catch (IOException ex)
+            {
+                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
 
-                    Thread.Sleep(100);
-                    DeleteLastFile(path, segmentExtension, retryCount + 1);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
-                }
+                Thread.Sleep(100);
+                DeleteFile(file, retryCount + 1);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
             }
         }
 
@@ -228,11 +231,13 @@ namespace MediaBrowser.Api.Playback.Hls
         {
             var folder = Path.GetDirectoryName(playlist);
 
+            var filePrefix = Path.GetFileNameWithoutExtension(playlist) ?? string.Empty;
+
             try
             {
                 return new DirectoryInfo(folder)
                     .EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-                    .Where(i => string.Equals(i.Extension, segmentExtension, StringComparison.OrdinalIgnoreCase))
+                    .Where(i => string.Equals(i.Extension, segmentExtension, StringComparison.OrdinalIgnoreCase) && Path.GetFileNameWithoutExtension(i.Name).StartsWith(filePrefix, StringComparison.OrdinalIgnoreCase))
                     .OrderByDescending(fileSystem.GetLastWriteTimeUtc)
                     .FirstOrDefault();
             }
@@ -493,6 +498,16 @@ namespace MediaBrowser.Api.Playback.Hls
             if (isLiveStream || string.IsNullOrWhiteSpace(state.MediaPath))
             {
                 // Opening live streams is so slow it's not even worth it
+                return false;
+            }
+
+            if (string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (string.Equals(state.OutputAudioCodec, "copy", StringComparison.OrdinalIgnoreCase))
+            {
                 return false;
             }
 

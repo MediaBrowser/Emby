@@ -1,14 +1,9 @@
 ﻿using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
-using MediaBrowser.ServerApplication.Logging;
-using MediaBrowser.ServerApplication.Native;
+using MediaBrowser.Server.Startup.Common.Browser;
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace MediaBrowser.ServerApplication
@@ -17,30 +12,23 @@ namespace MediaBrowser.ServerApplication
     {
         bool IsDisposing = false;
         
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem cmdExit;
-        private System.Windows.Forms.ToolStripMenuItem cmdBrowse;
-        private System.Windows.Forms.ToolStripMenuItem cmdConfigure;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem cmdRestart;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem cmdLogWindow;
-        private System.Windows.Forms.ToolStripMenuItem cmdCommunity;
-        private System.Windows.Forms.ToolStripMenuItem cmdApiDocs;
-        private System.Windows.Forms.ToolStripMenuItem cmdSwagger;
-        private System.Windows.Forms.ToolStripMenuItem cmdGtihub;
+        private NotifyIcon notifyIcon1;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem cmdExit;
+        private ToolStripMenuItem cmdBrowse;
+        private ToolStripMenuItem cmdConfigure;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem cmdRestart;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem cmdCommunity;
+        private ToolStripMenuItem cmdApiDocs;
+        private ToolStripMenuItem cmdSwagger;
+        private ToolStripMenuItem cmdGtihub;
 
         private readonly ILogger _logger;
         private readonly IServerApplicationHost _appHost;
-        private readonly ILogManager _logManager;
         private readonly IServerConfigurationManager _configurationManager;
-        private readonly IUserManager _userManager;
-        private readonly ILibraryManager _libraryManager;
-        private readonly IJsonSerializer _jsonSerializer;
-        private readonly IUserViewManager _userViewManager;
         private readonly ILocalizationManager _localization;
-        private LogForm _logForm;
 
         public bool Visible
         {
@@ -57,38 +45,30 @@ namespace MediaBrowser.ServerApplication
 
         public ServerNotifyIcon(ILogManager logManager, 
             IServerApplicationHost appHost, 
-            IServerConfigurationManager configurationManager, 
-            IUserManager userManager, ILibraryManager libraryManager, 
-            IJsonSerializer jsonSerializer, 
-            ILocalizationManager localization, IUserViewManager userViewManager)
+            IServerConfigurationManager configurationManager,
+            ILocalizationManager localization)
         {
             _logger = logManager.GetLogger("MainWindow");
             _localization = localization;
-            _userViewManager = userViewManager;
             _appHost = appHost;
-            _logManager = logManager;
             _configurationManager = configurationManager;
-            _userManager = userManager;
-            _libraryManager = libraryManager;
-            _jsonSerializer = jsonSerializer;
             
             var components = new System.ComponentModel.Container();
             
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
-            notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            notifyIcon1 = new NotifyIcon(components);
             
-            cmdExit = new System.Windows.Forms.ToolStripMenuItem();
-            cmdCommunity = new System.Windows.Forms.ToolStripMenuItem();
-            cmdLogWindow = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            cmdRestart = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            cmdConfigure = new System.Windows.Forms.ToolStripMenuItem();
-            cmdBrowse = new System.Windows.Forms.ToolStripMenuItem();
-            cmdApiDocs = new System.Windows.Forms.ToolStripMenuItem();
-            cmdSwagger = new System.Windows.Forms.ToolStripMenuItem();
-            cmdGtihub = new System.Windows.Forms.ToolStripMenuItem();
+            cmdExit = new ToolStripMenuItem();
+            cmdCommunity = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            cmdRestart = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            cmdConfigure = new ToolStripMenuItem();
+            cmdBrowse = new ToolStripMenuItem();
+            cmdApiDocs = new ToolStripMenuItem();
+            cmdSwagger = new ToolStripMenuItem();
+            cmdGtihub = new ToolStripMenuItem();
             
             // 
             // notifyIcon1
@@ -100,14 +80,13 @@ namespace MediaBrowser.ServerApplication
             // 
             // contextMenuStrip1
             // 
-            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] {
             cmdBrowse,
             cmdConfigure,
             toolStripSeparator2,
             cmdRestart,
             toolStripSeparator1,
             cmdApiDocs,
-            cmdLogWindow,
             cmdCommunity,
             cmdExit});
             contextMenuStrip1.Name = "contextMenuStrip1";
@@ -124,12 +103,6 @@ namespace MediaBrowser.ServerApplication
             // 
             cmdCommunity.Name = "cmdCommunity";
             cmdCommunity.Size = new System.Drawing.Size(208, 22);
-            // 
-            // cmdLogWindow
-            // 
-            cmdLogWindow.CheckOnClick = true;
-            cmdLogWindow.Name = "cmdLogWindow";
-            cmdLogWindow.Size = new System.Drawing.Size(208, 22);
             // 
             // toolStripSeparator1
             // 
@@ -158,7 +131,7 @@ namespace MediaBrowser.ServerApplication
             // 
             // cmdApiDocs
             // 
-            cmdApiDocs.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            cmdApiDocs.DropDownItems.AddRange(new ToolStripItem[] {
             cmdSwagger,
             cmdGtihub});
             cmdApiDocs.Name = "cmdApiDocs";
@@ -176,7 +149,6 @@ namespace MediaBrowser.ServerApplication
 
             cmdExit.Click += cmdExit_Click;
             cmdRestart.Click += cmdRestart_Click;
-            cmdLogWindow.Click += cmdLogWindow_Click;
             cmdConfigure.Click += cmdConfigure_Click;
             cmdCommunity.Click += cmdCommunity_Click;
             cmdBrowse.Click += cmdBrowse_Click;
@@ -184,8 +156,6 @@ namespace MediaBrowser.ServerApplication
             cmdSwagger.Click += cmdSwagger_Click;
             cmdGtihub.Click += cmdGtihub_Click;
 
-            LoadLogWindow(null, EventArgs.Empty);
-            _logManager.LoggerLoaded += LoadLogWindow;
             _configurationManager.ConfigurationUpdated += Instance_ConfigurationUpdated;
 
             LocalizeText();
@@ -204,13 +174,12 @@ namespace MediaBrowser.ServerApplication
 
             cmdExit.Text = _localization.GetLocalizedString("LabelExit");
             cmdCommunity.Text = _localization.GetLocalizedString("LabelVisitCommunity");
-            cmdGtihub.Text = _localization.GetLocalizedString("LabelGithubWiki");
-            cmdSwagger.Text = _localization.GetLocalizedString("LabelSwagger");
-            cmdApiDocs.Text = _localization.GetLocalizedString("LabelViewApiDocumentation");
+            cmdGtihub.Text = _localization.GetLocalizedString("LabelGithub");
+            cmdSwagger.Text = _localization.GetLocalizedString("LabelApiDocumentation");
+            cmdApiDocs.Text = _localization.GetLocalizedString("LabelDeveloperResources");
             cmdBrowse.Text = _localization.GetLocalizedString("LabelBrowseLibrary");
             cmdConfigure.Text = _localization.GetLocalizedString("LabelConfigureMediaBrowser");
             cmdRestart.Text = _localization.GetLocalizedString("LabelRestartServer");
-            cmdLogWindow.Text = _localization.GetLocalizedString("LabelShowLogWindow");
         }
 
         private string _uiCulture;
@@ -226,67 +195,11 @@ namespace MediaBrowser.ServerApplication
             {
                 LocalizeText();
             }
-
-            Action action = () =>
-            {
-                var isLogWindowOpen = _logForm != null;
-
-                if ((!isLogWindowOpen && _configurationManager.Configuration.ShowLogWindow) ||
-                    (isLogWindowOpen && !_configurationManager.Configuration.ShowLogWindow))
-                {
-                    _logManager.ReloadLogger(_configurationManager.Configuration.EnableDebugLevelLogging
-                        ? LogSeverity.Debug
-                        : LogSeverity.Info);
-                }
-            };
-
-            contextMenuStrip1.Invoke(action);
-        }
-
-        /// <summary>
-        /// Loads the log window.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-        void LoadLogWindow(object sender, EventArgs args)
-        {
-            CloseLogWindow();
-
-            Action action = () =>
-            {
-                // Add our log window if specified
-                if (_configurationManager.Configuration.ShowLogWindow)
-                {
-                    _logForm = new LogForm(_logManager);
-
-                    Trace.Listeners.Add(new WindowTraceListener(_logForm));
-                }
-                else
-                {
-                    Trace.Listeners.Remove("MBLogWindow");
-                }
-
-                // Set menu option indicator
-                cmdLogWindow.Checked = _configurationManager.Configuration.ShowLogWindow;
-            };
-
-            contextMenuStrip1.Invoke(action);
-        }
-
-        /// <summary>
-        /// Closes the log window.
-        /// </summary>
-        void CloseLogWindow()
-        {
-            if (_logForm != null)
-            {
-                _logForm.ShutDown();
-            }
         }
 
         void cmdBrowse_Click(object sender, EventArgs e)
         {
-            BrowserLauncher.OpenWebClient(_userManager, _configurationManager, _appHost, _logger);
+            BrowserLauncher.OpenWebClient(_appHost, _logger);
         }
 
         void cmdCommunity_Click(object sender, EventArgs e)
@@ -296,14 +209,7 @@ namespace MediaBrowser.ServerApplication
 
         void cmdConfigure_Click(object sender, EventArgs e)
         {
-            BrowserLauncher.OpenDashboard(_userManager, _configurationManager, _appHost, _logger);
-        }
-
-        void cmdLogWindow_Click(object sender, EventArgs e)
-        {
-            _configurationManager.Configuration.ShowLogWindow = !_configurationManager.Configuration.ShowLogWindow;
-            _configurationManager.SaveConfiguration();
-            LoadLogWindow(sender, e);
+            BrowserLauncher.OpenDashboard(_appHost, _logger);
         }
 
         void cmdRestart_Click(object sender, EventArgs e)
@@ -323,7 +229,7 @@ namespace MediaBrowser.ServerApplication
 
         void cmdSwagger_Click(object sender, EventArgs e)
         {
-            BrowserLauncher.OpenSwagger(_configurationManager, _appHost, _logger);
+            BrowserLauncher.OpenSwagger(_appHost, _logger);
         }
 
         ~ServerNotifyIcon()

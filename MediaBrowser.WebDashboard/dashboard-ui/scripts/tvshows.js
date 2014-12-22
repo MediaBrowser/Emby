@@ -1,6 +1,6 @@
 ﻿(function ($, document) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Thumb', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('Thumb', 'Thumb');
 
     // The base query options
     var query = {
@@ -9,8 +9,10 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "Series",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName",
-        StartIndex: 0
+        Fields: "PrimaryImageAspectRatio,SortName,SyncInfo",
+        StartIndex: 0,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -53,6 +55,20 @@
 
                 $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
+            else if (view == "ThumbCard") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "backdrop",
+                    preferThumb: true,
+                    context: 'tv',
+                    lazy: true,
+                    cardLayout: true,
+                    showTitle: true,
+                    showSeriesYear: true
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
+            }
             else if (view == "Banner") {
 
                 html = LibraryBrowser.getPosterViewHtml({
@@ -70,6 +86,18 @@
                     items: result.Items,
                     context: 'tv',
                     sortBy: query.SortBy
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
+            }
+            else if (view == "PosterCard") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "portrait",
+                    context: 'tv',
+                    showTitle: true,
+                    showYear: true,
+                    lazy: true,
+                    cardLayout: true
                 });
                 $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
@@ -156,18 +184,32 @@
         $('#chkThemeVideo', page).checked(query.HasThemeVideo == true).checkboxradio('refresh');
         $('#chkSpecialFeature', page).checked(query.HasSpecialFeature == true).checkboxradio('refresh');
 
-        $('#chkMissingImdbId', page).checked(query.HasImdbId == false).checkboxradio('refresh');
-        $('#chkMissingTvdbId', page).checked(query.HasTvdbId == false).checkboxradio('refresh');
-        $('#chkMissingOverview', page).checked(query.HasOverview == false).checkboxradio('refresh');
-        $('#chkYearMismatch', page).checked(query.IsYearMismatched == true).checkboxradio('refresh');
-
         $('.alphabetPicker', page).alphaValue(query.NameStartsWith);
         $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
+    }
+
+    var filtersLoaded;
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
     }
 
     $(document).on('pageinit', "#tvShowsPage", function () {
 
         var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+
+            reloadFiltersIfNeeded(page);
+        });
 
         $('.radioSortBy', this).on('click', function () {
             query.SortBy = this.getAttribute('data-sortby');
@@ -312,38 +354,6 @@
             }
         });
 
-        $('#chkMissingImdbId', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasImdbId = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkMissingTvdbId', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasTvdbId = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkMissingOverview', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasOverview = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkYearMismatch', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.IsYearMismatched = this.checked ? true : null;
-
-            reloadItems(page);
-        });
-
         $('#selectPageSize', page).on('change', function () {
             query.Limit = parseInt(this.value);
             query.StartIndex = 0;
@@ -366,6 +376,7 @@
         var viewKey = getSavedQueryKey();
 
         LibraryBrowser.loadSavedQueryValues(viewKey, query);
+        QueryFilters.onPageShow(page, query);
 
         LibraryBrowser.getSavedViewSetting(viewKey).done(function (val) {
 

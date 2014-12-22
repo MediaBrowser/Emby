@@ -238,19 +238,40 @@ namespace MediaBrowser.Api.Session
 
         [ApiMember(Name = "SupportsContentUploading", Description = "Determines whether camera upload is supported.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool SupportsContentUploading { get; set; }
+
+        [ApiMember(Name = "SupportsSync", Description = "Determines whether sync is supported.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
+        public bool SupportsSync { get; set; }
+
+        [ApiMember(Name = "SupportsUniqueIdentifier", Description = "Determines whether the device supports a unique identifier.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
+        public bool SupportsUniqueIdentifier { get; set; }
+    }
+
+    [Route("/Sessions/Capabilities/Full", "POST", Summary = "Updates capabilities for a device")]
+    [Authenticated]
+    public class PostFullCapabilities : ClientCapabilities, IReturnVoid
+    {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [ApiMember(Name = "Id", Description = "Session Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
     }
 
     [Route("/Sessions/Logout", "POST", Summary = "Reports that a session has ended")]
+    [Authenticated]
     public class ReportSessionEnded : IReturnVoid
     {
     }
 
     [Route("/Auth/Keys", "GET")]
+    [Authenticated(Roles = "Admin")]
     public class GetApiKeys
     {
     }
 
     [Route("/Auth/Keys/{Key}", "DELETE")]
+    [Authenticated(Roles = "Admin")]
     public class RevokeKey
     {
         [ApiMember(Name = "Key", Description = "Auth Key", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
@@ -258,6 +279,7 @@ namespace MediaBrowser.Api.Session
     }
 
     [Route("/Auth/Keys", "POST")]
+    [Authenticated(Roles = "Admin")]
     public class CreateKey
     {
         [ApiMember(Name = "App", Description = "App", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
@@ -353,7 +375,12 @@ namespace MediaBrowser.Api.Session
 
                 if (!user.Configuration.EnableRemoteControlOfOtherUsers)
                 {
-                    result = result.Where(i => !i.UserId.HasValue || i.ContainsUser(request.ControllableByUserId.Value));
+                    result = result.Where(i => i.ContainsUser(request.ControllableByUserId.Value));
+                }
+
+                if (!user.Configuration.EnableSharedDeviceControl)
+                {
+                    result = result.Where(i => !i.UserId.HasValue);
                 }
             }
 
@@ -507,8 +534,21 @@ namespace MediaBrowser.Api.Session
 
                 MessageCallbackUrl = request.MessageCallbackUrl,
 
-                SupportsContentUploading = request.SupportsContentUploading
+                SupportsContentUploading = request.SupportsContentUploading,
+
+                SupportsSync = request.SupportsSync,
+
+                SupportsUniqueIdentifier = request.SupportsUniqueIdentifier
             });
+        }
+
+        public void Post(PostFullCapabilities request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Id))
+            {
+                request.Id = GetSession().Id;
+            }
+            _sessionManager.ReportCapabilities(request.Id, request);
         }
     }
 }

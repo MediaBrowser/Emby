@@ -3,11 +3,9 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
-using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace MediaBrowser.ServerApplication.Networking
+namespace MediaBrowser.Server.Mono.Networking
 {
     /// <summary>
     /// Class NetUtils
@@ -30,9 +28,9 @@ namespace MediaBrowser.ServerApplication.Networking
         }
 
         /// <summary>
-        /// Gets a list of network devices
+        /// Gets available devices within the domain
         /// </summary>
-        /// PC's in the Domain</returns>
+        /// <returns>PC's in the Domain</returns>
 		public IEnumerable<FileSystemEntryInfo> GetNetworkDevices()
         {
 			return new List<FileSystemEntryInfo> ();

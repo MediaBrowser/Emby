@@ -2,6 +2,7 @@
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Model.Devices;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Session;
 using System;
@@ -19,13 +20,15 @@ namespace MediaBrowser.Server.Implementations.Devices
 
         private readonly IApplicationPaths _appPaths;
         private readonly IJsonSerializer _json;
+        private readonly ILogger _logger;
 
         private ConcurrentBag<DeviceInfo> _devices;
 
-        public DeviceRepository(IApplicationPaths appPaths, IJsonSerializer json)
+        public DeviceRepository(IApplicationPaths appPaths, IJsonSerializer json, ILogger logger)
         {
             _appPaths = appPaths;
             _json = json;
+            _logger = logger;
         }
 
         private string GetDevicesPath()
@@ -69,7 +72,8 @@ namespace MediaBrowser.Server.Implementations.Devices
 
         public DeviceInfo GetDevice(string id)
         {
-            return GetDevices().FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase));
+            return GetDevices()
+                .FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
         public IEnumerable<DeviceInfo> GetDevices()
@@ -93,11 +97,23 @@ namespace MediaBrowser.Server.Implementations.Devices
 
             try
             {
-                return new DirectoryInfo(path)
-                    .EnumerateFiles("*", SearchOption.AllDirectories)
-                    .Where(i => string.Equals(i.Name, "device.json", StringComparison.OrdinalIgnoreCase))
-                    .Select(i => _json.DeserializeFromFile<DeviceInfo>(i.FullName))
-                    .ToList();
+                return Directory
+                    .EnumerateFiles(path, "*", SearchOption.AllDirectories)
+                    .Where(i => string.Equals(Path.GetFileName(i), "device.json", StringComparison.OrdinalIgnoreCase))
+                    .ToList()
+                    .Select(i =>
+                    {
+                        try
+                        {
+                            return _json.DeserializeFromFile<DeviceInfo>(i);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error reading {0}", ex, i);
+                            return null;
+                        }
+                    })
+                    .Where(i => i != null);
             }
             catch (IOException)
             {

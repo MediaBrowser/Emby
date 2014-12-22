@@ -1,13 +1,15 @@
-﻿using MediaBrowser.Common;
+﻿using System.Collections.Concurrent;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Connect;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
@@ -16,10 +18,12 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Server.Implementations.Security;
+using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -65,7 +69,7 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly Func<IImageProcessor> _imageProcessorFactory;
         private readonly Func<IDtoService> _dtoServiceFactory;
         private readonly Func<IConnectManager> _connectFactory;
-        private readonly IApplicationHost _appHost;
+        private readonly IServerApplicationHost _appHost;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserManager" /> class.
@@ -73,7 +77,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <param name="logger">The logger.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="userRepository">The user repository.</param>
-        public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IApplicationHost appHost)
+        public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost)
         {
             _logger = logger;
             UserRepository = userRepository;
@@ -85,6 +89,8 @@ namespace MediaBrowser.Server.Implementations.Library
             _appHost = appHost;
             ConfigurationManager = configurationManager;
             Users = new List<User>();
+
+            DeletePinFile();
         }
 
         #region UserUpdated Event
@@ -145,6 +151,16 @@ namespace MediaBrowser.Server.Implementations.Library
             return GetUserById(new Guid(id));
         }
 
+        public User GetUserByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            return Users.FirstOrDefault(u => string.Equals(u.Name, name, StringComparison.OrdinalIgnoreCase));
+        }
+
         public async Task Initialize()
         {
             Users = await LoadUsers().ConfigureAwait(false);
@@ -166,12 +182,12 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (user == null)
             {
-                throw new AuthenticationException("Invalid username or password entered.");
+                throw new SecurityException("Invalid username or password entered.");
             }
 
             if (user.Configuration.IsDisabled)
             {
-                throw new AuthenticationException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
+                throw new SecurityException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
             }
 
             var success = false;
@@ -302,7 +318,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 ConnectLinkType = user.ConnectLinkType,
                 ConnectUserId = user.ConnectUserId,
                 ConnectUserName = user.ConnectUserName,
-                ServerId = _appHost.SystemId
+                ServerId = _appHost.SystemId,
+                Policy = user.Policy
             };
 
             var image = user.GetImageInfo(ImageType.Primary, 0);
@@ -313,7 +330,10 @@ namespace MediaBrowser.Server.Implementations.Library
 
                 try
                 {
-                    _dtoServiceFactory().AttachPrimaryImageAspectRatio(dto, user);
+                    _dtoServiceFactory().AttachPrimaryImageAspectRatio(dto, user, new List<ItemFields>
+                    {
+                        ItemFields.PrimaryImageAspectRatio
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -511,6 +531,8 @@ namespace MediaBrowser.Server.Implementations.Library
                     _logger.ErrorException("Error deleting file {0}", ex, path);
                 }
 
+                DeleteUserPolicy(user);
+
                 // Force this to be lazy loaded again
                 Users = await LoadUsers().ConfigureAwait(false);
 
@@ -528,20 +550,30 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         public Task ResetPassword(User user)
         {
-            return ChangePassword(user, string.Empty);
+            return ChangePassword(user, GetSha1String(string.Empty));
         }
 
         /// <summary>
         /// Changes the password.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="newPassword">The new password.</param>
+        /// <param name="newPasswordSha1">The new password sha1.</param>
         /// <returns>Task.</returns>
-        public async Task ChangePassword(User user, string newPassword)
+        /// <exception cref="System.ArgumentNullException">
+        /// user
+        /// or
+        /// newPassword
+        /// </exception>
+        /// <exception cref="System.ArgumentException">Passwords for guests cannot be changed.</exception>
+        public async Task ChangePassword(User user, string newPasswordSha1)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
+            }
+            if (string.IsNullOrWhiteSpace(newPasswordSha1))
+            {
+                throw new ArgumentNullException("newPasswordSha1");
             }
 
             if (user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
@@ -549,7 +581,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("Passwords for guests cannot be changed.");
             }
 
-            user.Password = string.IsNullOrEmpty(newPassword) ? GetSha1String(string.Empty) : GetSha1String(newPassword);
+            user.Password = newPasswordSha1;
 
             await UpdateUser(user).ConfigureAwait(false);
 
@@ -588,6 +620,218 @@ namespace MediaBrowser.Server.Implementations.Library
             _xmlSerializer.SerializeToFile(newConfiguration, xmlPath);
 
             EventHelper.FireEventIfNotNull(UserConfigurationUpdated, this, new GenericEventArgs<User> { Argument = user }, _logger);
+        }
+
+        private string PasswordResetFile
+        {
+            get { return Path.Combine(ConfigurationManager.ApplicationPaths.ProgramDataPath, "passwordreset.txt"); }
+        }
+
+        private string _lastPin;
+        private PasswordPinCreationResult _lastPasswordPinCreationResult;
+        private int _pinAttempts;
+
+        private PasswordPinCreationResult CreatePasswordResetPin()
+        {
+            var num = new Random().Next(1, 9999);
+
+            var path = PasswordResetFile;
+
+            var pin = num.ToString("0000", CultureInfo.InvariantCulture);
+            _lastPin = pin;
+
+            var time = TimeSpan.FromMinutes(5);
+            var expiration = DateTime.UtcNow.Add(time);
+
+            var text = new StringBuilder();
+
+            var info = _appHost.GetSystemInfo();
+            var localAddress = info.LocalAddress ?? string.Empty;
+
+            text.AppendLine("Use your web browser to visit:");
+            text.AppendLine(string.Empty);
+            text.AppendLine(localAddress + "/mediabrowser/web/forgotpasswordpin.html");
+            text.AppendLine(string.Empty);
+            text.AppendLine("Enter the following pin code:");
+            text.AppendLine(string.Empty);
+            text.AppendLine(pin);
+            text.AppendLine(string.Empty);
+            text.AppendLine("The pin code will expire at " + expiration.ToLocalTime().ToShortDateString() + " " + expiration.ToLocalTime().ToShortTimeString());
+
+            File.WriteAllText(path, text.ToString(), Encoding.UTF8);
+
+            var result = new PasswordPinCreationResult
+            {
+                PinFile = path,
+                ExpirationDate = expiration
+            };
+
+            _lastPasswordPinCreationResult = result;
+            _pinAttempts = 0;
+
+            return result;
+        }
+
+        public ForgotPasswordResult StartForgotPasswordProcess(string enteredUsername, bool isInNetwork)
+        {
+            DeletePinFile();
+
+            var user = string.IsNullOrWhiteSpace(enteredUsername) ?
+                null :
+                GetUserByName(enteredUsername);
+
+            if (user != null && user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
+            {
+                throw new ArgumentException("Unable to process forgot password request for guests.");
+            }
+
+            var action = ForgotPasswordAction.InNetworkRequired;
+            string pinFile = null;
+            DateTime? expirationDate = null;
+
+            if (user != null && !user.Configuration.IsAdministrator)
+            {
+                action = ForgotPasswordAction.ContactAdmin;
+            }
+            else
+            {
+                if (isInNetwork)
+                {
+                    action = ForgotPasswordAction.PinCode;
+                }
+
+                var result = CreatePasswordResetPin();
+                pinFile = result.PinFile;
+                expirationDate = result.ExpirationDate;
+            }
+
+            return new ForgotPasswordResult
+            {
+                Action = action,
+                PinFile = pinFile,
+                PinExpirationDate = expirationDate
+            };
+        }
+
+        public async Task<PinRedeemResult> RedeemPasswordResetPin(string pin)
+        {
+            DeletePinFile();
+
+            var usersReset = new List<string>();
+
+            var valid = !string.IsNullOrWhiteSpace(_lastPin) &&
+                string.Equals(_lastPin, pin, StringComparison.OrdinalIgnoreCase) &&
+                _lastPasswordPinCreationResult != null &&
+                _lastPasswordPinCreationResult.ExpirationDate > DateTime.UtcNow;
+
+            if (valid)
+            {
+                _lastPin = null;
+                _lastPasswordPinCreationResult = null;
+
+                var users = Users.Where(i => !i.ConnectLinkType.HasValue || i.ConnectLinkType.Value != UserLinkType.Guest)
+                        .ToList();
+
+                foreach (var user in users)
+                {
+                    await ResetPassword(user).ConfigureAwait(false);
+                    usersReset.Add(user.Name);
+                }
+            }
+            else
+            {
+                _pinAttempts++;
+                if (_pinAttempts >= 3)
+                {
+                    _lastPin = null;
+                    _lastPasswordPinCreationResult = null;
+                }
+            }
+
+            return new PinRedeemResult
+            {
+                Success = valid,
+                UsersReset = usersReset.ToArray()
+            };
+        }
+
+        private void DeletePinFile()
+        {
+            try
+            {
+                File.Delete(PasswordResetFile);
+            }
+            catch
+            {
+
+            }
+        }
+
+        class PasswordPinCreationResult
+        {
+            public string PinFile { get; set; }
+            public DateTime ExpirationDate { get; set; }
+        }
+
+        public UserPolicy GetUserPolicy(User user)
+        {
+            var path = GetPolifyFilePath(user);
+
+            try
+            {
+                lock (_policySyncLock)
+                {
+                    return (UserPolicy)_xmlSerializer.DeserializeFromFile(typeof(UserPolicy), path);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error reading policy file: {0}", ex, path);
+
+                return new UserPolicy
+                {
+                    EnableSync = !user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest
+                };
+            }
+        }
+
+        private readonly object _policySyncLock = new object();
+        public async Task UpdateUserPolicy(string userId, UserPolicy userPolicy)
+        {
+            var user = GetUserById(userId);
+            var path = GetPolifyFilePath(user);
+
+            lock (_policySyncLock)
+            {
+                _xmlSerializer.SerializeToFile(userPolicy, path);
+                user.Policy = userPolicy;
+            }
+        }
+
+        private void DeleteUserPolicy(User user)
+        {
+            var path = GetPolifyFilePath(user);
+
+            try
+            {
+                lock (_policySyncLock)
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (IOException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error deleting policy file", ex);
+            }
+        }
+
+        private string GetPolifyFilePath(User user)
+        {
+            return Path.Combine(user.ConfigurationDirectoryPath, "policy.xml");
         }
     }
 }

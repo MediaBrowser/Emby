@@ -1,6 +1,6 @@
 ﻿(function ($, document) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('PosterCard', 'PosterCard');
 
     // The base query options
     var query = {
@@ -9,8 +9,10 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "MusicAlbum",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName",
-        StartIndex: 0
+        Fields: "PrimaryImageAspectRatio,SortName,SyncInfo",
+        StartIndex: 0,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -49,8 +51,21 @@
                     context: 'music',
                     showTitle: true,
                     showParentTitle: true,
+                    lazy: true
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
+            }
+            else if (view == "PosterCard") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "square",
+                    context: 'music',
+                    showTitle: true,
+                    coverImage: true,
+                    showParentTitle: true,
                     lazy: true,
-                    selectionPanel: true
+                    cardLayout: true
                 });
                 $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
@@ -71,8 +86,7 @@
                     showTitle: true,
                     showParentTitle: true,
                     timeline: true,
-                    lazy: true,
-                    selectionPanel: true
+                    lazy: true
                 });
                 $('.itemsContainer', page).addClass('timelineItemsContainer');
             }
@@ -118,9 +132,28 @@
         $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
     }
 
+    var filtersLoaded;
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
+    }
+
     $(document).on('pageinit', "#musicAlbumsPage", function () {
 
         var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+
+            reloadFiltersIfNeeded(page);
+        });
 
         $('.radioSortBy', page).on('click', function () {
             query.SortBy = this.getAttribute('data-sortby');
@@ -223,6 +256,7 @@
 
         var viewKey = getSavedQueryKey();
         LibraryBrowser.loadSavedQueryValues(viewKey, query);
+        QueryFilters.onPageShow(page, query);
 
         LibraryBrowser.getSavedViewSetting(viewKey).done(function (val) {
 

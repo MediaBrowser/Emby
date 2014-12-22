@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -72,10 +72,7 @@
     <Compile Include="Providers\PlaylistXmlProvider.cs" />
     <Compile Include="Providers\SeasonXmlProvider.cs" />
     <Compile Include="Providers\SeriesXmlProvider.cs" />
-    <Compile Include="Providers\TrailerXmlProvider.cs" />
     <Compile Include="Providers\VideoXmlProvider.cs" />
-    <Compile Include="Savers\AlbumXmlSaver.cs" />
-    <Compile Include="Savers\ArtistXmlSaver.cs" />
     <Compile Include="Savers\BoxSetXmlSaver.cs" />
     <Compile Include="Savers\ChannelXmlSaver.cs" />
     <Compile Include="Savers\EpisodeXmlSaver.cs" />

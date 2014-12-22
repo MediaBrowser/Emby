@@ -6,6 +6,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.LiveTv;
+using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Notifications;
 using MediaBrowser.Model.Playlists;
 using MediaBrowser.Model.Plugins;
@@ -13,6 +14,7 @@ using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Search;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Session;
+using MediaBrowser.Model.Sync;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Tasks;
 using MediaBrowser.Model.Users;
@@ -122,6 +124,16 @@ namespace MediaBrowser.Model.ApiClient
         Task<SearchHintResult> GetSearchHintsAsync(SearchQuery query);
 
         /// <summary>
+        /// Gets the filters.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="parentId">The parent identifier.</param>
+        /// <param name="mediaTypes">The media types.</param>
+        /// <param name="itemTypes">The item types.</param>
+        /// <returns>Task&lt;QueryFilters&gt;.</returns>
+        Task<QueryFilters> GetFilters(string userId, string parentId, string[] mediaTypes, string[] itemTypes);
+
+        /// <summary>
         /// Gets the theme videos async.
         /// </summary>
         /// <param name="userId">The user id.</param>
@@ -212,6 +224,14 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="userId">The user identifier.</param>
         /// <returns>Task{BaseItemDto[]}.</returns>
         Task<ItemsResult> GetAdditionalParts(string itemId, string userId);
+
+        /// <summary>
+        /// Gets the live media information.
+        /// </summary>
+        /// <param name="itemId">The item identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>Task&lt;LiveMediaInfoResult&gt;.</returns>
+        Task<LiveMediaInfoResult> GetLiveMediaInfo(string itemId, string userId);
 
         /// <summary>
         /// Gets the users async.
@@ -394,7 +414,7 @@ namespace MediaBrowser.Model.ApiClient
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Task{ItemsResult}.</returns>
-        Task<ItemsResult> GetUpcomingEpisodesAsync(NextUpQuery query);
+        Task<ItemsResult> GetUpcomingEpisodesAsync(UpcomingEpisodesQuery query);
 
         /// <summary>
         /// Gets a genre
@@ -1351,6 +1371,49 @@ namespace MediaBrowser.Model.ApiClient
         /// </summary>
         /// <returns>Task&lt;DevicesOptions&gt;.</returns>
         Task<DevicesOptions> GetDevicesOptions();
+
+        /// <summary>
+        /// Updates the item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>Task.</returns>
+        Task UpdateItem(BaseItemDto item);
+
+        /// <summary>
+        /// Creates the synchronize job.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>Task&lt;SyncJob&gt;.</returns>
+        Task<SyncJob> CreateSyncJob(SyncJobRequest request);
+
+        /// <summary>
+        /// Gets the synchronize jobs.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>Task&lt;QueryResult&lt;SyncJob&gt;&gt;.</returns>
+        Task<QueryResult<SyncJob>> GetSyncJobs(SyncJobQuery query);
+
+        /// <summary>
+        /// Gets the synchronize job items.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>Task&lt;QueryResult&lt;SyncJobItem&gt;&gt;.</returns>
+        Task<QueryResult<SyncJobItem>> GetSyncJobItems(SyncJobItemQuery query);
+
+        /// <summary>
+        /// Reports the synchronize job item transferred.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task.</returns>
+        Task ReportSyncJobItemTransferred(string id);
+
+        /// <summary>
+        /// Gets the synchronize job item file.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;Stream&gt;.</returns>
+        Task<Stream> GetSyncJobItemFile(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Opens the web socket.

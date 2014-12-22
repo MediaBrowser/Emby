@@ -24,8 +24,7 @@ namespace MediaBrowser.Api.Images
     /// <summary>
     /// Class GetItemImage
     /// </summary>
-    [Route("/Items/{Id}/Images", "GET")]
-    [Api(Description = "Gets information about an item's images")]
+    [Route("/Items/{Id}/Images", "GET", Summary = "Gets information about an item's images")]
     [Authenticated]
     public class GetItemImageInfos : IReturn<List<ImageInfo>>
     {
@@ -43,7 +42,6 @@ namespace MediaBrowser.Api.Images
     [Route("/Items/{Id}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Items/{Id}/Images/{Type}/{Index}/{Tag}/{Format}/{MaxWidth}/{MaxHeight}/{PercentPlayed}", "GET")]
     [Route("/Items/{Id}/Images/{Type}/{Index}/{Tag}/{Format}/{MaxWidth}/{MaxHeight}/{PercentPlayed}", "HEAD")]
-    [Api(Description = "Gets an item image")]
     public class GetItemImage : ImageRequest
     {
         /// <summary>
@@ -57,8 +55,7 @@ namespace MediaBrowser.Api.Images
     /// <summary>
     /// Class UpdateItemImageIndex
     /// </summary>
-    [Route("/Items/{Id}/Images/{Type}/{Index}/Index", "POST")]
-    [Api(Description = "Updates the index for an item image")]
+    [Route("/Items/{Id}/Images/{Type}/{Index}/Index", "POST", Summary = "Updates the index for an item image")]
     [Authenticated]
     public class UpdateItemImageIndex : IReturnVoid
     {
@@ -122,7 +119,6 @@ namespace MediaBrowser.Api.Images
     [Route("/Studios/{Name}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Years/{Year}/Images/{Type}", "HEAD")]
     [Route("/Years/{Year}/Images/{Type}/{Index}", "HEAD")]
-    [Api(Description = "Gets an item by name image")]
     public class GetItemByNameImage : ImageRequest
     {
         /// <summary>
@@ -140,7 +136,6 @@ namespace MediaBrowser.Api.Images
     [Route("/Users/{Id}/Images/{Type}/{Index}", "GET")]
     [Route("/Users/{Id}/Images/{Type}", "HEAD")]
     [Route("/Users/{Id}/Images/{Type}/{Index}", "HEAD")]
-    [Api(Description = "Gets a user image")]
     public class GetUserImage : ImageRequest
     {
         /// <summary>
@@ -156,7 +151,6 @@ namespace MediaBrowser.Api.Images
     /// </summary>
     [Route("/Items/{Id}/Images/{Type}", "DELETE")]
     [Route("/Items/{Id}/Images/{Type}/{Index}", "DELETE")]
-    [Api(Description = "Deletes an item image")]
     [Authenticated]
     public class DeleteItemImage : DeleteImageRequest, IReturnVoid
     {
@@ -173,7 +167,6 @@ namespace MediaBrowser.Api.Images
     /// </summary>
     [Route("/Users/{Id}/Images/{Type}", "DELETE")]
     [Route("/Users/{Id}/Images/{Type}/{Index}", "DELETE")]
-    [Api(Description = "Deletes a user image")]
     [Authenticated]
     public class DeleteUserImage : DeleteImageRequest, IReturnVoid
     {
@@ -190,7 +183,6 @@ namespace MediaBrowser.Api.Images
     /// </summary>
     [Route("/Users/{Id}/Images/{Type}", "POST")]
     [Route("/Users/{Id}/Images/{Type}/{Index}", "POST")]
-    [Api(Description = "Posts a user image")]
     [Authenticated]
     public class PostUserImage : DeleteImageRequest, IRequiresRequestStream, IReturnVoid
     {
@@ -542,7 +534,8 @@ namespace MediaBrowser.Api.Images
 
             }).ToList() : new List<IImageEnhancer>();
 
-            var contentType = GetMimeType(request.Format, imageInfo.Path);
+            var format = GetOutputFormat(request, imageInfo, supportedImageEnhancers);
+            var contentType = GetMimeType(format, imageInfo.Path);
 
             var cacheGuid = new Guid(_imageProcessor.GetImageCacheTag(item, imageInfo, supportedImageEnhancers));
 
@@ -562,6 +555,7 @@ namespace MediaBrowser.Api.Images
             return GetImageResult(item,
                 request,
                 imageInfo,
+                format,
                 supportedImageEnhancers,
                 contentType,
                 cacheDuration,
@@ -573,6 +567,7 @@ namespace MediaBrowser.Api.Images
         private async Task<object> GetImageResult(IHasImages item,
             ImageRequest request,
             ItemImageInfo image,
+            ImageFormat format,
             List<IImageEnhancer> enhancers,
             string contentType,
             TimeSpan? cacheDuration,
@@ -598,11 +593,11 @@ namespace MediaBrowser.Api.Images
                 MaxWidth = request.MaxWidth,
                 Quality = request.Quality,
                 Width = request.Width,
-                OutputFormat = request.Format,
                 AddPlayedIndicator = request.AddPlayedIndicator,
                 PercentPlayed = request.PercentPlayed ?? 0,
                 UnplayedCount = request.UnplayedCount,
-                BackgroundColor = request.BackgroundColor
+                BackgroundColor = request.BackgroundColor,
+                OutputFormat = format
             };
 
             var file = await _imageProcessor.ProcessImage(options).ConfigureAwait(false);
@@ -617,25 +612,77 @@ namespace MediaBrowser.Api.Images
             });
         }
 
-        private string GetMimeType(ImageOutputFormat format, string path)
+        private ImageFormat GetOutputFormat(ImageRequest request, ItemImageInfo image, List<IImageEnhancer> enhancers)
         {
-            if (format == ImageOutputFormat.Bmp)
+            if (!string.IsNullOrWhiteSpace(request.Format))
+            {
+                ImageFormat format;
+                if (Enum.TryParse(request.Format, true, out format))
+                {
+                    return format;
+                }
+            }
+
+            var serverFormats = _imageProcessor.GetSupportedImageOutputFormats();
+
+            var clientFormats = GetClientSupportedFormats();
+
+            if (serverFormats.Contains(ImageFormat.Webp) &&
+                clientFormats.Contains(ImageFormat.Webp))
+            {
+                return ImageFormat.Webp;
+            }
+
+            if (enhancers.Count > 0)
+            {
+                return ImageFormat.Png;
+            }
+
+            if (string.Equals(Path.GetExtension(image.Path), ".jpg", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(Path.GetExtension(image.Path), ".jpeg", StringComparison.OrdinalIgnoreCase))
+            {
+                return ImageFormat.Jpg;
+            }
+
+            // We can't predict if there will be transparency or not, so play it safe
+            return ImageFormat.Png;
+        }
+
+        private ImageFormat[] GetClientSupportedFormats()
+        {
+            if ((Request.AcceptTypes ?? new string[] { }).Contains("image/webp", StringComparer.OrdinalIgnoreCase))
+            {
+                var userAgent = Request.UserAgent ?? string.Empty;
+
+                // Not displaying properly on iOS
+                if (userAgent.IndexOf("cfnetwork", StringComparison.OrdinalIgnoreCase) == -1)
+                {
+                    return new[] { ImageFormat.Webp, ImageFormat.Jpg, ImageFormat.Png };
+                }
+            }
+
+            return new[] { ImageFormat.Jpg, ImageFormat.Png };
+        }
+
+        private string GetMimeType(ImageFormat format, string path)
+        {
+            if (format == ImageFormat.Bmp)
             {
                 return Common.Net.MimeTypes.GetMimeType("i.bmp");
             }
-            if (format == ImageOutputFormat.Gif)
+            if (format == ImageFormat.Gif)
             {
                 return Common.Net.MimeTypes.GetMimeType("i.gif");
             }
-            if (format == ImageOutputFormat.Jpg)
+            if (format == ImageFormat.Jpg)
             {
                 return Common.Net.MimeTypes.GetMimeType("i.jpg");
             }
-            if (format == ImageOutputFormat.Png)
+            if (format == ImageFormat.Png)
             {
                 return Common.Net.MimeTypes.GetMimeType("i.png");
             }
-            if (format == ImageOutputFormat.Webp)
+            if (format == ImageFormat.Webp)
             {
                 return Common.Net.MimeTypes.GetMimeType("i.webp");
             }

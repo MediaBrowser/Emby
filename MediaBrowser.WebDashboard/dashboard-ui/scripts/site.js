@@ -12,7 +12,6 @@
             cache: false
         });
     }
-
 })();
 
 // TODO: Deprecated in 1.9
@@ -21,6 +20,7 @@ $.support.cors = true;
 $(document).one('click', WebNotifications.requestPermission);
 
 var Dashboard = {
+
     jQueryMobileInit: function () {
 
         // Page
@@ -36,6 +36,10 @@ var Dashboard = {
         $.mobile.popup.prototype.options.transition = "fade";
         $.mobile.defaultPageTransition = "none";
         //$.mobile.collapsible.prototype.options.contentTheme = "a";
+
+        // Make panels a little larger than the defaults
+        $.mobile.panel.prototype.options.classes.modalOpen = "largePanelModalOpen ui-panel-dismiss-open";
+        $.mobile.panel.prototype.options.classes.panel = "largePanel ui-panel";
     },
 
     onRequestFail: function (e, data) {
@@ -50,9 +54,6 @@ var Dashboard = {
                 !$($.mobile.activePage).is('.standalonePage')) {
 
                 if (data.errorCode == "ParentalControl") {
-
-                    //alert(Globalize.translate('MessageLoggedOutParentalControl'));
-
 
                     Dashboard.alert({
                         message: Globalize.translate('MessageLoggedOutParentalControl'),
@@ -437,7 +438,7 @@ var Dashboard = {
         Dashboard.alert("Settings saved.");
     },
 
-    defaultErrorMessage: "There was an error processing the request.",
+    defaultErrorMessage: Globalize.translate('DefaultErrorMessage'),
 
     processServerConfigurationUpdateResult: function (result) {
 
@@ -567,12 +568,14 @@ var Dashboard = {
 
             html += '<form>';
 
+            var isConnectMode = Dashboard.isConnectMode();
+
             if (user.localUser && user.localUser.Configuration.EnableUserPreferenceAccess) {
                 html += '<p><a data-mini="true" data-role="button" href="mypreferencesdisplay.html?userId=' + user.localUser.Id + '" data-icon="gear">' + Globalize.translate('ButtonMyPreferences') + '</button></a>';
             }
 
-            if (Dashboard.isConnectMode()) {
-                html += '<p><a data-mini="true" data-role="button" href="selectserver.html" data-icon="cloud">' + Globalize.translate('ButtonSelectServer') + '</button></a>';
+            if (isConnectMode) {
+                html += '<p><a data-mini="true" data-role="button" href="selectserver.html" data-icon="cloud" data-ajax="false">' + Globalize.translate('ButtonSelectServer') + '</button></a>';
             }
 
             html += '<p><button data-mini="true" type="button" onclick="Dashboard.logout();" data-icon="lock">' + Globalize.translate('ButtonSignOut') + '</button></p>';
@@ -757,6 +760,10 @@ var Dashboard = {
             name: Globalize.translate('TabPlayback'),
             href: "playbackconfiguration.html",
             selected: page.hasClass('playbackConfigurationPage')
+        //}, {
+        //    name: Globalize.translate('TabSync'),
+        //    href: "syncactivity.html",
+        //    selected: page.hasClass('syncConfigurationPage')
         }, {
             divider: true,
             name: Globalize.translate('TabAutoOrganize'),
@@ -921,8 +928,8 @@ var Dashboard = {
         else if (msg.MessageType === "GeneralCommand") {
 
             var cmd = msg.Data;
-
-            Dashboard.processGeneralCommand(cmd);
+            // Media Controller should catch this
+            //Dashboard.processGeneralCommand(cmd);
         }
     },
 
@@ -1243,9 +1250,6 @@ var Dashboard = {
             .on("websocketmessage.dashboard", Dashboard.onWebSocketMessageReceived)
             .on('requestfail.dashboard', Dashboard.onRequestFail)
             .on('serveraddresschanged.dashboard', Dashboard.onApiClientServerAddressChanged);
-
-        // TODO: Improve with http://webpjs.appspot.com/
-        apiClient.supportsWebP($.browser.chrome);
     }
 
     var appName = "Dashboard";
@@ -1257,7 +1261,8 @@ var Dashboard = {
     var capabilities = {
         PlayableMediaTypes: "Audio,Video",
 
-        SupportedCommands: Dashboard.getSupportedRemoteCommands().join(',')
+        SupportedCommands: Dashboard.getSupportedRemoteCommands().join(','),
+        SupportsUniqueIdentifier: false
     };
 
     window.ConnectionManager = new MediaBrowser.ConnectionManager(credentialProvider, appName, appVersion, deviceName, deviceId, capabilities);
@@ -1275,7 +1280,7 @@ var Dashboard = {
 
             initializeApiClient(ApiClient);
 
-            ConnectionManager.addApiClient(ApiClient, true);
+            ConnectionManager.addApiClient(ApiClient, true).fail(Dashboard.logout);
         }
 
     } else {
@@ -1448,7 +1453,7 @@ $(document).on('pagebeforeshow', ".page", function () {
 
     else {
 
-        if (this.id !== "loginPage" && !page.hasClass('wizardPage') && !isConnectMode) {
+        if (this.id !== "loginPage" && !page.hasClass('forgotPasswordPage') && !page.hasClass('wizardPage') && !isConnectMode) {
 
             console.log('Not logged into server. Redirecting to login.');
             Dashboard.logout();

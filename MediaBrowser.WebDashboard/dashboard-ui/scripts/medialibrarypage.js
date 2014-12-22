@@ -3,7 +3,7 @@
     onPageInit: function () {
 
         var page = this;
-        $('#selectCollectionType', page).on('change', function() {
+        $('#selectCollectionType', page).on('change', function () {
 
             var index = this.selectedIndex;
             if (index != -1) {
@@ -93,11 +93,11 @@
 
         html += '<p style="padding-left:.5em;">';
 
-		html += Globalize.translate('LabelFolderTypeValue').replace('{0}', '<b>' + typeName + '</b>');
-		html += '</p><ul class="mediaFolderLocations" data-inset="true" data-role="listview" data-split-icon="minus">';
+        html += Globalize.translate('LabelFolderTypeValue').replace('{0}', '<b>' + typeName + '</b>');
+        html += '</p><ul class="mediaFolderLocations" data-inset="true" data-role="listview" data-split-icon="minus">';
 
         html += '<li data-role="list-divider" class="mediaLocationsHeader">' + Globalize.translate('HeaderMediaLocations');
-        html += '<button type="button" data-icon="plus" data-mini="true" data-inline="true" data-iconpos="notext" onclick="MediaLibraryPage.addMediaLocation(' + index + ');"></button>';
+        html += '<button type="button" data-icon="plus" data-mini="true" data-iconpos="notext" data-inline="true" onclick="MediaLibraryPage.addMediaLocation(' + index + ');">' + Globalize.translate('ButtonAdd') + '</button>';
         html += '</li>';
 
         for (var i = 0, length = virtualFolder.Locations.length; i < length; i++) {
@@ -111,13 +111,13 @@
         html += '</ul>';
 
         if (addPathMappingInfo) {
-            html += '<p style="margin:1.5em 0;">'+Globalize.translate('LabelPathSubstitutionHelp')+'</p>';
+            html += '<div class="fieldDescription" style="margin:.5em 0 1.5em;">' + Globalize.translate('LabelPathSubstitutionHelp') + '</div>';
         }
 
         html += '<p>';
-        html += '<button type="button" data-inline="true" data-icon="minus" data-folderindex="' + index + '" onclick="MediaLibraryPage.deleteVirtualFolder(this);" data-mini="true">'+Globalize.translate('ButtonRemove')+'</button>';
-        html += '<button type="button" data-inline="true" data-icon="edit" data-folderindex="' + index + '" onclick="MediaLibraryPage.renameVirtualFolder(this);" data-mini="true">'+Globalize.translate('ButtonRename')+'</button>';
-        html += '<button type="button" data-inline="true" data-icon="edit" data-folderindex="' + index + '" onclick="MediaLibraryPage.changeCollectionType(this);" data-mini="true">'+Globalize.translate('ButtonChangeType')+'</button>';
+        html += '<button type="button" data-inline="true" data-icon="minus" data-folderindex="' + index + '" onclick="MediaLibraryPage.deleteVirtualFolder(this);" data-mini="true">' + Globalize.translate('ButtonRemove') + '</button>';
+        html += '<button type="button" data-inline="true" data-icon="edit" data-folderindex="' + index + '" onclick="MediaLibraryPage.renameVirtualFolder(this);" data-mini="true">' + Globalize.translate('ButtonRename') + '</button>';
+        html += '<button type="button" data-inline="true" data-icon="edit" data-folderindex="' + index + '" onclick="MediaLibraryPage.changeCollectionType(this);" data-mini="true">' + Globalize.translate('ButtonChangeType') + '</button>';
         html += '</p>';
 
         html += '</div>';
@@ -281,7 +281,7 @@
         var msg = Globalize.translate('MessageAreYouSureYouWishToRemoveMediaFolder');
 
         if (locations.length) {
-            msg += "<br/><br/>"+Globalize.translate("MessageTheFollowingLocationWillBeRemovedFromLibrary")+"<br/><br/>";
+            msg += "<br/><br/>" + Globalize.translate("MessageTheFollowingLocationWillBeRemovedFromLibrary") + "<br/><br/>";
             msg += locations.join("<br/>");
         }
 
@@ -345,9 +345,11 @@ var WizardLibraryPage = {
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.ajax({
+        var apiClient = ApiClient;
+
+        apiClient.ajax({
             type: "POST",
-            url: ApiClient.getUrl('System/Configuration/MetadataPlugins/Autoset')
+            url: apiClient.getUrl('System/Configuration/MetadataPlugins/Autoset')
 
         }).done(function () {
 
@@ -374,7 +376,7 @@ var WizardLibraryPage = {
 
         var task = tasks.filter(function (t) {
 
-            return t.Name == 'Scan media library';
+            return t.Key == 'RefreshLibrary';
 
         })[0];
 
@@ -440,14 +442,16 @@ var WizardLibraryPage = {
 
         pollTasks(page);
 
-        if (ApiClient.isWebSocketOpen()) {
-            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
+        var apiClient = ApiClient;
+
+        if (apiClient.isWebSocketOpen()) {
+            apiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
         }
 
-        $(ApiClient).on("websocketmessage", onWebSocketMessage).on('websocketopen', function () {
+        $(apiClient).on("websocketmessage", onWebSocketMessage).on('websocketopen', function () {
 
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
+            if (apiClient.isWebSocketOpen()) {
+                apiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
             }
         });
 
@@ -455,11 +459,13 @@ var WizardLibraryPage = {
 
         var page = this;
 
-        if (ApiClient.isWebSocketOpen()) {
-            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStop");
+        var apiClient = ApiClient;
+
+        if (apiClient.isWebSocketOpen()) {
+            apiClient.sendWebSocketMessage("ScheduledTasksInfoStop");
         }
 
-        $(ApiClient).off("websocketmessage", onWebSocketMessage);
+        $(apiClient).off("websocketmessage", onWebSocketMessage);
     });
 
 })(jQuery, document, window);

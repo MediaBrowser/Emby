@@ -3,8 +3,6 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Controller.Resolvers;
-using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.Logging;
 using System;
@@ -45,7 +43,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var eligibleFiles = watchLocations.SelectMany(GetFilesToOrganize)
                 .OrderBy(_fileSystem.GetCreationTimeUtc)
-                .Where(i => EntityResolutionHelper.IsVideoFile(i.FullName) && i.Length >= minFileBytes)
+                .Where(i => _libraryManager.IsVideoFile(i.FullName) && i.Length >= minFileBytes)
                 .ToList();
 
             progress.Report(10);

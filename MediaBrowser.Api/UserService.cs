@@ -59,7 +59,7 @@ namespace MediaBrowser.Api
     /// Class DeleteUser
     /// </summary>
     [Route("/Users/{Id}", "DELETE", Summary = "Deletes a user")]
-    [Authenticated]
+    [Authenticated(Roles = "Admin")]
     public class DeleteUser : IReturnVoid
     {
         /// <summary>
@@ -159,21 +159,26 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class CreateUser
     /// </summary>
-    [Route("/Users", "POST", Summary = "Creates a user")]
-    [Authenticated]
-    public class CreateUser : UserDto, IReturn<UserDto>
-    {
-    }
-
-    /// <summary>
-    /// Class CreateUser
-    /// </summary>
     [Route("/Users/New", "POST", Summary = "Creates a user")]
-    [Authenticated]
+    [Authenticated(Roles = "Admin")]
     public class CreateUserByName : IReturn<UserDto>
     {
         [ApiMember(Name = "Name", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
         public string Name { get; set; }
+    }
+
+    [Route("/Users/ForgotPassword", "POST", Summary = "Initiates the forgot password process for a local user")]
+    public class ForgotPassword : IReturn<ForgotPasswordResult>
+    {
+        [ApiMember(Name = "EnteredUsername", IsRequired = false, DataType = "string", ParameterType = "body", Verb = "POST")]
+        public string EnteredUsername { get; set; }
+    }
+
+    [Route("/Users/ForgotPassword/Pin", "POST", Summary = "Redeems a forgot password pin")]
+    public class ForgotPasswordPin : IReturn<PinRedeemResult>
+    {
+        [ApiMember(Name = "Pin", IsRequired = false, DataType = "string", ParameterType = "body", Verb = "POST")]
+        public string Pin { get; set; }
     }
 
     /// <summary>
@@ -218,34 +223,15 @@ namespace MediaBrowser.Api
                 });
             }
 
-            var authInfo = AuthorizationContext.GetAuthorizationInfo(Request);
-            var isDashboard = string.Equals(authInfo.Client, "Dashboard", StringComparison.OrdinalIgnoreCase);
-
-            if (Request.IsLocal && isDashboard)
-            {
-                var users = _userManager.Users
-                    .Where(i => !i.Configuration.IsDisabled && !(i.ConnectLinkType.HasValue && i.ConnectLinkType.Value == UserLinkType.Guest))
-                    .ToList();
-
-                return ToOptimizedResult(users);
-            }
-
-            // TODO: Uncomment this once all clients can handle an empty user list.
-            return Get(new GetUsers
-            {
-                IsHidden = false,
-                IsDisabled = false
-            });
-
-            //// TODO: Add or is authenticated
+            // TODO: Uncomment once clients can handle an empty user list (and below)
             //if (Request.IsLocal || IsInLocalNetwork(Request.RemoteIp))
-            //{
-            //    return Get(new GetUsers
-            //    {
-            //        IsHidden = false,
-            //        IsDisabled = false
-            //    });
-            //}
+            {
+                return Get(new GetUsers
+                {
+                    IsHidden = false,
+                    IsDisabled = false
+                });
+            }
 
             //// Return empty when external
             //return ToOptimizedResult(new List<UserDto>());
@@ -380,7 +366,7 @@ namespace MediaBrowser.Api
                 RemoteEndPoint = Request.RemoteIp,
                 Username = WebUtility.HtmlDecode(request.Username)
 
-            }, Request.IsLocal).ConfigureAwait(false);
+            }).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
         }
@@ -420,7 +406,7 @@ namespace MediaBrowser.Api
                 await _userManager.ChangePassword(user, request.NewPassword).ConfigureAwait(false);
             }
         }
-        
+
         /// <summary>
         /// Posts the specified request.
         /// </summary>
@@ -483,13 +469,11 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Post(CreateUser request)
+        public object Post(CreateUserByName request)
         {
             var dtoUser = request;
 
             var newUser = _userManager.CreateUser(dtoUser.Name).Result;
-
-            newUser.UpdateConfiguration(dtoUser.Configuration);
 
             var result = _userManager.GetUserDto(newUser, Request.RemoteIp);
 
@@ -501,15 +485,16 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Post(CreateUserByName request)
+        public object Post(ForgotPassword request)
         {
-            var dtoUser = request;
+            var isLocal = Request.IsLocal || _networkManager.IsInLocalNetwork(Request.RemoteIp);
 
-            var newUser = _userManager.CreateUser(dtoUser.Name).Result;
+            return _userManager.StartForgotPasswordProcess(request.EnteredUsername, isLocal);
+        }
 
-            var result = _userManager.GetUserDto(newUser, Request.RemoteIp);
-
-            return ToOptimizedResult(result);
+        public object Post(ForgotPasswordPin request)
+        {
+            return _userManager.RedeemPasswordResetPin(request.Pin);
         }
     }
 }

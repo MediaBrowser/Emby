@@ -16,7 +16,7 @@ namespace MediaBrowser.LocalMetadata.Savers
         {
             get
             {
-                return "Media Browser Xml";
+                return XmlProviderUtils.Name;
             }
         }
 
@@ -56,11 +56,6 @@ namespace MediaBrowser.LocalMetadata.Savers
             var builder = new StringBuilder();
 
             builder.Append("<Item>");
-
-            if (!string.IsNullOrEmpty(playlist.OwnerUserId))
-            {
-                builder.Append("<OwnerUserId>" + SecurityElement.Escape(playlist.OwnerUserId) + "</OwnerUserId>");
-            }
 
             if (!string.IsNullOrEmpty(playlist.PlaylistMediaType))
             {

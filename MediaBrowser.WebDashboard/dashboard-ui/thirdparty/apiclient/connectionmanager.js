@@ -17,7 +17,7 @@
         Remote: 1
     };
 
-    globalScope.MediaBrowser.ConnectionManager = function (credentialProvider, appName, applicationVersion, deviceName, deviceId, capabilities) {
+    globalScope.MediaBrowser.ConnectionManager = function (credentialProvider, appName, appVersion, deviceName, deviceId, capabilities) {
 
         var self = this;
         var apiClients = [];
@@ -67,7 +67,7 @@
                 url: url + "/mediabrowser/system/info/public",
                 dataType: "json",
 
-                timeout: 5000
+                timeout: 15000
 
             });
         }
@@ -78,7 +78,7 @@
         };
 
         self.appVersion = function () {
-            return applicationVersion;
+            return appVersion;
         };
 
         self.deviceId = function () {
@@ -94,7 +94,7 @@
 
             apiClients.push(apiClient);
 
-            apiClient.getPublicSystemInfo().done(function (systemInfo) {
+            return apiClient.getPublicSystemInfo().done(function (systemInfo) {
 
                 var server = credentialProvider.credentials().servers.filter(function (s) {
 
@@ -128,7 +128,7 @@
 
                 var url = connectionMode == MediaBrowser.ConnectionMode.Local ? server.LocalAddress : server.RemoteAddress;
 
-                apiClient = new MediaBrowser.ApiClient(url, appName, applicationVersion, deviceName, deviceId, capabilities);
+                apiClient = new MediaBrowser.ApiClient(url, appName, appVersion, deviceName, deviceId, capabilities);
 
                 apiClients.push(apiClient);
 
@@ -199,11 +199,11 @@
 
             var deferred = $.Deferred();
 
-            if (connectUser != null && connectUser.Id == credentials.ConnectUserId) {
+            if (connectUser && connectUser.Id == credentials.ConnectUserId) {
                 deferred.resolveWith(null, [[]]);
             }
 
-            else if (self.connectToken() && self.connectUserId()) {
+            else if (credentials.ConnectAccessToken && credentials.ConnectUserId) {
 
                 connectUser = null;
 
@@ -213,7 +213,6 @@
                     deferred.resolveWith(null, [[]]);
 
                 }).fail(function () {
-
                     deferred.resolveWith(null, [[]]);
                 });
 
@@ -226,6 +225,13 @@
 
         function getConnectUser(userId, accessToken) {
 
+            if (!userId) {
+                throw new Error("null userId");
+            }
+            if (!accessToken) {
+                throw new Error("null accessToken");
+            }
+
             var url = "https://connect.mediabrowser.tv/service/user?id=" + userId;
 
             return $.ajax({
@@ -233,6 +239,7 @@
                 url: url,
                 dataType: "json",
                 headers: {
+                    "X-Application": appName + "/" + appVersion,
                     "X-Connect-UserToken": accessToken
                 }
 
@@ -240,6 +247,13 @@
         }
 
         function addAuthenticationInfoFromConnect(server, connectionMode, credentials) {
+
+            if (!server.ExchangeToken) {
+                throw new Error("server.ExchangeToken cannot be null");
+            }
+            if (!credentials.ConnectUserId) {
+                throw new Error("credentials.ConnectUserId cannot be null");
+            }
 
             var url = connectionMode == MediaBrowser.ConnectionMode.Local ? server.LocalAddress : server.RemoteAddress;
 
@@ -445,6 +459,13 @@
 
         function getConnectServers() {
 
+            if (!self.connectToken()) {
+                throw new Error("null connectToken");
+            }
+            if (!self.connectUserId()) {
+                throw new Error("null connectUserId");
+            }
+
             var deferred = $.Deferred();
 
             var url = "https://connect.mediabrowser.tv/service/servers?userId=" + self.connectUserId();
@@ -454,6 +475,7 @@
                 url: url,
                 dataType: "json",
                 headers: {
+                    "X-Application": appName + "/" + appVersion,
                     "X-Connect-UserToken": self.connectToken()
                 }
 
@@ -462,6 +484,7 @@
                 servers = servers.map(function (i) {
                     return {
                         ExchangeToken: i.AccessKey,
+                        ConnectServerId: i.Id,
                         Id: i.SystemId,
                         Name: i.Name,
                         RemoteAddress: i.Url,
@@ -583,11 +606,7 @@
 
             var deferred = $.Deferred();
 
-            var systemInfo = null;
-            var connectionMode = MediaBrowser.ConnectionMode.Local;
-            var credentials = credentialProvider.credentials();
-
-            function onLocalServerTokenValidationDone() {
+            function onLocalServerTokenValidationDone(connectionMode, credentials) {
 
                 credentialProvider.addOrUpdateServer(credentials.servers, server);
                 server.DateLastAccessed = new Date().getTime();
@@ -616,27 +635,33 @@
                 $(self).trigger('connected', [result]);
             }
 
-            function onExchangeTokenDone() {
+            function onExchangeTokenDone(connectionMode, credentials) {
 
                 if (server.AccessToken) {
-                    validateAuthentication(server, connectionMode).always(onLocalServerTokenValidationDone);
+                    validateAuthentication(server, connectionMode).always(function() {
+                 
+                        onLocalServerTokenValidationDone(connectionMode, credentials);
+                    });
                 } else {
-                    onLocalServerTokenValidationDone();
+                    onLocalServerTokenValidationDone(connectionMode, credentials);
                 }
             }
 
-            function onEnsureConnectUserDone() {
+            function onEnsureConnectUserDone(connectionMode, credentials) {
 
-                if (credentials.ConnectUserId && credentials.ConnectAccessToken) {
+                if (credentials.ConnectUserId && credentials.ConnectAccessToken && server.ExchangeToken) {
 
-                    addAuthenticationInfoFromConnect(server, connectionMode, credentials).always(onExchangeTokenDone);
+                    addAuthenticationInfoFromConnect(server, connectionMode, credentials).always(function() {
+                        
+                        onExchangeTokenDone(connectionMode, credentials);
+                    });
 
                 } else {
-                    onExchangeTokenDone();
+                    onExchangeTokenDone(connectionMode, credentials);
                 }
             }
 
-            function onRemoteTestDone() {
+            function onRemoteTestDone(systemInfo, connectionMode) {
 
                 if (systemInfo == null) {
 
@@ -645,31 +670,33 @@
                 }
 
                 updateServerInfo(server, systemInfo);
+                server.LastConnectionMode = connectionMode;
+                var credentials = credentialProvider.credentials();
 
                 if (credentials.ConnectUserId && credentials.ConnectAccessToken) {
-                    ensureConnectUser(credentials).always(onEnsureConnectUserDone);
+                    ensureConnectUser(credentials).always(function() {
+                        onEnsureConnectUserDone(connectionMode, credentials);
+                    });
                 } else {
-                    onEnsureConnectUserDone();
+                    onEnsureConnectUserDone(connectionMode, credentials);
                 }
             }
 
-            function onLocalTestDone() {
+            function onLocalTestDone(systemInfo, connectionMode) {
 
                 if (!systemInfo && server.RemoteAddress) {
 
                     // Try to connect to the local address
                     tryConnect(server.RemoteAddress).done(function (result) {
 
-                        systemInfo = result;
-                        connectionMode = MediaBrowser.ConnectionMode.Remote;
-                        onRemoteTestDone();
+                        onRemoteTestDone(result, MediaBrowser.ConnectionMode.Remote);
 
-                    }).fail(function () {
+                    }).fail(function() {
                         onRemoteTestDone();
                     });
 
                 } else {
-                    onRemoteTestDone();
+                    onRemoteTestDone(systemInfo, connectionMode);
                 }
             }
 
@@ -678,10 +705,7 @@
                 //onLocalTestDone();
                 // Try to connect to the local address
                 tryConnect(server.LocalAddress).done(function (result) {
-
-                    systemInfo = result;
-                    onLocalTestDone();
-
+                    onLocalTestDone(result, MediaBrowser.ConnectionMode.Local);
                 }).fail(function () {
                     onLocalTestDone();
                 });
@@ -725,18 +749,27 @@
 
         self.loginToConnect = function (username, password) {
 
+            if (!username) {
+                throw new Error("null username");
+            }
+            if (!password) {
+                throw new Error("null password");
+            }
+
             var md5 = self.getConnectPasswordHash(password);
 
             return $.ajax({
                 type: "POST",
                 url: "https://connect.mediabrowser.tv/service/user/authenticate",
                 data: {
-                    userName: username,
+                    nameOrEmail: username,
                     password: md5
                 },
                 dataType: "json",
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
-
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                headers: {
+                    "X-Application": appName + "/" + appVersion
+                }
 
             }).done(function (result) {
 
@@ -753,17 +786,7 @@
 
         self.getConnectPasswordHash = function (password) {
 
-            password = password || '';
-
-            password = password
-                .replace("&", "&amp;")
-                .replace("/", "&#092;")
-                .replace("!", "&#33;")
-                .replace("$", "&#036;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("'", "&#39;");
+            password = globalScope.MediaBrowser.ConnectService.cleanPassword(password);
 
             return CryptoJS.MD5(password).toString();
         };
@@ -784,6 +807,115 @@
 
             })[0];
         };
+
+        self.getUserInvitations = function () {
+
+            if (!self.connectToken()) {
+                throw new Error("null connectToken");
+            }
+            if (!self.connectUserId()) {
+                throw new Error("null connectUserId");
+            }
+
+            var url = "https://connect.mediabrowser.tv/service/servers?userId=" + self.connectUserId() + "&status=Waiting";
+
+            return $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                headers: {
+                    "X-Connect-UserToken": self.connectToken(),
+                    "X-Application": appName + "/" + appVersion
+                }
+
+            });
+        };
+
+        self.deleteServer = function (serverId) {
+
+            if (!serverId) {
+                throw new Error("null serverId");
+            }
+            if (!self.connectToken()) {
+                throw new Error("null connectToken");
+            }
+            if (!self.connectUserId()) {
+                throw new Error("null connectUserId");
+            }
+
+            var url = "https://connect.mediabrowser.tv/service/serverAuthorizations?serverId=" + serverId + "&userId=" + self.connectUserId();
+
+            return $.ajax({
+                type: "DELETE",
+                url: url,
+                headers: {
+                    "X-Connect-UserToken": self.connectToken(),
+                    "X-Application": appName + "/" + appVersion
+                }
+
+            }).done(function () {
+
+                var credentials = credentialProvider.credentials();
+
+                credentials.servers = credentials.servers.filter(function (s) {
+                    return s.ConnectServerId != serverId;
+                });
+
+                credentialProvider.credentials(credentials);
+
+            });
+        };
+
+        self.rejectServer = function (serverId) {
+
+            if (!serverId) {
+                throw new Error("null serverId");
+            }
+            if (!self.connectToken()) {
+                throw new Error("null connectToken");
+            }
+            if (!self.connectUserId()) {
+                throw new Error("null connectUserId");
+            }
+
+            var url = "https://connect.mediabrowser.tv/service/serverAuthorizations?serverId=" + serverId + "&userId=" + self.connectUserId();
+
+            return $.ajax({
+                type: "DELETE",
+                url: url,
+                headers: {
+                    "X-Connect-UserToken": self.connectToken(),
+                    "X-Application": appName + "/" + appVersion
+                }
+
+            });
+        };
+
+        self.acceptServer = function (serverId) {
+
+            if (!serverId) {
+                throw new Error("null serverId");
+            }
+            if (!self.connectToken()) {
+                throw new Error("null connectToken");
+            }
+            if (!self.connectUserId()) {
+                throw new Error("null connectUserId");
+            }
+
+            var url = "https://connect.mediabrowser.tv/service/ServerAuthorizations/accept?serverId=" + serverId + "&userId=" + self.connectUserId();
+
+            return $.ajax({
+                type: "GET",
+                url: url,
+                headers: {
+                    "X-Connect-UserToken": self.connectToken(),
+                    "X-Application": appName + "/" + appVersion
+                }
+
+            });
+        };
+
     };
 
 })(window, jQuery);

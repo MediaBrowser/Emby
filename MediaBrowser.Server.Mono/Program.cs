@@ -1,14 +1,13 @@
-using MediaBrowser.Common.Configuration;
+using System.IO;
 using MediaBrowser.Common.Implementations.IO;
 using MediaBrowser.Common.Implementations.Logging;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Server.Implementations;
-using MediaBrowser.ServerApplication;
-using MediaBrowser.ServerApplication.IO;
+using MediaBrowser.Server.Mono.Native;
+using MediaBrowser.Server.Startup.Common;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
@@ -25,12 +24,7 @@ namespace MediaBrowser.Server.Mono
 
 		public static void Main (string[] args)
 		{
-			//GetEntryAssembly is empty when running from a mkbundle package
-			#if MONOMKBUNDLE
-			var applicationPath = GetExecutablePath();
-			#else
-			var applicationPath = Assembly.GetEntryAssembly ().Location;
-			#endif
+            var applicationPath = Assembly.GetEntryAssembly().Location;
 			
 			var options = new StartupOptions();
 
@@ -45,15 +39,9 @@ namespace MediaBrowser.Server.Mono
 
 			var logger = _logger = logManager.GetLogger("Main");
 
-			BeginLog(logger, appPaths);
+            ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
 
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-			if (PerformUpdateIfNeeded(appPaths, logger))
-			{
-				logger.Info("Exiting to perform application update.");
-				return;
-			}
 
 			try
 			{
@@ -71,50 +59,26 @@ namespace MediaBrowser.Server.Mono
 		{
 			if (string.IsNullOrEmpty(programDataPath))
 			{
-				return new ServerApplicationPaths(applicationPath);
+			    programDataPath = ApplicationPathHelper.GetProgramDataPath(applicationPath);
 			}
 			
-			return new ServerApplicationPaths(programDataPath, applicationPath);
+			return new ServerApplicationPaths(programDataPath, applicationPath, Path.GetDirectoryName(applicationPath));
 		}
 
-		/// <summary>
-		/// Determines whether this instance [can self restart].
-		/// </summary>
-		/// <returns><c>true</c> if this instance [can self restart]; otherwise, <c>false</c>.</returns>
-		public static bool CanSelfRestart
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether this instance can self update.
-		/// </summary>
-		/// <value><c>true</c> if this instance can self update; otherwise, <c>false</c>.</value>
-		public static bool CanSelfUpdate
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		private static RemoteCertificateValidationCallback _ignoreCertificates = new RemoteCertificateValidationCallback(delegate { return true; });
-
-		private static TaskCompletionSource<bool> _applicationTaskCompletionSource = new TaskCompletionSource<bool>();
+		private static readonly TaskCompletionSource<bool> ApplicationTaskCompletionSource = new TaskCompletionSource<bool>();
 
 		private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager, StartupOptions options)
 		{
 			SystemEvents.SessionEnding += SystemEvents_SessionEnding;
 
 			// Allow all https requests
-			ServicePointManager.ServerCertificateValidationCallback = _ignoreCertificates;
+			ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
 
 		    var fileSystem = new CommonFileSystem(logManager.GetLogger("FileSystem"), false, true);
 
-            _appHost = new ApplicationHost(appPaths, logManager, false, false, options, fileSystem, "MBServer.Mono", false);
+		    var nativeApp = new NativeApp();
+
+            _appHost = new ApplicationHost(appPaths, logManager, options, fileSystem, "MBServer.Mono", false, nativeApp);
 			
 			if (options.ContainsOption("-v")) {
 				Console.WriteLine (_appHost.ApplicationVersion.ToString());
@@ -133,7 +97,7 @@ namespace MediaBrowser.Server.Mono
 			task = _appHost.RunStartupTasks();
 			Task.WaitAll (task);
 
-			task = _applicationTaskCompletionSource.Task;
+			task = ApplicationTaskCompletionSource.Task;
 
 			Task.WaitAll (task);
 		}
@@ -152,16 +116,6 @@ namespace MediaBrowser.Server.Mono
 		}
 
 		/// <summary>
-		/// Begins the log.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		private static void BeginLog(ILogger logger, IApplicationPaths appPaths)
-        {
-            logger.Info("Media Browser Server started");
-            ApplicationHost.LogEnvironmentInfo(logger, appPaths);
-        }
-
-		/// <summary>
 		/// Handles the UnhandledException event of the CurrentDomain control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
@@ -170,7 +124,7 @@ namespace MediaBrowser.Server.Mono
 		{
 			var exception = (Exception)e.ExceptionObject;
 
-			LogUnhandledException(exception);
+            new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager).Log(exception);
 
 			if (!Debugger.IsAttached)
 			{
@@ -178,59 +132,10 @@ namespace MediaBrowser.Server.Mono
 			}
 		}
 
-		private static void LogUnhandledException(Exception ex)
-		{
-			_logger.ErrorException("UnhandledException", ex);
-
-			_appHost.LogManager.Flush ();
-
-			var path = Path.Combine(_appHost.ServerConfigurationManager.ApplicationPaths.LogDirectoryPath, "crash_" + Guid.NewGuid() + ".txt");
-
-			var builder = LogHelper.GetLogMessage(ex);
-
-			Console.WriteLine ("UnhandledException");
-			Console.WriteLine (builder.ToString());
-
-			File.WriteAllText(path, builder.ToString());
-		}
-
-		/// <summary>
-		/// Performs the update if needed.
-		/// </summary>
-		/// <param name="appPaths">The app paths.</param>
-		/// <param name="logger">The logger.</param>
-		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-		private static bool PerformUpdateIfNeeded(ServerApplicationPaths appPaths, ILogger logger)
-		{
-			return false;
-		}
-
 		public static void Shutdown()
 		{
-			_applicationTaskCompletionSource.SetResult (true);
+			ApplicationTaskCompletionSource.SetResult (true);
 		}
-
-		public static void Restart()
-		{
-			// Second instance will start first, so dispose so that the http ports will be available to the new instance
-			_appHost.Dispose();
-
-			// Right now this method will just shutdown, but not restart
-			Shutdown ();
-		}
-
-		// Return the running process path
-		#if MONOMKBUNDLE
-		public static string GetExecutablePath() 
-		{ 
-			var builder = new StringBuilder (8192); 
-			if (Syscall.readlink("/proc/self/exe", builder) >= 0)
-				return builder.ToString (); 
-			else 
-				return null; 
-		}
-		#endif
-
 	}
 
 	class NoCheckCertificatePolicy : ICertificatePolicy

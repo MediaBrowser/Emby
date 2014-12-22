@@ -995,7 +995,7 @@ namespace MediaBrowser.Api.Playback
 
                 if (state.ReadInputAtNativeFramerate)
                 {
-                    await Task.Delay(1000, cancellationTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(1500, cancellationTokenSource.Token).ConfigureAwait(false);
                 }
             }
 
@@ -1402,6 +1402,13 @@ namespace MediaBrowser.Api.Playback
                         videoRequest.Profile = val;
                     }
                 }
+                else if (i == 20)
+                {
+                    if (videoRequest != null)
+                    {
+                        videoRequest.Cabac = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
             }
         }
 
@@ -1618,8 +1625,6 @@ namespace MediaBrowser.Api.Playback
             var videoRequest = request as VideoStreamRequest;
 
             AttachMediaStreamInfo(state, mediaStreams, videoRequest, url);
-
-            state.SegmentLength = 6;
 
             var container = Path.GetExtension(state.RequestedUrl);
 
@@ -1869,6 +1874,14 @@ namespace MediaBrowser.Api.Playback
                 }
             }
 
+            if (request.Cabac.HasValue && request.Cabac.Value)
+            {
+                if (videoStream.IsCabac.HasValue && !videoStream.IsCabac.Value)
+                {
+                    return false;
+                }
+            }
+
             return request.EnableAutoStreamCopy;
         }
 
@@ -1998,11 +2011,6 @@ namespace MediaBrowser.Api.Playback
                 state.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 state.EnableMpegtsM2TsMode = transcodingProfile.EnableMpegtsM2TsMode;
                 state.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
-
-                if (state.VideoRequest != null && string.IsNullOrWhiteSpace(state.VideoRequest.Profile))
-                {
-                    state.VideoRequest.Profile = transcodingProfile.VideoProfile;
-                }
             }
         }
 

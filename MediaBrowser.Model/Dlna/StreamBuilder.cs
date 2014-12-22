@@ -298,7 +298,6 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.VideoCodec = transcodingProfile.VideoCodec;
                 playlistItem.Protocol = transcodingProfile.Protocol;
                 playlistItem.AudioStreamIndex = audioStreamIndex;
-                playlistItem.VideoProfile = transcodingProfile.VideoProfile;
 
                 List<ProfileCondition> videoTranscodingConditions = new List<ProfileCondition>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
@@ -626,6 +625,12 @@ namespace MediaBrowser.Model.Dlna
                     continue;
                 }
 
+                // No way to express this
+                if (condition.Condition == ProfileConditionType.GreaterThanEqual)
+                {
+                    continue;
+                }
+
                 switch (condition.Property)
                 {
                     case ProfileConditionValue.AudioBitrate:
@@ -646,9 +651,24 @@ namespace MediaBrowser.Model.Dlna
                             }
                             break;
                         }
-                    case ProfileConditionValue.AudioProfile:
-                    case ProfileConditionValue.IsAnamorphic:
                     case ProfileConditionValue.IsCabac:
+                        {
+                            bool val;
+                            if (BoolHelper.TryParseCultureInvariant(value, out val))
+                            {
+                                if (condition.Condition == ProfileConditionType.Equals)
+                                {
+                                    item.Cabac = val;
+                                }
+                                else if (condition.Condition == ProfileConditionType.NotEquals)
+                                {
+                                    item.Cabac = !val;
+                                }
+                            }
+                            break;
+                        }
+                    case ProfileConditionValue.IsAnamorphic:
+                    case ProfileConditionValue.AudioProfile:
                     case ProfileConditionValue.Has64BitOffsets:
                     case ProfileConditionValue.PacketLength:
                     case ProfileConditionValue.VideoTimestamp:

@@ -15,6 +15,16 @@ namespace MediaBrowser.Model.Sync
         /// <value>The item ids.</value>
         public List<string> ItemIds { get; set; }
         /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
+        /// <value>The category.</value>
+        public SyncCategory? Category { get; set; }
+        /// <summary>
+        /// Gets or sets the parent identifier.
+        /// </summary>
+        /// <value>The parent identifier.</value>
+        public string ParentId { get; set; }
+        /// <summary>
         /// Gets or sets the quality.
         /// </summary>
         /// <value>The quality.</value>
@@ -35,19 +45,20 @@ namespace MediaBrowser.Model.Sync
         /// <value><c>true</c> if [unwatched only]; otherwise, <c>false</c>.</value>
         public bool UnwatchedOnly { get; set; }
         /// <summary>
+        /// Gets or sets a value indicating whether [synchronize new content].
+        /// </summary>
+        /// <value><c>true</c> if [synchronize new content]; otherwise, <c>false</c>.</value>
+        public bool SyncNewContent { get; set; }
+        /// <summary>
         /// Gets or sets the limit.
         /// </summary>
         /// <value>The limit.</value>
-        public long? Limit { get; set; }
-        /// <summary>
-        /// Gets or sets the type of the limit.
-        /// </summary>
-        /// <value>The type of the limit.</value>
-        public SyncLimitType? LimitType { get; set; }
+        public int? ItemLimit { get; set; }
 
         public SyncJobRequest()
         {
             ItemIds = new List<string>();
+            SyncNewContent = true;
         }
     }
 }

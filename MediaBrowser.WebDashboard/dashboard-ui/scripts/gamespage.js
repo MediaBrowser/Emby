@@ -11,7 +11,9 @@
         MediaTypes: "Game",
         Recursive: true,
         Fields: "Genres,Studios,PrimaryImageAspectRatio,SortName",
-        StartIndex: 0
+        StartIndex: 0,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -61,6 +63,17 @@
                     centerText: true
                 });
             }
+            else if (view == "PosterCard") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "auto",
+                    context: 'games',
+                    showTitle: true,
+                    showParentTitle: true,
+                    cardLayout: true
+                });
+            }
+
 
             html += pagingHtml;
 
@@ -121,17 +134,32 @@
 
         $('#selectView', page).val(view).selectmenu('refresh');
 
-        $('#chkTrailer', page).checked(query.HasTrailer == true).checkboxradio('refresh');
-        $('#chkThemeSong', page).checked(query.HasThemeSong == true).checkboxradio('refresh');
-        $('#chkThemeVideo', page).checked(query.HasThemeVideo == true).checkboxradio('refresh');
-
         $('.alphabetPicker', page).alphaValue(query.NameStartsWith);
         $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
+    }
+
+    var filtersLoaded;
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
     }
 
     $(document).on('pageinit', "#gamesPage", function () {
 
         var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+
+            reloadFiltersIfNeeded(page);
+        });
 
         $('.radioSortBy', this).on('click', function () {
             query.StartIndex = 0;
@@ -169,30 +197,6 @@
 
             query.StartIndex = 0;
             query.Filters = filters;
-
-            reloadItems(page);
-        });
-
-        $('#chkTrailer', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasTrailer = this.checked ? true : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkThemeSong', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasThemeSong = this.checked ? true : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkThemeVideo', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasThemeVideo = this.checked ? true : null;
 
             reloadItems(page);
         });
@@ -251,6 +255,7 @@
         var viewkey = getSavedQueryKey();
 
         LibraryBrowser.loadSavedQueryValues(viewkey, query);
+        QueryFilters.onPageShow(page, query);
 
         LibraryBrowser.getSavedViewSetting(viewkey).done(function (val) {
 

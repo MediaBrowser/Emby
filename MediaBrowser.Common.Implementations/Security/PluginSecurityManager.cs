@@ -17,7 +17,7 @@ namespace MediaBrowser.Common.Implementations.Security
     /// </summary>
     public class PluginSecurityManager : ISecurityManager
     {
-        private const string MBValidateUrl = Constants.Constants.MbAdminUrl + "service/registration/validate";
+        private const string MBValidateUrl = MbAdmin.HttpsUrl + "service/registration/validate";
 
         /// <summary>
         /// The _is MB supporter
@@ -160,7 +160,7 @@ namespace MediaBrowser.Common.Implementations.Security
                 return new SupporterInfo();
             }
 
-            var url = Constants.Constants.MbAdminUrl + "/service/supporter/retrieve?key=" + key;
+            var url = MbAdmin.HttpsUrl + "/service/supporter/retrieve?key=" + key;
 
             using (var stream = await _httpClient.Get(url, CancellationToken.None).ConfigureAwait(false))
             {
@@ -186,15 +186,18 @@ namespace MediaBrowser.Common.Implementations.Security
             string mb2Equivalent = null,
             string version = null)
         {
+            var lastChecked = LicenseFile.LastChecked(feature);
+
             //check the reg file first to alleviate strain on the MB admin server - must actually check in every 30 days tho
             var reg = new RegRecord
             {
-                registered = LicenseFile.LastChecked(feature) > DateTime.UtcNow.AddDays(-3)
+                // Cache the result for up to a week
+                registered = lastChecked > DateTime.UtcNow.AddDays(-7)
             };
 
             var success = reg.registered;
 
-            if (!reg.registered)
+            if (!(lastChecked > DateTime.UtcNow.AddDays(-1)))
             {
                 var mac = _networkManager.GetMacAddress();
                 var data = new Dictionary<string, string>
@@ -205,7 +208,7 @@ namespace MediaBrowser.Common.Implementations.Security
                     { "systemid", _appHost.SystemId }, 
                     { "mb2equiv", mb2Equivalent }, 
                     { "ver", version }, 
-                    { "platform", Environment.OSVersion.VersionString }, 
+                    { "platform", _appHost.OperatingSystemDisplayName }, 
                     { "isservice", _appHost.IsRunningAsService.ToString().ToLower() }
                 };
 

@@ -19,11 +19,13 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
     {
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
+        private readonly ILibraryManager _libraryManager;
 
-        public MusicArtistResolver(ILogger logger, IFileSystem fileSystem)
+        public MusicArtistResolver(ILogger logger, IFileSystem fileSystem, ILibraryManager libraryManager)
         {
             _logger = logger;
             _fileSystem = fileSystem;
+            _libraryManager = libraryManager;
         }
 
         /// <summary>
@@ -49,13 +51,13 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
             if (args.Parent.IsRoot) return null;
 
             // Don't allow nested artists
-            if (args.Parent is MusicArtist)
+            if (args.HasParent<MusicArtist>() || args.HasParent<MusicAlbum>())
             {
                 return null;
             }
 
             // Optimization
-            if (args.Parent is BoxSet || args.Parent is Series || args.Parent is Season)
+            if (args.HasParent<BoxSet>() || args.HasParent<Series>() || args.HasParent<Season>())
             {
                 return null;
             }
@@ -74,7 +76,7 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
             var directoryService = args.DirectoryService;
             
             // If we contain an album assume we are an artist folder
-            return args.FileSystemChildren.Where(i => (i.Attributes & FileAttributes.Directory) == FileAttributes.Directory).Any(i => MusicAlbumResolver.IsMusicAlbum(i.FullName, isMusicMediaFolder, directoryService, _logger, _fileSystem)) ? new MusicArtist() : null;
+            return args.FileSystemChildren.Where(i => (i.Attributes & FileAttributes.Directory) == FileAttributes.Directory).Any(i => MusicAlbumResolver.IsMusicAlbum(i.FullName, directoryService, _logger, _fileSystem, _libraryManager)) ? new MusicArtist() : null;
         }
 
     }

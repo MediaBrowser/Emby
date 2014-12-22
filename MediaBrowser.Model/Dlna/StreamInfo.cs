@@ -30,6 +30,7 @@ namespace MediaBrowser.Model.Dlna
         public string VideoCodec { get; set; }
         public string VideoProfile { get; set; }
 
+        public bool? Cabac { get; set; }
         public string AudioCodec { get; set; }
 
         public int? AudioStreamIndex { get; set; }
@@ -144,11 +145,12 @@ namespace MediaBrowser.Model.Dlna
             list.Add(item.MaxRefFrames.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxRefFrames.Value) : string.Empty);
             list.Add(item.MaxVideoBitDepth.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxVideoBitDepth.Value) : string.Empty);
             list.Add(item.VideoProfile ?? string.Empty);
+            list.Add(item.Cabac.HasValue ? item.Cabac.Value.ToString() : string.Empty);
 
             return string.Format("Params={0}", string.Join(";", list.ToArray()));
         }
 
-        public List<SubtitleStreamInfo> GetExternalSubtitles(string baseUrl)
+        public List<SubtitleStreamInfo> GetExternalSubtitles(string baseUrl, bool includeSelectedTrackOnly)
         {
             if (string.IsNullOrEmpty(baseUrl))
             {
@@ -162,40 +164,55 @@ namespace MediaBrowser.Model.Dlna
                 return list;
             }
 
-            if (!SubtitleStreamIndex.HasValue)
-            {
-                return list;
-            }
-
             // HLS will preserve timestamps so we can just grab the full subtitle stream
             long startPositionTicks = StringHelper.EqualsIgnoreCase(Protocol, "hls")
                 ? 0
                 : StartPositionTicks;
 
+            // First add the selected track
+            if (SubtitleStreamIndex.HasValue)
+            {
+                foreach (MediaStream stream in MediaSource.MediaStreams)
+                {
+                    if (stream.Type == MediaStreamType.Subtitle && stream.IsTextSubtitleStream && stream.Index == SubtitleStreamIndex.Value)
+                    {
+                        AddSubtitle(list, stream, baseUrl, startPositionTicks);
+                    }
+                }
+            }
+
+            if (!includeSelectedTrackOnly)
+            {
+                foreach (MediaStream stream in MediaSource.MediaStreams)
+                {
+                    if (stream.Type == MediaStreamType.Subtitle && stream.IsTextSubtitleStream && (!SubtitleStreamIndex.HasValue || stream.Index != SubtitleStreamIndex.Value))
+                    {
+                        AddSubtitle(list, stream, baseUrl, startPositionTicks);
+                    }
+                }
+            }
+            
+            return list;
+        }
+
+        private void AddSubtitle(List<SubtitleStreamInfo> list, MediaStream stream, string baseUrl, long startPositionTicks)
+        {
             string url = string.Format("{0}/Videos/{1}/{2}/Subtitles/{3}/{4}/Stream.{5}",
                 baseUrl,
                 ItemId,
                 MediaSourceId,
-                StringHelper.ToStringCultureInvariant(SubtitleStreamIndex.Value),
+                StringHelper.ToStringCultureInvariant(stream.Index),
                 StringHelper.ToStringCultureInvariant(startPositionTicks),
                 SubtitleFormat);
 
-            foreach (MediaStream stream in MediaSource.MediaStreams)
+            list.Add(new SubtitleStreamInfo
             {
-                if (stream.Type == MediaStreamType.Subtitle && stream.Index == SubtitleStreamIndex.Value)
-                {
-                    list.Add(new SubtitleStreamInfo
-                    {
-                        Url = url,
-                        IsForced = stream.IsForced,
-                        Language = stream.Language,
-                        Name = stream.Language ?? "Unknown",
-                        Format = SubtitleFormat
-                    });
-                }
-            }
-
-            return list;
+                Url = url,
+                IsForced = stream.IsForced,
+                Language = stream.Language,
+                Name = stream.Language ?? "Unknown",
+                Format = SubtitleFormat
+            });
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Drawing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -28,7 +29,7 @@ namespace MediaBrowser.Controller.Drawing
 
         public List<IImageEnhancer> Enhancers { get; set; }
 
-        public ImageOutputFormat OutputFormat { get; set; }
+        public ImageFormat OutputFormat { get; set; }
 
         public bool AddPlayedIndicator { get; set; }
 
@@ -59,12 +60,7 @@ namespace MediaBrowser.Controller.Drawing
 
         private bool IsOutputFormatDefault(string originalImagePath)
         {
-            if (OutputFormat == ImageOutputFormat.Original)
-            {
-                return true;
-            }
-
-            return string.Equals(Path.GetExtension(originalImagePath), "." + OutputFormat);
+            return string.Equals(Path.GetExtension(originalImagePath), "." + OutputFormat, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
 {
@@ -34,9 +35,9 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
             {
                 var season = new Season
                 {
-                    IndexNumber = TVUtils.GetSeasonNumberFromPath(args.Path)
+                    IndexNumber = SeriesResolver.GetSeasonNumberFromPath(args.Path, CollectionType.TvShows)
                 };
-
+                
                 if (season.IndexNumber.HasValue && season.IndexNumber.Value == 0)
                 {
                     season.Name = _config.Configuration.SeasonZeroDisplayName;

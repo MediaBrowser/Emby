@@ -1,6 +1,6 @@
 ﻿(function ($, document) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('Poster', 'Poster');
 
     // The base query options
     var query = {
@@ -9,8 +9,10 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "Movie",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName",
-        StartIndex: 0
+        Fields: "PrimaryImageAspectRatio,SortName,MediaSourceCount,IsUnidentified,SyncInfo",
+        StartIndex: 0,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -22,7 +24,9 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+        var userId = Dashboard.getCurrentUserId();
+
+        ApiClient.getItems(userId, query).done(function (result) {
 
             // Scroll back up so they can see the results from the beginning
             $(document).scrollTop(0);
@@ -48,9 +52,23 @@
                     shape: "backdrop",
                     preferThumb: true,
                     context: 'movies',
-                    selectionPanel: true,
                     lazy: true,
-                    overlayText: true
+                    overlayText: true,
+                    showTitle: false
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
+            }
+            else if (view == "ThumbCard") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "backdrop",
+                    preferThumb: true,
+                    context: 'movies',
+                    lazy: true,
+                    showTitle: true,
+                    cardLayout: true,
+                    showYear: true
                 });
                 $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
@@ -81,9 +99,20 @@
                     context: 'movies',
                     showTitle: false,
                     centerText: true,
-                    selectionPanel: true,
                     lazy: true,
                     overlayText: true
+                });
+                $('.itemsContainer', page).removeClass('timelineItemsContainer');
+            }
+            else if (view == "PosterCard") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "portrait",
+                    context: 'movies',
+                    showTitle: true,
+                    showYear: true,
+                    lazy: true,
+                    cardLayout: true
                 });
                 $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
@@ -95,7 +124,6 @@
                     showTitle: true,
                     timeline: true,
                     centerText: true,
-                    selectionPanel: true,
                     lazy: true
                 });
                 $('.itemsContainer', page).addClass('timelineItemsContainer');
@@ -166,17 +194,32 @@
         $('#chkThemeSong', page).checked(query.HasThemeSong == true).checkboxradio('refresh');
         $('#chkThemeVideo', page).checked(query.HasThemeVideo == true).checkboxradio('refresh');
 
-        $('#chkMissingImdbId', page).checked(query.HasImdbId == false).checkboxradio('refresh');
-        $('#chkMissingTmdbId', page).checked(query.HasTmdbId == false).checkboxradio('refresh');
-        $('#chkYearMismatch', page).checked(query.IsYearMismatched == true).checkboxradio('refresh');
-
         $('.alphabetPicker', page).alphaValue(query.NameStartsWithOrGreater);
         $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
+    }
+
+    var filtersLoaded;
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
     }
 
     $(document).on('pageinit', "#moviesPage", function () {
 
         var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+
+            reloadFiltersIfNeeded(page);
+        });
 
         $('.radioSortBy', this).on('click', function () {
             query.StartIndex = 0;
@@ -340,31 +383,7 @@
             }
         });
 
-        $('#chkMissingImdbId', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasImdbId = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkMissingTmdbId', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.HasTmdbId = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkYearMismatch', this).on('change', function () {
-
-            query.StartIndex = 0;
-            query.IsYearMismatched = this.checked ? true : null;
-
-            reloadItems(page);
-        });
-
-        $('.itemsContainer', page).on('needsrefresh', function() {
+        $('.itemsContainer', page).on('needsrefresh', function () {
 
             reloadItems(page);
 
@@ -393,6 +412,8 @@
 
         LibraryBrowser.loadSavedQueryValues(viewkey, query);
 
+        QueryFilters.onPageShow(page, query);
+
         LibraryBrowser.getSavedViewSetting(viewkey).done(function (val) {
 
             if (val) {
@@ -404,7 +425,170 @@
 
     }).on('pageshow', "#moviesPage", function () {
 
-        updateFilterControls(this);
+        var page = this;
+
+        updateFilterControls(page);
+
+        filtersLoaded = false;
     });
 
 })(jQuery, document);
+
+(function (window) {
+
+    function renderOptions(page, selector, cssClass, items) {
+
+        var elem;
+
+        if (items.length) {
+
+            elem = $(selector, page).show();
+
+        } else {
+            elem = $(selector, page).hide();
+        }
+
+        var html = '';
+
+        //  style="margin: -.2em -.8em;"
+        html += '<div data-role="controlgroup">';
+
+        var index = 0;
+        var idPrefix = 'chk' + selector.substring(1);
+
+        html += items.map(function (filter) {
+
+            var itemHtml = '';
+
+            var id = idPrefix + index;
+            itemHtml += '<label for="' + id + '">' + filter + '</label>';
+            itemHtml += '<input id="' + id + '" type="checkbox" data-filter="' + filter + '" data-mini="true" class="' + cssClass + '" />';
+
+            index++;
+
+            return itemHtml;
+
+        }).join('');
+
+        html += '</div>';
+
+        $('.filterOptions', elem).html(html).trigger('create');
+    }
+
+    function renderFilters(page, result) {
+
+        // If there's a huge number of these they will be really show to render
+        if (result.Tags) {
+            result.Tags.length = Math.min(result.Tags.length, 50);
+        }
+
+        renderOptions(page, '.genreFilters', 'chkGenreFilter', result.Genres);
+        renderOptions(page, '.officialRatingFilters', 'chkOfficialRatingFilter', result.OfficialRatings);
+        renderOptions(page, '.tagFilters', 'chkTagFilter', result.Tags);
+        renderOptions(page, '.yearFilters', 'chkYearFilter', result.Years);
+
+    }
+
+    function onFiltersLoaded(page, query, reloadItemsFn) {
+
+        $('.chkGenreFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Genres || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Genres = filters;
+
+            reloadItemsFn();
+        });
+        $('.chkTagFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Tags || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Tags = filters;
+
+            reloadItemsFn();
+        });
+        $('.chkYearFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Years || "";
+            var delimiter = ',';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Years = filters;
+
+            reloadItemsFn();
+        });
+        $('.chkOfficialRatingFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.OfficialRatings || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.OfficialRatings = filters;
+
+            reloadItemsFn();
+        });
+    }
+
+    function loadFilters(page, userId, itemQuery, reloadItemsFn) {
+
+        return ApiClient.getJSON(ApiClient.getUrl('Items/Filters', {
+
+            UserId: userId,
+            ParentId: itemQuery.ParentId,
+            IncludeItemTypes: itemQuery.IncludeItemTypes
+
+
+        })).done(function (result) {
+
+            renderFilters(page, result);
+
+            onFiltersLoaded(page, itemQuery, reloadItemsFn);
+        });
+
+    }
+
+    function onPageShow(page, query) {
+        query.Genres = null;
+        query.Years = null;
+        query.OfficialRatings = null;
+        query.Tags = null;
+    }
+
+    window.QueryFilters = {
+        loadFilters: loadFilters,
+        onPageShow: onPageShow
+    };
+
+})(window);

@@ -3,6 +3,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -14,10 +15,27 @@ namespace MediaBrowser.Server.Implementations.Library
     public class CoreResolutionIgnoreRule : IResolverIgnoreRule
     {
         private readonly IFileSystem _fileSystem;
+        private readonly ILibraryManager _libraryManager;
 
-        public CoreResolutionIgnoreRule(IFileSystem fileSystem)
+        /// <summary>
+        /// Any folder named in this list will be ignored - can be added to at runtime for extensibility
+        /// </summary>
+        public static readonly List<string> IgnoreFolders = new List<string>
+        {
+                "metadata",
+                "ps3_update",
+                "ps3_vprm",
+                "extrafanart",
+                "extrathumbs",
+                ".actors",
+                ".wd_tv"
+
+        };
+        
+        public CoreResolutionIgnoreRule(IFileSystem fileSystem, ILibraryManager libraryManager)
         {
             _fileSystem = fileSystem;
+            _libraryManager = libraryManager;
         }
 
         /// <summary>
@@ -62,7 +80,7 @@ namespace MediaBrowser.Server.Implementations.Library
             if (args.IsDirectory)
             {
                 // Ignore any folders in our list
-                if (EntityResolutionHelper.IgnoreFolders.Contains(filename, StringComparer.OrdinalIgnoreCase))
+                if (IgnoreFolders.Contains(filename, StringComparer.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -89,17 +107,12 @@ namespace MediaBrowser.Server.Implementations.Library
                 if (args.Parent != null)
                 {
                     // Don't resolve these into audio files
-                    if (string.Equals(_fileSystem.GetFileNameWithoutExtension(filename), BaseItem.ThemeSongFilename) && EntityResolutionHelper.IsAudioFile(filename))
-                    {
-                        return true;
-                    }
-
-                    if (BaseItem.ExtraSuffixes.Any(i => filename.IndexOf(i.Key, StringComparison.OrdinalIgnoreCase) != -1))
+                    if (string.Equals(_fileSystem.GetFileNameWithoutExtension(filename), BaseItem.ThemeSongFilename) && _libraryManager.IsAudioFile(filename))
                     {
                         return true;
                     }
                 }
-
+                
                 // Ignore samples
                 if (filename.IndexOf(".sample.", StringComparison.OrdinalIgnoreCase) != -1)
                 {

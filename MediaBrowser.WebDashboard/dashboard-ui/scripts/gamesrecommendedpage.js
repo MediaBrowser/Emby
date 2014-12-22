@@ -10,9 +10,11 @@
         var options = {
 
             IncludeItemTypes: "Game",
-            Limit: 8,
+            Limit: 18,
             Fields: "PrimaryImageAspectRatio",
-            ParentId: parentId
+            ParentId: parentId,
+            ImageTypeLimit: 1,
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
         ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).done(function (items) {
@@ -33,11 +35,13 @@
             SortBy: "DatePlayed",
             SortOrder: "Descending",
             MediaTypes: "Game",
-            Limit: 8,
+            Limit: 18,
             Recursive: true,
             Filters: "IsPlayed",
             Fields: "ItemCounts,AudioInfo,PrimaryImageAspectRatio",
-            ParentId: parentId
+            ParentId: parentId,
+            ImageTypeLimit: 1,
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
         ApiClient.getItems(userId, options).done(function (result) {

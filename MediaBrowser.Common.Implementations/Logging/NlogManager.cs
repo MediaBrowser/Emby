@@ -2,6 +2,7 @@
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NLog.Targets.Wrappers;
 using System;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,12 @@ namespace MediaBrowser.Common.Implementations.Logging
         public string LogFilePath { get; private set; }
 
         /// <summary>
+        /// Gets or sets the exception message prefix.
+        /// </summary>
+        /// <value>The exception message prefix.</value>
+        public string ExceptionMessagePrefix { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="NlogManager" /> class.
         /// </summary>
         /// <param name="logDirectory">The log directory.</param>
@@ -42,6 +49,8 @@ namespace MediaBrowser.Common.Implementations.Logging
         {
             LogDirectory = logDirectory;
             LogFilePrefix = logFileNamePrefix;
+
+			LogManager.Configuration = new LoggingConfiguration ();
         }
 
         private LogSeverity _severity = LogSeverity.Debug;
@@ -86,16 +95,22 @@ namespace MediaBrowser.Common.Implementations.Logging
         /// <param name="level">The level.</param>
         private void AddFileTarget(string path, LogSeverity level)
         {
-            var logFile = new FileTarget
+			RemoveTarget("ApplicationLogFileWrapper");
+
+			var wrapper = new AsyncTargetWrapper ();
+			wrapper.Name = "ApplicationLogFileWrapper";
+
+			var logFile = new FileTarget
             {
                 FileName = path,
                 Layout = "${longdate} ${level} - ${logger}: ${message}"
             };
 
-            RemoveTarget("ApplicationLogFile");
             logFile.Name = "ApplicationLogFile";
 
-            AddLogTarget(logFile, level);
+			wrapper.WrappedTarget = logFile;
+
+            AddLogTarget(wrapper, level);
         }
 
         /// <summary>
@@ -150,7 +165,7 @@ namespace MediaBrowser.Common.Implementations.Logging
         /// <returns>ILogger.</returns>
         public ILogger GetLogger(string name)
         {
-            return new NLogger(name);
+            return new NLogger(name, this);
         }
 
         /// <summary>
@@ -216,22 +231,27 @@ namespace MediaBrowser.Common.Implementations.Logging
 
         public void AddConsoleOutput()
         {
+			RemoveTarget("ConsoleTargetWrapper");
+
+			var wrapper = new AsyncTargetWrapper ();
+			wrapper.Name = "ConsoleTargetWrapper";
+
             var target = new ConsoleTarget()
             {
                 Layout = "${level}, ${logger}, ${message}",
                 Error = false
             };
 
-            RemoveTarget("ConsoleTarget");
-
             target.Name = "ConsoleTarget";
 
-            AddLogTarget(target, LogSeverity);
+			wrapper.WrappedTarget = target;
+
+			AddLogTarget(wrapper, LogSeverity);
         }
 
         public void RemoveConsoleOutput()
         {
-            RemoveTarget("ConsoleTarget");
+			RemoveTarget("ConsoleTargetWrapper");
         }
     }
 }

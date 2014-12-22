@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
 
 namespace MediaBrowser.Server.Implementations.Library.Resolvers
@@ -8,6 +9,22 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers
     /// </summary>
     public class VideoResolver : BaseVideoResolver<Video>
     {
+        public VideoResolver(ILibraryManager libraryManager)
+            : base(libraryManager)
+        {
+        }
+
+        protected override Video Resolve(ItemResolveArgs args)
+        {
+            if (args.Parent != null)
+            {
+                // The movie resolver will handle this
+                return null;
+            }
+
+            return base.Resolve(args);
+        }
+
         /// <summary>
         /// Gets the priority.
         /// </summary>
@@ -17,6 +34,4 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers
             get { return ResolverPriority.Last; }
         }
     }
-
-
 }

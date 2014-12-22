@@ -6,7 +6,6 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Playlists;
 using MediaBrowser.Model.Querying;
 using ServiceStack;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -152,7 +151,7 @@ namespace MediaBrowser.Api
             {
                 items = items.Take(request.Limit.Value).ToArray();
             }
-
+            
             var dtos = items
                    .Select(i => _dtoService.GetBaseItemDto(i.Item2, request.GetItemFields().ToList(), user))
                    .ToArray();

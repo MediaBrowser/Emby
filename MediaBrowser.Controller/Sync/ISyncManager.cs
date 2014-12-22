@@ -1,6 +1,5 @@
-﻿using System.IO;
-using MediaBrowser.Controller.Entities;
-using MediaBrowser.Model.Devices;
+﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Sync;
 using System.Collections.Generic;
@@ -24,12 +23,19 @@ namespace MediaBrowser.Controller.Sync
         QueryResult<SyncJob> GetJobs(SyncJobQuery query);
 
         /// <summary>
+        /// Gets the job items.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>QueryResult&lt;SyncJobItem&gt;.</returns>
+        QueryResult<SyncJobItem> GetJobItems(SyncJobItemQuery query);
+        
+        /// <summary>
         /// Gets the job.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>SyncJob.</returns>
         SyncJob GetJob(string id);
-        
+
         /// <summary>
         /// Cancels the job.
         /// </summary>
@@ -53,5 +59,26 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="item">The item.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         bool SupportsSync(BaseItem item);
+
+        /// <summary>
+        /// Gets the device profile.
+        /// </summary>
+        /// <param name="targetId">The target identifier.</param>
+        /// <returns>DeviceProfile.</returns>
+        DeviceProfile GetDeviceProfile(string targetId);
+
+        /// <summary>
+        /// Reports the synchronize job item transferred.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task.</returns>
+        Task ReportSyncJobItemTransferred(string id);
+
+        /// <summary>
+        /// Gets the job item.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>SyncJobItem.</returns>
+        SyncJobItem GetJobItem(string id);
     }
 }

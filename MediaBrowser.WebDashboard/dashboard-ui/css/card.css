@@ -89,6 +89,12 @@
     background: #fff;
 }
 
+.visualCardBox-b {
+    background: rgb(51, 51, 51);
+    border: 1px solid rgb(31, 31, 31);
+    border-radius: 3px;
+}
+
 .cardScalable {
     position: relative;
 }
@@ -125,21 +131,9 @@
     right: 0;
 }
 
-    /*.cardContent:hover {
-        -moz-box-shadow: 0 0 0 5px #38c;
-        -webkit-box-shadow: 0 0 0 5px #38c;
-        box-shadow: 0 0 0 5px #38c;
-    }*/
-
-.alternateHover:hover .cardContent {
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.cardContent:hover .cardImage {
-    opacity: .5;
-}
+    .cardContent:hover .cardImage {
+        opacity: .5;
+    }
 
 /*.preview-overlay-container {
     -moz-border-radius: 2px;
@@ -422,15 +416,19 @@
 
 @media all and (min-width: 1920px) {
 
-    .squareCard {
-        width: 9.0909090909090909090909090909091%;
-    }
-
     .bannerCard {
         width: 25%;
     }
 
     .portraitCard {
+        width: 9.0909090909090909090909090909091%;
+    }
+}
+
+
+@media all and (min-width: 2300px) {
+
+    .squareCard {
         width: 9.0909090909090909090909090909091%;
     }
 }
@@ -696,31 +694,9 @@
     }
 }
 
-/*.touch .mobileItemsContainer {
-    white-space: nowrap;
-    overflow-y: hidden;
-    overflow-x: scroll;
-    -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
-}
+@media all and (min-width: 1600px) {
 
-.touch .mobileItemsContainer::-webkit-scrollbar {
-    height: 0 !important;
-    display: none;
+    .homePageSmallBackdropCard {
+        width: 12.5%;
+    }
 }
-
-.touch .mobileItemsContainer .card {
-    width: 80%;
-}
-
-.touch .mobileItemsContainer .homePageBackdropCard, .touch .mobileItemsContainer .homePageSmallBackdropCard {
-    max-width: 320px;
-}
-
-.touch .mobileItemsContainer .homePagePortraitCard {
-    max-width: 150px;
-}
-
-.touch .mobileItemsContainer .homePageSquareCard {
-    max-width: 200px;
-}*/

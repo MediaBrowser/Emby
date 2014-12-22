@@ -26,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -53,7 +53,7 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -62,10 +62,6 @@
   <ItemGroup>
     <Reference Include="MediaBrowser.IsoMounter">
       <HintPath>..\packages\MediaBrowser.IsoMounting.3.0.69\lib\net45\MediaBrowser.IsoMounter.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Mono.Posix.4.0.0.0\lib\net40\Mono.Posix.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,6 +77,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.94.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
@@ -94,28 +94,14 @@
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
-    <Compile Include="ApplicationHost.cs" />
     <Compile Include="BackgroundService.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BackgroundServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EntryPoints\KeepServerAwake.cs" />
     <Compile Include="EntryPoints\ResourceEntryPoint.cs" />
-    <Compile Include="EntryPoints\StartupWizard.cs" />
-    <Compile Include="FFMpeg\FFMpegDownloader.cs" />
-    <Compile Include="FFMpeg\FFMpegDownloadInfo.cs" />
-    <Compile Include="FFMpeg\FFMpegInfo.cs" />
-    <Compile Include="IO\NativeFileSystem.cs" />
-    <Compile Include="IO\StartupOptions.cs" />
-    <Compile Include="Logging\LogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Logging\LogForm.Designer.cs">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\WindowTraceListener.cs" />
+    <Compile Include="Native\NativeFileSystem.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,11 +109,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainStartup.cs" />
-    <Compile Include="Native\Assemblies.cs" />
     <Compile Include="Native\Autorun.cs" />
-    <Compile Include="Native\BrowserLauncher.cs" />
-    <Compile Include="Native\NativeApp.cs" />
+    <Compile Include="Native\Standby.cs" />
     <Compile Include="Native\ServerAuthorization.cs" />
+    <Compile Include="Native\WindowsApp.cs" />
     <Compile Include="Networking\NativeMethods.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\NetworkShares.cs" />
@@ -153,9 +138,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Logging\LogForm.resx">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -168,6 +150,34 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Installation\MediaBrowser.InstallUtil.dll">
+      <Link>MediaBrowser.InstallUtil.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Installation\MediaBrowser.Uninstaller.exe">
+      <Link>MediaBrowser.Uninstaller.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Installation\MediaBrowser.Updater.exe">
+      <Link>MediaBrowser.Updater.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ThirdParty\libwebp\windows\x86\libwebp.dll">
+      <Link>libwebp.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ThirdParty\MediaInfo\windows\x86\MediaInfo.dll">
+      <Link>MediaInfo.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Icon.ico" />
     <Content Include="Resources\Images\mb3logo800.png" />
   </ItemGroup>
@@ -212,6 +222,10 @@
       <Project>{2e781478-814d-4a48-9d80-bff206441a65}</Project>
       <Name>MediaBrowser.Server.Implementations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.Server.Startup.Common\MediaBrowser.Server.Startup.Common.csproj">
+      <Project>{b90ab8f2-1bff-4568-a3fd-2a338a435a75}</Project>
+      <Name>MediaBrowser.Server.Startup.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.WebDashboard\MediaBrowser.WebDashboard.csproj">
       <Project>{5624b7b5-b5a7-41d8-9f10-cc5611109619}</Project>
       <Name>MediaBrowser.WebDashboard</Name>
@@ -223,35 +237,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (
-rmdir "$(SolutionDir)..\Deploy\Server\System" /s /q
-mkdir "$(SolutionDir)..\Deploy\Server\System"
-rmdir "$(SolutionDir)..\Deploy\Server\Pismo" /s /q
-xcopy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)..\Deploy\Server\System\" /y
-xcopy "$(SolutionDir)Installation\MediaBrowser.Uninstaller.exe.config" "$(SolutionDir)..\Deploy\Server\System\" /y
-xcopy "$(SolutionDir)Installation\MediaBrowser.Uninstaller.exe" "$(SolutionDir)..\Deploy\Server\System\" /y
-xcopy "$(SolutionDir)Installation\MediaBrowser.InstallUtil.dll" "$(SolutionDir)..\Deploy\Server\System\" /y
-xcopy "$(SolutionDir)Installation\MediaBrowser.Updater.exe" "$(SolutionDir)..\Deploy\Server\System\" /y
-
-mkdir "$(SolutionDir)..\Deploy\Server\System\swagger-ui"
-xcopy "$(TargetDir)swagger-ui" "$(SolutionDir)..\Deploy\Server\System\swagger-ui" /y /s
-
-xcopy "$(TargetDir)$(TargetFileName).config" "$(SolutionDir)..\Deploy\Server\System\" /y
-
-xcopy "$(TargetDir)*.dll" "$(SolutionDir)..\Deploy\Server\System" /y
-
-mkdir "$(SolutionDir)..\Deploy\Server\System\dashboard-ui"
-xcopy "$(TargetDir)dashboard-ui" "$(SolutionDir)..\Deploy\Server\System\dashboard-ui" /y /s
-
-mkdir "$(SolutionDir)..\Deploy\Server\System\x86"
-xcopy "$(TargetDir)x86" "$(SolutionDir)..\Deploy\Server\System\x86" /y /s
-
-mkdir "$(SolutionDir)..\Deploy\Server\System\x64"
-xcopy "$(TargetDir)x64" "$(SolutionDir)..\Deploy\Server\System\x64" /y /s
-
-del "$(SolutionDir)..\Deploy\MBServer.zip"
-"$(SolutionDir)ThirdParty\7zip\7za" a -mx9 "$(SolutionDir)..\Deploy\MBServer.zip" "$(SolutionDir)..\Deploy\Server\*"
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -260,10 +247,5 @@ del "$(SolutionDir)..\Deploy\MBServer.zip"
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="CurrentAssembly" />
-    </GetAssemblyIdentity>
-    <Exec Command="copy &quot;$(SolutionDir)..\Deploy\MBServer.zip&quot;  &quot;$(SolutionDir)..\Deploy\MBServer_%(CurrentAssembly.Version).zip&quot; /y" Condition="'$(ConfigurationName)' == 'Release'" />
-  </Target>
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" />
 </Project>

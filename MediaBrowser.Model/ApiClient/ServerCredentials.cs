@@ -54,6 +54,10 @@ namespace MediaBrowser.Model.ApiClient
                 {
                     existing.LocalAddress = server.LocalAddress;
                 }
+                if (!string.IsNullOrEmpty(server.ManualAddress))
+                {
+                    existing.LocalAddress = server.ManualAddress;
+                }
                 if (!string.IsNullOrEmpty(server.Name))
                 {
                     existing.Name = server.Name;
@@ -61,6 +65,10 @@ namespace MediaBrowser.Model.ApiClient
                 if (server.WakeOnLanInfos != null && server.WakeOnLanInfos.Count > 0)
                 {
                     existing.WakeOnLanInfos = server.WakeOnLanInfos.ToList();
+                }
+                if (server.LastConnectionMode.HasValue)
+                {
+                    existing.LastConnectionMode = server.LastConnectionMode;
                 }
             }
             else

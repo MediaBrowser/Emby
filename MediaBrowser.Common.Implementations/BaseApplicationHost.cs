@@ -193,6 +193,11 @@ namespace MediaBrowser.Common.Implementations
             }
         }
 
+        public virtual string OperatingSystemDisplayName
+        {
+            get { return Environment.OSVersion.VersionString; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseApplicationHost{TApplicationPathsType}"/> class.
         /// </summary>
@@ -207,6 +212,9 @@ namespace MediaBrowser.Common.Implementations
             FileSystemManager = fileSystem;
 
             ConfigurationManager = GetConfigurationManager();
+
+            // Initialize this early in case the -v command line option is used
+            Logger = LogManager.GetLogger("App");
         }
 
         /// <summary>
@@ -228,7 +236,6 @@ namespace MediaBrowser.Common.Implementations
 
             JsonSerializer = CreateJsonSerializer();
 
-            Logger = LogManager.GetLogger("App");
             OnLoggerLoaded(true);
             LogManager.LoggerLoaded += (s, e) => OnLoggerLoaded(false);
 
@@ -266,7 +273,7 @@ namespace MediaBrowser.Common.Implementations
 
             if (!isFirstLoad)
             {
-                LogEnvironmentInfo(Logger, ApplicationPaths);
+                LogEnvironmentInfo(Logger, ApplicationPaths, false);
             }
 
             // Put the app config in the log for troubleshooting purposes
@@ -285,16 +292,22 @@ namespace MediaBrowser.Common.Implementations
             }
         }
 
-        public static void LogEnvironmentInfo(ILogger logger, IApplicationPaths appPaths)
+        public static void LogEnvironmentInfo(ILogger logger, IApplicationPaths appPaths, bool isStartup)
         {
-            logger.Info("Command line: {0}", string.Join(" ", Environment.GetCommandLineArgs()));
+            logger.LogMultiline("Media Browser", LogSeverity.Info, GetBaseExceptionMessage(appPaths));
+        }
 
-            logger.Info("Server: {0}", Environment.MachineName);
-            logger.Info("Operating system: {0}", Environment.OSVersion.ToString());
-            logger.Info("Processor count: {0}", Environment.ProcessorCount);
-            logger.Info("64-Bit OS: {0}", Environment.Is64BitOperatingSystem);
-            logger.Info("64-Bit Process: {0}", Environment.Is64BitProcess);
-            logger.Info("Program data path: {0}", appPaths.ProgramDataPath);
+        protected static StringBuilder GetBaseExceptionMessage(IApplicationPaths appPaths)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine(string.Format("Command line: {0}", string.Join(" ", Environment.GetCommandLineArgs())));
+
+            builder.AppendLine(string.Format("Operating system: {0}", Environment.OSVersion));
+            builder.AppendLine(string.Format("Processor count: {0}", Environment.ProcessorCount));
+            builder.AppendLine(string.Format("64-Bit OS: {0}", Environment.Is64BitOperatingSystem));
+            builder.AppendLine(string.Format("64-Bit Process: {0}", Environment.Is64BitProcess));
+            builder.AppendLine(string.Format("Program data path: {0}", appPaths.ProgramDataPath));
 
             Type type = Type.GetType("Mono.Runtime");
             if (type != null)
@@ -302,13 +315,13 @@ namespace MediaBrowser.Common.Implementations
                 MethodInfo displayName = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (displayName != null)
                 {
-                    logger.Info("Mono: " + displayName.Invoke(null, null));
+                    builder.AppendLine("Mono: " + displayName.Invoke(null, null));
                 }
-            } 
-            
-            logger.Info("Application Path: {0}", appPaths.ApplicationPath);
+            }
 
-            logger.Info("*** When reporting issues please include the entire log file. ***".ToUpper());
+            builder.AppendLine(string.Format("Application Path: {0}", appPaths.ApplicationPath));
+
+            return builder;
         }
 
         protected virtual IJsonSerializer CreateJsonSerializer()
@@ -366,14 +379,13 @@ namespace MediaBrowser.Common.Implementations
         /// <returns>Task.</returns>
         public virtual Task RunStartupTasks()
         {
-            return Task.Run(() =>
-            {
-                Resolve<ITaskManager>().AddTasks(GetExports<IScheduledTask>(false));
+			Resolve<ITaskManager>().AddTasks(GetExports<IScheduledTask>(false));
 
-                Task.Run(() => ConfigureAutorun());
+			ConfigureAutorun ();
 
-                ConfigurationManager.ConfigurationUpdated += OnConfigurationUpdated;
-            });
+			ConfigurationManager.ConfigurationUpdated += OnConfigurationUpdated;
+
+			return Task.FromResult (true);
         }
 
         /// <summary>
@@ -437,45 +449,43 @@ namespace MediaBrowser.Common.Implementations
         /// <returns>Task.</returns>
         protected virtual Task RegisterResources(IProgress<double> progress)
         {
-            return Task.Run(() =>
-            {
-                RegisterSingleInstance(ConfigurationManager);
-                RegisterSingleInstance<IApplicationHost>(this);
+			RegisterSingleInstance(ConfigurationManager);
+			RegisterSingleInstance<IApplicationHost>(this);
 
-                RegisterSingleInstance<IApplicationPaths>(ApplicationPaths);
+			RegisterSingleInstance<IApplicationPaths>(ApplicationPaths);
 
-                TaskManager = new TaskManager(ApplicationPaths, JsonSerializer, Logger);
+			TaskManager = new TaskManager(ApplicationPaths, JsonSerializer, Logger);
 
-                RegisterSingleInstance(JsonSerializer);
-                RegisterSingleInstance(XmlSerializer);
+			RegisterSingleInstance(JsonSerializer);
+			RegisterSingleInstance(XmlSerializer);
 
-                RegisterSingleInstance(LogManager);
-                RegisterSingleInstance(Logger);
+			RegisterSingleInstance(LogManager);
+			RegisterSingleInstance(Logger);
 
-                RegisterSingleInstance(TaskManager);
+			RegisterSingleInstance(TaskManager);
 
-                RegisterSingleInstance(FileSystemManager);
+			RegisterSingleInstance(FileSystemManager);
 
-                HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, Logger, FileSystemManager, ConfigurationManager);
-                RegisterSingleInstance(HttpClient);
+			HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, Logger, FileSystemManager, ConfigurationManager);
+			RegisterSingleInstance(HttpClient);
 
-                NetworkManager = CreateNetworkManager(LogManager.GetLogger("NetworkManager"));
-                RegisterSingleInstance(NetworkManager);
+			NetworkManager = CreateNetworkManager(LogManager.GetLogger("NetworkManager"));
+			RegisterSingleInstance(NetworkManager);
 
-                SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, NetworkManager, LogManager);
-                RegisterSingleInstance(SecurityManager);
+			SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, NetworkManager, LogManager);
+			RegisterSingleInstance(SecurityManager);
 
-                InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, NetworkManager, ConfigurationManager);
-                RegisterSingleInstance(InstallationManager);
+			InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, NetworkManager, ConfigurationManager);
+			RegisterSingleInstance(InstallationManager);
 
-                ZipClient = new ZipClient();
-                RegisterSingleInstance(ZipClient);
+			ZipClient = new ZipClient();
+			RegisterSingleInstance(ZipClient);
 
-                IsoManager = new IsoManager();
-                RegisterSingleInstance(IsoManager);
+			IsoManager = new IsoManager();
+			RegisterSingleInstance(IsoManager);
 
-                RegisterModules();
-            });
+			RegisterModules();
+			return Task.FromResult (true);
         }
 
         private void RegisterModules()
@@ -692,18 +702,11 @@ namespace MediaBrowser.Common.Implementations
             return parts;
         }
 
-        private Version _version;
         /// <summary>
-        /// Gets the current application version
+        /// Gets the application version.
         /// </summary>
         /// <value>The application version.</value>
-        public Version ApplicationVersion
-        {
-            get
-            {
-                return _version ?? (_version = GetType().Assembly.GetName().Version);
-            }
-        }
+        public abstract Version ApplicationVersion { get; }
 
         /// <summary>
         /// Handles the ConfigurationUpdated event of the ConfigurationManager control.

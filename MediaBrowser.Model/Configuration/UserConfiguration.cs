@@ -47,6 +47,7 @@ namespace MediaBrowser.Model.Configuration
         public bool DisplayMissingEpisodes { get; set; }
         public bool DisplayUnairedEpisodes { get; set; }
         public bool EnableRemoteControlOfOtherUsers { get; set; }
+        public bool EnableSharedDeviceControl { get; set; }
 
         public bool EnableLiveTvManagement { get; set; }
         public bool EnableLiveTvAccess { get; set; }
@@ -85,7 +86,8 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableUserPreferenceAccess { get; set; }
 
         public string[] LatestItemsExcludes { get; set; }
-        
+        public string[] BlockedTags { get; set; }
+   
         /// <summary>
         /// Initializes a new instance of the <see cref="UserConfiguration" /> class.
         /// </summary>
@@ -95,17 +97,18 @@ namespace MediaBrowser.Model.Configuration
             EnableLiveTvManagement = true;
             EnableMediaPlayback = true;
             EnableLiveTvAccess = true;
+            EnableSharedDeviceControl = true;
 
             LatestItemsExcludes = new string[] { };
             OrderedViews = new string[] { };
             BlockedMediaFolders = new string[] { };
             DisplayChannelsWithinViews = new string[] { };
+            BlockedTags = new string[] { };
             BlockedChannels = new string[] { };
             BlockUnratedItems = new UnratedItem[] { };
 
             ExcludeFoldersFromGrouping = new string[] { };
             DisplayCollectionsView = true;
-            DisplayFoldersView = true;
 
             SyncConnectName = true;
             SyncConnectImage = true;

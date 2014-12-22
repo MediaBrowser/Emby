@@ -220,19 +220,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 }
 
                 return 2;
-            })
-            .ThenBy(i =>
-            {
-                double number = 0;
-
-                if (!string.IsNullOrEmpty(i.Number))
-                {
-                    double.TryParse(i.Number, out number);
-                }
-
-                return number;
-
-            }).ThenBy(i => i.Name);
+            });
 
             var allChannels = channels.ToList();
             IEnumerable<LiveTvChannel> allEnumerable = allChannels;
@@ -1366,14 +1354,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv
         {
             var results = await GetTimers(new TimerQuery(), cancellationToken).ConfigureAwait(false);
 
-            return results.Items.FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.CurrentCulture));
+            return results.Items.FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<SeriesTimerInfoDto> GetSeriesTimer(string id, CancellationToken cancellationToken)
         {
             var results = await GetSeriesTimers(new SeriesTimerQuery(), cancellationToken).ConfigureAwait(false);
 
-            return results.Items.FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.CurrentCulture));
+            return results.Items.FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<QueryResult<SeriesTimerInfoDto>> GetSeriesTimers(SeriesTimerQuery query, CancellationToken cancellationToken)

@@ -35,7 +35,7 @@ namespace MediaBrowser.Api.System
     /// Class RestartApplication
     /// </summary>
     [Route("/System/Restart", "POST", Summary = "Restarts the application, if needed")]
-    [Authenticated]
+    [Authenticated(Roles = "Admin")]
     public class RestartApplication
     {
     }
@@ -44,13 +44,14 @@ namespace MediaBrowser.Api.System
     /// This is currently not authenticated because the uninstaller needs to be able to shutdown the server.
     /// </summary>
     [Route("/System/Shutdown", "POST", Summary = "Shuts down the application")]
-    [Authenticated(AllowLocal = true)]
     public class ShutdownApplication
     {
+        // TODO: This is not currently authenticated due to uninstaller
+        // Improve later
     }
 
     [Route("/System/Logs", "GET", Summary = "Gets a list of available server log files")]
-    [Authenticated]
+    [Authenticated(Roles = "Admin")]
     public class GetServerLogs : IReturn<List<LogFile>>
     {
     }
@@ -63,6 +64,7 @@ namespace MediaBrowser.Api.System
     }
 
     [Route("/System/Logs/Log", "GET", Summary = "Gets a log file")]
+    [Authenticated(Roles = "Admin")]
     public class GetLogFile
     {
         [ApiMember(Name = "Name", Description = "The log file name.", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
@@ -122,7 +124,7 @@ namespace MediaBrowser.Api.System
             {
                 files = new DirectoryInfo(_appPaths.LogDirectoryPath)
                     .EnumerateFiles("*", SearchOption.AllDirectories)
-                    .Where(i => string.Equals(i.Extension, ".txt", global::System.StringComparison.OrdinalIgnoreCase))
+                    .Where(i => string.Equals(i.Extension, ".txt", StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
             catch (DirectoryNotFoundException)
@@ -149,7 +151,7 @@ namespace MediaBrowser.Api.System
         {
             var file = new DirectoryInfo(_appPaths.LogDirectoryPath)
                 .EnumerateFiles("*", SearchOption.AllDirectories)
-                .First(i => string.Equals(i.Name, request.Name, global::System.StringComparison.OrdinalIgnoreCase));
+                .First(i => string.Equals(i.Name, request.Name, StringComparison.OrdinalIgnoreCase));
 
             return ResultFactory.GetStaticFileResult(Request, file.FullName, FileShare.ReadWrite);
         }

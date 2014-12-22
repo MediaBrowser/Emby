@@ -10,6 +10,13 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
     /// </summary>
     public class AudioResolver : ItemResolver<Controller.Entities.Audio.Audio>
     {
+        private readonly ILibraryManager _libraryManager;
+
+        public AudioResolver(ILibraryManager libraryManager)
+        {
+            _libraryManager = libraryManager;
+        }
+
         /// <summary>
         /// Gets the priority.
         /// </summary>
@@ -30,15 +37,23 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.Audio
 
             if (!args.IsDirectory)
             {
-                if (EntityResolutionHelper.IsAudioFile(args.Path))
+                if (_libraryManager.IsAudioFile(args.Path))
                 {
                     var collectionType = args.GetCollectionType();
+
+                    var isMixed = string.IsNullOrWhiteSpace(collectionType);
+
+                    // For conflicting extensions, give priority to videos
+                    if (isMixed && _libraryManager.IsVideoFile(args.Path))
+                    {
+                        return null;
+                    }
 
                     var isStandalone = args.Parent == null;
 
                     if (isStandalone ||
                         string.Equals(collectionType, CollectionType.Music, StringComparison.OrdinalIgnoreCase) ||
-                        string.IsNullOrEmpty(collectionType))
+                        isMixed)
                     {
                         return new Controller.Entities.Audio.Audio();
                     }

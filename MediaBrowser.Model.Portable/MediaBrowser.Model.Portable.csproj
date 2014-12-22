@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -79,6 +79,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\ConnectionMode.cs">
       <Link>ApiClient\ConnectionMode.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\ConnectionOptions.cs">
+      <Link>ApiClient\ConnectionOptions.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\ConnectionResult.cs">
       <Link>ApiClient\ConnectionResult.cs</Link>
@@ -275,6 +278,9 @@
     <Compile Include="..\MediaBrowser.Model\Devices\DeviceOptions.cs">
       <Link>Devices\DeviceOptions.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Devices\DeviceQuery.cs">
+      <Link>Devices\DeviceQuery.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Devices\DevicesOptions.cs">
       <Link>Devices\DevicesOptions.cs</Link>
     </Compile>
@@ -347,9 +353,6 @@
     <Compile Include="..\MediaBrowser.Model\Dlna\ProfileConditionValue.cs">
       <Link>Dlna\ProfileConditionValue.cs</Link>
     </Compile>
-    <Compile Include="..\MediaBrowser.Model\Dlna\Profiles\AndroidProfile.cs">
-      <Link>Dlna\Profiles\AndroidProfile.cs</Link>
-    </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\Profiles\DefaultProfile.cs">
       <Link>Dlna\Profiles\DefaultProfile.cs</Link>
     </Compile>
@@ -404,11 +407,11 @@
     <Compile Include="..\MediaBrowser.Model\Drawing\DrawingUtils.cs">
       <Link>Drawing\DrawingUtils.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Drawing\ImageFormat.cs">
+      <Link>Drawing\ImageFormat.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Drawing\ImageOrientation.cs">
       <Link>Drawing\ImageOrientation.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Drawing\ImageOutputFormat.cs">
-      <Link>Drawing\ImageOutputFormat.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Drawing\ImageSize.cs">
       <Link>Drawing\ImageSize.cs</Link>
@@ -421,6 +424,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ChapterInfoDto.cs">
       <Link>Dto\ChapterInfoDto.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\DtoOptions.cs">
+      <Link>Dto\DtoOptions.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\GameSystemSummary.cs">
       <Link>Dto\GameSystemSummary.cs</Link>
@@ -764,6 +770,9 @@
     <Compile Include="..\MediaBrowser.Model\MediaInfo\IBlurayExaminer.cs">
       <Link>MediaInfo\IBlurayExaminer.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\MediaInfo\LiveMediaInfoResult.cs">
+      <Link>MediaInfo\LiveMediaInfoResult.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\MediaInfo\MediaProtocol.cs">
       <Link>MediaInfo\MediaProtocol.cs</Link>
     </Compile>
@@ -923,6 +932,9 @@
     <Compile Include="..\MediaBrowser.Model\Querying\PersonsQuery.cs">
       <Link>Querying\PersonsQuery.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\QueryFilters.cs">
+      <Link>Querying\QueryFilters.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\QueryResult.cs">
       <Link>Querying\QueryResult.cs</Link>
     </Compile>
@@ -1016,6 +1028,12 @@
     <Compile Include="..\MediaBrowser.Model\Session\UserDataChangeInfo.cs">
       <Link>Session\UserDataChangeInfo.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncCategory.cs">
+      <Link>Sync\SyncCategory.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncDialogOptions.cs">
+      <Link>Sync\SyncDialogOptions.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncJob.cs">
       <Link>Sync\SyncJob.cs</Link>
     </Compile>
@@ -1024,6 +1042,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncJobItem.cs">
       <Link>Sync\SyncJobItem.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncJobItemQuery.cs">
+      <Link>SyncJobItemQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncJobItemStatus.cs">
+      <Link>Sync\SyncJobItemStatus.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncJobQuery.cs">
       <Link>Sync\SyncJobQuery.cs</Link>
@@ -1034,8 +1058,8 @@
     <Compile Include="..\MediaBrowser.Model\Sync\SyncJobStatus.cs">
       <Link>Sync\SyncJobStatus.cs</Link>
     </Compile>
-    <Compile Include="..\MediaBrowser.Model\Sync\SyncLimitType.cs">
-      <Link>Sync\SyncLimitType.cs</Link>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncOptions.cs">
+      <Link>Sync\SyncOptions.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncQuality.cs">
       <Link>Sync\SyncQuality.cs</Link>
@@ -1103,6 +1127,18 @@
     <Compile Include="..\MediaBrowser.Model\Users\AuthenticationResult.cs">
       <Link>Users\AuthenticationResult.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Users\ForgotPasswordAction.cs">
+      <Link>Users\ForgotPasswordAction.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Users\ForgotPasswordResult.cs">
+      <Link>Users\ForgotPasswordResult.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Users\PinRedeemResult.cs">
+      <Link>Users\PinRedeemResult.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Users\UserPolicy.cs">
+      <Link>Users\UserPolicy.cs</Link>
+    </Compile>
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
@@ -1125,9 +1161,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (
-xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\dlls\portable\" /y /d /r /i
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="Fody.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

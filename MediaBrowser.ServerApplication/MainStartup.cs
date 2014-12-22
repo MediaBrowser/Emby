@@ -1,8 +1,8 @@
-﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Implementations.Logging;
+﻿using MediaBrowser.Common.Implementations.Logging;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Server.Implementations;
-using MediaBrowser.ServerApplication.IO;
+using MediaBrowser.Server.Startup.Common;
+using MediaBrowser.Server.Startup.Common.Browser;
 using MediaBrowser.ServerApplication.Native;
 using MediaBrowser.ServerApplication.Splash;
 using MediaBrowser.ServerApplication.Updates;
@@ -36,7 +36,9 @@ namespace MediaBrowser.ServerApplication
             var options = new StartupOptions();
             _isRunningAsService = options.ContainsOption("-service");
 
-            var applicationPath = Process.GetCurrentProcess().MainModule.FileName;
+            var currentProcess = Process.GetCurrentProcess();
+
+            var applicationPath = currentProcess.MainModule.FileName;
 
             var appPaths = CreateApplicationPaths(applicationPath, _isRunningAsService);
 
@@ -46,7 +48,7 @@ namespace MediaBrowser.ServerApplication
 
             var logger = _logger = logManager.GetLogger("Main");
 
-            BeginLog(logger, appPaths);
+            ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
 
             // Install directly
             if (options.ContainsOption("-installservice"))
@@ -83,8 +85,6 @@ namespace MediaBrowser.ServerApplication
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             RunServiceInstallationIfNeeded(applicationPath);
-
-            var currentProcess = Process.GetCurrentProcess();
 
             if (IsAlreadyRunning(applicationPath, currentProcess))
             {
@@ -147,20 +147,23 @@ namespace MediaBrowser.ServerApplication
         /// <summary>
         /// Creates the application paths.
         /// </summary>
+        /// <param name="applicationPath">The application path.</param>
         /// <param name="runAsService">if set to <c>true</c> [run as service].</param>
         /// <returns>ServerApplicationPaths.</returns>
         private static ServerApplicationPaths CreateApplicationPaths(string applicationPath, bool runAsService)
         {
+            var resourcesPath = Path.GetDirectoryName(applicationPath);
+
             if (runAsService)
             {
                 var systemPath = Path.GetDirectoryName(applicationPath);
 
                 var programDataPath = Path.GetDirectoryName(systemPath);
 
-                return new ServerApplicationPaths(programDataPath, applicationPath);
+                return new ServerApplicationPaths(programDataPath, applicationPath, resourcesPath);
             }
 
-            return new ServerApplicationPaths(applicationPath);
+            return new ServerApplicationPaths(ApplicationPathHelper.GetProgramDataPath(applicationPath), applicationPath, resourcesPath);
         }
 
         /// <summary>
@@ -187,17 +190,6 @@ namespace MediaBrowser.ServerApplication
             }
         }
 
-        /// <summary>
-        /// Begins the log.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="appPaths">The app paths.</param>
-        private static void BeginLog(ILogger logger, IApplicationPaths appPaths)
-        {
-            logger.Info("Media Browser Server started");
-            ApplicationHost.LogEnvironmentInfo(logger, appPaths);
-        }
-
         private static readonly TaskCompletionSource<bool> ApplicationTaskCompletionSource = new TaskCompletionSource<bool>();
 
         /// <summary>
@@ -211,21 +203,25 @@ namespace MediaBrowser.ServerApplication
         {
             var fileSystem = new NativeFileSystem(logManager.GetLogger("FileSystem"), false);
 
-            _appHost = new ApplicationHost(appPaths, 
-                logManager, 
-                true, 
-                runService, 
-                options, 
-                fileSystem, 
-                "MBServer",
-                true);
+            var nativeApp = new WindowsApp
+            {
+                IsRunningAsService = runService
+            };
 
+            _appHost = new ApplicationHost(appPaths,
+                logManager,
+                options,
+                fileSystem,
+                "MBServer",
+                true,
+                nativeApp);
+            
             var initProgress = new Progress<double>();
 
             if (!runService)
             {
-                ShowSplashScreen(_appHost.ApplicationVersion, initProgress, logManager.GetLogger("Splash"));
-                
+                if (!options.ContainsOption("-nosplash")) ShowSplashScreen(_appHost.ApplicationVersion, initProgress, logManager.GetLogger("Splash"));
+
                 // Not crazy about this but it's the only way to suppress ffmpeg crash dialog boxes
                 SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT |
                              ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
@@ -245,11 +241,11 @@ namespace MediaBrowser.ServerApplication
 
                 SystemEvents.SessionEnding += SystemEvents_SessionEnding;
                 SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
-   
+
                 HideSplashScreen();
 
                 ShowTrayIcon();
-                
+
                 task = ApplicationTaskCompletionSource.Task;
                 Task.WaitAll(task);
             }
@@ -260,7 +256,7 @@ namespace MediaBrowser.ServerApplication
         {
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
-            _serverNotifyIcon = new ServerNotifyIcon(_appHost.LogManager, _appHost, _appHost.ServerConfigurationManager, _appHost.UserManager, _appHost.LibraryManager, _appHost.JsonSerializer, _appHost.LocalizationManager, _appHost.UserViewManager);
+            _serverNotifyIcon = new ServerNotifyIcon(_appHost.LogManager, _appHost, _appHost.ServerConfigurationManager, _appHost.LocalizationManager);
             Application.Run();
         }
 
@@ -274,7 +270,7 @@ namespace MediaBrowser.ServerApplication
 
                 _splash.ShowDialog();
             });
-           
+
             thread.SetApartmentState(ApartmentState.STA);
             thread.IsBackground = true;
             thread.Start();
@@ -300,7 +296,7 @@ namespace MediaBrowser.ServerApplication
         {
             if (e.Reason == SessionSwitchReason.SessionLogon)
             {
-                BrowserLauncher.OpenDashboard(_appHost.UserManager, _appHost.ServerConfigurationManager, _appHost, _logger);
+                BrowserLauncher.OpenDashboard(_appHost, _logger);
             }
         }
 
@@ -451,9 +447,7 @@ namespace MediaBrowser.ServerApplication
         {
             var exception = (Exception)e.ExceptionObject;
 
-            LogUnhandledException(exception);
-
-            _appHost.LogManager.Flush();
+            new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager).Log(exception);
 
             if (!_isRunningAsService)
             {
@@ -464,18 +458,6 @@ namespace MediaBrowser.ServerApplication
             {
                 Environment.Exit(Marshal.GetHRForException(exception));
             }
-        }
-
-        private static void LogUnhandledException(Exception ex)
-        {
-            _logger.ErrorException("UnhandledException", ex);
-
-            var path = Path.Combine(_appHost.ServerConfigurationManager.ApplicationPaths.LogDirectoryPath, "unhandled_" + Guid.NewGuid() + ".txt");
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-            var builder = LogHelper.GetLogMessage(ex);
-
-            File.WriteAllText(path, builder.ToString());
         }
 
         /// <summary>

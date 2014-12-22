@@ -25,7 +25,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Occurs when [local user sign out].
         /// </summary>
-        event EventHandler<EventArgs> LocalUserSignOut;
+        event EventHandler<GenericEventArgs<IApiClient>> LocalUserSignOut;
         /// <summary>
         /// Occurs when [connect user sign out].
         /// </summary>
@@ -60,6 +60,14 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;ConnectionResult&gt;.</returns>
         Task<ConnectionResult> Connect(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Connects the specified API client.
+        /// </summary>
+        /// <param name="apiClient">The API client.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;ConnectionResult&gt;.</returns>
+        Task<ConnectionResult> Connect(IApiClient apiClient, CancellationToken cancellationToken);
         
         /// <summary>
         /// Connects the specified server.
@@ -68,6 +76,15 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;ConnectionResult&gt;.</returns>
         Task<ConnectionResult> Connect(ServerInfo server, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Connects the specified server.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;ConnectionResult&gt;.</returns>
+        Task<ConnectionResult> Connect(ServerInfo server, ConnectionOptions options, CancellationToken cancellationToken);
 
         /// <summary>
         /// Connects the specified server.
@@ -81,7 +98,7 @@ namespace MediaBrowser.Model.ApiClient
         /// Logouts this instance.
         /// </summary>
         /// <returns>Task&lt;ConnectionResult&gt;.</returns>
-        Task<ConnectionResult> Logout();
+        Task Logout();
 
         /// <summary>
         /// Logins to connect.

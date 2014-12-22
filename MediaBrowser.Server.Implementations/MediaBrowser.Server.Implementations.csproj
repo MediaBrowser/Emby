@@ -27,7 +27,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -36,7 +36,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -49,35 +49,33 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ThirdParty\libwebp\Imazen.WebP.dll</HintPath>
     </Reference>
+    <Reference Include="MediaBrowser.Naming, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MediaBrowser.Naming.1.0.0.18\lib\portable-net45+sl4+wp71+win8+wpa81\MediaBrowser.Naming.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Nat, Version=1.2.21.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Nat.1.2.21.0\lib\net40\Mono.Nat.dll</HintPath>
     </Reference>
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Api.Swagger">
       <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Api.Swagger.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.91.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.91.3\lib\net45\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\1.0.94.0\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Data.SQLite" Condition=" '$(ConfigurationName)' == 'Release Mono' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq" Condition=" '$(ConfigurationName)' == 'Release Mono' ">
-      <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack">
       <HintPath>..\ThirdParty\ServiceStack\ServiceStack.dll</HintPath>
     </Reference>
@@ -123,6 +121,7 @@
     <Compile Include="Devices\DeviceManager.cs" />
     <Compile Include="Devices\DeviceRepository.cs" />
     <Compile Include="Devices\CameraUploadsFolder.cs" />
+    <Compile Include="Drawing\ImageExtensions.cs" />
     <Compile Include="Drawing\ImageHeader.cs" />
     <Compile Include="Drawing\PercentPlayedDrawer.cs" />
     <Compile Include="Drawing\PlayedIndicatorDrawer.cs" />
@@ -181,7 +180,10 @@
     <Compile Include="IO\LibraryMonitor.cs" />
     <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
     <Compile Include="Library\LibraryManager.cs" />
+    <Compile Include="Library\LocalTrailerPostScanTask.cs" />
     <Compile Include="Library\MusicManager.cs" />
+    <Compile Include="Library\PathExtensions.cs" />
+    <Compile Include="Library\Resolvers\BaseVideoResolver.cs" />
     <Compile Include="Library\Resolvers\PhotoAlbumResolver.cs" />
     <Compile Include="Library\Resolvers\PhotoResolver.cs" />
     <Compile Include="Library\Resolvers\PlaylistResolver.cs" />
@@ -192,7 +194,6 @@
     <Compile Include="Library\Resolvers\Audio\MusicArtistResolver.cs" />
     <Compile Include="Library\Resolvers\ItemResolver.cs" />
     <Compile Include="Library\Resolvers\FolderResolver.cs" />
-    <Compile Include="Library\Resolvers\LocalTrailerResolver.cs" />
     <Compile Include="Library\Resolvers\Movies\BoxSetResolver.cs" />
     <Compile Include="Library\Resolvers\Movies\MovieResolver.cs" />
     <Compile Include="Library\Resolvers\TV\EpisodeResolver.cs" />
@@ -214,7 +215,6 @@
     <Compile Include="Library\Validators\PeopleValidator.cs" />
     <Compile Include="Library\Validators\StudiosPostScanTask.cs" />
     <Compile Include="Library\Validators\StudiosValidator.cs" />
-    <Compile Include="Library\Validators\UserViewPostScanTask.cs" />
     <Compile Include="Library\Validators\YearsPostScanTask.cs" />
     <Compile Include="LiveTv\ChannelImageProvider.cs" />
     <Compile Include="LiveTv\CleanDatabaseScheduledTask.cs" />
@@ -226,7 +226,7 @@
     <Compile Include="LiveTv\RefreshChannelsScheduledTask.cs" />
     <Compile Include="Localization\LocalizationManager.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
-    <Compile Include="Music\MusicDynamicImageProvider.cs" />
+    <Compile Include="Photos\DynamicImageProvider.cs" />
     <Compile Include="News\NewsEntryPoint.cs" />
     <Compile Include="News\NewsService.cs" />
     <Compile Include="Notifications\CoreNotificationTypes.cs" />
@@ -254,7 +254,6 @@
     <Compile Include="ScheduledTasks\RefreshIntrosTask.cs" />
     <Compile Include="ScheduledTasks\RefreshMediaLibraryTask.cs" />
     <Compile Include="ScheduledTasks\SystemUpdateTask.cs" />
-    <Compile Include="Security\AuthenticationException.cs" />
     <Compile Include="Security\AuthenticationRepository.cs" />
     <Compile Include="Security\EncryptionManager.cs" />
     <Compile Include="ServerApplicationPaths.cs" />
@@ -303,8 +302,10 @@
     <Compile Include="Sync\AppSyncProvider.cs" />
     <Compile Include="Sync\CloudSyncProvider.cs" />
     <Compile Include="Sync\MockSyncProvider.cs" />
+    <Compile Include="Sync\SyncJobProcessor.cs" />
     <Compile Include="Sync\SyncManager.cs" />
     <Compile Include="Sync\SyncRepository.cs" />
+    <Compile Include="Sync\SyncScheduledTask.cs" />
     <Compile Include="Themes\AppThemeManager.cs" />
     <Compile Include="TV\TVSeriesManager.cs" />
     <Compile Include="Udp\UdpMessageReceivedEventArgs.cs" />
@@ -407,20 +408,15 @@
     <EmbeddedResource Include="Localization\Server\hr.json" />
     <EmbeddedResource Include="Localization\JavaScript\zh_CN.json" />
     <EmbeddedResource Include="Localization\Server\zh_CN.json" />
+    <EmbeddedResource Include="Localization\JavaScript\fi.json" />
+    <EmbeddedResource Include="Localization\Server\fi.json" />
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\ca.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\ThirdParty\libwebp\windows\x86\libwebp.dll">
-      <Link>libwebp.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\css\highlight.default.css">
-      <Link>swagger-ui\css\highlight.default.css</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\ThirdParty\ServiceStack\swagger-ui\css\screen.css">
       <Link>swagger-ui\css\screen.css</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -498,23 +494,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Localization\iso6392.txt" />
-    <Content Include="x64\SQLite.Interop.dll" Condition=" '$(ConfigurationName)' != 'Release Mono' ">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\SQLite.Interop.dll" Condition=" '$(ConfigurationName)' != 'Release Mono' ">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Localization\Ratings\be.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.dll" Condition=" '$(ConfigurationName)' == 'Release Mono'">
-      <Link>System.Data.SQLite.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.Linq.dll" Condition=" '$(ConfigurationName)' == 'Release Mono'">
-      <Link>System.Data.SQLite.Linq.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

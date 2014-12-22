@@ -59,7 +59,7 @@
 
         $('.userMenu', page).popup("close").remove();
 
-        var html = '<div data-role="popup" class="userMenu" data-theme="a">';
+        var html = '<div data-role="popup" class="userMenu tapHoldMenu" data-theme="a">';
 
         html += '<ul data-role="listview" style="min-width: 180px;">';
         html += '<li data-role="list-divider">' + Globalize.translate('HeaderMenu') + '</li>';
@@ -139,7 +139,6 @@
         html += '<div class="cardFooter">';
 
         html += '<div class="cardText" style="text-align:right; float:right;">';
-
         html += '<button class="btnUserMenu" type="button" data-inline="true" data-iconpos="notext" data-icon="ellipsis-v" style="margin: 2px 0 0;"></button>';
         html += "</div>";
 
@@ -202,7 +201,7 @@
 
         $('.userMenu', page).popup("close").remove();
 
-        var html = '<div data-role="popup" class="userMenu" data-theme="a">';
+        var html = '<div data-role="popup" class="userMenu tapHoldMenu" data-theme="a">';
 
         html += '<ul data-role="listview" style="min-width: 180px;">';
         html += '<li data-role="list-divider">' + Globalize.translate('HeaderMenu') + '</li>';
@@ -403,10 +402,29 @@
 
     function showInvitePopup(page) {
 
-        $('#popupInvite', page).popup('open');
+        Dashboard.getCurrentUser().done(function (user) {
 
-        $('#txtConnectUsername', page).val('');
+            if (user.ConnectUserId) {
 
+                $('#popupInvite', page).popup('open');
+                $('#txtConnectUsername', page).val('');
+            } else {
+
+                var msg = Globalize.translate('MessageConnectAccountRequiredToInviteGuest');
+
+                msg += '<br/>';
+                msg += '<br/>';
+                msg += '<a href="useredit.html?userId=' + user.Id + '">' + Globalize.translate('ButtonLinkMyMediaBrowserAccount') + '</a>';
+                msg += '<br/>';
+
+                Dashboard.alert({
+                    message: msg,
+                    title: Globalize.translate('HeaderInviteGuest')
+                });
+
+            }
+
+        });
     }
 
     $(document).on('pageinit', "#userProfilesPage", function () {

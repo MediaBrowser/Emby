@@ -1,6 +1,6 @@
 ﻿(function ($, document) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('Poster', 'Poster');
 
     // The base query options
     var query = {
@@ -9,10 +9,12 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "Episode",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName",
+        Fields: "PrimaryImageAspectRatio,MediaSourceCount,IsUnidentified,UserData,SyncInfo",
         StartIndex: 0,
         IsMissing: false,
-        IsVirtualUnaired: false
+        IsVirtualUnaired: false,
+        ImageTypeLimit: 1,
+        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
     };
 
     function getSavedQueryKey() {
@@ -59,9 +61,19 @@
                     showTitle: true,
                     showParentTitle: true,
                     overlayText: true,
-                    selectionPanel: true,
                     lazy: true,
                     context: 'tv'
+                });
+            }
+            else if (view == "PosterCard") {
+                html += LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "backdrop",
+                    showTitle: true,
+                    showParentTitle: true,
+                    lazy: true,
+                    context: 'tv',
+                    cardLayout: true
                 });
             }
 
