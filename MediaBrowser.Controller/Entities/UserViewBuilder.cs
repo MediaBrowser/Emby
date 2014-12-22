@@ -1427,7 +1427,7 @@ namespace MediaBrowser.Controller.Entities
                 var hasTrailers = item as IHasTrailers;
                 if (hasTrailers != null)
                 {
-                    trailerCount = hasTrailers.LocalTrailerIds.Count;
+                    trailerCount = hasTrailers.GetTrailerIds().Count;
                 }
 
                 var ok = val ? trailerCount > 0 : trailerCount == 0;

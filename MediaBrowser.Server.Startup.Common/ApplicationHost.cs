@@ -346,6 +346,7 @@ namespace MediaBrowser.Server.Startup.Common
             new RenameXbmcOptions(ServerConfigurationManager).Run();
             new RenameXmlOptions(ServerConfigurationManager).Run();
             new DeprecatePlugins(ApplicationPaths).Run();
+            new DeleteDlnaProfiles(ApplicationPaths).Run();
         }
 
         /// <summary>
@@ -389,8 +390,8 @@ namespace MediaBrowser.Server.Startup.Common
             AuthenticationRepository = await GetAuthenticationRepository().ConfigureAwait(false);
             RegisterSingleInstance(AuthenticationRepository);
 
-            //SyncRepository = await GetSyncRepository().ConfigureAwait(false);
-            //RegisterSingleInstance(SyncRepository);
+            SyncRepository = await GetSyncRepository().ConfigureAwait(false);
+            RegisterSingleInstance(SyncRepository);
 
             UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this);
             RegisterSingleInstance(UserManager);
@@ -428,7 +429,7 @@ namespace MediaBrowser.Server.Startup.Common
             ImageProcessor = new ImageProcessor(LogManager.GetLogger("ImageProcessor"), ServerConfigurationManager.ApplicationPaths, FileSystemManager, JsonSerializer, MediaEncoder);
             RegisterSingleInstance(ImageProcessor);
 
-            SyncManager = new SyncManager(LibraryManager, SyncRepository, ImageProcessor, LogManager.GetLogger("SyncManager"));
+            SyncManager = new SyncManager(LibraryManager, SyncRepository, ImageProcessor, LogManager.GetLogger("SyncManager"), UserManager);
             RegisterSingleInstance(SyncManager);
 
             DtoService = new DtoService(Logger, LibraryManager, UserDataManager, ItemRepository, ImageProcessor, ServerConfigurationManager, FileSystemManager, ProviderManager, () => ChannelManager, SyncManager, this);

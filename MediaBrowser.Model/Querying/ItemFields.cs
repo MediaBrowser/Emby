@@ -162,10 +162,15 @@ namespace MediaBrowser.Model.Querying
         ScreenshotImageTags,
 
         /// <summary>
+        /// The series genres
+        /// </summary>
+        SeriesGenres,
+
+        /// <summary>
         /// The series studio
         /// </summary>
         SeriesStudio,
-
+        
         /// <summary>
         /// The soundtrack ids
         /// </summary>

@@ -5,7 +5,7 @@
         var query = {
 
             Limit: 24,
-            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated",
+            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated,SyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ExcludeLocationTypes: "Virtual",
             ImageTypeLimit: 1,
@@ -40,7 +40,7 @@
         var query = {
 
             Limit: 24,
-            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated",
+            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated,SyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ExcludeLocationTypes: "Virtual",
             ImageTypeLimit: 1,
@@ -89,8 +89,6 @@
 
     function loadResume(page) {
 
-        var screenWidth = $(window).width();
-
         var parentId = LibraryMenu.getTopParentId();
 
         var options = {
@@ -99,9 +97,9 @@
             SortOrder: "Descending",
             IncludeItemTypes: "Episode",
             Filters: "IsResumable",
-            Limit: screenWidth >= 1920 ? 6 : (screenWidth >= 1200 ? 6 : 4),
+            Limit: 6,
             Recursive: true,
-            Fields: "PrimaryImageAspectRatio,SeriesInfo,UserData",
+            Fields: "PrimaryImageAspectRatio,SeriesInfo,UserData,SyncInfo",
             ExcludeLocationTypes: "Virtual",
             ParentId: parentId,
             ImageTypeLimit: 1,

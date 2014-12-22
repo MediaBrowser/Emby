@@ -1,6 +1,6 @@
 ﻿(function ($, document) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    var view = LibraryBrowser.getDefaultItemsView('Poster', 'Poster');
 
     // The base query options
     var query = {
@@ -9,7 +9,7 @@
         SortOrder: "Ascending",
         IncludeItemTypes: "BoxSet",
         Recursive: true,
-        Fields: "PrimaryImageAspectRatio,SortName",
+        Fields: "PrimaryImageAspectRatio,SortName,SyncInfo",
         StartIndex: 0,
         ImageTypeLimit: 1,
         EnableImageTypes: "Primary,Backdrop,Banner,Thumb"

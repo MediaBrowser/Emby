@@ -833,7 +833,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             var hasTrailers = item as IHasTrailers;
             if (hasTrailers != null)
             {
-                dto.LocalTrailerCount = hasTrailers.LocalTrailerIds.Count;
+                dto.LocalTrailerCount = hasTrailers.GetTrailerIds().Count;
             }
 
             var hasDisplayOrder = item as IHasDisplayOrder;
@@ -915,7 +915,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
 
             // If there is no art, indicate what parent has one in case the Ui wants to allow inheritance
-            if (!dto.HasArtImage && options.GetImageLimit(ImageType.Thumb) > 0)
+            if (!dto.HasArtImage && options.GetImageLimit(ImageType.Art) > 0)
             {
                 var parentWithImage = GetParentImageItem(item, ImageType.Art, owner);
 
@@ -1141,6 +1141,15 @@ namespace MediaBrowser.Server.Implementations.Dto
                 {
                     dto.SeasonId = episodeSeason.Id.ToString("N");
                     dto.SeasonName = episodeSeason.Name;
+                }
+
+                if (fields.Contains(ItemFields.SeriesGenres))
+                {
+                    var episodeseries = episode.Series;
+                    if (episodeseries != null)
+                    {
+                        dto.SeriesGenres = episodeseries.Genres.ToList();
+                    }
                 }
             }
 

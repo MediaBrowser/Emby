@@ -2,7 +2,6 @@
 
     $(document).on('pagebeforeshow', "#tvNextUpPage", function () {
 
-        var screenWidth = $(window).width();
         var userId = Dashboard.getCurrentUserId();
 
         var parentId = LibraryMenu.getTopParentId();
@@ -13,7 +12,7 @@
 
             IncludeItemTypes: "Episode",
             Limit: 30,
-            Fields: "PrimaryImageAspectRatio",
+            Fields: "PrimaryImageAspectRatio,SyncInfo",
             ParentId: parentId,
             IsPlayed: false,
             ImageTypeLimit: 1,
@@ -30,7 +29,7 @@
                 showParentTitle: false,
                 showUnplayedIndicator: false,
                 showChildCountIndicator: true,
-                overlayText: screenWidth >= 600,
+                overlayText: true,
                 lazy: true
 
             })).trigger('create').createCardMenus();
