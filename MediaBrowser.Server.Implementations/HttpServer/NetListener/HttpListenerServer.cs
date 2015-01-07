@@ -38,7 +38,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer.NetListener
             UrlPrefixes = urlPrefixes.ToList();
 
             if (_listener == null)
+            {
                 _listener = new HttpListener();
+            }
 
             //HostContext.Config.HandlerFactoryPath = ListenerRequest.GetHandlerPathIfAny(UrlPrefixes.First());
 
