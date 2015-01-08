@@ -44,6 +44,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private readonly bool _supportsNativeWebSocket;
 
+        private string _certificateLocation;
+
         /// <summary>
         /// Gets the local end points.
         /// </summary>
@@ -217,10 +219,12 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         {
             if (_supportsNativeWebSocket && NativeWebSocket.IsSupported)
             {
+                // Certificate location is ignored here. You need to use netsh 
+                // to assign the certificate to the proper port.
                 return new HttpListenerServer(_logger, OnRequestReceived);
             }
 
-            return new WebSocketSharpListener(_logger, OnRequestReceived);
+            return new WebSocketSharpListener(_logger, OnRequestReceived, _certificateLocation);
         }
 
         private void WebSocketHandler(WebSocketConnectEventArgs args)
@@ -425,8 +429,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             GC.SuppressFinalize(this);
         }
 
-        public void StartServer(IEnumerable<string> urlPrefixes)
+        public void StartServer(IEnumerable<string> urlPrefixes, string certificateLocation)
         {
+            _certificateLocation = certificateLocation;
             UrlPrefixes = urlPrefixes.ToList();
             Start(UrlPrefixes.First());
         }

@@ -17,11 +17,14 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
         private readonly ILogger _logger;
         private readonly Action<string> _endpointListener;
+        private readonly string  _certificateLocation ;
 
-        public WebSocketSharpListener(ILogger logger, Action<string> endpointListener)
+        public WebSocketSharpListener(ILogger logger, Action<string> endpointListener, 
+            string certificateLocation)
         {
             _logger = logger;
             _endpointListener = endpointListener;
+            _certificateLocation = certificateLocation;
         }
 
         public Action<Exception, IRequest> ErrorHandler { get; set; }
@@ -33,7 +36,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         public void Start(IEnumerable<string> urlPrefixes)
         {
             if (_listener == null)
-                _listener = new HttpListener(new SocketSharpLogger(_logger));
+                _listener = new HttpListener(new SocketSharpLogger(_logger), _certificateLocation);
 
             foreach (var prefix in urlPrefixes)
             {

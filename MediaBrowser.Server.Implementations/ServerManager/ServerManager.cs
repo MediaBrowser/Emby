@@ -99,22 +99,22 @@ namespace MediaBrowser.Server.Implementations.ServerManager
         /// <summary>
         /// Starts this instance.
         /// </summary>
-        public void Start(IEnumerable<string> urlPrefixes)
+        public void Start(IEnumerable<string> urlPrefixes, string certificateLocation)
         {
-            ReloadHttpServer(urlPrefixes);
+            ReloadHttpServer(urlPrefixes, certificateLocation);
         }
 
         /// <summary>
         /// Restarts the Http Server, or starts it if not currently running
         /// </summary>
-        private void ReloadHttpServer(IEnumerable<string> urlPrefixes)
+        private void ReloadHttpServer(IEnumerable<string> urlPrefixes, string certificateLocation)
         {
             _logger.Info("Loading Http Server");
 
             try
             {
                 HttpServer = _applicationHost.Resolve<IHttpServer>();
-                HttpServer.StartServer(urlPrefixes);
+                HttpServer.StartServer(urlPrefixes, certificateLocation);
             }
             catch (SocketException ex)
             {

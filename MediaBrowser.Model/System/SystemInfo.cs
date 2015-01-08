@@ -51,12 +51,6 @@ namespace MediaBrowser.Model.System
         public List<InstallationInfo> InProgressInstallations { get; set; }
 
         /// <summary>
-        /// Gets or sets the web socket port number.
-        /// </summary>
-        /// <value>The web socket port number.</value>
-        public int WebSocketPortNumber { get; set; }
-
-        /// <summary>
         /// Gets or sets the completed installations.
         /// </summary>
         /// <value>The completed installations.</value>
@@ -127,6 +121,25 @@ namespace MediaBrowser.Model.System
         /// </summary>
         /// <value>The HTTP server port number.</value>
         public int HttpServerPortNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value pointing to the file system where the ssl certiifcate is located.
+        /// </summary>
+        /// <value>The value pointing to the file system where the ssl certiifcate is located.</value>
+        public bool UseHttps { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value pointing to the file system where the ssl certiifcate is located..
+        /// </summary>
+        /// <value>The value pointing to the file system where the ssl certiifcate is located..</value>
+        public string CertificateLocation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HTTPS server port number.
+        /// </summary>
+        /// <value>The HTTPS server port number.</value>
+        public int HttpsServerPortNumber { get; set; }
+
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has update available.

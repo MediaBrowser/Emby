@@ -133,6 +133,11 @@ namespace MediaBrowser.Server.Startup.Common
                     "http://+:" + ServerConfigurationManager.Configuration.HttpServerPortNumber + "/" + WebApplicationName + "/"
                 };
 
+                if (ServerConfigurationManager.Configuration.UseHttps)
+                {
+                    list.Add("https://+:" + ServerConfigurationManager.Configuration.HttpsServerPortNumber + "/" + WebApplicationName + "/");
+                }
+
                 return list;
             }
         }
@@ -810,7 +815,7 @@ namespace MediaBrowser.Server.Startup.Common
         {
             try
             {
-                ServerManager.Start(HttpServerUrlPrefixes);
+                ServerManager.Start(HttpServerUrlPrefixes, CertificateLocation);
             }
             catch (Exception ex)
             {
@@ -965,7 +970,6 @@ namespace MediaBrowser.Server.Startup.Common
                 HasPendingRestart = HasPendingRestart,
                 Version = ApplicationVersion.ToString(),
                 IsNetworkDeployed = CanSelfUpdate,
-                WebSocketPortNumber = HttpServerPort,
                 SupportsNativeWebSocket = true,
                 FailedPluginAssemblies = FailedAssemblies.ToList(),
                 InProgressInstallations = InstallationManager.CurrentInstallations.Select(i => i.Item1).ToList(),
@@ -978,6 +982,8 @@ namespace MediaBrowser.Server.Startup.Common
                 CachePath = ApplicationPaths.CachePath,
                 MacAddress = GetMacAddress(),
                 HttpServerPortNumber = HttpServerPort,
+                UseHttps = UseHttps,
+                CertificateLocation = CertificateLocation,
                 OperatingSystem = OperatingSystemDisplayName,
                 CanSelfRestart = CanSelfRestart,
                 CanSelfUpdate = CanSelfUpdate,
@@ -1050,6 +1056,21 @@ namespace MediaBrowser.Server.Startup.Common
         public int HttpServerPort
         {
             get { return ServerConfigurationManager.Configuration.HttpServerPortNumber; }
+        }
+
+        public bool UseHttps
+        {
+            get { return this.ServerConfigurationManager.Configuration.UseHttps; }
+        }
+
+        public string CertificateLocation
+        {
+            get { return this.ServerConfigurationManager.Configuration.CertificateLocation; }
+        }
+
+        public int HttpsServerPort
+        {
+            get { return ServerConfigurationManager.Configuration.HttpsServerPortNumber; }
         }
 
         /// <summary>
