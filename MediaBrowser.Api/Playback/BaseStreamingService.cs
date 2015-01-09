@@ -338,7 +338,8 @@ namespace MediaBrowser.Api.Playback
 
             var qualitySetting = GetQualitySetting();
 
-            if (string.Equals(videoCodec, H264Encoder, StringComparison.OrdinalIgnoreCase))
+            // h264 (libx264)
+            if (string.Equals(videoCodec, "libx264", StringComparison.OrdinalIgnoreCase))
             {
                 switch (qualitySetting)
                 {
@@ -365,6 +366,24 @@ namespace MediaBrowser.Api.Playback
                         param += " -crf 18";
                         break;
                 }
+            }
+
+            // h264 (h264_qsv)
+            else if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+            {
+                switch (qualitySetting)
+                {
+                    case EncodingQuality.HighSpeed:
+                        param = "-preset 7";
+                        break;
+                    case EncodingQuality.HighQuality:
+                        param = "-preset 4";
+                        break;
+                    case EncodingQuality.MaxQuality:
+                        param = "-preset 1";
+                        break;
+                }
+
             }
 
             // webm
@@ -513,13 +532,21 @@ namespace MediaBrowser.Api.Playback
                 filters.Add("yadif=0:-1:0");
             }
 
+            int roundingFactor;
+            if (outputVideoCodec == "h264_qsv")  {
+                roundingFactor = 32;
+            }
+            else {
+                roundingFactor = 2; 
+            }
+
             // If fixed dimensions were supplied
             if (request.Width.HasValue && request.Height.HasValue)
             {
                 var widthParam = request.Width.Value.ToString(UsCulture);
                 var heightParam = request.Height.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", widthParam, heightParam));
+                filters.Add(string.Format("scale=trunc({0}/{2})*{2}:trunc({1}/{2})*{2}", widthParam, heightParam, roundingFactor));
             }
 
             // If Max dimensions were supplied, for width selects lowest even number between input width and width req size and selects lowest even number from in width*display aspect and requested size
@@ -528,39 +555,39 @@ namespace MediaBrowser.Api.Playback
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(min(iw\\,{0})/2)*2:trunc(min((iw/dar)\\,{1})/2)*2", maxWidthParam, maxHeightParam));
+                filters.Add(string.Format("scale=trunc(min(iw\\,{0})/{2})*{2}:trunc(min((iw/dar)\\,{1})/{2})*{2}", maxWidthParam, maxHeightParam, roundingFactor));
             }
 
             // If a fixed width was requested
             else if (request.Width.HasValue)
             {
-                var widthParam = request.Width.Value.ToString(UsCulture);
+                var widthParam = ((Math.Truncate((double)request.Width.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
+                filters.Add(string.Format("scale={0}:trunc(ow/a/{1})*{1}", widthParam, roundingFactor));
             }
 
             // If a fixed height was requested
             else if (request.Height.HasValue)
             {
-                var heightParam = request.Height.Value.ToString(UsCulture);
+                var heightParam = ((Math.Truncate((double)request.Height.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a*2)/2:{0}", heightParam));
+                filters.Add(string.Format("scale=trunc(oh*a*{1})/{1}:{0}", heightParam, roundingFactor));
             }
 
             // If a max width was requested
             else if (request.MaxWidth.HasValue && (!request.MaxHeight.HasValue || state.VideoStream == null))
             {
-                var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
+                var maxWidthParam = ((Math.Truncate((double)request.MaxWidth.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
+                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/{1})*{1}", maxWidthParam, roundingFactor));
             }
 
             // If a max height was requested
             else if (request.MaxHeight.HasValue && (!request.MaxWidth.HasValue || state.VideoStream == null))
             {
-                var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
+                var maxHeightParam = ((Math.Truncate((double)request.MaxHeight.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a*2)/2:min(ih\\,{0})", maxHeightParam));
+                filters.Add(string.Format("scale=trunc(oh*a*{1})/{1}:min(ih\\,{0})", maxHeightParam, roundingFactor));
             }
 
             else if (request.MaxWidth.HasValue ||
@@ -581,10 +608,15 @@ namespace MediaBrowser.Api.Playback
                     var manualWidthParam = outputSize.Width.ToString(UsCulture);
                     var manualHeightParam = outputSize.Height.ToString(UsCulture);
 
-                    filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", manualWidthParam, manualHeightParam));
+                    filters.Add(string.Format("scale=trunc({0}/{2})*{2}:trunc({1}/{2})*{2}", manualWidthParam, manualHeightParam, roundingFactor));
                 }
             }
 
+            if (H264Encoder == "h264_qsv")
+            {
+                filters[filters.Count -1] += ":flags=fast_bilinear";
+            } 
+                        
             var output = string.Empty;
 
             if (state.SubtitleStream != null && state.SubtitleStream.IsTextSubtitleStream)
@@ -1200,6 +1232,23 @@ namespace MediaBrowser.Api.Playback
                 {
                     return string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
                 }
+
+                // h264_qsv
+                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (hasFixedResolution)
+                    {
+                        if (isHls)
+                        {
+                            return string.Format(" -b:v {0} -maxrate ({0}*.80) -bufsize {0}", bitrate.Value.ToString(UsCulture));
+                        }
+
+                        return string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
+                    }
+
+                    return string.Format(" -b:v {0} -maxrate ({0}*1.2) -bufsize ({0}*2)", bitrate.Value.ToString(UsCulture));
+                }
+                
 
                 // H264
                 if (hasFixedResolution)
