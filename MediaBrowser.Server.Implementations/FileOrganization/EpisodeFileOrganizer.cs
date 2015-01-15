@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Server.Implementations.Library;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
@@ -55,7 +56,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 FileSize = new FileInfo(path).Length
             };
 
-            var resolver = new Naming.TV.EpisodeResolver(new ExtendedNamingOptions(), new Naming.Logging.NullLogger());
+            var namingOptions = ((LibraryManager) _libraryManager).GetNamingOptions();
+            var resolver = new Naming.TV.EpisodeResolver(namingOptions, new Naming.Logging.NullLogger());
 
             var episodeInfo = resolver.Resolve(path, FileInfoType.File) ??
                 new Naming.TV.EpisodeInfo();
@@ -207,7 +209,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        File.Delete(path);
+                        _fileSystem.DeleteFile(path);
                     }
                     catch (IOException ex)
                     {
@@ -313,7 +315,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 try
                 {
-                    File.Delete(result.OriginalPath);
+                    _fileSystem.DeleteFile(result.OriginalPath);
                 }
                 catch (Exception ex)
                 {

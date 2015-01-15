@@ -120,7 +120,7 @@ namespace MediaBrowser.Api.Playback
         private string GetOutputFilePath(StreamState state)
         {
             var folder = Path.Combine(ServerConfigurationManager.ApplicationPaths.TranscodingTempPath, EncodingContext.Streaming.ToString().ToLower());
-            
+
             var outputFileExtension = GetOutputFileExtension(state);
 
             var data = GetCommandLineArguments("dummy\\dummy", "dummyTranscodingId", state, false);
@@ -279,32 +279,7 @@ namespace MediaBrowser.Api.Playback
                 return Math.Max(Environment.ProcessorCount - 1, 2);
             }
 
-            // Use more when this is true. -re will keep cpu usage under control
-            if (state.ReadInputAtNativeFramerate)
-            {
-                if (isWebm)
-                {
-                    return Math.Max(Environment.ProcessorCount - 1, 2);
-                }
-
-                return 0;
-            }
-
-            // Webm: http://www.webmproject.org/docs/encoder-parameters/
-            // The decoder will usually automatically use an appropriate number of threads according to how many cores are available but it can only use multiple threads 
-            // for the coefficient data if the encoder selected --token-parts > 0 at encode time.
-
-            switch (GetQualitySetting())
-            {
-                case EncodingQuality.HighSpeed:
-                    return 2;
-                case EncodingQuality.HighQuality:
-                    return 2;
-                case EncodingQuality.MaxQuality:
-                    return isWebm ? Math.Max(Environment.ProcessorCount - 1, 2) : 0;
-                default:
-                    throw new Exception("Unrecognized MediaEncodingQuality value.");
-            }
+            return 0;
         }
 
         protected string H264Encoder
@@ -341,18 +316,7 @@ namespace MediaBrowser.Api.Playback
             // h264 (libx264)
             if (string.Equals(videoCodec, "libx264", StringComparison.OrdinalIgnoreCase))
             {
-                switch (qualitySetting)
-                {
-                    case EncodingQuality.HighSpeed:
-                        param = "-preset superfast";
-                        break;
-                    case EncodingQuality.HighQuality:
-                        param = "-preset superfast";
-                        break;
-                    case EncodingQuality.MaxQuality:
-                        param = "-preset superfast";
-                        break;
-                }
+                param = "-preset superfast";
 
                 switch (qualitySetting)
                 {
@@ -364,6 +328,24 @@ namespace MediaBrowser.Api.Playback
                         break;
                     case EncodingQuality.MaxQuality:
                         param += " -crf 18";
+                        break;
+                }
+            }
+
+            else if (string.Equals(videoCodec, "libx265", StringComparison.OrdinalIgnoreCase))
+            {
+                param = "-preset fast";
+
+                switch (qualitySetting)
+                {
+                    case EncodingQuality.HighSpeed:
+                        param += " -crf 28";
+                        break;
+                    case EncodingQuality.HighQuality:
+                        param += " -crf 25";
+                        break;
+                    case EncodingQuality.MaxQuality:
+                        param += " -crf 21";
                         break;
                 }
             }
@@ -381,6 +363,24 @@ namespace MediaBrowser.Api.Playback
                         break;
                     case EncodingQuality.MaxQuality:
                         param = "-preset 1";
+                        break;
+                }
+
+            }
+
+            // h264 (libnvenc)
+            else if (string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
+            {
+                switch (qualitySetting)
+                {
+                    case EncodingQuality.HighSpeed:
+                        param = "-preset high-performance";
+                        break;
+                    case EncodingQuality.HighQuality:
+                        param = "";
+                        break;
+                    case EncodingQuality.MaxQuality:
+                        param = "-preset high-quality";
                         break;
                 }
 
@@ -463,7 +463,47 @@ namespace MediaBrowser.Api.Playback
 
             if (!string.IsNullOrEmpty(state.VideoRequest.Level))
             {
-                param += " -level " + state.VideoRequest.Level;
+                if (String.Equals(H264Encoder, "h264_qsv", StringComparison.OrdinalIgnoreCase) || String.Equals(H264Encoder, "libnvenc", StringComparison.OrdinalIgnoreCase))
+                {
+                    // h264_qsv and libnvenc expect levels to be expressed as a decimal. libx264 support decimal and non-decimal format
+                    switch (state.VideoRequest.Level)
+                    {
+                        case "30":
+                            param += " -level 3";
+                            break;
+                        case "31":
+                            param += " -level 3.1";
+                            break;
+                        case "32":
+                            param += " -level 3.2";
+                            break;
+                        case "40":
+                            param += " -level 4";
+                            break;
+                        case "41":
+                            param += " -level 4.1";
+                            break;
+                        case "42":
+                            param += " -level 4.2";
+                            break;
+                        case "50":
+                            param += " -level 5";
+                            break;
+                        case "51":
+                            param += " -level 5.1";
+                            break;
+                        case "52":
+                            param += " -level 5.2";
+                            break;
+                        default:
+                            param += " -level " + state.VideoRequest.Level;
+                            break;
+                    }
+                }
+                else
+                {
+                    param += " -level " + state.VideoRequest.Level;
+                }
             }
 
             return param;
@@ -533,11 +573,13 @@ namespace MediaBrowser.Api.Playback
             }
 
             int roundingFactor;
-            if (outputVideoCodec == "h264_qsv")  {
+            if (String.Equals(outputVideoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+            {
                 roundingFactor = 32;
             }
-            else {
-                roundingFactor = 2; 
+            else
+            {
+                roundingFactor = 2;
             }
 
             // If fixed dimensions were supplied
@@ -612,11 +654,11 @@ namespace MediaBrowser.Api.Playback
                 }
             }
 
-            if (H264Encoder == "h264_qsv")
+            if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
             {
-                filters[filters.Count -1] += ":flags=fast_bilinear";
-            } 
-                        
+                filters[filters.Count - 1] += ":flags=fast_bilinear";
+            }
+
             var output = string.Empty;
 
             if (state.SubtitleStream != null && state.SubtitleStream.IsTextSubtitleStream)
@@ -848,7 +890,7 @@ namespace MediaBrowser.Api.Playback
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -1233,8 +1275,8 @@ namespace MediaBrowser.Api.Playback
                     return string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
                 }
 
-                // h264_qsv
-                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+                // h264_qsv and libnvenc
+                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) || string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
                 {
                     if (hasFixedResolution)
                     {
@@ -1249,7 +1291,6 @@ namespace MediaBrowser.Api.Playback
                     return string.Format(" -b:v {0} -maxrate ({0}*1.2) -bufsize ({0}*2)", bitrate.Value.ToString(UsCulture));
                 }
                 
-
                 // H264
                 if (hasFixedResolution)
                 {

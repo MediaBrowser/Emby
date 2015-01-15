@@ -45,20 +45,13 @@
 }
 
 .cardBox {
-    margin: 4px;
+    margin: 3px;
 }
 
 .grayscale {
     -webkit-filter: grayscale(100%);
     -moz-filter: grayscale(100%);
     filter: grayscale(100%);
-}
-
-@media all and (max-width: 800px) {
-
-    .cardBox {
-        margin: 0 2px;
-    }
 }
 
 @media all and (max-width: 600px) {
@@ -89,7 +82,7 @@
     background: #fff;
 }
 
-.visualCardBox-b {
+.ui-page-theme-b .visualCardBox {
     background: rgb(51, 51, 51);
     border: 1px solid rgb(31, 31, 31);
     border-radius: 3px;
@@ -155,9 +148,6 @@
     width: 100%;
 }*/
 
-.cardFooter {
-}
-
 .cardContent .cardFooter {
     position: absolute;
     bottom: 0;
@@ -169,7 +159,7 @@
     background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%); /* W3C */
     left: 0;
     right: 0;
-    color: #fff;
+    color: inherit;
 }
 
 .cardText {
@@ -183,7 +173,7 @@
 }
 
 .cardOverlayInner {
-    color: #fff;
+    color: inherit;
 }
 
 .cardTextCentered {
@@ -199,7 +189,7 @@
 }
 
 .libraryPage .cardDefaultText, .libraryPage .cardText {
-    color: #fff;
+    color: inherit;
 }
 
 .cardContent .cardText {

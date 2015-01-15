@@ -27,6 +27,12 @@ namespace MediaBrowser.Model.Configuration
         public int HttpServerPortNumber { get; set; }
 
         /// <summary>
+        /// Gets or sets the HTTPS server port number.
+        /// </summary>
+        /// <value>The HTTPS server port number.</value>
+        public int HttpsPortNumber { get; set; }
+        
+        /// <summary>
         /// Gets or sets a value indicating whether [enable internet providers].
         /// </summary>
         /// <value><c>true</c> if [enable internet providers]; otherwise, <c>false</c>.</value>
@@ -67,6 +73,12 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable localized guids]; otherwise, <c>false</c>.</value>
         public bool EnableLocalizedGuids { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable library metadata sub folder].
+        /// </summary>
+        /// <value><c>true</c> if [enable library metadata sub folder]; otherwise, <c>false</c>.</value>
+        public bool EnableLibraryMetadataSubFolder { get; set; }
         
         /// <summary>
         /// Gets or sets the preferred metadata language.
@@ -143,7 +155,11 @@ namespace MediaBrowser.Model.Configuration
         /// <value><c>true</c> if [enable tv db updates]; otherwise, <c>false</c>.</value>
         public bool EnableTvDbUpdates { get; set; }
         public bool EnableTmdbUpdates { get; set; }
+
+        public bool StoreArtistsInMetadata { get; set; }
+
         public bool EnableFanArtUpdates { get; set; }
+        public string FanartApiKey { get; set; }
 
         /// <summary>
         /// Gets or sets the image saving convention.
@@ -168,12 +184,15 @@ namespace MediaBrowser.Model.Configuration
         public PeopleMetadataOptions PeopleMetadataOptions { get; set; }
         public bool FindInternetTrailers { get; set; }
 
-        public string[] InsecureApps7 { get; set; }
+        public string[] InsecureApps8 { get; set; }
 
         public bool SaveMetadataHidden { get; set; }
         public bool EnableWin8HttpListener { get; set; }
 
         public NameValuePair[] ContentTypes { get; set; }
+
+        public bool EnableAudioArchiveFiles { get; set; }
+        public bool EnableVideoArchiveFiles { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
@@ -184,6 +203,7 @@ namespace MediaBrowser.Model.Configuration
             ImageSavingConvention = ImageSavingConvention.Compatible;
             PublicPort = 8096;
             HttpServerPortNumber = 8096;
+            HttpsPortNumber = 8920;
             EnableDashboardResponseCaching = true;
 
             EnableAutomaticRestart = true;
@@ -220,7 +240,7 @@ namespace MediaBrowser.Model.Configuration
 
             PeopleMetadataOptions = new PeopleMetadataOptions();
 
-            InsecureApps7 = new[]
+            InsecureApps8 = new[]
             {
                 "Chromecast",
                 "iOS",
@@ -229,7 +249,8 @@ namespace MediaBrowser.Model.Configuration
                 "Media Portal",
                 "iPad",
                 "iPhone",
-                "Roku"
+                "Roku",
+                "Windows Phone"
             };
 
             MetadataOptions = new[]

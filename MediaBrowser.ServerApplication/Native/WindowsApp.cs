@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Net;
 using MediaBrowser.IsoMounter;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Server.Startup.Common;
@@ -10,6 +11,13 @@ namespace MediaBrowser.ServerApplication.Native
 {
     public class WindowsApp : INativeApp
     {
+        private readonly IFileSystem _fileSystem;
+
+        public WindowsApp(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
         public List<Assembly> GetAssembliesWithParts()
         {
             var list = new List<Assembly>();
@@ -21,9 +29,9 @@ namespace MediaBrowser.ServerApplication.Native
             return list;
         }
 
-        public void AuthorizeServer(int httpServerPort, int udpPort, string tempDirectory)
+        public void AuthorizeServer(int udpPort, int httpServerPort, int httpsPort, string tempDirectory)
         {
-            ServerAuthorization.AuthorizeServer(udpPort, httpServerPort, tempDirectory);
+            ServerAuthorization.AuthorizeServer(udpPort, httpServerPort, httpsPort, tempDirectory);
         }
 
         public NativeEnvironment Environment
@@ -89,7 +97,7 @@ namespace MediaBrowser.ServerApplication.Native
 
         public void ConfigureAutoRun(bool autorun)
         {
-            Autorun.Configure(autorun);
+            Autorun.Configure(autorun, _fileSystem);
         }
 
         public INetworkManager CreateNetworkManager(ILogger logger)

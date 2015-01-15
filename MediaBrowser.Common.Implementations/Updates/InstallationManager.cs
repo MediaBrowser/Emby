@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Implementations.Security;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Progress;
@@ -105,8 +106,8 @@ namespace MediaBrowser.Common.Implementations.Updates
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISecurityManager _securityManager;
-        private readonly INetworkManager _networkManager;
         private readonly IConfigurationManager _config;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Gets the application host.
@@ -114,7 +115,7 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// <value>The application host.</value>
         private readonly IApplicationHost _applicationHost;
 
-        public InstallationManager(ILogger logger, IApplicationHost appHost, IApplicationPaths appPaths, IHttpClient httpClient, IJsonSerializer jsonSerializer, ISecurityManager securityManager, INetworkManager networkManager, IConfigurationManager config)
+        public InstallationManager(ILogger logger, IApplicationHost appHost, IApplicationPaths appPaths, IHttpClient httpClient, IJsonSerializer jsonSerializer, ISecurityManager securityManager, IConfigurationManager config, IFileSystem fileSystem)
         {
             if (logger == null)
             {
@@ -129,8 +130,8 @@ namespace MediaBrowser.Common.Implementations.Updates
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
             _securityManager = securityManager;
-            _networkManager = networkManager;
             _config = config;
+            _fileSystem = fileSystem;
             _logger = logger;
         }
 
@@ -158,7 +159,7 @@ namespace MediaBrowser.Common.Implementations.Updates
             var data = new Dictionary<string, string>
             {
                 { "key", _securityManager.SupporterKey }, 
-                { "mac", _networkManager.GetMacAddress() }, 
+                { "mac", _applicationHost.SystemId }, 
                 { "systemid", _applicationHost.SystemId }
             };
 
@@ -572,7 +573,7 @@ namespace MediaBrowser.Common.Implementations.Updates
 
             try
             {
-                File.Delete(tempFile);
+                _fileSystem.DeleteFile(tempFile);
             }
             catch (IOException e)
             {
@@ -593,7 +594,7 @@ namespace MediaBrowser.Common.Implementations.Updates
             // Remove it the quick way for now
             _applicationHost.RemovePlugin(plugin);
 
-            File.Delete(plugin.AssemblyFilePath);
+            _fileSystem.DeleteFile(plugin.AssemblyFilePath);
 
             OnPluginUninstalled(plugin);
 
