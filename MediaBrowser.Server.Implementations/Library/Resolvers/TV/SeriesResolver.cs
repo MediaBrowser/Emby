@@ -12,6 +12,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Naming.Common;
 using MediaBrowser.Naming.IO;
 using MediaBrowser.Naming.TV;
+using MediaBrowser.Server.Implementations.Logging;
 using EpisodeInfo = MediaBrowser.Controller.Providers.EpisodeInfo;
 
 namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
@@ -148,11 +149,11 @@ namespace MediaBrowser.Server.Implementations.Library.Resolvers.TV
                         if (!isTvContentType)
                         {
                             namingOptions.EpisodeExpressions = namingOptions.EpisodeExpressions
-                                .Where(i => i.IsNamed)
+                                .Where(i => i.IsNamed && !i.IsOptimistic)
                                 .ToList();
                         }
 
-                        var episodeResolver = new Naming.TV.EpisodeResolver(namingOptions, new Naming.Logging.NullLogger());
+                        var episodeResolver = new Naming.TV.EpisodeResolver(namingOptions, new PatternsLogger());
                         var episodeInfo = episodeResolver.Resolve(fullName, FileInfoType.File, false);
                         if (episodeInfo != null && episodeInfo.EpisodeNumber.HasValue)
                         {

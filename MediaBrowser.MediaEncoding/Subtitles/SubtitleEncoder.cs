@@ -459,7 +459,7 @@ namespace MediaBrowser.MediaEncoding.Subtitles
                     try
                     {
                         _logger.Info("Deleting converted subtitle due to failure: ", outputPath);
-                        File.Delete(outputPath);
+                        _fileSystem.DeleteFile(outputPath);
                     }
                     catch (IOException ex)
                     {
@@ -608,7 +608,7 @@ namespace MediaBrowser.MediaEncoding.Subtitles
                 try
                 {
                     _logger.Info("Deleting extracted subtitle due to failure: {0}", outputPath);
-                    File.Delete(outputPath);
+                    _fileSystem.DeleteFile(outputPath);
                 }
                 catch (FileNotFoundException)
                 {
@@ -706,10 +706,10 @@ namespace MediaBrowser.MediaEncoding.Subtitles
             {
                 if (string.Equals(charset, "utf-8", StringComparison.OrdinalIgnoreCase))
                 {
-                    //return null;
+                    return null;
                 }
 
-                //return charset;
+                return charset;
             }
 
             if (GetFileEncoding(path).Equals(Encoding.UTF8))

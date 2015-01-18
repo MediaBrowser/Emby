@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Model.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Channels;
@@ -210,10 +210,10 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 return;
             }
-
+            
             try
             {
-                File.Delete(file.FullName);
+                FileSystem.DeleteFile(file.FullName);
             }
             catch (IOException ex)
             {

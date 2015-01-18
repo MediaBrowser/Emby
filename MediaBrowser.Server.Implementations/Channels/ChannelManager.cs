@@ -11,6 +11,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Net;
@@ -1492,7 +1493,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
             else
             {
-                File.Delete(response.TempFilePath);
+                _fileSystem.DeleteFile(response.TempFilePath);
 
                 throw new ApplicationException("Unexpected response type encountered: " + response.ContentType);
             }
@@ -1501,7 +1502,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
             try
             {
-                File.Delete(response.TempFilePath);
+                _fileSystem.DeleteFile(response.TempFilePath);
             }
             catch
             {

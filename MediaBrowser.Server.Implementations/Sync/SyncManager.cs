@@ -1,5 +1,7 @@
 ﻿using MediaBrowser.Common;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
@@ -12,6 +14,7 @@ using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Sync;
 using MediaBrowser.Controller.TV;
 using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
@@ -22,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.Sync
@@ -37,10 +41,13 @@ namespace MediaBrowser.Server.Implementations.Sync
         private readonly IApplicationHost _appHost;
         private readonly ITVSeriesManager _tvSeriesManager;
         private readonly Func<IMediaEncoder> _mediaEncoder;
+        private readonly IFileSystem _fileSystem;
+        private readonly Func<ISubtitleEncoder> _subtitleEncoder;
+        private readonly IConfigurationManager _config;
 
         private ISyncProvider[] _providers = { };
 
-        public SyncManager(ILibraryManager libraryManager, ISyncRepository repo, IImageProcessor imageProcessor, ILogger logger, IUserManager userManager, Func<IDtoService> dtoService, IApplicationHost appHost, ITVSeriesManager tvSeriesManager, Func<IMediaEncoder> mediaEncoder)
+        public SyncManager(ILibraryManager libraryManager, ISyncRepository repo, IImageProcessor imageProcessor, ILogger logger, IUserManager userManager, Func<IDtoService> dtoService, IApplicationHost appHost, ITVSeriesManager tvSeriesManager, Func<IMediaEncoder> mediaEncoder, IFileSystem fileSystem, Func<ISubtitleEncoder> subtitleEncoder, IConfigurationManager config)
         {
             _libraryManager = libraryManager;
             _repo = repo;
@@ -51,6 +58,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             _appHost = appHost;
             _tvSeriesManager = tvSeriesManager;
             _mediaEncoder = mediaEncoder;
+            _fileSystem = fileSystem;
+            _subtitleEncoder = subtitleEncoder;
+            _config = config;
         }
 
         public void AddParts(IEnumerable<ISyncProvider> providers)
@@ -60,7 +70,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public async Task<SyncJobCreationResult> CreateJob(SyncJobRequest request)
         {
-            var processor = new SyncJobProcessor(_libraryManager, _repo, this, _logger, _userManager, _tvSeriesManager, _mediaEncoder());
+            var processor = GetSyncJobProcessor();
 
             var user = _userManager.GetUserById(request.UserId);
 
@@ -124,6 +134,16 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             await processor.EnsureJobItems(job).ConfigureAwait(false);
 
+            // If it already has a converting status then is must have been aborted during conversion
+            var jobItemsResult = _repo.GetJobItems(new SyncJobItemQuery
+            {
+                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                JobId = jobId
+            });
+
+            await processor.SyncJobItems(jobItemsResult.Items, false, new Progress<double>(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
             return new SyncJobCreationResult
             {
                 Job = GetJob(jobId)
@@ -164,7 +184,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             if (item == null)
             {
-                var processor = new SyncJobProcessor(_libraryManager, _repo, this, _logger, _userManager, _tvSeriesManager, _mediaEncoder());
+                var processor = GetSyncJobProcessor();
 
                 var user = _userManager.GetUserById(job.UserId);
 
@@ -392,11 +412,14 @@ namespace MediaBrowser.Server.Implementations.Sync
             jobItem.Status = SyncJobItemStatus.Synced;
             jobItem.Progress = 100;
 
-            if (jobItem.RequiresConversion)
+            if (!string.IsNullOrWhiteSpace(jobItem.TemporaryPath))
             {
                 try
                 {
-                    File.Delete(jobItem.OutputPath);
+                    _fileSystem.DeleteDirectory(jobItem.TemporaryPath, true);
+                }
+                catch (DirectoryNotFoundException)
+                {
                 }
                 catch (Exception ex)
                 {
@@ -406,9 +429,14 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             await _repo.Update(jobItem).ConfigureAwait(false);
 
-            var processor = new SyncJobProcessor(_libraryManager, _repo, this, _logger, _userManager, _tvSeriesManager, _mediaEncoder());
+            var processor = GetSyncJobProcessor();
 
             await processor.UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
+        }
+
+        private SyncJobProcessor GetSyncJobProcessor()
+        {
+            return new SyncJobProcessor(_libraryManager, _repo, this, _logger, _userManager, _tvSeriesManager, _mediaEncoder(), _subtitleEncoder(), _config, _fileSystem);
         }
 
         public SyncJobItem GetJobItem(string id)
@@ -439,7 +467,15 @@ namespace MediaBrowser.Server.Implementations.Sync
                 SyncJobId = jobItem.JobId,
                 SyncJobItemId = jobItem.Id,
                 ServerId = _appHost.SystemId,
-                UserId = job.UserId
+                UserId = job.UserId,
+                AdditionalFiles = jobItem.AdditionalFiles.Select(i => new ItemFileInfo
+                {
+                    ImageType = i.ImageType,
+                    Name = i.Name,
+                    Type = i.Type,
+                    Index = i.Index
+
+                }).ToList()
             };
 
             var dtoOptions = new DtoOptions();
@@ -456,14 +492,11 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             syncedItem.Item = _dtoService().GetBaseItemDto(libraryItem, dtoOptions);
 
-            // TODO: this should be the media source of the transcoded output
-            syncedItem.Item.MediaSources = syncedItem.Item.MediaSources
-                .Where(i => string.Equals(i.Id, jobItem.MediaSourceId))
-                .ToList();
-
             var mediaSource = syncedItem.Item.MediaSources
                .FirstOrDefault(i => string.Equals(i.Id, jobItem.MediaSourceId));
 
+            syncedItem.Item.MediaSources = new List<MediaSourceInfo>();
+            
             // This will be null for items that are not audio/video
             if (mediaSource == null)
             {
@@ -472,6 +505,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             else
             {
                 syncedItem.OriginalFileName = Path.GetFileName(mediaSource.Path);
+                syncedItem.Item.MediaSources.Add(mediaSource);
             }
 
             return syncedItem;

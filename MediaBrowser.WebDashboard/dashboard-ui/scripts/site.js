@@ -640,11 +640,12 @@ var Dashboard = {
 
             headerHtml += '<div class="header">';
 
-            headerHtml += '<a class="logo" href="index.html">';
+            headerHtml += '<a class="logo" href="index.html" style="text-decoration:none;font-size: 22px;">';
 
             if (page.hasClass('standalonePage')) {
 
-                headerHtml += '<img class="imgLogoIcon" src="css/images/mblogoicon.png" /><img class="imgLogoText" src="css/images/mblogotextblack.png" />';
+                headerHtml += '<img class="imgLogoIcon" src="css/images/mblogoicon.png" />';
+                headerHtml += '<span class="logoLibraryMenuButtonText">MEDIA</span><span class="logoLibraryMenuButtonText mediaBrowserAccent">BROWSER</span>';
             }
 
             headerHtml += '</a>';
@@ -677,7 +678,7 @@ var Dashboard = {
                 }
 
                 if (link.divider) {
-                    html += "<div class='sidebarDivider'></div>";
+                    html += "<div class='sidebarDivider ui-bar-inherit'></div>";
                 }
 
                 if (link.href) {
@@ -1276,7 +1277,7 @@ var Dashboard = {
         SupportsUniqueIdentifier: false
     };
 
-    window.ConnectionManager = new MediaBrowser.ConnectionManager(credentialProvider, appName, appVersion, deviceName, deviceId, capabilities);
+    window.ConnectionManager = new MediaBrowser.ConnectionManager(jQuery, Logger, credentialProvider, appName, appVersion, deviceName, deviceId, capabilities);
     if (Dashboard.isConnectMode()) {
 
         $(ConnectionManager).on('apiclientcreated', function (e, apiClient) {
@@ -1286,7 +1287,7 @@ var Dashboard = {
 
         if (!Dashboard.isServerlessPage()) {
             if (Dashboard.serverAddress() && Dashboard.getCurrentUserId() && Dashboard.getAccessToken()) {
-                window.ApiClient = new MediaBrowser.ApiClient(Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
+                window.ApiClient = new MediaBrowser.ApiClient(jQuery, Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
 
                 ApiClient.setCurrentUserId(Dashboard.getCurrentUserId(), Dashboard.getAccessToken());
 
@@ -1300,7 +1301,7 @@ var Dashboard = {
 
     } else {
 
-        window.ApiClient = new MediaBrowser.ApiClient(Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
+        window.ApiClient = new MediaBrowser.ApiClient(jQuery, Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
 
         ApiClient.setCurrentUserId(Dashboard.getCurrentUserId(), Dashboard.getAccessToken());
 
@@ -1426,7 +1427,25 @@ $(function () {
 
 Dashboard.jQueryMobileInit();
 
-$(document).on('pagebeforeshow', ".page", function () {
+$(document).on('pagecreate', ".page", function () {
+
+    var page = $(this);
+
+    var newTheme;
+
+    if (page.hasClass('libraryPage')) {
+        newTheme = 'b';
+    } else {
+        newTheme = 'a';
+    }
+
+    var current = page.page("option", "theme");
+
+    if (current && current != newTheme) {
+        page.page("option", "theme", newTheme);
+    }
+
+}).on('pagebeforeshow', ".page", function () {
 
     var page = $(this);
 

@@ -1,4 +1,6 @@
-﻿using MediaBrowser.Common.ScheduledTasks;
+﻿using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Sync;
@@ -20,8 +22,11 @@ namespace MediaBrowser.Server.Implementations.Sync
         private readonly IUserManager _userManager;
         private readonly ITVSeriesManager _tvSeriesManager;
         private readonly IMediaEncoder _mediaEncoder;
+        private readonly ISubtitleEncoder _subtitleEncoder;
+        private readonly IConfigurationManager _config;
+        private readonly IFileSystem _fileSystem;
 
-        public SyncScheduledTask(ILibraryManager libraryManager, ISyncRepository syncRepo, ISyncManager syncManager, ILogger logger, IUserManager userManager, ITVSeriesManager tvSeriesManager, IMediaEncoder mediaEncoder)
+        public SyncScheduledTask(ILibraryManager libraryManager, ISyncRepository syncRepo, ISyncManager syncManager, ILogger logger, IUserManager userManager, ITVSeriesManager tvSeriesManager, IMediaEncoder mediaEncoder, ISubtitleEncoder subtitleEncoder, IConfigurationManager config, IFileSystem fileSystem)
         {
             _libraryManager = libraryManager;
             _syncRepo = syncRepo;
@@ -30,6 +35,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             _userManager = userManager;
             _tvSeriesManager = tvSeriesManager;
             _mediaEncoder = mediaEncoder;
+            _subtitleEncoder = subtitleEncoder;
+            _config = config;
+            _fileSystem = fileSystem;
         }
 
         public string Name
@@ -52,7 +60,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            return new SyncJobProcessor(_libraryManager, _syncRepo, _syncManager, _logger, _userManager, _tvSeriesManager, _mediaEncoder).Sync(progress,
+            return new SyncJobProcessor(_libraryManager, _syncRepo, _syncManager, _logger, _userManager, _tvSeriesManager, _mediaEncoder, _subtitleEncoder, _config, _fileSystem).Sync(progress,
                 cancellationToken);
         }
 
@@ -67,7 +75,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public bool IsHidden
         {
-            get { return true; }
+            get { return false; }
         }
 
         public bool IsEnabled

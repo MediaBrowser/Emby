@@ -77,9 +77,17 @@
 
             $('#appVersionNumber', page).html(Globalize.translate('LabelVersionNumber').replace('{0}', systemInfo.Version));
 
-            var port = systemInfo.HttpServerPortNumber;
+            var httpPort = systemInfo.HttpServerPortNumber;
 
-            $('#ports', page).html(Globalize.translate('LabelRunningOnPort', '<b>' + port + '</b>'));
+            var portHtml = Globalize.translate('LabelRunningOnPort', '<b>' + httpPort + '</b>');
+
+            if (systemInfo.UseHttps) {
+                var httpsPort = systemInfo.HttpsPortNumber;
+                portHtml += '<br>';
+                portHtml += Globalize.translate('LabelRunningOnHttpsPort', '<b>' + httpsPort + '</b>');
+            }
+
+            $('#ports', page).html(portHtml);
 
             if (systemInfo.CanSelfRestart) {
                 $('.btnRestartContainer', page).removeClass('hide');
@@ -1249,7 +1257,7 @@ $(document).on('pagebeforeshow', "#dashboardPage", DashboardPage.onPageShow)
 
 (function ($, document, window) {
 
-    var welcomeDismissValue = '8';
+    var welcomeDismissValue = '10';
     var welcomeTourKey = 'welcomeTour';
 
     function dismissWelcome(page, userId) {
@@ -1272,7 +1280,19 @@ $(document).on('pagebeforeshow', "#dashboardPage", DashboardPage.onPageShow)
             if (result.CustomPrefs[welcomeTourKey] == welcomeDismissValue) {
                 $('.welcomeMessage', page).hide();
             } else {
-                $('.welcomeMessage', page).show();
+
+                var elem = $('.welcomeMessage', page).show();
+
+                if (result.CustomPrefs[welcomeTourKey]) {
+
+                    $('.tourHeader', elem).html(Globalize.translate('HeaderWelcomeBack'));
+                    $('.tourButtonText', elem).html(Globalize.translate('ButtonTakeTheTourToSeeWhatsNew'));
+
+                } else {
+                    
+                    $('.tourHeader', elem).html(Globalize.translate('HeaderWelcomeToMediaBrowserServerDashboard'));
+                    $('.tourButtonText', elem).html(Globalize.translate('ButtonTakeTheTour'));
+                }
             }
         });
     }

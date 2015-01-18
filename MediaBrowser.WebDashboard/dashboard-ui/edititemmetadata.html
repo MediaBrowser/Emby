@@ -4,7 +4,7 @@
     <title>${TitleMediaBrowser}</title>
 </head>
 <body>
-    <div id="editItemMetadataPage" data-role="page" data-theme="b" class="page libraryPage metadataEditorPage" data-contextname="${HeaderMetadataManager}">
+    <div id="editItemMetadataPage" data-role="page" class="page libraryPage metadataEditorPage" data-contextname="${HeaderMetadataManager}">
         <div data-role="content editPageContent">
             <div class="editPageSidebar">
                 <div class="libraryTree">
@@ -290,7 +290,7 @@
                                     <div style="display: inline-block; width: 80%;">
                                         <input type="text" />
                                     </div>
-                                    <a data-role="button" data-theme="b" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                    <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
                                 </div>
                                 <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listCountries"></ul>
                             </div>
@@ -302,7 +302,7 @@
                                     <div style="display: inline-block; width: 80%;">
                                         <input type="text" />
                                     </div>
-                                    <a data-role="button" data-theme="b" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                    <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
                                 </div>
                                 <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listGenres"></ul>
                             </div>
@@ -323,7 +323,7 @@
                                     <div style="display: inline-block; width: 80%;">
                                         <input type="text" />
                                     </div>
-                                    <a data-role="button" data-theme="b" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                    <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
                                 </div>
                                 <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listKeywords"></ul>
                             </div>
@@ -335,7 +335,7 @@
                                     <div style="display: inline-block; width: 80%;">
                                         <input type="text" />
                                     </div>
-                                    <a data-role="button" data-theme="b" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                    <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
                                 </div>
                                 <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listStudios"></ul>
                             </div>
@@ -347,7 +347,7 @@
                                     <div style="display: inline-block; width: 80%;">
                                         <input type="text" />
                                     </div>
-                                    <a data-role="button" data-theme="b" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                    <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
                                 </div>
                                 <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listTags"></ul>
                             </div>
@@ -389,11 +389,10 @@
             </div>
         </div>
         <div data-role="popup" class="popupIdentify popup" data-theme="a">
-            <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-icon-delete ui-btn-icon-notext ui-btn-right">${ButtonClose}</a>
 
             <div class="ui-bar-a" style="text-align: center; padding: 0 20px; position: relative;">
 
-                <button type="button" data-icon="search" data-mini="true" data-inline="true" data-iconpos="notext" style="position: absolute; top: 8px; left: 10px; margin: 0;" class="btnSearchAgain">${ButtonSearch}</button>
+                <button type="button" data-icon="back" data-mini="true" data-inline="true" data-iconpos="notext" style="position: absolute; top: 8px; left: 10px; margin: 0;" class="btnIdentifyBack">${ButtonSearch}</button>
 
                 <h3 class="identificationHeader">${HeaderIdentifyItem}</h3>
             </div>
@@ -430,6 +429,24 @@
 
                     <div class="identificationSearchResultList"></div>
                 </div>
+
+                <form class="identifyOptionsForm" style="max-width:initial;">
+
+                    <h1 style="margin-top:.25em;">${HeaderIdentificationResult}</h1>
+                    <div class="selectedSearchResult"></div>
+                    <h1>${HeaderOptions}</h1>
+                    <div>
+                        <label for="chkIdentifyReplaceImages">${OptionReplaceExistingImages}</label>
+                        <input id="chkIdentifyReplaceImages" type="checkbox" checked="checked" data-mini="true" />
+                    </div>
+                    <br />
+                    <button type="submit" data-theme="b" data-icon="check" data-mini="true">
+                        ${ButtonSubmit}
+                    </button>
+                    <button type="button" data-icon="delete" data-mini="true" onclick="$(this).parents('.popup').popup('close');">
+                        ${ButtonCancel}
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -528,6 +545,7 @@
             $('.popupIdentifyForm').off('submit', EditItemMetadataPage.onIdentificationFormSubmitted).on('submit', EditItemMetadataPage.onIdentificationFormSubmitted);
             $('.popupEditPersonForm').off('submit', EditItemMetadataPage.onPersonInfoFormSubmit).on('submit', EditItemMetadataPage.onPersonInfoFormSubmit);
             $('.popupAdvancedRefreshForm').off('submit', EditItemMetadataPage.onRefreshFormSubmit).on('submit', EditItemMetadataPage.onRefreshFormSubmit);
+            $('.identifyOptionsForm').off('submit', EditItemMetadataPage.onIdentificationOptionsSubmit).on('submit', EditItemMetadataPage.onIdentificationOptionsSubmit);
         </script>
 
     </div>

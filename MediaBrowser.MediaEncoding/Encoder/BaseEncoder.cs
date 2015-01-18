@@ -248,7 +248,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
         protected virtual void DeleteFiles(EncodingJob job)
         {
-            File.Delete(job.OutputFilePath);
+            FileSystem.DeleteFile(job.OutputFilePath);
         }
 
         private void OnTranscodeBeginning(EncodingJob job)
@@ -280,13 +280,14 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
         private string GetOutputFilePath(EncodingJob state)
         {
-            var folder = ConfigurationManager.ApplicationPaths.TranscodingTempPath;
+            var folder = string.IsNullOrWhiteSpace(state.Options.OutputDirectory) ? 
+                ConfigurationManager.ApplicationPaths.TranscodingTempPath :
+                state.Options.OutputDirectory;
 
             var outputFileExtension = GetOutputFileExtension(state);
-            var context = state.Options.Context;
 
             var filename = state.Id + (outputFileExtension ?? string.Empty).ToLower();
-            return Path.Combine(folder, context.ToString().ToLower(), filename);
+            return Path.Combine(folder, filename);
         }
 
         protected virtual string GetOutputFileExtension(EncodingJob state)
@@ -460,7 +461,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
             //    {
             //        if (SupportsThrottleWithStream)
             //        {
-            //            var url = "http://localhost:" + ServerConfigurationManager.Configuration.HttpServerPortNumber.ToString(UsCulture) + "/mediabrowser/videos/" + job.Request.Id + "/stream?static=true&Throttle=true&mediaSourceId=" + job.Request.MediaSourceId;
+            //            var url = "http://localhost:" + ServerConfigurationManager.Configuration.HttpServerPortNumber.ToString(UsCulture) + "/videos/" + job.Request.Id + "/stream?static=true&Throttle=true&mediaSourceId=" + job.Request.MediaSourceId;
 
             //            url += "&transcodingJobId=" + transcodingJobId;
 

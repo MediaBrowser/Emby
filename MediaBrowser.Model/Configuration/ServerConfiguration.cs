@@ -31,7 +31,19 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value>The HTTPS server port number.</value>
         public int HttpsPortNumber { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [use HTTPS].
+        /// </summary>
+        /// <value><c>true</c> if [use HTTPS]; otherwise, <c>false</c>.</value>
+        public bool UseHttps { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value pointing to the file system where the ssl certiifcate is located..
+        /// </summary>
+        /// <value>The value pointing to the file system where the ssl certiifcate is located..</value>
+        public string CertificatePath { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether [enable internet providers].
         /// </summary>
@@ -73,6 +85,12 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable localized guids]; otherwise, <c>false</c>.</value>
         public bool EnableLocalizedGuids { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable library metadata sub folder].
+        /// </summary>
+        /// <value><c>true</c> if [enable library metadata sub folder]; otherwise, <c>false</c>.</value>
+        public bool EnableLibraryMetadataSubFolder { get; set; }
         
         /// <summary>
         /// Gets or sets the preferred metadata language.
@@ -136,6 +154,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable dashboard response caching]; otherwise, <c>false</c>.</value>
         public bool EnableDashboardResponseCaching { get; set; }
+        public bool EnableDashboardResourceMinification { get; set; }
 
         /// <summary>
         /// Allows the dashboard to be served from a custom path.
@@ -143,13 +162,7 @@ namespace MediaBrowser.Model.Configuration
         /// <value>The dashboard source path.</value>
         public string DashboardSourcePath { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether [enable tv db updates].
-        /// </summary>
-        /// <value><c>true</c> if [enable tv db updates]; otherwise, <c>false</c>.</value>
-        public bool EnableTvDbUpdates { get; set; }
-        public bool EnableTmdbUpdates { get; set; }
-        public bool EnableFanArtUpdates { get; set; }
+        public bool StoreArtistsInMetadata { get; set; }
 
         /// <summary>
         /// Gets or sets the image saving convention.
@@ -177,6 +190,7 @@ namespace MediaBrowser.Model.Configuration
         public string[] InsecureApps8 { get; set; }
 
         public bool SaveMetadataHidden { get; set; }
+
         public bool EnableWin8HttpListener { get; set; }
 
         public NameValuePair[] ContentTypes { get; set; }
@@ -194,7 +208,10 @@ namespace MediaBrowser.Model.Configuration
             PublicPort = 8096;
             HttpServerPortNumber = 8096;
             HttpsPortNumber = 8920;
+            UseHttps = false;
+            CertificatePath = null;
             EnableDashboardResponseCaching = true;
+            EnableDashboardResourceMinification = true;
 
             EnableAutomaticRestart = true;
             EnableWin8HttpListener = true;

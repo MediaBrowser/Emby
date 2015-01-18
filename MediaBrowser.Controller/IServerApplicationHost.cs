@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using MediaBrowser.Common;
+﻿using MediaBrowser.Common;
 using MediaBrowser.Model.System;
 using System;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller
 {
@@ -17,12 +17,6 @@ namespace MediaBrowser.Controller
         /// </summary>
         /// <returns>SystemInfo.</returns>
         SystemInfo GetSystemInfo();
-
-        /// <summary>
-        /// Gets the name of the web application.
-        /// </summary>
-        /// <value>The name of the web application.</value>
-        string WebApplicationName { get; }
 
         /// <summary>
         /// Gets a value indicating whether [supports automatic run at startup].
