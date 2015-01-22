@@ -21,6 +21,12 @@ namespace MediaBrowser.Model.Configuration
         public int PublicPort { get; set; }
 
         /// <summary>
+        /// Gets or sets the public HTTPS port.
+        /// </summary>
+        /// <value>The public HTTPS port.</value>
+        public int PublicHttpsPort { get; set; }
+        
+        /// <summary>
         /// Gets or sets the HTTP server port number.
         /// </summary>
         /// <value>The HTTP server port number.</value>
@@ -36,7 +42,7 @@ namespace MediaBrowser.Model.Configuration
         /// Gets or sets a value indicating whether [use HTTPS].
         /// </summary>
         /// <value><c>true</c> if [use HTTPS]; otherwise, <c>false</c>.</value>
-        public bool UseHttps { get; set; }
+        public bool EnableHttps { get; set; }
 
         /// <summary>
         /// Gets or sets the value pointing to the file system where the ssl certiifcate is located..
@@ -163,6 +169,7 @@ namespace MediaBrowser.Model.Configuration
         public string DashboardSourcePath { get; set; }
 
         public bool StoreArtistsInMetadata { get; set; }
+        public bool EnableStandaloneMetadata { get; set; }
 
         /// <summary>
         /// Gets or sets the image saving convention.
@@ -191,8 +198,6 @@ namespace MediaBrowser.Model.Configuration
 
         public bool SaveMetadataHidden { get; set; }
 
-        public bool EnableWin8HttpListener { get; set; }
-
         public NameValuePair[] ContentTypes { get; set; }
 
         public bool EnableAudioArchiveFiles { get; set; }
@@ -206,15 +211,14 @@ namespace MediaBrowser.Model.Configuration
         {
             ImageSavingConvention = ImageSavingConvention.Compatible;
             PublicPort = 8096;
+            PublicHttpsPort = 8920;
             HttpServerPortNumber = 8096;
             HttpsPortNumber = 8920;
-            UseHttps = false;
-            CertificatePath = null;
+            EnableHttps = false;
             EnableDashboardResponseCaching = true;
             EnableDashboardResourceMinification = true;
 
             EnableAutomaticRestart = true;
-            EnableWin8HttpListener = true;
 
             EnableUPnP = true;
 

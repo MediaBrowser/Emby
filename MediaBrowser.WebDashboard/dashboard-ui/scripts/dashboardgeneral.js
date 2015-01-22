@@ -1,8 +1,15 @@
 ﻿(function ($, document, window) {
 
     var brandingConfigKey = "branding";
+    var currentBrandingOptions;
 
     function loadPage(page, config, languageOptions) {
+
+        if (Dashboard.lastSystemInfo) {
+            Dashboard.setPageTitle(Dashboard.lastSystemInfo.ServerName);
+        }
+
+        refreshPageTitle(page);
 
         $('#txtServerName', page).val(config.ServerName || '');
 
@@ -12,19 +19,17 @@
 
         })).val(config.UICulture).selectmenu('refresh');
 
-        $('#txtPortNumber', page).val(config.HttpServerPortNumber);
-        $('#txtPublicPort', page).val(config.PublicPort);
-
-        $('#chkUseHttps', page).checked(config.UseHttps).checkboxradio('refresh');
-        $('#txtHttpsPort', page).val(config.HttpsPortNumber);
-        $('#txtCertificatePath', page).val(config.CertificatePath);
-
-        $('#txtDdns', page).val(config.WanDdns || '');
-
-        $('#chkEnableUpnp', page).checked(config.EnableUPnP).checkboxradio('refresh');
         $('#txtCachePath', page).val(config.CachePath || '');
 
         Dashboard.hideLoadingMsg();
+    }
+
+    function refreshPageTitle(page) {
+
+        ApiClient.getSystemInfo().done(function (systemInfo) {
+
+            Dashboard.setPageTitle(systemInfo.ServerName);
+        });
     }
 
     $(document).on('pageshow', "#dashboardGeneralPage", function () {
@@ -45,7 +50,10 @@
 
         ApiClient.getNamedConfiguration(brandingConfigKey).done(function (config) {
 
+            currentBrandingOptions = config;
+
             $('#txtLoginDisclaimer', page).val(config.LoginDisclaimer || '');
+            $('#txtCustomCss', page).val(config.CustomCss || '');
         });
 
     }).on('pageinit', "#dashboardGeneralPage", function () {
@@ -79,32 +87,31 @@
             Dashboard.showLoadingMsg();
 
             var form = this;
+            var page = $(form).parents('.page');
 
             ApiClient.getServerConfiguration().done(function (config) {
 
                 config.ServerName = $('#txtServerName', form).val();
                 config.UICulture = $('#selectLocalizationLanguage', form).val();
 
-                config.HttpServerPortNumber = $('#txtPortNumber', form).val();
-                config.PublicPort = $('#txtPublicPort', form).val();
-
-                config.UseHttps = $('#chkUseHttps', form).checked();
-                config.HttpsPortNumber = $('#txtHttpsPort', form).val();
-                config.CertificatePath = $('#txtCertificatePath', form).val();
-
-
-                config.EnableUPnP = $('#chkEnableUpnp', form).checked();
-
-                config.WanDdns = $('#txtDdns', form).val();
                 config.CachePath = $('#txtCachePath', form).val();
 
                 ApiClient.updateServerConfiguration(config).done(function () {
-                    
+
+                    refreshPageTitle(page);
+
                     ApiClient.getNamedConfiguration(brandingConfigKey).done(function (brandingConfig) {
 
                         brandingConfig.LoginDisclaimer = $('#txtLoginDisclaimer', form).val();
+                        brandingConfig.CustomCss = $('#txtCustomCss', form).val();
+
+                        var cssChanged = currentBrandingOptions && brandingConfig.CustomCss != currentBrandingOptions.CustomCss;
 
                         ApiClient.updateNamedConfiguration(brandingConfigKey, brandingConfig).done(Dashboard.processServerConfigurationUpdateResult);
+
+                        if (cssChanged) {
+                            Dashboard.showDashboardRefreshNotification();
+                        }
                     });
 
                 });

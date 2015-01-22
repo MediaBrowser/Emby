@@ -37,6 +37,34 @@ namespace MediaBrowser.Api.Sync
     {
     }
 
+    [Route("/Sync/JobItems/{Id}/Enable", "POST", Summary = "Enables a cancelled or queued sync job item")]
+    public class EnableSyncJobItem : IReturnVoid
+    {
+        [ApiMember(Name = "Id", Description = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+    }
+
+    [Route("/Sync/JobItems/{Id}/MarkForRemoval", "POST", Summary = "Marks a job item for removal")]
+    public class MarkJobItemForRemoval : IReturnVoid
+    {
+        [ApiMember(Name = "Id", Description = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+    }
+
+    [Route("/Sync/JobItems/{Id}/UnmarkForRemoval", "POST", Summary = "Unmarks a job item for removal")]
+    public class UnmarkJobItemForRemoval : IReturnVoid
+    {
+        [ApiMember(Name = "Id", Description = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+    }
+
+    [Route("/Sync/JobItems/{Id}", "DELETE", Summary = "Cancels a sync job item")]
+    public class CancelSyncJobItem : IReturnVoid
+    {
+        [ApiMember(Name = "Id", Description = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
+        public string Id { get; set; }
+    }
+
     [Route("/Sync/Jobs", "GET", Summary = "Gets sync jobs.")]
     public class GetSyncJobs : SyncJobQuery, IReturn<QueryResult<SyncJob>>
     {
@@ -270,6 +298,34 @@ namespace MediaBrowser.Api.Sync
             }
 
             return ToStaticFileResult(file.Path);
+        }
+
+        public void Post(EnableSyncJobItem request)
+        {
+            var task = _syncManager.ReEnableJobItem(request.Id);
+
+            Task.WaitAll(task);
+        }
+
+        public void Delete(CancelSyncJobItem request)
+        {
+            var task = _syncManager.CancelJobItem(request.Id);
+
+            Task.WaitAll(task);
+        }
+
+        public void Post(MarkJobItemForRemoval request)
+        {
+            var task = _syncManager.MarkJobItemForRemoval(request.Id);
+
+            Task.WaitAll(task);
+        }
+
+        public void Post(UnmarkJobItemForRemoval request)
+        {
+            var task = _syncManager.UnmarkJobItemForRemoval(request.Id);
+
+            Task.WaitAll(task);
         }
     }
 }

@@ -6,6 +6,10 @@
 
         var page = this;
 
+        if (Dashboard.lastSystemInfo) {
+            Dashboard.setPageTitle(Dashboard.lastSystemInfo.ServerName);
+        }
+
         DashboardPage.newsStartIndex = 0;
 
         Dashboard.showLoadingMsg();
@@ -19,12 +23,6 @@
         DashboardPage.lastPluginUpdateCheck = null;
 
         Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
-
-            if (pluginSecurityInfo.IsMBSupporter) {
-                $('#contribute', page).hide();
-            } else {
-                $('#contribute', page).show();
-            }
 
             DashboardPage.renderSupporterIcon(page, pluginSecurityInfo);
         });
@@ -73,21 +71,16 @@
 
         ApiClient.getSystemInfo().done(function (systemInfo) {
 
+            Dashboard.setPageTitle(systemInfo.ServerName);
             Dashboard.updateSystemInfo(systemInfo);
 
             $('#appVersionNumber', page).html(Globalize.translate('LabelVersionNumber').replace('{0}', systemInfo.Version));
 
-            var httpPort = systemInfo.HttpServerPortNumber;
-
-            var portHtml = Globalize.translate('LabelRunningOnPort', '<b>' + httpPort + '</b>');
-
-            if (systemInfo.UseHttps) {
-                var httpsPort = systemInfo.HttpsPortNumber;
-                portHtml += '<br>';
-                portHtml += Globalize.translate('LabelRunningOnHttpsPort', '<b>' + httpsPort + '</b>');
+            if (systemInfo.SupportsHttps) {
+                $('#ports', page).html(Globalize.translate('LabelRunningOnPorts', '<b>' + systemInfo.HttpServerPortNumber + '</b>', '<b>' + systemInfo.HttpsPortNumber + '</b>'));
+            } else {
+                $('#ports', page).html(Globalize.translate('LabelRunningOnPort', '<b>' + systemInfo.HttpServerPortNumber + '</b>'));
             }
-
-            $('#ports', page).html(portHtml);
 
             if (systemInfo.CanSelfRestart) {
                 $('.btnRestartContainer', page).removeClass('hide');
@@ -768,11 +761,20 @@
 
     renderUrls: function (page, systemInfo) {
 
+        if (systemInfo.LocalAddress) {
+
+            var localAccessHtml = Globalize.translate('LabelLocalAccessUrl', '<a href="' + systemInfo.LocalAddress + '" target="_blank">' + systemInfo.LocalAddress + '</a>');
+
+            $('.localUrl', page).html(localAccessHtml).show().trigger('create');
+        } else {
+            $('.externalUrl', page).hide();
+        }
+
         if (systemInfo.WanAddress) {
 
-            var externalUrl = systemInfo.WanAddress + ApiClient.apiPrefix();
+            var externalUrl = systemInfo.WanAddress;
 
-            var remoteAccessHtml = Globalize.translate('LabelRemoteAccessUrl').replace('{0}', '<a href="' + externalUrl + '" target="_blank">' + externalUrl + '</a>');
+            var remoteAccessHtml = Globalize.translate('LabelRemoteAccessUrl', '<a href="' + externalUrl + '" target="_blank">' + externalUrl + '</a>');
 
             $('.externalUrl', page).html(remoteAccessHtml).show().trigger('create');
         } else {
@@ -787,13 +789,13 @@
         if (pluginSecurityInfo.IsMBSupporter) {
 
             imgUrl = "css/images/supporter/supporterbadge.png";
-            text = "Thank you for supporting Media Browser.";
+            text = Globalize.translate('MessageThankYouForSupporting');
 
             $('.supporterIconContainer', page).html('<a class="imageLink supporterIcon" href="supporter.html" title="' + text + '"><img src="' + imgUrl + '" style="height:32px;vertical-align: middle; margin-right: .5em;" /></a><span style="position:relative;top:2px;text-decoration:none;">' + text + '</span>');
         } else {
 
             imgUrl = "css/images/supporter/nonsupporterbadge.png";
-            text = "Please support Media Browser.";
+            text = Globalize.translate('MessagePleaseSupportMediaBrowser');
 
             $('.supporterIconContainer', page).html('<a class="imageLink supporterIcon" href="supporter.html" title="' + text + '"><img src="' + imgUrl + '" style="height:32px;vertical-align: middle; margin-right: .5em;" /><span style="position:relative;top:2px;text-decoration:none;">' + text + '</span></a>');
         }

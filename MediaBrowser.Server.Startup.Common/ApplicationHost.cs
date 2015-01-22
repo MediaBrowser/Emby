@@ -2,6 +2,7 @@
 using MediaBrowser.Common;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Implementations;
 using MediaBrowser.Common.Implementations.ScheduledTasks;
 using MediaBrowser.Common.IO;
@@ -111,38 +112,6 @@ namespace MediaBrowser.Server.Startup.Common
         }
 
         /// <summary>
-        /// Gets the name of the web application that can be used for url building.
-        /// All api urls will be of the form {protocol}://{host}:{port}/{appname}/...
-        /// </summary>
-        /// <value>The name of the web application.</value>
-        public string WebApplicationName
-        {
-            get { return "mediabrowser"; }
-        }
-
-        /// <summary>
-        /// Gets the HTTP server URL prefix.
-        /// </summary>
-        /// <value>The HTTP server URL prefix.</value>
-        private IEnumerable<string> HttpServerUrlPrefixes
-        {
-            get
-            {
-                var list = new List<string>
-                {
-                    "http://+:" + ServerConfigurationManager.Configuration.HttpServerPortNumber + "/"
-                };
-
-                if (ServerConfigurationManager.Configuration.UseHttps)
-                {
-                    list.Add("https://+:" + ServerConfigurationManager.Configuration.HttpsPortNumber + "/");
-                }
-
-                return list;
-            }
-        }
-
-        /// <summary>
         /// Gets the configuration manager.
         /// </summary>
         /// <returns>IConfigurationManager.</returns>
@@ -230,8 +199,6 @@ namespace MediaBrowser.Server.Startup.Common
         private readonly StartupOptions _startupOptions;
         private readonly string _remotePackageName;
 
-        private bool _supportsNativeWebSocket;
-
         internal INativeApp NativeApp { get; set; }
 
         /// <summary>
@@ -242,20 +209,17 @@ namespace MediaBrowser.Server.Startup.Common
         /// <param name="options">The options.</param>
         /// <param name="fileSystem">The file system.</param>
         /// <param name="remotePackageName">Name of the remote package.</param>
-        /// <param name="supportsNativeWebSocket">if set to <c>true</c> [supports native web socket].</param>
         /// <param name="nativeApp">The native application.</param>
         public ApplicationHost(ServerApplicationPaths applicationPaths,
             ILogManager logManager,
             StartupOptions options,
             IFileSystem fileSystem,
             string remotePackageName,
-            bool supportsNativeWebSocket,
             INativeApp nativeApp)
             : base(applicationPaths, logManager, fileSystem)
         {
             _startupOptions = options;
             _remotePackageName = remotePackageName;
-            _supportsNativeWebSocket = supportsNativeWebSocket;
             NativeApp = nativeApp;
 
             SetBaseExceptionMessage();
@@ -359,6 +323,9 @@ namespace MediaBrowser.Server.Startup.Common
 
         public override async Task Init(IProgress<double> progress)
         {
+            HttpPort = ServerConfigurationManager.Configuration.HttpServerPortNumber;
+            HttpsPort = ServerConfigurationManager.Configuration.HttpsPortNumber;
+
             PerformPreInitMigrations();
 
             await base.Init(progress).ConfigureAwait(false);
@@ -440,7 +407,7 @@ namespace MediaBrowser.Server.Startup.Common
             SyncRepository = await GetSyncRepository().ConfigureAwait(false);
             RegisterSingleInstance(SyncRepository);
 
-            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager, () => ChannelManager);
+            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager);
             RegisterSingleInstance(UserManager);
 
             LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => LibraryMonitor, FileSystemManager, () => ProviderManager);
@@ -460,19 +427,7 @@ namespace MediaBrowser.Server.Startup.Common
 
             RegisterSingleInstance<ISearchEngine>(() => new SearchEngine(LogManager, LibraryManager, UserManager));
 
-            if (IsFirstRun)
-            {
-                ServerConfigurationManager.Configuration.EnableWin8HttpListener = false;
-                ServerConfigurationManager.SaveConfiguration();
-                _supportsNativeWebSocket = false;
-            }
-
-            if (!ServerConfigurationManager.Configuration.EnableWin8HttpListener)
-            {
-                _supportsNativeWebSocket = false;
-            }
-
-            HttpServer = ServerFactory.CreateServer(this, LogManager, "Media Browser", "web/index.html", false);
+            HttpServer = ServerFactory.CreateServer(this, LogManager, "Media Browser", "web/index.html");
             RegisterSingleInstance(HttpServer, false);
             progress.Report(10);
 
@@ -577,9 +532,9 @@ namespace MediaBrowser.Server.Startup.Common
 
             SetStaticProperties();
 
-            await ((UserManager)UserManager).Initialize().ConfigureAwait(false);
-
             SetKernelProperties();
+
+            await ((UserManager)UserManager).Initialize().ConfigureAwait(false);
         }
 
         protected override INetworkManager CreateNetworkManager(ILogger logger)
@@ -598,10 +553,10 @@ namespace MediaBrowser.Server.Startup.Common
 
             new FFmpegValidator(Logger, ApplicationPaths).Validate(info);
 
-            MediaEncoder = new MediaEncoder(LogManager.GetLogger("MediaEncoder"), 
-                JsonSerializer, 
-                info.EncoderPath, 
-                info.ProbePath, 
+            MediaEncoder = new MediaEncoder(LogManager.GetLogger("MediaEncoder"),
+                JsonSerializer,
+                info.EncoderPath,
+                info.ProbePath,
                 info.Version,
                 ServerConfigurationManager,
                 FileSystemManager,
@@ -803,14 +758,33 @@ namespace MediaBrowser.Server.Startup.Common
             SyncManager.AddParts(GetExports<ISyncProvider>());
         }
 
+        private string CertificatePath { get; set; }
+
+        private IEnumerable<string> GetUrlPrefixes()
+        {
+            var prefixes = new List<string>
+                {
+                    "http://+:" + ServerConfigurationManager.Configuration.HttpServerPortNumber + "/"
+                };
+
+            if (!string.IsNullOrWhiteSpace(CertificatePath))
+            {
+                prefixes.Add("https://+:" + ServerConfigurationManager.Configuration.HttpsPortNumber + "/");
+            }
+
+            return prefixes;
+        }
+
         /// <summary>
         /// Starts the server.
         /// </summary>
         private void StartServer()
         {
+            CertificatePath = GetCertificatePath(true);
+
             try
             {
-                ServerManager.Start(HttpServerUrlPrefixes, ServerConfigurationManager.Configuration.CertificatePath);
+                ServerManager.Start(GetUrlPrefixes(), CertificatePath);
             }
             catch (Exception ex)
             {
@@ -818,6 +792,39 @@ namespace MediaBrowser.Server.Startup.Common
 
                 throw;
             }
+        }
+
+        private string GetCertificatePath(bool generateCertificate)
+        {
+            if (string.IsNullOrWhiteSpace(ServerConfigurationManager.Configuration.CertificatePath))
+            {
+                // Generate self-signed cert
+                var certHost = GetHostnameFromExternalDns(ServerConfigurationManager.Configuration.WanDdns);
+                var certPath = Path.Combine(ServerConfigurationManager.ApplicationPaths.ProgramDataPath, "ssl", "cert_" + certHost.GetMD5().ToString("N") + ".pfx");
+
+                if (generateCertificate)
+                {
+                    if (!File.Exists(certPath))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(certPath));
+
+                        try
+                        {
+                            NetworkManager.GenerateSelfSignedSslCertificate(certPath, certHost);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.ErrorException("Error creating ssl cert", ex);
+                            return null;
+                        }
+                    }
+                }
+
+                return certPath;
+            }
+
+            // Custom cert
+            return ServerConfigurationManager.Configuration.CertificatePath;
         }
 
         /// <summary>
@@ -829,11 +836,34 @@ namespace MediaBrowser.Server.Startup.Common
         {
             base.OnConfigurationUpdated(sender, e);
 
-            if (!HttpServer.UrlPrefixes.SequenceEqual(HttpServerUrlPrefixes, StringComparer.OrdinalIgnoreCase))
-            {
-                ServerConfigurationManager.Configuration.IsPortAuthorized = false;
-                ServerConfigurationManager.SaveConfiguration();
+            var requiresRestart = false;
 
+            // Don't do anything if these haven't been set yet
+            if (HttpPort != 0 && HttpsPort != 0)
+            {
+                // Need to restart if ports have changed
+                if (ServerConfigurationManager.Configuration.HttpServerPortNumber != HttpPort ||
+                    ServerConfigurationManager.Configuration.HttpsPortNumber != HttpsPort)
+                {
+                    ServerConfigurationManager.Configuration.IsPortAuthorized = false;
+                    ServerConfigurationManager.SaveConfiguration();
+
+                    requiresRestart = true;
+                }
+            }
+
+            if (!HttpServer.UrlPrefixes.SequenceEqual(GetUrlPrefixes(), StringComparer.OrdinalIgnoreCase))
+            {
+                requiresRestart = true;
+            }
+
+            if (!string.Equals(CertificatePath, GetCertificatePath(false), StringComparison.OrdinalIgnoreCase))
+            {
+                requiresRestart = true;
+            }
+
+            if (requiresRestart)
+            {
                 NotifyPendingRestart();
             }
         }
@@ -965,7 +995,7 @@ namespace MediaBrowser.Server.Startup.Common
                 HasPendingRestart = HasPendingRestart,
                 Version = ApplicationVersion.ToString(),
                 IsNetworkDeployed = CanSelfUpdate,
-                WebSocketPortNumber = HttpServerPort,
+                WebSocketPortNumber = HttpPort,
                 FailedPluginAssemblies = FailedAssemblies.ToList(),
                 InProgressInstallations = InstallationManager.CurrentInstallations.Select(i => i.Item1).ToList(),
                 CompletedInstallations = InstallationManager.CompletedInstallations.ToList(),
@@ -976,8 +1006,9 @@ namespace MediaBrowser.Server.Startup.Common
                 InternalMetadataPath = ApplicationPaths.InternalMetadataPath,
                 CachePath = ApplicationPaths.CachePath,
                 MacAddress = GetMacAddress(),
-                HttpServerPortNumber = HttpServerPort,
-                HttpsPortNumber = HttpsServerPort,
+                HttpServerPortNumber = HttpPort,
+                SupportsHttps = SupportsHttps,
+                HttpsPortNumber = HttpsPort,
                 OperatingSystem = OperatingSystemDisplayName,
                 CanSelfRestart = CanSelfRestart,
                 CanSelfUpdate = CanSelfUpdate,
@@ -990,6 +1021,19 @@ namespace MediaBrowser.Server.Startup.Common
                 ServerName = FriendlyName,
                 LocalAddress = GetLocalIpAddress()
             };
+        }
+
+        public bool EnableHttps
+        {
+            get
+            {
+                return SupportsHttps && ServerConfigurationManager.Configuration.EnableHttps;
+            }
+        }
+
+        public bool SupportsHttps
+        {
+            get { return !string.IsNullOrWhiteSpace(HttpServer.CertificatePath); }
         }
 
         /// <summary>
@@ -1005,7 +1049,7 @@ namespace MediaBrowser.Server.Startup.Common
             {
                 address = string.Format("http://{0}:{1}",
                     address,
-                    ServerConfigurationManager.Configuration.HttpServerPortNumber.ToString(CultureInfo.InvariantCulture));
+                    HttpPort.ToString(CultureInfo.InvariantCulture));
             }
 
             return address;
@@ -1047,15 +1091,9 @@ namespace MediaBrowser.Server.Startup.Common
             }
         }
 
-        public int HttpServerPort
-        {
-            get { return ServerConfigurationManager.Configuration.HttpServerPortNumber; }
-        }
+        public int HttpPort { get; private set; }
 
-        public int HttpsServerPort
-        {
-            get { return ServerConfigurationManager.Configuration.HttpsPortNumber; }
-        }
+        public int HttpsPort { get; private set; }
 
         /// <summary>
         /// Gets the mac address.
@@ -1186,6 +1224,29 @@ namespace MediaBrowser.Server.Startup.Common
             if (SupportsAutoRunAtStartup)
             {
                 NativeApp.ConfigureAutoRun(autorun);
+            }
+        }
+
+        /// <summary>
+        /// This returns localhost in the case of no external dns, and the hostname if the 
+        /// dns is prefixed with a valid Uri prefix.
+        /// </summary>
+        /// <param name="externalDns">The external dns prefix to get the hostname of.</param>
+        /// <returns>The hostname in <paramref name="externalDns"/></returns>
+        private static string GetHostnameFromExternalDns(string externalDns)
+        {
+            if (string.IsNullOrWhiteSpace(externalDns))
+            {
+                return "localhost";
+            }
+
+            try
+            {
+                return new Uri(externalDns).Host;
+            }
+            catch (Exception e)
+            {
+                return externalDns;
             }
         }
     }

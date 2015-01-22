@@ -69,7 +69,6 @@ namespace MediaBrowser.Server.Implementations.Collections
                 {
                     Name = name,
                     Parent = parentFolder,
-                    DisplayMediaType = "Collection",
                     Path = path,
                     IsLocked = options.IsLocked,
                     ProviderIds = options.ProviderIds,
@@ -168,24 +167,13 @@ namespace MediaBrowser.Server.Implementations.Collections
                 }
 
                 list.Add(LinkedChild.Create(item));
-
-                var supportsGrouping = item as ISupportsBoxSetGrouping;
-
-                if (supportsGrouping != null)
-                {
-                    var boxsetIdList = supportsGrouping.BoxSetIdList.ToList();
-                    if (!boxsetIdList.Contains(collectionId))
-                    {
-                        boxsetIdList.Add(collectionId);
-                    }
-                    supportsGrouping.BoxSetIdList = boxsetIdList;
-                }
             }
 
             collection.LinkedChildren.AddRange(list);
 
-            await collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+            collection.UpdateRatingToContent();
 
+            await collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
             await collection.RefreshMetadata(CancellationToken.None).ConfigureAwait(false);
 
             if (fireEvent)
@@ -228,15 +216,6 @@ namespace MediaBrowser.Server.Implementations.Collections
                 {
                     itemList.Add(childItem);
                 }
-
-                var supportsGrouping = childItem as ISupportsBoxSetGrouping;
-
-                if (supportsGrouping != null)
-                {
-                    var boxsetIdList = supportsGrouping.BoxSetIdList.ToList();
-                    boxsetIdList.Remove(collectionId);
-                    supportsGrouping.BoxSetIdList = boxsetIdList;
-                }
             }
 
             var shortcutFiles = Directory
@@ -274,8 +253,9 @@ namespace MediaBrowser.Server.Implementations.Collections
                 }
             }
 
-            await collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+            collection.UpdateRatingToContent();
 
+            await collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
             await collection.RefreshMetadata(CancellationToken.None).ConfigureAwait(false);
 
             EventHelper.FireEventIfNotNull(ItemsRemovedFromCollection, this, new CollectionModifiedEventArgs
@@ -288,29 +268,40 @@ namespace MediaBrowser.Server.Implementations.Collections
 
         public IEnumerable<BaseItem> CollapseItemsWithinBoxSets(IEnumerable<BaseItem> items, User user)
         {
-            var itemsToCollapse = new List<ISupportsBoxSetGrouping>();
-            var boxsets = new List<BaseItem>();
+            var results = new Dictionary<Guid, BaseItem>();
+            var allBoxsets = new List<BoxSet>();
 
-            var list = items.ToList();
-
-            foreach (var item in list.OfType<ISupportsBoxSetGrouping>())
+            foreach (var item in items)
             {
-                var currentBoxSets = item.BoxSetIdList
-                    .Select(i => _libraryManager.GetItemById(i))
-                    .Where(i => i != null && i.IsVisible(user))
-                    .ToList();
+                var grouping = item as ISupportsBoxSetGrouping;
 
-                if (currentBoxSets.Count > 0)
+                if (grouping == null)
                 {
-                    itemsToCollapse.Add(item);
-                    boxsets.AddRange(currentBoxSets);
+                    results[item.Id] = item;
+                }
+                else
+                {
+                    var itemId = item.Id;
+
+                    var currentBoxSets = allBoxsets
+                        .Where(i => i.GetLinkedChildren().Any(j => j.Id == itemId))
+                        .ToList();
+
+                    if (currentBoxSets.Count > 0)
+                    {
+                        foreach (var boxset in currentBoxSets)
+                        {
+                            results[boxset.Id] = boxset;
+                        }
+                    }
+                    else
+                    {
+                        results[item.Id] = item;
+                    }
                 }
             }
 
-            return list
-                .Except(itemsToCollapse.Cast<BaseItem>())
-                .Concat(boxsets)
-                .DistinctBy(i => i.Id);
+            return results.Values;
         }
     }
 }

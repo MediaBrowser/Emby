@@ -78,10 +78,13 @@ namespace MediaBrowser.Server.Implementations.Connect
                     if (!ip.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
                         !ip.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                     {
-                        ip = (_config.Configuration.UseHttps ? "https://" : "http://") + ip;
+                        ip = (_appHost.EnableHttps ? "https://" : "http://") + ip;
                     }
 
-                    return ip + ":" + _config.Configuration.PublicPort.ToString(CultureInfo.InvariantCulture);
+                    ip += ":";
+                    ip += _appHost.EnableHttps ? _config.Configuration.PublicHttpsPort.ToString(CultureInfo.InvariantCulture) : _config.Configuration.PublicPort.ToString(CultureInfo.InvariantCulture);
+
+                    return ip;
                 }
 
                 return null;
@@ -90,7 +93,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private string XApplicationValue
         {
-            get { return "Media Browser Server/" + _appHost.ApplicationVersion; }
+            get { return _appHost.Name + "/" + _appHost.ApplicationVersion; }
         }
 
         public ConnectManager(ILogger logger,
@@ -112,6 +115,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             _providerManager = providerManager;
 
             _userManager.UserConfigurationUpdated += _userManager_UserConfigurationUpdated;
+            _config.ConfigurationUpdated += _config_ConfigurationUpdated;
 
             LoadCachedData();
         }
@@ -164,8 +168,7 @@ namespace MediaBrowser.Server.Implementations.Connect
                     }
                     catch (HttpException ex)
                     {
-                        if (!ex.StatusCode.HasValue ||
-                            !new[] { HttpStatusCode.NotFound, HttpStatusCode.Unauthorized }.Contains(ex.StatusCode.Value))
+                        if (!ex.StatusCode.HasValue || !new[] { HttpStatusCode.NotFound, HttpStatusCode.Unauthorized }.Contains(ex.StatusCode.Value))
                         {
                             throw;
                         }
@@ -179,12 +182,35 @@ namespace MediaBrowser.Server.Implementations.Connect
                     await CreateServerRegistration(wanApiAddress, localAddress).ConfigureAwait(false);
                 }
 
+                _lastReportedIdentifier = GetConnectReportingIdentifier(localAddress, wanApiAddress);
+
                 await RefreshAuthorizationsInternal(true, CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.ErrorException("Error registering with Connect", ex);
             }
+        }
+
+        private string _lastReportedIdentifier;
+        private string GetConnectReportingIdentifier()
+        {
+            return GetConnectReportingIdentifier(_appHost.GetSystemInfo().LocalAddress, WanApiAddress);
+        }
+        private string GetConnectReportingIdentifier(string localAddress, string remoteAddress)
+        {
+            return (remoteAddress ?? string.Empty) + (localAddress ?? string.Empty);
+        }
+
+        void _config_ConfigurationUpdated(object sender, EventArgs e)
+        {
+            // If info hasn't changed, don't report anything
+            if (string.Equals(_lastReportedIdentifier, GetConnectReportingIdentifier(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            UpdateConnectInfo();
         }
 
         private async Task CreateServerRegistration(string wanApiAddress, string localAddress)
@@ -546,7 +572,7 @@ namespace MediaBrowser.Server.Implementations.Connect
                     Id = response.Id,
                     ImageUrl = response.UserImageUrl,
                     UserName = response.UserName,
-                    ExcludedLibraries = request.ExcludedLibraries,
+                    EnabledLibraries = request.EnabledLibraries,
                     EnabledChannels = request.EnabledChannels,
                     EnableLiveTv = request.EnableLiveTv,
                     AccessToken = accessToken
@@ -807,10 +833,13 @@ namespace MediaBrowser.Server.Implementations.Connect
 
                             if (currentPendingEntry != null)
                             {
-                                user.Policy.EnableLiveTvAccess = currentPendingEntry.EnableLiveTv;
-                                user.Policy.BlockedMediaFolders = currentPendingEntry.ExcludedLibraries;
+                                user.Policy.EnabledFolders = currentPendingEntry.EnabledLibraries;
+                                user.Policy.EnableAllFolders = false;
+
                                 user.Policy.EnabledChannels = currentPendingEntry.EnabledChannels;
                                 user.Policy.EnableAllChannels = false;
+
+                                user.Policy.EnableLiveTvAccess = currentPendingEntry.EnableLiveTv;
                             }
 
                             await _userManager.UpdateConfiguration(user.Id.ToString("N"), user.Configuration);
@@ -938,7 +967,7 @@ namespace MediaBrowser.Server.Implementations.Connect
                 ConnectUserId = i.ConnectUserId,
                 EnableLiveTv = i.EnableLiveTv,
                 EnabledChannels = i.EnabledChannels,
-                ExcludedLibraries = i.ExcludedLibraries,
+                EnabledLibraries = i.EnabledLibraries,
                 Id = i.Id,
                 ImageUrl = i.ImageUrl,
                 UserName = i.UserName

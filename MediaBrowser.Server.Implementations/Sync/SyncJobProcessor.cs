@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using MediaBrowser.Common.Configuration;
+﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller.Entities;
@@ -348,26 +347,38 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public async Task SyncJobItems(SyncJobItem[] items, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var index = 0;
+            var numComplete = 0;
 
             foreach (var item in items)
             {
-                double percent = index;
-                percent /= items.Length;
-
-                progress.Report(100 * percent);
-
                 cancellationToken.ThrowIfCancellationRequested();
 
+                double percentPerItem = 1;
+                percentPerItem /= items.Length;
+                var startingPercent = numComplete * percentPerItem * 100;
+
                 var innerProgress = new ActionableProgress<double>();
+                innerProgress.RegisterAction(p => progress.Report(startingPercent + (percentPerItem * p)));
 
-                var job = _syncRepo.GetJob(item.JobId);
-                await ProcessJobItem(job, item, enableConversion, innerProgress, cancellationToken).ConfigureAwait(false);
+                // Pull it fresh from the db just to make sure it wasn't deleted or cancelled while another item was converting
+                var jobItem = enableConversion ? _syncRepo.GetJobItem(item.Id) : item;
 
-                job = _syncRepo.GetJob(item.JobId);
-                await UpdateJobStatus(job).ConfigureAwait(false);
+                if (jobItem != null)
+                {
+                    var job = _syncRepo.GetJob(jobItem.JobId);
+                    if (jobItem.Status != SyncJobItemStatus.Cancelled)
+                    {
+                        await ProcessJobItem(job, jobItem, enableConversion, innerProgress, cancellationToken).ConfigureAwait(false);
+                    }
 
-                index++;
+                    job = _syncRepo.GetJob(jobItem.JobId);
+                    await UpdateJobStatus(job).ConfigureAwait(false);
+                }
+
+                numComplete++;
+                double percent = numComplete;
+                percent /= items.Length;
+                progress.Report(100 * percent);
             }
         }
 
@@ -432,9 +443,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             var streamInfo = new StreamBuilder().BuildVideoItem(options);
             var mediaSource = streamInfo.MediaSource;
             var externalSubs = streamInfo.GetExternalSubtitles("dummy", false);
-            var hasExternalSubs = externalSubs.Count > 0;
 
-            var requiresConversion = streamInfo.PlayMethod == PlayMethod.Transcode || hasExternalSubs;
+            // Mark as requiring conversion if transcoding the video, or if any subtitles need to be extracted
+            var requiresConversion = streamInfo.PlayMethod == PlayMethod.Transcode || externalSubs.Any(i => RequiresExtraction(i, mediaSource));
 
             if (requiresConversion && !enableConversion)
             {
@@ -498,7 +509,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                 jobItem.MediaSource = mediaSource;
             }
 
-            if (hasExternalSubs)
+            if (externalSubs.Count > 0)
             {
                 // Save the job item now since conversion could take a while
                 await _syncRepo.Update(jobItem).ConfigureAwait(false);
@@ -509,6 +520,13 @@ namespace MediaBrowser.Server.Implementations.Sync
             jobItem.Progress = 50;
             jobItem.Status = SyncJobItemStatus.Transferring;
             await _syncRepo.Update(jobItem).ConfigureAwait(false);
+        }
+
+        private bool RequiresExtraction(SubtitleStreamInfo stream, MediaSourceInfo mediaSource)
+        {
+            var originalStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Subtitle && i.Index == stream.Index);
+
+            return originalStream != null && !originalStream.IsExternal;
         }
 
         private async Task ConvertSubtitles(SyncJobItem jobItem,

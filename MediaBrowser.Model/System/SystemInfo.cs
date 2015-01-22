@@ -123,6 +123,12 @@ namespace MediaBrowser.Model.System
         public int HttpServerPortNumber { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [enable HTTPS].
+        /// </summary>
+        /// <value><c>true</c> if [enable HTTPS]; otherwise, <c>false</c>.</value>
+        public bool SupportsHttps { get; set; }
+
+        /// <summary>
         /// Gets or sets the HTTPS server port number.
         /// </summary>
         /// <value>The HTTPS server port number.</value>
