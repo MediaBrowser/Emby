@@ -367,7 +367,23 @@ namespace MediaBrowser.Api.Playback
                         param = "-preset 1";
                         break;
                 }
+            }
 
+            // h264 (libnvenc)
+            else if (string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
+            {
+                switch (qualitySetting)
+                {
+                    case EncodingQuality.HighSpeed:
+                        param = "-preset high-performance";
+                        break;
+                    case EncodingQuality.HighQuality:
+                        param = "";
+                        break;
+                    case EncodingQuality.MaxQuality:
+                        param = "-preset high-quality";
+                        break;
+                }
             }
 
             // webm
@@ -447,7 +463,47 @@ namespace MediaBrowser.Api.Playback
 
             if (!string.IsNullOrEmpty(state.VideoRequest.Level))
             {
-                param += " -level " + state.VideoRequest.Level;
+                // h264_qsv and libnvenc expect levels to be expressed as a decimal. libx264 supports decimal and non-decimal format
+                if (String.Equals(H264Encoder, "h264_qsv", StringComparison.OrdinalIgnoreCase) || String.Equals(H264Encoder, "libnvenc", StringComparison.OrdinalIgnoreCase))
+                {
+                    switch (state.VideoRequest.Level)
+                    {
+                        case "30":
+                            param += " -level 3";
+                            break;
+                        case "31":
+                            param += " -level 3.1";
+                            break;
+                        case "32":
+                            param += " -level 3.2";
+                            break;
+                        case "40":
+                            param += " -level 4";
+                            break;
+                        case "41":
+                            param += " -level 4.1";
+                            break;
+                        case "42":
+                            param += " -level 4.2";
+                            break;
+                        case "50":
+                            param += " -level 5";
+                            break;
+                        case "51":
+                            param += " -level 5.1";
+                            break;
+                        case "52":
+                            param += " -level 5.2";
+                            break;
+                        default:
+                            param += " -level " + state.VideoRequest.Level;
+                            break;
+                    }
+                }
+                else
+                {
+                    param += " -level " + state.VideoRequest.Level;
+                }
             }
 
             return param;
@@ -516,13 +572,24 @@ namespace MediaBrowser.Api.Playback
                 filters.Add("yadif=0:-1:0");
             }
 
+            // h264_qsv requires multiples of 32, not 2
+            int roundingFactor;
+            if (String.Equals(outputVideoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+            {
+                roundingFactor = 32;
+            }
+            else
+            {
+                roundingFactor = 2;
+            }
+
             // If fixed dimensions were supplied
             if (request.Width.HasValue && request.Height.HasValue)
             {
                 var widthParam = request.Width.Value.ToString(UsCulture);
                 var heightParam = request.Height.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", widthParam, heightParam));
+                filters.Add(string.Format("scale=trunc({0}/{2})*{2}:trunc({1}/{2})*{2}", widthParam, heightParam, roundingFactor));
             }
 
             // If Max dimensions were supplied, for width selects lowest even number between input width and width req size and selects lowest even number from in width*display aspect and requested size
@@ -531,39 +598,39 @@ namespace MediaBrowser.Api.Playback
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(min(iw\\,{0})/2)*2:trunc(min((iw/dar)\\,{1})/2)*2", maxWidthParam, maxHeightParam));
+                filters.Add(string.Format("scale=trunc(min(iw\\,{0})/{2})*{2}:trunc(min((iw/dar)\\,{1})/{2})*{2}", maxWidthParam, maxHeightParam, roundingFactor));
             }
 
             // If a fixed width was requested
             else if (request.Width.HasValue)
             {
-                var widthParam = request.Width.Value.ToString(UsCulture);
+                var widthParam = ((Math.Truncate((double)request.Width.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
+                filters.Add(string.Format("scale={0}:trunc(ow/a/{1})*{1}", widthParam, roundingFactor));
             }
 
             // If a fixed height was requested
             else if (request.Height.HasValue)
             {
-                var heightParam = request.Height.Value.ToString(UsCulture);
+                var heightParam = ((Math.Truncate((double)request.Height.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a*2)/2:{0}", heightParam));
+                filters.Add(string.Format("scale=trunc(oh*a*{1})/{1}:{0}", heightParam, roundingFactor));
             }
 
             // If a max width was requested
             else if (request.MaxWidth.HasValue && (!request.MaxHeight.HasValue || state.VideoStream == null))
             {
-                var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
+                var maxWidthParam = ((Math.Truncate((double)request.MaxWidth.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
+                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/{1})*{1}", maxWidthParam, roundingFactor));
             }
 
             // If a max height was requested
             else if (request.MaxHeight.HasValue && (!request.MaxWidth.HasValue || state.VideoStream == null))
             {
-                var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
+                var maxHeightParam = ((Math.Truncate((double)request.MaxHeight.Value / roundingFactor)) * roundingFactor).ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a*2)/2:min(ih\\,{0})", maxHeightParam));
+                filters.Add(string.Format("scale=trunc(oh*a*{1})/{1}:min(ih\\,{0})", maxHeightParam, roundingFactor));
             }
 
             else if (request.MaxWidth.HasValue ||
@@ -584,7 +651,7 @@ namespace MediaBrowser.Api.Playback
                     var manualWidthParam = outputSize.Width.ToString(UsCulture);
                     var manualHeightParam = outputSize.Height.ToString(UsCulture);
 
-                    filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", manualWidthParam, manualHeightParam));
+                    filters.Add(string.Format("scale=trunc({0}/{2})*{2}:trunc({1}/{2})*{2}", manualWidthParam, manualHeightParam, roundingFactor));
                 }
             }
 
@@ -1209,8 +1276,8 @@ namespace MediaBrowser.Api.Playback
                     return string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
                 }
 
-                // h264_qsv
-                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+                // h264_qsv and libnvenc
+                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) || string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
                 {
                     if (hasFixedResolution)
                     {
