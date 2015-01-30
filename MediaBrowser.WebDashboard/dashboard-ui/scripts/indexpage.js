@@ -123,7 +123,9 @@
 
             Limit: 24,
             Fields: "PrimaryImageAspectRatio,SyncInfo",
-            IsPlayed: false
+            IsPlayed: false,
+            ImageTypeLimit: 1,
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
         return ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).done(function (items) {
@@ -135,11 +137,11 @@
                 html += '<h1 style="display:inline-block; vertical-align:middle;" class="listHeader">' + Globalize.translate('HeaderLatestMedia') + '</h1>';
                 html += '<a href="mypreferencesdisplay.html" class="accentButton"><i class="fa fa-pencil"></i>' + Globalize.translate('ButtonEdit') + '</a>';
                 html += '</div>';
-                html += '<div>';
+                html += '<div class="itemsContainer">';
                 html += LibraryBrowser.getPosterViewHtml({
                     items: items,
                     preferThumb: true,
-                    shape: 'homePageBackdrop',
+                    shape: 'backdrop',
                     context: context || 'home',
                     showUnplayedIndicator: false,
                     showChildCountIndicator: true,
@@ -148,7 +150,8 @@
                 html += '</div>';
             }
 
-            $(elem).html(html).trigger('create').createCardMenus();
+            $(elem).html(html).lazyChildren();
+            $(elem).createCardMenus();
         });
     }
 
@@ -170,7 +173,7 @@
 
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestChannelMedia') + '</h1>';
-                html += '<div>';
+                html += '<div class="itemsContainer">';
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
                     preferThumb: true,
@@ -182,7 +185,8 @@
                 html += '</div>';
             }
 
-            $(elem).html(html).trigger('create').createCardMenus();
+            $(elem).html(html).lazyChildren();
+            $(elem).createCardMenus();
         });
     }
 
@@ -221,7 +225,7 @@
             }
 
 
-            $(elem).html(html).trigger('create').createCardMenus();
+            $(elem).html(html).lazyChildren().createCardMenus();
 
             handleLibraryLinkNavigations(elem);
         });
@@ -231,7 +235,8 @@
 
         ApiClient.getItems(userId, {
 
-            SortBy: "SortName"
+            SortBy: "SortName",
+            ImageTypeLimit: 1
 
         }).done(function (result) {
 
@@ -257,7 +262,7 @@
                 html += '</div>';
             }
 
-            $(elem).html(html).trigger('create').createCardMenus();
+            $(elem).html(html).lazyChildren();
 
             handleLibraryLinkNavigations(elem);
         });
@@ -277,7 +282,9 @@
             Recursive: true,
             Fields: "PrimaryImageAspectRatio,SyncInfo",
             CollapseBoxSetItems: false,
-            ExcludeLocationTypes: "Virtual"
+            ExcludeLocationTypes: "Virtual",
+            ImageTypeLimit: 1,
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
         ApiClient.getItems(userId, options).done(function (result) {
@@ -290,7 +297,7 @@
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
                     preferBackdrop: true,
-                    shape: 'homePageBackdrop',
+                    shape: 'backdrop',
                     overlayText: screenWidth >= 600,
                     showTitle: true,
                     showParentTitle: true,
@@ -300,7 +307,7 @@
                 html += '</div>';
             }
 
-            $(elem).html(html).trigger('create').createCardMenus();
+            $(elem).html(html).lazyChildren();
         });
     }
 
@@ -350,7 +357,7 @@
 
         var options = {
 
-            Limit: screenWidth >= 1600 ? 6 : (screenWidth >= 1440 ? 5 : (screenWidth >= 800 ? 6 : 6)),
+            Limit: screenWidth >= 1600 ? 10 : (screenWidth >= 1440 ? 5 : (screenWidth >= 800 ? 6 : 6)),
             Fields: "PrimaryImageAspectRatio,SyncInfo",
             Filters: "IsUnplayed",
             UserId: Dashboard.getCurrentUserId(),
@@ -368,9 +375,10 @@
                 html += '<div>';
                 var text = Globalize.translate('HeaderLatestFromChannel').replace('{0}', channel.Name);
                 html += '<h1 style="display:inline-block; vertical-align:middle;" class="' + cssClass + '">' + text + '</h1>';
-                html += '<a href="channelitems.html?context=channels&id=' + channel.Id + '" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" class="sectionHeaderButton">d</a>';
+                html += '<a href="channelitems.html?context=channels&id=' + channel.Id + '" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" class="sectionHeaderButton"></a>';
                 html += '</div>';
             }
+            html += '<div class="itemsContainer">';
             html += LibraryBrowser.getPosterViewHtml({
                 items: result.Items,
                 shape: 'autohome',
@@ -380,8 +388,10 @@
                 context: 'channels',
                 lazy: true
             });
+            html += '</div>';
 
-            $('#channel' + channel.Id + '', page).html(html).trigger('create').createCardMenus();
+            var elem = $('#channel' + channel.Id + '', page).html(html).lazyChildren().trigger('create');
+            $(elem).createCardMenus();
         });
     }
 
@@ -419,7 +429,7 @@
                 lazy: true
             });
 
-            elem.html(html).trigger('create').createCardMenus();
+            elem.html(html).lazyChildren();
 
         });
     }
@@ -467,7 +477,7 @@
             Sections.loadRecentlyAdded(elem, userId);
         }
         else if (section == 'librarytiles') {
-            Sections.loadLibraryTiles(elem, userId, 'homePageBackdrop', index);
+            Sections.loadLibraryTiles(elem, userId, 'backdrop', index);
         }
         else if (section == 'smalllibrarytiles') {
             Sections.loadLibraryTiles(elem, userId, 'homePageSmallBackdrop', index);
@@ -487,7 +497,7 @@
         }
 
         else if (section == 'folders') {
-            Sections.loadLibraryFolders(elem, userId, 'homePageBackdrop', index);
+            Sections.loadLibraryFolders(elem, userId, 'backdrop', index);
 
         } else if (section == 'latestchannelmedia') {
             Sections.loadLatestChannelMedia(elem, userId);

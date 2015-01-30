@@ -13,7 +13,6 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Controller.Resolvers;
 using MediaBrowser.Controller.Sorting;
 using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Naming.Audio;
@@ -219,11 +218,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <summary>
         /// The _root folder sync lock
         /// </summary>
-        private object _rootFolderSyncLock = new object();
-        /// <summary>
-        /// The _root folder initialized
-        /// </summary>
-        private bool _rootFolderInitialized;
+        private readonly object _rootFolderSyncLock = new object();
         /// <summary>
         /// Gets the root folder.
         /// </summary>
@@ -232,17 +227,17 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             get
             {
-                LazyInitializer.EnsureInitialized(ref _rootFolder, ref _rootFolderInitialized, ref _rootFolderSyncLock, CreateRootFolder);
-                return _rootFolder;
-            }
-            private set
-            {
-                _rootFolder = value;
-
-                if (value == null)
+                if (_rootFolder == null)
                 {
-                    _rootFolderInitialized = false;
+                    lock (_rootFolderSyncLock)
+                    {
+                        if (_rootFolder == null)
+                        {
+                            _rootFolder = CreateRootFolder();
+                        }
+                    }
                 }
+                return _rootFolder;
             }
         }
 
@@ -337,8 +332,8 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         private async Task UpdateSeasonZeroNames(string newName, CancellationToken cancellationToken)
         {
-            var seasons = RootFolder.RecursiveChildren
-                .OfType<Season>()
+            var seasons = RootFolder.GetRecursiveChildren(i => i is Season)
+                .Cast<Season>()
                 .Where(i => i.IndexNumber.HasValue && i.IndexNumber.Value == 0 && !string.Equals(i.Name, newName, StringComparison.Ordinal))
                 .ToList();
 
@@ -393,7 +388,7 @@ namespace MediaBrowser.Server.Implementations.Library
             var locationType = item.LocationType;
 
             var children = item.IsFolder
-                ? ((Folder)item).RecursiveChildren.ToList()
+                ? ((Folder)item).GetRecursiveChildren().ToList()
                 : new List<BaseItem>();
 
             foreach (var metadataPath in GetMetadataPaths(item, children))
@@ -583,7 +578,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 collectionType = GetContentTypeOverride(fullPath, true);
             }
 
-            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths, this, directoryService)
+            var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths, directoryService)
             {
                 Parent = parent,
                 Path = fullPath,
@@ -757,12 +752,14 @@ namespace MediaBrowser.Server.Implementations.Library
 
                         Directory.CreateDirectory(userRootPath);
 
-                        _userRootFolder = GetItemById(GetNewItemId(userRootPath, typeof(UserRootFolder))) as UserRootFolder;
+                        var tmpItem = GetItemById(GetNewItemId(userRootPath, typeof(UserRootFolder))) as UserRootFolder;
 
-                        if (_userRootFolder == null)
+                        if (tmpItem == null)
                         {
-                            _userRootFolder = (UserRootFolder)ResolvePath(new DirectoryInfo(userRootPath));
+                            tmpItem = (UserRootFolder)ResolvePath(new DirectoryInfo(userRootPath));
                         }
+
+                        _userRootFolder = tmpItem;
                     }
                 }
             }
@@ -849,11 +846,6 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             get
             {
-                if (ConfigurationManager.Configuration.StoreArtistsInMetadata)
-                {
-                    return Path.Combine(ConfigurationManager.ApplicationPaths.InternalMetadataPath, "artists");
-                }
-
                 return Path.Combine(ConfigurationManager.ApplicationPaths.ItemsByNamePath, "artists");
             }
         }
@@ -919,9 +911,10 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 var validFilename = _fileSystem.GetValidFilename(name).Trim();
 
-                var existing = RootFolder.RecursiveChildren
-                    .OfType<T>()
-                    .FirstOrDefault(i => string.Equals(_fileSystem.GetValidFilename(i.Name).Trim(), validFilename, StringComparison.OrdinalIgnoreCase));
+                var existing = RootFolder
+                    .GetRecursiveChildren(i => i is T && string.Equals(_fileSystem.GetValidFilename(i.Name).Trim(), validFilename, StringComparison.OrdinalIgnoreCase))
+                    .Cast<T>()
+                    .FirstOrDefault();
 
                 if (existing != null)
                 {
@@ -1575,7 +1568,7 @@ namespace MediaBrowser.Server.Implementations.Library
             CancellationToken cancellationToken)
         {
             var path = Path.Combine(ConfigurationManager.ApplicationPaths.ItemsByNamePath,
-                "views");
+                            "views");
 
             path = Path.Combine(path, _fileSystem.GetValidFilename(type));
 
@@ -1646,7 +1639,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             var id = GetNewItemId("7_namedview_" + name + user.Id.ToString("N") + parentId, typeof(UserView));
 
-            var path = BaseItem.GetInternalMetadataPathForId(id);
+            var path = Path.Combine(ConfigurationManager.ApplicationPaths.InternalMetadataPath, "views", "specialviews", id.ToString("N"));
 
             var item = GetItemById(id) as UserView;
 

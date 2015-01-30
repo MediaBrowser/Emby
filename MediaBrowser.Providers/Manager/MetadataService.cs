@@ -114,7 +114,7 @@ namespace MediaBrowser.Providers.Manager
             catch (Exception ex)
             {
                 localImagesFailed = true;
-                Logger.ErrorException("Error validating images for {0}", ex, item.Path ?? item.Name);
+                Logger.ErrorException("Error validating images for {0}", ex, item.Path ?? item.Name ?? "Unknown name");
                 refreshResult.AddStatus(ProviderRefreshStatus.Failure, ex.Message);
             }
 
@@ -182,6 +182,15 @@ namespace MediaBrowser.Providers.Manager
             {
                 await SaveProviderResult(itemOfType, refreshResult, refreshOptions.DirectoryService).ConfigureAwait(false);
             }
+
+            await AfterMetadataRefresh(itemOfType, refreshOptions, cancellationToken).ConfigureAwait(false);
+        }
+
+        private readonly Task _cachedTask = Task.FromResult(true);
+        protected virtual Task AfterMetadataRefresh(TItemType item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
+        {
+            item.AfterMetadataRefresh();
+            return _cachedTask;
         }
 
         private void MergeIdentities(TItemType item, TIdType id)
@@ -321,11 +330,11 @@ namespace MediaBrowser.Providers.Manager
             return item is TItemType;
         }
 
-        protected virtual async Task<RefreshResult> RefreshWithProviders(TItemType item, 
-            TIdType id, 
-            MetadataRefreshOptions options, 
-            List<IMetadataProvider> providers, 
-            ItemImageProvider imageService, 
+        protected virtual async Task<RefreshResult> RefreshWithProviders(TItemType item,
+            TIdType id,
+            MetadataRefreshOptions options,
+            List<IMetadataProvider> providers,
+            ItemImageProvider imageService,
             CancellationToken cancellationToken)
         {
             var refreshResult = new RefreshResult
@@ -437,8 +446,7 @@ namespace MediaBrowser.Providers.Manager
                 localProviders.Count == 0 &&
                 refreshResult.UpdateType > ItemUpdateType.None)
             {
-                // TODO: If the new metadata from above has some blank data, this
-                // can cause old data to get filled into those empty fields
+                // TODO: If the new metadata from above has some blank data, this can cause old data to get filled into those empty fields
                 MergeData(item, temp, new List<MetadataFields>(), false, true);
             }
 
@@ -602,10 +610,10 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        protected abstract void MergeData(TItemType source, 
-            TItemType target, 
-            List<MetadataFields> lockedFields, 
-            bool replaceData, 
+        protected abstract void MergeData(TItemType source,
+            TItemType target,
+            List<MetadataFields> lockedFields,
+            bool replaceData,
             bool mergeMetadataSettings);
 
         public virtual int Order

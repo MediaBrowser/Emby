@@ -2,7 +2,6 @@
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
-using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
@@ -11,7 +10,6 @@ using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Security;
 using MediaBrowser.Controller.Session;
@@ -870,14 +868,14 @@ namespace MediaBrowser.Server.Implementations.Session
             {
                 if (items.Any(i => !session.QueueableMediaTypes.Contains(i.MediaType, StringComparer.OrdinalIgnoreCase)))
                 {
-                    throw new ArgumentException(string.Format("{0} is unable to queue the requested media type.", session.DeviceName ?? session.Id.ToString()));
+                    throw new ArgumentException(string.Format("{0} is unable to queue the requested media type.", session.DeviceName ?? session.Id));
                 }
             }
             else
             {
                 if (items.Any(i => !session.PlayableMediaTypes.Contains(i.MediaType, StringComparer.OrdinalIgnoreCase)))
                 {
-                    throw new ArgumentException(string.Format("{0} is unable to play the requested media type.", session.DeviceName ?? session.Id.ToString()));
+                    throw new ArgumentException(string.Format("{0} is unable to play the requested media type.", session.DeviceName ?? session.Id));
                 }
             }
 
@@ -895,14 +893,28 @@ namespace MediaBrowser.Server.Implementations.Session
         {
             var item = _libraryManager.GetItemById(new Guid(id));
 
+            var byName = item as IItemByName;
+
+            if (byName != null)
+            {
+                var itemFilter = byName.GetItemFilter();
+
+                var items = user == null ?
+                    _libraryManager.RootFolder.GetRecursiveChildren(i => !i.IsFolder && itemFilter(i)) :
+                    user.RootFolder.GetRecursiveChildren(user, i => !i.IsFolder && itemFilter(i));
+
+                items = items.OrderBy(i => i.SortName);
+
+                return items;
+            }
+            
             if (item.IsFolder)
             {
                 var folder = (Folder)item;
 
-                var items = user == null ? folder.RecursiveChildren :
-                    folder.GetRecursiveChildren(user);
-
-                items = items.Where(i => !i.IsFolder);
+                var items = user == null ?
+                    folder.GetRecursiveChildren(i => !i.IsFolder) :
+                    folder.GetRecursiveChildren(user, i => !i.IsFolder);
 
                 items = items.OrderBy(i => i.SortName);
 
@@ -914,37 +926,9 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private IEnumerable<BaseItem> TranslateItemForInstantMix(string id, User user)
         {
-            var item = _libraryManager.GetItemById(new Guid(id));
+            var item = _libraryManager.GetItemById(id);
 
-            var audio = item as Audio;
-
-            if (audio != null)
-            {
-                return _musicManager.GetInstantMixFromSong(audio, user);
-            }
-
-            var artist = item as MusicArtist;
-
-            if (artist != null)
-            {
-                return _musicManager.GetInstantMixFromArtist(artist.Name, user);
-            }
-
-            var album = item as MusicAlbum;
-
-            if (album != null)
-            {
-                return _musicManager.GetInstantMixFromAlbum(album, user);
-            }
-
-            var genre = item as MusicGenre;
-
-            if (genre != null)
-            {
-                return _musicManager.GetInstantMixFromGenres(new[] { genre.Name }, user);
-            }
-
-            return new BaseItem[] { };
+            return _musicManager.GetInstantMixFromItem(item, user);
         }
 
         public Task SendBrowseCommand(string controllingSessionId, string sessionId, BrowseRequest command, CancellationToken cancellationToken)
@@ -1356,7 +1340,14 @@ namespace MediaBrowser.Server.Implementations.Session
 
             if (saveCapabilities)
             {
-                await SaveCapabilities(session.DeviceId, capabilities).ConfigureAwait(false);
+                try
+                {
+                    await SaveCapabilities(session.DeviceId, capabilities).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error saving device capabilities", ex);
+                }
             }
         }
 
@@ -1646,7 +1637,28 @@ namespace MediaBrowser.Server.Implementations.Session
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error in SendPlaybackStoppedNotification.", ex);
+                    _logger.ErrorException("Error sending message", ex);
+                }
+
+            }, cancellationToken));
+
+            return Task.WhenAll(tasks);
+        }
+
+        public Task SendMessageToUserDeviceSessions<T>(string deviceId, string name, T data,
+            CancellationToken cancellationToken)
+        {
+            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && string.Equals(i.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var tasks = sessions.Select(session => Task.Run(async () =>
+            {
+                try
+                {
+                    await session.SessionController.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error sending message", ex);
                 }
 
             }, cancellationToken));

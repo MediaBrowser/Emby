@@ -4,11 +4,11 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.MediaInfo;
+using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
@@ -77,6 +77,15 @@ namespace MediaBrowser.Controller.Entities.Audio
             get
             {
                 return LatestItemsIndexContainer ?? new MusicAlbum { Name = "Unknown Album" };
+            }
+        }
+
+        [IgnoreDataMember]
+        protected override bool SupportsOwnedItems
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -169,7 +178,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// Gets the user data key.
         /// </summary>
         /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+        protected override string CreateUserDataKey()
         {
             var parent = FindParent<MusicAlbum>();
 
@@ -186,7 +195,7 @@ namespace MediaBrowser.Controller.Entities.Audio
                 }
             }
 
-            return base.GetUserDataKey();
+            return base.CreateUserDataKey();
         }
 
         protected override bool GetBlockUnratedValue(UserPolicy config)

@@ -77,12 +77,15 @@
                     cardLayout: true,
                     showSongCount: true
                 });
-                $('.itemsContainer', page).removeClass('timelineItemsContainer');
             }
 
-            html += pagingHtml;
+            var elem = $('#items', page).html(html).lazyChildren();
 
-            $('#items', page).html(html).trigger('create').createCardMenus();
+            if (trigger) {
+                elem.trigger('create');
+            }
+
+            $(pagingHtml).appendTo(elem).trigger('create');
 
             $('.btnNextPage', page).on('click', function () {
                 query.StartIndex += query.Limit;

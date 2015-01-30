@@ -49,7 +49,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private ISyncProvider[] _providers = { };
 
-        public event EventHandler<GenericEventArgs<SyncJob>> SyncJobCreated;
+        public event EventHandler<GenericEventArgs<SyncJobCreationResult>> SyncJobCreated;
         public event EventHandler<GenericEventArgs<SyncJob>> SyncJobCancelled;
 
         public SyncManager(ILibraryManager libraryManager, ISyncRepository repo, IImageProcessor imageProcessor, ILogger logger, IUserManager userManager, Func<IDtoService> dtoService, IApplicationHost appHost, ITVSeriesManager tvSeriesManager, Func<IMediaEncoder> mediaEncoder, IFileSystem fileSystem, Func<ISubtitleEncoder> subtitleEncoder, IConfigurationManager config)
@@ -103,14 +103,14 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var target = GetSyncTargets(request.UserId)
                 .FirstOrDefault(i => string.Equals(request.TargetId, i.Id));
-
+            
             if (target == null)
             {
                 throw new ArgumentException("Sync target not found.");
             }
 
             var jobId = Guid.NewGuid().ToString("N");
-
+         
             var job = new SyncJob
             {
                 Id = jobId,
@@ -149,19 +149,28 @@ namespace MediaBrowser.Server.Implementations.Sync
             await processor.SyncJobItems(jobItemsResult.Items, false, new Progress<double>(), CancellationToken.None)
                     .ConfigureAwait(false);
 
+            jobItemsResult = _repo.GetJobItems(new SyncJobItemQuery
+            {
+                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                JobId = jobId
+            });
+
+            var returnResult = new SyncJobCreationResult
+            {
+                Job = GetJob(jobId),
+                JobItems = jobItemsResult.Items.ToList()
+            };
+
             if (SyncJobCreated != null)
             {
-                EventHelper.FireEventIfNotNull(SyncJobCreated, this, new GenericEventArgs<SyncJob>
+                EventHelper.FireEventIfNotNull(SyncJobCreated, this, new GenericEventArgs<SyncJobCreationResult>
                 {
-                    Argument = job
+                    Argument = returnResult
 
                 }, _logger);
             }
 
-            return new SyncJobCreationResult
-            {
-                Job = GetJob(jobId)
-            };
+            return returnResult;
         }
 
         public Task UpdateJob(SyncJob job)
@@ -719,6 +728,11 @@ namespace MediaBrowser.Server.Implementations.Sync
             var processor = GetSyncJobProcessor();
 
             await processor.UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
+        }
+
+        public QueryResult<string> GetLibraryItemIds(SyncJobItemQuery query)
+        {
+            return _repo.GetLibraryItemIds(query);
         }
     }
 }

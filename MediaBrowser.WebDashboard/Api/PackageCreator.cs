@@ -441,7 +441,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "metadataconfigurationpage.js",
                                 "metadataimagespage.js",
                                 "metadatasubtitles.js",
-                                "metadatakodi.js",
+                                "metadatanfo.js",
                                 "moviegenres.js",
                                 "moviecollections.js",
                                 "movies.js",
@@ -565,7 +565,8 @@ namespace MediaBrowser.WebDashboard.Api
                                       "userimage.css",
                                       "livetv.css",
                                       "nowplaying.css",
-                                      "icons.css"
+                                      "icons.css",
+                                      "materialize.css"
                                   };
 
             var builder = new StringBuilder();

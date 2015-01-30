@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Progress;
-using MediaBrowser.Controller.Entities.TV;
+﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
@@ -17,7 +16,7 @@ namespace MediaBrowser.Controller.Entities.Movies
     /// <summary>
     /// Class BoxSet
     /// </summary>
-    public class BoxSet : Folder, IHasTrailers, IHasKeywords, IHasPreferredMetadataLanguage, IHasDisplayOrder, IHasLookupInfo<BoxSetInfo>, IMetadataContainer, IHasShares
+    public class BoxSet : Folder, IHasTrailers, IHasKeywords, IHasDisplayOrder, IHasLookupInfo<BoxSetInfo>, IMetadataContainer, IHasShares
     {
         public List<Share> Shares { get; set; }
 
@@ -54,14 +53,6 @@ namespace MediaBrowser.Controller.Entities.Movies
         /// </summary>
         /// <value>The tags.</value>
         public List<string> Keywords { get; set; }
-
-        public string PreferredMetadataLanguage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the preferred metadata country code.
-        /// </summary>
-        /// <value>The preferred metadata country code.</value>
-        public string PreferredMetadataCountryCode { get; set; }
 
         /// <summary>
         /// Gets or sets the display order.
@@ -103,7 +94,7 @@ namespace MediaBrowser.Controller.Entities.Movies
             var currentOfficialRating = OfficialRating;
 
             // Gather all possible ratings
-            var ratings = RecursiveChildren
+            var ratings = GetRecursiveChildren()
                 .Concat(GetLinkedChildren())
                 .Where(i => i is Movie || i is Series)
                 .Select(i => i.OfficialRating)
@@ -148,45 +139,26 @@ namespace MediaBrowser.Controller.Entities.Movies
         {
             // Refresh bottom up, children first, then the boxset
             // By then hopefully the  movies within will have Tmdb collection values
-            var items = RecursiveChildren.ToList();
+            var items = GetRecursiveChildren().ToList();
 
             var totalItems = items.Count;
-            var percentages = new Dictionary<Guid, double>(totalItems);
+            var numComplete = 0;
 
             // Refresh songs
             foreach (var item in items)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var innerProgress = new ActionableProgress<double>();
 
-                // Avoid implicitly captured closure
-                var currentChild = item;
-                innerProgress.RegisterAction(p =>
-                {
-                    lock (percentages)
-                    {
-                        percentages[currentChild.Id] = p / 100;
+                await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
 
-                        var percent = percentages.Values.Sum();
-                        percent /= totalItems;
-                        percent *= 100;
-                        progress.Report(percent);
-                    }
-                });
-
-                // Avoid implicitly captured closure
-                await RefreshItem(item, refreshOptions, innerProgress, cancellationToken).ConfigureAwait(false);
+                numComplete++;
+                double percent = numComplete;
+                percent /= totalItems;
+                progress.Report(percent * 100);
             }
 
             // Refresh current item
             await RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
-
-            progress.Report(100);
-        }
-
-        private async Task RefreshItem(BaseItem item, MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
-        {
-            await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
 
             progress.Report(100);
         }

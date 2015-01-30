@@ -12,7 +12,7 @@ namespace MediaBrowser.Controller.Sync
 {
     public interface ISyncManager
     {
-        event EventHandler<GenericEventArgs<SyncJob>> SyncJobCreated;
+        event EventHandler<GenericEventArgs<SyncJobCreationResult>> SyncJobCreated;
         event EventHandler<GenericEventArgs<SyncJob>> SyncJobCancelled;
           
         /// <summary>
@@ -142,5 +142,12 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="id">The identifier.</param>
         /// <returns>Task.</returns>
         Task UnmarkJobItemForRemoval(string id);
+
+        /// <summary>
+        /// Gets the library item ids.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>QueryResult&lt;System.String&gt;.</returns>
+        QueryResult<string> GetLibraryItemIds(SyncJobItemQuery query);
     }
 }

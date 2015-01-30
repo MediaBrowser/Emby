@@ -66,6 +66,49 @@
         return data.replace(regexp, "<b>$1</b>");
     }
 
+    function getAdditionalTextLines(hint) {
+
+        if (hint.Type == "Audio") {
+
+            return [[hint.AlbumArtist, hint.Album].join(" - ")];
+
+        }
+        else if (hint.Type == "MusicAlbum") {
+
+            return [hint.AlbumArtist];
+
+        }
+        else if (hint.Type == "MusicArtist") {
+
+            return [Globalize.translate('LabelArtist')];
+
+        }
+        else if (hint.Type == "Movie") {
+
+            return [Globalize.translate('LabelMovie')];
+
+        }
+        else if (hint.Type == "MusicVideo") {
+
+            return [Globalize.translate('LabelMusicVideo')];
+        }
+        else if (hint.Type == "Episode") {
+
+            return [Globalize.translate('LabelEpisode')];
+
+        }
+        else if (hint.Type == "Series") {
+
+            return [Globalize.translate('LabelSeries')];
+        }
+        else if (hint.Type == "BoxSet") {
+
+            return [Globalize.translate('LabelCollection')];
+        }
+
+        return [hint.Type];
+    }
+
     function getSearchHintHtml(hint) {
 
         var html = '';
@@ -311,11 +354,14 @@
         var html = LibraryBrowser.getPosterViewHtml({
             items: hints,
             shape: "square",
-            lazy: false,
+            lazy: true,
             overlayText: false,
-            showTitle: true
+            showTitle: true,
+            coverImage: true,
+            centerImage: true,
+            textLines: getAdditionalTextLines
         });
-        $('.itemsContainer', elem).html(html).trigger('create').createCardMenus();
+        $('.itemsContainer', elem).html(html).lazyChildren();
     }
 
     function requestSearchHintsForOverlay(elem, searchTerm) {
@@ -355,7 +401,14 @@
         var elem = $('.searchResultsOverlay');
 
         if (createIfNeeded && !elem.length) {
-            elem = $('<div class="searchResultsOverlay ui-page-theme-b"><div class="searchResultsContainer"><div class="itemsContainer"></div></div></div>').appendTo(document.body).hide();
+
+            var html = '<div class="searchResultsOverlay ui-page-theme-b">';
+
+            html += '<div class="searchResultsContainer"><div class="itemsContainer"></div></div></div>';
+
+            elem = $(html).appendTo(document.body).hide().trigger('create');
+
+            elem.createCardMenus();
         }
 
         return elem;
@@ -364,12 +417,15 @@
     function onHeaderSearchChange(val) {
 
         if (val) {
-
+            $('.btnCloseSearch').show();
             updateSearchOverlay(getSearchOverlay(true).fadeIn('fast'), val);
+            $(document.body).addClass('bodyWithPopupOpen');
 
         } else {
 
+            $('.btnCloseSearch').hide();
             updateSearchOverlay(getSearchOverlay(false).fadeOut('fast'), val);
+            $(document.body).removeClass('bodyWithPopupOpen');
         }
     }
 
@@ -401,6 +457,13 @@
             }
 
         });
+
+        $('.btnCloseSearch').on('click', closeSearchOverlay);
+    }
+
+    function closeSearchOverlay() {
+        $('.headerSearchInput').val('');
+        onHeaderSearchChange('');
     }
 
     $(document).on('pagehide', ".libraryPage", function () {
@@ -408,11 +471,7 @@
         $('#txtSearch', this).val('');
         $('#searchHints', this).empty();
 
-    }).on('pagecontainerbeforehide', function () {
-
-        $('.headerSearchInput').val('');
-        getSearchOverlay(false).hide();
-    });
+    }).on('pagecontainerbeforehide', closeSearchOverlay);
 
     $(document).on('headercreated', function () {
 

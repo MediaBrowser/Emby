@@ -1006,6 +1006,10 @@ progress {
     font-weight: normal !important;
     text-decoration: none;
     vertical-align: middle;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    cursor: hand;
 }
 
 .accentButton-g {
@@ -1022,6 +1026,10 @@ progress {
 
 h1 + .accentButton {
     margin: 18px 0 0 20px;
+}
+
+.detailSectionHeader .accentButton {
+    font-size: 13px;
 }
 
 .dashboardFooter {
@@ -1042,3 +1050,17 @@ h1 + .accentButton {
     .dashboardFooter .appLinks img {
         height: 16px;
     }
+
+.supporterPromotion {
+    margin: 1em 0;
+}
+
+@media all and (min-width: 800px) {
+
+    .supporterPromotion {
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        margin: 0;
+    }
+}

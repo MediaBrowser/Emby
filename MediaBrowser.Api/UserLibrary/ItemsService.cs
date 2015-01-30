@@ -321,14 +321,14 @@ namespace MediaBrowser.Api.UserLibrary
             var result = await GetItemsToSerialize(request, user, parentItem).ConfigureAwait(false);
 
             var isFiltered = result.Item2;
-            var dtoOptions = request.GetDtoOptions();
+            var dtoOptions = GetDtoOptions(request);
 
             if (isFiltered)
             {
                 return new ItemsResult
                 {
                     TotalRecordCount = result.Item1.TotalRecordCount,
-                    Items = result.Item1.Items.Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user)).ToArray()
+                    Items = _dtoService.GetBaseItemDtos(result.Item1.Items, dtoOptions, user).ToArray()
                 };
             }
 
@@ -362,7 +362,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var pagedItems = ApplyPaging(request, itemsArray);
 
-            var returnItems = pagedItems.Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user)).ToArray();
+            var returnItems = _dtoService.GetBaseItemDtos(pagedItems, dtoOptions, user).ToArray();
 
             return new ItemsResult
             {
@@ -398,7 +398,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 if (user == null)
                 {
-                    items = ((Folder)item).RecursiveChildren;
+                    items = ((Folder)item).GetRecursiveChildren();
 
                     items = _libraryManager.ReplaceVideosWithPrimaryVersions(items);
                 }
@@ -464,7 +464,7 @@ namespace MediaBrowser.Api.UserLibrary
                 SortBy = request.GetOrderBy(),
                 SortOrder = request.SortOrder ?? SortOrder.Ascending,
 
-                Filter = (i, u) => ApplyAdditionalFilters(request, i, u, true, _libraryManager),
+                Filter = i => ApplyAdditionalFilters(request, i, user, true, _libraryManager),
 
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,

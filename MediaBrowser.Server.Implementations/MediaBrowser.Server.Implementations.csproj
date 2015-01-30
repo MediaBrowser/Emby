@@ -68,9 +68,9 @@
     <Reference Include="ServiceStack.Api.Swagger">
       <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Api.Swagger.dll</HintPath>
     </Reference>
-    <Reference Include="SocketHttpListener, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SocketHttpListener, Version=1.0.5501.2204, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SocketHttpListener.1.0.0.0\lib\net45\SocketHttpListener.dll</HintPath>
+      <HintPath>..\packages\SocketHttpListener.1.0.0.1\lib\net45\SocketHttpListener.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -117,6 +117,7 @@
     <Compile Include="Collections\CollectionManager.cs" />
     <Compile Include="Collections\CollectionsDynamicFolder.cs" />
     <Compile Include="Collections\ManualCollectionsFolder.cs" />
+    <Compile Include="Collections\CollectionImageProvider.cs" />
     <Compile Include="Configuration\ServerConfigurationManager.cs" />
     <Compile Include="Connect\ConnectData.cs" />
     <Compile Include="Connect\ConnectManager.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Sorting\VideoBitRateComparer.cs" />
     <Compile Include="Sync\AppSyncProvider.cs" />
     <Compile Include="Sync\CloudSyncProvider.cs" />
+    <Compile Include="Sync\SyncRegistrationInfo.cs" />
     <Compile Include="Sync\SyncConfig.cs" />
     <Compile Include="Sync\SyncJobProcessor.cs" />
     <Compile Include="Sync\SyncManager.cs" />
@@ -402,8 +404,6 @@
     <EmbeddedResource Include="Localization\Server\vi.json" />
     <EmbeddedResource Include="Localization\JavaScript\pl.json" />
     <EmbeddedResource Include="Localization\Server\pl.json" />
-    <EmbeddedResource Include="Localization\JavaScript\es_ES.json" />
-    <EmbeddedResource Include="Localization\Server\es_ES.json" />
     <EmbeddedResource Include="Localization\Server\ko.json" />
     <EmbeddedResource Include="Localization\JavaScript\en_GB.json" />
     <EmbeddedResource Include="Localization\JavaScript\tr.json" />
@@ -415,6 +415,10 @@
     <EmbeddedResource Include="Localization\JavaScript\fi.json" />
     <EmbeddedResource Include="Localization\Server\fi.json" />
     <None Include="app.config" />
+    <EmbeddedResource Include="Localization\JavaScript\bg_BG.json" />
+    <EmbeddedResource Include="Localization\JavaScript\uk.json" />
+    <EmbeddedResource Include="Localization\Server\bg_BG.json" />
+    <EmbeddedResource Include="Localization\Server\uk.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -90,6 +90,10 @@ namespace MediaBrowser.Server.Implementations.Sync
                     continue;
                 }
 
+                var index = jobItems.Count == 0 ?
+                    0 :
+                    (jobItems.Select(i => i.JobItemIndex).Max() + 1);
+
                 jobItem = new SyncJobItem
                 {
                     Id = Guid.NewGuid().ToString("N"),
@@ -97,7 +101,8 @@ namespace MediaBrowser.Server.Implementations.Sync
                     ItemName = GetSyncJobItemName(item),
                     JobId = job.Id,
                     TargetId = job.TargetId,
-                    DateCreated = DateTime.UtcNow
+                    DateCreated = DateTime.UtcNow,
+                    JobItemIndex = index
                 };
 
                 await _syncRepo.Create(jobItem).ConfigureAwait(false);
@@ -283,18 +288,14 @@ namespace MediaBrowser.Server.Implementations.Sync
             var itemByName = item as IItemByName;
             if (itemByName != null)
             {
-                var items = user.RootFolder
-                    .GetRecursiveChildren(user);
-
-                return itemByName.GetTaggedItems(items);
+                return user.RootFolder
+                    .GetRecursiveChildren(user, itemByName.GetItemFilter());
             }
 
             if (item.IsFolder)
             {
                 var folder = (Folder)item;
-                var items = folder.GetRecursiveChildren(user);
-
-                items = items.Where(i => !i.IsFolder);
+                var items = folder.GetRecursiveChildren(user, i => !i.IsFolder);
 
                 if (!folder.IsPreSorted)
                 {
@@ -343,10 +344,20 @@ namespace MediaBrowser.Server.Implementations.Sync
         private void CleanDeadSyncFiles()
         {
             // TODO
+            // Clean files in sync temp folder that are not linked to any sync jobs
         }
 
         public async Task SyncJobItems(SyncJobItem[] items, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            if (items.Length > 0)
+            {
+                if (!SyncRegistrationInfo.Instance.IsRegistered)
+                {
+                    _logger.Debug("Cancelling sync job processing. Please obtain a supporter membership.");
+                    return;
+                }
+            }
+
             var numComplete = 0;
 
             foreach (var item in items)

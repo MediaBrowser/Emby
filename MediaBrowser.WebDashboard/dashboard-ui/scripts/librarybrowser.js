@@ -2,12 +2,6 @@
 
     var pageSizeKey = 'pagesize_v4';
 
-    $(function () {
-        $("body").on("create", function () {
-            $(".lazy").unveil(200);
-        });
-    });
-
     var defaultBackground = "#333";
 
     return {
@@ -96,14 +90,9 @@
             return "" + d.getFullYear() + formatDigit(d.getMonth() + 1) + formatDigit(d.getDate()) + formatDigit(d.getHours()) + formatDigit(d.getMinutes()) + formatDigit(d.getSeconds());
         },
 
-        playAllFromHere: function (query, index) {
+        playAllFromHere: function (fn, index) {
 
-            query = $.extend({}, query);
-            query.StartIndex = index;
-            query.Limit = 100;
-            query.Fields = "MediaSources,Chapters";
-
-            ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+            fn(index, 100, "MediaSources,Chapters").done(function (result) {
 
                 MediaController.play({
                     items: result.Items
@@ -112,12 +101,8 @@
         },
 
         queueAllFromHere: function (query, index) {
-            query = $.extend({}, query);
-            query.StartIndex = index;
-            query.Limit = 100;
-            query.Fields = "MediaSources,Chapters";
 
-            ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+            fn(index, 100, "MediaSources,Chapters").done(function (result) {
 
                 MediaController.queue({
                     items: result.Items
@@ -607,7 +592,7 @@
                 if (item.Type == 'Episode') return '';
 
                 // SortName
-                name = (item.SortName || item.Name)[0].toUpperCase();
+                name = (item.SortName || item.Name || '?')[0].toUpperCase();
 
                 code = name.charCodeAt(0);
                 if (code < 65 || code > 90) {
@@ -701,7 +686,7 @@
                     }
                 }
 
-                var dataAttributes = LibraryBrowser.getItemDataAttributes(item, options);
+                var dataAttributes = LibraryBrowser.getItemDataAttributes(item, options, index);
 
                 var cssClass = options.smallIcon ? 'ui-li-has-icon listItem' : 'ui-li-has-thumb listItem';
 
@@ -711,7 +696,7 @@
 
 
                 var href = LibraryBrowser.getHref(item, options.context);
-                html += '<li class="' + cssClass + '"' + dataAttributes + ' data-index="' + index + '" data-itemid="' + item.Id + '" data-playlistitemid="' + (item.PlaylistItemId || '') + '" data-href="' + href + '">';
+                html += '<li class="' + cssClass + '"' + dataAttributes + ' data-itemid="' + item.Id + '" data-playlistitemid="' + (item.PlaylistItemId || '') + '" data-href="' + href + '">';
 
                 var defaultActionAttribute = options.defaultAction ? (' data-action="' + options.defaultAction + '" class="itemWithAction"') : '';
                 html += '<a' + defaultActionAttribute + ' href="' + href + '">';
@@ -764,15 +749,15 @@
                 }
 
                 if (imgUrl) {
-
+                    var minLazyIndex = 16;
                     if (options.smallIcon) {
-                        if (index < 10) {
+                        if (index < minLazyIndex) {
                             html += '<div class="listviewIcon ui-li-icon" style="background-image:url(\'' + imgUrl + '\');"></div>';
                         } else {
                             html += '<div class="listviewIcon ui-li-icon lazy" data-src="' + imgUrl + '"></div>';
                         }
                     } else {
-                        if (index < 10) {
+                        if (index < minLazyIndex) {
                             html += '<div class="listviewImage ui-li-thumb" style="background-image:url(\'' + imgUrl + '\');"></div>';
                         } else {
                             html += '<div class="listviewImage ui-li-thumb lazy" data-src="' + imgUrl + '"></div>';
@@ -836,7 +821,8 @@
                 }
                 html += '</a>';
 
-                html += '<a href="#" data-icon="ellipsis-v" class="listviewMenuButton">';
+                // Render out the jqm classes so that we don't have to call trigger create
+                html += '<a href="#" data-icon="ellipsis-v" class="listviewMenuButton ui-btn ui-icon-ellipsis-v ui-btn-icon-notext ui-btn-inline">';
                 html += '</a>';
 
                 html += '</li>';
@@ -851,7 +837,7 @@
             return outerHtml;
         },
 
-        getItemDataAttributes: function (item, options) {
+        getItemDataAttributes: function (item, options, index) {
 
             var atts = [];
 
@@ -866,6 +852,7 @@
 
             atts.push('data-playaccess="' + (item.PlayAccess || '') + '"');
             atts.push('data-locationtype="' + (item.LocationType || '') + '"');
+            atts.push('data-index="' + index + '"');
 
             if (item.IsPlaceHolder) {
                 atts.push('data-placeholder="true"');
@@ -913,13 +900,17 @@
                 }
             }
 
+            if (BoxSetEditor.supportsAddingToCollection(item)) {
+                itemCommands.push('addtocollection');
+            }
+
             if (options.playFromHere) {
                 itemCommands.push('playfromhere');
                 itemCommands.push('queuefromhere');
             }
 
             // There's no detail page with a dedicated delete function
-            if (item.Type == 'Playlist') {
+            if (item.Type == 'Playlist' || item.Type == 'BoxSet') {
                 itemCommands.push('delete');
             }
 
@@ -946,7 +937,7 @@
                 primaryImageAspectRatio = LibraryBrowser.getAveragePrimaryImageAspectRatio(items);
 
                 if (primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1.777777778) < .3) {
-                    options.shape = options.shape == 'auto' ? 'backdrop' : 'homePageBackdrop';
+                    options.shape = options.shape == 'auto' ? 'backdrop' : 'backdrop';
                 } else if (primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1) < .33) {
                     options.coverImage = true;
                     options.shape = 'square';
@@ -957,9 +948,9 @@
                     options.shape = 'banner';
                     options.coverImage = true;
                 } else if (primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 0.6666667) < .2) {
-                    options.shape = options.shape == 'auto' ? 'portrait' : 'homePagePortrait';
+                    options.shape = options.shape == 'auto' ? 'portrait' : 'portrait';
                 } else {
-                    options.shape = options.defaultShape || (options.shape == 'auto' ? 'portrait' : 'homePagePortrait');
+                    options.shape = options.defaultShape || (options.shape == 'auto' ? 'portrait' : 'portrait');
                 }
             }
 
@@ -1215,7 +1206,7 @@
                     cssClass += ' bottomPaddedCard';
                 }
 
-                var dataAttributes = LibraryBrowser.getItemDataAttributes(item, options);
+                var dataAttributes = LibraryBrowser.getItemDataAttributes(item, options, i);
 
                 var defaultActionAttribute = options.defaultAction ? (' data-action="' + options.defaultAction + '"') : '';
 
@@ -1234,6 +1225,9 @@
                 var imageCssClass = 'cardImage';
                 if (options.coverImage) {
                     imageCssClass += " coveredCardImage";
+                }
+                if (options.centerImage) {
+                    imageCssClass += " centeredCardImage";
                 }
 
                 var dataSrc = "";
@@ -1328,7 +1322,8 @@
 
             if (options.cardLayout) {
                 html += '<div class="cardText" style="text-align:right; float:right;">';
-                html += '<button class="listviewMenuButton" type="button" data-inline="true" data-iconpos="notext" data-icon="ellipsis-v" style="margin: 4px 0 0;"></button>';
+                // Render out the jqm classes so that we don't have to call trigger create
+                html += '<button class="listviewMenuButton ui-btn ui-icon-ellipsis-v ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" type="button" data-inline="true" data-iconpos="notext" data-icon="ellipsis-v" style="margin: 4px 0 0;"></button>';
                 html += "</div>";
             }
 
@@ -1359,6 +1354,13 @@
                 var itemCountHtml = LibraryBrowser.getItemCountsHtml(options, item);
 
                 lines.push(itemCountHtml);
+            }
+
+            if (options.textLines) {
+                var additionalLines = options.textLines(item);
+                for (var i = 0, length = additionalLines.length; i < length; i++) {
+                    lines.push(additionalLines[i]);
+                }
             }
 
             if (options.showSongCount) {

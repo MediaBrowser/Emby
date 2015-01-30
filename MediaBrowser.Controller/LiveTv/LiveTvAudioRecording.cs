@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Controller.Entities.Audio;
+﻿using System.Runtime.Serialization;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Users;
@@ -12,7 +13,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// Gets the user data key.
         /// </summary>
         /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+        protected override string CreateUserDataKey()
         {
             var name = GetClientTypeName();
 
@@ -32,6 +33,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// Gets a value indicating whether this instance is owned item.
         /// </summary>
         /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
         public override bool IsOwnedItem
         {
             get
@@ -40,6 +42,7 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
+        [IgnoreDataMember]
         public override string MediaType
         {
             get
@@ -48,6 +51,7 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
+        [IgnoreDataMember]
         public override LocationType LocationType
         {
             get
@@ -71,6 +75,7 @@ namespace MediaBrowser.Controller.LiveTv
             return false;
         }
 
+        [IgnoreDataMember]
         public override bool SupportsLocalMetadata
         {
             get
