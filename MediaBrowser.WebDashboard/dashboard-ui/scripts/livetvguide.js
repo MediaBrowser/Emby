@@ -1,13 +1,14 @@
 ﻿(function ($, document) {
 
-    // 30 mins
-    var cellCurationMinutes = 30;
+    // 1 min
+    var cellCurationMinutes = 1;
     var cellDurationMs = cellCurationMinutes * 60 * 1000;
 
     var gridLocalStartDateMs;
     var gridLocalEndDateMs;
 
     var currentDate;
+	var today = new Date();
 
     var channelQuery = {
 
@@ -35,7 +36,7 @@
 
         } else {
 
-            date.setHours(date.getHours(), 0, 0, 0);
+	        date.setHours(date.getHours(), 0, 0, 0);
         }
 
         return date;
@@ -59,7 +60,7 @@
         var nextDay = new Date(date.getTime());
         nextDay.setHours(0, 0, 0, 0);
         nextDay.setDate(nextDay.getDate() + 1);
-        console.log(nextDay);
+
         channelsPromise.done(function (channelsResult) {
 
             ApiClient.getLiveTvPrograms({
@@ -106,15 +107,36 @@
         var dateNumber = date.getDate();
 
         while (date.getDate() == dateNumber) {
+	        var newDate = new Date();
+	        var width = 0;
+	        var offset = date.getMinutes();
 
-            html += '<div class="timeslotHeader">';
+	        if (offset != 0 && offset != 30) {
+		        if (offset < 30) {
+			        newDate.setTime(date.getTime() + (cellDurationMs * (30 - offset)));
+			        width = 179 - (179 / (30 / offset));
+
+		        }else if (offset > 30) {
+			        newDate.setTime(date.getTime() + (cellDurationMs * (30 - (offset - 30))));
+			        width = 179 - (179 / (30 / (offset - 30)));
+		        }
+	        }else {
+		        // Add 30 mins
+		        newDate.setTime(date.getTime() + (cellDurationMs * 30));
+	        }
+
+	        var styleWidth = '';
+	        if (width > 0) {
+		        styleWidth = ' style="width:'+width+'px" ';
+	        }
+
+            html += '<div class="timeslotHeader" '+styleWidth+'>';
             html += '<div class="timeslotHeaderInner">';
             html += LiveTvHelpers.getDisplayTime(date);
             html += '</div>';
             html += '</div>';
 
-            // Add 30 mins
-            date.setTime(date.getTime() + cellDurationMs);
+	        date = newDate;
         }
 
         return html;
@@ -166,18 +188,7 @@
 
         var ms = end - start;
 
-        var width = 100 * ms / cellDurationMs;
-
-        // Round to the nearest cell
-        var overlap = width % 100;
-
-        if (overlap) {
-            width = width - overlap + 100;
-        }
-
-        if (width > 300) {
-            width += (width / 100) - 3;
-        }
+        var width = (100 * ms) / cellDurationMs;
 
         return width;
     }
@@ -198,12 +209,11 @@
 
         while (date.getDate() == dateNumber) {
 
-            // Add 30 mins
             var cellEndDate = new Date(date.getTime() + cellDurationMs);
 
             var program = findProgramStartingInCell(programs, 0, date, cellEndDate, cellIndex);
 
-            html += '<div class="timeslotCell">';
+            html += '<div class="timeslotCell '+cellIndex+'">';
 
             var cellTagName;
             var href;
@@ -361,9 +371,15 @@
         $('.timeslotHeaders', page).scrollLeft(grid.scrollLeft());
     }
 
-    function changeDate(page, date) {
+    function changeDate(page, date, first_load) {
+	    var todayCompare = new Date(today.setSeconds(0,0));
+	    var dateCompare = new Date(date.setSeconds(0,0));
 
-        currentDate = normalizeDateToTimeslot(date);
+	    if (dateCompare.getTime() == todayCompare.getTime() || first_load === true) {
+		    currentDate = date;
+	    }else {
+            currentDate = normalizeDateToTimeslot(date);
+	    }
 
         gridLocalStartDateMs = currentDate.getTime();
 
@@ -376,10 +392,6 @@
     }
 
     function setDateRange(page, guideInfo) {
-
-        var today = new Date();
-        today.setHours(today.getHours(), 0, 0, 0);
-
         var start = parseISO8601Date(guideInfo.StartDate, { toLocal: true });
         var end = parseISO8601Date(guideInfo.EndDate, { toLocal: true });
 
@@ -396,7 +408,6 @@
 
         while (start <= end) {
 
-
             html += '<option value="' + start.getTime() + '">' + LibraryBrowser.getFutureDateText(start) + '</option>';
 
             start.setDate(start.getDate() + 1);
@@ -409,14 +420,7 @@
             elem.val(currentDate.getTime()).selectmenu('refresh');
         }
 
-        var val = elem.val();
-        var date = new Date();
-
-        if (val) {
-            date.setTime(parseInt(val));
-        }
-
-        changeDate(page, date);
+        changeDate(page, new Date(), true);
     }
 
     $(document).on('pageinit', "#liveTvGuidePage", function () {
@@ -433,7 +437,7 @@
             var date = new Date();
             date.setTime(parseInt(this.value));
 
-            changeDate(page, date);
+            changeDate(page, date, false);
 
         });
 
