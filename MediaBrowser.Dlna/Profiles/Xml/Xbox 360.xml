@@ -8,7 +8,7 @@
       <HttpHeaderInfo name="User-Agent" value="Xenon" match="Substring" />
     </Headers>
   </Identification>
-  <FriendlyName>Media Browser on ${ServerName} : 1 : Windows Media Connect</FriendlyName>
+  <FriendlyName>${HostName} : 1 : Windows Media Connect</FriendlyName>
   <Manufacturer>Microsoft Corporation</Manufacturer>
   <ManufacturerUrl>http://www.microsoft.com/</ManufacturerUrl>
   <ModelName>Windows Media Connect</ModelName>
@@ -35,6 +35,7 @@
   <RequiresPlainFolders>true</RequiresPlainFolders>
   <SupportsDirectRemoteContent>false</SupportsDirectRemoteContent>
   <SupportsCustomHttpHeaders>false</SupportsCustomHttpHeaders>
+  <EnableMSMediaReceiverRegistrar>true</EnableMSMediaReceiverRegistrar>
   <XmlRootAttributes />
   <DirectPlayProfiles>
     <DirectPlayProfile container="avi" audioCodec="ac3,mp3" videoCodec="mpeg4" type="Video" />

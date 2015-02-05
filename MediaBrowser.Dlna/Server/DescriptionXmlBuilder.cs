@@ -110,13 +110,11 @@ namespace MediaBrowser.Dlna.Server
 
         private string GetFriendlyName()
         {
-            var name = _profile.FriendlyName ?? string.Empty;
-
             var characters = _serverName.Where(c => (char.IsLetterOrDigit(c) || c == '-')).ToArray();
 
             var serverName = new string(characters);
 
-            name = name.Replace("${ServerName}", serverName, StringComparison.OrdinalIgnoreCase);
+            var name = (_profile.FriendlyName ?? string.Empty).Replace("${HostName}", serverName, StringComparison.OrdinalIgnoreCase);
 
             return name;
         }
@@ -263,14 +261,17 @@ namespace MediaBrowser.Dlna.Server
                 EventSubUrl = "connectionmanager/events"
             });
 
-            list.Add(new DeviceService
+            if (_profile.EnableMSMediaReceiverRegistrar)
             {
-                ServiceType = "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1",
-                ServiceId = "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar",
-                ScpdUrl = "mediareceiverregistrar/mediareceiverregistrar.xml",
-                ControlUrl = "mediareceiverregistrar/control",
-                EventSubUrl = "mediareceiverregistrar/events"
-            });
+                list.Add(new DeviceService
+                {
+                    ServiceType = "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1",
+                    ServiceId = "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar",
+                    ScpdUrl = "mediareceiverregistrar/mediareceiverregistrar.xml",
+                    ControlUrl = "mediareceiverregistrar/control",
+                    EventSubUrl = "mediareceiverregistrar/events"
+                });
+            }
 
             return list;
         }

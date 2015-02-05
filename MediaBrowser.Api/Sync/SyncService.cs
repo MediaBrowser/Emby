@@ -206,10 +206,13 @@ namespace MediaBrowser.Api.Sync
         {
             var jobItem = _syncManager.GetJobItem(request.Id);
 
-            if (jobItem.Status != SyncJobItemStatus.Transferring)
+            if (jobItem.Status < SyncJobItemStatus.ReadyToTransfer)
             {
                 throw new ArgumentException("The job item is not yet ready for transfer.");
             }
+
+            var task = _syncManager.ReportSyncJobItemTransferBeginning(request.Id);
+            Task.WaitAll(task);
 
             return ToStaticFileResult(jobItem.OutputPath);
         }
@@ -235,7 +238,7 @@ namespace MediaBrowser.Api.Sync
                     }
                 };
 
-                var items = request.ItemIds.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                var items = request.ItemIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(_libraryManager.GetItemById)
                     .Where(i => i != null);
 
@@ -286,7 +289,7 @@ namespace MediaBrowser.Api.Sync
         {
             var jobItem = _syncManager.GetJobItem(request.Id);
 
-            if (jobItem.Status != SyncJobItemStatus.Transferring)
+            if (jobItem.Status < SyncJobItemStatus.ReadyToTransfer)
             {
                 throw new ArgumentException("The job item is not yet ready for transfer.");
             }

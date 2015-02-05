@@ -14,7 +14,10 @@ namespace MediaBrowser.Controller.Sync
     {
         event EventHandler<GenericEventArgs<SyncJobCreationResult>> SyncJobCreated;
         event EventHandler<GenericEventArgs<SyncJob>> SyncJobCancelled;
-          
+        event EventHandler<GenericEventArgs<SyncJob>> SyncJobUpdated;
+        event EventHandler<GenericEventArgs<SyncJobItem>> SyncJobItemUpdated;
+        event EventHandler<GenericEventArgs<SyncJobItem>> SyncJobItemCreated;
+
         /// <summary>
         /// Creates the job.
         /// </summary>
@@ -34,7 +37,7 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="query">The query.</param>
         /// <returns>QueryResult&lt;SyncJobItem&gt;.</returns>
         QueryResult<SyncJobItem> GetJobItems(SyncJobItemQuery query);
-        
+
         /// <summary>
         /// Gets the job.
         /// </summary>
@@ -62,7 +65,7 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="id">The identifier.</param>
         /// <returns>Task.</returns>
         Task CancelJobItem(string id);
-        
+
         /// <summary>
         /// Cancels the job.
         /// </summary>
@@ -149,5 +152,34 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="query">The query.</param>
         /// <returns>QueryResult&lt;System.String&gt;.</returns>
         QueryResult<string> GetLibraryItemIds(SyncJobItemQuery query);
+
+        /// <summary>
+        /// Gets the audio options.
+        /// </summary>
+        /// <param name="jobItem">The job item.</param>
+        /// <returns>AudioOptions.</returns>
+        AudioOptions GetAudioOptions(SyncJobItem jobItem);
+
+        /// <summary>
+        /// Gets the video options.
+        /// </summary>
+        /// <param name="jobItem">The job item.</param>
+        /// <param name="job">The job.</param>
+        /// <returns>VideoOptions.</returns>
+        VideoOptions GetVideoOptions(SyncJobItem jobItem, SyncJob job);
+
+        /// <summary>
+        /// Reports the synchronize job item transfer beginning.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task.</returns>
+        Task ReportSyncJobItemTransferBeginning(string id);
+
+        /// <summary>
+        /// Reports the synchronize job item transfer failed.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task.</returns>
+        Task ReportSyncJobItemTransferFailed(string id);
     }
 }
