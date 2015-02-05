@@ -1,7 +1,7 @@
 ﻿(function ($, document) {
 
-    // 30 mins
-    var cellCurationMinutes = 30;
+    // 1 min
+    var cellCurationMinutes = 1;
     var cellDurationMs = cellCurationMinutes * 60 * 1000;
 
     var gridLocalStartDateMs;
@@ -114,7 +114,7 @@
             html += '</div>';
 
             // Add 30 mins
-            date.setTime(date.getTime() + cellDurationMs);
+            date.setTime(date.getTime() + (cellDurationMs * 30));
         }
 
         return html;
@@ -166,18 +166,7 @@
 
         var ms = end - start;
 
-        var width = 100 * ms / cellDurationMs;
-
-        // Round to the nearest cell
-        var overlap = width % 100;
-
-        if (overlap) {
-            width = width - overlap + 100;
-        }
-
-        if (width > 300) {
-            width += (width / 100) - 3;
-        }
+        var width = (100 * ms) / cellDurationMs;
 
         return width;
     }
@@ -198,7 +187,7 @@
 
         while (date.getDate() == dateNumber) {
 
-            // Add 30 mins
+            // Add 1 min
             var cellEndDate = new Date(date.getTime() + cellDurationMs);
 
             var program = findProgramStartingInCell(programs, 0, date, cellEndDate, cellIndex);
