@@ -41,7 +41,7 @@ namespace MediaBrowser.Model.ApiClient
         /// Occurs when [authenticated].
         /// </summary>
         event EventHandler<GenericEventArgs<AuthenticationResult>> Authenticated;
-        
+
         /// <summary>
         /// Gets the API URL.
         /// </summary>
@@ -201,7 +201,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;HttpResponse&gt;.</returns>
         Task<HttpResponse> GetResponse(string url, CancellationToken cancellationToken = default(CancellationToken));
-        
+
         /// <summary>
         /// Updates the user configuration.
         /// </summary>
@@ -225,7 +225,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="query">The query.</param>
         /// <returns>Task&lt;QueryResult&lt;BaseItemDto&gt;&gt;.</returns>
         Task<BaseItemDto[]> GetLatestItems(LatestItemsQuery query);
-        
+
         /// <summary>
         /// Gets the intros async.
         /// </summary>
@@ -324,7 +324,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;ItemsResult&gt;.</returns>
         Task<ItemsResult> GetUserViews(string userId, CancellationToken cancellationToken = default(CancellationToken));
-        
+
         /// <summary>
         /// Gets the instant mix from song async.
         /// </summary>
@@ -563,7 +563,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;UserDto&gt;.</returns>
         Task<UserDto> GetOfflineUserAsync(string id);
-        
+
         /// <summary>
         /// Gets the parental ratings async.
         /// </summary>
@@ -761,7 +761,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="password">The password.</param>
         /// <returns>Task.</returns>
         /// <exception cref="ArgumentNullException">userId</exception>
-        Task<AuthenticationResult> AuthenticateUserAsync(string username, 
+        Task<AuthenticationResult> AuthenticateUserAsync(string username,
             string password);
 
         /// <summary>
@@ -874,7 +874,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="accessToken">The access token.</param>
         /// <param name="userId">The user identifier.</param>
         void SetAuthenticationInfo(string accessToken, string userId);
-        
+
         /// <summary>
         /// Sets the authentication information.
         /// </summary>
@@ -904,9 +904,8 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Stops the receiving synchronize job updates.
         /// </summary>
-        /// <param name="intervalMs">The interval ms.</param>
         /// <returns>Task.</returns>
-        Task StopReceivingSyncJobUpdates(int intervalMs);
+        Task StopReceivingSyncJobUpdates();
 
         /// <summary>
         /// Starts the receiving synchronize jobs updates.
@@ -920,10 +919,9 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Stops the receiving synchronize jobs updates.
         /// </summary>
-        /// <param name="intervalMs">The interval ms.</param>
         /// <returns>Task.</returns>
-        Task StopReceivingSyncJobsUpdates(int intervalMs);
-        
+        Task StopReceivingSyncJobsUpdates();
+
         /// <summary>
         /// Starts the receiving session updates.
         /// </summary>
@@ -936,7 +934,7 @@ namespace MediaBrowser.Model.ApiClient
         /// </summary>
         /// <returns>Task.</returns>
         Task StopReceivingSessionUpdates();
-        
+
         /// <summary>
         /// Gets the image URL.
         /// </summary>
@@ -1380,7 +1378,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="file">The file.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task UploadFile(Stream stream, 
+        Task UploadFile(Stream stream,
             LocalFileInfo file,
             CancellationToken cancellationToken);
 
@@ -1404,6 +1402,13 @@ namespace MediaBrowser.Model.ApiClient
         /// <returns>Task&lt;SyncJob&gt;.</returns>
         Task<SyncJob> CreateSyncJob(SyncJobRequest request);
 
+        /// <summary>
+        /// Updates the synchronize job.
+        /// </summary>
+        /// <param name="job">The job.</param>
+        /// <returns>Task.</returns>
+        Task UpdateSyncJob(SyncJob job);
+        
         /// <summary>
         /// Gets the synchronize jobs.
         /// </summary>
@@ -1441,7 +1446,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;Stream&gt;.</returns>
         Task<Stream> GetSyncJobItemAdditionalFile(string id, string name, CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Opens the web socket.
         /// </summary>
@@ -1494,6 +1499,12 @@ namespace MediaBrowser.Model.ApiClient
         /// <returns>Task.</returns>
         Task QueueFailedSyncJobItemForRetry(string id);
         /// <summary>
+        /// Cancels the synchronize job.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task.</returns>
+        Task CancelSyncJob(string id);
+        /// <summary>
         /// Cancels the synchronize job item.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -1505,5 +1516,14 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="id">The identifier.</param>
         /// <returns>Task.</returns>
         Task EnableCancelledSyncJobItem(string id);
+        /// <summary>
+        /// Gets the synchronize options.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="itemIds">The item ids.</param>
+        /// <param name="parentId">The parent identifier.</param>
+        /// <param name="category">The category.</param>
+        /// <returns>Task&lt;SyncOptions&gt;.</returns>
+        Task<SyncDialogOptions> GetSyncOptions(IEnumerable<string> itemIds, string userId, string parentId = null, SyncCategory? category = null);
     }
 }

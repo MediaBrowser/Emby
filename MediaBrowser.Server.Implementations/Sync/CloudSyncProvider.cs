@@ -12,21 +12,16 @@ namespace MediaBrowser.Server.Implementations.Sync
 {
     public class CloudSyncProvider : IServerSyncProvider
     {
-        private ICloudSyncProvider[] _providers = {};
+        private readonly ICloudSyncProvider[] _providers = {};
 
         public CloudSyncProvider(IApplicationHost appHost)
         {
             _providers = appHost.GetExports<ICloudSyncProvider>().ToArray();
         }
 
-        public IEnumerable<SyncTarget> GetSyncTargets()
-        {
-            return new List<SyncTarget>();
-        }
-
         public IEnumerable<SyncTarget> GetSyncTargets(string userId)
         {
-            return new List<SyncTarget>();
+            return _providers.SelectMany(i => i.GetSyncTargets(userId));
         }
 
         public DeviceProfile GetDeviceProfile(SyncTarget target)
@@ -49,12 +44,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             throw new NotImplementedException();
         }
 
-        public Task TransferItemFile(string serverId, string itemId, string path, SyncTarget target, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task TransferRelatedFile(string serverId, string itemId, string path, ItemFileType type, SyncTarget target, CancellationToken cancellationToken)
+        public Task TransferItemFile(string serverId, string itemId, string[] pathParts, string name, ItemFileType fileType, SyncTarget target, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

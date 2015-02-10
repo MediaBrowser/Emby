@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Channels
 {
@@ -66,6 +67,16 @@ namespace MediaBrowser.Controller.Channels
         public static string GetInternalMetadataPath(string basePath, Guid id)
         {
             return System.IO.Path.Combine(basePath, "channels", id.ToString("N"), "metadata");
+        }
+
+        public override bool CanDelete()
+        {
+            return false;
+        }
+
+        protected override bool IsAllowTagFilterEnforced()
+        {
+            return false;
         }
     }
 }

@@ -239,6 +239,38 @@ namespace MediaBrowser.Controller.Entities
             get { return this.GetImagePath(ImageType.Primary); }
         }
 
+        public virtual bool CanDelete()
+        {
+            var locationType = LocationType;
+            return locationType != LocationType.Remote &&
+                   locationType != LocationType.Virtual;
+        }
+
+        public virtual bool IsAuthorizedToDelete(User user)
+        {
+            return user.Policy.EnableContentDeletion;
+        }
+
+        public bool CanDelete(User user)
+        {
+            return CanDelete() && IsAuthorizedToDelete(user);
+        }
+
+        public virtual bool CanDownload()
+        {
+            return false;
+        }
+
+        public virtual bool IsAuthorizedToDownload(User user)
+        {
+            return user.Policy.EnableContentDownloading;
+        }
+
+        public bool CanDownload(User user)
+        {
+            return CanDownload() && IsAuthorizedToDownload(user);
+        }
+
         /// <summary>
         /// Gets or sets the date created.
         /// </summary>
@@ -268,6 +300,7 @@ namespace MediaBrowser.Controller.Entities
         public static IChannelManager ChannelManager { get; set; }
         public static ICollectionManager CollectionManager { get; set; }
         public static IImageProcessor ImageProcessor { get; set; }
+        public static IMediaSourceManager MediaSourceManager { get; set; }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -1047,12 +1080,18 @@ namespace MediaBrowser.Controller.Entities
 
             if (hasTags != null)
             {
-                if (user.Policy.BlockedTags.Any(i => hasTags.Tags.Contains(i, StringComparer.OrdinalIgnoreCase)))
+                var policy = user.Policy;
+                if (policy.BlockedTags.Any(i => hasTags.Tags.Contains(i, StringComparer.OrdinalIgnoreCase)))
                 {
                     return false;
                 }
             }
 
+            return true;
+        }
+
+        protected virtual bool IsAllowTagFilterEnforced()
+        {
             return true;
         }
 

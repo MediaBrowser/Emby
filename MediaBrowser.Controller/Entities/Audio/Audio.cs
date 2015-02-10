@@ -113,6 +113,13 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
         }
 
+        public override bool CanDownload()
+        {
+            var locationType = LocationType;
+            return locationType != LocationType.Remote &&
+                   locationType != LocationType.Virtual;
+        }
+
         /// <summary>
         /// Gets or sets the artist.
         /// </summary>
@@ -232,7 +239,7 @@ namespace MediaBrowser.Controller.Entities.Audio
             {
                 Id = i.Id.ToString("N"),
                 Protocol = locationType == LocationType.Remote ? MediaProtocol.Http : MediaProtocol.File,
-                MediaStreams = ItemRepository.GetMediaStreams(new MediaStreamQuery { ItemId = i.Id }).ToList(),
+                MediaStreams = MediaSourceManager.GetMediaStreams(new MediaStreamQuery { ItemId = i.Id }).ToList(),
                 Name = i.Name,
                 Path = enablePathSubstituion ? GetMappedPath(i.Path, locationType) : i.Path,
                 RunTimeTicks = i.RunTimeTicks,

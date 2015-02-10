@@ -3,6 +3,7 @@ using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Sync;
@@ -222,8 +223,9 @@ namespace MediaBrowser.Server.Implementations.Sync
         {
             var items = category.HasValue ?
                 await GetItemsForSync(category.Value, parentId, user).ConfigureAwait(false) :
-                itemIds.SelectMany(i => GetItemsForSync(i, user))
-                .Where(_syncManager.SupportsSync);
+                itemIds.SelectMany(i => GetItemsForSync(i, user));
+
+            items = items.Where(_syncManager.SupportsSync);
 
             if (unwatchedOnly)
             {
@@ -303,16 +305,19 @@ namespace MediaBrowser.Server.Implementations.Sync
                 return new List<BaseItem>();
             }
 
-            return GetItemsForSync(item, user);
-        }
-
-        private IEnumerable<BaseItem> GetItemsForSync(BaseItem item, User user)
-        {
             var itemByName = item as IItemByName;
             if (itemByName != null)
             {
+                var itemByNameFilter = itemByName.GetItemFilter();
+
                 return user.RootFolder
-                    .GetRecursiveChildren(user, itemByName.GetItemFilter());
+                    .GetRecursiveChildren(user, i => !i.IsFolder && itemByNameFilter(i));
+            }
+
+            var series = item as Series;
+            if (series != null)
+            {
+                return series.GetEpisodes(user, false, false);
             }
 
             if (item.IsFolder)
@@ -481,7 +486,8 @@ namespace MediaBrowser.Server.Implementations.Sync
                 streamInfo.GetExternalSubtitles("dummy", false);
 
             // Mark as requiring conversion if transcoding the video, or if any subtitles need to be extracted
-            var requiresConversion = streamInfo.PlayMethod == PlayMethod.Transcode || externalSubs.Any(i => RequiresExtraction(i, mediaSource));
+            var requiresVideoTranscoding = streamInfo.PlayMethod == PlayMethod.Transcode && job.Quality != SyncQuality.Original;
+            var requiresConversion = requiresVideoTranscoding || externalSubs.Any(i => RequiresExtraction(i, mediaSource));
 
             if (requiresConversion && !enableConversion)
             {
@@ -496,7 +502,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                 jobItem.Status = SyncJobItemStatus.Converting;
             }
 
-            if (streamInfo.PlayMethod == PlayMethod.Transcode)
+            if (requiresVideoTranscoding)
             {
                 // Save the job item now since conversion could take a while
                 await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
@@ -611,7 +617,8 @@ namespace MediaBrowser.Server.Implementations.Sync
                     IsForced = subtitle.IsForced,
                     IsExternal = true,
                     Language = subtitle.Language,
-                    Path = fileInfo.Path
+                    Path = fileInfo.Path,
+                    SupportsExternalStream = true
                 });
 
                 startingIndex++;
@@ -667,7 +674,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             jobItem.MediaSourceId = streamInfo.MediaSourceId;
             jobItem.TemporaryPath = GetTemporaryPath(jobItem);
 
-            if (streamInfo.PlayMethod == PlayMethod.Transcode)
+            if (streamInfo.PlayMethod == PlayMethod.Transcode && job.Quality != SyncQuality.Original)
             {
                 if (!enableConversion)
                 {
@@ -754,7 +761,7 @@ namespace MediaBrowser.Server.Implementations.Sync
         private async Task SyncGeneric(SyncJobItem jobItem, BaseItem item, CancellationToken cancellationToken)
         {
             jobItem.OutputPath = item.Path;
-            
+
             jobItem.Progress = 50;
             jobItem.Status = SyncJobItemStatus.ReadyToTransfer;
             await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
