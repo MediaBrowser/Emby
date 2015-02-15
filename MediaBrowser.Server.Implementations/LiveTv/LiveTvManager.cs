@@ -2,6 +2,7 @@
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Progress;
 using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
@@ -147,7 +148,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 var currentUser = user;
 
                 channels = channels
-                    .Where(i => i.IsParentalAllowed(currentUser))
+                    .Where(i => i.IsVisible(currentUser))
                     .OrderBy(i =>
                     {
                         double number = 0;
@@ -436,40 +437,19 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         private async Task<LiveTvChannel> GetChannel(ChannelInfo channelInfo, string serviceName, CancellationToken cancellationToken)
         {
-            var path = Path.Combine(_config.ApplicationPaths.ItemsByNamePath, "tvchannels", _fileSystem.GetValidFilename(channelInfo.Name));
-
-            var fileInfo = new DirectoryInfo(path);
-
             var isNew = false;
-
-            if (!fileInfo.Exists)
-            {
-                _logger.Debug("Creating directory {0}", path);
-
-                Directory.CreateDirectory(path);
-                fileInfo = new DirectoryInfo(path);
-
-                if (!fileInfo.Exists)
-                {
-                    throw new IOException("Path not created: " + path);
-                }
-
-                isNew = true;
-            }
 
             var id = _tvDtoService.GetInternalChannelId(serviceName, channelInfo.Id);
 
             var item = _itemRepo.RetrieveItem(id) as LiveTvChannel;
 
-            if (item == null || !string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))
+            if (item == null)
             {
                 item = new LiveTvChannel
                 {
                     Name = channelInfo.Name,
                     Id = id,
-                    DateCreated = _fileSystem.GetCreationTimeUtc(fileInfo),
-                    DateModified = _fileSystem.GetLastWriteTimeUtc(fileInfo),
-                    Path = path
+                    DateCreated = DateTime.UtcNow,
                 };
 
                 isNew = true;
@@ -496,7 +476,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             item.ProviderImageUrl = channelInfo.ImageUrl;
             item.HasProviderImage = channelInfo.HasImage;
             item.ProviderImagePath = channelInfo.ImagePath;
-            
+
             if (string.IsNullOrEmpty(item.Name))
             {
                 item.Name = channelInfo.Name;
@@ -700,7 +680,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             {
                 // Avoid implicitly captured closure
                 var currentUser = user;
-                programs = programs.Where(i => i.IsParentalAllowed(currentUser));
+                programs = programs.Where(i => i.IsVisible(currentUser));
             }
 
             var programList = programs.ToList();
@@ -735,7 +715,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             // Avoid implicitly captured closure
             var currentUser = user;
-            programs = programs.Where(i => i.IsParentalAllowed(currentUser));
+            programs = programs.Where(i => i.IsVisible(currentUser));
 
             if (query.IsAiring.HasValue)
             {
@@ -908,7 +888,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             try
             {
-                await RefreshChannelsInternal(progress, cancellationToken).ConfigureAwait(false);
+                var innerProgress = new ActionableProgress<double>();
+                innerProgress.RegisterAction(p => progress.Report(p * .9));
+                await RefreshChannelsInternal(innerProgress, cancellationToken).ConfigureAwait(false);
+
+                innerProgress = new ActionableProgress<double>();
+                innerProgress.RegisterAction(p => progress.Report(90 + (p * .1)));
+                await CleanDatabaseInternal(progress, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -1019,14 +1005,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         public async Task CleanDatabase(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var service = ActiveService;
-
-            if (service == null)
-            {
-                progress.Report(100);
-                return;
-            }
-
             await _refreshSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
@@ -1039,8 +1017,21 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             }
         }
 
+        private Task CleanDatabaseInternal(IProgress<double> progress, CancellationToken cancellationToken)
+        {
+            return DeleteOldPrograms(_programs.Keys.ToList(), progress, cancellationToken);
+        }
+
         private async Task DeleteOldPrograms(List<Guid> currentIdList, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            var service = ActiveService;
+
+            if (service == null)
+            {
+                progress.Report(100);
+                return;
+            }
+
             var list = _itemRepo.GetItemsOfType(typeof(LiveTvProgram)).ToList();
 
             var numComplete = 0;

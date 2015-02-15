@@ -113,7 +113,7 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
             return info;
         }
 
-        private void DeleteOlderFolders(string path, IEnumerable<string> excludeFolders )
+        private void DeleteOlderFolders(string path, IEnumerable<string> excludeFolders)
         {
             var folders = Directory.GetDirectories(path)
                 .Where(i => !excludeFolders.Contains(i, StringComparer.OrdinalIgnoreCase))
@@ -129,7 +129,7 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
         {
             try
             {
-                Directory.Delete(path, true);
+                _fileSystem.DeleteDirectory(path, true);
             }
             catch (Exception ex)
             {
@@ -155,9 +155,9 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                 {
                     return new FFMpegInfo
                     {
-                         EncoderPath = encoder,
-                         ProbePath = probe,
-                         Version = Path.GetFileName(Path.GetDirectoryName(probe))
+                        EncoderPath = encoder,
+                        ProbePath = probe,
+                        Version = Path.GetFileName(Path.GetDirectoryName(probe))
                     };
                 }
             }
@@ -217,7 +217,8 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
             {
                 ExtractArchive(downloadinfo, tempFile, tempFolder);
 
-                var files = Directory.EnumerateFiles(tempFolder, "*", SearchOption.AllDirectories).ToList();
+                var files = Directory.EnumerateFiles(tempFolder, "*", SearchOption.AllDirectories)
+                    .ToList();
 
                 foreach (var file in files.Where(i =>
                     {
@@ -228,9 +229,9 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                             string.Equals(filename, downloadinfo.FFMpegFilename, StringComparison.OrdinalIgnoreCase);
                     }))
                 {
-                    File.Copy(file, Path.Combine(targetFolder, Path.GetFileName(file)), true);
-
-                    SetFilePermissions(targetFolder, file);
+                    var targetFile = Path.Combine(targetFolder, Path.GetFileName(file));
+                    File.Copy(file, targetFile, true);
+                    SetFilePermissions(targetFile);
                 }
             }
             finally
@@ -239,12 +240,14 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
             }
         }
 
-        private void SetFilePermissions(string targetFolder, string file)
+        private void SetFilePermissions(string path)
         {
             // Linux: File permission to 666, and user's execute bit
             if (_environment.OperatingSystem == OperatingSystem.Bsd || _environment.OperatingSystem == OperatingSystem.Linux || _environment.OperatingSystem == OperatingSystem.Osx)
             {
-                Syscall.chmod(Path.Combine(targetFolder, Path.GetFileName(file)), FilePermissions.DEFFILEMODE | FilePermissions.S_IXUSR);
+                _logger.Info("Syscall.chmod {0} FilePermissions.DEFFILEMODE | FilePermissions.S_IRWXU | FilePermissions.S_IXGRP | FilePermissions.S_IXOTH", path);
+
+                Syscall.chmod(path, FilePermissions.DEFFILEMODE | FilePermissions.S_IRWXU | FilePermissions.S_IXGRP | FilePermissions.S_IXOTH);
             }
         }
 
@@ -272,7 +275,7 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
         {
             try
             {
-                File.Delete(path);
+                _fileSystem.DeleteFile(path);
             }
             catch (IOException ex)
             {
@@ -307,7 +310,7 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                     Task.Run(async () =>
                     {
                         await DownloadFontFile(fontsDirectory, fontFilename, new Progress<double>()).ConfigureAwait(false);
-                        
+
                         await WriteFontConfigFile(fontsDirectory).ConfigureAwait(false);
                     });
                 }
@@ -383,7 +386,7 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
 
             try
             {
-                File.Delete(tempFile);
+                _fileSystem.DeleteFile(tempFile);
             }
             catch (IOException ex)
             {

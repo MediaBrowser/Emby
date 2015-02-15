@@ -148,12 +148,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
         private string GetServerAddress(IPAddress localIp)
         {
-            return string.Format("{0}://{1}:{2}/mediabrowser",
-
-                "http",
-                localIp,
-                _appHost.HttpServerPort
-                );
+            return _appHost.GetLocalApiUrl(localIp.ToString());
         }
 
         public void Dispose()
