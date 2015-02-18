@@ -494,7 +494,7 @@ namespace MediaBrowser.Api
 
             return new ItemsResult
             {
-                TotalRecordCount = dtos.Length,
+                TotalRecordCount = returnItems.Count(),
                 Items = dtos
             };
         }
