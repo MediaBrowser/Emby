@@ -153,8 +153,8 @@
                         { name: Globalize.translate('HeaderAudio'), type: 'Audio' },
                         { name: Globalize.translate('HeaderSubtitles'), type: 'Subtitles' },
                         { name: Globalize.translate('HeaderTrailers'), type: 'Trailers' },
-                        { name: Globalize.translate('HeaderSpecials'), type: 'Specials'  },
-		                { name: Globalize.translate('MediaInfoPath'), type: 'Path' }
+                        { name: Globalize.translate('HeaderSpecials'), type: 'Specials' },
+                        { name: Globalize.translate('MediaInfoPath'), type: 'Path' }
                     ];
                 }
         }
@@ -360,7 +360,11 @@
 
                 case 'Path':
                     {
-                        html += item.Path;
+                        if (item.LocationType != 'Remote') {
+                            html += item.Path || '&nbsp;';
+                        } else {
+                            html += "Remote";
+                        }
                         break;
                     }
 
