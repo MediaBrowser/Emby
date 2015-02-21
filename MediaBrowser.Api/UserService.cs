@@ -14,6 +14,7 @@ using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Api
@@ -445,7 +446,7 @@ namespace MediaBrowser.Api
                 PasswordSha1 = request.Password,
                 PasswordMd5 = request.PasswordMd5,
                 RemoteEndPoint = Request.RemoteIp,
-                Username = request.Username
+                Username = WebUtility.HtmlDecode(request.Username)
 
             }).ConfigureAwait(false);
 
