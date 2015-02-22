@@ -114,6 +114,9 @@
                 if ($.browser.chrome) {
                     return '.webm';
                 }
+                
+                // Firefox suddenly having trouble with our webm
+                return '.webm';
             }
 
             return '.mp4';
@@ -1293,7 +1296,8 @@
                 audioBitrate: 128000,
                 StartTimeTicks: startPositionTicks,
                 mediaSourceId: mediaSource.Id,
-                deviceId: ApiClient.deviceId()
+                deviceId: ApiClient.deviceId(),
+                api_key: ApiClient.accessToken()
             };
 
             var sourceContainer = (mediaSource.Container || '').toLowerCase();
