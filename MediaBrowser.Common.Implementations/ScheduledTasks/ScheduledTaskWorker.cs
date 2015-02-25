@@ -313,7 +313,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        async void trigger_Triggered(object sender, EventArgs e)
+        async void trigger_Triggered(object sender, GenericEventArgs<TaskExecutionOptions> e)
         {
             var trigger = (ITaskTrigger)sender;
 
@@ -328,7 +328,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
 
             trigger.Stop();
 
-            TaskManager.QueueScheduledTask(ScheduledTask);
+            TaskManager.QueueScheduledTask(ScheduledTask, e.Argument);
 
             await Task.Delay(1000).ConfigureAwait(false);
 
@@ -340,11 +340,12 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// <summary>
         /// Executes the task
         /// </summary>
+        /// <param name="options">Task options.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.InvalidOperationException">Cannot execute a Task that is already running</exception>
-        public async Task Execute()
+        public async Task Execute(TaskExecutionOptions options)
         {
-            var task = ExecuteInternal();
+            var task = ExecuteInternal(options);
 
             _currentTask = task;
 
@@ -358,7 +359,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
             }
         }
 
-        private async Task ExecuteInternal()
+        private async Task ExecuteInternal(TaskExecutionOptions options)
         {
             // Cancel the current execution, if any
             if (CurrentCancellationTokenSource != null)
@@ -368,7 +369,15 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
 
             var progress = new Progress<double>();
 
-            CurrentCancellationTokenSource = new CancellationTokenSource();
+            if (options != null && options.EllapsedTimeMs.HasValue)
+            {
+                CurrentCancellationTokenSource = new CancellationTokenSource(options.EllapsedTimeMs.Value);
+            }
+            else
+            {
+                CurrentCancellationTokenSource = new CancellationTokenSource();
+            }
+            
 
             Logger.Info("Executing {0}", Name);
 
