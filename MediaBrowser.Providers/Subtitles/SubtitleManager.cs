@@ -159,7 +159,10 @@ namespace MediaBrowser.Providers.Subtitles
                     Provider = provider.Name
 
                 }, _logger);
-                
+                if (ex.Message.Contains("407 Download limit reached"))
+                {
+
+                }
                 throw;
             }
         }
