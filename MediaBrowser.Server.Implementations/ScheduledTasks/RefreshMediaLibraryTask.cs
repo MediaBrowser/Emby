@@ -29,6 +29,12 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
         }
 
         /// <summary>
+        /// Gets or sets the execution options for this task.
+        /// </summary>
+        /// <value>The execution options for this task.</value>
+        public TaskExecutionOptions TaskExecutionOptions { get; set; }
+
+        /// <summary>
         /// Gets the default triggers.
         /// </summary>
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>

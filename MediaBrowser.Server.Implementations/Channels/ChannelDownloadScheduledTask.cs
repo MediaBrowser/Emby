@@ -48,6 +48,12 @@ namespace MediaBrowser.Server.Implementations.Channels
             _security = security;
         }
 
+        /// <summary>
+        /// Gets or sets the execution options for this task.
+        /// </summary>
+        /// <value>The execution options for this task.</value>
+        public TaskExecutionOptions TaskExecutionOptions { get; set; }
+
         public string Name
         {
             get { return "Download channel content"; }

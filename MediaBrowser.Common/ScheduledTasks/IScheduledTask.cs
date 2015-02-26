@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace MediaBrowser.Common.ScheduledTasks
 {
     /// <summary>
-    /// Interface IScheduledTaskWorker
+    /// Interface IScheduledTask
     /// </summary>
     public interface IScheduledTask
     {
@@ -41,5 +41,11 @@ namespace MediaBrowser.Common.ScheduledTasks
         /// </summary>
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>
         IEnumerable<ITaskTrigger> GetDefaultTriggers();
+
+        /// <summary>
+        /// Gets the execution options for this task.
+        /// </summary>
+        /// <value>The execution options for this task.</value>
+        TaskExecutionOptions TaskExecutionOptions { get; }
     }
 }

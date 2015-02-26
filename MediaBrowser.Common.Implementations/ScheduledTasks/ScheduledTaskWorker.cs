@@ -383,7 +383,15 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
 
             try
             {
-                await ExecuteTask(CurrentCancellationTokenSource.Token, progress).ConfigureAwait(false);
+                Task localTask = ScheduledTask.Execute(CurrentCancellationTokenSource.Token, progress);
+
+                if (ScheduledTask.TaskExecutionOptions != null
+                    && ScheduledTask.TaskExecutionOptions.MaxRuntimeMs.HasValue)
+                {
+                    CurrentCancellationTokenSource.CancelAfter(ScheduledTask.TaskExecutionOptions.MaxRuntimeMs.Value);
+                }
+
+                await localTask.ConfigureAwait(false);
 
                 status = TaskCompletionStatus.Completed;
             }
@@ -413,17 +421,6 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
             // Bad practice, i know. But we keep a lot in memory, unfortunately.
             GC.Collect(2, GCCollectionMode.Forced, true);
             GC.Collect(2, GCCollectionMode.Forced, true);
-        }
-
-        /// <summary>
-        /// Executes the task.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="progress">The progress.</param>
-        /// <returns>Task.</returns>
-        private Task ExecuteTask(CancellationToken cancellationToken, IProgress<double> progress)
-        {
-            return Task.Run(async () => await ScheduledTask.Execute(cancellationToken, progress).ConfigureAwait(false), cancellationToken);
         }
 
         /// <summary>
