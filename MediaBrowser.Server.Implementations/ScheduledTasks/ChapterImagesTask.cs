@@ -64,6 +64,12 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
             libraryManager.ItemUpdated += libraryManager_ItemAdded;
         }
 
+        /// <summary>
+        /// Gets or sets the execution options for this task.
+        /// </summary>
+        /// <value>The execution options for this task.</value>
+        public TaskExecutionOptions TaskExecutionOptions { get; set; }
+
         void libraryManager_ItemAdded(object sender, ItemChangeEventArgs e)
         {
             var video = e.Item as Video;
