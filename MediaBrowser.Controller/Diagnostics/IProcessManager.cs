@@ -8,21 +8,15 @@ namespace MediaBrowser.Controller.Diagnostics
     public interface IProcessManager
     {
         /// <summary>
-        /// Gets a value indicating whether [supports suspension].
-        /// </summary>
-        /// <value><c>true</c> if [supports suspension]; otherwise, <c>false</c>.</value>
-        bool SupportsSuspension { get; }
-
-        /// <summary>
-        /// Suspends the process.
+        /// Idles the process.
         /// </summary>
         /// <param name="process">The process.</param>
-        void SuspendProcess(Process process);
+        void IdleProcess(Process process);
 
         /// <summary>
-        /// Resumes the process.
+        /// Unidles the process.
         /// </summary>
         /// <param name="process">The process.</param>
-        void ResumeProcess(Process process);
+        void UnidleProcess(Process process);
     }
 }

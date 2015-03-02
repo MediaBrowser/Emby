@@ -2,7 +2,6 @@
 using MediaBrowser.Controller.Diagnostics;
 using MediaBrowser.IsoMounter;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Server.Mono.Diagnostics;
 using MediaBrowser.Server.Mono.Networking;
 using MediaBrowser.Server.Startup.Common;
 using Mono.Unix.Native;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MediaBrowser.Server.Implementations.Diagnostics;
 
 namespace MediaBrowser.Server.Mono.Native
 {
@@ -194,12 +194,7 @@ namespace MediaBrowser.Server.Mono.Native
 
 
         public IProcessManager GetProcessManager()
-        {
-            if (Environment.OperatingSystem == Startup.Common.OperatingSystem.Linux)
-            {
-                return new LinuxProcessManager();
-            }
-
+        {           
             return new ProcessManager();
         }
     }
