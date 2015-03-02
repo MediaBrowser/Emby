@@ -12,14 +12,11 @@ namespace MediaBrowser.Api.Playback
         private readonly ILogger _logger;
         private readonly IProcessManager _processManager;
         private Timer _timer;
-        private bool _isPaused;
+        private bool _isIdle;
 
         public void Start()
         {
-            if (_processManager.SupportsSuspension)
-            {
-                _timer = new Timer(TimerCallback, null, 5000, 5000);
-            }
+            _timer = new Timer(TimerCallback, null, 5000, 5000);
         }
 
         private void TimerCallback(object state)
@@ -32,17 +29,17 @@ namespace MediaBrowser.Api.Playback
 
             if (IsThrottleAllowed(_job))
             {
-                PauseTranscoding();
+                IdleTranscoding();
             }
             else
             {
-                UnpauseTranscoding();
+                UnidleTranscoding();
             }
         }
 
-        private void PauseTranscoding()
+        private void IdleTranscoding()
         {
-            if (!_isPaused)
+            if (!_isIdle)
             {
                 _logger.Debug("Sending pause command to ffmpeg");
             }
@@ -50,8 +47,8 @@ namespace MediaBrowser.Api.Playback
             try
             {
                 //_job.Process.StandardInput.WriteLine("p");
-                _processManager.SuspendProcess(_job.Process);
-                _isPaused = true;
+                _processManager.IdleProcess(_job.Process);
+                _isIdle = true;
             }
             catch (Exception ex)
             {
@@ -59,9 +56,9 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
-        private void UnpauseTranscoding()
+        private void UnidleTranscoding()
         {
-            if (_isPaused)
+            if (_isIdle)
             {
                 _logger.Debug("Sending unpause command to ffmpeg");
             }
@@ -69,8 +66,8 @@ namespace MediaBrowser.Api.Playback
             try
             {
                 //_job.Process.StandardInput.WriteLine("u");
-                _processManager.ResumeProcess(_job.Process);
-                _isPaused = false;
+                _processManager.UnidleProcess(_job.Process);
+                _isIdle = false;
             }
             catch (Exception ex)
             {

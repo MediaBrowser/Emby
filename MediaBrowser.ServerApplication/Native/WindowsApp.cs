@@ -7,6 +7,7 @@ using MediaBrowser.Server.Startup.Common;
 using MediaBrowser.ServerApplication.Networking;
 using System.Collections.Generic;
 using System.Reflection;
+using MediaBrowser.Server.Implementations.Diagnostics;
 
 namespace MediaBrowser.ServerApplication.Native
 {
@@ -113,7 +114,7 @@ namespace MediaBrowser.ServerApplication.Native
 
         public IProcessManager GetProcessManager()
         {
-            return new WindowsProcessManager();
+            return new ProcessManager();
         }
     }
 }
