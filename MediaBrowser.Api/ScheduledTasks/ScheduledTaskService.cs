@@ -195,7 +195,7 @@ namespace MediaBrowser.Api.ScheduledTasks
                 throw new ResourceNotFoundException("Task not found");
             }
 
-            TaskManager.Execute(task);
+            TaskManager.Execute(task, null);
         }
 
         /// <summary>

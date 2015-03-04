@@ -574,7 +574,7 @@ namespace MediaBrowser.Server.Implementations.IO
             // If the root folder changed, run the library task so the user can see it
             if (itemsToRefresh.Any(i => i is AggregateFolder))
             {
-                TaskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
+                TaskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>(null);
                 return;
             }
 

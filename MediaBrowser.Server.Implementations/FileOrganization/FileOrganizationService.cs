@@ -41,7 +41,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         public void BeginProcessNewFiles()
         {
-            _taskManager.CancelIfRunningAndQueue<OrganizerScheduledTask>();
+            _taskManager.CancelIfRunningAndQueue<OrganizerScheduledTask>(null);
         }
 
         public Task SaveResult(FileOrganizationResult result, CancellationToken cancellationToken)

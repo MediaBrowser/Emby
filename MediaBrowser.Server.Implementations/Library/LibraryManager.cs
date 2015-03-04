@@ -293,7 +293,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
                 if (seasonZeroNameChanged || ibnPathChanged || wizardChanged)
                 {
-                    _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
+                    _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>(null);
                 }
             });
         }
@@ -992,7 +992,7 @@ namespace MediaBrowser.Server.Implementations.Library
         public Task ValidateMediaLibrary(IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Just run the scheduled task so that the user can see it
-            _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
+            _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>(null);
 
             return Task.FromResult(true);
         }
@@ -1003,7 +1003,7 @@ namespace MediaBrowser.Server.Implementations.Library
         public void QueueLibraryScan()
         {
             // Just run the scheduled task so that the user can see it
-            _taskManager.QueueScheduledTask<RefreshMediaLibraryTask>();
+            _taskManager.QueueScheduledTask<RefreshMediaLibraryTask>(null);
         }
 
         /// <summary>

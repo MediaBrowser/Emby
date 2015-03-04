@@ -131,7 +131,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         void service_DataSourceChanged(object sender, EventArgs e)
         {
-            _taskManager.CancelIfRunningAndQueue<RefreshChannelsScheduledTask>();
+            _taskManager.CancelIfRunningAndQueue<RefreshChannelsScheduledTask>(null);
         }
 
         public async Task<QueryResult<LiveTvChannel>> GetInternalChannels(LiveTvChannelQuery query, CancellationToken cancellationToken)
