@@ -123,14 +123,7 @@ namespace MediaBrowser.Controller.Library
         /// Gets the default view.
         /// </summary>
         /// <returns>IEnumerable{VirtualFolderInfo}.</returns>
-        IEnumerable<VirtualFolderInfo> GetDefaultVirtualFolders();
-
-        /// <summary>
-        /// Gets the view.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>IEnumerable{VirtualFolderInfo}.</returns>
-        IEnumerable<VirtualFolderInfo> GetVirtualFolders(User user);
+        IEnumerable<VirtualFolderInfo> GetVirtualFolders();
 
         /// <summary>
         /// Gets the item by id.
@@ -400,5 +393,12 @@ namespace MediaBrowser.Controller.Library
         /// <returns>IEnumerable&lt;Video&gt;.</returns>
         IEnumerable<Video> FindExtras(BaseItem owner, List<FileSystemInfo> fileSystemChildren,
             IDirectoryService directoryService);
+
+        /// <summary>
+        /// Gets the collection folders.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable&lt;Folder&gt;.</returns>
+        IEnumerable<Folder> GetCollectionFolders(BaseItem item);
     }
 }

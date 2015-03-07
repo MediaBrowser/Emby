@@ -18,11 +18,64 @@ namespace MediaBrowser.Common.Implementations.Networking
             Logger = logger;
         }
 
+        private volatile List<string> _localIpAddresses;
+        private readonly object _localIpAddressSyncLock = new object();
+
         /// <summary>
         /// Gets the machine's local ip address
         /// </summary>
         /// <returns>IPAddress.</returns>
         public IEnumerable<string> GetLocalIpAddresses()
+        {
+            if (_localIpAddresses == null)
+            {
+                lock (_localIpAddressSyncLock)
+                {
+                    if (_localIpAddresses == null)
+                    {
+                        var addresses = GetLocalIpAddressesInternal().ToList();
+
+                        _localIpAddresses = addresses;
+                        BindEvents();
+
+                        return addresses;
+                    }
+                }
+            }
+
+            return _localIpAddresses;
+        }
+
+        private void BindEvents()
+        {
+            NetworkChange.NetworkAddressChanged -= NetworkChange_NetworkAddressChanged;
+            NetworkChange.NetworkAvailabilityChanged -= NetworkChange_NetworkAvailabilityChanged;
+
+            NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
+            NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
+        }
+
+        void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        {
+            Logger.Debug("NetworkAvailabilityChanged fired. Resetting cached network info.");
+
+            lock (_localIpAddressSyncLock)
+            {
+                _localIpAddresses = null;
+            }
+        }
+
+        void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+        {
+            Logger.Debug("NetworkAddressChanged fired. Resetting cached network info.");
+
+            lock (_localIpAddressSyncLock)
+            {
+                _localIpAddresses = null;
+            }
+        }
+
+        private IEnumerable<string> GetLocalIpAddressesInternal()
         {
             var list = GetIPsDefault()
                 .Where(i => !IPAddress.IsLoopback(i))
@@ -53,6 +106,11 @@ namespace MediaBrowser.Common.Implementations.Networking
             // Private address space:
             // http://en.wikipedia.org/wiki/Private_network
 
+            if (endpoint.StartsWith("172.", StringComparison.OrdinalIgnoreCase))
+            {
+                return Is172AddressPrivate(endpoint);
+            }
+
             return
 
                 // If url was requested with computer name, we may see this
@@ -61,9 +119,21 @@ namespace MediaBrowser.Common.Implementations.Networking
                 endpoint.StartsWith("localhost", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("127.", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("10.", StringComparison.OrdinalIgnoreCase) ||
-                endpoint.StartsWith("192.", StringComparison.OrdinalIgnoreCase) ||
-                endpoint.StartsWith("172.", StringComparison.OrdinalIgnoreCase) ||
+                endpoint.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("169.", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool Is172AddressPrivate(string endpoint)
+        {
+            for (var i = 16; i <= 31; i++)
+            {
+                if (endpoint.StartsWith("172." + i.ToString(CultureInfo.InvariantCulture) + ".", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool IsInLocalNetwork(string endpoint)
@@ -99,30 +169,33 @@ namespace MediaBrowser.Common.Implementations.Networking
             IPAddress address;
             if (resolveHost && !IPAddress.TryParse(endpoint, out address))
             {
-                var host = new Uri(endpoint).DnsSafeHost;
-
-                Logger.Debug("Resolving host {0}", host);
-
-                try
+                Uri uri;
+                if (Uri.TryCreate(endpoint, UriKind.RelativeOrAbsolute, out uri))
                 {
-                    address = GetIpAddresses(host).FirstOrDefault();
+                    var host = uri.DnsSafeHost;
+                    Logger.Debug("Resolving host {0}", host);
 
-                    if (address != null)
+                    try
                     {
-                        Logger.Debug("{0} resolved to {1}", host, address);
+                        address = GetIpAddresses(host).FirstOrDefault();
 
-                        return IsInLocalNetworkInternal(address.ToString(), false);
+                        if (address != null)
+                        {
+                            Logger.Debug("{0} resolved to {1}", host, address);
+
+                            return IsInLocalNetworkInternal(address.ToString(), false);
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error resovling hostname {0}", ex, host);
+                    catch (Exception ex)
+                    {
+                        Logger.ErrorException("Error resovling hostname {0}", ex, host);
+                    }
                 }
             }
 
             return false;
         }
-        
+
         public IEnumerable<IPAddress> GetIpAddresses(string hostName)
         {
             return Dns.GetHostAddresses(hostName);

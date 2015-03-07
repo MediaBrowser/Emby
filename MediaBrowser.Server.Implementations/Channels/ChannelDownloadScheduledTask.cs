@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
@@ -95,7 +96,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         public static string GetUserDistinctValue(User user)
         {
-            var channels = user.Policy.BlockedChannels
+            var channels = user.Policy.EnabledChannels
                 .OrderBy(i => i)
                 .ToList();
 
@@ -169,23 +170,29 @@ namespace MediaBrowser.Server.Implementations.Channels
             foreach (var item in result.Items)
             {
                 var channelItem = (IChannelItem)item;
-                if (options.DownloadingChannels.Contains(channelItem.ChannelId))
+
+                var channelFeatures = _manager.GetChannelFeatures(channelItem.ChannelId);
+
+                if (channelFeatures.SupportsContentDownloading)
                 {
-                    try
+                    if (options.DownloadingChannels.Contains(channelItem.ChannelId))
                     {
-                        await DownloadChannelItem(item, options, cancellationToken, path);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
-                    }
-                    catch (ChannelDownloadException)
-                    {
-                        // Logged at lower levels
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorException("Error downloading channel content for {0}", ex, item.Name);
+                        try
+                        {
+                            await DownloadChannelItem(item, options, cancellationToken, path);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                        catch (ChannelDownloadException)
+                        {
+                            // Logged at lower levels
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error downloading channel content for {0}", ex, item.Name);
+                        }
                     }
                 }
 
@@ -208,16 +215,6 @@ namespace MediaBrowser.Server.Implementations.Channels
             CancellationToken cancellationToken,
             string path)
         {
-            var limit = GetDownloadLimit(channelOptions);
-
-            if (limit.HasValue)
-            {
-                if (IsSizeLimitReached(path, limit.Value))
-                {
-                    return;
-                }
-            }
-
             var itemId = item.Id.ToString("N");
             var sources = await _manager.GetChannelItemMediaSources(itemId, false, cancellationToken)
                 .ConfigureAwait(false);
@@ -228,6 +225,16 @@ namespace MediaBrowser.Server.Implementations.Channels
             {
                 await RefreshMediaSourceItems(cachedVersions, cancellationToken).ConfigureAwait(false);
                 return;
+            }
+
+            var limit = GetDownloadLimit(channelOptions);
+
+            if (limit.HasValue)
+            {
+                if (IsSizeLimitReached(path, limit.Value))
+                {
+                    return;
+                }
             }
 
             var channelItem = (IChannelMediaItem)item;
@@ -254,10 +261,25 @@ namespace MediaBrowser.Server.Implementations.Channels
 
             if (item != null)
             {
-                // Get the version from the database
-                item = _libraryManager.GetItemById(item.Id) ?? item;
+                var forceSave = false;
 
-                await item.RefreshMetadata(cancellationToken).ConfigureAwait(false);
+                // Get the version from the database
+                var dbItem = _libraryManager.GetItemById(item.Id);
+
+                if (dbItem == null)
+                {
+                    forceSave = true;
+                }
+                else
+                {
+                    item = dbItem;
+                }
+
+                await item.RefreshMetadata(new MetadataRefreshOptions
+                {
+                    ForceSave = forceSave
+
+                }, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -358,7 +380,7 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             try
             {
-                File.Delete(path);
+                _fileSystem.DeleteFile(path);
             }
             catch (IOException ex)
             {

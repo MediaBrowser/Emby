@@ -13,12 +13,24 @@ namespace MediaBrowser.Model.Sync
         /// Gets or sets the options.
         /// </summary>
         /// <value>The options.</value>
-        public List<SyncOptions> Options { get; set; }
-
+        public List<SyncJobOption> Options { get; set; }
+        /// <summary>
+        /// Gets or sets the quality options.
+        /// </summary>
+        /// <value>The quality options.</value>
+        public List<SyncQuality> QualityOptions { get; set; }
+        
         public SyncDialogOptions()
         {
             Targets = new List<SyncTarget>();
-            Options = new List<SyncOptions>();
+            Options = new List<SyncJobOption>();
+            QualityOptions = new List<SyncQuality>
+            {
+                SyncQuality.Original,
+                SyncQuality.High,
+                SyncQuality.Medium,
+                SyncQuality.Low
+            };
         }
     }
 }

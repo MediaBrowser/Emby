@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Model.Extensions;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
@@ -13,12 +12,12 @@ using MediaBrowser.Dlna.ContentDirectory;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Net;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using MediaBrowser.Model.Net;
 
 namespace MediaBrowser.Dlna.Didl
 {
@@ -34,17 +33,19 @@ namespace MediaBrowser.Dlna.Didl
         private readonly DeviceProfile _profile;
         private readonly IImageProcessor _imageProcessor;
         private readonly string _serverAddress;
+        private readonly string _accessToken;
         private readonly User _user;
         private readonly IUserDataManager _userDataManager;
         private readonly ILocalizationManager _localization;
 
-        public DidlBuilder(DeviceProfile profile, User user, IImageProcessor imageProcessor, string serverAddress, IUserDataManager userDataManager, ILocalizationManager localization)
+        public DidlBuilder(DeviceProfile profile, User user, IImageProcessor imageProcessor, string serverAddress, string accessToken, IUserDataManager userDataManager, ILocalizationManager localization)
         {
             _profile = profile;
             _imageProcessor = imageProcessor;
             _serverAddress = serverAddress;
             _userDataManager = userDataManager;
             _localization = localization;
+            _accessToken = accessToken;
             _user = user;
         }
 
@@ -162,7 +163,7 @@ namespace MediaBrowser.Dlna.Didl
                 AddVideoResource(container, video, deviceId, filter, contentFeature, streamInfo);
             }
 
-            foreach (var subtitle in streamInfo.GetExternalSubtitles(_serverAddress, false))
+            foreach (var subtitle in streamInfo.GetExternalSubtitles(_serverAddress, _accessToken, false))
             {
                 AddSubtitleElement(container, subtitle);
             }
@@ -207,7 +208,7 @@ namespace MediaBrowser.Dlna.Didl
         {
             var res = container.OwnerDocument.CreateElement(string.Empty, "res", NS_DIDL);
 
-            var url = streamInfo.ToDlnaUrl(_serverAddress);
+            var url = streamInfo.ToDlnaUrl(_serverAddress, _accessToken);
 
             res.InnerText = url;
 
@@ -352,7 +353,7 @@ namespace MediaBrowser.Dlna.Didl
                });
             }
 
-            var url = streamInfo.ToDlnaUrl(_serverAddress);
+            var url = streamInfo.ToDlnaUrl(_serverAddress, _accessToken);
 
             res.InnerText = url;
 
@@ -801,7 +802,10 @@ namespace MediaBrowser.Dlna.Didl
                 if (string.Equals(item.MediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase)
                     || string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
                 {
-                    return;
+                    if (!stubType.HasValue)
+                    {
+                        return;
+                    }
                 }
             }
 

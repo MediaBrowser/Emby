@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.XbmcMetadata.Savers
 {
@@ -587,6 +588,10 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 if (!string.IsNullOrEmpty(hasLanguage.PreferredMetadataLanguage))
                 {
                     writer.WriteElementString("language", hasLanguage.PreferredMetadataLanguage);
+                }
+                if (!string.IsNullOrEmpty(hasLanguage.PreferredMetadataCountryCode))
+                {
+                    writer.WriteElementString("countrycode", hasLanguage.PreferredMetadataCountryCode);
                 }
             }
 

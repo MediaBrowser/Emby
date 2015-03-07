@@ -11,5 +11,15 @@ namespace MediaBrowser.Controller.Entities
         {
             get { return null; }
         }
+
+        public override bool CanDelete()
+        {
+            return false;
+        }
+
+        public override bool IsSaveLocalMetadataEnabled()
+        {
+            return true;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿(function (globalScope, $, JSON, WebSocket, setTimeout, devicePixelRatio, FileReader) {
+﻿(function (globalScope, JSON, WebSocket, setTimeout, devicePixelRatio, FileReader) {
 
     if (!globalScope.MediaBrowser) {
         globalScope.MediaBrowser = {};
@@ -10,17 +10,17 @@
      * @param {String} clientName 
      * @param {String} applicationVersion 
      */
-    globalScope.MediaBrowser.ApiClient = function (serverAddress, clientName, applicationVersion, deviceName, deviceId, capabilities) {
+    globalScope.MediaBrowser.ApiClient = function (logger, serverAddress, clientName, applicationVersion, deviceName, deviceId) {
 
         if (!serverAddress) {
             throw new Error("Must supply a serverAddress");
         }
 
-        console.log('ApiClient serverAddress: ' + serverAddress);
-        console.log('ApiClient clientName: ' + clientName);
-        console.log('ApiClient applicationVersion: ' + applicationVersion);
-        console.log('ApiClient deviceName: ' + deviceName);
-        console.log('ApiClient deviceId: ' + deviceId);
+        logger.log('ApiClient serverAddress: ' + serverAddress);
+        logger.log('ApiClient clientName: ' + clientName);
+        logger.log('ApiClient applicationVersion: ' + applicationVersion);
+        logger.log('ApiClient deviceName: ' + deviceName);
+        logger.log('ApiClient deviceId: ' + deviceId);
 
         var self = this;
         var currentUserId;
@@ -40,16 +40,11 @@
                 serverAddress = val;
 
                 if (changed) {
-                    $(this).trigger('serveraddresschanged');
+                    Events.trigger(this, 'serveraddresschanged');
                 }
             }
 
             return serverAddress;
-        };
-
-        self.apiPrefix = function () {
-
-            return "/mediabrowser";
         };
 
         self.serverInfo = function (info) {
@@ -101,13 +96,13 @@
             name = name.split('&').join('-');
             name = name.split('?').join('-');
 
-            var val = $.param({ name: name });
+            var val = AjaxApi.param({ name: name });
             return val.substring(val.indexOf('=') + 1).replace("'", '%27');
         };
 
         function onRequestFail(e) {
 
-            $(self).trigger('requestfail', [
+            Events.trigger(self, 'requestfail', [
             {
                 url: this.url,
                 status: e.status,
@@ -117,7 +112,7 @@
 
         function onRetryRequestFail(request) {
 
-            $(self).trigger('requestfail', [
+            Events.trigger(self, 'requestfail', [
             {
                 url: request.url
             }]);
@@ -152,11 +147,11 @@
             }
 
             if (!self.enableAutomaticNetwork || !self.serverInfo() || self.connectionMode == null) {
-                console.log('Requesting url without automatic networking: ' + request.url);
-                return $.ajax(request).fail(onRequestFail);
+                logger.log('Requesting url without automatic networking: ' + request.url);
+                return AjaxApi.ajax(request).fail(onRequestFail);
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             self.ajaxWithFailover(request, deferred, true);
             return deferred.promise();
         };
@@ -184,19 +179,19 @@
                 self.serverInfo().LocalAddress :
                 self.serverInfo().RemoteAddress;
 
-            console.log("Attempting reconnection to " + url);
+            logger.log("Attempting reconnection to " + url);
 
-            $.ajax({
+            AjaxApi.ajax({
 
                 type: "GET",
-                url: url + "/mediabrowser/system/info/public",
+                url: url + "/system/info/public",
                 dataType: "json",
 
                 timeout: 15000
 
             }).done(function () {
 
-                console.log("Reconnect succeeeded to " + url);
+                logger.log("Reconnect succeeeded to " + url);
 
                 self.connectionMode = connectionMode;
                 self.serverAddress(url);
@@ -205,7 +200,7 @@
 
             }).fail(function () {
 
-                console.log("Reconnect attempt failed to " + url);
+                logger.log("Reconnect attempt failed to " + url);
 
                 if (currentRetryCount <= 6) {
 
@@ -223,22 +218,16 @@
 
         function tryReconnect() {
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             setTimeout(function () {
                 tryReconnectInternal(deferred, self.connectionMode, 0);
             }, 500);
             return deferred.promise();
         }
 
-        function replaceServerAddress(url, newBaseUrl) {
+        function replaceServerAddress(url, oldBaseUrl, newBaseUrl) {
 
-            var index = url.toLowerCase().indexOf("/mediabrowser");
-
-            if (index != -1) {
-                return newBaseUrl + url.substring(index);
-            }
-
-            return url;
+            return url.replace(oldBaseUrl, newBaseUrl);
         }
 
         self.ajaxWithFailover = function (request, deferred, enableReconnection, replaceUrl) {
@@ -252,17 +241,17 @@
                 request.url = replaceServerAddress(request.url, baseUrl);
             }
 
-            console.log("Requesting " + request.url);
+            logger.log("Requesting " + request.url);
 
             request.timeout = 15000;
 
-            $.ajax(request).done(function (response) {
+            AjaxApi.ajax(request).done(function (response) {
 
                 deferred.resolve(response, 0);
 
             }).fail(function (e, textStatus) {
 
-                console.log("Request failed with textStatus " + textStatus + " to " + request.url);
+                logger.log("Request failed with textStatus " + textStatus + " to " + request.url);
 
                 var statusCode = parseInt(e.status || '0');
                 var isUserErrorCode = statusCode >= 400 && statusCode < 500;
@@ -271,12 +260,12 @@
                 if (enableReconnection && !isUserErrorCode) {
                     tryReconnect().done(function () {
 
-                        console.log("Reconnect succeesed");
+                        logger.log("Reconnect succeesed");
                         self.ajaxWithFailover(request, deferred, false, true);
 
                     }).fail(function () {
 
-                        console.log("Reconnect failed");
+                        logger.log("Reconnect failed");
                         onRetryRequestFail(request);
                         deferred.reject();
 
@@ -317,18 +306,18 @@
                 throw new Error("Url name cannot be empty");
             }
 
-            var url = serverAddress;
-
-            url += self.apiPrefix() + "/" + name;
+            var url = serverAddress + "/" + name;
 
             if (params) {
-                url += "?" + $.param(params);
+                url += "?" + AjaxApi.param(params);
             }
 
             return url;
         };
 
         self.enableAutomaticNetworking = function (server, connectionMode) {
+
+            logger.log('Begin enableAutomaticNetworking');
 
             self.serverInfo(server);
             self.connectionMode = connectionMode;
@@ -338,6 +327,7 @@
                 self.serverInfo().LocalAddress :
                 self.serverInfo().RemoteAddress;
 
+            logger.log('Setting server address to ' + url);
             self.serverAddress(url);
         };
 
@@ -347,39 +337,35 @@
 
         self.openWebSocket = function () {
 
-            var url = serverAddress + self.apiPrefix();
-
-            url = url.replace('http', 'ws');
+            var url = serverAddress.replace('http', 'ws');
 
             webSocket = new WebSocket(url);
 
             webSocket.onmessage = function (msg) {
 
                 msg = JSON.parse(msg.data);
-                $(self).trigger("websocketmessage", [msg]);
+                Events.trigger(self, 'websocketmessage', [msg]);
             };
 
             webSocket.onopen = function () {
 
-                console.log('web socket connection opened');
+                logger.log('web socket connection opened');
                 setTimeout(function () {
 
                     self.sendWebSocketMessage("Identity", clientName + "|" + deviceId + "|" + applicationVersion + "|" + deviceName);
 
-                    self.reportCapabilities(capabilities);
-
-                    $(self).trigger("websocketopen");
+                    Events.trigger(self, 'websocketopen');
 
                 }, 500);
             };
             webSocket.onerror = function () {
                 setTimeout(function () {
-                    $(self).trigger("websocketerror");
+                    Events.trigger(self, 'websocketerror');
                 }, 0);
             };
             webSocket.onclose = function () {
                 setTimeout(function () {
-                    $(self).trigger("websocketclose");
+                    Events.trigger(self, 'websocketclose');
                 }, 0);
             };
         };
@@ -392,7 +378,7 @@
 
         self.sendWebSocketMessage = function (name, data) {
 
-            console.log('Sending web socket message: ' + name);
+            logger.log('Sending web socket message: ' + name);
 
             var msg = { MessageType: name };
 
@@ -536,7 +522,7 @@
                 }).done(done);
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             deferred.resolveWith(null, []);
             return deferred.promise().done(done);
         };
@@ -1497,9 +1483,9 @@
         /**
          * Gets the virtual folder list
          */
-        self.getVirtualFolders = function (userId) {
+        self.getVirtualFolders = function () {
 
-            var url = userId ? "Users/" + userId + "/VirtualFolders" : "Library/VirtualFolders";
+            var url = "Library/VirtualFolders";
 
             url = self.getUrl(url);
 
@@ -1652,7 +1638,7 @@
          */
         self.getAvailablePlugins = function (options) {
 
-            options = $.extend({}, options || {});
+            options = options || {};
             options.PackageType = "UserInstalled";
 
             var url = self.getUrl("Packages", options);
@@ -1995,7 +1981,7 @@
                 throw new Error("File must be an image.");
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
 
             var reader = new FileReader();
 
@@ -2057,7 +2043,7 @@
 
             url += "/" + imageType;
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
 
             var reader = new FileReader();
 
@@ -2475,8 +2461,7 @@
 
             }).done(function (result) {
 
-
-                $(self).trigger('authenticated', [result]);
+                Events.trigger(self, 'authenticated', [result]);
             });
         };
 
@@ -2505,6 +2490,28 @@
         };
 
         /**
+         * Updates a user's easy password
+         * @param {String} userId
+         * @param {String} newPassword
+         */
+        self.updateEasyPassword = function (userId, newPassword) {
+
+            if (!userId) {
+                throw new Error("null userId");
+            }
+
+            var url = self.getUrl("Users/" + userId + "/EasyPassword");
+
+            return self.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    newPassword: CryptoJS.SHA1(newPassword).toString()
+                }
+            });
+        };
+
+        /**
         * Resets a user's password
         * @param {String} userId
         */
@@ -2515,6 +2522,27 @@
             }
 
             var url = self.getUrl("Users/" + userId + "/Password");
+
+            var postData = {
+
+            };
+
+            postData.resetPassword = true;
+
+            return self.ajax({
+                type: "POST",
+                url: url,
+                data: postData
+            });
+        };
+
+        self.resetEasyPassword = function (userId) {
+
+            if (!userId) {
+                throw new Error("null userId");
+            }
+
+            var url = self.getUrl("Users/" + userId + "/EasyPassword");
 
             var postData = {
 
@@ -2762,17 +2790,13 @@
          */
         self.getItems = function (userId, options) {
 
-            if (!userId) {
-                throw new Error("null userId");
-            }
-
             var url;
 
             if ((typeof userId).toString().toLowerCase() == 'string') {
                 url = self.getUrl("Users/" + userId + "/Items", options);
             } else {
-                options = userId;
-                url = self.getUrl("Items", options || {});
+
+                url = self.getUrl("Items", options);
             }
 
             return self.ajax({
@@ -3200,7 +3224,7 @@
 
             if (self.isWebSocketOpen()) {
 
-                var deferred = $.Deferred();
+                var deferred = DeferredBuilder.Deferred();
 
                 var msg = JSON.stringify(options);
 
@@ -3233,7 +3257,7 @@
 
             if (self.isWebSocketOpen()) {
 
-                var deferred = $.Deferred();
+                var deferred = DeferredBuilder.Deferred();
 
                 var msg = JSON.stringify(options);
 
@@ -3266,7 +3290,7 @@
 
             if (self.isWebSocketOpen()) {
 
-                var deferred = $.Deferred();
+                var deferred = DeferredBuilder.Deferred();
 
                 var msg = JSON.stringify(options);
 
@@ -3403,4 +3427,4 @@
 
     };
 
-})(window, jQuery, window.JSON, window.WebSocket, window.setTimeout, window.devicePixelRatio, window.FileReader);
+})(window, window.JSON, window.WebSocket, window.setTimeout, window.devicePixelRatio, window.FileReader);

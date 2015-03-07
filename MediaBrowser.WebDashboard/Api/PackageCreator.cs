@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebMarkupMin.Core.Minifiers;
+using WebMarkupMin.Core.Settings;
 
 namespace MediaBrowser.WebDashboard.Api
 {
@@ -30,9 +31,9 @@ namespace MediaBrowser.WebDashboard.Api
             _jsonSerializer = jsonSerializer;
         }
 
-        public async Task<Stream> GetResource(string path, 
+        public async Task<Stream> GetResource(string path,
             string localizationCulture,
-            string appVersion)
+            string appVersion, bool enableMinification)
         {
             var isHtml = IsHtml(path);
 
@@ -40,11 +41,11 @@ namespace MediaBrowser.WebDashboard.Api
 
             if (path.Equals("scripts/all.js", StringComparison.OrdinalIgnoreCase))
             {
-                resourceStream = await GetAllJavascript(localizationCulture, appVersion).ConfigureAwait(false);
+                resourceStream = await GetAllJavascript(localizationCulture, appVersion, enableMinification).ConfigureAwait(false);
             }
             else if (path.Equals("css/all.css", StringComparison.OrdinalIgnoreCase))
             {
-                resourceStream = await GetAllCss().ConfigureAwait(false);
+                resourceStream = await GetAllCss(enableMinification).ConfigureAwait(false);
             }
             else
             {
@@ -57,7 +58,7 @@ namespace MediaBrowser.WebDashboard.Api
                 // jQuery ajax doesn't seem to handle if-modified-since correctly
                 if (isHtml)
                 {
-                    resourceStream = await ModifyHtml(resourceStream, localizationCulture).ConfigureAwait(false);
+                    resourceStream = await ModifyHtml(resourceStream, localizationCulture, enableMinification).ConfigureAwait(false);
                 }
             }
 
@@ -106,8 +107,9 @@ namespace MediaBrowser.WebDashboard.Api
         /// </summary>
         /// <param name="sourceStream">The source stream.</param>
         /// <param name="localizationCulture">The localization culture.</param>
+        /// <param name="enableMinification">if set to <c>true</c> [enable minification].</param>
         /// <returns>Task{Stream}.</returns>
-        public async Task<Stream> ModifyHtml(Stream sourceStream, string localizationCulture)
+        public async Task<Stream> ModifyHtml(Stream sourceStream, string localizationCulture, bool enableMinification)
         {
             using (sourceStream)
             {
@@ -128,16 +130,27 @@ namespace MediaBrowser.WebDashboard.Api
                         html = html.Replace("<html>", "<html lang=\"" + lang + "\">");
                     }
 
-                    //try
-                    //{
-                    //    var minifier = new HtmlMinifier(new HtmlMinificationSettings(true));
+                    if (enableMinification)
+                    {
+                        try
+                        {
+                            var minifier = new HtmlMinifier(new HtmlMinificationSettings());
+                            var result = minifier.Minify(html, false);
 
-                    //    html = minifier.Minify(html).MinifiedContent;
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    Logger.ErrorException("Error minifying html", ex);
-                    //}
+                            if (result.Errors.Count > 0)
+                            {
+                                _logger.Error("Error minifying html: " + result.Errors[0].Message);
+                            }
+                            else
+                            {
+                                html = result.MinifiedContent;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error minifying html", ex);
+                        }
+                    }
                 }
 
                 var version = GetType().Assembly.GetName().Version;
@@ -180,6 +193,8 @@ namespace MediaBrowser.WebDashboard.Api
             sb.Append("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"css/images/touchicon114.png\" />");
             sb.Append("<link rel=\"apple-touch-startup-image\" href=\"css/images/iossplash.png\" />");
             sb.Append("<link rel=\"shortcut icon\" href=\"css/images/favicon.ico\" />");
+            sb.Append("<meta name=\"msapplication-TileImage\" content=\"css/images/touchicon144.png\">");
+            sb.Append("<meta name=\"msapplication-TileColor\" content=\"#23456B\">");
 
             return sb.ToString();
         }
@@ -221,7 +236,6 @@ namespace MediaBrowser.WebDashboard.Api
             var files = new[]
                             {
                                 "scripts/all.js" + versionString,
-                                "thirdparty/jstree3.0.8/jstree.min.js",
                                 "thirdparty/swipebox-master/js/jquery.swipebox.min.js" + versionString
             };
 
@@ -236,7 +250,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// Gets a stream containing all concatenated javascript
         /// </summary>
         /// <returns>Task{Stream}.</returns>
-        private async Task<Stream> GetAllJavascript(string culture, string version)
+        private async Task<Stream> GetAllJavascript(string culture, string version, bool enableMinification)
         {
             var memoryStream = new MemoryStream();
             var newLineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
@@ -249,6 +263,8 @@ namespace MediaBrowser.WebDashboard.Api
 
             await AppendResource(memoryStream, "thirdparty/cast_sender.js", newLineBytes).ConfigureAwait(false);
             await AppendResource(memoryStream, "thirdparty/browser.js", newLineBytes).ConfigureAwait(false);
+
+            await AppendResource(memoryStream, "thirdparty/jstree3.0.8/jstree.js", newLineBytes).ConfigureAwait(false);
 
             await AppendLocalization(memoryStream, culture).ConfigureAwait(false);
             await memoryStream.WriteAsync(newLineBytes, 0, newLineBytes.Length).ConfigureAwait(false);
@@ -264,14 +280,19 @@ namespace MediaBrowser.WebDashboard.Api
 
             foreach (var file in new[]
             {
+                "thirdparty/apiclient/logger.js",
                 "thirdparty/apiclient/md5.js",
                 "thirdparty/apiclient/sha1.js",
                 "thirdparty/apiclient/store.js",
                 "thirdparty/apiclient/network.js",
                 "thirdparty/apiclient/device.js",
                 "thirdparty/apiclient/credentials.js",
+                "thirdparty/apiclient/ajax.js",
+                "thirdparty/apiclient/events.js",
+                "thirdparty/apiclient/deferred.js",
                 "thirdparty/apiclient/mediabrowser.apiclient.js",
                 "thirdparty/apiclient/connectservice.js",
+                "thirdparty/apiclient/serverdiscovery.js",
                 "thirdparty/apiclient/connectionmanager.js"
             })
             {
@@ -303,15 +324,25 @@ namespace MediaBrowser.WebDashboard.Api
 
             var js = builder.ToString();
 
-            try
+            if (enableMinification)
             {
-                var result = new CrockfordJsMinifier().Minify(js, false, Encoding.UTF8);
+                try
+                {
+                    var result = new CrockfordJsMinifier().Minify(js, false, Encoding.UTF8);
 
-                js = result.MinifiedContent;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error minifying javascript", ex);
+                    if (result.Errors.Count > 0)
+                    {
+                        _logger.Error("Error minifying javascript: " + result.Errors[0].Message);
+                    }
+                    else
+                    {
+                        js = result.MinifiedContent;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error minifying javascript", ex);
+                }
             }
 
             var bytes = Encoding.UTF8.GetBytes(js);
@@ -341,6 +372,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "mediaplayer-video.js",
                                 "nowplayingbar.js",
                                 "nowplayingpage.js",
+                                "taskbutton.js",
 
                                 "ratingdialog.js",
                                 "aboutpage.js",
@@ -356,6 +388,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "channelsettings.js",
                                 "connectlogin.js",
                                 "dashboardgeneral.js",
+                                "dashboardhosting.js",
                                 "dashboardpage.js",
                                 "device.js",
                                 "devices.js",
@@ -387,7 +420,6 @@ namespace MediaBrowser.WebDashboard.Api
                                 "indexpage.js",
                                 "itembynamedetailpage.js",
                                 "itemdetailpage.js",
-                                "itemgallery.js",
                                 "itemlistpage.js",
                                 "librarypathmapping.js",
                                 "reports.js",
@@ -414,7 +446,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "metadataconfigurationpage.js",
                                 "metadataimagespage.js",
                                 "metadatasubtitles.js",
-                                "metadatakodi.js",
+                                "metadatanfo.js",
                                 "moviegenres.js",
                                 "moviecollections.js",
                                 "movies.js",
@@ -517,7 +549,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// Gets all CSS.
         /// </summary>
         /// <returns>Task{Stream}.</returns>
-        private async Task<Stream> GetAllCss()
+        private async Task<Stream> GetAllCss(bool enableMinification)
         {
             var files = new[]
                                   {
@@ -538,7 +570,8 @@ namespace MediaBrowser.WebDashboard.Api
                                       "userimage.css",
                                       "livetv.css",
                                       "nowplaying.css",
-                                      "icons.css"
+                                      "icons.css",
+                                      "materialize.css"
                                   };
 
             var builder = new StringBuilder();
@@ -560,16 +593,26 @@ namespace MediaBrowser.WebDashboard.Api
 
             var css = builder.ToString();
 
-            //try
-            //{
-            //    var result = new KristensenCssMinifier().Minify(builder.ToString(), false, Encoding.UTF8);
+            if (enableMinification)
+            {
+                try
+                {
+                    var result = new KristensenCssMinifier().Minify(builder.ToString(), false, Encoding.UTF8);
 
-            //    css = result.MinifiedContent;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.ErrorException("Error minifying css", ex);
-            //}
+                    if (result.Errors.Count > 0)
+                    {
+                        _logger.Error("Error minifying css: " + result.Errors[0].Message);
+                    }
+                    else
+                    {
+                        css = result.MinifiedContent;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error minifying css", ex);
+                }
+            }
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(css));
 

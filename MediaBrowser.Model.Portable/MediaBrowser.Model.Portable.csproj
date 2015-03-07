@@ -110,6 +110,9 @@
     <Compile Include="..\MediaBrowser.Model\ApiClient\IServerEvents.cs">
       <Link>ApiClient\IServerEvents.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\NetworkStatus.cs">
+      <Link>ApiClient\NetworkStatus.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\RemoteLogoutReason.cs">
       <Link>ApiClient\RemoteLogoutReason.cs</Link>
     </Compile>
@@ -121,6 +124,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\ServerInfo.cs">
       <Link>ApiClient\ServerInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\ServerUserInfo.cs">
+      <Link>ApiClient\ServerUserInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\SessionUpdatesEventArgs.cs">
       <Link>ApiClient\SessionUpdatesEventArgs.cs</Link>
@@ -194,6 +200,9 @@
     <Compile Include="..\MediaBrowser.Model\Configuration\EncodingQuality.cs">
       <Link>Configuration\EncodingQuality.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Configuration\FanartOptions.cs">
+      <Link>Configuration\FanartOptions.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Configuration\ImageOption.cs">
       <Link>Configuration\ImageOption.cs</Link>
     </Compile>
@@ -226,6 +235,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Configuration\SubtitlePlaybackMode.cs">
       <Link>Configuration\SubtitlePlaybackMode.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Configuration\TheMovieDbOptions.cs">
+      <Link>Configuration\TheMovieDbOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Configuration\TvdbOptions.cs">
+      <Link>Configuration\TvdbOptions.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Configuration\UnratedItem.cs">
       <Link>Configuration\UnratedItem.cs</Link>
@@ -487,9 +502,6 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\UserItemDataDto.cs">
       <Link>Dto\UserItemDataDto.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Dto\VideoStreamOptions.cs">
-      <Link>Dto\VideoStreamOptions.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Entities\BaseItemInfo.cs">
       <Link>Entities\BaseItemInfo.cs</Link>
@@ -812,9 +824,6 @@
     <Compile Include="..\MediaBrowser.Model\Net\WebSocketState.cs">
       <Link>Net\WebSocketState.cs</Link>
     </Compile>
-    <Compile Include="..\MediaBrowser.Model\News\NewsChannel.cs">
-      <Link>News\NewsChannel.cs</Link>
-    </Compile>
     <Compile Include="..\MediaBrowser.Model\News\NewsItem.cs">
       <Link>News\NewsItem.cs</Link>
     </Compile>
@@ -1037,6 +1046,9 @@
     <Compile Include="..\MediaBrowser.Model\Session\UserDataChangeInfo.cs">
       <Link>Session\UserDataChangeInfo.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\CompleteSyncJobInfo.cs">
+      <Link>Sync\CompleteSyncJobInfo.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\DeviceFileInfo.cs">
       <Link>Sync\DeviceFileInfo.cs</Link>
     </Compile>
@@ -1093,6 +1105,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncOptions.cs">
       <Link>Sync\SyncOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncParameter.cs">
+      <Link>Sync\SyncParameter.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncQuality.cs">
       <Link>Sync\SyncQuality.cs</Link>

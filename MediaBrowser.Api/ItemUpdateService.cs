@@ -83,6 +83,13 @@ namespace MediaBrowser.Api
                     {
                         info.ContentTypeOptions = GetContentTypeOptions(true);
                         info.ContentType = configuredContentType;
+
+                        if (string.Equals(inheritedContentType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase))
+                        {
+                            info.ContentTypeOptions = info.ContentTypeOptions
+                                .Where(i => string.IsNullOrWhiteSpace(i.Value) || string.Equals(i.Value, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+                        }
                     }
                 }
             }
@@ -215,7 +222,7 @@ namespace MediaBrowser.Api
             {
                 var folder = (Folder)item;
 
-                foreach (var child in folder.RecursiveChildren.ToList())
+                foreach (var child in folder.GetRecursiveChildren())
                 {
                     child.IsLocked = newLockData;
                     await child.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);

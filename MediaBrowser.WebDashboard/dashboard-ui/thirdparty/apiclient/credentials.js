@@ -1,4 +1,4 @@
-﻿(function (globalScope, store, JSON) {
+﻿(function (globalScope, JSON) {
 
     if (!globalScope.MediaBrowser) {
         globalScope.MediaBrowser = {};
@@ -23,7 +23,7 @@
         }
 
         function set(data) {
-            
+
             if (data) {
                 credentials = data;
                 store.setItem(key, JSON.stringify(data));
@@ -53,8 +53,9 @@
             })[0];
 
             if (existing) {
+
                 // Merge the data
-                existing.DateLastAccessed = Math.max(existing.DateLastAccessed || 0, server.DateLastAccessed || 0, new Date().getTime());
+                existing.DateLastAccessed = Math.max(existing.DateLastAccessed || 0, server.DateLastAccessed || 0);
 
                 if (server.AccessToken) {
                     existing.AccessToken = server.AccessToken;
@@ -82,4 +83,4 @@
         };
     };
 
-})(window, store, window.JSON);
+})(window, window.JSON);

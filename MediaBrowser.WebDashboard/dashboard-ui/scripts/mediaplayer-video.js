@@ -143,6 +143,10 @@
             self.changeStream(self.getCurrentTicks(), { AudioStreamIndex: index });
         };
 
+        self.supportsSubtitleStreamExternally = function (stream) {
+            return stream.Type == 'Subtitle' && stream.IsTextSubtitleStream && stream.SupportsExternalStream;
+        }
+
         self.setSubtitleStreamIndex = function (index) {
 
             if (!self.supportsTextTracks()) {
@@ -162,7 +166,7 @@
 
             if (currentStream && !newStream) {
 
-                if (!currentStream.IsTextSubtitleStream) {
+                if (!self.supportsSubtitleStreamExternally(currentStream)) {
 
                     // Need to change the transcoded stream to remove subs
                     self.changeStream(self.getCurrentTicks(), { SubtitleStreamIndex: -1 });
@@ -170,7 +174,7 @@
             }
             else if (!currentStream && newStream) {
 
-                if (newStream.IsTextSubtitleStream) {
+                if (self.supportsSubtitleStreamExternally(newStream)) {
                     selectedTrackElementIndex = index;
                 } else {
 
@@ -180,10 +184,10 @@
             }
             else if (currentStream && newStream) {
 
-                if (newStream.IsTextSubtitleStream) {
+                if (self.supportsSubtitleStreamExternally(newStream)) {
                     selectedTrackElementIndex = index;
 
-                    if (!currentStream.IsTextSubtitleStream) {
+                    if (!self.supportsSubtitleStreamExternally(currentStream)) {
                         self.changeStream(self.getCurrentTicks(), { SubtitleStreamIndex: -1 });
                     }
                 } else {
@@ -203,7 +207,7 @@
             var modes = ['disabled', 'showing', 'hidden'];
 
             var textStreams = self.currentMediaSource.MediaStreams.filter(function (s) {
-                return s.Type == 'Subtitle' && s.IsTextSubtitleStream;
+                return self.supportsSubtitleStreamExternally(s);
             });
 
             var newStream = textStreams.filter(function (s) {
@@ -1022,10 +1026,11 @@
                 AudioStreamIndex: mediaSource.DefaultAudioStreamIndex,
                 deviceId: ApiClient.deviceId(),
                 Static: false,
-                mediaSourceId: mediaSource.Id
+                mediaSourceId: mediaSource.Id,
+                api_key: ApiClient.accessToken()
             };
 
-            if (selectedSubtitleStream && (!selectedSubtitleStream.IsTextSubtitleStream || !self.supportsTextTracks())) {
+            if (selectedSubtitleStream && (!self.supportsSubtitleStreamExternally(selectedSubtitleStream) || !self.supportsTextTracks())) {
                 baseParams.SubtitleStreamIndex = mediaSource.DefaultSubtitleStreamIndex;
             }
 
@@ -1058,11 +1063,9 @@
                 audioBitrate: mp4Quality.audioBitrate,
                 VideoCodec: mp4Quality.videoCodec,
                 AudioCodec: mp4Quality.audioCodec,
-                profile: 'baseline',
-                level: '3',
-
-                // None of the browsers seem to like this
-                //EnableAutoStreamCopy: false
+                profile: 'high',
+                //EnableAutoStreamCopy: false,
+                level: '41'
             }));
 
             if (isStatic && mediaSource.Protocol == 'Http' && !mediaSource.RequiredHttpHeaders.length) {
@@ -1091,8 +1094,8 @@
                 audioBitrate: m3U8Quality.audioBitrate,
                 VideoCodec: m3U8Quality.videoCodec,
                 AudioCodec: m3U8Quality.audioCodec,
-                profile: 'baseline',
-                level: '3',
+                profile: 'high',
+                level: '41',
                 StartTimeTicks: 0,
                 ClientTime: new Date().getTime()
 
@@ -1138,14 +1141,15 @@
 
             if (self.supportsTextTracks()) {
                 var textStreams = subtitleStreams.filter(function (s) {
-                    return s.IsTextSubtitleStream;
+                    return self.supportsSubtitleStreamExternally(s);
                 });
 
                 for (var i = 0, length = textStreams.length; i < length; i++) {
 
                     var textStream = textStreams[i];
                     var textStreamUrl = ApiClient.getUrl('Videos/' + item.Id + '/' + mediaSource.Id + '/Subtitles/' + textStream.Index + '/Stream.vtt', {
-                        startPositionTicks: (startPosition || 0)
+                        startPositionTicks: (startPosition || 0),
+                        api_key: ApiClient.accessToken()
                     });
 
                     var defaultAttribute = textStream.Index == mediaSource.DefaultSubtitleStreamIndex ? ' default' : '';

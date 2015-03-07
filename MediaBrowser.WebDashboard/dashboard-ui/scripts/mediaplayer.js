@@ -106,8 +106,16 @@
             // Chrome, Firefox or IE with plugin installed
             // For some reason in chrome pausing mp4 is causing the video to fail. 
             // So for now it will have to prioritize webm
-            if (self.canPlayWebm() && ($.browser.chrome || $.browser.msie)) {
+            if (self.canPlayWebm()) {
 
+                if ($.browser.msie) {
+                    return '.webm';
+                }
+                if ($.browser.chrome) {
+                    return '.webm';
+                }
+                
+                // Firefox suddenly having trouble with our webm
                 return '.webm';
             }
 
@@ -297,14 +305,14 @@
                 return false;
             }
 
-            if (subtitleStream && (!subtitleStream.IsTextSubtitleStream || !self.supportsTextTracks())) {
+            if (subtitleStream && (!subtitleStream.SupportsExternalStream || !subtitleStream.IsTextSubtitleStream || !self.supportsTextTracks())) {
                 console.log('Transcoding because subtitles are required');
                 return false;
             }
 
             if (videoStream.IsCabac != null && !videoStream.IsCabac) {
                 console.log('Video not CABAC');
-                return false;
+                //return false;
             }
 
             if (!videoStream.Width) {
@@ -342,6 +350,12 @@
                 return false;
             }
 
+            if (mediaSource.Protocol == 'Http') {
+                if (Dashboard.isConnectMode()) {
+                    return false;
+                }
+            }
+
             if (extension == 'm4v' || extension == 'mkv') {
                 return $.browser.chrome != null;
             }
@@ -367,7 +381,7 @@
 
             var canPlayDirect = self.canPlayVideoDirect(mediaSource, videoStream, audioStream, subtitleStream, maxWidth, bitrate);
 
-            var audioBitrate = bitrate >= 700000 ? 128000 : 64000;
+            var audioBitrate = bitrate >= 700000 ? 192000 : 64000;
 
             var videoBitrate = bitrate - audioBitrate;
 
@@ -551,8 +565,8 @@
                 ApiClient.getJSON(ApiClient.getUrl('Items/' + item.Id + '/MediaInfo', {
                     userId: Dashboard.getCurrentUserId()
 
-                })).done(function(result) {
-                    
+                })).done(function (result) {
+
                     self.currentItem = item;
                     self.currentMediaSource = getOptimalMediaSource(item.MediaType, result.MediaSources);
 
@@ -1282,7 +1296,8 @@
                 audioBitrate: 128000,
                 StartTimeTicks: startPositionTicks,
                 mediaSourceId: mediaSource.Id,
-                deviceId: ApiClient.deviceId()
+                deviceId: ApiClient.deviceId(),
+                api_key: ApiClient.accessToken()
             };
 
             var sourceContainer = (mediaSource.Container || '').toLowerCase();

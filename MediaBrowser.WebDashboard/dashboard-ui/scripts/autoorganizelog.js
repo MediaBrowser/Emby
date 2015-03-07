@@ -54,7 +54,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getItems({
+        ApiClient.getItems(null, {
             recursive: true,
             includeItemTypes: 'Series',
             sortBy: 'SortName'
@@ -311,6 +311,21 @@
         }
     }
 
+    function onWebSocketMessage(e, msg) {
+
+        var page = $.mobile.activePage;
+
+        if (msg.MessageType == "ScheduledTaskEnded") {
+
+            var result = msg.Data;
+
+            if (result.Key == 'AutoOrganize') {
+
+                reloadItems(page);
+            }
+        }
+    }
+
     $(document).on('pageinit', "#libraryFileOrganizerLogPage", function () {
 
         var page = this;
@@ -329,9 +344,28 @@
 
         reloadItems(page);
 
+        // on here
+        $('.btnOrganize', page).taskButton({
+            mode: 'on',
+            progressElem: $('.organizeProgress', page),
+            panel: $('.organizeTaskPanel', page),
+            taskKey: 'AutoOrganize'
+        });
+
+        $(ApiClient).on("websocketmessage.autoorganizelog", onWebSocketMessage);
+
     }).on('pagehide', "#libraryFileOrganizerLogPage", function () {
 
+        var page = this;
+
         currentResult = null;
+
+        // off here
+        $('.btnOrganize', page).taskButton({
+            mode: 'off'
+        });
+
+        $(ApiClient).off(".autoorganizelog");
     });
 
     window.OrganizerLogPage = {

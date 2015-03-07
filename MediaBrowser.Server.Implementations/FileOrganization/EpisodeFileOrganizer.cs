@@ -5,10 +5,12 @@ using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Naming.Common;
 using MediaBrowser.Naming.IO;
+using MediaBrowser.Server.Implementations.Library;
+using MediaBrowser.Server.Implementations.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Server.Implementations.Library;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
@@ -57,7 +58,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             };
 
             var namingOptions = ((LibraryManager) _libraryManager).GetNamingOptions();
-            var resolver = new Naming.TV.EpisodeResolver(namingOptions, new Naming.Logging.NullLogger());
+            var resolver = new Naming.TV.EpisodeResolver(namingOptions, new PatternsLogger());
 
             var episodeInfo = resolver.Resolve(path, FileInfoType.File) ??
                 new Naming.TV.EpisodeInfo();
@@ -201,15 +202,25 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             if (overwriteExisting)
             {
+                var hasRenamedFiles = false;
+
                 foreach (var path in otherDuplicatePaths)
                 {
                     _logger.Debug("Removing duplicate episode {0}", path);
 
                     _libraryMonitor.ReportFileSystemChangeBeginning(path);
 
+                    var renameRelatedFiles = !hasRenamedFiles &&
+                        string.Equals(Path.GetDirectoryName(path), Path.GetDirectoryName(result.TargetPath), StringComparison.OrdinalIgnoreCase);
+
+                    if (renameRelatedFiles)
+                    {
+                        hasRenamedFiles = true;
+                    }
+
                     try
                     {
-                        File.Delete(path);
+                        DeleteLibraryFile(path, renameRelatedFiles, result.TargetPath);
                     }
                     catch (IOException ex)
                     {
@@ -223,9 +234,46 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             }
         }
 
+        private void DeleteLibraryFile(string path, bool renameRelatedFiles, string targetPath)
+        {
+            _fileSystem.DeleteFile(path);
+
+            if (!renameRelatedFiles)
+            {
+                return;
+            }
+
+            // Now find other files
+            var originalFilenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+            var directory = Path.GetDirectoryName(path);
+
+            if (!string.IsNullOrWhiteSpace(originalFilenameWithoutExtension) && !string.IsNullOrWhiteSpace(directory))
+            {
+                // Get all related files, e.g. metadata, images, etc
+                var files = Directory.EnumerateFiles(directory, "*", SearchOption.TopDirectoryOnly)
+                    .Where(i => (Path.GetFileNameWithoutExtension(i) ?? string.Empty).StartsWith(originalFilenameWithoutExtension, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                var targetFilenameWithoutExtension = Path.GetFileNameWithoutExtension(targetPath);
+                
+                foreach (var file in files)
+                {
+                    directory = Path.GetDirectoryName(file);
+                    var filename = Path.GetFileName(file);
+
+                    filename = filename.Replace(originalFilenameWithoutExtension, targetFilenameWithoutExtension,
+                        StringComparison.OrdinalIgnoreCase);
+
+                    var destination = Path.Combine(directory, filename);
+
+                    File.Move(file, destination);
+                }
+            }
+        }
+
         private List<string> GetOtherDuplicatePaths(string targetPath, Series series, int seasonNumber, int episodeNumber, int? endingEpisodeNumber)
         {
-            var episodePaths = series.RecursiveChildren
+            var episodePaths = series.GetRecursiveChildren()
                 .OfType<Episode>()
                 .Where(i =>
                 {
@@ -280,11 +328,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             Directory.CreateDirectory(Path.GetDirectoryName(result.TargetPath));
 
-            var copy = File.Exists(result.TargetPath);
+            var targetAlreadyExists = File.Exists(result.TargetPath);
 
             try
             {
-                if (copy || options.CopyOriginalFile)
+                if (targetAlreadyExists || options.CopyOriginalFile)
                 {
                     File.Copy(result.OriginalPath, result.TargetPath, true);
                 }
@@ -311,11 +359,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 _libraryMonitor.ReportFileSystemChangeComplete(result.TargetPath, true);
             }
 
-            if (copy && !options.CopyOriginalFile)
+            if (targetAlreadyExists && !options.CopyOriginalFile)
             {
                 try
                 {
-                    File.Delete(result.OriginalPath);
+                    _fileSystem.DeleteFile(result.OriginalPath);
                 }
                 catch (Exception ex)
                 {
@@ -334,8 +382,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             result.ExtractedName = nameWithoutYear;
             result.ExtractedYear = yearInName;
 
-            return _libraryManager.RootFolder.RecursiveChildren
-                .OfType<Series>()
+            return _libraryManager.RootFolder.GetRecursiveChildren(i => i is Series)
+                .Cast<Series>()
                 .Select(i => NameUtils.GetMatchScore(nameWithoutYear, yearInName, i))
                 .Where(i => i.Item2 > 0)
                 .OrderByDescending(i => i.Item2)
@@ -399,9 +447,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         {
             // If there's already a season folder, use that
             var season = series
-                .RecursiveChildren
-                .OfType<Season>()
-                .FirstOrDefault(i => i.LocationType == LocationType.FileSystem && i.IndexNumber.HasValue && i.IndexNumber.Value == seasonNumber);
+                .GetRecursiveChildren(i => i is Season && i.LocationType == LocationType.FileSystem && i.IndexNumber.HasValue && i.IndexNumber.Value == seasonNumber)
+                .FirstOrDefault();
 
             if (season != null)
             {
