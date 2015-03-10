@@ -130,6 +130,7 @@ namespace MediaBrowser.Dlna.Profiles
                     AudioCodec = "mp3",
                     Type = DlnaProfileType.Audio
                 },
+                new DirectPlayProfile
                 {
                     Container = "flac",
                     AudioCodec = "flac",
