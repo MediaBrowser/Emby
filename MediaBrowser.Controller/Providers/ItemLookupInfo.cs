@@ -185,6 +185,11 @@ namespace MediaBrowser.Controller.Providers
 
     }
 
+    public class LiveTvMovieInfo : ItemLookupInfo
+    {
+        
+    }
+
     public class BoxSetInfo : ItemLookupInfo
     {
 

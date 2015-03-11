@@ -113,10 +113,9 @@ namespace MediaBrowser.Providers.Movies
         }
 
         public Task<MetadataResult<T>> GetItemMetadata<T>(ItemLookupInfo id, CancellationToken cancellationToken)
-            where T : Video, new()
+            where T : BaseItem, new()
         {
             var movieDb = new GenericMovieDbInfo<T>(_logger, _jsonSerializer, _libraryManager);
-
             return movieDb.GetMetadata(id, cancellationToken);
         }
 

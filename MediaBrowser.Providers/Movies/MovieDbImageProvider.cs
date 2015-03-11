@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.LiveTv;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -43,6 +44,13 @@ namespace MediaBrowser.Providers.Movies
             var channelItem = item as ChannelVideoItem;
 
             if (channelItem != null && channelItem.ContentType == ChannelMediaContentType.MovieExtra && channelItem.ExtraType == ExtraType.Trailer)
+            {
+                return true;
+            }
+
+            // Supports images for tv movies
+            var tvProgram = item as LiveTvProgram;
+            if (tvProgram != null && tvProgram.IsMovie)
             {
                 return true;
             }
