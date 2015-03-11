@@ -72,6 +72,7 @@
     <Compile Include="ApiClient\IDevice.cs" />
     <Compile Include="ApiClient\IServerEvents.cs" />
     <Compile Include="ApiClient\GeneralCommandEventArgs.cs" />
+    <Compile Include="ApiClient\NetworkStatus.cs" />
     <Compile Include="ApiClient\RemoteLogoutReason.cs" />
     <Compile Include="ApiClient\ServerCredentials.cs" />
     <Compile Include="ApiClient\ServerDiscoveryInfo.cs" />
@@ -124,6 +125,8 @@
     <Compile Include="Devices\DeviceInfo.cs" />
     <Compile Include="Devices\DevicesOptions.cs" />
     <Compile Include="Dlna\EncodingContext.cs" />
+    <Compile Include="Dlna\PlaybackErrorCode.cs" />
+    <Compile Include="Dlna\PlaybackException.cs" />
     <Compile Include="Dlna\Profiles\DefaultProfile.cs" />
     <Compile Include="Dlna\ResolutionConfiguration.cs" />
     <Compile Include="Dlna\ResolutionNormalizer.cs" />
@@ -309,6 +312,7 @@
     <Compile Include="Querying\ItemsByNameQuery.cs" />
     <Compile Include="Entities\BaseItemInfo.cs" />
     <Compile Include="Querying\LatestItemsQuery.cs" />
+    <Compile Include="Querying\MovieRecommendationQuery.cs" />
     <Compile Include="Querying\NextUpQuery.cs" />
     <Compile Include="Querying\QueryFilters.cs" />
     <Compile Include="Querying\QueryResult.cs" />
@@ -318,6 +322,7 @@
     <Compile Include="Querying\SimilarItemsQuery.cs" />
     <Compile Include="Querying\UpcomingEpisodesQuery.cs" />
     <Compile Include="Querying\UserQuery.cs" />
+    <Compile Include="Registration\RegistrationInfo.cs" />
     <Compile Include="Search\SearchQuery.cs" />
     <Compile Include="Session\BrowseRequest.cs" />
     <Compile Include="Session\ClientCapabilities.cs" />
@@ -373,6 +378,8 @@
     <Compile Include="Sync\ItemFIleInfo.cs" />
     <Compile Include="Sync\ItemFileType.cs" />
     <Compile Include="Sync\LocalItem.cs" />
+    <Compile Include="Sync\LocalItemInfo.cs" />
+    <Compile Include="Sync\LocalItemQuery.cs" />
     <Compile Include="Sync\SyncCategory.cs" />
     <Compile Include="Sync\SyncDataRequest.cs" />
     <Compile Include="Sync\SyncDataResponse.cs" />
@@ -390,6 +397,7 @@
     <Compile Include="Sync\SyncOptions.cs" />
     <Compile Include="Sync\SyncParameter.cs" />
     <Compile Include="Sync\SyncQuality.cs" />
+    <Compile Include="Sync\SyncQualityOption.cs" />
     <Compile Include="Sync\SyncTarget.cs" />
     <Compile Include="System\LogFile.cs" />
     <Compile Include="System\PublicSystemInfo.cs" />

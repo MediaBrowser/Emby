@@ -32,17 +32,8 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                     break;
                 case OperatingSystem.Linux:
 
-                    info.ArchiveType = "gz";
-
-                    switch (environment.SystemArchitecture)
-                    {
-                        case Architecture.X86_X64:
-                            info.Version = "20150124";
-                            break;
-                        case Architecture.X86:
-                            info.Version = "20150124";
-                            break;
-                    }
+                    info.ArchiveType = "7z";
+                    info.Version = "20150124";
                     break;
                 case OperatingSystem.Osx:
 
@@ -128,14 +119,12 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                         case Architecture.X86_X64:
                             return new[]
                             {
-                                "http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz",
-                                "https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/ffmpeg/linux/ffmpeg-release-64bit-static.tar.xz"
+                                "https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/ffmpeg/linux/ffmpeg-2.5.3-64bit-static.7z"
                             };
                         case Architecture.X86:
                             return new[]
                             {
-                                "http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-32bit-static.tar.xz",
-                                "https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/ffmpeg/linux/ffmpeg-release-32bit-static.tar.xz"
+                                "https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/ffmpeg/linux/ffmpeg-2.5.3-32bit-static.7z"
                             };
                     }
                     break;

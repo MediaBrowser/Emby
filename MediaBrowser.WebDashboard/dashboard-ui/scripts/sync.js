@@ -110,7 +110,10 @@
 
             }).join('');
             html += '</select>';
-
+            if (!targets.length) {
+                html += '<div class="fieldDescription">' + Globalize.translate('LabelSyncNoTargetsHelp') + '</div>';
+                html += '<div class="fieldDescription"><a href="https://github.com/MediaBrowser/Wiki/wiki/Sync" target="_blank">' + Globalize.translate('ButtonLearnMore') + '</a></div>';
+            }
             html += '</div>';
 
             html += '<br/>';
@@ -132,21 +135,21 @@
             //html += '<h2>' + Globalize.translate('HeaderSettings') + '</h2>';
             //html += '<div style="margin:0 -.5em 0 -.25em;">';
 
+            if (result.Options.indexOf('SyncNewContent') != -1) {
+                html += '<br/>';
+                html += '<div>';
+                html += '<label for="chkSyncNewContent">' + Globalize.translate('OptionAutomaticallySyncNewContent') + '</label>';
+                html += '<input type="checkbox" id="chkSyncNewContent" data-mini="true" checked="checked" />';
+                html += '<div class="fieldDescription">' + Globalize.translate('OptionAutomaticallySyncNewContentHelp') + '</div>';
+                html += '</div>';
+            }
+
             if (result.Options.indexOf('UnwatchedOnly') != -1) {
                 html += '<br/>';
                 html += '<div>';
                 html += '<label for="chkUnwatchedOnly">' + Globalize.translate('OptionSyncUnwatchedVideosOnly') + '</label>';
                 html += '<input type="checkbox" id="chkUnwatchedOnly" data-mini="true" />';
                 html += '<div class="fieldDescription">' + Globalize.translate('OptionSyncUnwatchedVideosOnlyHelp') + '</div>';
-                html += '</div>';
-            }
-
-            if (result.Options.indexOf('SyncNewContent') != -1) {
-                html += '<br/>';
-                html += '<div>';
-                html += '<label for="chkSyncNewContent">' + Globalize.translate('OptionAutomaticallySyncNewContent') + '</label>';
-                html += '<input type="checkbox" id="chkSyncNewContent" data-mini="true" />';
-                html += '<div class="fieldDescription">' + Globalize.translate('OptionAutomaticallySyncNewContentHelp') + '</div>';
                 html += '</div>';
             }
 
@@ -185,33 +188,6 @@
                 return false;
             });
         });
-    }
-
-    function showUnwatchedFilter(items) {
-
-        return items.filter(function (i) {
-
-            return i.MediaType == "Video" || i.IsFolder || i.Type == "Person" || i.Type == "Genre" || i.Type == "MusicGenre" || i.Type == "GameGenre" || i.Type == "Studio" || i.Type == "MusicArtist";
-
-        }).length > 0;
-    }
-
-    function showItemLimit(items) {
-
-        return items.length > 1 || items.filter(function (i) {
-
-            return i.IsFolder || i.Type == "Person" || i.Type == "Genre" || i.Type == "MusicGenre" || i.Type == "GameGenre" || i.Type == "Studio" || i.Type == "MusicArtist";
-
-        }).length > 0;
-    }
-
-    function showSyncNew(items) {
-
-        return items.filter(function (i) {
-
-            return i.IsFolder || i.Type == "Person" || i.Type == "Genre" || i.Type == "MusicGenre" || i.Type == "GameGenre" || i.Type == "Studio" || i.Type == "MusicArtist";
-
-        }).length > 0;
     }
 
     function isAvailable(item, user) {

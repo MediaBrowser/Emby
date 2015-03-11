@@ -126,6 +126,21 @@ namespace MediaBrowser.Controller.Providers
                         break;
                     }
 
+                case "OriginalTitle":
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        var hasOriginalTitle = item as IHasOriginalTitle;
+                        if (hasOriginalTitle != null)
+                        {
+                            if (!string.IsNullOrEmpty(hasOriginalTitle.OriginalTitle))
+                            {
+                                hasOriginalTitle.OriginalTitle = val;
+                            }
+                        }
+                        break;
+                    }
+
                 case "LocalTitle":
                     item.Name = reader.ReadElementContentAsString();
                     break;
@@ -289,6 +304,19 @@ namespace MediaBrowser.Controller.Providers
                         if (hasLanguage != null)
                         {
                             hasLanguage.PreferredMetadataLanguage = val;
+                        }
+
+                        break;
+                    }
+
+                case "CountryCode":
+                    {
+                        var val = reader.ReadElementContentAsString();
+
+                        var hasLanguage = item as IHasPreferredMetadataLanguage;
+                        if (hasLanguage != null)
+                        {
+                            hasLanguage.PreferredMetadataCountryCode = val;
                         }
 
                         break;
@@ -1391,23 +1419,6 @@ namespace MediaBrowser.Controller.Providers
                         case "Type":
                             {
                                 linkedItem.ItemType = reader.ReadElementContentAsString();
-                                break;
-                            }
-
-                        case "Year":
-                            {
-                                var val = reader.ReadElementContentAsString();
-
-                                if (!string.IsNullOrWhiteSpace(val))
-                                {
-                                    int rval;
-
-                                    if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
-                                    {
-                                        linkedItem.ItemYear = rval;
-                                    }
-                                }
-
                                 break;
                             }
 

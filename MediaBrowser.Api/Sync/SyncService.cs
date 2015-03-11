@@ -94,6 +94,9 @@ namespace MediaBrowser.Api.Sync
         [ApiMember(Name = "ParentId", Description = "ParentId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string ParentId { get; set; }
 
+        [ApiMember(Name = "TargetId", Description = "TargetId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string TargetId { get; set; }
+
         [ApiMember(Name = "Category", Description = "Category", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public SyncCategory? Category { get; set; }
     }
@@ -145,12 +148,14 @@ namespace MediaBrowser.Api.Sync
         private readonly ISyncManager _syncManager;
         private readonly IDtoService _dtoService;
         private readonly ILibraryManager _libraryManager;
+        private readonly IUserManager _userManager;
 
-        public SyncService(ISyncManager syncManager, IDtoService dtoService, ILibraryManager libraryManager)
+        public SyncService(ISyncManager syncManager, IDtoService dtoService, ILibraryManager libraryManager, IUserManager userManager)
         {
             _syncManager = syncManager;
             _dtoService = dtoService;
             _libraryManager = libraryManager;
+            _userManager = userManager;
         }
 
         public object Get(GetSyncTargets request)
@@ -224,6 +229,13 @@ namespace MediaBrowser.Api.Sync
             result.Targets = _syncManager.GetSyncTargets(request.UserId)
                 .ToList();
 
+            if (!string.IsNullOrWhiteSpace(request.TargetId))
+            {
+                result.Targets = result.Targets
+                    .Where(i => string.Equals(i.Id, request.TargetId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             if (request.Category.HasValue)
             {
                 result.Options = SyncHelper.GetSyncOptions(request.Category.Value);
@@ -238,15 +250,43 @@ namespace MediaBrowser.Api.Sync
                     }
                 };
 
+                var auth = AuthorizationContext.GetAuthorizationInfo(Request);
+
+                var authenticatedUser = _userManager.GetUserById(auth.UserId);
+                
                 var items = request.ItemIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(_libraryManager.GetItemById)
                     .Where(i => i != null);
 
-                var dtos = _dtoService.GetBaseItemDtos(items, dtoOptions)
+                var dtos = _dtoService.GetBaseItemDtos(items, dtoOptions, authenticatedUser)
                     .ToList();
 
                 result.Options = SyncHelper.GetSyncOptions(dtos);
             }
+
+            result.QualityOptions = new List<SyncQualityOption>
+            {
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Original.ToString(),
+                    Id = SyncQuality.Original.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.High.ToString(),
+                    Id = SyncQuality.High.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Medium.ToString(),
+                    Id = SyncQuality.Medium.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Low.ToString(),
+                    Id = SyncQuality.Low.ToString()
+                }
+            };
 
             return ToOptimizedResult(result);
         }
@@ -266,9 +306,11 @@ namespace MediaBrowser.Api.Sync
             }
         }
 
-        public object Get(GetReadySyncItems request)
+        public async Task<object> Get(GetReadySyncItems request)
         {
-            return ToOptimizedResult(_syncManager.GetReadySyncItems(request.TargetId));
+            var result = await _syncManager.GetReadySyncItems(request.TargetId).ConfigureAwait(false);
+
+            return ToOptimizedResult(result);
         }
 
         public async Task<object> Post(SyncData request)

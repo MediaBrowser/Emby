@@ -717,7 +717,7 @@ namespace MediaBrowser.Controller.Entities
         /// <param name="options">The options.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>true if a provider reports we changed</returns>
-        public async Task RefreshMetadata(MetadataRefreshOptions options, CancellationToken cancellationToken)
+        public async Task<ItemUpdateType> RefreshMetadata(MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
             var locationType = LocationType;
 
@@ -744,15 +744,16 @@ namespace MediaBrowser.Controller.Entities
                 }
             }
 
-            var dateLastSaved = DateLastSaved;
+            var refreshOptions = requiresSave
+                ? new MetadataRefreshOptions(options)
+                {
+                    ForceSave = true
+                }
+                : options;
 
-            await ProviderManager.RefreshMetadata(this, options, cancellationToken).ConfigureAwait(false);
+            var result = await ProviderManager.RefreshMetadata(this, refreshOptions, cancellationToken).ConfigureAwait(false);
 
-            // If it wasn't saved by the provider process, save now
-            if (requiresSave && dateLastSaved == DateLastSaved)
-            {
-                await UpdateToRepository(ItemUpdateType.MetadataImport, cancellationToken).ConfigureAwait(false);
-            }
+            return result;
         }
 
         [IgnoreDataMember]
@@ -976,14 +977,21 @@ namespace MediaBrowser.Controller.Entities
                 lang = hasLang.PreferredMetadataLanguage;
             }
 
-            if (string.IsNullOrEmpty(lang))
+            if (string.IsNullOrWhiteSpace(lang))
             {
                 lang = Parents.OfType<IHasPreferredMetadataLanguage>()
                     .Select(i => i.PreferredMetadataLanguage)
-                    .FirstOrDefault(i => !string.IsNullOrEmpty(i));
+                    .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
             }
 
-            if (string.IsNullOrEmpty(lang))
+            if (string.IsNullOrWhiteSpace(lang))
+            {
+                lang = LibraryManager.GetCollectionFolders(this)
+                    .Select(i => i.PreferredMetadataLanguage)
+                    .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+            }
+
+            if (string.IsNullOrWhiteSpace(lang))
             {
                 lang = ConfigurationManager.Configuration.PreferredMetadataLanguage;
             }
@@ -1006,14 +1014,21 @@ namespace MediaBrowser.Controller.Entities
                 lang = hasLang.PreferredMetadataCountryCode;
             }
 
-            if (string.IsNullOrEmpty(lang))
+            if (string.IsNullOrWhiteSpace(lang))
             {
                 lang = Parents.OfType<IHasPreferredMetadataLanguage>()
                     .Select(i => i.PreferredMetadataCountryCode)
-                    .FirstOrDefault(i => !string.IsNullOrEmpty(i));
+                    .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
             }
 
-            if (string.IsNullOrEmpty(lang))
+            if (string.IsNullOrWhiteSpace(lang))
+            {
+                lang = LibraryManager.GetCollectionFolders(this)
+                    .Select(i => i.PreferredMetadataCountryCode)
+                    .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+            }
+
+            if (string.IsNullOrWhiteSpace(lang))
             {
                 lang = ConfigurationManager.Configuration.MetadataCountryCode;
             }
@@ -1231,13 +1246,6 @@ namespace MediaBrowser.Controller.Entities
                     {
                         if (string.Equals(i.GetType().Name, info.ItemType, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (info.ItemYear.HasValue)
-                            {
-                                if (info.ItemYear.Value != (i.ProductionYear ?? -1))
-                                {
-                                    return false;
-                                }
-                            }
                             return true;
                         }
                     }

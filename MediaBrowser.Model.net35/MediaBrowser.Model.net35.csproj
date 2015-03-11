@@ -75,6 +75,9 @@
     <Compile Include="..\MediaBrowser.Model\ApiClient\IServerEvents.cs">
       <Link>ApiClient\IServerEvents.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\ApiClient\NetworkStatus.cs">
+      <Link>ApiClient\NetworkStatus.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\ApiClient\RemoteLogoutReason.cs">
       <Link>ApiClient\RemoteLogoutReason.cs</Link>
     </Compile>
@@ -323,6 +326,12 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\MediaFormatProfileResolver.cs">
       <Link>Dlna\MediaFormatProfileResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dlna\PlaybackErrorCode.cs">
+      <Link>Dlna\PlaybackErrorCode.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dlna\PlaybackException.cs">
+      <Link>Dlna\PlaybackException.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\ProfileCondition.cs">
       <Link>Dlna\ProfileCondition.cs</Link>
@@ -900,6 +909,9 @@
     <Compile Include="..\MediaBrowser.Model\Querying\LatestItemsQuery.cs">
       <Link>Querying\LatestItemsQuery.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Querying\MovieRecommendationQuery.cs">
+      <Link>Querying\MovieRecommendationQuery.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\NextUpQuery.cs">
       <Link>Querying\NextUpQuery.cs</Link>
     </Compile>
@@ -932,6 +944,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Querying\UserQuery.cs">
       <Link>Querying\UserQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\mediabrowser.model\registration\RegistrationInfo.cs">
+      <Link>Registration\RegistrationInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Search\SearchHint.cs">
       <Link>Search\SearchHint.cs</Link>
@@ -1017,6 +1032,12 @@
     <Compile Include="..\MediaBrowser.Model\Sync\LocalItem.cs">
       <Link>Sync\LocalItem.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\LocalItemInfo.cs">
+      <Link>Sync\LocalItemInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\LocalItemQuery.cs">
+      <Link>Sync\LocalItemQuery.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncCategory.cs">
       <Link>Sync\SyncCategory.cs</Link>
     </Compile>
@@ -1067,6 +1088,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncQuality.cs">
       <Link>Sync\SyncQuality.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Sync\SyncQualityOption.cs">
+      <Link>Sync\SyncQualityOption.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Sync\SyncTarget.cs">
       <Link>Sync\SyncTarget.cs</Link>

@@ -5,7 +5,6 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Controller.TV;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
@@ -18,7 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MoreLinq;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -1632,7 +1630,7 @@ namespace MediaBrowser.Controller.Entities
                     var ok = new[] { item }.Any(i =>
                             i.People != null &&
                             i.People.Any(p =>
-                                p.Name.Equals(query.Person, StringComparison.OrdinalIgnoreCase) && (types.Contains(p.Type, StringComparer.OrdinalIgnoreCase) || types.Contains(p.Role, StringComparer.OrdinalIgnoreCase))));
+                                string.Equals(p.Name, query.Person, StringComparison.OrdinalIgnoreCase) && (types.Contains(p.Type ?? string.Empty, StringComparer.OrdinalIgnoreCase) || types.Contains(p.Role ?? string.Empty, StringComparer.OrdinalIgnoreCase))));
 
                     if (!ok)
                     {

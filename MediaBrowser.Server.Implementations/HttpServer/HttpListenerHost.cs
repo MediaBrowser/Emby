@@ -35,6 +35,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         private readonly ContainerAdapter _containerAdapter;
 
         public event EventHandler<WebSocketConnectEventArgs> WebSocketConnected;
+        public event EventHandler<WebSocketConnectingEventArgs> WebSocketConnecting;
 
         private readonly List<string> _localEndpoints = new List<string>();
 
@@ -196,7 +197,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
             _listener = GetListener();
 
-            _listener.WebSocketHandler = WebSocketHandler;
+            _listener.WebSocketConnected = OnWebSocketConnected;
+            _listener.WebSocketConnecting = OnWebSocketConnecting;
             _listener.ErrorHandler = ErrorHandler;
             _listener.RequestHandler = RequestHandler;
 
@@ -208,7 +210,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             return new WebSocketSharpListener(_logger, OnRequestReceived, CertificatePath);
         }
 
-        private void WebSocketHandler(WebSocketConnectEventArgs args)
+        private void OnWebSocketConnecting(WebSocketConnectingEventArgs args)
+        {
+            if (WebSocketConnecting != null)
+            {
+                WebSocketConnecting(this, args);
+            }
+        }
+
+        private void OnWebSocketConnected(WebSocketConnectEventArgs args)
         {
             if (WebSocketConnected != null)
             {
@@ -380,6 +390,14 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                     Priority = route.Priority,
                     Summary = route.Summary
                 });
+
+                // TODO: This is a hack for iOS. Remove it asap.
+                routes.Add(new RouteAttribute(DoubleNormalizeRoutePath(route.Path), route.Verbs)
+                {
+                    Notes = route.Notes,
+                    Priority = route.Priority,
+                    Summary = route.Summary
+                });
             }
 
             return routes.ToArray();
@@ -393,6 +411,16 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             }
 
             return "mediabrowser/" + path;
+        }
+
+        private string DoubleNormalizeRoutePath(string path)
+        {
+            if (path.StartsWith("/", StringComparison.OrdinalIgnoreCase))
+            {
+                return "/mediabrowser/mediabrowser" + path;
+            }
+
+            return "mediabrowser/mediabrowser/" + path;
         }
 
         /// <summary>

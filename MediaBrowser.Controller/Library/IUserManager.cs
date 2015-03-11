@@ -34,6 +34,7 @@ namespace MediaBrowser.Controller.Library
         event EventHandler<GenericEventArgs<User>> UserCreated;
         event EventHandler<GenericEventArgs<User>> UserConfigurationUpdated;
         event EventHandler<GenericEventArgs<User>> UserPasswordChanged;
+        event EventHandler<GenericEventArgs<User>> UserLockedOut;
 
         /// <summary>
         /// Gets a User by Id
@@ -121,9 +122,8 @@ namespace MediaBrowser.Controller.Library
         /// Gets the offline user dto.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="deviceId">The device identifier.</param>
         /// <returns>UserDto.</returns>
-        UserDto GetOfflineUserDto(User user, string deviceId);
+        UserDto GetOfflineUserDto(User user);
 
         /// <summary>
         /// Resets the easy password.

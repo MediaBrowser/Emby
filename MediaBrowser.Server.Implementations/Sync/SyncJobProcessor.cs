@@ -38,8 +38,9 @@ namespace MediaBrowser.Server.Implementations.Sync
         private readonly ISubtitleEncoder _subtitleEncoder;
         private readonly IConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
+        private readonly IMediaSourceManager _mediaSourceManager;
 
-        public SyncJobProcessor(ILibraryManager libraryManager, ISyncRepository syncRepo, SyncManager syncManager, ILogger logger, IUserManager userManager, ITVSeriesManager tvSeriesManager, IMediaEncoder mediaEncoder, ISubtitleEncoder subtitleEncoder, IConfigurationManager config, IFileSystem fileSystem)
+        public SyncJobProcessor(ILibraryManager libraryManager, ISyncRepository syncRepo, SyncManager syncManager, ILogger logger, IUserManager userManager, ITVSeriesManager tvSeriesManager, IMediaEncoder mediaEncoder, ISubtitleEncoder subtitleEncoder, IConfigurationManager config, IFileSystem fileSystem, IMediaSourceManager mediaSourceManager)
         {
             _libraryManager = libraryManager;
             _syncRepo = syncRepo;
@@ -51,6 +52,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             _subtitleEncoder = subtitleEncoder;
             _config = config;
             _fileSystem = fileSystem;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         public async Task EnsureJobItems(SyncJob job)
@@ -336,11 +338,12 @@ namespace MediaBrowser.Server.Implementations.Sync
             return new[] { item };
         }
 
-        public async Task EnsureSyncJobItems(CancellationToken cancellationToken)
+        private async Task EnsureSyncJobItems(string targetId, CancellationToken cancellationToken)
         {
             var jobResult = _syncRepo.GetJobs(new SyncJobQuery
             {
-                SyncNewContent = true
+                SyncNewContent = true,
+                TargetId = targetId
             });
 
             foreach (var job in jobResult.Items)
@@ -356,7 +359,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public async Task Sync(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            await EnsureSyncJobItems(cancellationToken).ConfigureAwait(false);
+            await EnsureSyncJobItems(null, cancellationToken).ConfigureAwait(false);
 
             // If it already has a converting status then is must have been aborted during conversion
             var result = _syncRepo.GetJobItems(new SyncJobItemQuery
@@ -373,6 +376,21 @@ namespace MediaBrowser.Server.Implementations.Sync
         {
             // TODO
             // Clean files in sync temp folder that are not linked to any sync jobs
+        }
+
+        public async Task SyncJobItems(string targetId, bool enableConversion, IProgress<double> progress,
+            CancellationToken cancellationToken)
+        {
+            await EnsureSyncJobItems(targetId, cancellationToken).ConfigureAwait(false);
+
+            // If it already has a converting status then is must have been aborted during conversion
+            var result = _syncRepo.GetJobItems(new SyncJobItemQuery
+            {
+                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                TargetId = targetId
+            });
+
+            await SyncJobItems(result.Items, true, progress, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task SyncJobItems(SyncJobItem[] items, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
@@ -475,7 +493,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             options.Context = EncodingContext.Static;
             options.Profile = profile;
             options.ItemId = item.Id.ToString("N");
-            options.MediaSources = item.GetMediaSources(false, user).ToList();
+            options.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
             var streamInfo = new StreamBuilder().BuildVideoItem(options);
             var mediaSource = streamInfo.MediaSource;
@@ -483,7 +501,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             // No sense creating external subs if we're already burning one into the video
             var externalSubs = streamInfo.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Encode ?
                 new List<SubtitleStreamInfo>() :
-                streamInfo.GetExternalSubtitles("dummy", false);
+                streamInfo.GetExternalSubtitles(false);
 
             // Mark as requiring conversion if transcoding the video, or if any subtitles need to be extracted
             var requiresVideoTranscoding = streamInfo.PlayMethod == PlayMethod.Transcode && job.Quality != SyncQuality.Original;
@@ -666,7 +684,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             options.Context = EncodingContext.Static;
             options.Profile = profile;
             options.ItemId = item.Id.ToString("N");
-            options.MediaSources = item.GetMediaSources(false, user).ToList();
+            options.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
             var streamInfo = new StreamBuilder().BuildAudioItem(options);
             var mediaSource = streamInfo.MediaSource;

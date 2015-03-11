@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -19,9 +20,11 @@ namespace MediaBrowser.Server.Implementations.Photos
     {
         protected IFileSystem FileSystem { get; private set; }
         protected IProviderManager ProviderManager { get; private set; }
+        protected IApplicationPaths ApplicationPaths { get; private set; }
 
-        protected BaseDynamicImageProvider(IFileSystem fileSystem, IProviderManager providerManager)
+        protected BaseDynamicImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths)
         {
+            ApplicationPaths = applicationPaths;
             ProviderManager = providerManager;
             FileSystem = fileSystem;
         }
@@ -105,17 +108,28 @@ namespace MediaBrowser.Server.Implementations.Photos
 
         protected Task<Stream> GetThumbCollage(List<BaseItem> items)
         {
-            return DynamicImageHelpers.GetThumbCollage(items.Select(i => i.GetImagePath(ImageType.Primary) ?? i.GetImagePath(ImageType.Thumb)).ToList(),
+            var files = items
+                .Select(i => i.GetImagePath(ImageType.Primary) ?? i.GetImagePath(ImageType.Thumb))
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .ToList();
+
+            return DynamicImageHelpers.GetThumbCollage(files,
                 FileSystem,
                 1600,
-                900);
+                900,
+                ApplicationPaths);
         }
 
         protected Task<Stream> GetSquareCollage(List<BaseItem> items)
         {
-            return DynamicImageHelpers.GetSquareCollage(items.Select(i => i.GetImagePath(ImageType.Primary) ?? i.GetImagePath(ImageType.Thumb)).ToList(),
+            var files = items
+                .Select(i => i.GetImagePath(ImageType.Primary) ?? i.GetImagePath(ImageType.Thumb))
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .ToList();
+
+            return DynamicImageHelpers.GetSquareCollage(files,
                 FileSystem,
-                800);
+                800, ApplicationPaths);
         }
 
         public string Name

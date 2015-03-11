@@ -126,6 +126,21 @@ var Dashboard = {
         var address = store.getItem('serverAddress');
 
         if (!address && !Dashboard.isConnectMode()) {
+
+            // Try to get the server address from the browser url
+            // This will preserve protocol, hostname, port and subdirectory
+            var urlLower = getWindowUrl().toLowerCase();
+            var index = urlLower.indexOf('/web');
+            if (index == -1) {
+                index = urlLower.indexOf('/dashboard');
+            }
+
+            if (index != -1) {
+                address = urlLower.substring(0, index);
+                return address;
+            }
+
+            // If the above failed, just piece it together manually
             var loc = window.location;
 
             address = loc.protocol + '//' + loc.hostname;
@@ -567,7 +582,7 @@ var Dashboard = {
                 var url = user.imageUrl;
 
                 if (user.supportsImageParams) {
-                    url += "width=" + 28;
+                    url += "&width=" + 28;
                 }
 
                 html += '<img style="max-width:28px;vertical-align:middle;margin-right:5px;" src="' + url + '" />';
@@ -634,7 +649,7 @@ var Dashboard = {
 
     ensureHeader: function (page) {
 
-        if (page.hasClass('standalonePage')) {
+        if (page.hasClass('standalonePage') && !page.hasClass('noHeaderPage')) {
 
             Dashboard.renderHeader(page);
         }
@@ -846,6 +861,7 @@ var Dashboard = {
         }
 
         ApiClient.openWebSocket();
+        ApiClient.reportCapabilities(Dashboard.capabilities());
     },
 
     processGeneralCommand: function (cmd) {
@@ -1258,6 +1274,16 @@ var Dashboard = {
     isServerlessPage: function () {
         var url = getWindowUrl().toLowerCase();
         return url.indexOf('connectlogin.html') != -1 || url.indexOf('selectserver.html') != -1;
+    },
+
+    capabilities: function () {
+        return {
+            PlayableMediaTypes: "Audio,Video",
+
+            SupportedCommands: Dashboard.getSupportedRemoteCommands().join(','),
+            SupportsPersistentIdentifier: false,
+            SupportsMediaControl: true
+        };
     }
 };
 
@@ -1314,14 +1340,9 @@ var Dashboard = {
     var deviceId = MediaBrowser.generateDeviceId();
     var credentialProvider = new MediaBrowser.CredentialProvider();
 
-    var capabilities = {
-        PlayableMediaTypes: "Audio,Video",
+    var capabilities = Dashboard.capabilities();
 
-        SupportedCommands: Dashboard.getSupportedRemoteCommands().join(','),
-        SupportsPersistentIdentifier: false
-    };
-
-    window.ConnectionManager = new MediaBrowser.ConnectionManager(jQuery, Logger, credentialProvider, appName, appVersion, deviceName, deviceId, capabilities);
+    window.ConnectionManager = new MediaBrowser.ConnectionManager(Logger, credentialProvider, appName, appVersion, deviceName, deviceId, capabilities);
 
     if (Dashboard.isConnectMode()) {
 
@@ -1332,7 +1353,7 @@ var Dashboard = {
 
         if (!Dashboard.isServerlessPage()) {
             if (Dashboard.serverAddress() && Dashboard.getCurrentUserId() && Dashboard.getAccessToken()) {
-                window.ApiClient = new MediaBrowser.ApiClient(jQuery, Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
+                window.ApiClient = new MediaBrowser.ApiClient(Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId);
 
                 ApiClient.setCurrentUserId(Dashboard.getCurrentUserId(), Dashboard.getAccessToken());
 
@@ -1347,7 +1368,7 @@ var Dashboard = {
 
     } else {
 
-        window.ApiClient = new MediaBrowser.ApiClient(jQuery, Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId, capabilities);
+        window.ApiClient = new MediaBrowser.ApiClient(Logger, Dashboard.serverAddress(), appName, appVersion, deviceName, deviceId);
 
         ApiClient.setCurrentUserId(Dashboard.getCurrentUserId(), Dashboard.getAccessToken());
 

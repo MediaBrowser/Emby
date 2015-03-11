@@ -45,9 +45,9 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Imazen.WebP, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ImageMagickSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ThirdParty\libwebp\Imazen.WebP.dll</HintPath>
+      <HintPath>..\packages\ImageMagickSharp.1.0.0.11\lib\net45\ImageMagickSharp.dll</HintPath>
     </Reference>
     <Reference Include="MediaBrowser.Naming, Version=1.0.5509.27636, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -77,7 +77,6 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\1.0.94.0\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net" />
@@ -98,6 +97,9 @@
     </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\ThirdParty\ServiceStack.Text\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="UniversalDetector">
+      <HintPath>..\ThirdParty\UniversalDetector\UniversalDetector.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +128,6 @@
     <Compile Include="Devices\DeviceManager.cs" />
     <Compile Include="Devices\DeviceRepository.cs" />
     <Compile Include="Devices\CameraUploadsFolder.cs" />
-    <Compile Include="Drawing\ImageExtensions.cs" />
     <Compile Include="Drawing\ImageHeader.cs" />
     <Compile Include="Drawing\PercentPlayedDrawer.cs" />
     <Compile Include="Drawing\PlayedIndicatorDrawer.cs" />
@@ -153,7 +154,6 @@
     <Compile Include="EntryPoints\ServerEventNotifier.cs" />
     <Compile Include="EntryPoints\UserDataChangeNotifier.cs" />
     <Compile Include="FileOrganization\OrganizerScheduledTask.cs" />
-    <Compile Include="HttpServer\NetListener\HttpListenerServer.cs" />
     <Compile Include="HttpServer\IHttpListener.cs" />
     <Compile Include="HttpServer\Security\AuthorizationContext.cs" />
     <Compile Include="HttpServer\ContainerAdapter.cs" />
@@ -222,7 +222,6 @@
     <Compile Include="Library\Validators\StudiosValidator.cs" />
     <Compile Include="Library\Validators\YearsPostScanTask.cs" />
     <Compile Include="LiveTv\ChannelImageProvider.cs" />
-    <Compile Include="LiveTv\CleanDatabaseScheduledTask.cs" />
     <Compile Include="LiveTv\LiveTvConfigurationFactory.cs" />
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
     <Compile Include="LiveTv\LiveTvManager.cs" />
@@ -281,6 +280,7 @@
     <Compile Include="Sorting\CommunityRatingComparer.cs" />
     <Compile Include="Sorting\CriticRatingComparer.cs" />
     <Compile Include="Sorting\DateCreatedComparer.cs" />
+    <Compile Include="Sorting\DateLastMediaAddedComparer.cs" />
     <Compile Include="Sorting\DatePlayedComparer.cs" />
     <Compile Include="Sorting\GameSystemComparer.cs" />
     <Compile Include="Sorting\IsFavoriteOrLikeComparer.cs" />
@@ -306,14 +306,19 @@
     <Compile Include="Sorting\StudioComparer.cs" />
     <Compile Include="Sorting\VideoBitRateComparer.cs" />
     <Compile Include="Sync\AppSyncProvider.cs" />
-    <Compile Include="Sync\CloudSyncProvider.cs" />
+    <Compile Include="Sync\CloudSyncProfile.cs" />
+    <Compile Include="Sync\IHasSyncProfile.cs" />
     <Compile Include="Sync\MediaSync.cs" />
+    <Compile Include="Sync\MultiProviderSync.cs" />
+    <Compile Include="Sync\ServerSyncScheduledTask.cs" />
+    <Compile Include="Sync\SyncedMediaSourceProvider.cs" />
     <Compile Include="Sync\SyncRegistrationInfo.cs" />
     <Compile Include="Sync\SyncConfig.cs" />
     <Compile Include="Sync\SyncJobProcessor.cs" />
     <Compile Include="Sync\SyncManager.cs" />
     <Compile Include="Sync\SyncRepository.cs" />
-    <Compile Include="Sync\SyncScheduledTask.cs" />
+    <Compile Include="Sync\SyncConvertScheduledTask.cs" />
+    <Compile Include="Sync\TargetDataProvider.cs" />
     <Compile Include="Themes\AppThemeManager.cs" />
     <Compile Include="TV\TVSeriesManager.cs" />
     <Compile Include="Udp\UdpMessageReceivedEventArgs.cs" />
@@ -421,6 +426,8 @@
     <EmbeddedResource Include="Localization\JavaScript\uk.json" />
     <EmbeddedResource Include="Localization\Server\bg_BG.json" />
     <EmbeddedResource Include="Localization\Server\uk.json" />
+    <EmbeddedResource Include="Drawing\fonts\webdings.ttf" />
+    <EmbeddedResource Include="Drawing\fonts\robotoregular.ttf" />
     <None Include="Localization\JavaScript\sl_SI.json" />
     <EmbeddedResource Include="Localization\Server\sl_SI.json" />
     <None Include="packages.config" />
@@ -508,7 +515,9 @@
     <EmbeddedResource Include="Localization\iso6392.txt" />
     <EmbeddedResource Include="Localization\Ratings\be.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="HttpServer\NetListener\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -132,8 +132,6 @@
                     childText += Globalize.translate('ValueMinutes', 0);
                 }
 
-                //childText += item.ChildCount == 1 ? "1 item" : item.ChildCount + " items";
-
                 counts.push(childText);
 
             }
@@ -322,7 +320,7 @@
 
             commands.push('refresh');
 
-            if (SyncManager.isAvailable(item)) {
+            if (SyncManager.isAvailable(item, user)) {
                 commands.push('sync');
             }
 
@@ -710,7 +708,13 @@
                 var href = LibraryBrowser.getHref(item, options.context);
                 html += '<li class="' + cssClass + '"' + dataAttributes + ' data-itemid="' + item.Id + '" data-playlistitemid="' + (item.PlaylistItemId || '') + '" data-href="' + href + '">';
 
-                var defaultActionAttribute = options.defaultAction ? (' data-action="' + options.defaultAction + '" class="itemWithAction"') : '';
+                var defaultAction = options.defaultAction;
+                if (defaultAction == 'play' || defaultAction == 'playallfromhere') {
+                    if (item.PlayAccess != 'Full') {
+                        defaultAction = null;
+                    }
+                }
+                var defaultActionAttribute = defaultAction ? (' data-action="' + defaultAction + '" class="itemWithAction"') : '';
                 html += '<a' + defaultActionAttribute + ' href="' + href + '">';
 
                 var imgUrl;
@@ -860,7 +864,10 @@
             atts.push('data-context="' + (options.context || '') + '"');
             atts.push('data-itemtype="' + item.Type + '"');
             atts.push('data-mediatype="' + (item.MediaType || '') + '"');
-            atts.push('data-positionticks="' + (item.UserData.PlaybackPositionTicks || 0) + '"');
+
+            if (item.UserData.PlaybackPositionTicks) {
+                atts.push('data-positionticks="' + (item.UserData.PlaybackPositionTicks || 0) + '"');
+            }
 
             atts.push('data-playaccess="' + (item.PlayAccess || '') + '"');
             atts.push('data-locationtype="' + (item.LocationType || '') + '"');
@@ -1014,6 +1021,7 @@
                 var forceName = false;
 
                 var downloadHeight = 576;
+                var enableImageEnhancers = options.enableImageEnhancers !== false;
 
                 if (options.autoThumb && item.ImageTags && item.ImageTags.Primary && item.PrimaryImageAspectRatio && item.PrimaryImageAspectRatio >= 1.5) {
 
@@ -1024,7 +1032,8 @@
                         type: "Primary",
                         height: height,
                         width: width,
-                        tag: item.ImageTags.Primary
+                        tag: item.ImageTags.Primary,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.autoThumb && item.ImageTags && item.ImageTags.Thumb) {
@@ -1032,7 +1041,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.ImageTags.Thumb
+                        tag: item.ImageTags.Thumb,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferBackdrop && item.BackdropImageTags && item.BackdropImageTags.length) {
@@ -1040,7 +1050,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Backdrop",
                         maxWidth: downloadHeight,
-                        tag: item.BackdropImageTags[0]
+                        tag: item.BackdropImageTags[0],
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferThumb && item.ImageTags && item.ImageTags.Thumb) {
@@ -1048,7 +1059,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.ImageTags.Thumb
+                        tag: item.ImageTags.Thumb,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferBanner && item.ImageTags && item.ImageTags.Banner) {
@@ -1056,7 +1068,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Banner",
                         maxWidth: 700,
-                        tag: item.ImageTags.Banner
+                        tag: item.ImageTags.Banner,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferThumb && item.SeriesThumbImageTag && options.inheritThumb !== false) {
@@ -1064,14 +1077,16 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.SeriesId, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.SeriesThumbImageTag
+                        tag: item.SeriesThumbImageTag,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferThumb && item.ParentThumbItemId && options.inheritThumb !== false) {
 
                     imgUrl = ApiClient.getThumbImageUrl(item.ParentThumbItemId, {
                         type: "Thumb",
-                        maxWidth: downloadHeight
+                        maxWidth: downloadHeight,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (options.preferThumb && item.BackdropImageTags && item.BackdropImageTags.length) {
@@ -1079,7 +1094,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Backdrop",
                         maxWidth: downloadHeight,
-                        tag: item.BackdropImageTags[0]
+                        tag: item.BackdropImageTags[0],
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                     forceName = true;
@@ -1093,7 +1109,8 @@
                         type: "Primary",
                         height: height,
                         width: width,
-                        tag: item.ImageTags.Primary
+                        tag: item.ImageTags.Primary,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 }
@@ -1104,7 +1121,8 @@
                     imgUrl = ApiClient.getImageUrl(item.ParentPrimaryImageItemId, {
                         type: "Primary",
                         height: height,
-                        tag: item.ParentPrimaryImageTag
+                        tag: item.ParentPrimaryImageTag,
+                        enableImageEnhancers: enableImageEnhancers
                     });
                 }
                 else if (item.AlbumId && item.AlbumPrimaryImageTag) {
@@ -1116,7 +1134,8 @@
                         type: "Primary",
                         height: height,
                         width: width,
-                        tag: item.AlbumPrimaryImageTag
+                        tag: item.AlbumPrimaryImageTag,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 }
@@ -1125,7 +1144,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.ImageTags.Thumb
+                        tag: item.ImageTags.Thumb,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 }
@@ -1134,7 +1154,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Backdrop",
                         maxWidth: downloadHeight,
-                        tag: item.BackdropImageTags[0]
+                        tag: item.BackdropImageTags[0],
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (item.ImageTags && item.ImageTags.Thumb) {
@@ -1142,7 +1163,8 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.Id, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.ImageTags.Thumb
+                        tag: item.ImageTags.Thumb,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (item.SeriesThumbImageTag) {
@@ -1150,14 +1172,16 @@
                     imgUrl = ApiClient.getScaledImageUrl(item.SeriesId, {
                         type: "Thumb",
                         maxWidth: downloadHeight,
-                        tag: item.SeriesThumbImageTag
+                        tag: item.SeriesThumbImageTag,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (item.ParentThumbItemId) {
 
                     imgUrl = ApiClient.getThumbImageUrl(item, {
                         type: "Thumb",
-                        maxWidth: downloadHeight
+                        maxWidth: downloadHeight,
+                        enableImageEnhancers: enableImageEnhancers
                     });
 
                 } else if (item.MediaType == "Audio" || item.Type == "MusicAlbum" || item.Type == "MusicArtist") {
@@ -1223,8 +1247,15 @@
 
                 var dataAttributes = LibraryBrowser.getItemDataAttributes(item, options, i);
 
-                var defaultActionAttribute = options.defaultAction ? (' data-action="' + options.defaultAction + '"') : '';
+                var defaultAction = options.defaultAction;
+                if (defaultAction == 'play' || defaultAction == 'playallfromhere') {
+                    if (item.PlayAccess != 'Full') {
+                        defaultAction = null;
+                    }
+                }
+                var defaultActionAttribute = defaultAction ? (' data-action="' + defaultAction + '"') : '';
 
+                // card
                 html += '<div' + dataAttributes + ' class="' + cssClass + '">';
 
                 var style = "";
@@ -1322,6 +1353,7 @@
                 // cardBox
                 html += '</div>';
 
+                // card
                 html += "</div>";
 
             }
@@ -1948,12 +1980,12 @@
             if (item.CriticRating != null) {
 
                 if (item.CriticRating >= 60) {
-                    html += '<div class="fresh rottentomatoesicon"></div>';
+                    html += '<div class="fresh rottentomatoesicon" title="Rotten Tomatoes"></div>';
                 } else {
-                    html += '<div class="rotten rottentomatoesicon"></div>';
+                    html += '<div class="rotten rottentomatoesicon" title="Rotten Tomatoes"></div>';
                 }
 
-                html += '<div class="criticRating">' + item.CriticRating + '%</div>';
+                html += '<div class="criticRating" title="Rotten Tomatoes">' + item.CriticRating + '%</div>';
             }
 
             if (item.Metascore && metascore !== false) {

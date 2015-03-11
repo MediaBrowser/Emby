@@ -45,8 +45,9 @@ namespace MediaBrowser.Server.Implementations.Dto
         private readonly ISyncManager _syncManager;
         private readonly IApplicationHost _appHost;
         private readonly Func<IDeviceManager> _deviceManager;
+        private readonly Func<IMediaSourceManager> _mediaSourceManager;
 
-        public DtoService(ILogger logger, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IImageProcessor imageProcessor, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, Func<IChannelManager> channelManagerFactory, ISyncManager syncManager, IApplicationHost appHost, Func<IDeviceManager> deviceManager)
+        public DtoService(ILogger logger, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IImageProcessor imageProcessor, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, Func<IChannelManager> channelManagerFactory, ISyncManager syncManager, IApplicationHost appHost, Func<IDeviceManager> deviceManager, Func<IMediaSourceManager> mediaSourceManager)
         {
             _logger = logger;
             _libraryManager = libraryManager;
@@ -60,6 +61,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             _syncManager = syncManager;
             _appHost = appHost;
             _deviceManager = deviceManager;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         /// <summary>
@@ -104,7 +106,7 @@ namespace MediaBrowser.Server.Implementations.Dto
                     SetItemByNameInfo(item, dto, libraryItems.ToList(), user);
                 }
 
-                FillSyncInfo(dto, item, itemIdsWithSyncJobs, options);
+                FillSyncInfo(dto, item, itemIdsWithSyncJobs, options, user);
 
                 list.Add(dto);
             }
@@ -128,10 +130,11 @@ namespace MediaBrowser.Server.Implementations.Dto
 
                 SetItemByNameInfo(item, dto, libraryItems.ToList(), user);
 
+                FillSyncInfo(dto, item, options, user);
                 return dto;
             }
 
-            FillSyncInfo(dto, item, options);
+            FillSyncInfo(dto, item, options, user);
 
             return dto;
         }
@@ -170,11 +173,12 @@ namespace MediaBrowser.Server.Implementations.Dto
             return result.Items;
         }
 
-        private void FillSyncInfo(BaseItemDto dto, BaseItem item, DtoOptions options)
+        private void FillSyncInfo(BaseItemDto dto, BaseItem item, DtoOptions options, User user)
         {
             if (options.Fields.Contains(ItemFields.SyncInfo))
             {
-                dto.SupportsSync = _syncManager.SupportsSync(item);
+                var userCanSync = user != null && user.Policy.EnableSync;
+                dto.SupportsSync = userCanSync && _syncManager.SupportsSync(item);
             }
 
             if (dto.SupportsSync ?? false)
@@ -183,11 +187,12 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
         }
 
-        private void FillSyncInfo(BaseItemDto dto, BaseItem item, IEnumerable<string> itemIdsWithSyncJobs, DtoOptions options)
+        private void FillSyncInfo(BaseItemDto dto, BaseItem item, IEnumerable<string> itemIdsWithSyncJobs, DtoOptions options, User user)
         {
             if (options.Fields.Contains(ItemFields.SyncInfo))
             {
-                dto.SupportsSync = _syncManager.SupportsSync(item);
+                var userCanSync = user != null && user.Policy.EnableSync;
+                dto.SupportsSync = userCanSync && _syncManager.SupportsSync(item);
             }
 
             if (dto.SupportsSync ?? false)
@@ -254,7 +259,7 @@ namespace MediaBrowser.Server.Implementations.Dto
                     }
                     else
                     {
-                        dto.MediaSources = hasMediaSources.GetMediaSources(true, user).ToList();
+                        dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(hasMediaSources, true, user).ToList();
                     }
                 }
             }
@@ -307,6 +312,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             var dto = GetBaseItemDtoInternal(item, options, user);
 
             SetItemByNameInfo(item, dto, taggedItems, user);
+            FillSyncInfo(dto, item, options, user);
 
             return dto;
         }
@@ -390,6 +396,18 @@ namespace MediaBrowser.Server.Implementations.Dto
                         dto.SeasonUserData = _userDataRepository.GetUserDataDto(season, user);
                     }
                 }
+            }
+
+            var userView = item as UserView;
+            if (userView != null)
+            {
+                dto.HasDynamicCategories = userView.ContainsDynamicCategories(user);
+            }
+
+            var collectionFolder = item as ICollectionFolder;
+            if (collectionFolder != null)
+            {
+                dto.HasDynamicCategories = false;
             }
         }
 
@@ -907,7 +925,8 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             // Prevent implicitly captured closure
             var currentItem = item;
-            foreach (var image in currentItem.ImageInfos.Where(i => !currentItem.AllowsMultipleImages(i.Type)))
+            foreach (var image in currentItem.ImageInfos.Where(i => !currentItem.AllowsMultipleImages(i.Type))
+                .ToList())
             {
                 if (options.GetImageLimit(image.Type) > 0)
                 {
@@ -1593,14 +1612,11 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             var path = imageInfo.Path;
 
-            // See if we can avoid a file system lookup by looking for the file in ResolveArgs
-            var dateModified = imageInfo.DateModified;
-
             ImageSize size;
 
             try
             {
-                size = _imageProcessor.GetImageSize(path, dateModified);
+                size = _imageProcessor.GetImageSize(imageInfo);
             }
             catch (FileNotFoundException)
             {

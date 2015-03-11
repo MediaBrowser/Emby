@@ -114,6 +114,9 @@
                 if ($.browser.chrome) {
                     return '.webm';
                 }
+
+                // Firefox suddenly having trouble with our webm
+                return '.webm';
             }
 
             return '.mp4';
@@ -347,6 +350,12 @@
                 return false;
             }
 
+            if (mediaSource.Protocol == 'Http') {
+                if (Dashboard.isConnectMode()) {
+                    return false;
+                }
+            }
+
             if (extension == 'm4v' || extension == 'mkv') {
                 return $.browser.chrome != null;
             }
@@ -496,30 +505,32 @@
             var firstItem = items[0];
 
             if (options.startPositionTicks || firstItem.MediaType !== 'Video' || !self.canAutoPlayVideo()) {
-                self.playInternal(firstItem, options.startPositionTicks, user);
 
-                self.playlist = items;
-                currentPlaylistIndex = 0;
+                self.playInternal(firstItem, options.startPositionTicks, function () {
+                    self.playlist = items;
+                    currentPlaylistIndex = 0;
+                });
+
                 return;
             }
 
             ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/' + firstItem.Id + '/Intros')).done(function (intros) {
 
                 items = intros.Items.concat(items);
-                self.playInternal(items[0], options.startPositionTicks, user);
+                self.playInternal(items[0], options.startPositionTicks, function () {
+                    self.playlist = items;
+                    currentPlaylistIndex = 0;
+                });
 
-                self.playlist = items;
-                currentPlaylistIndex = 0;
             });
         };
 
         function getOptimalMediaSource(mediaType, versions) {
 
             var optimalVersion;
+            var bitrateSetting = AppSettings.maxStreamingBitrate();
 
             if (mediaType == 'Video') {
-
-                var bitrateSetting = AppSettings.maxStreamingBitrate();
 
                 var maxAllowedWidth = self.getMaxPlayableWidth();
 
@@ -536,12 +547,21 @@
                     return self.canPlayVideoDirect(v, videoStream, audioStream, null, maxAllowedWidth, bitrateSetting);
 
                 })[0];
+            } else {
+
+                optimalVersion = versions.filter(function (v) {
+
+                    return canPlayAudioMediaSourceDirect(v);
+
+                })[0];
             }
 
-            return optimalVersion || versions[0];
+            return optimalVersion || versions.filter(function (s) {
+                return s.SupportsTranscoding;
+            })[0];
         }
 
-        self.playInternal = function (item, startPosition, user) {
+        self.playInternal = function (item, startPosition, callback) {
 
             if (item == null) {
                 throw new Error("item cannot be null");
@@ -551,36 +571,75 @@
                 self.stop();
             }
 
-            if (item.MediaType === "Video") {
-
-                ApiClient.getJSON(ApiClient.getUrl('Items/' + item.Id + '/MediaInfo', {
-                    userId: Dashboard.getCurrentUserId()
-
-                })).done(function (result) {
-
-                    self.currentItem = item;
-                    self.currentMediaSource = getOptimalMediaSource(item.MediaType, result.MediaSources);
-
-                    self.currentMediaElement = self.playVideo(item, self.currentMediaSource, startPosition);
-                    self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
-
-                    self.updateNowPlayingInfo(item);
-                });
-
-
-            } else if (item.MediaType === "Audio") {
-
-                self.currentItem = item;
-                self.currentMediaSource = getOptimalMediaSource(item.MediaType, item.MediaSources);
-
-                self.currentMediaElement = playAudio(item, self.currentMediaSource, startPosition);
-
-                self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
-
-            } else {
+            if (item.MediaType !== 'Audio' && item.MediaType !== 'Video') {
                 throw new Error("Unrecognized media type");
             }
+
+            var mediaSource;
+
+            ApiClient.getJSON(ApiClient.getUrl('Items/' + item.Id + '/PlaybackInfo', {
+                userId: Dashboard.getCurrentUserId()
+
+            })).done(function (result) {
+
+                if (validatePlaybackInfoResult(result)) {
+
+                    mediaSource = getOptimalMediaSource(item.MediaType, result.MediaSources);
+
+                    if (mediaSource) {
+
+                        self.currentMediaSource = mediaSource;
+                        self.currentItem = item;
+
+                        if (item.MediaType === "Video") {
+
+                            self.currentMediaElement = self.playVideo(item, self.currentMediaSource, startPosition);
+                            self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
+
+                            self.updateNowPlayingInfo(item);
+
+                        } else if (item.MediaType === "Audio") {
+
+                            self.currentMediaElement = playAudio(item, self.currentMediaSource, startPosition);
+                            self.currentDurationTicks = self.currentMediaSource.RunTimeTicks;
+                        }
+
+                        if (callback) {
+                            callback();
+                        }
+
+                    } else {
+                        showPlaybackInfoErrorMessage('NoCompatibleStream');
+                    }
+                }
+
+            });
         };
+
+        function validatePlaybackInfoResult(result) {
+
+            if (result.ErrorCode) {
+
+                showPlaybackInfoErrorMessage(result.ErrorCode);
+                return false;
+            }
+
+            return true;
+        }
+
+        function showPlaybackInfoErrorMessage(errorCode) {
+
+            // This timeout is messy, but if jqm is in the act of hiding a popup, it will not show a new one
+            // If we're coming from the popup play menu, this will be a problem
+
+            setTimeout(function () {
+                Dashboard.alert({
+                    message: Globalize.translate('MessagePlaybackError' + errorCode),
+                    title: Globalize.translate('HeaderPlaybackError')
+                });
+            }, 300);
+
+        }
 
         self.getNowPlayingNameHtml = function (playerState) {
 
@@ -623,11 +682,27 @@
 
             var userId = Dashboard.getCurrentUserId();
 
-            query.Limit = query.Limit || 100;
-            query.Fields = getItemFields;
-            query.ExcludeLocationTypes = "Virtual";
+            if (query.Ids && query.Ids.split(',').length == 1) {
+                var deferred = DeferredBuilder.Deferred();
 
-            return ApiClient.getItems(userId, query);
+                ApiClient.getItem(userId, query.Ids.split(',')).done(function (item) {
+                    deferred.resolveWith(null, [
+                    {
+                        Items: [item],
+                        TotalRecordCount: 1
+                    }]);
+                });
+
+                return deferred.promise();
+            }
+            else {
+
+                query.Limit = query.Limit || 100;
+                query.Fields = getItemFields;
+                query.ExcludeLocationTypes = "Virtual";
+
+                return ApiClient.getItems(userId, query);
+            }
         };
 
         self.removeFromPlaylist = function (index) {
@@ -645,9 +720,7 @@
 
             var newItem = self.playlist[i];
 
-            Dashboard.getCurrentUser().done(function (user) {
-
-                self.playInternal(newItem, 0, user);
+            self.playInternal(newItem, 0, function () {
                 currentPlaylistIndex = i;
             });
         };
@@ -661,9 +734,7 @@
 
                 console.log('playing next track');
 
-                Dashboard.getCurrentUser().done(function (user) {
-
-                    self.playInternal(newItem, 0, user);
+                self.playInternal(newItem, 0, function () {
                     currentPlaylistIndex = newIndex;
                 });
             }
@@ -675,9 +746,7 @@
                 var newItem = self.playlist[newIndex];
 
                 if (newItem) {
-                    Dashboard.getCurrentUser().done(function (user) {
-
-                        self.playInternal(newItem, 0, user);
+                    self.playInternal(newItem, 0, function () {
                         currentPlaylistIndex = newIndex;
                     });
                 }
@@ -1276,22 +1345,9 @@
             return $('.mediaPlayerAudio');
         }
 
-        var supportsAac = document.createElement('audio').canPlayType('audio/aac').replace(/no/, '');
-
-        function playAudio(item, mediaSource, startPositionTicks) {
-
-            startPositionTicks = startPositionTicks || 0;
-
-            var baseParams = {
-                audioChannels: 2,
-                audioBitrate: 128000,
-                StartTimeTicks: startPositionTicks,
-                mediaSourceId: mediaSource.Id,
-                deviceId: ApiClient.deviceId()
-            };
+        function canPlayAudioMediaSourceDirect(mediaSource) {
 
             var sourceContainer = (mediaSource.Container || '').toLowerCase();
-            var isStatic = false;
 
             if (sourceContainer == 'mp3' ||
                 (sourceContainer == 'aac' && supportsAac)) {
@@ -1304,12 +1360,33 @@
 
                         // Stream statically when possible
                         if (stream.BitRate <= 320000) {
-                            isStatic = true;
+                            return true;
                         }
                         break;
                     }
                 }
             }
+
+            return false;
+        }
+
+        var supportsAac = document.createElement('audio').canPlayType('audio/aac').replace(/no/, '');
+
+        function playAudio(item, mediaSource, startPositionTicks) {
+
+            startPositionTicks = startPositionTicks || 0;
+
+            var baseParams = {
+                audioChannels: 2,
+                audioBitrate: 128000,
+                StartTimeTicks: startPositionTicks,
+                mediaSourceId: mediaSource.Id,
+                deviceId: ApiClient.deviceId(),
+                api_key: ApiClient.accessToken()
+            };
+
+            var sourceContainer = (mediaSource.Container || '').toLowerCase();
+            var isStatic = canPlayAudioMediaSourceDirect(mediaSource);
 
             var outputContainer = isStatic ? sourceContainer : 'mp3';
             var audioUrl = ApiClient.getUrl('Audio/' + item.Id + '/stream.' + outputContainer, $.extend({}, baseParams, {

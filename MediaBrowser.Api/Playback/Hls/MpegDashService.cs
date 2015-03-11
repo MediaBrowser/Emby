@@ -1,8 +1,8 @@
 ﻿using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
+using MediaBrowser.Controller.Diagnostics;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
@@ -38,8 +38,7 @@ namespace MediaBrowser.Api.Playback.Hls
         }
     }
 
-    [Route("/Videos/{Id}/dash/{SegmentId}.ts", "GET")]
-    [Route("/Videos/{Id}/dash/{SegmentId}.mp4", "GET")]
+    [Route("/Videos/{Id}/dash/{SegmentType}/{SegmentId}.m4s", "GET")]
     public class GetDashSegment : VideoStreamRequest
     {
         /// <summary>
@@ -47,11 +46,18 @@ namespace MediaBrowser.Api.Playback.Hls
         /// </summary>
         /// <value>The segment id.</value>
         public string SegmentId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the segment.
+        /// </summary>
+        /// <value>The type of the segment.</value>
+        public string SegmentType { get; set; }
     }
 
     public class MpegDashService : BaseHlsService
     {
-        public MpegDashService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, ILiveTvManager liveTvManager, IDlnaManager dlnaManager, IChannelManager channelManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, INetworkManager networkManager) : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, liveTvManager, dlnaManager, channelManager, subtitleEncoder, deviceManager)
+        public MpegDashService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, ILiveTvManager liveTvManager, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IProcessManager processManager, IMediaSourceManager mediaSourceManager, INetworkManager networkManager)
+            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, liveTvManager, dlnaManager, subtitleEncoder, deviceManager, processManager, mediaSourceManager)
         {
             NetworkManager = networkManager;
         }
@@ -70,6 +76,14 @@ namespace MediaBrowser.Api.Playback.Hls
             var result = GetAsync(request, "HEAD").Result;
 
             return result;
+        }
+
+        protected override bool EnableOutputInSubFolder
+        {
+            get
+            {
+                return true;
+            }
         }
 
         private async Task<object> GetAsync(GetMasterManifest request, string method)
@@ -111,34 +125,16 @@ namespace MediaBrowser.Api.Playback.Hls
 
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
-            var profile = string.Equals(GetSegmentFileExtension(state), ".ts", StringComparison.OrdinalIgnoreCase)
-                ? "urn:mpeg:dash:profile:mp2t-simple:2011"
-                : "urn:mpeg:dash:profile:mp2t-simple:2011";
-
             builder.AppendFormat(
-                "<MPD xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd\" minBufferTime=\"PT2.00S\" mediaPresentationDuration=\"{0}\" maxSegmentDuration=\"PT{1}S\" type=\"static\" profiles=\""+profile+"\">",
-                duration,
-                state.SegmentLength.ToString(CultureInfo.InvariantCulture));
+                "<MPD xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"urn:mpeg:DASH:schema:MPD:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd\" profiles=\"urn:mpeg:dash:profile:isoff-live:2011\" type=\"static\" mediaPresentationDuration=\"{0}\" minBufferTime=\"PT5.0S\">",
+                duration);
 
-            builder.Append("<ProgramInformation moreInformationURL=\"http://gpac.sourceforge.net\">");
+            builder.Append("<ProgramInformation>");
             builder.Append("</ProgramInformation>");
 
-            builder.AppendFormat("<Period start=\"PT0S\" duration=\"{0}\">", duration);
-            builder.Append("<AdaptationSet segmentAlignment=\"true\">");
-
-            builder.Append("<ContentComponent id=\"1\" contentType=\"video\"/>");
-
-            var lang = state.AudioStream != null ? state.AudioStream.Language : null;
-            if (string.IsNullOrWhiteSpace(lang)) lang = "und";
-
-            builder.AppendFormat("<ContentComponent id=\"2\" contentType=\"audio\" lang=\"{0}\"/>", lang);
-
-            builder.Append(GetRepresentationOpenElement(state, lang));
-
-            AppendSegmentList(state, builder);
-
-            builder.Append("</Representation>");
-            builder.Append("</AdaptationSet>");
+            builder.Append("<Period start=\"PT0S\">");
+            builder.Append(GetVideoAdaptationSet(state));
+            builder.Append(GetAudioAdaptationSet(state));
             builder.Append("</Period>");
 
             builder.Append("</MPD>");
@@ -146,15 +142,45 @@ namespace MediaBrowser.Api.Playback.Hls
             return builder.ToString();
         }
 
-        private string GetRepresentationOpenElement(StreamState state, string language)
+        private string GetVideoAdaptationSet(StreamState state)
         {
-            var codecs = GetVideoCodecDescriptor(state) + "," + GetAudioCodecDescriptor(state);
+            var builder = new StringBuilder();
 
-            var mime = string.Equals(GetSegmentFileExtension(state), ".ts", StringComparison.OrdinalIgnoreCase)
-                ? "video/mp2t"
-                : "video/mp4";
+            builder.Append("<AdaptationSet id=\"video\" segmentAlignment=\"true\" bitstreamSwitching=\"true\">");
+            builder.Append(GetVideoRepresentationOpenElement(state));
 
-            var xml = "<Representation id=\"1\" mimeType=\"" + mime + "\" startWithSAP=\"1\" codecs=\"" + codecs + "\"";
+            AppendSegmentList(state, builder, "video");
+
+            builder.Append("</Representation>");
+            builder.Append("</AdaptationSet>");
+
+            return builder.ToString();
+        }
+
+        private string GetAudioAdaptationSet(StreamState state)
+        {
+            var builder = new StringBuilder();
+
+            builder.Append("<AdaptationSet id=\"audio\" segmentAlignment=\"true\" bitstreamSwitching=\"true\">");
+            builder.Append(GetAudioRepresentationOpenElement(state));
+
+            builder.Append("<AudioChannelConfiguration schemeIdUri=\"urn:mpeg:dash:23003:3:audio_channel_configuration:2011\" value=\"6\" />");
+
+            AppendSegmentList(state, builder, "audio");
+
+            builder.Append("</Representation>");
+            builder.Append("</AdaptationSet>");
+
+            return builder.ToString();
+        }
+
+        private string GetVideoRepresentationOpenElement(StreamState state)
+        {
+            var codecs = GetVideoCodecDescriptor(state);
+
+            var mime = "video/mp4";
+
+            var xml = "<Representation id=\"0\" mimeType=\"" + mime + "\" codecs=\"" + codecs + "\"";
 
             if (state.OutputWidth.HasValue)
             {
@@ -164,14 +190,31 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 xml += " height=\"" + state.OutputHeight.Value.ToString(UsCulture) + "\"";
             }
-            if (state.OutputAudioSampleRate.HasValue)
+            if (state.OutputVideoBitrate.HasValue)
             {
-                xml += " sampleRate=\"" + state.OutputAudioSampleRate.Value.ToString(UsCulture) + "\"";
+                xml += " bandwidth=\"" + state.OutputVideoBitrate.Value.ToString(UsCulture) + "\"";
             }
 
-            if (state.TotalOutputBitrate.HasValue)
+            xml += ">";
+
+            return xml;
+        }
+
+        private string GetAudioRepresentationOpenElement(StreamState state)
+        {
+            var codecs = GetAudioCodecDescriptor(state);
+
+            var mime = "audio/mp4";
+
+            var xml = "<Representation id=\"1\" mimeType=\"" + mime + "\" codecs=\"" + codecs + "\"";
+
+            if (state.OutputAudioSampleRate.HasValue)
             {
-                xml += " bandwidth=\"" + state.TotalOutputBitrate.Value.ToString(UsCulture) + "\"";
+                xml += " audioSamplingRate=\"" + state.OutputAudioSampleRate.Value.ToString(UsCulture) + "\"";
+            }
+            if (state.OutputAudioBitrate.HasValue)
+            {
+                xml += " bandwidth=\"" + state.OutputAudioBitrate.Value.ToString(UsCulture) + "\"";
             }
 
             xml += ">";
@@ -246,10 +289,10 @@ namespace MediaBrowser.Api.Playback.Hls
 
         public object Get(GetDashSegment request)
         {
-            return GetDynamicSegment(request, request.SegmentId).Result;
+            return GetDynamicSegment(request, request.SegmentId, request.SegmentType).Result;
         }
 
-        private void AppendSegmentList(StreamState state, StringBuilder builder)
+        private void AppendSegmentList(StreamState state, StringBuilder builder, string type)
         {
             var extension = GetSegmentFileExtension(state);
 
@@ -259,15 +302,16 @@ namespace MediaBrowser.Api.Playback.Hls
             var queryString = queryStringIndex == -1 ? string.Empty : Request.RawUrl.Substring(queryStringIndex);
 
             var index = 0;
-            builder.Append("<SegmentList timescale=\"1000\" duration=\"10000\">");
-
+            var duration = 1000000 * state.SegmentLength;
+            builder.AppendFormat("<SegmentList timescale=\"1000000\" duration=\"{0}\" startNumber=\"1\">", duration.ToString(CultureInfo.InvariantCulture));
 
             while (seconds > 0)
             {
-                var segmentUrl = string.Format("dash/{0}{1}{2}",
+                var segmentUrl = string.Format("dash/{3}/{0}{1}{2}",
                     index.ToString(UsCulture),
                     extension,
-                    SecurityElement.Escape(queryString));
+                    SecurityElement.Escape(queryString),
+                    type);
 
                 if (index == 0)
                 {
@@ -284,7 +328,7 @@ namespace MediaBrowser.Api.Playback.Hls
             builder.Append("</SegmentList>");
         }
 
-        private async Task<object> GetDynamicSegment(VideoStreamRequest request, string segmentId)
+        private async Task<object> GetDynamicSegment(VideoStreamRequest request, string segmentId, string segmentType)
         {
             if ((request.StartTimeTicks ?? 0) > 0)
             {
@@ -298,17 +342,18 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var state = await GetState(request, cancellationToken).ConfigureAwait(false);
 
-            var playlistPath = Path.ChangeExtension(state.OutputFilePath, ".m3u8");
+            var playlistPath = Path.ChangeExtension(state.OutputFilePath, ".mpd");
 
             var segmentExtension = GetSegmentFileExtension(state);
 
-            var segmentPath = GetSegmentPath(playlistPath, segmentExtension, index);
+            var segmentPath = GetSegmentPath(playlistPath, segmentType, segmentExtension, index);
             var segmentLength = state.SegmentLength;
 
             TranscodingJob job = null;
 
             if (File.Exists(segmentPath))
             {
+                job = ApiEntryPoint.Instance.GetTranscodingJob(playlistPath, TranscodingJobType);
                 return await GetSegmentResult(playlistPath, segmentPath, index, segmentLength, job, cancellationToken).ConfigureAwait(false);
             }
 
@@ -317,6 +362,7 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 if (File.Exists(segmentPath))
                 {
+                    job = ApiEntryPoint.Instance.GetTranscodingJob(playlistPath, TranscodingJobType);
                     return await GetSegmentResult(playlistPath, segmentPath, index, segmentLength, job, cancellationToken).ConfigureAwait(false);
                 }
                 else
@@ -346,7 +392,7 @@ namespace MediaBrowser.Api.Playback.Hls
                             throw;
                         }
 
-                        await WaitForMinimumSegmentCount(playlistPath, 2, cancellationTokenSource.Token).ConfigureAwait(false);
+                        await WaitForMinimumSegmentCount(playlistPath, 1, cancellationTokenSource.Token).ConfigureAwait(false);
                     }
                 }
             }
@@ -364,6 +410,53 @@ namespace MediaBrowser.Api.Playback.Hls
             Logger.Info("returning {0}", segmentPath);
             job = job ?? ApiEntryPoint.Instance.GetTranscodingJob(playlistPath, TranscodingJobType);
             return await GetSegmentResult(playlistPath, segmentPath, index, segmentLength, job, cancellationToken).ConfigureAwait(false);
+        }
+
+        protected override async Task WaitForMinimumSegmentCount(string playlist, int segmentCount, CancellationToken cancellationToken)
+        {
+            var tmpPath = playlist + ".tmp";
+            Logger.Debug("Waiting for {0} segments in {1}", segmentCount, playlist);
+            // Double since audio and video are split
+            segmentCount = segmentCount * 2;
+            // Account for the initial segments
+            segmentCount += 2;
+
+            while (true)
+            {
+                FileStream fileStream;
+                try
+                {
+                    fileStream = FileSystem.GetFileStream(tmpPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
+                }
+                catch (IOException)
+                {
+                    fileStream = FileSystem.GetFileStream(playlist, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
+                }
+                // Need to use FileShare.ReadWrite because we're reading the file at the same time it's being written
+                using (fileStream)
+                {
+                    using (var reader = new StreamReader(fileStream))
+                    {
+                        var count = 0;
+
+                        while (!reader.EndOfStream)
+                        {
+                            var line = await reader.ReadLineAsync().ConfigureAwait(false);
+
+                            if (line.IndexOf(".m4s", StringComparison.OrdinalIgnoreCase) != -1)
+                            {
+                                count++;
+                                if (count >= segmentCount)
+                                {
+                                    Logger.Debug("Finished waiting for {0} segments in {1}", segmentCount, playlist);
+                                    return;
+                                }
+                            }
+                        }
+                        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
         }
 
         private async Task<object> GetSegmentResult(string playlistPath,
@@ -459,7 +552,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             return job != null && !job.HasExited;
         }
-        
+
         public int? GetCurrentTranscodingIndex(string playlist, string segmentExtension)
         {
             var file = GetLastTranscodingFile(playlist, segmentExtension, FileSystem);
@@ -541,15 +634,29 @@ namespace MediaBrowser.Api.Playback.Hls
             return int.Parse(segmentId, NumberStyles.Integer, UsCulture);
         }
 
-        private string GetSegmentPath(string playlist, string segmentExtension, int index)
+        private string GetSegmentPath(string playlist, string segmentType, string segmentExtension, int index)
         {
             var folder = Path.GetDirectoryName(playlist);
 
-            var filename = Path.GetFileNameWithoutExtension(playlist);
+            var id = string.Equals(segmentType, "video", StringComparison.OrdinalIgnoreCase)
+                ? "0"
+                : "1";
 
-            return Path.Combine(folder, filename + index.ToString("000", UsCulture) + segmentExtension);
+            string filename;
+
+            if (index == 0)
+            {
+                filename = "init-stream" + id + segmentExtension;
+            }
+            else
+            {
+                var number = index.ToString("00000", CultureInfo.InvariantCulture);
+                filename = "chunk-stream" + id + "-" + number + segmentExtension;
+            }
+
+            return Path.Combine(folder, filename);
         }
-        
+
         protected override string GetAudioArguments(StreamState state)
         {
             var codec = state.OutputAudioCodec;
@@ -604,9 +711,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var hasGraphicalSubs = state.SubtitleStream != null && !state.SubtitleStream.IsTextSubtitleStream;
 
-            args+= " " + GetVideoQualityParam(state, H264Encoder, true) + keyFrameArg;
-
-            args += " -r 24 -g 24";
+            args += " " + GetVideoQualityParam(state, H264Encoder, true) + keyFrameArg;
 
             // Add resolution params, if specified
             if (!hasGraphicalSubs)
@@ -632,23 +737,15 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var inputModifier = GetInputModifier(state);
 
-            // If isEncoding is true we're actually starting ffmpeg
-            var startNumberParam = isEncoding ? GetStartNumber(state).ToString(UsCulture) : "0";
-
-            var segmentFilename = Path.GetFileNameWithoutExtension(outputPath) + "%03d" + GetSegmentFileExtension(state);
-
-            var args = string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -copyts {5} -f ssegment -segment_time {6} -segment_list_size {8} -segment_list \"{9}\" {10}",
+            var args = string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -copyts {5} -f dash -use_template 0 -min_seg_duration {6} -y \"{7}\"",
                 inputModifier,
                 GetInputArgument(transcodingJobId, state),
                 threads,
                 GetMapArgs(state),
                 GetVideoArguments(state),
                 GetAudioArguments(state),
-                state.SegmentLength.ToString(UsCulture),
-                startNumberParam,
-                state.HlsListSize.ToString(UsCulture),
-                outputPath,
-                segmentFilename
+                (state.SegmentLength * 1000000).ToString(CultureInfo.InvariantCulture),
+                outputPath
                 ).Trim();
 
             return args;
@@ -661,7 +758,7 @@ namespace MediaBrowser.Api.Playback.Hls
         /// <returns>System.String.</returns>
         protected override string GetSegmentFileExtension(StreamState state)
         {
-            return ".mp4";
+            return ".m4s";
         }
 
         protected override TranscodingJobType TranscodingJobType

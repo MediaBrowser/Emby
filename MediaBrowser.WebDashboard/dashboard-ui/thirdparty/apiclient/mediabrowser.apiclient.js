@@ -10,7 +10,7 @@
      * @param {String} clientName 
      * @param {String} applicationVersion 
      */
-    globalScope.MediaBrowser.ApiClient = function ($, logger, serverAddress, clientName, applicationVersion, deviceName, deviceId, capabilities) {
+    globalScope.MediaBrowser.ApiClient = function (logger, serverAddress, clientName, applicationVersion, deviceName, deviceId) {
 
         if (!serverAddress) {
             throw new Error("Must supply a serverAddress");
@@ -40,16 +40,11 @@
                 serverAddress = val;
 
                 if (changed) {
-                    $(this).trigger('serveraddresschanged');
+                    Events.trigger(this, 'serveraddresschanged');
                 }
             }
 
             return serverAddress;
-        };
-
-        self.apiPrefix = function () {
-
-            return "";
         };
 
         self.serverInfo = function (info) {
@@ -101,13 +96,13 @@
             name = name.split('&').join('-');
             name = name.split('?').join('-');
 
-            var val = $.param({ name: name });
+            var val = AjaxApi.param({ name: name });
             return val.substring(val.indexOf('=') + 1).replace("'", '%27');
         };
 
         function onRequestFail(e) {
 
-            $(self).trigger('requestfail', [
+            Events.trigger(self, 'requestfail', [
             {
                 url: this.url,
                 status: e.status,
@@ -117,7 +112,7 @@
 
         function onRetryRequestFail(request) {
 
-            $(self).trigger('requestfail', [
+            Events.trigger(self, 'requestfail', [
             {
                 url: request.url
             }]);
@@ -153,10 +148,10 @@
 
             if (!self.enableAutomaticNetwork || !self.serverInfo() || self.connectionMode == null) {
                 logger.log('Requesting url without automatic networking: ' + request.url);
-                return $.ajax(request).fail(onRequestFail);
+                return AjaxApi.ajax(request).fail(onRequestFail);
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             self.ajaxWithFailover(request, deferred, true);
             return deferred.promise();
         };
@@ -186,7 +181,7 @@
 
             logger.log("Attempting reconnection to " + url);
 
-            $.ajax({
+            AjaxApi.ajax({
 
                 type: "GET",
                 url: url + "/system/info/public",
@@ -223,7 +218,7 @@
 
         function tryReconnect() {
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             setTimeout(function () {
                 tryReconnectInternal(deferred, self.connectionMode, 0);
             }, 500);
@@ -250,7 +245,7 @@
 
             request.timeout = 15000;
 
-            $.ajax(request).done(function (response) {
+            AjaxApi.ajax(request).done(function (response) {
 
                 deferred.resolve(response, 0);
 
@@ -311,18 +306,18 @@
                 throw new Error("Url name cannot be empty");
             }
 
-            var url = serverAddress;
-
-            url += self.apiPrefix() + "/" + name;
+            var url = serverAddress + "/" + name;
 
             if (params) {
-                url += "?" + $.param(params);
+                url += "?" + AjaxApi.param(params);
             }
 
             return url;
         };
 
         self.enableAutomaticNetworking = function (server, connectionMode) {
+
+            logger.log('Begin enableAutomaticNetworking');
 
             self.serverInfo(server);
             self.connectionMode = connectionMode;
@@ -332,6 +327,7 @@
                 self.serverInfo().LocalAddress :
                 self.serverInfo().RemoteAddress;
 
+            logger.log('Setting server address to ' + url);
             self.serverAddress(url);
         };
 
@@ -341,39 +337,36 @@
 
         self.openWebSocket = function () {
 
-            var url = serverAddress + self.apiPrefix();
+            if (!accessToken) {
+                throw new Error("Cannot open web socket without access token.");
+            }
 
-            url = url.replace('http', 'ws');
+            var url = serverAddress.replace('http', 'ws');
+            url += "?api_key=" + accessToken;
 
             webSocket = new WebSocket(url);
 
             webSocket.onmessage = function (msg) {
 
                 msg = JSON.parse(msg.data);
-                $(self).trigger("websocketmessage", [msg]);
+                Events.trigger(self, 'websocketmessage', [msg]);
             };
 
             webSocket.onopen = function () {
 
                 logger.log('web socket connection opened');
                 setTimeout(function () {
-
-                    self.sendWebSocketMessage("Identity", clientName + "|" + deviceId + "|" + applicationVersion + "|" + deviceName);
-
-                    self.reportCapabilities(capabilities);
-
-                    $(self).trigger("websocketopen");
-
-                }, 500);
+                    Events.trigger(self, 'websocketopen');
+                }, 0);
             };
             webSocket.onerror = function () {
                 setTimeout(function () {
-                    $(self).trigger("websocketerror");
+                    Events.trigger(self, 'websocketerror');
                 }, 0);
             };
             webSocket.onclose = function () {
                 setTimeout(function () {
-                    $(self).trigger("websocketclose");
+                    Events.trigger(self, 'websocketclose');
                 }, 0);
             };
         };
@@ -530,7 +523,7 @@
                 }).done(done);
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
             deferred.resolveWith(null, []);
             return deferred.promise().done(done);
         };
@@ -1646,7 +1639,7 @@
          */
         self.getAvailablePlugins = function (options) {
 
-            options = $.extend({}, options || {});
+            options = options || {};
             options.PackageType = "UserInstalled";
 
             var url = self.getUrl("Packages", options);
@@ -1989,7 +1982,7 @@
                 throw new Error("File must be an image.");
             }
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
 
             var reader = new FileReader();
 
@@ -2051,7 +2044,7 @@
 
             url += "/" + imageType;
 
-            var deferred = $.Deferred();
+            var deferred = DeferredBuilder.Deferred();
 
             var reader = new FileReader();
 
@@ -2469,8 +2462,7 @@
 
             }).done(function (result) {
 
-
-                $(self).trigger('authenticated', [result]);
+                Events.trigger(self, 'authenticated', [result]);
             });
         };
 
@@ -3231,18 +3223,6 @@
                 throw new Error("null options");
             }
 
-            if (self.isWebSocketOpen()) {
-
-                var deferred = $.Deferred();
-
-                var msg = JSON.stringify(options);
-
-                self.sendWebSocketMessage("ReportPlaybackStart", msg);
-
-                deferred.resolveWith(null, []);
-                return deferred.promise();
-            }
-
             var url = self.getUrl("Sessions/Playing");
 
             return self.ajax({
@@ -3266,7 +3246,7 @@
 
             if (self.isWebSocketOpen()) {
 
-                var deferred = $.Deferred();
+                var deferred = DeferredBuilder.Deferred();
 
                 var msg = JSON.stringify(options);
 
@@ -3295,18 +3275,6 @@
 
             if (!options) {
                 throw new Error("null options");
-            }
-
-            if (self.isWebSocketOpen()) {
-
-                var deferred = $.Deferred();
-
-                var msg = JSON.stringify(options);
-
-                self.sendWebSocketMessage("ReportPlaybackStopped", msg);
-
-                deferred.resolveWith(null, []);
-                return deferred.promise();
             }
 
             var url = self.getUrl("Sessions/Playing/Stopped");
