@@ -63,587 +63,582 @@
 
         channelsPromise.done(function (channelsResult) {
 
-            ApiClient.getLiveTvPrograms({
-                UserId: Dashboard.getCurrentUserId(),
-                MaxStartDate: nextDay.toISOString(),
-                MinEndDate: date.toISOString(),
-                channelIds: channelsResult.Items.map(function (c) {
-                    return c.Id;
-                }).join(',')
+			ApiClient.getLiveTvPrograms({
+				UserId: Dashboard.getCurrentUserId(),
+				MaxStartDate: nextDay.toISOString(),
+				MinEndDate: date.toISOString(),
+				channelIds: channelsResult.Items.map(function (c) {
+					return c.Id;
+				}).join(',')
 
-            }).done(function (programsResult) {
+			}).done(function (programsResult) {
 
-                renderGuide(page, date, channelsResult.Items, programsResult.Items);
-                hideLoadingMessage(page);
+					renderGuide(page, date, channelsResult.Items, programsResult.Items);
+					hideLoadingMessage(page);
 
-            });
+				});
 
-            var channelPagingHtml = LibraryBrowser.getPagingHtml(channelQuery, channelsResult.TotalRecordCount, false, [10, 20, 30, 50, 100]);
-            $('.channelPaging', page).html(channelPagingHtml).trigger('create');
+			var channelPagingHtml = LibraryBrowser.getPagingHtml(channelQuery, channelsResult.TotalRecordCount, false, [10, 20, 30, 50, 100]);
+			$('.channelPaging', page).html(channelPagingHtml).trigger('create');
 
-            $('.btnNextPage', page).on('click', function () {
-                channelQuery.StartIndex += channelQuery.Limit;
-                reloadChannels(page);
-            });
+			$('.btnNextPage', page).on('click', function () {
+				channelQuery.StartIndex += channelQuery.Limit;
+				reloadChannels(page);
+			});
 
-            $('.btnPreviousPage', page).on('click', function () {
-                channelQuery.StartIndex -= channelQuery.Limit;
-                reloadChannels(page);
-            });
+			$('.btnPreviousPage', page).on('click', function () {
+				channelQuery.StartIndex -= channelQuery.Limit;
+				reloadChannels(page);
+			});
 
-            $('.selectPageSize', page).on('change', function () {
-                channelQuery.Limit = parseInt(this.value);
-                channelQuery.StartIndex = 0;
-                reloadChannels(page);
-            });
-        });
-    }
+			$('.selectPageSize', page).on('change', function () {
+				channelQuery.Limit = parseInt(this.value);
+				channelQuery.StartIndex = 0;
+				reloadChannels(page);
+			});
+		});
+	}
 
-    function getTimeslotHeadersHtml(date) {
+	function getTimeslotHeadersHtml(date) {
 
-        var html = '';
+		var html = '';
 
-        date = new Date(date.getTime());
-        var dateNumber = date.getDate();
+		date = new Date(date.getTime());
+		var dateNumber = date.getDate();
+		var first = true;
 
-        while (date.getDate() == dateNumber) {
-	        var newDate = new Date();
-	        var width = 0;
-	        var offset = date.getMinutes();
+		while (date.getDate() == dateNumber) {
+			var newDate = new Date();
+			var width = 0;
+			var offset = date.getMinutes();
 
-	        if (offset != 0 && offset != 30) {
-		        if (offset < 30) {
-			        newDate.setTime(date.getTime() + (cellDurationMs * (30 - offset)));
-			        width = 179 - (179 / (30 / offset));
+			if (offset != 0 && offset != 30) {
+				if (offset < 30) {
+					newDate.setTime(date.getTime() + (cellDurationMs * (30 - offset)));
+					width = 179 - (179 / (30 / offset));
+				}else if (offset > 30) {
+					newDate.setTime(date.getTime() + (cellDurationMs * (30 - (offset - 30))));
+					width = 179 - (179 / (30 / (offset - 30)));
+				}
+			}else {
+				// Add 30 mins
+				newDate.setTime(date.getTime() + (cellDurationMs * 30));
+			}
 
-		        }else if (offset > 30) {
-			        newDate.setTime(date.getTime() + (cellDurationMs * (30 - (offset - 30))));
-			        width = 179 - (179 / (30 / (offset - 30)));
-		        }
-	        }else {
-		        // Add 30 mins
-		        newDate.setTime(date.getTime() + (cellDurationMs * 30));
-	        }
+			//stretch first time slot to 30 minutes
+			if (first === true) {
+				width = 179;
+			}
+			first = false;
 
-	        var styleWidth = '';
-	        if (width > 0) {
-		        styleWidth = ' style="width:'+width+'px" ';
-	        }
+			var styleWidth = '';
+			if (width > 0) {
+				styleWidth = ' style="width:'+width+'px" ';
+			}
 
-            html += '<div class="timeslotHeader" '+styleWidth+'>';
-            html += '<div class="timeslotHeaderInner">';
-            html += LiveTvHelpers.getDisplayTime(date);
-            html += '</div>';
-            html += '</div>';
+			html += '<div class="timeslotHeader" '+styleWidth+'>';
+			html += '<div class="timeslotHeaderInner">';
+			html += LiveTvHelpers.getDisplayTime(date);
+			html += '</div>';
+			html += '</div>';
 
-	        date = newDate;
-        }
+			date = newDate;
+		}
 
-        return html;
-    }
+		return html;
+	}
 
-    function findProgramStartingInCell(programs, startIndex, cellStart, cellEnd, cellIndex) {
+	function findProgramStartingInCell(programs, startIndex, cellStart, cellEnd, cellIndex) {
 
-        for (var i = startIndex, length = programs.length; i < length; i++) {
+		for (var i = startIndex, length = programs.length; i < length; i++) {
 
-            var program = programs[i];
+			var program = programs[i];
 
-            if (!program.StartDateLocal) {
-                try {
+			if (!program.StartDateLocal) {
+				try {
 
-                    program.StartDateLocal = parseISO8601Date(program.StartDate, { toLocal: true });
+					program.StartDateLocal = parseISO8601Date(program.StartDate, { toLocal: true });
 
-                } catch (err) {
+				} catch (err) {
 
-                }
+				}
 
-            }
+			}
 
-            if (!program.EndDateLocal) {
-                try {
+			if (!program.EndDateLocal) {
+				try {
 
-                    program.EndDateLocal = parseISO8601Date(program.EndDate, { toLocal: true });
+					program.EndDateLocal = parseISO8601Date(program.EndDate, { toLocal: true });
 
-                } catch (err) {
+				} catch (err) {
 
-                }
+				}
 
-            }
+			}
 
-            var localTime = program.StartDateLocal.getTime();
-            if ((localTime >= cellStart || cellIndex == 0) && localTime < cellEnd && program.EndDateLocal > cellStart) {
+			var localTime = program.StartDateLocal.getTime();
+			if ((localTime >= cellStart || cellIndex == 0) && localTime <= cellEnd && program.EndDateLocal > cellStart) {
 
-                return program;
+				return program;
 
-            }
-        }
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    function getProgramWidth(program) {
+	function getProgramWidth(program) {
 
-        var end = Math.min(gridLocalEndDateMs, program.EndDateLocal.getTime());
-        var start = Math.max(gridLocalStartDateMs, program.StartDateLocal.getTime());
+		var end = Math.min(gridLocalEndDateMs, program.EndDateLocal.getTime());
+		var start = Math.max(gridLocalStartDateMs, program.StartDateLocal.getTime());
 
-        var ms = end - start;
+		var ms = end - start;
 
-        var width = (100 * ms) / cellDurationMs;
+		var width = (ms / cellDurationMs) * 6;//6px is base cell width
 
-        return width;
-    }
+		return width;
+	}
 
-    function getChannelProgramsHtml(page, date, channel, programs) {
+	function getChannelProgramsHtml(page, date, channel, programs) {
 
-        var html = '';
+		var html = '';
 
-        var dateNumber = date.getDate();
+		var dateNumber = date.getDate();
 
-        programs = programs.filter(function (curr) {
-            return curr.ChannelId == channel.Id;
-        });
+		programs = programs.filter(function (curr) {
+			return curr.ChannelId == channel.Id;
+		});
 
-        html += '<div class="channelPrograms">';
+		html += '<div class="channelPrograms">';
 
-        var cellIndex = 0;
+		var cellIndex = 0;
+		var cellEndDate = new Date(date.getTime() + cellDurationMs);
 
-        while (date.getDate() == dateNumber) {
+		while (date.getDate() == dateNumber) {
+			var program = findProgramStartingInCell(programs, 0, date, cellEndDate, cellIndex);
 
-            var cellEndDate = new Date(date.getTime() + cellDurationMs);
+			var cellTagName;
+			var href;
+			var cssClass = "timeslotCellInner";
+			var style;
+			var dataProgramId;
 
-            var program = findProgramStartingInCell(programs, 0, date, cellEndDate, cellIndex);
+			if (program) {
+				cellEndDate = program.EndDateLocal;
 
-            html += '<div class="timeslotCell '+cellIndex+'">';
+				var width = (cellIndex == 0)?179:getProgramWidth(program);
+				style = ' style="width:' + width + 'px;"';
 
-            var cellTagName;
-            var href;
-            var cssClass = "timeslotCellInner";
-            var style;
-            var dataProgramId;
+				html += '<div class="timeslotCell"' + style + '>';
 
-            if (program) {
-                if (program.IsKids) {
-                    cssClass += " childProgramInfo";
-                } else if (program.IsSports) {
-                    cssClass += " sportsProgramInfo";
-                } else if (program.IsNews) {
-                    cssClass += " newsProgramInfo";
-                } else if (program.IsMovie) {
-                    cssClass += " movieProgramInfo";
-                }
-                else {
-                    cssClass += " plainProgramInfo";
-                }
+				if (program.IsKids) {
+					cssClass += " childProgramInfo";
+				} else if (program.IsSports) {
+					cssClass += " sportsProgramInfo";
+				} else if (program.IsNews) {
+					cssClass += " newsProgramInfo";
+				} else if (program.IsMovie) {
+					cssClass += " movieProgramInfo";
+				}
+				else {
+					cssClass += " plainProgramInfo";
+				}
 
-                cssClass += " timeslotCellInnerWithProgram";
+				cssClass += " timeslotCellInnerWithProgram";
 
-                cellTagName = "a";
-                href = ' href="livetvprogram.html?id=' + program.Id + '"';
+				cellTagName = "a";
+				href = ' href="livetvprogram.html?id=' + program.Id + '"';
 
-                var width = getProgramWidth(program);
+				dataProgramId = ' data-programid="' + program.Id + '"';
 
-                if (width && width != 100) {
-                    style = ' style="width:' + width + '%;"';
-                } else {
-                    style = '';
-                }
-                dataProgramId = ' data-programid="' + program.Id + '"';
-            } else {
-                cellTagName = "div";
-                href = '';
-                style = '';
-                dataProgramId = '';
-            }
+				html += '<' + cellTagName + dataProgramId + ' class="' + cssClass + '"' + href + '>';
 
-            html += '<' + cellTagName + dataProgramId + ' class="' + cssClass + '"' + href + style + '>';
+				html += '<div class="guideProgramName">';
+				html += program.Name;
 
-            if (program) {
+				html += '</div>';
 
-                html += '<div class="guideProgramName">';
-                html += program.Name;
+				html += '<div class="guideProgramTime">';
 
-                html += '</div>';
+				if (program.IsLive) {
+					html += '<span class="liveTvProgram">'+Globalize.translate('LabelLiveProgram')+'&nbsp;&nbsp;</span>';
+				}
+				else if (program.IsPremiere) {
+					html += '<span class="premiereTvProgram">'+Globalize.translate('LabelPremiereProgram')+'&nbsp;&nbsp;</span>';
+				}
+				else if (program.IsSeries && !program.IsRepeat) {
+					html += '<span class="newTvProgram">'+Globalize.translate('LabelNewProgram')+'&nbsp;&nbsp;</span>';
+				}
 
-                html += '<div class="guideProgramTime">';
+				html += LiveTvHelpers.getDisplayTime(program.StartDateLocal);
+				html += ' - ';
+				html += LiveTvHelpers.getDisplayTime(program.EndDateLocal);
 
-                if (program.IsLive) {
-                    html += '<span class="liveTvProgram">'+Globalize.translate('LabelLiveProgram')+'&nbsp;&nbsp;</span>';
-                }
-                else if (program.IsPremiere) {
-                    html += '<span class="premiereTvProgram">'+Globalize.translate('LabelPremiereProgram')+'&nbsp;&nbsp;</span>';
-                }
-                else if (program.IsSeries && !program.IsRepeat) {
-                    html += '<span class="newTvProgram">'+Globalize.translate('LabelNewProgram')+'&nbsp;&nbsp;</span>';
-                }
+				if (program.SeriesTimerId) {
+					html += '<div class="timerCircle seriesTimerCircle"></div>';
+					html += '<div class="timerCircle seriesTimerCircle"></div>';
+					html += '<div class="timerCircle seriesTimerCircle"></div>';
+				}
+				else if (program.TimerId) {
 
-                html += LiveTvHelpers.getDisplayTime(program.StartDateLocal);
-                html += ' - ';
-                html += LiveTvHelpers.getDisplayTime(program.EndDateLocal);
+					html += '<div class="timerCircle"></div>';
+				}
 
-                if (program.SeriesTimerId) {
-                    html += '<div class="timerCircle seriesTimerCircle"></div>';
-                    html += '<div class="timerCircle seriesTimerCircle"></div>';
-                    html += '<div class="timerCircle seriesTimerCircle"></div>';
-                }
-                else if (program.TimerId) {
+				html += '</div>';
 
-                    html += '<div class="timerCircle"></div>';
-                }
+				html += '</' + cellTagName + '>';
+				html += '</div>';
+			} else {
+				cellEndDate = new Date(date.getTime() + cellDurationMs);
 
-                html += '</div>';
+				html += '<div class="timeslotCell"></div>';
+			}
 
-            } else {
-                html += '&nbsp;';
-            }
+			date = cellEndDate;
+			cellIndex++;
+		}
+		html += '</div>';
 
-            html += '</' + cellTagName + '>';
-            html += '</div>';
+		return html;
+	}
 
-            date = cellEndDate;
-            cellIndex++;
-        }
-        html += '</div>';
+	function renderPrograms(page, date, channels, programs) {
 
-        return html;
-    }
-
-    function renderPrograms(page, date, channels, programs) {
-
-        var html = [];
+		var html = [];
 
         for (var i = 0, length = channels.length; i < length; i++) {
 
-            html.push(getChannelProgramsHtml(page, date, channels[i], programs));
-        }
+			html.push(getChannelProgramsHtml(page, date, channels[i], programs));
+		}
 
-        $('.programGrid', page).html(html.join('')).scrollTop(0).scrollLeft(0)
-            .createGuideHoverMenu('.timeslotCellInnerWithProgram');
-    }
+		$('.programGrid', page).html(html.join('')).scrollTop(0).scrollLeft(0)
+			.createGuideHoverMenu('.timeslotCellInnerWithProgram');
+	}
 
-    function renderChannelHeaders(page, channels) {
+	function renderChannelHeaders(page, channels) {
 
-        var html = '';
+		var html = '';
 
-        for (var i = 0, length = channels.length; i < length; i++) {
+		for (var i = 0, length = channels.length; i < length; i++) {
 
-            var channel = channels[i];
+			var channel = channels[i];
 
-            html += '<div class="channelHeaderCellContainer">';
+			html += '<div class="channelHeaderCellContainer">';
 
-            html += '<div class="channelHeaderCell">';
-            html += '<a class="channelHeaderCellInner" href="livetvchannel.html?id=' + channel.Id + '">';
+			html += '<div class="channelHeaderCell">';
+			html += '<a class="channelHeaderCellInner" href="livetvchannel.html?id=' + channel.Id + '">';
 
-            html += '<div class="guideChannelInfo">' + channel.Name + '<br/>' + channel.Number + '</div>';
+			html += '<div class="guideChannelInfo">' + channel.Name + '<br/>' + channel.Number + '</div>';
 
-            if (channel.ImageTags.Primary) {
+			if (channel.ImageTags.Primary) {
 
-                var url = ApiClient.getScaledImageUrl(channel.Id, {
-                    maxHeight: 35,
-                    maxWidth: 60,
-                    tag: channel.ImageTags.Primary,
-                    type: "Primary"
-                });
+				var url = ApiClient.getScaledImageUrl(channel.Id, {
+					maxHeight: 35,
+					maxWidth: 60,
+					tag: channel.ImageTags.Primary,
+					type: "Primary"
+				});
 
-                html += '<img class="guideChannelImage" src="' + url + '" />';
-            }
+				html += '<img class="guideChannelImage" src="' + url + '" />';
+			}
 
-            html += '</a>';
-            html += '</div>';
+			html += '</a>';
+			html += '</div>';
 
-            html += '</div>';
-        }
+			html += '</div>';
+		}
 
-        $('.channelList', page).html(html);
-    }
+		$('.channelList', page).html(html);
+	}
 
-    function renderGuide(page, date, channels, programs) {
+	function renderGuide(page, date, channels, programs) {
 
-        renderChannelHeaders(page, channels);
-        $('.timeslotHeaders', page).html(getTimeslotHeadersHtml(date));
-        renderPrograms(page, date, channels, programs);
-    }
+		renderChannelHeaders(page, channels);
+		$('.timeslotHeaders', page).html(getTimeslotHeadersHtml(date));
+		renderPrograms(page, date, channels, programs);
+	}
 
-    function onProgramGridScroll(page, elem) {
+	function onProgramGridScroll(page, elem) {
 
-        var grid = $(elem);
+		var grid = $(elem);
 
-        grid.prev().scrollTop(grid.scrollTop());
-        $('.timeslotHeaders', page).scrollLeft(grid.scrollLeft());
-    }
+		grid.prev().scrollTop(grid.scrollTop());
+		$('.timeslotHeaders', page).scrollLeft(grid.scrollLeft());
+	}
 
-    function changeDate(page, date, first_load) {
-	    var todayCompare = new Date(today.setSeconds(0,0));
-	    var dateCompare = new Date(date.setSeconds(0,0));
+	function changeDate(page, date, first_load) {
+		var todayCompare = new Date(today.setSeconds(0,0));
+		var dateCompare = new Date(date.setSeconds(0,0));
 
-	    if (dateCompare.getTime() == todayCompare.getTime() || first_load === true) {
-		    currentDate = date;
-	    }else {
-            currentDate = normalizeDateToTimeslot(date);
-	    }
+		if (dateCompare.getTime() == todayCompare.getTime() || first_load === true) {
+			currentDate = date;
+		}else {
+			currentDate = normalizeDateToTimeslot(date);
+		}
 
-        gridLocalStartDateMs = currentDate.getTime();
+		gridLocalStartDateMs = currentDate.getTime();
 
-        var clone = new Date(gridLocalStartDateMs);
-        clone.setHours(0, 0, 0, 0);
-        clone.setDate(clone.getDate() + 1);
-        gridLocalEndDateMs = clone.getTime() - 1;
+		var clone = new Date(gridLocalStartDateMs);
+		clone.setHours(0, 0, 0, 0);
+		clone.setDate(clone.getDate() + 1);
+		gridLocalEndDateMs = clone.getTime() - 1;
 
-        reloadGuide(page);
-    }
+		reloadGuide(page);
+	}
 
-    function setDateRange(page, guideInfo) {
-        var start = parseISO8601Date(guideInfo.StartDate, { toLocal: true });
-        var end = parseISO8601Date(guideInfo.EndDate, { toLocal: true });
+	function setDateRange(page, guideInfo) {
+		var start = parseISO8601Date(guideInfo.StartDate, { toLocal: true });
+		var end = parseISO8601Date(guideInfo.EndDate, { toLocal: true });
 
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
+		start.setHours(0, 0, 0, 0);
+		end.setHours(0, 0, 0, 0);
 
-        if (start.getTime() >= end.getTime()) {
-            end.setDate(start.getDate() + 1);
-        }
+		if (start.getTime() >= end.getTime()) {
+			end.setDate(start.getDate() + 1);
+		}
 
-        start = new Date(Math.max(today, start));
+		start = new Date(Math.max(today, start));
 
-        var html = '';
+		var html = '';
 
-        while (start <= end) {
+		while (start <= end) {
 
-            html += '<option value="' + start.getTime() + '">' + LibraryBrowser.getFutureDateText(start) + '</option>';
+			html += '<option value="' + start.getTime() + '">' + LibraryBrowser.getFutureDateText(start) + '</option>';
 
-            start.setDate(start.getDate() + 1);
-            start.setHours(0, 0, 0, 0);
-        }
+			start.setDate(start.getDate() + 1);
+			start.setHours(0, 0, 0, 0);
+		}
 
-        var elem = $('#selectDate', page).html(html).selectmenu('refresh');
+		var elem = $('#selectDate', page).html(html).selectmenu('refresh');
 
-        if (currentDate) {
-            elem.val(currentDate.getTime()).selectmenu('refresh');
-        }
+		if (currentDate) {
+			elem.val(currentDate.getTime()).selectmenu('refresh');
+		}
 
-        changeDate(page, new Date(), true);
-    }
+		changeDate(page, new Date(), true);
+	}
 
-    $(document).on('pageinit', "#liveTvGuidePage", function () {
+	$(document).on('pageinit', "#liveTvGuidePage", function () {
 
-        var page = this;
+		var page = this;
 
-        $('.programGrid', page).on('scroll', function () {
+		$('.programGrid', page).on('scroll', function () {
 
-            onProgramGridScroll(page, this);
-        });
+			onProgramGridScroll(page, this);
+		});
 
-        $('#selectDate', page).on('change', function () {
+		$('#selectDate', page).on('change', function () {
 
-            var date = new Date();
-            date.setTime(parseInt(this.value));
+			var date = new Date();
+			date.setTime(parseInt(this.value));
 
-            changeDate(page, date, false);
+			changeDate(page, date, false);
 
-        });
+		});
 
-    }).on('pagebeforeshow', "#liveTvGuidePage", function () {
+	}).on('pagebeforeshow', "#liveTvGuidePage", function () {
 
-        var page = this;
+			var page = this;
 
-        ApiClient.getLiveTvGuideInfo().done(function (guideInfo) {
+			ApiClient.getLiveTvGuideInfo().done(function (guideInfo) {
 
-            setDateRange(page, guideInfo);
-        });
-    });
+				setDateRange(page, guideInfo);
+			});
+		});
 
 })(jQuery, document);
 
 (function ($, document, window) {
 
-    var showOverlayTimeout;
-    var hideOverlayTimeout;
-    var currentPosterItem;
+	var showOverlayTimeout;
+	var hideOverlayTimeout;
+	var currentPosterItem;
 
-    function onOverlayMouseOver() {
+	function onOverlayMouseOver() {
 
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
-    }
+		if (hideOverlayTimeout) {
+			clearTimeout(hideOverlayTimeout);
+			hideOverlayTimeout = null;
+		}
+	}
 
-    function onOverlayMouseOut() {
+	function onOverlayMouseOut() {
 
-        startHideOverlayTimer();
-    }
+		startHideOverlayTimer();
+	}
 
-    function getOverlayHtml(item) {
+	function getOverlayHtml(item) {
 
-        var html = '';
+		var html = '';
 
-        html += '<div class="itemOverlayContent">';
+		html += '<div class="itemOverlayContent">';
 
-        if (item.EpisodeTitle) {
-            html += '<p>';
-            html += item.EpisodeTitle;
-            html += '</p>';
-        }
+		if (item.EpisodeTitle) {
+			html += '<p>';
+			html += item.EpisodeTitle;
+			html += '</p>';
+		}
 
-        html += '<p class="itemMiscInfo miscTvProgramInfo"></p>';
+		html += '<p class="itemMiscInfo miscTvProgramInfo"></p>';
 
-        html += '<p style="margin: 1.25em 0;">';
-        html += '<span class="itemCommunityRating">';
-        html += LibraryBrowser.getRatingHtml(item);
-        html += '</span>';
-        html += '<span class="userDataIcons">';
-        html += LibraryBrowser.getUserDataIconsHtml(item);
-        html += '</span>';
-        html += '</p>';
+		html += '<p style="margin: 1.25em 0;">';
+		html += '<span class="itemCommunityRating">';
+		html += LibraryBrowser.getRatingHtml(item);
+		html += '</span>';
+		html += '<span class="userDataIcons">';
+		html += LibraryBrowser.getUserDataIconsHtml(item);
+		html += '</span>';
+		html += '</p>';
 
-        html += '<p class="itemGenres"></p>';
+		html += '<p class="itemGenres"></p>';
 
-        html += '<p class="itemOverlayHtml">';
-        html += (item.Overview || '');
-        html += '</p>';
+		html += '<p class="itemOverlayHtml">';
+		html += (item.Overview || '');
+		html += '</p>';
 
-        html += '</div>';
+		html += '</div>';
 
-        return html;
-    }
+		return html;
+	}
 
-    function showOverlay(elem, item) {
+	function showOverlay(elem, item) {
 
-        $('.itemFlyout').popup('close').remove();
+		$('.itemFlyout').popup('close').remove();
 
-        var html = '<div data-role="popup" class="itemFlyout" data-theme="b" data-arrow="true" data-history="false">';
+		var html = '<div data-role="popup" class="itemFlyout" data-theme="b" data-arrow="true" data-history="false">';
 
-        html += '<div class="ui-bar-b" style="text-align:center;">';
-        html += '<h3 style="margin: .5em 0;padding:0 1em;font-weight:normal;">' + item.Name + '</h3>';
-        html += '</div>';
+		html += '<div class="ui-bar-b" style="text-align:center;">';
+		html += '<h3 style="margin: .5em 0;padding:0 1em;font-weight:normal;">' + item.Name + '</h3>';
+		html += '</div>';
 
-        html += '<div style="padding: 0 1em;">';
-        html += getOverlayHtml(item);
-        html += '</div>';
+		html += '<div style="padding: 0 1em;">';
+		html += getOverlayHtml(item);
+		html += '</div>';
 
-        html += '</div>';
+		html += '</div>';
 
-        $('.itemFlyout').popup('close').popup('destroy').remove();
+		$('.itemFlyout').popup('close').popup('destroy').remove();
 
-        $(document.body).append(html);
+		$(document.body).append(html);
 
-        var popup = $('.itemFlyout').on('mouseenter', onOverlayMouseOver).on('mouseleave', onOverlayMouseOut).popup({
+		var popup = $('.itemFlyout').on('mouseenter', onOverlayMouseOver).on('mouseleave', onOverlayMouseOut).popup({
 
-            positionTo: elem
+			positionTo: elem
 
-        }).trigger('create').popup("open").on("popupafterclose", function () {
+		}).trigger('create').popup("open").on("popupafterclose", function () {
 
-            $(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
-        });
+				$(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
+			});
 
-        LibraryBrowser.renderGenres($('.itemGenres', popup), {
-            Type: item.type,
-            Genres: item.Genres.splice(0, 3)
-        }, 'livetv');
-        LiveTvHelpers.renderMiscProgramInfo($('.miscTvProgramInfo', popup), item);
+		LibraryBrowser.renderGenres($('.itemGenres', popup), {
+			Type: item.type,
+			Genres: item.Genres.splice(0, 3)
+		}, 'livetv');
+		LiveTvHelpers.renderMiscProgramInfo($('.miscTvProgramInfo', popup), item);
 
-        popup.parents().prev('.ui-popup-screen').remove();
-        currentPosterItem = elem;
-    }
+		popup.parents().prev('.ui-popup-screen').remove();
+		currentPosterItem = elem;
+	}
 
-    function onProgramClicked() {
+	function onProgramClicked() {
 
-        if (showOverlayTimeout) {
-            clearTimeout(showOverlayTimeout);
-            showOverlayTimeout = null;
-        }
+		if (showOverlayTimeout) {
+			clearTimeout(showOverlayTimeout);
+			showOverlayTimeout = null;
+		}
 
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
+		if (hideOverlayTimeout) {
+			clearTimeout(hideOverlayTimeout);
+			hideOverlayTimeout = null;
+		}
 
-        hideOverlay();
-    }
+		hideOverlay();
+	}
 
-    function hideOverlay() {
+	function hideOverlay() {
 
-        $('.itemFlyout').popup('close').remove();
+		$('.itemFlyout').popup('close').remove();
 
-        if (currentPosterItem) {
+		if (currentPosterItem) {
 
-            $(currentPosterItem).off('click.overlay');
-            currentPosterItem = null;
-        }
-    }
+			$(currentPosterItem).off('click.overlay');
+			currentPosterItem = null;
+		}
+	}
 
-    function startHideOverlayTimer() {
+	function startHideOverlayTimer() {
 
-        if (hideOverlayTimeout) {
-            clearTimeout(hideOverlayTimeout);
-            hideOverlayTimeout = null;
-        }
+		if (hideOverlayTimeout) {
+			clearTimeout(hideOverlayTimeout);
+			hideOverlayTimeout = null;
+		}
 
-        hideOverlayTimeout = setTimeout(hideOverlay, 200);
-    }
+		hideOverlayTimeout = setTimeout(hideOverlay, 200);
+	}
 
-    function onHoverOut() {
+	function onHoverOut() {
 
-        if (showOverlayTimeout) {
-            clearTimeout(showOverlayTimeout);
-            showOverlayTimeout = null;
-        }
+		if (showOverlayTimeout) {
+			clearTimeout(showOverlayTimeout);
+			showOverlayTimeout = null;
+		}
 
-        startHideOverlayTimer();
-    }
+		startHideOverlayTimer();
+	}
 
-    $.fn.createGuideHoverMenu = function (childSelector) {
+	$.fn.createGuideHoverMenu = function (childSelector) {
 
-        function onShowTimerExpired(elem) {
+		function onShowTimerExpired(elem) {
 
-            var id = elem.getAttribute('data-programid');
+			var id = elem.getAttribute('data-programid');
 
-            ApiClient.getLiveTvProgram(id, Dashboard.getCurrentUserId()).done(function (item) {
+			ApiClient.getLiveTvProgram(id, Dashboard.getCurrentUserId()).done(function (item) {
 
-                showOverlay(elem, item);
+				showOverlay(elem, item);
 
-            });
-        }
+			});
+		}
 
-        function onHoverIn() {
+		function onHoverIn() {
 
-            if (showOverlayTimeout) {
-                clearTimeout(showOverlayTimeout);
-                showOverlayTimeout = null;
-            }
+			if (showOverlayTimeout) {
+				clearTimeout(showOverlayTimeout);
+				showOverlayTimeout = null;
+			}
 
-            if (hideOverlayTimeout) {
-                clearTimeout(hideOverlayTimeout);
-                hideOverlayTimeout = null;
-            }
+			if (hideOverlayTimeout) {
+				clearTimeout(hideOverlayTimeout);
+				hideOverlayTimeout = null;
+			}
 
-            var elem = this;
+			var elem = this;
 
-            if (currentPosterItem) {
-                if (currentPosterItem && currentPosterItem == elem) {
-                    return;
-                } else {
-                    hideOverlay();
-                }
-            }
+			if (currentPosterItem) {
+				if (currentPosterItem && currentPosterItem == elem) {
+					return;
+				} else {
+					hideOverlay();
+				}
+			}
 
-            showOverlayTimeout = setTimeout(function () {
+			showOverlayTimeout = setTimeout(function () {
 
-                onShowTimerExpired(elem);
+				onShowTimerExpired(elem);
 
-            }, 1000);
-        }
+			}, 1000);
+		}
 
-        // https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/
+		// https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/
 
-        if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
-            /* browser with either Touch Events of Pointer Events
-               running on touch-capable device */
-            return this;
-        }
+		if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
+			/* browser with either Touch Events of Pointer Events
+			 running on touch-capable device */
+			return this;
+		}
 
-        return this.on('mouseenter', childSelector, onHoverIn)
-            .on('mouseleave', childSelector, onHoverOut)
-            .on('click', childSelector, onProgramClicked);
-    };
+		return this.on('mouseenter', childSelector, onHoverIn)
+			.on('mouseleave', childSelector, onHoverOut)
+			.on('click', childSelector, onProgramClicked);
+	};
 
 })(jQuery, document, window);

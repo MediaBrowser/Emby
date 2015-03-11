@@ -202,7 +202,8 @@
     overflow-y: hidden;
     overflow-x: scroll;
     float: left;
-    border-bottom: 4px solid #3B3B3B;
+	/*border-bottom: 4px solid #3B3B3B;*/
+	padding-bottom: 4px;
 }
 
 .programGrid {
