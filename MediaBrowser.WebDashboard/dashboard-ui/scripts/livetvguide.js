@@ -219,12 +219,18 @@
 		return nextProgram;
 	}
 
-	function getProgramWidth(program) {
+	function getProgramWidth(program, cellIndex) {
 
 		var end = Math.min(gridLocalEndDateMs, program.EndDateLocal.getTime());
 		var start = Math.max(gridLocalStartDateMs, program.StartDateLocal.getTime());
 
 		var ms = end - start;
+
+		if (cellIndex == 0 && currentDate.getMinutes() > 0) {
+			//adjust for stretching the first cell to 179px
+			var adjustment = (currentDate.getMinutes() < 30)?30-currentDate.getMinutes():currentDate.getMinutes()-30;
+			ms += adjustment * cellDurationMs;
+		}
 
 		var width = (ms / cellDurationMs) * 6;//6px is base cell width
 
@@ -258,7 +264,7 @@
 			if (program) {
 				cellEndDate = program.EndDateLocal;
 
-				var width = (cellIndex == 0)?179:getProgramWidth(program);
+				var width = getProgramWidth(program, cellIndex);
 				style = ' style="width:' + width + 'px;"';
 
 				html += '<div class="timeslotCell"' + style + '>';
@@ -325,7 +331,7 @@
 
 				cellEndDate = program.EndDateLocal;
 
-				var width = getProgramWidth(program);
+				var width = getProgramWidth(program, cellIndex);
 				style = ' style="width:' + width + 'px;"';
 
 				html += '<div class="timeslotCell"' + style + '>';
