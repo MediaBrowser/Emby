@@ -18,6 +18,8 @@
             return '<option value="' + s.Name + '">' + s.Name + '</option>';
         });
 
+        $('#chkRetrieveMovieInfo', page).checked(config.RetrieveMovieInfo).checkboxradio("refresh");
+
         Dashboard.hideLoadingMsg();
     }
 
@@ -51,6 +53,7 @@
 
 
                 config.GuideDays = $('#selectGuideDays', form).val() || null;
+                config.RetrieveMovieInfo = $('#chkRetrieveMovieInfo', form).checked();
 
                 ApiClient.updateNamedConfiguration("livetv", config).done(Dashboard.processServerConfigurationUpdateResult);
             });

@@ -32,8 +32,8 @@
             userId: Dashboard.getCurrentUserId(),
             IsAiring: false,
             HasAired: false,
-            limit: 18
-
+            limit: 18,
+            IsMovie: false
         }).done(function (result) {
 
             var html = LibraryBrowser.getPosterViewHtml({
@@ -49,6 +49,28 @@
             });
 
             $('.upcomingProgramItems', page).html(html).lazyChildren();
+        });
+
+        ApiClient.getLiveTvRecommendedPrograms({
+
+            userId: Dashboard.getCurrentUserId(),
+            IsAiring: false,
+            HasAired: false,
+            limit: 18,
+            IsMovie: true
+        }).done(function (result) {
+
+            var html = LibraryBrowser.getPosterViewHtml({
+                items: result.Items,
+                shape: "portrait",
+                showTitle: true,
+                showParentTitle: true,
+                overlayText: false,
+                coverImage: true,
+                lazy: true
+            });
+
+            $('.upcomingTvMovieItems', page).html(html).lazyChildren();
         });
     }
 

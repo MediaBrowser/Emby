@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.LiveTv;
 
 namespace MediaBrowser.Providers.Omdb
 {
@@ -106,6 +107,13 @@ namespace MediaBrowser.Providers.Omdb
                         return true;
                     }
                 }
+            }
+
+            // Supports images for tv movies
+            var tvProgram = item as LiveTvProgram;
+            if (tvProgram != null && tvProgram.IsMovie)
+            {
+                return true;
             }
 
             return item is Movie;

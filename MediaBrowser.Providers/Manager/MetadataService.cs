@@ -1,4 +1,9 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -6,11 +11,6 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Providers.Manager
 {
@@ -121,9 +121,7 @@ namespace MediaBrowser.Providers.Manager
             // Next run metadata providers
             if (refreshOptions.MetadataRefreshMode != MetadataRefreshMode.None)
             {
-                var providers = GetProviders(item, refreshResult, refreshOptions)
-                    .ToList();
-
+                var providers = GetProviders(item, refreshResult, refreshOptions).ToList();
                 if (providers.Count > 0 || !refreshResult.DateLastMetadataRefresh.HasValue)
                 {
                     if (item.BeforeMetadataRefresh())
@@ -328,7 +326,7 @@ namespace MediaBrowser.Providers.Manager
             return item.UpdateToRepository(reason, cancellationToken);
         }
 
-        public bool CanRefresh(IHasMetadata item)
+        public virtual bool CanRefresh(IHasMetadata item)
         {
             return item is TItemType;
         }
