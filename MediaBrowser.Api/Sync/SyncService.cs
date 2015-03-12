@@ -234,6 +234,10 @@ namespace MediaBrowser.Api.Sync
                 result.Targets = result.Targets
                     .Where(i => string.Equals(i.Id, request.TargetId, StringComparison.OrdinalIgnoreCase))
                     .ToList();
+
+                result.QualityOptions = _syncManager
+                    .GetQualityOptions(request.TargetId)
+                    .ToList();
             }
 
             if (request.Category.HasValue)
@@ -263,30 +267,6 @@ namespace MediaBrowser.Api.Sync
 
                 result.Options = SyncHelper.GetSyncOptions(dtos);
             }
-
-            result.QualityOptions = new List<SyncQualityOption>
-            {
-                new SyncQualityOption
-                {
-                    Name = SyncQuality.Original.ToString(),
-                    Id = SyncQuality.Original.ToString()
-                },
-                new SyncQualityOption
-                {
-                    Name = SyncQuality.High.ToString(),
-                    Id = SyncQuality.High.ToString()
-                },
-                new SyncQualityOption
-                {
-                    Name = SyncQuality.Medium.ToString(),
-                    Id = SyncQuality.Medium.ToString()
-                },
-                new SyncQualityOption
-                {
-                    Name = SyncQuality.Low.ToString(),
-                    Id = SyncQuality.Low.ToString()
-                }
-            };
 
             return ToOptimizedResult(result);
         }

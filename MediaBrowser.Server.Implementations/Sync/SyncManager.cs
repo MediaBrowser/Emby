@@ -92,7 +92,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private readonly ConcurrentDictionary<string, ISyncDataProvider> _dataProviders =
             new ConcurrentDictionary<string, ISyncDataProvider>(StringComparer.OrdinalIgnoreCase);
- 
+
         public ISyncDataProvider GetDataProvider(IServerSyncProvider provider, SyncTarget target)
         {
             return _dataProviders.GetOrAdd(target.Id, key => new TargetDataProvider(provider, target, _appHost.SystemId, _logger, _json, _fileSystem, _config.CommonApplicationPaths));
@@ -150,13 +150,9 @@ namespace MediaBrowser.Server.Implementations.Sync
                 SyncNewContent = request.SyncNewContent,
                 ItemCount = items.Count,
                 Category = request.Category,
-                ParentId = request.ParentId
+                ParentId = request.ParentId,
+                Quality = request.Quality
             };
-
-            if (!string.IsNullOrWhiteSpace(request.Quality))
-            {
-                job.Quality = (SyncQuality)Enum.Parse(typeof(SyncQuality), request.Quality, true);
-            }
 
             if (!request.Category.HasValue && request.ItemIds != null)
             {
@@ -563,34 +559,6 @@ namespace MediaBrowser.Server.Implementations.Sync
         private string GetDefaultName(BaseItem item)
         {
             return item.Name;
-        }
-
-        public DeviceProfile GetDeviceProfile(string targetId)
-        {
-            foreach (var provider in _providers)
-            {
-                foreach (var target in GetSyncTargets(provider))
-                {
-                    if (string.Equals(target.Id, targetId, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return GetDeviceProfile(provider, target);
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public DeviceProfile GetDeviceProfile(ISyncProvider provider, SyncTarget target)
-        {
-            var hasProfile = provider as IHasSyncProfile;
-
-            if (hasProfile != null)
-            {
-                return hasProfile.GetDeviceProfile(target);
-            }
-
-            return new CloudSyncProfile(true, false);
         }
 
         public async Task ReportSyncJobItemTransferred(string id)
@@ -1004,9 +972,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             return _repo.GetLibraryItemIds(query);
         }
 
-        public AudioOptions GetAudioOptions(SyncJobItem jobItem)
+        public AudioOptions GetAudioOptions(SyncJobItem jobItem, SyncJob job)
         {
-            var profile = GetDeviceProfile(jobItem.TargetId);
+            var profile = GetDeviceProfile(jobItem.TargetId, null);
 
             return new AudioOptions
             {
@@ -1016,25 +984,112 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public VideoOptions GetVideoOptions(SyncJobItem jobItem, SyncJob job)
         {
-            var profile = GetDeviceProfile(jobItem.TargetId);
+            var profile = GetDeviceProfile(jobItem.TargetId, job.Quality);
+
+            return new VideoOptions
+            {
+                Profile = profile
+            };
+        }
+
+        public DeviceProfile GetDeviceProfile(string targetId, string quality)
+        {
+            foreach (var provider in _providers)
+            {
+                foreach (var target in GetSyncTargets(provider))
+                {
+                    if (string.Equals(target.Id, targetId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return GetDeviceProfile(provider, target, quality);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private DeviceProfile GetDeviceProfile(ISyncProvider provider, SyncTarget target, string quality)
+        {
+            var hasProfile = provider as IHasSyncQuality;
+
+            if (hasProfile != null)
+            {
+                return hasProfile.GetDeviceProfile(target, quality);
+            }
+
+            return GetDefaultProfile(quality);
+        }
+
+        private DeviceProfile GetDefaultProfile(string quality)
+        {
+            var profile = new CloudSyncProfile(true, false);
             var maxBitrate = profile.MaxStaticBitrate;
 
             if (maxBitrate.HasValue)
             {
-                if (job.Quality == SyncQuality.Medium)
+                if (string.Equals(quality, "medium", StringComparison.OrdinalIgnoreCase))
                 {
                     maxBitrate = Convert.ToInt32(maxBitrate.Value * .75);
                 }
-                else if (job.Quality == SyncQuality.Low)
+                else if (string.Equals(quality, "low", StringComparison.OrdinalIgnoreCase))
                 {
                     maxBitrate = Convert.ToInt32(maxBitrate.Value * .5);
                 }
+
+                profile.MaxStaticBitrate = maxBitrate;
             }
 
-            return new VideoOptions
+            return profile;
+        }
+
+        public IEnumerable<SyncQualityOption> GetQualityOptions(string targetId)
+        {
+            foreach (var provider in _providers)
             {
-                Profile = profile,
-                MaxBitrate = maxBitrate
+                foreach (var target in GetSyncTargets(provider))
+                {
+                    if (string.Equals(target.Id, targetId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return GetQualityOptions(provider, target);
+                    }
+                }
+            }
+
+            return new List<SyncQualityOption>();
+        }
+
+        private IEnumerable<SyncQualityOption> GetQualityOptions(ISyncProvider provider, SyncTarget target)
+        {
+            var hasQuality = provider as IHasSyncQuality;
+            if (hasQuality != null)
+            {
+                return hasQuality.GetQualityOptions(target);
+            }
+
+            // Default options for providers that don't override
+            return new List<SyncQualityOption>
+            {
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Original.ToString(),
+                    Id = SyncQuality.Original.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.High.ToString(),
+                    Id = SyncQuality.High.ToString(),
+                    IsDefault = true
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Medium.ToString(),
+                    Id = SyncQuality.Medium.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Low.ToString(),
+                    Id = SyncQuality.Low.ToString()
+                }
             };
         }
     }

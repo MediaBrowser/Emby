@@ -3,12 +3,13 @@ using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.Devices;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Sync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MediaBrowser.Server.Implementations.Sync
 {
-    public class AppSyncProvider : ISyncProvider, IHasUniqueTargetIds, IHasSyncProfile
+    public class AppSyncProvider : ISyncProvider, IHasUniqueTargetIds, IHasSyncQuality
     {
         private readonly IDeviceManager _deviceManager;
 
@@ -31,11 +32,28 @@ namespace MediaBrowser.Server.Implementations.Sync
             });
         }
 
-        public DeviceProfile GetDeviceProfile(SyncTarget target)
+        public DeviceProfile GetDeviceProfile(SyncTarget target, string quality)
         {
             var caps = _deviceManager.GetCapabilities(target.Id);
 
-            return caps == null || caps.DeviceProfile == null ? new DeviceProfile() : caps.DeviceProfile;
+            var profile = caps == null || caps.DeviceProfile == null ? new DeviceProfile() : caps.DeviceProfile;
+            var maxBitrate = profile.MaxStaticBitrate;
+
+            if (maxBitrate.HasValue)
+            {
+                if (string.Equals(quality, "medium", StringComparison.OrdinalIgnoreCase))
+                {
+                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .75);
+                }
+                else if (string.Equals(quality, "low", StringComparison.OrdinalIgnoreCase))
+                {
+                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .5);
+                }
+
+                profile.MaxStaticBitrate = maxBitrate;
+            }
+
+            return profile;
         }
 
         public string Name
@@ -54,6 +72,34 @@ namespace MediaBrowser.Server.Implementations.Sync
                 Id = i.Id,
                 Name = i.Name
             });
+        }
+
+        public IEnumerable<SyncQualityOption> GetQualityOptions(SyncTarget target)
+        {
+            return new List<SyncQualityOption>
+            {
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Original.ToString(),
+                    Id = SyncQuality.Original.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.High.ToString(),
+                    Id = SyncQuality.High.ToString(),
+                    IsDefault = true
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Medium.ToString(),
+                    Id = SyncQuality.Medium.ToString()
+                },
+                new SyncQualityOption
+                {
+                    Name = SyncQuality.Low.ToString(),
+                    Id = SyncQuality.Low.ToString()
+                }
+            };
         }
     }
 }
