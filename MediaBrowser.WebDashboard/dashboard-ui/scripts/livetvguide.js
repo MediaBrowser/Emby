@@ -187,6 +187,38 @@
 		return null;
 	}
 
+	function findNextProgram(programs, date) {
+		var cellStart = new Date(date.getTime());
+		var cellEnd = new Date(date.getTime());
+		cellEnd.setHours(24,0,0,0);
+
+		var nextProgram = {StartDateLocal: cellStart, EndDateLocal: cellEnd};
+
+		for (var i = 0, length = programs.length; i < length; i++) {
+			var program = programs[i];
+
+			if (!program.StartDateLocal) {
+				try {
+					program.StartDateLocal = parseISO8601Date(program.StartDate, { toLocal: true });
+				} catch (err) {
+				}
+			}
+
+			if (!program.EndDateLocal) {
+				try {
+					program.EndDateLocal = parseISO8601Date(program.EndDate, { toLocal: true });
+				} catch (err) {
+				}
+			}
+
+			if (program.EndDateLocal > cellStart && program.EndDateLocal < nextProgram.EndDateLocal) {
+				nextProgram.EndDateLocal = program.EndDateLocal;
+			}
+		}
+
+		return nextProgram;
+	}
+
 	function getProgramWidth(program) {
 
 		var end = Math.min(gridLocalEndDateMs, program.EndDateLocal.getTime());
@@ -289,9 +321,14 @@
 				html += '</' + cellTagName + '>';
 				html += '</div>';
 			} else {
-				cellEndDate = new Date(date.getTime() + cellDurationMs);
+				var program = findNextProgram(programs, date);
 
-				html += '<div class="timeslotCell"></div>';
+				cellEndDate = program.EndDateLocal;
+
+				var width = getProgramWidth(program);
+				style = ' style="width:' + width + 'px;"';
+
+				html += '<div class="timeslotCell"' + style + '>';
 			}
 
 			date = cellEndDate;
