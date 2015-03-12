@@ -11,31 +11,31 @@ using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.LiveTv
 {
-    public class MovieMetaDataService : MetadataService<LiveTvProgram, LiveTvMovieInfo>
-    {
-        public MovieMetaDataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, IUserDataManager userDataManager)
-            : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem, userDataManager)
-        {
-        }
+    //public class MovieMetaDataService : MetadataService<LiveTvProgram, LiveTvProgramLookupInfo>
+    //{
+    //    public MovieMetaDataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, IUserDataManager userDataManager)
+    //        : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem, userDataManager)
+    //    {
+    //    }
 
-        public override bool CanRefresh(IHasMetadata item)
-        {
-            var program = item as LiveTvProgram;
-            return program != null && program.IsMovie;
-        }
+    //    public override bool CanRefresh(IHasMetadata item)
+    //    {
+    //        var program = item as LiveTvProgram;
+    //        return program != null && program.IsMovie;
+    //    }
 
-        /// <summary>
-        /// Merges the specified source.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="lockedFields">The locked fields.</param>
-        /// <param name="replaceData">if set to <c>true</c> [replace data].</param>
-        /// <param name="mergeMetadataSettings"></param>
-        protected override void MergeData(LiveTvProgram source, LiveTvProgram target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
-        {
-            // TODO: Change this to only update certain fields
-            ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
-        }
-    }
+    //    /// <summary>
+    //    /// Merges the specified source.
+    //    /// </summary>
+    //    /// <param name="source">The source.</param>
+    //    /// <param name="target">The target.</param>
+    //    /// <param name="lockedFields">The locked fields.</param>
+    //    /// <param name="replaceData">if set to <c>true</c> [replace data].</param>
+    //    /// <param name="mergeMetadataSettings"></param>
+    //    protected override void MergeData(LiveTvProgram source, LiveTvProgram target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+    //    {
+    //        // TODO: Change this to only update certain fields
+    //        ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
+    //    }
+    //}
 }

@@ -9,14 +9,14 @@ using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Providers.Movies
 {
-    public class LiveTvMovieDbProvider : IRemoteMetadataProvider<LiveTvProgram, LiveTvMovieInfo>, IDisposable, IHasOrder
+    public class LiveTvMovieDbProvider : IRemoteMetadataProvider<LiveTvProgram, LiveTvProgramLookupInfo>, IDisposable, IHasOrder
     {
-        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(LiveTvMovieInfo searchInfo, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(LiveTvProgramLookupInfo searchInfo, CancellationToken cancellationToken)
         {
             return MovieDbProvider.Current.GetMovieSearchResults(searchInfo, cancellationToken);
         }
 
-        public Task<MetadataResult<LiveTvProgram>> GetMetadata(LiveTvMovieInfo info, CancellationToken cancellationToken)
+        public Task<MetadataResult<LiveTvProgram>> GetMetadata(LiveTvProgramLookupInfo info, CancellationToken cancellationToken)
         {
             return MovieDbProvider.Current.GetItemMetadata<LiveTvProgram>(info, cancellationToken);
         }

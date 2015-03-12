@@ -12,7 +12,7 @@ using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvProgram : BaseItem, IHasLookupInfo<LiveTvMovieInfo>
+    public class LiveTvProgram : BaseItem, IHasLookupInfo<LiveTvProgramLookupInfo>
     {
         /// <summary>
         /// Gets the user data key.
@@ -222,9 +222,10 @@ namespace MediaBrowser.Controller.LiveTv
             return false;
         }
 
-        public LiveTvMovieInfo GetLookupInfo()
+        public LiveTvProgramLookupInfo GetLookupInfo()
         {
-            var info = GetItemLookupInfo<LiveTvMovieInfo>();
+            var info = GetItemLookupInfo<LiveTvProgramLookupInfo>();
+            info.IsMovie = IsMovie;  // Pass this over, so the providers can determine what they should be looking up.
             return info;                
         }
     }

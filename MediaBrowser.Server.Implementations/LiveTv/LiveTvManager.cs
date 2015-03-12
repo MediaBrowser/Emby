@@ -211,7 +211,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                     var userData = _userDataManager.GetUserData(user.Id, i.GetUserDataKey());
 
                     if (userData.IsFavorite)
-                    {
+                    { 
                         return 0;
                     }
                     if (userData.Likes.HasValue)
