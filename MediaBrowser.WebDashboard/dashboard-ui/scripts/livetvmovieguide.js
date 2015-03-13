@@ -1,0 +1,464 @@
+﻿(function ($, document) {
+
+    var filtersLoaded;
+    var view = LibraryBrowser.getDefaultItemsView('Poster', 'Poster');
+
+    var currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    // The base query options
+    var query = {
+        UserId: Dashboard.getCurrentUserId(),
+        SortBy: "PremiereDate,SortName",
+        SortOrder: "Ascending",
+        StartIndex: 0,
+        IsMovie: true
+    };
+
+    function getSavedQueryKey() {
+        return 'tvmovies' + (query.ParentId || '');
+    }
+
+    function updateFilterControls(page) {
+
+        // Reset form values using the last used query
+        $('.radioSortBy', page).each(function () {
+
+            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+
+        }).checkboxradio('refresh');
+
+        $('.radioSortOrder', page).each(function () {
+
+            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
+
+        }).checkboxradio('refresh');
+        
+        $('#selectView', page).val(view).selectmenu('refresh');
+        $('.alphabetPicker', page).alphaValue(query.NameStartsWithOrGreater);
+        $('#selectPageSize', page).val(query.Limit).selectmenu('refresh');
+    }
+
+    function reloadItems(page) {
+
+        Dashboard.showLoadingMsg();
+
+        ApiClient.getLiveTvPrograms(query).done(function (result) {
+
+            // Scroll back up so they can see the results from the beginning
+            $(document).scrollTop(0);
+
+            var html = '';
+            var pagingHtml = LibraryBrowser.getQueryPagingHtml({
+                startIndex: query.StartIndex,
+                limit: query.Limit,
+                totalRecordCount: result.TotalRecordCount,
+                viewButton: true,
+                showLimit: false,
+                addSelectionButton: true
+            });
+
+            $('.listTopPaging', page).html(pagingHtml).trigger('create');
+
+            updateFilterControls(page);
+            var trigger = false;
+
+            if (view == "Thumb") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "backdrop",
+                    preferThumb: true,
+                    context: 'movies',
+                    lazy: true,
+                    overlayText: true,
+                    showTitle: false
+                });
+            }
+            else if (view == "ThumbCard") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "backdrop",
+                    preferThumb: true,
+                    context: 'movies',
+                    lazy: true,
+                    showTitle: true,
+                    cardLayout: true,
+                    showYear: true
+                });
+            }
+            else if (view == "Banner") {
+
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "banner",
+                    preferBanner: true,
+                    context: 'movies',
+                    lazy: true
+                });
+            }
+            else if (view == "List") {
+
+                html = LibraryBrowser.getListViewHtml({
+                    items: result.Items,
+                    context: 'movies',
+                    sortBy: query.SortBy
+                });
+                trigger = true;
+            }
+            else if (view == "Poster") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "portrait",
+                    context: 'movies',
+                    showTitle: false,
+                    centerText: true,
+                    lazy: true,
+                    overlayText: true
+                });
+            }
+            else if (view == "PosterCard") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "portrait",
+                    context: 'movies',
+                    showTitle: true,
+                    showYear: true,
+                    lazy: true,
+                    cardLayout: true
+                });
+            }
+            else if (view == "Timeline") {
+                html = LibraryBrowser.getPosterViewHtml({
+                    items: result.Items,
+                    shape: "portrait",
+                    context: 'movies',
+                    showTitle: true,
+                    timeline: true,
+                    centerText: true,
+                    lazy: true
+                });
+            }
+
+            $('.itemsContainer', page).html(html).lazyChildren();
+
+            var elem = $('.itemsContainer', page).html(html).lazyChildren();
+
+            if (trigger) {
+                $(elem).trigger('create');
+            }
+
+            $(pagingHtml).appendTo(elem).trigger('create');
+
+            $('.btnNextPage', page).on('click', function () {
+                query.StartIndex += query.Limit;
+                reloadItems(page);
+            });
+
+            $('.btnPreviousPage', page).on('click', function () {
+                query.StartIndex -= query.Limit;
+                reloadItems(page);
+            });
+
+            LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+
+            Dashboard.hideLoadingMsg();
+        });
+    }
+
+    function reloadFiltersIfNeeded(page) {
+
+        if (!filtersLoaded) {
+
+            filtersLoaded = true;
+
+            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
+
+                reloadItems(page);
+            });
+        }
+    }
+
+    $(document).on('pageinit', "#liveTvMovieGuidePage", function () {
+
+        var page = this;
+
+        $('.viewPanel', page).on('panelopen', function () {
+            reloadFiltersIfNeeded(page);
+        });
+
+        $('.radioSortBy', this).on('click', function () {
+            query.StartIndex = 0;
+            query.SortBy = this.getAttribute('data-sortby');
+            reloadItems(page);
+        });
+
+        $('.radioSortOrder', this).on('click', function () {
+            query.StartIndex = 0;
+            query.SortOrder = this.getAttribute('data-sortorder');
+            reloadItems(page);
+        });
+
+        $('#selectView', this).on('change', function () {
+
+            view = this.value;
+
+            if (view == "Timeline") {
+
+                query.SortBy = "PremiereDate";
+                query.SortOrder = "Descending";
+                query.StartIndex = 0;
+                $('#radioPremiereDate', page)[0].click();
+
+            } else {
+                reloadItems(page);
+            }
+
+            LibraryBrowser.saveViewSetting(getSavedQueryKey(), view);
+        });
+
+        $('.alphabetPicker', this).on('alphaselect', function (e, character) {
+
+            query.NameStartsWithOrGreater = character;
+            query.StartIndex = 0;
+
+            reloadItems(page);
+
+        }).on('alphaclear', function (e) {
+
+            query.NameStartsWithOrGreater = '';
+
+            reloadItems(page);
+        });
+
+        $('#radioBasicFilters', this).on('change', function () {
+
+            if (this.checked) {
+                $('.basicFilters', page).show();
+                $('.advancedFilters', page).hide();
+            } else {
+                $('.basicFilters', page).hide();
+            }
+        });
+
+        $('#radioAdvancedFilters', this).on('change', function () {
+
+            if (this.checked) {
+                $('.advancedFilters', page).show();
+                $('.basicFilters', page).hide();
+            } else {
+                $('.advancedFilters', page).hide();
+            }
+        });
+
+        $('.itemsContainer', page).on('needsrefresh', function () {
+
+            reloadItems(page);
+
+        });
+
+        $('#selectPageSize', page).on('change', function () {
+            query.Limit = parseInt(this.value);
+            query.StartIndex = 0;
+            reloadItems(page);
+        });
+
+    }).on('pagebeforeshow', "#liveTvMovieGuidePage", function () {
+
+        query.ParentId = LibraryMenu.getTopParentId();
+
+        var page = this;
+        var limit = LibraryBrowser.getDefaultPageSize();
+
+        // If the default page size has changed, the start index will have to be reset
+        if (limit != query.Limit) {
+            query.Limit = limit;
+            query.StartIndex = 0;
+        }
+
+        var viewkey = getSavedQueryKey();
+
+        LibraryBrowser.loadSavedQueryValues(viewkey, query);
+
+        QueryFilters.onPageShow(page, query);
+
+        LibraryBrowser.getSavedViewSetting(viewkey).done(function (val) {
+
+            if (val) {
+                $('#selectView', page).val(val).selectmenu('refresh').trigger('change');
+            } else {
+                reloadItems(page);
+            }
+        });
+
+    }).on('pageshow', "#liveTvMovieGuidePage", function () {
+
+        var page = this;
+
+        updateFilterControls(page);
+
+        filtersLoaded = false;
+    });
+
+    $(document).on('pagebeforeshow', "#liveTvMovieGuidePage", function () {
+        var page = this;
+        reloadItems(page);
+    });
+
+})(jQuery, document);
+
+(function (window) {
+
+    function renderOptions(page, selector, cssClass, items) {
+
+        var elem;
+
+        if (items.length) {
+
+            elem = $(selector, page).show();
+
+        } else {
+            elem = $(selector, page).hide();
+        }
+
+        var html = '';
+
+        //  style="margin: -.2em -.8em;"
+        html += '<div data-role="controlgroup">';
+
+        var index = 0;
+        var idPrefix = 'chk' + selector.substring(1);
+
+        html += items.map(function (filter) {
+
+            var itemHtml = '';
+
+            var id = idPrefix + index;
+            itemHtml += '<label for="' + id + '">' + filter + '</label>';
+            itemHtml += '<input id="' + id + '" type="checkbox" data-filter="' + filter + '" data-mini="true" class="' + cssClass + '" />';
+
+            index++;
+
+            return itemHtml;
+
+        }).join('');
+
+        html += '</div>';
+
+        $('.filterOptions', elem).html(html).trigger('create');
+    }
+
+    function renderFilters(page, result) {
+
+        // If there's a huge number of these they will be really show to render
+        if (result.Tags) {
+            result.Tags.length = Math.min(result.Tags.length, 50);
+        }
+
+        renderOptions(page, '.genreFilters', 'chkGenreFilter', result.Genres);
+        renderOptions(page, '.officialRatingFilters', 'chkOfficialRatingFilter', result.OfficialRatings);
+        renderOptions(page, '.tagFilters', 'chkTagFilter', result.Tags);
+        renderOptions(page, '.yearFilters', 'chkYearFilter', result.Years);
+    }
+
+    function onFiltersLoaded(page, query, reloadItemsFn) {
+
+        $('.chkGenreFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Genres || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Genres = filters;
+
+            reloadItemsFn();
+        });
+
+        $('.chkTagFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Tags || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Tags = filters;
+
+            reloadItemsFn();
+        });
+
+        $('.chkYearFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.Years || "";
+            var delimiter = ',';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.Years = filters;
+
+            reloadItemsFn();
+        });
+
+        $('.chkOfficialRatingFilter', page).on('change', function () {
+
+            var filterName = this.getAttribute('data-filter');
+            var filters = query.OfficialRatings || "";
+            var delimiter = '|';
+
+            filters = (delimiter + filters).replace(delimiter + filterName, '').substring(1);
+
+            if (this.checked) {
+                filters = filters ? (filters + delimiter + filterName) : filterName;
+            }
+
+            query.StartIndex = 0;
+            query.OfficialRatings = filters;
+
+            reloadItemsFn();
+        });
+    }
+
+    function loadFilters(page, userId, itemQuery, reloadItemsFn) {
+
+        return ApiClient.getJSON(ApiClient.getUrl('Items/Filters', {
+            UserId: userId,
+            ParentId: itemQuery.ParentId,
+            IncludeItemTypes: itemQuery.IncludeItemTypes
+        })).done(function (result) {
+
+            renderFilters(page, result);
+            onFiltersLoaded(page, itemQuery, reloadItemsFn);
+        });
+    }
+
+    function onPageShow(page, query) {
+        query.Genres = null;
+        query.Years = null;
+        query.OfficialRatings = null;
+        query.Tags = null;
+    }
+
+    window.QueryFilters = {
+        loadFilters: loadFilters,
+        onPageShow: onPageShow
+    };
+
+})(window);

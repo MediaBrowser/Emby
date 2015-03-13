@@ -8,10 +8,11 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvProgram : BaseItem
+    public class LiveTvProgram : BaseItem, IHasLookupInfo<LiveTvProgramLookupInfo>
     {
         /// <summary>
         /// Gets the user data key.
@@ -219,6 +220,13 @@ namespace MediaBrowser.Controller.LiveTv
         public override bool CanDelete()
         {
             return false;
+        }
+
+        public LiveTvProgramLookupInfo GetLookupInfo()
+        {
+            var info = GetItemLookupInfo<LiveTvProgramLookupInfo>();
+            info.IsMovie = IsMovie;  // Pass this over, so the providers can determine what they should be looking up.
+            return info;                
         }
     }
 }

@@ -25,5 +25,11 @@
         /// </summary>
         /// <value>The limit.</value>
         public int? Limit { get; set; }
+
+        /// <summary>
+        /// Used to specific whether to return movies or not
+        /// </summary>
+        /// <remarks>If set to null, all programs will be returned</remarks>
+        public bool? IsMovie { get; set; }
     }
 }

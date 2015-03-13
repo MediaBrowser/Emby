@@ -19,6 +19,7 @@
         });
 
         $('#selectActiveService', page).html(serviceOptions).val(config.ActiveService || '').selectmenu('refresh');
+        $('#chkRetrieveMovieInfo', page).checked(config.RetrieveMovieInfo).checkboxradio("refresh");
 
         Dashboard.hideLoadingMsg();
     }
@@ -54,6 +55,7 @@
 
                 config.GuideDays = $('#selectGuideDays', form).val() || null;
                 config.ActiveService = $('#selectActiveService', form).val() || null;
+                config.RetrieveMovieInfo = $('#chkRetrieveMovieInfo', form).checked();
 
                 ApiClient.updateNamedConfiguration("livetv", config).done(Dashboard.processServerConfigurationUpdateResult);
             });
