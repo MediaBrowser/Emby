@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediaBrowser.Model.Channels;
-using MediaBrowser.Model.Entities;
+﻿using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -43,6 +39,7 @@ namespace MediaBrowser.Controller.Providers
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
     }
+<<<<<<< HEAD
 
     public interface IHasLookupInfo<out TLookupInfoType>
         where TLookupInfoType : ItemLookupInfo, new()
@@ -248,4 +245,6 @@ namespace MediaBrowser.Controller.Providers
         public ChannelMediaContentType ContentType { get; set; }
         public ExtraType ExtraType { get; set; }
     }
+=======
+>>>>>>> upstream/dev
 }
