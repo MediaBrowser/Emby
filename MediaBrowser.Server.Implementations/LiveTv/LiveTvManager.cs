@@ -1,4 +1,10 @@
-﻿using MediaBrowser.Common;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Common;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
@@ -21,13 +27,6 @@ using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Serialization;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.LiveTv
 {
@@ -45,6 +44,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
         private readonly ILibraryManager _libraryManager;
         private readonly ITaskManager _taskManager;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IProviderManager _providerManager;
 
         private readonly IDtoService _dtoService;
         private readonly ILocalizationManager _localization;
@@ -62,7 +62,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         private readonly SemaphoreSlim _refreshSemaphore = new SemaphoreSlim(1, 1);
 
-        public LiveTvManager(IApplicationHost appHost, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer)
+        public LiveTvManager(
+            IApplicationHost appHost, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, 
+            IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, 
+            IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, 
+            ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager)
         {
             _config = config;
             _fileSystem = fileSystem;
@@ -73,6 +77,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             _taskManager = taskManager;
             _localization = localization;
             _jsonSerializer = jsonSerializer;
+            _providerManager = providerManager;
             _dtoService = dtoService;
             _userDataManager = userDataManager;
 
@@ -483,13 +488,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             return item;
         }
 
-        private LiveTvProgram GetProgram(ProgramInfo info, ChannelType channelType, string serviceName, CancellationToken cancellationToken)
+        private async Task<LiveTvProgram> GetProgram(ProgramInfo info, ChannelType channelType, string serviceName, CancellationToken cancellationToken)
         {
             var id = _tvDtoService.GetInternalProgramId(serviceName, info.Id);
-
             var item = _itemRepo.RetrieveItem(id) as LiveTvProgram;
 
-            if (item == null)
+            var isNew = item == null;
+            if (isNew)
             {
                 item = new LiveTvProgram
                 {
@@ -528,6 +533,23 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             item.ProviderImageUrl = info.ImageUrl;
             item.RunTimeTicks = (info.EndDate - info.StartDate).Ticks;
             item.StartDate = info.StartDate;
+            item.ProductionYear = info.ProductionYear;
+
+            var config = GetConfiguration();
+
+            if (config.RetrieveMovieInfo && item.IsMovie)
+            {
+                await item.RefreshMetadata(new MetadataRefreshOptions
+                {
+                    ForceSave = isNew,
+                    //// TODO: Remove when done testing
+                    //ImageRefreshMode = ImageRefreshMode.FullRefresh,
+                    //ReplaceAllImages = true,
+                    //MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
+                    //ReplaceAllMetadata = true,
+                    //ReplaceImages = new List<ImageType>() { ImageType.Primary }
+                }, cancellationToken);
+            }
 
             return item;
         }
@@ -671,13 +693,43 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 });
             }
 
-            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
+            if (query.IsMovie.HasValue)
+            {
+                programs = programs.Where(p => p.IsMovie == query.IsMovie);
+            }
 
+            if (query.StartIndex.HasValue)
+            {
+                programs = programs.Skip(query.StartIndex.Value);
+            }
+
+            if (!query.SortOrder.HasValue || query.SortOrder.Value == SortOrder.Ascending)
+            {
+                programs = programs.OrderBy(p => p.StartDate);
+            }
+            else
+            {
+                programs = programs.OrderByDescending(p => p.StartDate);
+            }
+
+            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
             if (user != null)
             {
                 // Avoid implicitly captured closure
                 var currentUser = user;
                 programs = programs.Where(i => i.IsVisible(currentUser));
+            }
+
+            // Apply genre filter
+            if (query.GenreList.Length > 0)
+            {
+                programs = programs.Where(p => p.Genres.Any(g => query.GenreList.Contains(g)));
+            }
+
+            // Do this last.
+            if (query.Limit.HasValue)
+            {
+                programs = programs.Take(query.Limit.Value);
             }
 
             var programList = programs.ToList();
@@ -724,6 +776,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             {
                 var val = query.HasAired.Value;
                 programs = programs.Where(i => i.HasAired == val);
+            }
+
+            if (query.IsMovie.HasValue)
+            {
+                programs = programs.Where(p => p.IsMovie == query.IsMovie.Value);
             }
 
             var serviceName = ActiveService.Name;
@@ -957,6 +1014,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            //var config = GetConfiguration();
+
+            //var metadataRefreshOptions = new MetadataRefreshOptions()
+            //{
+            //    MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
+            //    ReplaceAllMetadata = true
+            //};
+
             foreach (var item in list)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -968,10 +1033,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 {
                     var start = DateTime.UtcNow.AddHours(-1);
                     var end = start.AddDays(guideDays);
-
                     var channelPrograms = await service.GetProgramsAsync(currentChannel.ExternalId, start, end, cancellationToken).ConfigureAwait(false);
-
-                    var programEntities = channelPrograms.Select(program => GetProgram(program, currentChannel.ChannelType, service.Name, cancellationToken));
+                    var programEntities = channelPrograms.Select(program => GetProgram(program, currentChannel.ChannelType, service.Name, cancellationToken).Result);
 
                     programs.AddRange(programEntities);
                 }
