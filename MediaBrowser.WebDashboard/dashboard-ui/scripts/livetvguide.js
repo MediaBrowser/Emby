@@ -482,13 +482,13 @@
 
     }).on('pagebeforeshow', "#liveTvGuidePage", function () {
 
-            var page = this;
+        var page = this;
 
-            ApiClient.getLiveTvGuideInfo().done(function (guideInfo) {
+        ApiClient.getLiveTvGuideInfo().done(function (guideInfo) {
 
-                setDateRange(page, guideInfo);
-            });
+            setDateRange(page, guideInfo);
         });
+    });
 
 })(jQuery, document);
 
@@ -571,8 +571,8 @@
 
         }).trigger('create').popup("open").on("popupafterclose", function () {
 
-                $(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
-            });
+            $(this).off("popupafterclose").off("mouseenter").off("mouseleave").remove();
+        });
 
         LibraryBrowser.renderGenres($('.itemGenres', popup), {
             Type: item.type,
@@ -676,7 +676,7 @@
 
         if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
             /* browser with either Touch Events of Pointer Events
-             running on touch-capable device */
+               running on touch-capable device */
             return this;
         }
 
