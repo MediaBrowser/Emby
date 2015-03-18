@@ -1389,7 +1389,25 @@
         $(LibraryBrowser).on('itemdeleting.editor', function (e, itemId) {
 
             if (currentItem && currentItem.Id == itemId) {
-                Dashboard.navigate('edititemmetadata.html');
+                var newItem;
+                //look for siblings
+                if ($('.libraryTree #' + itemId, page).next().length > 0) {
+                    newItem = $('.libraryTree #' + itemId, page).next();
+                } else if ($('.libraryTree #' + itemId, page).prev().length > 0) {
+                    newItem = $('.libraryTree #' + itemId, page).prev();
+                } else {
+                    newItem = $(".libraryTree #" + itemId, page).parent().parent();
+                }
+
+                var item = {id: newItem.attr('id')};
+
+                $('.libraryTree', page).jstree("select_node", item.id).jstree("delete_node", '#' + itemId);
+
+                //$(this).trigger("itemclicked", item);//why doesn't this work? (next 3 lines just duplicate that function)
+                MetadataEditor.currentItemId = item.id;
+                window.location.hash = 'editItemMetadataPage?id=' + item.id;
+
+                reload(page);
             }
         });
 
