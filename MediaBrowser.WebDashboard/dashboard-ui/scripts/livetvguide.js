@@ -1,13 +1,15 @@
 ﻿(function ($, document) {
 
-    // 30 mins
-    var cellCurationMinutes = 30;
+    // 1 min
+    var cellCurationMinutes = 1;
     var cellDurationMs = cellCurationMinutes * 60 * 1000;
+    var width30min = 179;
 
     var gridLocalStartDateMs;
     var gridLocalEndDateMs;
 
     var currentDate;
+    var today = new Date();
 
     var channelQuery = {
 
@@ -59,7 +61,7 @@
         var nextDay = new Date(date.getTime());
         nextDay.setHours(0, 0, 0, 0);
         nextDay.setDate(nextDay.getDate() + 1);
-        console.log(nextDay);
+
         channelsPromise.done(function (channelsResult) {
 
             ApiClient.getLiveTvPrograms({
@@ -72,10 +74,10 @@
 
             }).done(function (programsResult) {
 
-                renderGuide(page, date, channelsResult.Items, programsResult.Items);
-                hideLoadingMessage(page);
+                    renderGuide(page, date, channelsResult.Items, programsResult.Items);
+                    hideLoadingMessage(page);
 
-            });
+                });
 
             var channelPagingHtml = LibraryBrowser.getPagingHtml(channelQuery, channelsResult.TotalRecordCount, false, [10, 20, 30, 50, 100]);
             $('.channelPaging', page).html(channelPagingHtml).trigger('create');
@@ -104,17 +106,44 @@
 
         date = new Date(date.getTime());
         var dateNumber = date.getDate();
+        var first = true;
 
         while (date.getDate() == dateNumber) {
+            var newDate = new Date();
+            var width = 0;
+            var offset = date.getMinutes();
 
-            html += '<div class="timeslotHeader">';
+            if (offset != 0 && offset != 30) {
+                if (offset < 30) {
+                    newDate.setTime(date.getTime() + (cellDurationMs * (30 - offset)));
+                    width = width30min - (width30min / (30 / offset));
+                } else if (offset > 30) {
+                    newDate.setTime(date.getTime() + (cellDurationMs * (30 - (offset - 30))));
+                    width = width30min - (width30min / (30 / (offset - 30)));
+                }
+            } else {
+                // Add 30 mins
+                newDate.setTime(date.getTime() + (cellDurationMs * 30));
+            }
+
+            //stretch first time slot to 30 minutes
+            if (first === true) {
+                width = width30min;
+            }
+            first = false;
+
+            var styleWidth = '';
+            if (width > 0) {
+                styleWidth = ' style="width:' + width + 'px" ';
+            }
+
+            html += '<div class="timeslotHeader" ' + styleWidth + '>';
             html += '<div class="timeslotHeaderInner">';
             html += LiveTvHelpers.getDisplayTime(date);
             html += '</div>';
             html += '</div>';
 
-            // Add 30 mins
-            date.setTime(date.getTime() + cellDurationMs);
+            date = newDate;
         }
 
         return html;
@@ -149,7 +178,7 @@
             }
 
             var localTime = program.StartDateLocal.getTime();
-            if ((localTime >= cellStart || cellIndex == 0) && localTime < cellEnd && program.EndDateLocal > cellStart) {
+            if ((localTime >= cellStart || cellIndex == 0) && localTime <= cellEnd && program.EndDateLocal > cellStart) {
 
                 return program;
 
@@ -159,25 +188,52 @@
         return null;
     }
 
-    function getProgramWidth(program) {
+    function findNextProgram(programs, date) {
+        var cellStart = new Date(date.getTime());
+        var cellEnd = new Date(date.getTime());
+        cellEnd.setHours(24, 0, 0, 0);
+
+        var nextProgram = {StartDateLocal: cellStart, EndDateLocal: cellEnd};
+
+        for (var i = 0, length = programs.length; i < length; i++) {
+            var program = programs[i];
+
+            if (!program.StartDateLocal) {
+                try {
+                    program.StartDateLocal = parseISO8601Date(program.StartDate, { toLocal: true });
+                } catch (err) {
+                }
+            }
+
+            if (!program.EndDateLocal) {
+                try {
+                    program.EndDateLocal = parseISO8601Date(program.EndDate, { toLocal: true });
+                } catch (err) {
+                }
+            }
+
+            if (program.EndDateLocal > cellStart && program.EndDateLocal < nextProgram.EndDateLocal) {
+                nextProgram.EndDateLocal = program.EndDateLocal;
+            }
+        }
+
+        return nextProgram;
+    }
+
+    function getProgramWidth(program, cellIndex) {
 
         var end = Math.min(gridLocalEndDateMs, program.EndDateLocal.getTime());
         var start = Math.max(gridLocalStartDateMs, program.StartDateLocal.getTime());
 
         var ms = end - start;
 
-        var width = 100 * ms / cellDurationMs;
-
-        // Round to the nearest cell
-        var overlap = width % 100;
-
-        if (overlap) {
-            width = width - overlap + 100;
+        if (cellIndex == 0 && currentDate.getMinutes() > 0) {
+            //adjust for stretching the first cell to 179px
+            var adjustment = (currentDate.getMinutes() < 30) ? 30 - currentDate.getMinutes() : currentDate.getMinutes() - 30;
+            ms += adjustment * cellDurationMs;
         }
 
-        if (width > 300) {
-            width += (width / 100) - 3;
-        }
+        var width = (ms / cellDurationMs) * 6;//6px is base cell width
 
         return width;
     }
@@ -195,15 +251,10 @@
         html += '<div class="channelPrograms">';
 
         var cellIndex = 0;
+        var cellEndDate = new Date(date.getTime() + cellDurationMs);
 
         while (date.getDate() == dateNumber) {
-
-            // Add 30 mins
-            var cellEndDate = new Date(date.getTime() + cellDurationMs);
-
             var program = findProgramStartingInCell(programs, 0, date, cellEndDate, cellIndex);
-
-            html += '<div class="timeslotCell">';
 
             var cellTagName;
             var href;
@@ -212,6 +263,13 @@
             var dataProgramId;
 
             if (program) {
+                cellEndDate = program.EndDateLocal;
+
+                var width = getProgramWidth(program, cellIndex);
+                style = ' style="width:' + width + 'px;"';
+
+                html += '<div class="timeslotCell"' + style + '>';
+
                 if (program.IsKids) {
                     cssClass += " childProgramInfo";
                 } else if (program.IsSports) {
@@ -230,24 +288,9 @@
                 cellTagName = "a";
                 href = ' href="livetvprogram.html?id=' + program.Id + '"';
 
-                var width = getProgramWidth(program);
-
-                if (width && width != 100) {
-                    style = ' style="width:' + width + '%;"';
-                } else {
-                    style = '';
-                }
                 dataProgramId = ' data-programid="' + program.Id + '"';
-            } else {
-                cellTagName = "div";
-                href = '';
-                style = '';
-                dataProgramId = '';
-            }
 
-            html += '<' + cellTagName + dataProgramId + ' class="' + cssClass + '"' + href + style + '>';
-
-            if (program) {
+                html += '<' + cellTagName + dataProgramId + ' class="' + cssClass + '"' + href + '>';
 
                 html += '<div class="guideProgramName">';
                 html += program.Name;
@@ -257,13 +300,13 @@
                 html += '<div class="guideProgramTime">';
 
                 if (program.IsLive) {
-                    html += '<span class="liveTvProgram">'+Globalize.translate('LabelLiveProgram')+'&nbsp;&nbsp;</span>';
+                    html += '<span class="liveTvProgram">' + Globalize.translate('LabelLiveProgram') + '&nbsp;&nbsp;</span>';
                 }
                 else if (program.IsPremiere) {
-                    html += '<span class="premiereTvProgram">'+Globalize.translate('LabelPremiereProgram')+'&nbsp;&nbsp;</span>';
+                    html += '<span class="premiereTvProgram">' + Globalize.translate('LabelPremiereProgram') + '&nbsp;&nbsp;</span>';
                 }
                 else if (program.IsSeries && !program.IsRepeat) {
-                    html += '<span class="newTvProgram">'+Globalize.translate('LabelNewProgram')+'&nbsp;&nbsp;</span>';
+                    html += '<span class="newTvProgram">' + Globalize.translate('LabelNewProgram') + '&nbsp;&nbsp;</span>';
                 }
 
                 html += LiveTvHelpers.getDisplayTime(program.StartDateLocal);
@@ -282,12 +325,18 @@
 
                 html += '</div>';
 
+                html += '</' + cellTagName + '>';
+                html += '</div>';
             } else {
-                html += '&nbsp;';
-            }
+                var program = findNextProgram(programs, date);
 
-            html += '</' + cellTagName + '>';
-            html += '</div>';
+                cellEndDate = program.EndDateLocal;
+
+                var width = getProgramWidth(program, cellIndex);
+                style = ' style="width:' + width + 'px;"';
+
+                html += '<div class="timeslotCell"' + style + '>';
+            }
 
             date = cellEndDate;
             cellIndex++;
@@ -361,9 +410,15 @@
         $('.timeslotHeaders', page).scrollLeft(grid.scrollLeft());
     }
 
-    function changeDate(page, date) {
+    function changeDate(page, date, first_load) {
+        var todayCompare = new Date(today.setSeconds(0, 0));
+        var dateCompare = new Date(date.setSeconds(0, 0));
 
-        currentDate = normalizeDateToTimeslot(date);
+        if (dateCompare.getTime() == todayCompare.getTime() || first_load === true) {
+            currentDate = date;
+        } else {
+            currentDate = normalizeDateToTimeslot(date);
+        }
 
         gridLocalStartDateMs = currentDate.getTime();
 
@@ -376,10 +431,6 @@
     }
 
     function setDateRange(page, guideInfo) {
-
-        var today = new Date();
-        today.setHours(today.getHours(), 0, 0, 0);
-
         var start = parseISO8601Date(guideInfo.StartDate, { toLocal: true });
         var end = parseISO8601Date(guideInfo.EndDate, { toLocal: true });
 
@@ -396,7 +447,6 @@
 
         while (start <= end) {
 
-
             html += '<option value="' + start.getTime() + '">' + LibraryBrowser.getFutureDateText(start) + '</option>';
 
             start.setDate(start.getDate() + 1);
@@ -409,17 +459,10 @@
             elem.val(currentDate.getTime()).selectmenu('refresh');
         }
 
-        var val = elem.val();
-        var date = new Date();
-
-        if (val) {
-            date.setTime(parseInt(val));
-        }
-
-        changeDate(page, date);
+        changeDate(page, new Date(), true);
     }
 
-    $(document).on('pageinit', "#liveTvGuidePage", function () {
+    $(document).on('pageinit', "#liveTvGuidePage",function () {
 
         var page = this;
 
@@ -433,7 +476,7 @@
             var date = new Date();
             date.setTime(parseInt(this.value));
 
-            changeDate(page, date);
+            changeDate(page, date, false);
 
         });
 
