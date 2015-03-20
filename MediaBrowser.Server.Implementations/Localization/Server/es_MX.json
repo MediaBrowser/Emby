@@ -1385,5 +1385,6 @@
     "HeaderUpcomingPrograms": "Pr\u00f3ximos Programas",
     "ButtonMoreItems": "M\u00e1s...",
     "LabelShowLibraryTileNames": "Mostrar nombres de t\u00edtulo de las bibliotecas",
-    "LabelShowLibraryTileNamesHelp": "Determina si se desplegar\u00e1n etiquetas debajo de los t\u00edtulos de las bibliotecas con la p\u00e1gina principal"
+    "LabelShowLibraryTileNamesHelp": "Determina si se desplegar\u00e1n etiquetas debajo de los t\u00edtulos de las bibliotecas con la p\u00e1gina principal",
+    "ButtonClear": "Clear"
 }

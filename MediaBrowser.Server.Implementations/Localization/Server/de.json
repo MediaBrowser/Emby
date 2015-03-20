@@ -1385,5 +1385,6 @@
     "HeaderUpcomingPrograms": "Bevorstehende Programme",
     "ButtonMoreItems": "Mehr...",
     "LabelShowLibraryTileNames": "Zeige Bibliothek Kachelnamen.",
-    "LabelShowLibraryTileNamesHelp": "Legen Sie fest, ob Beschriftungen unter den Kacheln der Startseite angezeigt werden sollen."
+    "LabelShowLibraryTileNamesHelp": "Legen Sie fest, ob Beschriftungen unter den Kacheln der Startseite angezeigt werden sollen.",
+    "ButtonClear": "Clear"
 }
