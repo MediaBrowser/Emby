@@ -140,7 +140,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             foreach (string key in coll.Keys)
             {
                 string val = coll[key];
-                if (val != null && val.Length > 0 && IsInvalidString(val))
+                if (!string.IsNullOrEmpty(val) && IsInvalidString(val))
                     ThrowValidationException(name, key, val);
             }
         }
@@ -362,7 +362,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                     if (result.Length > 0)
                         result.Append('&');
 
-                    if (key != null && key.Length > 0)
+                    if (!string.IsNullOrEmpty(key))
                     {
                         result.Append(key);
                         result.Append('=');
@@ -880,7 +880,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
             static string StripPath(string path)
             {
-                if (path == null || path.Length == 0)
+                if (string.IsNullOrEmpty(path))
                     return path;
 
                 if (path.IndexOf(":\\") != 1 && !path.StartsWith("\\\\"))

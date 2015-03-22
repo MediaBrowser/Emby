@@ -483,7 +483,7 @@ namespace MediaBrowser.ServerApplication.Networking
         /// <param name="shares">The ShareCollection</param>
         protected static void EnumerateShares(string server, ShareCollection shares)
         {
-            if (null != server && 0 != server.Length && !IsW2KUp)
+            if (!string.IsNullOrEmpty(server) && !IsW2KUp)
             {
                 server = server.ToUpper();
 
@@ -512,7 +512,7 @@ namespace MediaBrowser.ServerApplication.Networking
         /// <returns></returns>
         public static bool IsValidFilePath(string fileName)
         {
-            if (null == fileName || 0 == fileName.Length) return false;
+            if (string.IsNullOrEmpty(fileName)) return false;
 
             char drive = char.ToUpper(fileName[0]);
             if ('A' > drive || drive > 'Z')
@@ -594,7 +594,7 @@ namespace MediaBrowser.ServerApplication.Networking
         {
             get
             {
-                if (null == path || 0 == path.Length) return null;
+                if (string.IsNullOrEmpty(path)) return null;
 
                 path = Path.GetFullPath(path);
                 if (!IsValidFilePath(path)) return null;
