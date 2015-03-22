@@ -392,8 +392,7 @@ namespace MediaBrowser.Providers.TV
 
             var path = GetSeriesDataPath(_configurationManager.ApplicationPaths, tmdbId);
 
-            var filename = string.Format("series-{0}.json",
-                preferredLanguage ?? string.Empty);
+            var filename = string.Format("series-{0}.json", preferredLanguage);
 
             return Path.Combine(path, filename);
         }

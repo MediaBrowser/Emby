@@ -103,13 +103,11 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Path))
-                {
-                    return false;
+                if (!string.IsNullOrWhiteSpace(Path)) { 
+                    return new[] {".zip", ".rar", ".7z"}.Contains(System.IO.Path.GetExtension(Path),
+                        StringComparer.OrdinalIgnoreCase);
                 }
-                var ext = System.IO.Path.GetExtension(Path) ?? string.Empty;
-
-                return new[] { ".zip", ".rar", ".7z" }.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                return false;
             }
         }
 

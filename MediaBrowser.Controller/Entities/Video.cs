@@ -110,13 +110,12 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Path))
+                if (!string.IsNullOrWhiteSpace(Path))
                 {
-                    return false;
+                    return new[] { ".zip", ".rar", ".7z" }.Contains(System.IO.Path.GetExtension(Path),
+                        StringComparer.OrdinalIgnoreCase);
                 }
-                var ext = System.IO.Path.GetExtension(Path) ?? string.Empty;
-
-                return new[] { ".zip", ".rar", ".7z" }.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                return false;
             }
         }
 
