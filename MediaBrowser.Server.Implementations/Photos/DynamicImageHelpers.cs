@@ -21,6 +21,11 @@ namespace MediaBrowser.Server.Implementations.Photos
                 throw new ArgumentException("Empty file found in files list");
             }
 
+            if (files.Count == 0)
+            {
+                return null;
+            }
+
             if (files.Count < 3)
             {
                 return await GetSingleImage(files, fileSystem).ConfigureAwait(false);
@@ -68,6 +73,11 @@ namespace MediaBrowser.Server.Implementations.Photos
                 throw new ArgumentException("Empty file found in files list");
             }
 
+            if (files.Count == 0)
+            {
+                return null;
+            }
+
             if (files.Count < 4)
             {
                 return await GetSingleImage(files, fileSystem).ConfigureAwait(false);
@@ -107,7 +117,7 @@ namespace MediaBrowser.Server.Implementations.Photos
             return Task.FromResult<Stream>(fileSystem.GetFileStream(files[0], FileMode.Open, FileAccess.Read, FileShare.Read));
         }
 
-        private static Stream GetStream(MagickWand image, IApplicationPaths appPaths)
+        internal static Stream GetStream(MagickWand image, IApplicationPaths appPaths)
         {
             var tempFile = Path.Combine(appPaths.TempDirectory, Guid.NewGuid().ToString("N") + ".png");
 

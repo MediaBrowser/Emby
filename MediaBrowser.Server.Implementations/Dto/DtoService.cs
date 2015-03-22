@@ -161,7 +161,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             var result = _syncManager.GetLibraryItemIds(new SyncJobItemQuery
             {
                 TargetId = deviceId,
-                Statuses = new List<SyncJobItemStatus>
+                Statuses = new SyncJobItemStatus[]
                 {
                     SyncJobItemStatus.Converting,
                     SyncJobItemStatus.Queued,
@@ -504,7 +504,6 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
 
             dto.Album = item.Album;
-            dto.Artists = item.Artists;
         }
 
         private void SetGameProperties(BaseItemDto dto, Game item)
@@ -766,11 +765,14 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             if (!string.IsNullOrEmpty(chapterInfo.ImagePath))
             {
+                var file = new FileInfo(chapterInfo.ImagePath);
+
                 dto.ImageTag = GetImageCacheTag(item, new ItemImageInfo
                 {
                     Path = chapterInfo.ImagePath,
                     Type = ImageType.Chapter,
-                    DateModified = _fileSystem.GetLastWriteTimeUtc(chapterInfo.ImagePath)
+                    DateModified = _fileSystem.GetLastWriteTimeUtc(file),
+                    Length = file.Length
                 });
             }
 
@@ -1142,7 +1144,6 @@ namespace MediaBrowser.Server.Implementations.Dto
             if (audio != null)
             {
                 dto.Album = audio.Album;
-                dto.Artists = audio.Artists;
 
                 var albumParent = audio.FindParent<MusicAlbum>();
 
@@ -1163,18 +1164,65 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             if (album != null)
             {
-                dto.Artists = album.Artists;
-
                 dto.SoundtrackIds = album.SoundtrackIds
                     .Select(i => i.ToString("N"))
                     .ToArray();
             }
 
-            var hasAlbumArtist = item as IHasAlbumArtist;
+            var hasArtist = item as IHasArtist;
+            if (hasArtist != null)
+            {
+                dto.Artists = hasArtist.Artists;
 
+                dto.ArtistItems = hasArtist
+                    .Artists
+                    .Select(i =>
+                    {
+                        try
+                        {
+                            var artist = _libraryManager.GetArtist(i);
+                            return new NameIdPair
+                            {
+                                Name = artist.Name,
+                                Id = artist.Id.ToString("N")
+                            };
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error getting artist", ex);
+                            return null;
+                        }
+                    })
+                    .Where(i => i != null)
+                    .ToList();
+            }
+
+            var hasAlbumArtist = item as IHasAlbumArtist;
             if (hasAlbumArtist != null)
             {
                 dto.AlbumArtist = hasAlbumArtist.AlbumArtists.FirstOrDefault();
+
+                dto.AlbumArtists = hasAlbumArtist
+                    .AlbumArtists
+                    .Select(i =>
+                    {
+                        try
+                        {
+                            var artist = _libraryManager.GetArtist(i);
+                            return new NameIdPair
+                            {
+                                Name = artist.Name,
+                                Id = artist.Id.ToString("N")
+                            };
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error getting album artist", ex);
+                            return null;
+                        }
+                    })
+                    .Where(i => i != null)
+                    .ToList();
             }
 
             // Add video info
@@ -1231,7 +1279,6 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             // Add MovieInfo
             var movie = item as Movie;
-
             if (movie != null)
             {
                 if (fields.Contains(ItemFields.TmdbCollectionName))
@@ -1241,7 +1288,6 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
 
             var hasSpecialFeatures = item as IHasSpecialFeatures;
-
             if (hasSpecialFeatures != null)
             {
                 var specialFeatureCount = hasSpecialFeatures.SpecialFeatureIds.Count;
@@ -1254,7 +1300,6 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             // Add EpisodeInfo
             var episode = item as Episode;
-
             if (episode != null)
             {
                 dto.IndexNumberEnd = episode.IndexNumberEnd;
@@ -1296,7 +1341,6 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             // Add SeriesInfo
             var series = item as Series;
-
             if (series != null)
             {
                 dto.AirDays = series.AirDays;
@@ -1346,7 +1390,6 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             // Add SeasonInfo
             var season = item as Season;
-
             if (season != null)
             {
                 series = season.Series;
@@ -1380,7 +1423,6 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
 
             var musicVideo = item as MusicVideo;
-
             if (musicVideo != null)
             {
                 SetMusicVideoProperties(dto, musicVideo);

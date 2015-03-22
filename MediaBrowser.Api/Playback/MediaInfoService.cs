@@ -1,14 +1,18 @@
-﻿using MediaBrowser.Controller.Library;
+﻿using System;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
+using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.MediaInfo;
 using ServiceStack;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.Playback
 {
-    [Route("/Items/{Id}/PlaybackInfo", "GET", Summary = "Gets live playback media info for an item")]
+    [Route("/Items/{Id}/MediaInfo", "GET", Summary = "Gets live playback media info for an item")]
     public class GetLiveMediaInfo : IReturn<LiveMediaInfoResult>
     {
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
@@ -38,24 +42,34 @@ namespace MediaBrowser.Api.Playback
             _mediaSourceManager = mediaSourceManager;
         }
 
-        public async Task<object> Get(GetPlaybackInfo request)
+        public Task<object> Get(GetPlaybackInfo request)
         {
-            var mediaSources = await _mediaSourceManager.GetPlayackMediaSources(request.Id, request.UserId, true, CancellationToken.None).ConfigureAwait(false);
-
-            return ToOptimizedResult(new LiveMediaInfoResult
-            {
-                MediaSources = mediaSources.ToList()
-            });
+            return GetPlaybackInfo(request.Id, request.UserId);
         }
 
-        public async Task<object> Get(GetLiveMediaInfo request)
+        public Task<object> Get(GetLiveMediaInfo request)
         {
-            var mediaSources = await _mediaSourceManager.GetPlayackMediaSources(request.Id, request.UserId, true, CancellationToken.None).ConfigureAwait(false);
+            return GetPlaybackInfo(request.Id, request.UserId);
+        }
 
-            return ToOptimizedResult(new LiveMediaInfoResult
+        private async Task<object> GetPlaybackInfo(string id, string userId)
+        {
+            IEnumerable<MediaSourceInfo> mediaSources;
+            var result = new LiveMediaInfoResult();
+
+            try
             {
-                MediaSources = mediaSources.ToList()
-            });
+                mediaSources = await _mediaSourceManager.GetPlayackMediaSources(id, userId, true, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (PlaybackException ex)
+            {
+                mediaSources = new List<MediaSourceInfo>();
+                result.ErrorCode = ex.ErrorCode;
+            }
+
+            result.MediaSources = mediaSources.ToList();
+
+            return ToOptimizedResult(result);
         }
     }
 }

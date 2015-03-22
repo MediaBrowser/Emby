@@ -52,10 +52,12 @@ namespace MediaBrowser.Api.Playback
         public IIsoMount IsoMount { get; set; }
 
         public string MediaPath { get; set; }
+        public string WaitForPath { get; set; }
 
         public MediaProtocol InputProtocol { get; set; }
 
         public bool IsInputVideo { get; set; }
+        public bool IsInputArchive { get; set; }
 
         public VideoType VideoType { get; set; }
         public IsoType? IsoType { get; set; }
@@ -64,8 +66,8 @@ namespace MediaBrowser.Api.Playback
 
         public string LiveTvStreamId { get; set; }
 
-        public int SegmentLength = 6;
-
+        public int SegmentLength = 3;
+        public bool EnableGenericHlsSegmenter = false;
         public int HlsListSize
         {
             get
@@ -112,6 +114,7 @@ namespace MediaBrowser.Api.Playback
         public long? EncodingDurationTicks { get; set; }
 
         public string ItemType { get; set; }
+        public string ItemId { get; set; }
 
         public string GetMimeType(string outputPath)
         {

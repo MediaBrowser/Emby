@@ -72,12 +72,14 @@ namespace MediaBrowser.Api.Playback
         protected ISubtitleEncoder SubtitleEncoder { get; private set; }
         protected IProcessManager ProcessManager { get; private set; }
         protected IMediaSourceManager MediaSourceManager { get; private set; }
+        protected IZipClient ZipClient { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseStreamingService" /> class.
         /// </summary>
-        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, ILiveTvManager liveTvManager, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IProcessManager processManager, IMediaSourceManager mediaSourceManager)
+        protected BaseStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, ILiveTvManager liveTvManager, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IProcessManager processManager, IMediaSourceManager mediaSourceManager, IZipClient zipClient)
         {
+            ZipClient = zipClient;
             MediaSourceManager = mediaSourceManager;
             ProcessManager = processManager;
             DeviceManager = deviceManager;
@@ -132,7 +134,7 @@ namespace MediaBrowser.Api.Playback
             var data = GetCommandLineArguments("dummy\\dummy", "dummyTranscodingId", state, false);
 
             data += "-" + (state.Request.DeviceId ?? string.Empty);
-            data += "-" + (state.Request.ClientTime ?? string.Empty);
+            data += "-" + (state.Request.StreamId ?? state.Request.ClientTime ?? string.Empty);
 
             var dataHash = data.GetMD5().ToString("N");
 
@@ -1052,6 +1054,7 @@ namespace MediaBrowser.Api.Playback
             }
 
             var transcodingJob = ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath,
+                state.Request.StreamId ?? state.Request.ClientTime,
                 transcodingId,
                 TranscodingJobType,
                 process,
@@ -1093,7 +1096,7 @@ namespace MediaBrowser.Api.Playback
             StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream);
 
             // Wait for the file to exist before proceeeding
-            while (!File.Exists(outputPath) && !transcodingJob.HasExited)
+            while (!File.Exists(state.WaitForPath ?? outputPath) && !transcodingJob.HasExited)
             {
                 await Task.Delay(100, cancellationTokenSource.Token).ConfigureAwait(false);
             }
@@ -1521,7 +1524,7 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 16)
                 {
-                    request.ClientTime = val;
+                    request.StreamId = val;
                 }
                 else if (i == 17)
                 {
@@ -1656,6 +1659,9 @@ namespace MediaBrowser.Api.Playback
             List<MediaStream> mediaStreams = null;
 
             state.ItemType = item.GetType().Name;
+            state.ItemId = item.Id.ToString("N");
+            var archivable = item as IArchivable;
+            state.IsInputArchive = archivable != null && archivable.IsArchive;
 
             if (item is ILiveTvRecording)
             {
@@ -1670,7 +1676,7 @@ namespace MediaBrowser.Api.Playback
                 var source = string.IsNullOrEmpty(request.MediaSourceId)
                     ? recording.GetMediaSources(false).First()
                     : MediaSourceManager.GetStaticMediaSource(recording, request.MediaSourceId, false);
-                
+
                 mediaStreams = source.MediaStreams;
 
                 // Just to prevent this from being null and causing other methods to fail
@@ -1810,12 +1816,10 @@ namespace MediaBrowser.Api.Playback
         }
 
         private void AttachMediaStreamInfo(StreamState state,
-          ChannelMediaInfo mediaInfo,
+          MediaSourceInfo mediaSource,
           VideoStreamRequest videoRequest,
           string requestedUrl)
         {
-            var mediaSource = mediaInfo.ToMediaSource();
-
             state.InputProtocol = mediaSource.Protocol;
             state.MediaPath = mediaSource.Path;
             state.RunTimeTicks = mediaSource.RunTimeTicks;

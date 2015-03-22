@@ -343,6 +343,7 @@
 
             var url = serverAddress.replace('http', 'ws');
             url += "?api_key=" + accessToken;
+            url += "&deviceId=" + deviceId;
 
             webSocket = new WebSocket(url);
 
@@ -1880,12 +1881,17 @@
             });
         };
 
-        self.stopActiveEncodings = function () {
+        self.stopActiveEncodings = function (streamId) {
 
-            var url = self.getUrl("Videos/ActiveEncodings", {
-
+            var options = {
                 deviceId: deviceId
-            });
+            };
+
+            if (streamId) {
+                options.streamId = streamId;
+            }
+
+            var url = self.getUrl("Videos/ActiveEncodings", options);
 
             return self.ajax({
                 type: "DELETE",

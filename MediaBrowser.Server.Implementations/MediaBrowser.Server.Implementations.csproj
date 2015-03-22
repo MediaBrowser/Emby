@@ -68,9 +68,9 @@
     <Reference Include="ServiceStack.Api.Swagger">
       <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Api.Swagger.dll</HintPath>
     </Reference>
-    <Reference Include="SocketHttpListener, Version=1.0.5501.2204, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SocketHttpListener, Version=1.0.5554.26260, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SocketHttpListener.1.0.0.1\lib\net45\SocketHttpListener.dll</HintPath>
+      <HintPath>..\packages\SocketHttpListener.1.0.0.3\lib\net45\SocketHttpListener.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -231,7 +231,9 @@
     <Compile Include="Localization\LocalizationManager.cs" />
     <Compile Include="Logging\PatternsLogger.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
-    <Compile Include="Photos\DynamicImageProvider.cs" />
+    <Compile Include="Sync\SyncHelper.cs" />
+    <Compile Include="Sync\SyncJobOptions.cs" />
+    <Compile Include="UserViews\DynamicImageProvider.cs" />
     <Compile Include="News\NewsEntryPoint.cs" />
     <Compile Include="News\NewsService.cs" />
     <Compile Include="Notifications\CoreNotificationTypes.cs" />
@@ -248,6 +250,7 @@
     <Compile Include="Persistence\TypeMapper.cs" />
     <Compile Include="Photos\BaseDynamicImageProvider.cs" />
     <Compile Include="Photos\DynamicImageHelpers.cs" />
+    <Compile Include="UserViews\StripCollageBuilder.cs" />
     <Compile Include="Playlists\ManualPlaylistsFolder.cs" />
     <Compile Include="Photos\PhotoAlbumImageProvider.cs" />
     <Compile Include="Playlists\PlaylistImageProvider.cs" />
@@ -428,6 +431,7 @@
     <EmbeddedResource Include="Localization\Server\uk.json" />
     <EmbeddedResource Include="Drawing\fonts\webdings.ttf" />
     <EmbeddedResource Include="Drawing\fonts\robotoregular.ttf" />
+    <EmbeddedResource Include="Drawing\fonts\MontserratLight.otf" />
     <None Include="Localization\JavaScript\sl_SI.json" />
     <EmbeddedResource Include="Localization\Server\sl_SI.json" />
     <None Include="packages.config" />
@@ -512,6 +516,14 @@
       <Link>swagger-ui\swagger-ui.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="UserViews\livetv\1.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\2.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\3.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\4.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\5.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\6.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\7.jpg" />
+    <EmbeddedResource Include="UserViews\livetv\8.jpg" />
     <EmbeddedResource Include="Localization\iso6392.txt" />
     <EmbeddedResource Include="Localization\Ratings\be.txt" />
   </ItemGroup>

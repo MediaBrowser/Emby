@@ -32,28 +32,14 @@ namespace MediaBrowser.Server.Implementations.Sync
             });
         }
 
-        public DeviceProfile GetDeviceProfile(SyncTarget target, string quality)
+        public DeviceProfile GetDeviceProfile(SyncTarget target, string profile, string quality)
         {
             var caps = _deviceManager.GetCapabilities(target.Id);
 
-            var profile = caps == null || caps.DeviceProfile == null ? new DeviceProfile() : caps.DeviceProfile;
-            var maxBitrate = profile.MaxStaticBitrate;
+            var deviceProfile = caps == null || caps.DeviceProfile == null ? new DeviceProfile() : caps.DeviceProfile;
+            deviceProfile.MaxStaticBitrate = SyncHelper.AdjustBitrate(deviceProfile.MaxStaticBitrate, quality);
 
-            if (maxBitrate.HasValue)
-            {
-                if (string.Equals(quality, "medium", StringComparison.OrdinalIgnoreCase))
-                {
-                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .75);
-                }
-                else if (string.Equals(quality, "low", StringComparison.OrdinalIgnoreCase))
-                {
-                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .5);
-                }
-
-                profile.MaxStaticBitrate = maxBitrate;
-            }
-
-            return profile;
+            return deviceProfile;
         }
 
         public string Name
@@ -80,25 +66,42 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Original.ToString(),
-                    Id = SyncQuality.Original.ToString()
+                    Name = "Original",
+                    Id = "original",
+                    Description = "Syncs original files as-is, regardless of whether the device is capable of playing them or not."
                 },
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.High.ToString(),
-                    Id = SyncQuality.High.ToString(),
+                    Name = "High",
+                    Id = "high",
                     IsDefault = true
                 },
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Medium.ToString(),
-                    Id = SyncQuality.Medium.ToString()
+                    Name = "Medium",
+                    Id = "medium"
                 },
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Low.ToString(),
-                    Id = SyncQuality.Low.ToString()
+                    Name = "Low",
+                    Id = "low"
                 }
+            };
+        }
+
+        public IEnumerable<SyncProfileOption> GetProfileOptions(SyncTarget target)
+        {
+            return new List<SyncProfileOption>();
+        }
+
+        public SyncJobOptions GetSyncJobOptions(SyncTarget target, string profile, string quality)
+        {
+            var isConverting = !string.Equals(quality, "original", StringComparison.OrdinalIgnoreCase);
+
+            return new SyncJobOptions
+            {
+                DeviceProfile = GetDeviceProfile(target, profile, quality),
+                IsConverting = isConverting
             };
         }
     }

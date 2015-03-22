@@ -124,7 +124,6 @@
     <Compile Include="Devices\LocalFileInfo.cs" />
     <Compile Include="Devices\DeviceInfo.cs" />
     <Compile Include="Devices\DevicesOptions.cs" />
-    <Compile Include="Dlna\DefaultLocalPlayer.cs" />
     <Compile Include="Dlna\EncodingContext.cs" />
     <Compile Include="Dlna\ILocalPlayer.cs" />
     <Compile Include="Dlna\NullLocalPlayer.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="Drawing\ImageOrientation.cs" />
     <Compile Include="Dto\IHasServerId.cs" />
     <Compile Include="Dto\MetadataEditorInfo.cs" />
+    <Compile Include="Dto\NameIdPair.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
     <Compile Include="MediaInfo\LiveMediaInfoResult.cs" />
     <Compile Include="Dto\MediaSourceType.cs" />
@@ -321,7 +321,6 @@
     <Compile Include="Querying\QueryResult.cs" />
     <Compile Include="Querying\SeasonQuery.cs" />
     <Compile Include="Querying\SessionQuery.cs" />
-    <Compile Include="Querying\SimilarItemsByNameQuery.cs" />
     <Compile Include="Querying\SimilarItemsQuery.cs" />
     <Compile Include="Querying\UpcomingEpisodesQuery.cs" />
     <Compile Include="Querying\UserQuery.cs" />
@@ -388,7 +387,6 @@
     <Compile Include="Sync\SyncDataResponse.cs" />
     <Compile Include="Sync\SyncDialogOptions.cs" />
     <Compile Include="Sync\SyncedItem.cs" />
-    <Compile Include="Sync\SyncHelper.cs" />
     <Compile Include="Sync\SyncJob.cs" />
     <Compile Include="Sync\SyncJobCreationResult.cs" />
     <Compile Include="Sync\SyncJobItem.cs" />
@@ -399,7 +397,7 @@
     <Compile Include="Sync\SyncJobStatus.cs" />
     <Compile Include="Sync\SyncOptions.cs" />
     <Compile Include="Sync\SyncParameter.cs" />
-    <Compile Include="Sync\SyncQuality.cs" />
+    <Compile Include="Sync\SyncProfileOption.cs" />
     <Compile Include="Sync\SyncQualityOption.cs" />
     <Compile Include="Sync\SyncTarget.cs" />
     <Compile Include="System\LogFile.cs" />

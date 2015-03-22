@@ -30,6 +30,11 @@ namespace MediaBrowser.Model.Sync
         /// <value>The quality.</value>
         public string Quality { get; set; }
         /// <summary>
+        /// Gets or sets the profile.
+        /// </summary>
+        /// <value>The profile.</value>
+        public string Profile { get; set; }
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
@@ -54,6 +59,11 @@ namespace MediaBrowser.Model.Sync
         /// </summary>
         /// <value>The limit.</value>
         public int? ItemLimit { get; set; }
+        /// <summary>
+        /// Gets or sets the bitrate.
+        /// </summary>
+        /// <value>The bitrate.</value>
+        public int? Bitrate { get; set; }
 
         public SyncJobRequest()
         {

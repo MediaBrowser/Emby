@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Common.Security;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Connect;
@@ -38,6 +39,7 @@ namespace MediaBrowser.Server.Implementations.Connect
         private readonly IServerConfigurationManager _config;
         private readonly IUserManager _userManager;
         private readonly IProviderManager _providerManager;
+        private readonly ISecurityManager _securityManager;
 
         private ConnectData _data = new ConnectData();
 
@@ -102,7 +104,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             IEncryptionManager encryption,
             IHttpClient httpClient,
             IServerApplicationHost appHost,
-            IServerConfigurationManager config, IUserManager userManager, IProviderManager providerManager)
+            IServerConfigurationManager config, IUserManager userManager, IProviderManager providerManager, ISecurityManager securityManager)
         {
             _logger = logger;
             _appPaths = appPaths;
@@ -113,6 +115,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             _config = config;
             _userManager = userManager;
             _providerManager = providerManager;
+            _securityManager = securityManager;
 
             _userManager.UserConfigurationUpdated += _userManager_UserConfigurationUpdated;
             _config.ConfigurationUpdated += _config_ConfigurationUpdated;
@@ -147,7 +150,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             if (string.IsNullOrWhiteSpace(wanApiAddress))
             {
-                _logger.Warn("Cannot update Media Browser Connect information without a WanApiAddress");
+                _logger.Warn("Cannot update Emby Connect information without a WanApiAddress");
                 return;
             }
 
@@ -408,7 +411,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             if (!connectUser.IsActive)
             {
-                throw new ArgumentException("The Media Browser account has been disabled.");
+                throw new ArgumentException("The Emby account has been disabled.");
             }
 
             var user = GetUser(userId);
@@ -514,7 +517,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
                 if (!connectUser.IsActive)
                 {
-                    throw new ArgumentException("The Media Browser account has been disabled.");
+                    throw new ArgumentException("The Emby account has been disabled.");
                 }
 
                 connectUserId = connectUser.Id;
@@ -1051,6 +1054,90 @@ namespace MediaBrowser.Server.Implementations.Connect
                 }
 
                 _logger.Debug("Connect returned a 404 when removing a user auth link. Handling it.");
+            }
+        }
+
+        public async Task<ConnectSupporterSummary> GetConnectSupporterSummary()
+        {
+            if (!_securityManager.IsMBSupporter)
+            {
+                return new ConnectSupporterSummary();
+            }
+
+            var url = GetConnectUrl("keyAssociation");
+
+            url += "?serverId=" + ConnectServerId;
+            url += "&supporterKey=" + _securityManager.SupporterKey;
+
+            var options = new HttpRequestOptions
+            {
+                Url = url,
+                CancellationToken = CancellationToken.None
+            };
+
+            SetServerAccessToken(options);
+            SetApplicationHeader(options);
+
+            // No need to examine the response
+            using (var stream = (await _httpClient.SendAsync(options, "GET").ConfigureAwait(false)).Content)
+            {
+                return _json.DeserializeFromStream<ConnectSupporterSummary>(stream);
+            }
+        }
+
+        public async Task AddConnectSupporter(string id)
+        {
+            if (!_securityManager.IsMBSupporter)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var url = GetConnectUrl("keyAssociation");
+
+            url += "?serverId=" + ConnectServerId;
+            url += "&supporterKey=" + _securityManager.SupporterKey;
+            url += "&userId=" + id;
+
+            var options = new HttpRequestOptions
+            {
+                Url = url,
+                CancellationToken = CancellationToken.None
+            };
+
+            SetServerAccessToken(options);
+            SetApplicationHeader(options);
+
+            // No need to examine the response
+            using (var stream = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
+            {
+            }
+        }
+
+        public async Task RemoveConnectSupporter(string id)
+        {
+            if (!_securityManager.IsMBSupporter)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var url = GetConnectUrl("keyAssociation");
+
+            url += "?serverId=" + ConnectServerId;
+            url += "&supporterKey=" + _securityManager.SupporterKey;
+            url += "&userId=" + id;
+     
+            var options = new HttpRequestOptions
+            {
+                Url = url,
+                CancellationToken = CancellationToken.None
+            };
+
+            SetServerAccessToken(options);
+            SetApplicationHeader(options);
+
+            // No need to examine the response
+            using (var stream = (await _httpClient.SendAsync(options, "DELETE").ConfigureAwait(false)).Content)
+            {
             }
         }
 

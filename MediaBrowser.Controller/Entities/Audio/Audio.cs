@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Controller.Providers;
+﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -22,7 +21,8 @@ namespace MediaBrowser.Controller.Entities.Audio
         IHasLookupInfo<SongInfo>,
         IHasTags,
         IHasMediaSources,
-        IThemeMedia
+        IThemeMedia,
+        IArchivable
     {
         public string FormatName { get; set; }
         public long? Size { get; set; }
@@ -169,16 +169,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("0000 - ") : "")
                     + (IndexNumber != null ? IndexNumber.Value.ToString("0000 - ") : "") + Name;
-        }
-
-        /// <summary>
-        /// Determines whether the specified name has artist.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns><c>true</c> if the specified name has artist; otherwise, <c>false</c>.</returns>
-        public bool HasArtist(string name)
-        {
-            return AllArtists.Contains(name, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

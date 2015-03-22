@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>${TitleMediaBrowser}</title>
+    <title>Emby</title>
 </head>
 <body>
     <div id="webClientPreferencesPage" data-role="page" class="page libraryPage userPreferencesPage" data-contextname="${HeaderPreferences}">
@@ -84,6 +84,12 @@
                             <option value="resume">${OptionResumablemedia}</option>
                             <option value="none">${OptionNone}</option>
                         </select>
+                    </div>
+                    <br />
+                    <div>
+                        <label for="chkEnableLibraryTileNames">${LabelShowLibraryTileNames}</label>
+                        <input type="checkbox" id="chkEnableLibraryTileNames" data-mini="true">
+                        <div class="fieldDescription">${LabelShowLibraryTileNamesHelp}</div>
                     </div>
                 </div>
             </div>

@@ -848,6 +848,12 @@ namespace MediaBrowser.Server.Implementations.Library
                 foreach (var user in users)
                 {
                     await ResetPassword(user).ConfigureAwait(false);
+
+                    if (user.Policy.IsDisabled)
+                    {
+                        user.Policy.IsDisabled = false;
+                        await UpdateUserPolicy(user, user.Policy, true).ConfigureAwait(false);
+                    }
                     usersReset.Add(user.Name);
                 }
             }

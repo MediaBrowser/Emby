@@ -74,7 +74,7 @@ namespace MediaBrowser.Controller.Session
         /// <summary>
         /// Logs the user activity.
         /// </summary>
-        /// <param name="clientType">Type of the client.</param>
+        /// <param name="appName">Type of the client.</param>
         /// <param name="appVersion">The app version.</param>
         /// <param name="deviceId">The device id.</param>
         /// <param name="deviceName">Name of the device.</param>
@@ -82,7 +82,7 @@ namespace MediaBrowser.Controller.Session
         /// <param name="user">The user.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        Task<SessionInfo> LogSessionActivity(string clientType, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user);
+        Task<SessionInfo> LogSessionActivity(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user);
 
         /// <summary>
         /// Used to report that playback has started for an item
@@ -283,18 +283,20 @@ namespace MediaBrowser.Controller.Session
         /// Gets the session by authentication token.
         /// </summary>
         /// <param name="token">The token.</param>
+        /// <param name="deviceId">The device identifier.</param>
         /// <param name="remoteEndpoint">The remote endpoint.</param>
         /// <returns>SessionInfo.</returns>
-        Task<SessionInfo> GetSessionByAuthenticationToken(string token, string remoteEndpoint);
+        Task<SessionInfo> GetSessionByAuthenticationToken(string token, string deviceId, string remoteEndpoint);
 
         /// <summary>
         /// Gets the session by authentication token.
         /// </summary>
         /// <param name="info">The information.</param>
+        /// <param name="deviceId">The device identifier.</param>
         /// <param name="remoteEndpoint">The remote endpoint.</param>
         /// <param name="appVersion">The application version.</param>
         /// <returns>Task&lt;SessionInfo&gt;.</returns>
-        Task<SessionInfo> GetSessionByAuthenticationToken(AuthenticationInfo info, string remoteEndpoint, string appVersion);
+        Task<SessionInfo> GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion);
 
         /// <summary>
         /// Logouts the specified access token.

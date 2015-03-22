@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>${TitleMediaBrowser}</title>
+    <title>Emby</title>
 </head>
 <body>
     <div id="editItemMetadataPage" data-role="page" class="page libraryPage metadataEditorPage" data-contextname="${HeaderMetadataManager}">
@@ -25,11 +25,6 @@
                     <div class="metadataFormFields">
 
                         <div>
-                            <div id="refreshLoading" style="display: none;">
-                                <div class="circle"></div>
-                                <div class="circle1"></div>
-                                <div style="margin-top: -15px;"></div>
-                            </div>
                             <button class="btnSave" type="submit" data-theme="a" data-icon="check" data-mini="true" data-inline="true">
                                 ${ButtonSave}
                             </button>
@@ -73,8 +68,8 @@
                                 <input type="text" id="txtArtist" placeholder="${LabelArtistsHelp}" />
                             </div>
                             <div data-role="fieldcontain" id="fldAlbumArtist" style="display: none;">
-                                <label for="txtAlbumArtist">${LabelAlbumArtist}</label>
-                                <input type="text" id="txtAlbumArtist" />
+                                <label for="txtAlbumArtist">${LabelAlbumArtists}</label>
+                                <input type="text" id="txtAlbumArtist" placeholder="${LabelArtistsHelp}" />
                             </div>
                             <div data-role="fieldcontain" id="fldAlbum" style="display: none;">
                                 <label for="txtAlbum">${LabelAlbum}</label>

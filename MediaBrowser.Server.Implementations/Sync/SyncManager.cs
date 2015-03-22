@@ -15,7 +15,6 @@ using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Playlists;
 using MediaBrowser.Controller.Sync;
 using MediaBrowser.Controller.TV;
-using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Events;
@@ -136,6 +135,14 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var jobId = Guid.NewGuid().ToString("N");
 
+            if (string.IsNullOrWhiteSpace(request.Quality))
+            {
+                request.Quality = GetQualityOptions(request.TargetId)
+                    .Where(i => i.IsDefault)
+                    .Select(i => i.Id)
+                    .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+            }
+
             var job = new SyncJob
             {
                 Id = jobId,
@@ -151,7 +158,9 @@ namespace MediaBrowser.Server.Implementations.Sync
                 ItemCount = items.Count,
                 Category = request.Category,
                 ParentId = request.ParentId,
-                Quality = request.Quality
+                Quality = request.Quality,
+                Profile = request.Profile,
+                Bitrate = request.Bitrate
             };
 
             if (!request.Category.HasValue && request.ItemIds != null)
@@ -174,7 +183,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             // If it already has a converting status then is must have been aborted during conversion
             var jobItemsResult = _repo.GetJobItems(new SyncJobItemQuery
             {
-                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                Statuses = new SyncJobItemStatus[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
                 JobId = jobId
             });
 
@@ -183,7 +192,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             jobItemsResult = _repo.GetJobItems(new SyncJobItemQuery
             {
-                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                Statuses = new SyncJobItemStatus[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
                 JobId = jobId
             });
 
@@ -212,6 +221,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             instance.Name = job.Name;
             instance.Quality = job.Quality;
+            instance.Profile = job.Profile;
             instance.UnwatchedOnly = job.UnwatchedOnly;
             instance.SyncNewContent = job.SyncNewContent;
             instance.ItemLimit = job.ItemLimit;
@@ -709,7 +719,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             var jobItemResult = GetJobItems(new SyncJobItemQuery
             {
                 TargetId = targetId,
-                Statuses = new List<SyncJobItemStatus>
+                Statuses = new SyncJobItemStatus[]
                 {
                     SyncJobItemStatus.ReadyToTransfer
                 }
@@ -726,7 +736,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             var jobItemResult = GetJobItems(new SyncJobItemQuery
             {
                 TargetId = request.TargetId,
-                Statuses = new List<SyncJobItemStatus> { SyncJobItemStatus.Synced }
+                Statuses = new SyncJobItemStatus[] { SyncJobItemStatus.Synced }
             });
 
             var response = new SyncDataResponse();
@@ -972,27 +982,31 @@ namespace MediaBrowser.Server.Implementations.Sync
             return _repo.GetLibraryItemIds(query);
         }
 
-        public AudioOptions GetAudioOptions(SyncJobItem jobItem, SyncJob job)
+        public SyncJobOptions GetAudioOptions(SyncJobItem jobItem, SyncJob job)
         {
-            var profile = GetDeviceProfile(jobItem.TargetId, null);
+            var options = GetSyncJobOptions(jobItem.TargetId, null, null);
 
-            return new AudioOptions
+            if (job.Bitrate.HasValue)
             {
-                Profile = profile
-            };
+                options.DeviceProfile.MaxStaticBitrate = job.Bitrate.Value;
+            }
+
+            return options;
         }
 
-        public VideoOptions GetVideoOptions(SyncJobItem jobItem, SyncJob job)
+        public SyncJobOptions GetVideoOptions(SyncJobItem jobItem, SyncJob job)
         {
-            var profile = GetDeviceProfile(jobItem.TargetId, job.Quality);
+            var options = GetSyncJobOptions(jobItem.TargetId, job.Profile, job.Quality);
 
-            return new VideoOptions
+            if (job.Bitrate.HasValue)
             {
-                Profile = profile
-            };
+                options.DeviceProfile.MaxStaticBitrate = job.Bitrate.Value;
+            }
+
+            return options;
         }
 
-        public DeviceProfile GetDeviceProfile(string targetId, string quality)
+        private SyncJobOptions GetSyncJobOptions(string targetId, string profile, string quality)
         {
             foreach (var provider in _providers)
             {
@@ -1000,46 +1014,43 @@ namespace MediaBrowser.Server.Implementations.Sync
                 {
                     if (string.Equals(target.Id, targetId, StringComparison.OrdinalIgnoreCase))
                     {
-                        return GetDeviceProfile(provider, target, quality);
+                        return GetSyncJobOptions(provider, target, profile, quality);
                     }
                 }
             }
 
-            return null;
+            return GetDefaultSyncJobOptions(profile, quality);
         }
 
-        private DeviceProfile GetDeviceProfile(ISyncProvider provider, SyncTarget target, string quality)
+        private SyncJobOptions GetSyncJobOptions(ISyncProvider provider, SyncTarget target, string profile, string quality)
         {
             var hasProfile = provider as IHasSyncQuality;
 
             if (hasProfile != null)
             {
-                return hasProfile.GetDeviceProfile(target, quality);
+                return hasProfile.GetSyncJobOptions(target, profile, quality);
             }
 
-            return GetDefaultProfile(quality);
+            return GetDefaultSyncJobOptions(profile, quality);
         }
 
-        private DeviceProfile GetDefaultProfile(string quality)
+        private SyncJobOptions GetDefaultSyncJobOptions(string profile, string quality)
         {
-            var profile = new CloudSyncProfile(true, false);
-            var maxBitrate = profile.MaxStaticBitrate;
+            var supportsAc3 = string.Equals(profile, "general", StringComparison.OrdinalIgnoreCase);
 
-            if (maxBitrate.HasValue)
+            var deviceProfile = new CloudSyncProfile(supportsAc3, false);
+            deviceProfile.MaxStaticBitrate = SyncHelper.AdjustBitrate(deviceProfile.MaxStaticBitrate, quality);
+
+            return new SyncJobOptions
             {
-                if (string.Equals(quality, "medium", StringComparison.OrdinalIgnoreCase))
-                {
-                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .75);
-                }
-                else if (string.Equals(quality, "low", StringComparison.OrdinalIgnoreCase))
-                {
-                    maxBitrate = Convert.ToInt32(maxBitrate.Value * .5);
-                }
+                DeviceProfile = deviceProfile,
+                IsConverting = IsConverting(profile, quality)
+            };
+        }
 
-                profile.MaxStaticBitrate = maxBitrate;
-            }
-
-            return profile;
+        private bool IsConverting(string profile, string quality)
+        {
+            return !string.Equals(profile, "original", StringComparison.OrdinalIgnoreCase);
         }
 
         public IEnumerable<SyncQualityOption> GetQualityOptions(string targetId)
@@ -1071,26 +1082,78 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Original.ToString(),
-                    Id = SyncQuality.Original.ToString()
-                },
-                new SyncQualityOption
-                {
-                    Name = SyncQuality.High.ToString(),
-                    Id = SyncQuality.High.ToString(),
+                    Name = "High",
+                    Id = "high",
                     IsDefault = true
                 },
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Medium.ToString(),
-                    Id = SyncQuality.Medium.ToString()
+                    Name = "Medium",
+                    Id = "medium"
                 },
                 new SyncQualityOption
                 {
-                    Name = SyncQuality.Low.ToString(),
-                    Id = SyncQuality.Low.ToString()
+                    Name = "Low",
+                    Id = "low"
+                },
+                new SyncQualityOption
+                {
+                    Name = "Custom",
+                    Id = "custom"
                 }
             };
+        }
+
+        public IEnumerable<SyncProfileOption> GetProfileOptions(string targetId)
+        {
+            foreach (var provider in _providers)
+            {
+                foreach (var target in GetSyncTargets(provider))
+                {
+                    if (string.Equals(target.Id, targetId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return GetProfileOptions(provider, target);
+                    }
+                }
+            }
+
+            return new List<SyncProfileOption>();
+        }
+
+        private IEnumerable<SyncProfileOption> GetProfileOptions(ISyncProvider provider, SyncTarget target)
+        {
+            var hasQuality = provider as IHasSyncQuality;
+            if (hasQuality != null)
+            {
+                return hasQuality.GetProfileOptions(target);
+            }
+
+            var list = new List<SyncProfileOption>();
+
+            list.Add(new SyncProfileOption
+            {
+                Name = "Original",
+                Id = "Original",
+                Description = "Syncs original files as-is.",
+                EnableQualityOptions = false
+            });
+
+            list.Add(new SyncProfileOption
+            {
+                Name = "Baseline",
+                Id = "baseline",
+                Description = "Designed for compatibility with all devices, including web browsers. Targets H264/AAC video and MP3 audio."
+            });
+
+            list.Add(new SyncProfileOption
+            {
+                Name = "General",
+                Id = "general",
+                Description = "Designed for compatibility with Chromecast, Roku, Smart TV's, and other similar devices. Targets H264/AAC/AC3 video and MP3 audio.",
+                IsDefault = true
+            });
+
+            return list;
         }
     }
 }
