@@ -143,7 +143,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             var fileTransferProgress = new ActionableProgress<double>();
             fileTransferProgress.RegisterAction(pct => progress.Report(pct * .92));
 
-            var localItem = CreateLocalItem(provider, jobItem.SyncJobId, jobItem.SyncJobItemId, target, libraryItem, serverId, jobItem.OriginalFileName);
+            var localItem = CreateLocalItem(provider, jobItem, target, libraryItem, serverId, jobItem.OriginalFileName);
 
             await _syncManager.ReportSyncJobItemTransferBeginning(internalSyncJobItem.Id);
 
@@ -167,6 +167,19 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                 // Create db record
                 await dataProvider.AddOrUpdate(target, localItem).ConfigureAwait(false);
+
+                if (localItem.Item.MediaSources != null)
+                {
+                    var mediaSource = localItem.Item.MediaSources.FirstOrDefault();
+                    if (mediaSource != null)
+                    {
+                        mediaSource.Path = sendFileResult.Path;
+                        mediaSource.Protocol = sendFileResult.Protocol;
+                        mediaSource.SupportsTranscoding = false;
+
+                        await SendSubtitles(localItem, mediaSource, provider, dataProvider, target, cancellationToken).ConfigureAwait(false);
+                    }
+                }
 
                 progress.Report(92);
 
@@ -192,6 +205,41 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
         }
 
+        private async Task SendSubtitles(LocalItem localItem, MediaSourceInfo mediaSource, IServerSyncProvider provider, ISyncDataProvider dataProvider, SyncTarget target, CancellationToken cancellationToken)
+        {
+            var failedSubtitles = new List<MediaStream>();
+            var requiresSave = false;
+
+            foreach (var mediaStream in mediaSource.MediaStreams
+                .Where(i => i.Type == MediaStreamType.Subtitle && i.IsExternal)
+                .ToList())
+            {
+                try
+                {
+                    var sendFileResult = await SendFile(provider, mediaStream.Path, localItem, target, cancellationToken).ConfigureAwait(false);
+
+                    mediaStream.Path = sendFileResult.Path;
+                    requiresSave = true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error sending subtitle stream", ex);
+                    failedSubtitles.Add(mediaStream);
+                }
+            }
+
+            if (failedSubtitles.Count > 0)
+            {
+                mediaSource.MediaStreams = mediaSource.MediaStreams.Except(failedSubtitles).ToList();
+                requiresSave = true;
+            }
+
+            if (requiresSave)
+            {
+                await dataProvider.AddOrUpdate(target, localItem).ConfigureAwait(false);
+            }
+        }
+
         private async Task RemoveItem(IServerSyncProvider provider,
             ISyncDataProvider dataProvider,
             string serverId,
@@ -207,6 +255,8 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                 foreach (var file in files)
                 {
+                    _logger.Debug("Removing {0} from {1}.", file.Path, target.Name);
+
                     await provider.DeleteFile(file.Path, target, cancellationToken).ConfigureAwait(false);
                 }
 
@@ -216,6 +266,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private async Task<SendFileResult> SendFile(IServerSyncProvider provider, string inputPath, LocalItem item, SyncTarget target, CancellationToken cancellationToken)
         {
+            _logger.Debug("Sending {0} to {1}. Remote path: {2}", inputPath, provider.Name, item.LocalPath);
             using (var stream = _fileSystem.GetFileStream(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read, true))
             {
                 return await provider.SendFile(stream, item.LocalPath, target, new Progress<double>(), cancellationToken).ConfigureAwait(false);
@@ -237,9 +288,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
         }
 
-        public LocalItem CreateLocalItem(IServerSyncProvider provider, string syncJobId, string syncJobItemId, SyncTarget target, BaseItemDto libraryItem, string serverId, string originalFileName)
+        public LocalItem CreateLocalItem(IServerSyncProvider provider, SyncedItem syncedItem, SyncTarget target, BaseItemDto libraryItem, string serverId, string originalFileName)
         {
-            var path = GetDirectoryPath(provider, syncJobId, libraryItem, serverId);
+            var path = GetDirectoryPath(provider, syncedItem, libraryItem, serverId);
             path.Add(GetLocalFileName(provider, libraryItem, originalFileName));
 
             var localPath = provider.GetFullPath(path, target);
@@ -256,16 +307,25 @@ namespace MediaBrowser.Server.Implementations.Sync
                 ItemId = libraryItem.Id,
                 ServerId = serverId,
                 LocalPath = localPath,
-                Id = GetLocalId(syncJobItemId, libraryItem.Id)
+                Id = GetLocalId(syncedItem.SyncJobItemId, libraryItem.Id)
             };
         }
 
-        private List<string> GetDirectoryPath(IServerSyncProvider provider, string syncJobId, BaseItemDto item, string serverId)
+        private string GetSyncJobFolderName(SyncedItem syncedItem, IServerSyncProvider provider)
+        {
+            var name = syncedItem.SyncJobName + syncedItem.SyncJobDateCreated.ToLocalTime().ToString("g");
+
+            name = GetValidFilename(provider, name);
+
+            return name;
+        }
+
+        private List<string> GetDirectoryPath(IServerSyncProvider provider, SyncedItem syncedItem, BaseItemDto item, string serverId)
         {
             var parts = new List<string>
             {
                 serverId,
-                syncJobId
+                GetSyncJobFolderName(syncedItem, provider)
             };
 
             if (item.IsType("episode"))
@@ -337,7 +397,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var name = Path.GetFileNameWithoutExtension(item.LocalPath);
 
-            foreach (var file in list.Where(f => f.Name.Contains(name)))
+            foreach (var file in list.Where(f => f.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) != -1))
             {
                 var itemFile = new ItemFileInfo
                 {

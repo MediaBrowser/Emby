@@ -89,38 +89,14 @@ namespace MediaBrowser.Model.Dlna
 
         private StreamInfo GetOptimalStream(List<StreamInfo> streams)
         {
-            // Grab the first one that can be direct streamed
-            // If that doesn't produce anything, just take the first
-            foreach (StreamInfo i in streams)
-            {
-                if (i.PlayMethod == PlayMethod.DirectPlay && i.MediaSource.Protocol == MediaProtocol.File)
-                {
-                    return i;
-                }
-            }
-            foreach (StreamInfo i in streams)
-            {
-                if (i.PlayMethod == PlayMethod.DirectPlay)
-                {
-                    return i;
-                }
-            }
-            foreach (StreamInfo i in streams)
-            {
-                if (i.PlayMethod == PlayMethod.DirectStream)
-                {
-                    return i;
-                }
-            }
+            streams = StreamInfoSorter.SortMediaSources(streams);
 
             foreach (StreamInfo stream in streams)
             {
                 return stream;
             }
 
-            PlaybackException error = new PlaybackException();
-            error.ErrorCode = PlaybackErrorCode.NoCompatibleStream;
-            throw error;
+            return null;
         }
 
         private StreamInfo BuildAudioItem(MediaSourceInfo item, AudioOptions options)
@@ -221,7 +197,7 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 playlistItem.Container = transcodingProfile.Container;
                 playlistItem.AudioCodec = transcodingProfile.AudioCodec;
-                playlistItem.Protocol = transcodingProfile.Protocol;
+                playlistItem.SubProtocol = transcodingProfile.Protocol;
 
                 List<CodecProfile> audioCodecProfiles = new List<CodecProfile>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
@@ -374,7 +350,7 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
                 playlistItem.AudioCodec = transcodingProfile.AudioCodec.Split(',')[0];
                 playlistItem.VideoCodec = transcodingProfile.VideoCodec;
-                playlistItem.Protocol = transcodingProfile.Protocol;
+                playlistItem.SubProtocol = transcodingProfile.Protocol;
                 playlistItem.AudioStreamIndex = audioStreamIndex;
 
                 List<ProfileCondition> videoTranscodingConditions = new List<ProfileCondition>();
