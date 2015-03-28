@@ -1,8 +1,6 @@
 ﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Diagnostics;
 using MediaBrowser.IsoMounter;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Server.Mono.Diagnostics;
 using MediaBrowser.Server.Mono.Networking;
 using MediaBrowser.Server.Startup.Common;
 using Mono.Unix.Native;
@@ -141,7 +139,6 @@ namespace MediaBrowser.Server.Mono.Native
             }
             else if (string.Equals(sysName, "BSD", StringComparison.OrdinalIgnoreCase))
             {
-                // TODO: How to detect BSD?
                 info.OperatingSystem = Startup.Common.OperatingSystem.Bsd;
             }
 
@@ -190,17 +187,6 @@ namespace MediaBrowser.Server.Mono.Native
         {
             public string sysname = string.Empty;
             public string machine = string.Empty;
-        }
-
-
-        public IProcessManager GetProcessManager()
-        {
-            if (Environment.OperatingSystem == Startup.Common.OperatingSystem.Linux)
-            {
-                return new LinuxProcessManager();
-            }
-
-            return new ProcessManager();
         }
     }
 }

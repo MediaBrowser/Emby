@@ -24,6 +24,7 @@ namespace MediaBrowser.Model.Dto
         public bool ReadAtNativeFramerate { get; set; }
         public bool SupportsTranscoding { get; set; }
         public bool SupportsDirectStream { get; set; }
+        public bool SupportsDirectPlay { get; set; }
 
         public VideoType? VideoType { get; set; }
 
@@ -39,7 +40,11 @@ namespace MediaBrowser.Model.Dto
         public int? Bitrate { get; set; }
 
         public TransportStreamTimestamp? Timestamp { get; set; }
-        public Dictionary<string, string> RequiredHttpHeaders { get; set; }
+        public Dictionary<string, string> RequiredHttpHeaders { get; set; }        
+        
+        public string TranscodingUrl { get; set; }
+        public string TranscodingSubProtocol { get; set; }
+        public string TranscodingContainer { get; set; }
 
         public MediaSourceInfo()
         {
@@ -49,6 +54,7 @@ namespace MediaBrowser.Model.Dto
             PlayableStreamFileNames = new List<string>();
             SupportsTranscoding = true;
             SupportsDirectStream = true;
+            SupportsDirectPlay = true;
         }
 
         public int? DefaultAudioStreamIndex { get; set; }
@@ -57,39 +63,41 @@ namespace MediaBrowser.Model.Dto
         [IgnoreDataMember]
         public MediaStream DefaultAudioStream
         {
-            get
+            get { return GetDefaultAudioStream(DefaultAudioStreamIndex); }
+        }
+
+        public MediaStream GetDefaultAudioStream(int? defaultIndex)
+        {
+            if (defaultIndex.HasValue)
             {
-                if (DefaultAudioStreamIndex.HasValue)
-                {
-                    var val = DefaultAudioStreamIndex.Value;
-
-                    foreach (MediaStream i in MediaStreams)
-                    {
-                        if (i.Type == MediaStreamType.Audio && i.Index == val)
-                        {
-                            return i;
-                        }
-                    }
-                }
+                var val = defaultIndex.Value;
 
                 foreach (MediaStream i in MediaStreams)
                 {
-                    if (i.Type == MediaStreamType.Audio && i.IsDefault)
+                    if (i.Type == MediaStreamType.Audio && i.Index == val)
                     {
                         return i;
                     }
                 }
-
-                foreach (MediaStream i in MediaStreams)
-                {
-                    if (i.Type == MediaStreamType.Audio)
-                    {
-                        return i;
-                    }
-                }
-
-                return null;
             }
+
+            foreach (MediaStream i in MediaStreams)
+            {
+                if (i.Type == MediaStreamType.Audio && i.IsDefault)
+                {
+                    return i;
+                }
+            }
+
+            foreach (MediaStream i in MediaStreams)
+            {
+                if (i.Type == MediaStreamType.Audio)
+                {
+                    return i;
+                }
+            }
+
+            return null;
         }
 
         [IgnoreDataMember]

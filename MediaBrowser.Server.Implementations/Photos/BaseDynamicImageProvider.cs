@@ -125,10 +125,13 @@ namespace MediaBrowser.Server.Implementations.Photos
 
         protected abstract Task<List<BaseItem>> GetItemsWithImages(IHasImages item);
 
-        private const string Version = "3";
+        private const string Version = "5";
         protected string GetConfigurationCacheKey(List<BaseItem> items, string itemName)
         {
-            return (Version + "_" + (itemName ?? string.Empty) + "_" + string.Join(",", items.Select(i => i.Id.ToString("N")).ToArray())).GetMD5().ToString("N");
+            var parts = Version + "_" + (itemName ?? string.Empty) + "_" +
+                        string.Join(",", items.Select(i => i.Id.ToString("N")).ToArray());
+
+            return parts.GetMD5().ToString("N");
         }
 
         protected Task<Stream> GetThumbCollage(List<BaseItem> items)
@@ -220,25 +223,14 @@ namespace MediaBrowser.Server.Implementations.Photos
 
         protected virtual List<BaseItem> GetFinalItems(List<BaseItem> items, int limit)
         {
-            // Rotate the images no more than once per week
-            var random = new Random(GetWeekOfYear()).Next();
+            // Rotate the images once every x days
+            var random = DateTime.Now.DayOfYear % 4;
 
             return items
-                .OrderBy(i => random - items.IndexOf(i))
+                .OrderBy(i => (random + "" + items.IndexOf(i)).GetMD5())
                 .Take(limit)
                 .OrderBy(i => i.Name)
                 .ToList();
-        }
-
-        private int GetWeekOfYear()
-        {
-            var usCulture = new CultureInfo("en-US");
-            var weekNo = usCulture.Calendar.GetWeekOfYear(
-                            DateTime.Now,
-                            usCulture.DateTimeFormat.CalendarWeekRule,
-                            usCulture.DateTimeFormat.FirstDayOfWeek);
-
-            return weekNo;
         }
 
         public int Order

@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using System;
@@ -26,7 +27,8 @@ namespace MediaBrowser.MediaEncoding.Encoder
             var format = string.Empty;
             var keyFrame = string.Empty;
 
-            if (string.Equals(Path.GetExtension(state.OutputFilePath), ".mp4", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(Path.GetExtension(state.OutputFilePath), ".mp4", StringComparison.OrdinalIgnoreCase) &&
+                state.Options.Context == EncodingContext.Streaming)
             {
                 format = " -f mp4 -movflags frag_keyframe+empty_moov";
             }
@@ -71,10 +73,13 @@ namespace MediaBrowser.MediaEncoding.Encoder
                     args;
             }
 
-            var keyFrameArg = string.Format(" -force_key_frames expr:gte(t,n_forced*{0})",
-                5.ToString(UsCulture));
+            if (state.Options.Context == EncodingContext.Streaming)
+            {
+                var keyFrameArg = string.Format(" -force_key_frames expr:gte(t,n_forced*{0})",
+                    5.ToString(UsCulture));
 
-            args += keyFrameArg;
+                args += keyFrameArg;
+            }
 
             var hasGraphicalSubs = state.SubtitleStream != null && !state.SubtitleStream.IsTextSubtitleStream;
 

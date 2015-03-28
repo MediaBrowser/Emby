@@ -274,32 +274,37 @@ namespace MediaBrowser.Api
                     return null;
                 }
 
-                job.ActiveRequestCount++;
-
-                job.DisposeKillTimer();
+                OnTranscodeBeginRequest(job);
 
                 return job;
             }
         }
 
+        public void OnTranscodeBeginRequest(TranscodingJob job)
+        {
+            job.ActiveRequestCount++;
+
+            job.DisposeKillTimer();
+        }
+        
         public void OnTranscodeEndRequest(TranscodingJob job)
         {
             job.ActiveRequestCount--;
 
             if (job.ActiveRequestCount == 0)
             {
-                if (job.Type == TranscodingJobType.Progressive)
-                {
-                    const int timerDuration = 1000;
+                // TODO: Lower this hls timeout
+                var timerDuration = job.Type == TranscodingJobType.Progressive ?
+                    1000 :
+                    14400000;
 
-                    if (job.KillTimer == null)
-                    {
-                        job.KillTimer = new Timer(OnTranscodeKillTimerStopped, job, timerDuration, Timeout.Infinite);
-                    }
-                    else
-                    {
-                        job.KillTimer.Change(timerDuration, Timeout.Infinite);
-                    }
+                if (job.KillTimer == null)
+                {
+                    job.KillTimer = new Timer(OnTranscodeKillTimerStopped, job, timerDuration, Timeout.Infinite);
+                }
+                else
+                {
+                    job.KillTimer.Change(timerDuration, Timeout.Infinite);
                 }
             }
         }
@@ -407,6 +412,11 @@ namespace MediaBrowser.Api
                 {
                     try
                     {
+                        if (job.TranscodingThrottler != null)
+                        {
+                            job.TranscodingThrottler.Stop();
+                        }
+
                         Logger.Info("Killing ffmpeg process for {0}", job.Path);
 
                         //process.Kill();
@@ -493,7 +503,7 @@ namespace MediaBrowser.Api
                 .ToList();
 
             Exception e = null;
-            
+
             foreach (var file in filesToDelete)
             {
                 try
@@ -577,6 +587,8 @@ namespace MediaBrowser.Api
 
         public long? TranscodingPositionTicks { get; set; }
         public long? DownloadPositionTicks { get; set; }
+
+        public TranscodingThrottler TranscodingThrottler { get; set; }
 
         public void DisposeKillTimer()
         {

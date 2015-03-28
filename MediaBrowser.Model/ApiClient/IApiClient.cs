@@ -38,11 +38,6 @@ namespace MediaBrowser.Model.ApiClient
         event EventHandler<GenericEventArgs<RemoteLogoutReason>> RemoteLoggedOut;
 
         /// <summary>
-        /// Occurs when [authenticated].
-        /// </summary>
-        event EventHandler<GenericEventArgs<AuthenticationResult>> Authenticated;
-
-        /// <summary>
         /// Gets the API URL.
         /// </summary>
         /// <param name="handler">The handler.</param>
@@ -256,7 +251,7 @@ namespace MediaBrowser.Model.ApiClient
         /// <param name="itemId">The item identifier.</param>
         /// <param name="userId">The user identifier.</param>
         /// <returns>Task&lt;LiveMediaInfoResult&gt;.</returns>
-        Task<LiveMediaInfoResult> GetPlaybackInfo(string itemId, string userId);
+        Task<PlaybackInfoResponse> GetPlaybackInfo(string itemId, string userId);
 
         /// <summary>
         /// Gets the users async.
