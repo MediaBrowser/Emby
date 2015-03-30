@@ -51,7 +51,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
                 var response = await _httpClient.GetResponse(options).ConfigureAwait(false);
 
-                if (response.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                if (response.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase) || HasImageExtension(liveTvItem.ProviderImageUrl))
                 {
                     imageResponse.HasImage = true;
                     imageResponse.Stream = response.Content;
@@ -106,6 +106,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv
         public bool HasChanged(IHasMetadata item, MetadataStatus status, IDirectoryService directoryService)
         {
             return GetSupportedImages(item).Any(i => !item.HasImage(i));
+        }
+        public bool HasImageExtension(string url)
+        {
+            var knownImageFormats = new List<string>(){
+                "png",
+                "jpg"
+            };
+            foreach (string imageFormat in knownImageFormats)
+            {
+                if (url.EndsWith("."+imageFormat)) { return true; }
+            }
+            return false;
         }
     }
 }
