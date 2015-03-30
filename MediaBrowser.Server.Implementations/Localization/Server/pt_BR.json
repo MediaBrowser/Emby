@@ -1384,5 +1384,6 @@
     "HeaderUpcomingPrograms": "Programas Por Estrear",
     "ButtonMoreItems": "Mais...",
     "LabelShowLibraryTileNames": "Mostrar os nomes das tiles da biblioteca",
-    "LabelShowLibraryTileNamesHelp": "Determina se os t\u00edtulos ser\u00e3o exibidos embaixo das tiles da biblioteca na p\u00e1gina in\u00edcio"
+    "LabelShowLibraryTileNamesHelp": "Determina se os t\u00edtulos ser\u00e3o exibidos embaixo das tiles da biblioteca na p\u00e1gina in\u00edcio",
+    "ButtonClear": "Clear"
 }

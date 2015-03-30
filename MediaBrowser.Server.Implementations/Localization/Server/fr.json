@@ -1384,5 +1384,6 @@
     "HeaderUpcomingPrograms": "Programmes \u00e0 venir",
     "ButtonMoreItems": "Plus...",
     "LabelShowLibraryTileNames": "Voir les noms des affiches de la biblioth\u00e8que",
-    "LabelShowLibraryTileNamesHelp": "D\u00e9termine si les noms doivent \u00eatre affich\u00e9s en dessous des affiches de la biblioth\u00e8que sur la page d'accueil"
+    "LabelShowLibraryTileNamesHelp": "D\u00e9termine si les noms doivent \u00eatre affich\u00e9s en dessous des affiches de la biblioth\u00e8que sur la page d'accueil",
+    "ButtonClear": "Clear"
 }
