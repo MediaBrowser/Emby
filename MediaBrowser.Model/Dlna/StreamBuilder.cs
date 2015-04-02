@@ -814,6 +814,21 @@ namespace MediaBrowser.Model.Dlna
                             break;
                         }
                     case ProfileConditionValue.IsAnamorphic:
+                        bool val2;
+                            if (BoolHelper.TryParseCultureInvariant(value, out val2))
+                            {
+                                if (condition.Condition == ProfileConditionType.Equals)
+                                {
+                                    if (!val2)
+                                        item.AllowAnamorphic = false;
+                                }
+                                else if (condition.Condition == ProfileConditionType.NotEquals)
+                                {
+                                    if (val2)
+                                        item.AllowAnamorphic = false;
+                                }
+                            }
+                            break;
                     case ProfileConditionValue.AudioProfile:
                     case ProfileConditionValue.Has64BitOffsets:
                     case ProfileConditionValue.PacketLength:

@@ -592,18 +592,20 @@ namespace MediaBrowser.Api.Playback
                 filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", widthParam, heightParam));
             }
 
-            // If Max dimensions were supplied, for width selects lowest even number between input width and width req size and selects lowest even number from in width*display aspect and requested size
+            // Fit the video into the specified bounds while ensuring upscaling only occurs in one dimension
             else if (request.MaxWidth.HasValue && request.MaxHeight.HasValue)
             {
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(min(iw\\,{0})/2)*2:trunc(min((iw/dar)\\,{1})/2)*2", maxWidthParam, maxHeightParam));
+                // picks the highest resolution that will fit within the max/min boundaries that only causes upscaling in one or other dimension
+                filters.Add(string.Format("scale=trunc(min(max(iw\\,ih*dar)\\,min({0}\\,{1}*dar))/2)*2:trunc(min(max(iw/dar\\,ih)\\,min({0}/dar\\,{1}))/2)*2", maxWidthParam, maxHeightParam));
             }
 
             // If a fixed width was requested
             else if (request.Width.HasValue)
             {
+                // currently assumes Width < MaxWidth and ignores any MaxHeight
                 var widthParam = request.Width.Value.ToString(UsCulture);
 
                 filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
@@ -612,25 +614,26 @@ namespace MediaBrowser.Api.Playback
             // If a fixed height was requested
             else if (request.Height.HasValue)
             {
+                // currently assume Height < MaxHeight and ignores and MaxWidth
                 var heightParam = request.Height.Value.ToString(UsCulture);
 
                 filters.Add(string.Format("scale=trunc(oh*a*2)/2:{0}", heightParam));
             }
 
             // If a max width was requested
-            else if (request.MaxWidth.HasValue && (!request.MaxHeight.HasValue || state.VideoStream == null))
+            else if (request.MaxWidth.HasValue && (!request.MaxHeight.HasValue))
             {
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
+                filters.Add(string.Format("scale=min(max(iw\\,ih*dar)\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
             }
 
             // If a max height was requested
-            else if (request.MaxHeight.HasValue && (!request.MaxWidth.HasValue || state.VideoStream == null))
+            else if (request.MaxHeight.HasValue && (!request.MaxWidth.HasValue))
             {
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a*2)/2:min(ih\\,{0})", maxHeightParam));
+                filters.Add(string.Format("scale=trunc(oh*a*2)/2:min(max(iw/dar\\,ih)\\,{0})", maxHeightParam));
             }
 
             else if (request.MaxWidth.HasValue ||
@@ -1515,7 +1518,18 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 22)
                 {
+                    // api key
+                }
+                else if (i == 23)
+                {
                     request.LiveStreamId = val;
+                }
+                else if (i == 24)
+                {
+                    if (videoRequest != null)
+                    {
+                        videoRequest.AllowAnamorphic = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                    }
                 }
             }
         }
@@ -1664,7 +1678,13 @@ namespace MediaBrowser.Api.Playback
             {
                 state.OutputVideoCodec = GetVideoCodec(videoRequest);
                 state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream);
-
+                /*
+                 *  ResolutionNormalizer which has limits set that are too aggressive when trying to 
+                 *  allow an anamorphic video to upscale, the video I was testing with was 720x432 843kpbs 
+                 *  that wanted upscaling to 1036x432 but was being blocked by the resolution normalizer. 
+                 *  I removed the normalizer but if it is felt important then the limits need changing to 
+                 *  have lower bitrate limits for each of the resolutions. The ResolutionNormalizer also currently 
+                 *  causes the loss of the MaxHeight property which is probably not appropriate.
                 if (state.OutputVideoBitrate.HasValue)
                 {
                     var resolution = ResolutionNormalizer.Normalize(state.OutputVideoBitrate.Value,
@@ -1674,7 +1694,7 @@ namespace MediaBrowser.Api.Playback
 
                     videoRequest.MaxWidth = resolution.MaxWidth;
                     videoRequest.MaxHeight = resolution.MaxHeight;
-                }
+                }*/
             }
 
             ApplyDeviceProfileSettings(state);
@@ -1857,6 +1877,15 @@ namespace MediaBrowser.Api.Playback
                 if (!videoStream.BitRate.HasValue || videoStream.BitRate.Value > request.VideoBitRate.Value)
                 {
                     return false;
+                }
+            }
+
+            if (request.AllowAnamorphic.HasValue)
+            {
+                if (!request.AllowAnamorphic.Value)
+                {
+                    if ((!videoStream.IsAnamorphic.HasValue) || (videoStream.IsAnamorphic.Value))
+                        return false;
                 }
             }
 
