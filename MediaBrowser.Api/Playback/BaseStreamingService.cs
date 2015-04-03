@@ -1196,22 +1196,19 @@ namespace MediaBrowser.Api.Playback
 
             if (videoStream != null)
             {
-                var isUpscaling = request.Height.HasValue && videoStream.Height.HasValue &&
-                                   request.Height.Value > videoStream.Height.Value;
+                // we will be upscaling if either dimension is growing or if we are converting from anamorphic to non-anmorphic
+                var isUpscaling = (request.Height.HasValue && videoStream.Height.HasValue && request.Height.Value > videoStream.Height.Value)
+                               || (request.Width.HasValue && videoStream.Width.HasValue && request.Width.Value > videoStream.Width.Value)
+                               || (request.AllowAnamorphic.HasValue && videoStream.IsAnamorphic.HasValue && !request.AllowAnamorphic.Value && videoStream.IsAnamorphic.Value);
 
-                if (request.Width.HasValue && videoStream.Width.HasValue &&
-                    request.Width.Value > videoStream.Width.Value)
-                {
-                    isUpscaling = true;
-                }
+                
 
                 // Don't allow bitrate increases unless upscaling
                 if (!isUpscaling)
                 {
-                    if (bitrate.HasValue && videoStream.BitRate.HasValue)
-                    {
-                        bitrate = Math.Min(bitrate.Value, videoStream.BitRate.Value);
-                    }
+                    bitrate = Math.Min(bitrate.HasValue ? bitrate.Value : int.MaxValue, videoStream.BitRate.HasValue ? videoStream.BitRate.Value : int.MaxValue);
+                    if (bitrate.Value == int.MaxValue)
+                        bitrate = null;
                 }
             }
 
@@ -1678,13 +1675,6 @@ namespace MediaBrowser.Api.Playback
             {
                 state.OutputVideoCodec = GetVideoCodec(videoRequest);
                 state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream);
-                /*
-                 *  ResolutionNormalizer which has limits set that are too aggressive when trying to 
-                 *  allow an anamorphic video to upscale, the video I was testing with was 720x432 843kpbs 
-                 *  that wanted upscaling to 1036x432 but was being blocked by the resolution normalizer. 
-                 *  I removed the normalizer but if it is felt important then the limits need changing to 
-                 *  have lower bitrate limits for each of the resolutions. The ResolutionNormalizer also currently 
-                 *  causes the loss of the MaxHeight property which is probably not appropriate.
                 if (state.OutputVideoBitrate.HasValue)
                 {
                     var resolution = ResolutionNormalizer.Normalize(state.OutputVideoBitrate.Value,
@@ -1694,7 +1684,7 @@ namespace MediaBrowser.Api.Playback
 
                     videoRequest.MaxWidth = resolution.MaxWidth;
                     videoRequest.MaxHeight = resolution.MaxHeight;
-                }*/
+                }
             }
 
             ApplyDeviceProfileSettings(state);
