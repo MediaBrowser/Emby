@@ -39,36 +39,14 @@ namespace MediaBrowser.Api.Playback
     [Route("/Items/{Id}/PlaybackInfo", "POST", Summary = "Gets live playback media info for an item")]
     public class GetPostedPlaybackInfo : PlaybackInfoRequest, IReturn<PlaybackInfoResponse>
     {
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string Id { get; set; }
-
-        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string UserId { get; set; }
-
-        [ApiMember(Name = "MaxStreamingBitrate", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
-        public int? MaxStreamingBitrate { get; set; }
-
-        [ApiMember(Name = "StartTimeTicks", Description = "Optional. Specify a starting offset, in ticks. 1 tick = 10000 ms", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
-        public long? StartTimeTicks { get; set; }
-
-        [ApiMember(Name = "AudioStreamIndex", Description = "Optional. The index of the audio stream to use. If omitted the first audio stream will be used.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
-        public int? AudioStreamIndex { get; set; }
-
-        [ApiMember(Name = "SubtitleStreamIndex", Description = "Optional. The index of the subtitle stream to use. If omitted no subtitles will be used.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
-        public int? SubtitleStreamIndex { get; set; }
-
-        [ApiMember(Name = "MediaSourceId", Description = "The media version id, if playing an alternate version", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string MediaSourceId { get; set; }
     }
 
-    [Route("/MediaSources/Open", "POST", Summary = "Opens a media source")]
-    public class OpenMediaSource : IReturn<MediaSourceInfo>
+    [Route("/LiveStreams/Open", "POST", Summary = "Opens a media source")]
+    public class OpenMediaSource : LiveStreamRequest, IReturn<LiveStreamResponse>
     {
-        [ApiMember(Name = "OpenToken", Description = "OpenToken", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string OpenToken { get; set; }
     }
 
-    [Route("/MediaSources/Close", "POST", Summary = "Closes a media source")]
+    [Route("/LiveStreams/Close", "POST", Summary = "Closes a media source")]
     public class CloseMediaSource : IReturnVoid
     {
         [ApiMember(Name = "LiveStreamId", Description = "LiveStreamId", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
@@ -103,7 +81,36 @@ namespace MediaBrowser.Api.Playback
 
         public async Task<object> Post(OpenMediaSource request)
         {
-            var result = await _mediaSourceManager.OpenLiveStream(request.OpenToken, false, CancellationToken.None).ConfigureAwait(false);
+            var authInfo = AuthorizationContext.GetAuthorizationInfo(Request);
+
+            var result = await _mediaSourceManager.OpenLiveStream(request, false, CancellationToken.None).ConfigureAwait(false);
+
+            var profile = request.DeviceProfile;
+            if (profile == null)
+            {
+                var caps = _deviceManager.GetCapabilities(authInfo.DeviceId);
+                if (caps != null)
+                {
+                    profile = caps.DeviceProfile;
+                }
+            }
+
+            if (profile != null)
+            {
+                var item = _libraryManager.GetItemById(request.ItemId);
+
+                SetDeviceSpecificData(item, result.MediaSource, profile, authInfo, request.MaxStreamingBitrate,
+                    request.StartTimeTicks ?? 0, result.MediaSource.Id, request.AudioStreamIndex,
+                    request.SubtitleStreamIndex, request.PlaySessionId);
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(result.MediaSource.TranscodingUrl))
+                {
+                    result.MediaSource.TranscodingUrl += "&LiveStreamId=" + result.MediaSource.LiveStreamId;
+                }
+            }
+
             return ToOptimizedResult(result);
         }
 
@@ -115,7 +122,7 @@ namespace MediaBrowser.Api.Playback
 
         public async Task<object> Post(GetPostedPlaybackInfo request)
         {
-            var info = await GetPlaybackInfo(request.Id, request.UserId, request.MediaSourceId).ConfigureAwait(false);
+            var info = await GetPlaybackInfo(request.Id, request.UserId, request.MediaSourceId, request.LiveStreamId).ConfigureAwait(false);
             var authInfo = AuthorizationContext.GetAuthorizationInfo(Request);
 
             var profile = request.DeviceProfile;
@@ -137,29 +144,37 @@ namespace MediaBrowser.Api.Playback
             return ToOptimizedResult(info);
         }
 
-        private async Task<PlaybackInfoResponse> GetPlaybackInfo(string id, string userId, string mediaSourceId = null)
+        private async Task<PlaybackInfoResponse> GetPlaybackInfo(string id, string userId, string mediaSourceId = null, string liveStreamId = null)
         {
             var result = new PlaybackInfoResponse();
 
-            IEnumerable<MediaSourceInfo> mediaSources;
-
-            try
+            if (string.IsNullOrWhiteSpace(liveStreamId))
             {
-                mediaSources = await _mediaSourceManager.GetPlayackMediaSources(id, userId, true, CancellationToken.None).ConfigureAwait(false);
+                IEnumerable<MediaSourceInfo> mediaSources;
+                try
+                {
+                    mediaSources = await _mediaSourceManager.GetPlayackMediaSources(id, userId, true, CancellationToken.None).ConfigureAwait(false);
+                }
+                catch (PlaybackException ex)
+                {
+                    mediaSources = new List<MediaSourceInfo>();
+                    result.ErrorCode = ex.ErrorCode;
+                }
+
+                result.MediaSources = mediaSources.ToList();
+
+                if (!string.IsNullOrWhiteSpace(mediaSourceId))
+                {
+                    result.MediaSources = result.MediaSources
+                        .Where(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
             }
-            catch (PlaybackException ex)
+            else
             {
-                mediaSources = new List<MediaSourceInfo>();
-                result.ErrorCode = ex.ErrorCode;
-            }
+                var mediaSource = await _mediaSourceManager.GetLiveStream(liveStreamId, CancellationToken.None).ConfigureAwait(false);
 
-            result.MediaSources = mediaSources.ToList();
-
-            if (!string.IsNullOrWhiteSpace(mediaSourceId))
-            {
-                result.MediaSources = result.MediaSources
-                    .Where(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                result.MediaSources = new List<MediaSourceInfo> { mediaSource };
             }
 
             if (result.MediaSources.Count == 0)
@@ -171,17 +186,17 @@ namespace MediaBrowser.Api.Playback
             }
             else
             {
-                result.StreamId = Guid.NewGuid().ToString("N");
+                result.PlaySessionId = Guid.NewGuid().ToString("N");
             }
 
             return result;
         }
 
-        private void SetDeviceSpecificData(string itemId, 
-            PlaybackInfoResponse result, 
-            DeviceProfile profile, 
-            AuthorizationInfo auth, 
-            int? maxBitrate, 
+        private void SetDeviceSpecificData(string itemId,
+            PlaybackInfoResponse result,
+            DeviceProfile profile,
+            AuthorizationInfo auth,
+            int? maxBitrate,
             long startTimeTicks,
             string mediaSourceId,
             int? audioStreamIndex,
@@ -191,7 +206,7 @@ namespace MediaBrowser.Api.Playback
 
             foreach (var mediaSource in result.MediaSources)
             {
-                SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex);
+                SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex, result.PlaySessionId);
             }
 
             SortMediaSources(result);
@@ -205,9 +220,10 @@ namespace MediaBrowser.Api.Playback
             long startTimeTicks,
             string mediaSourceId,
             int? audioStreamIndex,
-            int? subtitleStreamIndex)
+            int? subtitleStreamIndex,
+            string playSessionId)
         {
-            var streamBuilder = new StreamBuilder();
+            var streamBuilder = new StreamBuilder(Logger);
 
             var options = new VideoOptions
             {
@@ -245,6 +261,11 @@ namespace MediaBrowser.Api.Playback
 
                 // Set this back to what it was
                 mediaSource.SupportsDirectStream = supportsDirectStream;
+
+                if (streamInfo != null)
+                {
+                    SetDeviceSpecificSubtitleInfo(streamInfo, mediaSource, auth.Token);
+                }
             }
 
             if (mediaSource.SupportsDirectStream)
@@ -258,6 +279,11 @@ namespace MediaBrowser.Api.Playback
                 {
                     mediaSource.SupportsDirectStream = false;
                 }
+
+                if (streamInfo != null)
+                {
+                    SetDeviceSpecificSubtitleInfo(streamInfo, mediaSource, auth.Token);
+                }
             }
 
             if (mediaSource.SupportsTranscoding)
@@ -267,12 +293,41 @@ namespace MediaBrowser.Api.Playback
                     streamBuilder.BuildAudioItem(options) :
                     streamBuilder.BuildVideoItem(options);
 
+                if (streamInfo != null)
+                {
+                    streamInfo.PlaySessionId = playSessionId;
+                    SetDeviceSpecificSubtitleInfo(streamInfo, mediaSource, auth.Token);
+                }
+
                 if (streamInfo != null && streamInfo.PlayMethod == PlayMethod.Transcode)
                 {
                     streamInfo.StartPositionTicks = startTimeTicks;
-                    mediaSource.TranscodingUrl = streamInfo.ToUrl("-", auth.Token).Substring(1);
+                    mediaSource.TranscodingUrl = streamInfo.ToUrl("-", auth.Token).TrimStart('-');
                     mediaSource.TranscodingContainer = streamInfo.Container;
                     mediaSource.TranscodingSubProtocol = streamInfo.SubProtocol;
+                }
+            }
+        }
+
+        private void SetDeviceSpecificSubtitleInfo(StreamInfo info, MediaSourceInfo mediaSource, string accessToken)
+        {
+            var profiles = info.GetSubtitleProfiles(false, "-", accessToken);
+            mediaSource.DefaultSubtitleStreamIndex = info.SubtitleStreamIndex;
+
+            foreach (var profile in profiles)
+            {
+                foreach (var stream in mediaSource.MediaStreams)
+                {
+                    if (stream.Type == MediaStreamType.Subtitle && stream.Index == profile.Index)
+                    {
+                        stream.DeliveryMethod = profile.DeliveryMethod;
+
+                        if (profile.DeliveryMethod == SubtitleDeliveryMethod.External)
+                        {
+                            stream.DeliveryUrl = profile.Url.TrimStart('-');
+                            stream.IsExternalUrl = profile.IsExternalUrl;
+                        }
+                    }
                 }
             }
         }

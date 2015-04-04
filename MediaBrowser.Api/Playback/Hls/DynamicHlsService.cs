@@ -4,7 +4,6 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Dlna;
@@ -135,7 +134,7 @@ namespace MediaBrowser.Api.Playback.Hls
                         // If the playlist doesn't already exist, startup ffmpeg
                         try
                         {
-                            ApiEntryPoint.Instance.KillTranscodingJobs(request.DeviceId, request.StreamId, p => false);
+                            ApiEntryPoint.Instance.KillTranscodingJobs(request.DeviceId, request.PlaySessionId, p => false);
 
                             if (currentTranscodingIndex.HasValue)
                             {
@@ -300,7 +299,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var segmentFilename = Path.GetFileName(segmentPath);
 
-            using (var fileStream = FileSystem.GetFileStream(playlistPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
+            using (var fileStream = GetPlaylistFileStream(playlistPath))
             {
                 using (var reader = new StreamReader(fileStream))
                 {
@@ -698,7 +697,7 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 var outputTsArg = Path.Combine(Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath)) + "%d.ts";
 
-                return string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -copyts -flags -global_header {5} -f segment -segment_time {6} -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
+                return string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -flags -global_header -sc_threshold 0 {5} -f segment -segment_time {6} -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
                     inputModifier,
                     GetInputArgument(state),
                     threads,
@@ -712,7 +711,7 @@ namespace MediaBrowser.Api.Playback.Hls
                     ).Trim();
             }
 
-            return string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -copyts -flags -global_header {5} -hls_time {6} -start_number {7} -hls_list_size {8} -y \"{9}\"",
+            return string.Format("{0} {1} -map_metadata -1 -threads {2} {3} {4} -flags -global_header -sc_threshold 0 {5} -hls_time {6} -start_number {7} -hls_list_size {8} -y \"{9}\"",
                             inputModifier,
                             GetInputArgument(state),
                             threads,

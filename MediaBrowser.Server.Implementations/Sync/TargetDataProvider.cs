@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
@@ -26,11 +27,11 @@ namespace MediaBrowser.Server.Implementations.Sync
         private readonly IJsonSerializer _json;
         private readonly IFileSystem _fileSystem;
         private readonly IApplicationPaths _appPaths;
-        private readonly string _serverId;
+        private readonly IServerApplicationHost _appHost;
 
         private readonly SemaphoreSlim _cacheFileLock = new SemaphoreSlim(1, 1);
 
-        public TargetDataProvider(IServerSyncProvider provider, SyncTarget target, string serverId, ILogger logger, IJsonSerializer json, IFileSystem fileSystem, IApplicationPaths appPaths)
+        public TargetDataProvider(IServerSyncProvider provider, SyncTarget target, IServerApplicationHost appHost, ILogger logger, IJsonSerializer json, IFileSystem fileSystem, IApplicationPaths appPaths)
         {
             _logger = logger;
             _json = json;
@@ -38,47 +39,26 @@ namespace MediaBrowser.Server.Implementations.Sync
             _target = target;
             _fileSystem = fileSystem;
             _appPaths = appPaths;
-            _serverId = serverId;
-        }
-
-        private string GetCachePath()
-        {
-            return Path.Combine(_appPaths.DataPath, "sync", _target.Id.GetMD5().ToString("N") + ".json");
+            _appHost = appHost;
         }
 
         private string GetRemotePath()
         {
             var parts = new List<string>
             {
-                _serverId,
+                _appHost.FriendlyName,
                 "data.json"
             };
+
+            parts = parts.Select(i => GetValidFilename(_provider, i)).ToList();
 
             return _provider.GetFullPath(parts, _target);
         }
 
-        private async Task CacheData(Stream stream)
+        private string GetValidFilename(IServerSyncProvider provider, string filename)
         {
-            var cachePath = GetCachePath();
-
-            await _cacheFileLock.WaitAsync().ConfigureAwait(false);
-
-            try
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(cachePath));
-                using (var fileStream = _fileSystem.GetFileStream(cachePath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
-                {
-                    await stream.CopyToAsync(fileStream).ConfigureAwait(false);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error saving sync data to {0}", ex, cachePath);
-            }
-            finally
-            {
-                _cacheFileLock.Release();
-            }
+            // We can always add this method to the sync provider if it's really needed
+            return _fileSystem.GetValidFilename(filename);
         }
 
         private async Task EnsureData(CancellationToken cancellationToken)
@@ -87,7 +67,11 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 try
                 {
-                    using (var stream = await _provider.GetFile(GetRemotePath(), _target, new Progress<double>(), cancellationToken))
+                    var path = GetRemotePath();
+
+                    _logger.Debug("Getting {0} from {1}", path, _provider.Name);
+
+                    using (var stream = await _provider.GetFile(path, _target, new Progress<double>(), cancellationToken))
                     {
                         _items = _json.DeserializeFromStream<List<LocalItem>>(stream);
                     }
@@ -99,15 +83,6 @@ namespace MediaBrowser.Server.Implementations.Sync
                 catch (DirectoryNotFoundException)
                 {
                     _items = new List<LocalItem>();
-                }
-
-                using (var memoryStream = new MemoryStream())
-                {
-                    _json.SerializeToStream(_items, memoryStream);
-                    
-                    // Now cache it
-                    memoryStream.Position = 0;
-                    await CacheData(memoryStream).ConfigureAwait(false);
                 }
             }
         }
@@ -121,10 +96,6 @@ namespace MediaBrowser.Server.Implementations.Sync
                 // Save to sync provider
                 stream.Position = 0;
                 await _provider.SendFile(stream, GetRemotePath(), _target, new Progress<double>(), cancellationToken).ConfigureAwait(false);
-
-                // Now cache it
-                stream.Position = 0;
-                await CacheData(stream).ConfigureAwait(false);
             }
         }
 
@@ -167,6 +138,11 @@ namespace MediaBrowser.Server.Implementations.Sync
             return GetData(items => items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase)).Select(i => i.ItemId).ToList());
         }
 
+        public Task<List<string>> GetSyncJobItemIds(SyncTarget target, string serverId)
+        {
+            return GetData(items => items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase)).Select(i => i.SyncJobItemId).Where(i => !string.IsNullOrWhiteSpace(i)).ToList());
+        }
+
         public Task AddOrUpdate(SyncTarget target, LocalItem item)
         {
             return UpdateData(items =>
@@ -190,54 +166,14 @@ namespace MediaBrowser.Server.Implementations.Sync
             return GetData(items => items.FirstOrDefault(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase)));
         }
 
-        private async Task<List<LocalItem>> GetCachedData()
+        public Task<List<LocalItem>> GetItems(SyncTarget target, string serverId, string itemId)
         {
-            if (_items == null)
-            {
-                await _cacheFileLock.WaitAsync().ConfigureAwait(false);
-
-                try
-                {
-                    if (_items == null)
-                    {
-                        try
-                        {
-                            _items = _json.DeserializeFromFile<List<LocalItem>>(GetCachePath());
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            _items = new List<LocalItem>();
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                            _items = new List<LocalItem>();
-                        }
-                    }
-                }
-                finally
-                {
-                    _cacheFileLock.Release();
-                }
-            }
-
-            return _items.ToList();
+            return GetData(items => items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase) && string.Equals(i.ItemId, itemId, StringComparison.OrdinalIgnoreCase)).ToList());
         }
 
-        public async Task<List<string>> GetCachedServerItemIds(SyncTarget target, string serverId)
+        public Task<List<LocalItem>> GetItemsBySyncJobItemId(SyncTarget target, string serverId, string syncJobItemId)
         {
-            var items = await GetCachedData().ConfigureAwait(false);
-
-            return items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase))
-                    .Select(i => i.ItemId)
-                    .ToList();
-        }
-
-        public async Task<List<LocalItem>> GetCachedItems(SyncTarget target, string serverId, string itemId)
-        {
-            var items = await GetCachedData().ConfigureAwait(false);
-
-            return items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase) && string.Equals(i.ItemId, itemId, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+            return GetData(items => items.Where(i => string.Equals(i.ServerId, serverId, StringComparison.OrdinalIgnoreCase) && string.Equals(i.SyncJobItemId, syncJobItemId, StringComparison.OrdinalIgnoreCase)).ToList());
         }
     }
 }

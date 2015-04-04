@@ -126,7 +126,7 @@ namespace MediaBrowser.Api.Playback
             var data = GetCommandLineArguments("dummy\\dummy", state, false);
 
             data += "-" + (state.Request.DeviceId ?? string.Empty);
-            data += "-" + (state.Request.StreamId ?? string.Empty);
+            data += "-" + (state.Request.PlaySessionId ?? string.Empty);
             data += "-" + (state.Request.ClientTime ?? string.Empty);
 
             var dataHash = data.GetMD5().ToString("N");
@@ -699,7 +699,7 @@ namespace MediaBrowser.Api.Playback
 
                 if (!string.IsNullOrEmpty(state.SubtitleStream.Language))
                 {
-                    var charenc = SubtitleEncoder.GetSubtitleFileCharacterSet(subtitlePath);
+                    var charenc = SubtitleEncoder.GetSubtitleFileCharacterSet(subtitlePath, state.MediaSource.Protocol, CancellationToken.None).Result;
 
                     if (!string.IsNullOrEmpty(charenc))
                     {
@@ -936,10 +936,13 @@ namespace MediaBrowser.Api.Playback
 
             if (state.MediaSource.RequiresOpening)
             {
-                var mediaSource = await MediaSourceManager.OpenLiveStream(state.MediaSource.OpenToken, false, cancellationTokenSource.Token)
-                            .ConfigureAwait(false);
+                var liveStreamResponse = await MediaSourceManager.OpenLiveStream(new LiveStreamRequest
+                {
+                    OpenToken = state.MediaSource.OpenToken
 
-                AttachMediaSourceInfo(state, mediaSource, state.VideoRequest, state.RequestedUrl);
+                }, false, cancellationTokenSource.Token).ConfigureAwait(false);
+
+                AttachMediaSourceInfo(state, liveStreamResponse.MediaSource, state.VideoRequest, state.RequestedUrl);
 
                 if (state.VideoRequest != null)
                 {
@@ -1006,7 +1009,7 @@ namespace MediaBrowser.Api.Playback
             }
 
             var transcodingJob = ApiEntryPoint.Instance.OnTranscodeBeginning(outputPath,
-                state.Request.StreamId,
+                state.Request.PlaySessionId,
                 transcodingId,
                 TranscodingJobType,
                 process,
@@ -1077,7 +1080,7 @@ namespace MediaBrowser.Api.Playback
             {
                 if (state.RunTimeTicks.Value >= TimeSpan.FromMinutes(5).Ticks && state.IsInputVideo)
                 {
-                    transcodingJob.TranscodingThrottler = state.TranscodingThrottler = new TranscodingThrottler(transcodingJob, Logger);
+                    transcodingJob.TranscodingThrottler = state.TranscodingThrottler = new TranscodingThrottler(transcodingJob, Logger, ServerConfigurationManager);
                     state.TranscodingThrottler.Start();
                 }
             }
@@ -1508,7 +1511,11 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 21)
                 {
-                    request.StreamId = val;
+                    request.PlaySessionId = val;
+                }
+                else if (i == 22)
+                {
+                    request.LiveStreamId = val;
                 }
             }
         }
@@ -2005,7 +2012,6 @@ namespace MediaBrowser.Api.Playback
             }
 
             var audioCodec = state.ActualOutputAudioCodec;
-
             var videoCodec = state.ActualOutputVideoCodec;
 
             var mediaProfile = state.VideoRequest == null ?
@@ -2026,7 +2032,9 @@ namespace MediaBrowser.Api.Playback
                 state.TargetTimestamp,
                 state.IsTargetAnamorphic,
                 state.IsTargetCabac,
-                state.TargetRefFrames);
+                state.TargetRefFrames,
+                state.TargetVideoStreamCount,
+                state.TargetAudioStreamCount);
 
             if (mediaProfile != null)
             {
@@ -2111,7 +2119,9 @@ namespace MediaBrowser.Api.Playback
                     state.TranscodeSeekInfo,
                     state.IsTargetAnamorphic,
                     state.IsTargetCabac,
-                    state.TargetRefFrames
+                    state.TargetRefFrames,
+                    state.TargetVideoStreamCount,
+                    state.TargetAudioStreamCount
 
                     ).FirstOrDefault() ?? string.Empty;
             }

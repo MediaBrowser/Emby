@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.IO;
+﻿using System.Globalization;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Sync;
@@ -40,6 +41,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             CancellationToken cancellationToken)
         {
             var serverId = _appHost.SystemId;
+            var serverName = _appHost.FriendlyName;
 
             await SyncData(provider, dataProvider, serverId, target, cancellationToken).ConfigureAwait(false);
             progress.Report(3);
@@ -51,7 +53,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                 totalProgress += 1;
                 progress.Report(totalProgress);
             });
-            await GetNewMedia(provider, dataProvider, target, serverId, innerProgress, cancellationToken);
+            await GetNewMedia(provider, dataProvider, target, serverId, serverName, innerProgress, cancellationToken);
 
             // Do the data sync twice so the server knows what was removed from the device
             await SyncData(provider, dataProvider, serverId, target, cancellationToken).ConfigureAwait(false);
@@ -65,12 +67,12 @@ namespace MediaBrowser.Server.Implementations.Sync
             SyncTarget target,
             CancellationToken cancellationToken)
         {
-            var localIds = await dataProvider.GetServerItemIds(target, serverId).ConfigureAwait(false);
+            var jobItemIds = await dataProvider.GetSyncJobItemIds(target, serverId).ConfigureAwait(false);
 
             var result = await _syncManager.SyncData(new SyncDataRequest
             {
                 TargetId = target.Id,
-                LocalItemIds = localIds
+                SyncJobItemIds = jobItemIds
 
             }).ConfigureAwait(false);
 
@@ -93,6 +95,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             ISyncDataProvider dataProvider,
             SyncTarget target,
             string serverId,
+            string serverName,
             IProgress<double> progress,
             CancellationToken cancellationToken)
         {
@@ -119,7 +122,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     progress.Report(totalProgress);
                 });
 
-                await GetItem(provider, dataProvider, target, serverId, jobItem, innerProgress, cancellationToken).ConfigureAwait(false);
+                await GetItem(provider, dataProvider, target, serverId, serverName, jobItem, innerProgress, cancellationToken).ConfigureAwait(false);
 
                 numComplete++;
                 startingPercent = numComplete;
@@ -133,14 +136,16 @@ namespace MediaBrowser.Server.Implementations.Sync
             ISyncDataProvider dataProvider,
             SyncTarget target,
             string serverId,
+            string serverName,
             SyncedItem jobItem,
             IProgress<double> progress,
             CancellationToken cancellationToken)
         {
             var libraryItem = jobItem.Item;
             var internalSyncJobItem = _syncManager.GetJobItem(jobItem.SyncJobItemId);
+            var internalSyncJob = _syncManager.GetJob(jobItem.SyncJobId);
 
-            var localItem = CreateLocalItem(provider, jobItem, target, libraryItem, serverId, jobItem.OriginalFileName);
+            var localItem = CreateLocalItem(provider, jobItem, internalSyncJob, target, libraryItem, serverId, serverName, jobItem.OriginalFileName);
 
             await _syncManager.ReportSyncJobItemTransferBeginning(internalSyncJobItem.Id);
 
@@ -280,11 +285,11 @@ namespace MediaBrowser.Server.Implementations.Sync
         private async Task RemoveItem(IServerSyncProvider provider,
             ISyncDataProvider dataProvider,
             string serverId,
-            string itemId,
+            string syncJobItemId,
             SyncTarget target,
             CancellationToken cancellationToken)
         {
-            var localItems = await dataProvider.GetCachedItems(target, serverId, itemId);
+            var localItems = await dataProvider.GetItemsBySyncJobItemId(target, serverId, syncJobItemId);
 
             foreach (var localItem in localItems)
             {
@@ -326,9 +331,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
         }
 
-        public LocalItem CreateLocalItem(IServerSyncProvider provider, SyncedItem syncedItem, SyncTarget target, BaseItemDto libraryItem, string serverId, string originalFileName)
+        public LocalItem CreateLocalItem(IServerSyncProvider provider, SyncedItem syncedItem, SyncJob job, SyncTarget target, BaseItemDto libraryItem, string serverId, string serverName, string originalFileName)
         {
-            var path = GetDirectoryPath(provider, syncedItem, libraryItem, serverId);
+            var path = GetDirectoryPath(provider, job, syncedItem, libraryItem, serverName);
             path.Add(GetLocalFileName(provider, libraryItem, originalFileName));
 
             var localPath = provider.GetFullPath(path, target);
@@ -345,29 +350,52 @@ namespace MediaBrowser.Server.Implementations.Sync
                 ItemId = libraryItem.Id,
                 ServerId = serverId,
                 LocalPath = localPath,
-                Id = GetLocalId(syncedItem.SyncJobItemId, libraryItem.Id)
+                Id = GetLocalId(syncedItem.SyncJobItemId, libraryItem.Id),
+                SyncJobItemId = syncedItem.SyncJobItemId
             };
         }
 
-        private string GetSyncJobFolderName(SyncedItem syncedItem, IServerSyncProvider provider)
-        {
-            var name = syncedItem.SyncJobName + "-" + syncedItem.SyncJobDateCreated
-                .ToLocalTime()
-                .ToString("g")
-                .Replace(" ", "-");
-
-            name = GetValidFilename(provider, name);
-
-            return name;
-        }
-
-        private List<string> GetDirectoryPath(IServerSyncProvider provider, SyncedItem syncedItem, BaseItemDto item, string serverId)
+        private List<string> GetDirectoryPath(IServerSyncProvider provider, SyncJob job, SyncedItem syncedItem, BaseItemDto item, string serverName)
         {
             var parts = new List<string>
             {
-                serverId,
-                GetSyncJobFolderName(syncedItem, provider)
+                serverName
             };
+
+            var profileOption = _syncManager.GetProfileOptions(job.TargetId)
+                .FirstOrDefault(i => string.Equals(i.Id, job.Profile, StringComparison.OrdinalIgnoreCase));
+
+            string name;
+
+            if (profileOption != null && !string.IsNullOrWhiteSpace(profileOption.Name))
+            {
+                name = profileOption.Name;
+
+                if (job.Bitrate.HasValue)
+                {
+                    name += "-" + job.Bitrate.Value.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    var qualityOption = _syncManager.GetQualityOptions(job.TargetId)
+                        .FirstOrDefault(i => string.Equals(i.Id, job.Quality, StringComparison.OrdinalIgnoreCase));
+
+                    if (qualityOption != null && !string.IsNullOrWhiteSpace(qualityOption.Name))
+                    {
+                        name += "-" + qualityOption.Name;
+                    }
+                }
+            }
+            else
+            {
+                name = syncedItem.SyncJobName + "-" + syncedItem.SyncJobDateCreated
+                   .ToLocalTime()
+                   .ToString("g")
+                   .Replace(" ", "-");
+            }
+
+            name = GetValidFilename(provider, name);
+            parts.Add(name);
 
             if (item.IsType("episode"))
             {

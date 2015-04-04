@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
@@ -8,13 +7,14 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
+using MediaBrowser.Model.Serialization;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Server.Implementations.LiveTv;
 
 namespace MediaBrowser.Server.Implementations.Library
 {
@@ -23,16 +23,18 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly IItemRepository _itemRepo;
         private readonly IUserManager _userManager;
         private readonly ILibraryManager _libraryManager;
+        private readonly IJsonSerializer _jsonSerializer;
 
         private IMediaSourceProvider[] _providers;
         private readonly ILogger _logger;
 
-        public MediaSourceManager(IItemRepository itemRepo, IUserManager userManager, ILibraryManager libraryManager, ILogger logger)
+        public MediaSourceManager(IItemRepository itemRepo, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer)
         {
             _itemRepo = itemRepo;
             _userManager = userManager;
             _libraryManager = libraryManager;
             _logger = logger;
+            _jsonSerializer = jsonSerializer;
         }
 
         public void AddParts(IEnumerable<IMediaSourceProvider> providers)
@@ -127,12 +129,18 @@ namespace MediaBrowser.Server.Implementations.Library
             return list;
         }
 
+        public Task<IEnumerable<MediaSourceInfo>> GetPlayackMediaSources(string id, bool enablePathSubstitution, CancellationToken cancellationToken)
+        {
+            return GetPlayackMediaSources(id, null, enablePathSubstitution, cancellationToken);
+        }
+
         public async Task<IEnumerable<MediaSourceInfo>> GetPlayackMediaSources(string id, string userId, bool enablePathSubstitution, CancellationToken cancellationToken)
         {
             var item = _libraryManager.GetItemById(id);
             IEnumerable<MediaSourceInfo> mediaSources;
 
             var hasMediaSources = (IHasMediaSources)item;
+            User user = null;
 
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -140,7 +148,7 @@ namespace MediaBrowser.Server.Implementations.Library
             }
             else
             {
-                var user = _userManager.GetUserById(userId);
+                user = _userManager.GetUserById(userId);
                 mediaSources = GetStaticMediaSources(hasMediaSources, enablePathSubstitution, user);
             }
 
@@ -152,6 +160,10 @@ namespace MediaBrowser.Server.Implementations.Library
 
             foreach (var source in dynamicMediaSources)
             {
+                if (user != null)
+                {
+                    SetUserProperties(source, user);
+                }
                 if (source.Protocol == MediaProtocol.File)
                 {
                     source.SupportsDirectStream = File.Exists(source.Path);
@@ -218,12 +230,12 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        public Task<IEnumerable<MediaSourceInfo>> GetPlayackMediaSources(string id, bool enablePathSubstitution, CancellationToken cancellationToken)
+        public MediaSourceInfo GetStaticMediaSource(IHasMediaSources item, string mediaSourceId, bool enablePathSubstitution)
         {
-            return GetPlayackMediaSources(id, null, enablePathSubstitution, cancellationToken);
+            return GetStaticMediaSources(item, enablePathSubstitution).FirstOrDefault(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<MediaSourceInfo> GetStaticMediaSources(IHasMediaSources item, bool enablePathSubstitution)
+        public IEnumerable<MediaSourceInfo> GetStaticMediaSources(IHasMediaSources item, bool enablePathSubstitution, User user = null)
         {
             if (item == null)
             {
@@ -233,33 +245,16 @@ namespace MediaBrowser.Server.Implementations.Library
             if (!(item is Video))
             {
                 return item.GetMediaSources(enablePathSubstitution);
-            }
-
-            return item.GetMediaSources(enablePathSubstitution);
-        }
-
-        public IEnumerable<MediaSourceInfo> GetStaticMediaSources(IHasMediaSources item, bool enablePathSubstitution, User user)
-        {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
-            if (!(item is Video))
-            {
-                return item.GetMediaSources(enablePathSubstitution);
-            }
-
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
             }
 
             var sources = item.GetMediaSources(enablePathSubstitution).ToList();
 
-            foreach (var source in sources)
+            if (user != null)
             {
-                SetUserProperties(source, user);
+                foreach (var source in sources)
+                {
+                    SetUserProperties(source, user);
+                }
             }
 
             return sources;
@@ -286,6 +281,9 @@ namespace MediaBrowser.Server.Implementations.Library
                 preferredSubs,
                 user.Configuration.SubtitleMode,
                 audioLangage);
+
+            MediaStreamSelector.SetSubtitleStreamScores(source.MediaStreams, preferredSubs,
+                user.Configuration.SubtitleMode, audioLangage);
         }
 
         private IEnumerable<MediaSourceInfo> SortMediaSources(IEnumerable<MediaSourceInfo> sources)
@@ -309,24 +307,24 @@ namespace MediaBrowser.Server.Implementations.Library
             .ToList();
         }
 
-        public MediaSourceInfo GetStaticMediaSource(IHasMediaSources item, string mediaSourceId, bool enablePathSubstitution)
-        {
-            return GetStaticMediaSources(item, enablePathSubstitution).FirstOrDefault(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private readonly ConcurrentDictionary<string, LiveStreamInfo> _openStreams = new ConcurrentDictionary<string, LiveStreamInfo>();
+        private readonly ConcurrentDictionary<string, LiveStreamInfo> _openStreams = new ConcurrentDictionary<string, LiveStreamInfo>(StringComparer.OrdinalIgnoreCase);
         private readonly SemaphoreSlim _liveStreamSemaphore = new SemaphoreSlim(1, 1);
 
-        public async Task<MediaSourceInfo> OpenLiveStream(string openToken, bool enableAutoClose, CancellationToken cancellationToken)
+        public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, bool enableAutoClose, CancellationToken cancellationToken)
         {
             await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
-                var tuple = GetProvider(openToken);
+                var tuple = GetProvider(request.OpenToken);
                 var provider = tuple.Item1;
 
                 var mediaSource = await provider.OpenMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
+
+                if (string.IsNullOrWhiteSpace(mediaSource.LiveStreamId))
+                {
+                    throw new InvalidOperationException(string.Format("{0} returned null LiveStreamId", provider.GetType().Name));
+                }
 
                 SetKeyProperties(provider, mediaSource);
 
@@ -344,12 +342,19 @@ namespace MediaBrowser.Server.Implementations.Library
                     StartCloseTimer();
                 }
 
-                if (!string.IsNullOrWhiteSpace(mediaSource.TranscodingUrl))
+                var json = _jsonSerializer.SerializeToString(mediaSource);
+                var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
+
+                if (!string.IsNullOrWhiteSpace(request.UserId))
                 {
-                    mediaSource.TranscodingUrl += "&LiveStreamId=" + mediaSource.LiveStreamId;
+                    var user = _userManager.GetUserById(request.UserId);
+                    SetUserProperties(clone, user);
                 }
 
-                return mediaSource;
+                return new LiveStreamResponse
+                {
+                    MediaSource = clone
+                };
             }
             finally
             {
@@ -359,6 +364,13 @@ namespace MediaBrowser.Server.Implementations.Library
 
         public async Task<MediaSourceInfo> GetLiveStream(string id, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            _logger.Debug("Getting live stream {0}", id);
+
             await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
@@ -407,9 +419,16 @@ namespace MediaBrowser.Server.Implementations.Library
 
             try
             {
-                var tuple = GetProvider(id);
+                LiveStreamInfo current;
+                if (_openStreams.TryGetValue(id, out current))
+                {
+                    if (current.MediaSource.RequiresClosing)
+                    {
+                        var tuple = GetProvider(id);
 
-                await tuple.Item1.CloseMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
+                        await tuple.Item1.CloseMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
+                    }
+                }
 
                 LiveStreamInfo removed;
                 if (_openStreams.TryRemove(id, out removed))

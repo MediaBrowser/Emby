@@ -67,9 +67,10 @@ namespace MediaBrowser.Server.Implementations.Sync
             var items = (await GetItemsForSync(job.Category, job.ParentId, job.RequestedItemIds, user, job.UnwatchedOnly).ConfigureAwait(false))
                 .ToList();
 
-            var jobItems = _syncRepo.GetJobItems(new SyncJobItemQuery
+            var jobItems = _syncManager.GetJobItems(new SyncJobItemQuery
             {
-                JobId = job.Id
+                JobId = job.Id,
+                AddMetadata = false
 
             }).Items.ToList();
 
@@ -140,9 +141,10 @@ namespace MediaBrowser.Server.Implementations.Sync
                 throw new ArgumentNullException("job");
             }
 
-            var result = _syncRepo.GetJobItems(new SyncJobItemQuery
+            var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
-                JobId = job.Id
+                JobId = job.Id,
+                AddMetadata = false
             });
 
             return UpdateJobStatus(job, result.Items.ToList());
@@ -362,9 +364,10 @@ namespace MediaBrowser.Server.Implementations.Sync
             await EnsureSyncJobItems(null, cancellationToken).ConfigureAwait(false);
 
             // If it already has a converting status then is must have been aborted during conversion
-            var result = _syncRepo.GetJobItems(new SyncJobItemQuery
+            var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
-                Statuses = new SyncJobItemStatus[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting }
+                Statuses = new[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                AddMetadata = false
             });
 
             await SyncJobItems(result.Items, true, progress, cancellationToken).ConfigureAwait(false);
@@ -384,13 +387,14 @@ namespace MediaBrowser.Server.Implementations.Sync
             await EnsureSyncJobItems(targetId, cancellationToken).ConfigureAwait(false);
 
             // If it already has a converting status then is must have been aborted during conversion
-            var result = _syncRepo.GetJobItems(new SyncJobItemQuery
+            var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
-                Statuses = new SyncJobItemStatus[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
-                TargetId = targetId
+                Statuses = new[] { SyncJobItemStatus.Queued, SyncJobItemStatus.Converting },
+                TargetId = targetId,
+                AddMetadata = false
             });
 
-            await SyncJobItems(result.Items, true, progress, cancellationToken).ConfigureAwait(false);
+            await SyncJobItems(result.Items, enableConversion, progress, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task SyncJobItems(SyncJobItem[] items, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
@@ -489,13 +493,13 @@ namespace MediaBrowser.Server.Implementations.Sync
             conversionOptions.ItemId = item.Id.ToString("N");
             conversionOptions.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
-            var streamInfo = new StreamBuilder().BuildVideoItem(conversionOptions);
+            var streamInfo = new StreamBuilder(_logger).BuildVideoItem(conversionOptions);
             var mediaSource = streamInfo.MediaSource;
 
             // No sense creating external subs if we're already burning one into the video
             var externalSubs = streamInfo.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Encode ?
                 new List<SubtitleStreamInfo>() :
-                streamInfo.GetExternalSubtitles(false);
+                streamInfo.GetExternalSubtitles(false, true, null, null);
 
             // Mark as requiring conversion if transcoding the video, or if any subtitles need to be extracted
             var requiresVideoTranscoding = streamInfo.PlayMethod == PlayMethod.Transcode && jobOptions.IsConverting;
@@ -686,7 +690,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             conversionOptions.ItemId = item.Id.ToString("N");
             conversionOptions.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
-            var streamInfo = new StreamBuilder().BuildAudioItem(conversionOptions);
+            var streamInfo = new StreamBuilder(_logger).BuildAudioItem(conversionOptions);
             var mediaSource = streamInfo.MediaSource;
 
             jobItem.MediaSourceId = streamInfo.MediaSourceId;
@@ -823,7 +827,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var hasMediaSources = item as IHasMediaSources;
 
-            var mediaSources = hasMediaSources.GetMediaSources(false).ToList();
+            var mediaSources = _mediaSourceManager.GetStaticMediaSources(hasMediaSources, false).ToList();
 
             var preferredAudio = string.IsNullOrEmpty(user.Configuration.AudioLanguagePreference)
                 ? new string[] { }
