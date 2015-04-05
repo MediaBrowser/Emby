@@ -329,8 +329,11 @@ namespace MediaBrowser.Model.Dlna
             return item.DefaultSubtitleStreamIndex;
         }
 
+        const string STREAMCOPY = "copy";
         private StreamInfo BuildVideoItem(MediaSourceInfo item, VideoOptions options)
         {
+            
+
             StreamInfo playlistItem = new StreamInfo
             {
                 ItemId = options.ItemId,
@@ -411,12 +414,32 @@ namespace MediaBrowser.Model.Dlna
                     playlistItem.SubtitleFormat = subtitleProfile.Format;
                 }
 
+                var isEligibleForStreamCopy = isEligibleForDirectStream && !string.IsNullOrEmpty(item.Container) && item.Protocol == MediaProtocol.File && videoStream != null;
+
+                var audioCodecs = transcodingProfile.AudioCodec.Split(',');
+                if (isEligibleForStreamCopy)
+                {
+                    foreach (var codec in audioCodecs)
+                    {
+                        if (codec.Equals(audioStream.Codec, StringComparison.OrdinalIgnoreCase))
+                        {
+                            playlistItem.AudioCodec = STREAMCOPY;
+                            break;
+                        }
+                    }
+                }
+                if (playlistItem.AudioCodec != STREAMCOPY)
+                    playlistItem.AudioCodec = audioCodecs[0];
+
+                if (isEligibleForStreamCopy && transcodingProfile.VideoCodec.Equals(videoStream.Codec, StringComparison.OrdinalIgnoreCase))
+                    playlistItem.VideoCodec = STREAMCOPY;
+                else
+                    playlistItem.VideoCodec = transcodingProfile.VideoCodec; 
+
                 playlistItem.PlayMethod = PlayMethod.Transcode;
                 playlistItem.Container = transcodingProfile.Container;
                 playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
-                playlistItem.AudioCodec = transcodingProfile.AudioCodec.Split(',')[0];
-                playlistItem.VideoCodec = transcodingProfile.VideoCodec;
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
                 playlistItem.AudioStreamIndex = audioStreamIndex;
 
