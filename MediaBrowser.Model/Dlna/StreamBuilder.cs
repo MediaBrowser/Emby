@@ -494,7 +494,7 @@ namespace MediaBrowser.Model.Dlna
             {
                 foreach (var codec in splittedCodecs)
                 {
-                    if (codec.Equals(streamCodec, StringComparison.OrdinalIgnoreCase))
+                    if (StringHelper.EqualsIgnoreCase(codec,streamCodec))
                     {
                         return STREAMCOPY;
                     }
