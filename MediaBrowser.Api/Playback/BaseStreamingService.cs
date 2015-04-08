@@ -1026,7 +1026,7 @@ namespace MediaBrowser.Api.Playback
             // FFMpeg writes debug/error info to stderr. This is useful when debugging so let's put it in the log directory.
             state.LogFileStream = FileSystem.GetFileStream(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true);
 
-            var commandLineLogMessageBytes = Encoding.UTF8.GetBytes(commandLineLogMessage + Environment.NewLine + Environment.NewLine);
+            var commandLineLogMessageBytes = Encoding.UTF8.GetBytes(Request.AbsoluteUri + Environment.NewLine + Environment.NewLine + commandLineLogMessage + Environment.NewLine + Environment.NewLine);
             await state.LogFileStream.WriteAsync(commandLineLogMessageBytes, 0, commandLineLogMessageBytes.Length, cancellationTokenSource.Token).ConfigureAwait(false);
 
             process.Exited += (sender, args) => OnFfMpegProcessExited(process, transcodingJob, state);
@@ -1624,14 +1624,19 @@ namespace MediaBrowser.Api.Playback
             var archivable = item as IArchivable;
             state.IsInputArchive = archivable != null && archivable.IsArchive;
 
-            MediaSourceInfo mediaSource = null;
+            MediaSourceInfo mediaSource;
             if (string.IsNullOrWhiteSpace(request.LiveStreamId))
             {
-                var mediaSources = await MediaSourceManager.GetPlayackMediaSources(request.Id, false, cancellationToken).ConfigureAwait(false);
+                var mediaSources = (await MediaSourceManager.GetPlayackMediaSources(request.Id, false, cancellationToken).ConfigureAwait(false)).ToList();
 
                 mediaSource = string.IsNullOrEmpty(request.MediaSourceId)
                    ? mediaSources.First()
-                   : mediaSources.First(i => string.Equals(i.Id, request.MediaSourceId));
+                   : mediaSources.FirstOrDefault(i => string.Equals(i.Id, request.MediaSourceId));
+
+                if (mediaSource == null && string.Equals(request.Id, request.MediaSourceId, StringComparison.OrdinalIgnoreCase))
+                {
+                    mediaSource = mediaSources.First();
+                }
             }
             else
             {
