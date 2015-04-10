@@ -55,21 +55,24 @@ namespace MediaBrowser.Controller.Providers
                 //_logger.Debug("Getting files for " + path);
 
                 entries = new Dictionary<string, FileSystemInfo>(StringComparer.OrdinalIgnoreCase);
-                
-                try
-                {
-                    var list = new DirectoryInfo(path)
-                        .EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly);
 
-                    // Seeing dupes on some users file system for some reason
-                    foreach (var item in list)
-                    {
-                        entries[item.FullName] = item;
-                    }
-                }
-                catch (DirectoryNotFoundException)
+                if (Directory.Exists(path))
                 {
-                }
+                    try
+                    {
+                        var list = new DirectoryInfo(path)
+                            .EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly);
+
+                        // Seeing dupes on some users file system for some reason
+                        foreach (var item in list)
+                        {
+                            entries[item.FullName] = item;
+                        }
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                    }   
+                }                
 
                 //var group = entries.ToLookup(i => Path.GetDirectoryName(i.FullName)).ToList();
 
