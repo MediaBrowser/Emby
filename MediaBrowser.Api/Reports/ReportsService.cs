@@ -37,9 +37,7 @@ namespace MediaBrowser.Api.Reports
             // Placeholder in case needed later
             User user = null;
 
-            var parentItem = string.IsNullOrEmpty(request.ParentId) ?
-                (user == null ? _libraryManager.RootFolder : user.RootFolder) :
-                _libraryManager.GetItemById(request.ParentId);
+            var parentItem = string.IsNullOrEmpty(request.ParentId) ? (_libraryManager.RootFolder): _libraryManager.GetItemById(request.ParentId);
 
             return ((Folder)parentItem).GetItems(GetItemsQuery(request, user));
         }
