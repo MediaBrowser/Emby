@@ -156,7 +156,7 @@ namespace MediaBrowser.Model.Dlna
                     if (all)
                     {
                         if (item.Protocol == MediaProtocol.File &&
-                            directPlayMethods.Contains(PlayMethod.DirectPlay) && 
+                            directPlayMethods.Contains(PlayMethod.DirectPlay) &&
                             _localPlayer.CanAccessFile(item.Path))
                         {
                             playlistItem.PlayMethod = PlayMethod.DirectPlay;
@@ -274,7 +274,7 @@ namespace MediaBrowser.Model.Dlna
                 {
                     playMethods.Add(PlayMethod.DirectStream);
                 }
-                
+
                 // The profile describes what the device supports
                 // If device requirements are satisfied then allow both direct stream and direct play
                 if (IsAudioEligibleForDirectPlay(item, GetBitrateForDirectPlayCheck(item, options)))
@@ -298,7 +298,7 @@ namespace MediaBrowser.Model.Dlna
                     {
                         highestScore = stream.Score.Value;
                     }
-                }    
+                }
             }
 
             List<MediaStream> topStreams = new List<MediaStream>();
@@ -329,8 +329,11 @@ namespace MediaBrowser.Model.Dlna
             return item.DefaultSubtitleStreamIndex;
         }
 
+
         private StreamInfo BuildVideoItem(MediaSourceInfo item, VideoOptions options)
         {
+
+
             StreamInfo playlistItem = new StreamInfo
             {
                 ItemId = options.ItemId,
@@ -411,12 +414,14 @@ namespace MediaBrowser.Model.Dlna
                     playlistItem.SubtitleFormat = subtitleProfile.Format;
                 }
 
+                var isEligibleForStreamCopy = isEligibleForDirectStream && !string.IsNullOrEmpty(item.Container) && item.Protocol == MediaProtocol.File && videoStream != null;
+
+                playlistItem.AudioCodec = GetCodec(audioStream.Codec, transcodingProfile.AudioCodec, isEligibleForStreamCopy);
+                playlistItem.VideoCodec = GetCodec(videoStream.Codec, transcodingProfile.VideoCodec, isEligibleForStreamCopy);
                 playlistItem.PlayMethod = PlayMethod.Transcode;
                 playlistItem.Container = transcodingProfile.Container;
                 playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
-                playlistItem.AudioCodec = transcodingProfile.AudioCodec.Split(',')[0];
-                playlistItem.VideoCodec = transcodingProfile.VideoCodec;
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
                 playlistItem.AudioStreamIndex = audioStreamIndex;
 
@@ -481,6 +486,24 @@ namespace MediaBrowser.Model.Dlna
             return playlistItem;
         }
 
+        private string GetCodec(string streamCodec, string codecs, bool allowCopy)
+        {
+            const string STREAMCOPY = "copy";
+            var splittedCodecs = codecs.Split(',');
+            if (allowCopy)
+            {
+                foreach (var codec in splittedCodecs)
+                {
+                    if (StringHelper.EqualsIgnoreCase(codec,streamCodec))
+                    {
+                        return STREAMCOPY;
+                    }
+                }
+            }
+            return splittedCodecs[0];
+
+        }
+
         private int GetAudioBitrate(int? channels, string codec)
         {
             if (channels.HasValue)
@@ -516,8 +539,8 @@ namespace MediaBrowser.Model.Dlna
             {
                 _logger.Debug("Profile: {0}, No direct play profiles found for Path: {1}",
                     profile.Name ?? "Unknown Profile",
-                    mediaSource.Path ?? "Unknown path"); 
-                
+                    mediaSource.Path ?? "Unknown path");
+
                 return null;
             }
 
@@ -643,7 +666,7 @@ namespace MediaBrowser.Model.Dlna
                             profile.Name ?? "Unknown Profile",
                             i.Property,
                             mediaSource.Path ?? "Unknown path");
-                        
+
                         return null;
                     }
                 }
