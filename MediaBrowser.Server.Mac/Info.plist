@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDisplayName</key>
-	<string>Media Browser</string>
 	<key>CFBundleIconFile</key>
 	<string>appicon</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.MediaBrowser.MediaBrowser.Server.Mac</string>
+	<string>com.emby.server</string>
 	<key>CFBundleName</key>
 	<string>Media Browser</string>
 	<key>CFBundleShortVersionString</key>
@@ -26,5 +24,7 @@
 	<string>NSApplication</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
+	<key>CFBundleDisplayName</key>
+	<string>Emby</string>
 </dict>
 </plist>

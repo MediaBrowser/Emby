@@ -74,6 +74,17 @@
                         lazy: true
                     });
                 }
+                else if (view == "Thumb") {
+                    html = LibraryBrowser.getPosterViewHtml({
+                        items: result.Items,
+                        shape: "backdrop",
+                        context: 'movies',
+                        showTitle: true,
+                        centerText: true,
+                        lazy: true,
+                        preferThumb: true
+                    });
+                }
 
                 $('.noItemsMessage', page).hide();
 
@@ -481,7 +492,7 @@
 
             var invalidTypes = ['Person', 'Genre', 'MusicGenre', 'Studio', 'GameGenre', 'BoxSet', 'Playlist', 'UserView', 'CollectionFolder', 'Audio', 'Episode'];
 
-            return item.LocationType == 'FileSystem' && !item.CollectionType && invalidTypes.indexOf(item.Type) == -1;
+            return item.LocationType == 'FileSystem' && !item.CollectionType && invalidTypes.indexOf(item.Type) == -1 && item.MediaType != 'Photo';
         }
     };
 

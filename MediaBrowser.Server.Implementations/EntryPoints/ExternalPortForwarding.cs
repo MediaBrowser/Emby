@@ -47,7 +47,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         void _config_ConfigurationUpdated(object sender, EventArgs e)
         {
             _config.ConfigurationUpdated -= _config_ConfigurationUpdated;
-            
+
             if (!string.Equals(_lastConfigIdentifier, GetConfigIdentifier(), StringComparison.OrdinalIgnoreCase))
             {
                 if (_isStarted)
@@ -88,7 +88,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             NatUtility.UnhandledException += NatUtility_UnhandledException;
             NatUtility.StartDiscovery();
 
-            _timer = new Timer(s => _createdRules = new List<string>(), null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
+            _timer = new Timer(s => _createdRules = new List<string>(), null, TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3));
 
             _lastConfigIdentifier = GetConfigIdentifier();
 
@@ -119,7 +119,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
 
                 CreateRules(device);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // I think it could be a good idea to log the exception because 
                 //   you are using permanent portmapping here (never expire) and that means that next time
@@ -128,7 +128,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
                 //   It also can fail with others like 727-ExternalPortOnlySupportsWildcard, 728-NoPortMapsAvailable
                 // and those errors (upnp errors) could be useful for diagnosting.  
 
-                //_logger.ErrorException("Error creating port forwarding rules", ex);
+                _logger.ErrorException("Error creating port forwarding rules", ex);
             }
         }
 
@@ -152,7 +152,6 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         private void CreatePortMap(INatDevice device, int privatePort, int publicPort)
         {
             _logger.Debug("Creating port map on port {0}", privatePort);
-
             device.CreatePortMap(new Mapping(Protocol.Tcp, privatePort, publicPort)
             {
                 Description = _appHost.Name

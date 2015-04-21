@@ -1,5 +1,5 @@
 ﻿.libraryPage {
-    padding-top: 50px !important;
+    padding-top: 49px !important;
 }
 
     .libraryPage:not(.metadataEditorPage):not(.noSecondaryNavPage) {
@@ -129,7 +129,7 @@
     top: 50px;
     z-index: 999;
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
     white-space: nowrap;
     padding: 0 0 0;
     overflow-x: scroll;
@@ -226,7 +226,7 @@
     margin: 0 0;
     position: relative;
     font-weight: normal;
-    border-bottom: 5px solid transparent;
+    border-bottom: 4px solid transparent;
 }
 
     .libraryViewNav a:not(.ui-btn-active):hover {

@@ -451,7 +451,6 @@ namespace MediaBrowser.WebDashboard.Api
                                 "moviegenres.js",
                                 "moviecollections.js",
                                 "movies.js",
-                                "movieslatest.js",
                                 "moviepeople.js",
                                 "moviesrecommended.js",
                                 "moviestudios.js",
@@ -471,6 +470,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "notificationlist.js",
                                 "notificationsetting.js",
                                 "notificationsettings.js",
+                                "photos.js",
                                 "playlists.js",
                                 "playlistedit.js",
 
@@ -483,6 +483,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 "selectserver.js",
                                 "serversecurity.js",
                                 "songs.js",
+                                "streamingsettings.js",
                                 "supporterkeypage.js",
                                 "supporterpage.js",
                                 "syncactivity.js",

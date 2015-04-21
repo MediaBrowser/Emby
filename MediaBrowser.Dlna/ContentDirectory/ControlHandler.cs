@@ -58,7 +58,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
             _profile = profile;
             _config = config;
 
-            _didlBuilder = new DidlBuilder(profile, user, imageProcessor, serverAddress, accessToken, userDataManager, localization, mediaSourceManager);
+            _didlBuilder = new DidlBuilder(profile, user, imageProcessor, serverAddress, accessToken, userDataManager, localization, mediaSourceManager, Logger);
         }
 
         protected override IEnumerable<KeyValuePair<string, string>> GetResult(string methodName, Headers methodParams)
@@ -223,7 +223,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
             if (string.Equals(flag, "BrowseMetadata"))
             {
                 totalCount = 1;
-                
+
                 if (item.IsFolder || serverItem.StubType.HasValue)
                 {
                     var childrenResult = (await GetUserItems(item, serverItem.StubType, user, sortCriteria, start, requestedCount).ConfigureAwait(false));
@@ -350,7 +350,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
             };
         }
 
-        private async Task<QueryResult<BaseItem>> GetChildrenSorted(BaseItem item, User user, SearchCriteria search, SortCriteria sort, int? startIndex, int? limit)
+        private Task<QueryResult<BaseItem>> GetChildrenSorted(BaseItem item, User user, SearchCriteria search, SortCriteria sort, int? startIndex, int? limit)
         {
             var folder = (Folder)item;
 
@@ -389,7 +389,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
                 isFolder = true;
             }
 
-            return await folder.GetItems(new InternalItemsQuery
+            return folder.GetItems(new InternalItemsQuery
             {
                 Limit = limit,
                 StartIndex = startIndex,
@@ -401,7 +401,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
                 IsFolder = isFolder,
                 MediaTypes = mediaTypes.ToArray()
 
-            }).ConfigureAwait(false);
+            });
         }
 
         private async Task<QueryResult<ServerItem>> GetUserItems(BaseItem item, StubType? stubType, User user, SortCriteria sort, int? startIndex, int? limit)

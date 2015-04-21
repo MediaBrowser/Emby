@@ -477,15 +477,11 @@
 
             if (context != 'folders') {
                 if (item.CollectionType == 'movies') {
-                    return 'movieslatest.html?topParentId=' + item.Id;
+                    return 'moviesrecommended.html?topParentId=' + item.Id;
                 }
 
                 if (item.CollectionType == 'boxsets') {
                     return 'collections.html?topParentId=' + item.Id;
-                }
-
-                if (item.CollectionType == 'trailers') {
-                    return "itemlist.html?parentId=" + item.Id;
                 }
 
                 if (item.CollectionType == 'tvshows') {
@@ -502,11 +498,17 @@
                 if (item.CollectionType == 'playlists') {
                     return 'playlists.html?topParentId=' + item.Id;
                 }
+                if (item.CollectionType == 'photos') {
+                    return 'photos.html?topParentId=' + item.Id;
+                }
             }
             if (item.Type == 'CollectionFolder') {
                 return 'itemlist.html?topParentId=' + item.Id + '&parentid=' + item.Id;
             }
 
+            if (item.Type == "PhotoAlbum" && context == 'photos') {
+                return "photos.html?parentId=" + id;
+            }
             if (item.Type == "Playlist") {
                 return "playlistedit.html?id=" + id;
             }

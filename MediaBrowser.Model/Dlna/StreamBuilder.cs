@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Session;
 using System;
@@ -11,13 +12,16 @@ namespace MediaBrowser.Model.Dlna
     public class StreamBuilder
     {
         private readonly ILocalPlayer _localPlayer;
+        private readonly ILogger _logger;
 
-        public StreamBuilder(ILocalPlayer localPlayer)
+        public StreamBuilder(ILocalPlayer localPlayer, ILogger logger)
         {
             _localPlayer = localPlayer;
+            _logger = logger;
         }
-        public StreamBuilder()
-            : this(new NullLocalPlayer())
+
+        public StreamBuilder(ILogger logger)
+            : this(new NullLocalPlayer(), logger)
         {
         }
 
@@ -273,7 +277,7 @@ namespace MediaBrowser.Model.Dlna
                 
                 // The profile describes what the device supports
                 // If device requirements are satisfied then allow both direct stream and direct play
-                if (IsAudioEligibleForDirectPlay(item, GetBitrateForDirectPlayCheck(item, options)))
+                if (item.SupportsDirectPlay && IsAudioEligibleForDirectPlay(item, GetBitrateForDirectPlayCheck(item, options)))
                 {
                     playMethods.Add(PlayMethod.DirectPlay);
                 }
@@ -352,6 +356,12 @@ namespace MediaBrowser.Model.Dlna
             // TODO: This doesn't accout for situation of device being able to handle media bitrate, but wifi connection not fast enough
             bool isEligibleForDirectPlay = IsEligibleForDirectPlay(item, GetBitrateForDirectPlayCheck(item, options), subtitleStream, options);
             bool isEligibleForDirectStream = IsEligibleForDirectPlay(item, options.GetMaxBitrate(), subtitleStream, options);
+
+            _logger.Debug("Profile: {0}, Path: {1}, isEligibleForDirectPlay: {2}, isEligibleForDirectStream: {3}",
+                options.Profile.Name ?? "Unknown Profile",
+                item.Path ?? "Unknown path",
+                isEligibleForDirectPlay,
+                isEligibleForDirectStream);
 
             if (isEligibleForDirectPlay || isEligibleForDirectStream)
             {
@@ -446,10 +456,8 @@ namespace MediaBrowser.Model.Dlna
                     playlistItem.MaxAudioChannels = Math.Min(options.MaxAudioChannels.Value, currentValue);
                 }
 
-                if (!playlistItem.AudioBitrate.HasValue)
-                {
-                    playlistItem.AudioBitrate = GetAudioBitrate(playlistItem.TargetAudioChannels, playlistItem.TargetAudioCodec);
-                }
+                int audioBitrate = GetAudioBitrate(playlistItem.TargetAudioChannels, playlistItem.TargetAudioCodec);
+                playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
 
                 int? maxBitrateSetting = options.GetMaxBitrate();
                 // Honor max rate
@@ -462,9 +470,9 @@ namespace MediaBrowser.Model.Dlna
                         videoBitrate -= playlistItem.AudioBitrate.Value;
                     }
 
+                    // Make sure the video bitrate is lower than bitrate settings but at least 64k
                     int currentValue = playlistItem.VideoBitrate ?? videoBitrate;
-
-                    playlistItem.VideoBitrate = Math.Min(videoBitrate, currentValue);
+                    playlistItem.VideoBitrate = Math.Max(Math.Min(videoBitrate, currentValue), 64000);
                 }
             }
 
@@ -504,6 +512,10 @@ namespace MediaBrowser.Model.Dlna
 
             if (directPlay == null)
             {
+                _logger.Debug("Profile: {0}, No direct play profiles found for Path: {1}",
+                    profile.Name ?? "Unknown Profile",
+                    mediaSource.Path ?? "Unknown path"); 
+                
                 return null;
             }
 
@@ -550,6 +562,8 @@ namespace MediaBrowser.Model.Dlna
             {
                 if (!conditionProcessor.IsVideoConditionSatisfied(i, audioBitrate, audioChannels, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams))
                 {
+                    LogConditionFailure(profile, "VideoContainerProfile", i, mediaSource);
+
                     return null;
                 }
             }
@@ -558,6 +572,10 @@ namespace MediaBrowser.Model.Dlna
 
             if (string.IsNullOrEmpty(videoCodec))
             {
+                _logger.Debug("Profile: {0}, DirectPlay=false. Reason=Unknown video codec. Path: {1}",
+                    profile.Name ?? "Unknown Profile",
+                    mediaSource.Path ?? "Unknown path");
+
                 return null;
             }
 
@@ -577,6 +595,8 @@ namespace MediaBrowser.Model.Dlna
             {
                 if (!conditionProcessor.IsVideoConditionSatisfied(i, audioBitrate, audioChannels, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams))
                 {
+                    LogConditionFailure(profile, "VideoCodecProfile", i, mediaSource);
+
                     return null;
                 }
             }
@@ -587,6 +607,10 @@ namespace MediaBrowser.Model.Dlna
 
                 if (string.IsNullOrEmpty(audioCodec))
                 {
+                    _logger.Debug("Profile: {0}, DirectPlay=false. Reason=Unknown audio codec. Path: {1}",
+                        profile.Name ?? "Unknown Profile",
+                        mediaSource.Path ?? "Unknown path");
+
                     return null;
                 }
 
@@ -607,12 +631,14 @@ namespace MediaBrowser.Model.Dlna
                     bool? isSecondaryAudio = audioStream == null ? null : mediaSource.IsSecondaryAudio(audioStream);
                     if (!conditionProcessor.IsVideoAudioConditionSatisfied(i, audioChannels, audioBitrate, audioProfile, isSecondaryAudio))
                     {
+                        LogConditionFailure(profile, "VideoAudioCodecProfile", i, mediaSource);
+                        
                         return null;
                     }
                 }
             }
 
-            if (isEligibleForDirectPlay)
+            if (isEligibleForDirectPlay && mediaSource.SupportsDirectPlay)
             {
                 if (mediaSource.Protocol == MediaProtocol.Http)
                 {
@@ -631,15 +657,24 @@ namespace MediaBrowser.Model.Dlna
                 }
             }
 
-            if (isEligibleForDirectStream)
+            if (isEligibleForDirectStream && mediaSource.SupportsDirectStream)
             {
-                if (mediaSource.SupportsDirectStream)
-                {
-                    return PlayMethod.DirectStream;
-                }
+                return PlayMethod.DirectStream;
             }
 
             return null;
+        }
+
+        private void LogConditionFailure(DeviceProfile profile, string type, ProfileCondition condition, MediaSourceInfo mediaSource)
+        {
+            _logger.Debug("Profile: {0}, DirectPlay=false. Reason={1}.{2} Condition: {3}. ConditionValue: {4}. IsRequired: {5}. Path: {6}",
+                type,
+                profile.Name ?? "Unknown Profile",
+                condition.Property,
+                condition.Condition,
+                condition.Value ?? string.Empty,
+                condition.IsRequired,
+                mediaSource.Path ?? "Unknown path");
         }
 
         private bool IsEligibleForDirectPlay(MediaSourceInfo item,

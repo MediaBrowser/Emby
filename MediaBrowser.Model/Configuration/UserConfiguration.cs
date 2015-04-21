@@ -7,12 +7,6 @@ namespace MediaBrowser.Model.Configuration
     public class UserConfiguration
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is administrator.
-        /// </summary>
-        /// <value><c>true</c> if this instance is administrator; otherwise, <c>false</c>.</value>
-        public bool IsAdministrator { get; set; }
-
-        /// <summary>
         /// Gets or sets the audio language preference.
         /// </summary>
         /// <value>The audio language preference.</value>
@@ -52,8 +46,8 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableCinemaMode { get; set; }
 
         public string[] LatestItemsExcludes { get; set; }
+        public string[] PlainFolderViews { get; set; }
 
-        public bool HasMigratedToPolicy { get; set; }
         public bool HidePlayedInLatest { get; set; }
 
         /// <summary>
@@ -69,6 +63,7 @@ namespace MediaBrowser.Model.Configuration
             DisplayChannelsWithinViews = new string[] { };
 
             ExcludeFoldersFromGrouping = new string[] { };
+            PlainFolderViews = new string[] { };
             DisplayCollectionsView = true;
 
             IncludeTrailersInSuggestions = true;

@@ -71,6 +71,7 @@ namespace MediaBrowser.Model.Dlna
         public string SubtitleFormat { get; set; }
 
         public string PlaySessionId { get; set; }
+        public List<MediaSourceInfo> AllMediaSources { get; set; }
 
         public string MediaSourceId
         {
@@ -102,7 +103,7 @@ namespace MediaBrowser.Model.Dlna
             }
 
             List<string> list = new List<string>();
-            foreach (NameValuePair pair in BuildParams(this, accessToken))
+            foreach (NameValuePair pair in BuildParams(this, accessToken, false))
             {
                 if (string.IsNullOrEmpty(pair.Value))
                 {
@@ -173,7 +174,7 @@ namespace MediaBrowser.Model.Dlna
         {
             List<string> list = new List<string>();
 
-            foreach (NameValuePair pair in BuildParams(item, accessToken))
+            foreach (NameValuePair pair in BuildParams(item, accessToken, true))
             {
                 list.Add(pair.Value);
             }
@@ -181,7 +182,7 @@ namespace MediaBrowser.Model.Dlna
             return string.Format("Params={0}", string.Join(";", list.ToArray()));
         }
 
-        private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken)
+        private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken, bool isDlna)
         {
             List<NameValuePair> list = new List<NameValuePair>();
             // note the order of this is important for BuildDlnaParam which is decoded in BaseStreamingService.ParseParams
@@ -211,7 +212,17 @@ namespace MediaBrowser.Model.Dlna
 
             list.Add(new NameValuePair("Level", item.VideoLevel.HasValue ? StringHelper.ToStringCultureInvariant(item.VideoLevel.Value) : string.Empty));
 
-            list.Add(new NameValuePair("ClientTime", item.IsDirectStream ? string.Empty : DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture)));
+            if (isDlna)
+            {
+                // The player may see it as separate resources due to url differences
+                // And then try to request more than one at playback
+                list.Add(new NameValuePair("ClientTime", string.Empty));
+            }
+            else
+            {
+                list.Add(new NameValuePair("ClientTime", item.IsDirectStream ? string.Empty : DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture)));
+            }
+
             list.Add(new NameValuePair("MaxRefFrames", item.MaxRefFrames.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxRefFrames.Value) : string.Empty));
             list.Add(new NameValuePair("MaxVideoBitDepth", item.MaxVideoBitDepth.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxVideoBitDepth.Value) : string.Empty));
             list.Add(new NameValuePair("Profile", item.VideoProfile ?? string.Empty));

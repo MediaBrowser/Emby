@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using System.Collections.Generic;
@@ -8,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.Photos
 {
-    public class PhotoAlbumImageProvider : BaseDynamicImageProvider<PhotoAlbum>
-    {
-        public PhotoAlbumImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths) : base(fileSystem, providerManager, applicationPaths)
-        {
-        }
+    //public class PhotoAlbumImageProvider : BaseDynamicImageProvider<PhotoAlbum>
+    //{
+    //    public PhotoAlbumImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths, IImageProcessor imageProcessor) : base(fileSystem, providerManager, applicationPaths, imageProcessor)
+    //    {
+    //    }
 
-        protected override Task<List<BaseItem>> GetItemsWithImages(IHasImages item)
-        {
-            var photoAlbum = (PhotoAlbum)item;
-            var items = GetFinalItems(photoAlbum.GetRecursiveChildren(i => i is Photo).ToList());
+    //    protected override Task<List<BaseItem>> GetItemsWithImages(IHasImages item)
+    //    {
+    //        var photoAlbum = (PhotoAlbum)item;
+    //        var items = GetFinalItems(photoAlbum.Children.ToList());
 
-            return Task.FromResult(items);
-        }
-    }
+    //        return Task.FromResult(items);
+    //    }
+    //}
 }

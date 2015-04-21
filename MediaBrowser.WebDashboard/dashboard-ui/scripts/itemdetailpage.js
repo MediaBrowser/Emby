@@ -254,7 +254,21 @@
             $('a', elem).removeClass('ui-btn-active');
             $('.lnkHomeLatest', page).addClass('ui-btn-active');
         }
-        else if (context == 'movies' || item.Type == 'Movie' || context == 'movies-trailers') {
+        else if (context == 'photos' || context == 'photos-photos') {
+            elem = $('.photoTabs', page).show();
+            $('a', elem).removeClass('ui-btn-active');
+            $('.lnkHomeLatest', page).addClass('ui-btn-active');
+
+            if (context == 'photos-photos') {
+                $('.lnkPhotos', page).addClass('ui-btn-active');
+            }
+            else if (context == 'photos-videos') {
+                $('.lnkVideos', page).addClass('ui-btn-active');
+            } else {
+                $('.lnkPhotoAlbums', page).addClass('ui-btn-active');
+            }
+        }
+        else if (context == 'movies' || context == 'movies-trailers') {
             elem = $('#movieTabs', page).show();
             $('a', elem).removeClass('ui-btn-active');
 
@@ -1322,6 +1336,10 @@
 
             if (stream.RefFrames) {
                 attributes.push(createAttribute(Globalize.translate('MediaInfoRefFrames'), stream.RefFrames));
+            }
+
+            if (stream.KeyFrames) {
+                //attributes.push(createAttribute(Globalize.translate('MediaInfoKeyFrames'), stream.KeyFrames.join(', ')));
             }
 
             if (stream.Type != "Video") {

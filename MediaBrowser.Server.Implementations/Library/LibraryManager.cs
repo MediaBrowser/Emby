@@ -732,7 +732,12 @@ namespace MediaBrowser.Server.Implementations.Library
                         }
                     }
 
-                    folder = GetItemById(folder.Id) as BasePluginFolder ?? folder;
+                    var dbItem = GetItemById(folder.Id) as BasePluginFolder;
+
+                    if (dbItem != null && string.Equals(dbItem.Path, folder.Path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        folder = dbItem;
+                    }
 
                     rootFolder.AddVirtualChild(folder);
 
@@ -921,10 +926,8 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (isArtist)
             {
-                var validFilename = _fileSystem.GetValidFilename(name).Trim();
-
                 var existing = RootFolder
-                    .GetRecursiveChildren(i => i is T && string.Equals(_fileSystem.GetValidFilename(i.Name).Trim(), validFilename, StringComparison.OrdinalIgnoreCase))
+                    .GetRecursiveChildren(i => i is T && NameExtensions.AreEqual(i.Name, name))
                     .Cast<T>()
                     .FirstOrDefault();
 
@@ -1510,7 +1513,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             return GetUserRootFolder().Children
                 .OfType<Folder>()
-                .Where(i => string.Equals(i.Path, item.Path, StringComparison.OrdinalIgnoreCase) || i.PhysicalLocations.Contains(item.Path));
+                .Where(i => string.Equals(i.Path, item.Path, StringComparison.OrdinalIgnoreCase) || i.PhysicalLocations.Contains(item.Path, StringComparer.OrdinalIgnoreCase));
         }
 
         public string GetContentType(BaseItem item)
@@ -1599,7 +1602,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             if (ConfigurationManager.Configuration.EnableUserSpecificUserViews)
             {
-                return await GetNamedViewInternal(user, name, null, viewType, sortName, cancellationToken)
+                return await GetNamedViewInternal(user, name, null, viewType, sortName, null, cancellationToken)
                             .ConfigureAwait(false);
             }
 
@@ -1634,6 +1637,12 @@ namespace MediaBrowser.Server.Implementations.Library
                 refresh = true;
             }
 
+            if (!string.Equals(viewType, item.ViewType, StringComparison.OrdinalIgnoreCase))
+            {
+                item.ViewType = viewType;
+                await item.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken).ConfigureAwait(false);
+            }
+
             if (!refresh && item != null)
             {
                 refresh = (DateTime.UtcNow - item.DateLastSaved).TotalHours >= 24;
@@ -1653,6 +1662,7 @@ namespace MediaBrowser.Server.Implementations.Library
             string parentId,
             string viewType,
             string sortName,
+            string uniqueId,
             CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(parentId))
@@ -1660,7 +1670,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("parentId");
             }
 
-            return GetNamedViewInternal(user, name, parentId, viewType, sortName, cancellationToken);
+            return GetNamedViewInternal(user, name, parentId, viewType, sortName, uniqueId, cancellationToken);
         }
 
         private async Task<UserView> GetNamedViewInternal(User user,
@@ -1668,6 +1678,7 @@ namespace MediaBrowser.Server.Implementations.Library
             string parentId,
             string viewType,
             string sortName,
+            string uniqueId,
             CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -1675,12 +1686,13 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("name");
             }
 
-            if (string.IsNullOrWhiteSpace(viewType))
+            var idValues = "37_namedview_" + name + user.Id.ToString("N") + (parentId ?? string.Empty);
+            if (!string.IsNullOrWhiteSpace(uniqueId))
             {
-                throw new ArgumentNullException("viewType");
+                idValues += uniqueId;
             }
 
-            var id = GetNewItemId("37_namedview_" + name + user.Id.ToString("N") + (parentId ?? string.Empty), typeof(UserView));
+            var id = GetNewItemId(idValues, typeof(UserView));
 
             var path = Path.Combine(ConfigurationManager.ApplicationPaths.InternalMetadataPath, "views", id.ToString("N"));
 
@@ -1713,7 +1725,13 @@ namespace MediaBrowser.Server.Implementations.Library
                 isNew = true;
             }
 
-            var refresh = isNew || (DateTime.UtcNow - item.DateLastSaved).TotalHours >= 12;
+            if (!string.Equals(viewType, item.ViewType, StringComparison.OrdinalIgnoreCase))
+            {
+                item.ViewType = viewType;
+                await item.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken).ConfigureAwait(false);
+            }
+
+            var refresh = isNew || (DateTime.UtcNow - item.DateLastSaved).TotalHours >= 24;
 
             if (refresh)
             {

@@ -8,12 +8,12 @@ using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Querying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Querying;
 
 namespace MediaBrowser.Server.Implementations.LiveTv
 {
@@ -293,7 +293,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 ProgramName = info.ProgramName,
                 SourceType = info.SourceType,
                 Status = info.Status,
-                ChannelName = channelName
+                ChannelName = channelName,
+                Url = info.Url
             };
 
             if (!string.IsNullOrEmpty(info.ChannelId))

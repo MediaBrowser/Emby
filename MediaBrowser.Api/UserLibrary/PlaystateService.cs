@@ -67,6 +67,13 @@ namespace MediaBrowser.Api.UserLibrary
     {
     }
 
+    [Route("/Sessions/Playing/Ping", "POST", Summary = "Pings a playback session")]
+    public class PingPlaybackSession : IReturnVoid
+    {
+        [ApiMember(Name = "PlaySessionId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string PlaySessionId { get; set; }
+    }
+
     [Route("/Sessions/Playing/Stopped", "POST", Summary = "Reports playback has stopped within a session")]
     public class ReportPlaybackStopped : PlaybackStopInfo, IReturnVoid
     {
@@ -114,6 +121,15 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "SubtitleStreamIndex", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
         public int? SubtitleStreamIndex { get; set; }
+
+        [ApiMember(Name = "PlayMethod", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public PlayMethod PlayMethod { get; set; }
+
+        [ApiMember(Name = "LiveStreamId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string LiveStreamId { get; set; }
+
+        [ApiMember(Name = "PlaySessionId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string PlaySessionId { get; set; }
     }
 
     /// <summary>
@@ -160,6 +176,15 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "VolumeLevel", Description = "Scale of 0-100", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "POST")]
         public int? VolumeLevel { get; set; }
+
+        [ApiMember(Name = "PlayMethod", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public PlayMethod PlayMethod { get; set; }
+
+        [ApiMember(Name = "LiveStreamId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string LiveStreamId { get; set; }
+
+        [ApiMember(Name = "PlaySessionId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string PlaySessionId { get; set; }
     }
 
     /// <summary>
@@ -191,6 +216,12 @@ namespace MediaBrowser.Api.UserLibrary
         /// <value>The position ticks.</value>
         [ApiMember(Name = "PositionTicks", Description = "Optional. The position, in ticks, where playback stopped. 1 tick = 10000 ms", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "DELETE")]
         public long? PositionTicks { get; set; }
+
+        [ApiMember(Name = "LiveStreamId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string LiveStreamId { get; set; }
+
+        [ApiMember(Name = "PlaySessionId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string PlaySessionId { get; set; }
     }
 
     [Authenticated]
@@ -260,7 +291,10 @@ namespace MediaBrowser.Api.UserLibrary
                 QueueableMediaTypes = queueableMediaTypes.Split(',').ToList(),
                 MediaSourceId = request.MediaSourceId,
                 AudioStreamIndex = request.AudioStreamIndex,
-                SubtitleStreamIndex = request.SubtitleStreamIndex
+                SubtitleStreamIndex = request.SubtitleStreamIndex,
+                PlayMethod = request.PlayMethod,
+                PlaySessionId = request.PlaySessionId,
+                LiveStreamId = request.LiveStreamId
             });
         }
 
@@ -288,17 +322,30 @@ namespace MediaBrowser.Api.UserLibrary
                 MediaSourceId = request.MediaSourceId,
                 AudioStreamIndex = request.AudioStreamIndex,
                 SubtitleStreamIndex = request.SubtitleStreamIndex,
-                VolumeLevel = request.VolumeLevel
+                VolumeLevel = request.VolumeLevel,
+                PlayMethod = request.PlayMethod,
+                PlaySessionId = request.PlaySessionId,
+                LiveStreamId = request.LiveStreamId
             });
         }
 
         public void Post(ReportPlaybackProgress request)
         {
+            if (!string.IsNullOrWhiteSpace(request.PlaySessionId))
+            {
+                ApiEntryPoint.Instance.PingTranscodingJob(request.PlaySessionId);
+            }
+
             request.SessionId = GetSession().Result.Id;
 
             var task = _sessionManager.OnPlaybackProgress(request);
 
             Task.WaitAll(task);
+        }
+
+        public void Post(PingPlaybackSession request)
+        {
+            ApiEntryPoint.Instance.PingTranscodingJob(request.PlaySessionId);
         }
 
         /// <summary>
@@ -311,12 +358,19 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 ItemId = request.Id,
                 PositionTicks = request.PositionTicks,
-                MediaSourceId = request.MediaSourceId
+                MediaSourceId = request.MediaSourceId,
+                PlaySessionId = request.PlaySessionId,
+                LiveStreamId = request.LiveStreamId
             });
         }
 
         public void Post(ReportPlaybackStopped request)
         {
+            if (!string.IsNullOrWhiteSpace(request.PlaySessionId))
+            {
+                ApiEntryPoint.Instance.KillTranscodingJobs(AuthorizationContext.GetAuthorizationInfo(Request).DeviceId, request.PlaySessionId, s => true);
+            }
+
             request.SessionId = GetSession().Result.Id;
 
             var task = _sessionManager.OnPlaybackStopped(request);

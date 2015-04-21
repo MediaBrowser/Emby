@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Channels
 {
@@ -29,7 +28,7 @@ namespace MediaBrowser.Controller.Channels
                     return false;
                 }
             }
-            
+
             return base.IsVisible(user);
         }
 

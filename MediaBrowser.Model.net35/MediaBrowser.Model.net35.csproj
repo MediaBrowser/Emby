@@ -429,6 +429,9 @@
     <Compile Include="..\MediaBrowser.Model\Dto\IHasServerId.cs">
       <Link>Dto\IHasServerId.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\IHasSyncInfo.cs">
+      <Link>Dto\IHasSyncInfo.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\IItemDto.cs">
       <Link>Dto\IItemDto.cs</Link>
     </Compile>
@@ -449,6 +452,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\ItemIndex.cs">
       <Link>Dto\ItemIndex.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\Dto\ItemLayout.cs">
+      <Link>Dto\ItemLayout.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dto\MediaSourceInfo.cs">
       <Link>Dto\MediaSourceInfo.cs</Link>
@@ -524,9 +530,6 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Entities\MBRegistrationRecord.cs">
       <Link>Entities\MBRegistrationRecord.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Entities\MediaInfo.cs">
-      <Link>Entities\MediaInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Entities\MediaStream.cs">
       <Link>Entities\MediaStream.cs</Link>
@@ -764,6 +767,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\MediaInfo\LiveStreamResponse.cs">
       <Link>MediaInfo\LiveStreamResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\MediaInfo\MediaInfo.cs">
+      <Link>MediaInfo\MediaInfo.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\MediaInfo\MediaProtocol.cs">
       <Link>MediaInfo\MediaProtocol.cs</Link>

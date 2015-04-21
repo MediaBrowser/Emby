@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.Dlna;
+﻿using System.Collections.Generic;
+using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
 using System.Diagnostics;
 
@@ -57,7 +58,7 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value>The length of the packet.</value>
         public int? PacketLength { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the channels.
         /// </summary>
