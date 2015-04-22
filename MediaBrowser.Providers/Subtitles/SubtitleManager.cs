@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Events;
+﻿using MediaBrowser.Api.ScheduledTasks;
+using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Entities;
@@ -159,7 +160,10 @@ namespace MediaBrowser.Providers.Subtitles
                     Provider = provider.Name
 
                 }, _logger);
-                
+                if (ex.Message.Contains("407 Download limit reached"))
+                {
+                    ScheduledTaskService.Delete(StopScheduledTask request);
+                }
                 throw;
             }
         }

@@ -153,7 +153,8 @@
                         { name: Globalize.translate('HeaderAudio'), type: 'Audio' },
                         { name: Globalize.translate('HeaderSubtitles'), type: 'Subtitles' },
                         { name: Globalize.translate('HeaderTrailers'), type: 'Trailers' },
-                        { name: Globalize.translate('HeaderSpecials'), type: 'Specials'  }
+                        { name: Globalize.translate('HeaderSpecials'), type: 'Specials' },
+                        { name: Globalize.translate('MediaInfoPath'), type: 'Path' }
                     ];
                 }
         }
@@ -356,6 +357,17 @@
                         html += '<a href="edititemmetadata.html?id=' + item.Id + '">' + LibraryBrowser.getPosterViewDisplayName(item, false, false) + '</a>';
                         break;
                     }
+
+                case 'Path':
+                    {
+                        if (item.LocationType != 'Remote') {
+                            html += item.Path || '&nbsp;';
+                        } else {
+                            html += "Remote";
+                        }
+                        break;
+                    }
+
                 case 'Community Rating':
                     {
                         html += item.CommunityRating || '&nbsp;';
