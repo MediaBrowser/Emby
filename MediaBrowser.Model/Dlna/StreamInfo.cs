@@ -185,7 +185,10 @@ namespace MediaBrowser.Model.Dlna
         private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken, bool isDlna)
         {
             List<NameValuePair> list = new List<NameValuePair>();
-            // note the order of this is important for BuildDlnaParam which is decoded in BaseStreamingService.ParseParams
+            //############################################################################################################
+            // NOTE the order of this is important for BuildDlnaParam which is decoded in BaseStreamingService.ParseParams
+            // it also requires that all entries always exist to maintain the same indexes for items
+            //############################################################################################################
             list.Add(new NameValuePair("DeviceProfileId", item.DeviceProfileId ?? string.Empty));
             list.Add(new NameValuePair("DeviceId", item.DeviceId ?? string.Empty));
             list.Add(new NameValuePair("MediaSourceId", item.MediaSourceId ?? string.Empty));
@@ -233,8 +236,17 @@ namespace MediaBrowser.Model.Dlna
 
             string liveStreamId = item.MediaSource == null ? null : item.MediaSource.LiveStreamId;
             list.Add(new NameValuePair("LiveStreamId", liveStreamId ?? string.Empty));
-            list.Add(new NameValuePair("AllowAnamorphic", item.AllowAnamorphic.HasValue ? item.AllowAnamorphic.Value.ToString() : true.ToString()));
 
+            if (isDlna)
+            {
+                list.Add(new NameValuePair("ItemId", item.ItemId));
+            }
+            else
+            {
+                list.Add(new NameValuePair("ItemId", string.Empty));
+            }
+            list.Add(new NameValuePair("AllowAnamorphic", item.AllowAnamorphic.HasValue ? item.AllowAnamorphic.Value.ToString() : true.ToString()));
+            
             return list;
         }
 
