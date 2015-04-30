@@ -1524,6 +1524,10 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 24)
                 {
+                    // Duplicating ItemId because of MediaMonkey
+                }
+                else if (i == 25)
+                {
                     if (videoRequest != null)
                     {
                         videoRequest.AllowAnamorphic = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
