@@ -16,16 +16,16 @@
   <ModelNumber>3.0</ModelNumber>
   <ModelUrl>http://www.microsoft.com/</ModelUrl>
   <IgnoreTranscodeByteRangeRequests>false</IgnoreTranscodeByteRangeRequests>
-  <EnableAlbumArtInDidl>false</EnableAlbumArtInDidl>
-  <EnableSingleAlbumArtLimit>true</EnableSingleAlbumArtLimit>
+  <EnableAlbumArtInDidl>true</EnableAlbumArtInDidl>
+  <EnableSingleAlbumArtLimit>false</EnableSingleAlbumArtLimit>
   <SupportedMediaTypes>Audio,Photo,Video</SupportedMediaTypes>
   <AlbumArtPn>JPEG_TN</AlbumArtPn>
   <MaxAlbumArtWidth>480</MaxAlbumArtWidth>
   <MaxAlbumArtHeight>480</MaxAlbumArtHeight>
   <MaxIconWidth>48</MaxIconWidth>
   <MaxIconHeight>48</MaxIconHeight>
-  <MaxStreamingBitrate>8000000</MaxStreamingBitrate>
-  <MaxStaticBitrate>8000000</MaxStaticBitrate>
+  <MaxStreamingBitrate>80000000</MaxStreamingBitrate>
+  <MaxStaticBitrate>80000000</MaxStaticBitrate>
   <MusicStreamingTranscodingBitrate>128000</MusicStreamingTranscodingBitrate>
   <MusicSyncBitrate>128000</MusicSyncBitrate>
   <XDlnaDoc>DMS-1.50</XDlnaDoc>
@@ -43,7 +43,7 @@
     <DirectPlayProfile container="ts" audioCodec="mp3,mp2" videoCodec="mpeg2video" type="Video" />
     <DirectPlayProfile container="mp4" audioCodec="ac3,eac3,aac,mp3,mp2" videoCodec="h264,mpeg4" type="Video" />
     <DirectPlayProfile container="mov" audioCodec="ac3,eac3,aac,mp3,mp2" videoCodec="h264,mpeg4,mjpeg" type="Video" />
-    <DirectPlayProfile container="mkv" audioCodec="ac3,eac3,aac,mp3,mp2,pcm,vorbis" videoCodec="h264,mpeg4,vp8" type="Video" />
+    <DirectPlayProfile container="mkv" audioCodec="ac3,eac3,aac,mp3,mp2,pcm,vorbis,dca" videoCodec="h264,mpeg4,vp8" type="Video" />
     <DirectPlayProfile container="avi" audioCodec="ac3,eac3,mp3" videoCodec="mpeg4" type="Video" />
     <DirectPlayProfile container="avi" audioCodec="pcm" videoCodec="mjpeg" type="Video" />
     <DirectPlayProfile container="mpeg" audioCodec="mp3,mp2" videoCodec="mpeg2video,mpeg1video" type="Video" />
@@ -59,14 +59,6 @@
     <TranscodingProfile container="ts" type="Video" videoCodec="h264" audioCodec="ac3,aac" estimateContentLength="false" enableMpegtsM2TsMode="true" transcodeSeekInfo="Auto" context="Streaming" />
     <TranscodingProfile container="jpeg" type="Photo" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" context="Streaming" />
   </TranscodingProfiles>
-  <ContainerProfiles>
-    <ContainerProfile type="Photo">
-      <Conditions>
-        <ProfileCondition condition="LessThanEqual" property="Width" value="1920" isRequired="true" />
-        <ProfileCondition condition="LessThanEqual" property="Height" value="1080" isRequired="true" />
-      </Conditions>
-    </ContainerProfile>
-  </ContainerProfiles>
   <CodecProfiles>
     <CodecProfile type="Video">
       <Conditions>

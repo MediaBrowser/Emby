@@ -43,7 +43,8 @@ namespace MediaBrowser.Dlna.Profiles
             Manufacturer = "Microsoft Corporation";
             ManufacturerUrl = "http://www.microsoft.com/";
             SonyAggregationFlags = "10";
-            EnableSingleAlbumArtLimit = true;
+            EnableSingleAlbumArtLimit = false;
+            EnableAlbumArtInDidl = true;
 
             TranscodingProfiles = new[]
             {
@@ -101,7 +102,7 @@ namespace MediaBrowser.Dlna.Profiles
                 {
                     Container = "mkv",
                     VideoCodec = "h264,mpeg4,vp8",
-                    AudioCodec = "ac3,eac3,aac,mp3,mp2,pcm,vorbis",
+                    AudioCodec = "ac3,eac3,aac,mp3,mp2,pcm,vorbis,dca",
                     Type = DlnaProfileType.Video
                 },
                 new DirectPlayProfile
@@ -160,30 +161,6 @@ namespace MediaBrowser.Dlna.Profiles
                 {
                     Container = "jpeg",
                     Type = DlnaProfileType.Photo
-                }
-            };
-
-            ContainerProfiles = new[]
-            {
-                new ContainerProfile
-                {
-                    Type = DlnaProfileType.Photo,
-
-                    Conditions = new []
-                    {
-                        new ProfileCondition
-                        {
-                            Condition = ProfileConditionType.LessThanEqual,
-                            Property = ProfileConditionValue.Width,
-                            Value = "1920"
-                        },
-                        new ProfileCondition
-                        {
-                            Condition = ProfileConditionType.LessThanEqual,
-                            Property = ProfileConditionValue.Height,
-                            Value = "1080"
-                        }
-                    }
                 }
             };
 
