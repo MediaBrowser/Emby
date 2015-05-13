@@ -21,13 +21,11 @@ namespace MediaBrowser.Server.Implementations.UserViews
     public class DynamicImageProvider : BaseDynamicImageProvider<UserView>
     {
         private readonly IUserManager _userManager;
-        private readonly ILibraryManager _libraryManager;
 
-        public DynamicImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths, IImageProcessor imageProcessor, IUserManager userManager, ILibraryManager libraryManager)
+        public DynamicImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths, IImageProcessor imageProcessor, IUserManager userManager)
             : base(fileSystem, providerManager, applicationPaths, imageProcessor)
         {
             _userManager = userManager;
-            _libraryManager = libraryManager;
         }
 
         public override IEnumerable<ImageType> GetSupportedImages(IHasImages item)
@@ -122,7 +120,7 @@ namespace MediaBrowser.Server.Implementations.UserViews
                 var audio = i as Audio;
                 if (audio != null)
                 {
-                    var album = audio.FindParent<MusicAlbum>();
+                    var album = audio.AlbumEntity;
                     if (album != null && album.HasImage(ImageType.Primary))
                     {
                         return album;
@@ -226,8 +224,7 @@ namespace MediaBrowser.Server.Implementations.UserViews
                     return false;
                 }
 
-                await CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540, false, item.Name).ConfigureAwait(false);
-                return true;
+                return await CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540, false, item.Name).ConfigureAwait(false);
             }
 
             return await base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex).ConfigureAwait(false);

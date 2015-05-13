@@ -30,7 +30,7 @@
 
 .backdropContainer {
     position: fixed;
-    top: 50px;
+    top: 0;
     right: 0;
     left: 0;
     bottom: 0;
@@ -91,6 +91,13 @@
 @media all and (max-width: 800px) {
 
     .hiddenSectionOnMobile {
+        display: none;
+    }
+}
+
+@media all and (min-width: 800px) {
+
+    .hiddenSectionOnNonMobile {
         display: none;
     }
 }
@@ -633,7 +640,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
 
 .detailSection {
     vertical-align: top;
-    margin-bottom: 2.5em;
+    margin-bottom: 3em;
 }
 
 .detailCollapsibleSection:not(.hide) + .detailCollapsibleSection {
@@ -773,7 +780,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
     }
 }
 
-@media all and (max-height: 600px), (max-width: 600px) {
+@media all and (max-height: 540px), (max-width: 540px) {
 
     .itemBackdrop:not(.noBackdrop) {
         height: 280px;
@@ -933,6 +940,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
     color: #fff;
     background: rgb(51, 136, 204);
     background: rgba(51, 136, 204, .9);
+    line-height: 1.2;
 }
 
 .unidentifiedIndicator {
@@ -1048,6 +1056,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
 
 .timelineHeader {
     margin-bottom: .25em;
+    line-height: 1.25em;
     line-height: initial;
 }
 
@@ -1274,53 +1283,77 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
         text-decoration: none;
     }
 
+.groupingMenu {
+    width: 240px;
+}
+
 .groupingMenuScroller {
-    max-height: 200px;
-    min-width: 240px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-right: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 1em;
 }
 
 @media all and (min-width: 400px) {
 
-    .groupingMenuScroller {
-        min-width: 300px;
+    .groupingMenu {
+        width: 360px;
     }
 }
 
 @media all and (min-width: 500px) {
 
-    .groupingMenuScroller {
-        min-width: 400px;
+    .groupingMenu {
+        width: 460px;
     }
 }
 
 @media all and (min-width: 600px) {
 
-    .groupingMenuScroller {
-        min-width: 500px;
+    .groupingMenu {
+        width: 560px;
     }
 }
 
-@media all and (min-height: 400px) {
+@media all and (min-width: 700px) {
 
-    .groupingMenuScroller {
-        max-height: 300px;
+    .groupingMenu {
+        width: 660px;
     }
 }
 
-@media all and (min-height: 500px) {
+@media all and (min-width: 800px) {
 
-    .groupingMenuScroller {
-        max-height: 400px;
+    .groupingMenu {
+        width: 760px;
     }
 }
 
-@media all and (min-height: 600px) {
+@media all and (min-width: 900px) {
 
-    .groupingMenuScroller {
-        max-height: 500px;
+    .groupingMenu {
+        width: 860px;
+    }
+}
+
+@media all and (min-width: 1000px) {
+
+    .groupingMenu {
+        width: 960px;
+    }
+}
+
+@media all and (min-width: 1100px) {
+
+    .groupingMenu {
+        width: 1060px;
+    }
+}
+
+@media all and (min-width: 1200px) {
+
+    .groupingMenu {
+        width: 1160px;
     }
 }
 
@@ -1436,14 +1469,14 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
 }
 
     .userProfileSettingsForm .detailSectionContent {
-        padding: 0 1em;
+        padding: 0 .5em;
     }
 
 @media all and (max-width: 700px) {
 
     .userProfileSettingsForm .detailSection {
-        margin-left: 1em;
-        margin-right: 1em;
+        margin-left: .5em;
+        margin-right: .5em;
     }
 }
 
@@ -1469,4 +1502,36 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
     .smallDetailImageContainer {
         padding-left: 1em;
     }
+}
+
+.latestChannelItemsDisabled .latestChannelItemsTab {
+    display: none !important;
+}
+
+.studioTabDisabled .tvStudiosTab, .studioTabDisabled .movieStudiosTab {
+    display: none !important;
+}
+
+.peopleTabDisabled .tvPeopleTab, .peopleTabDisabled .moviePeopleTab {
+    display: none !important;
+}
+
+.tvEpisodesTabDisabled .tvEpisodesTab {
+    display: none !important;
+}
+
+.musicSongsTabDisabled .musicSongsTab {
+    display: none !important;
+}
+
+.musicArtistsTabDisabled .musicArtistsTab {
+    display: none !important;
+}
+
+.homeLatestTabDisabled .homeLatestTab {
+    display: none !important;
+}
+
+.movieTrailersTabDisabled .movieTrailersTab {
+    display: none !important;
 }

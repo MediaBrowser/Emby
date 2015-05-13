@@ -26,7 +26,7 @@
         self.getTargets = function () {
 
             var targets = [{
-                name: 'My Browser',
+                name: Globalize.translate('MyDevice'),
                 id: ConnectionManager.deviceId(),
                 playerName: self.name,
                 playableMediaTypes: ['Audio', 'Video'],
@@ -126,7 +126,7 @@
 
             profile.DirectPlayProfiles = [];
             profile.DirectPlayProfiles.push({
-                Container: 'mp4',
+                Container: 'mp4,m4v',
                 Type: 'Video',
                 VideoCodec: 'h264',
                 AudioCodec: 'aac,mp3'
@@ -134,11 +134,18 @@
 
             if ($.browser.chrome) {
                 profile.DirectPlayProfiles.push({
-                    Container: 'mkv,m4v',
+                    Container: 'mkv',
                     Type: 'Video',
                     VideoCodec: 'h264',
                     AudioCodec: 'aac,mp3'
                 });
+                // TODO: Test this
+                //profile.DirectPlayProfiles.push({
+                //    Container: 'mov',
+                //    Type: 'Video',
+                //    VideoCodec: 'h264',
+                //    AudioCodec: 'aac,mp3'
+                //});
             }
 
             profile.DirectPlayProfiles.push({
@@ -208,7 +215,6 @@
             profile.ContainerProfiles = [];
 
             var audioConditions = [];
-            var videoAudioAacConditions = [];
             var videoAudioMp3Conditions = [];
 
             var maxAudioChannels = $.browser.msie || $.browser.safari ?
@@ -222,7 +228,6 @@
             };
 
             audioConditions.push(channelCondition);
-            videoAudioAacConditions.push(channelCondition);
             videoAudioMp3Conditions.push(channelCondition);
 
             profile.CodecProfiles = [];
@@ -239,22 +244,32 @@
                 });
             }
 
-            videoAudioAacConditions.push({
-                Condition: 'NotEquals',
-                Property: 'AudioProfile',
-                Value: 'LC'
-            });
-
-            videoAudioAacConditions.push({
-                Condition: 'NotEquals',
-                Property: 'AudioProfile',
-                Value: 'HE-AAC'
+            profile.CodecProfiles.push({
+                Type: 'VideoAudio',
+                Codec: 'aac',
+                Container: 'mkv,mov',
+                Conditions: [
+                    channelCondition,
+                    {
+                        Condition: 'NotEquals',
+                        Property: 'AudioProfile',
+                        Value: 'HE-AAC'
+                    },
+                    {
+                        Condition: 'NotEquals',
+                        Property: 'AudioProfile',
+                        Value: 'LC'
+                    }
+                ]
             });
 
             profile.CodecProfiles.push({
                 Type: 'VideoAudio',
                 Codec: 'aac',
-                Conditions: videoAudioAacConditions
+                Container: 'mp4,m4v',
+                Conditions: [
+                    channelCondition
+                ]
             });
 
             profile.CodecProfiles.push({
@@ -310,6 +325,26 @@
                     Method: 'External'
                 });
             }
+
+            profile.ResponseProfiles = [];
+
+            profile.ResponseProfiles.push({
+                Type: 'Video',
+                Container: 'm4v',
+                MimeType: 'video/mp4'
+            });
+
+            //profile.ResponseProfiles.push({
+            //    Type: 'Video',
+            //    Container: 'mkv',
+            //    MimeType: 'video/webm'
+            //});
+
+            profile.ResponseProfiles.push({
+                Type: 'Video',
+                Container: 'mov',
+                MimeType: 'video/webm'
+            });
 
             return profile;
         };
@@ -825,7 +860,10 @@
 
             var deviceProfile = self.getDeviceProfile();
 
-            Dashboard.showLoadingMsg();
+            if (item.MediaType === "Video") {
+
+                Dashboard.showModalLoadingMsg();
+            }
 
             getPlaybackInfo(item.Id, deviceProfile, startPosition).done(function (playbackInfoResult) {
 
@@ -848,7 +886,7 @@
                             playInternalPostMediaSourceSelection(item, mediaSource, startPosition, callback);
                         }
                     } else {
-                        Dashboard.hideLoadingMsg();
+                        Dashboard.hideModalLoadingMsg();
                         showPlaybackInfoErrorMessage('NoCompatibleStream');
                     }
                 }
@@ -858,7 +896,7 @@
 
         function playInternalPostMediaSourceSelection(item, mediaSource, startPosition, callback) {
 
-            Dashboard.hideLoadingMsg();
+            Dashboard.hideModalLoadingMsg();
 
             self.currentMediaSource = mediaSource;
             self.currentItem = item;
@@ -903,35 +941,32 @@
 
         }
 
-        self.getNowPlayingNameHtml = function (playerState) {
+        self.getPosterUrl = function (item) {
 
-            var nowPlayingItem = playerState.NowPlayingItem;
-            var topText = nowPlayingItem.Name;
+            var screenWidth = Math.max(screen.height, screen.width);
 
-            if (nowPlayingItem.MediaType == 'Video') {
-                if (nowPlayingItem.IndexNumber != null) {
-                    topText = nowPlayingItem.IndexNumber + " - " + topText;
-                }
-                if (nowPlayingItem.ParentIndexNumber != null) {
-                    topText = nowPlayingItem.ParentIndexNumber + "." + topText;
-                }
+            if (item.BackdropImageTags && item.BackdropImageTags.length) {
+
+                return ApiClient.getScaledImageUrl(item.Id, {
+                    type: "Backdrop",
+                    index: 0,
+                    maxWidth: screenWidth,
+                    tag: item.BackdropImageTags[0]
+                });
+
+            }
+            else if (item.ParentBackdropItemId && item.ParentBackdropImageTags && item.ParentBackdropImageTags.length) {
+
+                return ApiClient.getScaledImageUrl(item.ParentBackdropItemId, {
+                    type: 'Backdrop',
+                    index: 0,
+                    maxWidth: screenWidth,
+                    tag: item.ParentBackdropImageTags[0]
+                });
+
             }
 
-            var bottomText = '';
-
-            if (nowPlayingItem.Artists && nowPlayingItem.Artists.length) {
-                bottomText = topText;
-                topText = nowPlayingItem.Artists[0];
-            }
-            else if (nowPlayingItem.SeriesName || nowPlayingItem.Album) {
-                bottomText = topText;
-                topText = nowPlayingItem.SeriesName || nowPlayingItem.Album;
-            }
-            else if (nowPlayingItem.ProductionYear) {
-                bottomText = nowPlayingItem.ProductionYear;
-            }
-
-            return bottomText ? topText + '<br/>' + bottomText : topText;
+            return null;
         };
 
         self.displayContent = function (options) {
@@ -1458,6 +1493,10 @@
                     nowPlayingItem.BackdropItemId = item.Id;
                     nowPlayingItem.BackdropImageTag = item.BackdropImageTags[0];
                 }
+                else if (item.ParentBackdropImageTags && item.ParentBackdropImageTags.length) {
+                    nowPlayingItem.BackdropItemId = item.ParentBackdropItemId;
+                    nowPlayingItem.BackdropImageTag = item.ParentBackdropImageTags[0];
+                }
 
                 if (imageTags.Thumb) {
 
@@ -1589,7 +1628,11 @@
 
         self.canAutoPlayAudio = function () {
 
-            if ($.browser.android || ($.browser.webkit && !$.browser.chrome)) {
+            if (Dashboard.isRunningInCordova()) {
+                return true;
+            }
+
+            if ($.browser.mobile) {
                 return false;
             }
 
@@ -1634,6 +1677,7 @@
 
                 this.src = audioUrl;
                 this.volume = initialVolume;
+                this.poster = self.getPosterUrl(item);
                 this.play();
 
             }).on("volumechange.mediaplayerevent", function () {

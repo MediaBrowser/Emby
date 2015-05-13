@@ -663,7 +663,8 @@
                 showTitle: item.Type == "MusicAlbum" || item.Type == "Game",
                 borderless: item.Type == "Game",
                 context: context,
-                overlayText: item.Type != "MusicAlbum"
+                overlayText: item.Type != "MusicAlbum",
+                lazy: true
             });
 
             $('#similarContent', page).html(html).lazyChildren();
@@ -837,7 +838,8 @@
                     index: 'disc',
                     showIndexNumber: true,
                     playFromHere: true,
-                    defaultAction: 'playallfromhere'
+                    defaultAction: 'playallfromhere',
+                    lazy: true
                 });
                 trigger = true;
 
@@ -849,7 +851,8 @@
                     showTitle: false,
                     centerText: true,
                     context: context,
-                    overlayText: true
+                    overlayText: true,
+                    lazy: true
                 });
             }
             else if (item.Type == "Season") {
@@ -860,7 +863,8 @@
                     displayAsSpecial: item.Type == "Season" && item.IndexNumber,
                     context: context,
                     playFromHere: true,
-                    overlayText: true
+                    overlayText: true,
+                    lazy: true
                 });
             }
             else if (item.Type == "GameSystem") {
@@ -869,7 +873,8 @@
                     shape: "auto",
                     showTitle: true,
                     centerText: true,
-                    context: context
+                    context: context,
+                    lazy: true
                 });
             }
 
@@ -974,7 +979,8 @@
             shape: shape,
             showTitle: true,
             centerText: true,
-            context: context
+            context: context,
+            lazy: true
         });
         html += '</div>';
 
@@ -1127,7 +1133,7 @@
 
             $('#themeVideosCollapsible', page).show();
 
-            $('#themeVideosContent', page).html(getVideosHtml(items, user)).trigger('create');
+            $('#themeVideosContent', page).html(getVideosHtml(items, user)).lazyChildren().trigger('create');
         } else {
             $('#themeVideosCollapsible', page).hide();
         }
@@ -1149,7 +1155,7 @@
 
                 $('#musicVideosCollapsible', page).show();
 
-                $('#musicVideosContent', page).html(getVideosHtml(result.Items, user)).trigger('create');
+                $('#musicVideosContent', page).html(getVideosHtml(result.Items, user)).lazyChildren().trigger('create');
             } else {
                 $('#musicVideosCollapsible', page).hide();
             }
@@ -1165,7 +1171,7 @@
 
                 $('#additionalPartsCollapsible', page).show();
 
-                $('#additionalPartsContent', page).html(getVideosHtml(result.Items, user)).trigger('create');
+                $('#additionalPartsContent', page).html(getVideosHtml(result.Items, user)).lazyChildren().trigger('create');
             } else {
                 $('#additionalPartsCollapsible', page).hide();
             }
@@ -1176,6 +1182,8 @@
         var html = '';
 
         var chapters = item.Chapters || [];
+
+        var maxWwidth = LibraryBrowser.getPosterViewInfo().thumbWidth;
 
         for (var i = 0, length = chapters.length; i < length; i++) {
 
@@ -1198,7 +1206,7 @@
             if (chapter.ImageTag) {
 
                 imgUrl = ApiClient.getScaledImageUrl(item.Id, {
-                    maxWidth: 210,
+                    maxWidth: maxWwidth,
                     tag: chapter.ImageTag,
                     type: "Chapter",
                     index: i
@@ -1210,7 +1218,7 @@
             html += '<div class="cardPadder"></div>';
 
             html += '<div class="cardContent">';
-            html += '<div class="cardImage" style="background-image:url(\'' + imgUrl + '\');"></div>';
+            html += '<div class="cardImage lazy" data-src="' + imgUrl + '"></div>';
 
             html += '<div class="cardFooter">';
             html += '<div class="cardText">' + chapterName + '</div>';
@@ -1237,7 +1245,7 @@
             html += '<p style="margin: 0;padding-left: .5em;"><button class="moreScenes" data-inline="true" data-mini="true">' + Globalize.translate('ButtonMoreItems') + '</button></p>';
         }
 
-        $('#scenesContent', page).html(html).trigger('create');
+        $('#scenesContent', page).html(html).trigger('create').lazyChildren();
     }
 
     function renderMediaSources(page, item) {
@@ -1397,6 +1405,8 @@
 
         var html = '';
 
+        var maxWwidth = LibraryBrowser.getPosterViewInfo().thumbWidth;
+
         for (var i = 0, length = items.length; i < length; i++) {
 
             if (limit && i >= limit) {
@@ -1423,7 +1433,7 @@
             if (imageTags.Primary) {
 
                 imgUrl = ApiClient.getScaledImageUrl(item.Id, {
-                    maxWidth: 210,
+                    maxWidth: maxWwidth,
                     tag: imageTags.Primary,
                     type: "primary"
                 });
@@ -1435,7 +1445,7 @@
             html += '<div class="cardPadder"></div>';
 
             html += '<div class="cardContent">';
-            html += '<div class="cardImage" style="background-image:url(\'' + imgUrl + '\');"></div>';
+            html += '<div class="cardImage lazy" data-src="' + imgUrl + '"></div>';
 
             html += '<div class="cardFooter">';
             html += '<div class="cardText">' + item.Name + '</div>';
@@ -1474,7 +1484,7 @@
 
         ApiClient.getSpecialFeatures(user.Id, item.Id).done(function (specials) {
 
-            $('#specialsContent', page).html(getVideosHtml(specials, user, limit, "moreSpecials")).trigger('create');
+            $('#specialsContent', page).html(getVideosHtml(specials, user, limit, "moreSpecials")).lazyChildren().trigger('create');
 
         });
     }
@@ -1502,7 +1512,8 @@
                 imgUrl = ApiClient.getScaledImageUrl(cast.Id, {
                     width: 100,
                     tag: cast.PrimaryImageTag,
-                    type: "primary"
+                    type: "primary",
+                    minScale: 2
                 });
 
             } else {
@@ -1510,7 +1521,7 @@
                 imgUrl = "css/images/items/list/person.png";
             }
 
-            html += '<div class="tileImage" style="background-image:url(\'' + imgUrl + '\');"></div>';
+            html += '<div class="tileImage lazy" data-src="' + imgUrl + '"></div>';
 
 
 
@@ -1543,7 +1554,7 @@
             html += '<p style="margin: 0;padding-left: .5em;"><button class="morePeople" data-inline="true" data-mini="true">' + Globalize.translate('ButtonMoreItems') + '</button></p>';
         }
 
-        $('#castContent', page).html(html).trigger('create');
+        $('#castContent', page).html(html).lazyChildren().trigger('create');
     }
 
     function play(startPosition) {

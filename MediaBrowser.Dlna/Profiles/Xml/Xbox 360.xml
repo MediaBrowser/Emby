@@ -8,14 +8,13 @@
       <HttpHeaderInfo name="User-Agent" value="Xenon" match="Substring" />
     </Headers>
   </Identification>
-  <FriendlyName>${HostName} : 1</FriendlyName>
+  <FriendlyName>${HostName}: 1</FriendlyName>
   <Manufacturer>Microsoft Corporation</Manufacturer>
-  <ManufacturerUrl>http://www.microsoft.com/</ManufacturerUrl>
-  <ModelName>Windows Media Player Sharing</ModelName>
-  <ModelDescription>Emby</ModelDescription>
-  <ModelNumber>12.0</ModelNumber>
-  <ModelUrl>http://www.microsoft.com/</ModelUrl>
-  <IgnoreTranscodeByteRangeRequests>false</IgnoreTranscodeByteRangeRequests>
+  <ManufacturerUrl>http://www.microsoft.com</ManufacturerUrl>
+  <ModelName>Windows Media Connect</ModelName>
+  <ModelDescription>Emby : UPnP Media Server</ModelDescription>
+  <ModelNumber>001</ModelNumber>
+  <ModelUrl>http://go.microsoft.com/fwlink/?LinkId=105926</ModelUrl>
   <EnableAlbumArtInDidl>false</EnableAlbumArtInDidl>
   <EnableSingleAlbumArtLimit>false</EnableSingleAlbumArtLimit>
   <SupportedMediaTypes>Audio,Photo,Video</SupportedMediaTypes>
@@ -34,6 +33,9 @@
   <RequiresPlainVideoItems>true</RequiresPlainVideoItems>
   <RequiresPlainFolders>true</RequiresPlainFolders>
   <EnableMSMediaReceiverRegistrar>true</EnableMSMediaReceiverRegistrar>
+  <IgnoreTranscodeByteRangeRequests>false</IgnoreTranscodeByteRangeRequests>
+  <EnableDlnaProtocol>false</EnableDlnaProtocol>
+  <EnableUrlBase>true</EnableUrlBase>
   <XmlRootAttributes />
   <DirectPlayProfiles>
     <DirectPlayProfile container="avi" audioCodec="ac3,mp3" videoCodec="mpeg4" type="Video" />

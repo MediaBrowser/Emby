@@ -1,9 +1,9 @@
-﻿.btnCastImage {
+﻿.btnCastImage:not(.btnCastIcon) {
     background-color: transparent;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center center;
-    width: 26px;
+    width: 28px;
     height: 100%;
     display: inline-block;
     vertical-align: middle;
@@ -17,12 +17,22 @@
     background-image: url(images/chromecast/ic_media_route_on_holo_dark.png);
 }
 
+.btnActiveCast i {
+    color: #2ad !important;
+}
+
 .btnDisabledCast .btnCastImage {
     background-image: url(images/chromecast/ic_media_route_disabled_holo_dark.png);
 }
 
+.btnDisabledCast i {
+    color: #555;
+}
+
 .btnCast {
     white-space: nowrap;
+    position: relative;
+    top: 1px !important;
 }
 
 .headerSelectedPlayer {
@@ -36,6 +46,10 @@
     max-width: 100px;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.btnCastIcon .headerSelectedPlayer {
+    top: 0;
 }
 
 @media all and (max-width: 1000px) {

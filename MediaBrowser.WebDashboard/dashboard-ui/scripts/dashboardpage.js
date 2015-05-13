@@ -590,10 +590,10 @@
     getClientImage: function (connection) {
 
         var clientLowered = connection.Client.toLowerCase();
+        var device = connection.DeviceName.toLowerCase();
 
-        if (clientLowered == "dashboard") {
 
-            var device = connection.DeviceName.toLowerCase();
+        if (clientLowered == "dashboard" || clientLowered == "emby web client") {
 
             var imgUrl;
 
@@ -613,7 +613,20 @@
                 imgUrl = 'css/images/clients/html5.png';
             }
 
-            return "<img src='" + imgUrl + "' alt='Dashboard' />";
+            return "<img src='" + imgUrl + "' alt='Emby Web Client' />";
+        }
+        if (clientLowered == "emby mobile") {
+
+            var imgUrl;
+
+            if (device.indexOf('iphone') != -1 || device.indexOf('ipad') != -1) {
+                imgUrl = 'css/images/clients/ios.png';
+            }
+            else {
+                imgUrl = 'css/images/clients/html5.png';
+            }
+
+            return "<img src='" + imgUrl + "' alt='Emby Web Client' />";
         }
         if (clientLowered == "mb-classic") {
 
@@ -1292,25 +1305,28 @@ $(document).on('pagebeforeshow', "#dashboardPage", DashboardPage.onPageShow)
 
     function takeTour(page, userId) {
 
-        $.swipebox([
-                { href: 'css/images/tour/dashboard/dashboard.png', title: Globalize.translate('DashboardTourDashboard') },
-                { href: 'css/images/tour/dashboard/help.png', title: Globalize.translate('DashboardTourHelp') },
-                { href: 'css/images/tour/dashboard/users.png', title: Globalize.translate('DashboardTourUsers') },
-                { href: 'css/images/tour/dashboard/sync.png', title: Globalize.translate('DashboardTourSync') },
-                { href: 'css/images/tour/dashboard/cinemamode.png', title: Globalize.translate('DashboardTourCinemaMode') },
-                { href: 'css/images/tour/dashboard/chapters.png', title: Globalize.translate('DashboardTourChapters') },
-                { href: 'css/images/tour/dashboard/subtitles.png', title: Globalize.translate('DashboardTourSubtitles') },
-                { href: 'css/images/tour/dashboard/plugins.png', title: Globalize.translate('DashboardTourPlugins') },
-                { href: 'css/images/tour/dashboard/notifications.png', title: Globalize.translate('DashboardTourNotifications') },
-                { href: 'css/images/tour/dashboard/scheduledtasks.png', title: Globalize.translate('DashboardTourScheduledTasks') },
-                { href: 'css/images/tour/dashboard/mobile.png', title: Globalize.translate('DashboardTourMobile') },
-                { href: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
-        ], {
-            afterClose: function () {
-                dismissWelcome(page, userId);
-                $('.welcomeMessage', page).hide();
-            },
-            hideBarsDelay: 30000
+        Dashboard.loadSwipebox().done(function () {
+
+            $.swipebox([
+                    { href: 'css/images/tour/dashboard/dashboard.png', title: Globalize.translate('DashboardTourDashboard') },
+                    { href: 'css/images/tour/dashboard/help.png', title: Globalize.translate('DashboardTourHelp') },
+                    { href: 'css/images/tour/dashboard/users.png', title: Globalize.translate('DashboardTourUsers') },
+                    { href: 'css/images/tour/dashboard/sync.png', title: Globalize.translate('DashboardTourSync') },
+                    { href: 'css/images/tour/dashboard/cinemamode.png', title: Globalize.translate('DashboardTourCinemaMode') },
+                    { href: 'css/images/tour/dashboard/chapters.png', title: Globalize.translate('DashboardTourChapters') },
+                    { href: 'css/images/tour/dashboard/subtitles.png', title: Globalize.translate('DashboardTourSubtitles') },
+                    { href: 'css/images/tour/dashboard/plugins.png', title: Globalize.translate('DashboardTourPlugins') },
+                    { href: 'css/images/tour/dashboard/notifications.png', title: Globalize.translate('DashboardTourNotifications') },
+                    { href: 'css/images/tour/dashboard/scheduledtasks.png', title: Globalize.translate('DashboardTourScheduledTasks') },
+                    { href: 'css/images/tour/dashboard/mobile.png', title: Globalize.translate('DashboardTourMobile') },
+                    { href: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
+            ], {
+                afterClose: function () {
+                    dismissWelcome(page, userId);
+                    $('.welcomeMessage', page).hide();
+                },
+                hideBarsDelay: 30000
+            });
         });
     }
 

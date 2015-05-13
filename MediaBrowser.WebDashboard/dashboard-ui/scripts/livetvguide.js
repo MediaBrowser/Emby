@@ -419,6 +419,20 @@
             });
         }
 
+        if (AppInfo.enableHeadRoom) {
+            requirejs(["thirdparty/headroom"], function () {
+
+                $('.tvGuideHeader', page).each(function () {
+
+                    // construct an instance of Headroom, passing the element
+                    var headroom = new Headroom(this);
+                    // initialise
+                    headroom.init();
+
+                });
+            });
+        }
+
     }).on('pageshow', "#liveTvGuidePage", function () {
 
         var page = this;

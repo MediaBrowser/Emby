@@ -1,7 +1,7 @@
 ﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
@@ -87,11 +87,14 @@ namespace MediaBrowser.Dlna.Ssdp
 
             try
             {
-                var ip = _appHost.LocalIpAddress;
-
-                if (!string.IsNullOrWhiteSpace(ip))
+                if (e.LocalEndPoint == null)
                 {
-                    e.LocalIp = IPAddress.Parse(ip);
+                    var ip = _appHost.LocalIpAddress;
+                    e.LocalEndPoint = new IPEndPoint(IPAddress.Parse(ip), 0);
+                }
+
+                if (e.LocalEndPoint != null)
+                {
                     TryCreateDevice(e);
                 }
             }
@@ -140,9 +143,12 @@ namespace MediaBrowser.Dlna.Ssdp
                         {
                             var args = SsdpHelper.ParseSsdpResponse(receiveBuffer);
                             args.EndPoint = endPoint;
-                            args.LocalIp = localIp;
+                            args.LocalEndPoint = new IPEndPoint(localIp, 0);
 
-                            TryCreateDevice(args);
+                            if (!_ssdpHandler.IsSelfNotification(args))
+                            {
+                                TryCreateDevice(args);
+                            }
                         }
                     }
 
@@ -183,7 +189,6 @@ namespace MediaBrowser.Dlna.Ssdp
                 }
 
             }, _tokenSource.Token, TaskCreationOptions.LongRunning);
-
         }
 
         private Socket GetMulticastSocket(IPAddress localIpAddress, EndPoint localEndpoint)
@@ -203,17 +208,24 @@ namespace MediaBrowser.Dlna.Ssdp
             string nts;
             args.Headers.TryGetValue("NTS", out nts);
 
+            if (String.Equals(nts, "ssdp:byebye", StringComparison.OrdinalIgnoreCase))
+            {
+                if (String.Equals(args.Method, "NOTIFY", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!_disposed)
+                    {
+                        EventHelper.FireEventIfNotNull(DeviceLeft, this, args, _logger);
+                    }
+                }
+
+                return;
+            }
+
             string usn;
             if (!args.Headers.TryGetValue("USN", out usn)) usn = string.Empty;
 
             string nt;
             if (!args.Headers.TryGetValue("NT", out nt)) nt = string.Empty;
-
-            // Ignore when a device is indicating it's shutting down
-            if (string.Equals(nts, "ssdp:byebye", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
 
             // Need to be able to download device description
             string location;

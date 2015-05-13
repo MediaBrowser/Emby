@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Dlna;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace MediaBrowser.Dlna.Profiles
@@ -36,6 +37,7 @@ namespace MediaBrowser.Dlna.Profiles
             MusicSyncBitrate = 128000;
 
             EnableAlbumArtInDidl = false;
+            EnableDlnaProtocol = true;
 
             TranscodingProfiles = new[]
             {
@@ -75,6 +77,20 @@ namespace MediaBrowser.Dlna.Profiles
                     Type = DlnaProfileType.Video
                 }
             };
+        }
+
+        public void AddXmlRootAttribute(string name, string value)
+        {
+            var atts = XmlRootAttributes ?? new XmlAttribute[] { };
+            var list = atts.ToList();
+
+            list.Add(new XmlAttribute
+            {
+                Name = name,
+                Value = value
+            });
+
+            XmlRootAttributes = list.ToArray();
         }
     }
 }

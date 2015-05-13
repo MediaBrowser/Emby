@@ -386,6 +386,8 @@
             MediaController.removeFromPlaylist(index);
             loadPlaylist(page);
         });
+
+        $(page).on('click', '.mediaItem', onListItemClick);
     }
 
     function onPlaybackStart(e, state) {
@@ -521,9 +523,10 @@
 
         var item = state.NowPlayingItem;
 
-        $('.itemName', page).html(item ? MediaPlayer.getNowPlayingNameHtml(state) : '');
+        $('.itemName', page).html(item ? MediaController.getNowPlayingNameHtml(item) : '');
 
         var url;
+        var backdropUrl = null;
 
         if (!item) {
         }
@@ -557,7 +560,20 @@
             return;
         }
 
+        if (item && item.BackdropImageTag) {
+
+            backdropUrl = ApiClient.getScaledImageUrl(item.BackdropItemId, {
+                type: "Backdrop",
+                maxWidth: $(window).width(),
+                tag: item.BackdropImageTag,
+                index: 0
+            });
+
+        }
+
         setImageUrl(page, url);
+
+        Backdrops.setBackdropUrl(page, backdropUrl);
     }
 
     function setImageUrl(page, url) {
@@ -614,73 +630,89 @@
     }
 
     function showIntro() {
-        
-        if (store.getItem('remotecontrolswipedown') != '1') {
+
+        var expected = '2';
+
+        if (store.getItem('remotecontrolswipedown') != expected) {
             Dashboard.alert({
                 message: Globalize.translate('MessageSwipeDownOnRemoteControl'),
                 title: Globalize.translate('HeaderAlert')
             });
-            store.setItem('remotecontrolswipedown', '1');
+            store.setItem('remotecontrolswipedown', expected);
         }
 
     }
 
     function loadPlaylist(page) {
-        
+
         var html = '';
 
-        html += '<table class="detailTable">';
+        //ApiClient.getItems(Dashboard.getCurrentUserId(), {
 
-        html += '<thead><tr>';
-        html += '<th></th>';
-        html += '<th>' + Globalize.translate('HeaderName') + '</th>';
-        html += '<th>' + Globalize.translate('HeaderAlbum') + '</th>';
-        html += '<th>' + Globalize.translate('HeaderArtist') + '</th>';
-        html += '<th>' + Globalize.translate('HeaderAlbumArtist') + '</th>';
-        html += '<th>' + Globalize.translate('HeaderTime') + '</th>';
-        html += '</tr></thead>';
+        //    SortBy: "SortName",
+        //    SortOrder: "Ascending",
+        //    IncludeItemTypes: "Audio",
+        //    Recursive: true,
+        //    Fields: "PrimaryImageAspectRatio,SortName,MediaSourceCount,IsUnidentified,SyncInfo",
+        //    StartIndex: 0,
+        //    ImageTypeLimit: 1,
+        //    EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+        //    Limit: 100
 
-        html += '<tbody>';
+        //}).done(function (result) {
 
-        $.each(MediaController.playlist(), function (i, item) {
+        //    html += LibraryBrowser.getListViewHtml({
+        //        items: result.Items,
+        //        smallIcon: true
+        //    });
 
-            var name = LibraryBrowser.getPosterViewDisplayName(item);
+        //    $(".playlist", page).html(html).trigger('create').lazyChildren();
+        //});
 
-            var parentName = item.SeriesName || item.Album;
-
-            html += '<tr>';
-            html += '<td><button type="button" data-index="' + i + '" class="lnkPlayFromIndex" data-icon="play" data-iconpos="notext">' + Globalize.translate('ButtonPlay') + '</button></td>';
-            html += '<td>';
-            html += '<a href="itemdetails.html?id=' + item.Id + '">' + name + '</a>';
-            html += '</td>';
-
-            html += '<td>';
-            if (parentName) {
-                var parentId = item.AlbumId || item.SeriesId || item.ParentId;
-                html += '<a href="itemdetails.html?id=' + parentId + '">' + parentName + '</a>';
-            }
-            html += '</td>';
-
-            html += '<td>';
-            html += LibraryBrowser.getArtistLinksHtml(item.ArtistItems || []);
-            html += '</td>';
-
-            html += '<td>';
-            if (item.AlbumArtist) {
-                html += LibraryBrowser.getArtistLinksHtml(item.AlbumArtists || []);
-            }
-            html += '</td>';
-
-            html += '<td>' + Dashboard.getDisplayTime(item.RunTimeTicks) + '</td>';
-            html += '<td><button type="button" data-index="' + i + '" class="lnkRemoveFromIndex" data-icon="delete" data-iconpos="notext">' + Globalize.translate('ButtonRemove') + '</button></td>';
-            html += '</tr>';
+        html += LibraryBrowser.getListViewHtml({
+            items: MediaController.playlist(),
+            smallIcon: true
         });
 
-        html += '</tbody>';
-        html += '</table>';
-
-        $(".playlist", page).html(html).trigger('create');
+        $(".playlist", page).html(html).trigger('create').lazyChildren();
     }
+
+    function onListItemClick(e) {
+
+        var info = LibraryBrowser.getListItemInfo(this);
+
+        MediaController.currentPlaylistIndex(info.index);
+
+        return false;
+    }
+
+    function getBackdropUrl(item) {
+
+        var screenWidth = Math.max(screen.height, screen.width);
+
+        if (item.BackdropImageTags && item.BackdropImageTags.length) {
+
+            return ApiClient.getScaledImageUrl(item.Id, {
+                type: "Backdrop",
+                index: 0,
+                maxWidth: screenWidth,
+                tag: item.BackdropImageTags[0]
+            });
+
+        }
+        else if (item.ParentBackdropItemId && item.ParentBackdropImageTags && item.ParentBackdropImageTags.length) {
+
+            return ApiClient.getScaledImageUrl(item.ParentBackdropItemId, {
+                type: 'Backdrop',
+                index: 0,
+                maxWidth: screenWidth,
+                tag: item.ParentBackdropImageTags[0]
+            });
+
+        }
+
+        return null;
+    };
 
     $(document).on('pageinit', "#nowPlayingPage", function () {
 
@@ -691,6 +723,8 @@
     }).on('pageshow', "#nowPlayingPage", function () {
 
         var page = this;
+
+        currentImgUrl = null;
 
         var tab = getParameterByName('tab');
         if (tab) {
