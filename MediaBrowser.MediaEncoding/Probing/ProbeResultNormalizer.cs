@@ -179,8 +179,8 @@ namespace MediaBrowser.MediaEncoding.Probing
                         }
                         else
                         {
-                            // allow up to 1% difference between stated display aspect and the calcualte ratio
-                            stream.IsAnamorphic = (Math.Abs((streamInfo.width * ratio1) - (streamInfo.height * ratio0)) * 100) / Math.Max((streamInfo.height * ratio0), (streamInfo.width * ratio1)) > 2;
+                            // allow up to 2% difference between stated display aspect and the calculated ratio
+                            stream.IsAnamorphic = (Math.Abs((streamInfo.width * ratio1) - (streamInfo.height * ratio0)) * 100.0f) / Math.Max((streamInfo.height * ratio0), (streamInfo.width * ratio1)) > 2;
                         }
                     }
                 }
