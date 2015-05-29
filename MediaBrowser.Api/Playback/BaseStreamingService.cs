@@ -157,11 +157,11 @@ namespace MediaBrowser.Api.Playback
         /// <value>The fast seek command line parameter.</value>
         protected string GetFastSeekCommandLineParameter(StreamRequest request)
         {
-            var time = request.StartTimeTicks;
+            var time = request.StartTimeTicks ?? 0;
 
-            if (time.HasValue && time.Value > 0)
+            if (time > 0)
             {
-                return string.Format("-ss {0}", MediaEncoder.GetTimeParameter(time.Value));
+                return string.Format("-ss {0}", MediaEncoder.GetTimeParameter(time));
             }
 
             return string.Empty;
@@ -693,7 +693,7 @@ namespace MediaBrowser.Api.Playback
 
                 // TODO: Perhaps also use original_size=1920x800 ??
                 return string.Format("subtitles=filename='{0}'{1},setpts=PTS -{2}/TB",
-                    subtitlePath.Replace('\\', '/').Replace(":/", "\\:/"),
+                    subtitlePath.Replace("'", "\\'").Replace('\\', '/').Replace(":/", "\\:/"),
                     charsetParam,
                     seconds.ToString(UsCulture));
             }
@@ -701,7 +701,7 @@ namespace MediaBrowser.Api.Playback
             var mediaPath = state.MediaPath ?? string.Empty;
 
             return string.Format("subtitles='{0}:si={1}',setpts=PTS -{2}/TB",
-                mediaPath.Replace('\\', '/').Replace(":/", "\\:/"),
+                mediaPath.Replace("'", "\\'").Replace('\\', '/').Replace(":/", "\\:/"),
                 state.InternalSubtitleStreamOffset.ToString(UsCulture),
                 seconds.ToString(UsCulture));
         }
@@ -772,26 +772,31 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.Nullable{System.Int32}.</returns>
         private int? GetNumAudioChannelsParam(StreamRequest request, MediaStream audioStream, string outputAudioCodec)
         {
-            if (audioStream != null)
-            {
-                var codec = outputAudioCodec ?? string.Empty;
+            var inputChannels = audioStream == null
+                ? null
+                : audioStream.Channels;
 
-                if (audioStream.Channels > 2 && codec.IndexOf("wma", StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    // wmav2 currently only supports two channel output
-                    return 2;
-                }
+            var codec = outputAudioCodec ?? string.Empty;
+
+            if (codec.IndexOf("wma", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                // wmav2 currently only supports two channel output
+                return Math.Min(2, inputChannels ?? 2);
             }
 
             if (request.MaxAudioChannels.HasValue)
             {
-                if (audioStream != null && audioStream.Channels.HasValue)
+                if (inputChannels.HasValue)
                 {
-                    return Math.Min(request.MaxAudioChannels.Value, audioStream.Channels.Value);
+                    return Math.Min(request.MaxAudioChannels.Value, inputChannels.Value);
                 }
 
+                var channelLimit = codec.IndexOf("mp3", StringComparison.OrdinalIgnoreCase) != -1
+                    ? 2
+                    : 5;
+
                 // If we don't have any media info then limit it to 5 to prevent encoding errors due to asking for too many channels
-                return Math.Min(request.MaxAudioChannels.Value, 5);
+                return Math.Min(request.MaxAudioChannels.Value, channelLimit);
             }
 
             return request.AudioChannels;
@@ -1058,7 +1063,7 @@ namespace MediaBrowser.Api.Playback
 
         private void StartThrottler(StreamState state, TranscodingJob transcodingJob)
         {
-            if (state.InputProtocol == MediaProtocol.File &&
+            if (EnableThrottling(state) && state.InputProtocol == MediaProtocol.File &&
                            state.RunTimeTicks.HasValue &&
                            state.VideoType == VideoType.VideoFile &&
                            !string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
@@ -1069,6 +1074,11 @@ namespace MediaBrowser.Api.Playback
                     state.TranscodingThrottler.Start();
                 }
             }
+        }
+
+        protected virtual bool EnableThrottling(StreamState state)
+        {
+            return true;
         }
 
         private async void StartStreamingLog(TranscodingJob transcodingJob, StreamState state, Stream source, Stream target)
@@ -1696,6 +1706,11 @@ namespace MediaBrowser.Api.Playback
 
         private void TryStreamCopy(StreamState state, VideoStreamRequest videoRequest)
         {
+            if (!EnableStreamCopy)
+            {
+                return;
+            }
+
             if (state.VideoStream != null && CanStreamCopyVideo(videoRequest, state.VideoStream))
             {
                 state.OutputVideoCodec = "copy";
@@ -1704,6 +1719,14 @@ namespace MediaBrowser.Api.Playback
             if (state.AudioStream != null && CanStreamCopyAudio(videoRequest, state.AudioStream, state.SupportedAudioCodecs))
             {
                 state.OutputAudioCodec = "copy";
+            }
+        }
+
+        protected virtual bool EnableStreamCopy
+        {
+            get
+            {
+                return true;
             }
         }
 
