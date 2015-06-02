@@ -29,6 +29,25 @@ namespace MediaBrowser.Common.Net
             }
         }
         /// <summary>
+        /// Gets or sets the token header.
+        /// </summary>
+        /// <value>The token header.</value>
+        public string Token
+        {
+            get { return GetHeaderValue("token"); }
+            set
+            {
+                RequestHeaders["token"] = value;
+            }
+        }
+        /// <summary>
+        /// Set a custom header.
+        /// </summary>
+        public void SetRequestHeader(string headerName, string value)
+        {
+                  RequestHeaders[headerName] = value;
+        }
+        /// <summary>
         /// Gets or sets the cancellation token.
         /// </summary>
         /// <value>The cancellation token.</value>

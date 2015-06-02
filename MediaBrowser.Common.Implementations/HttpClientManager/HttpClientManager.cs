@@ -724,7 +724,9 @@ namespace MediaBrowser.Common.Implementations.HttpClientManager
         private string GetHostFromUrl(string url)
         {
             var start = url.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3;
+            if (start < 3) { start = 0 ;}
             var len = url.IndexOf('/', start) - start;
+            if (len < 0) { len = url.Length - start; } 
             return url.Substring(start, len);
         }
 
