@@ -8,12 +8,12 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dlna;
-using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.MediaInfo;
+using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,7 +23,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -693,7 +692,7 @@ namespace MediaBrowser.Api.Playback
 
                 // TODO: Perhaps also use original_size=1920x800 ??
                 return string.Format("subtitles=filename='{0}'{1},setpts=PTS -{2}/TB",
-                    subtitlePath.Replace("'", "\\'").Replace('\\', '/').Replace(":/", "\\:/"),
+                    subtitlePath.Replace('\\', '/').Replace("'", "\\'").Replace(":/", "\\:/"),
                     charsetParam,
                     seconds.ToString(UsCulture));
             }
@@ -701,7 +700,7 @@ namespace MediaBrowser.Api.Playback
             var mediaPath = state.MediaPath ?? string.Empty;
 
             return string.Format("subtitles='{0}:si={1}',setpts=PTS -{2}/TB",
-                mediaPath.Replace("'", "\\'").Replace('\\', '/').Replace(":/", "\\:/"),
+                mediaPath.Replace('\\', '/').Replace("'", "\\'").Replace(":/", "\\:/"),
                 state.InternalSubtitleStreamOffset.ToString(UsCulture),
                 seconds.ToString(UsCulture));
         }
@@ -776,6 +775,11 @@ namespace MediaBrowser.Api.Playback
                 ? null
                 : audioStream.Channels;
 
+            if (inputChannels <= 0)
+            {
+                inputChannels = null;
+            }
+
             var codec = outputAudioCodec ?? string.Empty;
 
             if (codec.IndexOf("wma", StringComparison.OrdinalIgnoreCase) != -1)
@@ -816,11 +820,11 @@ namespace MediaBrowser.Api.Playback
         }
 
         /// <summary>
-        /// Gets the name of the output audio codec
+        /// Gets the audio encoder.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.String.</returns>
-        private string GetAudioCodec(StreamRequest request)
+        protected string GetAudioEncoder(StreamRequest request)
         {
             var codec = request.AudioCodec;
 
@@ -849,7 +853,7 @@ namespace MediaBrowser.Api.Playback
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.String.</returns>
-        private string GetVideoCodec(VideoStreamRequest request)
+        protected string GetVideoEncoder(VideoStreamRequest request)
         {
             var codec = request.VideoCodec;
 
@@ -1672,13 +1676,13 @@ namespace MediaBrowser.Api.Playback
             state.OutputAudioBitrate = GetAudioBitrateParam(state.Request, state.AudioStream);
             state.OutputAudioSampleRate = request.AudioSampleRate;
 
-            state.OutputAudioCodec = GetAudioCodec(state.Request);
+            state.OutputAudioCodec = state.Request.AudioCodec;
 
             state.OutputAudioChannels = GetNumAudioChannelsParam(state.Request, state.AudioStream, state.OutputAudioCodec);
 
             if (videoRequest != null)
             {
-                state.OutputVideoCodec = GetVideoCodec(videoRequest);
+                state.OutputVideoCodec = state.VideoRequest.VideoCodec;
                 state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream);
                 if (state.OutputVideoBitrate.HasValue)
                 {
@@ -1771,6 +1775,12 @@ namespace MediaBrowser.Api.Playback
             {
                 state.OutputAudioSync = "1000";
                 state.InputVideoSync = "-1";
+                state.InputAudioSync = "1";
+            }
+
+            if (string.Equals(mediaSource.Container, "wma", StringComparison.OrdinalIgnoreCase))
+            {
+                // Seeing some stuttering when transcoding wma to audio-only HLS
                 state.InputAudioSync = "1";
             }
 
@@ -2076,15 +2086,18 @@ namespace MediaBrowser.Api.Playback
                 state.MimeType = mediaProfile.MimeType;
             }
 
-            var transcodingProfile = state.VideoRequest == null ?
-                profile.GetAudioTranscodingProfile(state.OutputContainer, audioCodec) :
-                profile.GetVideoTranscodingProfile(state.OutputContainer, audioCodec, videoCodec);
-
-            if (transcodingProfile != null)
+            if (!state.Request.Static)
             {
-                state.EstimateContentLength = transcodingProfile.EstimateContentLength;
-                state.EnableMpegtsM2TsMode = transcodingProfile.EnableMpegtsM2TsMode;
-                state.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
+                var transcodingProfile = state.VideoRequest == null ?
+                    profile.GetAudioTranscodingProfile(state.OutputContainer, audioCodec) :
+                    profile.GetVideoTranscodingProfile(state.OutputContainer, audioCodec, videoCodec);
+
+                if (transcodingProfile != null)
+                {
+                    state.EstimateContentLength = transcodingProfile.EstimateContentLength;
+                    state.EnableMpegtsM2TsMode = transcodingProfile.EnableMpegtsM2TsMode;
+                    state.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
+                }
             }
         }
 
@@ -2102,6 +2115,15 @@ namespace MediaBrowser.Api.Playback
             var transferMode = GetHeader("transferMode.dlna.org");
             responseHeaders["transferMode.dlna.org"] = string.IsNullOrEmpty(transferMode) ? "Streaming" : transferMode;
             responseHeaders["realTimeInfo.dlna.org"] = "DLNA.ORG_TLAG=*";
+
+            if (string.Equals(GetHeader("getMediaInfo.sec"), "1", StringComparison.OrdinalIgnoreCase))
+            {
+                if (state.RunTimeTicks.HasValue)
+                {
+                    var ms = TimeSpan.FromTicks(state.RunTimeTicks.Value).TotalMilliseconds;
+                    responseHeaders["MediaInfo.sec"] = string.Format("SEC_Duration={0};", Convert.ToInt32(ms).ToString(CultureInfo.InvariantCulture));
+                }
+            }
 
             if (state.RunTimeTicks.HasValue && !isStaticallyStreamed && profile != null)
             {
