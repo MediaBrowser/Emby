@@ -1283,7 +1283,7 @@ var Dashboard = {
         $('.pageTitle', $.mobile.activePage).html(title);
 
         if (title) {
-            document.title = title;
+            document.title = "Emby | " + title;
         }
     },
 
