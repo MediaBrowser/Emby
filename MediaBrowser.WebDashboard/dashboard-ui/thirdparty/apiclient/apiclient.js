@@ -398,7 +398,7 @@
             }
 
             var url = serverAddress.replace('http', 'ws');
-            url += "?api_key=" + accessToken;
+            url += "/?api_key=" + accessToken;
             url += "&deviceId=" + deviceId;
 
             webSocket = new WebSocket(url);
