@@ -77,9 +77,9 @@
             Dashboard.getCurrentUser().done(function (user) {
 
                 if (MediaController.canPlay(item)) {
-                    $('.btnPlay', page).show();
+                    $('.btnPlay', page).visible(true);
                 } else {
-                    $('.btnPlay', page).hide();
+                    $('.btnPlay', page).visible(false);
                 }
 
                 if (SyncManager.isAvailable(item, user)) {
@@ -88,14 +88,14 @@
                     $('.btnSync', page).addClass('hide');
                 }
 
-                var editImagesHref = user.Policy.IsAdministrator ? 'edititemimages.html' + editQuery : null;
+                var editImagesHref = user.Policy.IsAdministrator ? 'edititemmetadata.html' + (editQuery + "&tab=3") : null;
 
                 $('#itemImage', page).html(LibraryBrowser.getDetailImageHtml(item, editImagesHref, true));
 
                 if (LibraryBrowser.getMoreCommands(item, user).length) {
-                    $('.btnMoreCommands', page).show();
+                    $('.btnMoreCommands', page).visible(true);
                 } else {
-                    $('.btnMoreCommands', page).show();
+                    $('.btnMoreCommands', page).visible(false);
                 }
 
             });
@@ -315,10 +315,10 @@
     function renderDetails(page, item, context) {
 
         //LibraryBrowser.renderDetailPageBackdrop(page, item);
-        LibraryBrowser.renderOverview($('.itemOverview', page), item);
+        LibraryBrowser.renderOverview(page.querySelectorAll('.itemOverview'), item);
 
         renderUserDataIcons(page, item);
-        LibraryBrowser.renderLinks($('#itemLinks', page), item);
+        LibraryBrowser.renderLinks(page.querySelector('#itemLinks'), item);
 
         LibraryBrowser.renderGenres($('.itemGenres', page), item, context);
 
@@ -418,7 +418,10 @@
 
             query.StartIndex = index;
             query.Limit = limit;
-            query.Fields = fields;
+
+            if (fields) {
+                query.Fields += "," + fields;
+            }
 
             return ApiClient.getItems(Dashboard.getCurrentUserId(), query);
 
@@ -439,7 +442,17 @@
             var html = '';
 
             if (result.TotalRecordCount > query.Limit) {
-                $('.listTopPaging', page).html(LibraryBrowser.getPagingHtml(query, result.TotalRecordCount, true)).trigger('create');
+
+                var pagingHtml = LibraryBrowser.getQueryPagingHtml({
+                    startIndex: query.StartIndex,
+                    limit: query.Limit,
+                    totalRecordCount: result.TotalRecordCount,
+                    showLimit: false,
+                    updatePageSizeSetting: false
+                });
+
+                page.querySelector('.listTopPaging').innerHTML = pagingHtml;
+
                 $('.viewSettings', page).show();
             } else {
                 $('.listTopPaging', page).html('');
@@ -450,12 +463,12 @@
 
             if (query.IncludeItemTypes == "Audio") {
 
-                html = LibraryBrowser.getListViewHtml({
+                html = "<div style='max-width:1000px;margin:auto;'>" + LibraryBrowser.getListViewHtml({
                     items: result.Items,
                     playFromHere: true,
                     defaultAction: 'playallfromhere',
                     smallIcon: true
-                });
+                }) + "</div>";
             }
             else if (query.IncludeItemTypes == "Movie" || query.IncludeItemTypes == "Trailer") {
 
@@ -503,15 +516,26 @@
             }
             else {
 
-                html = LibraryBrowser.getListViewHtml({
+                html = "<div style='max-width:1000px;margin:auto;'>" + LibraryBrowser.getListViewHtml({
                     items: result.Items,
                     smallIcon: true
-                });
+                }) + "</div>";
             }
 
-            html += LibraryBrowser.getPagingHtml(query, result.TotalRecordCount);
+            html += LibraryBrowser.getQueryPagingHtml({
+                startIndex: query.StartIndex,
+                limit: query.Limit,
+                totalRecordCount: result.TotalRecordCount,
+                showLimit: false,
+                updatePageSizeSetting: false
+            });
 
-            $('#items', page).html(html).trigger('create').lazyChildren();
+            var elem = page.querySelector('#items');
+            elem.innerHTML = html;
+            ImageLoader.lazyChildren(elem);
+
+            // Do we still need this?
+            $(elem).trigger('create');
 
             $('.btnNextPage', page).on('click', function () {
 
@@ -571,13 +595,18 @@
             });
         });
 
-    }).on('pageshowready', "#itemByNameDetailPage", function () {
+        var btnMore = page.querySelectorAll('.btnMoreCommands iron-icon');
+        for (var i = 0, length = btnMore.length; i < length; i++) {
+            btnMore[i].icon = AppInfo.moreIcon;
+        }
+
+    }).on('pagebeforeshowready', "#itemByNameDetailPage", function () {
 
         var page = this;
 
         reload(page);
 
-    }).on('pagehide', "#itemByNameDetailPage", function () {
+    }).on('pagebeforehide', "#itemByNameDetailPage", function () {
 
         currentItem = null;
     });

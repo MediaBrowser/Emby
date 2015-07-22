@@ -2,14 +2,6 @@
 
     var currentItem;
 
-    function updateTabs(page, item) {
-
-        var query = MetadataEditor.getEditQueryString(item);
-
-        $('#btnEditMetadata', page).attr('href', 'edititemmetadata.html?' + query);
-        $('#btnEditImages', page).attr('href', 'edititemimages.html?' + query);
-    }
-
     function reload(page) {
 
         Dashboard.showLoadingMsg();
@@ -21,8 +13,6 @@
             currentItem = item;
 
             LibraryBrowser.renderName(item, $('.itemName', page), true);
-
-            updateTabs(page, item);
 
             reloadTitles(page, item);
         });
@@ -96,7 +86,7 @@
         }).done(function (result) {
 
             // Scroll back up so they can see the results from the beginning
-            $(document).scrollTop(0);
+            window.scrollTo(0, 0);
 
             var html = result.Items.map(getTitleHtml).join('');
 
@@ -192,7 +182,7 @@
 
             Dashboard.hideLoadingMsg();
 
-            $('.popupIdentify', page).popup('close');
+            $('.popupIdentifyCollection', page).popup('close');
 
             reload(page);
 
@@ -233,33 +223,18 @@
     function onSearchFormSubmit() {
         var page = $(this).parents('.page');
 
-        showSearchResults(page, $('#txtLookupName', page).val());
+        showSearchResults(page, $('#txtLookupName', this).val());
         return false;
     }
 
-    $(document).on('pageinitdepends', "#editCollectionTitlesPage", function () {
+    $(document).on('pageinitdepends', "#editItemMetadataPage", function () {
 
         var page = this;
-
-        $('.libraryTree', page).on('itemclicked', function (event, data) {
-
-            if (data.id != currentItem.Id) {
-
-                MetadataEditor.currentItemId = data.id;
-                MetadataEditor.currentItemType = data.itemType;
-                //Dashboard.navigate('edititemmetadata.html?id=' + data.id);
-
-                //$.mobile.urlHistory.ignoreNextHashChange = true;
-                window.location.hash = 'editItemImagesPage?id=' + data.id;
-
-                reload(page);
-            }
-        });
 
         $('#btnAddItem', page).on('click', function () {
 
 
-            var popup = $('.popupIdentify', page).popup('open');
+            var popup = $('.popupIdentifyCollection', page).popup('open');
 
             $('#txtLookupName', popup).val('');
             $('.collectionItemSearchResults', popup).empty();
@@ -279,23 +254,14 @@
 
         $('.collectionItemSearchForm').off('submit', onSearchFormSubmit).on('submit', onSearchFormSubmit);
 
-    }).on('pagebeforeshowready', "#editCollectionTitlesPage", function () {
+        $(page.querySelector('neon-animated-pages')).on('tabchange', function () {
 
-        var page = this;
+            if (parseInt(this.selected) == 2) {
+                var tabContent = page.querySelector('.collectionItemsTabContent');
 
-        reload(page);
-
-        $("body").on("popupafteropen.collections", ".popupIdentify", function (e) {
-            $("#txtLookupName").focus().select();
+                reload(tabContent);
+            }
         });
-
-    }).on('pagehide', "#editCollectionTitlesPage", function () {
-
-        var page = this;
-
-        currentItem = null;
-
-        $("body").off("popupafteropen.collections");
     });
 
 })(jQuery, document, window, window.FileReader, escape);

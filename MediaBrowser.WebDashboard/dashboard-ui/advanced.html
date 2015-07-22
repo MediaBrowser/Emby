@@ -35,6 +35,12 @@
                         <div>
                             <br />
                             <ul data-role="listview" class="ulForm">
+                                <li class="fldAutomaticUpdates">
+                                    <div data-role="controlgroup">
+                                        <input type="checkbox" id="chkEnableAutomaticServerUpdates" data-mini="true" />
+                                        <label for="chkEnableAutomaticServerUpdates">${OptionEnableAutomaticServerUpdates}</label>
+                                    </div>
+                                </li>
                                 <li>
                                     <label for="selectAutomaticUpdateLevel">${LabelAutomaticUpdateLevel}</label>
                                     <select name="selectAutomaticUpdateLevel" id="selectAutomaticUpdateLevel">
@@ -85,12 +91,11 @@
                     <br />
                     <ul data-role="listview" class="ulForm">
                         <li>
-                            <button type="submit" data-theme="b" data-icon="check">
-                                ${ButtonSave}
+                            <button type="submit" data-role="none" class="clearButton">
+                                <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
                             </button>
-                            <button type="button" onclick="Dashboard.navigate('dashboard.html');" data-icon="delete">
-                                ${ButtonCancel}
-                            </button>
+
+                            <paper-button raised class="cancel block btnCancel" onclick="history.back();"><iron-icon icon="close"></iron-icon><span>${ButtonCancel}</span></paper-button>
                         </li>
 
                     </ul>

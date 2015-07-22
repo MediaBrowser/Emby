@@ -34,7 +34,7 @@ $.fn.taskButton = function (options) {
             return;
         }
 
-        button.buttonEnabled(task.State == 'Idle').attr('data-taskid', task.Id);
+        $(button).buttonEnabled(task.State == 'Idle').attr('data-taskid', task.Id);
 
         var progress = (task.CurrentProgressPercentage || 0).toFixed(1);
 
@@ -72,13 +72,16 @@ $.fn.taskButton = function (options) {
         });
     }
 
-    function onButtonClick(instance, id) {
+    function onButtonClick() {
+
+        var button = this;
+        var id = button.getAttribute('data-taskid');
 
         var key = 'scheduledTaskButton' + options.taskKey;
         var expectedValue = '4';
 
         if (appStorage.getItem(key) == expectedValue) {
-            onScheduledTaskMessageConfirmed(instance, id);
+            onScheduledTaskMessageConfirmed(button, id);
         } else {
 
             var msg = Globalize.translate('ConfirmMessageScheduledTaskButton');
@@ -91,14 +94,54 @@ $.fn.taskButton = function (options) {
                 if (result) {
 
                     appStorage.setItem(key, expectedValue);
-                    onScheduledTaskMessageConfirmed(instance, id);
+                    onScheduledTaskMessageConfirmed(button, id);
                 }
             });
 
         }
     }
 
+    function onSocketOpen() {
+        startInterval();
+    }
+
+    function onSocketMessage(e, msg) {
+        if (msg.MessageType == "ScheduledTasksInfo") {
+
+            var tasks = msg.Data;
+
+            updateTasks(self, tasks);
+        }
+    }
+
     var self = this;
+    var pollInterval;
+
+    function onPollIntervalFired() {
+
+        if (!ApiClient.isWebSocketOpen()) {
+            pollTasks(self);
+        }
+    }
+
+    function startInterval() {
+        if (ApiClient.isWebSocketOpen()) {
+            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
+        }
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+        pollInterval = setInterval(onPollIntervalFired, 1500);
+    }
+
+    function stopInterval() {
+        if (ApiClient.isWebSocketOpen()) {
+            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStop");
+        }
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+    }
 
     if (options.panel) {
         $(options.panel).hide();
@@ -106,44 +149,19 @@ $.fn.taskButton = function (options) {
 
     if (options.mode == 'off') {
 
-        this.off(".taskbutton");
-        $(ApiClient).off(".taskbutton");
-
-        if (ApiClient.isWebSocketOpen()) {
-            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStop");
-        }
+        this.off('click', onButtonClick);
+        $(ApiClient).off("websocketmessage", onSocketMessage).off('websocketopen', onSocketOpen);
+        stopInterval();
 
     } else if (this.length) {
 
-        this.on('click.taskbutton', function () {
-
-            var button = this;
-            var id = button.getAttribute('data-taskid');
-
-            onButtonClick(self, id);
-        });
+        this.on('click', onButtonClick);
 
         pollTasks(self);
 
-        if (ApiClient.isWebSocketOpen()) {
-            ApiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
-        }
+        startInterval();
 
-        $(ApiClient).on("websocketmessage.taskbutton", function (e, msg) {
-
-            if (msg.MessageType == "ScheduledTasksInfo") {
-
-                var tasks = msg.Data;
-
-                updateTasks(self, tasks);
-            }
-
-        }).on('websocketopen.taskbutton', function () {
-
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("ScheduledTasksInfoStart", "1000,1000");
-            }
-        });
+        $(ApiClient).on("websocketmessage", onSocketMessage).on('websocketopen', onSocketOpen);
     }
 
     return this;

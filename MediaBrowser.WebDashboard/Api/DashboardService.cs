@@ -1,5 +1,4 @@
-﻿using System.Text;
-using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
@@ -16,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using WebMarkupMin.Core.Minifiers;
 
@@ -200,9 +200,11 @@ namespace MediaBrowser.WebDashboard.Api
 
             var isHtml = IsHtml(path);
 
-            if (isHtml && !_serverConfigurationManager.Configuration.IsStartupWizardCompleted)
+            // Bounce them to the startup wizard if it hasn't been completed yet
+            if (isHtml && !_serverConfigurationManager.Configuration.IsStartupWizardCompleted && path.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1)
             {
-                if (path.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1)
+                // But don't redirect if an html import is being requested.
+                if (path.IndexOf("vulcanize", StringComparison.OrdinalIgnoreCase) == -1 && path.IndexOf("bower_components", StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     Request.Response.Redirect("wizardstart.html");
                     return null;
@@ -272,6 +274,12 @@ namespace MediaBrowser.WebDashboard.Api
             return Path.GetExtension(path).EndsWith("html", StringComparison.OrdinalIgnoreCase);
         }
 
+        private void CopyFile(string src, string dst)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(dst));
+            File.Copy(src, dst, true);
+        }
+
         public async Task<object> Get(GetDashboardPackage request)
         {
             var path = Path.Combine(_serverConfigurationManager.ApplicationPaths.ProgramDataPath,
@@ -299,20 +307,35 @@ namespace MediaBrowser.WebDashboard.Api
             if (string.Equals(mode, "cordova", StringComparison.OrdinalIgnoreCase))
             {
                 // Overwrite certain files with cordova specific versions
-                var cordovaVersion = Path.Combine(path, "thirdparty", "cordova", "registrationservices.js");
+                var cordovaVersion = Path.Combine(path, "cordova", "registrationservices.js");
                 File.Copy(cordovaVersion, Path.Combine(path, "scripts", "registrationservices.js"), true);
                 File.Delete(cordovaVersion);
 
                 // Delete things that are unneeded in an attempt to keep the output as trim as possible
                 Directory.Delete(Path.Combine(path, "css", "images", "tour"), true);
-                Directory.Delete(Path.Combine(path, "thirdparty", "apiclient", "alt"), true);
+                Directory.Delete(Path.Combine(path, "apiclient", "alt"), true);
 
                 File.Delete(Path.Combine(path, "thirdparty", "jquerymobile-1.4.5", "jquery.mobile-1.4.5.min.map"));
-            }
 
+                Directory.Delete(Path.Combine(path, "bower_components"), true);
+                Directory.Delete(Path.Combine(path, "thirdparty", "viblast"), true);
+
+                // But we do need this
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "webcomponentsjs", "webcomponents-lite.js"), Path.Combine(path, "bower_components", "webcomponentsjs", "webcomponents-lite.js"));
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "webcomponentsjs", "webcomponents-lite.min.js"), Path.Combine(path, "bower_components", "webcomponentsjs", "webcomponents-lite.min.js"));
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "velocity", "velocity.min.js"), Path.Combine(path, "bower_components", "velocity", "velocity.min.js"));
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "requirejs", "require.js"), Path.Combine(path, "bower_components", "requirejs", "require.js"));
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "fastclick", "lib", "fastclick.js"), Path.Combine(path, "bower_components", "fastclick", "lib", "fastclick.js"));
+                CopyFile(Path.Combine(creator.DashboardUIPath, "bower_components", "jquery", "dist", "jquery.min.js"), Path.Combine(path, "bower_components", "jquery", "dist", "jquery.min.js"));
+    
+                CopyDirectory(Path.Combine(creator.DashboardUIPath, "bower_components", "swipebox", "src", "css"), Path.Combine(path, "bower_components", "swipebox", "src", "css"));
+                CopyDirectory(Path.Combine(creator.DashboardUIPath, "bower_components", "swipebox", "src", "js"), Path.Combine(path, "bower_components", "swipebox", "src", "js"));
+                CopyDirectory(Path.Combine(creator.DashboardUIPath, "bower_components", "swipebox", "src", "img"), Path.Combine(path, "bower_components", "swipebox", "src", "img"));
+            }
+            
             MinifyCssDirectory(Path.Combine(path, "css"));
             MinifyJsDirectory(Path.Combine(path, "scripts"));
-            MinifyJsDirectory(Path.Combine(path, "thirdparty", "apiclient"));
+            MinifyJsDirectory(Path.Combine(path, "apiclient"));
             MinifyJsDirectory(Path.Combine(path, "voice"));
 
             await DumpHtml(creator.DashboardUIPath, path, mode, culture, appVersion);

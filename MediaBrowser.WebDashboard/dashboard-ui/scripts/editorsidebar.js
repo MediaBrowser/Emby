@@ -258,7 +258,7 @@
 
         if (elem) {
             // commenting out for now because it's causing the whole window to scroll in chrome
-            //elem.scrollIntoView();
+            elem.scrollIntoView();
         }
     }
 
@@ -267,6 +267,53 @@
         MetadataEditor.loadJsTree().done(function () {
             initializeTreeInternal(page, currentUser, openItems, selectedId);
         });
+    }
+
+    function onNodeSelect(event, data) {
+        var node = data.node;
+
+        var eventData = {
+            id: node.id,
+            itemType: node.li_attr.itemtype
+        };
+
+        if (eventData.itemType != 'livetv' && eventData.itemType != 'mediafolders') {
+            $(this).trigger('itemclicked', [eventData]);
+        }
+    }
+
+    function onNodeOpen(event, data) {
+
+        var page = $(this).parents('.page')[0];
+        var node = data.node;
+
+        if (node.children && node.children) {
+            loadNodesToLoad(page, node);
+        }
+
+        if (node.li_attr && node.id != '#' && !node.li_attr.loadedFromServer) {
+
+            node.li_attr.loadedFromServer = true;
+
+            $.jstree.reference(".libraryTree", page).load_node(node.id, loadNodeCallback);
+        }
+    }
+
+    function onNodeLoad(event, data) {
+
+        var page = $(this).parents('.page')[0];
+        var node = data.node;
+
+        if (node.children && node.children) {
+            loadNodesToLoad(page, node);
+        }
+
+        if (node.li_attr && node.id != '#' && !node.li_attr.loadedFromServer) {
+
+            node.li_attr.loadedFromServer = true;
+
+            $.jstree.reference(".libraryTree", page).load_node(node.id, loadNodeCallback);
+        }
     }
 
     function initializeTreeInternal(page, currentUser, openItems, selectedId) {
@@ -293,50 +340,7 @@
                 }
             }
 
-        }).off('select_node.jstree').on('select_node.jstree', function (event, data) {
-
-            var node = data.node;
-
-            var eventData = {
-                id: node.id,
-                itemType: node.li_attr.itemtype
-            };
-
-            if (eventData.itemType != 'livetv' && eventData.itemType != 'mediafolders') {
-                $(this).trigger('itemclicked', [eventData]);
-            }
-
-        }).off('open_node.jstree').on('open_node.jstree', function (event, data) {
-
-            var node = data.node;
-
-            if (node.children && node.children) {
-                loadNodesToLoad(page, node);
-            }
-
-            if (node.li_attr && node.id != '#' && !node.li_attr.loadedFromServer) {
-
-                node.li_attr.loadedFromServer = true;
-
-                $.jstree.reference(".libraryTree", page).load_node(node.id, loadNodeCallback);
-            }
-
-        }).off('load_node.jstree').on('load_node.jstree', function (event, data) {
-
-            var node = data.node;
-
-            if (node.children && node.children) {
-                loadNodesToLoad(page, node);
-            }
-
-            if (node.li_attr && node.id != '#' && !node.li_attr.loadedFromServer) {
-
-                node.li_attr.loadedFromServer = true;
-
-                $.jstree.reference(".libraryTree", page).load_node(node.id, loadNodeCallback);
-            }
-
-        });
+        }).off('select_node.jstree', onNodeSelect).on('select_node.jstree', onNodeSelect).off('open_node.jstree', onNodeOpen).on('open_node.jstree', onNodeOpen).off('load_node.jstree', onNodeLoad).on('load_node.jstree', onNodeLoad);
     }
 
     function loadNodesToLoad(page, node) {
@@ -423,11 +427,15 @@
 
         });
 
+    }).on('pageinitdepends', ".metadataEditorPage", function () {
+
+        Dashboard.importCss('css/metadataeditor.css');
+
     }).on('pagebeforehide', ".metadataEditorPage", function () {
 
         var page = this;
 
-        $('.libraryTree', page).off('select_node.jstree');
+        $('.libraryTree', page).off('select_node.jstree', onNodeSelect).off('open_node.jstree', onNodeOpen).off('load_node.jstree', onNodeLoad);
 
     });
 
@@ -486,10 +494,10 @@
             var deferred = DeferredBuilder.Deferred();
 
             require([
-                'thirdparty/jstree3.0.8/jstree.min',
-                'css!thirdparty/jstree3.0.8/themes/default/style.min'
+                'thirdparty/jstree3.0.8/jstree.min'
             ], function () {
 
+                Dashboard.importCss('thirdparty/jstree3.0.8/themes/default/style.min.css');
                 deferred.resolve();
             });
             return deferred.promise();
