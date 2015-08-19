@@ -1339,7 +1339,7 @@ var Dashboard = {
         }
 
         if (title) {
-            document.title = title;
+            document.title = "Emby | " + title;
         }
     },
 
