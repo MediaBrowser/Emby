@@ -81,6 +81,7 @@
     <Compile Include="Profiles\DefaultProfile.cs" />
     <Compile Include="Profiles\DirectTvProfile.cs" />
     <Compile Include="Profiles\DishHopperJoeyProfile.cs" />
+    <Compile Include="Profiles\KodiProfile.cs" />
     <Compile Include="Profiles\PopcornHourProfile.cs" />
     <Compile Include="Profiles\SonyPs4Profile.cs" />
     <Compile Include="Profiles\VlcProfile.cs" />
@@ -209,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Profiles\Xml\BubbleUPnp.xml" />
+    <EmbeddedResource Include="Profiles\Xml\Kodi.xml" />
     <EmbeddedResource Include="Profiles\Xml\Vlc.xml" />
   </ItemGroup>
   <ItemGroup>
