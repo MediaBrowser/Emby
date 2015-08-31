@@ -10,7 +10,7 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableDebugLogging { get; set; }
         public bool EnableThrottling { get; set; }
         public int ThrottleThresholdInSeconds { get; set; }
-        public bool SupportQsvDecoding { get; set; } //TODO: use a utility to detect if the server is configured to support QSV
+        public HwaDecodingSupport HwaDecoding { get; set; } //TODO: use a utility to detect if the server is configured to support QSV
 
         public EncodingOptions()
         {
@@ -19,7 +19,13 @@ namespace MediaBrowser.Model.Configuration
             EnableThrottling = true;
             ThrottleThresholdInSeconds = 120;
             EncodingThreadCount = -1;
-            SupportQsvDecoding = false;
+            HwaDecoding = HwaDecodingSupport.None;
         }
+    }
+
+    public enum HwaDecodingSupport
+    {
+        None = 0,
+        IntelQsv
     }
 }

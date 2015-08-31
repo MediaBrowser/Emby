@@ -301,12 +301,12 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
-        protected bool SupportQsvDecoding
+        protected HwaDecodingSupport HwaDecoding
         {
             get
             {
-                var supportQsvDecoding = ApiEntryPoint.Instance.GetEncodingOptions().SupportQsvDecoding;
-                return supportQsvDecoding;                
+                var hwaDecoding = ApiEntryPoint.Instance.GetEncodingOptions().HwaDecoding;
+                return hwaDecoding;                
             }
         }
 
@@ -827,10 +827,11 @@ namespace MediaBrowser.Api.Playback
         {
             string hwaDecoder = string.Empty; //leave blank so ffmpeg will decide
 
-            if(SupportQsvDecoding && state.MediaSource.VideoStream != null && !string.IsNullOrWhiteSpace(state.MediaSource.VideoStream.Codec))
+            if(HwaDecoding == HwaDecodingSupport.IntelQsv && state.MediaSource.VideoStream != null && !string.IsNullOrWhiteSpace(state.MediaSource.VideoStream.Codec))
             {
-                switch (state.MediaSource.VideoStream.Codec)
+                switch (state.MediaSource.VideoStream.Codec.ToLower())
                 {
+                    case "avc":
                     case "h264":
                         hwaDecoder = "-c:v h264_qsv ";
                         break;
