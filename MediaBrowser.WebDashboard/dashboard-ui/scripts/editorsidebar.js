@@ -155,7 +155,7 @@
 
     function loadLiveTvChannels(service, openItems, callback) {
 
-        ApiClient.getLiveTvChannels({ ServiceName: service }).done(function (result) {
+        ApiClient.getLiveTvChannels({ ServiceName: service, AddCurrentProgram: false }).done(function (result) {
 
             var nodes = result.Items.map(function (i) {
 
@@ -262,9 +262,23 @@
         }
     }
 
+    function loadJsTree() {
+
+        var deferred = DeferredBuilder.Deferred();
+
+        require([
+            'bower_components/jstree/dist/jstree.min'
+        ], function () {
+
+            Dashboard.importCss('thirdparty/jstree/themes/default/style.min.css');
+            deferred.resolve();
+        });
+        return deferred.promise();
+    }
+
     function initializeTree(page, currentUser, openItems, selectedId) {
 
-        MetadataEditor.loadJsTree().done(function () {
+        loadJsTree().done(function () {
             initializeTreeInternal(page, currentUser, openItems, selectedId);
         });
     }
@@ -400,15 +414,17 @@
 
         updateEditorNode(this, item);
 
-    }).on('pagebeforeshowready', ".metadataEditorPage", function () {
+    }).on('pagebeforeshow', ".metadataEditorPage", function () {
 
-        window.MetadataEditor = new metadataEditor();
+        Dashboard.importCss('css/metadataeditor.css');
+
+    }).on('pagebeforeshow', ".metadataEditorPage", function () {
 
         var page = this;
 
         Dashboard.getCurrentUser().done(function (user) {
 
-            var id = MetadataEditor.currentItemId;
+            var id = getCurrentItemId();
 
             if (id) {
 
@@ -427,10 +443,6 @@
 
         });
 
-    }).on('pageinitdepends', ".metadataEditorPage", function () {
-
-        Dashboard.importCss('css/metadataeditor.css');
-
     }).on('pagebeforehide', ".metadataEditorPage", function () {
 
         var page = this;
@@ -439,71 +451,24 @@
 
     });
 
-    function metadataEditor() {
+    function getCurrentItemId() {
 
-        var self = this;
+        var url = window.location.hash || getWindowUrl();
 
-        function ensureInitialValues() {
+        return getParameterByName('id', url);
+    }
 
-            if (self.currentItemType || self.currentItemId) {
-                return;
-            }
-
-            var url = window.location.hash || getWindowUrl();
-
-            var id = getParameterByName('id', url);
-
-            if (id) {
-                self.currentItemId = id;
-                self.currentItemType = null;
-            }
-        };
-
-        self.getItemPromise = function () {
-
-            var currentItemType = self.currentItemType;
-            var currentItemId = self.currentItemId;
-
-            if (currentItemType == "TvChannel") {
-                return ApiClient.getLiveTvChannel(currentItemId);
-            }
+    window.MetadataEditor = {
+        getItemPromise: function() {
+            var currentItemId = getCurrentItemId();
 
             if (currentItemId) {
                 return ApiClient.getItem(Dashboard.getCurrentUserId(), currentItemId);
             }
 
             return ApiClient.getRootFolder(Dashboard.getCurrentUserId());
-        };
-
-        self.getEditQueryString = function (item) {
-
-            var query = "id=" + item.Id;
-
-            var context = getParameterByName('context');
-
-            if (context) {
-                query += "&context=" + context;
-            }
-
-            return query;
-        };
-
-
-        self.loadJsTree = function () {
-
-            var deferred = DeferredBuilder.Deferred();
-
-            require([
-                'thirdparty/jstree3.0.8/jstree.min'
-            ], function () {
-
-                Dashboard.importCss('thirdparty/jstree3.0.8/themes/default/style.min.css');
-                deferred.resolve();
-            });
-            return deferred.promise();
-        };
-
-        ensureInitialValues();
-    }
+        },
+        getCurrentItemId: getCurrentItemId
+    };
 
 })(jQuery, document, window);
