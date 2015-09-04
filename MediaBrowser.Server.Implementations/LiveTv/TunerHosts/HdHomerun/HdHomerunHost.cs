@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.LiveTv;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
@@ -21,12 +22,15 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
     {
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
+        private IMediaEncoder _mediaEncoder;
+        private Dictionary<string, MediaInfo> _channelCache = new Dictionary<string, MediaInfo>();
 
-        public HdHomerunHost(IConfigurationManager config, ILogger logger, IHttpClient httpClient, IJsonSerializer jsonSerializer)
+        public HdHomerunHost(IConfigurationManager config, ILogger logger, IHttpClient httpClient, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder)
             : base(config, logger)
         {
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
+            _mediaEncoder = mediaEncoder;
         }
 
         public string Name
@@ -64,8 +68,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         Name = i.GuideName,
                         Number = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
                         Id = ChannelIdPrefix + i.GuideNumber.ToString(CultureInfo.InvariantCulture),
-                        IsFavorite = i.Favorite
-
+                        IsFavorite = i.Favorite,
+                        Url = i.URL //TODO: use this instead of figuring it out later?
                     });
 
                     if (info.ImportFavoritesOnly)
@@ -234,6 +238,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             var videoCodec = "mpeg2video";
             int? videoBitrate = null;
 
+            if (_channelCache.ContainsKey(channelId) && _channelCache[channelId].VideoStream != null)
+            {
+                videoCodec = _channelCache[channelId].VideoStream.Codec;
+            }
+
             if (string.Equals(profile, "mobile", StringComparison.OrdinalIgnoreCase))
             {
                 width = 1280;
@@ -291,8 +300,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 videoBitrate = 1000000;
             }
 
-            var url = GetApiUrl(info, true) + "/auto/v" + channelId;
-
+            var url = GetApiUrl(info, true) + "/auto/v" + channelId;      
             if (!string.IsNullOrWhiteSpace(profile) && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
             {
                 url += "?transcode=" + profile;
@@ -345,6 +353,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
             channelId = channelId.Substring(ChannelIdPrefix.Length);
 
+            await DetectMediaType(info, channelId, cancellationToken);
+
             list.Add(GetMediaSource(info, channelId, "native"));
 
             try
@@ -385,7 +395,29 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
             channelId = channelId.Substring(ChannelIdPrefix.Length);
 
+            await DetectMediaType(info, channelId, cancellationToken);
+
             return GetMediaSource(info, channelId, streamId);
+        }
+
+        protected async Task DetectMediaType(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
+        {
+            var url = GetApiUrl(info, true) + "/auto/v" + channelId;
+
+            if (!_channelCache.ContainsKey(channelId))
+            {
+                //scan the channel to find out its mediatype
+                MediaInfoRequest req = new MediaInfoRequest()
+                {
+                    ProbeSizeOverride = info.ProbeSize,
+                    Protocol = MediaProtocol.Http,
+                    InputPath = url,
+                    VideoType = VideoType.VideoFile,
+                    MediaType = Model.Dlna.DlnaProfileType.Video
+                };
+                var mi = await _mediaEncoder.GetMediaInfo(req, cancellationToken);
+                _channelCache[channelId] = mi;
+            }
         }
 
         public async Task Validate(TunerHostInfo info)

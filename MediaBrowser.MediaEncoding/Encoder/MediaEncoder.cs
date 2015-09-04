@@ -118,9 +118,12 @@ namespace MediaBrowser.MediaEncoding.Encoder
             var inputFiles = MediaEncoderHelpers.GetInputArgument(request.InputPath, request.Protocol, request.MountedIso, request.PlayableStreamFileNames);
 
             var extractKeyFrameInterval = request.ExtractKeyFrameInterval && request.Protocol == MediaProtocol.File && request.VideoType == VideoType.VideoFile;
+            var probeSizeArg = GetProbeSizeArgument(inputFiles, request.Protocol);
+            if (!string.IsNullOrWhiteSpace(request.ProbeSizeOverride))
+                probeSizeArg = string.Format("-probesize {0}", request.ProbeSizeOverride);
 
             return GetMediaInfoInternal(GetInputArgument(inputFiles, request.Protocol), request.InputPath, request.Protocol, extractChapters, extractKeyFrameInterval,
-                GetProbeSizeArgument(inputFiles, request.Protocol), request.MediaType == DlnaProfileType.Audio, request.VideoType, cancellationToken);
+                probeSizeArg, request.MediaType == DlnaProfileType.Audio, request.VideoType, cancellationToken);
         }
 
         /// <summary>

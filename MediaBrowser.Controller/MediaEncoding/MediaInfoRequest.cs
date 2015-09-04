@@ -16,6 +16,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         public VideoType VideoType { get; set; }
         public List<string> PlayableStreamFileNames { get; set; }
         public bool ExtractKeyFrameInterval { get; set; }
+        public string ProbeSizeOverride { get; set; }
 
         public MediaInfoRequest()
         {

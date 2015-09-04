@@ -53,5 +53,11 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public bool? IsFavorite { get; set; }
+
+        /// <summary>
+        /// Get or sets the Url.
+        /// </summary>
+        /// <value>The Url of the channel if there is one.</value>
+        public string Url { get; set; }
     }
 }
