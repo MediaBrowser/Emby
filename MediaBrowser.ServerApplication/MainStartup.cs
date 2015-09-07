@@ -28,6 +28,8 @@ namespace MediaBrowser.ServerApplication
 
         private static bool _isRunningAsService = false;
 
+        private static bool _isPowerShellInstalled = false;
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
@@ -35,6 +37,9 @@ namespace MediaBrowser.ServerApplication
         {
             var options = new StartupOptions();
             _isRunningAsService = options.ContainsOption("-service");
+
+            if (_isRunningAsService)
+                _isPowerShellInstalled = CanLoadPowerShell();
 
             var currentProcess = Process.GetCurrentProcess();
 
@@ -174,7 +179,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return !_isRunningAsService || _isPowerShellInstalled;
             }
         }
 
@@ -186,7 +191,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return !_isRunningAsService || _isPowerShellInstalled;
             }
         }
 
@@ -522,6 +527,58 @@ namespace MediaBrowser.ServerApplication
 
                 _logger.Info("Calling Environment.Exit");
                 Environment.Exit(0);
+            }
+            else
+            {
+                _logger.Info("Restarting service");
+                RestartService();
+            }
+        }
+
+        private static bool CanLoadPowerShell()
+        {
+            try
+            {
+                return IsPowerShellInstalled();     // throws FileNotFoundException if System.Management.Automation.dll is not registered
+                                                    // System.Management.Automation is installed in the GAC when PowerShell is installed for Windows 7 and is included in Windows 8+
+            }
+            catch (Exception ex)
+            {
+                if (ex is FileNotFoundException)            // Windows 7 without WMF installed
+                    _logger.Info("Windows Management Framework 4.0 must be installed in order to automatically restart the service.");
+
+                else if (ex is InvalidProgramException)     // Windows 7 SP1 requires an updated WMF
+                    _logger.Info("Windows Management Framework 4.0 must be updated in order to automatically restart the service.");
+
+                else
+                    _logger.ErrorException("PowerShell and the Windows Management Framework 4 must be installed in order to restart the service automatically.", ex);
+
+                _logger.Info("Please download the Windows Management Framework from https://support.microsoft.com/en-us/kb/2819745");
+
+                return false;
+            }
+        }
+
+        private static bool IsPowerShellInstalled()
+        {
+            // Microsoft recommended checking the registry for PowerShell entries but then warns this isn't future proof
+            // Instead, since we're using a managed assembly to invoke PowerShell just try to create it here
+
+            using (var ps = System.Management.Automation.PowerShell.Create())   // explicit to eliminate ambiguous Debugger class used above
+                return (ps != null);
+        }
+
+        private static void RestartService()
+        {
+            // Two ways to do this here:
+
+            //Process.Start("cmd.exe", string.Format("/c PowerShell.exe Restart-Service {0}", BackgroundService.GetExistingServiceName()));
+
+            // Instead, use PowerShell to start a new detached process to restart the service
+            using (var ps = System.Management.Automation.PowerShell.Create())
+            {
+                ps.AddScript(string.Format("Start-Process PowerShell.exe {{Restart-Service {0}}}", BackgroundService.GetExistingServiceName()));
+                ps.Invoke();
             }
         }
 
