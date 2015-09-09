@@ -28,11 +28,6 @@
         DashboardPage.lastAppUpdateCheck = null;
         DashboardPage.lastPluginUpdateCheck = null;
 
-        Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
-
-            DashboardPage.renderSupporterIcon(page, pluginSecurityInfo);
-        });
-
         DashboardPage.reloadSystemInfo(page);
         DashboardPage.reloadNews(page);
         DashboardPage.sessionUpdateTimer = setInterval(DashboardPage.refreshSessionsLocally, 60000);
@@ -784,28 +779,6 @@
             $('.externalUrl', page).html(remoteAccessHtml).show().trigger('create');
         } else {
             $('.externalUrl', page).hide();
-        }
-    },
-
-    renderSupporterIcon: function (page, pluginSecurityInfo) {
-
-        var imgUrl, text;
-
-        if (!AppInfo.enableSupporterMembership) {
-            $('.supporterIconContainer', page).remove();
-        }
-        else if (pluginSecurityInfo.IsMBSupporter) {
-
-            imgUrl = "css/images/supporter/supporterbadge.png";
-            text = Globalize.translate('MessageThankYouForSupporting');
-
-            $('.supporterIconContainer', page).html('<a class="imageLink supporterIcon" href="supporter.html" title="' + text + '"><img src="' + imgUrl + '" style="height:32px;vertical-align: middle; margin-right: .5em;" /></a><span style="position:relative;top:2px;text-decoration:none;">' + text + '</span>');
-        } else {
-
-            imgUrl = "css/images/supporter/nonsupporterbadge.png";
-            text = Globalize.translate('MessagePleaseSupportProject');
-
-            $('.supporterIconContainer', page).html('<a class="imageLink supporterIcon" href="supporter.html" title="' + text + '"><img src="' + imgUrl + '" style="height:32px;vertical-align: middle; margin-right: .5em;" /><span style="position:relative;top:2px;text-decoration:none;">' + text + '</span></a>');
         }
     },
 
