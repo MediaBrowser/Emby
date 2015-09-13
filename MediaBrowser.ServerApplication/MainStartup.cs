@@ -28,6 +28,9 @@ namespace MediaBrowser.ServerApplication
 
         private static bool _isRunningAsService = false;
 
+        private static bool _restartService = false;
+
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
@@ -174,7 +177,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return true;
             }
         }
 
@@ -186,7 +189,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return true;
             }
         }
 
@@ -332,6 +335,13 @@ namespace MediaBrowser.ServerApplication
             {
                 SetErrorMode(ErrorModes.SYSTEM_DEFAULT);
             }
+
+            else if (_restartService)
+            {
+                using (var p = Process.Start("cmd", "/c net start " + BackgroundService.GetExistingServiceName()))
+                {
+                }
+            }
         }
 
         /// <summary>
@@ -342,6 +352,39 @@ namespace MediaBrowser.ServerApplication
             try
             {
                 ManagedInstallerClass.InstallHelper(new[] { applicationPath });
+
+                // Change security permissions on the service to allow the service user to start/stop the service
+                string sd;
+
+                var serviceName = BackgroundService.GetExistingServiceName();
+
+                var startInfo = new ProcessStartInfo()
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+
+                    FileName = "sc.exe",
+                    Arguments = "sdshow " + serviceName,
+
+                    RedirectStandardOutput = true
+                };
+
+                using (var sc = Process.Start(startInfo))
+                    sd = sc.StandardOutput.ReadToEnd().Trim();
+
+                // Description of the SDDL strings can be found here:
+                // http://blogs.msmvps.com/erikr/2007/09/26/set-permissions-on-a-specific-service-windows/
+                if (sd.Contains("A;;CCLCSWLOCRRC;;;SU"))    // default permissions for service user
+                {
+                    sd = sd.Replace("A;;CCLCSWLOCRRC;;;SU", "A;;CCLCSWRPWPDTLOCRRC;;;SU")   // Allow the service to be started/stopped by the service user account
+                           .Replace("A;;CCLCSWLOCRRC;;;IU", "A;;CCLCSWRPWPDTLOCRRC;;;IU");  // Allow the service to be started/stopped by the interactive user
+
+                    startInfo.Arguments = string.Format("sdset {0} {1}", serviceName, sd);
+                    startInfo.RedirectStandardOutput = false;
+
+                    using (var sc = Process.Start(startInfo))
+                        sc.WaitForExit();
+                }
 
                 logger.Info("Service installation succeeded");
             }
@@ -522,6 +565,12 @@ namespace MediaBrowser.ServerApplication
 
                 _logger.Info("Calling Environment.Exit");
                 Environment.Exit(0);
+            }
+            else
+            {
+                _logger.Info("Restarting service");
+                _restartService = true;
+                ShutdownWindowsService();
             }
         }
 
