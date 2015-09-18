@@ -301,6 +301,15 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
+        protected HwaDecodingSupport HwaDecoding
+        {
+            get
+            {
+                var hwaDecoding = ApiEntryPoint.Instance.GetEncodingOptions().HwaDecoding;
+                return hwaDecoding;                
+            }
+        }
+
         /// <summary>
         /// Gets the video bitrate to specify on the command line
         /// </summary>
@@ -810,13 +819,42 @@ namespace MediaBrowser.Api.Playback
         }
 
         /// <summary>
+        /// Gets the name of the output video codec
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <returns>System.String.</returns>
+        protected string GetHwaVideoDecoder(StreamState state)
+        {
+            string hwaDecoder = string.Empty; //leave blank so ffmpeg will decide
+
+            if(HwaDecoding == HwaDecodingSupport.IntelQsv && state.MediaSource.VideoStream != null && !string.IsNullOrWhiteSpace(state.MediaSource.VideoStream.Codec))
+            {
+                switch (state.MediaSource.VideoStream.Codec.ToLower())
+                {
+                    case "avc":
+                    case "h264":
+                        hwaDecoder = "-c:v h264_qsv ";
+                        break;
+                    case "mpeg2video":
+                        hwaDecoder = "-c:v mpeg2_qsv ";
+                        break;
+                    case "vc1": 
+                        hwaDecoder = "-c:v vc1_qsv ";
+                        break;
+                }
+            }
+
+            return hwaDecoder;
+        }
+
+        /// <summary>
         /// Gets the input argument.
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>System.String.</returns>
         protected string GetInputArgument(StreamState state)
         {
-            var arg = "-i " + GetInputPathArgument(state);
+            var arg = string.Format("{1}-i {0}", GetInputPathArgument(state), GetHwaVideoDecoder(state));
 
             if (state.SubtitleStream != null)
             {

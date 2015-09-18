@@ -30,10 +30,12 @@ namespace MediaBrowser.Model.LiveTv
         public string Type { get; set; }
         public bool ImportFavoritesOnly { get; set; }
         public bool IsEnabled { get; set; }
+        public string ProbeSize { get; set; }
 
         public TunerHostInfo()
         {
             IsEnabled = true;
+            ProbeSize = "5000";
         }
     }
 

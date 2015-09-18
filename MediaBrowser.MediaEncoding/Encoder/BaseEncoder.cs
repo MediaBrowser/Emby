@@ -36,6 +36,15 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
+        protected EncodingOptions EncodingOptions
+        {
+            get
+            {
+                EncodingOptions encOptions = this.ConfigurationManager.GetConfiguration<EncodingOptions>("encoding");
+                return encOptions;
+            }
+        }
+
         protected BaseEncoder(MediaEncoder mediaEncoder,
             ILogger logger,
             IServerConfigurationManager configurationManager,
@@ -392,6 +401,16 @@ namespace MediaBrowser.MediaEncoding.Encoder
             return string.Empty;
         }
 
+        protected virtual string GetPreferredDecoder(EncodingJob state)
+        {
+            return string.Empty;
+        }
+
+        protected virtual string GetPreferredEncoder(EncodingJob state)
+        {
+            return string.Empty;
+        }
+
         /// <summary>
         /// Gets the input argument.
         /// </summary>
@@ -399,7 +418,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
         /// <returns>System.String.</returns>
         protected string GetInputArgument(EncodingJob job)
         {
-            var arg = "-i " + GetInputPathArgument(job);
+            var arg = string.Format("{1}-i {0}", GetInputPathArgument(job), GetPreferredDecoder(job));
 
             if (job.SubtitleStream != null)
             {

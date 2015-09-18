@@ -3,7 +3,9 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using System;
@@ -20,7 +22,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
         protected override string GetCommandLineArguments(EncodingJob state)
         {
             // Get the output codec name
-            var videoCodec = state.OutputVideoCodec;
+            var videoCodec = GetPreferredEncoder(state);
 
             var format = string.Empty;
             var keyFrame = string.Empty;
@@ -46,6 +48,50 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 format,
                 state.OutputFilePath
                 ).Trim();
+        }
+
+        protected override string GetPreferredEncoder(EncodingJob state)
+        {
+            var codec = state.OutputVideoCodec;
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                if (string.Equals(codec, "libx264", StringComparison.OrdinalIgnoreCase))
+                {
+                    codec = EncodingOptions.H264Encoder.ToLower();
+                }                
+            }
+
+            if (!string.IsNullOrWhiteSpace(codec))
+                return codec;
+            else
+                return state.OutputVideoCodec;
+        }
+
+        protected override string GetPreferredDecoder(EncodingJob state)
+        {
+            string hwaDecoder = string.Empty; //leave blank so ffmpeg will decide
+
+            if (IsVideoEncoder)
+            {
+                if (EncodingOptions.HwaDecoding == HwaDecodingSupport.IntelQsv && state.MediaSource.VideoStream != null && !string.IsNullOrWhiteSpace(state.MediaSource.VideoStream.Codec))
+                {
+                    switch (state.MediaSource.VideoStream.Codec.ToLower())
+                    {
+                        case "avc":
+                        case "h264":
+                            hwaDecoder = "-c:v h264_qsv ";
+                            break;
+                        case "mpeg2video":
+                            hwaDecoder = "-c:v mpeg2_qsv ";
+                            break;
+                        case "vc1":
+                            hwaDecoder = "-c:v vc1_qsv ";
+                            break;
+                    }
+                }
+            }
+            return hwaDecoder;
         }
 
         /// <summary>
