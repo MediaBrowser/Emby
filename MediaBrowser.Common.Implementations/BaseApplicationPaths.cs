@@ -9,6 +9,8 @@ namespace MediaBrowser.Common.Implementations
     /// </summary>
     public abstract class BaseApplicationPaths : IApplicationPaths
     {
+	// TST
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseApplicationPaths"/> class.
         /// </summary>
