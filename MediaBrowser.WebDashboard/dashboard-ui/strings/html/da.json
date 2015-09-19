@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "Slet efterladte filer med disse endelser:",
     "LabelDeleteLeftOverFilesHelp": "Adskil med ;. F. eks. .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Overskriv eksisterende episoder",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Overf\u00f8rselsmetode",
     "OptionCopy": "Kopier",
     "OptionMove": "Flyt",

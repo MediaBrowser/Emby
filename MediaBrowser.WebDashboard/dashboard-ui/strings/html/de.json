@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "L\u00f6sche \u00fcbriggebliebene Dateien mit den folgenden Dateiendungen:",
     "LabelDeleteLeftOverFilesHelp": "Unterteile mit ;. Zum Beispiel: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "\u00dcberschreibe vorhandene Episoden",
+    "OptionDisableMultiEpisodeDetection": "Erkennung von Multi-Episoden deaktivieren",
     "LabelTransferMethod": "\u00dcbertragungsmethode",
     "OptionCopy": "Kopieren",
     "OptionMove": "Verschieben",
