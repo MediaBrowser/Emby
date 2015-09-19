@@ -46,6 +46,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 .Where(i => _libraryManager.IsVideoFile(i.FullName) && i.Length >= minFileBytes)
                 .ToList();
 
+            var processedFolders = new HashSet<string>();
+
             progress.Report(10);
 
             if (eligibleFiles.Count > 0)
@@ -59,7 +61,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        var result = await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        if (result.Status == FileSortingStatus.Success && !processedFolders.Contains(file.DirectoryName))
+                        {
+                            processedFolders.Add(file.DirectoryName);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -77,7 +83,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             cancellationToken.ThrowIfCancellationRequested();
             progress.Report(99);
 
-            foreach (var path in watchLocations)
+            foreach (var path in processedFolders)
             {
                 var deleteExtensions = options.LeftOverFileExtensionsToDelete
                     .Select(i => i.Trim().TrimStart('.'))
