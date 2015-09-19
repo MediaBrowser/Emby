@@ -63,7 +63,6 @@
         $('#chkEnableTvSorting', page).checked(tvOptions.IsEnabled).checkboxradio('refresh');
         $('#chkOverwriteExistingEpisodes', page).checked(tvOptions.OverwriteExistingEpisodes).checkboxradio('refresh');
         $('#chkDeleteEmptyFolders', page).checked(tvOptions.DeleteEmptyFolders).checkboxradio('refresh');
-        $('#chkDisableMultiEpisodeDetection', page).checked(tvOptions.DisableMultiEpisodeDetection).checkboxradio('refresh');
 
         $('#txtMinFileSize', page).val(tvOptions.MinFileSizeMb);
         $('#txtSeasonFolderPattern', page).val(tvOptions.SeasonFolderPattern).trigger('change');
@@ -89,7 +88,6 @@
             tvOptions.IsEnabled = $('#chkEnableTvSorting', form).checked();
             tvOptions.OverwriteExistingEpisodes = $('#chkOverwriteExistingEpisodes', form).checked();
             tvOptions.DeleteEmptyFolders = $('#chkDeleteEmptyFolders', form).checked();
-            tvOptions.DisableMultiEpisodeDetection = $('#chkDisableMultiEpisodeDetection', form).checked();
 
             tvOptions.MinFileSizeMb = $('#txtMinFileSize', form).val();
             tvOptions.SeasonFolderPattern = $('#txtSeasonFolderPattern', form).val();

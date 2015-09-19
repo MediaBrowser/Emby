@@ -623,7 +623,6 @@
     "LabelDeleteLeftOverFiles": "Supprimer les fichiers restants avec les extensions suivantes :",
     "LabelDeleteLeftOverFilesHelp": "S\u00e9parez les \u00e9l\u00e9ments par des point-virgules. Par exemple: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Remplacer les \u00e9pisodes existants",
-    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "M\u00e9thode de transfert",
     "OptionCopy": "Copier",
     "OptionMove": "D\u00e9placer",

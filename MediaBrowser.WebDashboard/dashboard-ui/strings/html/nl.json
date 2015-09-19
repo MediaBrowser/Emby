@@ -623,7 +623,6 @@
     "LabelDeleteLeftOverFiles": "Verwijder overgebleven bestanden met de volgende extensies:",
     "LabelDeleteLeftOverFilesHelp": "Scheiden met ;. Bijvoorbeeld: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Bestaande afleveringen overschrijven",
-    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Verplaats methode",
     "OptionCopy": "Kopie",
     "OptionMove": "Verplaats",

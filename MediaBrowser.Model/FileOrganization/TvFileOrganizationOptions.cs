@@ -15,8 +15,6 @@ namespace MediaBrowser.Model.FileOrganization
         public string EpisodeNamePattern { get; set; }
         public string MultiEpisodeNamePattern { get; set; }
 
-        public bool DisableMultiEpisodeDetection { get; set; }
-
         public bool OverwriteExistingEpisodes { get; set; }
 
         public bool DeleteEmptyFolders { get; set; }
@@ -37,7 +35,6 @@ namespace MediaBrowser.Model.FileOrganization
             SeasonZeroFolderName = "Season 0";
 
             CopyOriginalFile = false;
-            DisableMultiEpisodeDetection = false;
         }
     }
 }

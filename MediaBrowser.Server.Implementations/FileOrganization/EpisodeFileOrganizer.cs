@@ -88,12 +88,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                     {
                         _logger.Debug("Extracted information from {0}. Series name {1}, Season {2}, Episode {3}", path, seriesName, season, episode);
 
-                        int? endingEpisodeNumber = null;
-
-                        if (!options.DisableMultiEpisodeDetection)
-                        {
-                            endingEpisodeNumber = episodeInfo.EndingEpsiodeNumber;
-                        }
+                        var endingEpisodeNumber = episodeInfo.EndingEpsiodeNumber;
 
                         result.ExtractedEndingEpisodeNumber = endingEpisodeNumber;
 

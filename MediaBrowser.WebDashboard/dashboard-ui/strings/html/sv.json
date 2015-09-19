@@ -623,7 +623,6 @@
     "LabelDeleteLeftOverFiles": "Ta bort \u00f6verblivna filer med f\u00f6ljande till\u00e4gg:",
     "LabelDeleteLeftOverFilesHelp": "\u00c5tskilj med;. Till exempel: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Skriv \u00f6ver existerande avsnitt",
-    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Metod f\u00f6r \u00f6verf\u00f6ring",
     "OptionCopy": "Kopiera",
     "OptionMove": "Flytta",
