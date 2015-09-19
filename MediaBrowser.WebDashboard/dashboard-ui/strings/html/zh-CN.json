@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "\u5220\u9664\u5177\u6709\u4ee5\u4e0b\u6269\u5c55\u540d\u7684\u9057\u7559\u6587\u4ef6\uff1a",
     "LabelDeleteLeftOverFilesHelp": "\u5206\u9694\u7b26 ;. \u4f8b\u5982\uff1a.nfo;.txt",
     "OptionOverwriteExistingEpisodes": "\u8986\u76d6\u73b0\u6709\u5267\u96c6",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "\u79fb\u52a8\u65b9\u5f0f",
     "OptionCopy": "\u590d\u5236",
     "OptionMove": "\u79fb\u52a8",

@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "Elimina i file rimasti con le seguenti estensioni:",
     "LabelDeleteLeftOverFilesHelp": "Separare con ;. Per esempio: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Sovrascrive gli episodi esistenti",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Metodo di trasferimento",
     "OptionCopy": "Copia",
     "OptionMove": "Sposta",

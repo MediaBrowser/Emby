@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "Slett gjenv\u00e6rende filer etter f\u00f8lgende utvidelser:",
     "LabelDeleteLeftOverFilesHelp": "Seprarer med ;. For eksempel: .nfk;.txt",
     "OptionOverwriteExistingEpisodes": "Skriv over eksisterende episoder",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "overf\u00f8ringsmetoder",
     "OptionCopy": "Kopier",
     "OptionMove": "Flytt",

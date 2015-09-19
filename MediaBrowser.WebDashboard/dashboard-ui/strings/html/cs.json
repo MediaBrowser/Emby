@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "Smazat zbyl\u00e9 soubory s n\u00e1sleduj\u00edc\u00edmi p\u0159\u00edponami:",
     "LabelDeleteLeftOverFilesHelp": "Odd\u011blte ;. Nap\u0159.: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "P\u0159epsat existuj\u00edc\u00ed epizody",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Metoda p\u0159enosu",
     "OptionCopy": "Kop\u00edrovat",
     "OptionMove": "P\u0159esunout",
