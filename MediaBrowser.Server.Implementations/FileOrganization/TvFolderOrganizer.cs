@@ -98,35 +98,14 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                 if (options.DeleteEmptyFolders)
                 {
-                    foreach (var subfolder in GetDirectories(path).ToList())
+                    if (!IsWatchFolder(path, watchLocations))
                     {
-                        DeleteEmptyFolders(subfolder);
+                        DeleteEmptyFolders(path);
                     }
                 }
             }
 
             progress.Report(100);
-        }
-
-        /// <summary>
-        /// Gets the directories.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>IEnumerable{System.String}.</returns>
-        private IEnumerable<string> GetDirectories(string path)
-        {
-            try
-            {
-                return Directory
-                    .EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
-                    .ToList();
-            }
-            catch (IOException ex)
-            {
-                _logger.ErrorException("Error getting files from {0}", ex, path);
-
-                return new List<string>();
-            }
         }
 
         /// <summary>
@@ -202,6 +181,24 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 }
             }
             catch (UnauthorizedAccessException) { }
+        }
+
+        /// <summary>
+        /// Determines if a given folder path is contained in a folder list
+        /// </summary>
+        /// <param name="path">The folder path to check.</param>
+        /// <param name="watchLocations">A list of folders.</param>
+        private bool IsWatchFolder(string path, IEnumerable<string> watchLocations)
+        {
+            foreach (var watchFolder in watchLocations)
+            {
+                if (Path.GetFullPath(path) == Path.GetFullPath(watchFolder))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
