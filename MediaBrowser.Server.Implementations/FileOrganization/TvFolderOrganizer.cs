@@ -190,9 +190,12 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         /// <param name="watchLocations">A list of folders.</param>
         private bool IsWatchFolder(string path, IEnumerable<string> watchLocations)
         {
+            // Use GetFullPath to resolve 8.3 naming and path indirections
+            path = Path.GetFullPath(path);
+
             foreach (var watchFolder in watchLocations)
             {
-                if (Path.GetFullPath(path) == Path.GetFullPath(watchFolder))
+                if (String.Equals(path, Path.GetFullPath(watchFolder), StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
