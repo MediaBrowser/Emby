@@ -623,6 +623,7 @@
     "LabelDeleteLeftOverFiles": "Izbri\u0161i zaostale datoteke sa sljede\u0107im ekstenzijama:",
     "LabelDeleteLeftOverFilesHelp": "Odvojite sa ;. Naprimjer: .nfo;.txt",
     "OptionOverwriteExistingEpisodes": "Presnimi preko postoje\u0107ih epizoda",
+    "OptionDisableMultiEpisodeDetection": "Disable multi-episode detection",
     "LabelTransferMethod": "Na\u010din prijenosa",
     "OptionCopy": "Kopiraj",
     "OptionMove": "Premjesti",
