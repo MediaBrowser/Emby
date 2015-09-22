@@ -807,15 +807,6 @@ namespace MediaBrowser.Controller.Providers
                         break;
                     }
 
-                case "AutoOrganizeNames":
-                    {
-                        using (var subtree = reader.ReadSubtree())
-                        {
-                            FetchFromAutoOrganizeNamesNode(subtree, item);
-                        }
-                        break;
-                    }
-
                 case "Tags":
                     {
                         using (var subtree = reader.ReadSubtree())
@@ -1071,40 +1062,6 @@ namespace MediaBrowser.Controller.Providers
                                 if (!string.IsNullOrWhiteSpace(genre))
                                 {
                                     item.AddGenre(genre);
-                                }
-                                break;
-                            }
-
-                        default:
-                            reader.Skip();
-                            break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Fetches from AutoOrganizeNames node.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="item">The item.</param>
-        private void FetchFromAutoOrganizeNamesNode(XmlReader reader, T item)
-        {
-            reader.MoveToContent();
-
-            while (reader.Read())
-            {
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    switch (reader.Name)
-                    {
-                        case "AutoOrganizeName":
-                            {
-                                var name = reader.ReadElementContentAsString();
-
-                                if (!string.IsNullOrWhiteSpace(name))
-                                {
-                                    item.AddAutoOrganizeName(name);
                                 }
                                 break;
                             }

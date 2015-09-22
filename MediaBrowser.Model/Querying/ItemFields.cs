@@ -91,11 +91,6 @@
         Genres,
 
         /// <summary>
-        /// AutoOrganizeNames
-        /// </summary>
-        AutoOrganizeNames,
-
-        /// <summary>
         /// The home page URL
         /// </summary>
         HomePageUrl,

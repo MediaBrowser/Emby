@@ -584,18 +584,6 @@ namespace MediaBrowser.LocalMetadata.Savers
                 builder.Append("</Genres>");
             }
 
-            if (item.AutoOrganizeNames.Count > 0)
-            {
-                builder.Append("<AutoOrganizeNames>");
-
-                foreach (var name in item.AutoOrganizeNames)
-                {
-                    builder.Append("<AutoOrganizeName>" + SecurityElement.Escape(name) + "</AutoOrganizeName>");
-                }
-
-                builder.Append("</AutoOrganizeNames>");
-            }
-
             if (item.Studios.Count > 0)
             {
                 builder.Append("<Studios>");

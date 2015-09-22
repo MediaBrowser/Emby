@@ -1024,11 +1024,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.Genres = item.Genres;
             }
 
-            if (fields.Contains(ItemFields.AutoOrganizeNames))
-            {
-                dto.AutoOrganizeNames = item.AutoOrganizeNames;
-            }
-
             dto.ImageTags = new Dictionary<ImageType, string>();
 
             // Prevent implicitly captured closure
@@ -1437,7 +1432,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.AirDays = series.AirDays;
                 dto.AirTime = series.AirTime;
                 dto.SeriesStatus = series.Status;
-                dto.AutoOrganizeNames = series.AutoOrganizeNames;
 
                 dto.SeasonCount = series.SeasonCount;
 

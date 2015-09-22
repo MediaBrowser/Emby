@@ -161,7 +161,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             _connection.AddColumn(_logger, "TypedBaseItems", "ProductionYear", "INT");
             _connection.AddColumn(_logger, "TypedBaseItems", "ParentId", "GUID");
             _connection.AddColumn(_logger, "TypedBaseItems", "Genres", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "AutoOrganizeNames", "Text");
             _connection.AddColumn(_logger, "TypedBaseItems", "ParentalRatingValue", "INT");
             _connection.AddColumn(_logger, "TypedBaseItems", "SchemaVersion", "INT");
             _connection.AddColumn(_logger, "TypedBaseItems", "SortName", "Text");
@@ -225,7 +224,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "ProductionYear",
                 "ParentId",
                 "Genres",
-                "AutoOrganizeNames",
                 "ParentalRatingValue",
                 "SchemaVersion",
                 "SortName",
@@ -392,7 +390,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     }
 
                     _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.Genres.ToArray());
-                    _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.AutoOrganizeNames.ToArray());
                     _saveItemCommand.GetParameter(index++).Value = item.GetParentalRatingValue();
 
                     _saveItemCommand.GetParameter(index++).Value = LatestSchemaVersion;

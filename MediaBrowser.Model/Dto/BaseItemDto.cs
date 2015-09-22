@@ -450,12 +450,6 @@ namespace MediaBrowser.Model.Dto
         /// <value>The status.</value>
         public string Status { get; set; }
 
-        /// <summary>
-        /// Gets or sets a list of strings for auto-organize detection.
-        /// </summary>
-        /// <value>The list of strings for auto-organize detection.</value>
-        public List<string> AutoOrganizeNames { get; set; }
-
         [IgnoreDataMember]
         public SeriesStatus? SeriesStatus
         {

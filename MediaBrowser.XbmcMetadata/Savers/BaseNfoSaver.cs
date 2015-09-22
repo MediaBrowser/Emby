@@ -718,11 +718,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("genre", genre);
             }
 
-            foreach (var autoOrganizeName in item.AutoOrganizeNames)
-            {
-                writer.WriteElementString("autoorganizename", autoOrganizeName);
-            }
-
             foreach (var studio in item.Studios)
             {
                 writer.WriteElementString("studio", studio);

@@ -34,7 +34,6 @@ namespace MediaBrowser.Controller.Entities
         protected BaseItem()
         {
             Genres = new List<string>();
-            AutoOrganizeNames = new List<string>();
             Studios = new List<string>();
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             LockedFields = new List<MetadataFields>();
@@ -651,12 +650,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The parent index number.</value>
         public int? ParentIndexNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets a list of strings for auto-organize detection.
-        /// </summary>
-        /// <value>The list of strings for auto-organize detection.</value>
-        public List<string> AutoOrganizeNames { get; set; }
 
         [IgnoreDataMember]
         public virtual string OfficialRatingForComparison
@@ -1347,24 +1340,6 @@ namespace MediaBrowser.Controller.Entities
             if (!Genres.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
                 Genres.Add(name);
-            }
-        }
-
-        /// <summary>
-        /// Adds a name for auto-organize to the item
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public void AddAutoOrganizeName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentNullException("name");
-            }
-
-            if (!AutoOrganizeNames.Contains(name, StringComparer.OrdinalIgnoreCase))
-            {
-                AutoOrganizeNames.Add(name);
             }
         }
 

@@ -24,8 +24,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             if (IsNameMatch(sortedName, seriesNameWithoutYear))
             {
-                // Score for direct match now starts at 2
-                score = 2;
+                score++;
 
                 if (year.HasValue && series.ProductionYear.HasValue)
                 {
@@ -39,10 +38,6 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                         return new Tuple<T, int>(series, 0);
                     }
                 }
-            }
-            else if (series.AutoOrganizeNames != null && series.AutoOrganizeNames.Contains(sortedName, StringComparer.OrdinalIgnoreCase))
-            {
-                score = 1;
             }
 
             return new Tuple<T, int>(series, score);
