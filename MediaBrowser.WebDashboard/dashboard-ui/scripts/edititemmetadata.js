@@ -369,8 +369,10 @@
 
         if (item.Type == "Series") {
             $('#fldDisplaySpecialsInline', page).show();
+            $('#autoOrganizeCollapsible', page).show();
         } else {
             $('#fldDisplaySpecialsInline', page).hide();
+            $('#autoOrganizeCollapsible', page).hide();
         }
 
         if (item.Type == "BoxSet") {
@@ -429,6 +431,8 @@
 
         populateListView($('#listTags', page), item.Tags);
         populateListView($('#listKeywords', page), item.Keywords);
+
+        populateListView($('#listAutoOrganize', page), item.AutoOrganizeNames);
 
         var lockData = (item.LockData || false);
         var chkLockData = page.querySelector("#chkLockData");
@@ -846,6 +850,7 @@
                 AirDays: getSelectedAirDays(form),
                 AirTime: $('#txtAirTime', form).val(),
                 Genres: editableListViewValues($("#listGenres", form)),
+                AutoOrganizeNames: editableListViewValues($("#listAutoOrganize", form)),
                 ProductionLocations: editableListViewValues($("#listCountries", form)),
                 Tags: editableListViewValues($("#listTags", form)),
                 Keywords: editableListViewValues($("#listKeywords", form)),

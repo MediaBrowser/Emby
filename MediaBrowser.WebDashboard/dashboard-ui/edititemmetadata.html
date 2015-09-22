@@ -313,6 +313,19 @@
                             <div id="metadataSettingsCollapsible" style="display: none; margin-top: 3em;">
                                 <h1>${HeaderMetadataSettings}</h1>
                                 <div>
+                                    <div data-role="collapsible" data-mini="true" id="autoOrganizeCollapsible" style="display: none; margin-top: 1em;">
+                                        <h3>Auto-Organize Strings</h3>
+                                        <div data-role="editableListviewContainer">
+                                            <div>
+                                                <div style="display: inline-block; width: 80%;">
+                                                    <input type="text" class="txtEditableListview" />
+                                                </div>
+                                                <a data-role="button" data-inline="true" data-mini="true" data-icon="plus" data-iconpos="notext" onclick="EditItemMetadataPage.addElementToEditableListview(this)" style="vertical-align: top;">${ButtonAdd}</a>
+                                            </div>
+                                            <ul data-role="listview" data-inset="true" data-split-icon="delete" id="listAutoOrganize"></ul>
+                                        </div>
+                                    </div>
+
                                     <div>
                                         <label for="selectLanguage">${LabelMetadataDownloadLanguage}</label>
                                         <select id="selectLanguage" data-mini="true"></select>

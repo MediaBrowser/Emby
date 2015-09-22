@@ -78,6 +78,10 @@
         $('#txtEpisode', popup).val(item.ExtractedEpisodeNumber);
         $('#txtEndingEpisode', popup).val(item.ExtractedEndingEpisodeNumber);
 
+        $('#chkRememberCorrection', popup).val(false);
+
+        $('.extractedName', popup).html(item.ExtractedName);
+
         $('#hfResultId', popup).val(item.Id);
 
         var seriesHtml = allSeries.map(function (s) {
@@ -149,7 +153,8 @@
             SeriesId: $('#selectSeries', form).val(),
             SeasonNumber: $('#txtSeason', form).val(),
             EpisodeNumber: $('#txtEpisode', form).val(),
-            EndingEpisodeNumber: $('#txtEndingEpisode', form).val()
+            EndingEpisodeNumber: $('#txtEndingEpisode', form).val(),
+            RememberCorrection: $('#chkRememberCorrection', form).checked()
         };
 
         ApiClient.performEpisodeOrganization(resultId, options).done(function () {

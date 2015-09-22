@@ -267,6 +267,7 @@ namespace MediaBrowser.Api
             item.ParentIndexNumber = request.ParentIndexNumber;
             item.Overview = request.Overview;
             item.Genres = request.Genres;
+            item.AutoOrganizeNames = request.AutoOrganizeNames;
 
             var episode = item as Episode;
             if (episode != null)
