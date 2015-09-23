@@ -46,12 +46,12 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         public Task<FileOrganizationResult> OrganizeEpisodeFile(string path, CancellationToken cancellationToken)
         {
-            var options = _config.GetAutoOrganizeOptions().TvOptions;
+            var options = _config.GetAutoOrganizeOptions();
 
             return OrganizeEpisodeFile(path, options, false, cancellationToken);
         }
 
-        public async Task<FileOrganizationResult> OrganizeEpisodeFile(string path, TvFileOrganizationOptions options, bool overwriteExisting, CancellationToken cancellationToken)
+        public async Task<FileOrganizationResult> OrganizeEpisodeFile(string path, AutoOrganizeOptions options, bool overwriteExisting, CancellationToken cancellationToken)
         {
             _logger.Info("Sorting file {0}", path);
 
@@ -93,7 +93,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                         result.ExtractedEndingEpisodeNumber = endingEpisodeNumber;
 
-                        await OrganizeEpisode(path, seriesName, season.Value, episode.Value, endingEpisodeNumber, options, overwriteExisting, result, cancellationToken).ConfigureAwait(false);
+                        await OrganizeEpisode(path, seriesName, season.Value, episode.Value, endingEpisodeNumber, options, overwriteExisting, false, result, cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
@@ -135,22 +135,22 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             return result;
         }
 
-        public async Task<FileOrganizationResult> OrganizeWithCorrection(EpisodeFileOrganizationRequest request, TvFileOrganizationOptions options, CancellationToken cancellationToken)
+        public async Task<FileOrganizationResult> OrganizeWithCorrection(EpisodeFileOrganizationRequest request, AutoOrganizeOptions options, CancellationToken cancellationToken)
         {
             var result = _organizationService.GetResult(request.ResultId);
 
             var series = (Series)_libraryManager.GetItemById(new Guid(request.SeriesId));
 
-            await OrganizeEpisode(result.OriginalPath, series, request.SeasonNumber, request.EpisodeNumber, request.EndingEpisodeNumber, options, true, result, cancellationToken).ConfigureAwait(false);
+            await OrganizeEpisode(result.OriginalPath, series, request.SeasonNumber, request.EpisodeNumber, request.EndingEpisodeNumber, options, true, request.RememberCorrection, result, cancellationToken).ConfigureAwait(false);
 
             await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
 
             return result;
         }
 
-        private Task OrganizeEpisode(string sourcePath, string seriesName, int seasonNumber, int episodeNumber, int? endingEpiosdeNumber, TvFileOrganizationOptions options, bool overwriteExisting, FileOrganizationResult result, CancellationToken cancellationToken)
+        private Task OrganizeEpisode(string sourcePath, string seriesName, int seasonNumber, int episodeNumber, int? endingEpiosdeNumber, AutoOrganizeOptions options, bool overwriteExisting, bool rememberCorrection, FileOrganizationResult result, CancellationToken cancellationToken)
         {
-            var series = GetMatchingSeries(seriesName, result);
+            var series = GetMatchingSeries(seriesName, result, options);
 
             if (series == null)
             {
@@ -161,15 +161,17 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 return Task.FromResult(true);
             }
 
-            return OrganizeEpisode(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, options, overwriteExisting, result, cancellationToken);
+            return OrganizeEpisode(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, options, overwriteExisting, rememberCorrection, result, cancellationToken);
         }
 
-        private async Task OrganizeEpisode(string sourcePath, Series series, int seasonNumber, int episodeNumber, int? endingEpiosdeNumber, TvFileOrganizationOptions options, bool overwriteExisting, FileOrganizationResult result, CancellationToken cancellationToken)
+        private async Task OrganizeEpisode(string sourcePath, Series series, int seasonNumber, int episodeNumber, int? endingEpiosdeNumber, AutoOrganizeOptions options, bool overwriteExisting, bool rememberCorrection, FileOrganizationResult result, CancellationToken cancellationToken)
         {
             _logger.Info("Sorting file {0} into series {1}", sourcePath, series.Path);
 
+            var originalExtractedSeriesString = result.ExtractedName;
+
             // Proceed to sort the file
-            var newPath = await GetNewPath(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, options, cancellationToken).ConfigureAwait(false);
+            var newPath = await GetNewPath(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, options.TvOptions, cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(newPath))
             {
@@ -188,7 +190,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             if (!overwriteExisting)
             {
-                if (options.CopyOriginalFile && fileExists && IsSameEpisode(sourcePath, newPath))
+                if (options.TvOptions.CopyOriginalFile && fileExists && IsSameEpisode(sourcePath, newPath))
                 {
                     _logger.Info("File {0} already copied to new path {1}, stopping organization", sourcePath, newPath);
                     result.Status = FileSortingStatus.SkippedExisting;
@@ -205,7 +207,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 }
             }
 
-            PerformFileSorting(options, result);
+            PerformFileSorting(options.TvOptions, result);
 
             if (overwriteExisting)
             {
@@ -238,6 +240,31 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                         _libraryMonitor.ReportFileSystemChangeComplete(path, true);
                     }
                 }
+            }
+
+            if (rememberCorrection)
+            {
+                SaveSmartMatchString(originalExtractedSeriesString, series, options);
+            }
+        }
+
+        private void SaveSmartMatchString(string matchString, Series series, AutoOrganizeOptions options)
+        {
+            SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Find(i => i.Id == series.Id);
+
+            if (info == null)
+            {
+                info = new SmartMatchInfo();
+                info.Id = series.Id;
+                info.OrganizerType = FileOrganizerType.Episode;
+                info.Name = series.Name;
+                options.SmartMatchOptions.SmartMatchInfos.Add(info);
+            }
+
+            if (!info.MatchStrings.Contains(matchString, StringComparer.OrdinalIgnoreCase))
+            {
+                info.MatchStrings.Add(matchString);
+                _config.SaveAutoOrganizeOptions(options);
             }
         }
 
@@ -379,7 +406,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             }
         }
 
-        private Series GetMatchingSeries(string seriesName, FileOrganizationResult result)
+        private Series GetMatchingSeries(string seriesName, FileOrganizationResult result, AutoOrganizeOptions options)
         {
             var parsedName = _libraryManager.ParseName(seriesName);
 
@@ -389,13 +416,28 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             result.ExtractedName = nameWithoutYear;
             result.ExtractedYear = yearInName;
 
-            return _libraryManager.RootFolder.GetRecursiveChildren(i => i is Series)
+            var series = _libraryManager.RootFolder.GetRecursiveChildren(i => i is Series)
                 .Cast<Series>()
                 .Select(i => NameUtils.GetMatchScore(nameWithoutYear, yearInName, i))
                 .Where(i => i.Item2 > 0)
                 .OrderByDescending(i => i.Item2)
                 .Select(i => i.Item1)
                 .FirstOrDefault();
+
+            if (series == null)
+            {
+                SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Where(e => e.MatchStrings.Contains(seriesName, StringComparer.OrdinalIgnoreCase)).FirstOrDefault();
+
+                if (info != null)
+                {
+                    series = _libraryManager.RootFolder.GetRecursiveChildren(i => i is Series)
+                        .Cast<Series>()
+                        .Where(i => i.Id == info.Id)
+                        .FirstOrDefault();
+                }
+            }
+
+            return series ?? new Series();
         }
 
         /// <summary>
