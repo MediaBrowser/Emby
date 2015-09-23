@@ -577,6 +577,8 @@
     "LabelMinResumeDurationHelp": "Titles shorter than this will not be resumable",
     "TitleAutoOrganize": "Auto-Organize",
     "TabActivityLog": "Activity Log",
+    "TabSmartMatch": "Smart Match",
+    "TabSmartMatchInfo": "This page lists the match-strings for all library items which were added from within the Auto-Organize correction dialog",
     "HeaderName": "Name",
     "HeaderDate": "Date",
     "HeaderSource": "Source",

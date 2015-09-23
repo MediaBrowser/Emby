@@ -585,6 +585,8 @@
     "LabelMinResumeDurationHelp": "Titel die k\u00fcrzer als dieser Wert sind, werden nicht fortsetzbar sein",
     "TitleAutoOrganize": "automatische Sortierung",
     "TabActivityLog": "Aktivit\u00e4tsverlauf",
+    "TabSmartMatch": "Smart Match",
+    "TabSmartMatchInfo": "This page lists the match-strings for all library items which were added from within the Auto-Organize correction dialog",
     "HeaderName": "Name",
     "HeaderDate": "Datum",
     "HeaderSource": "Quelle",
