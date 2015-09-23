@@ -598,6 +598,7 @@
     "HeaderEpisodeOrganization": "Episode Organization",
     "LabelEndingEpisodeNumber": "Ending episode number:",
     "LabelEndingEpisodeNumberHelp": "Only required for multi-episode files",
+	"LabelOrganizeSmartMatchOption": "In the future, organize all files into the selected series if the name contains",
     "HeaderSupportTheTeam": "Support the Emby Team",
     "LabelSupportAmount": "Amount (USD)",
     "HeaderSupportTheTeamHelp": "Help ensure the continued development of this project by donating. A portion of all donations will be contributed to other free tools we depend on.",

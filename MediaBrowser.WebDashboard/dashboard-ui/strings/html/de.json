@@ -598,6 +598,7 @@
     "HeaderEpisodeOrganization": "Episodensortierung",
     "LabelEndingEpisodeNumber": "Nummer der letzten Episode:",
     "LabelEndingEpisodeNumberHelp": "Nur erforderlich f\u00fcr Mehrfachepisoden",
+	"LabelOrganizeSmartMatchOption": "In the future, organize all files into the selected series if the name contains",
     "HeaderSupportTheTeam": "Unterst\u00fctzen Sie das Emby Team",
     "LabelSupportAmount": "Betrag (USD)",
     "HeaderSupportTheTeamHelp": "Hilf bei der Weiterentwicklung dieses Projekts indem du spendest. Ein Teil der Spenden wird an freie Anwendungen auf die wir angewiesen sind weiter gespendet.",
