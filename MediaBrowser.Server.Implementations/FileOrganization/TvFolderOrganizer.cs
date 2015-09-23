@@ -52,13 +52,13 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             return false;
         }
 
-        public async Task Organize(TvFileOrganizationOptions options, CancellationToken cancellationToken, IProgress<double> progress)
+        public async Task Organize(AutoOrganizeOptions options, CancellationToken cancellationToken, IProgress<double> progress)
         {
-            var watchLocations = options.WatchLocations.ToList();
+            var watchLocations = options.TvOptions.WatchLocations.ToList();
 
             var eligibleFiles = watchLocations.SelectMany(GetFilesToOrganize)
                 .OrderBy(_fileSystem.GetCreationTimeUtc)
-                .Where(i => EnableOrganization(i, options))
+                .Where(i => EnableOrganization(i, options.TvOptions))
                 .ToList();
 
             var processedFolders = new HashSet<string>();
@@ -76,7 +76,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        var result = await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        var result = await organizer.OrganizeEpisodeFile(file.FullName, options, options.TvOptions.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
                         if (result.Status == FileSortingStatus.Success && !processedFolders.Contains(file.DirectoryName, StringComparer.OrdinalIgnoreCase))
                         {
                             processedFolders.Add(file.DirectoryName);
@@ -100,7 +100,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             foreach (var path in processedFolders)
             {
-                var deleteExtensions = options.LeftOverFileExtensionsToDelete
+                var deleteExtensions = options.TvOptions.LeftOverFileExtensionsToDelete
                     .Select(i => i.Trim().TrimStart('.'))
                     .Where(i => !string.IsNullOrEmpty(i))
                     .Select(i => "." + i)
@@ -111,7 +111,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                     DeleteLeftOverFiles(path, deleteExtensions);
                 }
 
-                if (options.DeleteEmptyFolders)
+                if (options.TvOptions.DeleteEmptyFolders)
                 {
                     if (!IsWatchFolder(path, watchLocations))
                     {
@@ -132,7 +132,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         {
             try
             {
-				return _fileSystem.GetFiles(path, true)
+                return _fileSystem.GetFiles(path, true)
                     .ToList();
             }
             catch (IOException ex)
@@ -150,7 +150,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         /// <param name="extensions">The extensions.</param>
         private void DeleteLeftOverFiles(string path, IEnumerable<string> extensions)
         {
-			var eligibleFiles = _fileSystem.GetFiles(path, true)
+            var eligibleFiles = _fileSystem.GetFiles(path, true)
                 .Where(i => extensions.Contains(i.Extension, StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
