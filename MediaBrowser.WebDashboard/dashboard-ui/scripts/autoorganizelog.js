@@ -129,6 +129,18 @@
 
                     reloadItems(page);
 
+                }).fail(function (e) {
+
+                    Dashboard.hideLoadingMsg();
+
+                    reloadItems(page);
+
+                    Dashboard.alert({
+
+                        title: Globalize.translate('AutoOrganizeError'),
+                        message: e.status + ' - ' + e.statusText + '<br>' + e.getResponseHeader("X-Application-Error-Code")
+
+                    });
                 });
 
             }
@@ -160,6 +172,20 @@
 
             reloadItems(page);
 
+        }).fail(function (e) {
+
+            Dashboard.hideLoadingMsg();
+
+            $('.episodeCorrectionPopup', page).popup("close");
+
+            reloadItems(page);
+
+            Dashboard.alert({
+
+                title: Globalize.translate('AutoOrganizeError'),
+                message: e.status + ' - ' + e.statusText + '<br>' + e.getResponseHeader("X-Application-Error-Code")
+
+            });
         });
     }
 
