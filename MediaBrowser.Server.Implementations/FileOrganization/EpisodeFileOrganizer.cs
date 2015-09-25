@@ -21,37 +21,21 @@ using CommonIO;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
-    public class EpisodeFileOrganizer
+    public class EpisodeFileOrganizer : FileOrganizerBase
     {
-        private readonly ILibraryMonitor _libraryMonitor;
-        private readonly ILibraryManager _libraryManager;
-        private readonly ILogger _logger;
-        private readonly IFileSystem _fileSystem;
-        private readonly IFileOrganizationService _organizationService;
-        private readonly IServerConfigurationManager _config;
-        private readonly IProviderManager _providerManager;
-
-        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
-
-        public EpisodeFileOrganizer(IFileOrganizationService organizationService, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager)
+        public EpisodeFileOrganizer(IFileOrganizationService organizationService, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager) :
+            base(organizationService, config, fileSystem, logger, libraryManager, libraryMonitor, providerManager)
         {
-            _organizationService = organizationService;
-            _config = config;
-            _fileSystem = fileSystem;
-            _logger = logger;
-            _libraryManager = libraryManager;
-            _libraryMonitor = libraryMonitor;
-            _providerManager = providerManager;
         }
 
         public Task<FileOrganizationResult> OrganizeEpisodeFile(string path, CancellationToken cancellationToken)
         {
             var options = _config.GetAutoOrganizeOptions();
 
-            return OrganizeEpisodeFile(path, options, false, cancellationToken);
+            return OrganizeFile(path, options, false, cancellationToken);
         }
 
-        public async Task<FileOrganizationResult> OrganizeEpisodeFile(string path, AutoOrganizeOptions options, bool overwriteExisting, CancellationToken cancellationToken)
+        public override async Task<FileOrganizationResult> OrganizeFile(string path, AutoOrganizeOptions options, bool overwriteExisting, CancellationToken cancellationToken)
         {
             _logger.Info("Sorting file {0}", path);
 
@@ -65,6 +49,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             };
 
             var namingOptions = ((LibraryManager)_libraryManager).GetNamingOptions();
+
+            var videoResolver = new Naming.Video.VideoResolver(namingOptions, new PatternsLogger());
+            var videoInfo = videoResolver.Resolve(path, false);
+            if (videoInfo != null)
+            {
+                result.ExtractedMovieName = videoInfo.Name;
+                result.ExtractedMovieYear = videoInfo.Year;
+            }
+
             var resolver = new Naming.TV.EpisodeResolver(namingOptions, new PatternsLogger());
 
             var episodeInfo = resolver.Resolve(path, false) ??
@@ -135,11 +128,50 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             return result;
         }
 
-        public async Task<FileOrganizationResult> OrganizeWithCorrection(EpisodeFileOrganizationRequest request, AutoOrganizeOptions options, CancellationToken cancellationToken)
+        public override async Task<FileOrganizationResult> OrganizeWithCorrection(BaseFileOrganizationRequest baseRequest, AutoOrganizeOptions options, CancellationToken cancellationToken)
         {
+            var request = (EpisodeFileOrganizationRequest)baseRequest;
+
             var result = _organizationService.GetResult(request.ResultId);
 
-            var series = (Series)_libraryManager.GetItemById(new Guid(request.SeriesId));
+            Series series = null;
+
+            if (request.NewSeriesProviderIdsDictionary.Count > 0)
+            {
+                // We're having a new series here
+                SeriesInfo seriesRequest = new SeriesInfo();
+                seriesRequest.ProviderIds = request.NewSeriesProviderIdsDictionary;
+
+                var refreshOptions = new MetadataRefreshOptions(_fileSystem);
+                series = new Series();
+                series.Id = Guid.NewGuid();
+                series.Name = request.NewSeriesName;
+
+                int year;
+                if (int.TryParse(request.NewSeriesYear, out year))
+                {
+                    series.ProductionYear = year;
+                }
+
+                var seriesFolderName = series.Name;
+                if (series.ProductionYear.HasValue)
+                {
+                    seriesFolderName = string.Format("{0} ({1})", seriesFolderName, series.ProductionYear);
+                }
+
+                series.Path = Path.Combine(request.TargetFolder, seriesFolderName);
+
+                series.ProviderIds = request.NewSeriesProviderIdsDictionary;
+
+                await series.RefreshMetadata(refreshOptions, cancellationToken);
+
+            }
+
+            if (series == null)
+            {
+                // Existing Series
+                series = (Series)_libraryManager.GetItemById(new Guid(request.SeriesId));
+            }
 
             await OrganizeEpisode(result.OriginalPath, series, request.SeasonNumber, request.EpisodeNumber, request.EndingEpisodeNumber, options, true, request.RememberCorrection, result, cancellationToken).ConfigureAwait(false);
 
@@ -192,16 +224,29 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 if (options.TvOptions.CopyOriginalFile && fileExists && IsSameEpisode(sourcePath, newPath))
                 {
-                    _logger.Info("File {0} already copied to new path {1}, stopping organization", sourcePath, newPath);
+                    var msg = string.Format("File '{0}' already copied to new path '{1}', stopping organization", sourcePath, newPath);
+                    _logger.Info(msg);
                     result.Status = FileSortingStatus.SkippedExisting;
-                    result.StatusMessage = string.Empty;
+                    result.StatusMessage = msg;
                     return;
                 }
 
-                if (fileExists || otherDuplicatePaths.Count > 0)
+                if (fileExists)
                 {
+                    var msg = string.Format("File '{0}' already exists as '{1}', stopping organization", sourcePath, newPath);
+                    _logger.Info(msg);
                     result.Status = FileSortingStatus.SkippedExisting;
-                    result.StatusMessage = string.Empty;
+                    result.StatusMessage = msg;
+                    result.TargetPath = newPath;
+                    return;
+                }
+
+                if (otherDuplicatePaths.Count > 0)
+                {
+                    var msg = string.Format("File '{0}' already exists as '{1}', stopping organization", sourcePath, otherDuplicatePaths);
+                    _logger.Info(msg);
+                    result.Status = FileSortingStatus.SkippedExisting;
+                    result.StatusMessage = msg;
                     result.DuplicatePaths = otherDuplicatePaths;
                     return;
                 }
@@ -437,7 +482,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 }
             }
 
-            return series ?? new Series();
+            return series;
         }
 
         /// <summary>

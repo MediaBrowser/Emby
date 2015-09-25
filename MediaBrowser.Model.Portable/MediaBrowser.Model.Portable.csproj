@@ -653,6 +653,9 @@
     <Compile Include="..\MediaBrowser.Model\FileOrganization\AutoOrganizeOptions.cs">
       <Link>FileOrganization\AutoOrganizeOptions.cs</Link>
     </Compile>
+    <Compile Include="..\MediaBrowser.Model\FileOrganization\BaseFileOrganizationRequest.cs">
+      <Link>FileOrganization\BaseFileOrganizationRequest.cs</Link>
+    </Compile>
     <Compile Include="..\MediaBrowser.Model\FileOrganization\EpisodeFileOrganizationRequest.cs">
       <Link>FileOrganization\EpisodeFileOrganizationRequest.cs</Link>
     </Compile>
@@ -667,6 +670,9 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\FileOrganization\FileSortingStatus.cs">
       <Link>FileOrganization\FileSortingStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.Model\FileOrganization\MovieFileOrganizationRequest.cs">
+      <Link>FileOrganization\MovieFileOrganizationRequest.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\FileOrganization\SmartMatchInfo.cs">
       <Link>FileOrganization\SmartMatchInfo.cs</Link>
