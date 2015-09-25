@@ -4,6 +4,7 @@ using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.FileOrganization;
@@ -28,8 +29,9 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
         private readonly IProviderManager _providerManager;
+        private readonly IServerManager _serverManager;
 
-        public FileOrganizationService(ITaskManager taskManager, IFileOrganizationRepository repo, ILogger logger, ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager)
+        public FileOrganizationService(ITaskManager taskManager, IFileOrganizationRepository repo, ILogger logger, ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, IServerManager serverManager)
         {
             _taskManager = taskManager;
             _repo = repo;
@@ -39,6 +41,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             _config = config;
             _fileSystem = fileSystem;
             _providerManager = providerManager;
+            _serverManager = serverManager;
         }
 
         public void BeginProcessNewFiles()
@@ -97,7 +100,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             return _repo.Delete(resultId);
         }
 
-        private AutoOrganizeOptions GetAutoOrganizeptions()
+        private AutoOrganizeOptions GetAutoOrganizeOptions()
         {
             return _config.GetAutoOrganizeOptions();
         }
@@ -111,11 +114,30 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 throw new ArgumentException("No target path available.");
             }
 
-            var organizer = new EpisodeFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
-                _libraryMonitor, _providerManager);
+            switch (result.Type)
+            {
+                case FileOrganizerType.Episode:
 
-            await organizer.OrganizeEpisodeFile(result.OriginalPath, GetAutoOrganizeptions(), true, CancellationToken.None)
-                    .ConfigureAwait(false);
+                    var organizer = new EpisodeFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
+                        _libraryMonitor, _providerManager);
+
+                    var task = await organizer.OrganizeFile(result.OriginalPath, GetAutoOrganizeOptions(), true, CancellationToken.None)
+                            .ConfigureAwait(false);
+                    await _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => task, CancellationToken.None);
+                    break;
+
+                case FileOrganizerType.Movie:
+                    var movieOrganizer = new MovieFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
+                        _libraryMonitor, _providerManager);
+
+                    var task2 = await movieOrganizer.OrganizeFile(result.OriginalPath, GetAutoOrganizeOptions(), true, CancellationToken.None)
+                            .ConfigureAwait(false);
+                    await _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => task2, CancellationToken.None);
+                    break;
+
+                default:
+                    throw new ArgumentException("Unsupported organizer type.");
+            }
         }
 
         public Task ClearLog()
@@ -128,7 +150,19 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             var organizer = new EpisodeFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
                 _libraryMonitor, _providerManager);
 
-            await organizer.OrganizeWithCorrection(request, GetAutoOrganizeptions(), CancellationToken.None).ConfigureAwait(false);
+            var task = await organizer.OrganizeWithCorrection(request, GetAutoOrganizeOptions(), CancellationToken.None).ConfigureAwait(false);
+
+            await _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => task, CancellationToken.None);
+        }
+
+        public async Task PerformMovieOrganization(MovieFileOrganizationRequest request)
+        {
+            var organizer = new MovieFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
+                _libraryMonitor, _providerManager);
+
+            var task = await organizer.OrganizeWithCorrection(request, GetAutoOrganizeOptions(), CancellationToken.None).ConfigureAwait(false);
+
+            await _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => task, CancellationToken.None);
         }
 
         public QueryResult<SmartMatchInfo> GetSmartMatchInfos(FileOrganizationResultQuery query)
@@ -138,7 +172,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 throw new ArgumentNullException("query");
             }
 
-            var options = GetAutoOrganizeptions();
+            var options = GetAutoOrganizeOptions();
 
             var items = options.SmartMatchOptions.SmartMatchInfos.Skip(query.StartIndex ?? 0).Take(query.Limit ?? Int32.MaxValue);
 
@@ -163,7 +197,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 throw new ArgumentNullException("matchString");
             }
 
-            var options = GetAutoOrganizeptions();
+            var options = GetAutoOrganizeOptions();
 
             SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Find(i => i.Id == Id);
 
