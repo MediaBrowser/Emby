@@ -40,7 +40,7 @@ namespace MediaBrowser.Common.Implementations.Security
         {
             get
             {
-                LazyInitializer.EnsureInitialized(ref _isMbSupporter, ref _isMbSupporterInitialized, ref _isMbSupporterSyncLock, () => GetSupporterRegistrationStatus().Result.IsRegistered);
+                LazyInitializer.EnsureInitialized(ref _isMbSupporter, ref _isMbSupporterInitialized, ref _isMbSupporterSyncLock, () => GetRegistrationStatus().Result.IsRegistered);
                 return _isMbSupporter.Value;
             }
         }
@@ -54,7 +54,6 @@ namespace MediaBrowser.Common.Implementations.Security
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IApplicationHost _appHost;
-        private readonly ILogger _logger;
         private readonly IApplicationPaths _appPaths;
 
         private IEnumerable<IRequiresRegistration> _registeredEntities;
@@ -81,7 +80,6 @@ namespace MediaBrowser.Common.Implementations.Security
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
             _appPaths = appPaths;
-            _logger = logManager.GetLogger("SecurityManager");
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace MediaBrowser.Common.Implementations.Security
         /// <returns>Task{MBRegistrationRecord}.</returns>
         public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent = null)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent);
+            return GetRegistrationStatus();
         }
 
         /// <summary>
@@ -118,12 +116,19 @@ namespace MediaBrowser.Common.Implementations.Security
         /// <returns>Task{MBRegistrationRecord}.</returns>
         public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent, version);
+            return GetRegistrationStatus();
         }
 
-        private Task<MBRegistrationRecord> GetSupporterRegistrationStatus()
+        private async Task<MBRegistrationRecord> GetRegistrationStatus()
         {
-            return GetRegistrationStatusInternal("MBSupporter", null, _appHost.ApplicationVersion.ToString());
+            return new MBRegistrationRecord
+            {
+                IsRegistered = true,
+                RegChecked = true,
+                TrialVersion = false,
+                IsValid = true,
+                RegError = false
+            };
         }
 
         /// <summary>
@@ -183,86 +188,6 @@ namespace MediaBrowser.Common.Implementations.Security
 
                 return info;
             }
-        }
-
-        private async Task<MBRegistrationRecord> GetRegistrationStatusInternal(string feature,
-            string mb2Equivalent = null,
-            string version = null)
-        {
-            var lastChecked = LicenseFile.LastChecked(feature);
-
-            //check the reg file first to alleviate strain on the MB admin server - must actually check in every 30 days tho
-            var reg = new RegRecord
-            {
-                // Cache the result for up to a week
-                registered = lastChecked > DateTime.UtcNow.AddDays(-7)
-            };
-
-            var success = reg.registered;
-
-            if (!(lastChecked > DateTime.UtcNow.AddDays(-1)))
-            {
-                var data = new Dictionary<string, string>
-                {
-                    { "feature", feature }, 
-                    { "key", SupporterKey }, 
-                    { "mac", _appHost.SystemId }, 
-                    { "systemid", _appHost.SystemId }, 
-                    { "mb2equiv", mb2Equivalent }, 
-                    { "ver", version }, 
-                    { "platform", _appHost.OperatingSystemDisplayName }, 
-                    { "isservice", _appHost.IsRunningAsService.ToString().ToLower() }
-                };
-
-                try
-                {
-                    using (var json = await _httpClient.Post(MBValidateUrl, data, CancellationToken.None).ConfigureAwait(false))
-                    {
-                        reg = _jsonSerializer.DeserializeFromStream<RegRecord>(json);
-                        success = true;
-                    }
-
-                    if (reg.registered)
-                    {
-                        LicenseFile.AddRegCheck(feature);
-                    }
-                    else
-                    {
-                        LicenseFile.RemoveRegCheck(feature);
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    _logger.ErrorException("Error checking registration status of {0}", e, feature);
-                }
-            }
-
-            var record = new MBRegistrationRecord
-            {
-                IsRegistered = reg.registered,
-                ExpirationDate = reg.expDate,
-                RegChecked = true,
-                RegError = !success
-            };
-
-            record.TrialVersion = IsInTrial(reg.expDate, record.RegChecked, record.IsRegistered);
-            record.IsValid = !record.RegChecked || (record.IsRegistered || record.TrialVersion);
-
-            return record;
-        }
-
-        private bool IsInTrial(DateTime expirationDate, bool regChecked, bool isRegistered)
-        {
-            //don't set this until we've successfully obtained exp date
-            if (!regChecked)
-            {
-                return false;
-            }
-
-            var isInTrial = expirationDate > DateTime.UtcNow;
-
-            return (isInTrial && !isRegistered);
         }
 
         /// <summary>
