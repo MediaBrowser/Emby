@@ -1,4 +1,6 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿// AreaKode: This code has been modified to disable license check.
+
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Security;
 using MediaBrowser.Model.Entities;
