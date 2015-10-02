@@ -31,7 +31,6 @@ namespace MediaBrowser.Server.Implementations.Channels
     public class ChannelManager : IChannelManager, IDisposable
     {
         private IChannel[] _channels;
-        private IChannelFactory[] _factories;
 
         private readonly IUserManager _userManager;
         private readonly IUserDataManager _userDataManager;
@@ -76,10 +75,9 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
         }
 
-        public void AddParts(IEnumerable<IChannel> channels, IEnumerable<IChannelFactory> factories)
+        public void AddParts(IEnumerable<IChannel> channels)
         {
-            _channels = channels.Where(i => !(i is IFactoryChannel)).ToArray();
-            _factories = factories.ToArray();
+            _channels = channels.ToArray();
         }
 
         public string ChannelDownloadPath
@@ -99,20 +97,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         private IEnumerable<IChannel> GetAllChannels()
         {
-            return _factories
-                .SelectMany(i =>
-                {
-                    try
-                    {
-                        return i.GetChannels().ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorException("Error getting channel list", ex);
-                        return new List<IChannel>();
-                    }
-                })
-                .Concat(_channels)
+            return _channels
                 .OrderBy(i => i.Name);
         }
 
@@ -318,7 +303,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
             try
             {
-                var files = new DirectoryInfo(parentPath).EnumerateFiles("*", SearchOption.TopDirectoryOnly);
+                var files = _fileSystem.GetFiles(parentPath);
 
                 if (string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
                 {
@@ -411,7 +396,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             {
                 _logger.Debug("Creating directory {0}", path);
 
-                Directory.CreateDirectory(path);
+                _fileSystem.CreateDirectory(path);
                 fileInfo = new DirectoryInfo(path);
 
                 if (!fileInfo.Exists)
@@ -432,23 +417,29 @@ namespace MediaBrowser.Server.Implementations.Channels
                     Id = id,
                     DateCreated = _fileSystem.GetCreationTimeUtc(fileInfo),
                     DateModified = _fileSystem.GetLastWriteTimeUtc(fileInfo),
-                    Path = path
+                    Path = path,
+                    ChannelId = channelInfo.Name.GetMD5().ToString("N")
                 };
 
+                isNew = true;
+            }
+
+            var channelId = channelInfo.Name.GetMD5().ToString("N");
+            if (!string.Equals(item.ChannelId, channelId, StringComparison.OrdinalIgnoreCase))
+            {
                 isNew = true;
             }
 
             item.OfficialRating = GetOfficialRating(channelInfo.ParentalRating);
             item.Overview = channelInfo.Description;
             item.HomePageUrl = channelInfo.HomePageUrl;
-            item.OriginalChannelName = channelInfo.Name;
 
             if (string.IsNullOrEmpty(item.Name))
             {
                 item.Name = channelInfo.Name;
             }
 
-            await item.RefreshMetadata(new MetadataRefreshOptions
+            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
             {
                 ForceSave = isNew
 
@@ -1082,7 +1073,7 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
                 _jsonSerializer.SerializeToFile(result, path);
             }
@@ -1311,7 +1302,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         internal IChannel GetChannelProvider(Channel channel)
         {
-            return GetAllChannels().First(i => string.Equals(i.Name, channel.OriginalChannelName, StringComparison.OrdinalIgnoreCase));
+            return GetAllChannels().First(i => string.Equals(i.Name.GetMD5().ToString("N"), channel.ChannelId, StringComparison.OrdinalIgnoreCase) || string.Equals(i.Name, channel.Name, StringComparison.OrdinalIgnoreCase));
         }
 
         private IEnumerable<BaseItem> ApplyFilters(IEnumerable<BaseItem> items, IEnumerable<ItemFilter> filters, User user)
@@ -1462,7 +1453,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 options.RequestHeaders[header.Key] = header.Value;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destination));
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(destination));
 
             // Determine output extension
             var response = await _httpClient.GetTempFileResponse(options).ConfigureAwait(false);
@@ -1500,7 +1491,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 throw new ApplicationException("Unexpected response type encountered: " + response.ContentType);
             }
 
-            File.Copy(response.TempFilePath, destination, true);
+            _fileSystem.CopyFile(response.TempFilePath, destination, true);
 
             try
             {

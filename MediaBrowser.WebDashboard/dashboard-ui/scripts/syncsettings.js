@@ -5,7 +5,7 @@
         $('#txtSyncTempPath', page).val(config.TemporaryPath || '');
         $('#txtUploadSpeedLimit', page).val((config.UploadSpeedLimitBytes / 1000000) || '');
         $('#txtCpuCoreLimit', page).val(config.TranscodingCpuCoreLimit);
-        $('#chkEnableFullSpeedConversion', page).checked(config.EnableFullSpeedTranscoding).checkboxradio('refresh');
+        $('#chkEnableFullSpeedConversion', page).checked(config.EnableFullSpeedTranscoding);
 
         Dashboard.hideLoadingMsg();
     }
@@ -52,7 +52,7 @@
         $('.syncSettingsForm').off('submit', onSubmit).on('submit', onSubmit);
 
 
-    }).on('pageshowready', "#syncSettingsPage", function () {
+    }).on('pageshow', "#syncSettingsPage", function () {
 
         Dashboard.showLoadingMsg();
 

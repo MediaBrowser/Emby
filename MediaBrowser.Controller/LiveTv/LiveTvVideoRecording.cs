@@ -17,23 +17,32 @@ namespace MediaBrowser.Controller.LiveTv
         public string ExternalId { get; set; }
         public string ProviderImagePath { get; set; }
         public string ProviderImageUrl { get; set; }
+        [IgnoreDataMember]
         public string EpisodeTitle { get; set; }
+        [IgnoreDataMember]
         public bool IsSeries { get; set; }
         public string SeriesTimerId { get; set; }
+        [IgnoreDataMember]
         public DateTime StartDate { get; set; }
         public RecordingStatus Status { get; set; }
+        [IgnoreDataMember]
         public bool IsSports { get; set; }
+        [IgnoreDataMember]
         public bool IsNews { get; set; }
+        [IgnoreDataMember]
         public bool IsKids { get; set; }
+        [IgnoreDataMember]
         public bool IsRepeat { get; set; }
+        [IgnoreDataMember]
         public bool IsMovie { get; set; }
         public bool? IsHD { get; set; }
+        [IgnoreDataMember]
         public bool IsLive { get; set; }
+        [IgnoreDataMember]
         public bool IsPremiere { get; set; }
         public ChannelType ChannelType { get; set; }
         public string ProgramId { get; set; }
         public ProgramAudio? Audio { get; set; }
-        public DateTime? OriginalAirDate { get; set; }
 
         /// <summary>
         /// Gets the user data key.

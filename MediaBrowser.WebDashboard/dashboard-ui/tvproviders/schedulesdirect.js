@@ -17,7 +17,7 @@
                 })[0] || {};
 
                 listingsId = info.ListingsId;
-                $('#selectListing', page).val(info.ListingsId || '').selectmenu('refresh');
+                $('#selectListing', page).val(info.ListingsId || '');
                 page.querySelector('.txtUser').value = info.Username || '';
                 page.querySelector('.txtPass').value = info.Username || '';
 
@@ -62,7 +62,7 @@
 
                     return '<option value="' + c.value + '">' + c.name + '</option>';
 
-                }).join('')).val(info.Country || '').selectmenu('refresh');
+                }).join('')).val(info.Country || '');
 
                 $(page.querySelector('.txtZipCode')).trigger('change');
 
@@ -80,38 +80,40 @@
 
             Dashboard.showLoadingMsg();
 
-            var info = {
-                Type: 'SchedulesDirect',
-                Username: page.querySelector('.txtUser').value,
-                Password: CryptoJS.SHA1(page.querySelector('.txtPass').value).toString()
-            };
+            require(["cryptojs-sha1"], function () {
 
-            var id = providerId;
+                var info = {
+                    Type: 'SchedulesDirect',
+                    Username: page.querySelector('.txtUser').value,
+                    Password: CryptoJS.SHA1(page.querySelector('.txtPass').value).toString()
+                };
 
-            if (id) {
-                info.Id = id;
-            }
+                var id = providerId;
 
-            ApiClient.ajax({
-                type: "POST",
-                url: ApiClient.getUrl('LiveTv/ListingProviders', {
-                    ValidateLogin: true
-                }),
-                data: JSON.stringify(info),
-                contentType: "application/json"
+                if (id) {
+                    info.Id = id;
+                }
 
-            }).done(function (result) {
+                ApiClient.ajax({
+                    type: "POST",
+                    url: ApiClient.getUrl('LiveTv/ListingProviders', {
+                        ValidateLogin: true
+                    }),
+                    data: JSON.stringify(info),
+                    contentType: "application/json"
 
-                Dashboard.processServerConfigurationUpdateResult();
-                providerId = result.Id;
-                reload();
+                }).done(function (result) {
 
-            }).fail(function () {
-                Dashboard.alert({
-                    message: Globalize.translate('ErrorSavingTvProvider')
+                    Dashboard.processServerConfigurationUpdateResult();
+                    providerId = result.Id;
+                    reload();
+
+                }).fail(function () {
+                    Dashboard.alert({
+                        message: Globalize.translate('ErrorSavingTvProvider')
+                    });
                 });
             });
-
         }
 
         function submitListingsForm() {
@@ -168,7 +170,7 @@
         function refreshListings(value) {
 
             if (!value) {
-                $('#selectListing', page).html('').selectmenu('refresh');
+                $('#selectListing', page).html('');
                 return;
             }
 
@@ -189,10 +191,10 @@
 
                     return '<option value="' + o.Id + '">' + o.Name + '</option>';
 
-                })).selectmenu('refresh');
+                }));
 
                 if (listingsId) {
-                    $('#selectListing', page).val(listingsId).selectmenu('refresh');
+                    $('#selectListing', page).val(listingsId);
                 }
 
                 Dashboard.hideModalLoadingMsg();

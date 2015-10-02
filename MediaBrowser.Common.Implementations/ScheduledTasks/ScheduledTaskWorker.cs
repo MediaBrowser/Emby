@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Common.Implementations.ScheduledTasks
 {
@@ -51,6 +52,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// </summary>
         /// <value>The task manager.</value>
         private ITaskManager TaskManager { get; set; }
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduledTaskWorker" /> class.
@@ -71,7 +73,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// or
         /// logger
         /// </exception>
-        public ScheduledTaskWorker(IScheduledTask scheduledTask, IApplicationPaths applicationPaths, ITaskManager taskManager, IJsonSerializer jsonSerializer, ILogger logger)
+        public ScheduledTaskWorker(IScheduledTask scheduledTask, IApplicationPaths applicationPaths, ITaskManager taskManager, IJsonSerializer jsonSerializer, ILogger logger, IFileSystem fileSystem)
         {
             if (scheduledTask == null)
             {
@@ -99,6 +101,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
             TaskManager = taskManager;
             JsonSerializer = jsonSerializer;
             Logger = logger;
+            _fileSystem = fileSystem;
 
             ReloadTriggerEvents(true);
         }
@@ -154,7 +157,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
                 _lastExecutionResult = value;
 
                 var path = GetHistoryFilePath();
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+				_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
                 lock (_lastExecutionResultSyncLock)
                 {
@@ -552,7 +555,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         {
             var path = GetConfigurationFilePath();
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
+			_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
             JsonSerializer.SerializeToFile(triggers.Select(ScheduledTaskHelpers.GetTriggerInfo), path);
         }

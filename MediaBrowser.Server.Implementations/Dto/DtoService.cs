@@ -908,12 +908,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.DisplayMediaType = item.DisplayMediaType;
             }
 
-            // Leave null if false
-            if (item.IsUnidentified)
-            {
-                dto.IsUnidentified = item.IsUnidentified;
-            }
-
             if (fields.Contains(ItemFields.Settings))
             {
                 dto.LockedFields = item.LockedFields;
@@ -1048,13 +1042,8 @@ namespace MediaBrowser.Server.Implementations.Dto
             dto.MediaType = item.MediaType;
             dto.LocationType = item.LocationType;
 
-            var hasLang = item as IHasPreferredMetadataLanguage;
-
-            if (hasLang != null)
-            {
-                dto.PreferredMetadataCountryCode = hasLang.PreferredMetadataCountryCode;
-                dto.PreferredMetadataLanguage = hasLang.PreferredMetadataLanguage;
-            }
+            dto.PreferredMetadataCountryCode = item.PreferredMetadataCountryCode;
+            dto.PreferredMetadataLanguage = item.PreferredMetadataLanguage;
 
             var hasCriticRating = item as IHasCriticRating;
             if (hasCriticRating != null)
@@ -1432,8 +1421,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.AirDays = series.AirDays;
                 dto.AirTime = series.AirTime;
                 dto.SeriesStatus = series.Status;
-
-                dto.SeasonCount = series.SeasonCount;
 
                 if (fields.Contains(ItemFields.Settings))
                 {

@@ -74,7 +74,7 @@
 
         $('#txtDeleteLeftOverFiles', page).val(tvOptions.LeftOverFileExtensionsToDelete.join(';'));
 
-        $('#copyOrMoveFile', page).val(tvOptions.CopyOriginalFile.toString()).selectmenu('refresh');
+        $('#copyOrMoveFile', page).val(tvOptions.CopyOriginalFile.toString());
 
     }
 
@@ -153,7 +153,7 @@
 
         $('.libraryFileOrganizerForm').off('submit', onSubmit).on('submit', onSubmit);
 
-    }).on('pageshowready', "#libraryFileOrganizerPage", function () {
+    }).on('pageshow', "#libraryFileOrganizerPage", function () {
 
         var page = this;
 

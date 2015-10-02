@@ -39,6 +39,7 @@ Custom property | Description | Default
 `--paper-toggle-button-unchecked-button` | Mixin applied to the slider button when the input is not checked | `{}`
 `--paper-toggle-button-checked-bar` | Mixin applied to the slider when the input is checked | `{}`
 `--paper-toggle-button-checked-button` | Mixin applied to the slider button when the input is checked | `{}`
+`--paper-toggle-button-label-color` | Label color | `--primary-text-color`
 
 @group Paper Elements
 @element paper-toggle-button
@@ -62,43 +63,7 @@ Custom property | Description | Default
         outline:none;
       }
 
-      :host .toggle-bar {
-        background-color: var(--paper-toggle-button-unchecked-bar-color, #000000);
-        @apply(--paper-toggle-button-unchecked-bar);
-      }
-
-      :host .toggle-button {
-        background-color: var(--paper-toggle-button-unchecked-button-color, --paper-grey-50);
-        @apply(--paper-toggle-button-unchecked-button);
-      }
-
-      :host([checked]) .toggle-bar {
-        background-color: var(--paper-toggle-button-checked-bar-color, --default-primary-color);
-        @apply(--paper-toggle-button-checked-bar);
-      }
-
-      :host([checked]) .toggle-button {
-        background-color: var(--paper-toggle-button-checked-button-color, --default-primary-color);
-        @apply(--paper-toggle-button-checked-button);
-      }
-
-      :host .toggle-ink {
-        color: var(--paper-toggle-button-unchecked-ink-color, --primary-text-color);
-      }
-
-      :host([checked]) .toggle-ink {
-        color: var(--paper-toggle-button-checked-ink-color, --default-primary-color);
-      }
-
-      /* ID selectors should not be overriden by users. */
-
-      #toggleContainer {
-        position: relative;
-        width: 36px;
-        height: 14px;
-      }
-
-      #toggleBar {
+      .toggle-bar {
         position: absolute;
         height: 100%;
         width: 100%;
@@ -106,18 +71,11 @@ Custom property | Description | Default
         pointer-events: none;
         opacity: 0.4;
         transition: background-color linear .08s;
+        background-color: var(--paper-toggle-button-unchecked-bar-color, #000000);
+        @apply(--paper-toggle-button-unchecked-bar);
       }
 
-      :host([checked]) #toggleBar {
-        opacity: 0.5;
-      }
-
-      :host([disabled]) #toggleBar {
-        background-color: #000;
-        opacity: 0.12;
-      }
-
-      #toggleButton {
+      .toggle-button {
         position: absolute;
         top: -3px;
         height: 20px;
@@ -127,24 +85,42 @@ Custom property | Description | Default
         transition: -webkit-transform linear .08s, background-color linear .08s;
         transition: transform linear .08s, background-color linear .08s;
         will-change: transform;
+        background-color: var(--paper-toggle-button-unchecked-button-color, --paper-grey-50);
+        @apply(--paper-toggle-button-unchecked-button);
       }
 
-      #toggleButton.dragging {
+      .toggle-button.dragging {
         -webkit-transition: none;
         transition: none;
       }
 
-      :host([checked]) #toggleButton {
+      :host([checked]:not([disabled])) .toggle-bar {
+        opacity: 0.5;
+        background-color: var(--paper-toggle-button-checked-bar-color, --default-primary-color);
+        @apply(--paper-toggle-button-checked-bar);
+      }
+
+      :host([disabled]) .toggle-bar {
+        background-color: #000;
+        opacity: 0.12;
+      }
+
+      :host([checked]) .toggle-button {
         -webkit-transform: translate(16px, 0);
         transform: translate(16px, 0);
       }
 
-      :host([disabled]) #toggleButton {
+      :host([checked]:not([disabled])) .toggle-button {
+        background-color: var(--paper-toggle-button-checked-button-color, --default-primary-color);
+        @apply(--paper-toggle-button-checked-button);
+      }
+
+      :host([disabled]) .toggle-button {
         background-color: #bdbdbd;
         opacity: 1;
       }
 
-      #ink {
+      .toggle-ink {
         position: absolute;
         top: -14px;
         left: -14px;
@@ -152,15 +128,40 @@ Custom property | Description | Default
         height: 48px;
         opacity: 0.5;
         pointer-events: none;
+        color: var(--paper-toggle-button-unchecked-ink-color, --primary-text-color);
+      }
+
+      :host([checked]) .toggle-ink {
+        color: var(--paper-toggle-button-checked-ink-color, --default-primary-color);
+      }
+
+      .toggle-container {
+        display: inline-block;
+        position: relative;
+        width: 36px;
+        height: 14px;
+      }
+
+      .toggle-label {
+        position: relative;
+        top: -2px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+        white-space: normal;
+        pointer-events: none;
+        color: var(--paper-toggle-button-label-color, --primary-text-color);
       }
     </style>
 
-    <div id="toggleContainer">
+    <div class="toggle-container">
       <div id="toggleBar" class="toggle-bar"></div>
       <div id="toggleButton" class="toggle-button">
         <paper-ripple id="ink" class="toggle-ink circle" recenters></paper-ripple>
       </div>
     </div>
+
+    <div class="toggle-label"><content></content></div>
 
   </template>
 

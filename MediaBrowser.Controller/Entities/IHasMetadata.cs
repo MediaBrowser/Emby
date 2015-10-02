@@ -45,17 +45,6 @@ namespace MediaBrowser.Controller.Entities
         bool BeforeMetadataRefresh();
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is unidentified.
-        /// </summary>
-        /// <value><c>true</c> if this instance is unidentified; otherwise, <c>false</c>.</value>
-        bool IsUnidentified { get; set; }
-
-        /// <summary>
-        /// Gets the item identities.
-        /// </summary>
-        List<IItemIdentity> Identities { get; set; }
-
-        /// <summary>
         /// Afters the metadata refresh.
         /// </summary>
         void AfterMetadataRefresh();

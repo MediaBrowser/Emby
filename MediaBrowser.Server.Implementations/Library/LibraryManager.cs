@@ -354,6 +354,10 @@ namespace MediaBrowser.Server.Implementations.Library
                     return;
                 }
             }
+            //if (!(item is Folder))
+            //{
+            //    return;
+            //}
             LibraryItemsCache.AddOrUpdate(id, item, delegate { return item; });
         }
 
@@ -395,12 +399,12 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 foreach (var path in item.GetDeletePaths().ToList())
                 {
-                    if (Directory.Exists(path))
+					if (_fileSystem.DirectoryExists(path))
                     {
                         _logger.Debug("Deleting path {0}", path);
                         _fileSystem.DeleteDirectory(path, true);
                     }
-                    else if (File.Exists(path))
+					else if (_fileSystem.FileExists(path))
                     {
                         _logger.Debug("Deleting path {0}", path);
                         _fileSystem.DeleteFile(path);
@@ -548,7 +552,7 @@ namespace MediaBrowser.Server.Implementations.Library
         public BaseItem ResolvePath(FileSystemInfo fileInfo,
             Folder parent = null)
         {
-            return ResolvePath(fileInfo, new DirectoryService(_logger), parent);
+            return ResolvePath(fileInfo, new DirectoryService(_logger, _fileSystem), parent);
         }
 
         private BaseItem ResolvePath(FileSystemInfo fileInfo, IDirectoryService directoryService, Folder parent = null, string collectionType = null)
@@ -691,7 +695,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var rootFolderPath = ConfigurationManager.ApplicationPaths.RootFolderPath;
 
-            Directory.CreateDirectory(rootFolderPath);
+			_fileSystem.CreateDirectory(rootFolderPath);
 
             var rootFolder = GetItemById(GetNewItemId(rootFolderPath, typeof(AggregateFolder))) as AggregateFolder ?? (AggregateFolder)ResolvePath(new DirectoryInfo(rootFolderPath));
 
@@ -742,7 +746,7 @@ namespace MediaBrowser.Server.Implementations.Library
                     {
                         var userRootPath = ConfigurationManager.ApplicationPaths.DefaultUserViewsPath;
 
-                        Directory.CreateDirectory(userRootPath);
+						_fileSystem.CreateDirectory(userRootPath);
 
                         var tmpItem = GetItemById(GetNewItemId(userRootPath, typeof(UserRootFolder))) as UserRootFolder;
 
@@ -1007,9 +1011,9 @@ namespace MediaBrowser.Server.Implementations.Library
         public Task ValidatePeople(CancellationToken cancellationToken, IProgress<double> progress)
         {
             // Ensure the location is available.
-            Directory.CreateDirectory(ConfigurationManager.ApplicationPaths.PeoplePath);
+			_fileSystem.CreateDirectory(ConfigurationManager.ApplicationPaths.PeoplePath);
 
-            return new PeopleValidator(this, _logger, ConfigurationManager).ValidatePeople(cancellationToken, progress);
+            return new PeopleValidator(this, _logger, ConfigurationManager, _fileSystem).ValidatePeople(cancellationToken, progress);
         }
 
         /// <summary>
@@ -1064,7 +1068,7 @@ namespace MediaBrowser.Server.Implementations.Library
             progress.Report(.5);
 
             // Start by just validating the children of the root, but go no further
-            await RootFolder.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(), recursive: false);
+            await RootFolder.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false);
 
             progress.Report(1);
 
@@ -1072,7 +1076,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             await userRoot.RefreshMetadata(cancellationToken).ConfigureAwait(false);
 
-            await userRoot.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(), recursive: false).ConfigureAwait(false);
+            await userRoot.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false).ConfigureAwait(false);
             progress.Report(2);
 
             var innerProgress = new ActionableProgress<double>();
@@ -1080,7 +1084,7 @@ namespace MediaBrowser.Server.Implementations.Library
             innerProgress.RegisterAction(pct => progress.Report(2 + pct * .73));
 
             // Now validate the entire media library
-            await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(), recursive: true).ConfigureAwait(false);
+            await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: true).ConfigureAwait(false);
 
             progress.Report(75);
 
@@ -1165,7 +1169,7 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>IEnumerable{VirtualFolderInfo}.</returns>
         private IEnumerable<VirtualFolderInfo> GetView(string path)
         {
-            return Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
+            return _fileSystem.GetDirectoryPaths(path)
                 .Select(dir => new VirtualFolderInfo
                 {
                     Name = Path.GetFileName(dir),
@@ -1638,6 +1642,7 @@ namespace MediaBrowser.Server.Implementations.Library
         }
 
         private readonly TimeSpan _viewRefreshInterval = TimeSpan.FromHours(24);
+        //private readonly TimeSpan _viewRefreshInterval = TimeSpan.FromMinutes(1);
 
         public Task<UserView> GetNamedView(User user,
             string name,
@@ -1645,12 +1650,7 @@ namespace MediaBrowser.Server.Implementations.Library
             string sortName,
             CancellationToken cancellationToken)
         {
-            if (ConfigurationManager.Configuration.EnableUserSpecificUserViews)
-            {
-                return GetNamedViewInternal(user, name, null, viewType, sortName, null, cancellationToken);
-            }
-
-            return GetNamedView(name, viewType, sortName, cancellationToken);
+            return GetNamedViewInternal(user, name, null, viewType, sortName, null, cancellationToken);
         }
 
         public async Task<UserView> GetNamedView(string name,
@@ -1671,7 +1671,7 @@ namespace MediaBrowser.Server.Implementations.Library
             if (item == null ||
                 !string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))
             {
-                Directory.CreateDirectory(path);
+				_fileSystem.CreateDirectory(path);
 
                 item = new UserView
                 {
@@ -1702,7 +1702,7 @@ namespace MediaBrowser.Server.Implementations.Library
             if (refresh)
             {
                 await item.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None).ConfigureAwait(false);
-                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions
+                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
                 {
                     // Not sure why this is necessary but need to figure it out
                     // View images are not getting utilized without this
@@ -1758,7 +1758,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (item == null)
             {
-                Directory.CreateDirectory(path);
+				_fileSystem.CreateDirectory(path);
 
                 item = new UserView
                 {
@@ -1767,7 +1767,8 @@ namespace MediaBrowser.Server.Implementations.Library
                     DateCreated = DateTime.UtcNow,
                     Name = name,
                     ViewType = viewType,
-                    ForcedSortName = sortName
+                    ForcedSortName = sortName,
+                    UserId = user.Id
                 };
 
                 if (!string.IsNullOrWhiteSpace(parentId))
@@ -1780,6 +1781,12 @@ namespace MediaBrowser.Server.Implementations.Library
                 isNew = true;
             }
 
+            if (!item.UserId.HasValue)
+            {
+                item.UserId = user.Id;
+                await item.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken).ConfigureAwait(false);
+            }
+
             if (!string.Equals(viewType, item.ViewType, StringComparison.OrdinalIgnoreCase))
             {
                 item.ViewType = viewType;
@@ -1790,7 +1797,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (refresh)
             {
-                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions
+                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
                 {
                     // Need to force save to increment DateLastSaved
                     ForceSave = true
@@ -1828,7 +1835,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (item == null)
             {
-                Directory.CreateDirectory(path);
+				_fileSystem.CreateDirectory(path);
 
                 item = new UserView
                 {
@@ -1860,7 +1867,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             if (refresh)
             {
-                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions
+                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
                 {
                     // Need to force save to increment DateLastSaved
                     ForceSave = true
@@ -2181,7 +2188,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 }
             }
 
-            return item.People ?? new List<PersonInfo>();
+            return new List<PersonInfo>();
         }
 
         public List<Person> GetPeopleItems(InternalPeopleQuery query)
