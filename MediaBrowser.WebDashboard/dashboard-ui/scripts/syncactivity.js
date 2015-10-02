@@ -22,47 +22,7 @@
         });
     }
 
-    function getSyncJobHtml(page, job, cardBoxCssClass, syncJobPage) {
-
-        var html = '';
-
-        html += "<div class='card squareCard' data-id='" + job.Id + "' data-status='" + job.Status + "'>";
-
-        html += '<div class="' + cardBoxCssClass + '">';
-        html += '<div class="cardScalable">';
-
-        html += '<div class="cardPadder"></div>';
-
-        syncJobPage += '?id=' + job.Id;
-
-        html += '<a class="cardContent" href="' + syncJobPage + '">';
-
-        var imgUrl;
-        var style = '';
-
-        if (job.PrimaryImageItemId) {
-            imgUrl = ApiClient.getScaledImageUrl(job.PrimaryImageItemId, {
-                type: "Primary",
-                width: 400,
-                tag: job.PrimaryImageTag
-            });
-            style = "background-position:center center;";
-        } else {
-            style = "background-color:#38c;background-position:center center;";
-            imgUrl = "css/images/items/detail/video.png";
-        }
-
-        html += '<div class="cardImage coveredCardImage lazy" data-src="' + imgUrl + '" style="' + style + '">';
-
-        if (job.Progress && job.Progress < 100) {
-            html += '<div class="cardFooter">';
-            html += "<div class='cardText cardProgress'>";
-            html += '<progress class="itemProgressBar" min="0" max="100" value="' + job.Progress + '"></progress>';
-            html += "</div>";
-            html += "</div>";
-        }
-
-        html += "</div>";
+    function getSyncStatusBanner(job) {
 
         var opacity = '.85';
         var background = 'rgba(204,51,51,' + opacity + ')';
@@ -87,17 +47,35 @@
             background = 'rgba(255, 106, 0, ' + opacity + ')';
         }
 
-        html += '<div class="syncStatusBanner" style="background-color:' + background + ';position:absolute;top:0;right:0;padding:.5em .5em; text-align:left;color: #fff; font-weight: 500; text-transform:uppercase; border-bottom-left-radius: 3px;">';
+        var html = '';
+        html += '<div class="syncStatus" secondary data-status="' + job.Status + '" style="color:' + background + ';">';
         html += text;
         html += '</div>';
 
-        // cardContent
-        html += "</a>";
+        return html;
+    }
 
-        // cardScalable
-        html += "</div>";
+    function getSyncJobHtml(page, job, cardBoxCssClass, syncJobPage) {
 
-        html += '<div class="cardFooter outerCardFooter">';
+        var html = '';
+
+        html += '<paper-icon-item class="syncJobItem" data-id="' + job.Id + '" data-status="' + job.Status + '">';
+
+        if (job.PrimaryImageItemId) {
+            var imgUrl = ApiClient.getScaledImageUrl(job.PrimaryImageItemId, {
+                type: "Primary",
+                width: 40,
+                tag: job.PrimaryImageTag,
+                minScale: 3
+            });
+            html += '<paper-fab class="listAvatar blue" style="background-image:url(\'' + imgUrl + '\');background-repeat:no-repeat;background-position:center center;background-size: cover;" item-icon></paper-fab>';
+        } else {
+            html += '<paper-fab class="listAvatar blue" icon="sync" item-icon></paper-fab>';
+        }
+
+        html += '<paper-item-body three-line style="min-height:120px;">';
+        syncJobPage += '?id=' + job.Id;
+        html += '<a class="clearLink" href="' + syncJobPage + '">';
 
         var textLines = [];
 
@@ -117,29 +95,94 @@
             textLines.push('&nbsp;');
         }
 
-        html += '<div class="cardText" style="text-align:right; float:right;padding:0;">';
-        html += '<paper-icon-button icon="' + AppInfo.moreIcon + '" class="btnJobMenu"></paper-icon-button>';
-        html += "</div>";
-
         for (var i = 0, length = textLines.length; i < length; i++) {
-            html += "<div class='cardText' style='margin-right:30px;'>";
+
+            if (i == 0) {
+                html += "<div>";
+            } else {
+                html += "<div secondary>";
+            }
             html += textLines[i];
             html += "</div>";
         }
 
-        // cardFooter
-        html += "</div>";
+        html += getSyncStatusBanner(job);
 
-        // cardBox
-        html += "</div>";
+        html += '<div secondary class="syncProgresContainer" style="padding-top:5px;">';
+        html += '<paper-progress class="mini" style="width:100%;" value="' + (job.Progress || 0) + '"></paper-progress>';
+        html += '</div>';
 
-        // card
-        html += "</div>";
+        html += '</a>';
+        html += '</paper-item-body>';
+
+        html += '<paper-icon-button icon="' + AppInfo.moreIcon + '" class="btnJobMenu"></paper-icon-button>';
+
+        html += '</paper-icon-item>';
+
+        //html += "<div class='card squareCard'>";
+
+        //html += '<div class="' + cardBoxCssClass + '">';
+        //html += '<div class="cardScalable">';
+
+        //html += '<div class="cardPadder"></div>';
+
+        //html += '<a class="cardContent" href="' + syncJobPage + '">';
+
+        //var imgUrl;
+        //var style = '';
+
+        //html += '<div class="cardImage coveredCardImage lazy" data-src="' + imgUrl + '" style="' + style + '">';
+
+        //var progress = job.Progress || 0;
+
+        //var footerClass = 'cardFooter fullCardFooter lightCardFooter';
+
+        //if (progress == 0 || progress >= 100) {
+        //    footerClass += ' hide';
+        //}
+
+        //html += '<div class="' + footerClass + '">';
+        //html += "<div class='cardText cardProgress'>";
+        //html += '<progress class="itemProgressBar" min="0" max="100" value="' + progress + '"></progress>';
+        //html += "</div>";
+        //html += "</div>";
+
+        //html += "</div>";
+
+        //// cardContent
+        //html += "</a>";
+
+        //// cardScalable
+        //html += "</div>";
+
+        //html += '<div class="cardFooter outerCardFooter">';
+
+        //html += '<div class="cardText" style="text-align:right; float:right;padding:0;">';
+        //html += '<paper-icon-button icon="' + AppInfo.moreIcon + '" class="btnJobMenu"></paper-icon-button>';
+        //html += "</div>";
+
+        //// cardFooter
+        //html += "</div>";
+
+        //// cardBox
+        //html += "</div>";
+
+        //// card
+        //html += "</div>";
 
         return html;
     }
 
+    var lastDataLoad = 0;
+
     function loadData(page, jobs) {
+
+        if ((new Date().getTime() - lastDataLoad) < 60000) {
+            refreshData(page, jobs);
+            return;
+        }
+
+        lastDataLoad = new Date().getTime();
 
         var html = '';
         var lastTargetName = '';
@@ -147,34 +190,41 @@
         var cardBoxCssClass = 'cardBox visualCardBox';
 
         var syncJobPage = 'syncjob.html';
+        var showTargetName = true;
 
         if ($(page).hasClass('mySyncPage')) {
             syncJobPage = 'mysyncjob.html';
+
+            showTargetName = !hasLocalSync();
         }
 
         for (var i = 0, length = jobs.length; i < length; i++) {
 
             var job = jobs[i];
-            var targetName = job.TargetName || 'Unknown';
+            if (showTargetName) {
+                var targetName = job.TargetName || 'Unknown';
 
-            if (targetName != lastTargetName) {
+                if (targetName != lastTargetName) {
 
-                if (lastTargetName) {
-                    html += '<br/>';
-                    html += '<br/>';
-                    html += '<br/>';
+                    if (lastTargetName) {
+                        html += '</div>';
+                        html += '</div>';
+                    }
+
+                    lastTargetName = targetName;
+
+                    html += '<div class="syncActivityForTarget">';
+                    html += '<h1>' + targetName + '</h1>';
+                    html += '<div class="paperList">';
                 }
-
-                lastTargetName = targetName;
-
-                html += '<div class="detailSectionHeader">';
-
-                html += '<div style="display:inline-block;vertical-align:middle;">' + targetName + '</div>';
-
-                html += '</div>';
             }
 
             html += getSyncJobHtml(page, job, cardBoxCssClass, syncJobPage);
+        }
+
+        if (jobs.length) {
+            html += '</div>';
+            html += '</div>';
         }
 
         var elem = $('.syncActivity', page).html(html).lazyChildren();
@@ -190,9 +240,43 @@
         }
     }
 
+    function refreshData(page, jobs) {
+
+        for (var i = 0, length = jobs.length; i < length; i++) {
+
+            var job = jobs[i];
+            refreshJob(page, job);
+        }
+    }
+
+    function refreshJob(page, job) {
+
+        var card = page.querySelector('.syncJobItem[data-id=\'' + job.Id + '\']');
+
+        if (!card) {
+            return;
+        }
+
+        var banner = card.querySelector('.syncStatus');
+
+        if (banner.getAttribute('data-status') == job.Status) {
+            var elem = document.createElement('div');
+            elem.innerHTML = getSyncStatusBanner(job);
+            elem = elem.querySelector('.syncStatus');
+            elem.parentNode.removeChild(elem);
+
+            banner.parentNode.replaceChild(elem, banner);
+        }
+
+        var progress = job.Progress || 0;
+        var syncProgresContainer = card.querySelector('.syncProgresContainer');
+
+        syncProgresContainer.querySelector('paper-progress').value = progress;
+    }
+
     function showJobMenu(page, elem) {
 
-        var card = $(elem).parents('.card');
+        var card = $(elem).parents('.syncJobItem');
         var jobId = card.attr('data-id');
         var status = card.attr('data-status');
 
@@ -236,7 +320,13 @@
         });
     }
 
+    function hasLocalSync() {
+        return Dashboard.capabilities().SupportsSync;
+    }
+
     function reloadData(page) {
+
+        lastDataLoad = 0;
 
         Dashboard.showLoadingMsg();
 
@@ -246,6 +336,10 @@
 
             if ($(page).hasClass('mySyncPage')) {
                 options.UserId = Dashboard.getCurrentUserId();
+
+                if (hasLocalSync()) {
+                    options.TargetId = ApiClient.deviceId();
+                }
             }
 
             ApiClient.getJSON(ApiClient.getUrl('Sync/Jobs', options)).done(function (response) {
@@ -260,10 +354,19 @@
 
     function onWebSocketMessage(e, msg) {
 
-        var page = $.mobile.activePage;
+        var page = $($.mobile.activePage)[0];
 
         if (msg.MessageType == "SyncJobs") {
-            loadData(page, msg.Data);
+
+            var data = msg.Data;
+
+            if (hasLocalSync()) {
+                var targetId = ApiClient.deviceId();
+                data = data.filter(function (j) {
+                    return j.TargetId == targetId;
+                });
+            }
+            loadData(page, data);
         }
     }
 
@@ -289,7 +392,20 @@
 
     }
 
-    $(document).on('pageshowready', ".syncActivityPage", function () {
+    $(document).on('pageinit', ".syncActivityPage", function () {
+
+        var page = this;
+
+        $('.btnSyncSupporter', page).on('click', function () {
+
+            requirejs(["scripts/registrationservices"], function () {
+                RegistrationServices.validateFeature('sync').done(function () {
+                });
+            });
+        });
+        $('.supporterPromotion .mainText', page).html(Globalize.translate('HeaderSyncRequiresSupporterMembership'));
+
+    }).on('pageshow', ".syncActivityPage", function () {
 
         var page = this;
 
@@ -299,16 +415,6 @@
                 $('.supporterPromotionContainer', page).hide();
             } else {
                 $('.supporterPromotionContainer', page).show();
-
-                if (AppInfo.enableSupporterMembership) {
-                    $('.supporterPromotion a', page).attr('href', 'http://emby.media/donate');
-                    $('.supporterPromotion .btnLearnMore', page).show();
-                    $('.supporterPromotion .mainText', page).html(Globalize.translate('HeaderSyncRequiresSupporterMembership'));
-                } else {
-                    $('.supporterPromotion a', page).attr('href', '#');
-                    $('.supporterPromotion .btnLearnMore', page).hide();
-                    $('.supporterPromotion .mainText', page).html(Globalize.translate('HeaderSyncRequiresSupporterMembershipAppVersion'));
-                }
             }
         });
 
@@ -317,7 +423,7 @@
         // on here
         $('.btnSync', page).taskButton({
             mode: 'on',
-            progressElem: $('.syncProgress', page),
+            progressElem: page.querySelector('.syncProgress'),
             taskKey: 'SyncPrepare'
         });
 

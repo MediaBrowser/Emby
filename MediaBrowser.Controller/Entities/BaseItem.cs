@@ -38,7 +38,6 @@ namespace MediaBrowser.Controller.Entities
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             LockedFields = new List<MetadataFields>();
             ImageInfos = new List<ItemImageInfo>();
-            Identities = new List<IItemIdentity>();
         }
 
         /// <summary>
@@ -56,12 +55,16 @@ namespace MediaBrowser.Controller.Entities
         public static string ThemeSongFilename = "theme";
         public static string ThemeVideosFolderName = "backdrops";
 
+        public string PreferredMetadataCountryCode { get; set; }
+        public string PreferredMetadataLanguage { get; set; }
+        
         public List<ItemImageInfo> ImageInfos { get; set; }
 
         /// <summary>
         /// Gets or sets the channel identifier.
         /// </summary>
         /// <value>The channel identifier.</value>
+        [IgnoreDataMember]
         public string ChannelId { get; set; }
 
         [IgnoreDataMember]
@@ -183,7 +186,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 // Local trailer, special feature, theme video, etc.
                 // An item that belongs to another item but is not part of the Parent-Child tree
-                return !IsFolder && Parent == null && LocationType == LocationType.FileSystem;
+                return !IsFolder && ParentId == Guid.Empty && LocationType == LocationType.FileSystem;
             }
         }
 
@@ -331,31 +334,9 @@ namespace MediaBrowser.Controller.Entities
             return Name;
         }
 
-        /// <summary>
-        /// Returns true if this item should not attempt to fetch metadata
-        /// </summary>
-        /// <value><c>true</c> if [dont fetch meta]; otherwise, <c>false</c>.</value>
-        [Obsolete("Please use IsLocked instead of DontFetchMeta")]
-        public bool DontFetchMeta { get; set; }
-
         [IgnoreDataMember]
-        public bool IsLocked
-        {
-            get
-            {
-                return DontFetchMeta;
-            }
-            set
-            {
-                DontFetchMeta = value;
-            }
-        }
-
-        public bool IsUnidentified { get; set; }
-
-        [IgnoreDataMember]
-        public List<IItemIdentity> Identities { get; set; }
-
+        public bool IsLocked { get; set; }
+        
         /// <summary>
         /// Gets or sets the locked fields.
         /// </summary>
@@ -484,7 +465,6 @@ namespace MediaBrowser.Controller.Entities
 
         public Guid ParentId { get; set; }
 
-        private Folder _parent;
         /// <summary>
         /// Gets or sets the parent.
         /// </summary>
@@ -494,11 +474,6 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (_parent != null)
-                {
-                    return _parent;
-                }
-
                 if (ParentId != Guid.Empty)
                 {
                     return LibraryManager.GetItemById(ParentId) as Folder;
@@ -506,12 +481,14 @@ namespace MediaBrowser.Controller.Entities
 
                 return null;
             }
-            set { _parent = value; }
+            set
+            {
+                
+            }
         }
 
         public void SetParent(Folder parent)
         {
-            Parent = parent;
             ParentId = parent == null ? Guid.Empty : parent.Id;
         }
 
@@ -558,6 +535,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets or sets the end date.
         /// </summary>
         /// <value>The end date.</value>
+        [IgnoreDataMember]
         public DateTime? EndDate { get; set; }
 
         /// <summary>
@@ -582,6 +560,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets or sets the custom rating.
         /// </summary>
         /// <value>The custom rating.</value>
+        [IgnoreDataMember]
         public string CustomRating { get; set; }
 
         /// <summary>
@@ -589,12 +568,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The overview.</value>
         public string Overview { get; set; }
-
-        /// <summary>
-        /// Gets or sets the people.
-        /// </summary>
-        /// <value>The people.</value>
-        public List<PersonInfo> People { get; set; }
 
         /// <summary>
         /// Gets or sets the studios.
@@ -618,6 +591,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets or sets the community rating.
         /// </summary>
         /// <value>The community rating.</value>
+        [IgnoreDataMember]
         public float? CommunityRating { get; set; }
 
         /// <summary>
@@ -643,6 +617,7 @@ namespace MediaBrowser.Controller.Entities
         /// This could be episode number, album track number, etc.
         /// </summary>
         /// <value>The index number.</value>
+        [IgnoreDataMember]
         public int? IndexNumber { get; set; }
 
         /// <summary>
@@ -705,7 +680,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var files = fileSystemChildren.OfType<DirectoryInfo>()
                 .Where(i => string.Equals(i.Name, ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
-                .SelectMany(i => i.EnumerateFiles("*", SearchOption.TopDirectoryOnly))
+				.SelectMany(i => directoryService.GetFiles(i.FullName))
                 .ToList();
 
             // Support plex/xbmc convention
@@ -741,7 +716,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var files = fileSystemChildren.OfType<DirectoryInfo>()
                 .Where(i => string.Equals(i.Name, ThemeVideosFolderName, StringComparison.OrdinalIgnoreCase))
-                .SelectMany(i => i.EnumerateFiles("*", SearchOption.TopDirectoryOnly));
+				.SelectMany(i => directoryService.GetFiles(i.FullName));
 
             return LibraryManager.ResolvePaths(files, directoryService, null)
                 .OfType<Video>()
@@ -765,7 +740,7 @@ namespace MediaBrowser.Controller.Entities
 
         public Task RefreshMetadata(CancellationToken cancellationToken)
         {
-            return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService()), cancellationToken);
+            return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(FileSystem)), cancellationToken);
         }
 
         /// <summary>
@@ -902,7 +877,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (!i.IsThemeMedia)
                 {
-                    i.IsThemeMedia = true;
+                    i.ExtraType = ExtraType.ThemeVideo;
                     subOptions.ForceSave = true;
                 }
 
@@ -932,7 +907,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (!i.IsThemeMedia)
                 {
-                    i.IsThemeMedia = true;
+                    i.ExtraType = ExtraType.ThemeSong;
                     subOptions.ForceSave = true;
                 }
 
@@ -999,18 +974,11 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>System.String.</returns>
         public string GetPreferredMetadataLanguage()
         {
-            string lang = null;
-
-            var hasLang = this as IHasPreferredMetadataLanguage;
-
-            if (hasLang != null)
-            {
-                lang = hasLang.PreferredMetadataLanguage;
-            }
+            string lang = PreferredMetadataLanguage;
 
             if (string.IsNullOrWhiteSpace(lang))
             {
-                lang = Parents.OfType<IHasPreferredMetadataLanguage>()
+                lang = Parents
                     .Select(i => i.PreferredMetadataLanguage)
                     .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
             }
@@ -1036,18 +1004,11 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>System.String.</returns>
         public string GetPreferredMetadataCountryCode()
         {
-            string lang = null;
-
-            var hasLang = this as IHasPreferredMetadataLanguage;
-
-            if (hasLang != null)
-            {
-                lang = hasLang.PreferredMetadataCountryCode;
-            }
+            string lang = PreferredMetadataCountryCode;
 
             if (string.IsNullOrWhiteSpace(lang))
             {
-                lang = Parents.OfType<IHasPreferredMetadataLanguage>()
+                lang = Parents
                     .Select(i => i.PreferredMetadataCountryCode)
                     .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
             }
@@ -1114,7 +1075,7 @@ namespace MediaBrowser.Controller.Entities
             // Could not determine the integer value
             if (!value.HasValue)
             {
-                return true;
+                return !GetBlockUnratedValue(user.Policy);
             }
 
             return value.Value <= maxAllowedRating.Value;
@@ -1418,7 +1379,7 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>Task.</returns>
         public virtual Task ChangedExternally()
         {
-            ProviderManager.QueueRefresh(Id, new MetadataRefreshOptions());
+			ProviderManager.QueueRefresh(Id, new MetadataRefreshOptions(FileSystem));
             return Task.FromResult(true);
         }
 
@@ -1635,7 +1596,7 @@ namespace MediaBrowser.Controller.Entities
                 var newImagePaths = images.Select(i => i.FullName).ToList();
 
                 var deleted = existingImages
-                    .Where(i => !newImagePaths.Contains(i.Path, StringComparer.OrdinalIgnoreCase) && !File.Exists(i.Path))
+					.Where(i => !newImagePaths.Contains(i.Path, StringComparer.OrdinalIgnoreCase) && !FileSystem.FileExists(i.Path))
                     .ToList();
 
                 ImageInfos = ImageInfos.Except(deleted).ToList();

@@ -46,6 +46,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 .Where(i => _libraryManager.IsVideoFile(i.FullName) && i.Length >= minFileBytes)
                 .ToList();
 
+            var processedFolders = new HashSet<string>();
+
             progress.Report(10);
 
             if (eligibleFiles.Count > 0)
@@ -59,7 +61,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        var result = await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        if (result.Status == FileSortingStatus.Success && !processedFolders.Contains(file.DirectoryName, StringComparer.OrdinalIgnoreCase))
+                        {
+                            processedFolders.Add(file.DirectoryName);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -77,7 +83,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             cancellationToken.ThrowIfCancellationRequested();
             progress.Report(99);
 
-            foreach (var path in watchLocations)
+            foreach (var path in processedFolders)
             {
                 var deleteExtensions = options.LeftOverFileExtensionsToDelete
                     .Select(i => i.Trim().TrimStart('.'))
@@ -92,35 +98,14 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                 if (options.DeleteEmptyFolders)
                 {
-                    foreach (var subfolder in GetDirectories(path).ToList())
+                    if (!IsWatchFolder(path, watchLocations))
                     {
-                        DeleteEmptyFolders(subfolder);
+                        DeleteEmptyFolders(path);
                     }
                 }
             }
 
             progress.Report(100);
-        }
-
-        /// <summary>
-        /// Gets the directories.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>IEnumerable{System.String}.</returns>
-        private IEnumerable<string> GetDirectories(string path)
-        {
-            try
-            {
-                return Directory
-                    .EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
-                    .ToList();
-            }
-            catch (IOException ex)
-            {
-                _logger.ErrorException("Error getting files from {0}", ex, path);
-
-                return new List<string>();
-            }
         }
 
         /// <summary>
@@ -132,8 +117,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         {
             try
             {
-                return new DirectoryInfo(path)
-                    .EnumerateFiles("*", SearchOption.AllDirectories)
+				return _fileSystem.GetFiles(path, true)
                     .ToList();
             }
             catch (IOException ex)
@@ -151,8 +135,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         /// <param name="extensions">The extensions.</param>
         private void DeleteLeftOverFiles(string path, IEnumerable<string> extensions)
         {
-            var eligibleFiles = new DirectoryInfo(path)
-                .EnumerateFiles("*", SearchOption.AllDirectories)
+			var eligibleFiles = _fileSystem.GetFiles(path, true)
                 .Where(i => extensions.Contains(i.Extension, StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
@@ -177,25 +160,35 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         {
             try
             {
-                foreach (var d in Directory.EnumerateDirectories(path))
+                foreach (var d in _fileSystem.GetDirectoryPaths(path))
                 {
                     DeleteEmptyFolders(d);
                 }
 
-                var entries = Directory.EnumerateFileSystemEntries(path);
+                var entries = _fileSystem.GetFileSystemEntryPaths(path);
 
                 if (!entries.Any())
                 {
                     try
                     {
                         _logger.Debug("Deleting empty directory {0}", path);
-                        Directory.Delete(path);
+                        _fileSystem.DeleteDirectory(path, false);
                     }
                     catch (UnauthorizedAccessException) { }
                     catch (DirectoryNotFoundException) { }
                 }
             }
             catch (UnauthorizedAccessException) { }
+        }
+
+        /// <summary>
+        /// Determines if a given folder path is contained in a folder list
+        /// </summary>
+        /// <param name="path">The folder path to check.</param>
+        /// <param name="watchLocations">A list of folders.</param>
+        private bool IsWatchFolder(string path, IEnumerable<string> watchLocations)
+        {
+            return watchLocations.Contains(path, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

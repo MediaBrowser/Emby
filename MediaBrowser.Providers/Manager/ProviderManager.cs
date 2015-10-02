@@ -283,32 +283,31 @@ namespace MediaBrowser.Providers.Manager
         {
             var options = GetMetadataOptions(item);
 
-            return GetMetadataProvidersInternal<T>(item, options, false);
+            return GetMetadataProvidersInternal<T>(item, options, false, true);
         }
 
-        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(IHasMetadata item, MetadataOptions options, bool includeDisabled)
+        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(IHasMetadata item, MetadataOptions options, bool includeDisabled, bool checkIsOwnedItem)
             where T : IHasMetadata
         {
             // Avoid implicitly captured closure
             var currentOptions = options;
 
             return _metadataProviders.OfType<IMetadataProvider<T>>()
-                .Where(i => CanRefresh(i, item, currentOptions, includeDisabled))
+                .Where(i => CanRefresh(i, item, currentOptions, includeDisabled, checkIsOwnedItem))
                 .OrderBy(i => GetConfiguredOrder(i, options))
                 .ThenBy(GetDefaultOrder);
         }
 
-        public IEnumerable<IItemIdentityProvider<TLookupInfo, TIdentity>> GetItemIdentityProviders<TLookupInfo, TIdentity>()
+        public IEnumerable<IItemIdentityProvider<TLookupInfo>> GetItemIdentityProviders<TLookupInfo>()
             where TLookupInfo : ItemLookupInfo
-            where TIdentity : IItemIdentity
         {
-            return _identityProviders.OfType<IItemIdentityProvider<TLookupInfo, TIdentity>>();
+            return _identityProviders.OfType<IItemIdentityProvider<TLookupInfo>>();
         }
 
-        public IEnumerable<IItemIdentityConverter<TIdentity>> GetItemIdentityConverters<TIdentity>()
-            where TIdentity : IItemIdentity
+        public IEnumerable<IItemIdentityConverter<TLookupInfo>> GetItemIdentityConverters<TLookupInfo>()
+            where TLookupInfo : ItemLookupInfo
         {
-            return _identityConverters.OfType<IItemIdentityConverter<TIdentity>>();
+            return _identityConverters.OfType<IItemIdentityConverter<TLookupInfo>>();
         }
 
         private IEnumerable<IRemoteImageProvider> GetRemoteImageProviders(IHasImages item, bool includeDisabled)
@@ -318,7 +317,7 @@ namespace MediaBrowser.Providers.Manager
             return GetImageProviders(item, options, includeDisabled).OfType<IRemoteImageProvider>();
         }
 
-        private bool CanRefresh(IMetadataProvider provider, IHasMetadata item, MetadataOptions options, bool includeDisabled)
+        private bool CanRefresh(IMetadataProvider provider, IHasMetadata item, MetadataOptions options, bool includeDisabled, bool checkIsOwnedItem)
         {
             if (!includeDisabled)
             {
@@ -348,7 +347,7 @@ namespace MediaBrowser.Providers.Manager
             }
 
             // If this restriction is ever lifted, movie xml providers will have to be updated to prevent owned items like trailers from reading those files
-            if (item.IsOwnedItem)
+            if (checkIsOwnedItem && item.IsOwnedItem)
             {
                 if (provider is ILocalMetadataProvider || provider is IRemoteMetadataProvider)
                 {
@@ -491,10 +490,9 @@ namespace MediaBrowser.Providers.Manager
             // Give it a dummy path just so that it looks like a file system item
             var dummy = new T()
             {
-                Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy")
+                Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy"),
+                ParentId = Guid.NewGuid()
             };
-
-            dummy.SetParent(new Folder());
 
             var options = GetMetadataOptions(dummy);
 
@@ -523,7 +521,7 @@ namespace MediaBrowser.Providers.Manager
         private void AddMetadataPlugins<T>(List<MetadataPlugin> list, T item, MetadataOptions options)
             where T : IHasMetadata
         {
-            var providers = GetMetadataProvidersInternal<T>(item, options, true).ToList();
+            var providers = GetMetadataProvidersInternal<T>(item, options, true, false).ToList();
 
             // Locals
             list.AddRange(providers.Where(i => (i is ILocalMetadataProvider)).Select(i => new MetadataPlugin
@@ -701,7 +699,7 @@ namespace MediaBrowser.Providers.Manager
 
                             // Manual edit occurred
                             // Even if save local is off, save locally anyway if the metadata file already exists
-                            if (fileSaver == null || !isEnabledFor || !File.Exists(fileSaver.GetSavePath(item)))
+							if (fileSaver == null || !isEnabledFor || !_fileSystem.FileExists(fileSaver.GetSavePath(item)))
                             {
                                 return false;
                             }
@@ -729,17 +727,20 @@ namespace MediaBrowser.Providers.Manager
             where TItemType : BaseItem, new()
             where TLookupType : ItemLookupInfo
         {
+            const int maxResults = 10;
+
             // Give it a dummy path just so that it looks like a file system item
             var dummy = new TItemType
             {
-                Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy")
+                Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy"),
+                ParentId = Guid.NewGuid()
             };
 
             dummy.SetParent(new Folder());
 
             var options = GetMetadataOptions(dummy);
 
-            var providers = GetMetadataProvidersInternal<TItemType>(dummy, options, searchInfo.IncludeDisabledProviders)
+            var providers = GetMetadataProvidersInternal<TItemType>(dummy, options, searchInfo.IncludeDisabledProviders, false)
                 .OfType<IRemoteSearchProvider<TLookupType>>();
 
             if (!string.IsNullOrEmpty(searchInfo.SearchProviderName))
@@ -756,6 +757,8 @@ namespace MediaBrowser.Providers.Manager
                 searchInfo.SearchInfo.MetadataCountryCode = ConfigurationManager.Configuration.MetadataCountryCode;
             }
 
+            var resultList = new List<RemoteSearchResult>();
+
             foreach (var provider in providers)
             {
                 try
@@ -766,7 +769,12 @@ namespace MediaBrowser.Providers.Manager
 
                     if (list.Count > 0)
                     {
-                        return list.Take(10);
+                        resultList.AddRange(list.Take(maxResults - resultList.Count));
+                    }
+
+                    if (resultList.Count >= maxResults)
+                    {
+                        return resultList;
                     }
                 }
                 catch (Exception ex)
@@ -775,8 +783,7 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            // Nothing found
-            return new List<RemoteSearchResult>();
+            return resultList;
         }
 
         private async Task<IEnumerable<RemoteSearchResult>> GetSearchResults<TLookupType>(IRemoteSearchProvider<TLookupType> provider, TLookupType searchInfo,
@@ -880,6 +887,11 @@ namespace MediaBrowser.Providers.Manager
 
         private void StartRefreshTimer()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             lock (_refreshTimerLock)
             {
                 if (_refreshTimer == null)
@@ -1014,6 +1026,7 @@ namespace MediaBrowser.Providers.Manager
         public void Dispose()
         {
             _disposed = true;
+            StopRefreshTimer();
         }
     }
 }

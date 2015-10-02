@@ -72,7 +72,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private IDbCommand _deletePeopleCommand;
         private IDbCommand _savePersonCommand;
 
-        private const int LatestSchemaVersion = 6;
+        private const int LatestSchemaVersion = 11;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
@@ -175,7 +175,19 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             _connection.AddColumn(_logger, "TypedBaseItems", "ForcedSortName", "Text");
             _connection.AddColumn(_logger, "TypedBaseItems", "IsOffline", "BIT");
+            _connection.AddColumn(_logger, "TypedBaseItems", "LocationType", "Text");
 
+            _connection.AddColumn(_logger, "TypedBaseItems", "IsSeries", "BIT");
+            _connection.AddColumn(_logger, "TypedBaseItems", "IsLive", "BIT");
+            _connection.AddColumn(_logger, "TypedBaseItems", "IsNews", "BIT");
+            _connection.AddColumn(_logger, "TypedBaseItems", "IsPremiere", "BIT");
+
+            _connection.AddColumn(_logger, "TypedBaseItems", "EpisodeTitle", "Text");
+            _connection.AddColumn(_logger, "TypedBaseItems", "IsRepeat", "BIT");
+
+            _connection.AddColumn(_logger, "TypedBaseItems", "PreferredMetadataLanguage", "Text");
+            _connection.AddColumn(_logger, "TypedBaseItems", "PreferredMetadataCountryCode", "Text");
+            
             PrepareStatements();
 
             _mediaStreamsRepository.Initialize();
@@ -187,11 +199,29 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// </summary>
         private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
 
-        private string[] _retriveItemColumns =
+        private readonly string[] _retriveItemColumns =
         {
             "type",
             "data",
-            "IsOffline"
+            "StartDate",
+            "EndDate",
+            "IsOffline",
+            "ChannelId",
+            "IsMovie",
+            "IsSports",
+            "IsKids",
+            "IsSeries",
+            "IsLive",
+            "IsNews",
+            "IsPremiere",
+            "EpisodeTitle",
+            "IsRepeat",
+            "CommunityRating",
+            "CustomRating",
+            "IndexNumber",
+            "IsLocked",
+            "PreferredMetadataLanguage",
+            "PreferredMetadataCountryCode"
         };
 
         /// <summary>
@@ -211,6 +241,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "IsKids",
                 "IsMovie",
                 "IsSports",
+                "IsSeries",
+                "IsLive",
+                "IsNews",
+                "IsPremiere",
+                "EpisodeTitle",
+                "IsRepeat",
                 "CommunityRating",
                 "CustomRating",
                 "IndexNumber",
@@ -235,7 +271,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "DateCreated",
                 "DateModified",
                 "ForcedSortName",
-                "IsOffline"
+                "IsOffline",
+                "LocationType",
+                "PreferredMetadataLanguage",
+                "PreferredMetadataCountryCode"
             };
             _saveItemCommand = _connection.CreateCommand();
             _saveItemCommand.CommandText = "replace into TypedBaseItems (" + string.Join(",", saveColumns.ToArray()) + ") values (";
@@ -357,9 +396,21 @@ namespace MediaBrowser.Server.Implementations.Persistence
                         _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsKids;
                         _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsMovie;
                         _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsSports;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsSeries;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsLive;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsNews;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsPremiere;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.EpisodeTitle;
+                        _saveItemCommand.GetParameter(index++).Value = hasProgramAttributes.IsRepeat;
                     }
                     else
                     {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                        _saveItemCommand.GetParameter(index++).Value = null;
                         _saveItemCommand.GetParameter(index++).Value = null;
                         _saveItemCommand.GetParameter(index++).Value = null;
                         _saveItemCommand.GetParameter(index++).Value = null;
@@ -405,7 +456,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     _saveItemCommand.GetParameter(index++).Value = item.ForcedSortName;
                     _saveItemCommand.GetParameter(index++).Value = item.IsOffline;
+                    _saveItemCommand.GetParameter(index++).Value = item.LocationType.ToString();
 
+                    _saveItemCommand.GetParameter(index++).Value = item.PreferredMetadataLanguage;
+                    _saveItemCommand.GetParameter(index++).Value = item.PreferredMetadataCountryCode;
+                    
                     _saveItemCommand.Transaction = transaction;
 
                     _saveItemCommand.ExecuteNonQuery();
@@ -511,7 +566,105 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             if (!reader.IsDBNull(2))
             {
-                item.IsOffline = reader.GetBoolean(2);
+                var hasStartDate = item as IHasStartDate;
+                if (hasStartDate != null)
+                {
+                    hasStartDate.StartDate = reader.GetDateTime(2).ToUniversalTime();
+                }
+            }
+
+            if (!reader.IsDBNull(3))
+            {
+                item.EndDate = reader.GetDateTime(3).ToUniversalTime();
+            }
+
+            if (!reader.IsDBNull(4))
+            {
+                item.IsOffline = reader.GetBoolean(4);
+            }
+
+            if (!reader.IsDBNull(5))
+            {
+                item.ChannelId = reader.GetString(5);
+            }
+
+            var hasProgramAttributes = item as IHasProgramAttributes;
+            if (hasProgramAttributes != null)
+            {
+                if (!reader.IsDBNull(6))
+                {
+                    hasProgramAttributes.IsMovie = reader.GetBoolean(6);
+                }
+
+                if (!reader.IsDBNull(7))
+                {
+                    hasProgramAttributes.IsSports = reader.GetBoolean(7);
+                }
+
+                if (!reader.IsDBNull(8))
+                {
+                    hasProgramAttributes.IsKids = reader.GetBoolean(8);
+                }
+
+                if (!reader.IsDBNull(9))
+                {
+                    hasProgramAttributes.IsSeries = reader.GetBoolean(9);
+                }
+
+                if (!reader.IsDBNull(10))
+                {
+                    hasProgramAttributes.IsLive = reader.GetBoolean(10);
+                }
+
+                if (!reader.IsDBNull(11))
+                {
+                    hasProgramAttributes.IsNews = reader.GetBoolean(11);
+                }
+
+                if (!reader.IsDBNull(12))
+                {
+                    hasProgramAttributes.IsPremiere = reader.GetBoolean(12);
+                }
+
+                if (!reader.IsDBNull(13))
+                {
+                    hasProgramAttributes.EpisodeTitle = reader.GetString(13);
+                }
+
+                if (!reader.IsDBNull(14))
+                {
+                    hasProgramAttributes.IsRepeat = reader.GetBoolean(14);
+                }
+            }
+
+            if (!reader.IsDBNull(15))
+            {
+                item.CommunityRating = reader.GetFloat(15);
+            }
+
+            if (!reader.IsDBNull(16))
+            {
+                item.CustomRating = reader.GetString(16);
+            }
+
+            if (!reader.IsDBNull(17))
+            {
+                item.IndexNumber = reader.GetInt32(17);
+            }
+
+            if (!reader.IsDBNull(18))
+            {
+                item.IsLocked = reader.GetBoolean(18);
+            }
+
+            if (!reader.IsDBNull(19))
+            {
+                item.PreferredMetadataLanguage = reader.GetString(19);
+            }
+
+            if (!reader.IsDBNull(20))
+            {
+                item.PreferredMetadataCountryCode = reader.GetString(20);
             }
 
             return item;
@@ -882,6 +1035,75 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
+        public QueryResult<Tuple<Guid, string>> GetItemIdsWithPath(InternalItemsQuery query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
+
+            CheckDisposed();
+
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "select guid,path from TypedBaseItems";
+
+                var whereClauses = GetWhereClauses(query, cmd, false);
+
+                var whereTextWithoutPaging = whereClauses.Count == 0 ?
+                    string.Empty :
+                    " where " + string.Join(" AND ", whereClauses.ToArray());
+
+                whereClauses = GetWhereClauses(query, cmd, true);
+
+                var whereText = whereClauses.Count == 0 ?
+                    string.Empty :
+                    " where " + string.Join(" AND ", whereClauses.ToArray());
+
+                cmd.CommandText += whereText;
+
+                cmd.CommandText += GetOrderByText(query);
+
+                if (query.Limit.HasValue)
+                {
+                    cmd.CommandText += " LIMIT " + query.Limit.Value.ToString(CultureInfo.InvariantCulture);
+                }
+
+                cmd.CommandText += "; select count (guid) from TypedBaseItems" + whereTextWithoutPaging;
+
+                var list = new List<Tuple<Guid, string>>();
+                var count = 0;
+
+                _logger.Debug(cmd.CommandText);
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                {
+                    while (reader.Read())
+                    {
+                        var id = reader.GetGuid(0);
+                        string path = null;
+
+                        if (!reader.IsDBNull(1))
+                        {
+                            path = reader.GetString(1);
+                        }
+                        list.Add(new Tuple<Guid, string>(id, path));
+                    }
+
+                    if (reader.NextResult() && reader.Read())
+                    {
+                        count = reader.GetInt32(0);
+                    }
+                }
+
+                return new QueryResult<Tuple<Guid, string>>()
+                {
+                    Items = list.ToArray(),
+                    TotalRecordCount = count
+                };
+            }
+        }
+
         public QueryResult<Guid> GetItemIds(InternalItemsQuery query)
         {
             if (query == null)
@@ -960,6 +1182,16 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 }
                 cmd.Parameters.Add(cmd, "@SchemaVersion", DbType.Int32).Value = LatestSchemaVersion;
             }
+            if (query.IsOffline.HasValue)
+            {
+                whereClauses.Add("IsOffline=@IsOffline");
+                cmd.Parameters.Add(cmd, "@IsOffline", DbType.Boolean).Value = query.IsOffline;
+            }
+            if (query.LocationType.HasValue)
+            {
+                whereClauses.Add("LocationType=@LocationType");
+                cmd.Parameters.Add(cmd, "@LocationType", DbType.String).Value = query.LocationType.Value;
+            }
             if (query.IsMovie.HasValue)
             {
                 whereClauses.Add("IsMovie=@IsMovie");
@@ -1009,6 +1241,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 var inClause = string.Join(",", query.ChannelIds.Select(i => "'" + i + "'").ToArray());
                 whereClauses.Add(string.Format("ChannelId in ({0})", inClause));
+            }
+
+            if (query.ParentId.HasValue)
+            {
+                whereClauses.Add("ParentId=@ParentId");
+                cmd.Parameters.Add(cmd, "@ParentId", DbType.Guid).Value = query.ParentId.Value;
             }
 
             if (query.MinEndDate.HasValue)

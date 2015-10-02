@@ -107,7 +107,7 @@
         html += '</p><ul class="mediaFolderLocations" data-inset="true" data-role="listview" data-split-icon="minus">';
 
         html += '<li data-role="list-divider" class="mediaLocationsHeader">' + Globalize.translate('HeaderMediaLocations');
-        html += '<button type="button" data-icon="plus" data-mini="true" data-iconpos="notext" data-inline="true" onclick="MediaLibraryPage.addMediaLocation(' + index + ');">' + Globalize.translate('ButtonAdd') + '</button>';
+        html += '<paper-fab class="mini subdued" icon="add" title="' + Globalize.translate('ButtonAdd') + '" onclick="MediaLibraryPage.addMediaLocation(' + index + ');" style="margin-left:1em;"></paper-fab>';
         html += '</li>';
 
         for (var i = 0, length = virtualFolder.Locations.length; i < length; i++) {
@@ -189,13 +189,13 @@
 
         if (showCollectionType) {
             $('#fldCollectionType', popup).show();
-            $('#selectCollectionType', popup).attr('required', 'required').selectmenu('refresh');
+            $('#selectCollectionType', popup).attr('required', 'required');
         } else {
             $('#fldCollectionType', popup).hide();
-            $('#selectCollectionType', popup).removeAttr('required').selectmenu('refresh');
+            $('#selectCollectionType', popup).removeAttr('required');
         }
 
-        $('#selectCollectionType', popup).html(MediaLibraryPage.getCollectionTypeOptionsHtml()).val('').selectmenu('refresh');
+        $('#selectCollectionType', popup).html(MediaLibraryPage.getCollectionTypeOptionsHtml()).val('');
 
         popup.on("popupafterclose", function () {
             $(this).off("popupafterclose").off("click");
@@ -347,7 +347,7 @@
     }
 };
 
-$(document).on('pageinit', ".mediaLibraryPage", MediaLibraryPage.onPageInit).on('pageshowready', ".mediaLibraryPage", MediaLibraryPage.onPageShow);
+$(document).on('pageinit', ".mediaLibraryPage", MediaLibraryPage.onPageInit).on('pageshow', ".mediaLibraryPage", MediaLibraryPage.onPageShow);
 
 var WizardLibraryPage = {
 
@@ -371,14 +371,14 @@ var WizardLibraryPage = {
 
 (function ($, document, window) {
 
-    $(document).on('pageshowready', "#mediaLibraryPage", function () {
+    $(document).on('pageshow', "#mediaLibraryPage", function () {
 
         var page = this;
 
         // on here
         $('.btnRefresh', page).taskButton({
             mode: 'on',
-            progressElem: $('.refreshProgress', page),
+            progressElem: page.querySelector('.refreshProgress'),
             lastResultElem: $('.lastRefreshResult', page),
             taskKey: 'RefreshLibrary'
         });

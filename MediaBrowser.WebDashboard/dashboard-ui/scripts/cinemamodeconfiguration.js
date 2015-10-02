@@ -75,7 +75,7 @@
 
         $('.cinemaModeConfigurationForm').off('submit', onSubmit).on('submit', onSubmit);
 
-    }).on('pageshowready', "#cinemaModeConfigurationPage", function () {
+    }).on('pageshow', "#cinemaModeConfigurationPage", function () {
 
         Dashboard.showLoadingMsg();
 
@@ -93,7 +93,5 @@
             $('.lnkSupporterLearnMore', page).hide();
         }
     });
-
-    window.CinemaModeConfigurationPage = new cinemaModeConfigurationPage();
 
 })(jQuery, document, window);

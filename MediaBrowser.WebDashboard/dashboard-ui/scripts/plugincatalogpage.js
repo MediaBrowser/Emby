@@ -166,7 +166,6 @@
         var html = '';
 
         var href = plugin.externalUrl ? plugin.externalUrl : "addplugin.html?name=" + encodeURIComponent(plugin.name) + "&guid=" + plugin.guid;
-
         if (options.context) {
             href += "&context=" + options.context;
         }
@@ -272,7 +271,7 @@
             reloadList(page);
         });
 
-    }).on('pageshowready', "#pluginCatalogPage", function () {
+    }).on('pageshow', "#pluginCatalogPage", function () {
 
         var page = this;
 

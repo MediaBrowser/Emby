@@ -12,7 +12,7 @@
             return '<option value="' + u.Id + '">' + u.Name + '</option>';
         }).join('');
 
-        $('#selectUser', page).html(usersHtml).val(config.DefaultUserId || '').selectmenu("refresh");
+        $('#selectUser', page).html(usersHtml).val(config.DefaultUserId || '');
 
         Dashboard.hideLoadingMsg();
     }
@@ -43,7 +43,7 @@
 
         $('.dlnaServerSettingsForm').off('submit', onSubmit).on('submit', onSubmit);
 
-    }).on('pageshowready', "#dlnaServerSettingsPage", function () {
+    }).on('pageshow', "#dlnaServerSettingsPage", function () {
 
         Dashboard.showLoadingMsg();
 

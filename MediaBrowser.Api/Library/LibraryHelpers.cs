@@ -33,11 +33,11 @@ namespace MediaBrowser.Api.Library
             var rootFolderPath = appPaths.DefaultUserViewsPath;
             var path = Path.Combine(rootFolderPath, virtualFolderName);
 
-            if (!Directory.Exists(path))
+			if (!fileSystem.DirectoryExists(path))
             {
                 throw new DirectoryNotFoundException(string.Format("The media collection {0} does not exist", virtualFolderName));
             }
-
+            
             var shortcut = Directory.EnumerateFiles(path, ShortcutFileSearch, SearchOption.AllDirectories).FirstOrDefault(f => fileSystem.ResolveShortcut(f).Equals(mediaPath, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(shortcut))
@@ -57,7 +57,7 @@ namespace MediaBrowser.Api.Library
         /// <exception cref="System.ArgumentException">The path is not valid.</exception>
         public static void AddMediaPath(IFileSystem fileSystem, string virtualFolderName, string path, IServerApplicationPaths appPaths)
         {
-            if (!Directory.Exists(path))
+			if (!fileSystem.DirectoryExists(path))
             {
                 throw new DirectoryNotFoundException("The path does not exist.");
             }
@@ -69,7 +69,7 @@ namespace MediaBrowser.Api.Library
 
             var lnk = Path.Combine(virtualFolderPath, shortcutFilename + ShortcutFileExtension);
 
-            while (File.Exists(lnk))
+			while (fileSystem.FileExists(lnk))
             {
                 shortcutFilename += "1";
                 lnk = Path.Combine(virtualFolderPath, shortcutFilename + ShortcutFileExtension);

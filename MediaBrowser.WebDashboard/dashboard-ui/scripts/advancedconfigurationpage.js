@@ -18,8 +18,10 @@
 
         if (systemInfo.CanSelfUpdate) {
             $('.fldAutomaticUpdates', page).show();
+            $('.lnlAutomaticUpdateLevel', page).html(Globalize.translate('LabelAutomaticUpdateLevel'));
         } else {
             $('.fldAutomaticUpdates', page).hide();
+            $('.lnlAutomaticUpdateLevel', page).html(Globalize.translate('LabelAutomaticUpdateLevelForPlugins'));
         }
 
         $('#chkEnableAutomaticServerUpdates', page).checked(config.EnableAutoUpdate).checkboxradio("refresh");
@@ -31,7 +33,7 @@
             $('#fldEnableAutomaticRestart', page).hide();
         }
 
-        $('#selectAutomaticUpdateLevel', page).val(config.SystemUpdateLevel).selectmenu('refresh').trigger('change');
+        $('#selectAutomaticUpdateLevel', page).val(config.SystemUpdateLevel).trigger('change');
         $('#chkDebugLog', page).checked(config.EnableDebugLevelLogging).checkboxradio("refresh");
 
         $('#chkRunAtStartup', page).checked(config.RunAtStartup).checkboxradio("refresh");
@@ -68,7 +70,7 @@
         return false;
     }
 
-    $(document).on('pageshowready', "#advancedConfigurationPage", function () {
+    $(document).on('pageshow', "#advancedConfigurationPage", function () {
 
         Dashboard.showLoadingMsg();
 

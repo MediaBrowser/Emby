@@ -30,7 +30,7 @@
 
     function getSavedQueryKey() {
 
-        return getWindowUrl();
+        return getWindowUrl() + 'people';
     }
 
     function reloadItems(page, viewPanel) {
@@ -63,7 +63,6 @@
             html = LibraryBrowser.getPosterViewHtml({
                 items: result.Items,
                 shape: "portrait",
-                context: 'movies',
                 showTitle: true,
                 showItemCounts: true,
                 coverImage: true,
@@ -100,7 +99,7 @@
 
             this.checked = filters.indexOf(',' + filterName) != -1;
 
-        }).checkboxradio('refresh');
+        });
 
         $('.alphabetPicker', tabContent).alphaValue(query.NameStartsWithOrGreater);
     }

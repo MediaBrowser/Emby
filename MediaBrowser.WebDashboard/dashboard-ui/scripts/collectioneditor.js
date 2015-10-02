@@ -81,7 +81,7 @@
             populateCollections(panel);
         } else {
             $('.fldSelectCollection', panel).hide();
-            $('#selectCollectionToAddTo', panel).html('').val('').selectmenu('refresh').trigger('change');
+            $('#selectCollectionToAddTo', panel).html('').val('').trigger('change');
         }
     }
 
@@ -109,7 +109,7 @@
                 return '<option value="' + i.Id + '">' + i.Name + '</option>';
             });
 
-            select.html(html).val('').selectmenu('refresh').trigger('change');
+            select.html(html).val('').trigger('change');
 
         });
     }
@@ -130,7 +130,7 @@
         return false;
     }
 
-    $(document).on('pageinit', ".collectionEditorPage", function () {
+    pageClassOn('pageinit', "collectionEditorPage", function () {
 
         var page = this;
 
@@ -205,14 +205,16 @@
     window.BoxSetEditor = {
 
         showPanel: function (items) {
-            showCollectionPanel(items);
+            require(['jqmpanel'], function () {
+                showCollectionPanel(items);
+            });
         },
 
         supportsAddingToCollection: function (item) {
 
-            var invalidTypes = ['Person', 'Genre', 'MusicGenre', 'Studio', 'GameGenre', 'BoxSet', 'Playlist', 'UserView', 'CollectionFolder', 'Audio', 'Episode'];
+            var invalidTypes = ['Person', 'Genre', 'MusicGenre', 'Studio', 'GameGenre', 'BoxSet', 'Playlist', 'UserView', 'CollectionFolder', 'Audio', 'Episode', 'TvChannel', 'Program'];
 
-            return item.LocationType == 'FileSystem' && !item.CollectionType && invalidTypes.indexOf(item.Type) == -1 && item.MediaType != 'Photo';
+            return !item.CollectionType && invalidTypes.indexOf(item.Type) == -1 && item.MediaType != 'Photo';
         }
     };
 

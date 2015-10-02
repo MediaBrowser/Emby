@@ -199,6 +199,8 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
         private void SaveToFile(Stream stream, string path)
         {
+            FileSystem.CreateDirectory(Path.GetDirectoryName(path));
+
             var file = new FileInfo(path);
 
             var wasHidden = false;
@@ -597,17 +599,13 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("tvcomid", tvcom);
             }
 
-            var hasLanguage = item as IHasPreferredMetadataLanguage;
-            if (hasLanguage != null)
+            if (!string.IsNullOrEmpty(item.PreferredMetadataLanguage))
             {
-                if (!string.IsNullOrEmpty(hasLanguage.PreferredMetadataLanguage))
-                {
-                    writer.WriteElementString("language", hasLanguage.PreferredMetadataLanguage);
-                }
-                if (!string.IsNullOrEmpty(hasLanguage.PreferredMetadataCountryCode))
-                {
-                    writer.WriteElementString("countrycode", hasLanguage.PreferredMetadataCountryCode);
-                }
+                writer.WriteElementString("language", item.PreferredMetadataLanguage);
+            }
+            if (!string.IsNullOrEmpty(item.PreferredMetadataCountryCode))
+            {
+                writer.WriteElementString("countrycode", item.PreferredMetadataCountryCode);
             }
 
             if (item.PremiereDate.HasValue && !(item is Episode))

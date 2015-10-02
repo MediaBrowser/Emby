@@ -20,7 +20,7 @@
 
             return '<option value="' + l.Value + '">' + l.Name + '</option>';
 
-        })).val(config.UICulture).selectmenu('refresh');
+        })).val(config.UICulture);
 
         currentLanguage = config.UICulture;
 
@@ -103,7 +103,7 @@
 
         $('.dashboardGeneralForm').off('submit', onSubmit).on('submit', onSubmit);
 
-    }).on('pageshowready', "#dashboardGeneralPage", function () {
+    }).on('pageshow', "#dashboardGeneralPage", function () {
 
         Dashboard.showLoadingMsg();
 
