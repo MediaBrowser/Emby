@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MediaBrowser.Common.IO
 {
@@ -73,7 +75,9 @@ namespace MediaBrowser.Common.IO
         /// <param name="share">The share.</param>
         /// <param name="isAsync">if set to <c>true</c> [is asynchronous].</param>
         /// <returns>FileStream.</returns>
-        FileStream GetFileStream(string path, FileMode mode, FileAccess access, FileShare share, bool isAsync = false);
+        Stream GetFileStream(string path, FileMode mode, FileAccess access, FileShare share, bool isAsync = false);
+
+		Stream OpenRead(String path);
 
         /// <summary>
         /// Swaps the files.
@@ -138,21 +142,6 @@ namespace MediaBrowser.Common.IO
         /// Deletes the file.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <param name="sendToRecycleBin">if set to <c>true</c> [send to recycle bin].</param>
-        void DeleteFile(string path, bool sendToRecycleBin);
-
-        /// <summary>
-        /// Deletes the directory.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
-        /// <param name="sendToRecycleBin">if set to <c>true</c> [send to recycle bin].</param>
-        void DeleteDirectory(string path, bool recursive, bool sendToRecycleBin);
-
-        /// <summary>
-        /// Deletes the file.
-        /// </summary>
-        /// <param name="path">The path.</param>
         void DeleteFile(string path);
 
         /// <summary>
@@ -161,5 +150,37 @@ namespace MediaBrowser.Common.IO
         /// <param name="path">The path.</param>
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         void DeleteDirectory(string path, bool recursive);
+        
+        IEnumerable<DirectoryInfo> GetDirectories(string path, bool recursive = false);
+
+		IEnumerable<FileInfo> GetFiles(string path, bool recursive = false);
+
+		IEnumerable<FileSystemInfo> GetFileSystemEntries(string path, bool recursive = false);
+
+		void CreateDirectory(string path);
+
+		void CopyFile(string source, string target, bool overwrite);
+
+		void MoveFile(string source, string target);
+
+		void MoveDirectory(string source, string target);
+
+		bool DirectoryExists(string path);
+
+		bool FileExists(string path);
+
+		string ReadAllText(string path);
+
+        void WriteAllText(string path, string text);
+        
+        void WriteAllText(string path, string text, Encoding encoding);
+
+        string ReadAllText(string path, Encoding encoding);
+
+        IEnumerable<string> GetDirectoryPaths(string path, bool recursive = false);
+
+        IEnumerable<string> GetFilePaths(string path, bool recursive = false);
+
+        IEnumerable<string> GetFileSystemEntryPaths(string path, bool recursive = false);
     }
 }

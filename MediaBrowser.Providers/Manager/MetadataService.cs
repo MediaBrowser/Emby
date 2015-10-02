@@ -141,15 +141,21 @@ namespace MediaBrowser.Providers.Manager
 
                 if (providers.Count > 0)
                 {
-                    var id = await CreateInitialLookupInfo(itemOfType, cancellationToken).ConfigureAwait(false);
+                    var id = itemOfType.GetLookupInfo();
+                    await ItemIdentifier<TIdType>.FindIdentities(id, ProviderManager, cancellationToken);
 
                     var result = await RefreshWithProviders(metadataResult, id, refreshOptions, providers, itemImageProvider, cancellationToken).ConfigureAwait(false);
 
                     updateType = updateType | result.UpdateType;
                     refreshResult.AddStatus(result.Status, result.ErrorMessage);
-                    refreshResult.SetDateLastMetadataRefresh(DateTime.UtcNow);
-
-                    MergeIdentities(itemOfType, id);
+                    if (result.Failures == 0)
+                    {
+                        refreshResult.SetDateLastMetadataRefresh(DateTime.UtcNow);
+                    }
+                    else
+                    {
+                        refreshResult.SetDateLastMetadataRefresh(null);
+                    }
                 }
             }
 
@@ -164,7 +170,14 @@ namespace MediaBrowser.Providers.Manager
 
                     updateType = updateType | result.UpdateType;
                     refreshResult.AddStatus(result.Status, result.ErrorMessage);
-                    refreshResult.SetDateLastImagesRefresh(DateTime.UtcNow);
+                    if (result.Failures == 0)
+                    {
+                        refreshResult.SetDateLastImagesRefresh(DateTime.UtcNow);
+                    }
+                    else
+                    {
+                        refreshResult.SetDateLastImagesRefresh(null);
+                    }
                 }
             }
 
@@ -209,16 +222,7 @@ namespace MediaBrowser.Providers.Manager
             item.AfterMetadataRefresh();
             return _cachedTask;
         }
-
-        private void MergeIdentities(TItemType item, TIdType id)
-        {
-            var hasIdentity = id as IHasIdentities<IItemIdentity>;
-            if (hasIdentity != null)
-            {
-                item.Identities = hasIdentity.Identities.ToList();
-            }
-        }
-
+        
         private readonly Task<ItemUpdateType> _cachedResult = Task.FromResult(ItemUpdateType.None);
         /// <summary>
         /// Befores the save.
@@ -479,13 +483,7 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            var isUnidentified = failedProviderCount > 0 && successfulProviderCount == 0;
-
-            if (item.IsUnidentified != isUnidentified)
-            {
-                item.IsUnidentified = isUnidentified;
-                refreshResult.UpdateType = refreshResult.UpdateType | ItemUpdateType.MetadataImport;
-            }
+            //var isUnidentified = failedProviderCount > 0 && successfulProviderCount == 0;
 
             foreach (var provider in customProviders.Where(i => !(i is IPreRefreshProvider)))
             {
@@ -503,7 +501,7 @@ namespace MediaBrowser.Providers.Manager
             {
                 return false;
             }
-            
+
             return true;
         }
 
@@ -607,26 +605,6 @@ namespace MediaBrowser.Providers.Manager
                     hasTrailers.RemoteTrailers.Clear();
                 }
             }
-        }
-
-        private async Task<TIdType> CreateInitialLookupInfo(TItemType item, CancellationToken cancellationToken)
-        {
-            var info = item.GetLookupInfo();
-
-            var hasIdentity = info as IHasIdentities<IItemIdentity>;
-            if (hasIdentity != null)
-            {
-                try
-                {
-                    await hasIdentity.FindIdentities(ProviderManager, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error in identity providers", ex);
-                }
-            }
-
-            return info;
         }
 
         private void MergeNewData(TItemType source, TIdType lookupInfo)

@@ -5,7 +5,7 @@
         var folderHtml = '';
 
         folderHtml += '<div class="paperCheckboxList">';
-        folderHtml += result.Items.map(function (i) {
+        folderHtml += result.map(function (i) {
 
             var currentHtml = '';
 
@@ -87,39 +87,40 @@
 
         var html = '';
 
-        html += '<ul data-role="listview" data-inset="true" data-mini="true">';
         var index = 0;
 
         html += result.Items.map(function (view) {
 
             var currentHtml = '';
 
-            currentHtml += '<li data-mini="true" class="viewItem" data-viewid="' + view.Id + '">';
+            currentHtml += '<paper-icon-item class="viewItem" data-viewid="' + view.Id + '">';
+
+            currentHtml += '<paper-fab class="listAvatar" style="background-color:#444;" icon="folder-open" item-icon></paper-fab>';
+
+            currentHtml += '<paper-item-body>';
+
+            currentHtml += '<div>';
+            currentHtml += view.Name;
+            currentHtml += '</div>';
+
+            currentHtml += '</paper-item-body>';
 
             if (index > 0) {
-                currentHtml += '<a href="#">' + view.Name + '</a>';
 
-                currentHtml += '<a class="btnViewItemUp btnViewItemMove" href="#" data-icon="arrow-u">' + Globalize.translate('ButtonUp') + '</a>';
+                currentHtml += '<paper-icon-button icon="keyboard-arrow-up" class="btnViewItemUp btnViewItemMove" title="' + Globalize.translate('ButtonUp') + '"></paper-icon-button>';
             }
             else if (result.Items.length > 1) {
 
-                currentHtml += '<a href="#">' + view.Name + '</a>';
-
-                currentHtml += '<a class="btnViewItemDown btnViewItemMove" href="#" data-icon="arrow-d">' + Globalize.translate('ButtonDown') + '</a>';
+                currentHtml += '<paper-icon-button icon="keyboard-arrow-down" class="btnViewItemDown btnViewItemMove" title="' + Globalize.translate('ButtonDown') + '"></paper-icon-button>';
             }
-            else {
 
-                currentHtml += view.Name;
 
-            }
-            html += '</li>';
+            currentHtml += '</paper-icon-item>';
 
             index++;
             return currentHtml;
 
         }).join('');
-
-        html += '</ul>';
 
         $('.viewOrderList', page).html(html).trigger('create');
     }
@@ -130,20 +131,21 @@
         page.querySelector('.chkHidePlayedFromLatest').checked = user.Configuration.HidePlayedInLatest || false;
         page.querySelector('.chkDisplayChannelsInline').checked = user.Configuration.DisplayChannelsInline || false;
 
-        $('#selectHomeSection1', page).val(displayPreferences.CustomPrefs.home0 || '').selectmenu("refresh");
-        $('#selectHomeSection2', page).val(displayPreferences.CustomPrefs.home1 || '').selectmenu("refresh");
-        $('#selectHomeSection3', page).val(displayPreferences.CustomPrefs.home2 || '').selectmenu("refresh");
-        $('#selectHomeSection4', page).val(displayPreferences.CustomPrefs.home3 || '').selectmenu("refresh");
+        $('#selectHomeSection1', page).val(displayPreferences.CustomPrefs.home0 || '');
+        $('#selectHomeSection2', page).val(displayPreferences.CustomPrefs.home1 || '');
+        $('#selectHomeSection3', page).val(displayPreferences.CustomPrefs.home2 || '');
+        $('#selectHomeSection4', page).val(displayPreferences.CustomPrefs.home3 || '');
 
         var promise1 = ApiClient.getItems(user.Id, {
             sortBy: "SortName"
         });
         var promise2 = ApiClient.getUserViews({}, user.Id);
         var promise3 = ApiClient.getJSON(ApiClient.getUrl("Users/" + user.Id + "/SpecialViewOptions"));
+        var promise4 = ApiClient.getJSON(ApiClient.getUrl("Users/" + user.Id + "/GroupingOptions"));
 
-        $.when(promise1, promise2, promise3).done(function (r1, r2, r3) {
+        $.when(promise1, promise2, promise3, promise4).done(function (r1, r2, r3, r4) {
 
-            renderViews(page, user, r1[0]);
+            renderViews(page, user, r4[0]);
             renderLatestItems(page, user, r1[0]);
             renderViewOrder(page, user, r2[0]);
             renderViewStyles(page, user, r3[0]);
@@ -170,7 +172,7 @@
 
         user.Configuration.ExcludeFoldersFromGrouping = null;
 
-        user.Configuration.GroupedFolders = $(".chkGroupFolder", page).get().filter(function(i) {
+        user.Configuration.GroupedFolders = $(".chkGroupFolder", page).get().filter(function (i) {
 
             return i.checked;
 
@@ -267,7 +269,7 @@
 
         $('.homeScreenPreferencesForm').off('submit', onSubmit).on('submit', onSubmit);
 
-    }).on('pageshowready', "#homeScreenPreferencesPage", function () {
+    }).on('pageshow', "#homeScreenPreferencesPage", function () {
 
         var page = this;
 

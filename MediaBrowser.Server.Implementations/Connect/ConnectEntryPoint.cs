@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Server.Implementations.Connect
 {
@@ -23,8 +24,9 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         private readonly INetworkManager _networkManager;
         private readonly IApplicationHost _appHost;
+        private readonly IFileSystem _fileSystem;
 
-        public ConnectEntryPoint(IHttpClient httpClient, IApplicationPaths appPaths, ILogger logger, INetworkManager networkManager, IConnectManager connectManager, IApplicationHost appHost)
+        public ConnectEntryPoint(IHttpClient httpClient, IApplicationPaths appPaths, ILogger logger, INetworkManager networkManager, IConnectManager connectManager, IApplicationHost appHost, IFileSystem fileSystem)
         {
             _httpClient = httpClient;
             _appPaths = appPaths;
@@ -32,6 +34,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             _networkManager = networkManager;
             _connectManager = connectManager;
             _appHost = appHost;
+            _fileSystem = fileSystem;
         }
 
         public void Run()
@@ -90,8 +93,8 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                File.WriteAllText(path, address, Encoding.UTF8);
+				_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
+				_fileSystem.WriteAllText(path, address, Encoding.UTF8);
             }
             catch (Exception ex)
             {
@@ -105,7 +108,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             try
             {
-                var endpoint = File.ReadAllText(path, Encoding.UTF8);
+				var endpoint = _fileSystem.ReadAllText(path, Encoding.UTF8);
 
                 if (IsValid(endpoint))
                 {

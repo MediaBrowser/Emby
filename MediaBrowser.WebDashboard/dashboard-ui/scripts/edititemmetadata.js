@@ -46,18 +46,6 @@
             setFieldVisibilities(page, item);
             fillItemInfo(page, item, metadataEditorInfo.ParentalRatingOptions);
 
-            if (item.Type == "BoxSet") {
-                page.querySelector('.collectionItemsTabButton').classList.remove('hide');
-            } else {
-                page.querySelector('.collectionItemsTabButton').classList.add('hide');
-            }
-
-            if (item.MediaType == "Video" && item.LocationType == "FileSystem" && item.Type !== 'TvChannel') {
-                page.querySelector('.subtitleTabButton').classList.remove('hide');
-            } else {
-                page.querySelector('.subtitleTabButton').classList.add('hide');
-            }
-
             if (item.MediaType == 'Photo') {
                 $('#btnEditImages', page).hide();
             } else {
@@ -96,7 +84,7 @@
 
         }).join('');
 
-        $('#selectContentType', page).html(html).val(metadataInfo.ContentType || '').selectmenu('refresh');
+        $('#selectContentType', page).html(html).val(metadataInfo.ContentType || '');
     }
 
     function onExternalIdChange() {
@@ -377,9 +365,9 @@
             $('#fldDisplayOrder', page).show();
 
             $('#labelDisplayOrder', page).html(Globalize.translate('LabelTitleDisplayOrder'));
-            $('#selectDisplayOrder', page).html('<option value="SortName">' + Globalize.translate('OptionSortName') + '</option><option value="PremiereDate">' + Globalize.translate('OptionReleaseDate') + '</option>').selectmenu('refresh');
+            $('#selectDisplayOrder', page).html('<option value="SortName">' + Globalize.translate('OptionSortName') + '</option><option value="PremiereDate">' + Globalize.translate('OptionReleaseDate') + '</option>');
         } else {
-            $('#selectDisplayOrder', page).html('').selectmenu('refresh');
+            $('#selectDisplayOrder', page).html('');
             $('#fldDisplayOrder', page).hide();
         }
 
@@ -401,19 +389,19 @@
 
         populateRatings(parentalRatingOptions, select, item.OfficialRating);
 
-        select.val(item.OfficialRating || "").selectmenu('refresh');
+        select.val(item.OfficialRating || "");
 
         select = $('#selectCustomRating', page);
 
         populateRatings(parentalRatingOptions, select, item.CustomRating);
 
-        select.val(item.CustomRating || "").selectmenu('refresh');
+        select.val(item.CustomRating || "");
 
         var selectStatus = $('#selectStatus', page);
         populateStatus(selectStatus);
-        selectStatus.val(item.Status || "").selectmenu('refresh');
+        selectStatus.val(item.Status || "");
 
-        $('#select3dFormat', page).val(item.Video3DFormat || "").selectmenu('refresh');
+        $('#select3dFormat', page).val(item.Video3DFormat || "");
 
         $('.chkAirDay', page).each(function () {
 
@@ -481,7 +469,7 @@
 
         }).join(';'));
 
-        $('#selectDisplayOrder', page).val(item.DisplayOrder).selectmenu('refresh');
+        $('#selectDisplayOrder', page).val(item.DisplayOrder);
 
         $('#txtArtist', page).val((item.ArtistItems || []).map(function (a) {
 
@@ -536,8 +524,8 @@
 
         $('#txtOriginalAspectRatio', page).val(item.AspectRatio || "");
 
-        $('#selectLanguage', page).val(item.PreferredMetadataLanguage || "").selectmenu('refresh');
-        $('#selectCountry', page).val(item.PreferredMetadataCountryCode || "").selectmenu('refresh');
+        $('#selectLanguage', page).val(item.PreferredMetadataLanguage || "");
+        $('#selectCountry', page).val(item.PreferredMetadataCountryCode || "");
 
         if (item.RunTimeTicks) {
 
@@ -604,7 +592,7 @@
         $('#popupEditPerson', page).popup("open");
 
         $('#txtPersonName', page).val(person.Name || '');
-        $('#selectPersonType', page).val(person.Type || '').selectmenu('refresh');
+        $('#selectPersonType', page).val(person.Type || '');
         $('#txtPersonRole', page).val(person.Role || '');
 
         if (index == null) {
@@ -678,7 +666,7 @@
             html += "<option value='" + rating.Value + "'>" + rating.Name + "</option>";
         }
 
-        select.html(html).selectmenu("refresh");
+        select.html(html);
     }
 
     function populateStatus(select) {
@@ -687,7 +675,7 @@
         html += "<option value=''></option>";
         html += "<option value='Continuing'>" + Globalize.translate('OptionContinuing') + "</option>";
         html += "<option value='Ended'>" + Globalize.translate('OptionEnded') + "</option>";
-        select.html(html).selectmenu("refresh");
+        select.html(html);
     }
 
     function populateListView(list, items, sortCallback) {
@@ -1046,7 +1034,7 @@
 
                 var id = "txtLookup" + idInfo.Key;
 
-                html += '<div data-role="fieldcontain">';
+                html += '<div>';
 
                 var idLabel = Globalize.translate('LabelDynamicExternalId').replace('{0}', idInfo.Name);
                 html += '<label for="' + id + '">' + idLabel + '</label>';
@@ -1283,8 +1271,8 @@
 
         $('.popupAdvancedRefresh', page).popup('open');
 
-        $('#selectMetadataRefreshMode', page).val('all').selectmenu('refresh');
-        $('#selectImageRefreshMode', page).val('missing').selectmenu('refresh');
+        $('#selectMetadataRefreshMode', page).val('all');
+        $('#selectImageRefreshMode', page).val('missing');
     }
 
     function performSimpleRefresh(page) {
@@ -1390,6 +1378,12 @@
                 });
             }
 
+            menuItems.push({
+                name: Globalize.translate('ButtonEditImages'),
+                id: 'editimages',
+                ironIcon: 'photo'
+            });
+
             require(['actionsheet'], function () {
 
                 ActionSheetElement.show({
@@ -1404,6 +1398,9 @@
                                 break;
                             case 'delete':
                                 LibraryBrowser.deleteItem(currentItem.Id);
+                                break;
+                            case 'editimages':
+                                LibraryBrowser.editImages(currentItem.Id);
                                 break;
                             default:
                                 break;
@@ -1455,11 +1452,9 @@
 
             if (data.id != currentItem.Id) {
 
-                //Dashboard.navigate('edititemmetadata.html?id=' + data.id);
-
                 //$.mobile.urlHistory.ignoreNextHashChange = true;
                 window.location.hash = 'editItemMetadataPage?id=' + data.id;
-                $(page.querySelector('paper-tabs')).trigger('tabchange');
+                reload(page);
             }
         });
 
@@ -1474,40 +1469,16 @@
         $('.popupAdvancedRefreshForm').off('submit', EditItemMetadataPage.onRefreshFormSubmit).on('submit', EditItemMetadataPage.onRefreshFormSubmit);
         $('.identifyOptionsForm').off('submit', EditItemMetadataPage.onIdentificationOptionsSubmit).on('submit', EditItemMetadataPage.onIdentificationOptionsSubmit);
 
-        var tabs = page.querySelector('paper-tabs');
-
-        configurePaperLibraryTabs(page, tabs);
-
-        $(tabs).on('iron-select', function () {
-
-            var self = this;
-
-            setTimeout(function () {
-                Events.trigger(self, 'tabchange');
-            }, 400);
-
-        }).on('tabchange', function () {
-            var selected = this.selected;
-
-            showTab(page, selected);
-            loadTab(page, parseInt(this.selected));
-        });
-
-        page.querySelector('.btnMore iron-icon').icon = AppInfo.moreIcon;
-
         $('.btnMore', page).on('click', function () {
             showMoreMenu(page, this);
         });
 
-    }).on('pageshowready', "#editItemMetadataPage", function () {
+    }).on('pageshow', "#editItemMetadataPage", function () {
 
         var page = this;
 
         $(LibraryBrowser).on('itemdeleting', onItemDeleted);
-
-        var selected = parseInt(getParameterByName('tab') || '0');
-
-        page.querySelector('paper-tabs').selected = selected;
+        reload(page);
 
     }).on('pagebeforehide', "#editItemMetadataPage", function () {
 
@@ -1515,49 +1486,7 @@
         $(LibraryBrowser).off('itemdeleting', onItemDeleted);
 
         unbindItemChanged(page);
-
     });
-
-    function configurePaperLibraryTabs(ownerpage, tabs) {
-
-        tabs.hideScrollButtons = true;
-        tabs.noSlide = true;
-
-        // Unfortunately we can't disable this because it causes iron-select to not fire in IE and Safari.
-        //tabs.noink = true;
-
-        $(ownerpage).on('pageshowready', function () {
-
-            var selected = tabs.selected;
-
-            if (selected == null) {
-
-                Logger.log('selected tab is null, checking query string');
-
-                selected = parseInt(getParameterByName('tab') || '0');
-
-                Logger.log('selected tab will be ' + selected);
-
-                tabs.selected = selected;
-
-            } else {
-                Events.trigger(tabs, 'tabchange');
-            }
-        });
-    }
-
-    function loadTab(page, index) {
-
-        switch (index) {
-
-            case 0:
-                reload(page);
-                break;
-            default:
-                reload(page);
-                break;
-        }
-    }
 
 })(jQuery, document, window);
 

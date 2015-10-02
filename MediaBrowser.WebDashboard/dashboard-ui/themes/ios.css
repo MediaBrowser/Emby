@@ -1,61 +1,98 @@
-﻿html {
-    /* Setting it here will help prevent white flashes */
-    background-color: #1c1c1c;
-}
-
-html, body, .ui-btn, .pageTitle {
+﻿html, body, .ui-btn, .pageTitle {
     font-family: San Francisco, Helvetica Neue;
 }
 
-
-.viewMenuBar, .libraryViewNav, paper-tabs {
-    background-color: rgba(28,28,28,.97);
+body {
+    font-size: 15px;
 }
 
-    .viewMenuBar.semiTransparent {
-        background-color: rgba(28, 28, 28, .8);
-    }
+.ui-body-b a:visited {
+    color: #007AFF /*{b-link-visited}*/;
+}
 
-.backdropPage.ui-page-theme-b {
+.ui-body-b a {
+    color: #007AFF /*{b-link-color}*/;
+    font-weight: 500;
+}
+
+.ui-body-b select {
+    -webkit-appearance: none;
+}
+
+.pageWithAbsoluteTabs:not(.noSecondaryNavPage) {
+    padding-top: 88px !important;
+}
+
+.libraryPage:not(.noSecondaryNavPage) {
+    padding-top: 85px !important;
+}
+
+.backdropContainer {
+    /* This isn't implemented right and ends up looking terrible */
+    background-attachment: initial;
+}
+
+.background-theme-b {
+    background-color: #161616;
+}
+
+.backdropContainer .pageBackground {
     background-color: rgba(28,28,28,.92) !important;
 }
 
-.ui-page-theme-b {
-    background-color: #1c1c1c;
+.homeTopViews .defaultBackground .cardImage {
+    background-color: #303030;
 }
 
-.libraryViewNav a {
-    font-weight: 400;
-    text-transform: none;
-    color: #ccc !important;
-    padding: 12px 13px 8px;
+.viewMenuBar {
+    /* It needs this in order to retain height since we're positioning the contents absolutely */
+    height: 50px;
 }
 
-.libraryViewNav .tab-content {
-    display: block !important;
+.viewMenuBar, .libraryViewNav, paper-tabs {
+    background-color: #000;
 }
 
-.libraryViewNav paper-tabs {
-    height: 58px !important;
+    .viewMenuBar.semiTransparent {
+        background-color: #000;
+    }
+
+    .libraryViewNav a {
+        font-weight: 400;
+        text-transform: none;
+        color: #ccc !important;
+        padding: 12px 13px 8px;
+    }
+
+    .libraryViewNav .tab-content {
+        display: block !important;
+    }
+
+    .libraryViewNav paper-tabs {
+        flex-grow: 0 !important;
+        height: 36px;
+    }
+
+    .libraryViewNav paper-tab {
+        height: auto !important;
+        flex-grow: 0 !important;
+    }
+
+    .libraryViewNav #selectionBar {
+        background-color: transparent !important;
+    }
+
+    .libraryViewNav #tabsContainer {
+        flex-grow: 0 !important;
+    }
+
+.ui-body-b .paperList {
+    background-color: transparent;
+    box-shadow: none;
 }
 
-.libraryViewNav paper-tab {
-    height: auto !important;
-}
-
-.libraryViewNav iron-icon {
-    width: 22px;
-    height: 22px;
-    display: block;
-    margin: 0 auto 6px;
-}
-
-.libraryViewNav paper-tabs iron-icon {
-    margin: 6px auto 6px;
-}
-
-.libraryViewNav #selectionBar {
-    background-color: transparent !important;
+.settingsMenuHeader {
+    display: none;
 }
 
 @media all and (max-width: 600px) {
@@ -70,33 +107,20 @@ html, body, .ui-btn, .pageTitle {
     border-bottom: 0;
 }
 
-    .libraryViewNav .ui-btn-active, .libraryViewNav .iron-selected, .barsMenuButton .fa, .btnActiveCast, .libraryViewNav a:not(.ui-btn-active):hover {
-        color: #FF2D55 !important;
-    }
-
-.viewMenuBar .headerButtonLeft {
-    color: #FF2D55 !important;
+.libraryViewNav .ui-btn-active, .libraryViewNav .iron-selected, .btnActiveCast {
+    color: #52B54B !important;
 }
 
 .channelTimeslotHeader {
-    border-right-color: #FF2D55 !important;
+    border-right-color: #52B54B !important;
 }
 
 .channelTimeslotHeader, .timeslotHeader {
-    background: #FF2D55 !important;
-}
-
-
-.libraryViewNav {
-    border-top: 1px solid #333 !important;
+    background: #52B54B !important;
 }
 
 .libraryViewNav, paper-tabs {
     font-size: 12px;
-}
-
-.viewMenuBar {
-    border-bottom: 1px solid #333;
 }
 
 h1, h1 a {
@@ -115,14 +139,34 @@ h1, h1 a {
     font-weight: 400;
 }
 
+.tvGuideHeader {
+    top: 86px !important;
+}
+
 .libraryMenuButtonText {
     font-weight: 500 !important;
-    position: relative;
-    top: 2px;
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    text-align: center;
+    font-size: 16px;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+@media all and (max-width: 400px) {
+
+    .libraryMenuButtonText {
+        display: block;
+    }
 }
 
 .libraryPanelHeader span {
     font-weight: 400;
+}
+
+.noSecondaryNavPage .itemBackdrop {
+    margin-top: 0;
 }
 
 paper-tab {
@@ -153,15 +197,6 @@ paper-tab {
     background: #1c1c1c;
 }
 
-.libraryMenuButtonText {
-    position: absolute;
-    left: 100px;
-    right: 100px;
-    text-align: center;
-    font-size: 16px;
-    margin: 0 auto !important;
-}
-
 @media (min-width: 600px) {
 
     /* This needs a little extra space to account for the longer date format */
@@ -185,4 +220,19 @@ paper-tab {
 #footer {
     /* Eliminate transparency to prevent clicks from passing through to the elements underneath */
     background-color: rgb(26,26,26);
+}
+
+.nowPlayingPageBackButton {
+    display: none !important;
+}
+
+.nowPlayingPage .libraryViewNav {
+    top: 0 !important;
+}
+
+.nowPlayingPage {
+    padding-top: 50px !important;
+}
+.localSyncStatus .labelSyncStatus {
+    display: none !important;
 }

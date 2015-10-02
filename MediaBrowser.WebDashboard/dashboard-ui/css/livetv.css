@@ -15,18 +15,9 @@
     position: static;
 }
 
-.bottomSecondaryNav .tvGuideHeader {
-    top: 48px;
-}
-
 .tvGuideHeader.headroom--unpinned {
     -webkit-transform: translateY(-98px);
     transform: translateY(-98px);
-}
-
-.bottomSecondaryNav .tvGuideHeader.headroom--unpinned {
-    -webkit-transform: translateY(-48px);
-    transform: translateY(-48px);
 }
 
 .tvProgramSectionHeader {
@@ -226,11 +217,11 @@
 }
 
 .channelTimeslotHeader {
-    border-right: 1px solid #38c;
+    border-right-color: #52B54B;
 }
 
 .channelTimeslotHeader, .timeslotHeader {
-    background: #38c;
+    background: #52B54B;
 }
 
 .timeslotHeader, .channelTimeslotHeader {
@@ -319,11 +310,14 @@
 }
 
 .guideChannelImage {
-    max-width: 60px;
-    max-height: 35px;
+    width: 60px;
+    height: 35px;
     position: absolute;
     right: 7px;
     top: 7px;
+    background-size: contain;
+    background-position: right center;
+    background-repeat: no-repeat;
 }
 
 @media (max-width: 1920px) {

@@ -1,5 +1,6 @@
 ﻿using ImageMagickSharp;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Model.Drawing;
 using System.Globalization;
 
@@ -10,10 +11,12 @@ namespace Emby.Drawing.ImageMagick
         private const int OffsetFromTopRightCorner = 38;
 
         private readonly IApplicationPaths _appPaths;
+        private readonly IFileSystem _fileSystem;
 
-        public UnplayedCountIndicator(IApplicationPaths appPaths)
+        public UnplayedCountIndicator(IApplicationPaths appPaths, IFileSystem fileSystem)
         {
             _appPaths = appPaths;
+            _fileSystem = fileSystem;
         }
 
         public void DrawUnplayedCountIndicator(MagickWand wand, ImageSize imageSize, int count)
@@ -33,7 +36,7 @@ namespace Emby.Drawing.ImageMagick
                     pixel.Opacity = 0;
                     pixel.Color = "white";
                     draw.FillColor = pixel;
-                    draw.Font = PlayedIndicatorDrawer.ExtractFont("robotoregular.ttf", _appPaths);
+                    draw.Font = PlayedIndicatorDrawer.ExtractFont("robotoregular.ttf", _appPaths, _fileSystem);
                     draw.FontStyle = FontStyleType.NormalStyle;
                     draw.TextAlignment = TextAlignType.CenterAlign;
                     draw.FontWeight = FontWeightType.RegularStyle;

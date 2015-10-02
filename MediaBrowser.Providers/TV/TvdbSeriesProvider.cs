@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
-    public class TvdbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IItemIdentityProvider<SeriesInfo, SeriesIdentity>, IHasOrder
+    public class TvdbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IItemIdentityProvider<SeriesInfo>, IHasOrder
     {
         private const string TvdbSeriesOffset = "TvdbSeriesOffset";
         private const string TvdbSeriesOffsetFormat = "{0}-{1}";
@@ -94,24 +94,10 @@ namespace MediaBrowser.Providers.TV
 
             if (string.IsNullOrWhiteSpace(seriesId))
             {
-                seriesId = itemId.Identities
-                                 .Where(id => id.Type == MetadataProviders.Tvdb.ToString())
-                                 .Select(id => id.Id)
-                                 .FirstOrDefault();
-
-                if (string.IsNullOrWhiteSpace(seriesId))
-                {
-                    var srch = await GetSearchResults(itemId, cancellationToken).ConfigureAwait(false);
-
-                    var entry = srch.FirstOrDefault();
-
-                    if (entry != null)
-                    {
-                        seriesId = entry.GetProviderId(MetadataProviders.Tvdb);
-                    }
-                }
+                await Identify(itemId).ConfigureAwait(false);
+                seriesId = itemId.GetProviderId(MetadataProviders.Tvdb);
             }
-
+            
             cancellationToken.ThrowIfCancellationRequested();
 
             if (!string.IsNullOrWhiteSpace(seriesId))
@@ -252,7 +238,7 @@ namespace MediaBrowser.Providers.TV
 
             if (!string.Equals(downloadLangaugeXmlFile, saveAsLanguageXmlFile, StringComparison.OrdinalIgnoreCase))
             {
-                File.Copy(downloadLangaugeXmlFile, saveAsLanguageXmlFile, true);
+				_fileSystem.CopyFile(downloadLangaugeXmlFile, saveAsLanguageXmlFile, true);
             }
 
             await ExtractEpisodes(seriesDataPath, downloadLangaugeXmlFile, lastTvDbUpdateTime).ConfigureAwait(false);
@@ -268,9 +254,9 @@ namespace MediaBrowser.Providers.TV
         {
             var seriesDataPath = GetSeriesDataPath(_config.ApplicationPaths, seriesId);
 
-            Directory.CreateDirectory(seriesDataPath);
+			_fileSystem.CreateDirectory(seriesDataPath);
 
-            var files = new DirectoryInfo(seriesDataPath).EnumerateFiles("*.xml", SearchOption.TopDirectoryOnly)
+			var files = _fileSystem.GetFiles(seriesDataPath)
                 .ToList();
 
             var seriesXmlFilename = preferredMetadataLanguage + ".xml";
@@ -1107,7 +1093,7 @@ namespace MediaBrowser.Providers.TV
             var file = Path.Combine(seriesDataPath, string.Format("episode-{0}-{1}.xml", seasonNumber, episodeNumber));
 
             // Only save the file if not already there, or if the episode has changed
-            if (hasEpisodeChanged || !File.Exists(file))
+			if (hasEpisodeChanged || !_fileSystem.FileExists(file))
             {
                 using (var writer = XmlWriter.Create(file, new XmlWriterSettings
                 {
@@ -1124,7 +1110,7 @@ namespace MediaBrowser.Providers.TV
                 file = Path.Combine(seriesDataPath, string.Format("episode-abs-{0}.xml", absoluteNumber));
 
                 // Only save the file if not already there, or if the episode has changed
-                if (hasEpisodeChanged || !File.Exists(file))
+				if (hasEpisodeChanged || !_fileSystem.FileExists(file))
                 {
                     using (var writer = XmlWriter.Create(file, new XmlWriterSettings
                     {
@@ -1167,11 +1153,10 @@ namespace MediaBrowser.Providers.TV
         {
             try
             {
-                foreach (var file in new DirectoryInfo(path)
-                    .EnumerateFiles("*.xml", SearchOption.AllDirectories)
+                foreach (var file in _fileSystem.GetFilePaths(path, true)
                     .ToList())
                 {
-                    _fileSystem.DeleteFile(file.FullName);
+                    _fileSystem.DeleteFile(file);
                 }
             }
             catch (DirectoryNotFoundException)
@@ -1240,27 +1225,20 @@ namespace MediaBrowser.Providers.TV
             get { return "TheTVDB"; }
         }
 
-        public async Task<SeriesIdentity> FindIdentity(SeriesInfo info)
+        public async Task Identify(SeriesInfo info)
         {
-            string tvdbId;
-            if (!info.ProviderIds.TryGetValue(MetadataProviders.Tvdb.ToString(), out tvdbId))
+            if (string.IsNullOrEmpty(info.GetProviderId(MetadataProviders.Tvdb)))
             {
-                var srch = await GetSearchResults(info, CancellationToken.None).ConfigureAwait(false);
+                var srch = await FindSeries(info.Name, info.MetadataLanguage, CancellationToken.None).ConfigureAwait(false);
 
                 var entry = srch.FirstOrDefault();
 
                 if (entry != null)
                 {
-                    tvdbId = entry.GetProviderId(MetadataProviders.Tvdb);
+                    var id = entry.GetProviderId(MetadataProviders.Tvdb);
+                    info.SetProviderId(MetadataProviders.Tvdb, id);
                 }
             }
-
-            if (!string.IsNullOrWhiteSpace(tvdbId))
-            {
-                return new SeriesIdentity { Type = MetadataProviders.Tvdb.ToString(), Id = tvdbId };
-            }
-
-            return null;
         }
 
         public int Order

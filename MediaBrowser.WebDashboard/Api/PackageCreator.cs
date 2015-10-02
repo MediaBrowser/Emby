@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Net;
 using WebMarkupMin.Core;
 using WebMarkupMin.Core.Minifiers;
 using WebMarkupMin.Core.Settings;
@@ -136,7 +137,7 @@ namespace MediaBrowser.WebDashboard.Api
             // Don't allow file system access outside of the source folder
             if (!_fileSystem.ContainsSubPath(rootPath, fullPath))
             {
-                throw new UnauthorizedAccessException();
+                throw new SecurityException("Access denied");
             }
 
             return fullPath;
@@ -521,7 +522,6 @@ namespace MediaBrowser.WebDashboard.Api
                 "thirdparty/jquery.unveil-custom.js",
                 "apiclient/logger.js",
                 "apiclient/md5.js",
-                "apiclient/sha1.js",
                 "apiclient/store.js",
                 "apiclient/device.js",
                 "apiclient/credentials.js",
@@ -607,7 +607,6 @@ namespace MediaBrowser.WebDashboard.Api
                                 "appsettings.js",
                                 "mediaplayer.js",
                                 "mediaplayer-video.js",
-                                "nowplayingbar.js",
                                 "alphapicker.js",
                                 "directorybrowser.js",
                                 "collectioneditor.js",
@@ -657,7 +656,6 @@ namespace MediaBrowser.WebDashboard.Api
                                       "thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.structure.css",
                                       "css/site.css",
                                       "css/chromecast.css",
-                                      "css/nowplayingbar.css",
                                       "css/mediaplayer.css",
                                       "css/mediaplayer-video.css",
                                       "css/librarymenu.css",

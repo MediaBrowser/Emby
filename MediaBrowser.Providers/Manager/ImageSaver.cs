@@ -208,7 +208,7 @@ namespace MediaBrowser.Providers.Manager
 
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+				_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
                 // If the file is currently hidden we'll have to remove that or the save will fail
                 var file = new FileInfo(path);
@@ -235,11 +235,6 @@ namespace MediaBrowser.Providers.Manager
                     // Add back the attribute
                     file.Attributes |= FileAttributes.Hidden;
                 }
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.Error("Error saving image to {0}", ex, path);
-                throw new Exception(string.Format("Error saving image to {0}", path), ex);
             }
             finally
             {

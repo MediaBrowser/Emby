@@ -110,7 +110,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
             try
             {
-                Directory.CreateDirectory(path);
+				_fileSystem.CreateDirectory(path);
 
                 var playlist = new Playlist
                 {
@@ -128,7 +128,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
                 await parentFolder.AddChild(playlist, CancellationToken.None).ConfigureAwait(false);
 
-                await playlist.RefreshMetadata(new MetadataRefreshOptions { ForceSave = true }, CancellationToken.None)
+                await playlist.RefreshMetadata(new MetadataRefreshOptions(_fileSystem) { ForceSave = true }, CancellationToken.None)
                     .ConfigureAwait(false);
 
                 if (options.ItemIdList.Count > 0)
@@ -150,7 +150,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
         private string GetTargetPath(string path)
         {
-            while (Directory.Exists(path))
+			while (_fileSystem.DirectoryExists(path))
             {
                 path += "1";
             }
@@ -196,7 +196,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
             await playlist.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
 
-            _providerManager.QueueRefresh(playlist.Id, new MetadataRefreshOptions
+            _providerManager.QueueRefresh(playlist.Id, new MetadataRefreshOptions(_fileSystem)
             {
                 ForceSave = true
             });
@@ -223,7 +223,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
             await playlist.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
 
-            _providerManager.QueueRefresh(playlist.Id, new MetadataRefreshOptions
+            _providerManager.QueueRefresh(playlist.Id, new MetadataRefreshOptions(_fileSystem)
             {
                 ForceSave = true
             });

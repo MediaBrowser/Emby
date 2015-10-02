@@ -4,7 +4,7 @@
     <title>Emby</title>
 </head>
 <body>
-    <div id="libraryReportManagerPage" data-role="page" class="page libraryPage noSecondaryNavPage reportsPage" data-contextname="${HeaderReports}" data-require="jqmtable,scripts/reports,detailtablecss,jqmicons">
+    <div id="libraryReportManagerPage" data-role="page" class="page libraryPage noSecondaryNavPage reportsPage" data-contextname="${HeaderReports}" data-require="jqmcheckbox,jqmcontrolgroup,jqmpanel,jqmcollapsible,jqmtable,scripts/reports,detailtablecss">
         <div data-role="content">
             <div style="text-align: center;">
                 <div class="viewControls">
@@ -125,9 +125,6 @@
 
                                 <input class="chkMissingRating" type="checkbox" name="chkMissingRating" id="chkMissingRating">
                                 <label for="chkMissingRating">${OptionMissingParentalRating}</label>
-
-                                <input class="chkIsUnidentified" type="checkbox" id="chkIsUnidentified">
-                                <label for="chkIsUnidentified">${OptionUnidentified}</label>
 
                                 <input class="chkYearMismatch" type="checkbox" name="chkYearMismatch" id="chkYearMismatch">
                                 <label for="chkYearMismatch">${OptionFileMetadataYearMismatch}</label>

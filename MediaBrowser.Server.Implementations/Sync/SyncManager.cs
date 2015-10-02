@@ -516,30 +516,10 @@ namespace MediaBrowser.Server.Implementations.Sync
                     return false;
                 }
 
-                if (!item.RunTimeTicks.HasValue)
-                {
-                    return false;
-                }
-
                 var video = item as Video;
                 if (video != null)
                 {
-                    if (video.VideoType == VideoType.Iso || video.VideoType == VideoType.HdDvd)
-                    {
-                        return false;
-                    }
-
                     if (video.IsPlaceHolder)
-                    {
-                        return false;
-                    }
-
-                    if (video.IsArchive)
-                    {
-                        return false;
-                    }
-
-                    if (video.IsStacked)
                     {
                         return false;
                     }
@@ -550,22 +530,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     }
                 }
 
-                var game = item as Game;
-                if (game != null)
-                {
-                    if (game.IsMultiPart)
-                    {
-                        return false;
-                    }
-                }
-
                 if (item is LiveTvChannel || item is IChannelItem)
-                {
-                    return false;
-                }
-
-                // It would be nice to support these later
-                if (item is Game || item is Book)
                 {
                     return false;
                 }
@@ -996,8 +961,6 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 return false;
             }
-
-            // TODO: Make sure it hasn't been deleted
 
             return true;
         }
