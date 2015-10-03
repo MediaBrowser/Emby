@@ -35,11 +35,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             _providerManager = providerManager;
         }
 
-        public async Task Organize(TvFileOrganizationOptions options, CancellationToken cancellationToken, IProgress<double> progress)
+        public async Task Organize(AutoOrganizeOptions options, CancellationToken cancellationToken, IProgress<double> progress)
         {
-            var minFileBytes = options.MinFileSizeMb * 1024 * 1024;
+            var minFileBytes = options.TvOptions.MinFileSizeMb * 1024 * 1024;
 
-            var watchLocations = options.WatchLocations.ToList();
+            var watchLocations = options.TvOptions.WatchLocations.ToList();
 
             var eligibleFiles = watchLocations.SelectMany(GetFilesToOrganize)
                 .OrderBy(_fileSystem.GetCreationTimeUtc)
@@ -59,7 +59,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        await organizer.OrganizeEpisodeFile(file.FullName, options, options.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        await organizer.OrganizeEpisodeFile(file.FullName, options, options.TvOptions.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -79,7 +79,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             foreach (var path in watchLocations)
             {
-                var deleteExtensions = options.LeftOverFileExtensionsToDelete
+                var deleteExtensions = options.TvOptions.LeftOverFileExtensionsToDelete
                     .Select(i => i.Trim().TrimStart('.'))
                     .Where(i => !string.IsNullOrEmpty(i))
                     .Select(i => "." + i)
@@ -90,7 +90,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                     DeleteLeftOverFiles(path, deleteExtensions);
                 }
 
-                if (options.DeleteEmptyFolders)
+                if (options.TvOptions.DeleteEmptyFolders)
                 {
                     foreach (var subfolder in GetDirectories(path).ToList())
                     {
