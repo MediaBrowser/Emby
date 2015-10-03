@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 namespace MediaBrowser.Model.FileOrganization
 {
     public class AutoOrganizeOptions
@@ -10,15 +11,15 @@ namespace MediaBrowser.Model.FileOrganization
         public TvFileOrganizationOptions TvOptions { get; set; }
 
         /// <summary>
-        /// Gets or sets the smart match options.
+        /// Gets or sets a list of smart match entries.
         /// </summary>
-        /// <value>The smart match options.</value>
-        public SmartMatchOptions SmartMatchOptions { get; set; }
+        /// <value>The smart match entries.</value>
+        public List<SmartMatchInfo> SmartMatchInfos { get; set; }
 
         public AutoOrganizeOptions()
         {
             TvOptions = new TvFileOrganizationOptions();
-            SmartMatchOptions = new SmartMatchOptions();
+            SmartMatchInfos = new List<SmartMatchInfo>();
         }
     }
 }

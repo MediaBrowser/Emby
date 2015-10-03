@@ -139,7 +139,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var options = GetAutoOrganizeptions();
 
-            var items = options.SmartMatchOptions.SmartMatchInfos.Skip(query.StartIndex ?? 0).Take(query.Limit ?? Int32.MaxValue);
+            var items = options.SmartMatchInfos.Skip(query.StartIndex ?? 0).Take(query.Limit ?? Int32.MaxValue);
 
             return new QueryResult<SmartMatchInfo>()
             {
@@ -164,14 +164,14 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var options = GetAutoOrganizeptions();
 
-            SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Find(i => i.Id == Id);
+            SmartMatchInfo info = options.SmartMatchInfos.Find(i => i.Id == Id);
 
             if (info != null && info.MatchStrings.Contains(matchString))
             {
                 info.MatchStrings.Remove(matchString);
                 if (info.MatchStrings.Count == 0)
                 {
-                    options.SmartMatchOptions.SmartMatchInfos.Remove(info);
+                    options.SmartMatchInfos.Remove(info);
                 }
 
                 _config.SaveAutoOrganizeOptions(options);

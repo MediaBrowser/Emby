@@ -249,7 +249,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         private void SaveSmartMatchString(string matchString, Series series, AutoOrganizeOptions options)
         {
-            SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Find(i => i.Id == series.Id);
+            SmartMatchInfo info = options.SmartMatchInfos.Find(i => i.Id == series.Id);
 
             if (info == null)
             {
@@ -257,7 +257,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 info.Id = series.Id;
                 info.OrganizerType = FileOrganizerType.Episode;
                 info.Name = series.Name;
-                options.SmartMatchOptions.SmartMatchInfos.Add(info);
+                options.SmartMatchInfos.Add(info);
             }
 
             if (!info.MatchStrings.Contains(matchString, StringComparer.OrdinalIgnoreCase))
@@ -425,7 +425,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             if (series == null)
             {
-                SmartMatchInfo info = options.SmartMatchOptions.SmartMatchInfos.Where(e => e.MatchStrings.Contains(seriesName, StringComparer.OrdinalIgnoreCase)).FirstOrDefault();
+                SmartMatchInfo info = options.SmartMatchInfos.Where(e => e.MatchStrings.Contains(seriesName, StringComparer.OrdinalIgnoreCase)).FirstOrDefault();
 
                 if (info != null)
                 {
