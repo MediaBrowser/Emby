@@ -414,6 +414,8 @@
     <Compile Include="Sync\SyncedFileInfo.cs" />
     <Compile Include="Sync\SyncedItemProgress.cs" />
     <Compile Include="TV\ITVSeriesManager.cs" />
+    <Compile Include="TV\SeriesCreationOptions.cs" />
+    <Compile Include="TV\SeriesEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">

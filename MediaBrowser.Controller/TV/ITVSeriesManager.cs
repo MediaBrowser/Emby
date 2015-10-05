@@ -1,6 +1,8 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Querying;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using MediaBrowser.Controller.Entities.TV;
 
 namespace MediaBrowser.Controller.TV
 {
@@ -20,5 +22,13 @@ namespace MediaBrowser.Controller.TV
         /// <param name="parentsFolders">The parents folders.</param>
         /// <returns>QueryResult&lt;BaseItem&gt;.</returns>
         QueryResult<BaseItem> GetNextUp(NextUpQuery request, IEnumerable<Folder> parentsFolders);
+
+        /// <summary>
+        /// Gets the next up.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="parentsFolders">The parents folders.</param>
+        /// <returns>QueryResult&lt;BaseItem&gt;.</returns>
+        Task<Series> CreateSeries(SeriesCreationOptions options);
     }
 }

@@ -224,6 +224,16 @@ namespace MediaBrowser.Api.Library
         public bool? IsHidden { get; set; }
     }
 
+    [Route("/Library/Series", "POST", Summary = "Creates a new TV series")]
+    public class CreateSeries : IReturn<SeriesCreationResult>
+    {
+        [ApiMember(Name = "Name", Description = "The name of the new series.", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string Name { get; set; }
+
+        [ApiMember(Name = "Location", Description = "Create the series within this specific physical folder", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string Location { get; set; }
+    }
+
     [Route("/Library/Series/Added", "POST", Summary = "Reports that new episodes of a series have been added by an external source")]
     [Route("/Library/Series/Updated", "POST", Summary = "Reports that new episodes of a series have been added by an external source")]
     [Authenticated]
@@ -435,6 +445,28 @@ namespace MediaBrowser.Api.Library
             };
 
             return ToOptimizedResult(result);
+        }
+
+        public async Task<object> Post(CreateSeries request)
+        {
+            var userId = AuthorizationContext.GetAuthorizationInfo(Request).UserId;
+
+            var item = await _tvManager.CreateSeries(new SeriesCreationOptions
+            {
+                Name = request.Name,
+                Location = request.Location,
+                UserIds = new List<Guid> { new Guid(userId) }
+
+            }).ConfigureAwait(false);
+
+            var dtoOptions = GetDtoOptions(request);
+
+            var dto = _dtoService.GetBaseItemDto(item, dtoOptions);
+
+            return ToOptimizedResult(new SeriesCreationResult
+            {
+                Id = dto.Id
+            });
         }
 
         public void Post(PostUpdatedSeries request)
