@@ -79,9 +79,13 @@
             }
         }
 
+        function getEmbyServerUrl(baseUrl, handler) {
+            return baseUrl + "/emby/" + handler;
+        }
+
         function tryConnect(url, timeout) {
 
-            url += "/system/info/public";
+            url = getEmbyServerUrl(url, "system/info/public");
 
             logger.log('tryConnect url: ' + url);
 
@@ -399,7 +403,7 @@
 
             var url = MediaBrowser.ServerInfo.getServerAddress(server, connectionMode);
 
-            url += "/Connect/Exchange?format=json&ConnectUserId=" + credentials.ConnectUserId;
+            url = getEmbyServerUrl(url, "Connect/Exchange?format=json&ConnectUserId=" + credentials.ConnectUserId);
 
             return HttpClient.send({
                 type: "GET",
@@ -430,7 +434,7 @@
             HttpClient.send({
 
                 type: "GET",
-                url: url + "/system/info",
+                url: getEmbyServerUrl(url, "System/Info"),
                 dataType: "json",
                 headers: {
                     "X-MediaBrowser-Token": server.AccessToken
@@ -445,7 +449,7 @@
                     HttpClient.send({
 
                         type: "GET",
-                        url: url + "/users/" + server.UserId,
+                        url: getEmbyServerUrl(url, "users/" + server.UserId),
                         dataType: "json",
                         headers: {
                             "X-MediaBrowser-Token": server.AccessToken
@@ -919,7 +923,7 @@
             if (mode == MediaBrowser.ConnectionMode.Local) {
 
                 enableRetry = true;
-                timeout = 7000;
+                timeout = 10000;
             }
 
             else if (mode == MediaBrowser.ConnectionMode.Manual) {

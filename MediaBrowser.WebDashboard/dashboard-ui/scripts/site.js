@@ -1549,7 +1549,7 @@ var Dashboard = {
             SupportedLiveMediaTypes: ['Audio', 'Video']
         };
 
-        if (Dashboard.isRunningInCordova()) {
+        if (Dashboard.isRunningInCordova() && !$.browser.safari) {
             caps.SupportsOfflineAccess = true;
             caps.SupportsSync = true;
             caps.SupportsContentUploading = true;
@@ -1777,7 +1777,6 @@ var AppInfo = {};
 
         if (!AppInfo.hasLowImageBandwidth) {
             AppInfo.enableStudioTabs = true;
-            AppInfo.enablePeopleTabs = true;
             AppInfo.enableTvEpisodesTab = true;
             AppInfo.enableMovieTrailersTab = true;
         }
@@ -1913,10 +1912,6 @@ var AppInfo = {};
 
         if (!AppInfo.enableStudioTabs) {
             elem.classList.add('studioTabDisabled');
-        }
-
-        if (!AppInfo.enablePeopleTabs) {
-            elem.classList.add('peopleTabDisabled');
         }
 
         if (!AppInfo.enableTvEpisodesTab) {
@@ -2322,7 +2317,11 @@ var AppInfo = {};
         var deps = [];
 
         if (AppInfo.isNativeApp && $.browser.safari) {
-            deps.push('cordova/ios/backgroundfetch');
+
+            if (Dashboard.capabilities().SupportsSync) {
+                deps.push('cordova/ios/backgroundfetch');
+            }
+
             deps.push('cordova/ios/tabbar');
         }
         if (AppInfo.isNativeApp && $.browser.android) {

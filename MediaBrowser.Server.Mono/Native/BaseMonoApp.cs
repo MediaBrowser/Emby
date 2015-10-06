@@ -13,6 +13,12 @@ namespace MediaBrowser.Server.Mono.Native
 {
     public abstract class BaseMonoApp : INativeApp
     {
+        protected StartupOptions StartupOptions { get; private set; }
+        protected BaseMonoApp(StartupOptions startupOptions)
+        {
+            StartupOptions = startupOptions;
+        }
+
         /// <summary>
         /// Shutdowns this instance.
         /// </summary>
@@ -111,7 +117,10 @@ namespace MediaBrowser.Server.Mono.Native
 
         public bool SupportsLibraryMonitor
         {
-            get { return false; }
+            get
+            {
+                return false;
+            }
         }
 
         public void ConfigureAutoRun(bool autorun)
@@ -170,6 +179,7 @@ namespace MediaBrowser.Server.Mono.Native
         }
 
         private Uname _unixName;
+
         private Uname GetUnixName()
         {
             if (_unixName == null)

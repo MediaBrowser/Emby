@@ -926,11 +926,6 @@
                 return s.Type == 'Subtitle';
             });
 
-            // Reports of stuttering with h264 stream copy in IE
-            if (streamInfo.playMethod == 'Transcode' && streamInfo.url.indexOf('.m3u8') == -1) {
-                streamInfo.url += '&EnableAutoStreamCopy=false';
-            }
-
             // Create video player
             var mediaPlayerContainer = $("#mediaPlayer").show();
             var videoControls = $('.videoControls', mediaPlayerContainer);
@@ -968,7 +963,7 @@
             if (requiresNativeControls || AppInfo.isNativeApp) {
                 $('#video-fullscreenButton', videoControls).hide();
             } else {
-                $('#video-fullscreenButton', videoControls).hide();
+                $('#video-fullscreenButton', videoControls).show();
             }
 
             if (AppInfo.hasPhysicalVolumeButtons) {
