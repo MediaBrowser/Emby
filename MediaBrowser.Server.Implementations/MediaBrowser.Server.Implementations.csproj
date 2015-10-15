@@ -136,6 +136,8 @@
     <Compile Include="EntryPoints\UsageEntryPoint.cs" />
     <Compile Include="Connect\ConnectEntryPoint.cs" />
     <Compile Include="EntryPoints\UsageReporter.cs" />
+    <Compile Include="FileOrganization\ItemInProgressException.cs" />
+    <Compile Include="FileOrganization\ItemProgressLock.cs" />
     <Compile Include="FileOrganization\MovieFileOrganizer.cs" />
     <Compile Include="FileOrganization\FileOrganizerBase.cs" />
     <Compile Include="FileOrganization\EpisodeFileOrganizer.cs" />

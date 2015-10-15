@@ -18,15 +18,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Localization;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
     public class MovieFileOrganizer : FileOrganizerBase
     {
-        public MovieFileOrganizer(IFileOrganizationService organizationService, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager) :
-            base(organizationService, config, fileSystem, logger, libraryManager, libraryMonitor, providerManager)
+        public MovieFileOrganizer(IFileOrganizationService organizationService, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager, IServerManager serverManager, ILocalizationManager localizationManager) :
+            base(organizationService, config, fileSystem, logger, libraryManager, libraryMonitor, providerManager, serverManager, localizationManager)
         {
-            
         }
 
         public override Task<FileOrganizationResult> OrganizeFile(string path, AutoOrganizeOptions options, bool overwriteExisting, CancellationToken cancellationToken)
@@ -40,11 +41,18 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var result = _organizationService.GetResult(request.ResultId);
 
+            var file = _fileSystem.GetFileInfo(result.OriginalPath);
+
             result.Type = FileOrganizerType.Movie;
 
             await OrganizeMovie(result.OriginalPath, request.Name, request.Year, request.TargetFolder, options, true, result, cancellationToken).ConfigureAwait(false);
 
             await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
+
+            if (file != null && file.Exists && file.DirectoryName != null)
+            {
+                this.DeleteLeftoverFilesAndEmptyFolders(options, file.DirectoryName);
+            }
 
             return result;
         }
@@ -126,50 +134,53 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         private void PerformFileSorting(TvFileOrganizationOptions options, FileOrganizationResult result)
         {
-            _libraryMonitor.ReportFileSystemChangeBeginning(result.TargetPath);
-
-            _fileSystem.CreateDirectory(Path.GetDirectoryName(result.TargetPath));
-
-            var targetAlreadyExists = _fileSystem.FileExists(result.TargetPath);
-
-            try
+            using (new ItemProgressLock(result.Id, _organizationService.InProgressItemIds, _serverManager, _localizationManager))
             {
-                if (targetAlreadyExists || options.CopyOriginalFile)
-                {
-                    _fileSystem.CopyFile(result.OriginalPath, result.TargetPath, true);
-                }
-                else
-                {
-                    _fileSystem.MoveFile(result.OriginalPath, result.TargetPath);
-                }
+                _libraryMonitor.ReportFileSystemChangeBeginning(result.TargetPath);
 
-                result.Status = FileSortingStatus.Success;
-                result.StatusMessage = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                var errorMsg = string.Format("Failed to move file from {0} to {1}", result.OriginalPath, result.TargetPath);
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(result.TargetPath));
 
-                result.Status = FileSortingStatus.Failure;
-                result.StatusMessage = errorMsg;
-                _logger.ErrorException(errorMsg, ex);
+                var targetAlreadyExists = _fileSystem.FileExists(result.TargetPath);
 
-                return;
-            }
-            finally
-            {
-                _libraryMonitor.ReportFileSystemChangeComplete(result.TargetPath, true);
-            }
-
-            if (targetAlreadyExists && !options.CopyOriginalFile)
-            {
                 try
                 {
-                    _fileSystem.DeleteFile(result.OriginalPath);
+                    if (targetAlreadyExists || options.CopyOriginalFile)
+                    {
+                        _fileSystem.CopyFile(result.OriginalPath, result.TargetPath, true);
+                    }
+                    else
+                    {
+                        _fileSystem.MoveFile(result.OriginalPath, result.TargetPath);
+                    }
+
+                    result.Status = FileSortingStatus.Success;
+                    result.StatusMessage = string.Empty;
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error deleting {0}", ex, result.OriginalPath);
+                    var errorMsg = string.Format("Failed to move file from {0} to {1}", result.OriginalPath, result.TargetPath);
+
+                    result.Status = FileSortingStatus.Failure;
+                    result.StatusMessage = errorMsg;
+                    _logger.ErrorException(errorMsg, ex);
+
+                    return;
+                }
+                finally
+                {
+                    _libraryMonitor.ReportFileSystemChangeComplete(result.TargetPath, true);
+                }
+
+                if (targetAlreadyExists && !options.CopyOriginalFile)
+                {
+                    try
+                    {
+                        _fileSystem.DeleteFile(result.OriginalPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error deleting {0}", ex, result.OriginalPath);
+                    }
                 }
             }
         }

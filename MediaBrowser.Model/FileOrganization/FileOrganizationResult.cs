@@ -103,6 +103,11 @@ namespace MediaBrowser.Model.FileOrganization
         /// <value>The extracted video year.</value>
         public int? ExtractedMovieYear { get; set; }
 
+        /// <summary>
+        /// Indicates if the item is currently being processed.
+        /// </summary>
+        public bool IsInProgress { get; set; }
+
         public FileOrganizationResult()
         {
             DuplicatePaths = new List<string>();

@@ -206,16 +206,19 @@
             html += '<tr>';
 
             html += '<td>';
-
             var date = parseISO8601Date(item.Date, { toLocal: true });
             html += date.toLocaleDateString();
-
             html += '</td>';
 
             html += '<td>';
             var status = item.Status;
 
-            if (status == 'SkippedExisting') {
+            if (item.IsInProgress) {
+                html += '<div style="color:darkorange;">';
+                html += item.OriginalFileName;
+                html += '</div>';
+            }
+            else if (status == 'SkippedExisting') {
                 html += '<a data-resultid="' + item.Id + '" style="color:blue;" href="#" class="btnShowStatusMessage">';
                 html += item.OriginalFileName;
                 html += '</a>';
@@ -229,6 +232,11 @@
                 html += item.OriginalFileName;
                 html += '</div>';
             }
+            html += '</td>';
+
+            html += '<td>';
+            var spinnerActive = item.IsInProgress ? 'active' : '';
+            html += '<paper-spinner class="syncSpinner"' + spinnerActive + ' style="vertical-align: middle; /">';
             html += '</td>';
 
             html += '<td>';
