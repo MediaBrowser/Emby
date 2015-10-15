@@ -26,14 +26,6 @@ namespace MediaBrowser.Server.Implementations.IO
         /// The file system watchers
         /// </summary>
         private readonly ConcurrentDictionary<string, FileSystemWatcher> _fileSystemWatchers = new ConcurrentDictionary<string, FileSystemWatcher>(StringComparer.OrdinalIgnoreCase);
-        /// <summary>
-        /// The update timer
-        /// </summary>
-        private Timer _updateTimer;
-        /// <summary>
-        /// The affected paths
-        /// </summary>
-        private readonly ConcurrentDictionary<string, string> _affectedPaths = new ConcurrentDictionary<string, string>();
 
         /// <summary>
         /// A dynamic list of paths that should be ignored.  Added to during our own file sytem modifications.
@@ -53,11 +45,6 @@ namespace MediaBrowser.Server.Implementations.IO
             "TempRec",
             "TempSBE"
         };
-
-        /// <summary>
-        /// The timer lock
-        /// </summary>
-        private readonly object _timerLock = new object();
 
         /// <summary>
         /// Add the path to our temporary ignore list.  Use when writing to a path within our listening scope.
@@ -85,10 +72,16 @@ namespace MediaBrowser.Server.Implementations.IO
                 throw new ArgumentNullException("path");
             }
 
-            // This is an arbitraty amount of time, but delay it because file system writes often trigger events long after the file was actually written to.
-            // Seeing long delays in some situations, especially over the network, sometimes up to 45 seconds
-            // But if we make this delay too high, we risk missing legitimate changes, such as user adding a new file, or hand-editing metadata
-            await Task.Delay(25000).ConfigureAwait(false);
+            // Currently there are only 2 callers where refreshPath==true. In both cases it is
+            // granted that the file operation is completed. If subsequent events would cause file locking,
+            // this will be handled later
+            if (!refreshPath)
+            {
+                // This is an arbitraty amount of time, but delay it because file system writes often trigger events long after the file was actually written to.
+                // Seeing long delays in some situations, especially over the network, sometimes up to 45 seconds
+                // But if we make this delay too high, we risk missing legitimate changes, such as user adding a new file, or hand-editing metadata
+                await Task.Delay(20000).ConfigureAwait(false);
+            }
 
             string val;
             _tempIgnoredPaths.TryRemove(path, out val);
@@ -116,6 +109,7 @@ namespace MediaBrowser.Server.Implementations.IO
 
         private readonly IFileSystem _fileSystem;
         private readonly IServerApplicationHost _appHost;
+        private FileRefreshQueue _updateQueue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryMonitor" /> class.
@@ -127,13 +121,17 @@ namespace MediaBrowser.Server.Implementations.IO
                 throw new ArgumentNullException("taskManager");
             }
 
+            // The default 40s of Configuration.RealtimeLibraryMonitorDelay seems to be a bit too long for the new implementation
+            int retryDelay = 15; // configurationManager.Configuration.RealtimeLibraryMonitorDelay
+
             LibraryManager = libraryManager;
             TaskManager = taskManager;
             Logger = logManager.GetLogger(GetType().Name);
             ConfigurationManager = configurationManager;
             _fileSystem = fileSystem;
             _appHost = appHost;
-
+            _updateQueue = new FileRefreshQueue(logManager, fileSystem, retryDelay);
+            _updateQueue.ItemReady += UpdateQueue_ItemReady;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
         }
 
@@ -398,7 +396,7 @@ namespace MediaBrowser.Server.Implementations.IO
         {
             try
             {
-                Logger.Debug("Changed detected of type " + e.ChangeType + " to " + e.FullPath);
+                Logger.Debug("Watcher detected event '{0}'. Path: {1}", e.ChangeType.ToString().ToUpper(), e.FullPath);
 
                 ReportFileSystemChanged(e.FullPath);
             }
@@ -415,12 +413,37 @@ namespace MediaBrowser.Server.Implementations.IO
                 throw new ArgumentNullException("path");
             }
 
-            var filename = Path.GetFileName(path);
+            if (_fileSystem.IsPathFile(path))
+            {
+                var filename = Path.GetFileName(path);
+                if (_alwaysIgnoreFiles.Contains(filename, StringComparer.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+            }
 
-            var monitorPath = !(!string.IsNullOrEmpty(filename) && _alwaysIgnoreFiles.Contains(filename, StringComparer.OrdinalIgnoreCase));
+            _updateQueue.AddPath(path);
+        }
+
+        void UpdateQueue_ItemReady(object sender, FileRefreshEventArgs e)
+        {
+            // Opposed to using foreach enumeration, .ToArray() returns a snapshot 
+            // of the current dictionary contents
+            var affectedPathsSnapshot = e.Item.FilePaths.Keys.ToList();
+
+            if (affectedPathsSnapshot.Any(i => IsFileLocked(i)))
+            {
+                // Cancel will reschedule at a later time
+                e.Cancel = true;
+                return;
+            }
+
+            var path = e.Item.Folder;
 
             // Ignore certain files
             var tempIgnorePaths = _tempIgnoredPaths.Keys.ToList();
+
+            // The tempIgnorePaths are now checked once library updates are due - not when queuing updates
 
             // If the parent of an ignored path has a change event, ignore that too
             if (tempIgnorePaths.Any(i =>
@@ -449,61 +472,16 @@ namespace MediaBrowser.Server.Implementations.IO
                 }
 
                 return false;
-
             }))
             {
-                monitorPath = false;
-            }
-
-            if (monitorPath)
-            {
-                // Avoid implicitly captured closure
-                var affectedPath = path;
-                _affectedPaths.AddOrUpdate(path, path, (key, oldValue) => affectedPath);
-            }
-
-            RestartTimer();
-        }
-
-        private void RestartTimer()
-        {
-            lock (_timerLock)
-            {
-                if (_updateTimer == null)
-                {
-                    _updateTimer = new Timer(TimerStopped, null, TimeSpan.FromSeconds(ConfigurationManager.Configuration.LibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
-                }
-                else
-                {
-                    _updateTimer.Change(TimeSpan.FromSeconds(ConfigurationManager.Configuration.LibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Timers the stopped.
-        /// </summary>
-        /// <param name="stateInfo">The state info.</param>
-        private async void TimerStopped(object stateInfo)
-        {
-            // Extend the timer as long as any of the paths are still being written to.
-            if (_affectedPaths.Any(p => IsFileLocked(p.Key)))
-            {
-                Logger.Info("Timer extended.");
-                RestartTimer();
+                // Cancel will reschedule at a later time
+                e.Cancel = true;
                 return;
             }
 
-            Logger.Debug("Timer stopped.");
-
-            DisposeTimer();
-
-            var paths = _affectedPaths.Keys.ToList();
-            _affectedPaths.Clear();
-
             try
             {
-                await ProcessPathChanges(paths).ConfigureAwait(false);
+                ProcessPathChanges(affectedPathsSnapshot).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -553,11 +531,8 @@ namespace MediaBrowser.Server.Implementations.IO
             {
                 using (_fileSystem.GetFileStream(path, FileMode.Open, requestedFileAccess, FileShare.ReadWrite))
                 {
-                    if (_updateTimer != null)
-                    {
-                        //file is not locked
-                        return false;
-                    }
+                    //file is not locked
+                    return false;
                 }
             }
             catch (DirectoryNotFoundException)
@@ -582,22 +557,9 @@ namespace MediaBrowser.Server.Implementations.IO
             catch (Exception ex)
             {
                 Logger.ErrorException("Error determining if file is locked: {0}", ex, path);
-                return false;
             }
 
             return false;
-        }
-
-        private void DisposeTimer()
-        {
-            lock (_timerLock)
-            {
-                if (_updateTimer != null)
-                {
-                    _updateTimer.Dispose();
-                    _updateTimer = null;
-                }
-            }
         }
 
         /// <summary>
@@ -615,19 +577,20 @@ namespace MediaBrowser.Server.Implementations.IO
 
             foreach (var p in paths)
             {
-                Logger.Info(p + " reports change.");
+                Logger.Info("ProcessPathChanges: " + p + " reports change.");
             }
 
             // If the root folder changed, run the library task so the user can see it
             if (itemsToRefresh.Any(i => i is AggregateFolder))
             {
+                _updateQueue.Clear();
                 TaskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
                 return;
             }
 
             foreach (var item in itemsToRefresh)
             {
-                Logger.Info(item.Name + " (" + item.Path + ") will be refreshed.");
+                Logger.Info("ProcessPathChanges: " + item.Name + " (" + item.Path + ") will be refreshed.");
 
                 try
                 {
@@ -638,11 +601,11 @@ namespace MediaBrowser.Server.Implementations.IO
                     // For now swallow and log. 
                     // Research item: If an IOException occurs, the item may be in a disconnected state (media unavailable)
                     // Should we remove it from it's parent?
-                    Logger.ErrorException("Error refreshing {0}", ex, item.Name);
+                    Logger.ErrorException("ProcessPathChanges: Error refreshing {0}", ex, item.Name);
                 }
                 catch (Exception ex)
                 {
-                    Logger.ErrorException("Error refreshing {0}", ex, item.Name);
+                    Logger.ErrorException("ProcessPathChanges: Error refreshing {0}", ex, item.Name);
                 }
             }
         }
@@ -666,7 +629,7 @@ namespace MediaBrowser.Server.Implementations.IO
             if (item != null)
             {
                 // If the item has been deleted find the first valid parent that still exists
-				while (!_fileSystem.DirectoryExists(item.Path) && !_fileSystem.FileExists(item.Path))
+                while (!_fileSystem.DirectoryExists(item.Path) && !_fileSystem.FileExists(item.Path))
                 {
                     item = item.GetParent();
 
@@ -695,10 +658,8 @@ namespace MediaBrowser.Server.Implementations.IO
                 watcher.Dispose();
             }
 
-            DisposeTimer();
-
             _fileSystemWatchers.Clear();
-            _affectedPaths.Clear();
+            _updateQueue.Clear();
         }
 
         /// <summary>
