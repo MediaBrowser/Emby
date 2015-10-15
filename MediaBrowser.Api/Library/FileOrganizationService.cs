@@ -188,9 +188,8 @@ namespace MediaBrowser.Api.Library
                 TargetFolder = request.TargetFolder
             });
 
-            var tasks = new Task[] { task };
-
-            Task.WaitAll(tasks, 8000);
+            // Wait 2s for exceptions that may occur and would be automatically forwarded to the client for immediate error display
+            task.Wait(2000);
         }
 
         public void Post(OrganizeMovie request)
@@ -203,7 +202,8 @@ namespace MediaBrowser.Api.Library
                 TargetFolder = request.TargetFolder
             });
 
-            Task.WaitAll(task);
+            // Wait 2s for exceptions that may occur and would be automatically forwarded to the client for immediate error display
+            task.Wait(2000);
         }
 
         public object Get(GetSmartMatchInfos request)

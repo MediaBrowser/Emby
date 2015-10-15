@@ -23,7 +23,7 @@
                     <div style="float: right; position: relative; top: 15px;margin-top: -5px;display:none;" class="organizeTaskPanel">
                         <paper-button type="button" class="btnClearLog" raised><iron-icon icon="clear-all"></iron-icon><span>${ButtonClear}</span></paper-button>
                         <paper-button type="button" class="btnOrganize" raised><iron-icon icon="check"></iron-icon><span>${ButtonOrganize}</span></paper-button>
-                        <progress max="100" min="0" style="width:100px;display:none;" class="organizeProgress"></progress>
+                        <progress max="100" min="0" style="width:100px" class="organizeProgress hide"></progress>
                     </div>
                     <br />
 
@@ -34,6 +34,7 @@
                         <tr>
                             <th data-priority="2">${HeaderDate}</th>
                             <th data-priority="1">${HeaderSource}</th>
+                            <th data-priority="1"></th>
                             <th data-priority="3">${HeaderDestination}</th>
                             <th data-priority="1"></th>
                         </tr>

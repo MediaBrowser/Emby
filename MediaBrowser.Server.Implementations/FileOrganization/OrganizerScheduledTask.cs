@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Localization;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
@@ -23,8 +25,10 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         private readonly IServerConfigurationManager _config;
         private readonly IFileOrganizationService _organizationService;
         private readonly IProviderManager _providerManager;
+        private readonly IServerManager _serverManager;
+        private readonly ILocalizationManager _localizationManager;
 
-        public OrganizerScheduledTask(ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, ILogger logger, IFileSystem fileSystem, IServerConfigurationManager config, IFileOrganizationService organizationService, IProviderManager providerManager)
+        public OrganizerScheduledTask(ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, ILogger logger, IFileSystem fileSystem, IServerConfigurationManager config, IFileOrganizationService organizationService, IProviderManager providerManager, IServerManager serverManager, ILocalizationManager localizationManager)
         {
             _libraryMonitor = libraryMonitor;
             _libraryManager = libraryManager;
@@ -33,6 +37,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             _config = config;
             _organizationService = organizationService;
             _providerManager = providerManager;
+            _serverManager = serverManager;
+            _localizationManager = localizationManager;
         }
 
         public string Name
@@ -59,7 +65,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         {
             if (GetAutoOrganizeOptions().TvOptions.IsEnabled)
             {
-                await new TvFolderOrganizer(_libraryManager, _logger, _fileSystem, _libraryMonitor, _organizationService, _config, _providerManager)
+                await new TvFolderOrganizer(_libraryManager, _logger, _fileSystem, _libraryMonitor, _organizationService, _config, _providerManager, _serverManager, _localizationManager)
                     .Organize(GetAutoOrganizeOptions(), cancellationToken, progress).ConfigureAwait(false);
             }
         }
