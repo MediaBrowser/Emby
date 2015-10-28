@@ -1,4 +1,4 @@
-﻿// AreaKode: This code has been modified to disable license check.
+// AreaKode: This code has been modified to disable license check.
 
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
