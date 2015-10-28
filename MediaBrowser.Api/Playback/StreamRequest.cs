@@ -92,6 +92,12 @@ namespace MediaBrowser.Api.Playback
         public int? VideoBitRate { get; set; }
 
         /// <summary>
+        /// Gets or sets if the stream is allowed to be anamorphic
+        /// </summary>
+        [ApiMember(Name = "AllowAnamorphic", Description = "Optional. Specify if the stream is allowed to be anamorphic", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? AllowAnamorphic { get; set; }
+
+        /// <summary>
         /// Gets or sets the index of the audio stream.
         /// </summary>
         /// <value>The index of the audio stream.</value>

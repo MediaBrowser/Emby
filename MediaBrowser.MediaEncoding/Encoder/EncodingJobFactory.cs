@@ -608,6 +608,15 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 }
             }
 
+            if (request.AllowAnamorphic.HasValue)
+            {
+                if (!request.AllowAnamorphic.Value)
+                {
+                    if ((!videoStream.IsAnamorphic.HasValue) || (videoStream.IsAnamorphic.Value))
+                        return false;
+                }
+            }
+
             if (request.MaxVideoBitDepth.HasValue)
             {
                 if (videoStream.BitDepth.HasValue && videoStream.BitDepth.Value > request.MaxVideoBitDepth.Value)

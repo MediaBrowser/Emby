@@ -34,7 +34,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         public EncodingContext Context { get; set; }
 
         public string VideoCodec { get; set; }
-
+        public bool? AllowAnamorphic { get; set; }
         public int? VideoBitRate { get; set; }
         public int? AudioStreamIndex { get; set; }
         public int? VideoStreamIndex { get; set; }
@@ -88,6 +88,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             SubtitleMethod = info.SubtitleDeliveryMethod;
             Cabac = info.Cabac;
             Context = info.Context;
+            AllowAnamorphic = info.AllowAnamorphic;
 
             if (info.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Encode ||
                 info.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Embed)

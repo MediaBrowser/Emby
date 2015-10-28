@@ -44,6 +44,7 @@ namespace MediaBrowser.Model.Dlna
 
         public int? VideoBitrate { get; set; }
 
+        public bool? AllowAnamorphic { get; set; }
         public int? VideoLevel { get; set; }
 
         public int? MaxWidth { get; set; }
@@ -189,7 +190,10 @@ namespace MediaBrowser.Model.Dlna
         private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken, bool isDlna)
         {
             List<NameValuePair> list = new List<NameValuePair>();
-
+            //############################################################################################################
+            // NOTE the order of this is important for BuildDlnaParam which is decoded in BaseStreamingService.ParseParams
+            // it also requires that all entries always exist to maintain the same indexes for items
+            //############################################################################################################
             list.Add(new NameValuePair("DeviceProfileId", item.DeviceProfileId ?? string.Empty));
             list.Add(new NameValuePair("DeviceId", item.DeviceId ?? string.Empty));
             list.Add(new NameValuePair("MediaSourceId", item.MediaSourceId ?? string.Empty));
@@ -242,6 +246,11 @@ namespace MediaBrowser.Model.Dlna
             {
                 list.Add(new NameValuePair("ItemId", item.ItemId));
             }
+            else
+            {
+                list.Add(new NameValuePair("ItemId", string.Empty));
+            }
+            list.Add(new NameValuePair("AllowAnamorphic", item.AllowAnamorphic.HasValue ? item.AllowAnamorphic.Value.ToString() : true.ToString()));
             
             return list;
         }
