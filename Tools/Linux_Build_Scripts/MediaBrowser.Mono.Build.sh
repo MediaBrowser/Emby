@@ -142,7 +142,7 @@ echo ""
 if [ ! -d "$MBGITPATH" ]; then
     mkdir $MBGITPATH
     echo "Git cloning into $MBGITPATH"
-    git clone https://github.com/MediaBrowser/MediaBrowser.git $MBGITPATH > "$LOGPATH/gitclone_stdout_$LOGDATE.log" 2> "$LOGPATH/gitclone_stderr_$LOGDATE.log"
+    git clone https://github.com/AreaKode/Emby.git $MBGITPATH > "$LOGPATH/gitclone_stdout_$LOGDATE.log" 2> "$LOGPATH/gitclone_stderr_$LOGDATE.log"
     cd $MBGITPATH
 else
     cd $MBGITPATH

@@ -1,4 +1,5 @@
-﻿using System.IO;
+// AreaKode: This code has been modified to disable license check.
+
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Security;
@@ -19,7 +20,6 @@ namespace MediaBrowser.Common.Implementations.Security
     public class PluginSecurityManager : ISecurityManager
     {
         private const string MBValidateUrl = MbAdmin.HttpsUrl + "service/registration/validate";
-        private const string AppstoreRegUrl = /*MbAdmin.HttpsUrl*/ "http://mb3admin.com/admin/" + "service/appstore/register";
 
         /// <summary>
         /// The _is MB supporter
@@ -42,7 +42,7 @@ namespace MediaBrowser.Common.Implementations.Security
         {
             get
             {
-                LazyInitializer.EnsureInitialized(ref _isMbSupporter, ref _isMbSupporterInitialized, ref _isMbSupporterSyncLock, () => GetSupporterRegistrationStatus().Result.IsRegistered);
+                LazyInitializer.EnsureInitialized(ref _isMbSupporter, ref _isMbSupporterInitialized, ref _isMbSupporterSyncLock, () => GetRegistrationStatus().Result.IsRegistered);
                 return _isMbSupporter.Value;
             }
         }
@@ -56,7 +56,6 @@ namespace MediaBrowser.Common.Implementations.Security
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IApplicationHost _appHost;
-        private readonly ILogger _logger;
         private readonly IApplicationPaths _appPaths;
 
         private IEnumerable<IRequiresRegistration> _registeredEntities;
@@ -83,7 +82,6 @@ namespace MediaBrowser.Common.Implementations.Security
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
             _appPaths = appPaths;
-            _logger = logManager.GetLogger("SecurityManager");
         }
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace MediaBrowser.Common.Implementations.Security
         /// <returns>Task{MBRegistrationRecord}.</returns>
         public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent = null)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent);
+            return GetRegistrationStatus();
         }
 
         /// <summary>
@@ -120,12 +118,19 @@ namespace MediaBrowser.Common.Implementations.Security
         /// <returns>Task{MBRegistrationRecord}.</returns>
         public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent, version);
+            return GetRegistrationStatus();
         }
 
-        private Task<MBRegistrationRecord> GetSupporterRegistrationStatus()
+        private async Task<MBRegistrationRecord> GetRegistrationStatus()
         {
-            return GetRegistrationStatusInternal("MBSupporter", null, _appHost.ApplicationVersion.ToString());
+            return new MBRegistrationRecord
+            {
+                IsRegistered = true,
+                RegChecked = true,
+                TrialVersion = false,
+                IsValid = true,
+                RegError = false
+            };
         }
 
         /// <summary>
@@ -185,150 +190,6 @@ namespace MediaBrowser.Common.Implementations.Security
 
                 return info;
             }
-        }
-
-        /// <summary>
-        /// Register an app store sale with our back-end.  It will validate the transaction with the store
-        /// and then register the proper feature and then fill in the supporter key on success.
-        /// </summary>
-        /// <param name="parameters">Json parameters to send to admin server</param>
-        public async Task RegisterAppStoreSale(string parameters)
-        {
-            var options = new HttpRequestOptions()
-            {
-                Url = AppstoreRegUrl,
-                CancellationToken = CancellationToken.None
-            };
-            options.RequestHeaders.Add("X-Emby-Token", _appHost.SystemId);
-            options.RequestContent = parameters;
-            options.RequestContentType = "application/json";
-
-            try
-            {
-                using (var response = await _httpClient.Post(options).ConfigureAwait(false))
-                {
-                    var reg = _jsonSerializer.DeserializeFromStream<RegRecord>(response.Content);
-
-                    if (reg == null)
-                    {
-                        var msg = "Result from appstore registration was null.";
-                        _logger.Error(msg);
-                        throw new ApplicationException(msg);
-                    }
-                    if (!String.IsNullOrEmpty(reg.key))
-                    {
-                        SupporterKey = reg.key;
-                    }
-                }
-
-            }
-            catch (ApplicationException)
-            {
-                SaveAppStoreInfo(parameters);
-                throw;
-            }
-            catch (Exception e)
-            {
-                _logger.ErrorException("Error registering appstore purchase {0}", e, parameters ?? "NO PARMS SENT");
-                SaveAppStoreInfo(parameters);
-                //TODO - could create a re-try routine on start-up if this file is there.  For now we can handle manually.
-                throw new ApplicationException("Error registering store sale");
-            }
-
-        }
-
-        private void SaveAppStoreInfo(string info)
-        {
-            // Save all transaction information to a file
-
-            try
-            {
-                File.WriteAllText(Path.Combine(_appPaths.ProgramDataPath, "apptrans-error.txt"), info);
-            }
-            catch (IOException)
-            {
-
-            }
-        }
-
-        private async Task<MBRegistrationRecord> GetRegistrationStatusInternal(string feature,
-            string mb2Equivalent = null,
-            string version = null)
-        {
-            var lastChecked = LicenseFile.LastChecked(feature);
-
-            //check the reg file first to alleviate strain on the MB admin server - must actually check in every 30 days tho
-            var reg = new RegRecord
-            {
-                // Cache the result for up to a week
-                registered = lastChecked > DateTime.UtcNow.AddDays(-7)
-            };
-
-            var success = reg.registered;
-
-            if (!(lastChecked > DateTime.UtcNow.AddDays(-1)))
-            {
-                var data = new Dictionary<string, string>
-                {
-                    { "feature", feature }, 
-                    { "key", SupporterKey }, 
-                    { "mac", _appHost.SystemId }, 
-                    { "systemid", _appHost.SystemId }, 
-                    { "mb2equiv", mb2Equivalent }, 
-                    { "ver", version }, 
-                    { "platform", _appHost.OperatingSystemDisplayName }, 
-                    { "isservice", _appHost.IsRunningAsService.ToString().ToLower() }
-                };
-
-                try
-                {
-                    using (var json = await _httpClient.Post(MBValidateUrl, data, CancellationToken.None).ConfigureAwait(false))
-                    {
-                        reg = _jsonSerializer.DeserializeFromStream<RegRecord>(json);
-                        success = true;
-                    }
-
-                    if (reg.registered)
-                    {
-                        LicenseFile.AddRegCheck(feature);
-                    }
-                    else
-                    {
-                        LicenseFile.RemoveRegCheck(feature);
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    _logger.ErrorException("Error checking registration status of {0}", e, feature);
-                }
-            }
-
-            var record = new MBRegistrationRecord
-            {
-                IsRegistered = reg.registered,
-                ExpirationDate = reg.expDate,
-                RegChecked = true,
-                RegError = !success
-            };
-
-            record.TrialVersion = IsInTrial(reg.expDate, record.RegChecked, record.IsRegistered);
-            record.IsValid = !record.RegChecked || (record.IsRegistered || record.TrialVersion);
-
-            return record;
-        }
-
-        private bool IsInTrial(DateTime expirationDate, bool regChecked, bool isRegistered)
-        {
-            //don't set this until we've successfully obtained exp date
-            if (!regChecked)
-            {
-                return false;
-            }
-
-            var isInTrial = expirationDate > DateTime.UtcNow;
-
-            return (isInTrial && !isRegistered);
         }
 
         /// <summary>
