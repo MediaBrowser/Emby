@@ -18,7 +18,7 @@
                 }
             }
 
-            var url = 'tvproviders/' + type.toLowerCase() + '.js';
+            var url = 'components/tvproviders/' + type.toLowerCase() + '.js';
 
             require([url], function (factory) {
 
@@ -44,13 +44,12 @@
         ApiClient.ajax({
 
             type: 'GET',
-            url: 'tvproviders/' + type + '.template.html'
+            url: 'components/tvproviders/' + type + '.template.html'
 
         }).done(function (html) {
 
             var elem = page.querySelector('.providerTemplate');
             elem.innerHTML = Globalize.translateDocument(html);
-            $(elem).trigger('create');
 
             init(page, type);
         });
@@ -92,7 +91,7 @@
         $('.btnSkip', page).on('click', skip);
         $('.btnNext', page).on('click', next);
 
-    }).on('pageshowready', "#wizardGuidePage", function () {
+    }).on('pageshow', "#wizardGuidePage", function () {
 
         var page = this;
 

@@ -17,6 +17,8 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CommonIO.Windows;
+using MediaBrowser.Server.Implementations.Logging;
 
 namespace MediaBrowser.ServerApplication
 {
@@ -201,7 +203,8 @@ namespace MediaBrowser.ServerApplication
         /// <param name="options">The options.</param>
         private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager, bool runService, StartupOptions options)
         {
-            var fileSystem = new NativeFileSystem(logManager.GetLogger("FileSystem"), false);
+            var fileSystem = new WindowsFileSystem(new PatternsLogger(logManager.GetLogger("FileSystem")));
+            fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
 
             var nativeApp = new WindowsApp(fileSystem)
             {
@@ -214,7 +217,7 @@ namespace MediaBrowser.ServerApplication
                 fileSystem,
                 "MBServer",
                 nativeApp);
-            
+
             var initProgress = new Progress<double>();
 
             if (!runService)
@@ -327,11 +330,6 @@ namespace MediaBrowser.ServerApplication
             _logger.Info("Shutting down");
 
             _appHost.Dispose();
-
-            if (!_isRunningAsService)
-            {
-                SetErrorMode(ErrorModes.SYSTEM_DEFAULT);
-            }
         }
 
         /// <summary>
@@ -513,23 +511,19 @@ namespace MediaBrowser.ServerApplication
 
             if (!_isRunningAsService)
             {
-                _logger.Info("Hiding server notify icon");
-                _serverNotifyIcon.Visible = false;
+                //_logger.Info("Hiding server notify icon");
+                //_serverNotifyIcon.Visible = false;
 
                 _logger.Info("Starting new instance");
                 //Application.Restart();
                 Process.Start(_appHost.ServerConfigurationManager.ApplicationPaths.ApplicationPath);
 
-                _logger.Info("Calling Environment.Exit");
-                Environment.Exit(0);
+                ShutdownWindowsApplication();
             }
         }
 
         private static void ShutdownWindowsApplication()
         {
-            _logger.Info("Hiding server notify icon");
-            _serverNotifyIcon.Visible = false;
-
             _logger.Info("Calling Application.Exit");
             Application.Exit();
 

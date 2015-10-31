@@ -8,6 +8,7 @@ using MediaBrowser.Model.Devices;
 using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Session;
 using MediaBrowser.Model.Users;
@@ -16,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonIO;
 
 namespace MediaBrowser.Server.Implementations.Devices
 {
@@ -151,11 +153,12 @@ namespace MediaBrowser.Server.Implementations.Devices
                 path = Path.Combine(path, _fileSystem.GetValidFilename(file.Album));
             }
 
-            Directory.CreateDirectory(path);
-
             path = Path.Combine(path, file.Name);
+            path = Path.ChangeExtension(path, MimeTypes.ToExtension(file.MimeType) ?? "jpg");
 
             _libraryMonitor.ReportFileSystemChangeBeginning(path);
+
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
             try
             {
@@ -258,6 +261,11 @@ namespace MediaBrowser.Server.Implementations.Devices
         private bool CanAccessDevice(UserPolicy policy, string id)
         {
             if (policy.EnableAllDevices)
+            {
+                return true;
+            }
+
+            if (policy.IsAdministrator)
             {
                 return true;
             }

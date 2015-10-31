@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonIO;
 using MimeTypes = MediaBrowser.Model.Net.MimeTypes;
 
 namespace MediaBrowser.Api.Playback.Hls
@@ -165,7 +166,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             TranscodingJob job = null;
 
-            if (File.Exists(segmentPath))
+            if (FileSystem.FileExists(segmentPath))
             {
                 job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                 return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
@@ -174,7 +175,7 @@ namespace MediaBrowser.Api.Playback.Hls
             await ApiEntryPoint.Instance.TranscodingStartLock.WaitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
             try
             {
-                if (File.Exists(segmentPath))
+                if (FileSystem.FileExists(segmentPath))
                 {
                     job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                     return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
@@ -285,20 +286,23 @@ namespace MediaBrowser.Api.Playback.Hls
         private double[] GetSegmentLengths(StreamState state)
         {
             var result = new List<double>();
-            var encoder = GetVideoEncoder(state);
-
-            if (string.Equals(encoder, "copy", StringComparison.OrdinalIgnoreCase))
+            if (state.VideoRequest != null)
             {
-                var videoStream = state.VideoStream;
-                if (videoStream.KeyFrames != null && videoStream.KeyFrames.Count > 0)
+                var encoder = GetVideoEncoder(state);
+
+                if (string.Equals(encoder, "copy", StringComparison.OrdinalIgnoreCase))
                 {
-                    foreach (var frame in videoStream.KeyFrames)
+                    var videoStream = state.VideoStream;
+                    if (videoStream.KeyFrames != null && videoStream.KeyFrames.Count > 0)
                     {
-                        var seconds = TimeSpan.FromMilliseconds(frame).TotalSeconds;
-                        seconds -= result.Sum();
-                        result.Add(seconds);
+                        foreach (var frame in videoStream.KeyFrames)
+                        {
+                            var seconds = TimeSpan.FromMilliseconds(frame).TotalSeconds;
+                            seconds -= result.Sum();
+                            result.Add(seconds);
+                        }
+                        return result.ToArray();
                     }
-                    return result.ToArray();
                 }
             }
 
@@ -351,7 +355,7 @@ namespace MediaBrowser.Api.Playback.Hls
             }
         }
 
-        private void DeleteFile(FileInfo file, int retryCount)
+        private void DeleteFile(FileSystemMetadata file, int retryCount)
         {
             if (retryCount >= 5)
             {
@@ -375,7 +379,7 @@ namespace MediaBrowser.Api.Playback.Hls
             }
         }
 
-        private static FileInfo GetLastTranscodingFile(string playlist, string segmentExtension, IFileSystem fileSystem)
+        private static FileSystemMetadata GetLastTranscodingFile(string playlist, string segmentExtension, IFileSystem fileSystem)
         {
             var folder = Path.GetDirectoryName(playlist);
 
@@ -383,8 +387,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             try
             {
-                return new DirectoryInfo(folder)
-                    .EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+                return fileSystem.GetFiles(folder)
                     .Where(i => string.Equals(i.Extension, segmentExtension, StringComparison.OrdinalIgnoreCase) && Path.GetFileNameWithoutExtension(i.Name).StartsWith(filePrefix, StringComparison.OrdinalIgnoreCase))
                     .OrderByDescending(fileSystem.GetLastWriteTimeUtc)
                     .FirstOrDefault();
@@ -429,7 +432,7 @@ namespace MediaBrowser.Api.Playback.Hls
             CancellationToken cancellationToken)
         {
             // If all transcoding has completed, just return immediately
-            if (transcodingJob != null && transcodingJob.HasExited && File.Exists(segmentPath))
+            if (transcodingJob != null && transcodingJob.HasExited && FileSystem.FileExists(segmentPath))
             {
                 return GetSegmentResult(state, segmentPath, segmentIndex, transcodingJob);
             }
@@ -449,7 +452,7 @@ namespace MediaBrowser.Api.Playback.Hls
                             // If it appears in the playlist, it's done
                             if (text.IndexOf(segmentFilename, StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                if (File.Exists(segmentPath))
+                                if (FileSystem.FileExists(segmentPath))
                                 {
                                     return GetSegmentResult(state, segmentPath, segmentIndex, transcodingJob);
                                 }
@@ -959,6 +962,31 @@ namespace MediaBrowser.Api.Playback.Hls
         protected string GetSegmentFileExtension(bool isOutputVideo)
         {
             return isOutputVideo ? ".ts" : ".ts";
+        }
+
+        protected override bool CanStreamCopyVideo(VideoStreamRequest request, MediaStream videoStream)
+        {
+            if (videoStream.KeyFrames == null || videoStream.KeyFrames.Count == 0)
+            {
+                Logger.Debug("Cannot stream copy video due to missing keyframe info");
+                return false;
+            }
+
+            var previousSegment = 0;
+            foreach (var frame in videoStream.KeyFrames)
+            {
+                var length = frame - previousSegment;
+
+                // Don't allow really long segments because this could result in long download times
+                if (length > 10000)
+                {
+                    Logger.Debug("Cannot stream copy video due to long segment length of {0}ms", length);
+                    return false;
+                }
+                previousSegment = frame;
+            }
+
+            return base.CanStreamCopyVideo(request, videoStream);
         }
     }
 }

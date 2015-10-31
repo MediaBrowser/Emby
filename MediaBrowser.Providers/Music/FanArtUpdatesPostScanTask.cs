@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonIO;
 using MediaBrowser.Providers.TV;
 
 namespace MediaBrowser.Providers.Music
@@ -65,11 +66,11 @@ namespace MediaBrowser.Providers.Music
 
             var path = FanartArtistProvider.GetArtistDataPath(_config.CommonApplicationPaths);
 
-            Directory.CreateDirectory(path);
+            _fileSystem.CreateDirectory(path);
 
             var timestampFile = Path.Combine(path, "time.txt");
 
-            var timestampFileInfo = new FileInfo(timestampFile);
+            var timestampFileInfo = _fileSystem.GetFileInfo(timestampFile);
 
             // Don't check for updates every single time
             if (timestampFileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(timestampFileInfo)).TotalDays < 3)
@@ -78,7 +79,7 @@ namespace MediaBrowser.Providers.Music
             }
 
             // Find out the last time we queried for updates
-            var lastUpdateTime = timestampFileInfo.Exists ? File.ReadAllText(timestampFile, Encoding.UTF8) : string.Empty;
+            var lastUpdateTime = timestampFileInfo.Exists ? _fileSystem.ReadAllText(timestampFile, Encoding.UTF8) : string.Empty;
 
             var existingDirectories = Directory.EnumerateDirectories(path).Select(Path.GetFileName).ToList();
 
@@ -93,8 +94,8 @@ namespace MediaBrowser.Providers.Music
             }
 
             var newUpdateTime = Convert.ToInt64(DateTimeToUnixTimestamp(DateTime.UtcNow)).ToString(UsCulture);
-            
-            File.WriteAllText(timestampFile, newUpdateTime, Encoding.UTF8);
+
+            _fileSystem.WriteAllText(timestampFile, newUpdateTime, Encoding.UTF8);
 
             progress.Report(100);
         }
@@ -114,7 +115,7 @@ namespace MediaBrowser.Providers.Music
             {
                 url += "&client_key=" + options.UserApiKey;
             }
-            
+
             // First get last time
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
@@ -179,7 +180,7 @@ namespace MediaBrowser.Providers.Music
         {
             _logger.Info("Updating artist " + musicBrainzId);
 
-            return FanartArtistProvider.Current.DownloadArtistXml(musicBrainzId, cancellationToken);
+            return FanartArtistProvider.Current.DownloadArtistJson(musicBrainzId, cancellationToken);
         }
 
         /// <summary>

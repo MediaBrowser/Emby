@@ -51,18 +51,18 @@ namespace MediaBrowser.Common.ScheduledTasks
             DisposeTimer();
 
             var triggerDate = lastResult != null ?
-                lastResult.EndTimeUtc.Add(Interval) :
-                DateTime.UtcNow.Add(FirstRunDelay);
+                            lastResult.EndTimeUtc.Add(Interval) :
+                            DateTime.UtcNow.Add(FirstRunDelay);
 
             if (DateTime.UtcNow > triggerDate)
             {
                 if (isApplicationStartup)
                 {
-                    triggerDate = DateTime.UtcNow.AddMinutes(5);
+                    triggerDate = DateTime.UtcNow.AddMinutes(1);
                 }
                 else
                 {
-                    triggerDate = DateTime.UtcNow.Add(Interval);
+                    triggerDate = DateTime.UtcNow.AddMinutes(1);
                 }
             }
 

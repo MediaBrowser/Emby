@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.Security;
 
 namespace MediaBrowser.Server.Implementations.HttpServer
 {
@@ -65,7 +66,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         }
 
         public HttpListenerHost(IApplicationHost applicationHost,
-            ILogManager logManager, 
+            ILogManager logManager,
             IServerConfigurationManager config,
             string serviceName,
             string defaultRedirectPath, params Assembly[] assembliesWithServices)
@@ -79,6 +80,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             _containerAdapter = new ContainerAdapter(applicationHost);
         }
 
+        public string GlobalResponse { get; set; }
+
         public override void Configure(Container container)
         {
             HostConfig.Instance.DefaultRedirectPath = DefaultRedirectPath;
@@ -90,7 +93,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 {typeof (FileNotFoundException), 404},
                 {typeof (DirectoryNotFoundException), 404},
                 {typeof (SecurityException), 401},
-                {typeof (UnauthorizedAccessException), 401}
+                {typeof (PaymentRequiredException), 402},
+                {typeof (UnauthorizedAccessException), 500},
+                {typeof (ApplicationException), 500}
             };
 
             HostConfig.Instance.DebugMode = true;
@@ -333,6 +338,13 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             if (string.IsNullOrEmpty(localPath))
             {
                 httpRes.RedirectToUrl("/" + DefaultRedirectPath);
+                return Task.FromResult(true);
+            }
+
+            if (!string.IsNullOrWhiteSpace(GlobalResponse))
+            {
+                httpRes.Write(GlobalResponse);
+                httpRes.ContentType = "text/plain";
                 return Task.FromResult(true);
             }
 

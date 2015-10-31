@@ -157,7 +157,7 @@ namespace MediaBrowser.Model.Dlna
                     if (all)
                     {
                         if (item.Protocol == MediaProtocol.File &&
-                            directPlayMethods.Contains(PlayMethod.DirectPlay) && 
+                            directPlayMethods.Contains(PlayMethod.DirectPlay) &&
                             _localPlayer.CanAccessFile(item.Path))
                         {
                             playlistItem.PlayMethod = PlayMethod.DirectPlay;
@@ -286,9 +286,9 @@ namespace MediaBrowser.Model.Dlna
             }
             else
             {
-                _logger.Debug("Profile: {0}, No direct play profiles found for Path: {1}",
+                _logger.Info("Profile: {0}, No direct play profiles found for Path: {1}",
                     options.Profile.Name ?? "Unknown Profile",
-                    item.Path ?? "Unknown path"); 
+                    item.Path ?? "Unknown path");
             }
 
             return playMethods;
@@ -306,7 +306,7 @@ namespace MediaBrowser.Model.Dlna
                     {
                         highestScore = stream.Score.Value;
                     }
-                }    
+                }
             }
 
             List<MediaStream> topStreams = new List<MediaStream>();
@@ -365,7 +365,7 @@ namespace MediaBrowser.Model.Dlna
             bool isEligibleForDirectPlay = IsEligibleForDirectPlay(item, GetBitrateForDirectPlayCheck(item, options), subtitleStream, options, PlayMethod.DirectPlay);
             bool isEligibleForDirectStream = IsEligibleForDirectPlay(item, options.GetMaxBitrate(), subtitleStream, options, PlayMethod.DirectStream);
 
-            _logger.Debug("Profile: {0}, Path: {1}, isEligibleForDirectPlay: {2}, isEligibleForDirectStream: {3}",
+            _logger.Info("Profile: {0}, Path: {1}, isEligibleForDirectPlay: {2}, isEligibleForDirectStream: {3}",
                 options.Profile.Name ?? "Unknown Profile",
                 item.Path ?? "Unknown path",
                 isEligibleForDirectPlay,
@@ -538,10 +538,10 @@ namespace MediaBrowser.Model.Dlna
 
             if (directPlay == null)
             {
-                _logger.Debug("Profile: {0}, No direct play profiles found for Path: {1}",
+                _logger.Info("Profile: {0}, No direct play profiles found for Path: {1}",
                     profile.Name ?? "Unknown Profile",
-                    mediaSource.Path ?? "Unknown path"); 
-                
+                    mediaSource.Path ?? "Unknown path");
+
                 return null;
             }
 
@@ -571,6 +571,7 @@ namespace MediaBrowser.Model.Dlna
             float? videoFramerate = videoStream == null ? null : videoStream.AverageFrameRate ?? videoStream.AverageFrameRate;
             bool? isAnamorphic = videoStream == null ? null : videoStream.IsAnamorphic;
             bool? isCabac = videoStream == null ? null : videoStream.IsCabac;
+            string videoCodecTag = videoStream == null ? null : videoStream.CodecTag;
 
             int? audioBitrate = audioStream == null ? null : audioStream.BitRate;
             int? audioChannels = audioStream == null ? null : audioStream.Channels;
@@ -586,7 +587,7 @@ namespace MediaBrowser.Model.Dlna
             // Check container conditions
             foreach (ProfileCondition i in conditions)
             {
-                if (!conditionProcessor.IsVideoConditionSatisfied(i, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams))
+                if (!conditionProcessor.IsVideoConditionSatisfied(i, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams, videoCodecTag))
                 {
                     LogConditionFailure(profile, "VideoContainerProfile", i, mediaSource);
 
@@ -598,7 +599,7 @@ namespace MediaBrowser.Model.Dlna
 
             if (string.IsNullOrEmpty(videoCodec))
             {
-                _logger.Debug("Profile: {0}, DirectPlay=false. Reason=Unknown video codec. Path: {1}",
+                _logger.Info("Profile: {0}, DirectPlay=false. Reason=Unknown video codec. Path: {1}",
                     profile.Name ?? "Unknown Profile",
                     mediaSource.Path ?? "Unknown path");
 
@@ -619,7 +620,7 @@ namespace MediaBrowser.Model.Dlna
 
             foreach (ProfileCondition i in conditions)
             {
-                if (!conditionProcessor.IsVideoConditionSatisfied(i, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams))
+                if (!conditionProcessor.IsVideoConditionSatisfied(i, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, isCabac, refFrames, numVideoStreams, numAudioStreams, videoCodecTag))
                 {
                     LogConditionFailure(profile, "VideoCodecProfile", i, mediaSource);
 
@@ -633,7 +634,7 @@ namespace MediaBrowser.Model.Dlna
 
                 if (string.IsNullOrEmpty(audioCodec))
                 {
-                    _logger.Debug("Profile: {0}, DirectPlay=false. Reason=Unknown audio codec. Path: {1}",
+                    _logger.Info("Profile: {0}, DirectPlay=false. Reason=Unknown audio codec. Path: {1}",
                         profile.Name ?? "Unknown Profile",
                         mediaSource.Path ?? "Unknown path");
 
@@ -658,7 +659,7 @@ namespace MediaBrowser.Model.Dlna
                     if (!conditionProcessor.IsVideoAudioConditionSatisfied(i, audioChannels, audioBitrate, audioProfile, isSecondaryAudio))
                     {
                         LogConditionFailure(profile, "VideoAudioCodecProfile", i, mediaSource);
-                        
+
                         return null;
                     }
                 }
@@ -693,7 +694,7 @@ namespace MediaBrowser.Model.Dlna
 
         private void LogConditionFailure(DeviceProfile profile, string type, ProfileCondition condition, MediaSourceInfo mediaSource)
         {
-            _logger.Debug("Profile: {0}, DirectPlay=false. Reason={1}.{2} Condition: {3}. ConditionValue: {4}. IsRequired: {5}. Path: {6}",
+            _logger.Info("Profile: {0}, DirectPlay=false. Reason={1}.{2} Condition: {3}. ConditionValue: {4}. IsRequired: {5}. Path: {6}",
                 type,
                 profile.Name ?? "Unknown Profile",
                 condition.Property,
@@ -715,7 +716,7 @@ namespace MediaBrowser.Model.Dlna
 
                 if (subtitleProfile.Method != SubtitleDeliveryMethod.External && subtitleProfile.Method != SubtitleDeliveryMethod.Embed)
                 {
-                    _logger.Debug("Not eligible for {0} due to unsupported subtitles", playMethod);
+                    _logger.Info("Not eligible for {0} due to unsupported subtitles", playMethod);
                     return false;
                 }
             }
@@ -725,7 +726,7 @@ namespace MediaBrowser.Model.Dlna
 
         public static SubtitleProfile GetSubtitleProfile(MediaStream subtitleStream, SubtitleProfile[] subtitleProfiles, EncodingContext context, PlayMethod playMethod)
         {
-            if (playMethod != PlayMethod.Transcode)
+            if (playMethod != PlayMethod.Transcode && !subtitleStream.IsExternal)
             {
                 // Look for supported embedded subs
                 foreach (SubtitleProfile profile in subtitleProfiles)
@@ -750,29 +751,32 @@ namespace MediaBrowser.Model.Dlna
             // Look for an external profile that matches the stream type (text/graphical)
             foreach (SubtitleProfile profile in subtitleProfiles)
             {
-                bool requiresConversion = !StringHelper.EqualsIgnoreCase(subtitleStream.Codec, profile.Format);
+                if (profile.Method != SubtitleDeliveryMethod.External)
+                {
+                    continue;
+                }
 
                 if (!profile.SupportsLanguage(subtitleStream.Language))
                 {
                     continue;
                 }
 
-                if (profile.Method == SubtitleDeliveryMethod.External && subtitleStream.IsTextSubtitleStream == MediaStream.IsTextFormat(profile.Format))
+                if (subtitleStream.IsTextSubtitleStream == MediaStream.IsTextFormat(profile.Format))
                 {
-                    if (!requiresConversion)
-                    {
-                        return profile;
-                    }
+                    bool requiresConversion = !StringHelper.EqualsIgnoreCase(subtitleStream.Codec, profile.Format);
 
-                    if (subtitleStream.SupportsExternalStream)
+                    if (subtitleStream.IsTextSubtitleStream || !requiresConversion)
                     {
-                        return profile;
-                    }
+                        if (subtitleStream.SupportsExternalStream)
+                        {
+                            return profile;
+                        }
 
-                    // For sync we can handle the longer extraction times
-                    if (context == EncodingContext.Static && subtitleStream.IsTextSubtitleStream)
-                    {
-                        return profile;
+                        // For sync we can handle the longer extraction times
+                        if (context == EncodingContext.Static && subtitleStream.IsTextSubtitleStream)
+                        {
+                            return profile;
+                        }
                     }
                 }
             }
@@ -791,7 +795,7 @@ namespace MediaBrowser.Model.Dlna
                 return true;
             }
 
-            _logger.Debug("Bitrate exceeds DirectPlay limit");
+            _logger.Info("Bitrate exceeds DirectPlay limit");
             return false;
         }
 
@@ -963,8 +967,6 @@ namespace MediaBrowser.Model.Dlna
                             }
                             break;
                         }
-                    default:
-                        throw new ArgumentException("Unrecognized ProfileConditionValue");
                 }
             }
         }

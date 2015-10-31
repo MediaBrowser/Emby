@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using CommonIO;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -45,7 +46,7 @@ namespace MediaBrowser.LocalMetadata.Images
 
             try
             {
-                return new LocalImageProvider(_fileSystem).GetImages(item, path, false, directoryService);
+                return new LocalImageProvider(_fileSystem).GetImages(item, path, directoryService);
             }
             catch (DirectoryNotFoundException)
             {

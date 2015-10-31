@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonIO;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -190,8 +191,8 @@ namespace MediaBrowser.Providers.MediaInfo
             var mediaStreams = mediaInfo.MediaStreams;
 
             video.TotalBitrate = mediaInfo.Bitrate;
-            video.FormatName = (mediaInfo.Container ?? string.Empty)
-                .Replace("matroska", "mkv", StringComparison.OrdinalIgnoreCase);
+            //video.FormatName = (mediaInfo.Container ?? string.Empty)
+            //    .Replace("matroska", "mkv", StringComparison.OrdinalIgnoreCase);
 
             // For dvd's this may not always be accurate, so don't set the runtime if the item already has one
             var needToSetRuntime = video.VideoType != VideoType.Dvd || video.RunTimeTicks == null || video.RunTimeTicks.Value == 0;
@@ -488,7 +489,8 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var subtitleResolver = new SubtitleResolver(_localization, _fileSystem);
 
-            var externalSubtitleStreams = subtitleResolver.GetExternalSubtitleStreams(video, currentStreams.Count, options.DirectoryService, false).ToList();
+            var startIndex = currentStreams.Count == 0 ? 0 : (currentStreams.Select(i => i.Index).Max() + 1);
+            var externalSubtitleStreams = subtitleResolver.GetExternalSubtitleStreams(video, startIndex, options.DirectoryService, false).ToList();
 
             var enableSubtitleDownloading = options.MetadataRefreshMode == MetadataRefreshMode.Default ||
                                             options.MetadataRefreshMode == MetadataRefreshMode.FullRefresh;
@@ -512,7 +514,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 // Rescan
                 if (downloadedLanguages.Count > 0)
                 {
-                    externalSubtitleStreams = subtitleResolver.GetExternalSubtitleStreams(video, currentStreams.Count, options.DirectoryService, true).ToList();
+                    externalSubtitleStreams = subtitleResolver.GetExternalSubtitleStreams(video, startIndex, options.DirectoryService, true).ToList();
                 }
             }
 
@@ -706,7 +708,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
             // Try to eliminate menus and intros by skipping all files at the front of the list that are less than the minimum size
             // Once we reach a file that is at least the minimum, return all subsequent ones
-            var allVobs = new DirectoryInfo(root).EnumerateFiles("*", SearchOption.AllDirectories)
+            var allVobs = _fileSystem.GetFiles(root)
                 .Where(file => string.Equals(file.Extension, ".vob", StringComparison.OrdinalIgnoreCase))
                 .OrderBy(i => i.FullName)
                 .ToList();
@@ -732,7 +734,7 @@ namespace MediaBrowser.Providers.MediaInfo
                     return minSizeVobs.Count == 0 ? vobs.Select(i => i.FullName) : minSizeVobs.Select(i => i.FullName);
                 }
 
-                _logger.Debug("Could not determine vob file list for {0} using DvdLib. Will scan using file sizes.", video.Path);
+                _logger.Info("Could not determine vob file list for {0} using DvdLib. Will scan using file sizes.", video.Path);
             }
 
             var files = allVobs

@@ -14,19 +14,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.MediaEncoding;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Dlna;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
     public class HdHomerunHost : BaseTunerHost, ITunerHost
     {
         private readonly IHttpClient _httpClient;
-        private readonly IJsonSerializer _jsonSerializer;
 
-        public HdHomerunHost(IConfigurationManager config, ILogger logger, IHttpClient httpClient, IJsonSerializer jsonSerializer)
-            : base(config, logger)
+        public HdHomerunHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IHttpClient httpClient)
+            : base(config, logger, jsonSerializer, mediaEncoder)
         {
             _httpClient = httpClient;
-            _jsonSerializer = jsonSerializer;
         }
 
         public string Name
@@ -55,7 +56,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             };
             using (var stream = await _httpClient.Get(options))
             {
-                var root = _jsonSerializer.DeserializeFromStream<List<Channels>>(stream);
+                var root = JsonSerializer.DeserializeFromStream<List<Channels>>(stream);
 
                 if (root != null)
                 {
@@ -88,7 +89,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 Url = string.Format("{0}/", GetApiUrl(info, false)),
                 CancellationToken = cancellationToken,
                 CacheLength = TimeSpan.FromDays(1),
-                CacheMode = CacheMode.Unconditional
+                CacheMode = CacheMode.Unconditional,
+                TimeoutMs = Convert.ToInt32(TimeSpan.FromSeconds(5).TotalMilliseconds)
             }))
             {
                 using (var sr = new StreamReader(stream, System.Text.Encoding.UTF8))
@@ -103,7 +105,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 }
             }
 
-            return null;
+            return model;
         }
 
         public async Task<List<LiveTvTunerInfo>> GetTunerInfos(TunerHostInfo info, CancellationToken cancellationToken)
@@ -113,7 +115,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             using (var stream = await _httpClient.Get(new HttpRequestOptions()
             {
                 Url = string.Format("{0}/tuners.html", GetApiUrl(info, false)),
-                CancellationToken = cancellationToken
+                CancellationToken = cancellationToken,
+                TimeoutMs = Convert.ToInt32(TimeSpan.FromSeconds(5).TotalMilliseconds)
             }))
             {
                 var tuners = new List<LiveTvTunerInfo>();
@@ -231,7 +234,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             int? width = null;
             int? height = null;
             bool isInterlaced = true;
-            var videoCodec = "mpeg2video";
+            var videoCodec = !string.IsNullOrWhiteSpace(GetEncodingOptions().HardwareVideoDecoder) ? null : "mpeg2video";
+
             int? videoBitrate = null;
 
             if (string.Equals(profile, "mobile", StringComparison.OrdinalIgnoreCase))
@@ -329,10 +333,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 RequiresClosing = false,
                 BufferMs = 1000,
                 Container = "ts",
-                Id = profile
+                Id = profile,
+                SupportsDirectPlay = true,
+                SupportsDirectStream = true,
+                SupportsTranscoding = true
             };
 
             return mediaSource;
+        }
+
+        protected EncodingOptions GetEncodingOptions()
+        {
+            return Config.GetConfiguration<EncodingOptions>("encoding");
         }
 
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
@@ -372,16 +384,21 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         protected override bool IsValidChannelId(string channelId)
         {
+            if (string.IsNullOrWhiteSpace(channelId))
+            {
+                throw new ArgumentNullException("channelId");
+            }
+
             return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
         }
 
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
-            Logger.Debug("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
+            Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
 
             if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                return null;
+                throw new ArgumentException("Channel not found");
             }
             channelId = channelId.Substring(ChannelIdPrefix.Length);
 
@@ -400,7 +417,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             var info = await GetTunerInfos(tuner, cancellationToken).ConfigureAwait(false);
 
-            return info.Any(i => i.Status == LiveTvTunerStatus.Available || string.Equals(i.ChannelId, channelId, StringComparison.OrdinalIgnoreCase));
+            return info.Any(i => i.Status == LiveTvTunerStatus.Available);
         }
     }
 }

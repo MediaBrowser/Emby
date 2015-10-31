@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using CommonIO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 
@@ -135,6 +136,12 @@ namespace MediaBrowser.MediaEncoding.Probing
                 PixelFormat = streamInfo.pix_fmt
             };
 
+            // Filter out junk
+            if (!string.IsNullOrWhiteSpace(streamInfo.codec_tag_string) && streamInfo.codec_tag_string.IndexOf("[0]", StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                stream.CodecTag = streamInfo.codec_tag_string;
+            }
+
             if (streamInfo.tags != null)
             {
                 stream.Language = GetDictionaryValue(streamInfo.tags, "language");
@@ -148,7 +155,11 @@ namespace MediaBrowser.MediaEncoding.Probing
 
                 if (!string.IsNullOrEmpty(streamInfo.sample_rate))
                 {
-                    stream.SampleRate = int.Parse(streamInfo.sample_rate, _usCulture);
+                    int value;
+                    if (int.TryParse(streamInfo.sample_rate, NumberStyles.Any, _usCulture, out value))
+                    {
+                        stream.SampleRate = value;
+                    }
                 }
 
                 stream.ChannelLayout = ParseChannelLayout(streamInfo.channel_layout);
@@ -178,6 +189,11 @@ namespace MediaBrowser.MediaEncoding.Probing
 
                 // http://stackoverflow.com/questions/17353387/how-to-detect-anamorphic-video-with-ffprobe
                 stream.IsAnamorphic = string.Equals(streamInfo.sample_aspect_ratio, "0:1", StringComparison.OrdinalIgnoreCase);
+
+                if (streamInfo.refs > 0)
+                {
+                    stream.RefFrames = streamInfo.refs;
+                }
             }
             else
             {
@@ -189,12 +205,21 @@ namespace MediaBrowser.MediaEncoding.Probing
 
             if (!string.IsNullOrEmpty(streamInfo.bit_rate))
             {
-                bitrate = int.Parse(streamInfo.bit_rate, _usCulture);
+                int value;
+                if (int.TryParse(streamInfo.bit_rate, NumberStyles.Any, _usCulture, out value))
+                {
+                    bitrate = value;
+                }
             }
-            else if (formatInfo != null && !string.IsNullOrEmpty(formatInfo.bit_rate) && stream.Type == MediaStreamType.Video)
+
+            if (bitrate == 0 && formatInfo != null && !string.IsNullOrEmpty(formatInfo.bit_rate) && stream.Type == MediaStreamType.Video)
             {
                 // If the stream info doesn't have a bitrate get the value from the media format info
-                bitrate = int.Parse(formatInfo.bit_rate, _usCulture);
+                int value;
+                if (int.TryParse(formatInfo.bit_rate, NumberStyles.Any, _usCulture, out value))
+                {
+                    bitrate = value;
+                }
             }
 
             if (bitrate > 0)
@@ -516,12 +541,25 @@ namespace MediaBrowser.MediaEncoding.Probing
             FetchStudios(audio, tags, "label");
 
             // These support mulitple values, but for now we only store the first.
-            audio.SetProviderId(MetadataProviders.MusicBrainzAlbumArtist, GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Album Artist Id")));
-            audio.SetProviderId(MetadataProviders.MusicBrainzArtist, GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Artist Id")));
+            var mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Album Artist Id"));
+            if (mb == null) mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MUSICBRAINZ_ALBUMARTISTID"));
+            audio.SetProviderId(MetadataProviders.MusicBrainzAlbumArtist, mb);
 
-            audio.SetProviderId(MetadataProviders.MusicBrainzAlbum, GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Album Id")));
-            audio.SetProviderId(MetadataProviders.MusicBrainzReleaseGroup, GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Release Group Id")));
-            audio.SetProviderId(MetadataProviders.MusicBrainzTrack, GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Release Track Id")));
+            mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Artist Id"));
+            if (mb == null) mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MUSICBRAINZ_ARTISTID"));
+            audio.SetProviderId(MetadataProviders.MusicBrainzArtist, mb);
+
+            mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Album Id"));
+            if (mb == null) mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MUSICBRAINZ_ALBUMID"));
+            audio.SetProviderId(MetadataProviders.MusicBrainzAlbum, mb);
+
+            mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Release Group Id"));
+            if (mb == null) mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MUSICBRAINZ_RELEASEGROUPID"));
+            audio.SetProviderId(MetadataProviders.MusicBrainzReleaseGroup, mb);
+
+            mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MusicBrainz Release Track Id"));
+            if (mb == null) mb = GetMultipleMusicBrainzId(FFProbeHelpers.GetDictionaryValue(tags, "MUSICBRAINZ_RELEASETRACKID"));
+            audio.SetProviderId(MetadataProviders.MusicBrainzTrack, mb);
         }
 
         private string GetMultipleMusicBrainzId(string value)
@@ -894,25 +932,26 @@ namespace MediaBrowser.MediaEncoding.Probing
 
         private void UpdateFromMediaInfo(MediaSourceInfo video, MediaStream videoStream)
         {
-            if (video.Protocol == MediaProtocol.File)
+            if (video.Protocol == MediaProtocol.File && videoStream != null)
             {
-                if (videoStream != null)
+                try
                 {
-                    try
-                    {
-                        _logger.Debug("Running MediaInfo against {0}", video.Path);
+                    _logger.Debug("Running MediaInfo against {0}", video.Path);
 
-                        var result = new MediaInfoLib().GetVideoInfo(video.Path);
+                    var result = new MediaInfoLib().GetVideoInfo(video.Path);
 
-                        videoStream.IsCabac = result.IsCabac ?? videoStream.IsCabac;
-                        videoStream.IsInterlaced = result.IsInterlaced ?? videoStream.IsInterlaced;
-                        videoStream.BitDepth = result.BitDepth ?? videoStream.BitDepth;
-                        videoStream.RefFrames = result.RefFrames;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorException("Error running MediaInfo on {0}", ex, video.Path);
-                    }
+                    videoStream.IsCabac = result.IsCabac ?? videoStream.IsCabac;
+                    videoStream.IsInterlaced = result.IsInterlaced ?? videoStream.IsInterlaced;
+                    videoStream.BitDepth = result.BitDepth ?? videoStream.BitDepth;
+                    videoStream.RefFrames = result.RefFrames ?? videoStream.RefFrames;
+                }
+                catch (TypeLoadException)
+                {
+                    // This is non-essential. Don't spam the log
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error running MediaInfo on {0}", ex, video.Path);
                 }
             }
         }
