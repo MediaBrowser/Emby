@@ -187,8 +187,45 @@ namespace MediaBrowser.MediaEncoding.Probing
                 //    string.Equals(stream.AspectRatio, "2.35:1", StringComparison.OrdinalIgnoreCase) ||
                 //    string.Equals(stream.AspectRatio, "2.40:1", StringComparison.OrdinalIgnoreCase);
 
-                // http://stackoverflow.com/questions/17353387/how-to-detect-anamorphic-video-with-ffprobe
-                stream.IsAnamorphic = string.Equals(streamInfo.sample_aspect_ratio, "0:1", StringComparison.OrdinalIgnoreCase);
+                if (string.Equals(streamInfo.sample_aspect_ratio, "1:1", StringComparison.OrdinalIgnoreCase))
+                {
+                    stream.IsAnamorphic = false;
+                }
+                else if (!((string.IsNullOrWhiteSpace(streamInfo.sample_aspect_ratio) || string.Equals(streamInfo.sample_aspect_ratio, "0:1", StringComparison.OrdinalIgnoreCase))))
+                {
+                    stream.IsAnamorphic = true;
+                }
+                else if (string.IsNullOrWhiteSpace(streamInfo.display_aspect_ratio) || string.Equals(streamInfo.display_aspect_ratio, "0:1", StringComparison.OrdinalIgnoreCase))
+                {
+                    stream.IsAnamorphic = false;
+                }
+                else
+                {
+                    var ratioParts = streamInfo.display_aspect_ratio.Split(':');
+                    if (ratioParts.Length != 2)
+                    {
+                        stream.IsAnamorphic = false;
+                    }
+                    else
+                    {
+                        int ratio0;
+                        int ratio1;
+                        if (!Int32.TryParse(ratioParts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out ratio0))
+                        {
+                            stream.IsAnamorphic = false;
+                        }
+                        else if (!Int32.TryParse(ratioParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out ratio1))
+                        {
+                            stream.IsAnamorphic = false;
+                        }
+                        else
+                        {
+                            // allow up to 2% difference between stated display aspect and the calculated ratio
+                            stream.IsAnamorphic = (Math.Abs((streamInfo.width * ratio1) - (streamInfo.height * ratio0)) * 100.0f) / Math.Max((streamInfo.height * ratio0), (streamInfo.width * ratio1)) > 2;
+                        }
+                    }
+                }
+            
 
                 if (streamInfo.refs > 0)
                 {

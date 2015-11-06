@@ -534,7 +534,7 @@ namespace MediaBrowser.Server.Implementations.IO
 
             try
             {
-                using (_fileSystem.GetFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                using (_fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     if (_updateTimer != null)
                     {

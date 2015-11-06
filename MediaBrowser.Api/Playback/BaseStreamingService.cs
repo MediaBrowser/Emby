@@ -1,12 +1,11 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
+﻿using CommonIO;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
-using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -23,7 +22,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -518,18 +516,20 @@ namespace MediaBrowser.Api.Playback
                 filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", widthParam, heightParam));
             }
 
-            // If Max dimensions were supplied, for width selects lowest even number between input width and width req size and selects lowest even number from in width*display aspect and requested size
+            // Fit the video into the specified bounds while ensuring upscaling only occurs in one dimension
             else if (request.MaxWidth.HasValue && request.MaxHeight.HasValue)
             {
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
+                // picks the highest resolution that will fit within the max/min boundaries that only causes upscaling in one or other dimension
                 filters.Add(string.Format("scale=trunc(min(max(iw\\,ih*dar)\\,min({0}\\,{1}*dar))/2)*2:trunc(min(max(iw/dar\\,ih)\\,min({0}/dar\\,{1}))/2)*2", maxWidthParam, maxHeightParam));
             }
 
             // If a fixed width was requested
             else if (request.Width.HasValue)
             {
+                // currently assumes Width < MaxWidth and ignores any MaxHeight
                 var widthParam = request.Width.Value.ToString(UsCulture);
 
                 filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
@@ -538,6 +538,7 @@ namespace MediaBrowser.Api.Playback
             // If a fixed height was requested
             else if (request.Height.HasValue)
             {
+                // currently assume Height < MaxHeight and ignores and MaxWidth
                 var heightParam = request.Height.Value.ToString(UsCulture);
 
                 filters.Add(string.Format("scale=trunc(oh*a*2)/2:{0}", heightParam));
@@ -548,7 +549,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var maxWidthParam = request.MaxWidth.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=min(iw\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
+                filters.Add(string.Format("scale=min(max(iw\\,ih*dar)\\,{0}):trunc(ow/dar/2)*2", maxWidthParam));
             }
 
             // If a max height was requested
@@ -556,7 +557,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
-                filters.Add(string.Format("scale=trunc(oh*a/2)*2:min(ih\\,{0})", maxHeightParam));
+                filters.Add(string.Format("scale=trunc(oh*a/2)*2:min(max(iw/dar\\,ih)\\,{0})", maxHeightParam));
             }
 
             if (string.Equals(outputVideoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
@@ -1166,6 +1167,9 @@ namespace MediaBrowser.Api.Playback
                 {
                     isUpscaling = true;
                 }
+
+				if (videoStream.IsAnamorphic.HasValue && videoStream.IsAnamorphic.Value)
+					isUpscaling = true;
 
                 // Don't allow bitrate increases unless upscaling
                 if (!isUpscaling)
