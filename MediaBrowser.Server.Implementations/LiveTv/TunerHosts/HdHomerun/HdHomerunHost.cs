@@ -23,6 +23,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
     public class HdHomerunHost : BaseTunerHost, ITunerHost
     {
         private readonly IHttpClient _httpClient;
+        private Dictionary<string, MediaInfo> _channelCache = new Dictionary<string, MediaInfo>();
 
         public HdHomerunHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IHttpClient httpClient)
             : base(config, logger, jsonSerializer, mediaEncoder)
@@ -236,6 +237,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             bool isInterlaced = true;
             var videoCodec = !string.IsNullOrWhiteSpace(GetEncodingOptions().HardwareVideoDecoder) ? null : "mpeg2video";
 
+            if (_channelCache.ContainsKey(channelId) && _channelCache[channelId].VideoStream != null)
+            {
+                videoCodec = _channelCache[channelId].VideoStream.Codec;
+            }
+
             int? videoBitrate = null;
 
             if (string.Equals(profile, "mobile", StringComparison.OrdinalIgnoreCase))
@@ -357,6 +363,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
             channelId = channelId.Substring(ChannelIdPrefix.Length);
 
+            await DetectMediaType(info, channelId, cancellationToken);
+
             list.Add(GetMediaSource(info, channelId, "native"));
 
             try
@@ -390,6 +398,26 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
 
             return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
+        }
+
+        protected async Task DetectMediaType(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
+        {
+            var url = GetApiUrl(info, true) + "/auto/v" + channelId;
+
+            if (!_channelCache.ContainsKey(channelId))
+            {
+                //scan the channel to find out its mediatype
+                MediaInfoRequest req = new MediaInfoRequest()
+                {
+                    ProbeSizeOverride = info.ProbeSize,
+                    Protocol = MediaProtocol.Http,
+                    InputPath = url,
+                    VideoType = VideoType.VideoFile,
+                    MediaType = Model.Dlna.DlnaProfileType.Video
+                };
+                var mi = await MediaEncoder.GetMediaInfo(req, cancellationToken);
+                _channelCache[channelId] = mi;
+            }
         }
 
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
