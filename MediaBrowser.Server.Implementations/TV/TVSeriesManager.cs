@@ -7,6 +7,14 @@ using MediaBrowser.Model.Querying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using System.IO;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Common.Events;
+using MediaBrowser.Model.Logging;
+using CommonIO;
 
 namespace MediaBrowser.Server.Implementations.TV
 {
@@ -15,12 +23,22 @@ namespace MediaBrowser.Server.Implementations.TV
         private readonly IUserManager _userManager;
         private readonly IUserDataManager _userDataManager;
         private readonly ILibraryManager _libraryManager;
+        private readonly IFileSystem _fileSystem;
+        private readonly ILibraryMonitor _iLibraryMonitor;
+        private readonly ILogger _logger;
+        private readonly IProviderManager _providerManager;
 
-        public TVSeriesManager(IUserManager userManager, IUserDataManager userDataManager, ILibraryManager libraryManager)
+        public event EventHandler<SeriesCreatedEventArgs> SeriesCreated;
+
+        public TVSeriesManager(IUserManager userManager, IUserDataManager userDataManager, ILibraryManager libraryManager, IFileSystem fileSystem, ILibraryMonitor iLibraryMonitor, ILogger logger, IProviderManager providerManager)
         {
             _userManager = userManager;
             _userDataManager = userDataManager;
             _libraryManager = libraryManager;
+            _fileSystem = fileSystem;
+            _iLibraryMonitor = iLibraryMonitor;
+            _logger = logger;
+            _providerManager = providerManager;
         }
 
         public QueryResult<BaseItem> GetNextUp(NextUpQuery request)
@@ -192,5 +210,89 @@ namespace MediaBrowser.Server.Implementations.TV
                 Items = itemsArray
             };
         }
+
+        public async Task<Series> CreateSeries(SeriesCreationOptions options)
+        {
+            var name = options.Name;
+
+            // Use the series name as the folder name
+            var folderName = _fileSystem.GetValidFilename(name);
+
+            if (options.Location.Length != 0)
+            {
+
+                if (!System.IO.Directory.Exists(options.Location))
+                {
+                    throw new ArgumentNullException("location");
+                }
+            }
+
+            var parentFolder = GetParentFolder(options.Location);
+
+            if (parentFolder == null)
+            {
+                throw new ArgumentException();
+            }
+
+            var path = Path.Combine(options.Location, folderName);
+
+            _iLibraryMonitor.ReportFileSystemChangeBeginning(path);
+
+            try
+            {
+                Directory.CreateDirectory(path);
+
+                var series = new Series
+                {
+                    Name = name,
+                    Path = path,
+                    IsLocked = options.IsLocked,
+                    ProviderIds = options.ProviderIds,
+                };
+
+                await parentFolder.AddChild(series, CancellationToken.None).ConfigureAwait(false);
+
+                await series.RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(_logger, _fileSystem)), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                EventHelper.FireEventIfNotNull(SeriesCreated, this, new SeriesCreatedEventArgs
+                {
+                    TvShow = series,
+                    Options = options
+
+                }, _logger);
+
+                return series;
+            }
+            finally
+            {
+                // Refresh handled internally
+                _iLibraryMonitor.ReportFileSystemChangeComplete(path, false);
+            }
+        }
+
+        private Folder GetParentFolder(string location)
+        {
+            if (location.Length != 0)
+            {
+
+                if ( ! System.IO.Directory.Exists(location) )
+                {
+                    throw new ArgumentNullException("location");
+                }
+
+                var child = _libraryManager.RootFolder.Children.OfType<Folder>()
+                    .FirstOrDefault(i => location.Equals(i.Path));
+
+                if (child != null)
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+
     }
 }

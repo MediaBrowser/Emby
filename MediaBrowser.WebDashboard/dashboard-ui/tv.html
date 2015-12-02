@@ -4,7 +4,7 @@
     <title>Emby</title>
 </head>
 <body>
-    <div id="tvRecommendedPage" data-dom-cache="true" data-role="page" class="page libraryPage backdropPage pageWithAbsoluteTabs" data-backdroptype="series" data-require="jqmpanel,jqmcollapsible,scripts/tvrecommended">
+    <div id="tvRecommendedPage" data-dom-cache="true" data-role="page" class="page libraryPage backdropPage pageWithAbsoluteTabs" data-backdroptype="series" data-require="jqmpanel,jqmcollapsible,scripts/tvrecommended,scripts/tvshoweditor">
 
         <div class="libraryViewNav libraryViewNavWithMinHeight">
             <paper-tabs hidescrollbuttons noink>
@@ -78,6 +78,7 @@
                 </neon-animatable>
                 <neon-animatable>
                     <div class="pageTabContent" data-index="3">
+                        <paper-fab class="btnNewTvShow bottomFab" icon="add" style="position:fixed;right:30px;top:105px;background-color:#db4437;"></paper-fab>
                         <div class="alphabetPicker">
                         </div>
                         <div class="viewSettings">

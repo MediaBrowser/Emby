@@ -1,4 +1,8 @@
 ﻿{
+    "HeaderNewTvShow": "New TV Show",
+    "NewTvShowNameExample": "Example: Wonder Woman",
+    "LabelSelectTvShowFolder": "Select Tv Show Folder",
+    "OptionNewTvShow":  "Select Physical Folder (required)",
     "SettingsSaved": "Settings saved.",
     "AddUser": "Add User",
     "Users": "Users",
