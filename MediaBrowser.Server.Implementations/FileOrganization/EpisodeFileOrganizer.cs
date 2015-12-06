@@ -138,7 +138,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             if (previousResult != null)
             {
                 // Don't keep saving the same result over and over if nothing has changed
-                if (previousResult.Status == result.Status && result.Status != FileSortingStatus.Success)
+                if (previousResult.Status == result.Status && previousResult.StatusMessage == result.StatusMessage && result.Status != FileSortingStatus.Success)
                 {
                     return previousResult;
                 }
@@ -230,16 +230,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var originalExtractedSeriesString = result.ExtractedName;
 
+            try
+            {
             // Proceed to sort the file
             var newPath = await GetNewPath(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, options.TvOptions, cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(newPath))
             {
                 var msg = string.Format("Unable to sort {0} because target path could not be determined.", sourcePath);
-                result.Status = FileSortingStatus.Failure;
-                result.StatusMessage = msg;
-                _logger.Warn(msg);
-                return;
+                throw new Exception(msg);
             }
 
             _logger.Info("Sorting file {0} to new path {1}", sourcePath, newPath);
@@ -319,6 +318,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 SaveSmartMatchString(originalExtractedSeriesString, series, options);
             }
+            }
+            catch (Exception ex)
+            {
+                result.Status = FileSortingStatus.Failure;
+                result.StatusMessage = ex.Message;
+                _logger.Warn(ex.Message);
+                return;
+            }
+
         }
 
         private void SaveSmartMatchString(string matchString, Series series, AutoOrganizeOptions options)
@@ -643,6 +651,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var pattern = endingEpisodeNumber.HasValue ? options.MultiEpisodeNamePattern : options.EpisodeNamePattern;
 
+            if (string.IsNullOrEmpty(pattern))
+            {
+                throw new Exception("GetEpisodeFileName: Configured episode name pattern is empty!");
+            }
+
             var result = pattern.Replace("%sn", seriesName)
                 .Replace("%s.n", seriesName.Replace(" ", "."))
                 .Replace("%s_n", seriesName.Replace(" ", "_"))
@@ -688,7 +701,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 // stay below maxLength
                 var msg = string.Format("Unable to generate an episode file name shorter than {0} characters to constrain to the max path limit", maxLength);
                 _logger.Warn(msg);
-                return string.Empty;
+                throw new Exception(msg);
             }
 
             return result;
