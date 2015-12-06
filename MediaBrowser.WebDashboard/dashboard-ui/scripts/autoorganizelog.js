@@ -38,13 +38,13 @@
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.deleteOriginalFileFromOrganizationResult(id).done(function () {
+                ApiClient.deleteOriginalFileFromOrganizationResult(id).then(function () {
 
                     Dashboard.hideLoadingMsg();
 
                     reloadItems(page);
 
-                }).fail(onApiFailure);
+                }, onApiFailure);
             }
 
         });
@@ -61,11 +61,11 @@
             includeItemTypes: 'Series',
             sortBy: 'SortName'
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             seriesItems = result.Items;
 
-            ApiClient.getVirtualFolders().done(function (result) {
+            ApiClient.getVirtualFolders().then(function (result) {
 
                 Dashboard.hideLoadingMsg();
 
@@ -92,9 +92,9 @@
                 }
 
                 showEpisodeCorrectionPopup(page, item, seriesItems, movieLocations, seriesLocations);
-            }).fail(onApiFailure);
+            }, onApiFailure);
 
-        }).fail(onApiFailure);
+        }, onApiFailure);
     }
 
     function showEpisodeCorrectionPopup(page, item, allSeries, movieLocations, seriesLocations) {
@@ -139,15 +139,14 @@
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.performOrganization(id).done(function () {
+                ApiClient.performOrganization(id).then(function () {
 
                     Dashboard.hideLoadingMsg();
 
                     reloadItems(page);
 
-                }).fail(onApiFailure);
+                }, onApiFailure);
             }
-
         });
     }
 
@@ -155,13 +154,13 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getFileOrganizationResults(query).done(function (result) {
+        ApiClient.getFileOrganizationResults(query).then(function (result) {
 
             currentResult = result;
             renderResults(page, result);
 
             Dashboard.hideLoadingMsg();
-        }).fail(onApiFailure);
+        }, onApiFailure);
 
     }
 
@@ -235,7 +234,11 @@
             html += '</td>';
 
             html += '<td>';
-            var spinnerActive = item.IsInProgress ? 'active' : '';
+            var spinnerActive = '';
+            if (item.IsInProgress) {
+                spinnerActive = 'active';
+            }
+
             html += '<paper-spinner class="syncSpinner"' + spinnerActive + ' style="vertical-align: middle; /">';
             html += '</td>';
 
@@ -351,9 +354,9 @@
 
         $('.btnClearLog', page).on('click', function () {
 
-            ApiClient.clearOrganizationLog().done(function () {
+            ApiClient.clearOrganizationLog().then(function () {
                 reloadItems(page);
-            }).fail(onApiFailure);
+            }, onApiFailure);
 
         });
 

@@ -12,7 +12,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getSmartMatchInfos(query).done(function (infos) {
+        ApiClient.getSmartMatchInfos(query).then(function (infos) {
 
             currentResult = infos;
 
@@ -101,7 +101,7 @@
                 MatchString: button.getAttribute('data-matchstring')
             };
 
-            ApiClient.deleteSmartMatchEntry(id, options).done(function () {
+            ApiClient.deleteSmartMatchEntry(id, options).then(function () {
 
                 reloadList(page);
 
