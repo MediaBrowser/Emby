@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['components/paperdialoghelper', 'paper-tabs'], function () {
 
     var currentItemId;
     var currentFile;
@@ -31,7 +31,7 @@
             TargetFolder: targetFolder
         };
 
-        ApiClient.performEpisodeOrganization(resultId, options).done(function () {
+        ApiClient.performEpisodeOrganization(resultId, options).then(function () {
 
             Dashboard.hideLoadingMsg();
 
@@ -39,7 +39,7 @@
 
             reloadItems();
 
-        }).fail(onApiFailure);
+        }, onApiFailure);
     }
 
     function submitMovieForm(form) {
@@ -56,7 +56,7 @@
             TargetFolder: targetFolder
         };
 
-        ApiClient.performMovieOrganization(resultId, options).done(function () {
+        ApiClient.performMovieOrganization(resultId, options).then(function () {
 
             Dashboard.hideLoadingMsg();
 
@@ -64,7 +64,7 @@
 
             reloadItems();
 
-        }).fail(onApiFailure);
+        }, onApiFailure);
     }
 
     function searchForIdentificationResults(popup, itemtype) {
@@ -100,7 +100,7 @@
             data: JSON.stringify(lookupInfo),
             contentType: "application/json"
 
-        }).done(function (results) {
+        }).then(function (results) {
 
             Dashboard.hideLoadingMsg();
             showIdentificationSearchResults(popup, results, itemtype);
@@ -127,7 +127,7 @@
                 }
             });
 
-        }).fail(onApiFailure);
+        }, onApiFailure);
     }
 
     function showIdentificationSearchResults(popup, results, itemtype) {
@@ -363,12 +363,12 @@
 
         reloadItems = reloadDelegate;
 
-        ApiClient.ajax({
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'components/fileorganizer/fileorganizer.template.html', true);
 
-            type: 'GET',
-            url: 'components/fileorganizer/fileorganizer.template.html'
+        xhr.onload = function (e) {
 
-        }).done(function (template) {
+            var template = this.response;
 
             var dlg = createDialog();
             dlg.setAttribute('id', 'with-backdrop');
@@ -393,6 +393,8 @@
             dlg.innerHTML = html;
             document.body.appendChild(dlg);
 
+            initEditor(dlg, item, allSeries, movieLocations, seriesLocations);
+
             // Has to be assigned a z-index after the call to .open() 
             $(dlg).on('iron-overlay-closed', onDialogClosed);
 
@@ -412,16 +414,17 @@
                 showTab(dlg, selected);
             });
 
-            initEditor(dlg, item, allSeries, movieLocations, seriesLocations);
             dlg.classList.add('organizerDialog');
 
-            dlg.open();
+            PaperDialogHelper.openWithHash(dlg, 'fileorganizer');
+            //dlg.open();
 
             $('#btnBack', dlg).on('click', function () {
-
-                dlg.close();
+                PaperDialogHelper.close(dlg);
             });
-        }).fail(onApiFailure);
+        };
+
+        xhr.send();
     }
 
     function createDialog() {
@@ -488,4 +491,4 @@
         }
     };
 
-})(jQuery, window, document);
+});
