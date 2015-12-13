@@ -381,7 +381,7 @@
             html += '</h2>';
             //html += '</div>';
 
-            html += '<div style="padding:0; margin: 0px 10px 0px 0px"><paper-tabs hidescrollbuttons selected="0">';
+            html += '<div style="padding:0; margin: 10px 0px 0px 0px"><paper-tabs hidescrollbuttons selected="0">';
             html += '<paper-tab id="popupTab1" class="episodeTabButton">TV Episode</paper-tab>';
             html += '<paper-tab id="popupTab2" class="movieTabButton">Movie</paper-tab>';
             html += '</paper-tabs></div>'
