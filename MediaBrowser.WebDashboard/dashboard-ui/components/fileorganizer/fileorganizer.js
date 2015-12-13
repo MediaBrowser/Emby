@@ -1,4 +1,4 @@
-﻿define(['components/paperdialoghelper', 'paper-tabs'], function () {
+﻿define(['components/paperdialoghelper', 'paper-tabs', 'paper-item', 'paper-input', 'paper-fab', 'paper-item-body'], function (paperDialogHelper) {
 
     var currentItemId;
     var currentFile;
@@ -374,19 +374,19 @@
             dlg.setAttribute('id', 'with-backdrop');
 
             var html = '';
-            html += '<div class="ui-bar-a" style="text-align: left; padding: 10px 15px; margin: 0">';
+            //html += '<div class="ui-bar-a" style="text-align: left; padding: 10px 15px; margin: 0">';
             html += '<h2 class="dialogHeader">';
-            html += '<paper-fab icon="arrow-back" class="mini" id="btnBack"></paper-fab>';
+            html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog" id="btnBack"></paper-fab>';
             html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + Globalize.translate('FileOrganizeManually') + '</div>';
             html += '</h2>';
-            html += '</div>';
+            //html += '</div>';
 
-            html += '<div style="padding:0; margin:0"><paper-tabs hidescrollbuttons selected="0">';
+            html += '<div style="padding:0; margin: 0px 10px 0px 0px"><paper-tabs hidescrollbuttons selected="0">';
             html += '<paper-tab id="popupTab1" class="episodeTabButton">TV Episode</paper-tab>';
             html += '<paper-tab id="popupTab2" class="movieTabButton">Movie</paper-tab>';
             html += '</paper-tabs></div>'
 
-            html += '<div class="editorContent">';
+            html += '<div class="editorContent" style="margin:auto;">';
             html += Globalize.translateDocument(template);
             html += '</div>';
 
@@ -416,11 +416,12 @@
 
             dlg.classList.add('organizerDialog');
 
-            PaperDialogHelper.openWithHash(dlg, 'fileorganizer');
+            paperDialogHelper.open(dlg);
+            //PaperDialogHelper.openWithHash(dlg, 'fileorganizer');
             //dlg.open();
 
             $('#btnBack', dlg).on('click', function () {
-                PaperDialogHelper.close(dlg);
+                paperDialogHelper.close(dlg);
             });
         };
 
@@ -428,7 +429,12 @@
     }
 
     function createDialog() {
-        var dlg = document.createElement('paper-dialog');
+        //var dlg = document.createElement('paper-dialog');
+
+        var dlg = paperDialogHelper.createDialog({
+            theme: 'a',
+            size: 'auto'
+        });
 
         dlg.setAttribute('with-backdrop', 'with-backdrop');
         dlg.setAttribute('role', 'alertdialog');
