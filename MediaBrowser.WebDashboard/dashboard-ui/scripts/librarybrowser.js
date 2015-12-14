@@ -1836,14 +1836,6 @@
                     enableImageEnhancers: enableImageEnhancers
                 });
 
-            } else if (options.preferThumb && item.ParentThumbItemId && options.inheritThumb !== false) {
-
-                imgUrl = ApiClient.getThumbImageUrl(item.ParentThumbItemId, {
-                    type: "Thumb",
-                    maxWidth: thumbWidth,
-                    enableImageEnhancers: enableImageEnhancers
-                });
-
             } else if (options.preferThumb && item.BackdropImageTags && item.BackdropImageTags.length) {
 
                 imgUrl = ApiClient.getScaledImageUrl(item.Id, {
@@ -1854,6 +1846,14 @@
                 });
 
                 forceName = true;
+                
+            } else if (options.preferThumb && item.ParentThumbItemId && options.inheritThumb !== false) {
+
+                imgUrl = ApiClient.getThumbImageUrl(item.ParentThumbItemId, {
+                    type: "Thumb",
+                    maxWidth: thumbWidth,
+                    enableImageEnhancers: enableImageEnhancers
+                });
 
             } else if (item.ImageTags && item.ImageTags.Primary) {
 
