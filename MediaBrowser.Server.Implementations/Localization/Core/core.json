@@ -30,7 +30,7 @@
     "CategorySystem": "System",
     "CategoryApplication": "Application",
     "CategoryPlugin": "Plugin",
-	"ItemInProgress": "Operation aborted. The item is currently being processed."
+	"ItemInProgress": "Operation aborted. The item is currently being processed.",
     "NotificationOptionPluginError": "Plugin failure",
     "NotificationOptionApplicationUpdateAvailable": "Application update available",
     "NotificationOptionApplicationUpdateInstalled": "Application update installed",

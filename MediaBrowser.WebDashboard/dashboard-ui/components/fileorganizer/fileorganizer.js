@@ -98,6 +98,7 @@
             type: "POST",
             url: url,
             data: JSON.stringify(lookupInfo),
+            dataType: "json",
             contentType: "application/json"
 
         }).then(function (results) {
