@@ -48,10 +48,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         {
             List<string> dates = new List<string>();
 
-            var start = new List<DateTime> { startDateUtc, startDateUtc.ToLocalTime() }.Min();
-            var end = new List<DateTime> { endDateUtc, endDateUtc.ToLocalTime() }.Max();
+            var start = new List<DateTime> { startDateUtc, startDateUtc.ToLocalTime() }.Min().Date;
+            var end = new List<DateTime> { endDateUtc, endDateUtc.ToLocalTime() }.Max().Date;
 
-            while (start.DayOfYear <= end.Day)
+            while (start <= end)
             {
                 dates.Add(start.ToString("yyyy-MM-dd"));
                 start = start.AddDays(1);
@@ -82,7 +82,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                 UserAgent = UserAgent,
                 CancellationToken = cancellationToken,
                 // The data can be large so give it some extra time
-                TimeoutMs = 60000,
+                TimeoutMs = 120000,
                 LogErrorResponseBody = true
             };
 

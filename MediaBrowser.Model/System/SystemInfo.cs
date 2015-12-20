@@ -43,7 +43,7 @@ namespace MediaBrowser.Model.System
         /// </summary>
         /// <value><c>true</c> if [supports library monitor]; otherwise, <c>false</c>.</value>
         public bool SupportsLibraryMonitor { get; set; }
-        
+
         /// <summary>
         /// Gets or sets a value indicating whether this instance is network deployed.
         /// </summary>
