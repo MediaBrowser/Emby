@@ -77,6 +77,9 @@
                 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtMetadataPath', page).val(),
+
                     callback: function (path) {
                         if (path) {
                             $('#txtMetadataPath', page).val(path);

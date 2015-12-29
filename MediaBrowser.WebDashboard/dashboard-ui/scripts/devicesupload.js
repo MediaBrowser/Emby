@@ -123,6 +123,8 @@
 
                 picker.show({
 
+                    path: $('#txtUploadPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

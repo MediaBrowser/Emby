@@ -139,6 +139,8 @@
 
                 picker.show({
 
+                    path: $('#txtWatchFolder', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

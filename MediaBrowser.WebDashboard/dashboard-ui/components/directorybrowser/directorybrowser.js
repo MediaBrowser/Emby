@@ -42,7 +42,14 @@
         }
         else if (path) {
             promise = ApiClient.getDirectoryContents(path, fileOptions);
-            parentPathPromise = ApiClient.getParentPath(path);
+            parentPathPromise = ApiClient.getParentPath(path).then(function (response) {
+                if (response.status < 400) {
+                    return response.text();
+                } else {
+                    onFetchFail(request.url, response);
+                    return Promise.reject(response);
+                }
+            });
         } else {
             promise = ApiClient.getDrives();
         }
@@ -97,6 +104,10 @@
 
         var html = '';
         html += '<paper-item role="menuitem" class="' + cssClass + '" data-type="' + type + '" data-path="' + path + '">';
+
+        var icon = (type == 'File') ? 'menu' : 'folder';
+        html += '<iron-icon icon="' + icon + '" style="margin-right: 10px;" ></iron-icon>';
+
         html += '<paper-item-body>';
         html += name;
         html += '</paper-item-body>';
@@ -211,6 +222,10 @@
                 fileOptions.includeFiles = options.includeFiles;
             }
 
+            if (options.includeHidden != null) {
+                fileOptions.includeHidden = options.includeHidden;
+            }
+
             getSystemInfo().then(function (systemInfo) {
 
                 var dlg = paperDialogHelper.createDialog({
@@ -257,7 +272,7 @@
                     txtCurrentPath.val(options.path);
                 }
 
-                refreshDirectoryBrowser(editorContent, txtCurrentPath.val());
+                refreshDirectoryBrowser(editorContent, txtCurrentPath.val(), fileOptions);
 
             });
         };
