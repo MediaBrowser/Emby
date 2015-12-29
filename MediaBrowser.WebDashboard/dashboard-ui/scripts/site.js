@@ -92,6 +92,15 @@ var Dashboard = {
             return;
             Dashboard.hideLoadingMsg();
         }
+        else
+        {
+            // Display error messages for all other cases
+            Dashboard.hideLoadingMsg();
+            Dashboard.alert({
+                title: data.statusText,
+                message: data.errorCode
+            });
+        }
     },
 
     onPopupOpen: function () {
