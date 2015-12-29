@@ -98,6 +98,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dashboard-ui\autoorganizesmart.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="dashboard-ui\components\chromecasthelpers.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -119,8 +122,12 @@
     <Content Include="dashboard-ui\components\directorybrowser\directorybrowser.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dashboard-ui\components\fileorganizer\fileorganizer.js" />
-    <Content Include="dashboard-ui\components\fileorganizer\fileorganizer.template.html" />
+    <Content Include="dashboard-ui\components\fileorganizer\fileorganizer.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dashboard-ui\components\fileorganizer\fileorganizer.template.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="dashboard-ui\components\humanedate.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
