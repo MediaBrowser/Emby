@@ -133,11 +133,19 @@
 
         function onFetchFail(url, response) {
 
+            var status = '' + response.status;
+
+            if (response.statusText)
+            {
+                status = status + ': ' + response.statusText;
+            }
+
             Events.trigger(self, 'requestfail', [
             {
                 url: url,
                 status: response.status,
-                errorCode: response.headers ? response.headers["X-Application-Error-Code"] : null
+                statusText: status,
+                errorCode: response.headers.get('X-Application-Error-Code')
             }]);
         }
 
