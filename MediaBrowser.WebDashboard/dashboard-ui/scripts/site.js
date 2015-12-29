@@ -94,6 +94,23 @@ var Dashboard = {
         }
     },
 
+    showResponseError: function (response) {
+
+        Dashboard.hideLoadingMsg();
+
+        var status = '' + response.status;
+
+        if (response.statusText)
+        {
+            status = response.statusText;
+        }
+
+        Dashboard.alert({
+            title: status,
+            message: response.headers ? response.headers.get('X-Application-Error-Code') : null
+        });
+    },
+
     onPopupOpen: function () {
         Dashboard.popupCount = (Dashboard.popupCount || 0) + 1;
         document.body.classList.add('bodyWithPopupOpen');
