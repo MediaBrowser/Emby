@@ -374,7 +374,7 @@
             taskKey: 'AutoOrganize'
         });
 
-        $(ApiClient).on("websocketmessage", onWebSocketMessage);
+        Events.on(ApiClient, "websocketmessage", onWebSocketMessage);
 
     }).on('pagebeforehide', "#libraryFileOrganizerLogPage", function () {
 
@@ -387,7 +387,7 @@
             mode: 'off'
         });
 
-        $(ApiClient).off("websocketmessage", onWebSocketMessage);
+        Events.off(ApiClient, "websocketmessage", onWebSocketMessage);
     });
 
 })(jQuery, document, window);

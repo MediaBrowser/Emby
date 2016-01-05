@@ -405,15 +405,20 @@
 
                 var self = this;
 
-                setTimeout(function () {
-                    Events.trigger(self, 'tabchange');
-                }, 400);
-
-            }).on('tabchange', function () {
                 var selected = this.selected;
-
                 showTab(dlg, selected);
+
+                //setTimeout(function () {
+                //    Events.trigger(self, 'tabchange');
+                //}, 400);
+
             });
+            
+            //.on('tabchange', function () {
+            //    var selected = this.selected;
+
+            //    showTab(dlg, selected);
+            //});
 
             dlg.classList.add('organizerDialog');
 
