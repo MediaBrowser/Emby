@@ -210,7 +210,7 @@
             html += '<a href="#" class="searchImage" data-index="' + index + '" style="background-image:url(\'' + displayUrl + '\');">';
         } else {
 
-            html += '<a href="#" class="searchImage" data-index="' + index + '" style="background-image:url(\'css/images/items/list/remotesearch.png\');background-position: center center;">';
+            html += '<a href="#" class="searchImage iconCardImage" data-index="' + index + '"><iron-icon icon="search"></iron-icon>';
         }
         html += '</a>';
 
