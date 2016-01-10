@@ -71,6 +71,17 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 result.Status = FileSortingStatus.Success;
                 await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
             }
+            else
+            {
+                // If an item is organized manually via the correction dialog, or even automatically
+                // due to updated smart-match configuration, the item should remain at the same position
+                // in the autoorganize log, i.e. should not moved to the top.
+                // The reason for this requirement: The Auto-Organize log is ordered by date descending.
+                // If we change the date of manually organized items to the latest date, those 
+                // items would change their list position and thus may "move out of sight". 
+                // This behaviour appears to be quite irritating in some cases.
+                result.Date = previousResult.Date;
+            }
 
             try
             {
