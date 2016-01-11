@@ -52,7 +52,7 @@ namespace MediaBrowser.Api.Library
         public string Id { get; set; }
     }
 
-    [Route("/Library/FileOrganizations/{Id}/Episode/Organize", "POST", Summary = "Performs an organization")]
+    [Route("/Library/FileOrganizations/{Id}/Episode/Organize", "POST", Summary = "Performs organization of a tv episode")]
     public class OrganizeEpisode
     {
         [ApiMember(Name = "Id", Description = "Result Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
@@ -72,6 +72,62 @@ namespace MediaBrowser.Api.Library
 
         [ApiMember(Name = "RememberCorrection", Description = "Whether or not to apply the same correction to future episodes of the same series.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool RememberCorrection { get; set; }
+
+        [ApiMember(Name = "NewSeriesProviderIds", Description = "A list of provider IDs identifying a new series.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string NewSeriesProviderIds { get; set; }
+
+        [ApiMember(Name = "NewSeriesName", Description = "Name of a series to add.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string NewSeriesName { get; set; }
+
+        [ApiMember(Name = "NewSeriesYear", Description = "Year of a series to add.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string NewSeriesYear { get; set; }
+
+        [ApiMember(Name = "TargetFolder", Description = "Target Folder", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string TargetFolder { get; set; }
+    }
+
+    [Route("/Library/FileOrganizations/{Id}/Movie/Organize", "POST", Summary = "Performs organization of a movie file")]
+    public class OrganizeMovie
+    {
+        [ApiMember(Name = "Id", Description = "Result Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+
+        [ApiMember(Name = "MovieName", Description = "Movie Name", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MovieName { get; set; }
+
+        [ApiMember(Name = "MovieYear", Description = "Movie Year", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MovieYear { get; set; }
+
+        [ApiMember(Name = "TargetFolder", Description = "Target Folder", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string TargetFolder { get; set; }
+    }
+
+    [Route("/Library/FileOrganizationSmartMatch", "GET", Summary = "Gets smart match entries")]
+    public class GetSmartMatchInfos : IReturn<QueryResult<SmartMatchInfo>>
+    {
+        /// <summary>
+        /// Skips over a given number of items within the results. Use for paging.
+        /// </summary>
+        /// <value>The start index.</value>
+        [ApiMember(Name = "StartIndex", Description = "Optional. The record index to start at. All items with a lower index will be dropped from the results.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? StartIndex { get; set; }
+
+        /// <summary>
+        /// The maximum number of items to return
+        /// </summary>
+        /// <value>The limit.</value>
+        [ApiMember(Name = "Limit", Description = "Optional. The maximum number of records to return", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? Limit { get; set; }
+    }
+
+    [Route("/Library/FileOrganizationSmartMatch/{Id}/Delete", "POST", Summary = "Deletes a smart match entry")]
+    public class DeleteSmartMatchEntry
+    {
+        [ApiMember(Name = "Id", Description = "Item ID", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+
+        [ApiMember(Name = "MatchString", Description = "SmartMatch String", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MatchString { get; set; }
     }
 
     [Authenticated(Roles = "Admin")]
@@ -125,10 +181,45 @@ namespace MediaBrowser.Api.Library
                 RememberCorrection = request.RememberCorrection,
                 ResultId = request.Id,
                 SeasonNumber = request.SeasonNumber,
-                SeriesId = request.SeriesId
+                SeriesId = request.SeriesId,
+                NewSeriesName = request.NewSeriesName,
+                NewSeriesYear = request.NewSeriesYear,
+                NewSeriesProviderIds = request.NewSeriesProviderIds,
+                TargetFolder = request.TargetFolder
             });
 
-            Task.WaitAll(task);
+            // Wait 2s for exceptions that may occur and would be automatically forwarded to the client for immediate error display
+            task.Wait(2000);
+        }
+
+        public void Post(OrganizeMovie request)
+        {
+            var task = _iFileOrganizationService.PerformMovieOrganization(new MovieFileOrganizationRequest
+            {
+                ResultId = request.Id,
+                Name = request.MovieName,
+                Year = request.MovieYear,
+                TargetFolder = request.TargetFolder
+            });
+
+            // Wait 2s for exceptions that may occur and would be automatically forwarded to the client for immediate error display
+            task.Wait(2000);
+        }
+
+        public object Get(GetSmartMatchInfos request)
+        {
+            var result = _iFileOrganizationService.GetSmartMatchInfos(new FileOrganizationResultQuery
+            {
+                Limit = request.Limit,
+                StartIndex = request.StartIndex
+            });
+
+            return ToOptimizedSerializedResultUsingCache(result);
+        }
+
+        public void Post(DeleteSmartMatchEntry request)
+        {
+            _iFileOrganizationService.DeleteSmartMatchEntry(request.Id, request.MatchString);
         }
     }
 }
