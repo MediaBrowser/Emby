@@ -137,7 +137,7 @@
             {
                 url: url,
                 status: response.status,
-                errorCode: response.headers ? response.headers["X-Application-Error-Code"] : null
+                errorCode: response.headers ? response.headers.get('X-Application-Error-Code') : null
             }]);
         }
 
