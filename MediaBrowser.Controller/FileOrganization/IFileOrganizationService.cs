@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.Querying;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,12 @@ namespace MediaBrowser.Controller.FileOrganization
 {
     public interface IFileOrganizationService
     {
+        /// <summary>
+        /// A collection of item ids which are currently being processed.
+        /// </summary>
+        /// <remarks>Dictionary values are unused.</remarks>
+        ConcurrentDictionary<string, bool> InProgressItemIds { get; }
+
         /// <summary>
         /// Processes the new files.
         /// </summary>
@@ -38,7 +45,14 @@ namespace MediaBrowser.Controller.FileOrganization
         /// <param name="request">The request.</param>
         /// <returns>Task.</returns>
         Task PerformEpisodeOrganization(EpisodeFileOrganizationRequest request);
-        
+
+        /// <summary>
+        /// Performs movie organization.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>Task.</returns>
+        Task PerformMovieOrganization(MovieFileOrganizationRequest request);
+
         /// <summary>
         /// Gets the results.
         /// </summary>
@@ -59,7 +73,14 @@ namespace MediaBrowser.Controller.FileOrganization
         /// <param name="path">The path.</param>
         /// <returns>FileOrganizationResult.</returns>
         FileOrganizationResult GetResultBySourcePath(string path);
-        
+
+        /// <summary>
+        /// Gets an id from the source path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        string GetResultIdFromSourcePath(string path);
+
         /// <summary>
         /// Saves the result.
         /// </summary>
@@ -67,5 +88,19 @@ namespace MediaBrowser.Controller.FileOrganization
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task SaveResult(FileOrganizationResult result, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Returns a list of smart match entries
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>IEnumerable{SmartMatchInfo}.</returns>
+        QueryResult<SmartMatchInfo> GetSmartMatchInfos(FileOrganizationResultQuery query);
+
+        /// <summary>
+        /// Deletes a smart match entry.
+        /// </summary>
+        /// <param name="Id">Item Id.</param>
+        /// <param name="matchString">The match string to delete.</param>
+        void DeleteSmartMatchEntry(string Id, string matchString);
     }
 }

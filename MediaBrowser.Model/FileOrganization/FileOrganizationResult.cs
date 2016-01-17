@@ -95,6 +95,19 @@ namespace MediaBrowser.Model.FileOrganization
         /// <value>The size of the file.</value>
         public long FileSize { get; set; }
 
+        public string ExtractedMovieName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extracted video year.
+        /// </summary>
+        /// <value>The extracted video year.</value>
+        public int? ExtractedMovieYear { get; set; }
+
+        /// <summary>
+        /// Indicates if the item is currently being processed.
+        /// </summary>
+        public bool IsInProgress { get; set; }
+
         public FileOrganizationResult()
         {
             DuplicatePaths = new List<string>();

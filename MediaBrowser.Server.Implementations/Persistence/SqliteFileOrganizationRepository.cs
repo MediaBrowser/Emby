@@ -54,13 +54,28 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             _connection.RunQueries(queries, Logger);
 
+            // Sqlite does not have an easy method to check for existance of columns. 
+            // Thus, the easiest solution is to try add and eat up the exception
+            try
+            {
+                _connection.RunQueries(new[] { "alter table FileOrganizerResults add column ExtractedVideoName TEXT" }, new NullLogger());
+            }
+            catch { }
+
+            try
+            {
+                _connection.RunQueries(new[] { "alter table FileOrganizerResults add column ExtractedVideoYear INT NUll" }, new NullLogger());
+            }
+            catch { }
+
+
             PrepareStatements();
         }
 
         private void PrepareStatements()
         {
             _saveResultCommand = _connection.CreateCommand();
-            _saveResultCommand.CommandText = "replace into FileOrganizerResults (ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths) values (@ResultId, @OriginalPath, @TargetPath, @FileLength, @OrganizationDate, @Status, @OrganizationType, @StatusMessage, @ExtractedName, @ExtractedYear, @ExtractedSeasonNumber, @ExtractedEpisodeNumber, @ExtractedEndingEpisodeNumber, @DuplicatePaths)";
+            _saveResultCommand.CommandText = "replace into FileOrganizerResults (ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths, ExtractedVideoName, ExtractedVideoYear) values (@ResultId, @OriginalPath, @TargetPath, @FileLength, @OrganizationDate, @Status, @OrganizationType, @StatusMessage, @ExtractedName, @ExtractedYear, @ExtractedSeasonNumber, @ExtractedEpisodeNumber, @ExtractedEndingEpisodeNumber, @DuplicatePaths, @ExtractedVideoName, @ExtractedVideoYear)";
 
             _saveResultCommand.Parameters.Add(_saveResultCommand, "@ResultId");
             _saveResultCommand.Parameters.Add(_saveResultCommand, "@OriginalPath");
@@ -76,6 +91,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
             _saveResultCommand.Parameters.Add(_saveResultCommand, "@ExtractedEpisodeNumber");
             _saveResultCommand.Parameters.Add(_saveResultCommand, "@ExtractedEndingEpisodeNumber");
             _saveResultCommand.Parameters.Add(_saveResultCommand, "@DuplicatePaths");
+            _saveResultCommand.Parameters.Add(_saveResultCommand, "@ExtractedVideoName");
+            _saveResultCommand.Parameters.Add(_saveResultCommand, "@ExtractedVideoYear");
 
             _deleteResultCommand = _connection.CreateCommand();
             _deleteResultCommand.CommandText = "delete from FileOrganizerResults where ResultId = @ResultId";
@@ -118,7 +135,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 _saveResultCommand.GetParameter(index++).Value = result.ExtractedSeasonNumber;
                 _saveResultCommand.GetParameter(index++).Value = result.ExtractedEpisodeNumber;
                 _saveResultCommand.GetParameter(index++).Value = result.ExtractedEndingEpisodeNumber;
-                _saveResultCommand.GetParameter(index).Value = string.Join("|", result.DuplicatePaths.ToArray());
+                _saveResultCommand.GetParameter(index++).Value = string.Join("|", result.DuplicatePaths.ToArray());
+                _saveResultCommand.GetParameter(index++).Value = result.ExtractedMovieName;
+                _saveResultCommand.GetParameter(index).Value = result.ExtractedMovieYear;
 
                 _saveResultCommand.Transaction = transaction;
 
@@ -267,7 +286,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             using (var cmd = _connection.CreateCommand())
             {
-                cmd.CommandText = "SELECT ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths from FileOrganizerResults";
+                cmd.CommandText = "SELECT ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths, ExtractedVideoName, ExtractedVideoYear from FileOrganizerResults";
 
                 if (query.StartIndex.HasValue && query.StartIndex.Value > 0)
                 {
@@ -319,7 +338,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             using (var cmd = _connection.CreateCommand())
             {
-                cmd.CommandText = "select ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths from FileOrganizerResults where ResultId=@Id";
+                cmd.CommandText = "select ResultId, OriginalPath, TargetPath, FileLength, OrganizationDate, Status, OrganizationType, StatusMessage, ExtractedName, ExtractedYear, ExtractedSeasonNumber, ExtractedEpisodeNumber, ExtractedEndingEpisodeNumber, DuplicatePaths, ExtractedVideoName, ExtractedVideoYear from FileOrganizerResults where ResultId=@Id";
 
                 cmd.Parameters.Add(cmd, "@Id", DbType.Guid).Value = guid;
 
@@ -412,7 +431,19 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 result.DuplicatePaths = reader.GetString(index).Split('|').Where(i => !string.IsNullOrEmpty(i)).ToList();
             }
 
-            return result;
+            index++;
+            if (!reader.IsDBNull(index))
+            {
+                result.ExtractedMovieName = reader.GetString(index);
+            }
+
+            index++;
+            if (!reader.IsDBNull(index))
+            {
+                result.ExtractedMovieYear = reader.GetInt32(index);
+            }
+
+           return result;
         }
 
         protected override void CloseConnection()
