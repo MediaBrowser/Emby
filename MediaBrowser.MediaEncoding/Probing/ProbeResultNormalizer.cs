@@ -441,6 +441,7 @@ namespace MediaBrowser.MediaEncoding.Probing
             }
 
             var composer = FFProbeHelpers.GetDictionaryValue(tags, "composer");
+
             if (!string.IsNullOrWhiteSpace(composer))
             {
                 foreach (var person in Split(composer, false))
@@ -449,15 +450,37 @@ namespace MediaBrowser.MediaEncoding.Probing
                 }
             }
 
-            var conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
-            if (!string.IsNullOrWhiteSpace(conductor))
+            var Conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
+
+            if (!string.IsNullOrWhiteSpace(Conductor))
             {
-                foreach (var person in Split(conductor, false))
+                foreach (var person in Split(Conductor, false))
                 {
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Conductor });
                 }
             }
+            // capture additional people 1/15/16
+            var Lyricist = FFProbeHelpers.GetDictionaryValue(tags, "lyricist");
 
+            if (!string.IsNullOrWhiteSpace(Lyricist))
+            {
+                foreach (var person in Split(Lyricist, false))
+                {
+                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Lyricist });
+                }
+            }
+            // Check for writer some music is tagged that way as alternative to composer/lyricist
+            var Writer = FFProbeHelpers.GetDictionaryValue(tags, "writer");
+
+            if (!string.IsNullOrWhiteSpace(Writer))
+            {
+                foreach (var person in Split(Writer, false))
+                {
+                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Writer });
+                }
+            }
+            
+            /// end additional people 1/15/16
             audio.Album = FFProbeHelpers.GetDictionaryValue(tags, "album");
 
             var artists = FFProbeHelpers.GetDictionaryValue(tags, "artists");
