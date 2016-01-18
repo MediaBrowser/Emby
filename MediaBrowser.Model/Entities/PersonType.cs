@@ -19,14 +19,6 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         public const string Composer = "Composer";
         /// <summary>
-        /// The lyricist
-        /// </summary>
-        public const string Lyricist = "Lyricist";
-        /// <summary>
-        /// The conductor
-        /// </summary>
-        public const string Conductor = "Conductor";
-        /// <summary>
         /// The writer
         /// </summary>
         public const string Writer = "Writer";
@@ -38,5 +30,9 @@ namespace MediaBrowser.Model.Entities
         /// The producer
         /// </summary>
         public const string Producer = "Producer";
+        /// <summary>
+        /// The conductor
+        /// </summary>
+        public const string Conductor = "Conductor";
     }
 }

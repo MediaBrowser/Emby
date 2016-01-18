@@ -141,6 +141,7 @@ namespace MediaBrowser.MediaEncoding.Probing
             if (streamInfo.tags != null)
             {
                 stream.Language = GetDictionaryValue(streamInfo.tags, "language");
+                stream.Comment = GetDictionaryValue(streamInfo.tags, "comment");
             }
 
             if (string.Equals(streamInfo.codec_type, "audio", StringComparison.OrdinalIgnoreCase))
@@ -440,7 +441,6 @@ namespace MediaBrowser.MediaEncoding.Probing
             }
 
             var composer = FFProbeHelpers.GetDictionaryValue(tags, "composer");
-
             if (!string.IsNullOrWhiteSpace(composer))
             {
                 foreach (var person in Split(composer, false))
@@ -448,36 +448,16 @@ namespace MediaBrowser.MediaEncoding.Probing
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Composer });
                 }
             }
-            // capture additional people 1/15/16
-            var Lyricist = FFProbeHelpers.GetDictionaryValue(tags, "lyricist");
 
-            if (!string.IsNullOrWhiteSpace(Lyricist))
+            var conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
+            if (!string.IsNullOrWhiteSpace(conductor))
             {
-                foreach (var person in Split(Lyricist, false))
-                {
-                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Lyricist });
-                }
-            }
-            // Check for writer some music is tagged that way as alternative to composer/lyricist
-            var Writer = FFProbeHelpers.GetDictionaryValue(tags, "writer");
-
-            if (!string.IsNullOrWhiteSpace(Writer))
-            {
-                foreach (var person in Split(Writer, false))
-                {
-                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Writer });
-                }
-            }
-            var Conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
-
-            if (!string.IsNullOrWhiteSpace(Conductor))
-            {
-                foreach (var person in Split(Conductor, false))
+                foreach (var person in Split(conductor, false))
                 {
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Conductor });
                 }
             }
-            /// end additional people 1/15/16
+
             audio.Album = FFProbeHelpers.GetDictionaryValue(tags, "album");
 
             var artists = FFProbeHelpers.GetDictionaryValue(tags, "artists");
