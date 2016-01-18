@@ -141,7 +141,6 @@ namespace MediaBrowser.MediaEncoding.Probing
             if (streamInfo.tags != null)
             {
                 stream.Language = GetDictionaryValue(streamInfo.tags, "language");
-                stream.Comment = GetDictionaryValue(streamInfo.tags, "comment");
             }
 
             if (string.Equals(streamInfo.codec_type, "audio", StringComparison.OrdinalIgnoreCase))
@@ -449,16 +448,6 @@ namespace MediaBrowser.MediaEncoding.Probing
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Composer });
                 }
             }
-
-            var Conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
-
-            if (!string.IsNullOrWhiteSpace(Conductor))
-            {
-                foreach (var person in Split(Conductor, false))
-                {
-                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Conductor });
-                }
-            }
             // capture additional people 1/15/16
             var Lyricist = FFProbeHelpers.GetDictionaryValue(tags, "lyricist");
 
@@ -479,7 +468,15 @@ namespace MediaBrowser.MediaEncoding.Probing
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Writer });
                 }
             }
-            
+            var Conductor = FFProbeHelpers.GetDictionaryValue(tags, "conductor");
+
+            if (!string.IsNullOrWhiteSpace(Conductor))
+            {
+                foreach (var person in Split(Conductor, false))
+                {
+                    audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Conductor });
+                }
+            }
             /// end additional people 1/15/16
             audio.Album = FFProbeHelpers.GetDictionaryValue(tags, "album");
 
