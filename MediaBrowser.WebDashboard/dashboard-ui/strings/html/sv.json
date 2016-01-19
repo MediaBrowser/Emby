@@ -555,7 +555,7 @@
     "LabelPublicHttpsPort": "Public https port number:",
     "LabelPublicHttpsPortHelp": "The public port number that should be mapped to the local https port.",
     "LabelEnableHttps": "Report https as external address",
-    "LabelEnableHttpsHelp": "If enabled, the server will report an https url to clients as it's external address.",
+    "LabelEnableHttpsHelp": "If enabled, the server will report an https url to clients as its external address.",
     "LabelHttpsPort": "Local https port number:",
     "LabelHttpsPortHelp": "The tcp port number that Emby's https server should bind to.",
     "LabelWebSocketPortNumber": "Webanslutningens portnummer:",
