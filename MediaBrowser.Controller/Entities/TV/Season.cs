@@ -3,6 +3,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Users;
 using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,8 +13,20 @@ namespace MediaBrowser.Controller.Entities.TV
     /// <summary>
     /// Class Season
     /// </summary>
-    public class Season : Folder, IHasSeries, IHasLookupInfo<SeasonInfo>
+    public class Season : Folder, IHasTrailers, IHasSeries, IHasLookupInfo<SeasonInfo>
     {
+
+        public Season()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            LocalTrailerIds = new List<Guid>();
+            RemoteTrailerIds = new List<Guid>();
+        }
+
+        public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
         [IgnoreDataMember]
         public override bool SupportsAddingToPlaylist
         {
@@ -221,6 +234,17 @@ namespace MediaBrowser.Controller.Entities.TV
             }
 
             return episodes;
+        }
+
+        /// <summary>
+        /// Gets the trailer ids.
+        /// </summary>
+        /// <returns>List&lt;Guid&gt;.</returns>
+        public List<Guid> GetTrailerIds()
+        {
+            var list = LocalTrailerIds.ToList();
+            list.AddRange(RemoteTrailerIds);
+            return list;
         }
 
         public override IEnumerable<BaseItem> GetChildren(User user, bool includeLinkedChildren)
