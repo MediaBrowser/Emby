@@ -66,6 +66,8 @@
 
                     includeFiles: true,
                     includeDirectories: true,
+                    includeHidden: true,
+                    path: $('#txtCertificatePath', page).val(),
 
                     callback: function (path) {
 

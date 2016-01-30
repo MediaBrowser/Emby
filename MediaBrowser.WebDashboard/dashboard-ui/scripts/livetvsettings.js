@@ -55,6 +55,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtRecordingPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

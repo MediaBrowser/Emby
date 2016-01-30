@@ -35,6 +35,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtTranscodingTempPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

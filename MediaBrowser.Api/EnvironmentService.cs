@@ -223,8 +223,17 @@ namespace MediaBrowser.Api
         /// <returns>IEnumerable{FileSystemEntryInfo}.</returns>
         private IEnumerable<FileSystemEntryInfo> GetFileSystemEntries(GetDirectoryContents request)
         {
+            var path = request.Path;
+
+            if (request.IncludeFiles && _fileSystem.FileExists(path))
+            {
+                // In case we are browsing and selecting files, we would want to return the contents 
+                // of the folder containing the current file
+                path = Path.GetDirectoryName(path);
+            }
+
             // using EnumerateFileSystemInfos doesn't handle reparse points (symlinks)
-            var entries = _fileSystem.GetFileSystemEntries(request.Path).Where(i =>
+            var entries = _fileSystem.GetFileSystemEntries(path).Where(i =>
             {
                 if (!request.IncludeHidden && i.Attributes.HasFlag(FileAttributes.Hidden))
                 {
@@ -257,7 +266,16 @@ namespace MediaBrowser.Api
 
         public object Get(GetParentPath request)
         {
-            var parent = Path.GetDirectoryName(request.Path);
+            var path = request.Path;
+
+            if (_fileSystem.FileExists(path))
+            {
+                // In case we are browsing and selecting files, we want to return the parent folder 
+                // of the folder containing the current file
+                path = Path.GetDirectoryName(path);
+            }
+
+            var parent = Path.GetDirectoryName(path);
 
             if (string.IsNullOrEmpty(parent))
             {

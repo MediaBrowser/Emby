@@ -89,6 +89,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtCachePath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

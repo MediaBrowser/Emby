@@ -108,6 +108,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtDashboardSourcePath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {
