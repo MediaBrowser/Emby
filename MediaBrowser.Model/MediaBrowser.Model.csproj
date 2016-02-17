@@ -11,7 +11,7 @@
     <AssemblyName>MediaBrowser.Model</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <FodyPath>..\packages\Fody.1.19.1.0</FodyPath>
+    <FodyPath>..\packages\Fody.1.29.4</FodyPath>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ReleaseVersion>
     </ReleaseVersion>
@@ -444,7 +444,9 @@
     <None Include="Fody.targets" />
     <None Include="FodyWeavers.xml" />
     <None Include="MediaBrowser.Model.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

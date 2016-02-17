@@ -6,17 +6,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using System.Threading;
+using CommonIO;
 
 namespace MediaBrowser.Controller.Entities.TV
 {
     /// <summary>
     /// Class Episode
     /// </summary>
-    public class Episode : Video, IHasTrailers, IHasLookupInfo<EpisodeInfo>, IHasSeries
+    public class Episode : Video, IHasTrailers, IHasSpecialFeatures, IHasLookupInfo<EpisodeInfo>, IHasSeries
     {
+
+        public List<Guid> SpecialFeatureIds { get; set; }
 
         public Episode()
         {
+            SpecialFeatureIds = new List<Guid>();
+
             RemoteTrailers = new List<MediaUrl>();
             LocalTrailerIds = new List<Guid>();
             RemoteTrailerIds = new List<Guid>();
@@ -110,6 +117,44 @@ namespace MediaBrowser.Controller.Entities.TV
                 return Season ?? Parent;
             }
         }
+
+
+        protected override async Task<bool> RefreshedOwnedItems(MetadataRefreshOptions options, List<FileSystemMetadata> fileSystemChildren, CancellationToken cancellationToken)
+        {
+            var hasChanges = await base.RefreshedOwnedItems(options, fileSystemChildren, cancellationToken).ConfigureAwait(false);
+
+            // Must have a parent to have special features
+            // In other words, it must be part of the Parent/Child tree
+           // if (LocationType == LocationType.FileSystem && Parent != null && !IsInMixedFolder)
+           // {
+                var specialFeaturesChanged = await RefreshSpecialFeatures(options, fileSystemChildren, cancellationToken).ConfigureAwait(false);
+
+                if (specialFeaturesChanged)
+                {
+                    hasChanges = true;
+                }
+           // }
+
+            return hasChanges;
+        }
+
+        private async Task<bool> RefreshSpecialFeatures(MetadataRefreshOptions options, List<FileSystemMetadata> fileSystemChildren, CancellationToken cancellationToken)
+        {
+            var newItems = LibraryManager.FindExtras(this, fileSystemChildren, options.DirectoryService).ToList();
+            var newItemIds = newItems.Select(i => i.Id).ToList();
+
+            var itemsChanged = !SpecialFeatureIds.SequenceEqual(newItemIds);
+
+            var tasks = newItems.Select(i => i.RefreshMetadata(options, cancellationToken));
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            SpecialFeatureIds = newItemIds;
+
+            return itemsChanged;
+        }
+
+
 
         /// <summary>
         /// Gets the user data key.

@@ -2314,6 +2314,10 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 item.ExtraType = ExtraType.Scene;
             }
+            else if (string.Equals(result.ExtraType, "trailer", StringComparison.OrdinalIgnoreCase))
+            {
+                item.ExtraType = ExtraType.Trailer;
+            }
             else if (string.Equals(result.ExtraType, "sample", StringComparison.OrdinalIgnoreCase))
             {
                 item.ExtraType = ExtraType.Sample;
