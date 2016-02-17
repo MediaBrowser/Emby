@@ -125,6 +125,12 @@ namespace MediaBrowser.Dlna.Profiles
                 },
                 new DirectPlayProfile
                 {
+                    Container = "flac",
+                    AudioCodec = "flac",
+                    Type = DlnaProfileType.Audio
+                },
+                new DirectPlayProfile
+                {
                     Container = "jpeg",
                     Type = DlnaProfileType.Photo
                 }
