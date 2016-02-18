@@ -20,6 +20,13 @@
 
         $('#chkRememberCorrection', context).val(false);
 
+        if (!item.ExtractedName || item.ExtractedName.length < 4) {
+            $('#divRememberCorrection', context).hide();
+        }
+        else {
+            $('.extractedName', context).html('(' +item.ExtractedName + ')');
+        }
+
         $('#hfResultId', context).val(item.Id);
 
         ApiClient.getItems(null, {

@@ -22,9 +22,9 @@
         <paper-input id="txtEndingEpisode" type="number" pattern="[0-9]*" min="0" label="${LabelEndingEpisodeNumber}"></paper-input>
         <div class="fieldDescription">${LabelEndingEpisodeNumberHelp}</div>
     </div>
-    <div class="hide">
+    <div id="divRememberCorrection">
         <br />
-        <paper-checkbox type="checkbox" id="chkRememberCorrection">${OptionRememberOrganizeCorrection}</paper-checkbox>
+        <paper-checkbox type="checkbox" id="chkRememberCorrection">${OptionRememberOrganizeCorrection} <span class="extractedName" style="font-weight: bold" /></paper-checkbox>
     </div>
     <br />
     <button type="submit" data-role="none" class="clearButton">
