@@ -51,6 +51,16 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
             var list = result.ToList();
+
+            if (tuner.ChannelOffset > 0)
+            {
+                foreach (var channel in list)
+                {
+                    float channelInt = Convert.ToSingle(channel.Number) + tuner.ChannelOffset;
+                    channel.Number = channelInt.ToString();
+                }
+            }
+
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 
             if (!string.IsNullOrWhiteSpace(key) && list.Count > 0)
