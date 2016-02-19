@@ -4,6 +4,7 @@
 
         page.querySelector('.txtDevicePath').value = '';
         page.querySelector('.chkFavorite').checked = false;
+        page.querySelector('.txtChannelOffset').value = info.ChannelOffset || 0;
 
         if (providerId) {
             ApiClient.getNamedConfiguration("livetv").then(function (config) {
@@ -15,6 +16,7 @@
                 page.querySelector('.txtDevicePath').value = info.Url || '';
                 page.querySelector('.chkFavorite').checked = info.ImportFavoritesOnly;
                 page.querySelector('.chkEnabled').checked = info.IsEnabled;
+                page.querySelector('.txtChannelOffset').value = 0;
 
             });
         } else {
@@ -30,7 +32,8 @@
             Type: 'hdhomerun',
             Url: page.querySelector('.txtDevicePath').value,
             ImportFavoritesOnly: page.querySelector('.chkFavorite').checked,
-            IsEnabled: page.querySelector('.chkEnabled').checked
+            IsEnabled: page.querySelector('.chkEnabled').checked,
+            ChannelOffset : page.querySelector('.txtChannelOffset').value
         };
 
         var id = getParameterByName('id');

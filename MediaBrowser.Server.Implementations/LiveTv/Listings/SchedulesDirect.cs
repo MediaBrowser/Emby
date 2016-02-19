@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.Listings
 {
-    public class SchedulesDirect : IListingsProvider
+    public class SchedulesDirect : BaseListingsProvider, IListingsProvider
     {
         private readonly ILogger _logger;
         private readonly IJsonSerializer _jsonSerializer;
@@ -60,7 +60,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return dates;
         }
 
-        public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
             List<ProgramInfo> programsInfo = new List<ProgramInfo>();
 
@@ -200,7 +200,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return value.Replace(" ", string.Empty).Replace("-", string.Empty);
         }
 
-        public async Task AddMetadata(ListingsProviderInfo info, List<ChannelInfo> channels,
+        protected override async Task AddMetadataInternal(ListingsProviderInfo info, List<ChannelInfo> channels,
             CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(info.ListingsId))

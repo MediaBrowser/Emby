@@ -53,6 +53,9 @@
                 <select id="selectListing" data-mini="true" required="required"></select>
             </div>
             <div>
+                <paper-input class="txtChannelOffset" pattern="[0-9]*" min="0" step="1" label="${LabelChannelOffset}" type="number"></paper-input>
+            </div>
+            <div>
                 <button type="submit" data-role="none" class="clearButton btnSubmitListingsContainer">
                     <paper-button raised class="submit block btnSubmitListings hide"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
                 </button>

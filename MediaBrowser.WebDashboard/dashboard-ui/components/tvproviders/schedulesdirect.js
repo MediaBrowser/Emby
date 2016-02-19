@@ -22,6 +22,7 @@
                 page.querySelector('.txtPass').value = '';
 
                 page.querySelector('.txtZipCode').value = info.ZipCode || '';
+                page.querySelector('.txtChannelOffset').value = info.ChannelOffset || 0;
 
                 if (info.Username && info.Password) {
                     page.querySelector('.listingsSection').classList.remove('hide');
@@ -145,6 +146,7 @@
                 })[0];
 
                 info.ZipCode = page.querySelector('.txtZipCode').value;
+                info.ChannelOffset = page.querySelector('.txtChannelOffset').value;
                 info.Country = $('#selectCountry', page).val();
                 info.ListingsId = selectedListingsId;
 
