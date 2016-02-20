@@ -3,6 +3,7 @@
     function reload(page, providerId) {
 
         page.querySelector('.txtDevicePath').value = '';
+        page.querySelector('.txtGuideGroup').value = 0;
 
         if (providerId) {
             ApiClient.getNamedConfiguration("livetv").then(function (config) {
@@ -22,7 +23,8 @@
 
         var info = {
             Type: 'm3u',
-            Url: page.querySelector('.txtDevicePath').value
+            Url: page.querySelector('.txtDevicePath').value,
+            GuideGroup : page.querySelector('.txtGuideGroup').value
         };
 
         var id = getParameterByName('id');
