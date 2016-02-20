@@ -15,7 +15,7 @@ using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
-    public abstract class BaseTunerHost: ITunerHost
+    public abstract class BaseTunerHost
     {
         protected readonly IConfigurationManager Config;
         protected readonly ILogger Logger;
@@ -61,9 +61,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             var list = result.ToList();
             foreach (var channel in list)
             {
+                channel.Sources = new List<string> { "T[" + tuner.Id + "]_I[" + channel.Id + "]" };
                 channel.Id = "C[" + channel.Number + "]_G[" + tuner.GuideGroup + "]";
-                channel.GuideGroup = tuner.GuideGroup;
-                channel.Sources = new List<string> { tuner.Id };
+                channel.GuideGroup = tuner.GuideGroup;                
             }
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 
@@ -125,13 +125,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 var hosts = GetTunerHosts();
 
                 var hostsWithChannel = new List<TunerHostInfo>();
-                var channelId = channel.Id;
+               
 
                 foreach (var host in hosts)
                 {
                     try
                     {
-                        if (channel.Sources.Contains(host.Id))
+                        if (IsValidChannel(host, channel))
                         {
                             hostsWithChannel.Add(host);
                         }
@@ -149,8 +149,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                     await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
                     Logger.Debug("GetChannelStreamMediaSources - Unlocked resource pool");
-
-                    try
+                var channelId = GetInternalChannelId(host, channel);
+                try
                     {
                         // Check to make sure the tuner is available
                         // If there's only one tuner, don't bother with the check and just let the tuner be the one to throw an error
@@ -161,7 +161,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                             continue;
                         }
 
-                        var mediaSources = await GetChannelStreamMediaSources(host, channel.Number, cancellationToken).ConfigureAwait(false);
+                        var mediaSources = await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
 
                         // Prefix the id with the host Id so that we can easily find it
                         foreach (var mediaSource in mediaSources)
@@ -192,7 +192,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             var hosts = GetTunerHosts();
 
             var hostsWithChannel = new List<TunerHostInfo>();
-            var channelId = channel.Id;
 
                 foreach (var host in hosts)
                 {
@@ -200,7 +199,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     {
                         try
                         {
-                            if (channel.Sources.Contains(host.Id))
+                            if (IsValidChannel(host,channel))
                             {
                                 hostsWithChannel.Add(host);
                             }
@@ -224,7 +223,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     Logger.Debug("GetChannelStream - Waiting on tuner resource pool");
                     await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
                     Logger.Debug("GetChannelStream - Unlocked resource pool");
-                    try
+                var channelId = GetInternalChannelId(host, channel);
+                try
                     {
                         // Check to make sure the tuner is available
                         // If there's only one tuner, don't bother with the check and just let the tuner be the one to throw an error
@@ -239,7 +239,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                             }
                         }
 
-                        var stream = await GetChannelStream(host, channel.Number, streamId, cancellationToken).ConfigureAwait(false);
+                        var stream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
 
                         //await AddMediaInfo(stream, false, resourcePool, cancellationToken).ConfigureAwait(false);
                         return new Tuple<MediaSourceInfo, SemaphoreSlim>(stream, resourcePool);
@@ -268,7 +268,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 return false;
             }
         }
-
+        protected string GetInternalChannelId(TunerHostInfo host, ChannelInfo channel)
+        {
+            string channelId = channel.Sources.FirstOrDefault(c => IsValidChannel(host, channel)).Substring(("T[" + host.Id + "]_G[").Length);
+            return channelId.TrimEnd(']');
+        }
         protected abstract Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);
 
         /// <summary>
@@ -365,7 +369,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         protected bool IsValidChannel(TunerHostInfo tuner, ChannelInfo channel)
         {            
-            return channel.Sources.Contains(tuner.Id);       
+            return channel.Sources.Exists(s => s.StartsWith("T["+tuner.Id+"]"));       
         }
 
         protected LiveTvOptions GetConfiguration()

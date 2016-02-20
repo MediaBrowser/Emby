@@ -20,7 +20,7 @@ using MediaBrowser.Model.Dlna;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
-    public class HdHomerunHost : BaseTunerHost, IConfigurableTunerHost
+    public class HdHomerunHost : BaseTunerHost, ITunerHost, IConfigurableTunerHost
     {
         private readonly IHttpClient _httpClient;
 
@@ -64,7 +64,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         Name = i.GuideName,
                         Number = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
-                        IsFavorite = i.Favorite
+                        IsFavorite = i.Favorite,
+                        Id = i.GuideNumber
 
                     });
 

@@ -18,7 +18,7 @@ using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
-    public class M3UTunerHost : BaseTunerHost, IConfigurableTunerHost
+    public class M3UTunerHost : BaseTunerHost, ITunerHost, IConfigurableTunerHost
     {
         private readonly IFileSystem _fileSystem;
         private readonly IHttpClient _httpClient;
@@ -82,11 +82,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
             var urlHash = info.Url.GetMD5().ToString("N");
-            var prefix = ChannelIdPrefix + urlHash;
-            if (!channelId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
+            var prefix = urlHash;
 
             var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
             var m3uchannels = channels.Cast<M3UChannel>();

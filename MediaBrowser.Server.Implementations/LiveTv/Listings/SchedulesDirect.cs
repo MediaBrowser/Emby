@@ -171,7 +171,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                             }
                         }
 
-                        programsInfo.Add(GetProgram(channelNumber, schedule, programDict[schedule.programID]));
+                        programsInfo.Add(GetProgram(channel.Id, schedule, programDict[schedule.programID]));
                     }
                     _logger.Info("Finished with EPGData");
                 }
@@ -816,11 +816,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         public Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
         {
             return GetHeadends(info, country, location, CancellationToken.None);
-        }
-
-        public Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public class ScheduleDirect
