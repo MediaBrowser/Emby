@@ -53,5 +53,10 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public bool? IsFavorite { get; set; }
+        /// <summary>
+        /// Defines how this channel will be grouped with other channels and which listing provider to use.
+        /// </summary>
+        /// <value>The Number</value>
+        public int GuideGroup { get; set; }
     }
 }

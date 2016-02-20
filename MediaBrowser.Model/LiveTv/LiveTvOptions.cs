@@ -31,10 +31,12 @@ namespace MediaBrowser.Model.LiveTv
         public string Type { get; set; }
         public bool ImportFavoritesOnly { get; set; }
         public bool IsEnabled { get; set; }
+        public string GuideGroup { get; set; }
 
         public TunerHostInfo()
         {
             IsEnabled = true;
+            GuideGroup = "0";
         }
     }
 
@@ -48,5 +50,11 @@ namespace MediaBrowser.Model.LiveTv
         public string ZipCode { get; set; }
         public string Country { get; set; }
         public string Path { get; set; }
+        public string GuideGroup { get; set; }
+
+        public ListingsProviderInfo()
+        {
+            GuideGroup = "0";
+        }
     }
 }
