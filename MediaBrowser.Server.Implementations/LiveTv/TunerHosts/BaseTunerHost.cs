@@ -15,7 +15,7 @@ using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
-    public abstract class BaseTunerHost
+    public abstract class BaseTunerHost: ITunerHost
     {
         protected readonly IConfigurationManager Config;
         protected readonly ILogger Logger;
@@ -36,6 +36,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         protected abstract Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo tuner, CancellationToken cancellationToken);
         public abstract string Type { get; }
 
+        public string Name
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public async Task<IEnumerable<ChannelInfo>> GetChannels(TunerHostInfo tuner, bool enableCache, CancellationToken cancellationToken)
         {
             ChannelCache cache = null;
@@ -51,6 +59,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
             var list = result.ToList();
+            foreach (var channel in list)
+            {
+                channel.Id = "C[" + channel.Number + "]_G[" + tuner.GuideGroup + "]";
+                channel.GuideGroup = tuner.GuideGroup;
+                channel.Sources = new List<string> { tuner.Id };
+            }
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 
             if (!string.IsNullOrWhiteSpace(key) && list.Count > 0)
@@ -73,8 +87,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<IEnumerable<ChannelInfo>> GetChannels(CancellationToken cancellationToken)
         {
-            var list = new List<ChannelInfo>();
-
+            var dict = new Dictionary<string,ChannelInfo>();
+            
             var hosts = GetTunerHosts();
 
             foreach (var host in hosts)
@@ -82,9 +96,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 try
                 {
                     var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-                    var newChannels = channels.Where(i => !list.Any(l => string.Equals(i.Id, l.Id, StringComparison.OrdinalIgnoreCase))).ToList();
-
-                    list.AddRange(newChannels);
+                    foreach(var channel in channels)
+                    {
+                        if (dict.ContainsKey(channel.Id))
+                        {
+                            dict[channel.Id].Sources.AddRange(channel.Sources);
+                        }
+                        else
+                        {
+                            dict[channel.Id] = channel;
+                        }
+                    }
+ 
                 }
                 catch (Exception ex)
                 {
@@ -92,26 +115,23 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 }
             }
 
-            return list;
+            return dict.Values;
         }
 
         protected abstract Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);
 
-        public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
+        public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken)
         {
-            if (IsValidChannelId(channelId))
-            {
                 var hosts = GetTunerHosts();
 
                 var hostsWithChannel = new List<TunerHostInfo>();
+                var channelId = channel.Id;
 
                 foreach (var host in hosts)
                 {
                     try
                     {
-                        var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-
-                        if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                        if (channel.Sources.Contains(host.Id))
                         {
                             hostsWithChannel.Add(host);
                         }
@@ -141,7 +161,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                             continue;
                         }
 
-                        var mediaSources = await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
+                        var mediaSources = await GetChannelStreamMediaSources(host, channel.Number, cancellationToken).ConfigureAwait(false);
 
                         // Prefix the id with the host Id so that we can easily find it
                         foreach (var mediaSource in mediaSources)
@@ -160,20 +180,19 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                         resourcePool.Release();
                     }
                 }
-            }
+            
 
             return new List<MediaSourceInfo>();
         }
 
         protected abstract Task<MediaSourceInfo> GetChannelStream(TunerHostInfo tuner, string channelId, string streamId, CancellationToken cancellationToken);
 
-        public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken)
         {
-            if (IsValidChannelId(channelId))
-            {
-                var hosts = GetTunerHosts();
+            var hosts = GetTunerHosts();
 
-                var hostsWithChannel = new List<TunerHostInfo>();
+            var hostsWithChannel = new List<TunerHostInfo>();
+            var channelId = channel.Id;
 
                 foreach (var host in hosts)
                 {
@@ -181,13 +200,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     {
                         try
                         {
-                            var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-
-                            if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                            if (channel.Sources.Contains(host.Id))
                             {
                                 hostsWithChannel.Add(host);
                             }
-                        }
+                    }
                         catch (Exception ex)
                         {
                             Logger.Error("Error getting channels", ex);
@@ -222,7 +239,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                             }
                         }
 
-                        var stream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
+                        var stream = await GetChannelStream(host, channel.Number, streamId, cancellationToken).ConfigureAwait(false);
 
                         //await AddMediaInfo(stream, false, resourcePool, cancellationToken).ConfigureAwait(false);
                         return new Tuple<MediaSourceInfo, SemaphoreSlim>(stream, resourcePool);
@@ -234,7 +251,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                         resourcePool.Release();
                     }
                 }
-            }
+            
 
             throw new LiveTvConflictException();
         }
@@ -346,11 +363,19 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected abstract bool IsValidChannelId(string channelId);
+        protected bool IsValidChannel(TunerHostInfo tuner, ChannelInfo channel)
+        {            
+            return channel.Sources.Contains(tuner.Id);       
+        }
 
         protected LiveTvOptions GetConfiguration()
         {
             return Config.GetConfiguration<LiveTvOptions>("livetv");
+        }
+
+        public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         private class ChannelCache

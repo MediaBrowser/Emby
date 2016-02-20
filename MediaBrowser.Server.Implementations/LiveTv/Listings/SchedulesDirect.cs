@@ -60,12 +60,15 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return dates;
         }
 
-        public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, ChannelInfo channel, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
             List<ProgramInfo> programsInfo = new List<ProgramInfo>();
 
             var token = await GetToken(info, cancellationToken).ConfigureAwait(false);
-
+            if(channel.GuideGroup != info.GuideGroup)
+            {
+                return programsInfo;
+            }
             if (string.IsNullOrWhiteSpace(token))
             {
                 return programsInfo;
@@ -75,7 +78,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             {
                 return programsInfo;
             }
-
+            var channelNumber = channel.Number;
+            var channelName = channel.Name;
             var httpOptions = new HttpRequestOptions()
             {
                 Url = ApiUrl + "/schedules",
@@ -257,21 +261,24 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
 
                 foreach (ChannelInfo channel in channels)
                 {
-                    var station = GetStation(channel.Number, channel.Name);
+                    if (channel.GuideGroup == info.GuideGroup)
+                    {
+                        var station = GetStation(channel.Number, channel.Name);
 
-                    if (station != null)
-                    {
-                        if (station.logo != null)
+                        if (station != null)
                         {
-                            channel.ImageUrl = station.logo.URL;
-                            channel.HasImage = true;
+                            if (station.logo != null)
+                            {
+                                channel.ImageUrl = station.logo.URL;
+                                channel.HasImage = true;
+                            }
+                            string channelName = station.name;
+                            channel.Name = channelName;
                         }
-                        string channelName = station.name;
-                        channel.Name = channelName;
-                    }
-                    else
-                    {
-                        _logger.Info("Schedules Direct doesnt have data for channel: " + channel.Number + " " + channel.Name);
+                        else
+                        {
+                            _logger.Info("Schedules Direct doesnt have data for channel: " + channel.Number + " " + channel.Name);
+                        }
                     }
                 }
             }
@@ -286,7 +293,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             ProgramAudio audioType = ProgramAudio.Stereo;
 
             bool repeat = (programInfo.@new == null);
-            string newID = programInfo.programID + "T" + startAt.Ticks + "C" + channel;
+            string newID = "P["+programInfo.programID + "]_T[" + startAt.Ticks +"]_"+ channel;
 
             if (programInfo.audioProperties != null)
             {
@@ -809,6 +816,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         public Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
         {
             return GetHeadends(info, country, location, CancellationToken.None);
+        }
+
+        public Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public class ScheduleDirect

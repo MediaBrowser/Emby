@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -57,6 +58,11 @@ namespace MediaBrowser.Controller.LiveTv
         /// Defines how this channel will be grouped with other channels and which listing provider to use.
         /// </summary>
         /// <value>The Number</value>
-        public int GuideGroup { get; set; }
+        public string GuideGroup { get; set; }
+        /// <summary>
+        /// Holds the id of all the hosts that offer the channel
+        /// </summary>
+        /// <value>The Number</value>
+        public List<string> Sources { get; set; }
     }
 }

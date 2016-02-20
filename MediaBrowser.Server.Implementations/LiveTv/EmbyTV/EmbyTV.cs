@@ -194,7 +194,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                 return _channelCache.ToList();
             }
 
-            var list = new List<ChannelInfo>();
+            var dict = new Dictionary<string,ChannelInfo>();
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
@@ -202,14 +202,25 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                 {
                     var channels = await hostInstance.GetChannels(cancellationToken).ConfigureAwait(false);
 
-                    list.AddRange(channels);
+                    foreach (var channel in channels)
+                    {
+                        if (dict.ContainsKey(channel.Id))
+                        {
+                            dict[channel.Id].Sources.AddRange(channel.Sources);
+                        }
+                        else
+                        {
+                            dict[channel.Id] = channel;
+                        }
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error getting channels", ex);
                 }
             }
-
+            var list = dict.Values.ToList();
             if (list.Count > 0)
             {
                 foreach (var provider in GetListingProviders())
@@ -496,7 +507,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
             foreach (var provider in GetListingProviders())
             {
-                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel.Number, channel.Name, startDateUtc, endDateUtc, cancellationToken)
+                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel, startDateUtc, endDateUtc, cancellationToken)
                         .ConfigureAwait(false);
 
                 var list = programs.ToList();
@@ -539,12 +550,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         public async Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
-
+            var channel = _channelCache.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    var result = await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
 
                     result.Item2.Release();
 
@@ -562,12 +573,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         private async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
-
+            var channel = _channelCache.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    return await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    return await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -580,11 +591,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
+            var channel = _channelCache.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var sources = await hostInstance.GetChannelStreamMediaSources(channelId, cancellationToken).ConfigureAwait(false);
+                    var sources = await hostInstance.GetChannelStreamMediaSources(channel, cancellationToken).ConfigureAwait(false);
 
                     if (sources.Count > 0)
                     {

@@ -20,11 +20,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             get { return "xmltv"; }
         }
 
-        public Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task AddMetadata(ListingsProviderInfo info, List<ChannelInfo> channels, CancellationToken cancellationToken)
         {
             // Might not be needed
@@ -38,6 +33,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         public Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
         {
             // In theory this should never be called because there is always only one lineup
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, ChannelInfo channel, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        {
             throw new NotImplementedException();
         }
     }

@@ -38,14 +38,14 @@ namespace MediaBrowser.Controller.LiveTv
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;MediaSourceInfo&gt;.</returns>
-        Task<Tuple<MediaSourceInfo,SemaphoreSlim>> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken);
+        Task<Tuple<MediaSourceInfo,SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken);
         /// <summary>
         /// Gets the channel stream media sources.
         /// </summary>
         /// <param name="channelId">The channel identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;List&lt;MediaSourceInfo&gt;&gt;.</returns>
-        Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken);
+        Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken);
     }
     public interface IConfigurableTunerHost
     {

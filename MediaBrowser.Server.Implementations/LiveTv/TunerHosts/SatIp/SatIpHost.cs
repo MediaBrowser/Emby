@@ -122,11 +122,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
             return updatedInfo.TunersAvailable > 0;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override List<TunerHostInfo> GetTunerHosts()
         {
             return SatIpDiscovery.Current.DiscoveredHosts;
