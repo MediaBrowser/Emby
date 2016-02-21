@@ -75,6 +75,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     if(map.Length > 1) { guideGroup = map[1].Trim(); }
                     channel.Number = map[0].Trim();
                 }
+                double n;
+                double.TryParse(channel.Number, out n);
+                if (n == 0 )
+                {
+                    channel.Number = "0";
+                    guideGroup = "T[" + tuner.Id + "]_I[" + channel.Id + "]";
+                }
                 channel.Sources = new List<string> { "T[" + tuner.Id + "]_I[" + channel.Id + "]" };
                 channel.Id = "C[" + channel.Number + "]_G[" + guideGroup + "]";
                 channel.GuideGroup = guideGroup;                

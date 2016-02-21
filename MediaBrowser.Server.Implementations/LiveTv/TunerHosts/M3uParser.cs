@@ -70,7 +70,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     line = line.Substring(8);
                     _logger.Info("Found m3u channel: {0}", line);
                     var parts = line.Split(new[] { ',' }, 2);
-                    channelNumber = parts[0];
+                    channelNumber = parts[0].Trim().Split(' ')[0] ?? "0";
                     channnelName = parts[1];
                 }
                 else if (!string.IsNullOrWhiteSpace(channelNumber))
