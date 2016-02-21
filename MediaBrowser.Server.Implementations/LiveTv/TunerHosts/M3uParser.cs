@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
@@ -51,7 +53,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             string channnelName = null;
             string channelNumber = null;
             string line;
-
+            string imageUrl = null;
             while ((line = reader.ReadLine()) != null)
             {
                 line = line.Trim();
@@ -71,7 +73,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     _logger.Info("Found m3u channel: {0}", line);
                     var parts = line.Split(new[] { ',' }, 2);
                     channelNumber = parts[0].Trim().Split(' ')[0] ?? "0";
-                    channnelName = parts[1];
+                    channnelName = FindProperty("tvg-name", line, parts[1]);
+                    imageUrl = FindProperty("tvg-logo", line, null);
                 }
                 else if (!string.IsNullOrWhiteSpace(channelNumber))
                 {
@@ -79,16 +82,32 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     {
                         Name = channnelName,
                         Number = channelNumber,
-                        Id = line
+                        Id = line,
+                        ImageUrl = imageUrl
                     });
 
+                    imageUrl = null;
                     channelNumber = null;
                     channnelName = null;
                 }
             }
             return channels;
         }
+        public string FindProperty(string property, string properties, string defaultResult = "")
+        {
+            var reg = new Regex(@"([a-z0-9\-_]+)=\""([^""]+)\""", RegexOptions.IgnoreCase);
+            var matches = reg.Matches(properties);
+            foreach (Match match in matches)
+            {
+                if (match.Groups[1].Value == property)
+                {
+                    return match.Groups[2].Value;
+                }
+            }
+            return defaultResult;
+        }
     }
+
 
     public class M3UChannel : ChannelInfo
     {
