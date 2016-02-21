@@ -48,6 +48,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         {
             ChannelCache cache = null;
             var key = tuner.Id;
+            var channelMaps = new Dictionary<string,string>();
 
             if (enableCache && !string.IsNullOrWhiteSpace(key) && _channelCache.TryGetValue(key, out cache))
             {
@@ -57,13 +58,26 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 }
             }
 
+            foreach (var map in tuner.ChannelMaps.Split(','))
+            {
+                var Map = map.Split(':');
+                if (Map.Length == 2) { channelMaps[Map[0].Trim()] = Map[1].Trim(); }
+            }
+
             var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
             var list = result.ToList();
             foreach (var channel in list)
             {
+                var guideGroup = tuner.GuideGroup;
+                if (channelMaps.ContainsKey(channel.Number))
+                {
+                    var map = channelMaps[channel.Number].Split('G');
+                    if(map.Length > 1) { guideGroup = map[1].Trim(); }
+                    channel.Number = map[0].Trim();
+                }
                 channel.Sources = new List<string> { "T[" + tuner.Id + "]_I[" + channel.Id + "]" };
-                channel.Id = "C[" + channel.Number + "]_G[" + tuner.GuideGroup + "]";
-                channel.GuideGroup = tuner.GuideGroup;                
+                channel.Id = "C[" + channel.Number + "]_G[" + guideGroup + "]";
+                channel.GuideGroup = guideGroup;                
             }
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 

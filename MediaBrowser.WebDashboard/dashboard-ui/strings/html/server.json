@@ -1,4 +1,6 @@
 ﻿{
+  "LabelChannelMaps": "Channel Maps",
+  "LabelChannelMapsHelp": "Use {currentChannelNumber}:{newChannelNumber}{GuideGroup|optional} Example for channel 44 to become channel 55 in guide group 0 and channel 50 -> 220 without changing the guide group: 44:55G0,50:220",
   "LabelGuideGroup": "Guide Group",
   "LabelExit": "Exit",
   "LabelVisitCommunity": "Visit Community",

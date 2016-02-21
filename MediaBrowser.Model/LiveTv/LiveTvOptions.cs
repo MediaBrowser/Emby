@@ -32,11 +32,13 @@ namespace MediaBrowser.Model.LiveTv
         public bool ImportFavoritesOnly { get; set; }
         public bool IsEnabled { get; set; }
         public string GuideGroup { get; set; }
+        public string ChannelMaps { get; set; }
 
         public TunerHostInfo()
         {
             IsEnabled = true;
             GuideGroup = "0";
+            ChannelMaps = "";
         }
     }
 

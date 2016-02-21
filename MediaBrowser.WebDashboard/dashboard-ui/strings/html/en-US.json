@@ -1,5 +1,7 @@
 {
-   "LabelGuideGroup": "Guide Group",
+  "LabelChannelMaps": "Channel Maps",
+  "LabelChannelMapsHelp": "Use {currentChannelNumber}:{newChannelNumber}{GuideGroup|optional} Example for channel 44 to become channel 55 in guide group 0 and channel 50 -> 220 without changing the guide group: 44:55G0,50:220",
+  "LabelGuideGroup": "Guide Group",
   "HeaderTaskTriggers": "Task Triggers",
   "TabSmartMatches": "Smart Matches",
   "TabSmartMatchInfo": "Manage your smart matches that were added using the Auto-Organize correction dialog",
