@@ -199,6 +199,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 return Task.FromResult(true);
             }
 
+            if (!series.ProviderIds.Any())
+            {
+                var msg = string.Format("Series has not yet been identified: {0}. If you just added the series, please run a library scan or use the identify feature to identify it.", series.Name);
+                result.Status = FileSortingStatus.Failure;
+                result.StatusMessage = msg;
+                _logger.Warn(msg);
+                return Task.FromResult(true);
+            }
+
             return OrganizeEpisode(sourcePath,
                 series,
                 seasonNumber,
