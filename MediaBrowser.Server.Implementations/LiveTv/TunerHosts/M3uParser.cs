@@ -24,14 +24,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             _httpClient = httpClient;
         }
 
-        public async Task<List<M3UChannel>> Parse(string url, string channelIdPrefix, CancellationToken cancellationToken)
+        public async Task<List<M3UChannel>> Parse(string url, CancellationToken cancellationToken)
         {
             var urlHash = url.GetMD5().ToString("N");
 
             // Read the file and display it line by line.
             using (var reader = new StreamReader(await GetListingsStream(url, cancellationToken).ConfigureAwait(false)))
             {
-                return GetChannels(reader, urlHash, channelIdPrefix);
+                return GetChannels(reader);
             }
         }
 
@@ -44,7 +44,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return Task.FromResult(_fileSystem.OpenRead(url));
         }
 
-        private List<M3UChannel> GetChannels(StreamReader reader, string urlHash, string channelIdPrefix)
+        private List<M3UChannel> GetChannels(StreamReader reader)
         {
             var channels = new List<M3UChannel>();
 
@@ -79,8 +79,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     {
                         Name = channnelName,
                         Number = channelNumber,
-                        Id = channelIdPrefix + urlHash + line.GetMD5().ToString("N"),
-                        Path = line
+                        Id = line
                     });
 
                     channelNumber = null;

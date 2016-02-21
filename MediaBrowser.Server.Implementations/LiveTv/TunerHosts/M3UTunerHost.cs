@@ -40,11 +40,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             get { return "M3U Tuner"; }
         }
 
-        private const string ChannelIdPrefix = "m3u_";
-
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, ChannelIdPrefix, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, cancellationToken).ConfigureAwait(false);
         }
 
         public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
@@ -79,17 +77,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         }
 
 
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
+        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string path, CancellationToken cancellationToken)
         {
-            var urlHash = info.Url.GetMD5().ToString("N");
-            var prefix = urlHash;
 
-            var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
-            var m3uchannels = channels.Cast<M3UChannel>();
-            var channel = m3uchannels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));
-            if (channel != null)
-            {
-                var path = channel.Path;
                 MediaProtocol protocol = MediaProtocol.File;
                 if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
@@ -106,7 +96,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                 var mediaSource = new MediaSourceInfo
                 {
-                    Path = channel.Path,
+                    Path = path,
                     Protocol = protocol,
                     MediaStreams = new List<MediaStream>
                     {
@@ -130,8 +120,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 };
 
                 return new List<MediaSourceInfo> { mediaSource };
-            }
-            return new List<MediaSourceInfo> { };
         }
 
         protected override Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
