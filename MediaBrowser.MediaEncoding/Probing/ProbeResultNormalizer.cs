@@ -496,21 +496,21 @@ namespace MediaBrowser.MediaEncoding.Probing
                 }
             }
 
-            var Lyricist = FFProbeHelpers.GetDictionaryValue(tags, "lyricist");
+            var lyricist = FFProbeHelpers.GetDictionaryValue(tags, "lyricist");
 
-            if (!string.IsNullOrWhiteSpace(Lyricist))
+            if (!string.IsNullOrWhiteSpace(lyricist))
             {
-                foreach (var person in Split(Lyricist, false))
+                foreach (var person in Split(lyricist, false))
                 {
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Lyricist });
                 }
             }
             // Check for writer some music is tagged that way as alternative to composer/lyricist
-            var Writer = FFProbeHelpers.GetDictionaryValue(tags, "writer");
+            var writer = FFProbeHelpers.GetDictionaryValue(tags, "writer");
 
-            if (!string.IsNullOrWhiteSpace(Writer))
+            if (!string.IsNullOrWhiteSpace(writer))
             {
-                foreach (var person in Split(Writer, false))
+                foreach (var person in Split(writer, false))
                 {
                     audio.People.Add(new BaseItemPerson { Name = person, Type = PersonType.Writer });
                 }
