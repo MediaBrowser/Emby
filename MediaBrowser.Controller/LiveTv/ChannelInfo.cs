@@ -54,15 +54,23 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public bool? IsFavorite { get; set; }
+
         /// <summary>
-        /// Defines how this channel will be grouped with other channels and which listing provider to use.
+        /// Gets or sets a value indicating whether this instance is favorite.
         /// </summary>
-        /// <value>The Number</value>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public string GuideGroup { get; set; }
+
         /// <summary>
-        /// Holds the id of all the hosts that offer the channel
+        /// Gets or sets a value indicating whether this instance is favorite.
         /// </summary>
-        /// <value>The Number</value>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
+        public string StationId { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is favorite.
+        /// </summary>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public List<string> Sources { get; set; }
     }
 }

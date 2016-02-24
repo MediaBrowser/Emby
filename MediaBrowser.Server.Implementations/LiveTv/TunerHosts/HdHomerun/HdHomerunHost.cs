@@ -64,9 +64,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         Name = i.GuideName,
                         Number = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
-                        IsFavorite = i.Favorite,
-                        Id = i.GuideNumber
-
+                        Id = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
+                        IsFavorite = i.Favorite
                     });
 
                     if (info.ImportFavoritesOnly)
@@ -229,7 +228,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             public bool DRM { get; set; }
         }
 
-        private MediaSourceInfo GetMediaSource(TunerHostInfo info, string channelNumber, string profile)
+        private MediaSourceInfo GetMediaSource(TunerHostInfo info, string channelId, string profile)
         {
             int? width = null;
             int? height = null;
@@ -295,7 +294,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 videoBitrate = 1000000;
             }
 
-            var url = GetApiUrl(info, true) + "/auto/v" + channelNumber;
+            var url = GetApiUrl(info, true) + "/auto/v" + channelId;
 
             if (!string.IsNullOrWhiteSpace(profile) && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
             {
@@ -318,7 +317,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                                 Width = width,
                                 Height = height,
                                 BitRate = videoBitrate
-                                
+
                             },
                             new MediaStream
                             {
@@ -347,11 +346,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return Config.GetConfiguration<EncodingOptions>("encoding");
         }
 
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelNumber, CancellationToken cancellationToken)
+        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
             var list = new List<MediaSourceInfo>();
 
-            list.Add(GetMediaSource(info, channelNumber, "native"));
+            list.Add(GetMediaSource(info, channelId, "native"));
 
             try
             {
@@ -360,12 +359,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
                 if (model.IndexOf("hdtc", StringComparison.OrdinalIgnoreCase) != -1)
                 {
-                    list.Insert(0, GetMediaSource(info, channelNumber, "heavy"));
+                    list.Insert(0, GetMediaSource(info, channelId, "heavy"));
 
-                    list.Add(GetMediaSource(info, channelNumber, "internet480"));
-                    list.Add(GetMediaSource(info, channelNumber, "internet360"));
-                    list.Add(GetMediaSource(info, channelNumber, "internet240"));
-                    list.Add(GetMediaSource(info, channelNumber, "mobile"));
+                    list.Add(GetMediaSource(info, channelId, "internet480"));
+                    list.Add(GetMediaSource(info, channelId, "internet360"));
+                    list.Add(GetMediaSource(info, channelId, "internet240"));
+                    list.Add(GetMediaSource(info, channelId, "mobile"));
                 }
             }
             catch (Exception ex)
@@ -376,12 +375,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-
-        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelNumber, string streamId, CancellationToken cancellationToken)
+        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
-            Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelNumber, streamId ?? string.Empty);
+            Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
 
-            return GetMediaSource(info, channelNumber, streamId);
+            return GetMediaSource(info, channelId, streamId);
         }
 
         public async Task Validate(TunerHostInfo info)

@@ -40,9 +40,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             get { return "M3U Tuner"; }
         }
 
+        private const string ChannelIdPrefix = "m3u_";
+
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, ChannelIdPrefix, cancellationToken).ConfigureAwait(false);
         }
 
         public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
@@ -61,9 +63,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return Task.FromResult(list);
         }
 
-        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
+        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string path, string streamId, CancellationToken cancellationToken)
         {
-            var sources = await GetChannelStreamMediaSources(info, channelId, cancellationToken).ConfigureAwait(false);
+            var sources = await GetChannelStreamMediaSources(info, path, cancellationToken).ConfigureAwait(false);
 
             return sources.First();
         }
@@ -76,29 +78,27 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string path, CancellationToken cancellationToken)
         {
+            MediaProtocol protocol = MediaProtocol.File;
+            if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                protocol = MediaProtocol.Http;
+            }
+            else if (path.StartsWith("rtmp", StringComparison.OrdinalIgnoreCase))
+            {
+                protocol = MediaProtocol.Rtmp;
+            }
+            else if (path.StartsWith("rtsp", StringComparison.OrdinalIgnoreCase))
+            {
+                protocol = MediaProtocol.Rtsp;
+            }
 
-                MediaProtocol protocol = MediaProtocol.File;
-                if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Http;
-                }
-                else if (path.StartsWith("rtmp", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Rtmp;
-                }
-                else if (path.StartsWith("rtsp", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Rtsp;
-                }
-
-                var mediaSource = new MediaSourceInfo
-                {
-                    Path = path,
-                    Protocol = protocol,
-                    MediaStreams = new List<MediaStream>
+            var mediaSource = new MediaSourceInfo
+            {
+                Path = path,
+                Protocol = protocol,
+                MediaStreams = new List<MediaStream>
                     {
                         new MediaStream
                         {
@@ -115,11 +115,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                         }
                     },
-                    RequiresOpening = false,
-                    RequiresClosing = false
-                };
+                RequiresOpening = false,
+                RequiresClosing = false
+            };
 
-                return new List<MediaSourceInfo> { mediaSource };
+            return new List<MediaSourceInfo> { mediaSource };
         }
 
         protected override Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)

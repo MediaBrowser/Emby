@@ -4,6 +4,8 @@
 
         page.querySelector('.txtDevicePath').value = '';
         page.querySelector('.txtGuideGroup').value = 0;
+        page.querySelector('.txtChannelMaps').value = '';
+
 
         if (providerId) {
             ApiClient.getNamedConfiguration("livetv").then(function (config) {
@@ -13,6 +15,9 @@
                 })[0];
 
                 page.querySelector('.txtDevicePath').value = info.Url || '';
+                page.querySelector('.txtGuideGroup').value = info.GuideGroup || 0;
+                page.querySelector('.txtChannelMaps').value = info.ChannelMaps || '';
+
             });
         }
     }
@@ -24,7 +29,8 @@
         var info = {
             Type: 'm3u',
             Url: page.querySelector('.txtDevicePath').value,
-            GuideGroup : page.querySelector('.txtGuideGroup').value
+            GuideGroup: page.querySelector('.txtGuideGroup').value,
+            ChannelMaps: page.querySelector('.txtChannelMaps').value
         };
 
         var id = getParameterByName('id');

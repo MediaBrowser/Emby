@@ -23,19 +23,21 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
     {
         private readonly IFileSystem _fileSystem;
         private readonly IHttpClient _httpClient;
-        
+
         public SatIpHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient)
             : base(config, logger, jsonSerializer, mediaEncoder)
         {
             _fileSystem = fileSystem;
             _httpClient = httpClient;
         }
-        
+
+        private const string ChannelIdPrefix = "sat_";
+
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo tuner, CancellationToken cancellationToken)
         {
-            var satInfo = (SatIpTunerHostInfo) tuner;
+            var satInfo = (SatIpTunerHostInfo)tuner;
 
-            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(satInfo.M3UUrl, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(satInfo.M3UUrl, ChannelIdPrefix, cancellationToken).ConfigureAwait(false);
         }
 
         public static string DeviceType
@@ -51,6 +53,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string path, CancellationToken cancellationToken)
         {
 
+            if (string.IsNullOrWhiteSpace(path))
+            {
                 MediaProtocol protocol = MediaProtocol.File;
                 if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
@@ -91,7 +95,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
                 };
 
                 return new List<MediaSourceInfo> { mediaSource };
-
+            }
+            return new List<MediaSourceInfo> { };
         }
 
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo tuner, string channelId, string streamId, CancellationToken cancellationToken)
@@ -108,7 +113,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
             return updatedInfo.TunersAvailable > 0;
         }
 
-        protected override List<TunerHostInfo> GetTunerHosts()
+        protected override List<TunerHostInfo> GetTunerHostsInternal()
         {
             return SatIpDiscovery.Current.DiscoveredHosts;
         }
@@ -129,7 +134,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
 
         public List<LiveTvTunerInfo> GetTunerInfos(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            var satInfo = (SatIpTunerHostInfo) info;
+            var satInfo = (SatIpTunerHostInfo)info;
 
             var list = new List<LiveTvTunerInfo>();
 
