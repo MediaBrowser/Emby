@@ -1067,7 +1067,7 @@ h1 .imageLink {
     }
 
 .fieldDescription {
-    padding-left: 5px;
+    padding-left: 2px;
     font-weight: normal;
     white-space: normal !important;
 }
@@ -1878,4 +1878,8 @@ progress {
     padding: 25px;
     text-align: center;
     color: #bbb;
+}
+
+.actionSheetMenuItem:hover {
+    background-color: #e8e8e8;
 }
