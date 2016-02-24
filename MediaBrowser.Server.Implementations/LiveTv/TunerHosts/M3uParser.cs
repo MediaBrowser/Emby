@@ -17,6 +17,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IHttpClient _httpClient;
+        private readonly static Regex _tagRegex = new Regex(@"([a-z0-9\-_]+)=\""([^""]+)\""", RegexOptions.IgnoreCase);
 
         public M3uParser(ILogger logger, IFileSystem fileSystem, IHttpClient httpClient)
         {
@@ -50,7 +51,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             var channels = new List<M3UChannel>();
             string line;
             string extInf = "";
-             while ((line = reader.ReadLine()) != null)
+            while ((line = reader.ReadLine()) != null)
             {
                 line = line.Trim();
                 if (string.IsNullOrWhiteSpace(line))
@@ -69,10 +70,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     _logger.Info("Found m3u channel: {0}", extInf);
                 }
                 else if (!string.IsNullOrWhiteSpace(extInf))
-                {   
+                {
                     var channel = GetChannelnfo(extInf);
-                    channel.Id = channelIdPrefix + urlHash + line.GetMD5().ToString("N");
-                    channel.Path = line;
+                    channel.Id = line.Trim();
                     channels.Add(channel);
                     extInf = "";
                 }
@@ -86,11 +86,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             channel.Number = extInf.Trim().Split(' ')[0] ?? "0";
             channel.Name = extInf.Substring(titleIndex + 1);
-            
-            if(channel.Number == "-1") { channel.Number = "0"; }         
+
+            if (channel.Number == "-1") { channel.Number = "0"; }
 
             //Check for channel number with the format from SatIp            
-            int number;                   
+            int number;
             var numberIndex = channel.Name.IndexOf('.');
             if (numberIndex > 0)
             {
@@ -110,8 +110,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         }
         public string FindProperty(string property, string properties, string defaultResult = "")
         {
-            var reg = new Regex(@"([a-z0-9\-_]+)=\""([^""]+)\""", RegexOptions.IgnoreCase);
-            var matches = reg.Matches(properties);
+            var matches = _tagRegex.Matches(properties);
             foreach (Match match in matches)
             {
                 if (match.Groups[1].Value == property)

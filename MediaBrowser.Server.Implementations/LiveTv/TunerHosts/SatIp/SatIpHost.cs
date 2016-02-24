@@ -23,7 +23,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
     {
         private readonly IFileSystem _fileSystem;
         private readonly IHttpClient _httpClient;
-        
+
         public SatIpHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient)
             : base(config, logger, jsonSerializer, mediaEncoder)
         {
@@ -32,10 +32,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
         }
 
         private const string ChannelIdPrefix = "sat_";
-        
+
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo tuner, CancellationToken cancellationToken)
         {
-            var satInfo = (SatIpTunerHostInfo) tuner;
+            var satInfo = (SatIpTunerHostInfo)tuner;
 
             return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(satInfo.M3UUrl, ChannelIdPrefix, cancellationToken).ConfigureAwait(false);
         }
@@ -50,21 +50,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
             get { return DeviceType; }
         }
 
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
+        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string path, CancellationToken cancellationToken)
         {
-            var urlHash = tuner.Url.GetMD5().ToString("N");
-            var prefix = ChannelIdPrefix + urlHash;
-            if (!channelId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
 
-            var channels = await GetChannels(tuner, true, cancellationToken).ConfigureAwait(false);
-            var m3uchannels = channels.Cast<M3UChannel>();
-            var channel = m3uchannels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));
-            if (channel != null)
+            if (string.IsNullOrWhiteSpace(path))
             {
-                var path = channel.Path;
                 MediaProtocol protocol = MediaProtocol.File;
                 if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
@@ -81,7 +71,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
 
                 var mediaSource = new MediaSourceInfo
                 {
-                    Path = channel.Path,
+                    Path = path,
                     Protocol = protocol,
                     MediaStreams = new List<MediaStream>
                     {
@@ -123,12 +113,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
             return updatedInfo.TunersAvailable > 0;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
-        protected override List<TunerHostInfo> GetTunerHosts()
+        protected override List<TunerHostInfo> GetTunerHostsInternal()
         {
             return SatIpDiscovery.Current.DiscoveredHosts;
         }
@@ -149,7 +134,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
 
         public List<LiveTvTunerInfo> GetTunerInfos(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            var satInfo = (SatIpTunerHostInfo) info;
+            var satInfo = (SatIpTunerHostInfo)info;
 
             var list = new List<LiveTvTunerInfo>();
 

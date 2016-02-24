@@ -63,9 +63,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return Task.FromResult(list);
         }
 
-        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
+        protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string path, string streamId, CancellationToken cancellationToken)
         {
-            var sources = await GetChannelStreamMediaSources(info, channelId, cancellationToken).ConfigureAwait(false);
+            var sources = await GetChannelStreamMediaSources(info, path, cancellationToken).ConfigureAwait(false);
 
             return sources.First();
         }
@@ -78,45 +78,27 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected override bool IsValidChannelId(string channelId)
+        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string path, CancellationToken cancellationToken)
         {
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
-        {
-            var urlHash = info.Url.GetMD5().ToString("N");
-            var prefix = ChannelIdPrefix + urlHash;
-            if (!channelId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            MediaProtocol protocol = MediaProtocol.File;
+            if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
-                return null;
+                protocol = MediaProtocol.Http;
+            }
+            else if (path.StartsWith("rtmp", StringComparison.OrdinalIgnoreCase))
+            {
+                protocol = MediaProtocol.Rtmp;
+            }
+            else if (path.StartsWith("rtsp", StringComparison.OrdinalIgnoreCase))
+            {
+                protocol = MediaProtocol.Rtsp;
             }
 
-            var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
-            var m3uchannels = channels.Cast<M3UChannel>();
-            var channel = m3uchannels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));
-            if (channel != null)
+            var mediaSource = new MediaSourceInfo
             {
-                var path = channel.Path;
-                MediaProtocol protocol = MediaProtocol.File;
-                if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Http;
-                }
-                else if (path.StartsWith("rtmp", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Rtmp;
-                }
-                else if (path.StartsWith("rtsp", StringComparison.OrdinalIgnoreCase))
-                {
-                    protocol = MediaProtocol.Rtsp;
-                }
-
-                var mediaSource = new MediaSourceInfo
-                {
-                    Path = channel.Path,
-                    Protocol = protocol,
-                    MediaStreams = new List<MediaStream>
+                Path = path,
+                Protocol = protocol,
+                MediaStreams = new List<MediaStream>
                     {
                         new MediaStream
                         {
@@ -133,13 +115,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                         }
                     },
-                    RequiresOpening = false,
-                    RequiresClosing = false
-                };
+                RequiresOpening = false,
+                RequiresClosing = false
+            };
 
-                return new List<MediaSourceInfo> { mediaSource };
-            }
-            return new List<MediaSourceInfo> { };
+            return new List<MediaSourceInfo> { mediaSource };
         }
 
         protected override Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)

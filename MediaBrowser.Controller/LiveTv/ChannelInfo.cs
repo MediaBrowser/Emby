@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -53,5 +54,23 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public bool? IsFavorite { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is favorite.
+        /// </summary>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
+        public string GuideGroup { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is favorite.
+        /// </summary>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
+        public string StationId { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is favorite.
+        /// </summary>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
+        public List<string> Sources { get; set; }
     }
 }

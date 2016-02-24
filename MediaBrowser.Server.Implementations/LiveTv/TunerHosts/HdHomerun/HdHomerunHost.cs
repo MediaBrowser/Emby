@@ -64,9 +64,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         Name = i.GuideName,
                         Number = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
-                        Id = ChannelIdPrefix + i.GuideNumber.ToString(CultureInfo.InvariantCulture),
+                        Id = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
                         IsFavorite = i.Favorite
-
                     });
 
                     if (info.ImportFavoritesOnly)
@@ -318,7 +317,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                                 Width = width,
                                 Height = height,
                                 BitRate = videoBitrate
-                                
+
                             },
                             new MediaStream
                             {
@@ -351,12 +350,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             var list = new List<MediaSourceInfo>();
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return list;
-            }
-            channelId = channelId.Substring(ChannelIdPrefix.Length);
-
             list.Add(GetMediaSource(info, channelId, "native"));
 
             try
@@ -382,25 +375,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            if (string.IsNullOrWhiteSpace(channelId))
-            {
-                throw new ArgumentNullException("channelId");
-            }
-
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
             Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
-
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException("Channel not found");
-            }
-            channelId = channelId.Substring(ChannelIdPrefix.Length);
 
             return GetMediaSource(info, channelId, streamId);
         }

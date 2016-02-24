@@ -20,7 +20,7 @@
                 $('#selectListing', page).val(info.ListingsId || '');
                 page.querySelector('.txtUser').value = info.Username || '';
                 page.querySelector('.txtPass').value = '';
-
+                page.querySelector('.txtGuideGroup').value = info.GuideGroup || 0;
                 page.querySelector('.txtZipCode').value = info.ZipCode || '';
 
                 if (info.Username && info.Password) {
@@ -145,6 +145,7 @@
                 })[0];
 
                 info.ZipCode = page.querySelector('.txtZipCode').value;
+                info.GuideGroup = page.querySelector('.txtGuideGroup').value;
                 info.Country = $('#selectCountry', page).val();
                 info.ListingsId = selectedListingsId;
 
