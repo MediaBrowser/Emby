@@ -499,11 +499,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             return (info.EnableAllTuners && string.IsNullOrWhiteSpace(channel.ListingsProviderId)) ||
                 (channel.ListingsProviderId ?? string.Empty) == info.Id;
         }
-
-        private async Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        private async Task<ChannelInfo> GetChannel(string channelId, CancellationToken cancellationToken)
         {
             var channels = await GetChannelsAsync(true, cancellationToken).ConfigureAwait(false);
-            var channel = channels.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
+            return channels.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
+        }
+        private async Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        {
+            var channel = await GetChannel(channelId,cancellationToken);
 
             foreach (var provider in GetListingProviders())
             {
@@ -512,7 +515,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                     continue;
                 }
 
-                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel.Number, channel.Name, startDateUtc, endDateUtc, cancellationToken)
+                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel, startDateUtc, endDateUtc, cancellationToken)
                         .ConfigureAwait(false);
 
                 var list = programs.ToList();
@@ -555,12 +558,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         public async Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
+            var channel = await GetChannel(channelId, cancellationToken);
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    var result = await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
 
                     result.Item2.Release();
 
@@ -578,12 +582,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         private async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
+            var channel = await GetChannel(channelId, cancellationToken);
+
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    return await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    return await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -596,11 +602,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
+            var channel = await GetChannel(channelId, cancellationToken);
+
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var sources = await hostInstance.GetChannelStreamMediaSources(channelId, cancellationToken).ConfigureAwait(false);
+                    var sources = await hostInstance.GetChannelStreamMediaSources(channel, cancellationToken).ConfigureAwait(false);
 
                     if (sources.Count > 0)
                     {

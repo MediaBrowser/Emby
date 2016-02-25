@@ -97,8 +97,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         protected abstract Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);
 
-        public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
+        public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken)
         {
+            var channelId = channel.Id;
             if (IsValidChannelId(channelId))
             {
                 var hosts = GetTunerHosts();
@@ -167,8 +168,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         protected abstract Task<MediaSourceInfo> GetChannelStream(TunerHostInfo tuner, string channelId, string streamId, CancellationToken cancellationToken);
 
-        public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken)
         {
+            var channelId = channel.Id;
             if (IsValidChannelId(channelId))
             {
                 var hosts = GetTunerHosts();

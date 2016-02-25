@@ -60,9 +60,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return dates;
         }
 
-        public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, ChannelInfo channel, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
             List<ProgramInfo> programsInfo = new List<ProgramInfo>();
+            var channelName = channel.Name;
+            var channelNumber = channel.Number;
 
             var token = await GetToken(info, cancellationToken).ConfigureAwait(false);
 
