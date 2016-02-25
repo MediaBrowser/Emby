@@ -83,7 +83,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         {
             var titleIndex = extInf.LastIndexOf(',');
             var channel = new M3UChannel();
-            channel.TunerHostId = tunerHostId;
 
             channel.Number = extInf.Trim().Split(' ')[0] ?? "0";
             channel.Name = extInf.Substring(titleIndex + 1);

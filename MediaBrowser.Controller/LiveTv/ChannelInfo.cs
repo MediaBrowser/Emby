@@ -26,10 +26,10 @@ namespace MediaBrowser.Controller.LiveTv
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the tuner host identifier.
+        /// Gets or sets the Listings Provider identifier.
         /// </summary>
-        /// <value>The tuner host identifier.</value>
-        public string TunerHostId { get; set; }
+        /// <value>The Listings Provider identifier.</value>
+        public string ListingsProviderId { get; set; }
         
         /// <summary>
         /// Gets or sets the type of the channel.

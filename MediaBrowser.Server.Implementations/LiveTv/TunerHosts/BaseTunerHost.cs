@@ -83,7 +83,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 {
                     var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
                     var newChannels = channels.Where(i => !list.Any(l => string.Equals(i.Id, l.Id, StringComparison.OrdinalIgnoreCase))).ToList();
-
+                    newChannels.ForEach(c => c.ListingsProviderId = host.ListingsProvider ?? string.Empty);
                     list.AddRange(newChannels);
                 }
                 catch (Exception ex)

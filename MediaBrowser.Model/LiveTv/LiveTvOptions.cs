@@ -31,6 +31,7 @@ namespace MediaBrowser.Model.LiveTv
         public string Type { get; set; }
         public bool ImportFavoritesOnly { get; set; }
         public bool IsEnabled { get; set; }
+        public string ListingsProvider { get; set; }
 
         public TunerHostInfo()
         {
@@ -49,12 +50,10 @@ namespace MediaBrowser.Model.LiveTv
         public string Country { get; set; }
         public string Path { get; set; }
 
-        public string[] EnabledTuners { get; set; }
         public bool EnableAllTuners { get; set; }
 
         public ListingsProviderInfo()
         {
-            EnabledTuners = new string[] { };
             EnableAllTuners = true;
         }
     }
