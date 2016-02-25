@@ -33,6 +33,12 @@ namespace MediaBrowser.Controller.LiveTv
         public string ListingsProviderId { get; set; }
 
         /// <summary>
+        /// Gets or sets the Listings Provider station identifier.
+        /// </summary>
+        /// <value>The Listings Provider stationidentifier.</value>
+        public string StationId { get; set; }
+
+        /// <summary>
         /// Gets or sets the sources for a channel.
         /// </summary>
         /// <value>The channel sources.</value>
