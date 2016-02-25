@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -30,7 +31,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The Listings Provider identifier.</value>
         public string ListingsProviderId { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the sources for a channel.
+        /// </summary>
+        /// <value>The channel sources.</value>
+        public List<string> Sources { get; set; }
+
         /// <summary>
         /// Gets or sets the type of the channel.
         /// </summary>
