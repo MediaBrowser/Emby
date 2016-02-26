@@ -33,6 +33,8 @@ namespace MediaBrowser.Model.LiveTv
         public bool IsEnabled { get; set; }
         public string ListingsProvider { get; set; }
 
+        public int DataVersion { get; set; }
+
         public TunerHostInfo()
         {
             IsEnabled = true;
