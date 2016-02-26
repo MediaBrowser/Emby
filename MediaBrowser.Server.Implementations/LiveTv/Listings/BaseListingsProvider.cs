@@ -41,14 +41,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         {
             IEnumerable<ProgramInfo> programsInfo = new List<ProgramInfo>();
 
-            var channelNumber = channel.Number;
-            var channelName = channel.Name;
-
             var station = GetStation(channel);
 
             if (station == null)
             {
-                _logger.Info("No Guide Station found for channel {0} with name {1}", channelNumber, channelName);
+                _logger.Info("No Guide Station found for channel {0} with name {1}", channel.Number, channel.Name);
                 return programsInfo;
             }
 
@@ -65,9 +62,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         private Station GetStation(ChannelInfo channel)
         {
             Station station = null;
-            var stationId = channel.StationId ?? "" + "_" + channel.ListingsProviderId ?? "";
-            if (_stations.TryGetValue(stationId, out station)) { return station; }
-            return GetStation(channel, _stations.Values.Where(s => s.ListingsProviderId == channel.ListingsProviderId));
+            if (_stations.TryGetValue(channel.StationId ?? "", out station)) { return station; }
+            return GetStation(channel, _stations.Where(s => s.Key.StartsWith(channel.ListingsProviderId + "_")).Select( s => s.Value));
         }
         private Station GetStation(ChannelInfo channel, IEnumerable<Station> filteredStations)
         {
@@ -114,15 +110,15 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                 var station = GetStation(channel, stations);
                 if (station != null)
                 {
-                    _stations.TryAdd(station.Id+"_"+info.Id, station);
+                    var stationId = info.Id + "_" + station.Id;
+                    _stations.TryAdd(stationId, station);
                     if (station.ImageUrl != null)
                     {
                         channel.ImageUrl = station.ImageUrl;
                         channel.HasImage = true;
                     }
                     channel.Name = station.Name ?? station.Callsign;
-                    channel.StationId = station.Id;
-                    station.ListingsProviderId = info.Id;
+                    channel.StationId = stationId;
                 }
                 else
                 {
@@ -132,19 +128,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             }
             _logger.Info("Added " + _stations.Count + " stations to the dictionary");
         }
-
-
-        private DateTime GetDate(string value)
-        {
-            var date = DateTime.ParseExact(value, "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture);
-
-            if (date.Kind != DateTimeKind.Utc)
-            {
-                date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
-            }
-            return date;
-        }
-
     }
     public class Station
     {
@@ -177,28 +160,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         public string Affiliate { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of the channel.
-        /// </summary>
-        /// <value>The type of the channel.</value>
-        public ChannelType ChannelType { get; set; }
-
-        /// <summary>
-        /// Supply the image path if it can be accessed directly from the file system
-        /// </summary>
-        /// <value>The image path.</value>
-        public string ImagePath { get; set; }
-
-        /// <summary>
         /// Supply the image url if it can be downloaded
         /// </summary>
         /// <value>The image URL.</value>
         public string ImageUrl { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Listings Provider identifier.
-        /// </summary>
-        /// <value>The Listings Provider identifier.</value>
-        public string ListingsProviderId { get; set; }
 
     }
 }

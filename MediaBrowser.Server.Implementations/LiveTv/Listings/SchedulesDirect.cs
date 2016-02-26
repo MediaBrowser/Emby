@@ -149,11 +149,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return programsInfo;
         }
 
-        private string NormalizeName(string value)
-        {
-            return value.Replace(" ", string.Empty).Replace("-", string.Empty);
-        }
-
         protected override async Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
 
