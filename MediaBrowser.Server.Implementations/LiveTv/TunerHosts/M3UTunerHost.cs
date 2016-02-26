@@ -75,15 +75,16 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             }
         }
+        private string GetM3uPathFromChannelId(string channelId)
+        {
+            return channelId.Split('_')[1];
+        }
 
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
-            var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
-            var m3uchannels = channels.Cast<M3UChannel>();
-            var channel = m3uchannels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));
-            if (channel != null)
+            var path = GetM3uPathFromChannelId(channelId);
+            if (string.IsNullOrWhiteSpace(path))
             {
-                var path = channel.Path;
                 MediaProtocol protocol = MediaProtocol.File;
                 if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
@@ -100,7 +101,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                 var mediaSource = new MediaSourceInfo
                 {
-                    Path = channel.Path,
+                    Path = path,
                     Protocol = protocol,
                     MediaStreams = new List<MediaStream>
                     {
