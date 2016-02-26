@@ -304,17 +304,20 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                     }
                 }
 
-                try
+                if (!string.IsNullOrWhiteSpace(remove.Path))
                 {
-                    _fileSystem.DeleteFile(remove.Path);
-                }
-                catch (DirectoryNotFoundException)
-                {
+                    try
+                    {
+                        _fileSystem.DeleteFile(remove.Path);
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
 
-                }
-                catch (FileNotFoundException)
-                {
+                    }
+                    catch (FileNotFoundException)
+                    {
 
+                    }
                 }
                 _recordingProvider.Delete(remove);
             }
