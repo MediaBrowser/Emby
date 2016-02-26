@@ -29,14 +29,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
         {
 
         }
-
-        private const string ChannelIdPrefix = "sat_";
-        
+          
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo tuner, CancellationToken cancellationToken)
         {
             var satInfo = (SatIpTunerHostInfo) tuner;
 
-            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(satInfo.M3UUrl, ChannelIdPrefix, tuner.Id, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(satInfo.M3UUrl, tuner.Id, cancellationToken).ConfigureAwait(false);
         }
 
         public static string DeviceType

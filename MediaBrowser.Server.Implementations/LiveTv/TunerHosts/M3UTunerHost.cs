@@ -40,11 +40,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             get { return "M3U Tuner"; }
         }
 
-        private const string ChannelIdPrefix = "m3u_";
-
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, ChannelIdPrefix, info.Id, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient).Parse(info.Url, info.Id, cancellationToken).ConfigureAwait(false);
         }
 
         public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
@@ -78,20 +76,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
-            var urlHash = info.Url.GetMD5().ToString("N");
-            var prefix = ChannelIdPrefix + urlHash;
-            if (!channelId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-
             var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
             var m3uchannels = channels.Cast<M3UChannel>();
             var channel = m3uchannels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));

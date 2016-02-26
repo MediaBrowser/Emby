@@ -83,11 +83,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken)
         {
             var channelId = channel.Id;
-            if (IsValidChannelId(channelId))
-            {
                 foreach (var host in GetTunerHosts())
                 {
-                    if (!channel.Sources.Any(i => string.Equals(i, host.Id, StringComparison.OrdinalIgnoreCase))) { continue; }
+                    if (!IsValidChannel(channel, host)) { continue; }
 
                     var resourcePool = GetLock(host.Url);
                     Logger.Debug("GetChannelStreamMediaSources - Waiting on tuner resource pool");
@@ -123,7 +121,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                         resourcePool.Release();
                     }
                 }
-            }
 
             return new List<MediaSourceInfo>();
         }
@@ -133,13 +130,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken)
         {
             var channelId = channel.Id;
-            if (IsValidChannelId(channelId))
-            {
                 foreach (var host in GetTunerHosts())
                 {
                     if (string.IsNullOrWhiteSpace(streamId))
                     {
-                        if (!channel.Sources.Any(i => string.Equals(i, host.Id, StringComparison.OrdinalIgnoreCase))){ continue; }
+                        if (!IsValidChannel(channel, host)) { continue; }
                     }
                     else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))
                     {
@@ -177,7 +172,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                         resourcePool.Release();
                     }
                 }
-            }
 
             throw new LiveTvConflictException();
         }
@@ -289,7 +283,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected abstract bool IsValidChannelId(string channelId);
+        protected bool IsValidChannel(ChannelInfo channel, TunerHostInfo host) {
+            return channel.Sources.Any(i => string.Equals(i, host.Id, StringComparison.OrdinalIgnoreCase));
+        }
 
         protected LiveTvOptions GetConfiguration()
         {

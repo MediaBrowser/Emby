@@ -17,6 +17,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IHttpClient _httpClient;
+        public static Regex TagRegex = new Regex(@"([a-z0-9\-_]+)=\""([^""]+)\""", RegexOptions.IgnoreCase);
+
 
         public M3uParser(ILogger logger, IFileSystem fileSystem, IHttpClient httpClient)
         {
@@ -25,14 +27,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             _httpClient = httpClient;
         }
 
-        public async Task<List<M3UChannel>> Parse(string url, string channelIdPrefix, string tunerHostId, CancellationToken cancellationToken)
+        public async Task<List<M3UChannel>> Parse(string url, string tunerHostId, CancellationToken cancellationToken)
         {
             var urlHash = url.GetMD5().ToString("N");
 
             // Read the file and display it line by line.
             using (var reader = new StreamReader(await GetListingsStream(url, cancellationToken).ConfigureAwait(false)))
             {
-                return GetChannels(reader, urlHash, channelIdPrefix, tunerHostId);
+                return GetChannels(reader, urlHash, tunerHostId);
             }
         }
 
@@ -45,7 +47,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return Task.FromResult(_fileSystem.OpenRead(url));
         }
 
-        private List<M3UChannel> GetChannels(StreamReader reader, string urlHash, string channelIdPrefix, string tunerHostId)
+        private List<M3UChannel> GetChannels(StreamReader reader, string urlHash, string tunerHostId)
         {
             var channels = new List<M3UChannel>();
             string line;
@@ -71,7 +73,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 else if (!string.IsNullOrWhiteSpace(extInf))
                 {
                     var channel = GetChannelnfo(extInf, tunerHostId);
-                    channel.Id = channelIdPrefix + urlHash + line.GetMD5().ToString("N");
+                    channel.Id = urlHash + line.GetMD5().ToString("N");
                     channel.Path = line;
                     channels.Add(channel);
                     extInf = "";
@@ -110,8 +112,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         }
         private string FindProperty(string property, string properties, string defaultResult = "")
         {
-            var reg = new Regex(@"([a-z0-9\-_]+)=\""([^""]+)\""", RegexOptions.IgnoreCase);
-            var matches = reg.Matches(properties);
+            var matches = TagRegex.Matches(properties);
             foreach (Match match in matches)
             {
                 if (match.Groups[1].Value == property)

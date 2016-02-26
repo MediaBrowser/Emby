@@ -46,11 +46,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             get { return "hdhomerun"; }
         }
 
-        private const string ChannelIdPrefix = "hdhr_";
-
         private string GetChannelId(TunerHostInfo info, Channels i)
         {
-            var id = ChannelIdPrefix + i.GuideNumber.ToString(CultureInfo.InvariantCulture);
+            var id = i.GuideNumber.ToString(CultureInfo.InvariantCulture);
 
             if (info.DataVersion >= 1)
             {
@@ -361,17 +359,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         private string GetHdHrIdFromChannelId(string channelId)
         {
-            return channelId.Split('_')[1];
+            return channelId.Split('_')[0];
         }
 
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
             var list = new List<MediaSourceInfo>();
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return list;
-            }
             var hdhrId = GetHdHrIdFromChannelId(channelId);
 
             list.Add(GetMediaSource(info, hdhrId, "native"));
@@ -399,24 +393,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            if (string.IsNullOrWhiteSpace(channelId))
-            {
-                throw new ArgumentNullException("channelId");
-            }
-
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
             Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException("Channel not found");
-            }
             var hdhrId = GetHdHrIdFromChannelId(channelId);
 
             return GetMediaSource(info, hdhrId, streamId);
