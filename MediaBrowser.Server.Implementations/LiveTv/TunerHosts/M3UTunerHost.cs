@@ -20,8 +20,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
     public class M3UTunerHost : BaseTunerHost, ITunerHost, IConfigurableTunerHost
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IHttpClient _httpClient;
+        protected readonly IFileSystem _fileSystem;
+        protected readonly IHttpClient _httpClient;
 
         public M3UTunerHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient)
             : base(config, logger, jsonSerializer, mediaEncoder)

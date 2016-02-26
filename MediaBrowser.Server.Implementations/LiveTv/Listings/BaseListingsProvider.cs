@@ -99,13 +99,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                 throw new Exception("ListingsId required");
             }
 
-            var channelsFiltered = channels.Where(c => c.ListingsProviderId == info.Id);
-
             _stations.Clear();
 
             var stations = await GetStations(info, cancellationToken);
 
-            foreach (var channel in channelsFiltered)
+            foreach (var channel in channels)
             {
                 var station = GetStation(channel, stations);
                 if (station != null)

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Serialization;
+using static MediaBrowser.Server.Implementations.LiveTv.EmbyTV.EmbyTV;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
@@ -34,14 +35,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         protected abstract Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo tuner, CancellationToken cancellationToken);
         public abstract string Type { get; }
 
-        public async Task<IEnumerable<ChannelInfo>> GetChannels(TunerHostInfo tuner, bool enableCache, CancellationToken cancellationToken)
+        public async Task<List<ChannelInfo>> GetChannels(TunerHostInfo tuner, CancellationToken cancellationToken)
         {
 
-            var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
-            var list = result.ToList();
-            Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
+            var channels = (await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false)).ToList();
+            Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(channels));
+            channels.ForEach(c => {
+                c.Sources = new List<string> { tuner.Id+"_"+c.Id };
+                c.ListingsProviderId = tuner.ListingsProvider ?? string.Empty;
+                c.Id = c.Number + "_" + c.ListingsProviderId;
+            });
 
-            return list;
+            return channels;
         }
 
         protected virtual List<TunerHostInfo> GetTunerHosts()
@@ -53,7 +58,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<IEnumerable<ChannelInfo>> GetChannels(CancellationToken cancellationToken)
         {
-            var list = new List<ChannelInfo>();
+            var channels = new Dictionary<string,ChannelInfo>();
 
             var hosts = GetTunerHosts();
 
@@ -61,13 +66,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             {
                 try
                 {
-                    var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-                    var newChannels = channels.Where(i => !list.Any(l => string.Equals(i.Id, l.Id, StringComparison.OrdinalIgnoreCase))).ToList();
-                    newChannels.ForEach(c => {
-                        c.ListingsProviderId = host.ListingsProvider ?? string.Empty;
-                        c.Sources = new List<string> { host.Id};
-                    });
-                    list.AddRange(newChannels);
+                       ChannelMerge(await GetChannels(host, cancellationToken).ConfigureAwait(false), channels);                    
                 }
                 catch (Exception ex)
                 {
@@ -75,7 +74,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 }
             }
 
-            return list;
+            return channels.Values;
         }
 
         protected abstract Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);

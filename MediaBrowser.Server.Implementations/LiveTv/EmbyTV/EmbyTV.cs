@@ -184,24 +184,30 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private List<ChannelInfo> _channelCache = null;
+        private Dictionary<string, ChannelInfo> _channelCache = null;
+
+        public static void ChannelMerge(IEnumerable<ChannelInfo> src, Dictionary<string, ChannelInfo> dst)
+        {
+            src.ToList().ForEach(c => {
+                if (dst.ContainsKey(c.Id)) { dst[c.Id].Sources.AddRange(c.Sources); }
+                else { dst[c.Id] = c; }
+            });
+        }
+
         private async Task<IEnumerable<ChannelInfo>> GetChannelsAsync(bool enableCache, CancellationToken cancellationToken)
         {
             if (enableCache && _channelCache != null)
             {
-
-                return _channelCache.ToList();
+                return _channelCache.Values;
             }
-
-            var list = new List<ChannelInfo>();
+            if (_channelCache == null) { _channelCache = new Dictionary<string, ChannelInfo>(); }
+            else { _channelCache.Clear(); }
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var channels = await hostInstance.GetChannels(cancellationToken).ConfigureAwait(false);
-
-                    list.AddRange(channels);
+                    ChannelMerge(await hostInstance.GetChannels(cancellationToken).ConfigureAwait(false), _channelCache);
                 }
                 catch (Exception ex)
                 {
@@ -211,15 +217,15 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
             foreach (var provider in GetListingProviders())
             {
-                var enabledChannels = list
-                    .Where(i => IsListingProviderEnabledForChannel(provider.Item2, i))
+                var enabledChannels = _channelCache.Values
+                    .Where(c => IsListingProviderEnabledForChannel(provider.Item2, c))
                     .ToList();
 
                 if (enabledChannels.Count > 0)
                 {
                     try
                     {
-                        await provider.Item1.AddMetadata(provider.Item2, list, cancellationToken).ConfigureAwait(false);
+                        await provider.Item1.AddMetadata(provider.Item2, enabledChannels, cancellationToken).ConfigureAwait(false);
                     }
                     catch (NotSupportedException)
                     {
@@ -231,9 +237,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                     }
                 }
             }
-
-            _channelCache = list;
-            return list;
+            return _channelCache.Values;
         }
 
         public Task<IEnumerable<ChannelInfo>> GetChannelsAsync(CancellationToken cancellationToken)

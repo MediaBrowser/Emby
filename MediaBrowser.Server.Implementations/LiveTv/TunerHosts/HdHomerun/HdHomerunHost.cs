@@ -406,7 +406,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             if (info.IsEnabled)
             {
-                await GetChannels(info, false, CancellationToken.None).ConfigureAwait(false);
+                await GetChannels(info, CancellationToken.None).ConfigureAwait(false);
             }
         }
 

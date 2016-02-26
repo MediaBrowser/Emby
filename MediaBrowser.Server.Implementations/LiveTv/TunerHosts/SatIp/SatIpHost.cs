@@ -21,9 +21,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
 {
     public class SatIpHost : M3UTunerHost, ITunerHost
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IHttpClient _httpClient;
-        
+       
         public SatIpHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient)
             : base(config, logger, jsonSerializer, mediaEncoder,fileSystem,httpClient)
         {
