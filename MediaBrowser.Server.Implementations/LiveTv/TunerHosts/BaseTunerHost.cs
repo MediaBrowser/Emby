@@ -13,6 +13,7 @@ using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Serialization;
 using static MediaBrowser.Server.Implementations.LiveTv.EmbyTV.EmbyTV;
+using System.Globalization;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
@@ -43,10 +44,19 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             channels.ForEach(c => {
                 c.Sources = new List<string> { tuner.Id+"_"+c.Id };
                 c.ListingsProviderId = tuner.ListingsProvider ?? string.Empty;
-                c.Id = c.Number + "_" + c.ListingsProviderId;
+                SetChannelId(c, tuner);
             });
 
             return channels;
+        }
+
+        private void SetChannelId(ChannelInfo channel, TunerHostInfo tuner)
+        {
+            if (tuner.DataVersion >= 1)
+            {
+                channel.Id = channel.Number + "_" + channel.ListingsProviderId;
+            }
+
         }
 
         protected virtual List<TunerHostInfo> GetTunerHosts()
@@ -81,10 +91,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken)
         {
-            var channelId = channel.Id;
+            var channelId = string.Empty;
                 foreach (var host in GetTunerHosts())
                 {
-                    if (!IsValidChannel(channel, host)) { continue; }
+                    if (!!TryGetChannelId(channel, host, out channelId)) { continue; }
 
                     var resourcePool = GetLock(host.Url);
                     Logger.Debug("GetChannelStreamMediaSources - Waiting on tuner resource pool");
@@ -128,12 +138,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken)
         {
-            var channelId = channel.Id;
+            string channelId = string.Empty;
                 foreach (var host in GetTunerHosts())
                 {
                     if (string.IsNullOrWhiteSpace(streamId))
                     {
-                        if (!IsValidChannel(channel, host)) { continue; }
+                        if (!TryGetChannelId(channel, host,out channelId)) { continue; }
                     }
                     else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))
                     {
@@ -282,8 +292,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected bool IsValidChannel(ChannelInfo channel, TunerHostInfo host) {
-            return channel.Sources.Any(i => string.Equals(i, host.Id, StringComparison.OrdinalIgnoreCase));
+        protected bool TryGetChannelId(ChannelInfo channel, TunerHostInfo host, out string channelId) {
+            channelId = channel.Sources.FirstOrDefault(s => s.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(channelId)) { return false; }
+            channelId = channelId.Substring((host.Id + "_").Length);
+            return true;
         }
 
         protected LiveTvOptions GetConfiguration()
