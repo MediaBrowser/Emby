@@ -62,15 +62,15 @@
 
         Dashboard.showLoadingMsg();
 
-        var resultId = context.querySelector('#hfResultId').value;
+        var resultId = dlg.querySelector('#hfResultId').value;
 
         var options = {
 
-            SeriesId: context.querySelector('#selectSeries').value,
-            SeasonNumber: context.querySelector('#txtSeason').value,
-            EpisodeNumber: context.querySelector('#txtEpisode').value,
-            EndingEpisodeNumber: context.querySelector('#txtEndingEpisode').value,
-            RememberCorrection: context.querySelector('#chkRememberCorrection').checked
+            SeriesId: dlg.querySelector('#selectSeries').value,
+            SeasonNumber: dlg.querySelector('#txtSeason').value,
+            EpisodeNumber: dlg.querySelector('#txtEpisode').value,
+            EndingEpisodeNumber: dlg.querySelector('#txtEndingEpisode').value,
+            RememberCorrection: dlg.querySelector('#chkRememberCorrection').checked
         };
 
         ApiClient.performEpisodeOrganization(resultId, options).then(function () {
