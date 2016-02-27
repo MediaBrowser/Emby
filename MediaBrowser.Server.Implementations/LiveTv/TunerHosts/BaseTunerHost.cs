@@ -49,7 +49,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(channels));
             channels.ForEach(c => {
                 var source = tuner.Id + "_" + c.Id;
-                var listingsProvider = tuner.ListingsProvider;
+                var listingsProvider = tuner.ListingsProvider ?? string.Empty;
                 if (channelMaps.ContainsKey(c.Number))
                 {
                     var map = channelMaps[c.Number];
@@ -65,7 +65,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                     listingsProvider = source;
                 }
                 c.Sources = new List<string> { source };
-                c.ListingsProviderId = listingsProvider ?? string.Empty;
+                c.ListingsProviderId = listingsProvider;
                 SetChannelId(c, tuner);
             });
 
@@ -316,7 +316,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         }
 
         protected bool TryGetChannelId(ChannelInfo channel, TunerHostInfo host, out string channelId) {
-            channelId = channel.Sources.FirstOrDefault(s => s.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            channelId = channel.Sources.FirstOrDefault(s => s.StartsWith(host.Id+"_", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
             if (string.IsNullOrWhiteSpace(channelId)) { return false; }
             channelId = channelId.Substring((host.Id + "_").Length);
             return true;

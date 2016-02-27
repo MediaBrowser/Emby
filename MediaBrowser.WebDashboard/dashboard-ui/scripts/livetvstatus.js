@@ -192,7 +192,7 @@
 
                 var device = devices[i];
 
-                var href = 'livetvtunerprovider-' + device.Type + '.html?id=' + device.Id;
+                var href = 'livetvtunerprovider.html?type=' + device.Type + '&id=' + device.Id;
 
                 html += '<paper-icon-item>';
 

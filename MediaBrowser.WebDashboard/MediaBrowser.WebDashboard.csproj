@@ -263,10 +263,13 @@
     <Content Include="dashboard-ui\livetvguideprovider.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dashboard-ui\livetvtunerprovider-hdhomerun.html">
+    <Content Include="dashboard-ui\components\tunerproviders\hdhomerun.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dashboard-ui\livetvtunerprovider-m3u.html">
+    <Content Include="dashboard-ui\components\tunerproviders\m3u.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dashboard-ui\livetvtunerprovider.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="dashboard-ui\mypreferenceshome.html">
@@ -290,13 +293,16 @@
     <Content Include="dashboard-ui\scripts\homeupcoming.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="dashboard-ui\components\tunerproviders\hdhomerun.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dashboard-ui\components\tunerproviders\m3u.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="dashboard-ui\scripts\livetvguideprovider.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dashboard-ui\scripts\livetvtunerprovider-hdhomerun.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dashboard-ui\scripts\livetvtunerprovider-m3u.js">
+    <Content Include="dashboard-ui\scripts\livetvtunerprovider.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="dashboard-ui\scripts\localsync.js">
