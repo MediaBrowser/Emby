@@ -22,6 +22,7 @@
         }
         else {
             context.querySelector('.fldRemember').classList.remove('hide');
+            $('.extractedName', context).html('(' + item.ExtractedName + ')');
         }
 
         context.querySelector('.inputFile').innerHTML = item.OriginalFileName;
