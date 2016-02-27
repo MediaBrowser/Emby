@@ -171,12 +171,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                         var stream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
 
+                        stream.Id = host.Id + stream.Id;
                         //await AddMediaInfo(stream, false, resourcePool, cancellationToken).ConfigureAwait(false);
                         return new Tuple<MediaSourceInfo, SemaphoreSlim>(stream, resourcePool);
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("Error opening tuner", ex);
+                        Logger.Error("Error opening tuner: "+ex.ToString(), ex);
 
                         resourcePool.Release();
                     }

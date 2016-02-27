@@ -406,7 +406,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             var hdhrId = GetChannelId(info, channelId);
 
-            return GetMediaSource(info, hdhrId, streamId);
+            return GetMediaSource(info, hdhrId, streamId ?? "native");
         }
 
         public async Task Validate(TunerHostInfo info)
