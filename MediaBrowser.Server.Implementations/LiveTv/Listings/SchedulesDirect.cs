@@ -149,7 +149,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return programsInfo;
         }
 
-        protected override async Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info,string lineup, CancellationToken cancellationToken)
         {
 
             var token = await GetToken(info, cancellationToken);
@@ -162,7 +162,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
 
             var httpOptions = new HttpRequestOptions()
             {
-                Url = ApiUrl + "/lineups/" + info.ListingsId,
+                Url = ApiUrl + "/lineups/" + lineup,
                 UserAgent = UserAgent,
                 CancellationToken = cancellationToken,
                 LogErrorResponseBody = true,
@@ -202,6 +202,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                             Name = schChannel.name,
                             Affiliate = schChannel.affiliate,
                             Id = schChannel.stationID,
+                            Lineup = lineup,
                             ChannelNumbers = new List<string> { channelNumber }
                         };
                         if (schChannel.logo != null)

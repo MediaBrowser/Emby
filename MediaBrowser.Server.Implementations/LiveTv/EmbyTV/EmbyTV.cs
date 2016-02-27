@@ -503,7 +503,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         private bool IsListingProviderEnabledForChannel(ListingsProviderInfo info, ChannelInfo channel)
         {
             return (info.EnableAllTuners && string.IsNullOrWhiteSpace(channel.ListingsProviderId)) ||
-                (channel.ListingsProviderId ?? string.Empty) == info.Id;
+                (channel.ListingsProviderId ?? string.Empty).StartsWith(info.Id+"_",StringComparison.InvariantCultureIgnoreCase);
         }
         private async Task<ChannelInfo> GetChannel(string channelId, CancellationToken cancellationToken)
         {
@@ -525,12 +525,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                         .ConfigureAwait(false);
 
                 var list = programs.ToList();
-
-                // Replace the value that came from the provider with a normalized value
-                foreach (var program in list)
-                {
-                    program.ChannelId = channelId;
-                }
 
                 if (list.Count > 0)
                 {

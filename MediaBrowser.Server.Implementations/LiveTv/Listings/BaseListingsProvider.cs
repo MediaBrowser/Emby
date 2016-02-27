@@ -32,7 +32,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             _jsonSerializer = jsonSerializer;
         }
 
-        protected abstract Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, CancellationToken cancellationToken);
+        protected abstract Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, string lineup, CancellationToken cancellationToken);
 
         protected abstract Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(ListingsProviderInfo info, string station, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken);
 
@@ -48,7 +48,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                 _logger.Info("No Guide Station found for channel {0} with name {1}", channel.Number, channel.Name);
                 return programsInfo;
             }
-
+            
             programsInfo = await GetProgramsAsyncInternal(info, station.Id, startDateUtc,endDateUtc, cancellationToken);
 
             foreach (var program in programsInfo)
@@ -92,23 +92,29 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             return value.Replace(" ", string.Empty).Replace("-", string.Empty);
         }
 
+        public string GetLineupId(ChannelInfo channel, ListingsProviderInfo info)
+        {
+            if (string.IsNullOrWhiteSpace(channel.ListingsProviderId)) { return info.ListingsId ?? string.Empty; }
+            return channel.ListingsProviderId.Substring((info.Id + "_").Length);
+        }
+
         public async Task AddMetadata(ListingsProviderInfo info, List<ChannelInfo> channels, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(info.ListingsId))
-            {
-                throw new Exception("ListingsId required");
+            _stations.Clear();
+            var lineups = channels.Select(c => GetLineupId(c, info)).Distinct().ToList();
+            List<Station> stations = new List<Station>();
+            foreach(var lineup in lineups) { 
+                if (!string.IsNullOrWhiteSpace(lineup)) { stations.AddRange(await GetStations(info, lineup, cancellationToken)); }
             }
 
-            _stations.Clear();
-
-            var stations = await GetStations(info, cancellationToken);
-
+            _logger.Info("Found stations: "+ stations.Count+
+                " for lineups: " + _jsonSerializer.SerializeToString(lineups));
             foreach (var channel in channels)
             {
                 var station = GetStation(channel, stations);
                 if (station != null)
                 {
-                    var stationId = info.Id + "_" + station.Id;
+                    var stationId = info.Id + "_"+ station.Lineup + "_" + station.Id;
                     _stations.TryAdd(stationId, station);
                     if (station.ImageUrl != null)
                     {
@@ -162,6 +168,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         /// </summary>
         /// <value>The image URL.</value>
         public string ImageUrl { get; set; }
+
+        /// <summary>
+        /// Get or set the lineup from where the station came
+        /// </summary>
+        /// <value>The lineup id.</value>
+        public string Lineup { get; set; }
 
     }
 }
