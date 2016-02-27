@@ -14,6 +14,7 @@ using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Serialization;
 using static MediaBrowser.Server.Implementations.LiveTv.EmbyTV.EmbyTV;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 {
@@ -23,7 +24,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         protected readonly ILogger Logger;
         protected IJsonSerializer JsonSerializer;
         protected readonly IMediaEncoder MediaEncoder;
-
 
         protected BaseTunerHost(IConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder)
         {
@@ -38,12 +38,34 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<List<ChannelInfo>> GetChannels(TunerHostInfo tuner, CancellationToken cancellationToken)
         {
+            var channelMaps = new Dictionary<string, string>();
+            foreach (var map in (tuner.ChannelMaps ?? string.Empty).Split(','))
+            {
+                var Map = map.Split(':');
+                if (Map.Length == 2) { channelMaps[Map[0].Trim()] = Map[1].Trim(); }
+            }
 
             var channels = (await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false)).ToList();
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(channels));
             channels.ForEach(c => {
-                c.Sources = new List<string> { tuner.Id+"_"+c.Id };
-                c.ListingsProviderId = tuner.ListingsProvider ?? string.Empty;
+                var source = tuner.Id + "_" + c.Id;
+                var listingsProvider = tuner.ListingsProvider;
+                if (channelMaps.ContainsKey(c.Number))
+                {
+                    var map = channelMaps[c.Number];
+                    c.Number = GetTag(map, "#", c.Number).Trim();
+                    listingsProvider = GetTag(map, "G", listingsProvider).Trim();
+                    c.Name = GetTag(map, "N", c.Name).Trim();
+                }
+                double n;
+                double.TryParse(c.Number, out n);
+                if (n == 0)
+                {
+                    c.Number = "0";
+                    listingsProvider = source;
+                }
+                c.Sources = new List<string> { source };
+                c.ListingsProviderId = listingsProvider ?? string.Empty;
                 SetChannelId(c, tuner);
             });
 
@@ -305,5 +327,39 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return Config.GetConfiguration<LiveTvOptions>("livetv");
         }
 
+        public static string GetTag(string tagString, string key, string defaultResult = "")
+        {
+            string result = defaultResult;
+            var searchFor = "_" + key + "[";
+            int index = tagString.IndexOf(searchFor);
+
+            if (index == -1)
+            {
+                searchFor = "]" + key + "[";
+                index = tagString.IndexOf(searchFor);
+            }
+            if (index == -1)
+            {
+                searchFor = " " + key + "[";
+                index = tagString.IndexOf(searchFor);
+            }
+
+            if (index == -1)
+            {
+                searchFor = key + "[";
+                if (tagString.Trim().StartsWith(searchFor)) { index = 0; };
+            }
+
+            if (index != -1)
+            {
+                var subResult = tagString.Substring(index + searchFor.Length);
+                var end = subResult.IndexOf("]");
+                if (end > 0) { return subResult.Substring(0, end); }
+            }
+
+            return result;
+        }
+
     }
+
 }

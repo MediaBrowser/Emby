@@ -32,6 +32,7 @@ namespace MediaBrowser.Model.LiveTv
         public bool ImportFavoritesOnly { get; set; }
         public bool IsEnabled { get; set; }
         public string ListingsProvider { get; set; }
+        public string ChannelMaps { get; set; }
 
         public int DataVersion { get; set; }
 
