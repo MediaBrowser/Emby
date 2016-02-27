@@ -160,6 +160,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
                 throw new Exception("token required");
             }
 
+            var hasLineup = await HasLineup(info, CancellationToken.None).ConfigureAwait(false);
+
+            if (!hasLineup)
+            {
+                await AddLineupToAccount(info, CancellationToken.None).ConfigureAwait(false);
+            }
+
             var httpOptions = new HttpRequestOptions()
             {
                 Url = ApiUrl + "/lineups/" + lineup,

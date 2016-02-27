@@ -52,6 +52,7 @@
         page.CurrentInfo.Url = page.querySelector('.txtDevicePath').value;
         page.CurrentInfo.DataVersion = 1;
         page.CurrentInfo.ChannelMaps = page.querySelector('.txtChannelMaps').value;
+        page.CurrentInfo.ListingsProvider = page.querySelector('#selectListing').value;
 
         ApiClient.ajax({
             type: "POST",
@@ -81,12 +82,50 @@
                 page.querySelector('.txtDevicePath').value = page.CurrentInfo.Url || '';
                 page.querySelector('.txtChannelMaps').value = page.CurrentInfo.ChannelMaps || '';
                 page.querySelector('.chkEnabled').checked = page.CurrentInfo.IsEnabled;
-                wait.resolve(page.CurrentInfo);
+                getAllListings(config.ListingProviders,page).always(function (val) {
+                    page.querySelector('#selectListing').value = page.CurrentInfo.ListingsProvider || '';
+                    wait.resolve(page.CurrentInfo)
+                });
             });
         } else {
             page.querySelector('.chkEnabled').checked = true;
             wait.resolve(page.CurrentInfo);
         }
+        return wait;
+    }
+    function getAllListings(listingsProviders,page) {
+        var wait = $.Deferred();
+        page.querySelector('#selectListing').innerHTML = '';
+        if (!listingsProviders) { wait.resolve(true); return wait;}
+        var waits = [];
+        for (var index in listingsProviders) {
+            var provider = listingsProviders[index];
+            console.log("Getting listings for: "+ provider.Id)
+            waits.push(refreshListings(provider));
+        }
+        $.when.apply(null, waits).always(function (val) { wait.resolve(true); });
+        return wait;
+    }
+    function refreshListings(provider,page) {
+        var wait = $.Deferred();
+
+        if(!provider.Id || !provider.ZipCode || !provider.Country){return;}
+
+        ApiClient.ajax({
+            type: "GET",
+            url: ApiClient.getUrl('LiveTv/ListingProviders/Lineups', {
+                Id: provider.Id,
+                Location: provider.ZipCode,
+                Country: provider.Country
+            }),
+            dataType: 'json'
+
+        }).then(function (result) {
+            $('#selectListing', page).append(result.map(function (o) {
+                return '<option value="' + provider.Id+"_"+o.Id + '">' + o.Name + '</option>';                
+            }));
+            wait.resolve(true)           
+        }, function (result) { wait.resolve(true); });
         return wait;
     }
 

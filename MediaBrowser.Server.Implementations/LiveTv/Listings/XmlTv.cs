@@ -42,7 +42,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             throw new NotImplementedException();
         }
 
-        protected override Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, CancellationToken cancellationToken)
+        protected override Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, string lineup, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
