@@ -608,6 +608,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
+            _logger.Info("Streaming Channel " + channelId);
             var channel = await GetChannel(channelId, cancellationToken);
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
@@ -621,9 +622,9 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                         return sources;
                     }
                 }
-                catch (NotImplementedException)
+                catch (Exception ex)
                 {
-
+                    _logger.Error("Error Getting chanel stream: " + ex, ex);
                 }
             }
 

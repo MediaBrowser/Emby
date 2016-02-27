@@ -47,7 +47,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             var channels = (await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false)).ToList();
             Logger.Debug("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(channels));
-            channels.ForEach(c => {
+            channels.ForEach(c =>
+            {
                 var source = tuner.Id + "_" + c.Id;
                 var listingsProvider = tuner.ListingsProvider ?? string.Empty;
                 if (channelMaps.ContainsKey(c.Number))
@@ -90,7 +91,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<IEnumerable<ChannelInfo>> GetChannels(CancellationToken cancellationToken)
         {
-            var channels = new Dictionary<string,ChannelInfo>();
+            var channels = new Dictionary<string, ChannelInfo>();
 
             var hosts = GetTunerHosts();
 
@@ -98,7 +99,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             {
                 try
                 {
-                       ChannelMerge(await GetChannels(host, cancellationToken).ConfigureAwait(false), channels);                    
+                    ChannelMerge(await GetChannels(host, cancellationToken).ConfigureAwait(false), channels);
                 }
                 catch (Exception ex)
                 {
@@ -114,44 +115,45 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(ChannelInfo channel, CancellationToken cancellationToken)
         {
             var channelId = string.Empty;
-                foreach (var host in GetTunerHosts())
-                {
-                    if (!!TryGetChannelId(channel, host, out channelId)) { continue; }
+            foreach (var host in GetTunerHosts())
+            {
+                if (!TryGetChannelId(channel, host, out channelId)) { continue; }
 
-                    var resourcePool = GetLock(host.Url);
-                    Logger.Debug("GetChannelStreamMediaSources - Waiting on tuner resource pool");
+                var resourcePool = GetLock(host.Url);
+                Logger.Debug("GetChannelStreamMediaSources - Waiting on tuner resource pool");
 
-                    await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    Logger.Debug("GetChannelStreamMediaSources - Unlocked resource pool");
+                await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
+                Logger.Debug("GetChannelStreamMediaSources - Unlocked resource pool");
 
-                    try
+                try
+                {                  
+
+                    // Check to make sure the tuner is available
+                    if (!await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
                     {
-                        // Check to make sure the tuner is available
-                        if (!await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
-                        {
-                            Logger.Error("Tuner is not currently available");
-                            continue;
-                        }
-
-                        var mediaSources = await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
-
-                        // Prefix the id with the host Id so that we can easily find it
-                        foreach (var mediaSource in mediaSources)
-                        {
-                            mediaSource.Id = host.Id + mediaSource.Id;
-                        }
-
-                        return mediaSources;
+                        Logger.Error("Tuner is not currently available");
+                        continue;
                     }
-                    catch (Exception ex)
+
+                    var mediaSources = await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
+                    // Prefix the id with the host Id so that we can easily find it
+                    foreach (var mediaSource in mediaSources)
                     {
-                        Logger.Error("Error opening tuner", ex);
+                        mediaSource.Id = host.Id + (mediaSource.Id ?? string.Empty);
                     }
-                    finally
-                    {
-                        resourcePool.Release();
-                    }
+
+                    return mediaSources;
                 }
+                catch (Exception ex)
+                {
+                    Logger.Error("Error opening tuner", ex);
+                    Logger.Debug(ex.ToString());
+                }
+                finally
+                {
+                    resourcePool.Release();
+                }
+            }
 
             return new List<MediaSourceInfo>();
         }
@@ -161,49 +163,49 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
         public async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStream(ChannelInfo channel, string streamId, CancellationToken cancellationToken)
         {
             string channelId = string.Empty;
-                foreach (var host in GetTunerHosts())
+            foreach (var host in GetTunerHosts())
+            {
+                if (string.IsNullOrWhiteSpace(streamId))
                 {
+                    if (!TryGetChannelId(channel, host, out channelId)) { continue; }
+                }
+                else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))
+                {
+                    streamId = streamId.Substring(host.Id.Length);
+                }
+                else { continue; }
+
+                var resourcePool = GetLock(host.Url);
+                Logger.Debug("GetChannelStream - Waiting on tuner resource pool");
+                await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
+                Logger.Debug("GetChannelStream - Unlocked resource pool");
+                try
+                {
+                    // Check to make sure the tuner is available                   
+                    // If a streamId is specified then availibility has already been checked in GetChannelStreamMediaSources
                     if (string.IsNullOrWhiteSpace(streamId))
                     {
-                        if (!TryGetChannelId(channel, host,out channelId)) { continue; }
-                    }
-                    else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))
-                    {
-                        streamId = streamId.Substring(host.Id.Length);
-                    }
-                    else { continue; }
-
-                    var resourcePool = GetLock(host.Url);
-                    Logger.Debug("GetChannelStream - Waiting on tuner resource pool");
-                    await resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    Logger.Debug("GetChannelStream - Unlocked resource pool");
-                    try
-                    {
-                        // Check to make sure the tuner is available                   
-                        // If a streamId is specified then availibility has already been checked in GetChannelStreamMediaSources
-                        if (string.IsNullOrWhiteSpace(streamId))
+                        if (!await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
                         {
-                            if (!await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
-                            {
-                                Logger.Error("Tuner is not currently available");
-                                resourcePool.Release();
-                                continue;
-                            }
+                            Logger.Error("Tuner is not currently available");
+                            resourcePool.Release();
+                            continue;
                         }
-
-                        var stream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
-
-                        stream.Id = host.Id + stream.Id;
-                        //await AddMediaInfo(stream, false, resourcePool, cancellationToken).ConfigureAwait(false);
-                        return new Tuple<MediaSourceInfo, SemaphoreSlim>(stream, resourcePool);
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.Error("Error opening tuner: "+ex.ToString(), ex);
 
-                        resourcePool.Release();
-                    }
+                    var stream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
+
+                    stream.Id = host.Id + (stream.Id ?? string.Empty);
+                    //await AddMediaInfo(stream, false, resourcePool, cancellationToken).ConfigureAwait(false);
+                    return new Tuple<MediaSourceInfo, SemaphoreSlim>(stream, resourcePool);
                 }
+                catch (Exception ex)
+                {
+                    Logger.Error("Error opening tuner: " + ex.ToString(), ex);
+
+                    resourcePool.Release();
+                }
+            }
 
             throw new LiveTvConflictException();
         }
@@ -315,10 +317,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected bool TryGetChannelId(ChannelInfo channel, TunerHostInfo host, out string channelId) {
-            channelId = channel.Sources.FirstOrDefault(s => s.StartsWith(host.Id+"_", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+        protected bool TryGetChannelId(ChannelInfo channel, TunerHostInfo host, out string channelId)
+        {
+            channelId = channel.Sources.FirstOrDefault(s => s.StartsWith(host.Id + "_", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            Logger.Info("Found TV Channel source: " + channelId);
             if (string.IsNullOrWhiteSpace(channelId)) { return false; }
             channelId = channelId.Substring((host.Id + "_").Length);
+            Logger.Info("Resolve Internal Channel Id to: " + channelId);
             return true;
         }
 
