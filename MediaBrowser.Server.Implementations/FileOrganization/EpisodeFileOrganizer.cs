@@ -621,7 +621,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 var msg = string.Format("No provider metadata found for {0} season {1} episode {2}", series.Name, seasonNumber, episodeNumber);
                 _logger.Warn(msg);
-                return null;
+                throw new Exception(msg);
             }
 
             var episodeName = episode.Name;
