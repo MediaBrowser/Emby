@@ -208,6 +208,12 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
 
+            if (result.Status != FileSortingStatus.Success)
+            {
+                // Display message in client
+                throw new Exception(result.StatusMessage);
+            }
+
             return result;
         }
 
