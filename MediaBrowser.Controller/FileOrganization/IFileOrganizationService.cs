@@ -81,5 +81,21 @@ namespace MediaBrowser.Controller.FileOrganization
         /// <param name="ItemName">Item name.</param>
         /// <param name="matchString">The match string to delete.</param>
         void DeleteSmartMatchEntry(string ItemName, string matchString);
+
+        /// <summary>
+        /// Attempts to add a an item to the list of currently processed items.
+        /// </summary>
+        /// <param name="result">The result item.</param>
+        /// <param name="notifyClient">Passing true will send a websocket message to the client.</param>
+        /// <returns>True if the item was added, False if the item is already contained in the list.</returns>
+        bool AddToInProgressList(FileOrganizationResult result, bool notifyClient = false);
+
+        /// <summary>
+        /// Removes an item from the list of currently processed items.
+        /// </summary>
+        /// <param name="result">The result item.</param>
+        /// <param name="notifyClient">Passing true will send a websocket message to the client.</param>
+        /// <returns>True if the item was removed, False if the item was not contained in the list.</returns>
+        bool RemoveFromInprogressList(FileOrganizationResult result, bool notifyClient = false);
     }
 }

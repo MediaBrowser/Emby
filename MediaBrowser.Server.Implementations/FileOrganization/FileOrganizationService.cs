@@ -3,12 +3,15 @@ using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
 using System;
+using System.Collections.Concurrent; 
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,8 +29,10 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
         private readonly IProviderManager _providerManager;
+        private readonly IServerManager _serverManager;
+        private readonly ConcurrentDictionary<string, bool> _inProgressItemIds = new ConcurrentDictionary<string, bool>(); 
 
-        public FileOrganizationService(ITaskManager taskManager, IFileOrganizationRepository repo, ILogger logger, ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager)
+        public FileOrganizationService(ITaskManager taskManager, IFileOrganizationRepository repo, ILogger logger, ILibraryMonitor libraryMonitor, ILibraryManager libraryManager, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, IServerManager serverManager)
         {
             _taskManager = taskManager;
             _repo = repo;
@@ -37,6 +42,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             _config = config;
             _fileSystem = fileSystem;
             _providerManager = providerManager;
+            _serverManager = serverManager;
         }
 
         public void BeginProcessNewFiles()
@@ -58,12 +64,26 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         public QueryResult<FileOrganizationResult> GetResults(FileOrganizationResultQuery query)
         {
-            return _repo.GetResults(query);
+            var results = _repo.GetResults(query);
+
+            foreach (var result in results.Items)
+            {
+                result.IsInProgress = _inProgressItemIds.ContainsKey(result.Id);
+            }
+
+            return results;
         }
 
         public FileOrganizationResult GetResult(string id)
         {
-            return _repo.GetResult(id);
+            var result = _repo.GetResult(id);
+
+            if (result != null)
+            {
+                result.IsInProgress = _inProgressItemIds.ContainsKey(result.Id);
+            }
+
+            return result;
         }
 
         public FileOrganizationResult GetResultBySourcePath(string path)
@@ -83,6 +103,12 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             var result = _repo.GetResult(resultId);
 
             _logger.Info("Requested to delete {0}", result.OriginalPath);
+
+            if (!AddToInProgressList(result))
+            {
+                throw new Exception("Path is currently processed otherwise. Please try again later.");
+            }
+
             try
             {
                 _fileSystem.DeleteFile(result.OriginalPath);
@@ -90,6 +116,10 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             catch (Exception ex)
             {
                 _logger.ErrorException("Error deleting {0}", ex, result.OriginalPath);
+            }
+            finally
+            {
+                RemoveFromInprogressList(result);
             }
 
             return _repo.Delete(resultId);
@@ -118,7 +148,9 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         public Task ClearLog()
         {
-            return _repo.DeleteAll();
+            var task = _repo.DeleteAll();
+            _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => task, CancellationToken.None); 
+            return task;
         }
 
         public async Task PerformEpisodeOrganization(EpisodeFileOrganizationRequest request)
@@ -179,5 +211,51 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 _config.SaveAutoOrganizeOptions(options);
             }
         }
+
+        /// <summary>
+        /// Attempts to add a an item to the list of currently processed items.
+        /// </summary>
+        /// <param name="result">The result item.</param>
+        /// <param name="notifyClient">Passing true will send a websocket message to the client.</param>
+        /// <returns>True if the item was added, False if the item is already contained in the list.</returns>
+        public bool AddToInProgressList(FileOrganizationResult result, bool notifyClient = false)
+        {
+            if (string.IsNullOrWhiteSpace(result.Id))
+            {
+                result.Id = result.OriginalPath.GetMD5().ToString("N");
+            }
+
+            if (!_inProgressItemIds.TryAdd(result.Id, false))
+            {
+                return false;
+            }
+
+            if (_serverManager != null && notifyClient)
+            {
+                _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => string.Empty, CancellationToken.None); 
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes an item from the list of currently processed items.
+        /// </summary>
+        /// <param name="result">The result item.</param>
+        /// <param name="notifyClient">Passing true will send a websocket message to the client.</param>
+        /// <returns>True if the item was removed, False if the item was not contained in the list.</returns>
+        public bool RemoveFromInprogressList(FileOrganizationResult result, bool notifyClient = false)
+        {
+            bool itemValue;
+            var retval = _inProgressItemIds.TryRemove(result.Id, out itemValue);
+
+            if (_serverManager != null && notifyClient)
+            {
+                _serverManager.SendWebSocketMessageAsync("AutoOrganizeUpdate", () => string.Empty, CancellationToken.None); 
+            }
+
+            return retval;
+        }
+
     }
 }

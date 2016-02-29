@@ -1,4 +1,4 @@
-﻿define(['jQuery', 'datetime', 'paper-icon-button-light'], function ($, datetime) {
+﻿define(['jQuery', 'datetime', 'paper-icon-button-light', 'paper-spinner'], function ($, datetime) {
 
     var query = {
 
@@ -41,7 +41,7 @@
 
                     Dashboard.hideLoadingMsg();
 
-                    reloadItems(page);
+                    reloadItems(page, true);
 
                 }, Dashboard.processErrorResponse);
             });
@@ -58,7 +58,7 @@
         require(['components/fileorganizer/fileorganizer'], function (fileorganizer) {
 
             fileorganizer.show(item).then(function () {
-                reloadItems(page);
+                reloadItems(page, false);
             });
         });
     }
@@ -99,16 +99,18 @@
 
                     Dashboard.hideLoadingMsg();
 
-                    reloadItems(page);
+                    reloadItems(page, true);
 
                 }, Dashboard.processErrorResponse);
             });
         });
     }
 
-    function reloadItems(page) {
+    function reloadItems(page, showSpinner) {
 
-        Dashboard.showLoadingMsg();
+        if (showSpinner) {
+            Dashboard.showLoadingMsg();
+        }
 
         ApiClient.getFileOrganizationResults(query).then(function (result) {
 
@@ -168,7 +170,12 @@
             html += '<td>';
             var status = item.Status;
 
-            if (status == 'SkippedExisting') {
+            if (item.IsInProgress) {
+                html += '<div style="color:darkorange;">';
+                html += item.OriginalFileName;
+                html += '</div>';
+            }
+            else if (status == 'SkippedExisting') {
                 html += '<a data-resultid="' + item.Id + '" style="color:blue;" href="#" class="btnShowStatusMessage">';
                 html += item.OriginalFileName;
                 html += '</a>';
@@ -182,6 +189,11 @@
                 html += item.OriginalFileName;
                 html += '</div>';
             }
+            html += '</td>';
+
+            html += '<td>';
+            var spinnerActive = item.IsInProgress ? 'active' : '';
+            html += '<paper-spinner class="syncSpinner"' + spinnerActive + ' style="vertical-align: middle; /">';
             html += '</td>';
 
             html += '<td>';
@@ -247,13 +259,13 @@
         $('.btnNextPage', page).on('click', function () {
 
             query.StartIndex += query.Limit;
-            reloadItems(page);
+            reloadItems(page, true);
         });
 
         $('.btnPreviousPage', page).on('click', function () {
 
             query.StartIndex -= query.Limit;
-            reloadItems(page);
+            reloadItems(page, true);
         });
 
         if (result.TotalRecordCount) {
@@ -269,7 +281,7 @@
 
         if ((msg.MessageType == 'ScheduledTaskEnded' && msg.Data.Key == 'AutoOrganize') || msg.MessageType == 'AutoOrganizeUpdate') {
 
-            reloadItems(page);
+            reloadItems(page, false);
         }
     }
 
@@ -296,7 +308,7 @@
         $('.btnClearLog', page).on('click', function () {
 
             ApiClient.clearOrganizationLog().then(function () {
-                reloadItems(page);
+                reloadItems(page, true);
             }, Dashboard.processErrorResponse);
         });
 
@@ -306,7 +318,7 @@
 
         var page = this;
 
-        reloadItems(page);
+        reloadItems(page, true);
 
         // on here
         $('.btnOrganize', page).taskButton({
