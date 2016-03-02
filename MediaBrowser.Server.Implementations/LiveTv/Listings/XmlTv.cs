@@ -1,6 +1,8 @@
 ﻿using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.LiveTv;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,8 +10,13 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.LiveTv.Listings
 {
-    public class XmlTv : IListingsProvider
+    public class XmlTv : BaseListingsProvider, IListingsProvider
     {
+        public XmlTv(ILogger logger, IJsonSerializer jsonSerializer)
+            : base(logger, jsonSerializer)
+        {
+
+        }
         public string Name
         {
             get { return "XmlTV"; }
@@ -20,24 +27,23 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             get { return "xmltv"; }
         }
 
-        public Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelNumber, string channelName, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        public Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
         {
             throw new NotImplementedException();
         }
 
-        public async Task AddMetadata(ListingsProviderInfo info, List<ChannelInfo> channels, CancellationToken cancellationToken)
+        public Task Validate(ListingsProviderInfo info, bool validateLogin, bool validateListings)
         {
-            // Might not be needed
+            throw new NotImplementedException();
         }
 
-        public async Task Validate(ListingsProviderInfo info, bool validateLogin, bool validateListings)
+        protected override Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(ListingsProviderInfo info, string station, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
-            // Check that the path or url is valid. If not, throw a file not found exception
+            throw new NotImplementedException();
         }
 
-        public Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
+        protected override Task<IEnumerable<Station>> GetStations(ListingsProviderInfo info, string lineup, CancellationToken cancellationToken)
         {
-            // In theory this should never be called because there is always only one lineup
             throw new NotImplementedException();
         }
     }

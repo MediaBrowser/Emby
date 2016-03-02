@@ -184,24 +184,30 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private List<ChannelInfo> _channelCache = null;
+        private Dictionary<string, ChannelInfo> _channelCache = null;
+
+        public static void ChannelMerge(IEnumerable<ChannelInfo> src, Dictionary<string, ChannelInfo> dst)
+        {
+            src.ToList().ForEach(c => {
+                if (dst.ContainsKey(c.Id)) { dst[c.Id].Sources.AddRange(c.Sources); }
+                else { dst[c.Id] = c; }
+            });
+        }
+
         private async Task<IEnumerable<ChannelInfo>> GetChannelsAsync(bool enableCache, CancellationToken cancellationToken)
         {
             if (enableCache && _channelCache != null)
             {
-
-                return _channelCache.ToList();
+                return _channelCache.Values;
             }
-
-            var list = new List<ChannelInfo>();
+            if (_channelCache == null) { _channelCache = new Dictionary<string, ChannelInfo>(); }
+            else { _channelCache.Clear(); }
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var channels = await hostInstance.GetChannels(cancellationToken).ConfigureAwait(false);
-
-                    list.AddRange(channels);
+                    ChannelMerge(await hostInstance.GetChannels(cancellationToken).ConfigureAwait(false), _channelCache);
                 }
                 catch (Exception ex)
                 {
@@ -211,15 +217,15 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
             foreach (var provider in GetListingProviders())
             {
-                var enabledChannels = list
-                    .Where(i => IsListingProviderEnabledForTuner(provider.Item2, i.TunerHostId))
+                var enabledChannels = _channelCache.Values
+                    .Where(c => IsListingProviderEnabledForChannel(provider.Item2, c))
                     .ToList();
 
                 if (enabledChannels.Count > 0)
                 {
                     try
                     {
-                        await provider.Item1.AddMetadata(provider.Item2, list, cancellationToken).ConfigureAwait(false);
+                        await provider.Item1.AddMetadata(provider.Item2, enabledChannels, cancellationToken).ConfigureAwait(false);
                     }
                     catch (NotSupportedException)
                     {
@@ -231,9 +237,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                     }
                 }
             }
-
-            _channelCache = list;
-            return list;
+            return _channelCache.Values;
         }
 
         public Task<IEnumerable<ChannelInfo>> GetChannelsAsync(CancellationToken cancellationToken)
@@ -496,33 +500,31 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private bool IsListingProviderEnabledForTuner(ListingsProviderInfo info, string tunerHostId)
+        private bool IsListingProviderEnabledForChannel(ListingsProviderInfo info, ChannelInfo channel)
         {
-            return info.EnableAllTuners || info.EnabledTuners.Contains(tunerHostId ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+            return (info.EnableAllTuners && string.IsNullOrWhiteSpace(channel.ListingsProviderId)) ||
+                (channel.ListingsProviderId ?? string.Empty).StartsWith(info.Id+"_",StringComparison.InvariantCultureIgnoreCase);
         }
-
-        private async Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        private async Task<ChannelInfo> GetChannel(string channelId, CancellationToken cancellationToken)
         {
             var channels = await GetChannelsAsync(true, cancellationToken).ConfigureAwait(false);
-            var channel = channels.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
+            return channels.First(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
+        }
+        private async Task<IEnumerable<ProgramInfo>> GetProgramsAsyncInternal(string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
+        {
+            var channel = await GetChannel(channelId,cancellationToken);
 
             foreach (var provider in GetListingProviders())
             {
-                if (!IsListingProviderEnabledForTuner(provider.Item2, channel.TunerHostId))
+                if (!IsListingProviderEnabledForChannel(provider.Item2, channel))
                 {
                     continue;
                 }
 
-                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel.Number, channel.Name, startDateUtc, endDateUtc, cancellationToken)
+                var programs = await provider.Item1.GetProgramsAsync(provider.Item2, channel, startDateUtc, endDateUtc, cancellationToken)
                         .ConfigureAwait(false);
 
                 var list = programs.ToList();
-
-                // Replace the value that came from the provider with a normalized value
-                foreach (var program in list)
-                {
-                    program.ChannelId = channelId;
-                }
 
                 if (list.Count > 0)
                 {
@@ -556,12 +558,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         public async Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
+            var channel = await GetChannel(channelId, cancellationToken);
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    var result = await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
 
                     result.Item2.Release();
 
@@ -579,12 +582,14 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
         private async Task<Tuple<MediaSourceInfo, SemaphoreSlim>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
         {
             _logger.Info("Streaming Channel " + channelId);
+            var channel = await GetChannel(channelId, cancellationToken);
+
 
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    return await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    return await hostInstance.GetChannelStream(channel, streamId, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -597,20 +602,23 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
+            _logger.Info("Streaming Channel " + channelId);
+            var channel = await GetChannel(channelId, cancellationToken);
+
             foreach (var hostInstance in _liveTvManager.TunerHosts)
             {
                 try
                 {
-                    var sources = await hostInstance.GetChannelStreamMediaSources(channelId, cancellationToken).ConfigureAwait(false);
+                    var sources = await hostInstance.GetChannelStreamMediaSources(channel, cancellationToken).ConfigureAwait(false);
 
                     if (sources.Count > 0)
                     {
                         return sources;
                     }
                 }
-                catch (NotImplementedException)
+                catch (Exception ex)
                 {
-
+                    _logger.Error("Error Getting chanel stream: " + ex, ex);
                 }
             }
 

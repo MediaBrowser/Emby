@@ -46,18 +46,26 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             get { return "hdhomerun"; }
         }
 
-        private const string ChannelIdPrefix = "hdhr_";
-
         private string GetChannelId(TunerHostInfo info, Channels i)
         {
-            var id = ChannelIdPrefix + i.GuideNumber.ToString(CultureInfo.InvariantCulture);
+            var id = "hdhr_" + i.GuideNumber.ToString(CultureInfo.InvariantCulture);
 
             if (info.DataVersion >= 1)
             {
-                id += '_' + (i.GuideName ?? string.Empty).GetMD5().ToString("N");
+                id = i.GuideNumber.ToString(CultureInfo.InvariantCulture);
             }
 
             return id;
+        }
+        private string GetChannelId(TunerHostInfo info, string channelId)
+        {
+
+            if (info.DataVersion >= 1)
+            {
+                return channelId;
+            }
+
+            return channelId.Substring("hdhr_".Length);
         }
 
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
@@ -78,9 +86,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         Name = i.GuideName,
                         Number = i.GuideNumber.ToString(CultureInfo.InvariantCulture),
                         Id = GetChannelId(info, i),
-                        IsFavorite = i.Favorite,
-                        TunerHostId = info.Id
-
+                        IsFavorite = i.Favorite
                     });
 
                     if (info.ImportFavoritesOnly)
@@ -234,6 +240,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         private MediaSourceInfo GetMediaSource(TunerHostInfo info, string channelId, string profile)
         {
+            channelId = GetChannelId(info, channelId);
+
             int? width = null;
             int? height = null;
             bool isInterlaced = true;
@@ -350,20 +358,11 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return Config.GetConfiguration<EncodingOptions>("encoding");
         }
 
-        private string GetHdHrIdFromChannelId(string channelId)
-        {
-            return channelId.Split('_')[1];
-        }
-
         protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
         {
             var list = new List<MediaSourceInfo>();
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return list;
-            }
-            var hdhrId = GetHdHrIdFromChannelId(channelId);
+            var hdhrId = GetChannelId(info, channelId);
 
             list.Add(GetMediaSource(info, hdhrId, "native"));
 
@@ -390,34 +389,20 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            if (string.IsNullOrWhiteSpace(channelId))
-            {
-                throw new ArgumentNullException("channelId");
-            }
-
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override async Task<MediaSourceInfo> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
             Logger.Info("GetChannelStream: channel id: {0}. stream id: {1}", channelId, streamId ?? string.Empty);
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException("Channel not found");
-            }
-            var hdhrId = GetHdHrIdFromChannelId(channelId);
+            var hdhrId = GetChannelId(info, channelId);
 
-            return GetMediaSource(info, hdhrId, streamId);
+            return GetMediaSource(info, hdhrId, streamId ?? "native");
         }
 
         public async Task Validate(TunerHostInfo info)
         {
             if (info.IsEnabled)
             {
-                await GetChannels(info, false, CancellationToken.None).ConfigureAwait(false);
+                await GetChannels(info, CancellationToken.None).ConfigureAwait(false);
             }
         }
 

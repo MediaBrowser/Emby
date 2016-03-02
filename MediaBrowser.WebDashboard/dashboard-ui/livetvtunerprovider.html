@@ -4,7 +4,7 @@
     <title>${TitleLiveTV}</title>
 </head>
 <body>
-    <div id="liveTvTunerProviderM3UPage" data-role="page" class="page type-interior liveTvSettingsPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Live%20TV" data-require="scripts/livetvtunerprovider-m3u,paper-input">
+    <div id="liveTvTunerProviderPage" data-role="page" class="page type-interior liveTvSettingsPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Live%20TV" data-require="jqmcollapsible,scripts/livetvtunerprovider,paper-input,paper-checkbox">
 
         <div data-role="content">
             <div class="content-primary">
@@ -16,15 +16,26 @@
                 </div>
 
                 <div class="readOnlyContent" style="margin-top: 2em;">
-
-                    <h1>M3U Setup</h1>
-
+                    <h1 class="tunerHeader"></h1>
                     <form>
                         <div>
+                            <div class="providerTemplate"></div>
                             <div>
-                                <paper-input class="txtDevicePath" label="${LabelPath}" required="required"></paper-input>
+                                <br />
+                                <paper-checkbox class="chkEnabled" checked>${LabelEnableThisTuner}</paper-checkbox>
+                                <div class="fieldDescription paperCheckboxFieldDescription">${LabelEnableThisTunerHelp}</div>
                             </div>
-                            <br />
+                            <div data-role="collapsible" data-collapsed="True" style="margin-top: 2em;">
+                                <h3>Advanced</h3>
+                                <div>
+                                    <br />
+                                    <label for="selectListing" class="selectLabel">${LabelLineup}</label>
+                                    <select id="selectListing" data-mini="true"></select>
+                                </div>
+                                <div>
+                                    <paper-input class="txtChannelMaps" label="${Channel Maps}"></paper-input>
+                                </div>
+                            </div>
                             <div>
                                 <button type="submit" data-role="none" class="clearButton">
                                     <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
