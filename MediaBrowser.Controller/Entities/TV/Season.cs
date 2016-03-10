@@ -15,8 +15,31 @@ namespace MediaBrowser.Controller.Entities.TV
     /// <summary>
     /// Class Season
     /// </summary>
-    public class Season : Folder, IHasSeries, IHasLookupInfo<SeasonInfo>
+    public class Season : Folder, IHasTrailers, IHasSeries, IHasLookupInfo<SeasonInfo>
     {
+
+        public Season()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            LocalTrailerIds = new List<Guid>();
+            RemoteTrailerIds = new List<Guid>();
+        }
+
+        public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
+        /// <summary>
+        /// Gets the trailer ids.
+        /// </summary>
+        /// <returns>List&lt;Guid&gt;.</returns>
+        public List<Guid> GetTrailerIds()
+        {
+            var list = LocalTrailerIds.ToList();
+            list.AddRange(RemoteTrailerIds);
+            return list;
+        }
+
         [IgnoreDataMember]
         public override bool SupportsAddingToPlaylist
         {
@@ -41,8 +64,8 @@ namespace MediaBrowser.Controller.Entities.TV
         // Genre, Rating and Stuido will all be the same
         protected override IEnumerable<string> GetIndexByOptions()
         {
-            return new List<string> {            
-                {"None"}, 
+            return new List<string> {
+                {"None"},
                 {"Performer"},
                 {"Director"},
                 {"Year"},
@@ -195,7 +218,7 @@ namespace MediaBrowser.Controller.Entities.TV
 
                 episodes = list.DistinctBy(i => i.Id);
             }
-            
+
             if (!includeMissingEpisodes)
             {
                 episodes = episodes.Where(i => !i.IsMissingEpisode);
