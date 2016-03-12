@@ -295,7 +295,7 @@ namespace MediaBrowser.WebDashboard.Api
                         }
                     }
 
-                    html = html.Replace("<body>", "<body><paper-drawer-panel class=\"mainDrawerPanel mainDrawerPanelPreInit\" forceNarrow><div class=\"mainDrawer\" drawer></div><div class=\"mainDrawerPanelContent\" main><!--<div class=\"pageContainer\">")
+                    html = html.Replace("<body>", "<body><paper-drawer-panel class=\"mainDrawerPanel mainDrawerPanelPreInit skinContainer\" forceNarrow><div class=\"mainDrawer\" drawer></div><div class=\"mainDrawerPanelContent\" main><!--<div class=\"pageBackground\"></div><div class=\"pageContainer\">")
                         .Replace("</body>", "</div>--></div></paper-drawer-panel></body>");
                 }
 
@@ -436,14 +436,7 @@ namespace MediaBrowser.WebDashboard.Api
 
             var files = new List<string>();
 
-            if (string.Equals(mode, "cordova", StringComparison.OrdinalIgnoreCase))
-            {
-                files.Add("bower_components/requirejs/require.js");
-            }
-            else
-            {
-                files.Add("bower_components" + version + "/requirejs/require.js");
-            }
+            files.Add("bower_components/requirejs/require.js");
 
             files.Add("scripts/site.js" + versionString);
 

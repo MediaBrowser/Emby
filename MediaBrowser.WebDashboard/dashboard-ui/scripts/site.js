@@ -33,7 +33,7 @@ var Dashboard = {
             html = html.substring(0, lastIndex) + html.substring(lastIndex + 3);
         }
 
-        return Globalize.translateDocument(html, 'html');
+        return Globalize.translateDocument(html, 'core');
     },
 
     isConnectMode: function () {
@@ -1740,6 +1740,7 @@ var AppInfo = {};
             hammer: bowerPath + "/hammerjs/hammer.min",
             layoutManager: embyWebComponentsBowerPath + "/layoutmanager",
             focusManager: embyWebComponentsBowerPath + "/focusmanager",
+            globalize: embyWebComponentsBowerPath + "/globalize",
             imageLoader: embyWebComponentsBowerPath + "/images/imagehelper"
         };
 
@@ -1765,6 +1766,8 @@ var AppInfo = {};
 
             define("actionsheet", [embyWebComponentsBowerPath + "/actionsheet/actionsheet"], returnFirstDependency);
         }
+
+        define("backdrop", [embyWebComponentsBowerPath + "/backdrop/backdrop"], returnFirstDependency);
 
         // hack for an android test before browserInfo is loaded
         if (Dashboard.isRunningInCordova() && window.MainActivity) {
@@ -1845,7 +1848,9 @@ var AppInfo = {};
 
         define("jstree", [bowerPath + "/jstree/dist/jstree", "css!thirdparty/jstree/themes/default/style.min.css"]);
 
-        define('jqm', ['thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.js']);
+        define('jqm', ['thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.js'], function() {
+            $.mobile.filterHtml = Dashboard.filterHtml;
+        });
         define("jqmbase", ['css!thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.theme.css']);
         define("jqmicons", ['jqmbase', 'css!thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.icons.css']);
         define("jqmtable", ['jqmbase', "thirdparty/jquerymobile-1.4.5/jqm.table", 'css!thirdparty/jquerymobile-1.4.5/jqm.table.css']);
@@ -1898,12 +1903,12 @@ var AppInfo = {};
         define("swiper", [bowerPath + "/Swiper/dist/js/swiper.min", "css!" + bowerPath + "/Swiper/dist/css/swiper.min"], returnFirstDependency);
 
         define("paperdialoghelper", [embyWebComponentsBowerPath + "/paperdialoghelper/paperdialoghelper"], returnFirstDependency);
-        define("loading", [embyWebComponentsBowerPath + "/loading/loading"], returnFirstDependency);
         define("toast", [embyWebComponentsBowerPath + "/toast/toast"], returnFirstDependency);
         define("scrollHelper", [embyWebComponentsBowerPath + "/scrollhelper"], returnFirstDependency);
 
         define("appSettings", [embyWebComponentsBowerPath + "/appsettings"], updateAppSettings);
         define("userSettings", [embyWebComponentsBowerPath + "/usersettings"], returnFirstDependency);
+        define("material-design-lite", [bowerPath + "/material-design-lite/material.min", "css!" + bowerPath + "/material-design-lite/material"]);
 
         // alias
         define("historyManager", [], function () {
@@ -1931,10 +1936,6 @@ var AppInfo = {};
 
         define("connectionManager", [], function () {
             return ConnectionManager;
-        });
-
-        define("globalize", [], function () {
-            return Globalize;
         });
 
         define('apiClientResolver', [], function () {
@@ -1976,7 +1977,7 @@ var AppInfo = {};
 
         var embyWebComponentsBowerPath = bowerPath + '/emby-webcomponents';
 
-        if (browser.mobile || browser.msie) {
+        if (browser.mobile) {
             define("prompt", [embyWebComponentsBowerPath + "/prompt/nativeprompt"], returnFirstDependency);
             define("confirm", [embyWebComponentsBowerPath + "/confirm/nativeconfirm"], returnFirstDependency);
             define("alert", [embyWebComponentsBowerPath + "/alert/nativealert"], returnFirstDependency);
@@ -1984,6 +1985,14 @@ var AppInfo = {};
             define("prompt", [embyWebComponentsBowerPath + "/prompt/prompt"], returnFirstDependency);
             define("confirm", [embyWebComponentsBowerPath + "/confirm/confirm"], returnFirstDependency);
             define("alert", [embyWebComponentsBowerPath + "/alert/alert"], returnFirstDependency);
+        }
+
+        if (browser.animate) {
+            define("loading", [embyWebComponentsBowerPath + "/loading/loading"], returnFirstDependency);
+        } else if (browser.tv) {
+            define("loading", [embyWebComponentsBowerPath + "/loading/loading-smarttv"], returnFirstDependency);
+        } else {
+            define("loading", [embyWebComponentsBowerPath + "/loading/loading-lite"], returnFirstDependency);
         }
     }
 
@@ -2042,12 +2051,7 @@ var AppInfo = {};
         var deps = [];
         deps.push('events');
 
-        if (!window.fetch) {
-            deps.push('fetch');
-        }
-
         deps.push('scripts/mediacontroller');
-        deps.push('scripts/globalize');
 
         deps.push('paper-drawer-panel');
 
@@ -2094,6 +2098,10 @@ var AppInfo = {};
 
         deps.push('scripts/extensions');
 
+        if (!window.fetch) {
+            deps.push('fetch');
+        }
+
         require(deps, function (connectionManagerExports, credentialProviderFactory) {
 
             window.MediaBrowser = window.MediaBrowser || {};
@@ -2103,15 +2111,10 @@ var AppInfo = {};
 
             var promises = [];
             deps = [];
-            deps.push('scripts/mediaplayer');
-            deps.push('emby-icons');
-            deps.push('paper-icon-button');
-            deps.push('paper-button');
             deps.push('jQuery');
 
             promises.push(getRequirePromise(deps));
 
-            promises.push(Globalize.ensure());
             promises.push(createConnectionManager(credentialProviderFactory, Dashboard.capabilities()));
 
             Promise.all(promises).then(function () {
@@ -2119,58 +2122,80 @@ var AppInfo = {};
                 console.log('initAfterDependencies promises resolved');
                 MediaController.init();
 
-                document.title = Globalize.translateDocument(document.title, 'html');
+                require(['globalize'], function (globalize) {
 
-                var mainDrawerPanelContent = document.querySelector('.mainDrawerPanelContent');
+                    window.Globalize = globalize;
 
-                if (mainDrawerPanelContent) {
-
-                    var newHtml = mainDrawerPanelContent.innerHTML.substring(4);
-                    newHtml = newHtml.substring(0, newHtml.length - 3);
-
-                    var srch = 'data-require=';
-                    var index = newHtml.indexOf(srch);
-                    var depends;
-
-                    if (index != -1) {
-
-                        var requireAttribute = newHtml.substring(index + srch.length + 1);
-
-                        requireAttribute = requireAttribute.substring(0, requireAttribute.indexOf('"'));
-                        depends = requireAttribute.split(',');
-                    }
-
-                    depends = depends || [];
-
-                    if (newHtml.indexOf('type-interior') != -1) {
-                        addLegacyDependencies(depends, window.location.href);
-                    }
-
-                    require(depends, function () {
-
-                        // TODO: This needs to be deprecated, but it's used heavily
-                        $.fn.checked = function (value) {
-                            if (value === true || value === false) {
-                                // Set the value of the checkbox
-                                return $(this).each(function () {
-                                    this.checked = value;
-                                });
-                            } else {
-                                // Return check state
-                                return this.length && this[0].checked;
-                            }
-                        };
-
-                        // Don't like having to use jQuery here, but it takes care of making sure that embedded script executes
-                        $(mainDrawerPanelContent).html(Globalize.translateDocument(newHtml, 'html'));
-                        onAppReady();
-                    });
-                    return;
-                }
-
-                onAppReady();
+                    loadCoreDictionary(globalize).then(onGlobalizeInit);
+                });
             });
         });
+    }
+
+    function loadCoreDictionary(globalize) {
+
+        var baseUrl = 'strings/';
+
+        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'en-AR', 'en-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
+
+        var translations = languages.map(function (i) {
+            return {
+                lang: i,
+                path: baseUrl + i + '.json'
+            };
+        });
+
+        globalize.defaultModule('core');
+
+        return globalize.loadStrings({
+            name: 'core',
+            translations: translations
+        });
+    }
+
+    function onGlobalizeInit() {
+        document.title = Globalize.translateDocument(document.title, 'core');
+
+        var mainDrawerPanelContent = document.querySelector('.mainDrawerPanelContent');
+
+        if (mainDrawerPanelContent) {
+
+            var newHtml = mainDrawerPanelContent.innerHTML.substring(4);
+            newHtml = newHtml.substring(0, newHtml.length - 3);
+
+            var srch = 'data-require=';
+            var index = newHtml.indexOf(srch);
+            var depends;
+
+            if (index != -1) {
+
+                var requireAttribute = newHtml.substring(index + srch.length + 1);
+
+                requireAttribute = requireAttribute.substring(0, requireAttribute.indexOf('"'));
+                depends = requireAttribute.split(',');
+            }
+
+            depends = depends || [];
+
+            depends.push('scripts/mediaplayer');
+            depends.push('legacy/fnchecked');
+
+            if (newHtml.indexOf('type-interior') != -1) {
+                addLegacyDependencies(depends, window.location.href);
+            }
+
+            require(depends, function () {
+
+                MediaPlayer.init();
+
+                // Don't like having to use jQuery here, but it takes care of making sure that embedded script executes
+                $(mainDrawerPanelContent).html(Globalize.translateDocument(newHtml, 'core'));
+                onAppReady();
+            });
+            return;
+        }
+
+        onAppReady();
     }
 
     function onAppReady() {
@@ -2219,7 +2244,6 @@ var AppInfo = {};
 
         deps.push('scripts/search');
         deps.push('scripts/librarylist');
-        deps.push('scripts/backdrops');
         deps.push('scripts/librarymenu');
         deps.push('scripts/librarybrowser');
         deps.push('jqm');
@@ -2231,8 +2255,6 @@ var AppInfo = {};
             imageLoader.enableFade = browserInfo.animate && !browserInfo.mobile;
             window.ImageLoader = imageLoader;
 
-            $.mobile.filterHtml = Dashboard.filterHtml;
-
             $.mobile.initializePage();
 
             var postInitDependencies = [];
@@ -2241,6 +2263,7 @@ var AppInfo = {};
             postInitDependencies.push('scripts/remotecontrol');
             postInitDependencies.push('css!css/notifications.css');
             postInitDependencies.push('css!css/chromecast.css');
+            postInitDependencies.push('scripts/autobackdrops');
 
             if (Dashboard.isRunningInCordova()) {
 
@@ -2319,58 +2342,60 @@ var AppInfo = {};
 
         return new Promise(function (resolve, reject) {
 
-            var deviceName;
+            require(['appStorage'], function (appStorage) {
+                var deviceName;
 
-            if (browserInfo.chrome) {
-                deviceName = "Chrome";
-            } else if (browserInfo.edge) {
-                deviceName = "Edge";
-            } else if (browserInfo.firefox) {
-                deviceName = "Firefox";
-            } else if (browserInfo.msie) {
-                deviceName = "Internet Explorer";
-            } else {
-                deviceName = "Web Browser";
-            }
+                if (browserInfo.chrome) {
+                    deviceName = "Chrome";
+                } else if (browserInfo.edge) {
+                    deviceName = "Edge";
+                } else if (browserInfo.firefox) {
+                    deviceName = "Firefox";
+                } else if (browserInfo.msie) {
+                    deviceName = "Internet Explorer";
+                } else {
+                    deviceName = "Web Browser";
+                }
 
-            if (browserInfo.version) {
-                deviceName += " " + browserInfo.version;
-            }
+                if (browserInfo.version) {
+                    deviceName += " " + browserInfo.version;
+                }
 
-            if (browserInfo.ipad) {
-                deviceName += " Ipad";
-            } else if (browserInfo.iphone) {
-                deviceName += " Iphone";
-            } else if (browserInfo.android) {
-                deviceName += " Android";
-            }
+                if (browserInfo.ipad) {
+                    deviceName += " Ipad";
+                } else if (browserInfo.iphone) {
+                    deviceName += " Iphone";
+                } else if (browserInfo.android) {
+                    deviceName += " Android";
+                }
 
-            function onDeviceAdAcquired(id) {
+                function onDeviceAdAcquired(id) {
 
-                resolve({
-                    deviceId: id,
-                    deviceName: deviceName,
-                    appName: "Emby Web Client",
-                    appVersion: window.dashboardVersion
-                });
-            }
+                    resolve({
+                        deviceId: id,
+                        deviceName: deviceName,
+                        appName: "Emby Web Client",
+                        appVersion: window.dashboardVersion
+                    });
+                }
 
-            var deviceIdKey = '_deviceId1';
-            var deviceId = appStorage.getItem(deviceIdKey);
+                var deviceIdKey = '_deviceId1';
+                var deviceId = appStorage.getItem(deviceIdKey);
 
-            if (deviceId) {
-                onDeviceAdAcquired(deviceId);
-            } else {
-                require(['cryptojs-sha1'], function () {
-                    var keys = [];
-                    keys.push(navigator.userAgent);
-                    keys.push((navigator.cpuClass || ""));
-                    keys.push(new Date().getTime());
-                    var randomId = CryptoJS.SHA1(keys.join('|')).toString();
-                    appStorage.setItem(deviceIdKey, randomId);
-                    onDeviceAdAcquired(randomId);
-                });
-            }
+                if (deviceId) {
+                    onDeviceAdAcquired(deviceId);
+                } else {
+                    require(['cryptojs-sha1'], function () {
+                        var keys = [];
+                        keys.push(navigator.userAgent);
+                        keys.push((navigator.cpuClass || ""));
+                        keys.push(new Date().getTime());
+                        var randomId = CryptoJS.SHA1(keys.join('|')).toString();
+                        appStorage.setItem(deviceIdKey, randomId);
+                        onDeviceAdAcquired(randomId);
+                    });
+                }
+            });
         });
     }
 
@@ -2390,25 +2415,21 @@ var AppInfo = {};
         var initialDependencies = [];
 
         initialDependencies.push('browser');
-        initialDependencies.push('appStorage');
 
         if (!window.Promise) {
             initialDependencies.push('native-promise-only');
         }
 
-        require(initialDependencies, function (browser, appStorage) {
+        require(initialDependencies, function (browser) {
 
             initRequireWithBrowser(browser);
 
             window.browserInfo = browser;
-            window.appStorage = appStorage;
 
             setAppInfo();
             setDocumentClasses();
 
-            getHostingAppInfo().then(function (hostingAppInfo) {
-                init(hostingAppInfo);
-            });
+            getHostingAppInfo().then(init);
         });
     }
 
