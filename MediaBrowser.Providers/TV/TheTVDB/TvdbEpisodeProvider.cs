@@ -407,7 +407,6 @@ namespace MediaBrowser.Providers.TV
 									if (!string.IsNullOrWhiteSpace (val)) {
 										DateTime date;
 										if (DateTime.TryParse (val, out date)) {
-											date = date.ToUniversalTime ();
 
 											return date;
 										}
@@ -685,8 +684,6 @@ namespace MediaBrowser.Providers.TV
 									DateTime date;
 									if (DateTime.TryParse(val, out date))
 									{
-										date = date.ToUniversalTime();
-
 										item.PremiereDate = date;
 										item.ProductionYear = date.Year;
 									}

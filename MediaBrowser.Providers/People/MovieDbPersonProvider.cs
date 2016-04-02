@@ -186,12 +186,12 @@ namespace MediaBrowser.Providers.People
 
                 if (DateTime.TryParseExact(info.birthday, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out date))
                 {
-                    item.PremiereDate = date.ToUniversalTime();
+                    item.PremiereDate = date;
                 }
 
                 if (DateTime.TryParseExact(info.deathday, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out date))
                 {
-                    item.EndDate = date.ToUniversalTime();
+                    item.EndDate = date;
                 }
 
                 item.SetProviderId(MetadataProviders.Tmdb, info.id.ToString(_usCulture));

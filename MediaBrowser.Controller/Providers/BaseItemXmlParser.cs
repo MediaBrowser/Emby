@@ -638,9 +638,9 @@ namespace MediaBrowser.Controller.Providers
                         {
                             DateTime airDate;
 
-                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out airDate) && airDate.Year > 1850)
+                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out airDate) && airDate.Year > 1850)
                             {
-                                item.PremiereDate = airDate.ToUniversalTime();
+                                item.PremiereDate = airDate;
                                 item.ProductionYear = airDate.Year;
                             }
                         }
@@ -657,9 +657,9 @@ namespace MediaBrowser.Controller.Providers
                         {
                             DateTime airDate;
 
-                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out airDate) && airDate.Year > 1850)
+                            if (DateTime.TryParseExact(firstAired, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out airDate) && airDate.Year > 1850)
                             {
-                                item.EndDate = airDate.ToUniversalTime();
+                                item.EndDate = airDate;
                             }
                         }
 

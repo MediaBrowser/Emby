@@ -2203,7 +2203,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 {
                     if (episodeInfo.Year.HasValue && episodeInfo.Month.HasValue && episodeInfo.Day.HasValue)
                     {
-                        episode.PremiereDate = new DateTime(episodeInfo.Year.Value, episodeInfo.Month.Value, episodeInfo.Day.Value).ToUniversalTime();
+                        episode.PremiereDate = new DateTime(episodeInfo.Year.Value, episodeInfo.Month.Value, episodeInfo.Day.Value);
                     }
 
                     if (episode.PremiereDate.HasValue)

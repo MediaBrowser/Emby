@@ -223,7 +223,7 @@ namespace MediaBrowser.Providers.Movies
                 // These dates are always in this exact format
                 if (DateTime.TryParse(movieData.release_date, _usCulture, DateTimeStyles.None, out r))
                 {
-                    movie.PremiereDate = r.ToUniversalTime();
+                    movie.PremiereDate = r;
                     movie.ProductionYear = movie.PremiereDate.Value.Year;
                 }
             }

@@ -525,7 +525,7 @@ namespace MediaBrowser.Providers.TV
                                             DateTime date;
                                             if (DateTime.TryParse(val, out date))
                                             {
-                                                airDate = date.ToUniversalTime();
+                                                airDate = date;
                                             }
                                         }
 
