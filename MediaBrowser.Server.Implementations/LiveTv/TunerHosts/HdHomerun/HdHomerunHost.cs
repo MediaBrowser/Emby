@@ -257,18 +257,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 videoCodec = "h264";
                 videoBitrate = 15000000;
             }
-            else if (string.Equals(profile, "internet720", StringComparison.OrdinalIgnoreCase))
-            {
-                width = 1280;
-                height = 720;
-                isInterlaced = false;
-                videoCodec = "h264";
-                videoBitrate = 8000000;
-            }
             else if (string.Equals(profile, "internet540", StringComparison.OrdinalIgnoreCase))
             {
-                width = 1280;
-                height = 720;
+                width = 960;
+                height = 546;
                 isInterlaced = false;
                 videoCodec = "h264";
                 videoBitrate = 2500000;
@@ -376,6 +368,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 {
                     list.Insert(0, GetMediaSource(info, hdhrId, "heavy"));
 
+                    list.Add(GetMediaSource(info, hdhrId, "internet540"));
                     list.Add(GetMediaSource(info, hdhrId, "internet480"));
                     list.Add(GetMediaSource(info, hdhrId, "internet360"));
                     list.Add(GetMediaSource(info, hdhrId, "internet240"));
