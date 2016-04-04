@@ -368,6 +368,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 {
                     list.Insert(0, GetMediaSource(info, hdhrId, "heavy"));
 
+                    list.Add(GetMediaSource(info, hdhrId, "internet540"));
                     list.Add(GetMediaSource(info, hdhrId, "internet480"));
                     list.Add(GetMediaSource(info, hdhrId, "internet360"));
                     list.Add(GetMediaSource(info, hdhrId, "internet240"));
