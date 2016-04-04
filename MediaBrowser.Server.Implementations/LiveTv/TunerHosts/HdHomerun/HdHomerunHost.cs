@@ -372,7 +372,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 string model = await GetModelInfo(info, cancellationToken).ConfigureAwait(false);
                 model = model ?? string.Empty;
 
-                if (model.IndexOf("hdtc", StringComparison.OrdinalIgnoreCase) != -1)
+                if (info.AllowHWTranscoding && (model.IndexOf("hdtc", StringComparison.OrdinalIgnoreCase) != -1))
                 {
                     list.Insert(0, GetMediaSource(info, hdhrId, "heavy"));
 
