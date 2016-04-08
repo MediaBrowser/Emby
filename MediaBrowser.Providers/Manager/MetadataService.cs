@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -14,6 +13,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Providers.Manager
 {
@@ -137,6 +137,11 @@ namespace MediaBrowser.Providers.Manager
                 {
                     var id = itemOfType.GetLookupInfo();
 
+                    if (refreshOptions.SearchResult != null)
+                    {
+                        ApplySearchResult(id, refreshOptions.SearchResult);
+                    }
+
                     //await FindIdentities(id, cancellationToken).ConfigureAwait(false);
                     id.IsAutomated = refreshOptions.IsAutomated;
 
@@ -206,6 +211,13 @@ namespace MediaBrowser.Providers.Manager
             await AfterMetadataRefresh(itemOfType, refreshOptions, cancellationToken).ConfigureAwait(false);
 
             return updateType;
+        }
+
+        private void ApplySearchResult(ItemLookupInfo lookupInfo, RemoteSearchResult result)
+        {
+            lookupInfo.ProviderIds = result.ProviderIds;
+            lookupInfo.Name = result.Name;
+            lookupInfo.Year = result.ProductionYear;
         }
 
         private async Task FindIdentities(TIdType id, CancellationToken cancellationToken)

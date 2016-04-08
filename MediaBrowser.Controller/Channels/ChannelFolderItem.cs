@@ -7,7 +7,6 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Controller.Channels
 {
@@ -45,7 +44,7 @@ namespace MediaBrowser.Controller.Channels
             return ExternalId;
         }
 
-        public override async Task<QueryResult<BaseItem>> GetItems(InternalItemsQuery query)
+        protected override async Task<QueryResult<BaseItem>> GetItemsInternal(InternalItemsQuery query)
         {
             try
             {

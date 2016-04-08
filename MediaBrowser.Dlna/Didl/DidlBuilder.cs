@@ -171,7 +171,6 @@ namespace MediaBrowser.Dlna.Didl
                 streamInfo.TargetPacketLength,
                 streamInfo.TranscodeSeekInfo,
                 streamInfo.IsTargetAnamorphic,
-                streamInfo.IsTargetCabac,
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
@@ -317,7 +316,6 @@ namespace MediaBrowser.Dlna.Didl
                 streamInfo.TargetPacketLength,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsTargetAnamorphic,
-                streamInfo.IsTargetCabac,
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
@@ -981,7 +979,10 @@ namespace MediaBrowser.Dlna.Didl
 
             if (item != null)
             {
-                return GetImageInfo(item, ImageType.Primary);
+                if (item.HasImage(ImageType.Primary))
+                {
+                    return GetImageInfo(item, ImageType.Primary);
+                }
             }
 
             return null;

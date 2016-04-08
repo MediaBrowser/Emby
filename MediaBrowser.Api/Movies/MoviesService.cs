@@ -1,12 +1,10 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
@@ -15,7 +13,6 @@ using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Api.Movies
@@ -158,6 +155,8 @@ namespace MediaBrowser.Api.Movies
             listEligibleForSuggestion.AddRange(list);
 
             listEligibleForCategories = listEligibleForCategories
+                // Exclude trailers from the suggestion categories
+                .Where(i => i is Movie)
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .DistinctBy(i => i.GetProviderId(MetadataProviders.Imdb) ?? Guid.NewGuid().ToString(), StringComparer.OrdinalIgnoreCase)
                 .ToList();

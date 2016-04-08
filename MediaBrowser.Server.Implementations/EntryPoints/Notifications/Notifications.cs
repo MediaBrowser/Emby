@@ -22,8 +22,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.LiveTv;
 
 namespace MediaBrowser.Server.Implementations.EntryPoints.Notifications
 {
@@ -118,7 +116,8 @@ namespace MediaBrowser.Server.Implementations.EntryPoints.Notifications
 
             var notification = new NotificationRequest
             {
-                NotificationType = type
+                NotificationType = type,
+                Url = e.Argument.infoUrl
             };
 
             notification.Variables["Version"] = e.Argument.versionStr;
