@@ -287,16 +287,15 @@ namespace MediaBrowser.Api.Playback
         protected string GetH264Encoder(StreamState state)
         {
             if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
-            {
-                // It's currently failing on live tv
-                if (state.RunTimeTicks.HasValue)
                 {
+                
                     return "h264_qsv";
-                }
-            }
 
-            return "libx264";
-        }
+                }
+
+                return "libx264";
+
+            }
 
         /// <summary>
         /// Gets the video bitrate to specify on the command line
@@ -440,6 +439,9 @@ namespace MediaBrowser.Api.Playback
                             param += " -level " + state.VideoRequest.Level;
                             break;
                     }
+
+                    return param;
+
                 }
                 else
                 {
