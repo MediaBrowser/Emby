@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser'], function (libraryBrowser) {
+﻿define(['libraryBrowser', 'scrollStyles'], function (libraryBrowser) {
 
     var searchHintTimeout;
 
@@ -44,7 +44,7 @@
         }
         else if (hint.Type == "Series") {
 
-            return [Globalize.translate('LabelSeries')];
+            return [Globalize.translate('Series')];
         }
         else if (hint.Type == "BoxSet") {
 
@@ -109,7 +109,7 @@
         ApiClient.getSearchHints({
 
             userId: Dashboard.getCurrentUserId(),
-            searchTerm: searchTerm,
+            searchTerm: (searchTerm || '').trim(),
             limit: 30
 
         }).then(function (result) {

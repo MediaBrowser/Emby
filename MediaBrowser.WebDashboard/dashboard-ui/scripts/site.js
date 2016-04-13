@@ -210,8 +210,6 @@ var Dashboard = {
 
         Dashboard.lastSystemInfo = info;
 
-        Dashboard.ensureWebSocket();
-
         if (!Dashboard.initialServerVersion) {
             Dashboard.initialServerVersion = info.Version;
         }
@@ -532,8 +530,6 @@ var Dashboard = {
 
                     Dashboard.updateSystemInfo(info);
                 });
-            } else {
-                Dashboard.ensureWebSocket();
             }
         }
     },
@@ -690,11 +686,12 @@ var Dashboard = {
 
             if (item.items) {
 
+                var style = item.color ? ' iconstyle="color:' + item.color + '"' : '';
+                var expanded = item.expanded ? (' expanded') : '';
                 if (item.icon) {
-                    var style = item.color ? ' style="color:' + item.color + '"' : '';
-                    menuHtml += '<emby-collapsible icon="' + item.icon + '" title="' + item.name + '">';
+                    menuHtml += '<emby-collapsible icon="' + item.icon + '" title="' + item.name + '"' + style + expanded + '>';
                 } else {
-                    menuHtml += '<emby-collapsible title="' + item.name + '">';
+                    menuHtml += '<emby-collapsible title="' + item.name + '"' + style + expanded + '>';
                 }
                 menuHtml += item.items.map(Dashboard.getToolsLinkHtml).join('');
                 menuHtml += '</emby-collapsible>';
@@ -720,6 +717,7 @@ var Dashboard = {
             name: Globalize.translate('TabServer'),
             icon: 'dashboard',
             color: '#38c',
+            expanded: true,
             items: [
                 {
                     name: Globalize.translate('TabDashboard'),
@@ -746,6 +744,8 @@ var Dashboard = {
         }, {
             name: Globalize.translate('TabLibrary'),
             icon: 'folder',
+            color: '#ECA403',
+            expanded: true,
             items: [
                 {
                     name: Globalize.translate('TabFolders'),
@@ -793,6 +793,7 @@ var Dashboard = {
         }, {
             name: Globalize.translate('DLNA'),
             icon: 'live-tv',
+            color: '#E5342E',
             items: [
                 {
                     name: Globalize.translate('TabSettings'),
@@ -810,6 +811,7 @@ var Dashboard = {
         }, {
             name: Globalize.translate('TabLiveTV'),
             icon: 'dvr',
+            color: '#293AAE',
             items: [
                 {
                     name: Globalize.translate('TabSettings'),
@@ -831,8 +833,14 @@ var Dashboard = {
                 }
             ]
         }, {
+            name: Globalize.translate('TabNotifications'),
+            icon: 'notifications',
+            color: 'brown',
+            href: "notificationsettings.html"
+        }, {
             name: Globalize.translate('TabPlayback'),
             icon: 'play-circle-filled',
+            color: '#E5342E',
             items: [
                 {
                     name: Globalize.translate('TabCinemaMode'),
@@ -862,6 +870,7 @@ var Dashboard = {
         }, {
             name: Globalize.translate('TabPlugins'),
             icon: 'add-shopping-cart',
+            color: '#9D22B1',
             items: [
                 {
                     name: Globalize.translate('TabMyPlugins'),
@@ -904,6 +913,7 @@ var Dashboard = {
         }, {
             name: Globalize.translate('TabAdvanced'),
             icon: 'settings',
+            color: '#F16834',
             items: [
                 {
                     name: Globalize.translate('TabAutoOrganize'),
@@ -916,11 +926,6 @@ var Dashboard = {
                     href: "dashboardhosting.html",
                     pageIds: ['dashboardHostingPage'],
                     icon: 'wifi'
-                }, {
-                    name: Globalize.translate('TabNotifications'),
-                    href: "notificationsettings.html",
-                    pageIds: ['notificationSettingsPage', 'notificationSettingPage'],
-                    icon: 'notifications'
                 }, {
                     name: Globalize.translate('TabScheduledTasks'),
                     href: "scheduledtasks.html",
@@ -959,19 +964,6 @@ var Dashboard = {
             ]
         }];
 
-    },
-
-    ensureWebSocket: function () {
-
-        if (ApiClient.isWebSocketOpenOrConnecting() || !ApiClient.isWebSocketSupported()) {
-            return;
-        }
-
-        ApiClient.openWebSocket();
-
-        if (!Dashboard.isConnectMode()) {
-            ApiClient.reportCapabilities(Dashboard.capabilities());
-        }
     },
 
     processGeneralCommand: function (cmd) {
@@ -1832,6 +1824,8 @@ var AppInfo = {};
             define("actionsheet", [embyWebComponentsBowerPath + "/actionsheet/actionsheet"], returnFirstDependency);
         }
 
+        define("libjass", [bowerPath + "/libjass/libjass", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
+
         define("backdrop", [embyWebComponentsBowerPath + "/backdrop/backdrop"], returnFirstDependency);
         define("fetchHelper", [embyWebComponentsBowerPath + "/fetchhelper"], returnFirstDependency);
 
@@ -1983,6 +1977,7 @@ var AppInfo = {};
         define("robotoFont", ['css!' + embyWebComponentsBowerPath + '/fonts/roboto/style']);
         define("opensansFont", ['css!' + embyWebComponentsBowerPath + '/fonts/opensans/style']);
         define("montserratFont", ['css!' + embyWebComponentsBowerPath + '/fonts/montserrat/style']);
+        define("scrollStyles", ['css!' + embyWebComponentsBowerPath + '/scrollstyles']);
 
         define("viewcontainer", ['components/viewcontainer-lite'], returnFirstDependency);
         define('queryString', [bowerPath + '/query-string/index'], function () {
@@ -2264,7 +2259,7 @@ var AppInfo = {};
 
         var baseUrl = 'strings/';
 
-        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'en-AR', 'en-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
+        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-AR', 'es-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
 
         var translations = languages.map(function (i) {
             return {
@@ -2621,7 +2616,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/livetvtimer.html',
-            dependencies: [],
+            dependencies: ['scrollStyles'],
             autoFocus: false
         });
 
@@ -3050,6 +3045,7 @@ var AppInfo = {};
 
         deps.push('imageLoader');
         deps.push('router');
+        deps.push('layoutManager');
 
         if (!(AppInfo.isNativeApp && browserInfo.android)) {
             document.documentElement.classList.add('minimumSizeTabs');
@@ -3093,12 +3089,14 @@ var AppInfo = {};
 
         deps.push('css!css/card.css');
 
-        require(deps, function (imageLoader, pageObjects) {
+        require(deps, function (imageLoader, pageObjects, layoutManager) {
 
             console.log('Loaded dependencies in onAppReady');
 
             imageLoader.enableFade = browserInfo.animate && !browserInfo.mobile;
             window.ImageLoader = imageLoader;
+
+            layoutManager.init();
 
             //$.mobile.initializePage();
             window.Emby = {};
