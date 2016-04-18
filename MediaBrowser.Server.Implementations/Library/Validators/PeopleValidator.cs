@@ -12,7 +12,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Server.Implementations.Library.Validators
 {
@@ -126,7 +125,7 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
                     validIds.Add(item.Id);
 
                     var hasMetdata = !string.IsNullOrWhiteSpace(item.Overview);
-                    var performFullRefresh = !hasMetdata && (DateTime.UtcNow - item.DateLastRefreshed).TotalDays >= 30;
+                    var performFullRefresh = !hasMetdata && (DateTime.UtcNow - item.DateLastRefreshed).TotalDays >= 14;
 
                     var defaultMetadataRefreshMode = performFullRefresh
                         ? MetadataRefreshMode.FullRefresh

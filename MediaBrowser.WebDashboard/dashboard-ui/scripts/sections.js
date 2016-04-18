@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser', 'jQuery'], function (LibraryBrowser, $) {
+﻿define(['libraryBrowser', 'jQuery', 'appSettings', 'scrollStyles'], function (LibraryBrowser, $, appSettings) {
 
     function getUserViews(userId) {
 
@@ -19,10 +19,6 @@
                 list.push(view);
 
                 if (view.CollectionType == 'livetv') {
-
-                    view.ImageTags = {};
-                    view.icon = 'live-tv';
-                    view.onclick = "LibraryBrowser.showTab('livetv.html', 0);event.preventDefault();event.stopPropagation();return false;";
 
                     var guideView = $.extend({}, view);
                     guideView.Name = Globalize.translate('ButtonGuide');
@@ -167,10 +163,85 @@
             html += getLibraryButtonsHtml(items);
             html += '</div>';
 
-            elem.innerHTML = html;
+            return getAppInfo().then(function (infoHtml) {
 
-            handleLibraryLinkNavigations(elem);
+                elem.innerHTML = html + infoHtml;
+
+                handleLibraryLinkNavigations(elem);
+            });
         });
+    }
+
+    /**
+     * Returns a random integer between min (inclusive) and max (inclusive)
+     * Using Math.round() will give you a non-uniform distribution!
+     */
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getAppInfo() {
+
+        if (AppInfo.nativeApp) {
+            return Promise.resolve('');
+        }
+
+        var cacheKey = 'lastappinfopresent5';
+        if ((new Date().getTime() - parseInt(appSettings.get(cacheKey) || '0')) < 86400000) {
+            return Promise.resolve('');
+        }
+
+        return Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
+
+            appSettings.set(cacheKey, new Date().getTime());
+
+            if (pluginSecurityInfo.IsMBSupporter) {
+                return '';
+            }
+
+            var infos = [getTheaterInfo, getPremiereInfo];
+
+            appSettings.set(cacheKey, new Date().getTime());
+
+            return infos[getRandomInt(0, 1)]();
+        });
+    }
+
+    function getCard(img, target) {
+
+        return '<div class="card backdropCard"><div class="cardBox"><div class="cardScalable"><div class="cardPadder"></div><a class="cardContent" href="' + target + '" target="_blank"><div class="cardImage lazy" data-src="' + img + '"></div></a></div></div></div>';
+    }
+
+    function getTheaterInfo() {
+
+        var html = '';
+        html += '<div>';
+        html += '<h1>Try Emby Theater<paper-icon-button icon="close" onclick="jQuery(this.parentNode.parentNode).remove();" style="margin-left:1em;"></paper-icon-button></h1>';
+        html += '<p>A beautiful app for your TV and large screen tablet. <a href="https://emby.media/download" target="_blank">Emby Theater</a> runs on Windows, Xbox One, Google Chrome, FireFox, Microsoft Edge and Opera.</p>';
+        html += '<div class="itemsContainer">';
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', 'https://emby.media/download');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', 'https://emby.media/download');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', 'https://emby.media/download');
+        html += '</div>';
+        html += '<br/>';
+        html += '</div>';
+        return html;
+    }
+
+    function getPremiereInfo() {
+
+        var html = '';
+        html += '<div>';
+        html += '<h1>Try Emby Premiere<paper-icon-button icon="close" onclick="jQuery(this.parentNode.parentNode).remove();" style="margin-left:1em;"></paper-icon-button></h1>';
+        html += '<p>Design beautiful Cover Art, enjoy free access to Emby apps, and more. <a href="https://emby.media/premiere" target="_blank">Learn more</a></p>';
+        html += '<div class="itemsContainer">';
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', 'https://emby.media/premiere');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', 'https://emby.media/premiere');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', 'https://emby.media/premiere');
+        html += '</div>';
+        html += '<br/>';
+        html += '</div>';
+        return html;
     }
 
     function loadRecentlyAdded(elem, user) {
@@ -399,12 +470,15 @@
                 html += '</div>';
             }
 
-            elem.innerHTML = html;
-            ImageLoader.lazyChildren(elem);
+            return getAppInfo().then(function (infoHtml) {
 
-            LibraryBrowser.createCardMenus(elem, { showDetailsMenu: false });
+                elem.innerHTML = html + infoHtml;
+                ImageLoader.lazyChildren(elem);
 
-            handleLibraryLinkNavigations(elem);
+                LibraryBrowser.createCardMenus(elem, { showDetailsMenu: false });
+
+                handleLibraryLinkNavigations(elem);
+            });
         });
     }
 
