@@ -39,6 +39,7 @@ namespace MediaBrowser.Dlna.Main
         private readonly IDeviceDiscovery _deviceDiscovery;
 
         private readonly List<string> _registeredServerIds = new List<string>();
+        private bool _ssdpHandlerStarted;
         private bool _dlnaServerStarted;
 
         public DlnaEntryPoint(IServerConfigurationManager config,
@@ -75,7 +76,6 @@ namespace MediaBrowser.Dlna.Main
 
         public void Run()
         {
-            StartSsdpHandler();
             ReloadComponents();
 
             _config.NamedConfigurationUpdated += _config_NamedConfigurationUpdated;
@@ -91,9 +91,23 @@ namespace MediaBrowser.Dlna.Main
 
         private void ReloadComponents()
         {
-            var isServerStarted = _dlnaServerStarted;
-
             var options = _config.GetDlnaConfiguration();
+
+            if (!options.EnableServer && !options.EnablePlayTo)
+            {
+                if (_ssdpHandlerStarted)
+                {
+                    StopSsdpHandler();
+                }
+                return;
+            }
+
+            if (!_ssdpHandlerStarted)
+            {
+                StartSsdpHandler();
+            }
+
+            var isServerStarted = _dlnaServerStarted;
 
             if (options.EnableServer && !isServerStarted)
             {
@@ -123,10 +137,28 @@ namespace MediaBrowser.Dlna.Main
                 _ssdpHandler.Start();
 
                 ((DeviceDiscovery)_deviceDiscovery).Start(_ssdpHandler);
+
+                _ssdpHandlerStarted = true;
             }
             catch (Exception ex)
             {
                 _logger.ErrorException("Error starting ssdp handlers", ex);
+            }
+        }
+
+        private void StopSsdpHandler()
+        {
+            try
+            {
+                ((DeviceDiscovery)_deviceDiscovery).Dispose();
+
+                _ssdpHandler.Dispose();
+
+                _ssdpHandlerStarted = false;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error stopping ssdp handlers", ex);
             }
         }
 
