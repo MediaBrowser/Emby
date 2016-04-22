@@ -132,7 +132,7 @@
         var key = 'servertestermessagetime';
         var lastShown = parseInt(appSettings.get(key) || '0');
 
-        if ((new Date().getTime() - lastShown) < 172800000) {
+        if ((new Date().getTime() - lastShown) < 259200000) {
             return;
         }
 
@@ -145,7 +145,7 @@
 
         apiClient.getPublicSystemInfo().then(function (info) {
 
-            if (compareVersions(info.Version, '3.0.5930') == 1) {
+            if (compareVersions(info.Version, '3.0.5931') == 1) {
                 showInternal();
             }
         });
