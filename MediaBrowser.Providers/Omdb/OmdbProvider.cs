@@ -1,9 +1,13 @@
-﻿using MediaBrowser.Common.Net;
+﻿using CommonIO;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -15,15 +19,19 @@ namespace MediaBrowser.Providers.Omdb
     {
         internal static readonly SemaphoreSlim ResourcePool = new SemaphoreSlim(1, 1);
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IFileSystem _fileSystem;
+        private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
         public static OmdbProvider Current;
 
-        public OmdbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient)
+        public OmdbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager)
         {
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
+            _configurationManager = configurationManager;
 
             Current = this;
         }
@@ -35,7 +43,106 @@ namespace MediaBrowser.Providers.Omdb
                 throw new ArgumentNullException("imdbId");
             }
 
+            var path = await EnsureItemInfo(imdbId, cancellationToken);
+
+            var result = _jsonSerializer.DeserializeFromFile<RootObject>(path);
+
+            // Only take the name and rating if the user's language is set to english, since Omdb has no localization
+            if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
+            {
+                item.Name = result.Title;
+
+                if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
+                {
+                    item.OfficialRating = result.Rated;
+                }
+            }
+
+            int year;
+
+            if (!string.IsNullOrEmpty(result.Year)
+                && int.TryParse(result.Year, NumberStyles.Number, _usCulture, out year)
+                && year >= 0)
+            {
+                item.ProductionYear = year;
+            }
+
+            var hasCriticRating = item as IHasCriticRating;
+            if (hasCriticRating != null)
+            {
+                // Seeing some bogus RT data on omdb for series, so filter it out here
+                // RT doesn't even have tv series
+                int tomatoMeter;
+
+                if (!string.IsNullOrEmpty(result.tomatoMeter)
+                    && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
+                    && tomatoMeter >= 0)
+                {
+                    hasCriticRating.CriticRating = tomatoMeter;
+                }
+
+                if (!string.IsNullOrEmpty(result.tomatoConsensus)
+                    && !string.Equals(result.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
+                }
+            }
+
+            int voteCount;
+
+            if (!string.IsNullOrEmpty(result.imdbVotes)
+                && int.TryParse(result.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
+                && voteCount >= 0)
+            {
+                item.VoteCount = voteCount;
+            }
+
+            float imdbRating;
+
+            if (!string.IsNullOrEmpty(result.imdbRating)
+                && float.TryParse(result.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
+                && imdbRating >= 0)
+            {
+                item.CommunityRating = imdbRating;
+            }
+
+            if (!string.IsNullOrEmpty(result.Website)
+                    && !string.Equals(result.Website, "n/a", StringComparison.OrdinalIgnoreCase))
+            {
+                item.HomePageUrl = result.Website;
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.imdbID)
+                    && !string.Equals(result.imdbID, "n/a", StringComparison.OrdinalIgnoreCase))
+            {
+                item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
+            }
+
+            ParseAdditionalMetadata(item, result);
+        }
+
+        internal async Task<string> EnsureItemInfo(string imdbId, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(imdbId))
+            {
+                throw new ArgumentNullException("imdbId");
+            }
+
             var imdbParam = imdbId.StartsWith("tt", StringComparison.OrdinalIgnoreCase) ? imdbId : "tt" + imdbId;
+
+            var path = GetDataFilePath(imdbParam);
+
+            var fileInfo = _fileSystem.GetFileSystemInfo(path);
+
+            if (fileInfo.Exists)
+            {
+                // If it's recent or automatic updates are enabled, don't re-download
+                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
+                {
+                    return path;
+                }
+            }
 
             var url = string.Format("https://www.omdbapi.com/?i={0}&tomatoes=true", imdbParam);
 
@@ -47,82 +154,26 @@ namespace MediaBrowser.Providers.Omdb
 
             }).ConfigureAwait(false))
             {
-                var result = _jsonSerializer.DeserializeFromStream<RootObject>(stream);
-
-                // Only take the name and rating if the user's language is set to english, since Omdb has no localization
-                if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.Name = result.Title;
-
-                    if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
-                    {
-                        item.OfficialRating = result.Rated;
-                    }
-                }
-
-                int year;
-
-                if (!string.IsNullOrEmpty(result.Year)
-                    && int.TryParse(result.Year, NumberStyles.Number, _usCulture, out year)
-                    && year >= 0)
-                {
-                    item.ProductionYear = year;
-                }
-
-                var hasCriticRating = item as IHasCriticRating;
-                if (hasCriticRating != null)
-                {
-                    // Seeing some bogus RT data on omdb for series, so filter it out here
-                    // RT doesn't even have tv series
-                    int tomatoMeter;
-
-                    if (!string.IsNullOrEmpty(result.tomatoMeter)
-                        && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
-                        && tomatoMeter >= 0)
-                    {
-                        hasCriticRating.CriticRating = tomatoMeter;
-                    }
-
-                    if (!string.IsNullOrEmpty(result.tomatoConsensus)
-                        && !string.Equals(result.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
-                        && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
-                    {
-                        hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
-                    }
-                }
-
-                int voteCount;
-
-                if (!string.IsNullOrEmpty(result.imdbVotes)
-                    && int.TryParse(result.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
-                    && voteCount >= 0)
-                {
-                    item.VoteCount = voteCount;
-                }
-
-                float imdbRating;
-
-                if (!string.IsNullOrEmpty(result.imdbRating)
-                    && float.TryParse(result.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
-                    && imdbRating >= 0)
-                {
-                    item.CommunityRating = imdbRating;
-                }
-
-                if (!string.IsNullOrEmpty(result.Website)
-                        && !string.Equals(result.Website, "n/a", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.HomePageUrl = result.Website;
-                }
-
-                if (!string.IsNullOrWhiteSpace(result.imdbID)
-                        && !string.Equals(result.imdbID, "n/a", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
-                }
-
-                ParseAdditionalMetadata(item, result);
+                var rootObject = _jsonSerializer.DeserializeFromStream<RootObject>(stream);
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
+                _jsonSerializer.SerializeToFile(rootObject, path);
             }
+
+            return path;
+        }
+
+        internal string GetDataFilePath(string imdbId)
+        {
+            if (string.IsNullOrEmpty(imdbId))
+            {
+                throw new ArgumentNullException("imdbId");
+            }
+
+            var dataPath = Path.Combine(_configurationManager.ApplicationPaths.CachePath, "omdb");
+
+            var filename = string.Format("{0}.json", imdbId);
+
+            return Path.Combine(dataPath, filename);
         }
 
         private void ParseAdditionalMetadata(BaseItem item, RootObject result)
