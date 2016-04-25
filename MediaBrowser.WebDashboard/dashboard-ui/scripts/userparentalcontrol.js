@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['jQuery'], function ($) {
 
     function populateRatings(allParentalRatings, page) {
 
@@ -55,23 +55,20 @@
 
         var html = '';
 
-        html += '<fieldset data-role="controlgroup">';
+        html += '<p class="paperListLabel">' + Globalize.translate('HeaderBlockItemsWithNoRating') + '</p>';
 
-        html += '<legend>' + Globalize.translate('HeaderBlockItemsWithNoRating') + '</legend>';
+        html += '<div class="paperCheckboxList">';
 
         for (var i = 0, length = items.length; i < length; i++) {
 
             var item = items[i];
 
-            var id = 'unratedItem' + i;
-
             var checkedAttribute = user.Policy.BlockUnratedItems.indexOf(item.value) != -1 ? ' checked="checked"' : '';
 
-            html += '<input class="chkUnratedItem" data-itemtype="' + item.value + '" type="checkbox" id="' + id + '"' + checkedAttribute + ' />';
-            html += '<label for="' + id + '">' + item.name + '</label>';
+            html += '<paper-checkbox class="chkUnratedItem" data-itemtype="' + item.value + '" type="checkbox"' + checkedAttribute + '>' + item.name + '</paper-checkbox>';
         }
 
-        html += '</fieldset>';
+        html += '</div>';
 
         $('.blockUnratedItems', page).html(html).trigger('create');
     }
@@ -124,7 +121,7 @@
 
             li += '</a>';
 
-            li += '<a class="blockedTag btnDeleteTag" href="#" data-tag="' + h + '"></a>';
+            li += '<a class="blockedTag btnDeleteTag" href="#" data-tag="' + h + '" data-icon="delete"></a>';
 
             li += '</li>';
 
@@ -194,24 +191,30 @@
 
         Dashboard.hideLoadingMsg();
 
-        Dashboard.alert(Globalize.translate('SettingsSaved'));
+        require(['toast'], function (toast) {
+            toast(Globalize.translate('SettingsSaved'));
+        });
     }
 
     function saveUser(user, page) {
 
         user.Policy.MaxParentalRating = $('#selectMaxParentalRating', page).val() || null;
 
-        user.Policy.BlockUnratedItems = $('.chkUnratedItem:checked', page).map(function () {
+        user.Policy.BlockUnratedItems = $('.chkUnratedItem', page).get().filter(function(i) {
 
-            return this.getAttribute('data-itemtype');
+            return i.checked;
 
-        }).get();
+        }).map(function (i) {
+
+            return i.getAttribute('data-itemtype');
+
+        });
 
         user.Policy.AccessSchedules = getSchedulesFromPage(page);
 
         user.Policy.BlockedTags = getBlockedTagsFromPage(page);
 
-        ApiClient.updateUserPolicy(user.Id, user.Policy).done(function () {
+        ApiClient.updateUserPolicy(user.Id, user.Policy).then(function () {
             onSaveComplete(page);
         });
     }
@@ -226,7 +229,7 @@
 
             var userId = getParameterByName("userId");
 
-            ApiClient.getUser(userId).done(function (result) {
+            ApiClient.getUser(userId).then(function (result) {
                 saveUser(result, page);
             });
 
@@ -343,18 +346,14 @@
         require(['prompt'], function (prompt) {
 
             prompt({
-                text: Globalize.translate('LabelTag'),
-                title: Globalize.translate('HeaderAddTag'),
-                callback: function(value) {
-                    
-                    if (value) {
-                        var tags = getBlockedTagsFromPage(page);
+                label: Globalize.translate('LabelTag')
 
-                        if (tags.indexOf(value) == -1) {
-                            tags.push(value);
-                            loadBlockedTags(page, tags);
-                        }
-                    }
+            }).then(function (value) {
+                var tags = getBlockedTagsFromPage(page);
+
+                if (tags.indexOf(value) == -1) {
+                    tags.push(value);
+                    loadBlockedTags(page, tags);
                 }
             });
 
@@ -388,30 +387,14 @@
         Dashboard.showLoadingMsg();
 
         var userId = getParameterByName("userId");
-
-        var promise1;
-
-        if (!userId) {
-
-            var deferred = $.Deferred();
-
-            deferred.resolveWith(null, [{
-                Configuration: {}
-            }]);
-
-            promise1 = deferred.promise();
-        } else {
-
-            promise1 = ApiClient.getUser(userId);
-        }
-
+        var promise1 = ApiClient.getUser(userId);
         var promise2 = ApiClient.getParentalRatings();
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            loadUser(page, response1[0] || response1, response2[0]);
+            loadUser(page, responses[0], responses[1]);
 
         });
     });
 
-})(jQuery, window, document);
+});

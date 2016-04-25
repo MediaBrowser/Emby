@@ -58,7 +58,7 @@ namespace MediaBrowser.Dlna.Profiles
                     Container = "avi",
                     Type = DlnaProfileType.Video,
                     VideoCodec = "mpeg1video,mpeg2video,mpeg4,h264,vc1",
-                    AudioCodec = "ac3,dca,mp2,mp3,pcm"
+                    AudioCodec = "ac3,dca,mp2,mp3,pcm,dca"
                 },
 
                 new DirectPlayProfile
@@ -66,7 +66,7 @@ namespace MediaBrowser.Dlna.Profiles
                     Container = "mpeg",
                     Type = DlnaProfileType.Video,
                     VideoCodec = "mpeg1video,mpeg2video",
-                    AudioCodec = "ac3,dca,mp2,mp3,pcm"
+                    AudioCodec = "ac3,dca,mp2,mp3,pcm,dca"
                 },
 
                 new DirectPlayProfile
@@ -74,15 +74,15 @@ namespace MediaBrowser.Dlna.Profiles
                     Container = "mkv",
                     Type = DlnaProfileType.Video,
                     VideoCodec = "mpeg1video,mpeg2video,mpeg4,h264,vc1",
-                    AudioCodec = "ac3,dca,aac,mp2,mp3,pcm"
+                    AudioCodec = "ac3,dca,aac,mp2,mp3,pcm,dca"
                 },
 
                 new DirectPlayProfile
                 {
-                    Container = "ts",
+                    Container = "ts,m2ts",
                     Type = DlnaProfileType.Video,
                     VideoCodec = "mpeg1video,mpeg2video,h264,vc1",
-                    AudioCodec = "ac3,dca,mp2,mp3,aac"
+                    AudioCodec = "ac3,dca,mp2,mp3,aac,dca"
                 },
 
                 new DirectPlayProfile
@@ -90,7 +90,7 @@ namespace MediaBrowser.Dlna.Profiles
                     Container = "mp4,mov",
                     Type = DlnaProfileType.Video,
                     VideoCodec = "h264,mpeg4",
-                    AudioCodec = "ac3,aac,mp2,mp3"
+                    AudioCodec = "ac3,aac,mp2,mp3,dca"
                 },
 
                 new DirectPlayProfile
@@ -230,6 +230,35 @@ namespace MediaBrowser.Dlna.Profiles
                             Value = "2"
                         }
                     }
+                }
+            };
+
+            SubtitleProfiles = new[]
+            {
+                new SubtitleProfile
+                {
+                    Format = "srt",
+                    Method = SubtitleDeliveryMethod.External
+                },
+                new SubtitleProfile
+                {
+                    Format = "srt",
+                    Method = SubtitleDeliveryMethod.Embed
+                },
+                new SubtitleProfile
+                {
+                    Format = "sub",
+                    Method = SubtitleDeliveryMethod.Embed
+                },
+                new SubtitleProfile
+                {
+                    Format = "subrip",
+                    Method = SubtitleDeliveryMethod.Embed
+                },
+                new SubtitleProfile
+                {
+                    Format = "idx",
+                    Method = SubtitleDeliveryMethod.Embed
                 }
             };
         }

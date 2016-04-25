@@ -61,16 +61,7 @@ namespace MediaBrowser.Controller.Providers
             };
 
             //Fetch(item, metadataFile, settings, Encoding.GetEncoding("ISO-8859-1"), cancellationToken);
-
-            try
-            {
-                Fetch(item, metadataFile, settings, Encoding.UTF8, cancellationToken);
-            }
-            catch
-            {
-                Logger.Error("Error parsing xml file {0}", metadataFile);
-                throw;
-            }
+            Fetch(item, metadataFile, settings, Encoding.UTF8, cancellationToken);
         }
 
         /// <summary>
@@ -888,6 +879,10 @@ namespace MediaBrowser.Controller.Providers
                             else if (string.Equals("FSBS", val, StringComparison.OrdinalIgnoreCase))
                             {
                                 video.Video3DFormat = Video3DFormat.FullSideBySide;
+                            }
+                            else if (string.Equals("MVC", val, StringComparison.OrdinalIgnoreCase))
+                            {
+                                video.Video3DFormat = Video3DFormat.MVC;
                             }
                         }
                         break;

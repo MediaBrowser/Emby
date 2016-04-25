@@ -1,6 +1,6 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'Poster');
+    var view = 'Poster';
 
     var data = {};
     function getQuery(tab) {
@@ -38,7 +38,7 @@
 
         var query = getQuery(tabIndex);
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), query).then(function (result) {
 
             // Scroll back up so they can see the results from the beginning
             window.scrollTo(0, 0);
@@ -117,33 +117,13 @@
         localQuery.Recursive = true;
         localQuery.Filters = "IsNotFolder";
 
-        ApiClient.getItems(userId, localQuery).done(function (result) {
+        ApiClient.getItems(userId, localQuery).then(function (result) {
 
             showSlideshow(page, result.Items, startItemId);
         });
     }
 
     function showSlideshow(page, items, startItemId) {
-
-        var screenWidth = $(window).width();
-        var screenHeight = $(window).height();
-
-        var slideshowItems = items.map(function (item) {
-
-            var imgUrl = ApiClient.getScaledImageUrl(item.Id, {
-
-                tag: item.ImageTags.Primary,
-                type: 'Primary',
-                maxWidth: screenWidth,
-                maxHeight: screenHeight
-
-            });
-
-            return {
-                title: item.Name,
-                href: imgUrl
-            };
-        });
 
         var index = items.map(function (i) {
             return i.Id;
@@ -154,12 +134,18 @@
             index = 0;
         }
 
-        Dashboard.loadSwipebox().done(function () {
+        require(['slideshow'], function (slideshow) {
 
-            $.swipebox(slideshowItems, {
-                initialIndexOnArray: index,
-                hideBarsDelay: 30000
+            var newSlideShow = new slideshow({
+                showTitle: false,
+                cover: false,
+                items: items,
+                startIndex: index,
+                interval: 7000,
+                interactive: true
             });
+
+            newSlideShow.show();
         });
     }
 
@@ -169,8 +155,7 @@
         var info = LibraryBrowser.getListItemInfo(this);
 
         if (info.mediaType == 'Photo') {
-            var tab = page.querySelector('neon-animated-pages').selected;
-            var query = getQuery(tab);
+            var query = getQuery(LibraryBrowser.selectedTab(page.querySelector('.pageTabsContainer')));
 
             Photos.startSlideshow(page, query, info.id);
             return false;
@@ -201,7 +186,7 @@
         }
     }
 
-    $(document).on('pageinit', "#photosPage", function () {
+    pageIdOn('pageinit', "photosPage", function () {
 
         var page = this;
 
@@ -213,10 +198,10 @@
             baseUrl += '?topParentId=' + topParentId;
         }
 
-        LibraryBrowser.configurePaperLibraryTabs(page, tabs, page.querySelector('neon-animated-pages'), baseUrl);
+        LibraryBrowser.configurePaperLibraryTabs(page, tabs, page.querySelector('.pageTabsContainer'), baseUrl);
 
-        $(page.querySelector('neon-animated-pages')).on('tabchange', function () {
-            loadTab(page, parseInt(this.selected));
+        page.querySelector('.pageTabsContainer').addEventListener('tabchange', function (e) {
+            loadTab(page, parseInt(e.detail.selectedTabIndex));
         });
 
         $(page).on('click', '.mediaItem', onListItemClick);
@@ -227,4 +212,4 @@
         startSlideshow: startSlideshow
     };
 
-})(jQuery, document);
+});

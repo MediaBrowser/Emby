@@ -1,10 +1,8 @@
-﻿(function ($, document) {
+﻿define(['libraryBrowser', 'jQuery', 'appSettings', 'scrollStyles'], function (LibraryBrowser, $, appSettings) {
 
     function getUserViews(userId) {
 
-        var deferred = $.Deferred();
-
-        ApiClient.getUserViews({}, userId).done(function (result) {
+        return ApiClient.getUserViews({}, userId).then(function (result) {
 
             var items = result.Items;
 
@@ -14,20 +12,20 @@
 
                 var view = items[i];
 
+                if (AppInfo.isNativeApp && browserInfo.safari && view.CollectionType == 'livetv') {
+                    continue;
+                }
+
                 list.push(view);
 
                 if (view.CollectionType == 'livetv') {
-
-                    view.ImageTags = {};
-                    view.icon = 'live-tv';
-                    view.onclick = "LibraryBrowser.showTab('livetv.html', 0);return false;";
 
                     var guideView = $.extend({}, view);
                     guideView.Name = Globalize.translate('ButtonGuide');
                     guideView.ImageTags = {};
                     guideView.icon = 'dvr';
                     guideView.url = 'livetv.html?tab=1';
-                    guideView.onclick = "LibraryBrowser.showTab('livetv.html', 1);return false;";
+                    guideView.onclick = "LibraryBrowser.showTab('livetv.html', 1);event.preventDefault();event.stopPropagation();return false;";
                     list.push(guideView);
 
                     var recordedTvView = $.extend({}, view);
@@ -35,20 +33,18 @@
                     recordedTvView.ImageTags = {};
                     recordedTvView.icon = 'video-library';
                     recordedTvView.url = 'livetv.html?tab=3';
-                    recordedTvView.onclick = "LibraryBrowser.showTab('livetv.html', 3);return false;";
+                    recordedTvView.onclick = "LibraryBrowser.showTab('livetv.html', 3);event.preventDefault();event.stopPropagation();return false;";
                     list.push(recordedTvView);
                 }
             }
 
-            deferred.resolveWith(null, [list]);
+            return list;
         });
-
-        return deferred.promise();
     }
 
     function enableScrollX() {
 
-        return $.browser.mobile && AppInfo.enableAppLayouts;
+        return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
     function getThumbShape() {
@@ -141,7 +137,7 @@
             html += '<a' + onclick + ' data-itemid="' + item.Id + '" class="' + cssClass + '" href="' + href + '">';
             html += '<div class="cardBox" style="background-color:' + backgroundColor + ';margin:4px;border-radius:4px;">';
 
-            html += "<div class='cardText' style='padding:8px 10px;color:#fff;font-size:14px;'>";
+            html += "<div class='cardText' style='padding:8px 10px;color:#fff;'>";
             html += '<iron-icon icon="' + icon + '"></iron-icon>';
             html += '<span style="margin-left:.7em;">' + item.Name + '</span>';
             html += "</div>";
@@ -156,7 +152,7 @@
 
     function loadlibraryButtons(elem, userId, index) {
 
-        return getUserViews(userId).done(function (items) {
+        return getUserViews(userId).then(function (items) {
 
             var html = '<br/>';
 
@@ -167,10 +163,85 @@
             html += getLibraryButtonsHtml(items);
             html += '</div>';
 
-            elem.innerHTML = html;
+            return getAppInfo().then(function (infoHtml) {
 
-            handleLibraryLinkNavigations(elem);
+                elem.innerHTML = html + infoHtml;
+
+                handleLibraryLinkNavigations(elem);
+            });
         });
+    }
+
+    /**
+     * Returns a random integer between min (inclusive) and max (inclusive)
+     * Using Math.round() will give you a non-uniform distribution!
+     */
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getAppInfo() {
+
+        if (AppInfo.nativeApp) {
+            return Promise.resolve('');
+        }
+
+        var cacheKey = 'lastappinfopresent5';
+        if ((new Date().getTime() - parseInt(appSettings.get(cacheKey) || '0')) < 86400000) {
+            return Promise.resolve('');
+        }
+
+        return Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
+
+            appSettings.set(cacheKey, new Date().getTime());
+
+            if (pluginSecurityInfo.IsMBSupporter) {
+                return '';
+            }
+
+            var infos = [getTheaterInfo, getPremiereInfo];
+
+            appSettings.set(cacheKey, new Date().getTime());
+
+            return infos[getRandomInt(0, 1)]();
+        });
+    }
+
+    function getCard(img, target) {
+
+        return '<div class="card backdropCard"><div class="cardBox"><div class="cardScalable"><div class="cardPadder"></div><a class="cardContent" href="' + target + '" target="_blank"><div class="cardImage lazy" data-src="' + img + '"></div></a></div></div></div>';
+    }
+
+    function getTheaterInfo() {
+
+        var html = '';
+        html += '<div>';
+        html += '<h1>Try Emby Theater<paper-icon-button icon="close" onclick="jQuery(this.parentNode.parentNode).remove();" style="margin-left:1em;"></paper-icon-button></h1>';
+        html += '<p>A beautiful app for your TV and large screen tablet. <a href="https://emby.media/download" target="_blank">Emby Theater</a> runs on Windows, Xbox One, Google Chrome, FireFox, Microsoft Edge and Opera.</p>';
+        html += '<div class="itemsContainer">';
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', 'https://emby.media/download');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', 'https://emby.media/download');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', 'https://emby.media/download');
+        html += '</div>';
+        html += '<br/>';
+        html += '</div>';
+        return html;
+    }
+
+    function getPremiereInfo() {
+
+        var html = '';
+        html += '<div>';
+        html += '<h1>Try Emby Premiere<paper-icon-button icon="close" onclick="jQuery(this.parentNode.parentNode).remove();" style="margin-left:1em;"></paper-icon-button></h1>';
+        html += '<p>Design beautiful Cover Art, enjoy free access to Emby apps, and more. <a href="https://emby.media/premiere" target="_blank">Learn more</a></p>';
+        html += '<div class="itemsContainer">';
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', 'https://emby.media/premiere');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', 'https://emby.media/premiere');
+        html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', 'https://emby.media/premiere');
+        html += '</div>';
+        html += '<br/>';
+        html += '</div>';
+        return html;
     }
 
     function loadRecentlyAdded(elem, user) {
@@ -187,7 +258,7 @@
             EnableImageTypes: "Primary,Backdrop,Thumb"
         };
 
-        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).done(function (items) {
+        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).then(function (items) {
 
             var html = '';
 
@@ -220,7 +291,7 @@
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
 
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -235,7 +306,7 @@
             IncludeItemTypes: "Movie"
         };
 
-        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).done(function (items) {
+        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).then(function (items) {
 
             var html = '';
 
@@ -255,7 +326,8 @@
                     showChildCountIndicator: true,
                     lazy: true,
                     context: 'home',
-                    centerText: true
+                    centerText: true,
+                    overlayPlayButton: true
                 });
                 html += '</div>';
             }
@@ -263,7 +335,7 @@
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
 
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -278,7 +350,7 @@
             IncludeItemTypes: "Episode"
         };
 
-        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).done(function (items) {
+        return ApiClient.getJSON(ApiClient.getUrl('Users/' + user.Id + '/Items/Latest', options)).then(function (items) {
 
             var html = '';
 
@@ -299,7 +371,8 @@
                     showUnplayedIndicator: false,
                     showChildCountIndicator: true,
                     lazy: true,
-                    context: 'home'
+                    context: 'home',
+                    overlayPlayButton: true
                 });
                 html += '</div>';
             }
@@ -307,7 +380,7 @@
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
 
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -323,7 +396,7 @@
             UserId: userId
         };
 
-        return ApiClient.getJSON(ApiClient.getUrl("Channels/Items/Latest", options)).done(function (result) {
+        return ApiClient.getJSON(ApiClient.getUrl("Channels/Items/Latest", options)).then(function (result) {
 
             var html = '';
 
@@ -332,12 +405,12 @@
                 html += '<div class="itemsContainer">';
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
-                    preferThumb: true,
                     shape: 'auto',
                     showTitle: true,
                     centerText: true,
                     lazy: true,
-                    showDetailsMenu: true
+                    showDetailsMenu: true,
+                    overlayPlayButton: true
                 });
                 html += '</div>';
             }
@@ -345,13 +418,13 @@
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
 
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
     function loadLibraryTiles(elem, user, shape, index, autoHideOnMobile, showTitles) {
 
-        return getUserViews(user.Id).done(function (items) {
+        return getUserViews(user.Id).then(function (items) {
 
             var html = '';
 
@@ -370,7 +443,7 @@
 
                 html += '</div>';
 
-                var scrollX = enableScrollX() && $.browser.safari && screenWidth > 800;
+                var scrollX = enableScrollX() && browserInfo.safari && screenWidth > 800;
 
                 if (scrollX) {
                     html += '<div class="hiddenScrollX itemsContainer homeTopViews">';
@@ -397,12 +470,15 @@
                 html += '</div>';
             }
 
-            elem.innerHTML = html;
-            ImageLoader.lazyChildren(elem);
+            return getAppInfo().then(function (infoHtml) {
 
-            $(elem).createCardMenus({ showDetailsMenu: false });
+                elem.innerHTML = html + infoHtml;
+                ImageLoader.lazyChildren(elem);
 
-            handleLibraryLinkNavigations(elem);
+                LibraryBrowser.createCardMenus(elem, { showDetailsMenu: false });
+
+                handleLibraryLinkNavigations(elem);
+            });
         });
     }
 
@@ -416,7 +492,7 @@
             SortOrder: "Descending",
             MediaTypes: "Video",
             Filters: "IsResumable",
-            Limit: screenWidth >= 1920 ? 10 : (screenWidth >= 1600 ? 8 : (screenWidth >= 1200 ? 9 : 6)),
+            Limit: screenWidth >= 1920 ? 8 : (screenWidth >= 1600 ? 8 : (screenWidth >= 1200 ? 9 : 6)),
             Recursive: true,
             Fields: "PrimaryImageAspectRatio,SyncInfo",
             CollapseBoxSetItems: false,
@@ -425,7 +501,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        return ApiClient.getItems(userId, options).done(function (result) {
+        return ApiClient.getItems(userId, options).then(function (result) {
 
             var html = '';
 
@@ -455,7 +531,7 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -470,7 +546,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getNextUpEpisodes(query).done(function (result) {
+        ApiClient.getNextUpEpisodes(query).then(function (result) {
 
             var html = '';
 
@@ -499,7 +575,7 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -528,7 +604,7 @@
             SupportsLatestItems: true
         });
 
-        return ApiClient.getJSON(ApiClient.getUrl("Channels", options)).done(function (result) {
+        return ApiClient.getJSON(ApiClient.getUrl("Channels", options)).then(function (result) {
 
             var channels = result.Items;
 
@@ -563,7 +639,7 @@
             ChannelIds: channel.Id
         };
 
-        ApiClient.getJSON(ApiClient.getUrl("Channels/Items/Latest", options)).done(function (result) {
+        ApiClient.getJSON(ApiClient.getUrl("Channels/Items/Latest", options)).then(function (result) {
 
             var html = '';
 
@@ -596,7 +672,7 @@
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
 
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -608,7 +684,7 @@
             limit: 5,
             IsInProgress: false
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             var html = '';
 
@@ -618,7 +694,7 @@
 
                 html += '<div>';
                 html += '<h1 style="display:inline-block; vertical-align:middle;" class="' + cssClass + '">' + Globalize.translate('HeaderLatestTvRecordings') + '</h1>';
-                html += '<a href="livetv.html?tab=3" onclick="LibraryManager.showTab(\'livetv.html\',3);" class="clearLink" style="margin-left:2em;"><paper-button raised class="more mini"><span>' + Globalize.translate('ButtonMore') + '</span></paper-button></a>';
+                html += '<a href="livetv.html?tab=3" onclick="LibraryBrowser.showTab(\'livetv.html\',3);" class="clearLink" style="margin-left:2em;"><paper-button raised class="more mini"><span>' + Globalize.translate('ButtonMore') + '</span></paper-button></a>';
                 html += '</div>';
             }
 
@@ -635,13 +711,14 @@
                 coverImage: true,
                 lazy: true,
                 showDetailsMenu: true,
-                centerText: true
+                centerText: true,
+                overlayPlayButton: true
             });
             html += '</div>';
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-            $(elem).createCardMenus();
+            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -658,4 +735,5 @@
         loadLatestEpisodes: loadLatestEpisodes
     };
 
-})(jQuery, document);
+    return window.Sections;
+});

@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Api.Playback;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
@@ -63,6 +62,15 @@ namespace MediaBrowser.Api
             _mediaSourceManager = mediaSourceManager;
 
             Instance = this;
+            _sessionManager.PlaybackProgress += _sessionManager_PlaybackProgress;
+        }
+
+        void _sessionManager_PlaybackProgress(object sender, PlaybackProgressEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(e.PlaySessionId))
+            {
+                PingTranscodingJob(e.PlaySessionId, e.IsPaused);
+            }
         }
 
         /// <summary>
@@ -294,32 +302,37 @@ namespace MediaBrowser.Api
         public void OnTranscodeEndRequest(TranscodingJob job)
         {
             job.ActiveRequestCount--;
-            Logger.Debug("OnTranscodeEndRequest job.ActiveRequestCount={0}", job.ActiveRequestCount);
+            //Logger.Debug("OnTranscodeEndRequest job.ActiveRequestCount={0}", job.ActiveRequestCount);
             if (job.ActiveRequestCount <= 0)
             {
                 PingTimer(job, false);
             }
         }
-        internal void PingTranscodingJob(string playSessionId)
+        internal void PingTranscodingJob(string playSessionId, bool? isUserPaused)
         {
             if (string.IsNullOrEmpty(playSessionId))
             {
                 throw new ArgumentNullException("playSessionId");
             }
 
-            Logger.Debug("PingTranscodingJob PlaySessionId={0}", playSessionId);
+            //Logger.Debug("PingTranscodingJob PlaySessionId={0} isUsedPaused: {1}", playSessionId, isUserPaused);
 
-            var jobs = new List<TranscodingJob>();
+            List<TranscodingJob> jobs;
 
             lock (_activeTranscodingJobs)
             {
                 // This is really only needed for HLS. 
                 // Progressive streams can stop on their own reliably
-                jobs = jobs.Where(j => string.Equals(playSessionId, j.PlaySessionId, StringComparison.OrdinalIgnoreCase)).ToList();
+                jobs = _activeTranscodingJobs.Where(j => string.Equals(playSessionId, j.PlaySessionId, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             foreach (var job in jobs)
             {
+                if (isUserPaused.HasValue)
+                {
+                    //Logger.Debug("Setting job.IsUserPaused to {0}. jobId: {1}", isUserPaused, job.Id);
+                    job.IsUserPaused = isUserPaused.Value;
+                }
                 PingTimer(job, true);
             }
         }
@@ -336,7 +349,7 @@ namespace MediaBrowser.Api
 
             if (job.Type != TranscodingJobType.Progressive)
             {
-                timerDuration = 1800000;
+                timerDuration = 60000;
             }
 
             job.PingTimeout = timerDuration;
@@ -540,13 +553,13 @@ namespace MediaBrowser.Api
             }
             catch (IOException ex)
             {
-                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
+                //Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
 
                 DeletePartialStreamFiles(path, jobType, retryCount + 1, 500);
             }
             catch (Exception ex)
             {
-                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
+                //Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
             }
         }
 
@@ -578,7 +591,7 @@ namespace MediaBrowser.Api
             {
                 try
                 {
-                    Logger.Debug("Deleting HLS file {0}", file);
+                    //Logger.Debug("Deleting HLS file {0}", file);
                     _fileSystem.DeleteFile(file);
                 }
                 catch (DirectoryNotFoundException)
@@ -592,7 +605,7 @@ namespace MediaBrowser.Api
                 catch (IOException ex)
                 {
                     e = ex;
-                    Logger.ErrorException("Error deleting HLS file {0}", ex, file);
+                    //Logger.ErrorException("Error deleting HLS file {0}", ex, file);
                 }
             }
 
@@ -655,6 +668,7 @@ namespace MediaBrowser.Api
         public object ProcessLock = new object();
 
         public bool HasExited { get; set; }
+        public bool IsUserPaused { get; set; }
 
         public string Id { get; set; }
 
@@ -709,7 +723,10 @@ namespace MediaBrowser.Api
 
         public void StartKillTimer(TimerCallback callback, int intervalMs)
         {
-            CheckHasExited();
+            if (HasExited)
+            {
+                return;
+            }
 
             lock (_timerLock)
             {
@@ -728,7 +745,10 @@ namespace MediaBrowser.Api
 
         public void ChangeKillTimerIfStarted()
         {
-            CheckHasExited();
+            if (HasExited)
+            {
+                return;
+            }
 
             lock (_timerLock)
             {
@@ -739,14 +759,6 @@ namespace MediaBrowser.Api
                     Logger.Debug("Changing kill timer to {0}ms. JobId {1} PlaySessionId {2}", intervalMs, Id, PlaySessionId);
                     KillTimer.Change(intervalMs, Timeout.Infinite);
                 }
-            }
-        }
-
-        private void CheckHasExited()
-        {
-            if (HasExited)
-            {
-                throw new ObjectDisposedException("Job");
             }
         }
     }

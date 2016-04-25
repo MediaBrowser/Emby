@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Playlists;
@@ -264,6 +263,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
         public Folder GetPlaylistsFolder(string userId)
         {
             return _libraryManager.RootFolder.Children.OfType<PlaylistsFolder>()
+                .FirstOrDefault() ?? _libraryManager.GetUserRootFolder().Children.OfType<PlaylistsFolder>()
                 .FirstOrDefault();
         }
     }

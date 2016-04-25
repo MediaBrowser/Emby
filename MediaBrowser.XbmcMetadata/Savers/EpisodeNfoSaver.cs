@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
@@ -62,7 +61,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             {
                 var formatString = ConfigurationManager.GetNfoConfiguration().ReleaseDateFormat;
 
-                writer.WriteElementString("aired", episode.PremiereDate.Value.ToString(formatString));
+                writer.WriteElementString("aired", episode.PremiereDate.Value.ToLocalTime().ToString(formatString));
             }
 
             if (episode.AirsAfterSeasonNumber.HasValue)

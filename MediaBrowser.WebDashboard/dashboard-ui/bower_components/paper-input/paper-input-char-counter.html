@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-styles/typography.html">
 <link rel="import" href="paper-input-addon-behavior.html">
 
 <!--
@@ -29,9 +29,9 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--paper-input-char-counter` | Mixin applied to the element | `{}`
 -->
+
 <dom-module id="paper-input-char-counter">
   <template>
-
     <style>
       :host {
         display: inline-block;
@@ -40,10 +40,13 @@ Custom property | Description | Default
         @apply(--paper-font-caption);
         @apply(--paper-input-char-counter);
       }
+
+      :host-context([dir="rtl"]) {
+        float: left;
+      }
     </style>
 
     <span>[[_charCounterStr]]</span>
-
   </template>
 </dom-module>
 
@@ -62,6 +65,17 @@ Custom property | Description | Default
       }
     },
 
+    /**
+     * This overrides the update function in PaperInputAddonBehavior.
+     * @param {{
+     *   inputElement: (Element|undefined),
+     *   value: (string|undefined),
+     *   invalid: boolean
+     * }} state -
+     *     inputElement: The input element.
+     *     value: The input value.
+     *     invalid: True if the input value is invalid.
+     */
     update: function(state) {
       if (!state.inputElement) {
         return;
@@ -69,13 +83,13 @@ Custom property | Description | Default
 
       state.value = state.value || '';
 
-      // Account for the textarea's new lines.
-      var str = state.value.replace(/(\r\n|\n|\r)/g, '--').length;
+      var counter = state.value.length.toString();
 
       if (state.inputElement.hasAttribute('maxlength')) {
-        str += '/' + state.inputElement.getAttribute('maxlength');
+        counter += '/' + state.inputElement.getAttribute('maxlength');
       }
-      this._charCounterStr = str;
+
+      this._charCounterStr = counter;
     }
   });
 </script>

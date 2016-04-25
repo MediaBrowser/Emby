@@ -2,6 +2,8 @@
 using MediaBrowser.Model.Logging;
 using System.Collections.Generic;
 using System.Reflection;
+using MediaBrowser.Controller.Power;
+using MediaBrowser.Server.Startup.Common.FFMpeg;
 
 namespace MediaBrowser.Server.Startup.Common
 {
@@ -20,7 +22,7 @@ namespace MediaBrowser.Server.Startup.Common
         /// <param name="httpServerPort">The HTTP server port.</param>
         /// <param name="httpsServerPort">The HTTPS server port.</param>
         /// <param name="tempDirectory">The temporary directory.</param>
-        void AuthorizeServer(int udpPort, int httpServerPort, int httpsServerPort, string tempDirectory);
+        void AuthorizeServer(int udpPort, int httpServerPort, int httpsServerPort, string applicationPath, string tempDirectory);
 
         /// <summary>
         /// Gets the environment.
@@ -90,5 +92,13 @@ namespace MediaBrowser.Server.Startup.Common
         /// Prevents the system stand by.
         /// </summary>
         void PreventSystemStandby();
+
+        /// <summary>
+        /// Gets the power management.
+        /// </summary>
+        /// <returns>IPowerManagement.</returns>
+        IPowerManagement GetPowerManagement();
+
+        FFMpegInstallInfo GetFfmpegInstallInfo();
     }
 }

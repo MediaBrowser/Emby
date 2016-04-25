@@ -1,53 +1,47 @@
-﻿(function ($, window, document) {
+﻿define(['jQuery'], function ($) {
 
     function loadMediaFolders(page, mediaFolders) {
 
         var html = '';
 
-        html += '<fieldset data-role="controlgroup">';
+        html += '<div class="paperListLabel">' + Globalize.translate('HeaderLibraries') + '</div>';
 
-        html += '<legend>' + Globalize.translate('HeaderLibraries') + '</legend>';
+        html += '<div class="paperCheckboxList paperList" style="padding:.5em 1em;">';
 
         for (var i = 0, length = mediaFolders.length; i < length; i++) {
 
             var folder = mediaFolders[i];
 
-            var id = 'mediaFolder' + i;
-
             var checkedAttribute = ' checked="checked"';
 
-            html += '<input class="chkFolder" data-id="' + folder.Id + '" type="checkbox" id="' + id + '"' + checkedAttribute + ' />';
-            html += '<label for="' + id + '">' + folder.Name + '</label>';
+            html += '<paper-checkbox class="chkFolder" data-id="' + folder.Id + '"' + checkedAttribute + '>' + folder.Name + '</paper-checkbox>';
         }
 
-        html += '</fieldset>';
+        html += '</div>';
 
         $('.folderAccess', page).html(html).trigger('create');
 
-        $('#chkEnableAllFolders', page).checked(true).checkboxradio('refresh').trigger('change');
+        $('#chkEnableAllFolders', page).checked(true).trigger('change');
     }
 
     function loadChannels(page, channels) {
 
         var html = '';
 
-        html += '<fieldset data-role="controlgroup">';
+        html += '<div class="paperListLabel">' + Globalize.translate('HeaderChannels') + '</div>';
 
-        html += '<legend>' + Globalize.translate('HeaderChannels') + '</legend>';
+        html += '<div class="paperCheckboxList paperList" style="padding:.5em 1em;">';
 
         for (var i = 0, length = channels.length; i < length; i++) {
 
             var folder = channels[i];
 
-            var id = 'channels' + i;
-
             var checkedAttribute = ' checked="checked"';
 
-            html += '<input class="chkChannel" data-id="' + folder.Id + '" type="checkbox" id="' + id + '"' + checkedAttribute + ' />';
-            html += '<label for="' + id + '">' + folder.Name + '</label>';
+            html += '<paper-checkbox class="chkChannel" data-id="' + folder.Id + '"' + checkedAttribute + '>' + folder.Name + '</paper-checkbox>';
         }
 
-        html += '</fieldset>';
+        html += '</div>';
 
         $('.channelAccess', page).show().html(html).trigger('create');
 
@@ -57,7 +51,7 @@
             $('.channelAccessContainer', page).hide();
         }
 
-        $('#chkEnableAllChannels', page).checked(true).checkboxradio('refresh').trigger('change');
+        $('#chkEnableAllChannels', page).checked(true).trigger('change');
     }
 
     function loadUser(page) {
@@ -70,10 +64,10 @@
 
         var promise5 = ApiClient.getJSON(ApiClient.getUrl("Channels"));
 
-        $.when(promise4, promise5).done(function (response4, response5) {
+        Promise.all([promise4, promise5]).then(function (responses) {
 
-            loadMediaFolders(page, response4[0].Items);
-            loadChannels(page, response5[0].Items);
+            loadMediaFolders(page, responses[0].Items);
+            loadChannels(page, responses[1].Items);
 
             Dashboard.hideLoadingMsg();
         });
@@ -83,39 +77,50 @@
 
         var name = $('#txtUserName', page).val();
 
-        ApiClient.createUser(name).done(function (user) {
+        ApiClient.createUser(name).then(function (user) {
 
             user.Policy.EnableAllFolders = $('#chkEnableAllFolders', page).checked();
             user.Policy.EnabledFolders = user.Policy.EnableAllFolders ?
                 [] :
-                $('.chkFolder:checked', page).map(function () {
-
-                    return this.getAttribute('data-id');
-
-                }).get();
+                $('.chkFolder', page).get().filter(function (i) {
+                    return i.checked;
+                }).map(function (i) {
+                    return i.getAttribute('data-id');
+                });
 
             user.Policy.EnableAllChannels = $('#chkEnableAllChannels', page).checked();
             user.Policy.EnabledChannels = user.Policy.EnableAllChannels ?
                 [] :
-                $('.chkChannel:checked', page).map(function () {
+                $('.chkChannel', page).get().filter(function (i) {
+                    return i.checked;
+                }).map(function (i) {
+                    return i.getAttribute('data-id');
+                });
 
-                    return this.getAttribute('data-id');
-
-                }).get();
-
-            ApiClient.updateUserPolicy(user.Id, user.Policy).done(function () {
-                Dashboard.navigate("useredit.html?userId=" + user.Id);
+            ApiClient.updateUserPolicy(user.Id, user.Policy).then(function () {
+                Dashboard.navigate("userprofiles.html");
             });
 
-        }).fail(function() {
+        }, function (response) {
 
-            Dashboard.showError(Globalize.translate('DefaultErrorMessage'));
+            if (response.status == 400) {
+
+                Dashboard.alert({
+                    message: page.querySelector('.labelNewUserNameHelp').innerHTML
+                });
+
+            } else {
+                require(['toast'], function (toast) {
+                    toast(Globalize.translate('DefaultErrorMessage'));
+                });
+            }
+
             Dashboard.hideLoadingMsg();
         });
     }
 
     function onSubmit() {
-        var page = $(this).parents('.page');
+        var page = $(this).parents('.page')[0];
 
         Dashboard.showLoadingMsg();
 
@@ -164,4 +169,4 @@
 
     });
 
-})(jQuery, window, document);
+});

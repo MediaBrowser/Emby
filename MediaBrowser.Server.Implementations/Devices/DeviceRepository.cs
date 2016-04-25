@@ -1,13 +1,11 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Model.Devices;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Session;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +23,7 @@ namespace MediaBrowser.Server.Implementations.Devices
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
 
-        private ConcurrentBag<DeviceInfo> _devices;
+        private List<DeviceInfo> _devices;
 
         public DeviceRepository(IApplicationPaths appPaths, IJsonSerializer json, ILogger logger, IFileSystem fileSystem)
         {
@@ -93,17 +91,14 @@ namespace MediaBrowser.Server.Implementations.Devices
 
         public IEnumerable<DeviceInfo> GetDevices()
         {
-            if (_devices == null)
+            lock (_syncLock)
             {
-                lock (_syncLock)
+                if (_devices == null)
                 {
-                    if (_devices == null)
-                    {
-                        _devices = new ConcurrentBag<DeviceInfo>(LoadDevices());
-                    }
+                    _devices = LoadDevices().ToList();
                 }
+                return _devices.ToList();
             }
-            return _devices.ToList();
         }
 
         private IEnumerable<DeviceInfo> LoadDevices()

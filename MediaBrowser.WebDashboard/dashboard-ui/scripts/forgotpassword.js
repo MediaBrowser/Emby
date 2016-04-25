@@ -1,4 +1,4 @@
-﻿(function (window) {
+﻿define(['jQuery'], function ($) {
 
     function processForgotPasswordResult(page, result) {
 
@@ -53,7 +53,7 @@
                 EnteredUsername: $('#txtName', page).val()
             }
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             processForgotPasswordResult(page, result);
         });
@@ -68,4 +68,4 @@
         $('.forgotPasswordForm', page).off('submit', onSubmit).on('submit', onSubmit);
     });
 
-})(window);
+});

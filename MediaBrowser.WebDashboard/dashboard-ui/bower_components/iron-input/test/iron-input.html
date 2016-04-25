@@ -1,5 +1,6 @@
 <!doctype html>
 <!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -14,16 +15,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
   <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-
-  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../iron-input.html">
   <link rel="import" href="letters-only.html">
+  <link rel="import" href="disabled-input.html">
 
 </head>
 <body>
@@ -48,19 +46,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="prevent-invalid-input">
     <template>
-      <input is="iron-input" prevent-invalid-input pattern="[0-9]">
+      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="prevent-invalid-input-with-pattern">
+    <template>
+      <input is="iron-input" prevent-invalid-input pattern="[a-zA-Z]{3}[0-9]*">
     </template>
   </test-fixture>
 
   <test-fixture id="prevent-invalid-input-has-value">
     <template>
-      <input is="iron-input" prevent-invalid-input pattern="[0-9]*" value="foobar">
+      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]" value="foobar">
     </template>
   </test-fixture>
 
   <test-fixture id="prevent-invalid-input-has-bind-value">
     <template>
-      <input is="iron-input" prevent-invalid-input pattern="[0-9]*" bind-value="foobar">
+      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]" bind-value="foobar">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="automatically-prevent-invalid-input-if-allowed-pattern">
+    <template>
+      <input is="iron-input" allowed-pattern="[0-9]">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="no-validator">
+    <template>
+      <input is="iron-input" pattern="[a-zA-Z]{3}[0-9]*">
     </template>
   </test-fixture>
 
@@ -71,9 +87,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="native-and-custom-validator">
+    <template>
+      <letters-only></letters-only>
+      <input is="iron-input" validator="letters-only" pattern="[a-c]*">
+    </template>
+  </test-fixture>
+
   <template is="dom-bind" id="bind-to-object">
     <input is="iron-input" id="input" bind-value="{{foo}}">
   </template>
+
+  <test-fixture id="disabled-input">
+    <template>
+      <disabled-input></disabled-input>
+    </template>
+  </test-fixture>
 
   <script>
 
@@ -114,6 +143,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.ok(!scope.$.input.value, 'value is falsy');
       });
 
+      test('can validate using a complex regex', function() {
+        var input = fixture('no-validator');
+        input.value = '123';
+        input.validate();
+        assert.isTrue(input.invalid, 'input is invalid');
+        input.value = 'foo';
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+        input.value = 'foo123';
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+      });
+
+      test('set bindValue to false', function() {
+        var scope = document.getElementById('bind-to-object');
+        scope.foo = false;
+        assert.isFalse(scope.$.input.bindValue);
+        assert.equal(scope.$.input.value, 'false');
+      });
+
       test('validator used instead of constraints api if provided', function() {
         var input = fixture('has-validator')[1];
         input.value = '123';
@@ -131,8 +180,101 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input._onInput();
         assert.equal(input.bindValue, '123');
       });
+
+      test('inputs can be validated', function() {
+        var input = fixture('prevent-invalid-input-with-pattern');
+        input.value = '123';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+        input.validate();
+        assert.isTrue(input.invalid, 'input is invalid');
+
+        input.value = 'foo';
+        input._onInput();
+        assert.equal(input.bindValue, 'foo');
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+
+        input.value = 'foo123';
+        input._onInput();
+        assert.equal(input.bindValue, 'foo123');
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+      });
+
+      test('prevent invalid input works automatically when allowed pattern is set', function() {
+        var input = fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+        input.value = '123';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+
+        input.value = '123foo';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+
+        input.allowedPattern = '';
+        input.value = '#123foo BAR!';
+        input._onInput();
+        assert.equal(input.bindValue, '#123foo BAR!');
+
+        input.allowedPattern = '[a-zA-Z]';
+        input.value = 'foo';
+        input._onInput();
+        input.value = 'bar123';
+        input._onInput();
+        assert.equal(input.bindValue, 'foo');
+      });
+
+      test('disabled input doesn\'t throw on Firefox', function() {
+        var el = fixture('disabled-input');
+        var input = el.$.input;
+
+        assert.equal(input.bindValue, 'foo');
+
+        assert.isFalse(el.myInvalid);
+        assert.isTrue(input.disabled);
+      });
+
+      test('browser validation beats custom validation', function() {
+        var input = fixture('native-and-custom-validator')[1];
+        // The input allows any letters, but the browser only allows one
+        // of [abc].
+        input.value = 'aaaa';
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+
+        // The validator allows this, but the browser doesn't.
+        input.value = 'zzz';
+        input.validate();
+        assert.isTrue(input.invalid, 'input is invalid');
+      });
     });
 
+    suite('a11y', function() {
+      test('announces invalid characters when _onInput is called', function() {
+        var input = fixture('prevent-invalid-input');
+        input.addEventListener('iron-announce', function(event) {
+          assert.equal(event.detail.text, 'Invalid string of characters not entered.');
+        });
+        input.value = 'foo';
+        input._onInput();
+      });
+
+      test('announces invalid characters on keypress', function() {
+        var input = fixture('prevent-invalid-input');
+        input.addEventListener('iron-announce', function(event) {
+          assert.equal(event.detail.text, 'Invalid character a not entered.');
+        });
+
+        // Simulate key press event.
+        var event = new CustomEvent('keypress', {
+          bubbles: true,
+          cancelable: true
+        });
+        event.charCode = 97 /* a */;
+        input.dispatchEvent(event);
+      });
+    });
   </script>
 
 </body>

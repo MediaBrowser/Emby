@@ -12,17 +12,13 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.Sync
 {
-    public class SyncRepository : ISyncRepository, IDisposable
+    public class SyncRepository : BaseSqliteRepository, ISyncRepository
     {
         private IDbConnection _connection;
-        private readonly ILogger _logger;
-        private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
-        private readonly IServerApplicationPaths _appPaths;
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
         private IDbCommand _insertJobCommand;
@@ -34,19 +30,20 @@ namespace MediaBrowser.Server.Implementations.Sync
         private IDbCommand _updateJobItemCommand;
 
         private readonly IJsonSerializer _json;
+        private readonly IServerApplicationPaths _appPaths;
 
-        public SyncRepository(ILogger logger, IServerApplicationPaths appPaths, IJsonSerializer json)
+        public SyncRepository(ILogManager logManager, IJsonSerializer json, IServerApplicationPaths appPaths)
+            : base(logManager)
         {
-            _logger = logger;
-            _appPaths = appPaths;
             _json = json;
+            _appPaths = appPaths;
         }
 
         public async Task Initialize()
         {
             var dbFile = Path.Combine(_appPaths.DataPath, "sync14.db");
 
-            _connection = await SqliteExtensions.ConnectToDb(dbFile, _logger).ConfigureAwait(false);
+            _connection = await SqliteExtensions.ConnectToDb(dbFile, Logger).ConfigureAwait(false);
 
             string[] queries = {
 
@@ -62,11 +59,11 @@ namespace MediaBrowser.Server.Implementations.Sync
                                 "pragma shrink_memory"
                                };
 
-            _connection.RunQueries(queries, _logger);
+            _connection.RunQueries(queries, Logger);
 
-            _connection.AddColumn(_logger, "SyncJobs", "Profile", "TEXT");
-            _connection.AddColumn(_logger, "SyncJobs", "Bitrate", "INT");
-         
+            _connection.AddColumn(Logger, "SyncJobs", "Profile", "TEXT");
+            _connection.AddColumn(Logger, "SyncJobs", "Bitrate", "INT");
+
             PrepareStatements();
         }
 
@@ -107,7 +104,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             // _updateJobCommand
             _updateJobCommand = _connection.CreateCommand();
-            _updateJobCommand.CommandText = "update SyncJobs set TargetId=@TargetId,Name=@Name,Profile=@Profile,Quality=@Quality,Bitrate=@Bitrate,Status=@Status,Progress=@Progress,UserId=@UserId,ItemIds=@ItemIds,Category=@Category,ParentId=@ParentId,UnwatchedOnly=@UnwatchedOnly,ItemLimit=@ItemLimit,SyncNewContent=@SyncNewContent,DateCreated=@DateCreated,DateLastModified=@DateLastModified,ItemCount=@ItemCount where Id=@ID";
+            _updateJobCommand.CommandText = "update SyncJobs set TargetId=@TargetId,Name=@Name,Profile=@Profile,Quality=@Quality,Bitrate=@Bitrate,Status=@Status,Progress=@Progress,UserId=@UserId,ItemIds=@ItemIds,Category=@Category,ParentId=@ParentId,UnwatchedOnly=@UnwatchedOnly,ItemLimit=@ItemLimit,SyncNewContent=@SyncNewContent,DateCreated=@DateCreated,DateLastModified=@DateLastModified,ItemCount=@ItemCount where Id=@Id";
 
             _updateJobCommand.Parameters.Add(_updateJobCommand, "@Id");
             _updateJobCommand.Parameters.Add(_updateJobCommand, "@TargetId");
@@ -298,7 +295,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             CheckDisposed();
             
-            await _writeLock.WaitAsync().ConfigureAwait(false);
+            await WriteLock.WaitAsync().ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -344,7 +341,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save record:", e);
+                Logger.ErrorException("Failed to save record:", e);
 
                 if (transaction != null)
                 {
@@ -360,7 +357,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -373,7 +370,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             CheckDisposed();
             
-            await _writeLock.WaitAsync().ConfigureAwait(false);
+            await WriteLock.WaitAsync().ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -405,7 +402,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save record:", e);
+                Logger.ErrorException("Failed to save record:", e);
 
                 if (transaction != null)
                 {
@@ -421,7 +418,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -656,7 +653,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             CheckDisposed();
             
-            await _writeLock.WaitAsync().ConfigureAwait(false);
+            await WriteLock.WaitAsync().ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -699,7 +696,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save record:", e);
+                Logger.ErrorException("Failed to save record:", e);
 
                 if (transaction != null)
                 {
@@ -715,7 +712,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -802,56 +799,17 @@ namespace MediaBrowser.Server.Implementations.Sync
             return item;
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
+        protected override void CloseConnection()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _disposed;
-        private void CheckDisposed()
-        {
-            if (_disposed)
+            if (_connection != null)
             {
-                throw new ObjectDisposedException(GetType().Name + " has been disposed and cannot be accessed.");
-            }
-        }
-
-        private readonly object _disposeLock = new object();
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="dispose"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool dispose)
-        {
-            if (dispose)
-            {
-                _disposed = true;
-
-                try
+                if (_connection.IsOpen())
                 {
-                    lock (_disposeLock)
-                    {
-                        if (_connection != null)
-                        {
-                            if (_connection.IsOpen())
-                            {
-                                _connection.Close();
-                            }
+                    _connection.Close();
+                }
 
-                            _connection.Dispose();
-                            _connection = null;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error disposing database", ex);
-                }
+                _connection.Dispose();
+                _connection = null;
             }
         }
     }

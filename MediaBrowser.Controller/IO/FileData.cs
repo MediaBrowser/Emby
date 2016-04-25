@@ -1,10 +1,8 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Library;
+﻿using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using CommonIO;
 
 namespace MediaBrowser.Controller.IO
@@ -26,12 +24,12 @@ namespace MediaBrowser.Controller.IO
         /// <param name="resolveShortcuts">if set to <c>true</c> [resolve shortcuts].</param>
         /// <returns>Dictionary{System.StringFileSystemInfo}.</returns>
         /// <exception cref="System.ArgumentNullException">path</exception>
-        public static Dictionary<string, FileSystemMetadata> GetFilteredFileSystemEntries(IDirectoryService directoryService, 
-            string path, 
-            IFileSystem fileSystem, 
-            ILogger logger, 
-            ItemResolveArgs args, 
-            int flattenFolderDepth = 0, 
+        public static Dictionary<string, FileSystemMetadata> GetFilteredFileSystemEntries(IDirectoryService directoryService,
+            string path,
+            IFileSystem fileSystem,
+            ILogger logger,
+            ItemResolveArgs args,
+            int flattenFolderDepth = 0,
             bool resolveShortcuts = true)
         {
             if (string.IsNullOrEmpty(path))
@@ -60,22 +58,29 @@ namespace MediaBrowser.Controller.IO
 
                 if (resolveShortcuts && fileSystem.IsShortcut(fullName))
                 {
-                    var newPath = fileSystem.ResolveShortcut(fullName);
-
-                    if (string.IsNullOrWhiteSpace(newPath))
+                    try
                     {
-                        //invalid shortcut - could be old or target could just be unavailable
-                        logger.Warn("Encountered invalid shortcut: " + fullName);
-                        continue;
+                        var newPath = fileSystem.ResolveShortcut(fullName);
+
+                        if (string.IsNullOrWhiteSpace(newPath))
+                        {
+                            //invalid shortcut - could be old or target could just be unavailable
+                            logger.Warn("Encountered invalid shortcut: " + fullName);
+                            continue;
+                        }
+
+                        // Don't check if it exists here because that could return false for network shares.
+                        var data = fileSystem.GetDirectoryInfo(newPath);
+
+                        // add to our physical locations
+                        args.AddAdditionalLocation(newPath);
+
+                        dict[newPath] = data;
                     }
-
-                    // Don't check if it exists here because that could return false for network shares.
-                    var data = fileSystem.GetDirectoryInfo(newPath);
-
-                    // add to our physical locations
-                    args.AddAdditionalLocation(newPath);
-
-                    dict[newPath] = data;
+                    catch (Exception ex)
+                    {
+                        logger.ErrorException("Error resolving shortcut from {0}", ex, fullName);
+                    }
                 }
                 else if (flattenFolderDepth > 0 && isDirectory)
                 {

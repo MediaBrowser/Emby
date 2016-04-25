@@ -4,11 +4,12 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using MediaBrowser.Controller.Library;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -36,7 +37,13 @@ namespace MediaBrowser.Controller.LiveTv
         public bool IsLive { get; set; }
         [IgnoreDataMember]
         public bool IsPremiere { get; set; }
-        public ProgramAudio? Audio { get; set; }
+
+        [IgnoreDataMember]
+        public override SourceType SourceType
+        {
+            get { return SourceType.LiveTV; }
+            set { }
+        }
 
         /// <summary>
         /// Gets the user data key.
@@ -48,8 +55,6 @@ namespace MediaBrowser.Controller.LiveTv
 
             return name + "-" + Name + (EpisodeTitle ?? string.Empty);
         }
-
-        public string ServiceName { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is owned item.
@@ -106,9 +111,9 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.LiveTvProgram);
+            return UnratedItem.LiveTvProgram;
         }
 
         protected override string GetInternalMetadataPath(string basePath)
@@ -139,6 +144,21 @@ namespace MediaBrowser.Controller.LiveTv
             }
 
             return list;
+        }
+
+        public override bool IsVisibleStandalone(User user)
+        {
+            return IsVisible(user);
+        }
+
+        public override Task Delete(DeleteOptions options)
+        {
+            return LiveTvManager.DeleteRecording(this);
+        }
+
+        public override Task OnFileDeleted()
+        {
+            return LiveTvManager.OnRecordingFileDeleted(this);
         }
     }
 }

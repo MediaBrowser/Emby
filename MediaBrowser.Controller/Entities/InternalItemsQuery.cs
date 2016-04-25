@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -26,10 +27,13 @@ namespace MediaBrowser.Controller.Entities
         public bool? IsLiked { get; set; }
         public bool? IsPlayed { get; set; }
         public bool? IsResumable { get; set; }
+        public bool? IncludeItemsByName { get; set; }
 
         public string[] MediaTypes { get; set; }
         public string[] IncludeItemTypes { get; set; }
         public string[] ExcludeItemTypes { get; set; }
+        public string[] ExcludeTags { get; set; }
+        public string[] ExcludeInheritedTags { get; set; }
         public string[] Genres { get; set; }
 
         public bool? IsMissing { get; set; }
@@ -42,6 +46,8 @@ namespace MediaBrowser.Controller.Entities
         public string NameLessThan { get; set; }
         public string NameContains { get; set; }
 
+        public string Path { get; set; }
+        
         public string Person { get; set; }
         public string[] PersonIds { get; set; }
         public string[] ItemIds { get; set; }
@@ -69,12 +75,16 @@ namespace MediaBrowser.Controller.Entities
 
         public string[] Studios { get; set; }
         public string[] StudioIds { get; set; }
+        public string[] GenreIds { get; set; }
         public ImageType[] ImageTypes { get; set; }
         public VideoType[] VideoTypes { get; set; }
+        public UnratedItem[] BlockUnratedItems { get; set; }
         public int[] Years { get; set; }
         public string[] Tags { get; set; }
         public string[] OfficialRatings { get; set; }
 
+        public DateTime? MinPremiereDate { get; set; }
+        public DateTime? MaxPremiereDate { get; set; }
         public DateTime? MinStartDate { get; set; }
         public DateTime? MaxStartDate { get; set; }
         public DateTime? MinEndDate { get; set; }
@@ -87,23 +97,47 @@ namespace MediaBrowser.Controller.Entities
 
         public int? MinPlayers { get; set; }
         public int? MaxPlayers { get; set; }
+        public int? MinIndexNumber { get; set; }
+        public int? AiredDuringSeason { get; set; }
         public double? MinCriticRating { get; set; }
         public double? MinCommunityRating { get; set; }
-       
+
         public string[] ChannelIds { get; set; }
 
         internal List<Guid> ItemIdsFromPersonFilters { get; set; }
+        public int? ParentIndexNumber { get; set; }
+        public int? MinParentalRating { get; set; }
         public int? MaxParentalRating { get; set; }
 
         public bool? IsCurrentSchema { get; set; }
         public bool? HasDeadParentId { get; set; }
         public bool? IsOffline { get; set; }
-        public LocationType? LocationType { get; set; }
 
         public Guid? ParentId { get; set; }
+        public string[] AncestorIds { get; set; }
+        public string[] TopParentIds { get; set; }
+
+        public LocationType[] LocationTypes { get; set; }
+        public LocationType[] ExcludeLocationTypes { get; set; }
+        public string[] PresetViews { get; set; }
+        public SourceType[] SourceTypes { get; set; }
+        public SourceType[] ExcludeSourceTypes { get; set; }
+        public TrailerType[] TrailerTypes { get; set; }
+        public TrailerType[] ExcludeTrailerTypes { get; set; }
+
+        public DayOfWeek[] AirDays { get; set; }
+        public SeriesStatus[] SeriesStatuses { get; set; }
+        public string AlbumArtistStartsWithOrGreater { get; set; }
+
+        public string[] AlbumNames { get; set; }
+        public string[] ArtistNames { get; set; }
         
         public InternalItemsQuery()
         {
+            AlbumNames = new string[] { };
+            ArtistNames = new string[] { };
+            
+            BlockUnratedItems = new UnratedItem[] { };
             Tags = new string[] { };
             OfficialRatings = new string[] { };
             SortBy = new string[] { };
@@ -113,6 +147,7 @@ namespace MediaBrowser.Controller.Entities
             Genres = new string[] { };
             Studios = new string[] { };
             StudioIds = new string[] { };
+            GenreIds = new string[] { };
             ImageTypes = new ImageType[] { };
             VideoTypes = new VideoType[] { };
             Years = new int[] { };
@@ -120,6 +155,38 @@ namespace MediaBrowser.Controller.Entities
             PersonIds = new string[] { };
             ChannelIds = new string[] { };
             ItemIds = new string[] { };
+            AncestorIds = new string[] { };
+            TopParentIds = new string[] { };
+            ExcludeTags = new string[] { };
+            ExcludeInheritedTags = new string[] { };
+            LocationTypes = new LocationType[] { };
+            ExcludeLocationTypes = new LocationType[] { };
+            PresetViews = new string[] { };
+            SourceTypes = new SourceType[] { };
+            ExcludeSourceTypes = new SourceType[] { };
+            TrailerTypes = new TrailerType[] { };
+            ExcludeTrailerTypes = new TrailerType[] { };
+            AirDays = new DayOfWeek[] { };
+            SeriesStatuses = new SeriesStatus[] { };
+        }
+
+        public InternalItemsQuery(User user)
+            : this()
+        {
+            if (user != null)
+            {
+                var policy = user.Policy;
+                MaxParentalRating = policy.MaxParentalRating;
+
+                if (policy.MaxParentalRating.HasValue)
+                {
+                    BlockUnratedItems = policy.BlockUnratedItems;
+                }
+
+                ExcludeInheritedTags = policy.BlockedTags;
+
+                User = user;
+            }
         }
     }
 }

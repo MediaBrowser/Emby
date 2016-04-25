@@ -8,11 +8,9 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Controller.Library
 {
@@ -56,6 +54,13 @@ namespace MediaBrowser.Controller.Library
         /// <returns>Task{Person}.</returns>
         Person GetPerson(string name);
 
+        /// <summary>
+        /// Finds the by path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>BaseItem.</returns>
+        BaseItem FindByPath(string path);
+        
         /// <summary>
         /// Gets the artist.
         /// </summary>
@@ -144,13 +149,6 @@ namespace MediaBrowser.Controller.Library
         /// <param name="id">The id.</param>
         /// <returns>BaseItem.</returns>
         BaseItem GetItemById(Guid id);
-
-        /// <summary>
-        /// Gets the items.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <returns>QueryResult&lt;BaseItem&gt;.</returns>
-        QueryResult<BaseItem> GetItems(InternalItemsQuery query);
 
         /// <summary>
         /// Gets the memory item by identifier.
@@ -329,7 +327,6 @@ namespace MediaBrowser.Controller.Library
         /// <param name="parentId">The parent identifier.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="uniqueId">The unique identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;UserView&gt;.</returns>
         Task<UserView> GetNamedView(User user,
@@ -337,7 +334,6 @@ namespace MediaBrowser.Controller.Library
             string parentId,
             string viewType, 
             string sortName, 
-            string uniqueId,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -391,13 +387,11 @@ namespace MediaBrowser.Controller.Library
         /// <param name="parent">The parent.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="uniqueId">The unique identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;UserView&gt;.</returns>
         Task<UserView> GetShadowView(BaseItem parent,
           string viewType,
           string sortName,
-          string uniqueId,
           CancellationToken cancellationToken);
         
         /// <summary>
@@ -543,5 +537,35 @@ namespace MediaBrowser.Controller.Library
         /// <param name="imageIndex">Index of the image.</param>
         /// <returns>Task.</returns>
         Task<ItemImageInfo> ConvertImageToLocal(IHasImages item, ItemImageInfo image, int imageIndex);
+
+        /// <summary>
+        /// Gets the items.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>QueryResult&lt;BaseItem&gt;.</returns>
+        IEnumerable<BaseItem> GetItemList(InternalItemsQuery query);
+
+        /// <summary>
+        /// Gets the items.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="parentIds">The parent ids.</param>
+        /// <returns>List&lt;BaseItem&gt;.</returns>
+        IEnumerable<BaseItem> GetItemList(InternalItemsQuery query, IEnumerable<string> parentIds);
+
+        /// <summary>
+        /// Gets the items result.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>QueryResult&lt;BaseItem&gt;.</returns>
+        QueryResult<BaseItem> GetItemsResult(InternalItemsQuery query);
+        
+        /// <summary>
+        /// Ignores the file.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <param name="parent">The parent.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        bool IgnoreFile(FileSystemMetadata file, BaseItem parent);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
@@ -210,6 +209,10 @@ namespace MediaBrowser.Dlna
                 throw new ArgumentNullException("headers");
             }
 
+            //_logger.Debug("GetProfile. Headers: " + _jsonSerializer.SerializeToString(headers));
+            // Convert to case insensitive
+            headers = new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase);
+
             var profile = GetProfiles().FirstOrDefault(i => i.Identification != null && IsMatch(headers, i.Identification));
 
             if (profile != null)
@@ -221,7 +224,7 @@ namespace MediaBrowser.Dlna
                 string userAgent = null;
                 headers.TryGetValue("User-Agent", out userAgent);
 
-                var msg = "No matching device profile found. The default will be used. ";
+                var msg = "No matching device profile via headers found. The default will be used. ";
                 if (!string.IsNullOrEmpty(userAgent))
                 {
                     msg += "User-agent: " + userAgent + ". ";
@@ -249,9 +252,12 @@ namespace MediaBrowser.Dlna
                     case HeaderMatchType.Equals:
                         return string.Equals(value, header.Value, StringComparison.OrdinalIgnoreCase);
                     case HeaderMatchType.Substring:
-                        return value.IndexOf(header.Value, StringComparison.OrdinalIgnoreCase) != -1;
+                        var isMatch = value.IndexOf(header.Value, StringComparison.OrdinalIgnoreCase) != -1;
+                        //_logger.Debug("IsMatch-Substring value: {0} testValue: {1} isMatch: {2}", value, header.Value, isMatch);
+                        return isMatch;
                     case HeaderMatchType.Regex:
-                        return Regex.IsMatch(value, header.Value, RegexOptions.IgnoreCase);
+                        // Reports of IgnoreCase not working on linux so try it a couple different ways.
+                        return Regex.IsMatch(value, header.Value, RegexOptions.IgnoreCase) || Regex.IsMatch(value.ToUpper(), header.Value.ToUpper(), RegexOptions.IgnoreCase);
                     default:
                         throw new ArgumentException("Unrecognized HeaderMatchType");
                 }
@@ -280,7 +286,7 @@ namespace MediaBrowser.Dlna
         {
             try
             {
-				return _fileSystem.GetFiles(path)
+                return _fileSystem.GetFiles(path)
                     .Where(i => string.Equals(i.Extension, ".xml", StringComparison.OrdinalIgnoreCase))
                     .Select(i => ParseProfileXmlFile(i.FullName, type))
                     .Where(i => i != null)
@@ -318,7 +324,7 @@ namespace MediaBrowser.Dlna
                 throw new ArgumentNullException("id");
             }
 
-            var info = GetProfileInfosInternal().First(i => string.Equals(i.Info.Id, id));
+            var info = GetProfileInfosInternal().First(i => string.Equals(i.Info.Id, id, StringComparison.OrdinalIgnoreCase));
 
             return ParseProfileXmlFile(info.Path, info.Info.Type);
         }
@@ -342,7 +348,7 @@ namespace MediaBrowser.Dlna
         {
             try
             {
-				return _fileSystem.GetFiles(path)
+                return _fileSystem.GetFiles(path)
                     .Where(i => string.Equals(i.Extension, ".xml", StringComparison.OrdinalIgnoreCase))
                     .Select(i => new InternalProfileInfo
                     {
@@ -384,7 +390,7 @@ namespace MediaBrowser.Dlna
 
                     if (!fileInfo.Exists || fileInfo.Length != stream.Length)
                     {
-						_fileSystem.CreateDirectory(systemProfilesPath);
+                        _fileSystem.CreateDirectory(systemProfilesPath);
 
                         using (var fileStream = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
                         {
@@ -395,12 +401,12 @@ namespace MediaBrowser.Dlna
             }
 
             // Not necessary, but just to make it easy to find
-			_fileSystem.CreateDirectory(UserProfilesPath);
+            _fileSystem.CreateDirectory(UserProfilesPath);
         }
 
         public void DeleteProfile(string id)
         {
-            var info = GetProfileInfosInternal().First(i => string.Equals(id, i.Info.Id));
+            var info = GetProfileInfosInternal().First(i => string.Equals(id, i.Info.Id, StringComparison.OrdinalIgnoreCase));
 
             if (info.Info.Type == DeviceProfileType.System)
             {
@@ -448,7 +454,7 @@ namespace MediaBrowser.Dlna
             {
                 _fileSystem.DeleteFile(current.Path);
             }
-            
+
             _xmlSerializer.SerializeToFile(profile, path);
         }
 
@@ -481,7 +487,9 @@ namespace MediaBrowser.Dlna
             var profile = GetProfile(headers) ??
                           GetDefaultProfile();
 
-            return new DescriptionXmlBuilder(profile, serverUuId, serverAddress, _appHost.FriendlyName, serverUuId.GetMD5().ToString("N")).GetXml();
+            var serverId = _appHost.SystemId;
+
+            return new DescriptionXmlBuilder(profile, serverUuId, serverAddress, _appHost.FriendlyName, serverId).GetXml();
         }
 
         public ImageStream GetIcon(string filename)

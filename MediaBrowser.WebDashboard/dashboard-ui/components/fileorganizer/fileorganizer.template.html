@@ -1,0 +1,43 @@
+﻿<div class="dialogHeader">
+    <paper-icon-button icon="arrow-back" class="btnCancel" tabindex="-1"></paper-icon-button>
+    <div class="dialogHeaderTitle">
+    </div>
+</div>
+
+<form class="episodeCorrectionForm" style="margin:auto;">
+
+    <p><span class="inputFile"></span></p>
+
+    <div style="margin: 1em 0 1em;">
+        <div style="width:85%;display:inline-block;">
+            <label for="selectSeries" class="selectLabel">${LabelSeries}</label>
+            <select id="selectSeries" data-mini="true" required="required"></select>
+        </div>
+        <paper-icon-button id="btnNewSeries" icon="add" title="${ButtonNew}"></paper-icon-button>
+    </div>
+    <div class="fldSelectSeriesFolder hide" style="margin: 1em 0 1em;">
+        <div style="width:100%;display:inline-block;">
+            <label for="selectSeriesFolder" class="selectLabel">Series Root Folder</label>
+            <select id="selectSeriesFolder" data-mini="true"></select>
+        </div>
+    </div>
+    <div style="margin: 1em 0;">
+        <paper-input id="txtSeason" type="number" pattern="[0-9]*" required min="0" label="${LabelSeasonNumber}"></paper-input>
+    </div>
+    <div style="margin: 1em 0;">
+        <paper-input id="txtEpisode" type="number" pattern="[0-9]*" required min="0" label="${LabelEpisodeNumber}"></paper-input>
+    </div>
+    <div style="margin: 1em 0;">
+        <paper-input id="txtEndingEpisode" type="number" pattern="[0-9]*" min="0" label="${LabelEndingEpisodeNumber}"></paper-input>
+        <div class="fieldDescription">${LabelEndingEpisodeNumberHelp}</div>
+    </div>
+    <div class="fldRemember hide">
+        <br />
+        <paper-checkbox type="checkbox" id="chkRememberCorrection">${OptionRememberOrganizeCorrection} <span class="extractedName" style="font-weight: bold; font-style: italic" /></paper-checkbox>
+    </div>
+    <br />
+    <button type="submit" data-role="none" class="clearButton">
+        <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonOk}</span></paper-button>
+    </button>
+    <input id="hfResultId" type="hidden" />
+</form>

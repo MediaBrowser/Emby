@@ -1,12 +1,13 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     function deleteDevice(page, id) {
 
         var msg = Globalize.translate('DeleteDeviceConfirmation');
 
-        Dashboard.confirm(msg, Globalize.translate('HeaderDeleteDevice'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(msg, Globalize.translate('HeaderDeleteDevice')).then(function () {
+
                 Dashboard.showLoadingMsg();
 
                 ApiClient.ajax({
@@ -15,11 +16,12 @@
                         Id: id
                     })
 
-                }).done(function () {
+                }).then(function () {
 
                     loadData(page);
                 });
-            }
+            });
+
         });
     }
 
@@ -86,9 +88,11 @@
             
             SupportsPersistentIdentifier: true
 
-        })).done(function (result) {
+        })).then(function (result) {
 
-            load(page, result.Items);
+            require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+                load(page, result.Items);
+            });
 
             Dashboard.hideLoadingMsg();
         });
@@ -102,4 +106,4 @@
 
     });
 
-})();
+});

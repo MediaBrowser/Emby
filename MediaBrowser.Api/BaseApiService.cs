@@ -9,7 +9,6 @@ using MediaBrowser.Model.Logging;
 using ServiceStack.Text.Controller;
 using ServiceStack.Web;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,21 +55,6 @@ namespace MediaBrowser.Api
             where T : class
         {
             return ResultFactory.GetOptimizedResult(Request, result);
-        }
-
-        /// <summary>
-        /// To the optimized result using cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="lastDateModified">The last date modified.</param>
-        /// <param name="cacheDuration">Duration of the cache.</param>
-        /// <param name="factoryFn">The factory function.</param>
-        /// <returns>System.Object.</returns>
-        protected object ToOptimizedResultUsingCache<T>(Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn)
-           where T : class
-        {
-            return ResultFactory.GetOptimizedResultUsingCache(Request, cacheKey, lastDateModified, cacheDuration, factoryFn);
         }
 
         protected void AssertCanUpdateUser(IUserManager userManager, string userId)
@@ -198,50 +182,6 @@ namespace MediaBrowser.Api
             return libraryManager.GetPerson(DeSlugPersonName(name, libraryManager));
         }
 
-        protected IList<BaseItem> GetAllLibraryItems(string userId, IUserManager userManager, ILibraryManager libraryManager, string parentId, Func<BaseItem,bool> filter)
-        {
-            if (!string.IsNullOrEmpty(parentId))
-            {
-                var folder = (Folder)libraryManager.GetItemById(new Guid(parentId));
-
-                if (!string.IsNullOrWhiteSpace(userId))
-                {
-                    var user = userManager.GetUserById(userId);
-
-                    if (user == null)
-                    {
-                        throw new ArgumentException("User not found");
-                    }
-
-                    return folder
-                        .GetRecursiveChildren(user, filter)
-                        .ToList();
-                }
-
-                return folder
-                    .GetRecursiveChildren(filter);
-            }
-            if (!string.IsNullOrWhiteSpace(userId))
-            {
-                var user = userManager.GetUserById(userId);
-
-                if (user == null)
-                {
-                    throw new ArgumentException("User not found");
-                }
-
-                return userManager
-                    .GetUserById(userId)
-                    .RootFolder
-                    .GetRecursiveChildren(user, filter)
-                    .ToList();
-            }
-
-            return libraryManager
-                .RootFolder
-                .GetRecursiveChildren(filter);
-        }
-
         /// <summary>
         /// Deslugs an artist name by finding the correct entry in the library
         /// </summary>
@@ -255,9 +195,13 @@ namespace MediaBrowser.Api
                 return name;
             }
 
-            return libraryManager.RootFolder
-                .GetRecursiveChildren(i => i is IHasArtist)
-                .Cast<IHasArtist>()
+            var items = libraryManager.GetItemList(new InternalItemsQuery
+            {
+                IncludeItemTypes = new[] { typeof(Audio).Name, typeof(MusicVideo).Name, typeof(MusicAlbum).Name }
+            });
+
+            return items
+                .OfType<IHasArtist>()
                 .SelectMany(i => i.AllArtists)
                 .DistinctNames()
                 .FirstOrDefault(i =>
@@ -298,8 +242,12 @@ namespace MediaBrowser.Api
                 return name;
             }
 
-            return libraryManager.RootFolder
-                .GetRecursiveChildren(i => i is Game)
+            var items = libraryManager.GetItemList(new InternalItemsQuery
+            {
+                IncludeItemTypes = new[] { typeof(Game).Name }
+            });
+
+            return items
                 .SelectMany(i => i.Genres)
                 .DistinctNames()
                 .FirstOrDefault(i =>

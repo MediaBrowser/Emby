@@ -285,7 +285,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         public void Post(OnPlaybackStart request)
         {
-            var queueableMediaTypes = (request.QueueableMediaTypes ?? string.Empty);
+            var queueableMediaTypes = request.QueueableMediaTypes ?? string.Empty;
 
             Post(new ReportPlaybackStart
             {
@@ -335,11 +335,6 @@ namespace MediaBrowser.Api.UserLibrary
 
         public void Post(ReportPlaybackProgress request)
         {
-            if (!string.IsNullOrWhiteSpace(request.PlaySessionId))
-            {
-                ApiEntryPoint.Instance.PingTranscodingJob(request.PlaySessionId);
-            }
-
             request.SessionId = GetSession().Result.Id;
 
             var task = _sessionManager.OnPlaybackProgress(request);
@@ -349,7 +344,7 @@ namespace MediaBrowser.Api.UserLibrary
 
         public void Post(PingPlaybackSession request)
         {
-            ApiEntryPoint.Instance.PingTranscodingJob(request.PlaySessionId);
+            ApiEntryPoint.Instance.PingTranscodingJob(request.PlaySessionId, null);
         }
 
         /// <summary>
@@ -370,6 +365,8 @@ namespace MediaBrowser.Api.UserLibrary
 
         public void Post(ReportPlaybackStopped request)
         {
+            Logger.Debug("ReportPlaybackStopped PlaySessionId: {0}", request.PlaySessionId ?? string.Empty);
+
             if (!string.IsNullOrWhiteSpace(request.PlaySessionId))
             {
                 ApiEntryPoint.Instance.KillTranscodingJobs(AuthorizationContext.GetAuthorizationInfo(Request).DeviceId, request.PlaySessionId, s => true);

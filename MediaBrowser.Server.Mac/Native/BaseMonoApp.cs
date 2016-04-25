@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MediaBrowser.Controller.Power;
 
 namespace MediaBrowser.Server.Mac
 {
@@ -40,7 +41,7 @@ namespace MediaBrowser.Server.Mac
 		{
 			get
 			{
-				return false;
+				return true;
 			}
 		}
 
@@ -75,7 +76,7 @@ namespace MediaBrowser.Server.Mac
             return list;
         }
 
-        public void AuthorizeServer(int udpPort, int httpServerPort, int httpsPort, string tempDirectory)
+		public void AuthorizeServer(int udpPort, int httpServerPort, int httpsPort, string applicationPath, string tempDirectory)
         {
         }
 
@@ -109,6 +110,11 @@ namespace MediaBrowser.Server.Mac
         {
             return new NetworkManager(logger);
         }
+
+		public IPowerManagement GetPowerManagement() 
+		{
+			return new NullPowerManagement ();
+		}
 
         private NativeEnvironment GetEnvironmentInfo()
         {
@@ -169,5 +175,13 @@ namespace MediaBrowser.Server.Mac
             public string sysname = string.Empty;
             public string machine = string.Empty;
         }
+
+		private class NullPowerManagement : IPowerManagement
+		{
+			public void ScheduleWake(DateTime utcTime) 
+			{
+				throw new NotImplementedException ();
+			}
+		}
     }
 }

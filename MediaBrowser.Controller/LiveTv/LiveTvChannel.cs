@@ -4,14 +4,12 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.MediaInfo;
-using MediaBrowser.Model.Users;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvChannel : BaseItem, IHasMediaSources, ILiveTvItem
+    public class LiveTvChannel : BaseItem, IHasMediaSources
     {
         /// <summary>
         /// Gets the user data key.
@@ -22,9 +20,9 @@ namespace MediaBrowser.Controller.LiveTv
             return GetClientTypeName() + "-" + Name;
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.LiveTvChannel);
+            return UnratedItem.LiveTvChannel;
         }
 
         /// <summary>
@@ -40,6 +38,13 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
+        [IgnoreDataMember]
+        public override SourceType SourceType
+        {
+            get { return SourceType.LiveTV; }
+            set { }
+        }
+
         /// <summary>
         /// Gets or sets the number.
         /// </summary>
@@ -51,12 +56,6 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The type of the channel.</value>
         public ChannelType ChannelType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the service.
-        /// </summary>
-        /// <value>The name of the service.</value>
-        public string ServiceName { get; set; }
 
         [IgnoreDataMember]
         public override LocationType LocationType

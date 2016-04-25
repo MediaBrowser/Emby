@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function getApiClient() {
         return ApiClient;
@@ -45,15 +45,29 @@
             url: apiClient.getUrl('Startup/User'),
             dataType: 'json'
 
-        }).done(onUpdateUserComplete).fail(function () {
+        }).then(onUpdateUserComplete, function () {
 
-            var msgKey = form.querySelector('#txtConnectUserName').value ? 'ErrorAddingEmbyConnectAccount' : 'DefaultErrorMessage';
+            showEmbyConnectErrorMessage(form.querySelector('#txtConnectUserName').value);
+        });
+    }
 
-            Dashboard.alert({
+    function showEmbyConnectErrorMessage(username) {
 
-                message: Globalize.translate(msgKey)
+        var msg;
 
-            });
+        if (username) {
+
+            msg = Globalize.translate('ErrorAddingEmbyConnectAccount1', '<a href="https://emby.media/connect" target="_blank">https://emby.media/connect</a>');
+            msg += '<br/><br/>' + Globalize.translate('ErrorAddingEmbyConnectAccount2', 'apps@emby.media');
+
+        } else {
+            msg = Globalize.translate('DefaultErrorMessage');
+        }
+
+        Dashboard.alert({
+
+            message: msg
+
         });
     }
 
@@ -77,14 +91,13 @@
 
         var apiClient = getApiClient();
 
-        apiClient.getJSON(apiClient.getUrl('Startup/User')).done(function (user) {
+        apiClient.getJSON(apiClient.getUrl('Startup/User')).then(function (user) {
 
             page.querySelector('#txtUsername').value = user.Name;
             page.querySelector('#txtConnectUserName').value = user.ConnectUserName;
 
             Dashboard.hideLoadingMsg();
         });
-
     });
 
-})(jQuery, document, window);
+});

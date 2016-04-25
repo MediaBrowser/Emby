@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['jQuery'], function ($) {
 
     function loadUser(page, user) {
 
@@ -21,7 +21,7 @@
 
         var userId = getParameterByName("userId");
 
-        ApiClient.getUser(userId).done(function (user) {
+        ApiClient.getUser(userId).then(function (user) {
 
             loadUser(page, user);
 
@@ -41,4 +41,4 @@
 
     });
 
-})(jQuery, window, document);
+});

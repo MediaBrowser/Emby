@@ -1,5 +1,5 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
+﻿using System;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -43,20 +43,27 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var audio = (Audio)item;
 
+            var imageStreams =
+                audio.GetMediaSources(false)
+                    .Take(1)
+                    .SelectMany(i => i.MediaStreams)
+                    .Where(i => i.Type == MediaStreamType.EmbeddedImage)
+                    .ToList();
+
             // Can't extract if we didn't find a video stream in the file
-            if (!audio.GetMediaSources(false).Take(1).SelectMany(i => i.MediaStreams).Any(i => i.Type == MediaStreamType.EmbeddedImage))
+            if (imageStreams.Count == 0)
             {
                 return Task.FromResult(new DynamicImageResponse { HasImage = false });
             }
 
-            return GetImage((Audio)item, cancellationToken);
+            return GetImage((Audio)item, imageStreams, cancellationToken);
         }
 
-        public async Task<DynamicImageResponse> GetImage(Audio item, CancellationToken cancellationToken)
+        public async Task<DynamicImageResponse> GetImage(Audio item, List<MediaStream> imageStreams, CancellationToken cancellationToken)
         {
             var path = GetAudioImagePath(item);
 
-			if (!_fileSystem.FileExists(path))
+            if (!_fileSystem.FileExists(path))
             {
                 var semaphore = GetLock(path);
 
@@ -66,11 +73,17 @@ namespace MediaBrowser.Providers.MediaInfo
                 try
                 {
                     // Check again in case it was saved while waiting for the lock
-					if (!_fileSystem.FileExists(path))
+                    if (!_fileSystem.FileExists(path))
                     {
-						_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
+                        _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
-                        using (var stream = await _mediaEncoder.ExtractAudioImage(item.Path, cancellationToken).ConfigureAwait(false))
+                        var imageStream = imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("front", StringComparison.OrdinalIgnoreCase) != -1) ??
+                            imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("cover", StringComparison.OrdinalIgnoreCase) != -1) ??
+                            imageStreams.FirstOrDefault();
+
+                        var imageStreamIndex = imageStream == null ? (int?)null : imageStream.Index;
+
+                        using (var stream = await _mediaEncoder.ExtractAudioImage(item.Path, imageStreamIndex, cancellationToken).ConfigureAwait(false))
                         {
                             using (var fileStream = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                             {
@@ -94,11 +107,21 @@ namespace MediaBrowser.Providers.MediaInfo
 
         private string GetAudioImagePath(Audio item)
         {
-            var album = item.AlbumEntity;
-
             var filename = item.Album ?? string.Empty;
             filename += string.Join(",", item.Artists.ToArray());
-            filename += album == null ? item.Id.ToString("N") + "_primary" + item.DateModified.Ticks : album.Id.ToString("N") + album.DateModified.Ticks + "_primary";
+
+            if (!string.IsNullOrWhiteSpace(item.Album))
+            {
+                filename += "_" + item.Album;
+            }
+            else if (!string.IsNullOrWhiteSpace(item.Name))
+            {
+                filename += "_" + item.Name;
+            }
+            else
+            {
+                filename += "_" + item.Id.ToString("N");
+            }
 
             filename = filename.GetMD5() + ".jpg";
 
@@ -137,14 +160,11 @@ namespace MediaBrowser.Providers.MediaInfo
             return item.LocationType == LocationType.FileSystem && audio != null && !audio.IsArchive;
         }
 
-        public bool HasChanged(IHasMetadata item, MetadataStatus status, IDirectoryService directoryService)
+        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService)
         {
-            if (status.ItemDateModified.HasValue)
+            if (item.DateModifiedDuringLastRefresh.HasValue)
             {
-                if (status.ItemDateModified.Value != item.DateModified)
-                {
-                    return true;
-                }
+                return item.DateModifiedDuringLastRefresh.Value != item.DateModified;
             }
 
             return false;

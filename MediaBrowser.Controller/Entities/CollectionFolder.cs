@@ -3,13 +3,11 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -181,9 +179,7 @@ namespace MediaBrowser.Controller.Entities
         }
         private List<LinkedChild> GetLinkedChildrenInternal()
         {
-            return LibraryManager.RootFolder.Children
-                .OfType<Folder>()
-                .Where(i => i.Path != null && PhysicalLocations.Contains(i.Path, StringComparer.OrdinalIgnoreCase))
+            return GetPhysicalParents()
                 .SelectMany(c => c.LinkedChildren)
                 .ToList();
         }
@@ -199,11 +195,14 @@ namespace MediaBrowser.Controller.Entities
 
         private IEnumerable<BaseItem> GetActualChildren()
         {
-            return
-                LibraryManager.RootFolder.Children
+            return GetPhysicalParents().SelectMany(c => c.Children);
+        }
+
+        public IEnumerable<Folder> GetPhysicalParents()
+        {
+            return LibraryManager.RootFolder.Children
                 .OfType<Folder>()
-                .Where(i => i.Path != null && PhysicalLocations.Contains(i.Path, StringComparer.OrdinalIgnoreCase))
-                .SelectMany(c => c.Children);
+                .Where(i => i.Path != null && PhysicalLocations.Contains(i.Path, StringComparer.OrdinalIgnoreCase));
         }
 
         [IgnoreDataMember]

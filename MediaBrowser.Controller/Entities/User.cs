@@ -5,7 +5,6 @@ using MediaBrowser.Model.Connect;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -20,7 +19,6 @@ namespace MediaBrowser.Controller.Entities
     {
         public static IUserManager UserManager { get; set; }
         public static IXmlSerializer XmlSerializer { get; set; }
-        public bool EnableUserViews { get; set; }
 
         /// <summary>
         /// From now on all user paths will be Id-based. 
@@ -55,6 +53,26 @@ namespace MediaBrowser.Controller.Entities
             set
             {
                 base.Path = value;
+            }
+        }
+
+        private string _name;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public override string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+
+                // lazy load this again
+                SortName = null;
             }
         }
 
@@ -109,7 +127,7 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The last activity date.</value>
         public DateTime? LastActivityDate { get; set; }
 
-        private UserConfiguration _config;
+        private volatile UserConfiguration _config;
         private readonly object _configSyncLock = new object();
         [IgnoreDataMember]
         public UserConfiguration Configuration
@@ -132,7 +150,7 @@ namespace MediaBrowser.Controller.Entities
             set { _config = value; }
         }
 
-        private UserPolicy _policy;
+        private volatile UserPolicy _policy;
         private readonly object _policySyncLock = new object();
         [IgnoreDataMember]
         public UserPolicy Policy

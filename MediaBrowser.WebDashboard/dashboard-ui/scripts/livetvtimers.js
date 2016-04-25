@@ -1,45 +1,48 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     function deleteTimer(page, id) {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmRecordingCancellation'), Globalize.translate('HeaderConfirmRecordingCancellation'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmRecordingCancellation'), Globalize.translate('HeaderConfirmRecordingCancellation')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.cancelLiveTvTimer(id).done(function () {
+                ApiClient.cancelLiveTvTimer(id).then(function () {
 
-                    Dashboard.alert(Globalize.translate('MessageRecordingCancelled'));
+                    require(['toast'], function (toast) {
+                        toast(Globalize.translate('MessageRecordingCancelled'));
+                    });
 
                     reload(page);
                 });
-            }
-
+            });
         });
     }
 
     function renderTimers(page, timers) {
 
-        var html = LiveTvHelpers.getTimersHtml(timers);
+        LiveTvHelpers.getTimersHtml(timers).then(function (html) {
+            var elem = $('#items', page).html(html)[0];
 
-        var elem = $('#items', page).html(html);
+            ImageLoader.lazyChildren(elem);
 
-        $('.btnDeleteTimer', elem).on('click', function () {
+            $('.btnDeleteTimer', elem).on('click', function () {
 
-            var id = this.getAttribute('data-timerid');
+                var id = this.getAttribute('data-timerid');
 
-            deleteTimer(page, id);
+                deleteTimer(page, id);
+            });
+
+            Dashboard.hideLoadingMsg();
         });
-
-        Dashboard.hideLoadingMsg();
     }
 
     function reload(page) {
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getLiveTvTimers().done(function (result) {
+        ApiClient.getLiveTvTimers().then(function (result) {
 
             renderTimers(page, result.Items);
         });
@@ -52,4 +55,4 @@
         }
     };
 
-})(jQuery, document);
+});

@@ -9,6 +9,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Controller.Configuration;
 
 namespace MediaBrowser.Server.Implementations.EntryPoints
 {
@@ -22,19 +24,18 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         private readonly ILogger _logger;
         private readonly ISessionManager _sessionManager;
         private readonly IUserManager _userManager;
-
-        private Timer _timer;
-        private readonly TimeSpan _frequency = TimeSpan.FromHours(24);
+        private readonly IServerConfigurationManager _config;
 
         private readonly ConcurrentDictionary<Guid, ClientInfo> _apps = new ConcurrentDictionary<Guid, ClientInfo>();
 
-        public UsageEntryPoint(ILogger logger, IApplicationHost applicationHost, IHttpClient httpClient, ISessionManager sessionManager, IUserManager userManager)
+        public UsageEntryPoint(ILogger logger, IApplicationHost applicationHost, IHttpClient httpClient, ISessionManager sessionManager, IUserManager userManager, IServerConfigurationManager config)
         {
             _logger = logger;
             _applicationHost = applicationHost;
             _httpClient = httpClient;
             _sessionManager = sessionManager;
             _userManager = userManager;
+            _config = config;
 
             _sessionManager.SessionStarted += _sessionManager_SessionStarted;
         }
@@ -64,9 +65,14 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
 
         private async void ReportNewSession(ClientInfo client)
         {
+            if (!_config.Configuration.EnableAnonymousUsageReporting)
+            {
+                return;
+            }
+
             try
             {
-                await new UsageReporter(_applicationHost, _httpClient, _userManager)
+                await new UsageReporter(_applicationHost, _httpClient, _userManager, _logger)
                     .ReportAppUsage(client, CancellationToken.None)
                     .ConfigureAwait(false);
             }
@@ -95,20 +101,25 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             return info;
         }
 
-        public void Run()
+        public async void Run()
         {
-            _timer = new Timer(OnTimerFired, null, TimeSpan.FromMilliseconds(5000), _frequency);
+            await Task.Delay(5000).ConfigureAwait(false);
+            OnTimerFired();
         }
 
         /// <summary>
         /// Called when [timer fired].
         /// </summary>
-        /// <param name="state">The state.</param>
-        private async void OnTimerFired(object state)
+        private async void OnTimerFired()
         {
+            if (!_config.Configuration.EnableAnonymousUsageReporting)
+            {
+                return;
+            }
+
             try
             {
-                await new UsageReporter(_applicationHost, _httpClient, _userManager)
+                await new UsageReporter(_applicationHost, _httpClient, _userManager, _logger)
                     .ReportServerUsage(CancellationToken.None)
                     .ConfigureAwait(false);
             }
@@ -121,12 +132,6 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         public void Dispose()
         {
             _sessionManager.SessionStarted -= _sessionManager_SessionStarted;
-
-            if (_timer != null)
-            {
-                _timer.Dispose();
-                _timer = null;
-            }
         }
     }
 }

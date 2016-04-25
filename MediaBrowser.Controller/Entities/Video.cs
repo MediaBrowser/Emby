@@ -6,13 +6,13 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.MediaInfo;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Channels;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -33,6 +33,7 @@ namespace MediaBrowser.Controller.Entities
         public List<string> AdditionalParts { get; set; }
         public List<string> LocalAlternateVersions { get; set; }
         public List<LinkedChild> LinkedAlternateVersions { get; set; }
+        public List<ChannelMediaInfo> ChannelMediaSources { get; set; }
 
         [IgnoreDataMember]
         public bool IsThemeMedia
@@ -130,6 +131,29 @@ namespace MediaBrowser.Controller.Entities
             return LocalAlternateVersions.Select(i => LibraryManager.GetNewItemId(i, typeof(Video)));
         }
 
+        protected override string CreateUserDataKey()
+        {
+            if (ExtraType.HasValue)
+            {
+                var key = this.GetProviderId(MetadataProviders.Imdb) ?? this.GetProviderId(MetadataProviders.Tmdb);
+
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    key = key + "-" + ExtraType.ToString().ToLower();
+
+                    // Make sure different trailers have their own data.
+                    if (RunTimeTicks.HasValue)
+                    {
+                        key += "-" + RunTimeTicks.Value.ToString(CultureInfo.InvariantCulture);
+                    }
+
+                    return key;
+                }
+            }
+
+            return base.CreateUserDataKey();
+        }
+
         /// <summary>
         /// Gets the linked children.
         /// </summary>
@@ -184,12 +208,6 @@ namespace MediaBrowser.Controller.Entities
         public bool IsPlaceHolder { get; set; }
         public bool IsShortcut { get; set; }
         public string ShortcutPath { get; set; }
-
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        public List<string> Tags { get; set; }
 
         /// <summary>
         /// Gets or sets the video bit rate.
@@ -304,8 +322,6 @@ namespace MediaBrowser.Controller.Entities
             return base.IsValidFromResolver(newItem);
         }
 
-        public string MainFeaturePlaylistName { get; set; }
-
         /// <summary>
         /// Gets the playable stream files.
         /// </summary>
@@ -358,7 +374,7 @@ namespace MediaBrowser.Controller.Entities
             // Must have a parent to have additional parts or alternate versions
             // In other words, it must be part of the Parent/Child tree
             // The additional parts won't have additional parts themselves
-            if (LocationType == LocationType.FileSystem && Parent != null)
+            if (LocationType == LocationType.FileSystem && GetParent() != null)
             {
                 if (!IsStacked)
                 {
@@ -449,6 +465,22 @@ namespace MediaBrowser.Controller.Entities
 
         public virtual IEnumerable<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution)
         {
+            if (SourceType == SourceType.Channel)
+            {
+                var sources = ChannelManager.GetStaticMediaSources(this, false, CancellationToken.None)
+                           .Result.ToList();
+
+                if (sources.Count > 0)
+                {
+                    return sources;
+                }
+
+                return new List<MediaSourceInfo>
+                {
+                    GetVersionInfo(enablePathSubstitution, this, MediaSourceType.Placeholder)
+                };
+            }
+
             var item = this;
 
             var result = item.GetAlternateVersions()

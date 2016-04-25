@@ -1,4 +1,4 @@
-﻿paper-button {
+﻿paper-button, .paper-button-0 {
     font-weight: 500;
     vertical-align: middle;
     margin-top: 5px;
@@ -7,6 +7,7 @@
 
     paper-button.block {
         display: block;
+        margin: .25em 0;
     }
 
     paper-button.blue {
@@ -183,16 +184,6 @@ paper-button.notext {
         margin-right: 0;
     }
 
-.docspinner {
-    display: block;
-    margin-top: -14px;
-    margin-left: -14px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 9999999;
-}
-
 /*paper-toast {
     background-color: #eee;
     color: #000;
@@ -221,14 +212,6 @@ iron-overlay-backdrop {
     padding: 0 12px;
 }
 
-paper-dialog > *:last-child:not(.buttons) {
-    margin-bottom: 12px;
-}
-
-paper-dialog > *:first-child:not(h2) {
-    margin-top: 12px;
-}
-
 paper-icon-button paper-ripple {
     color: inherit !important;
 }
@@ -246,7 +229,7 @@ paper-dialog[role="alertdialog"] + iron-overlay-backdrop {
 }
 
 paper-tabs {
-    background-color: #111;
+    background-color: #020202;
     color: #fff;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
 }
@@ -349,6 +332,7 @@ paper-slider {
 
 .paper-slider-0 #sliderKnobInner.paper-slider {
     background-color: #52B54B;
+    border-color: #52B54B;
 }
 
 .paper-slider-0 paper-ripple.paper-slider {
@@ -443,11 +427,16 @@ paper-input label, paper-textarea label {
     font-family: inherit !important;
 }
 
-.ui-body-b .paper-input-container-0 .input-content.paper-input-container label, .ui-body-b .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-b paper-textarea label {
-    color: #858585;
+.paperListLabel {
+    font-size: 16px;
+    margin-bottom: .5em;
 }
 
-.ui-body-a .paper-input-container-0 .input-content.paper-input-container label, .ui-body-a .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-a paper-textarea label {
+.ui-body-b .paper-input-container-0 .input-content.paper-input-container label, .ui-body-b .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-b paper-textarea label, .ui-body-b .selectLabel, .ui-body-b .paperListLabel, .ui-body-b .fieldDescription {
+    color: #ccc;
+}
+
+.ui-body-a .paper-input-container-0 .input-content.paper-input-container label, .ui-body-a .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-a paper-textarea label, .ui-body-a .selectLabel, .ui-body-a .paperListLabel, .ui-body-a .fieldDescription {
     color: #656565;
 }
 
@@ -476,14 +465,18 @@ paper-textarea.mono textarea {
 }
 
 .paperList {
-    padding-top: 12px;
+    padding: .5em 0;
     margin: 12px auto;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     background-color: #fff;
 }
 
+.paperCheckboxList.paperList {
+    padding: .5em 1em;
+}
+
 .ui-body-b .paperList {
-    background-color: #303030;
+    background-color: #323232;
 }
 
 paper-dropdown-menu {
@@ -497,8 +490,8 @@ paper-dropdown-menu {
         display: block;
     }
 
-paper-dialog paper-radio-group paper-radio-button {
-    padding: 6px 12px;
+paper-radio-group > * {
+    padding: .5em;
 }
 
 .likePaperText {
@@ -531,71 +524,51 @@ paper-dialog paper-radio-group paper-radio-button {
     display: block;
 }
 
-.fullscreen-paper-dialog, .medium-paper-dialog, .small-paper-dialog {
-    position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    max-height: none !important;
-    max-width: none !important;
+div.dialogHeader {
+    margin: 0 0 2em !important;
+    padding: .35em .5em;
+    display: flex;
+    align-items: center;
+    line-height: normal;
+    font-size: 110%;
 }
 
-@media all and (min-width: 1280px) and (min-height: 720px) {
-
-    .medium-paper-dialog {
-        top: 10% !important;
-        bottom: 10% !important;
-        left: 10% !important;
-        right: 10% !important;
-    }
-
-    .small-paper-dialog {
-        top: 10% !important;
-        bottom: 10% !important;
-        left: 20% !important;
-        right: 20% !important;
-    }
+.ui-body-a div.dialogHeader {
+    background-color: #52B54B;
+    color: #fff;
 }
 
-@media all and (min-width: 1280px) and (min-height: 720px) {
-
-    .fullscreen-paper-dialog {
-        top: 5% !important;
-        bottom: 5% !important;
-        left: 5% !important;
-        right: 5% !important;
-    }
+.ui-body-a .pageContentPaperMaterial {
+    background-color: #fff;
+    padding: 1.5em;
 }
 
-paper-dialog.popupEditor .dialogHeader {
+.ui-body-b div.dialogHeader {
+    background-color: #101010;
+}
+
+.dialogHeaderTitle {
+    margin-left: .75em;
+}
+
+.dialog.popupEditor h2.dialogHeader {
     font-weight: inherit !important;
     line-height: 36px;
     padding: 0 1em;
     margin-top: .7em;
 }
 
-paper-dialog.popupEditor {
+.dialogHeader paper-button {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.dialog.popupEditor {
     padding-bottom: 100px;
 }
 
-.paperToggleContainer {
-    padding: .5em 0;
-}
-
-    .paperToggleContainer paper-toggle-button {
-        vertical-align: middle;
-    }
-
-    .paperToggleContainer > span {
-        vertical-align: middle;
-        margin-left: 1em;
-    }
-
-paper-toggle-button #toggleBar {
-    background-color: #080808;
+.paper-toggle-button-0 .toggle-label.paper-toggle-button {
+    color: inherit;
 }
 
 paper-toggle-button #toggleButton, paper-toggle-button[checked] #toggleBar {
@@ -612,4 +585,8 @@ paper-toggle-button paper-ripple {
 
 paper-progress.mini #progressContainer {
     height: 3px !important;
+}
+
+.formDialog.background-theme-b {
+    background-color: #202020;
 }

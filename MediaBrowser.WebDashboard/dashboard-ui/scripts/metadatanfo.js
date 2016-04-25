@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     var metadataKey = "xbmcmetadata";
 
@@ -12,9 +12,10 @@
 
         $('#selectUser', page).html(html).val(config.UserId || '');
         $('#selectReleaseDateFormat', page).val(config.ReleaseDateFormat);
-        $('#chkSaveImagePaths', page).checked(config.SaveImagePathsInNfo).checkboxradio('refresh');
-        $('#chkEnablePathSubstitution', page).checked(config.EnablePathSubstitution).checkboxradio('refresh');
-        $('#chkEnableExtraThumbs', page).checked(config.EnableExtraThumbsDuplication).checkboxradio('refresh');
+
+        page.querySelector('#chkSaveImagePaths').checked = config.SaveImagePathsInNfo;
+        page.querySelector('#chkEnablePathSubstitution').checked = config.EnablePathSubstitution;
+        page.querySelector('#chkEnableExtraThumbs').checked = config.EnableExtraThumbsDuplication;
 
         Dashboard.hideLoadingMsg();
     }
@@ -24,19 +25,36 @@
 
         var form = this;
 
-        ApiClient.getNamedConfiguration(metadataKey).done(function (config) {
+        ApiClient.getNamedConfiguration(metadataKey).then(function (config) {
 
             config.UserId = $('#selectUser', form).val() || null;
             config.ReleaseDateFormat = $('#selectReleaseDateFormat', form).val();
-            config.SaveImagePathsInNfo = $('#chkSaveImagePaths', form).checked();
-            config.EnablePathSubstitution = $('#chkEnablePathSubstitution', form).checked();
-            config.EnableExtraThumbsDuplication = $('#chkEnableExtraThumbs', form).checked();
 
-            ApiClient.updateNamedConfiguration(metadataKey, config).done(Dashboard.processServerConfigurationUpdateResult);
+            config.SaveImagePathsInNfo = form.querySelector('#chkSaveImagePaths').checked;
+            config.EnablePathSubstitution = form.querySelector('#chkEnablePathSubstitution').checked;
+            config.EnableExtraThumbsDuplication = form.querySelector('#chkEnableExtraThumbs').checked;
+
+            ApiClient.updateNamedConfiguration(metadataKey, config).then(Dashboard.processServerConfigurationUpdateResult);
         });
 
         // Disable default form submission
         return false;
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'metadata.html',
+            name: Globalize.translate('TabSettings')
+        },
+         {
+             href: 'metadataimages.html',
+             name: Globalize.translate('TabServices')
+         },
+         {
+             href: 'metadatanfo.html',
+             name: Globalize.translate('TabNfoSettings')
+         }];
     }
 
     $(document).on('pageinit', "#metadataNfoPage", function () {
@@ -45,6 +63,7 @@
 
     }).on('pageshow', "#metadataNfoPage", function () {
 
+        LibraryMenu.setTabs('metadata', 2, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;
@@ -52,10 +71,10 @@
         var promise1 = ApiClient.getUsers();
         var promise2 = ApiClient.getNamedConfiguration(metadataKey);
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            loadPage(page, response2[0], response1[0]);
+            loadPage(page, responses[1], responses[0]);
         });
     });
 
-})(jQuery, document, window);
+});

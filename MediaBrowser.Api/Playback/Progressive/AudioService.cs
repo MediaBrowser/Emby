@@ -1,11 +1,9 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
@@ -73,9 +71,13 @@ namespace MediaBrowser.Api.Playback.Progressive
                 audioTranscodeParams.Add("-ac " + state.OutputAudioChannels.Value.ToString(UsCulture));
             }
 
-            if (state.OutputAudioSampleRate.HasValue)
+            // opus will fail on 44100
+            if (!string.Equals(state.OutputAudioCodec, "opus", global::System.StringComparison.OrdinalIgnoreCase))
             {
-                audioTranscodeParams.Add("-ar " + state.OutputAudioSampleRate.Value.ToString(UsCulture));
+                if (state.OutputAudioSampleRate.HasValue)
+                {
+                    audioTranscodeParams.Add("-ar " + state.OutputAudioSampleRate.Value.ToString(UsCulture));
+                }
             }
 
             const string vn = " -vn";

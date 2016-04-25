@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Profile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Sony Bravia (2010)</Name>
   <Identification>
     <FriendlyName>KDL-\d{2}[EHLNPB]X\d[01]\d.*</FriendlyName>
@@ -8,7 +8,6 @@
       <HttpHeaderInfo name="X-AV-Client-Info" value=".*KDL-\d{2}[EHLNPB]X\d[01]\d.*" match="Regex" />
     </Headers>
   </Identification>
-  <FriendlyName>Emby</FriendlyName>
   <Manufacturer>Microsoft Corporation</Manufacturer>
   <ManufacturerUrl>http://www.microsoft.com/</ManufacturerUrl>
   <ModelName>Windows Media Player Sharing</ModelName>
@@ -17,16 +16,17 @@
   <ModelUrl>http://www.microsoft.com/</ModelUrl>
   <EnableAlbumArtInDidl>true</EnableAlbumArtInDidl>
   <EnableSingleAlbumArtLimit>true</EnableSingleAlbumArtLimit>
+  <EnableSingleSubtitleLimit>false</EnableSingleSubtitleLimit>
   <SupportedMediaTypes>Audio,Photo,Video</SupportedMediaTypes>
   <AlbumArtPn>JPEG_TN</AlbumArtPn>
   <MaxAlbumArtWidth>480</MaxAlbumArtWidth>
   <MaxAlbumArtHeight>480</MaxAlbumArtHeight>
   <MaxIconWidth>48</MaxIconWidth>
   <MaxIconHeight>48</MaxIconHeight>
-  <MaxStreamingBitrate>10000000</MaxStreamingBitrate>
-  <MaxStaticBitrate>10000000</MaxStaticBitrate>
-  <MusicStreamingTranscodingBitrate>128000</MusicStreamingTranscodingBitrate>
-  <MusicSyncBitrate>128000</MusicSyncBitrate>
+  <MaxStreamingBitrate>15000000</MaxStreamingBitrate>
+  <MaxStaticBitrate>15000000</MaxStaticBitrate>
+  <MusicStreamingTranscodingBitrate>192000</MusicStreamingTranscodingBitrate>
+  <MusicSyncBitrate>192000</MusicSyncBitrate>
   <XDlnaDoc>DMS-1.50</XDlnaDoc>
   <SonyAggregationFlags>10</SonyAggregationFlags>
   <ProtocolInfo>http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01;DLNA.ORG_FLAGS=81500000000000000000000000000000,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM;DLNA.ORG_OP=00;DLNA.ORG_FLAGS=00D00000000000000000000000000000,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=11;DLNA.ORG_FLAGS=81500000000000000000000000000000</ProtocolInfo>
@@ -35,7 +35,6 @@
   <RequiresPlainFolders>false</RequiresPlainFolders>
   <EnableMSMediaReceiverRegistrar>false</EnableMSMediaReceiverRegistrar>
   <IgnoreTranscodeByteRangeRequests>false</IgnoreTranscodeByteRangeRequests>
-  <EnableDlnaProtocol>true</EnableDlnaProtocol>
   <XmlRootAttributes>
     <XmlAttribute name="xmlns:av" value="urn:schemas-sony-com:av" />
   </XmlRootAttributes>
@@ -46,9 +45,9 @@
     <DirectPlayProfile container="mp3" audioCodec="mp3" type="Audio" />
   </DirectPlayProfiles>
   <TranscodingProfiles>
-    <TranscodingProfile container="mp3" type="Audio" audioCodec="mp3" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" context="Streaming" />
-    <TranscodingProfile container="ts" type="Video" videoCodec="h264" audioCodec="ac3" estimateContentLength="false" enableMpegtsM2TsMode="true" transcodeSeekInfo="Auto" context="Streaming" />
-    <TranscodingProfile container="jpeg" type="Photo" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" context="Streaming" />
+    <TranscodingProfile container="mp3" type="Audio" audioCodec="mp3" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" copyTimestamps="false" context="Streaming" />
+    <TranscodingProfile container="ts" type="Video" videoCodec="h264" audioCodec="ac3" estimateContentLength="false" enableMpegtsM2TsMode="true" transcodeSeekInfo="Auto" copyTimestamps="false" context="Streaming" />
+    <TranscodingProfile container="jpeg" type="Photo" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" copyTimestamps="false" context="Streaming" />
   </TranscodingProfiles>
   <ContainerProfiles>
     <ContainerProfile type="Photo">

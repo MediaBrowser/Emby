@@ -9,13 +9,11 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Session;
-using MediaBrowser.Dlna.Channels;
 using MediaBrowser.Dlna.PlayTo;
 using MediaBrowser.Dlna.Ssdp;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace MediaBrowser.Dlna.Main
 {
@@ -43,19 +41,19 @@ namespace MediaBrowser.Dlna.Main
         private readonly List<string> _registeredServerIds = new List<string>();
         private bool _dlnaServerStarted;
 
-        public DlnaEntryPoint(IServerConfigurationManager config, 
-            ILogManager logManager, 
-            IServerApplicationHost appHost, 
-            INetworkManager network, 
-            ISessionManager sessionManager, 
-            IHttpClient httpClient, 
-            ILibraryManager libraryManager, 
-            IUserManager userManager, 
-            IDlnaManager dlnaManager, 
-            IImageProcessor imageProcessor, 
-            IUserDataManager userDataManager, 
-            ILocalizationManager localization, 
-            IMediaSourceManager mediaSourceManager, 
+        public DlnaEntryPoint(IServerConfigurationManager config,
+            ILogManager logManager,
+            IServerApplicationHost appHost,
+            INetworkManager network,
+            ISessionManager sessionManager,
+            IHttpClient httpClient,
+            ILibraryManager libraryManager,
+            IUserManager userManager,
+            IDlnaManager dlnaManager,
+            IImageProcessor imageProcessor,
+            IUserDataManager userDataManager,
+            ILocalizationManager localization,
+            IMediaSourceManager mediaSourceManager,
             ISsdpHandler ssdpHandler, IDeviceDiscovery deviceDiscovery)
         {
             _config = config;
@@ -148,11 +146,18 @@ namespace MediaBrowser.Dlna.Main
 
         private void RegisterServerEndpoints()
         {
-            foreach (var address in _network.GetLocalIpAddresses())
+            foreach (var address in _appHost.LocalIpAddresses)
             {
-                var guid = address.GetMD5();
+                //if (IPAddress.IsLoopback(address))
+                //{
+                //    // Should we allow this?
+                //    continue;
+                //}
 
-                var descriptorURI = "/dlna/" + guid.ToString("N") + "/description.xml";
+                var addressString = address.ToString();
+                var udn = addressString.GetMD5().ToString("N");
+
+                var descriptorURI = "/dlna/" + udn + "/description.xml";
 
                 var uri = new Uri(_appHost.GetLocalApiUrl(address) + descriptorURI);
 
@@ -163,12 +168,12 @@ namespace MediaBrowser.Dlna.Main
                     "urn:schemas-upnp-org:service:ContentDirectory:1", 
                     "urn:schemas-upnp-org:service:ConnectionManager:1",
                     "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1",
-                    "uuid:" + guid.ToString("N")
+                    "uuid:" + udn
                 };
-                
-                _ssdpHandler.RegisterNotification(guid, uri, IPAddress.Parse(address), services);
 
-                _registeredServerIds.Add(guid.ToString("N"));
+                _ssdpHandler.RegisterNotification(udn, uri, address, services);
+
+                _registeredServerIds.Add(udn);
             }
         }
 
@@ -233,7 +238,7 @@ namespace MediaBrowser.Dlna.Main
             {
                 try
                 {
-                    _ssdpHandler.UnregisterNotification(new Guid(id));
+                    _ssdpHandler.UnregisterNotification(id);
                 }
                 catch (Exception ex)
                 {

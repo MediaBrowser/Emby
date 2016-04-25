@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Dlna.Didl
 {
@@ -56,7 +57,7 @@ namespace MediaBrowser.Dlna.Didl
             _user = user;
         }
 
-        public string GetItemDidl(BaseItem item, BaseItem context, string deviceId, Filter filter, StreamInfo streamInfo)
+        public string GetItemDidl(DlnaOptions options, BaseItem item, BaseItem context, string deviceId, Filter filter, StreamInfo streamInfo)
         {
             var result = new XmlDocument();
 
@@ -73,12 +74,12 @@ namespace MediaBrowser.Dlna.Didl
 
             result.AppendChild(didl);
 
-            result.DocumentElement.AppendChild(GetItemElement(result, item, context, null, deviceId, filter, streamInfo));
+            result.DocumentElement.AppendChild(GetItemElement(options, result, item, context, null, deviceId, filter, streamInfo));
 
             return result.DocumentElement.OuterXml;
         }
 
-        public XmlElement GetItemElement(XmlDocument doc, BaseItem item, BaseItem context, StubType? contextStubType, string deviceId, Filter filter, StreamInfo streamInfo = null)
+        public XmlElement GetItemElement(DlnaOptions options, XmlDocument doc, BaseItem item, BaseItem context, StubType? contextStubType, string deviceId, Filter filter, StreamInfo streamInfo = null)
         {
             var clientId = GetClientId(item, null);
 
@@ -92,10 +93,10 @@ namespace MediaBrowser.Dlna.Didl
             }
             else
             {
-                var parent = item.DisplayParent;
-                if (parent != null)
+                var parent = item.DisplayParentId;
+                if (parent.HasValue)
                 {
-                    element.SetAttribute("parentID", GetClientId(parent, null));
+                    element.SetAttribute("parentID", GetClientId(parent.Value, null));
                 }
             }
 
@@ -112,11 +113,11 @@ namespace MediaBrowser.Dlna.Didl
             {
                 if (string.Equals(item.MediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddAudioResource(element, hasMediaSources, deviceId, filter, streamInfo);
+                    AddAudioResource(options, element, hasMediaSources, deviceId, filter, streamInfo);
                 }
                 else if (string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddVideoResource(element, hasMediaSources, deviceId, filter, streamInfo);
+                    AddVideoResource(options, element, hasMediaSources, deviceId, filter, streamInfo);
                 }
             }
 
@@ -125,13 +126,23 @@ namespace MediaBrowser.Dlna.Didl
             return element;
         }
 
-        private void AddVideoResource(XmlElement container, IHasMediaSources video, string deviceId, Filter filter, StreamInfo streamInfo = null)
+        private ILogger GetStreamBuilderLogger(DlnaOptions options)
+        {
+            if (options.EnableDebugLog)
+            {
+                return _logger;
+            }
+
+            return new NullLogger();
+        }
+
+        private void AddVideoResource(DlnaOptions options, XmlElement container, IHasMediaSources video, string deviceId, Filter filter, StreamInfo streamInfo = null)
         {
             if (streamInfo == null)
             {
                 var sources = _mediaSourceManager.GetStaticMediaSources(video, true, _user).ToList();
 
-                streamInfo = new StreamBuilder(_logger).BuildVideoItem(new VideoOptions
+                streamInfo = new StreamBuilder(GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
                 {
                     ItemId = GetClientId(video),
                     MediaSources = sources,
@@ -160,7 +171,6 @@ namespace MediaBrowser.Dlna.Didl
                 streamInfo.TargetPacketLength,
                 streamInfo.TranscodeSeekInfo,
                 streamInfo.IsTargetAnamorphic,
-                streamInfo.IsTargetCabac,
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
@@ -175,19 +185,24 @@ namespace MediaBrowser.Dlna.Didl
             {
                 if (subtitle.DeliveryMethod == SubtitleDeliveryMethod.External)
                 {
-                    AddSubtitleElement(container, subtitle);
+                    var subtitleAdded = AddSubtitleElement(container, subtitle);
+
+                    if (subtitleAdded && _profile.EnableSingleSubtitleLimit)
+                    {
+                        break;
+                    }
                 }
             }
         }
 
-        private void AddSubtitleElement(XmlElement container, SubtitleStreamInfo info)
+        private bool AddSubtitleElement(XmlElement container, SubtitleStreamInfo info)
         {
             var subtitleProfile = _profile.SubtitleProfiles
                 .FirstOrDefault(i => string.Equals(info.Format, i.Format, StringComparison.OrdinalIgnoreCase) && i.Method == SubtitleDeliveryMethod.External);
 
             if (subtitleProfile == null)
             {
-                return;
+                return false;
             }
 
             var subtitleMode = subtitleProfile.DidlMode;
@@ -197,13 +212,13 @@ namespace MediaBrowser.Dlna.Didl
                 // <sec:CaptionInfoEx sec:type="srt">http://192.168.1.3:9999/video.srt</sec:CaptionInfoEx>
                 // <sec:CaptionInfo sec:type="srt">http://192.168.1.3:9999/video.srt</sec:CaptionInfo>
 
-                //var res = container.OwnerDocument.CreateElement("SEC", "CaptionInfoEx");
+                var res = container.OwnerDocument.CreateElement("CaptionInfoEx", "sec");
 
-                //res.InnerText = info.Url;
+                res.InnerText = info.Url;
 
                 //// TODO: attribute needs SEC:
-                //res.SetAttribute("type", info.Format.ToLower());
-                //container.AppendChild(res);
+                res.SetAttribute("type", "sec", info.Format.ToLower());
+                container.AppendChild(res);
             }
             else if (string.Equals(subtitleMode, "smi", StringComparison.OrdinalIgnoreCase))
             {
@@ -226,6 +241,8 @@ namespace MediaBrowser.Dlna.Didl
 
                 container.AppendChild(res);
             }
+
+            return true;
         }
 
         private void AddVideoResource(XmlElement container, IHasMediaSources video, string deviceId, Filter filter, string contentFeatures, StreamInfo streamInfo)
@@ -299,7 +316,6 @@ namespace MediaBrowser.Dlna.Didl
                 streamInfo.TargetPacketLength,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsTargetAnamorphic,
-                streamInfo.IsTargetCabac,
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
@@ -361,7 +377,7 @@ namespace MediaBrowser.Dlna.Didl
             return item.Name;
         }
 
-        private void AddAudioResource(XmlElement container, IHasMediaSources audio, string deviceId, Filter filter, StreamInfo streamInfo = null)
+        private void AddAudioResource(DlnaOptions options, XmlElement container, IHasMediaSources audio, string deviceId, Filter filter, StreamInfo streamInfo = null)
         {
             var res = container.OwnerDocument.CreateElement(string.Empty, "res", NS_DIDL);
 
@@ -369,7 +385,7 @@ namespace MediaBrowser.Dlna.Didl
             {
                 var sources = _mediaSourceManager.GetStaticMediaSources(audio, true, _user).ToList();
 
-                streamInfo = new StreamBuilder(new NullLogger()).BuildAudioItem(new AudioOptions
+                streamInfo = new StreamBuilder(GetStreamBuilderLogger(options)).BuildAudioItem(new AudioOptions
                {
                    ItemId = GetClientId(audio),
                    MediaSources = sources,
@@ -483,14 +499,21 @@ namespace MediaBrowser.Dlna.Didl
             {
                 container.SetAttribute("id", clientId);
 
-                var parent = context ?? folder.DisplayParent;
-                if (parent == null)
+                if (context != null)
                 {
-                    container.SetAttribute("parentID", "0");
+                    container.SetAttribute("parentID", GetClientId(context, null));
                 }
                 else
                 {
-                    container.SetAttribute("parentID", GetClientId(parent, null));
+                    var parent = folder.DisplayParentId;
+                    if (!parent.HasValue)
+                    {
+                        container.SetAttribute("parentID", "0");
+                    }
+                    else
+                    {
+                        container.SetAttribute("parentID", GetClientId(parent.Value, null));
+                    }
                 }
             }
 
@@ -959,11 +982,14 @@ namespace MediaBrowser.Dlna.Didl
                 }
             }
 
-            item = item.Parents.FirstOrDefault(i => i.HasImage(ImageType.Primary));
+            item = item.GetParents().FirstOrDefault(i => i.HasImage(ImageType.Primary));
 
             if (item != null)
             {
-                return GetImageInfo(item, ImageType.Primary);
+                if (item.HasImage(ImageType.Primary))
+                {
+                    return GetImageInfo(item, ImageType.Primary);
+                }
             }
 
             return null;
@@ -1040,7 +1066,12 @@ namespace MediaBrowser.Dlna.Didl
 
         public static string GetClientId(BaseItem item, StubType? stubType)
         {
-            var id = item.Id.ToString("N");
+            return GetClientId(item.Id, stubType);
+        }
+
+        public static string GetClientId(Guid idValue, StubType? stubType)
+        {
+            var id = idValue.ToString("N");
 
             if (stubType.HasValue)
             {

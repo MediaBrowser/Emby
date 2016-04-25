@@ -19,6 +19,7 @@ using MediaBrowser.Model.Sync;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -97,7 +98,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                 var index = jobItems.Count == 0 ?
                     0 :
-                    (jobItems.Select(i => i.JobItemIndex).Max() + 1);
+                    jobItems.Select(i => i.JobItemIndex).Max() + 1;
 
                 jobItem = new SyncJobItem
                 {
@@ -125,22 +126,28 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private string GetSyncJobItemName(BaseItem item)
         {
-            return item.Name;
+            var name = item.Name;
+            var episode = item as Episode;
+
+            if (episode != null)
+            {
+                if (episode.IndexNumber.HasValue)
+                {
+                    name = "E" + episode.IndexNumber.Value.ToString(CultureInfo.InvariantCulture) + " - " + name;
+                }
+
+                if (episode.ParentIndexNumber.HasValue)
+                {
+                    name = "S" + episode.ParentIndexNumber.Value.ToString(CultureInfo.InvariantCulture) + ", " + name;
+                }
+            }
+
+            return name;
         }
 
         public Task UpdateJobStatus(string id)
         {
             var job = _syncRepo.GetJob(id);
-
-            return UpdateJobStatus(job);
-        }
-
-        private Task UpdateJobStatus(SyncJob job)
-        {
-            if (job == null)
-            {
-                throw new ArgumentNullException("job");
-            }
 
             var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
@@ -291,6 +298,11 @@ namespace MediaBrowser.Server.Implementations.Sync
                     throw new ArgumentException("Unrecognized category: " + category);
             }
 
+            if (parent == null)
+            {
+                return new List<BaseItem>();
+            }
+
             query.User = user;
 
             var result = await parent.GetItems(query).ConfigureAwait(false);
@@ -319,6 +331,12 @@ namespace MediaBrowser.Server.Implementations.Sync
             if (series != null)
             {
                 return series.GetEpisodes(user, false, false);
+            }
+
+            var season = item as Season;
+            if (season != null)
+            {
+                return season.GetEpisodes(user, false, false);
             }
 
             if (item.IsFolder)
@@ -360,6 +378,9 @@ namespace MediaBrowser.Server.Implementations.Sync
         {
             await EnsureSyncJobItems(null, cancellationToken).ConfigureAwait(false);
 
+            // Look job items that are supposedly transfering, but need to be requeued because the synced files have been deleted somehow
+            await HandleDeletedSyncFiles(cancellationToken).ConfigureAwait(false);
+
             // If it already has a converting status then is must have been aborted during conversion
             var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
@@ -370,6 +391,28 @@ namespace MediaBrowser.Server.Implementations.Sync
             await SyncJobItems(result.Items, true, progress, cancellationToken).ConfigureAwait(false);
 
             CleanDeadSyncFiles();
+        }
+
+        private async Task HandleDeletedSyncFiles(CancellationToken cancellationToken)
+        {
+            // Look job items that are supposedly transfering, but need to be requeued because the synced files have been deleted somehow
+            var result = _syncManager.GetJobItems(new SyncJobItemQuery
+            {
+                Statuses = new[] { SyncJobItemStatus.ReadyToTransfer, SyncJobItemStatus.Transferring },
+                AddMetadata = false
+            });
+
+            foreach (var item in result.Items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (string.IsNullOrWhiteSpace(item.OutputPath) || !_fileSystem.FileExists(item.OutputPath))
+                {
+                    item.Status = SyncJobItemStatus.Queued;
+                    await _syncManager.UpdateSyncJobItemInternal(item).ConfigureAwait(false);
+                    await UpdateJobStatus(item.JobId).ConfigureAwait(false);
+                }
+            }
         }
 
         private void CleanDeadSyncFiles()
@@ -416,21 +459,19 @@ namespace MediaBrowser.Server.Implementations.Sync
                 var startingPercent = numComplete * percentPerItem * 100;
 
                 var innerProgress = new ActionableProgress<double>();
-                innerProgress.RegisterAction(p => progress.Report(startingPercent + (percentPerItem * p)));
+                innerProgress.RegisterAction(p => progress.Report(startingPercent + percentPerItem * p));
 
                 // Pull it fresh from the db just to make sure it wasn't deleted or cancelled while another item was converting
                 var jobItem = enableConversion ? _syncRepo.GetJobItem(item.Id) : item;
 
                 if (jobItem != null)
                 {
-                    var job = _syncRepo.GetJob(jobItem.JobId);
                     if (jobItem.Status != SyncJobItemStatus.Cancelled)
                     {
-                        await ProcessJobItem(job, jobItem, enableConversion, innerProgress, cancellationToken).ConfigureAwait(false);
+                        await ProcessJobItem(jobItem, enableConversion, innerProgress, cancellationToken).ConfigureAwait(false);
                     }
 
-                    job = _syncRepo.GetJob(jobItem.JobId);
-                    await UpdateJobStatus(job).ConfigureAwait(false);
+                    await UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
                 }
 
                 numComplete++;
@@ -440,7 +481,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
         }
 
-        private async Task ProcessJobItem(SyncJob job, SyncJobItem jobItem, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task ProcessJobItem(SyncJobItem jobItem, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var item = _libraryManager.GetItemById(jobItem.ItemId);
             if (item == null)
@@ -454,6 +495,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             jobItem.Progress = 0;
 
             var syncOptions = _config.GetSyncOptions();
+            var job = _syncManager.GetJob(jobItem.JobId);
             var user = _userManager.GetUserById(job.UserId);
             if (user == null)
             {
@@ -468,7 +510,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 AddMetadata = false,
                 ItemId = jobItem.ItemId,
-                TargetId = job.TargetId,
+                TargetId = jobItem.TargetId,
                 Statuses = new[] { SyncJobItemStatus.Converting, SyncJobItemStatus.Queued, SyncJobItemStatus.ReadyToTransfer, SyncJobItemStatus.Synced, SyncJobItemStatus.Transferring }
             });
 
@@ -478,7 +520,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             if (duplicateJobItems.Count > 0)
             {
-                var syncProvider = _syncManager.GetSyncProvider(jobItem, job) as IHasDuplicateCheck;
+                var syncProvider = _syncManager.GetSyncProvider(jobItem) as IHasDuplicateCheck;
 
                 if (!duplicateJobItems.Any(i => AllowDuplicateJobItem(syncProvider, i, jobItem)))
                 {
@@ -492,12 +534,12 @@ namespace MediaBrowser.Server.Implementations.Sync
             var video = item as Video;
             if (video != null)
             {
-                await Sync(jobItem, job, video, user, enableConversion, syncOptions, progress, cancellationToken).ConfigureAwait(false);
+                await Sync(jobItem, video, user, enableConversion, syncOptions, progress, cancellationToken).ConfigureAwait(false);
             }
 
             else if (item is Audio)
             {
-                await Sync(jobItem, job, (Audio)item, user, enableConversion, syncOptions, progress, cancellationToken).ConfigureAwait(false);
+                await Sync(jobItem, (Audio)item, user, enableConversion, syncOptions, progress, cancellationToken).ConfigureAwait(false);
             }
 
             else if (item is Photo)
@@ -521,8 +563,9 @@ namespace MediaBrowser.Server.Implementations.Sync
             return true;
         }
 
-        private async Task Sync(SyncJobItem jobItem, SyncJob job, Video item, User user, bool enableConversion, SyncOptions syncOptions, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task Sync(SyncJobItem jobItem, Video item, User user, bool enableConversion, SyncOptions syncOptions, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            var job = _syncManager.GetJob(jobItem.JobId);
             var jobOptions = _syncManager.GetVideoOptions(jobItem, job);
             var conversionOptions = new VideoOptions
             {
@@ -563,7 +606,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             {
                 // Save the job item now since conversion could take a while
                 await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
-                await UpdateJobStatus(job).ConfigureAwait(false);
+                await UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
 
                 try
                 {
@@ -577,7 +620,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                         {
                             jobItem.Progress = pct / 2;
                             await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
-                            await UpdateJobStatus(job).ConfigureAwait(false);
+                            await UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
                         }
                     });
 
@@ -588,6 +631,8 @@ namespace MediaBrowser.Server.Implementations.Sync
                         ReadInputAtNativeFramerate = !syncOptions.EnableFullSpeedTranscoding
 
                     }, innerProgress, cancellationToken);
+
+                    _syncManager.OnConversionComplete(jobItem);
                 }
                 catch (OperationCanceledException)
                 {
@@ -661,7 +706,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var startingIndex = mediaStreams.Count == 0 ?
                 0 :
-                (mediaStreams.Select(i => i.Index).Max() + 1);
+                mediaStreams.Select(i => i.Index).Max() + 1;
 
             foreach (var subtitle in subtitles)
             {
@@ -699,7 +744,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             var path = Path.Combine(temporaryPath, filename);
 
-			_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
             using (var stream = await _subtitleEncoder.GetSubtitles(streamInfo.ItemId, streamInfo.MediaSourceId, subtitleStreamIndex, subtitleStreamInfo.Format, 0, null, cancellationToken).ConfigureAwait(false))
             {
@@ -720,8 +765,9 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private const int DatabaseProgressUpdateIntervalSeconds = 2;
 
-        private async Task Sync(SyncJobItem jobItem, SyncJob job, Audio item, User user, bool enableConversion, SyncOptions syncOptions, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task Sync(SyncJobItem jobItem, Audio item, User user, bool enableConversion, SyncOptions syncOptions, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            var job = _syncManager.GetJob(jobItem.JobId);
             var jobOptions = _syncManager.GetAudioOptions(jobItem, job);
             var conversionOptions = new AudioOptions
             {
@@ -748,7 +794,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                 jobItem.Status = SyncJobItemStatus.Converting;
                 await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
-                await UpdateJobStatus(job).ConfigureAwait(false);
+                await UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
 
                 try
                 {
@@ -762,7 +808,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                         {
                             jobItem.Progress = pct / 2;
                             await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
-                            await UpdateJobStatus(job).ConfigureAwait(false);
+                            await UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
                         }
                     });
 
@@ -772,6 +818,8 @@ namespace MediaBrowser.Server.Implementations.Sync
                         CpuCoreLimit = syncOptions.TranscodingCpuCoreLimit
 
                     }, innerProgress, cancellationToken);
+
+                    _syncManager.OnConversionComplete(jobItem);
                 }
                 catch (OperationCanceledException)
                 {

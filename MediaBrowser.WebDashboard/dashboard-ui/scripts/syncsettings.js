@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function loadPage(page, config) {
 
@@ -15,18 +15,34 @@
 
         var form = this;
 
-        ApiClient.getNamedConfiguration("sync").done(function (config) {
+        ApiClient.getNamedConfiguration("sync").then(function (config) {
 
             config.TemporaryPath = $('#txtSyncTempPath', form).val();
             config.UploadSpeedLimitBytes = parseInt(parseFloat(($('#txtUploadSpeedLimit', form).val() || '0')) * 1000000);
             config.TranscodingCpuCoreLimit = parseInt($('#txtCpuCoreLimit', form).val());
             config.EnableFullSpeedTranscoding = $('#chkEnableFullSpeedConversion', form).checked();
 
-            ApiClient.updateNamedConfiguration("sync", config).done(Dashboard.processServerConfigurationUpdateResult);
+            ApiClient.updateNamedConfiguration("sync", config).then(Dashboard.processServerConfigurationUpdateResult);
         });
 
         // Disable default form submission
         return false;
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'syncactivity.html',
+            name: Globalize.translate('TabSyncJobs')
+        },
+         {
+             href: 'devicesupload.html',
+             name: Globalize.translate('TabCameraUpload')
+         },
+         {
+             href: 'syncsettings.html',
+             name: Globalize.translate('TabSettings')
+         }];
     }
 
     $(document).on('pageinit', "#syncSettingsPage", function () {
@@ -58,13 +74,14 @@
 
         Dashboard.showLoadingMsg();
 
+        LibraryMenu.setTabs('syncadmin', 2, getTabs);
         var page = this;
 
-        ApiClient.getNamedConfiguration("sync").done(function (config) {
+        ApiClient.getNamedConfiguration("sync").then(function (config) {
 
             loadPage(page, config);
 
         });
     });
 
-})(jQuery, document, window);
+});

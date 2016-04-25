@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['appSettings', 'userSettings', 'jQuery'], function (appSettings, userSettings, $) {
 
     function populateLanguages(select, languages) {
 
@@ -18,41 +18,45 @@
 
     function loadForm(page, user, loggedInUser, allCulturesPromise) {
 
-        allCulturesPromise.done(function (allCultures) {
+        allCulturesPromise.then(function (allCultures) {
 
             populateLanguages($('#selectAudioLanguage', page), allCultures);
             populateLanguages($('#selectSubtitleLanguage', page), allCultures);
 
             $('#selectAudioLanguage', page).val(user.Configuration.AudioLanguagePreference || "");
             $('#selectSubtitleLanguage', page).val(user.Configuration.SubtitleLanguagePreference || "");
+            page.querySelector('.chkEpisodeAutoPlay').checked = user.Configuration.EnableNextEpisodeAutoPlay || false;
         });
 
         $('#selectSubtitlePlaybackMode', page).val(user.Configuration.SubtitleMode || "").trigger('change');
 
         page.querySelector('.chkPlayDefaultAudioTrack').checked = user.Configuration.PlayDefaultAudioTrack || false;
-        page.querySelector('.chkEnableCinemaMode').checked = user.Configuration.EnableCinemaMode || false;
-        page.querySelector('.chkEnableChromecastAc3').checked = AppSettings.enableChromecastAc3();
-        page.querySelector('.chkExternalVideoPlayer').checked = AppSettings.enableExternalPlayers();
+        page.querySelector('.chkEnableCinemaMode').checked = userSettings.enableCinemaMode();
+        page.querySelector('.chkExternalVideoPlayer').checked = appSettings.enableExternalPlayers();
 
-        var bitrateOptions = MediaPlayer.getVideoQualityOptions().map(function (i) {
+        require(['qualityoptions'], function (qualityoptions) {
 
-            return '<option value="' + i.bitrate + '">' + i.name + '</option>';
+            var bitrateOptions = qualityoptions.getVideoQualityOptions(appSettings.maxStreamingBitrate()).map(function (i) {
 
-        }).join('');
+                return '<option value="' + i.bitrate + '">' + i.name + '</option>';
 
-        bitrateOptions = '<option value="">' + Globalize.translate('OptionAutomatic') + '</option>' + bitrateOptions;
+            }).join('');
 
-        $('#selectMaxBitrate', page).html(bitrateOptions);
+            bitrateOptions = '<option value="">' + Globalize.translate('OptionAutomatic') + '</option>' + bitrateOptions;
 
-        if (AppSettings.enableAutomaticBitrateDetection()) {
-            $('#selectMaxBitrate', page).val('');
-        } else {
-            $('#selectMaxBitrate', page).val(AppSettings.maxStreamingBitrate());
-        }
+            $('#selectMaxBitrate', page).html(bitrateOptions);
+            $('#selectMaxChromecastBitrate', page).html(bitrateOptions);
 
-        $('#selectMaxChromecastBitrate', page).val(AppSettings.maxChromecastBitrate());
+            if (appSettings.enableAutomaticBitrateDetection()) {
+                $('#selectMaxBitrate', page).val('');
+            } else {
+                $('#selectMaxBitrate', page).val(appSettings.maxStreamingBitrate());
+            }
 
-        Dashboard.hideLoadingMsg();
+            $('#selectMaxChromecastBitrate', page).val(appSettings.maxChromecastBitrate());
+
+            Dashboard.hideLoadingMsg();
+        });
     }
 
     function loadPage(page) {
@@ -67,13 +71,13 @@
 
         var allCulturesPromise = ApiClient.getCultures();
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            loadForm(page, response1[0] || response1, response2[0], allCulturesPromise);
+            loadForm(page, responses[1], responses[0], allCulturesPromise);
 
         });
 
-        ApiClient.getNamedConfiguration("cinemamode").done(function (cinemaConfig) {
+        ApiClient.getNamedConfiguration("cinemamode").then(function (cinemaConfig) {
 
             if (cinemaConfig.EnableIntrosForMovies || cinemaConfig.EnableIntrosForEpisodes) {
                 $('.cinemaModeOptions', page).show();
@@ -90,13 +94,46 @@
 
         user.Configuration.SubtitleMode = $('#selectSubtitlePlaybackMode', page).val();
         user.Configuration.PlayDefaultAudioTrack = page.querySelector('.chkPlayDefaultAudioTrack').checked;
-        user.Configuration.EnableCinemaMode = page.querySelector('.chkEnableCinemaMode').checked;
+        user.Configuration.EnableNextEpisodeAutoPlay = page.querySelector('.chkEpisodeAutoPlay').checked;
+        userSettings.enableCinemaMode(page.querySelector('.chkEnableCinemaMode').checked);
 
-        ApiClient.updateUserConfiguration(user.Id, user.Configuration).done(function () {
-            Dashboard.alert(Globalize.translate('SettingsSaved'));
+        return ApiClient.updateUserConfiguration(user.Id, user.Configuration);
+    }
 
-        }).always(function () {
-            Dashboard.hideLoadingMsg();
+    function save(page) {
+
+        appSettings.enableExternalPlayers(page.querySelector('.chkExternalVideoPlayer').checked);
+
+        if ($('#selectMaxBitrate', page).val()) {
+            appSettings.maxStreamingBitrate($('#selectMaxBitrate', page).val());
+            appSettings.enableAutomaticBitrateDetection(false);
+        } else {
+            appSettings.enableAutomaticBitrateDetection(true);
+        }
+
+        appSettings.maxChromecastBitrate($('#selectMaxChromecastBitrate', page).val());
+
+        var userId = getParameterByName('userId') || Dashboard.getCurrentUserId();
+
+        if (!AppInfo.enableAutoSave) {
+            Dashboard.showLoadingMsg();
+        }
+
+        ApiClient.getUser(userId).then(function (result) {
+
+            saveUser(page, result).then(function () {
+
+                Dashboard.hideLoadingMsg();
+                if (!AppInfo.enableAutoSave) {
+                    require(['toast'], function (toast) {
+                        toast(Globalize.translate('SettingsSaved'));
+                    });
+                }
+
+            }, function () {
+                Dashboard.hideLoadingMsg();
+            });
+
         });
     }
 
@@ -104,33 +141,13 @@
 
         var page = $(this).parents('.page')[0];
 
-        Dashboard.showLoadingMsg();
-
-        AppSettings.enableExternalPlayers(page.querySelector('.chkExternalVideoPlayer').checked);
-
-        if ($('#selectMaxBitrate', page).val()) {
-            AppSettings.maxStreamingBitrate($('#selectMaxBitrate', page).val());
-            AppSettings.enableAutomaticBitrateDetection(false);
-        } else {
-            AppSettings.enableAutomaticBitrateDetection(true);
-        }
-
-        AppSettings.maxChromecastBitrate($('#selectMaxChromecastBitrate', page).val());
-        AppSettings.enableChromecastAc3(page.querySelector('.chkEnableChromecastAc3').checked);
-
-        var userId = getParameterByName('userId') || Dashboard.getCurrentUserId();
-
-        ApiClient.getUser(userId).done(function (result) {
-
-            saveUser(page, result);
-
-        });
+        save(page);
 
         // Disable default form submission
         return false;
     }
 
-    $(document).on('pageinit', "#languagePreferencesPage", function () {
+    pageIdOn('pageinit', "languagePreferencesPage", function () {
 
         var page = this;
 
@@ -142,12 +159,24 @@
 
         $('.languagePreferencesForm').off('submit', onSubmit).on('submit', onSubmit);
 
+        if (AppInfo.enableAutoSave) {
+            page.querySelector('.btnSave').classList.add('hide');
+        } else {
+            page.querySelector('.btnSave').classList.remove('hide');
+        }
+    });
 
-    }).on('pageshow', "#languagePreferencesPage", function () {
+    pageIdOn('pageshow', "languagePreferencesPage", function () {
 
         var page = this;
 
-        if (AppInfo.hasKnownExternalPlayerSupport) {
+        if (AppInfo.supportsExternalPlayers) {
+            $('.fldExternalPlayer', page).show();
+        } else {
+            $('.fldExternalPlayer', page).hide();
+        }
+
+        if (AppInfo.supportsExternalPlayerMenu) {
             $('.labelNativeExternalPlayers', page).show();
             $('.labelGenericExternalPlayers', page).hide();
         } else {
@@ -158,4 +187,13 @@
         loadPage(page);
     });
 
-})(jQuery, window, document);
+    pageIdOn('pagebeforehide', "languagePreferencesPage", function () {
+
+        var page = this;
+
+        if (AppInfo.enableAutoSave) {
+            save(page);
+        }
+    });
+
+});

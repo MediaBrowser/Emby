@@ -1,5 +1,4 @@
-﻿.videoBackdrop {
-    /* Allows popups to be closed, because their z-index is 1099 */
+﻿#mediaPlayer {
     z-index: 1098;
     position: fixed;
     background-color: transparent;
@@ -123,19 +122,19 @@
 
 @media all and (max-width: 400px) {
     .videoPositionSlider {
-        width: 220px;
+        width: 200px;
     }
 }
 
 @media all and (max-width: 350px) {
     .videoPositionSlider {
-        width: 200px;
+        width: 180px;
     }
 }
 
 @media all and (max-width: 320px) {
     .videoPositionSlider {
-        width: 170px;
+        width: 120px;
     }
 }
 
@@ -258,6 +257,12 @@
     }
 }
 
+@media all and (max-width: 500px) {
+    .videoControls .currentTime {
+        display: none !important;
+    }
+}
+
 @media all and (min-width: 1400px) {
     .nowPlayingInfo {
         padding-bottom: 0;
@@ -359,4 +364,24 @@ video::-webkit-media-text-track-background {
 #videoPlayer:not(.idlePlayer) video:not([controls])::-webkit-media-text-track-display {
     /*Style the text itself*/
     margin-top: -2.5em;
+}
+
+
+.videoSubtitles {
+    position: fixed;
+    bottom: 10%;
+    text-align: center;
+    left: 0;
+    right: 0;
+    color: #fff;
+    font-size: 200%;
+    z-index: 9999999;
+}
+
+.videoSubtitlesInner {
+    max-width: 70%;
+    background-color: rgba(0,0,0,.8);
+    padding: .25em;
+    margin: auto;
+    display: inline-block;
 }

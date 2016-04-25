@@ -41,7 +41,7 @@ namespace MediaBrowser.Model.ApiClient
                 {
                     existing.DateLastAccessed = server.DateLastAccessed;
                 }
-
+                
                 existing.UserLinkType = server.UserLinkType;
 
                 if (!string.IsNullOrEmpty(server.AccessToken))

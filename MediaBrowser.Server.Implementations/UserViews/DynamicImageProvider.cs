@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -54,9 +53,7 @@ namespace MediaBrowser.Server.Implementations.UserViews
                 return new List<BaseItem>();
             }
 
-            if (string.Equals(view.ViewType, SpecialFolder.GameGenre, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(view.ViewType, SpecialFolder.MusicGenre, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(view.ViewType, SpecialFolder.MovieGenre, StringComparison.OrdinalIgnoreCase) ||
+            if (string.Equals(view.ViewType, SpecialFolder.MovieGenre, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(view.ViewType, SpecialFolder.TvGenre, StringComparison.OrdinalIgnoreCase))
             {
                 var userItemsResult = await view.GetItems(new InternalItemsQuery
@@ -72,7 +69,7 @@ namespace MediaBrowser.Server.Implementations.UserViews
 
             var result = await view.GetItems(new InternalItemsQuery
             {
-                User = (view.UserId.HasValue ? _userManager.GetUserById(view.UserId.Value) : null),
+                User = view.UserId.HasValue ? _userManager.GetUserById(view.UserId.Value) : null,
                 CollapseBoxSetItems = false,
                 Recursive = recursive,
                 ExcludeItemTypes = new[] { "UserView", "CollectionFolder" }
@@ -137,7 +134,7 @@ namespace MediaBrowser.Server.Implementations.UserViews
             var view = item as UserView;
             if (view != null)
             {
-                return (IsUsingCollectionStrip(view));
+                return IsUsingCollectionStrip(view);
             }
 
             return false;

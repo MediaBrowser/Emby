@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Server.Implementations.Persistence
@@ -24,9 +21,104 @@ namespace MediaBrowser.Server.Implementations.Persistence
             AddPixelFormatColumnCommand();
             AddBitDepthCommand();
             AddIsAnamorphicColumn();
-            AddIsCabacColumn();
             AddKeyFramesColumn();
             AddRefFramesCommand();
+            AddCodecTagColumn();
+            AddCommentColumn();
+            AddNalColumn();
+        }
+
+        private void AddNalColumn()
+        {
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "PRAGMA table_info(mediastreams)";
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        if (!reader.IsDBNull(1))
+                        {
+                            var name = reader.GetString(1);
+
+                            if (string.Equals(name, "NalLengthSize", StringComparison.OrdinalIgnoreCase))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine("alter table mediastreams");
+            builder.AppendLine("add column NalLengthSize TEXT");
+
+            _connection.RunQueries(new[] { builder.ToString() }, _logger);
+        }
+
+        private void AddCommentColumn()
+        {
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "PRAGMA table_info(mediastreams)";
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        if (!reader.IsDBNull(1))
+                        {
+                            var name = reader.GetString(1);
+
+                            if (string.Equals(name, "Comment", StringComparison.OrdinalIgnoreCase))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine("alter table mediastreams");
+            builder.AppendLine("add column Comment TEXT");
+
+            _connection.RunQueries(new[] { builder.ToString() }, _logger);
+        }
+
+        private void AddCodecTagColumn()
+        {
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "PRAGMA table_info(mediastreams)";
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        if (!reader.IsDBNull(1))
+                        {
+                            var name = reader.GetString(1);
+
+                            if (string.Equals(name, "CodecTag", StringComparison.OrdinalIgnoreCase))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine("alter table mediastreams");
+            builder.AppendLine("add column CodecTag TEXT");
+
+            _connection.RunQueries(new[] { builder.ToString() }, _logger);
         }
 
         private void AddPixelFormatColumnCommand()
@@ -118,37 +210,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             builder.AppendLine("alter table mediastreams");
             builder.AppendLine("add column RefFrames INT NULL");
-
-            _connection.RunQueries(new[] { builder.ToString() }, _logger);
-        }
-
-        private void AddIsCabacColumn()
-        {
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "PRAGMA table_info(mediastreams)";
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        if (!reader.IsDBNull(1))
-                        {
-                            var name = reader.GetString(1);
-
-                            if (string.Equals(name, "IsCabac", StringComparison.OrdinalIgnoreCase))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            var builder = new StringBuilder();
-
-            builder.AppendLine("alter table mediastreams");
-            builder.AppendLine("add column IsCabac BIT NULL");
 
             _connection.RunQueries(new[] { builder.ToString() }, _logger);
         }

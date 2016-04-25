@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -40,6 +39,7 @@ namespace MediaBrowser.Server.Implementations.Collections
         public Folder GetCollectionsFolder(string userId)
         {
             return _libraryManager.RootFolder.Children.OfType<ManualCollectionsFolder>()
+                .FirstOrDefault() ?? _libraryManager.GetUserRootFolder().Children.OfType<ManualCollectionsFolder>()
                 .FirstOrDefault();
         }
 

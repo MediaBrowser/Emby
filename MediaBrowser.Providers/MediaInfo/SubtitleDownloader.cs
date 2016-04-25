@@ -26,8 +26,9 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public async Task<List<string>> DownloadSubtitles(Video video,
             List<MediaStream> mediaStreams,
-            bool skipIfGraphicalSubtitlesPresent,
+            bool skipIfEmbeddedSubtitlesPresent,
             bool skipIfAudioTrackMatches,
+            bool requirePerfectMatch,
             IEnumerable<string> languages,
             CancellationToken cancellationToken)
         {
@@ -59,7 +60,7 @@ namespace MediaBrowser.Providers.MediaInfo
             {
                 try
                 {
-                    var downloaded = await DownloadSubtitles(video, mediaStreams, skipIfGraphicalSubtitlesPresent, skipIfAudioTrackMatches, lang, mediaType, cancellationToken)
+                    var downloaded = await DownloadSubtitles(video, mediaStreams, skipIfEmbeddedSubtitlesPresent, skipIfAudioTrackMatches, requirePerfectMatch, lang, mediaType, cancellationToken)
                         .ConfigureAwait(false);
 
                     if (downloaded)
@@ -78,8 +79,9 @@ namespace MediaBrowser.Providers.MediaInfo
 
         private async Task<bool> DownloadSubtitles(Video video,
             List<MediaStream> mediaStreams,
-            bool skipIfGraphicalSubtitlesPresent,
+            bool skipIfEmbeddedSubtitlesPresent,
             bool skipIfAudioTrackMatches,
+            bool requirePerfectMatch,
             string language,
             VideoContentType mediaType,
             CancellationToken cancellationToken)
@@ -107,8 +109,8 @@ namespace MediaBrowser.Providers.MediaInfo
             }
 
             // There's an internal subtitle stream for this language
-            if (skipIfGraphicalSubtitlesPresent &&
-                mediaStreams.Any(i => i.Type == MediaStreamType.Subtitle && !i.IsTextSubtitleStream && string.Equals(i.Language, language, StringComparison.OrdinalIgnoreCase)))
+            if (skipIfEmbeddedSubtitlesPresent &&
+                mediaStreams.Any(i => i.Type == MediaStreamType.Subtitle && !i.IsExternal && string.Equals(i.Language, language, StringComparison.OrdinalIgnoreCase)))
             {
                 return false;
             }
@@ -125,7 +127,9 @@ namespace MediaBrowser.Providers.MediaInfo
                 ProviderIds = video.ProviderIds,
 
                 // Stop as soon as we find something
-                SearchAllProviders = false
+                SearchAllProviders = false,
+
+                IsPerfectMatch = requirePerfectMatch
             };
 
             var episode = video as Episode;

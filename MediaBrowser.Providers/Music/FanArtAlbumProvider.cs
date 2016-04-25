@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -13,10 +12,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using CommonIO;
 using MediaBrowser.Model.Serialization;
 
@@ -68,7 +65,14 @@ namespace MediaBrowser.Providers.Music
 
             var list = new List<RemoteImageInfo>();
 
-            var artistMusicBrainzId = album.MusicArtist.GetProviderId(MetadataProviders.MusicBrainzArtist);
+            var musicArtist = album.MusicArtist;
+
+            if (musicArtist == null)
+            {
+                return list;
+            }
+
+            var artistMusicBrainzId = musicArtist.GetProviderId(MetadataProviders.MusicBrainzArtist);
 
             if (!string.IsNullOrEmpty(artistMusicBrainzId))
             {

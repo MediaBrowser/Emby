@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -10,7 +9,6 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Server.Implementations.Photos;
 using MoreLinq;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommonIO;
@@ -59,7 +57,7 @@ namespace MediaBrowser.Server.Implementations.Collections
                         return subItem;
                     }
 
-                    var parent = subItem.Parent;
+                    var parent = subItem.GetParent();
 
                     if (parent != null && parent.HasImage(ImageType.Primary))
                     {
@@ -78,24 +76,9 @@ namespace MediaBrowser.Server.Implementations.Collections
             return Task.FromResult(GetFinalItems(items, 2));
         }
 
-        protected override async Task<string> CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override Task<string> CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
-            var image = itemsWithImages
-                .Where(i => i.HasImage(ImageType.Primary) && i.GetImageInfo(ImageType.Primary, 0).IsLocalFile && Path.HasExtension(i.GetImagePath(ImageType.Primary)))
-                .Select(i => i.GetImagePath(ImageType.Primary))
-                .FirstOrDefault();
-
-            if (string.IsNullOrWhiteSpace(image))
-            {
-                return null;
-            }
-
-            var ext = Path.GetExtension(image);
-
-            var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ext);
-            File.Copy(image, outputPath);
-
-            return outputPath;
+            return CreateSingleImage(itemsWithImages, outputPathWithoutExtension, ImageType.Primary);
         }
     }
 }

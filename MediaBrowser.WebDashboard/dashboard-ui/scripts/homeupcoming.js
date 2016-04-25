@@ -1,9 +1,9 @@
-﻿(function ($, document) {
+﻿define(['jQuery', 'scrollStyles'], function ($) {
 
     function loadUpcoming(page) {
         Dashboard.showLoadingMsg();
 
-        var limit = AppInfo.hasLowImageBandwidth ?
+        var limit = AppInfo.hasLowImageBandwidth && !enableScrollX() ?
          24 :
          40;
 
@@ -16,7 +16,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query)).done(function (result) {
+        ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query)).then(function (result) {
 
             var items = result.Items;
 
@@ -30,13 +30,11 @@
             renderUpcoming(elem, items);
 
             Dashboard.hideLoadingMsg();
-
-            LibraryBrowser.setLastRefreshed(page);
         });
     }
 
     function enableScrollX() {
-        return $.browser.mobile && AppInfo.enableAppLayouts;
+        return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
     function getThumbShape() {
@@ -61,7 +59,13 @@
             if (item.PremiereDate) {
                 try {
 
-                    dateText = LibraryBrowser.getFutureDateText(parseISO8601Date(item.PremiereDate, { toLocal: true }), true);
+                    var premiereDate = parseISO8601Date(item.PremiereDate, { toLocal: true });
+
+                    if (premiereDate.getDate() == new Date().getDate() - 1) {
+                        dateText = Globalize.translate('Yesterday');
+                    } else {
+                        dateText = LibraryBrowser.getFutureDateText(premiereDate, true);
+                    }
 
                 } catch (err) {
                 }
@@ -108,7 +112,8 @@
                 lazy: true,
                 showDetailsMenu: true,
                 centerText: true,
-                context: 'home-upcoming'
+                context: 'home-upcoming',
+                overlayMoreButton: true
 
             });
             html += '</div>';
@@ -119,11 +124,14 @@
         elem.innerHTML = html;
         ImageLoader.lazyChildren(elem);
     }
+    return function (view, params, tabContent) {
 
-    window.HomePage.renderUpcoming = function (page, tabContent) {
-        if (LibraryBrowser.needsRefresh(tabContent)) {
+        var self = this;
+
+        self.renderTab = function () {
+
             loadUpcoming(tabContent);
-        }
+        };
     };
 
-})(jQuery, document);
+});

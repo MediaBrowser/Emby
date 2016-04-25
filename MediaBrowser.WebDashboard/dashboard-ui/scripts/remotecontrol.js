@@ -1,4 +1,4 @@
-﻿(function (window, document, $) {
+﻿define([], function () {
 
     function sendPlayCommand(options, playType) {
 
@@ -167,32 +167,31 @@
 
         self.getPlayerState = function () {
 
-            var deferred = $.Deferred();
+            return new Promise(function (resolve, reject) {
 
-            var apiClient = window.ApiClient;
+                var apiClient = window.ApiClient;
 
-            if (apiClient) {
-                apiClient.getSessions().done(function (sessions) {
+                if (apiClient) {
+                    apiClient.getSessions().then(function (sessions) {
 
-                    var currentTargetId = MediaController.getPlayerInfo().id;
+                        var currentTargetId = MediaController.getPlayerInfo().id;
 
-                    // Update existing data
-                    //updateSessionInfo(popup, msg.Data);
-                    var session = sessions.filter(function (s) {
-                        return s.Id == currentTargetId;
-                    })[0];
+                        // Update existing data
+                        //updateSessionInfo(popup, msg.Data);
+                        var session = sessions.filter(function (s) {
+                            return s.Id == currentTargetId;
+                        })[0];
 
-                    if (session) {
-                        session = getPlayerState(session);
-                    }
+                        if (session) {
+                            session = getPlayerState(session);
+                        }
 
-                    deferred.resolveWith(null, [session]);
-                });
-            } else {
-                deferred.resolveWith(null, [{}]);
-            }
-
-            return deferred.promise();
+                        resolve(session);
+                    });
+                } else {
+                    resolve({});
+                }
+            });
         };
 
         var pollInterval;
@@ -203,7 +202,7 @@
                 var apiClient = window.ApiClient;
 
                 if (apiClient) {
-                    apiClient.getSessions().done(processUpdatedSessions);
+                    apiClient.getSessions().then(processUpdatedSessions);
                 }
             }
         }
@@ -263,52 +262,53 @@
 
         self.getTargets = function () {
 
-            var deferred = $.Deferred();
+            return new Promise(function (resolve, reject) {
 
-            var sessionQuery = {
-                ControllableByUserId: Dashboard.getCurrentUserId()
-            };
+                var sessionQuery = {
+                    ControllableByUserId: Dashboard.getCurrentUserId()
+                };
 
-            var apiClient = window.ApiClient;
+                var apiClient = window.ApiClient;
 
-            if (apiClient) {
-                apiClient.getSessions(sessionQuery).done(function (sessions) {
+                if (apiClient) {
+                    apiClient.getSessions(sessionQuery).then(function (sessions) {
 
-                    var targets = sessions.filter(function (s) {
+                        var targets = sessions.filter(function (s) {
 
-                        return s.DeviceId != apiClient.deviceId();
+                            return s.DeviceId != apiClient.deviceId();
 
-                    }).map(function (s) {
-                        return {
-                            name: s.DeviceName,
-                            deviceName: s.DeviceName,
-                            id: s.Id,
-                            playerName: self.name,
-                            appName: s.Client,
-                            playableMediaTypes: s.PlayableMediaTypes,
-                            isLocalPlayer: false,
-                            supportedCommands: s.SupportedCommands
-                        };
+                        }).map(function (s) {
+                            return {
+                                name: s.DeviceName,
+                                deviceName: s.DeviceName,
+                                id: s.Id,
+                                playerName: self.name,
+                                appName: s.Client,
+                                playableMediaTypes: s.PlayableMediaTypes,
+                                isLocalPlayer: false,
+                                supportedCommands: s.SupportedCommands
+                            };
+                        });
+
+                        resolve(targets);
+
+                    }, function () {
+
+                        reject();
                     });
 
-                    deferred.resolveWith(null, [targets]);
-
-                }).fail(function () {
-
-                    deferred.reject();
-                });
-            } else {
-                deferred.resolveWith(null, []);
-            }
-
-            return deferred.promise();
+                } else {
+                    resolve([]);
+                }
+            });
         };
 
         self.tryPair = function(target) {
 
-            var deferred = $.Deferred();
-            deferred.resolve();
-            return deferred.promise();
+            return new Promise(function (resolve, reject) {
+
+                resolve();
+            });
         };
     }
 
@@ -359,7 +359,7 @@
         }
         else if (msg.MessageType === "SessionEnded") {
 
-            Logger.log("Server reports another session ended");
+            console.log("Server reports another session ended");
 
             if (MediaController.getPlayerInfo().id == msg.Data.Id) {
                 MediaController.setDefaultPlayerActive();
@@ -384,18 +384,16 @@
     }
 
     function initializeApiClient(apiClient) {
-        $(apiClient).on("websocketmessage", onWebSocketMessageReceived).on("websocketopen", onWebSocketConnectionChange);
+        Events.on(apiClient, "websocketmessage", onWebSocketMessageReceived);
+        Events.on(apiClient, "websocketopen", onWebSocketConnectionChange);
     }
 
-    Dashboard.ready(function () {
+    if (window.ApiClient) {
+        initializeApiClient(window.ApiClient);
+    }
 
-        if (window.ApiClient) {
-            initializeApiClient(window.ApiClient);
-        }
-
-        $(ConnectionManager).on('apiclientcreated', function (e, apiClient) {
-            initializeApiClient(apiClient);
-        });
+    Events.on(ConnectionManager, 'apiclientcreated', function (e, apiClient) {
+        initializeApiClient(apiClient);
     });
 
-})(window, document, jQuery);
+});

@@ -1,47 +1,21 @@
-﻿(function (document, window, $) {
-
-    function renderLibrarySharingList(page, result) {
-
-        var folderHtml = '';
-
-        folderHtml += '<div data-role="controlgroup">';
-
-        folderHtml += result.Items.map(function (i) {
-
-            var currentHtml = '';
-
-            var id = 'chkShareFolder' + i.Id;
-
-            currentHtml += '<label for="' + id + '">' + i.Name + '</label>';
-
-            var isChecked = true;
-            var checkedHtml = isChecked ? ' checked="checked"' : '';
-
-            currentHtml += '<input data-mini="true" class="chkShareFolder" data-folderid="' + i.Id + '" type="checkbox" id="' + id + '"' + checkedHtml + ' />';
-
-            return currentHtml;
-
-        }).join('');
-
-        folderHtml += '</div>';
-
-        $('.librarySharingList', page).html(folderHtml).trigger('create');
-    }
+﻿define(['jQuery'], function ($) {
 
     function deleteUser(page, id) {
 
         var msg = Globalize.translate('DeleteUserConfirmation');
 
-        Dashboard.confirm(msg, Globalize.translate('DeleteUser'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(msg, Globalize.translate('DeleteUser')).then(function () {
+
                 Dashboard.showLoadingMsg();
 
-                ApiClient.deleteUser(id).done(function () {
+                ApiClient.deleteUser(id).then(function () {
 
                     loadData(page);
                 });
-            }
+            });
+
         });
     }
 
@@ -77,9 +51,9 @@
             ironIcon: 'delete'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: card,
                 callback: function (id) {
@@ -198,7 +172,7 @@
 
         var html = getUserSectionHtml(users, addConnectIndicator);
 
-        elem.html(html).trigger('create');
+        elem.html(html);
 
         $('.btnUserMenu', elem).on('click', function () {
             showUserMenu(this);
@@ -218,35 +192,34 @@
 
     function showPendingUserMenu(elem) {
 
-        require(['jqmpopup'], function () {
+        var menuItems = [];
+
+        menuItems.push({
+            name: Globalize.translate('ButtonCancel'),
+            id: 'delete',
+            ironIcon: 'delete'
+        });
+
+        require(['actionsheet'], function (actionsheet) {
+
             var card = $(elem).parents('.card');
             var page = $(elem).parents('.page');
             var id = card.attr('data-id');
 
-            $('.userMenu', page).popup("close").remove();
+            actionsheet.show({
+                items: menuItems,
+                positionTo: card,
+                callback: function (menuItemId) {
 
-            var html = '<div data-role="popup" class="userMenu tapHoldMenu" data-theme="a">';
+                    switch (menuItemId) {
 
-            html += '<ul data-role="listview" style="min-width: 180px;">';
-            html += '<li data-role="list-divider">' + Globalize.translate('HeaderMenu') + '</li>';
-
-            html += '<li><a href="#" class="btnDelete" data-id="' + id + '">' + Globalize.translate('ButtonCancel') + '</a></li>';
-
-            html += '</ul>';
-
-            html += '</div>';
-
-            page.append(html);
-
-            var flyout = $('.userMenu', page).popup({ positionTo: elem || "window" }).trigger('create').popup("open").on("popupafterclose", function () {
-
-                $(this).off("popupafterclose").remove();
-
-            });
-
-            $('.btnDelete', flyout).on('click', function () {
-                cancelAuthorization(page, this.getAttribute('data-id'));
-                $('.userMenu', page).popup("close").remove();
+                        case 'delete':
+                            cancelAuthorization(page, id);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             });
         });
     }
@@ -311,7 +284,7 @@
 
         var html = users.map(getPendingUserHtml).join('');
 
-        var elem = $('.pending', page).html(html).trigger('create');
+        var elem = $('.pending', page).html(html);
 
         $('.btnUserMenu', elem).on('click', function () {
             showPendingUserMenu(this);
@@ -332,7 +305,7 @@
 
             })
 
-        }).done(function () {
+        }).then(function () {
 
             loadData(page);
 
@@ -343,95 +316,22 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getUsers().done(function (users) {
+        ApiClient.getUsers().then(function (users) {
             renderUsers(page, users);
             Dashboard.hideLoadingMsg();
         });
 
-        ApiClient.getJSON(ApiClient.getUrl('Connect/Pending')).done(function (pending) {
+        ApiClient.getJSON(ApiClient.getUrl('Connect/Pending')).then(function (pending) {
 
             renderPendingGuests(page, pending);
         });
-
-        ApiClient.getJSON(ApiClient.getUrl("Library/MediaFolders", { IsHidden: false })).done(function (result) {
-
-            renderLibrarySharingList(page, result);
-        });
-    }
-
-    function inviteUser(page) {
-
-        Dashboard.showLoadingMsg();
-
-        ApiClient.getJSON(ApiClient.getUrl("Channels", {})).done(function (channelsResult) {
-
-            var shareExcludes = $(".chkShareFolder:checked", page).get().map(function (i) {
-
-                return i.getAttribute('data-folderid');
-            });
-
-            // Add/Update connect info
-            ApiClient.ajax({
-
-                type: "POST",
-                url: ApiClient.getUrl('Connect/Invite'),
-                dataType: 'json',
-                data: {
-
-                    ConnectUsername: $('#txtConnectUsername', page).val(),
-                    EnabledLibraries: shareExcludes.join(','),
-                    SendingUserId: Dashboard.getCurrentUserId(),
-                    EnableLiveTv: false
-                }
-
-            }).done(function (result) {
-
-                $('#popupInvite').popup('close');
-
-                Dashboard.hideLoadingMsg();
-
-                showNewUserInviteMessage(page, result);
-
-            });
-        });
-    }
-
-    function showNewUserInviteMessage(page, result) {
-
-        if (!result.IsNewUserInvitation && !result.IsPending) {
-
-            // It was immediately approved
-            loadData(page);
-            return;
-        }
-
-        var message = result.IsNewUserInvitation ?
-            Globalize.translate('MessageInvitationSentToNewUser', result.GuestDisplayName) :
-            Globalize.translate('MessageInvitationSentToUser', result.GuestDisplayName);
-
-        // Need a timeout because jquery mobile will not show a popup while a previous one is in the act of closing
-        setTimeout(function () {
-
-            Dashboard.alert({
-                message: message,
-                title: Globalize.translate('HeaderInvitationSent'),
-                callback: function () {
-                    loadData(page);
-                }
-            });
-
-        }, 300);
     }
 
     function showInvitePopup(page) {
 
-        Dashboard.getCurrentUser().done(function (user) {
+        Dashboard.getCurrentUser().then(function (user) {
 
-            if (user.ConnectUserId) {
-
-                $('#popupInvite', page).popup('open');
-                $('#txtConnectUsername', page).val('');
-            } else {
+            if (!user.ConnectUserId) {
 
                 var msg = Globalize.translate('MessageConnectAccountRequiredToInviteGuest');
 
@@ -440,24 +340,22 @@
                 msg += '<a href="useredit.html?userId=' + user.Id + '">' + Globalize.translate('ButtonLinkMyEmbyAccount') + '</a>';
                 msg += '<br/>';
 
-                Dashboard.alert({
-                    message: msg,
-                    title: Globalize.translate('HeaderInviteGuest')
+                require(['alert'], function (alert) {
+                    alert({
+                        title: Globalize.translate('HeaderInviteGuest'),
+                        text: msg
+                    });
                 });
-
+                return;
             }
 
+            require(['components/guestinviter/guestinviter'], function (guestinviter) {
+
+                guestinviter.show().then(function () {
+                    loadData(page);
+                });
+            });
         });
-    }
-
-    function onSubmit() {
-        var form = this;
-
-        var page = $(form).parents('.page');
-
-        inviteUser(page);
-
-        return false;
     }
 
     $(document).on('pageinit', "#userProfilesPage", function () {
@@ -474,8 +372,6 @@
             Dashboard.navigate('usernew.html');
         });
 
-        $('.addUserForm').off('submit', onSubmit).on('submit', onSubmit);
-
     }).on('pagebeforeshow', "#userProfilesPage", function () {
 
         var page = this;
@@ -483,4 +379,4 @@
         loadData(page);
     });
 
-})(document, window, jQuery);
+});

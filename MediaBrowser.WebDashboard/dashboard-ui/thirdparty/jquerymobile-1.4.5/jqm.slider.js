@@ -1,4 +1,81 @@
-﻿(function ($, undefined) {
+﻿define(['jqmwidget'], function () {
+
+    var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/;
+
+    $.extend($.mobile, {
+
+        // Namespace used framework-wide for data-attrs. Default is no namespace
+
+        // Retrieve an attribute from an element and perform some massaging of the value
+
+        getAttribute: function (element, key) {
+            var data;
+
+            element = element.jquery ? element[0] : element;
+
+            if (element && element.getAttribute) {
+                data = element.getAttribute("data-" + key);
+            }
+
+            // Copied from core's src/data.js:dataAttr()
+            // Convert from a string to a proper data type
+            try {
+                data = data === "true" ? true :
+                    data === "false" ? false :
+                    data === "null" ? null :
+                    // Only convert to a number if it doesn't change the string
+                    +data + "" === data ? +data :
+                    rbrace.test(data) ? JSON.parse(data) :
+                    data;
+            } catch (err) { }
+
+            return data;
+        }
+
+    });
+
+    /*!
+     * jQuery UI Core c0ab71056b936627e8a7821f03c044aec6280a40
+     * http://jqueryui.com
+     *
+     * Copyright 2013 jQuery Foundation and other contributors
+     * Released under the MIT license.
+     * http://jquery.org/license
+     *
+     * http://api.jqueryui.com/category/ui-core/
+     */
+    (function ($, undefined) {
+
+        // $.ui might exist from components with no dependencies, e.g., $.ui.position
+        $.ui = $.ui || {};
+
+        $.extend($.ui, {
+            version: "c0ab71056b936627e8a7821f03c044aec6280a40",
+
+            keyCode: {
+                BACKSPACE: 8,
+                COMMA: 188,
+                DELETE: 46,
+                DOWN: 40,
+                END: 35,
+                ENTER: 13,
+                ESCAPE: 27,
+                HOME: 36,
+                LEFT: 37,
+                PAGE_DOWN: 34,
+                PAGE_UP: 33,
+                PERIOD: 190,
+                RIGHT: 39,
+                SPACE: 32,
+                TAB: 9,
+                UP: 38
+            }
+        });
+
+        // deprecated
+        $.ui.ie = !!/msie [\w.]+/.exec(navigator.userAgent.toLowerCase());
+
+    })(jQuery);
 
     $.widget("mobile.slider", $.extend({
         initSelector: "input[type='range']:not([data-role='none'])",
@@ -20,11 +97,11 @@
                 control = this.element,
                 trackTheme = this.options.trackTheme || $.mobile.getAttribute(control[0], "theme"),
                 trackThemeClass = trackTheme ? " ui-bar-" + trackTheme : " ui-bar-inherit",
-                cornerClass = (this.options.corners || control.jqmData("corners")) ? " ui-corner-all" : "",
-                miniClass = (this.options.mini || control.jqmData("mini")) ? " ui-mini" : "",
+                cornerClass = (this.options.corners || control.data("corners")) ? " ui-corner-all" : "",
+                miniClass = (this.options.mini || control.data("mini")) ? " ui-mini" : "",
                 cType = control[0].nodeName.toLowerCase(),
                 isToggleSwitch = (cType === "select"),
-                isRangeslider = control.parent().is(":jqmData(role='rangeslider')"),
+                isRangeslider = control.parent().is("[data-role='rangeslider']"),
                 selectClass = (isToggleSwitch) ? "ui-slider-switch" : "",
                 controlID = control.attr("id"),
                 $label = $("[for='" + controlID + "']"),
@@ -134,8 +211,8 @@
                 "mouseup": "_controlVMouseUp"
             });
 
-            slider.bind("mousedown", $.proxy(this._sliderVMouseDown, this))
-                .bind("click", false);
+            slider.on("mousedown", $.proxy(this._sliderVMouseDown, this))
+                .on("click", false);
 
             // We have to instantiate a new function object for the unbind to work properly
             // since the method itself is defined in the prototype (causing it to unbind everything)
@@ -158,7 +235,7 @@
                 "keyup": "_handleKeyup"
             });
 
-            this.handle.bind("click", false);
+            this.handle.on("click", false);
 
             //this._handleFormReset();
 
@@ -230,14 +307,14 @@
 
             // In all cases prevent the default and mark the handle as active
             switch (event.keyCode) {
-                case $.mobile.keyCode.HOME:
-                case $.mobile.keyCode.END:
-                case $.mobile.keyCode.PAGE_UP:
-                case $.mobile.keyCode.PAGE_DOWN:
-                case $.mobile.keyCode.UP:
-                case $.mobile.keyCode.RIGHT:
-                case $.mobile.keyCode.DOWN:
-                case $.mobile.keyCode.LEFT:
+                case $.ui.keyCode.HOME:
+                case $.ui.keyCode.END:
+                case $.ui.keyCode.PAGE_UP:
+                case $.ui.keyCode.PAGE_DOWN:
+                case $.ui.keyCode.UP:
+                case $.ui.keyCode.RIGHT:
+                case $.ui.keyCode.DOWN:
+                case $.ui.keyCode.LEFT:
                     event.preventDefault();
 
                     if (!this._keySliding) {
@@ -250,20 +327,20 @@
 
             // move the slider according to the keypress
             switch (event.keyCode) {
-                case $.mobile.keyCode.HOME:
+                case $.ui.keyCode.HOME:
                     this.refresh(this.min);
                     break;
-                case $.mobile.keyCode.END:
+                case $.ui.keyCode.END:
                     this.refresh(this.max);
                     break;
-                case $.mobile.keyCode.PAGE_UP:
-                case $.mobile.keyCode.UP:
-                case $.mobile.keyCode.RIGHT:
+                case $.ui.keyCode.PAGE_UP:
+                case $.ui.keyCode.UP:
+                case $.ui.keyCode.RIGHT:
                     this.refresh(index + this.step);
                     break;
-                case $.mobile.keyCode.PAGE_DOWN:
-                case $.mobile.keyCode.DOWN:
-                case $.mobile.keyCode.LEFT:
+                case $.ui.keyCode.PAGE_DOWN:
+                case $.ui.keyCode.DOWN:
+                case $.ui.keyCode.LEFT:
                     this.refresh(index - this.step);
                     break;
             }
@@ -475,9 +552,9 @@
 
             this.handle[0].setAttribute("aria-valuenow", isInput ? newval : optionElements.eq(newval).attr("value"));
 
-            this.handle[0].setAttribute("aria-valuetext", isInput ? newval : optionElements.eq(newval).getEncodedText());
+            this.handle[0].setAttribute("aria-valuetext", isInput ? newval : optionElements.eq(newval).text());
 
-            this.handle[0].setAttribute("title", isInput ? newval : optionElements.eq(newval).getEncodedText());
+            this.handle[0].setAttribute("title", isInput ? newval : optionElements.eq(newval).text());
 
             if (this.valuebg) {
                 this.valuebg.css("width", percent + "%");
@@ -577,9 +654,6 @@
 
     }, $.mobile.behaviors.formReset));
 
-})(jQuery);
-
-(function ($, undefined) {
     $.widget("mobile.rangeslider", $.extend({
 
         options: {
@@ -837,11 +911,6 @@
 
     }, $.mobile.behaviors.formReset));
 
-})(jQuery);
-
-
-(function ($, undefined) {
-
     var popup;
 
     function getPopup() {
@@ -955,4 +1024,4 @@
         }
     });
 
-})(jQuery);
+});

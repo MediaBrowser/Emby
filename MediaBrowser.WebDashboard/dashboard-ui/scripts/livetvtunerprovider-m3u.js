@@ -1,11 +1,11 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function reload(page, providerId) {
 
         page.querySelector('.txtDevicePath').value = '';
 
         if (providerId) {
-            ApiClient.getNamedConfiguration("livetv").done(function (config) {
+            ApiClient.getNamedConfiguration("livetv").then(function (config) {
 
                 var info = config.TunerHosts.filter(function (i) {
                     return i.Id == providerId;
@@ -37,12 +37,12 @@
             data: JSON.stringify(info),
             contentType: "application/json"
 
-        }).done(function (result) {
+        }).then(function () {
 
             Dashboard.processServerConfigurationUpdateResult();
             Dashboard.navigate('livetvstatus.html');
 
-        }).fail(function () {
+        }, function () {
             Dashboard.hideLoadingMsg();
             Dashboard.alert({
                 message: Globalize.translate('ErrorSavingTvProvider')
@@ -60,6 +60,26 @@
             return false;
         });
 
+        $('#btnSelectPath', page).on("click.selectDirectory", function () {
+
+            require(['directorybrowser'], function (directoryBrowser) {
+
+                var picker = new directoryBrowser();
+
+                picker.show({
+
+                    includeFiles: true,
+                    callback: function (path) {
+                        if (path) {
+                            $('#txtDevicePath', page).val(path);
+                        }
+                        picker.close();
+                    }
+                });
+            });
+
+        });
+
     }).on('pageshow', "#liveTvTunerProviderM3UPage", function () {
 
         var providerId = getParameterByName('id');
@@ -67,4 +87,4 @@
         reload(page, providerId);
     });
 
-})(jQuery, document, window);
+});

@@ -1,12 +1,13 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     function cancelJob(page, id) {
 
         var msg = Globalize.translate('CancelSyncJobConfirmation');
 
-        Dashboard.confirm(msg, Globalize.translate('HeaderCancelSyncJob'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(msg, Globalize.translate('HeaderCancelSyncJob')).then(function () {
+
                 Dashboard.showLoadingMsg();
 
                 ApiClient.ajax({
@@ -14,11 +15,11 @@
                     url: ApiClient.getUrl('Sync/Jobs/' + id),
                     type: 'DELETE'
 
-                }).done(function () {
+                }).then(function () {
 
                     reloadData(page);
                 });
-            }
+            });
         });
     }
 
@@ -206,7 +207,6 @@
         }
 
         var elem = $('.syncActivity', page).html(html).lazyChildren();
-        Events.trigger(elem[0], 'create');
 
         $('.btnJobMenu', elem).on('click', function () {
             showJobMenu(page, this);
@@ -217,6 +217,14 @@
             elem.html('<div style="padding:1em .25em;">' + Globalize.translate('MessageNoSyncJobsFound') + '</div>');
         }
     }
+
+    $.fn.lazyChildren = function () {
+
+        for (var i = 0, length = this.length; i < length; i++) {
+            ImageLoader.lazyChildren(this[i]);
+        }
+        return this;
+    };
 
     function refreshData(page, jobs) {
 
@@ -280,9 +288,9 @@
             });
         }
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: elem,
                 callback: function (id) {
@@ -315,7 +323,7 @@
 
         var options = {};
 
-        Dashboard.getCurrentUser().done(function (user) {
+        Dashboard.getCurrentUser().then(function (user) {
 
             if ($(page).hasClass('mySyncPage')) {
                 options.UserId = Dashboard.getCurrentUserId();
@@ -325,7 +333,7 @@
                 }
             }
 
-            ApiClient.getJSON(ApiClient.getUrl('Sync/Jobs', options)).done(function (response) {
+            ApiClient.getJSON(ApiClient.getUrl('Sync/Jobs', options)).then(function (response) {
 
                 loadData(page, response.Items);
                 Dashboard.hideLoadingMsg();
@@ -374,24 +382,42 @@
 
     }
 
+    function getTabs() {
+        return [
+        {
+            href: 'syncactivity.html',
+            name: Globalize.translate('TabSyncJobs')
+        },
+         {
+             href: 'devicesupload.html',
+             name: Globalize.translate('TabCameraUpload')
+         },
+         {
+             href: 'syncsettings.html',
+             name: Globalize.translate('TabSettings')
+         }];
+    }
+
     $(document).on('pageinit', ".syncActivityPage", function () {
 
         var page = this;
 
         $('.btnSyncSupporter', page).on('click', function () {
 
-            requirejs(["scripts/registrationservices"], function () {
-                RegistrationServices.validateFeature('sync').done(function () {
-                });
+            requirejs(["registrationservices"], function () {
+                RegistrationServices.validateFeature('sync');
             });
         });
         $('.supporterPromotion .mainText', page).html(Globalize.translate('HeaderSyncRequiresSupporterMembership'));
 
     }).on('pageshow', ".syncActivityPage", function () {
 
+        if (this.id == 'syncActivityPage') {
+            LibraryMenu.setTabs('syncadmin', 0, getTabs);
+        }
         var page = this;
 
-        Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
+        Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
 
             if (pluginSecurityInfo.IsMBSupporter) {
                 $('.supporterPromotionContainer', page).hide();
@@ -410,7 +436,7 @@
         });
 
         startListening(page);
-        $(ApiClient).on("websocketmessage", onWebSocketMessage);
+        Events.on(ApiClient, "websocketmessage", onWebSocketMessage);
 
     }).on('pagebeforehide', ".syncActivityPage", function () {
 
@@ -422,7 +448,7 @@
         });
 
         stopListening();
-        $(ApiClient).off("websocketmessage", onWebSocketMessage);
+        Events.off(ApiClient, "websocketmessage", onWebSocketMessage);
     });
 
-})();
+});

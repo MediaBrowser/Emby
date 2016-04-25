@@ -1,23 +1,24 @@
-﻿(function (window, $, document) {
+﻿define(['jQuery'], function ($) {
 
     var currentItem;
 
     function deleteTimer(page, id) {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmRecordingCancellation'), Globalize.translate('HeaderConfirmRecordingCancellation'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmRecordingCancellation'), Globalize.translate('HeaderConfirmRecordingCancellation')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.cancelLiveTvTimer(id).done(function () {
+                ApiClient.cancelLiveTvTimer(id).then(function () {
 
-                    Dashboard.alert(Globalize.translate('MessageRecordingCancelled'));
+                    require(['toast'], function (toast) {
+                        toast(Globalize.translate('MessageRecordingCancelled'));
+                    });
 
                     Dashboard.navigate('livetv.html');
                 });
-            }
-
+            });
         });
     }
 
@@ -72,14 +73,16 @@
 
         var form = this;
 
-        ApiClient.getLiveTvTimer(currentItem.Id).done(function (item) {
+        ApiClient.getLiveTvTimer(currentItem.Id).then(function (item) {
 
             item.PrePaddingSeconds = $('#txtPrePaddingMinutes', form).val() * 60;
             item.PostPaddingSeconds = $('#txtPostPaddingMinutes', form).val() * 60;
 
-            ApiClient.updateLiveTvTimer(item).done(function () {
+            ApiClient.updateLiveTvTimer(item).then(function () {
                 Dashboard.hideLoadingMsg();
-                Dashboard.alert(Globalize.translate('MessageRecordingSaved'));
+                require(['toast'], function (toast) {
+                    toast(Globalize.translate('MessageRecordingSaved'));
+                });
             });
         });
 
@@ -94,7 +97,7 @@
 
         var id = getParameterByName('id');
 
-        ApiClient.getLiveTvTimer(id).done(function (result) {
+        ApiClient.getLiveTvTimer(id).then(function (result) {
 
             renderTimer(page, result);
 
@@ -124,4 +127,4 @@
         currentItem = null;
     });
 
-})(window, jQuery, document);
+});

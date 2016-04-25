@@ -8,16 +8,17 @@ using MediaBrowser.Model.Net;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Threading;
 
 namespace MediaBrowser.Server.Implementations.Connect
 {
     public class ConnectEntryPoint : IServerEntryPoint
     {
-        private Timer _timer;
+        private PeriodicTimer _timer;
         private readonly IHttpClient _httpClient;
         private readonly IApplicationPaths _appPaths;
         private readonly ILogger _logger;
@@ -40,46 +41,31 @@ namespace MediaBrowser.Server.Implementations.Connect
 
         public void Run()
         {
-            LoadCachedAddress();
+            Task.Run(() => LoadCachedAddress());
 
-            _timer = new Timer(TimerCallback, null, TimeSpan.FromSeconds(5), TimeSpan.FromHours(3));
+            _timer = new PeriodicTimer(TimerCallback, null, TimeSpan.FromSeconds(5), TimeSpan.FromHours(3));
         }
 
-        private readonly string[] _ipLookups = { "http://bot.whatismyipaddress.com", "https://connect.emby.media/service/ip" };
+        private readonly string[] _ipLookups =
+        {
+            "http://bot.whatismyipaddress.com", 
+            "https://connect.emby.media/service/ip"
+        };
 
         private async void TimerCallback(object state)
         {
-            var index = 0;
+            IPAddress validIpAddress = null;
 
             foreach (var ipLookupUrl in _ipLookups)
             {
                 try
                 {
-                    // Sometimes whatismyipaddress might fail, but it won't do us any good having users raise alarms over it.
-                    var logErrors = index > 0;
+                    validIpAddress = await GetIpAddress(ipLookupUrl).ConfigureAwait(false);
 
-#if DEBUG
-                    logErrors = true;
-#endif
-                    using (var stream = await _httpClient.Get(new HttpRequestOptions
+                    // Try to find the ipv4 address, if present
+                    if (validIpAddress.AddressFamily == AddressFamily.InterNetwork)
                     {
-                        Url = ipLookupUrl,
-                        UserAgent = "Emby/" + _appHost.ApplicationVersion,
-                        LogErrors = logErrors
-
-                    }).ConfigureAwait(false))
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var address = await reader.ReadToEndAsync().ConfigureAwait(false);
-
-                            if (IsValid(address, ipLookupUrl))
-                            {
-                                ((ConnectManager)_connectManager).OnWanAddressResolved(address);
-                                CacheAddress(address);
-                                return;
-                            }
-                        }
+                        break;
                     }
                 }
                 catch (HttpException)
@@ -89,8 +75,66 @@ namespace MediaBrowser.Server.Implementations.Connect
                 {
                     _logger.ErrorException("Error getting connection info", ex);
                 }
+            }
 
-                index++;
+            // If this produced an ipv6 address, try again
+            if (validIpAddress == null || validIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                foreach (var ipLookupUrl in _ipLookups)
+                {
+                    try
+                    {
+                        validIpAddress = await GetIpAddress(ipLookupUrl, true).ConfigureAwait(false);
+
+                        // Try to find the ipv4 address, if present
+                        if (validIpAddress.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            break;
+                        }
+                    }
+                    catch (HttpException)
+                    {
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error getting connection info", ex);
+                    }
+                }
+            }
+
+            if (validIpAddress != null)
+            {
+                ((ConnectManager)_connectManager).OnWanAddressResolved(validIpAddress);
+                CacheAddress(validIpAddress);
+            }
+        }
+
+        private async Task<IPAddress> GetIpAddress(string lookupUrl, bool preferIpv4 = false)
+        {
+            // Sometimes whatismyipaddress might fail, but it won't do us any good having users raise alarms over it.
+            var logErrors = false;
+
+#if DEBUG
+            logErrors = true;
+#endif
+            using (var stream = await _httpClient.Get(new HttpRequestOptions
+            {
+                Url = lookupUrl,
+                UserAgent = "Emby/" + _appHost.ApplicationVersion,
+                LogErrors = logErrors,
+
+                // Seeing block length errors with our server
+                EnableHttpCompression = false,
+                PreferIpv4 = preferIpv4
+
+            }).ConfigureAwait(false))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var addressString = await reader.ReadToEndAsync().ConfigureAwait(false);
+
+                    return IPAddress.Parse(addressString);
+                }
             }
         }
 
@@ -99,14 +143,14 @@ namespace MediaBrowser.Server.Implementations.Connect
             get { return Path.Combine(_appPaths.DataPath, "wan.txt"); }
         }
 
-        private void CacheAddress(string address)
+        private void CacheAddress(IPAddress address)
         {
             var path = CacheFilePath;
 
             try
             {
                 _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
-                _fileSystem.WriteAllText(path, address, Encoding.UTF8);
+                _fileSystem.WriteAllText(path, address.ToString(), Encoding.UTF8);
             }
             catch (Exception ex)
             {
@@ -121,10 +165,11 @@ namespace MediaBrowser.Server.Implementations.Connect
             try
             {
                 var endpoint = _fileSystem.ReadAllText(path, Encoding.UTF8);
+                IPAddress ipAddress;
 
-                if (IsValid(endpoint, "cache"))
+                if (IPAddress.TryParse(endpoint, out ipAddress))
                 {
-                    ((ConnectManager)_connectManager).OnWanAddressResolved(endpoint);
+                    ((ConnectManager)_connectManager).OnWanAddressResolved(ipAddress);
                 }
             }
             catch (IOException)
@@ -135,19 +180,6 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 _logger.ErrorException("Error loading data", ex);
             }
-        }
-
-        private bool IsValid(string address, string source)
-        {
-            IPAddress ipAddress;
-            var valid = IPAddress.TryParse(address, out ipAddress);
-
-            if (!valid)
-            {
-                _logger.Error("{0} is not a valid ip address. Source: {1}", address, source);
-            }
-
-            return valid;
         }
 
         public void Dispose()

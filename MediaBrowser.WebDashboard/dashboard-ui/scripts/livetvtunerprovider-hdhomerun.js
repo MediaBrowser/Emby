@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function reload(page, providerId) {
 
@@ -6,7 +6,7 @@
         page.querySelector('.chkFavorite').checked = false;
 
         if (providerId) {
-            ApiClient.getNamedConfiguration("livetv").done(function (config) {
+            ApiClient.getNamedConfiguration("livetv").then(function (config) {
 
                 var info = config.TunerHosts.filter(function (i) {
                     return i.Id == providerId;
@@ -14,6 +14,7 @@
 
                 page.querySelector('.txtDevicePath').value = info.Url || '';
                 page.querySelector('.chkFavorite').checked = info.ImportFavoritesOnly;
+                page.querySelector('.chkTranscode').checked = info.AllowHWTranscoding;
                 page.querySelector('.chkEnabled').checked = info.IsEnabled;
 
             });
@@ -30,7 +31,9 @@
             Type: 'hdhomerun',
             Url: page.querySelector('.txtDevicePath').value,
             ImportFavoritesOnly: page.querySelector('.chkFavorite').checked,
-            IsEnabled: page.querySelector('.chkEnabled').checked
+            AllowHWTranscoding: page.querySelector('.chkTranscode').checked,
+            IsEnabled: page.querySelector('.chkEnabled').checked,
+            DataVersion: 1
         };
 
         var id = getParameterByName('id');
@@ -45,12 +48,12 @@
             data: JSON.stringify(info),
             contentType: "application/json"
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             Dashboard.processServerConfigurationUpdateResult();
             Dashboard.navigate('livetvstatus.html');
 
-        }).fail(function () {
+        }, function () {
             Dashboard.alert({
                 message: Globalize.translate('ErrorSavingTvProvider')
             });
@@ -74,4 +77,4 @@
         reload(page, providerId);
     });
 
-})(jQuery, document, window);
+});

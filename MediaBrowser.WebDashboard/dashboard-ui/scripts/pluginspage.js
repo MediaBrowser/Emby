@@ -1,19 +1,18 @@
-﻿(function ($, window) {
+﻿define(['jQuery'], function ($) {
 
     function deletePlugin(page, uniqueid, name) {
 
         var msg = Globalize.translate('UninstallPluginConfirmation').replace("{0}", name);
 
-        Dashboard.confirm(msg, Globalize.translate('UninstallPluginHeader'), function (result) {
-
-            if (result) {
+        require(['confirm'], function (confirm) {
+            confirm(msg, Globalize.translate('UninstallPluginHeader')).then(function () {
                 Dashboard.showLoadingMsg();
 
-                ApiClient.uninstallPlugin(uniqueid).done(function () {
+                ApiClient.uninstallPlugin(uniqueid).then(function () {
 
                     reloadList(page);
                 });
-            }
+            });
         });
     }
 
@@ -110,7 +109,7 @@
 
     function renderPlugins(page, plugins, showNoPluginsMessage) {
 
-        ApiClient.getJSON(ApiClient.getUrl("dashboard/configurationpages") + "?pageType=PluginConfiguration").done(function (configPages) {
+        ApiClient.getJSON(ApiClient.getUrl("web/configurationpages") + "?pageType=PluginConfiguration").then(function (configPages) {
 
             populateList(page, plugins, configPages, showNoPluginsMessage);
 
@@ -134,17 +133,23 @@
 
             if (showNoPluginsMessage) {
                 html += '<div style="padding:5px;">';
-                html += '<p>' + Globalize.translate('MessageNoPluginsInstalled') + '</p>';
-                html += '<p><a href="plugincatalog.html">';
-                html += Globalize.translate('BrowsePluginCatalogMessage');
-                html += '</a></p>';
+
+                if (AppInfo.enableAppStorePolicy) {
+                    html += '<p>' + Globalize.translate('MessageNoPluginsDueToAppStore') + '</p>';
+                } else {
+                    html += '<p>' + Globalize.translate('MessageNoPluginsInstalled') + '</p>';
+
+                    html += '<p><a href="plugincatalog.html">';
+                    html += Globalize.translate('BrowsePluginCatalogMessage');
+                    html += '</a></p>';
+                }
                 html += '</div>';
             }
 
-            $('.installedPlugins', page).html(html).trigger('create');
+            $('.installedPlugins', page).html(html);
         } else {
 
-            var elem = $('.installedPlugins', page).html(html).trigger('create');
+            var elem = $('.installedPlugins', page).html(html);
 
             $('.noConfigPluginCard', elem).on('click', function () {
                 showNoConfigurationMessage();
@@ -185,9 +190,9 @@
             ironIcon: 'delete'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: elem,
                 callback: function (resultId) {
@@ -213,14 +218,27 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getInstalledPlugins().done(function (plugins) {
+        ApiClient.getInstalledPlugins().then(function (plugins) {
 
             renderPlugins(page, plugins, true);
         });
     }
 
+    function getTabs() {
+        return [
+        {
+            href: 'plugins.html',
+            name: Globalize.translate('TabMyPlugins')
+        },
+         {
+             href: 'plugincatalog.html',
+             name: Globalize.translate('TabCatalog')
+         }];
+    }
+
     $(document).on('pageshow', "#pluginsPage", function () {
 
+        LibraryMenu.setTabs('plugins', 0, getTabs);
         reloadList(this);
     });
 
@@ -228,4 +246,4 @@
         renderPlugins: renderPlugins
     };
 
-})(jQuery, window);
+});

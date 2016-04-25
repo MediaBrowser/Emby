@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
@@ -47,11 +46,11 @@ namespace MediaBrowser.Providers.BoxSets
 
             if (mergeMetadataSettings)
             {
-                var list = sourceItem.LinkedChildren.Where(i => i.Type != LinkedChildType.Manual).ToList();
+                // Retain shortcut children
+                var linkedChildren = sourceItem.LinkedChildren.ToList();
+                linkedChildren.AddRange(sourceItem.LinkedChildren.Where(i => i.Type == LinkedChildType.Shortcut));
 
-                list.AddRange(targetItem.LinkedChildren.Where(i => i.Type == LinkedChildType.Manual));
-
-                targetItem.LinkedChildren = list;
+                targetItem.LinkedChildren = linkedChildren;
                 targetItem.Shares = sourceItem.Shares;
             }
         }

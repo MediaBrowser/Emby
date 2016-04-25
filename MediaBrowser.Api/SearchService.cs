@@ -4,12 +4,10 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Search;
 using ServiceStack;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -179,6 +177,7 @@ namespace MediaBrowser.Api
             if (primaryImageTag != null)
             {
                 result.PrimaryImageTag = primaryImageTag;
+                result.PrimaryImageAspectRatio = _dtoService.GetPrimaryImageAspectRatio(item);
             }
 
             SetThumbImageInfo(result, item);
@@ -283,7 +282,7 @@ namespace MediaBrowser.Api
         private T GetParentWithImage<T>(BaseItem item, ImageType type)
             where T : BaseItem
         {
-            return item.Parents.OfType<T>().FirstOrDefault(i => i.HasImage(type));
+            return item.GetParents().OfType<T>().FirstOrDefault(i => i.HasImage(type));
         }
     }
 }

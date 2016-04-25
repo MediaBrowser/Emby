@@ -1,10 +1,10 @@
-﻿(function ($, document) {
+﻿define(['libraryBrowser', 'jQuery'], function (libraryBrowser, $) {
 
     var defaultFirstSection = 'smalllibrarytiles';
 
     function getDefaultSection(index) {
 
-        if (AppInfo.isNativeApp && $.browser.safari) {
+        if (AppInfo.isNativeApp && browserInfo.safari) {
 
             switch (index) {
 
@@ -95,9 +95,10 @@
 
             elem.innerHTML = '';
 
-            var deferred = DeferredBuilder.Deferred();
-            deferred.resolve();
-            return deferred.promise();
+            return new Promise(function (resolve, reject) {
+
+                resolve();
+            });
         }
     }
 
@@ -125,18 +126,26 @@
             promises.push(loadSection(page, user, displayPreferences, i));
         }
 
-        return $.when(promises);
+        return Promise.all(promises);
     }
 
     var homePageDismissValue = '14';
     var homePageTourKey = 'homePageTour';
 
+    function displayPreferencesKey() {
+        if (AppInfo.isNativeApp) {
+            return 'Emby Mobile';
+        }
+
+        return 'webclient';
+    }
+
     function dismissWelcome(page, userId) {
 
-        getDisplayPreferences('home', userId).done(function (result) {
+        getDisplayPreferences('home', userId).then(function (result) {
 
             result.CustomPrefs[homePageTourKey] = homePageDismissValue;
-            ApiClient.updateDisplayPreferences('home', result, userId, AppSettings.displayPreferencesKey());
+            ApiClient.updateDisplayPreferences('home', result, userId, displayPreferencesKey());
         });
     }
 
@@ -165,54 +174,61 @@
 
     function takeTour(page, userId) {
 
-        Dashboard.loadSwipebox().done(function () {
+        require(['slideshow'], function () {
 
-            $.swipebox([
-                    { href: 'css/images/tour/web/tourcontent.jpg', title: Globalize.translate('WebClientTourContent') },
-                    { href: 'css/images/tour/web/tourmovies.jpg', title: Globalize.translate('WebClientTourMovies') },
-                    { href: 'css/images/tour/web/tourmouseover.jpg', title: Globalize.translate('WebClientTourMouseOver') },
-                    { href: 'css/images/tour/web/tourtaphold.jpg', title: Globalize.translate('WebClientTourTapHold') },
-                    { href: 'css/images/tour/web/tourmysync.png', title: Globalize.translate('WebClientTourMySync') },
-                    { href: 'css/images/tour/web/toureditor.png', title: Globalize.translate('WebClientTourMetadataManager') },
-                    { href: 'css/images/tour/web/tourplaylist.png', title: Globalize.translate('WebClientTourPlaylists') },
-                    { href: 'css/images/tour/web/tourcollections.jpg', title: Globalize.translate('WebClientTourCollections') },
-                    { href: 'css/images/tour/web/tourusersettings1.png', title: Globalize.translate('WebClientTourUserPreferences1') },
-                    { href: 'css/images/tour/web/tourusersettings2.png', title: Globalize.translate('WebClientTourUserPreferences2') },
-                    { href: 'css/images/tour/web/tourusersettings3.png', title: Globalize.translate('WebClientTourUserPreferences3') },
-                    { href: 'css/images/tour/web/tourusersettings4.png', title: Globalize.translate('WebClientTourUserPreferences4') },
-                    { href: 'css/images/tour/web/tourmobile1.jpg', title: Globalize.translate('WebClientTourMobile1') },
-                    { href: 'css/images/tour/web/tourmobile2.png', title: Globalize.translate('WebClientTourMobile2') },
-                    { href: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
-            ], {
-                afterClose: function () {
-                    dismissWelcome(page, userId);
-                    $('.welcomeMessage', page).hide();
-                },
-                hideBarsDelay: 30000
+            var slides = [
+                    { imageUrl: 'css/images/tour/web/tourcontent.jpg', title: Globalize.translate('WebClientTourContent') },
+                    { imageUrl: 'css/images/tour/web/tourmovies.jpg', title: Globalize.translate('WebClientTourMovies') },
+                    { imageUrl: 'css/images/tour/web/tourmouseover.jpg', title: Globalize.translate('WebClientTourMouseOver') },
+                    { imageUrl: 'css/images/tour/web/tourtaphold.jpg', title: Globalize.translate('WebClientTourTapHold') },
+                    { imageUrl: 'css/images/tour/web/tourmysync.png', title: Globalize.translate('WebClientTourMySync') },
+                    { imageUrl: 'css/images/tour/web/toureditor.png', title: Globalize.translate('WebClientTourMetadataManager') },
+                    { imageUrl: 'css/images/tour/web/tourplaylist.png', title: Globalize.translate('WebClientTourPlaylists') },
+                    { imageUrl: 'css/images/tour/web/tourcollections.jpg', title: Globalize.translate('WebClientTourCollections') },
+                    { imageUrl: 'css/images/tour/web/tourusersettings1.png', title: Globalize.translate('WebClientTourUserPreferences1') },
+                    { imageUrl: 'css/images/tour/web/tourusersettings2.png', title: Globalize.translate('WebClientTourUserPreferences2') },
+                    { imageUrl: 'css/images/tour/web/tourusersettings3.png', title: Globalize.translate('WebClientTourUserPreferences3') },
+                    { imageUrl: 'css/images/tour/web/tourusersettings4.png', title: Globalize.translate('WebClientTourUserPreferences4') },
+                    { imageUrl: 'css/images/tour/web/tourmobile1.jpg', title: Globalize.translate('WebClientTourMobile1') },
+                    { imageUrl: 'css/images/tour/web/tourmobile2.png', title: Globalize.translate('WebClientTourMobile2') },
+                    { imageUrl: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
+            ];
+
+            require(['slideshow'], function (slideshow) {
+
+                var newSlideShow = new slideshow({
+                    slides: slides,
+                    interactive: true,
+                    loop: false
+                });
+
+                newSlideShow.show();
+
+                dismissWelcome(page, userId);
+                $('.welcomeMessage', page).hide();
             });
         });
     }
 
     function loadHomeTab(page, tabContent) {
 
-        if (LibraryBrowser.needsRefresh(tabContent)) {
+        if (libraryBrowser.needsRefresh(tabContent)) {
             if (window.ApiClient) {
                 var userId = Dashboard.getCurrentUserId();
-
                 Dashboard.showLoadingMsg();
 
-                getDisplayPreferences('home', userId).done(function (result) {
+                getDisplayPreferences('home', userId).then(function (result) {
 
-                    Dashboard.getCurrentUser().done(function (user) {
+                    Dashboard.getCurrentUser().then(function (user) {
 
-                        loadSections(tabContent, user, result).done(function () {
+                        loadSections(tabContent, user, result).then(function () {
 
                             if (!AppInfo.isNativeApp) {
                                 showWelcomeIfNeeded(page, result);
                             }
                             Dashboard.hideLoadingMsg();
 
-                            LibraryBrowser.setLastRefreshed(tabContent);
+                            libraryBrowser.setLastRefreshed(tabContent);
                         });
 
                     });
@@ -221,99 +237,109 @@
         }
     }
 
-    function loadTab(page, index) {
-
-        var tabContent = page.querySelector('.pageTabContent[data-index=\'' + index + '\']');
-        var depends = [];
-        var scope = 'HomePage';
-        var method = '';
-
-        switch (index) {
-
-            case 0:
-                depends.push('scripts/sections');
-                method = 'renderHomeTab';
-                break;
-            case 1:
-                depends.push('scripts/homenextup');
-                method = 'renderNextUp';
-                break;
-            case 2:
-                depends.push('scripts/favorites');
-                method = 'renderFavorites';
-                break;
-            case 3:
-                depends.push('scripts/homeupcoming');
-                method = 'renderUpcoming';
-                break;
-            default:
-                break;
-        }
-
-        require(depends, function () {
-
-            window[scope][method](page, tabContent);
-
-        });
-    }
-
-    pageIdOn('pageinit', "indexPage", function () {
-
-        var page = this;
-
-        var tabs = page.querySelector('paper-tabs');
-        var pages = page.querySelector('neon-animated-pages');
-
-        LibraryBrowser.configurePaperLibraryTabs(page, tabs, pages, 'index.html');
-
-        $(pages).on('tabchange', function () {
-            loadTab(page, parseInt(this.selected));
-        });
-
-        Events.on(page.querySelector('.btnTakeTour'), 'click', function () {
-            takeTour(page, Dashboard.getCurrentUserId());
-        });
-
-        if (AppInfo.enableHomeTabs) {
-            page.classList.remove('noSecondaryNavPage');
-            page.querySelector('.libraryViewNav').classList.remove('hide');
-        } else {
-            page.classList.add('noSecondaryNavPage');
-            page.querySelector('.libraryViewNav').classList.add('hide');
-        }
-    });
-
-    pageIdOn('pageshow', "indexPage", function () {
-
-        var page = this;
-        $(MediaController).on('playbackstop', onPlaybackStop);
-    });
-
-    pageIdOn('pagebeforehide', "indexPage", function () {
-
-        var page = this;
-        $(MediaController).off('playbackstop', onPlaybackStop);
-    });
-
     function onPlaybackStop(e, state) {
 
         if (state.NowPlayingItem && state.NowPlayingItem.MediaType == 'Video') {
-            var page = $($.mobile.activePage)[0];
-            var pages = page.querySelector('neon-animated-pages');
+            var page = $.mobile.activePage;
+            var pageTabsContainer = page.querySelector('.pageTabsContainer');
 
-            $(pages).trigger('tabchange');
+            pageTabsContainer.dispatchEvent(new CustomEvent("tabchange", {
+                detail: {
+                    selectedTabIndex: libraryBrowser.selectedTab(pageTabsContainer)
+                }
+            }));
         }
     }
 
     function getDisplayPreferences(key, userId) {
 
-        return ApiClient.getDisplayPreferences(key, userId, AppSettings.displayPreferencesKey()).done(function (result) {
-
-        });
+        return ApiClient.getDisplayPreferences(key, userId, displayPreferencesKey());
     }
 
-    window.HomePage = {
-        renderHomeTab: loadHomeTab
-    };
+    return function (view, params) {
 
-})(jQuery, document);
+        var self = this;
+
+        self.renderTab = function () {
+            var tabContent = view.querySelector('.pageTabContent[data-index=\'' + 0 + '\']');
+            loadHomeTab(view, tabContent);
+        };
+
+        var pageTabsContainer = view.querySelector('.pageTabsContainer');
+
+        libraryBrowser.configurePaperLibraryTabs(view, view.querySelector('paper-tabs'), pageTabsContainer, 'home.html');
+
+        var tabControllers = [];
+        var renderedTabs = [];
+
+        function loadTab(page, index) {
+
+            var tabContent = page.querySelector('.pageTabContent[data-index=\'' + index + '\']');
+            var depends = [];
+
+            switch (index) {
+
+                case 0:
+                    depends.push('scripts/sections');
+                    break;
+                case 1:
+                    depends.push('scripts/homenextup');
+                    break;
+                case 2:
+                    depends.push('scripts/homefavorites');
+                    break;
+                case 3:
+                    depends.push('scripts/homeupcoming');
+                    break;
+                default:
+                    return;
+                    break;
+            }
+
+            require(depends, function (controllerFactory) {
+
+                if (index == 0) {
+                    self.tabContent = tabContent;
+                }
+                var controller = tabControllers[index];
+                if (!controller) {
+                    controller = index ? new controllerFactory(view, params, tabContent) : self;
+                    tabControllers[index] = controller;
+
+                    if (controller.initTab) {
+                        controller.initTab();
+                    }
+                }
+
+                if (renderedTabs.indexOf(index) == -1) {
+                    renderedTabs.push(index);
+                    controller.renderTab();
+                }
+            });
+        }
+
+        pageTabsContainer.addEventListener('tabchange', function (e) {
+            loadTab(view, parseInt(e.detail.selectedTabIndex));
+        });
+
+        view.querySelector('.btnTakeTour').addEventListener('click', function () {
+            takeTour(view, Dashboard.getCurrentUserId());
+        });
+
+        if (AppInfo.enableHomeTabs) {
+            view.classList.remove('noSecondaryNavPage');
+            view.querySelector('.libraryViewNav').classList.remove('hide');
+        } else {
+            view.classList.add('noSecondaryNavPage');
+            view.querySelector('.libraryViewNav').classList.add('hide');
+        }
+
+        view.addEventListener('viewshow', function (e) {
+            Events.on(MediaController, 'playbackstop', onPlaybackStop);
+        });
+
+        view.addEventListener('viewbeforehide', function (e) {
+            Events.off(MediaController, 'playbackstop', onPlaybackStop);
+        });
+    };
+});

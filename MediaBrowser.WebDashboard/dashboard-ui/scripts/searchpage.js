@@ -1,4 +1,4 @@
-﻿(function () {
+﻿define([], function () {
 
     function loadSuggestions(page) {
 
@@ -12,7 +12,7 @@
             EnableImages: false
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             var html = result.Items.map(function (i) {
 
@@ -38,4 +38,4 @@
     });
 
 
-})();
+});

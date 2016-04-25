@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.IO;
@@ -330,6 +329,9 @@ namespace MediaBrowser.Server.Implementations.Sync
                     _logger.Debug("Removing {0} from {1}.", file, target.Name);
                     await provider.DeleteFile(file, target, cancellationToken).ConfigureAwait(false);
                 }
+
+                _logger.Debug("Removing {0} from {1}.", localItem.FileId, target.Name);
+                await provider.DeleteFile(localItem.FileId, target, cancellationToken).ConfigureAwait(false);
 
                 await dataProvider.Delete(target, localItem.Id).ConfigureAwait(false);
             }

@@ -1,13 +1,13 @@
-﻿(function () {
+﻿define(['appStorage', 'jQuery'], function (appStorage, $) {
 
-    var supporterPlaybackKey = 'lastSupporterPlaybackMessage2';
+    var supporterPlaybackKey = 'lastSupporterPlaybackMessage4';
 
-    function validatePlayback(deferred) {
+    function validatePlayback(resolve, reject) {
 
-        Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
+        Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
 
             if (pluginSecurityInfo.IsMBSupporter) {
-                deferred.resolve();
+                resolve();
             } else {
 
                 var lastMessage = parseInt(appStorage.getItem(supporterPlaybackKey) || '0');
@@ -16,78 +16,171 @@
 
                     // Don't show on the very first playback attempt
                     appStorage.setItem(supporterPlaybackKey, new Date().getTime());
-                    deferred.resolve();
+                    resolve();
                 }
-                else if ((new Date().getTime() - lastMessage) > 345600000) {
+                else if ((new Date().getTime() - lastMessage) > 259200000) {
 
-                    showPlaybackOverlay(deferred);
+                    showPlaybackOverlay(resolve, reject);
                 } else {
-                    deferred.resolve();
+                    resolve();
                 }
             }
         });
     }
 
-    function showPlaybackOverlay(deferred) {
+    function getSubscriptionBenefits() {
 
-        require(['paperbuttonstyle']);
+        var list = [];
+
+        list.push({
+            name: Globalize.translate('CoverArt'),
+            icon: 'photo',
+            text: Globalize.translate('CoverArtFeatureDescription')
+        });
+
+        list.push({
+            name: Globalize.translate('HeaderFreeApps'),
+            icon: 'check',
+            text: Globalize.translate('FreeAppsFeatureDescription')
+        });
+
+        if (Dashboard.capabilities().SupportsSync) {
+            list.push({
+                name: Globalize.translate('HeaderMobileSync'),
+                icon: 'sync',
+                text: Globalize.translate('MobileSyncFeatureDescription')
+            });
+        }
+        else if (AppInfo.isNativeApp) {
+            list.push({
+                name: Globalize.translate('HeaderCloudSync'),
+                icon: 'sync',
+                text: Globalize.translate('CloudSyncFeatureDescription')
+            });
+        }
+        else {
+            list.push({
+                name: Globalize.translate('HeaderCinemaMode'),
+                icon: 'movie',
+                text: Globalize.translate('CinemaModeFeatureDescription')
+            });
+        }
+
+        return list;
+    }
+
+    function getSubscriptionBenefitHtml(item) {
 
         var html = '';
-        html += '<div class="supporterInfoOverlay" style="top: 0;left: 0;right: 0;bottom: 0;position: fixed;background-color:#1c1c1c;background-image: url(css/images/splash.jpg);background-position: center center;background-size: 100% 100%;background-repeat: no-repeat;z-index:1097;">';
-        html += '<div style="background:rgba(0,0,0,.82);top: 0;left: 0;right: 0;bottom: 0;position: fixed;z-index:1098;font-size:14px;">';
-        html += '<div class="readOnlyContent" style="margin:20px auto 0;color:#fff;padding:1em;">';
+        html += '<paper-icon-item>';
 
-        html += '<h1>' + Globalize.translate('HeaderTryCinemaMode') + '</h1>';
+        html += '<paper-fab mini style="background-color:#52B54B;" icon="' + item.icon + '" item-icon></paper-fab>';
 
-        html += '<p>' + Globalize.translate('MessageDidYouKnowCinemaMode') + '</p>';
-        html += '<p>' + Globalize.translate('MessageDidYouKnowCinemaMode2') + '</p>';
+        html += '<paper-item-body three-line>';
+        html += '<a class="clearLink" href="https://emby.media/premiere" target="_blank">';
 
-        html += '<br/>';
-
-        html += '<a class="clearLink" href="http://emby.media/premiere" target="_blank"><paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>' + Globalize.translate('ButtonBecomeSupporter') + '</span></paper-button></a>';
-        html += '<paper-button raised class="subdued block btnCancelSupporterInfo" style="background:#444;"><iron-icon icon="close"></iron-icon><span>' + Globalize.translate('ButtonClosePlayVideo') + '</span></paper-button>';
-
-        html += '</div>';
-        html += '</div>';
+        html += '<div>';
+        html += item.name;
         html += '</div>';
 
-        $(document.body).append(html);
+        html += '<div secondary style="white-space:normal;">';
+        html += item.text;
+        html += '</div>';
 
-        $('.btnCancelSupporterInfo').on('click', function () {
+        html += '</a>';
+        html += '</paper-item-body>';
 
-            $('.supporterInfoOverlay').remove();
-            appStorage.setItem(supporterPlaybackKey, new Date().getTime());
-            deferred.resolve();
+        html += '</paper-icon-item>';
+
+        return html;
+    }
+
+    function showPlaybackOverlay(resolve, reject) {
+
+        require(['dialogHelper', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (dialogHelper) {
+
+            var dlg = dialogHelper.createDialog({
+                size: 'fullscreen-border'
+            });
+
+            dlg.classList.add('ui-body-b');
+            dlg.classList.add('background-theme-b');
+            dlg.classList.add('popupEditor');
+
+            var html = '';
+            html += '<h2 class="dialogHeader">';
+            html += '<paper-fab icon="arrow-back" mini class="btnCancelSupporterInfo" tabindex="-1"></paper-fab>';
+            html += '</h2>';
+
+            html += '<div class="readOnlyContent" style="margin:0 auto 0;color:#fff;padding:1em;">';
+
+            html += '<h1>' + Globalize.translate('HeaderTryEmbyPremiere') + '</h1>';
+
+            html += '<p>' + Globalize.translate('MessageDidYouKnowCinemaMode') + '</p>';
+            html += '<p>' + Globalize.translate('MessageDidYouKnowCinemaMode2') + '</p>';
+
+            html += '<br/>';
+
+            html += '<h1>' + Globalize.translate('HeaderBenefitsEmbyPremiere') + '</h1>';
+
+            html += '<div class="paperList">';
+            html += getSubscriptionBenefits().map(getSubscriptionBenefitHtml).join('');
+            html += '</div>';
+
+            html += '<br/>';
+
+            html += '<a class="clearLink" href="http://emby.media/premiere" target="_blank"><paper-button raised class="submit block" autoFocus><iron-icon icon="check"></iron-icon><span>' + Globalize.translate('ButtonBecomeSupporter') + '</span></paper-button></a>';
+            html += '<paper-button raised class="subdued block btnCancelSupporterInfo" style="background:#444;"><iron-icon icon="close"></iron-icon><span>' + Globalize.translate('ButtonClosePlayVideo') + '</span></paper-button>';
+
+            html += '</div>';
+
+            dlg.innerHTML = html;
+            document.body.appendChild(dlg);
+
+            // Has to be assigned a z-index after the call to .open() 
+            dlg.addEventListener('close', function (e) {
+                appStorage.setItem(supporterPlaybackKey, new Date().getTime());
+                dlg.parentNode.removeChild(dlg);
+                resolve();
+            });
+
+            dialogHelper.open(dlg);
+
+            $('.btnCancelSupporterInfo').on('click', function () {
+                dialogHelper.close(dlg);
+            });
         });
     }
 
-    function validateSync(deferred) {
+    function validateSync(resolve, reject) {
 
-        Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
+        Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
 
             if (pluginSecurityInfo.IsMBSupporter) {
-                deferred.resolve();
+                resolve();
                 return;
             }
 
             Dashboard.showLoadingMsg();
 
-            ApiClient.getRegistrationInfo('Sync').done(function (registrationInfo) {
+            ApiClient.getRegistrationInfo('Sync').then(function (registrationInfo) {
 
                 Dashboard.hideLoadingMsg();
 
                 if (registrationInfo.IsRegistered) {
-                    deferred.resolve();
+                    resolve();
                     return;
                 }
 
                 Dashboard.alert({
                     message: Globalize.translate('HeaderSyncRequiresSupporterMembership') + '<br/><p><a href="http://emby.media/premiere" target="_blank">' + Globalize.translate('ButtonLearnMore') + '</a></p>',
-                    title: Globalize.translate('HeaderSync')
+                    title: Globalize.translate('HeaderSync'),
+                    callback: reject
                 });
 
-            }).fail(function () {
+            }, function () {
 
+                reject();
                 Dashboard.hideLoadingMsg();
 
                 Dashboard.alert({
@@ -146,17 +239,23 @@
                         $('#amount', page).val(pkg.price);
 
                         $('#regPrice', page).html("<h3>" + Globalize.translate('ValuePriceUSD').replace('{0}', "$" + pkg.price.toFixed(2)) + "</h3>");
+                        $('#ppButton', page).hide();
 
-                        var url = "http://mb3admin.com/admin/service/user/getPayPalEmail?id=" + pkg.owner;
+                        var url = "https://mb3admin.com/admin/service/user/getPayPalEmail?id=" + pkg.owner;
 
-                        $.getJSON(url).done(function (dev) {
+                        fetch(url).then(function (response) {
+
+                            return response.json();
+
+                        }).then(function (dev) {
+
                             if (dev.payPalEmail) {
                                 $('#payPalEmail', page).val(dev.payPalEmail);
+                                $('#ppButton', page).show();
 
-                            } else {
-                                $('#ppButton', page).hide();
                             }
                         });
+
                     } else {
                         // Supporter-only feature
                         $('.premiumHasPrice', page).hide();
@@ -184,20 +283,18 @@
 
         validateFeature: function (name) {
 
-            var deferred = DeferredBuilder.Deferred();
-
-            if (name == 'playback') {
-                validatePlayback(deferred);
-            } else if (name == 'livetv') {
-                deferred.resolve();
-            } else if (name == 'sync') {
-                validateSync(deferred);
-            } else {
-                deferred.resolve();
-            }
-
-            return deferred.promise();
+            return new Promise(function (resolve, reject) {
+                if (name == 'playback') {
+                    validatePlayback(resolve, reject);
+                } else if (name == 'livetv') {
+                    resolve();
+                } else if (name == 'sync') {
+                    validateSync(resolve, reject);
+                } else {
+                    resolve();
+                }
+            });
         }
     };
 
-})();
+});

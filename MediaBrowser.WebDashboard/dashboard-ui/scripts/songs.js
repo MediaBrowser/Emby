@@ -1,10 +1,10 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     var defaultSortBy = "Album,SortName";
 
     var data = {};
-    function getPageData() {
-        var key = getSavedQueryKey();
+    function getPageData(context) {
+        var key = getSavedQueryKey(context);
         var pageData = data[key];
 
         if (!pageData) {
@@ -28,22 +28,25 @@
         return pageData;
     }
 
-    function getQuery() {
+    function getQuery(context) {
 
-        return getPageData().query;
+        return getPageData(context).query;
     }
 
-    function getSavedQueryKey() {
+    function getSavedQueryKey(context) {
 
-        return LibraryBrowser.getSavedQueryKey('songs');
+        if (!context.savedQueryKey) {
+            context.savedQueryKey = LibraryBrowser.getSavedQueryKey('songs');
+        }
+        return context.savedQueryKey;
     }
 
-    function reloadItems(page, viewPanel) {
+    function reloadItems(page) {
 
         Dashboard.showLoadingMsg();
 
-        var query = getQuery();
-        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+        var query = getQuery(page);
+        ApiClient.getItems(Dashboard.getCurrentUserId(), query).then(function (result) {
 
             // Scroll back up so they can see the results from the beginning
             window.scrollTo(0, 0);
@@ -53,12 +56,10 @@
                 startIndex: query.StartIndex,
                 limit: query.Limit,
                 totalRecordCount: result.TotalRecordCount,
-                viewButton: true,
                 showLimit: false,
                 sortButton: true,
-                viewPanelClass: 'songsViewPanel',
                 updatePageSizeSetting: false,
-                viewIcon: 'filter-list'
+                filterButton: true
             });
 
             page.querySelector('.listTopPaging').innerHTML = pagingHtml;
@@ -74,16 +75,18 @@
             elem.innerHTML = html + pagingHtml;
             ImageLoader.lazyChildren(elem);
 
-            Events.trigger(elem, 'create');
-
             $('.btnNextPage', page).on('click', function () {
                 query.StartIndex += query.Limit;
-                reloadItems(page, viewPanel);
+                reloadItems(page);
             });
 
             $('.btnPreviousPage', page).on('click', function () {
                 query.StartIndex -= query.Limit;
-                reloadItems(page, viewPanel);
+                reloadItems(page);
+            });
+
+            $('.btnFilter', page).on('click', function () {
+                showFilterMenu(page);
             });
 
             // On callback make sure to set StartIndex = 0
@@ -126,70 +129,40 @@
                         id: 'Runtime,AlbumArtist,Album,SortName'
                     }],
                     callback: function () {
-                        reloadItems(page, viewPanel);
+                        reloadItems(page);
                     },
                     query: query
                 });
             });
 
-            LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+            LibraryBrowser.saveQueryValues(getSavedQueryKey(page), query);
 
             Dashboard.hideLoadingMsg();
         });
     }
 
-    function reloadFiltersIfNeeded(page, viewPanel) {
+    function showFilterMenu(page) {
 
-        if (!getPageData().filtersLoaded) {
+        require(['components/filterdialog/filterdialog'], function (filterDialogFactory) {
 
-            getPageData().filtersLoaded = true;
-
-            var query = getQuery();
-            QueryFilters.loadFilters(viewPanel, Dashboard.getCurrentUserId(), query, function () {
-
-                reloadItems(page, viewPanel);
+            var filterDialog = new filterDialogFactory({
+                query: getQuery(page),
+                mode: 'songs'
             });
-        }
-    }
 
-    function initPage(tabContent, viewPanel) {
+            Events.on(filterDialog, 'filterchange', function () {
+                reloadItems(page);
+            });
 
-        $(viewPanel).on('panelopen', function () {
-
-            reloadFiltersIfNeeded(tabContent, viewPanel);
-        });
-
-        $('.chkStandardFilter', viewPanel).on('change', function () {
-
-            var query = getQuery();
-            var filterName = this.getAttribute('data-filter');
-            var filters = query.Filters || "";
-
-            filters = (',' + filters).replace(',' + filterName, '').substring(1);
-
-            if (this.checked) {
-                filters = filters ? (filters + ',' + filterName) : filterName;
-            }
-
-            query.StartIndex = 0;
-            query.Filters = filters;
-
-            reloadItems(tabContent, viewPanel);
+            filterDialog.show();
         });
     }
-
-    window.MusicPage.initSongsTab = function (page, tabContent) {
-
-        var viewPanel = page.querySelector('.songsViewPanel');
-        initPage(tabContent, viewPanel);
-    };
 
     window.MusicPage.renderSongsTab = function (page, tabContent) {
 
         if (LibraryBrowser.needsRefresh(tabContent)) {
-            var viewPanel = page.querySelector('.songsViewPanel');
-            reloadItems(tabContent, viewPanel);
+            reloadItems(tabContent);
         }
     };
 
-})(jQuery, document);
+});

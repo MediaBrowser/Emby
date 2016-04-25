@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function loadPage(page, config) {
 
@@ -22,7 +22,7 @@
 
         var form = this;
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             config.HttpServerPortNumber = $('#txtPortNumber', form).val();
             config.PublicPort = $('#txtPublicPort', form).val();
@@ -33,20 +33,33 @@
             config.WanDdns = $('#txtDdns', form).val();
             config.CertificatePath = $('#txtCertificatePath', form).val();
 
-            ApiClient.updateServerConfiguration(config).done(Dashboard.processServerConfigurationUpdateResult);
+            ApiClient.updateServerConfiguration(config).then(Dashboard.processServerConfigurationUpdateResult);
         });
 
         // Disable default form submission
         return false;
     }
 
+    function getTabs() {
+        return [
+        {
+            href: 'dashboardhosting.html',
+            name: Globalize.translate('TabHosting')
+        },
+         {
+             href: 'serversecurity.html',
+             name: Globalize.translate('TabSecurity')
+         }];
+    }
+
     $(document).on('pageshow', "#dashboardHostingPage", function () {
 
+        LibraryMenu.setTabs('adminadvanced', 0, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             loadPage(page, config);
 
@@ -83,4 +96,4 @@
         $('.dashboardHostingForm').off('submit', onSubmit).on('submit', onSubmit);
     });
 
-})(jQuery, document, window);
+});

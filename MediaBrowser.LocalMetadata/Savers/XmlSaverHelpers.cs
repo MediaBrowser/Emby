@@ -15,7 +15,6 @@ using System.Security;
 using System.Text;
 using System.Xml;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.LocalMetadata.Savers
 {
@@ -735,6 +734,9 @@ namespace MediaBrowser.LocalMetadata.Savers
                             break;
                         case Video3DFormat.HalfTopAndBottom:
                             builder.Append("<Format3D>HTAB</Format3D>");
+                            break;
+                        case Video3DFormat.MVC:
+                            builder.Append("<Format3D>MVC</Format3D>");
                             break;
                     }
                 }

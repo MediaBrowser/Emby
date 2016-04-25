@@ -1,20 +1,18 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     var notificationsConfigurationKey = "notifications";
 
     function fillItems(elem, items, cssClass, idPrefix, currentList, isEnabledList) {
 
-        var html = '<div data-role="controlgroup">';
+        var html = '<div class="paperCheckboxList paperList" style="padding: .5em 1em;">';
 
         html += items.map(function (u) {
-
-            var id = idPrefix + u.Id;
 
             var isChecked = isEnabledList ? currentList.indexOf(u.Id) != -1 : currentList.indexOf(u.Id) == -1;
 
             var checkedHtml = isChecked ? ' checked="checked"' : '';
 
-            return '<label for="' + id + '">' + u.Name + '</label><input class="' + cssClass + '" type="checkbox" data-itemid="' + u.Id + '" id="' + id + '"' + checkedHtml + ' />';
+            return '<paper-checkbox class="' + cssClass + '" type="checkbox" data-itemid="' + u.Id + '"' + checkedHtml + '>' + u.Name + '</paper-checkbox>';
 
         }).join('');
 
@@ -32,12 +30,12 @@
         var promise3 = ApiClient.getJSON(ApiClient.getUrl("Notifications/Types"));
         var promise4 = ApiClient.getJSON(ApiClient.getUrl("Notifications/Services"));
 
-        $.when(promise1, promise2, promise3, promise4).done(function (response1, response2, response3, response4) {
+        Promise.all([promise1, promise2, promise3, promise4]).then(function (responses) {
 
-            var users = response1[0];
-            var notificationOptions = response2[0];
-            var types = response3[0];
-            var services = response4[0];
+            var users = responses[0];
+            var notificationOptions = responses[1];
+            var types = responses[2];
+            var services = responses[3];
 
             var notificationConfig = notificationOptions.Options.filter(function (n) {
 
@@ -86,7 +84,7 @@
             fillItems($('.sendToUsersList', page), users, 'chkSendTo', 'chkSendTo', notificationConfig.SendToUsers, true);
             fillItems($('.servicesList', page), services, 'chkService', 'chkService', notificationConfig.DisabledServices);
 
-            $('#chkEnabled', page).checked(notificationConfig.Enabled || false).checkboxradio('refresh');
+            $('#chkEnabled', page).checked(notificationConfig.Enabled || false);
 
             $('#txtTitle', page).val(notificationConfig.Title || typeInfo.DefaultTitle);
 
@@ -102,10 +100,10 @@
         var promise1 = ApiClient.getNamedConfiguration(notificationsConfigurationKey);
         var promise2 = ApiClient.getJSON(ApiClient.getUrl("Notifications/Types"));
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            var notificationOptions = response1[0];
-            var types = response2[0];
+            var notificationOptions = responses[0];
+            var types = responses[1];
 
             var notificationConfig = notificationOptions.Options.filter(function (n) {
 
@@ -135,19 +133,25 @@
                 notificationConfig.Title = null;
             }
 
-            notificationConfig.DisabledMonitorUsers = $('.chkMonitor:not(:checked)', page).get().map(function (c) {
+            notificationConfig.DisabledMonitorUsers = $('.chkMonitor', page).get().filter(function (c) {
+                return !c.checked;
+            }).map(function (c) {
                 return c.getAttribute('data-itemid');
             });
 
-            notificationConfig.SendToUsers = $('.chkSendTo:checked', page).get().map(function (c) {
+            notificationConfig.SendToUsers = $('.chkSendTo', page).get().filter(function (c) {
+                return c.checked;
+            }).map(function (c) {
                 return c.getAttribute('data-itemid');
             });
 
-            notificationConfig.DisabledServices = $('.chkService:not(:checked)', page).get().map(function (c) {
+            notificationConfig.DisabledServices = $('.chkService', page).get().filter(function (c) {
+                return !c.checked;
+            }).map(function (c) {
                 return c.getAttribute('data-itemid');
             });
 
-            ApiClient.updateNamedConfiguration(notificationsConfigurationKey, notificationOptions).done(function (r) {
+            ApiClient.updateNamedConfiguration(notificationsConfigurationKey, notificationOptions).then(function (r) {
 
                 Dashboard.navigate('notificationsettings.html');
             });
@@ -184,4 +188,4 @@
         reload(page);
     });
 
-})(jQuery, window);
+});

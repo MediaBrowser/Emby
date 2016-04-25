@@ -1,4 +1,11 @@
-﻿var ScheduledTaskPage = {
+﻿// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function (from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+};
+
+var ScheduledTaskPage = {
 
     refreshScheduledTask: function () {
         Dashboard.showLoadingMsg();
@@ -6,42 +13,44 @@
         var id = getParameterByName('id');
 
 
-        ApiClient.getScheduledTask(id).done(ScheduledTaskPage.loadScheduledTask);
+        ApiClient.getScheduledTask(id).then(ScheduledTaskPage.loadScheduledTask);
     },
 
     loadScheduledTask: function (task) {
 
-        var page = $.mobile.activePage;
+        var page = $($.mobile.activePage)[0];
 
         $('.taskName', page).html(task.Name);
 
         $('#pTaskDescription', page).html(task.Description);
 
-        ScheduledTaskPage.loadTaskTriggers(task);
+        require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+            ScheduledTaskPage.loadTaskTriggers(page, task);
+        });
 
         Dashboard.hideLoadingMsg();
     },
 
-    loadTaskTriggers: function (task) {
+    loadTaskTriggers: function (context, task) {
 
         var html = '';
 
-        html += '<li data-role="list-divider"><h3>' + Globalize.translate('HeaderTaskTriggers') + '</h3></li>';
+        html += '<div class="paperList">';
 
         for (var i = 0, length = task.Triggers.length; i < length; i++) {
 
             var trigger = task.Triggers[i];
 
-            html += '<li>';
+            html += '<paper-icon-item>';
 
-            html += '<a href="#">';
+            html += '<paper-fab mini icon="schedule" class="blue" item-icon></paper-fab>';
 
-            html += '<h3>';
-            html += ScheduledTaskPage.getTriggerFriendlyName(trigger);
-            html += '</h3>';
+            html += '<paper-item-body two-line>';
+
+            html += "<div>" + ScheduledTaskPage.getTriggerFriendlyName(trigger) + "</div>";
 
             if (trigger.MaxRuntimeMs) {
-                html += '<p>';
+                html += '<div secondary>';
 
                 var hours = trigger.MaxRuntimeMs / 3600000;
 
@@ -50,19 +59,19 @@
                 } else {
                     html += Globalize.translate('ValueTimeLimitMultiHour', hours);
                 }
-                html += '</p>';
+                html += '</div>';
             }
 
-            html += '</a>';
+            html += '</paper-item-body>';
 
-            html += '<a href="#" onclick="ScheduledTaskPage.confirmDeleteTrigger(' + i + ');">';
-            html += Globalize.translate('Delete');
-            html += '</a>';
+            html += '<paper-icon-button icon="delete" title="' + Globalize.translate('ButtonDelete') + '" onclick="ScheduledTaskPage.confirmDeleteTrigger(' + i + ');"></paper-icon-button>';
 
-            html += '</li>';
+            html += '</paper-icon-item>';
         }
 
-        $('#ulTaskTriggers', $.mobile.activePage).html(html).listview('refresh');
+        html += '</div>';
+
+        context.querySelector('.taskTriggers').innerHTML = html;
     },
 
     getTriggerFriendlyName: function (trigger) {
@@ -147,7 +156,7 @@
 
         var page = $.mobile.activePage;
 
-        Events.trigger($('#selectTriggerType', page).val('DailyTrigger')[0], 'change');
+        $('#selectTriggerType', page).val('DailyTrigger').trigger('change');
 
         $('#popupAddTrigger', page).on("popupafteropen", function () {
             $('#addTriggerForm input:first', this).focus();
@@ -160,14 +169,11 @@
 
     confirmDeleteTrigger: function (index) {
 
-        Dashboard.confirm(Globalize.translate('MessageDeleteTaskTrigger'), Globalize.translate('HeaderDeleteTaskTrigger'), function (result) {
-
-            if (result) {
+        require(['confirm'], function (confirm) {
+            confirm(Globalize.translate('MessageDeleteTaskTrigger'), Globalize.translate('HeaderDeleteTaskTrigger')).then(function () {
                 ScheduledTaskPage.deleteTrigger(index);
-            }
-
+            });
         });
-
     },
 
     deleteTrigger: function (index) {
@@ -177,11 +183,11 @@
         var id = getParameterByName('id');
 
 
-        ApiClient.getScheduledTask(id).done(function (task) {
+        ApiClient.getScheduledTask(id).then(function (task) {
 
             task.Triggers.remove(index);
 
-            ApiClient.updateScheduledTaskTriggers(task.Id, task.Triggers).done(function () {
+            ApiClient.updateScheduledTaskTriggers(task.Id, task.Triggers).then(function () {
 
                 ScheduledTaskPage.refreshScheduledTask();
 
@@ -274,7 +280,7 @@
         var vals = val.split(':');
 
         var hours = vals[0];
-        var minutes = vals[1];
+        var minutes = vals[1].split(' ')[0];
 
         // Add hours
         var ticks = hours * 60 * 60 * 1000 * 10000;
@@ -293,11 +299,11 @@
 
         var id = getParameterByName('id');
 
-        ApiClient.getScheduledTask(id).done(function (task) {
+        ApiClient.getScheduledTask(id).then(function (task) {
 
             task.Triggers.push(ScheduledTaskPage.getTriggerToAdd());
 
-            ApiClient.updateScheduledTaskTriggers(task.Id, task.Triggers).done(function () {
+            ApiClient.updateScheduledTaskTriggers(task.Id, task.Triggers).then(function () {
 
                 $('#popupAddTrigger').popup('close');
 
@@ -312,7 +318,11 @@
 
     $(document).on('pageinit', "#scheduledTaskPage", function () {
 
+        var page = this;
+
         $('.addTriggerForm').off('submit', onSubmit).on('submit', onSubmit);
+
+        page.querySelector('.timeFieldExample').innerHTML = Globalize.translate('ValueExample', '1:00 PM');
 
     }).on('pageshow', "#scheduledTaskPage", function () {
 

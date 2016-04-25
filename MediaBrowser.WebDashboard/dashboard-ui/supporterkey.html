@@ -1,161 +1,101 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>${TitleSupport}</title>
-</head>
-<body>
-    <div id="supporterKeyPage" data-role="page" class="page type-interior" data-require="jqmpopup,scripts/supporterkeypage">
+﻿<div id="supporterKeyPage" data-role="page" class="page type-interior withTabs" data-require="jqmcollapsible,scripts/supporterkeypage,paper-input">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div class="readOnlyContent">
-                    <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                        <a href="support.html" data-role="button">${TabGeneral}</a>
-                        <a href="log.html" data-role="button">${TabLogs}</a>
-                        <a href="supporterkey.html" data-role="button" class="ui-btn-active tabSupporterMembership">${TabEmbyPremiere}</a>
-                        <a href="about.html" data-role="button">${TabAbout}</a>
-                    </div>
+    <div data-role="content">
+        <div class="content-primary">
+            <div class="readOnlyContent">
 
-                    <div>
-                        <h1>${HeaderSupportTheTeam}</h1>
-                        <p>${HeaderSupportTheTeamHelp}</p>
+                <div>
+                    <h1>${HeaderSupportTheTeam}</h1>
+                    <p>${HeaderSupportTheTeamHelp}</p>
 
-                        <p class="benefits"></p>
+                    <p class="benefits"></p>
 
-                        <div class="supporterContainer hide">
-                            <br />
-                            <a class="clearLink" href="http://emby.media/premiere" target="_blank">
-                                <paper-button raised class="block accent"><iron-icon icon="check"></iron-icon><span>${HeaderBecomeProjectSupporter}</span></paper-button>
-                            </a>
-                        </div>
-                    </div>
-
-                    <form id="supporterKeyForm">
-
-                        <div style="margin: 3em 0 1em;">
-
-                            <h1>${TabSupporterKey}</h1>
-                            <div>
-                                <label for="txtSupporterKey">${LabelSupporterKey}</label>
-                                <input type="password" id="txtSupporterKey" name="txtSupporterKey" data-inline="true" />
-                                <div class="fieldDescription">
-                                    ${LabelSupporterKeyHelp}
-                                </div>
-                            </div>
-
-                            <div style="display: none; padding: 1em; margin-top: 1em; font-weight: normal;" class="ui-bar-a notSupporter">
-                                <p>
-                                    <strong>${MessageInvalidKey}</strong>
-                                </p>
-                                <p>
-                                    ${ErrorMessageInvalidKey}
-                                </p>
-                            </div>
-
-                        </div>
-                        <p>
-                            <button type="submit" id="mbLegacyKeyBtn" class="clearButton">
-                                <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
-                            </button>
-                        </p>
-                    </form>
-                    <br />
-                    <div data-role="collapsible">
-                        <h3>${HeaderForgotKey}</h3>
-                        <div>
-                            <form id="lostKeyForm">
-                                <div style="margin: 1em 0;">
-                                    <label for="txtEmail">${LabelEmailAddress}</label>
-                                    <input type="email" required id="txtEmail" name="txtEmail" />
-                                    <div class="fieldDescription">${LabelSupporterEmailAddress}</div>
-                                </div>
-                                <p>
-                                    <button type="submit" id="mbRetrieveKeyBtn" class="clearButton">
-                                        <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonRetrieveKey}</span></paper-button>
-                                    </button>
-                                </p>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div data-role="collapsible">
-                        <h3>${HeaderMultipleKeyLinking}</h3>
-                        <div>
-
-                            <form id="linkKeysForm">
-                                <p>
-                                    ${MultipleKeyLinkingHelp}
-                                </p>
-                                <div style="margin: 1em 0;">
-                                    <label for="txtEmail">${LabelCurrentEmailAddress}</label>
-                                    <input type="email" required id="txtNewEmail" name="txtNewEmail" />
-                                    <div class="fieldDescription">
-                                        ${LabelCurrentEmailAddressHelp}
-                                    </div>
-                                </div>
-                                <p>
-                                    <label for="txtNewKey">${LabelNewSupporterKey}</label>
-                                    <input type="password" required="required" id="txtNewKey" name="txtNewKey" />
-                                </p>
-                                <p>
-
-                                    <label for="txtOldKey">${LabelOldSupporterKey}</label>
-                                    <input type="password" required="required" id="txtOldKey" name="txtOldKey" />
-                                </p>
-                                <p>
-                                    <button type="submit" id="mbLinkKeysBtn" class="clearButton">
-                                        <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonLinkKeys}</span></paper-button>
-                                    </button>
-                                </p>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div style="display:none;">
+                    <div class="supporterContainer hide">
                         <br />
-                        <h1>${HeaderSupporterBenefits}</h1>
-                        <p class="linkSupporterKeyMessage"></p>
-                        <a href="https://play.google.com/store/apps/details?id=tv.mediabrowser.mediabrowsertv" target="_blank" title="Android TV">
-                            <img src="css/images/clients/androidtv-tile.png" style="height:60px;" />
+                        <a class="clearLink" href="http://emby.media/premiere" target="_blank">
+                            <paper-button raised class="block accent"><iron-icon icon="check"></iron-icon><span>${HeaderBecomeProjectSupporter}</span></paper-button>
                         </a>
-                        <br />
-                        <br />
-                        <div class="supporters">
+                    </div>
+                </div>
 
+                <form id="supporterKeyForm">
+
+                    <!-- Terrible, but this hidden field prevents the yellow background in chrome -->
+                    <div style="height:0; overflow: hidden;"><input type="text" name="fakeusernameremembered" tabindex="-1" /><input type="password" name="fakepasswordremembered" tabindex="-1" /></div>
+
+                    <div style="margin: 3em 0 1em;">
+
+                        <h1>${TabSupporterKey}</h1>
+                        <div>
+                            <paper-input type="password" id="txtSupporterKey" label="${LabelSupporterKey}" autocomplete="off"></paper-input>
+                            <div class="fieldDescription">
+                                ${LabelSupporterKeyHelp}
+                            </div>
                         </div>
-                        <button type="button" id="btnAddConnectUser" data-icon="plus">${ButtonAddUser}</button>
+
+                        <div style="display: none; padding: 1em; margin-top: 1em; font-weight: normal;" class="ui-bar-a notSupporter">
+                            <p>
+                                <strong>${MessageInvalidKey}</strong>
+                            </p>
+                            <p>
+                                ${ErrorMessageInvalidKey}
+                            </p>
+                        </div>
+
+                    </div>
+                    <p>
+                        <button type="submit" id="mbLegacyKeyBtn" class="clearButton">
+                            <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
+                        </button>
+                    </p>
+                </form>
+                <br />
+                <div data-role="collapsible">
+                    <h3>${HeaderForgotKey}</h3>
+                    <div>
+                        <form id="lostKeyForm">
+                            <div style="margin: 1em 0;">
+                                <paper-input type="email" required id="txtEmail" label="${LabelEmailAddress}"></paper-input>
+                                <div class="fieldDescription">${LabelSupporterEmailAddress}</div>
+                            </div>
+                            <p>
+                                <button type="submit" id="mbRetrieveKeyBtn" class="clearButton">
+                                    <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonRetrieveKey}</span></paper-button>
+                                </button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+
+                <div data-role="collapsible">
+                    <h3>${HeaderMultipleKeyLinking}</h3>
+                    <div>
+
+                        <form id="linkKeysForm">
+                            <p>
+                                ${MultipleKeyLinkingHelp}
+                            </p>
+                            <div style="margin: 1em 0;">
+                                <paper-input type="email" required id="txtNewEmail" label="${LabelCurrentEmailAddress}"></paper-input>
+                                <div class="fieldDescription">
+                                    ${LabelCurrentEmailAddressHelp}
+                                </div>
+                            </div>
+                            <div>
+                                <paper-input type="password" required id="txtNewKey" label="${LabelNewSupporterKey}"></paper-input>
+                            </div>
+                            <div>
+                                <paper-input type="password" required id="txtOldKey" label="${LabelOldSupporterKey}"></paper-input>
+                            </div>
+                            <p>
+                                <button type="submit" id="mbLinkKeysBtn" class="clearButton">
+                                    <paper-button raised class="block submit"><iron-icon icon="check"></iron-icon><span>${ButtonLinkKeys}</span></paper-button>
+                                </button>
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <div data-role="popup" class="popupAddUser popup" data-theme="a">
-
-            <div class="ui-bar-a" style="text-align: center; padding: 0 20px; position: relative;">
-
-                <h3 class="identificationHeader">${HeaderAddUser}</h3>
-            </div>
-
-            <div data-role="content">
-
-                <form class="popupAddUserForm" style="max-width:350px;padding-top:.5em;">
-                    <div>
-                        <label for="selectUserToAdd">${LabelUser}</label>
-                        <select id="selectUserToAdd" required="required"></select>
-                        <div class="fieldDescription">${LabelAddConnectSupporterHelp}</div>
-                    </div>
-                    <br />
-                    <p>
-                        <button type="submit" data-theme="b" data-icon="check">
-                            ${ButtonSubmit}
-                        </button>
-                        <button type="button" data-icon="delete" onclick="$(this).parents('.popup').popup('close');">
-                            ${ButtonCancel}
-                        </button>
-                    </p>
-                </form>
-            </div>
-
-        </div>
     </div>
-</body>
-</html>
+</div>

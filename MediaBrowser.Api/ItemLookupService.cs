@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -17,6 +16,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Api
 {
@@ -112,13 +112,15 @@ namespace MediaBrowser.Api
         private readonly IServerApplicationPaths _appPaths;
         private readonly IFileSystem _fileSystem;
         private readonly ILibraryManager _libraryManager;
+        private readonly IJsonSerializer _json;
 
-        public ItemLookupService(IProviderManager providerManager, IServerApplicationPaths appPaths, IFileSystem fileSystem, ILibraryManager libraryManager)
+        public ItemLookupService(IProviderManager providerManager, IServerApplicationPaths appPaths, IFileSystem fileSystem, ILibraryManager libraryManager, IJsonSerializer json)
         {
             _providerManager = providerManager;
             _appPaths = appPaths;
             _fileSystem = fileSystem;
             _libraryManager = libraryManager;
+            _json = json;
         }
 
         public object Get(GetExternalIdInfos request)
@@ -199,14 +201,20 @@ namespace MediaBrowser.Api
             //        item.SetProviderId(key.Key, value);
             //    }
             //}
-            item.ProviderIds = request.ProviderIds;
+            Logger.Info("Setting provider id's to item {0}-{1}: {2}", item.Id, item.Name, _json.SerializeToString(request.ProviderIds));
 
-			var task = _providerManager.RefreshFullItem(item, new MetadataRefreshOptions(_fileSystem)
+            // Since the refresh process won't erase provider Ids, we need to set this explicitly now.
+            item.ProviderIds = request.ProviderIds;
+            //item.ProductionYear = request.ProductionYear;
+            //item.Name = request.Name;
+
+            var task = _providerManager.RefreshFullItem(item, new MetadataRefreshOptions(_fileSystem)
             {
                 MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
                 ImageRefreshMode = ImageRefreshMode.FullRefresh,
                 ReplaceAllMetadata = true,
-                ReplaceAllImages = request.ReplaceAllImages
+                ReplaceAllImages = request.ReplaceAllImages,
+                SearchResult = request
 
             }, CancellationToken.None);
             Task.WaitAll(task);
@@ -231,7 +239,7 @@ namespace MediaBrowser.Api
                     contentPath = await reader.ReadToEndAsync().ConfigureAwait(false);
                 }
 
-				if (_fileSystem.FileExists(contentPath))
+                if (_fileSystem.FileExists(contentPath))
                 {
                     return ToStaticFileResult(contentPath);
                 }
@@ -272,7 +280,7 @@ namespace MediaBrowser.Api
 
             var fullCachePath = GetFullCachePath(urlHash + "." + ext);
 
-			_fileSystem.CreateDirectory(Path.GetDirectoryName(fullCachePath));
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(fullCachePath));
             using (var stream = result.Content)
             {
                 using (var filestream = _fileSystem.GetFileStream(fullCachePath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
@@ -281,7 +289,7 @@ namespace MediaBrowser.Api
                 }
             }
 
-			_fileSystem.CreateDirectory(Path.GetDirectoryName(pointerCachePath));
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(pointerCachePath));
             using (var writer = new StreamWriter(pointerCachePath))
             {
                 await writer.WriteAsync(fullCachePath).ConfigureAwait(false);

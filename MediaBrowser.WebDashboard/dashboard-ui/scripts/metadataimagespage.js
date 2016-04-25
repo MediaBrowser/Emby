@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     var currentType;
 
@@ -29,10 +29,10 @@
         var promise1 = ApiClient.getServerConfiguration();
         var promise2 = ApiClient.getJSON(ApiClient.getUrl("System/Configuration/MetadataPlugins"));
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            var config = response1[0];
-            var metadataPlugins = response2[0];
+            var config = responses[0];
+            var metadataPlugins = responses[1];
 
             config = config.MetadataOptions.filter(function (c) {
                 return c.ItemType == type;
@@ -46,7 +46,7 @@
 
             } else {
 
-                ApiClient.getJSON(ApiClient.getUrl("System/Configuration/MetadataOptions/Default")).done(function (defaultConfig) {
+                ApiClient.getJSON(ApiClient.getUrl("System/Configuration/MetadataOptions/Default")).then(function (defaultConfig) {
 
 
                     config = defaultConfig;
@@ -91,17 +91,17 @@
             var imageType = this.getAttribute('data-imagetype');
 
             if (metadataInfo.SupportedImageTypes.indexOf(imageType) == -1) {
-                $(this).hide();
+                this.classList.add('hide');
             } else {
-                $(this).show();
+                this.classList.remove('hide');
             }
 
             if (getImageConfig(config, imageType).Limit) {
 
-                $('input', this).checked(true).checkboxradio('refresh');
+                this.checked = true;
 
             } else {
-                $('input', this).checked(false).checkboxradio('refresh');
+                this.checked = false;
             }
         });
 
@@ -144,84 +144,66 @@
         var html = '';
 
         if (!plugins.length) {
-            $('.imageFetchers', page).html(html).hide().trigger('create');
+            $('.imageFetchers', page).html(html).hide();
             return;
         }
 
         var i, length, plugin, id;
 
-        html += '<div class="ui-controlgroup-label" style="margin-bottom:0;padding-left:2px;">' + Globalize.translate('LabelImageFetchers') + '</div>';
-
-        html += '<div style="display:inline-block;width: 75%;vertical-align:top;">';
-        html += '<div data-role="controlgroup" class="imageFetcherGroup">';
+        html += '<div class="paperListLabel">' + Globalize.translate('LabelImageFetchers') + '</div>';
+        html += '<div class="paperList">';
 
         for (i = 0, length = plugins.length; i < length; i++) {
 
             plugin = plugins[i];
 
-            id = 'chkImageFetcher' + i;
-
             var isChecked = config.DisabledImageFetchers.indexOf(plugin.Name) == -1 ? ' checked="checked"' : '';
 
-            html += '<input class="chkImageFetcher" type="checkbox" name="' + id + '" id="' + id + '" data-pluginname="' + plugin.Name + '" data-mini="true"' + isChecked + '>';
-            html += '<label for="' + id + '">' + plugin.Name + '</label>';
+            html += '<paper-icon-item class="imageFetcherItem" data-pluginname="' + plugin.Name + '">';
+
+            html += '<paper-checkbox class="chkImageFetcher" data-pluginname="' + plugin.Name + '" item-icon' + isChecked + '></paper-checkbox>';
+
+            html += '<paper-item-body>';
+
+            html += '<div>';
+            html += plugin.Name;
+            html += '</div>';
+
+            html += '</paper-item-body>';
+
+            html += '<paper-icon-button class="btnUp" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
+            html += '<paper-icon-button class="btnDown" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
+
+            html += '</paper-icon-item>';
         }
 
         html += '</div>';
-        html += '</div>';
+        html += '<div class="fieldDescription">' + Globalize.translate('LabelImageFetchersHelp') + '</div>';
 
-        if (plugins.length > 1) {
-            html += '<div style="display:inline-block;vertical-align:top;margin-left:5px;">';
-
-            for (i = 0, length = plugins.length; i < length; i++) {
-
-                html += '<div style="margin:6px 0 0;">';
-
-                if (i > 0) {
-                    html += '<paper-icon-button class="btnUp" data-pluginindex="' + i + '" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
-                } else {
-                    html += '<paper-icon-button disabled class="btnUp" data-pluginindex="' + i + '" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
-                }
-
-                if (i < (plugins.length - 1)) {
-                    html += '<paper-icon-button class="btnDown" data-pluginindex="' + i + '" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
-                } else {
-                    html += '<paper-icon-button disabled class="btnDown" data-pluginindex="' + i + '" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
-                }
-                html += '</div>';
-            }
-        }
-
-        html += '</div>';
-        html += '<div class="fieldDescription" style="width:75%;">' + Globalize.translate('LabelImageFetchersHelp') + '</div>';
-
-        var elem = $('.imageFetchers', page).html(html).show().trigger('create');
+        var elem = $('.imageFetchers', page).html(html).show();
 
         $('.btnDown', elem).on('click', function () {
-            var index = parseInt(this.getAttribute('data-pluginindex'));
 
-            var elemToMove = $('.imageFetcherGroup .ui-checkbox', page)[index];
+            var elemToMove = $(this).parents('.imageFetcherItem')[0];
 
-            var insertAfter = $(elemToMove).next('.ui-checkbox')[0];
+            var insertAfter = $(elemToMove).next('.imageFetcherItem')[0];
 
-            elemToMove.parentNode.removeChild(elemToMove);
-            $(elemToMove).insertAfter(insertAfter);
-
-            $('.imageFetcherGroup', page).controlgroup('destroy').controlgroup();
+            if (insertAfter) {
+                elemToMove.parentNode.removeChild(elemToMove);
+                $(elemToMove).insertAfter(insertAfter);
+            }
         });
 
         $('.btnUp', elem).on('click', function () {
 
-            var index = parseInt(this.getAttribute('data-pluginindex'));
+            var elemToMove = $(this).parents('.imageFetcherItem')[0];
 
-            var elemToMove = $('.imageFetcherGroup .ui-checkbox', page)[index];
+            var insertBefore = $(elemToMove).prev('.imageFetcherItem')[0];
 
-            var insertBefore = $(elemToMove).prev('.ui-checkbox')[0];
-
-            elemToMove.parentNode.removeChild(elemToMove);
-            $(elemToMove).insertBefore(insertBefore);
-
-            $('.imageFetcherGroup', page).controlgroup('destroy').controlgroup();
+            if (insertBefore) {
+                elemToMove.parentNode.removeChild(elemToMove);
+                $(elemToMove).insertBefore(insertBefore);
+            }
         });
     }
 
@@ -234,29 +216,26 @@
         var html = '';
 
         if (!plugins.length) {
-            $('.metadataSavers', page).html(html).hide().trigger('create');
+            $('.metadataSavers', page).html(html).hide();
             return;
         }
 
-        html += '<fieldset data-role="controlgroup">';
-        html += '<legend>' + Globalize.translate('LabelMetadataSavers') + '</legend>';
+        html += '<div class="paperListLabel">' + Globalize.translate('LabelMetadataSavers') + '</div>';
+        html += '<div class="paperCheckboxList paperList">';
 
         for (var i = 0, length = plugins.length; i < length; i++) {
 
             var plugin = plugins[i];
 
-            var id = 'chkMetadataSaver' + i;
-
             var isChecked = config.DisabledMetadataSavers.indexOf(plugin.Name) == -1 ? ' checked="checked"' : '';
 
-            html += '<input class="chkMetadataSaver" type="checkbox" name="' + id + '" id="' + id + '" data-mini="true"' + isChecked + ' data-pluginname="' + plugin.Name + '">';
-            html += '<label for="' + id + '">' + plugin.Name + '</label>';
+            html += '<paper-checkbox class="chkMetadataSaver"' + isChecked + ' data-pluginname="' + plugin.Name + '">' + plugin.Name + '</paper-checkbox>';
         }
 
-        html += '</fieldset>';
-        html += '<div class="fieldDescription">' + Globalize.translate('LabelMetadataSaversHelp') + '</div>';
+        html += '</div>';
+        html += '<div class="fieldDescription" style="margin-top:.25em;">' + Globalize.translate('LabelMetadataSaversHelp') + '</div>';
 
-        $('.metadataSavers', page).html(html).show().trigger('create');
+        page.querySelector('.metadataSavers').innerHTML = html;
     }
 
     function renderMetadataFetchers(page, type, config, metadataInfo) {
@@ -268,84 +247,66 @@
         var html = '';
 
         if (!plugins.length) {
-            $('.metadataFetchers', page).html(html).hide().trigger('create');
+            $('.metadataFetchers', page).html(html).hide();
             return;
         }
 
-        var i, length, plugin, id;
+        var i, length, plugin;
 
-        html += '<div class="ui-controlgroup-label" style="margin-bottom:0;padding-left:2px;">' + Globalize.translate('LabelMetadataDownloaders') + '</div>';
-
-        html += '<div style="display:inline-block;width: 75%;vertical-align:top;">';
-        html += '<div data-role="controlgroup" class="metadataFetcherGroup">';
+        html += '<div class="paperListLabel">' + Globalize.translate('LabelMetadataDownloaders') + '</div>';
+        html += '<div class="paperList">';
 
         for (i = 0, length = plugins.length; i < length; i++) {
 
             plugin = plugins[i];
 
-            id = 'chkMetadataFetcher' + i;
-
             var isChecked = config.DisabledMetadataFetchers.indexOf(plugin.Name) == -1 ? ' checked="checked"' : '';
 
-            html += '<input class="chkMetadataFetcher" type="checkbox" name="' + id + '" id="' + id + '" data-pluginname="' + plugin.Name + '" data-mini="true"' + isChecked + '>';
-            html += '<label for="' + id + '">' + plugin.Name + '</label>';
+            html += '<paper-icon-item class="metadataFetcherItem" data-pluginname="' + plugin.Name + '">';
+
+            html += '<paper-checkbox class="chkMetadataFetcher" data-pluginname="' + plugin.Name + '" item-icon' + isChecked + '></paper-checkbox>';
+
+            html += '<paper-item-body>';
+
+            html += '<div>';
+            html += plugin.Name;
+            html += '</div>';
+
+            html += '</paper-item-body>';
+
+            html += '<paper-icon-button class="btnUp" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
+            html += '<paper-icon-button class="btnDown" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
+
+            html += '</paper-icon-item>';
         }
 
         html += '</div>';
-        html += '</div>';
+        html += '<div class="fieldDescription">' + Globalize.translate('LabelMetadataDownloadersHelp') + '</div>';
 
-        if (plugins.length > 1) {
-            html += '<div style="display:inline-block;vertical-align:top;margin-left:5px;">';
-
-            for (i = 0, length = plugins.length; i < length; i++) {
-
-                html += '<div style="margin:6px 0 0;">';
-
-                if (i > 0) {
-                    html += '<paper-icon-button class="btnUp" data-pluginindex="' + i + '" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
-                } else {
-                    html += '<paper-icon-button disabled class="btnUp" data-pluginindex="' + i + '" icon="keyboard-arrow-up" title="' + Globalize.translate('ButtonUp') + '" style="padding:3px 8px;"></paper-icon-button>';
-                }
-
-                if (i < (plugins.length - 1)) {
-                    html += '<paper-icon-button class="btnDown" data-pluginindex="' + i + '" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
-                } else {
-                    html += '<paper-icon-button disabled class="btnDown" data-pluginindex="' + i + '" icon="keyboard-arrow-down" title="' + Globalize.translate('ButtonDown') + '" style="padding:3px 8px;"></paper-icon-button>';
-                }
-                html += '</div>';
-            }
-        }
-
-        html += '</div>';
-        html += '<div class="fieldDescription" style="width:75%;">' + Globalize.translate('LabelMetadataDownloadersHelp') + '</div>';
-
-        var elem = $('.metadataFetchers', page).html(html).show().trigger('create');
+        var elem = $('.metadataFetchers', page).html(html).show();
 
         $('.btnDown', elem).on('click', function () {
-            var index = parseInt(this.getAttribute('data-pluginindex'));
 
-            var elemToMove = $('.metadataFetcherGroup .ui-checkbox', page)[index];
+            var elemToMove = $(this).parents('.metadataFetcherItem')[0];
 
-            var insertAfter = $(elemToMove).next('.ui-checkbox')[0];
+            var insertAfter = $(elemToMove).next('.metadataFetcherItem')[0];
 
-            elemToMove.parentNode.removeChild(elemToMove);
-            $(elemToMove).insertAfter(insertAfter);
-
-            $('.metadataFetcherGroup', page).controlgroup('destroy').controlgroup();
+            if (insertAfter) {
+                elemToMove.parentNode.removeChild(elemToMove);
+                $(elemToMove).insertAfter(insertAfter);
+            }
         });
 
         $('.btnUp', elem).on('click', function () {
 
-            var index = parseInt(this.getAttribute('data-pluginindex'));
+            var elemToMove = $(this).parents('.metadataFetcherItem')[0];
 
-            var elemToMove = $('.metadataFetcherGroup .ui-checkbox', page)[index];
+            var insertBefore = $(elemToMove).prev('.metadataFetcherItem')[0];
 
-            var insertBefore = $(elemToMove).prev('.ui-checkbox')[0];
-
-            elemToMove.parentNode.removeChild(elemToMove);
-            $(elemToMove).insertBefore(insertBefore);
-
-            $('.metadataFetcherGroup', page).controlgroup('destroy').controlgroup();
+            if (insertBefore) {
+                elemToMove.parentNode.removeChild(elemToMove);
+                $(elemToMove).insertBefore(insertBefore);
+            }
         });
     }
 
@@ -358,42 +319,44 @@
         var html = '';
 
         if (plugins.length < 2) {
-            $('.metadataReaders', page).html(html).hide().trigger('create');
+            $('.metadataReaders', page).html(html).hide();
             return;
         }
 
-        html += '<div class="ui-controlgroup-label" style="margin-bottom:0;padding-left:2px;">' + Globalize.translate('LabelMetadataReaders') + '</div>';
-        html += '<ul data-role="listview" data-inset="true" data-mini="true" style="margin-top:.5em;margin-bottom:.5em;">';
+        html += '<div class="paperListLabel">' + Globalize.translate('LabelMetadataReaders') + '</div>';
+        html += '<div class="paperList">';
 
         for (var i = 0, length = plugins.length; i < length; i++) {
 
             var plugin = plugins[i];
 
-            html += '<li data-mini="true" class="localReaderOption" data-pluginname="' + plugin.Name + '">';
+            html += '<paper-icon-item class="localReaderOption" data-pluginname="' + plugin.Name + '">';
+
+            html += '<paper-fab mini style="background:#52B54B;" icon="live-tv" item-icon></paper-fab>';
+
+            html += '<paper-item-body>';
+
+            html += '<div>';
+            html += plugin.Name;
+            html += '</div>';
+
+            html += '</paper-item-body>';
 
             if (i > 0) {
-                html += '<a href="#" style="font-size:13px;font-weight:normal;">' + plugin.Name + '</a>';
-
-                html += '<a class="btnLocalReaderUp btnLocalReaderMove" data-pluginindex="' + i + '" href="#" style="font-size:13px;font-weight:normal;" data-icon="arrow-u">' + Globalize.translate('ButtonUp') + '</a>';
+                html += '<paper-icon-button title="' + Globalize.translate('ButtonUp') + '" icon="keyboard-arrow-up" class="btnLocalReaderUp btnLocalReaderMove" data-pluginindex="' + i + '"></paper-icon-button>';
             }
             else if (plugins.length > 1) {
 
-                html += '<a href="#" style="font-size:13px;font-weight:normal;">' + plugin.Name + '</a>';
-
-                html += '<a class="btnLocalReaderDown btnLocalReaderMove" data-pluginindex="' + i + '" href="#" style="font-size:13px;font-weight:normal;" data-icon="arrow-d">' + Globalize.translate('ButtonDown') + '</a>';
+                html += '<paper-icon-button title="' + Globalize.translate('ButtonDown') + '" icon="keyboard-arrow-down" class="btnLocalReaderDown btnLocalReaderMove" data-pluginindex="' + i + '"></paper-icon-button>';
             }
-            else {
 
-                html += plugin.Name;
-
-            }
-            html += '</li>';
+            html += '</paper-icon-item>';
         }
 
-        html += '</ul>';
+        html += '</div>';
         html += '<div class="fieldDescription">' + Globalize.translate('LabelMetadataReadersHelp') + '</div>';
 
-        $('.metadataReaders', page).html(html).show().trigger('create');
+        $('.metadataReaders', page).html(html).show();
     }
 
     function loadPage(page) {
@@ -424,7 +387,11 @@
 
     function saveSettingsIntoConfig(form, config) {
 
-        config.DisabledMetadataSavers = $('.chkMetadataSaver:not(:checked)', form).get().map(function (c) {
+        config.DisabledMetadataSavers = $('.chkMetadataSaver', form).get().filter(function (c) {
+
+            return !c.checked;
+
+        }).map(function (c) {
 
             return c.getAttribute('data-pluginname');
 
@@ -436,7 +403,9 @@
 
         });
 
-        config.DisabledMetadataFetchers = $('.chkMetadataFetcher:not(:checked)', form).get().map(function (c) {
+        config.DisabledMetadataFetchers = $('.chkMetadataFetcher', form).get().filter(function (c) {
+            return !c.checked;
+        }).map(function (c) {
 
             return c.getAttribute('data-pluginname');
 
@@ -448,7 +417,9 @@
 
         });
 
-        config.DisabledImageFetchers = $('.chkImageFetcher:not(:checked)', form).get().map(function (c) {
+        config.DisabledImageFetchers = $('.chkImageFetcher', form).get().filter(function (c) {
+            return !c.checked;
+        }).map(function (c) {
 
             return c.getAttribute('data-pluginname');
 
@@ -460,11 +431,11 @@
 
         });
 
-        config.ImageOptions = $('.imageType:visible input', form).get().map(function (c) {
+        config.ImageOptions = $('.imageType:not(.hide)', form).get().map(function (c) {
 
 
             return {
-                Type: $(c).parents('.imageType').attr('data-imagetype'),
+                Type: c.getAttribute('data-imagetype'),
                 Limit: c.checked ? 1 : 0,
                 MinWidth: 0
             };
@@ -490,7 +461,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             var type = currentType;
 
@@ -501,16 +472,16 @@
             if (metadataOptions) {
 
                 saveSettingsIntoConfig(form, metadataOptions);
-                ApiClient.updateServerConfiguration(config).done(Dashboard.processServerConfigurationUpdateResult);
+                ApiClient.updateServerConfiguration(config).then(Dashboard.processServerConfigurationUpdateResult);
 
             } else {
 
-                ApiClient.getJSON(ApiClient.getUrl("System/Configuration/MetadataOptions/Default")).done(function (defaultOptions) {
+                ApiClient.getJSON(ApiClient.getUrl("System/Configuration/MetadataOptions/Default")).then(function (defaultOptions) {
 
                     defaultOptions.ItemType = type;
                     config.MetadataOptions.push(defaultOptions);
                     saveSettingsIntoConfig(form, defaultOptions);
-                    ApiClient.updateServerConfiguration(config).done(Dashboard.processServerConfigurationUpdateResult);
+                    ApiClient.updateServerConfiguration(config).then(Dashboard.processServerConfigurationUpdateResult);
 
                 });
             }
@@ -520,6 +491,22 @@
         return false;
     }
 
+    function getTabs() {
+        return [
+        {
+            href: 'metadata.html',
+            name: Globalize.translate('TabSettings')
+        },
+         {
+             href: 'metadataimages.html',
+             name: Globalize.translate('TabServices')
+         },
+         {
+             href: 'metadatanfo.html',
+             name: Globalize.translate('TabNfoSettings')
+         }];
+    }
+
     $(document).on('pageinit', "#metadataImagesConfigurationPage", function () {
 
         var page = this;
@@ -527,7 +514,7 @@
         $('.metadataReaders', page).on('click', '.btnLocalReaderMove', function () {
 
             var li = $(this).parents('.localReaderOption');
-            var ul = li.parents('ul');
+            var list = li.parents('.paperList');
 
             if ($(this).hasClass('btnLocalReaderDown')) {
 
@@ -542,17 +529,15 @@
                 li.remove().insertBefore(prev);
             }
 
-            $('.localReaderOption', ul).each(function () {
+            $('.localReaderOption', list).each(function () {
 
                 if ($(this).prev('.localReaderOption').length) {
-                    $('.btnLocalReaderMove', this).addClass('btnLocalReaderUp').removeClass('btnLocalReaderDown').attr('data-icon', 'arrow-u').removeClass('ui-icon-arrow-d').addClass('ui-icon-arrow-u');
+                    $('.btnLocalReaderMove', this).addClass('btnLocalReaderUp').removeClass('btnLocalReaderDown').attr('icon', 'keyboard-arrow-up');
                 } else {
-                    $('.btnLocalReaderMove', this).addClass('btnLocalReaderDown').removeClass('btnLocalReaderUp').attr('data-icon', 'arrow-d').removeClass('ui-icon-arrow-u').addClass('ui-icon-arrow-d');
+                    $('.btnLocalReaderMove', this).addClass('btnLocalReaderDown').removeClass('btnLocalReaderUp').attr('icon', 'keyboard-arrow-down');
                 }
 
             });
-
-            ul.listview('destroy').listview({});
         });
 
         $('#selectItemType', page).on('change', function () {
@@ -564,6 +549,7 @@
 
     }).on('pageshow', "#metadataImagesConfigurationPage", function () {
 
+        LibraryMenu.setTabs('metadata', 1, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;
@@ -571,4 +557,4 @@
         loadPage(page);
     });
 
-})(jQuery, document, window);
+});

@@ -1,6 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Providers;
@@ -105,13 +103,7 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public object Get(GetConfiguration request)
         {
-            var configPath = _configurationManager.ApplicationPaths.SystemConfigurationFilePath;
-
-            var dateModified = _fileSystem.GetLastWriteTimeUtc(configPath);
-
-            var cacheKey = (configPath + dateModified.Ticks).GetMD5();
-
-            return ToOptimizedResultUsingCache(cacheKey, dateModified, null, () => _configurationManager.Configuration);
+            return ToOptimizedResult(_configurationManager.Configuration);
         }
 
         public object Get(GetNamedConfiguration request)

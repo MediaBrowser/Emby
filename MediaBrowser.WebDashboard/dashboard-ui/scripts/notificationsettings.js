@@ -1,10 +1,10 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     function reload(page) {
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getJSON(ApiClient.getUrl("Notifications/Types")).done(function (list) {
+        ApiClient.getJSON(ApiClient.getUrl("Notifications/Types")).then(function (list) {
 
             var html = '';
 
@@ -62,11 +62,27 @@
         });
     }
 
-    $(document).on('pageshow', "#notificationSettingsPage", function () {
+    function getTabs() {
+        return [
+        {
+            href: 'notificationsettings.html',
+            name: Globalize.translate('TabNotifications')
+        },
+        {
+            href: 'appservices.html?context=notifications',
+            name: Globalize.translate('TabServices')
+        }];
+    }
 
-        var page = this;
+    return function (view, params) {
 
-        reload(page);
-    });
+        view.addEventListener('viewshow', function () {
 
-})(jQuery, window);
+            LibraryMenu.setTabs('notifications', 0, getTabs);
+
+            require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+                reload(view);
+            });
+        });
+    };
+});

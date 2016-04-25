@@ -44,6 +44,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         public int? CpuCoreLimit { get; set; }
         public bool ReadInputAtNativeFramerate { get; set; }
         public SubtitleDeliveryMethod SubtitleMethod { get; set; }
+        public bool CopyTimestamps { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has fixed resolution.
@@ -56,8 +57,6 @@ namespace MediaBrowser.Controller.MediaEncoding
                 return Width.HasValue || Height.HasValue;
             }
         }
-
-        public bool? Cabac { get; set; }
 
         public EncodingJobOptions()
         {
@@ -86,11 +85,9 @@ namespace MediaBrowser.Controller.MediaEncoding
             MaxRefFrames = info.MaxRefFrames;
             MaxVideoBitDepth = info.MaxVideoBitDepth;
             SubtitleMethod = info.SubtitleDeliveryMethod;
-            Cabac = info.Cabac;
             Context = info.Context;
 
-            if (info.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Encode ||
-                info.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Embed)
+            if (info.SubtitleDeliveryMethod != SubtitleDeliveryMethod.External)
             {
                 SubtitleStreamIndex = info.SubtitleStreamIndex;
             }

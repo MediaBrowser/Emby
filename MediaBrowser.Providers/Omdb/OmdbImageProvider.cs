@@ -1,16 +1,12 @@
 ﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Providers;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,25 +47,15 @@ namespace MediaBrowser.Providers.Omdb
             return Task.FromResult<IEnumerable<RemoteImageInfo>>(list);
         }
 
-        public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetResponse(new HttpRequestOptions
+            return _httpClient.GetResponse(new HttpRequestOptions
             {
                 CancellationToken = cancellationToken,
                 Url = url,
                 ResourcePool = OmdbProvider.ResourcePool
 
-            }).ConfigureAwait(false);
-
-            if (response.ContentLength == 11059)
-            {
-                throw new HttpException("File not found")
-                {
-                    StatusCode = HttpStatusCode.NotFound
-                };
-            }
-
-            return response;
+            });
         }
 
         public string Name
@@ -86,26 +72,9 @@ namespace MediaBrowser.Providers.Omdb
             }
 
             // Save the http requests since we know it's not currently supported
-            if (item is Series || item is Season || item is Episode)
+            if (item is Season || item is Episode)
             {
                 return false;
-            }
-
-            var channelItem = item as IChannelMediaItem;
-
-            if (channelItem != null)
-            {
-                if (channelItem.ContentType == ChannelMediaContentType.Movie)
-                {
-                    return true;
-                }
-                if (channelItem.ContentType == ChannelMediaContentType.MovieExtra)
-                {
-                    if (channelItem.ExtraType == ExtraType.Trailer)
-                    {
-                        return true;
-                    }
-                }
             }
 
             // Supports images for tv movies
@@ -115,7 +84,7 @@ namespace MediaBrowser.Providers.Omdb
                 return true;
             }
 
-            return item is Movie;
+            return item is Movie || item is Trailer;
         }
 
         public int Order

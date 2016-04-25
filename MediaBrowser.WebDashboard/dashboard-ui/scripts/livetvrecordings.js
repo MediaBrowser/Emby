@@ -1,4 +1,4 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     function getRecordingGroupHtml(group) {
 
@@ -70,7 +70,8 @@
             showParentTitle: true,
             centerText: true,
             coverImage: true,
-            lazy: true
+            lazy: true,
+            overlayPlayButton: true
 
         });
 
@@ -84,9 +85,10 @@
         ApiClient.getLiveTvRecordings({
 
             userId: Dashboard.getCurrentUserId(),
-            IsInProgress: true
+            IsInProgress: true,
+            Fields: 'CanDelete'
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             renderRecordings(page.querySelector('#activeRecordings'), result.Items);
 
@@ -96,9 +98,10 @@
 
             userId: Dashboard.getCurrentUserId(),
             limit: 12,
-            IsInProgress: false
+            IsInProgress: false,
+            Fields: 'CanDelete,PrimaryImageAspectRatio'
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             renderRecordings(page.querySelector('#latestRecordings'), result.Items);
         });
@@ -107,10 +110,11 @@
 
             userId: Dashboard.getCurrentUserId()
 
-        }).done(function (result) {
+        }).then(function (result) {
 
-            renderRecordingGroups(page, result.Items);
-
+            require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+                renderRecordingGroups(page, result.Items);
+            });
         });
     }
 
@@ -121,4 +125,4 @@
         }
     };
 
-})(jQuery, document);
+});

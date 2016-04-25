@@ -1,17 +1,10 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function loadPage(page, config) {
 
-        $('#chkEnableDebugEncodingLogging', page).checked(config.EnableDebugLogging).checkboxradio('refresh');
-        $('#chkEnableThrottle', page).checked(config.EnableThrottling).checkboxradio('refresh');
+        page.querySelector('#chkEnableThrottle').checked = config.EnableThrottling;
 
-        $('.radioEncodingQuality', page).each(function () {
-
-            this.checked = config.EncodingQuality == this.value;
-
-        }).checkboxradio('refresh');
-
-        $('#selectVideoDecoder', page).val(config.HardwareVideoDecoder);
+        $('#selectVideoDecoder', page).val(config.HardwareAccelerationType);
         $('#selectThreadCount', page).val(config.EncodingThreadCount);
         $('#txtDownMixAudioBoost', page).val(config.DownMixAudioBoost);
         $('#txtTranscodingTempPath', page).val(config.TranscodingTempPath || '');
@@ -20,25 +13,61 @@
     }
 
     function onSubmit() {
-        Dashboard.showLoadingMsg();
 
         var form = this;
 
-        ApiClient.getNamedConfiguration("encoding").done(function (config) {
+        var onDecoderConfirmed = function() {
+            Dashboard.showLoadingMsg();
 
-            config.EnableDebugLogging = $('#chkEnableDebugEncodingLogging', form).checked();
-            config.EncodingQuality = $('.radioEncodingQuality:checked', form).val();
-            config.DownMixAudioBoost = $('#txtDownMixAudioBoost', form).val();
-            config.TranscodingTempPath = $('#txtTranscodingTempPath', form).val();
-            config.EnableThrottling = $('#chkEnableThrottle', form).checked();
-            config.EncodingThreadCount = $('#selectThreadCount', form).val();
-            config.HardwareVideoDecoder = $('#selectVideoDecoder', form).val();
+            ApiClient.getNamedConfiguration("encoding").then(function (config) {
 
-            ApiClient.updateNamedConfiguration("encoding", config).done(Dashboard.processServerConfigurationUpdateResult);
-        });
+                config.DownMixAudioBoost = $('#txtDownMixAudioBoost', form).val();
+                config.TranscodingTempPath = $('#txtTranscodingTempPath', form).val();
+                config.EncodingThreadCount = $('#selectThreadCount', form).val();
+                config.HardwareAccelerationType = $('#selectVideoDecoder', form).val();
+
+                config.EnableThrottling = form.querySelector('#chkEnableThrottle').checked;
+
+                ApiClient.updateNamedConfiguration("encoding", config).then(Dashboard.processServerConfigurationUpdateResult);
+            });
+        };
+
+        if ($('#selectVideoDecoder', form).val()) {
+
+            require(['alert'], function (alert) {
+                alert({
+                    title: Globalize.translate('TitleHardwareAcceleration'),
+                    text: Globalize.translate('HardwareAccelerationWarning')
+                }).then(onDecoderConfirmed);
+            });
+
+        } else {
+            onDecoderConfirmed();
+        }
+
 
         // Disable default form submission
         return false;
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'cinemamodeconfiguration.html',
+            name: Globalize.translate('TabCinemaMode')
+        },
+         {
+             href: 'playbackconfiguration.html',
+             name: Globalize.translate('TabResumeSettings')
+         },
+         {
+             href: 'streamingsettings.html',
+             name: Globalize.translate('TabStreaming')
+         },
+         {
+             href: 'encodingsettings.html',
+             name: Globalize.translate('TabTranscoding')
+         }];
     }
 
     $(document).on('pageinit', "#encodingSettingsPage", function () {
@@ -75,13 +104,14 @@
 
         Dashboard.showLoadingMsg();
 
+        LibraryMenu.setTabs('playback',3, getTabs);
         var page = this;
 
-        ApiClient.getNamedConfiguration("encoding").done(function (config) {
+        ApiClient.getNamedConfiguration("encoding").then(function (config) {
 
             loadPage(page, config);
 
         });
     });
 
-})(jQuery, document, window);
+});

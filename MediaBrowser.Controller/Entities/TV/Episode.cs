@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,11 +90,11 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         [IgnoreDataMember]
-        public override BaseItem DisplayParent
+        public override Guid? DisplayParentId
         {
             get
             {
-                return Season ?? Parent;
+                return SeasonId;
             }
         }
 
@@ -113,19 +112,6 @@ namespace MediaBrowser.Controller.Entities.TV
             }
 
             return base.CreateUserDataKey();
-        }
-
-        /// <summary>
-        /// Our rating comes from our series
-        /// </summary>
-        [IgnoreDataMember]
-        public override string OfficialRatingForComparison
-        {
-            get
-            {
-                var series = Series;
-                return series != null ? series.OfficialRatingForComparison : base.OfficialRatingForComparison;
-            }
         }
 
         /// <summary>
@@ -189,7 +175,7 @@ namespace MediaBrowser.Controller.Entities.TV
         /// <returns>System.String.</returns>
         protected override string CreateSortName()
         {
-            return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("000-") : "")
+            return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("000 - ") : "")
                     + (IndexNumber != null ? IndexNumber.Value.ToString("0000 - ") : "") + Name;
         }
 
@@ -265,14 +251,28 @@ namespace MediaBrowser.Controller.Entities.TV
             }
         }
 
+        public override IEnumerable<Guid> GetAncestorIds()
+        {
+            var list = base.GetAncestorIds().ToList();
+
+            var seasonId = SeasonId;
+
+            if (seasonId.HasValue && !list.Contains(seasonId.Value))
+            {
+                list.Add(seasonId.Value);
+            }
+
+            return list;
+        }
+
         public override IEnumerable<string> GetDeletePaths()
         {
             return new[] { Path };
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.Series);
+            return UnratedItem.Series;
         }
 
         public EpisodeInfo GetLookupInfo()
@@ -287,7 +287,9 @@ namespace MediaBrowser.Controller.Entities.TV
                 id.AnimeSeriesIndex = series.AnimeSeriesIndex;
             }
 
+            id.IsMissingEpisode = IsMissingEpisode;
             id.IndexNumberEnd = IndexNumberEnd;
+            id.IsVirtualUnaired = IsVirtualUnaired;
 
             return id;
         }

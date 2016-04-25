@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -20,6 +19,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Common;
 using MediaBrowser.Model.Net;
 
 namespace MediaBrowser.Providers.Movies
@@ -40,10 +40,11 @@ namespace MediaBrowser.Providers.Movies
         private readonly ILogger _logger;
         private readonly ILocalizationManager _localization;
         private readonly ILibraryManager _libraryManager;
+        private readonly IApplicationHost _appHost;
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
-        public MovieDbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILogger logger, ILocalizationManager localization, ILibraryManager libraryManager)
+        public MovieDbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILogger logger, ILocalizationManager localization, ILibraryManager libraryManager, IApplicationHost appHost)
         {
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
@@ -52,6 +53,7 @@ namespace MediaBrowser.Providers.Movies
             _logger = logger;
             _localization = localization;
             _libraryManager = libraryManager;
+            _appHost = appHost;
             Current = this;
         }
 
@@ -223,10 +225,6 @@ namespace MediaBrowser.Providers.Movies
             {
                 throw new ArgumentNullException("tmdbId");
             }
-            if (string.IsNullOrEmpty(language))
-            {
-                throw new ArgumentNullException("language");
-            }
 
             var path = GetDataFilePath(tmdbId, language);
 
@@ -250,15 +248,15 @@ namespace MediaBrowser.Providers.Movies
             {
                 throw new ArgumentNullException("tmdbId");
             }
-            if (string.IsNullOrEmpty(preferredLanguage))
-            {
-                throw new ArgumentNullException("preferredLanguage");
-            }
 
             var path = GetMovieDataPath(_configurationManager.ApplicationPaths, tmdbId);
 
-            var filename = string.Format("all-{0}.json",
-                preferredLanguage);
+            if (string.IsNullOrWhiteSpace(preferredLanguage))
+            {
+                preferredLanguage = "alllang";
+            }
+
+            var filename = string.Format("all-{0}.json", preferredLanguage);
 
             return Path.Combine(path, filename);
         }
@@ -280,6 +278,20 @@ namespace MediaBrowser.Providers.Movies
             return string.Join(",", languages.ToArray());
         }
 
+        public static string NormalizeLanguage(string language)
+        {
+            // They require this to be uppercase
+            // http://emby.media/community/index.php?/topic/32454-fr-follow-tmdbs-new-language-api-update/?p=311148
+            var parts = language.Split('-');
+
+            if (parts.Length == 2)
+            {
+                language = parts[0] + "-" + parts[1].ToUpper();
+            }
+
+            return language;
+        }
+
         /// <summary>
         /// Fetches the main result.
         /// </summary>
@@ -294,12 +306,11 @@ namespace MediaBrowser.Providers.Movies
 
             if (!string.IsNullOrEmpty(language))
             {
-                url += string.Format("&language={0}", language);
-            }
+                url += string.Format("&language={0}", NormalizeLanguage(language));
 
-            var includeImageLanguageParam = GetImageLanguagesParam(language);
-            // Get images in english and with no language
-            url += "&include_image_language=" + includeImageLanguageParam;
+                // Get images in english and with no language
+                url += "&include_image_language=" + GetImageLanguagesParam(language);
+            }
 
             CompleteMovieData mainResult;
 
@@ -345,7 +356,13 @@ namespace MediaBrowser.Providers.Movies
             {
                 _logger.Info("MovieDbProvider couldn't find meta for language " + language + ". Trying English...");
 
-                url = string.Format(GetMovieInfo3, id, ApiKey) + "&include_image_language=" + includeImageLanguageParam + "&language=en";
+                url = string.Format(GetMovieInfo3, id, ApiKey) + "&language=en";
+
+                if (!string.IsNullOrEmpty(language))
+                {
+                    // Get images in english and with no language
+                    url += "&include_image_language=" + GetImageLanguagesParam(language);
+                }
 
                 using (var json = await GetMovieDbResponse(new HttpRequestOptions
                 {
@@ -366,14 +383,30 @@ namespace MediaBrowser.Providers.Movies
             return mainResult;
         }
 
+        private static long _lastRequestTicks;
+        // The limit is 40 requests per 10 seconds
+        private static int requestIntervalMs = 300;
+
         /// <summary>
         /// Gets the movie db response.
         /// </summary>
-        internal Task<Stream> GetMovieDbResponse(HttpRequestOptions options)
+        internal async Task<Stream> GetMovieDbResponse(HttpRequestOptions options)
         {
-            options.ResourcePool = MovieDbResourcePool;
+            var delayTicks = (requestIntervalMs * 10000) - (DateTime.UtcNow.Ticks - _lastRequestTicks);
+            var delayMs = Math.Min(delayTicks / 10000, requestIntervalMs);
 
-            return _httpClient.Get(options);
+            if (delayMs > 0)
+            {
+                _logger.Debug("Throttling Tmdb by {0} ms", delayMs);
+                await Task.Delay(Convert.ToInt32(delayMs)).ConfigureAwait(false);
+            }
+
+            options.ResourcePool = MovieDbResourcePool;
+            _lastRequestTicks = DateTime.UtcNow.Ticks;
+
+            options.UserAgent = "Emby/" + _appHost.ApplicationVersion;
+
+            return await _httpClient.Get(options).ConfigureAwait(false);
         }
 
         public TheMovieDbOptions GetTheMovieDbOptions()

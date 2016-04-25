@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Model.Logging;
-using System.Linq;
 using System.ServiceProcess;
 
 namespace MediaBrowser.ServerApplication
@@ -14,18 +13,6 @@ namespace MediaBrowser.ServerApplication
 
         public static string GetExistingServiceName()
         {
-            try
-            {
-                if (ServiceController.GetServices().Any(s => s.ServiceName == "MediaBrowser"))
-                {
-                    return "MediaBrowser";
-                }
-            }
-            catch
-            {
-                return "MediaBrowser";
-            }
-
             return Name;
         }
 

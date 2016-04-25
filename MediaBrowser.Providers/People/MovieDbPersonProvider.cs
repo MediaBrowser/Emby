@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -18,6 +17,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Net;
 
 namespace MediaBrowser.Providers.People
 {
@@ -31,13 +32,19 @@ namespace MediaBrowser.Providers.People
         private readonly IFileSystem _fileSystem;
         private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
+        private readonly ILogger _logger;
 
-        public MovieDbPersonProvider(IFileSystem fileSystem, IServerConfigurationManager configurationManager, IJsonSerializer jsonSerializer, IHttpClient httpClient)
+        private int _requestCount;
+        private readonly object _requestCountLock = new object();
+        private DateTime _lastRequestCountReset;
+
+        public MovieDbPersonProvider(IFileSystem fileSystem, IServerConfigurationManager configurationManager, IJsonSerializer jsonSerializer, IHttpClient httpClient, ILogger logger)
         {
             _fileSystem = fileSystem;
             _configurationManager = configurationManager;
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
+            _logger = logger;
             Current = this;
         }
 
@@ -68,7 +75,7 @@ namespace MediaBrowser.Providers.People
                     Name = info.name,
 
                     SearchProviderName = Name,
-                    
+
                     ImageUrl = images.Count == 0 ? null : (tmdbImageUrl + images[0].file_path)
                 };
 
@@ -76,6 +83,30 @@ namespace MediaBrowser.Providers.People
                 result.SetProviderId(MetadataProviders.Imdb, info.imdb_id.ToString(_usCulture));
 
                 return new[] { result };
+            }
+
+            if (searchInfo.IsAutomated)
+            {
+                lock (_requestCountLock)
+                {
+                    if ((DateTime.UtcNow - _lastRequestCountReset).TotalHours >= 1)
+                    {
+                        _requestCount = 0;
+                        _lastRequestCountReset = DateTime.UtcNow;
+                    }
+
+                    var requestCount = _requestCount;
+
+                    if (requestCount >= 30)
+                    {
+                        //_logger.Debug("Throttling Tmdb people");
+
+                        // This needs to be throttled
+                        return new List<RemoteSearchResult>();
+                    }
+
+                    _requestCount = requestCount + 1;
+                }
             }
 
             var url = string.Format(@"http://api.themoviedb.org/3/search/person?api_key={1}&query={0}", WebUtility.UrlEncode(searchInfo.Name), MovieDbProvider.ApiKey);
@@ -100,7 +131,7 @@ namespace MediaBrowser.Providers.People
             var result = new RemoteSearchResult
             {
                 SearchProviderName = Name,
-                
+
                 Name = i.Name,
 
                 ImageUrl = string.IsNullOrEmpty(i.Profile_Path) ? null : (baseImageUrl + i.Profile_Path)
@@ -125,7 +156,19 @@ namespace MediaBrowser.Providers.People
 
             if (!string.IsNullOrEmpty(tmdbId))
             {
-                await EnsurePersonInfo(tmdbId, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await EnsurePersonInfo(tmdbId, cancellationToken).ConfigureAwait(false);
+                }
+                catch (HttpException ex)
+                {
+                    if (ex.StatusCode.HasValue && ex.StatusCode.Value == HttpStatusCode.NotFound)
+                    {
+                        return result;
+                    }
+
+                    throw;
+                }
 
                 var dataFilePath = GetPersonDataFilePath(_configurationManager.ApplicationPaths, tmdbId);
 
@@ -201,7 +244,7 @@ namespace MediaBrowser.Providers.People
 
             }).ConfigureAwait(false))
             {
-				_fileSystem.CreateDirectory(Path.GetDirectoryName(dataFilePath));
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(dataFilePath));
 
                 using (var fs = _fileSystem.GetFileStream(dataFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                 {

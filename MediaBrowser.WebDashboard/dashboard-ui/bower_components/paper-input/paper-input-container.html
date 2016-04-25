@@ -9,7 +9,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/default-theme.html">
+<link rel="import" href="../paper-styles/typography.html">
 
 <!--
 `<paper-input-container>` is a container for a `<label>`, an `<input is="iron-input">` or
@@ -22,6 +24,9 @@ For example:
       <label>Your name</label>
       <input is="iron-input">
     </paper-input-container>
+
+Do not wrap `<paper-input-container>` around elements that already include it, such as `<paper-input>`.
+Doing so may cause events to bounce infintely between the container and its contained element.
 
 ### Listening for input changes
 
@@ -40,6 +45,11 @@ compound input field like a social security number input. The custom input eleme
       <label>Social security number</label>
       <ssn-input class="paper-input-input"></ssn-input>
     </paper-input-container>
+
+
+If you're using a `<paper-input-container>` imperatively, it's important to make sure
+that you attach its children (the `iron-input` and the optional `label`) before you
+attach the `<paper-input-container>` itself, so that it can be set up correctly.
 
 ### Validation
 
@@ -71,26 +81,27 @@ The following custom properties and mixins are available for styling:
 Custom property | Description | Default
 ----------------|-------------|----------
 `--paper-input-container-color` | Label and underline color when the input is not focused | `--secondary-text-color`
-`--paper-input-container-focus-color` | Label and underline color when the input is focused | `--default-primary-color`
-`--paper-input-container-invalid-color` | Label and underline color when the input is is invalid | `--google-red-500`
+`--paper-input-container-focus-color` | Label and underline color when the input is focused | `--primary-color`
+`--paper-input-container-invalid-color` | Label and underline color when the input is is invalid | `--error-color`
 `--paper-input-container-input-color` | Input foreground color | `--primary-text-color`
 `--paper-input-container` | Mixin applied to the container | `{}`
+`--paper-input-container-disabled` | Mixin applied to the container when it's disabled | `{}`
 `--paper-input-container-label` | Mixin applied to the label | `{}`
 `--paper-input-container-label-focus` | Mixin applied to the label when the input is focused | `{}`
+`--paper-input-container-label-floating` | Mixin applied to the label when floating | `{}`
 `--paper-input-container-input` | Mixin applied to the input | `{}`
-`--paper-input-container-input-disabled` | Mixin applied to the input when it's disabled | `{}`
-`--paper-input-container-prefix` | Mixin applied to the input prefix | `{}`
-`--paper-input-container-suffix` | Mixin applied to the input suffix | `{}`
 `--paper-input-container-underline` | Mixin applied to the underline | `{}`
-`--paper-input-container-underline-focus` | Mixin applied to the underline when the input is focued | `{}`
+`--paper-input-container-underline-focus` | Mixin applied to the underline when the input is focused | `{}`
 `--paper-input-container-underline-disabled` | Mixin applied to the underline when the input is disabled | `{}`
+`--paper-input-prefix` | Mixin applied to the input prefix | `{}`
+`--paper-input-suffix` | Mixin applied to the input suffix | `{}`
 
 This element is `display:block` by default, but you can set the `inline` attribute to make it
 `display:inline-block`.
 -->
+
 <dom-module id="paper-input-container">
   <template>
-
     <style>
       :host {
         display: block;
@@ -119,14 +130,15 @@ This element is `display:block` by default, but you can set the `inline` attribu
       }
 
       .focused-line {
+        @apply(--layout-fit);
+
+        background: var(--paper-input-container-focus-color, --primary-color);
         height: 2px;
 
         -webkit-transform-origin: center center;
         transform-origin: center center;
         -webkit-transform: scale3d(0,1,1);
         transform: scale3d(0,1,1);
-
-        background: var(--paper-input-container-focus-color, --default-primary-color);
 
         @apply(--paper-input-container-underline-focus);
       }
@@ -141,8 +153,7 @@ This element is `display:block` by default, but you can set the `inline` attribu
       }
 
       .underline.is-invalid .focused-line {
-        background: var(--paper-input-container-invalid-color, --google-red-500);
-
+        background: var(--paper-input-container-invalid-color, --error-color);
         -webkit-transform: none;
         transform: none;
         -webkit-transition: -webkit-transform 0.25s;
@@ -152,8 +163,10 @@ This element is `display:block` by default, but you can set the `inline` attribu
       }
 
       .unfocused-line {
-        height: 1px;
+        @apply(--layout-fit);
+
         background: var(--paper-input-container-color, --secondary-text-color);
+        height: 1px;
 
         @apply(--paper-input-container-underline);
       }
@@ -167,14 +180,18 @@ This element is `display:block` by default, but you can set the `inline` attribu
       }
 
       .label-and-input-container {
-        @apply(--layout-flex);
+        @apply(--layout-flex-auto);
         @apply(--layout-relative);
+
+        width: 100%;
+        max-width: 100%;
       }
 
       .input-content {
-        position: relative;
         @apply(--layout-horizontal);
-        @apply(--layout-end);
+        @apply(--layout-center);
+
+        position: relative;
       }
 
       .input-content ::content label,
@@ -183,35 +200,52 @@ This element is `display:block` by default, but you can set the `inline` attribu
         top: 0;
         right: 0;
         left: 0;
+        width: 100%;
         font: inherit;
         color: var(--paper-input-container-color, --secondary-text-color);
+        -webkit-transition: -webkit-transform 0.25s, width 0.25s;
+        transition: transform 0.25s, width 0.25s;
+        -webkit-transform-origin: left top;
+        transform-origin: left top;
 
+        @apply(--paper-font-common-nowrap);
         @apply(--paper-font-subhead);
         @apply(--paper-input-container-label);
+        @apply(--paper-transition-easing);
       }
 
       .input-content.label-is-floating ::content label,
       .input-content.label-is-floating ::content .paper-input-label {
         -webkit-transform: translateY(-75%) scale(0.75);
         transform: translateY(-75%) scale(0.75);
-        -webkit-transform-origin: left top;
-        transform-origin: left top;
-        -webkit-transition: -webkit-transform 0.25s;
-        transition: transform 0.25s;
 
-        @apply(--paper-transition-easing);
+        /* Since we scale to 75/100 of the size, we actually have 100/75 of the
+        original space now available */
+        width: 133%;
+
+        @apply(--paper-input-container-label-floating);
+      }
+
+      :host-context([dir="rtl"]) .input-content.label-is-floating ::content label,
+      :host-context([dir="rtl"]) .input-content.label-is-floating ::content .paper-input-label {
+        /* TODO(noms): Figure out why leaving the width at 133% before the animation
+         * actually makes
+         * it wider on the right side, not left side, as you would expect in RTL */
+        width: 100%;
+        -webkit-transform-origin: right top;
+        transform-origin: right top;
       }
 
       .input-content.label-is-highlighted ::content label,
       .input-content.label-is-highlighted ::content .paper-input-label {
-        color: var(--paper-input-container-focus-color, --default-primary-color);
+        color: var(--paper-input-container-focus-color, --primary-color);
 
         @apply(--paper-input-container-label-focus);
       }
 
       .input-content.is-invalid ::content label,
       .input-content.is-invalid ::content .paper-input-label {
-        color: var(--paper-input-container-invalid-color, --google-red-500);
+        color: var(--paper-input-container-invalid-color, --error-color);
       }
 
       .input-content.label-is-hidden ::content label,
@@ -228,10 +262,12 @@ This element is `display:block` by default, but you can set the `inline` attribu
         box-shadow: none;
         padding: 0;
         width: 100%;
+        max-width: 100%;
         background: transparent;
         border: none;
         color: var(--paper-input-container-input-color, --primary-text-color);
         -webkit-appearance: none;
+        text-align: inherit;
 
         @apply(--paper-font-subhead);
         @apply(--paper-input-container-input);
@@ -239,12 +275,16 @@ This element is `display:block` by default, but you can set the `inline` attribu
 
       ::content [prefix] {
         @apply(--paper-font-subhead);
+
         @apply(--paper-input-prefix);
+        @apply(--layout-flex-none);
       }
 
       ::content [suffix] {
         @apply(--paper-font-subhead);
+
         @apply(--paper-input-suffix);
+        @apply(--layout-flex-none);
       }
 
       /* Firefox sets a min-width on the input, which can cause layout issues */
@@ -256,12 +296,16 @@ This element is `display:block` by default, but you can set the `inline` attribu
         resize: none;
       }
 
+      .add-on-content {
+        position: relative;
+      }
+
       .add-on-content.is-invalid ::content * {
-        color: var(--paper-input-container-invalid-color, --google-red-500);
+        color: var(--paper-input-container-invalid-color, --error-color);
       }
 
       .add-on-content.is-highlighted ::content * {
-        color: var(--paper-input-container-focus-color, --default-primary-color);
+        color: var(--paper-input-container-focus-color, --primary-color);
       }
     </style>
 
@@ -271,21 +315,22 @@ This element is `display:block` by default, but you can set the `inline` attribu
 
     <div class$="[[_computeInputContentClass(noLabelFloat,alwaysFloatLabel,focused,invalid,_inputHasContent)]]">
       <content select="[prefix]" id="prefix"></content>
-      <div class="label-and-input-container">
+
+      <div class="label-and-input-container" id="labelAndInputContainer">
         <content select=":not([add-on]):not([prefix]):not([suffix])"></content>
       </div>
+
       <content select="[suffix]"></content>
     </div>
 
     <div class$="[[_computeUnderlineClass(focused,invalid)]]">
-      <div class="unfocused-line fit"></div>
-      <div class="focused-line fit"></div>
+      <div class="unfocused-line"></div>
+      <div class="focused-line"></div>
     </div>
 
     <div class$="[[_computeAddOnContentClass(focused,invalid)]]">
       <content id="addOnContent" select="[add-on]"></content>
     </div>
-
   </template>
 </dom-module>
 
@@ -420,14 +465,15 @@ This element is `display:block` by default, but you can set the `inline` attribu
       }
       this.addEventListener('focus', this._boundOnFocus, true);
       this.addEventListener('blur', this._boundOnBlur, true);
+    },
+
+    attached: function() {
       if (this.attrForValue) {
         this._inputElement.addEventListener(this._valueChangedEvent, this._boundValueChanged);
       } else {
         this.addEventListener('input', this._onInput);
       }
-    },
 
-    attached: function() {
       // Only validate when attached if the input already has a value.
       if (this._inputElementValue != '') {
         this._handleValueAndAutoValidate(this._inputElement);
@@ -525,21 +571,19 @@ This element is `display:block` by default, but you can set the `inline` attribu
 
         if (alwaysFloatLabel || _inputHasContent) {
           cls += ' label-is-floating';
+          // If the label is floating, ignore any offsets that may have been
+          // applied from a prefix element.
+          this.$.labelAndInputContainer.style.position = 'static';
+
           if (invalid) {
             cls += ' is-invalid';
           } else if (focused) {
             cls += " label-is-highlighted";
           }
-          // The label might have a horizontal offset if a prefix element exists
-          // which needs to be undone when displayed as a floating label.
-          if (Polymer.dom(this.$.prefix).getDistributedNodes().length > 0 &&
-              label && label.offsetParent) {
-            label.style.left = -label.offsetParent.offsetLeft + 'px';
-          }
         } else {
           // When the label is not floating, it should overlap the input element.
           if (label) {
-            label.style.left = 0;
+            this.$.labelAndInputContainer.style.position = 'relative';
           }
         }
       } else {

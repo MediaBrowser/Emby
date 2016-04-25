@@ -43,7 +43,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
             if (enableCache && !string.IsNullOrWhiteSpace(key) && _channelCache.TryGetValue(key, out cache))
             {
-                if ((DateTime.UtcNow - cache.Date) < TimeSpan.FromMinutes(60))
+                if (DateTime.UtcNow - cache.Date < TimeSpan.FromMinutes(60))
                 {
                     return cache.Channels.ToList();
                 }
@@ -64,7 +64,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
             return list;
         }
 
-        private List<TunerHostInfo> GetTunerHosts()
+        protected virtual List<TunerHostInfo> GetTunerHosts()
         {
             return GetConfiguration().TunerHosts
                 .Where(i => i.IsEnabled && string.Equals(i.Type, Type, StringComparison.OrdinalIgnoreCase))
@@ -107,11 +107,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
 
                 foreach (var host in hosts)
                 {
-                    var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-
-                    if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                    try
                     {
-                        hostsWithChannel.Add(host);
+                        var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
+
+                        if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            hostsWithChannel.Add(host);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Error getting channels", ex);
                     }
                 }
 
@@ -172,11 +179,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts
                 {
                     if (string.IsNullOrWhiteSpace(streamId))
                     {
-                        var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
-
-                        if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                        try
                         {
-                            hostsWithChannel.Add(host);
+                            var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
+
+                            if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                hostsWithChannel.Add(host);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error("Error getting channels", ex);
                         }
                     }
                     else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))

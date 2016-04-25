@@ -1,4 +1,4 @@
-﻿(function (window, $) {
+﻿define(['jQuery'], function ($) {
 
     function loadPage(page, config, languageOptions) {
 
@@ -17,7 +17,7 @@
 
         var apiClient = ApiClient;
 
-        apiClient.getJSON(apiClient.getUrl('Startup/Configuration')).done(function (config) {
+        apiClient.getJSON(apiClient.getUrl('Startup/Configuration')).then(function (config) {
 
             config.UICulture = $('#selectLocalizationLanguage', page).val();
 
@@ -27,7 +27,7 @@
                 data: config,
                 url: apiClient.getUrl('Startup/Configuration')
 
-            }).done(function () {
+            }).then(function () {
 
                 Dashboard.navigate('wizarduser.html');
 
@@ -46,6 +46,9 @@
 
         $('.wizardStartForm').off('submit', onSubmit).on('submit', onSubmit);
 
+        window.ConnectionManager.clearData();
+
+
     }).on('pageshow', "#wizardStartPage", function () {
 
         Dashboard.showLoadingMsg();
@@ -57,11 +60,11 @@
 
         var promise2 = apiClient.getJSON(apiClient.getUrl("Localization/Options"));
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            loadPage(page, response1[0], response2[0]);
+            loadPage(page, responses[0], responses[1]);
 
         });
     });
 
-})(window, jQuery);
+});

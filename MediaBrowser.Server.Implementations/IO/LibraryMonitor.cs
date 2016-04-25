@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.ScheduledTasks;
+﻿using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -76,6 +75,12 @@ namespace MediaBrowser.Server.Implementations.IO
             }
 
             TemporarilyIgnore(path);
+        }
+
+        public bool IsPathLocked(string path)
+        {
+            var lockedPaths = _tempIgnoredPaths.Keys.ToList();
+            return lockedPaths.Any(i => string.Equals(i, path, StringComparison.OrdinalIgnoreCase) || _fileSystem.ContainsSubPath(i, path));
         }
 
         public async void ReportFileSystemChangeComplete(string path, bool refreshPath)
@@ -160,7 +165,7 @@ namespace MediaBrowser.Server.Implementations.IO
                 switch (ConfigurationManager.Configuration.EnableLibraryMonitor)
                 {
                     case AutoOnOff.Auto:
-                        return _appHost.SupportsLibraryMonitor;
+                        return Environment.OSVersion.Platform == PlatformID.Win32NT;
                     case AutoOnOff.Enabled:
                         return true;
                     default:
@@ -217,7 +222,7 @@ namespace MediaBrowser.Server.Implementations.IO
         /// <param name="e">The <see cref="ItemChangeEventArgs"/> instance containing the event data.</param>
         void LibraryManager_ItemRemoved(object sender, ItemChangeEventArgs e)
         {
-            if (e.Item.Parent is AggregateFolder)
+            if (e.Item.GetParent() is AggregateFolder)
             {
                 StopWatchingPath(e.Item.Path);
             }
@@ -230,7 +235,7 @@ namespace MediaBrowser.Server.Implementations.IO
         /// <param name="e">The <see cref="ItemChangeEventArgs"/> instance containing the event data.</param>
         void LibraryManager_ItemAdded(object sender, ItemChangeEventArgs e)
         {
-            if (e.Item.Parent is AggregateFolder)
+            if (e.Item.GetParent() is AggregateFolder)
             {
                 StartWatchingPath(e.Item.Path);
             }
@@ -246,7 +251,7 @@ namespace MediaBrowser.Server.Implementations.IO
         /// <exception cref="System.ArgumentNullException">path</exception>
         private static bool ContainsParentFolder(IEnumerable<string> lst, string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 throw new ArgumentNullException("path");
             }
@@ -258,7 +263,7 @@ namespace MediaBrowser.Server.Implementations.IO
                 //this should be a little quicker than examining each actual parent folder...
                 var compare = str.TrimEnd(Path.DirectorySeparatorChar);
 
-                return (path.Equals(compare, StringComparison.OrdinalIgnoreCase) || (path.StartsWith(compare, StringComparison.OrdinalIgnoreCase) && path[compare.Length] == Path.DirectorySeparatorChar));
+                return path.Equals(compare, StringComparison.OrdinalIgnoreCase) || (path.StartsWith(compare, StringComparison.OrdinalIgnoreCase) && path[compare.Length] == Path.DirectorySeparatorChar);
             });
         }
 
@@ -275,9 +280,13 @@ namespace MediaBrowser.Server.Implementations.IO
                 {
                     var newWatcher = new FileSystemWatcher(path, "*")
                     {
-                        IncludeSubdirectories = true,
-                        InternalBufferSize = 32767
+                        IncludeSubdirectories = true
                     };
+
+                    if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                    {
+                        newWatcher.InternalBufferSize = 32767;
+                    }
 
                     newWatcher.NotifyFilter = NotifyFilters.CreationTime |
                         NotifyFilters.DirectoryName |
@@ -467,11 +476,11 @@ namespace MediaBrowser.Server.Implementations.IO
             {
                 if (_updateTimer == null)
                 {
-                    _updateTimer = new Timer(TimerStopped, null, TimeSpan.FromSeconds(ConfigurationManager.Configuration.RealtimeLibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
+                    _updateTimer = new Timer(TimerStopped, null, TimeSpan.FromSeconds(ConfigurationManager.Configuration.LibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
                 }
                 else
                 {
-                    _updateTimer.Change(TimeSpan.FromSeconds(ConfigurationManager.Configuration.RealtimeLibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
+                    _updateTimer.Change(TimeSpan.FromSeconds(ConfigurationManager.Configuration.LibraryMonitorDelay), TimeSpan.FromMilliseconds(-1));
                 }
             }
         }
@@ -509,12 +518,18 @@ namespace MediaBrowser.Server.Implementations.IO
 
         private bool IsFileLocked(string path)
         {
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                // Causing lockups on linux
+                return false;
+            }
+
             try
             {
                 var data = _fileSystem.GetFileSystemInfo(path);
 
                 if (!data.Exists
-                    || data.Attributes.HasFlag(FileAttributes.Directory)
+                    || data.IsDirectory
 
                     // Opening a writable stream will fail with readonly files
                     || data.Attributes.HasFlag(FileAttributes.ReadOnly))
@@ -532,9 +547,16 @@ namespace MediaBrowser.Server.Implementations.IO
                 return false;
             }
 
+            // In order to determine if the file is being written to, we have to request write access
+            // But if the server only has readonly access, this is going to cause this entire algorithm to fail
+            // So we'll take a best guess about our access level
+            var requestedFileAccess = ConfigurationManager.Configuration.SaveLocalMeta
+                ? FileAccess.ReadWrite
+                : FileAccess.Read;
+
             try
             {
-                using (_fileSystem.GetFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                using (_fileSystem.GetFileStream(path, FileMode.Open, requestedFileAccess, FileShare.ReadWrite))
                 {
                     if (_updateTimer != null)
                     {
@@ -641,7 +663,7 @@ namespace MediaBrowser.Server.Implementations.IO
 
             while (item == null && !string.IsNullOrEmpty(path))
             {
-                item = LibraryManager.RootFolder.FindByPath(path);
+                item = LibraryManager.FindByPath(path);
 
                 path = Path.GetDirectoryName(path);
             }
@@ -651,7 +673,7 @@ namespace MediaBrowser.Server.Implementations.IO
                 // If the item has been deleted find the first valid parent that still exists
 				while (!_fileSystem.DirectoryExists(item.Path) && !_fileSystem.FileExists(item.Path))
                 {
-                    item = item.Parent;
+                    item = item.GetParent();
 
                     if (item == null)
                     {
@@ -673,8 +695,21 @@ namespace MediaBrowser.Server.Implementations.IO
 
             foreach (var watcher in _fileSystemWatchers.Values.ToList())
             {
+                watcher.Created -= watcher_Changed;
+                watcher.Deleted -= watcher_Changed;
+                watcher.Renamed -= watcher_Changed;
                 watcher.Changed -= watcher_Changed;
-                watcher.EnableRaisingEvents = false;
+
+                try
+                {
+                    watcher.EnableRaisingEvents = false;
+                }
+                catch (InvalidOperationException)
+                {
+                    // Seeing this under mono on linux sometimes
+                    // Collection was modified; enumeration operation may not execute.
+                }
+
                 watcher.Dispose();
             }
 

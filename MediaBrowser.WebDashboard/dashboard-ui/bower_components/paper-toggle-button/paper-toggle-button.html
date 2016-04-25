@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="../paper-styles/default-theme.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
@@ -41,6 +42,7 @@ Custom property | Description | Default
 `--paper-toggle-button-checked-bar` | Mixin applied to the slider when the input is checked | `{}`
 `--paper-toggle-button-checked-button` | Mixin applied to the slider button when the input is checked | `{}`
 `--paper-toggle-button-label-color` | Label color | `--primary-text-color`
+`--paper-toggle-button-label-spacing` | Spacing between the label and the button | `8px`
 
 @group Paper Elements
 @element paper-toggle-button
@@ -54,6 +56,8 @@ Custom property | Description | Default
     <style>
       :host {
         display: inline-block;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
       }
 
       :host([disabled]) {
@@ -141,14 +145,16 @@ Custom property | Description | Default
         position: relative;
         width: 36px;
         height: 14px;
+        /* The toggle button has an absolute position of -3px; The extra 1px
+        /* accounts for the toggle button shadow box. */
+        margin: 4px 1px;
       }
 
       .toggle-label {
         position: relative;
-        top: -2px;
         display: inline-block;
         vertical-align: middle;
-        margin-left: 10px;
+        padding-left: var(--paper-toggle-button-label-spacing, 8px);
         white-space: normal;
         pointer-events: none;
         color: var(--paper-toggle-button-label-color, --primary-text-color);

@@ -1,233 +1,103 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Emby</title>
-</head>
-<body>
-    <div id="moviesPage" data-role="page" data-dom-cache="true" class="page libraryPage backdropPage pageWithAbsoluteTabs collectionEditorPage" data-backdroptype="movie" data-require="jqmpanel,jqmcollapsible,scripts/moviesrecommended">
+﻿<div id="moviesPage" data-role="page" data-dom-cache="true" class="page libraryPage backdropPage pageWithAbsoluteTabs collectionEditorPage" data-backdroptype="movie">
 
-        <div class="libraryViewNav libraryViewNavWithMinHeight">
-            <paper-tabs hidescrollbuttons noink>
-                <paper-tab>${TabSuggestions}</paper-tab>
-                <paper-tab>${TabMovies}</paper-tab>
-                <paper-tab class="movieTrailersTab">${TabTrailers}</paper-tab>
-                <paper-tab>${TabCollections}</paper-tab>
-                <paper-tab>${TabGenres}</paper-tab>
-                <paper-tab class="movieStudiosTab">${TabStudios}</paper-tab>
-            </paper-tabs>
-            <div class="legacyTabs scopedLibraryViewNav">
-                <a href="movies.html">${TabSuggestions}</a>
-                <a href="movies.html?tab=1">${TabMovies}</a>
-                <a href="movies.html?tab=2" class="movieTrailersTab">${TabTrailers}</a>
-                <a href="movies.html?tab=3">${TabCollections}</a>
-                <a href="movies.html?tab=4">${TabGenres}</a>
-                <a href="movies.html?tab=5" class="movieStudiosTab">${TabStudios}</a>
-            </div>
-        </div>
-
-        <div class="ehsContent fullWidth">
-            <neon-animated-pages>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="0">
-                        <div id="resumableSection" style="display: none;" class="homePageSection">
-                            <div>
-                                <h1 class="listHeader" style="display:inline-block;vertical-align:middle;">${HeaderResume}</h1>
-                                <paper-button raised class="submit mini categorySyncButton" data-category="Resume"><iron-icon icon="sync"></iron-icon><span>${ButtonSync}</span></paper-button>
-                            </div>
-
-                            <div id="resumableItems" class="itemsContainer noautoinit">
-                            </div>
-                        </div>
-
-                        <div class="homePageSection">
-                            <div>
-                                <h1 class="listHeader" style="display:inline-block;vertical-align:middle;">${HeaderLatestMovies}</h1>
-                                <paper-button raised class="submit mini categorySyncButton" data-category="Latest"><iron-icon icon="sync"></iron-icon><span>${ButtonSync}</span></paper-button>
-                            </div>
-
-                            <div id="recentlyAddedItems" class="itemsContainer noautoinit">
-                            </div>
-                        </div>
-
-                        <div class="recommendations homePageSection">
-                        </div>
-                        <div class="noItemsMessage" style="display: none;">
-                            <br />
-                            <p>${MessageNoMovieSuggestionsAvailable}</p>
-                        </div>
-                    </div>
-                </neon-animatable>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="1">
-                        <div class="alphabetPicker">
-                        </div>
-                        <div class="viewSettings">
-                            <div class="listTopPaging">
-                            </div>
-                        </div>
-                        <div class="itemsContainer" style="text-align:center;"></div>
-                    </div>
-                </neon-animatable>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="2">
-                        <div class="alphabetPicker">
-                        </div>
-                        <div class="viewSettings">
-                            <div class="listTopPaging">
-                            </div>
-                        </div>
-                        <div class="itemsContainer" style="text-align:center;"></div>
-                        <p class="noItemsMessage" style="display:none;text-align:center;">${MessageNoTrailersFound}</p>
-                    </div>
-                </neon-animatable>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="3">
-                        <div class="viewSettings">
-
-                            <div class="listTopPaging">
-                                &nbsp;
-                            </div>
-                        </div>
-                        <div class="itemsContainer" style="text-align:center;"></div>
-                        <div class="noItemsMessage" style="display: none; text-align: center;">
-                            <p>${MessageNoCollectionsAvailable}</p>
-                        </div>
-
-                        <paper-fab class="btnNewCollection bottomFab" icon="add" style="position:fixed;right:20px;background-color:#db4437;"></paper-fab>
-                    </div>
-                </neon-animatable>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="4">
-                        <div class="viewSettings">
-                            <div class="listTopPaging">
-                            </div>
-                        </div>
-                        <div class="itemsContainer"></div>
-                    </div>
-                </neon-animatable>
-                <neon-animatable>
-                    <div class="pageTabContent" data-index="5">
-                        <div class="viewSettings">
-                            <div class="listTopPaging">
-                            </div>
-                        </div>
-                        <div class="itemsContainer" style="text-align:center;"></div>
-                    </div>
-                </neon-animatable>
-            </neon-animated-pages>
-        </div>
-
-        <div data-role="panel" class="viewPanel movieViewPanel hide" data-theme="b" data-position="right" data-display="overlay" data-position-fixed="true">
-            <div class="ui-panel-inner">
-                <form>
-
-                    <div>
-                        <h1>
-                            ${HeaderFilters}
-                        </h1>
-                        <div class="paperCheckboxList">
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsPlayed">${OptionPlayed}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsUnPlayed">${OptionUnplayed}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsResumable">${OptionResumable}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsFavorite">${OptionFavorite}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="Likes">${OptionLikes}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="Dislikes">${OptionDislikes}</paper-checkbox>
-                        </div>
-                    </div>
-                    <br />
-
-                    <div data-role="collapsible" data-collapsed="true" data-mini="true" class="genreFilters">
-                        <h2>${HeaderGenres}</h2>
-
-                        <div class="filterOptions">
-                        </div>
-                    </div>
-
-                    <div data-role="collapsible" data-collapsed="true" data-mini="true" class="officialRatingFilters">
-                        <h2>${HeaderParentalRatings}</h2>
-
-                        <div class="filterOptions">
-                        </div>
-                    </div>
-
-                    <div data-role="collapsible" data-collapsed="true" data-mini="true" class="tagFilters">
-                        <h2>${HeaderTags}</h2>
-
-                        <div class="filterOptions">
-                        </div>
-                    </div>
-
-                    <div data-role="collapsible" data-collapsed="true" data-mini="true">
-                        <h2>${HeaderVideoTypes}</h2>
-
-                        <div>
-
-                            <div class="checkboxContainer">
-                                <input class="chkVideoTypeFilter chkBluray" type="checkbox" id="chkBlurayMovie" data-filter="Bluray" data-role="none">
-                                <label for="chkBlurayMovie">${OptionBluray}</label>
-                            </div>
-
-                            <div class="checkboxContainer">
-                                <input class="chkVideoTypeFilter chkDvd" type="checkbox" id="chkDvdMovie" data-filter="Dvd" data-role="none">
-                                <label for="chkDvdMovie">${OptionDvd}</label>
-                            </div>
-
-                            <div class="checkboxContainer">
-                                <input class="chkVideoTypeFilter chkIso" type="checkbox" id="chkIsoMovie" data-filter="Iso" data-role="none">
-                                <label for="chkIsoMovie">${OptionIso}</label>
-                            </div>
-
-                            <div class="checkboxContainer">
-                                <input class="chkHDFilter IsHD" type="checkbox" id="chkHDMovie" data-filter="IsHD" data-role="none">
-                                <label for="chkHDMovie">${OptionIsHD}</label>
-                            </div>
-
-                            <div class="checkboxContainer">
-                                <input class="chkSDFilter IsHD" type="checkbox" id="chkSDMovie" data-filter="IsHD" data-role="none">
-                                <label for="chkSDMovie">${OptionIsSD}</label>
-                            </div>
-
-                            <div class="checkboxContainer">
-                                <input class="chk3DFilter chk3D" type="checkbox" id="chk3DMovie" data-filter="Digital3D,Sbs3D" data-role="none">
-                                <label for="chk3DMovie">${Option3D}</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-role="collapsible" data-collapsed="true" data-mini="true" class="yearFilters">
-                        <h2>${HeaderYears}</h2>
-
-                        <div class="filterOptions">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div data-role="panel" class="viewPanel trailerViewPanel hide" data-theme="b" data-position="right" data-display="overlay" data-position-fixed="true">
-            <div class="ui-panel-inner">
-                <form>
-
-                    <div>
-                        <h1>
-                            ${HeaderFilters}
-                        </h1>
-                        <div class="paperCheckboxList">
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsPlayed">${OptionPlayed}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsUnPlayed">${OptionUnplayed}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsResumable">${OptionResumable}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="IsFavorite">${OptionFavorite}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="Likes">${OptionLikes}</paper-checkbox>
-                            <paper-checkbox class="chkStandardFilter" data-filter="Dislikes">${OptionDislikes}</paper-checkbox>
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-        <div data-role="content">
-
+    <div class="libraryViewNav libraryViewNavWithMinHeight">
+        <paper-tabs hidescrollbuttons noink>
+            <paper-tab>${TabSuggestions}</paper-tab>
+            <paper-tab>${TabMovies}</paper-tab>
+            <paper-tab class="movieTrailersTab">${TabTrailers}</paper-tab>
+            <paper-tab>${TabCollections}</paper-tab>
+            <paper-tab>${TabGenres}</paper-tab>
+            <paper-tab class="movieStudiosTab">${TabStudios}</paper-tab>
+        </paper-tabs>
+        <div class="legacyTabs scopedLibraryViewNav">
+            <a href="movies.html">${TabSuggestions}</a>
+            <a href="movies.html?tab=1">${TabMovies}</a>
+            <a href="movies.html?tab=2" class="movieTrailersTab">${TabTrailers}</a>
+            <a href="movies.html?tab=3">${TabCollections}</a>
+            <a href="movies.html?tab=4">${TabGenres}</a>
+            <a href="movies.html?tab=5" class="movieStudiosTab">${TabStudios}</a>
         </div>
     </div>
-</body>
-</html>
+
+    <div class="ehsContent fullWidth pageTabsContainer">
+        <div class="pageTabContent hide" data-index="0">
+            <div id="resumableSection" style="display: none;" class="homePageSection">
+                <div>
+                    <h1 class="listHeader" style="display:inline-block;vertical-align:middle;">${HeaderResume}</h1>
+                    <paper-button raised class="submit mini categorySyncButton" data-category="Resume"><iron-icon icon="sync"></iron-icon><span>${ButtonSync}</span></paper-button>
+                </div>
+
+                <div id="resumableItems" class="itemsContainer noautoinit">
+                </div>
+            </div>
+
+            <div class="homePageSection">
+                <div>
+                    <h1 class="listHeader" style="display:inline-block;vertical-align:middle;">${HeaderLatestMovies}</h1>
+                    <paper-button raised class="submit mini categorySyncButton" data-category="Latest"><iron-icon icon="sync"></iron-icon><span>${ButtonSync}</span></paper-button>
+                </div>
+
+                <div id="recentlyAddedItems" class="itemsContainer noautoinit">
+                </div>
+            </div>
+
+            <div class="recommendations homePageSection">
+            </div>
+            <div class="noItemsMessage" style="display: none;">
+                <br />
+                <p>${MessageNoMovieSuggestionsAvailable}</p>
+            </div>
+        </div>
+        <div class="pageTabContent hide" data-index="1">
+            <div class="alphabetPicker">
+            </div>
+            <div class="viewSettings">
+                <div class="listTopPaging">
+                </div>
+            </div>
+            <div class="itemsContainer" style="text-align:center;"></div>
+        </div>
+        <div class="pageTabContent hide" data-index="2">
+            <div class="alphabetPicker">
+            </div>
+            <div class="viewSettings">
+                <div class="listTopPaging">
+                </div>
+            </div>
+            <div class="itemsContainer" style="text-align:center;"></div>
+            <p class="noItemsMessage" style="display:none;text-align:center;">${MessageNoTrailersFound}</p>
+        </div>
+        <div class="pageTabContent hide" data-index="3">
+            <div class="viewSettings">
+
+                <div class="listTopPaging">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="itemsContainer" style="text-align:center;"></div>
+            <div class="noItemsMessage" style="display: none; text-align: center;">
+                <p>${MessageNoCollectionsAvailable}</p>
+            </div>
+
+            <paper-fab class="btnNewCollection bottomFab" icon="add" style="position:fixed;right:20px;background-color:#db4437;"></paper-fab>
+        </div>
+        <div class="pageTabContent hide" data-index="4">
+            <div class="viewSettings">
+                <div class="listTopPaging">
+                </div>
+            </div>
+            <div class="itemsContainer"></div>
+        </div>
+        <div class="pageTabContent hide" data-index="5">
+            <div class="viewSettings">
+                <div class="listTopPaging">
+                </div>
+            </div>
+            <div class="itemsContainer" style="text-align:center;"></div>
+        </div>
+    </div>
+
+    <div data-role="content">
+
+    </div>
+</div>

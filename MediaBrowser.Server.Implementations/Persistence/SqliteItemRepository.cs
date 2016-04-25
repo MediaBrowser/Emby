@@ -19,17 +19,17 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Channels;
+using MediaBrowser.Controller.Playlists;
+using MediaBrowser.Model.LiveTv;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
     /// <summary>
     /// Class SQLiteItemRepository
     /// </summary>
-    public class SqliteItemRepository : IItemRepository
+    public class SqliteItemRepository : BaseSqliteRepository, IItemRepository
     {
         private IDbConnection _connection;
-
-        private readonly ILogger _logger;
 
         private readonly TypeMapper _typeMapper = new TypeMapper();
 
@@ -63,8 +63,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         private readonly string _criticReviewsPath;
 
-        private IDbCommand _deleteChildrenCommand;
-        private IDbCommand _saveChildrenCommand;
         private IDbCommand _deleteItemCommand;
 
         private IDbCommand _deletePeopleCommand;
@@ -76,7 +74,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private IDbCommand _deleteStreamsCommand;
         private IDbCommand _saveStreamCommand;
 
-        private const int LatestSchemaVersion = 13;
+        private IDbCommand _deleteAncestorsCommand;
+        private IDbCommand _saveAncestorCommand;
+
+        private IDbCommand _updateInheritedRatingCommand;
+        private IDbCommand _updateInheritedTagsCommand;
+
+        private const int LatestSchemaVersion = 63;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
@@ -90,6 +94,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// jsonSerializer
         /// </exception>
         public SqliteItemRepository(IApplicationPaths appPaths, IJsonSerializer jsonSerializer, ILogManager logManager)
+            : base(logManager)
         {
             if (appPaths == null)
             {
@@ -104,8 +109,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             _jsonSerializer = jsonSerializer;
 
             _criticReviewsPath = Path.Combine(_appPaths.DataPath, "critic-reviews");
-
-            _logger = logManager.GetLogger(GetType().Name);
         }
 
         private const string ChaptersTableName = "Chapters2";
@@ -118,20 +121,25 @@ namespace MediaBrowser.Server.Implementations.Persistence
         {
             var dbFile = Path.Combine(_appPaths.DataPath, "library.db");
 
-            _connection = await SqliteExtensions.ConnectToDb(dbFile, _logger).ConfigureAwait(false);
+            _connection = await SqliteExtensions.ConnectToDb(dbFile, Logger).ConfigureAwait(false);
 
             var createMediaStreamsTableCommand
-               = "create table if not exists mediastreams (ItemId GUID, StreamIndex INT, StreamType TEXT, Codec TEXT, Language TEXT, ChannelLayout TEXT, Profile TEXT, AspectRatio TEXT, Path TEXT, IsInterlaced BIT, BitRate INT NULL, Channels INT NULL, SampleRate INT NULL, IsDefault BIT, IsForced BIT, IsExternal BIT, Height INT NULL, Width INT NULL, AverageFrameRate FLOAT NULL, RealFrameRate FLOAT NULL, Level FLOAT NULL, PixelFormat TEXT, BitDepth INT NULL, IsAnamorphic BIT NULL, RefFrames INT NULL, IsCabac BIT NULL, KeyFrames TEXT NULL, PRIMARY KEY (ItemId, StreamIndex))";
+               = "create table if not exists mediastreams (ItemId GUID, StreamIndex INT, StreamType TEXT, Codec TEXT, Language TEXT, ChannelLayout TEXT, Profile TEXT, AspectRatio TEXT, Path TEXT, IsInterlaced BIT, BitRate INT NULL, Channels INT NULL, SampleRate INT NULL, IsDefault BIT, IsForced BIT, IsExternal BIT, Height INT NULL, Width INT NULL, AverageFrameRate FLOAT NULL, RealFrameRate FLOAT NULL, Level FLOAT NULL, PixelFormat TEXT, BitDepth INT NULL, IsAnamorphic BIT NULL, RefFrames INT NULL, CodecTag TEXT NULL, Comment TEXT NULL, NalLengthSize TEXT NULL, PRIMARY KEY (ItemId, StreamIndex))";
 
             string[] queries = {
 
-                                "create table if not exists TypedBaseItems (guid GUID primary key, type TEXT, data BLOB)",
+                                "create table if not exists TypedBaseItems (guid GUID primary key, type TEXT, data BLOB, ParentId GUID, Path TEXT)",
                                 "create index if not exists idx_TypedBaseItems on TypedBaseItems(guid)",
+                                "create index if not exists idx_PathTypedBaseItems on TypedBaseItems(Path)",
+                                "create index if not exists idx_ParentIdTypedBaseItems on TypedBaseItems(ParentId)",
 
-                                "create table if not exists ChildrenIds (ParentId GUID, ItemId GUID, PRIMARY KEY (ParentId, ItemId))",
-                                "create index if not exists idx_ChildrenIds on ChildrenIds(ParentId,ItemId)",
+                                "create table if not exists AncestorIds (ItemId GUID, AncestorId GUID, AncestorIdText TEXT, PRIMARY KEY (ItemId, AncestorId))",
+                                "create index if not exists idx_AncestorIds1 on AncestorIds(AncestorId)",
+                                "create index if not exists idx_AncestorIds2 on AncestorIds(AncestorIdText)",
 
                                 "create table if not exists People (ItemId GUID, Name TEXT NOT NULL, Role TEXT, PersonType TEXT, SortOrder int, ListOrder int)",
+                                "create index if not exists idxPeopleItemId on People(ItemId)",
+                                "create index if not exists idxPeopleName on People(Name)",
 
                                 "create table if not exists "+ChaptersTableName+" (ItemId GUID, ChapterIndex INT, StartPositionTicks BIGINT, Name TEXT, ImagePath TEXT, PRIMARY KEY (ItemId, ChapterIndex))",
                                 "create index if not exists idx_"+ChaptersTableName+" on "+ChaptersTableName+"(ItemId, ChapterIndex)",
@@ -145,62 +153,83 @@ namespace MediaBrowser.Server.Implementations.Persistence
                                 "pragma shrink_memory"
                                };
 
-            _connection.RunQueries(queries, _logger);
+            _connection.RunQueries(queries, Logger);
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "Path", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "StartDate", "DATETIME");
-            _connection.AddColumn(_logger, "TypedBaseItems", "EndDate", "DATETIME");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ChannelId", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsMovie", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsSports", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsKids", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "CommunityRating", "Float");
-            _connection.AddColumn(_logger, "TypedBaseItems", "CustomRating", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IndexNumber", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsLocked", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "Name", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "OfficialRating", "Text");
+            _connection.AddColumn(Logger, "AncestorIds", "AncestorIdText", "Text");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "MediaType", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "Overview", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ParentIndexNumber", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "PremiereDate", "DATETIME");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ProductionYear", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ParentId", "GUID");
-            _connection.AddColumn(_logger, "TypedBaseItems", "Genres", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ParentalRatingValue", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "SchemaVersion", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "SortName", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "RunTimeTicks", "BIGINT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Path", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "StartDate", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "EndDate", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ChannelId", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsMovie", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsSports", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsKids", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "CommunityRating", "Float");
+            _connection.AddColumn(Logger, "TypedBaseItems", "CustomRating", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IndexNumber", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsLocked", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Name", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "OfficialRating", "Text");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "OfficialRatingDescription", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "HomePageUrl", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "VoteCount", "INT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "DisplayMediaType", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "DateCreated", "DATETIME");
-            _connection.AddColumn(_logger, "TypedBaseItems", "DateModified", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "MediaType", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Overview", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ParentIndexNumber", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "PremiereDate", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ProductionYear", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ParentId", "GUID");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Genres", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ParentalRatingValue", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "SchemaVersion", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "SortName", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "RunTimeTicks", "BIGINT");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "ForcedSortName", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsOffline", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "LocationType", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "OfficialRatingDescription", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "HomePageUrl", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "VoteCount", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "DisplayMediaType", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "DateCreated", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "DateModified", "DATETIME");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsSeries", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsLive", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsNews", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsPremiere", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ForcedSortName", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsOffline", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "LocationType", "Text");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "EpisodeTitle", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsRepeat", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsSeries", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsLive", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsNews", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsPremiere", "BIT");
 
-            _connection.AddColumn(_logger, "TypedBaseItems", "PreferredMetadataLanguage", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "PreferredMetadataCountryCode", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "IsHD", "BIT");
-            _connection.AddColumn(_logger, "TypedBaseItems", "ExternalEtag", "Text");
-            _connection.AddColumn(_logger, "TypedBaseItems", "DateLastRefreshed", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "EpisodeTitle", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsRepeat", "BIT");
+
+            _connection.AddColumn(Logger, "TypedBaseItems", "PreferredMetadataLanguage", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "PreferredMetadataCountryCode", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsHD", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ExternalEtag", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "DateLastRefreshed", "DATETIME");
+
+            _connection.AddColumn(Logger, "TypedBaseItems", "DateLastSaved", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsInMixedFolder", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "LockedFields", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Studios", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Audio", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "ExternalServiceId", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "Tags", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsFolder", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "InheritedParentalRatingValue", "INT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "UnratedType", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "TopParentId", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "IsItemByName", "BIT");
+            _connection.AddColumn(Logger, "TypedBaseItems", "SourceType", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "TrailerTypes", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "CriticRating", "Float");
+            _connection.AddColumn(Logger, "TypedBaseItems", "CriticRatingSummary", "Text");
+            _connection.AddColumn(Logger, "TypedBaseItems", "DateModifiedDuringLastRefresh", "DATETIME");
+            _connection.AddColumn(Logger, "TypedBaseItems", "InheritedTags", "Text");
 
             PrepareStatements();
 
-            new MediaStreamColumns(_connection, _logger).AddColumns();
+            new MediaStreamColumns(_connection, Logger).AddColumns();
 
             var chapterDbFile = Path.Combine(_appPaths.DataPath, "chapters.db");
             if (File.Exists(chapterDbFile))
@@ -229,11 +258,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
                                 "REPLACE INTO mediastreams("+columns+") SELECT "+columns+" FROM MediaInfoOld.mediastreams;"
                                };
 
-                _connection.RunQueries(queries, _logger);
+                _connection.RunQueries(queries, Logger);
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Error migrating media info database", ex);
+                Logger.ErrorException("Error migrating media info database", ex);
             }
             finally
             {
@@ -253,11 +282,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
                                 "REPLACE INTO "+ChaptersTableName+"(ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath) SELECT ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath FROM ChaptersOld.Chapters;"
                                };
 
-                _connection.RunQueries(queries, _logger);
+                _connection.RunQueries(queries, Logger);
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Error migrating chapter database", ex);
+                Logger.ErrorException("Error migrating chapter database", ex);
             }
             finally
             {
@@ -273,14 +302,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Error deleting file {0}", ex, file);
+                Logger.ErrorException("Error deleting file {0}", ex, file);
             }
         }
-
-        /// <summary>
-        /// The _write lock
-        /// </summary>
-        private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
 
         private readonly string[] _retriveItemColumns =
         {
@@ -307,7 +331,35 @@ namespace MediaBrowser.Server.Implementations.Persistence
             "PreferredMetadataCountryCode",
             "IsHD",
             "ExternalEtag",
-            "DateLastRefreshed"
+            "DateLastRefreshed",
+            "Name",
+            "Path",
+            "PremiereDate",
+            "Overview",
+            "ParentIndexNumber",
+            "ProductionYear",
+            "OfficialRating",
+            "OfficialRatingDescription",
+            "HomePageUrl",
+            "DisplayMediaType",
+            "ForcedSortName",
+            "RunTimeTicks",
+            "VoteCount",
+            "DateCreated",
+            "DateModified",
+            "guid",
+            "Genres",
+            "ParentId",
+            "Audio",
+            "ExternalServiceId",
+            "IsInMixedFolder",
+            "DateLastSaved",
+            "LockedFields",
+            "Studios",
+            "Tags",
+            "SourceType",
+            "TrailerTypes",
+            "DateModifiedDuringLastRefresh"
         };
 
         private readonly string[] _mediaStreamSaveColumns =
@@ -337,8 +389,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
             "BitDepth",
             "IsAnamorphic",
             "RefFrames",
-            "IsCabac",
-            "KeyFrames"
+            "CodecTag",
+            "Comment",
+            "NalLengthSize"
         };
 
         /// <summary>
@@ -351,7 +404,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "guid",
                 "type",
                 "data",
-				"Path",
+                "Path",
                 "StartDate",
                 "EndDate",
                 "ChannelId",
@@ -378,6 +431,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "ParentId",
                 "Genres",
                 "ParentalRatingValue",
+                "InheritedParentalRatingValue",
                 "SchemaVersion",
                 "SortName",
                 "RunTimeTicks",
@@ -394,7 +448,24 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "PreferredMetadataCountryCode",
                 "IsHD",
                 "ExternalEtag",
-                "DateLastRefreshed"
+                "DateLastRefreshed",
+                "DateLastSaved",
+                "IsInMixedFolder",
+                "LockedFields",
+                "Studios",
+                "Audio",
+                "ExternalServiceId",
+                "Tags",
+                "IsFolder",
+                "UnratedType",
+                "TopParentId",
+                "IsItemByName",
+                "SourceType",
+                "TrailerTypes",
+                "CriticRating",
+                "CriticRatingSummary",
+                "DateModifiedDuringLastRefresh",
+                "InheritedTags"
             };
             _saveItemCommand = _connection.CreateCommand();
             _saveItemCommand.CommandText = "replace into TypedBaseItems (" + string.Join(",", saveColumns.ToArray()) + ") values (";
@@ -411,18 +482,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             _saveItemCommand.CommandText += ")";
 
-            _deleteChildrenCommand = _connection.CreateCommand();
-            _deleteChildrenCommand.CommandText = "delete from ChildrenIds where ParentId=@ParentId";
-            _deleteChildrenCommand.Parameters.Add(_deleteChildrenCommand, "@ParentId");
-
             _deleteItemCommand = _connection.CreateCommand();
             _deleteItemCommand.CommandText = "delete from TypedBaseItems where guid=@Id";
             _deleteItemCommand.Parameters.Add(_deleteItemCommand, "@Id");
-
-            _saveChildrenCommand = _connection.CreateCommand();
-            _saveChildrenCommand.CommandText = "replace into ChildrenIds (ParentId, ItemId) values (@ParentId, @ItemId)";
-            _saveChildrenCommand.Parameters.Add(_saveChildrenCommand, "@ParentId");
-            _saveChildrenCommand.Parameters.Add(_saveChildrenCommand, "@ItemId");
 
             // People
             _deletePeopleCommand = _connection.CreateCommand();
@@ -437,6 +499,17 @@ namespace MediaBrowser.Server.Implementations.Persistence
             _savePersonCommand.Parameters.Add(_savePersonCommand, "@PersonType");
             _savePersonCommand.Parameters.Add(_savePersonCommand, "@SortOrder");
             _savePersonCommand.Parameters.Add(_savePersonCommand, "@ListOrder");
+
+            // Ancestors
+            _deleteAncestorsCommand = _connection.CreateCommand();
+            _deleteAncestorsCommand.CommandText = "delete from AncestorIds where ItemId=@Id";
+            _deleteAncestorsCommand.Parameters.Add(_deleteAncestorsCommand, "@Id");
+
+            _saveAncestorCommand = _connection.CreateCommand();
+            _saveAncestorCommand.CommandText = "insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values (@ItemId, @AncestorId, @AncestorIdText)";
+            _saveAncestorCommand.Parameters.Add(_saveAncestorCommand, "@ItemId");
+            _saveAncestorCommand.Parameters.Add(_saveAncestorCommand, "@AncestorId");
+            _saveAncestorCommand.Parameters.Add(_saveAncestorCommand, "@AncestorIdText");
 
             // Chapters
             _deleteChaptersCommand = _connection.CreateCommand();
@@ -467,6 +540,16 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 _saveStreamCommand.Parameters.Add(_saveStreamCommand, "@" + col);
             }
+
+            _updateInheritedRatingCommand = _connection.CreateCommand();
+            _updateInheritedRatingCommand.CommandText = "Update TypedBaseItems set InheritedParentalRatingValue=@InheritedParentalRatingValue where Guid=@Guid";
+            _updateInheritedRatingCommand.Parameters.Add(_updateInheritedRatingCommand, "@Guid");
+            _updateInheritedRatingCommand.Parameters.Add(_updateInheritedRatingCommand, "@InheritedParentalRatingValue");
+
+            _updateInheritedTagsCommand = _connection.CreateCommand();
+            _updateInheritedTagsCommand.CommandText = "Update TypedBaseItems set InheritedTags=@InheritedTags where Guid=@Guid";
+            _updateInheritedTagsCommand.Parameters.Add(_updateInheritedTagsCommand, "@Guid");
+            _updateInheritedTagsCommand.Parameters.Add(_updateInheritedTagsCommand, "@InheritedTags");
         }
 
         /// <summary>
@@ -508,7 +591,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             CheckDisposed();
 
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -592,7 +675,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     }
 
                     _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.Genres.ToArray());
-                    _saveItemCommand.GetParameter(index++).Value = item.GetParentalRatingValue();
+                    _saveItemCommand.GetParameter(index++).Value = item.GetParentalRatingValue() ?? 0;
+                    _saveItemCommand.GetParameter(index++).Value = item.GetInheritedParentalRatingValue() ?? 0;
 
                     _saveItemCommand.GetParameter(index++).Value = LatestSchemaVersion;
                     _saveItemCommand.GetParameter(index++).Value = item.SortName;
@@ -623,9 +707,98 @@ namespace MediaBrowser.Server.Implementations.Persistence
                         _saveItemCommand.GetParameter(index++).Value = item.DateLastRefreshed;
                     }
 
+                    _saveItemCommand.GetParameter(index++).Value = item.DateLastSaved;
+                    _saveItemCommand.GetParameter(index++).Value = item.IsInMixedFolder;
+                    _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.LockedFields.Select(i => i.ToString()).ToArray());
+                    _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.Studios.ToArray());
+
+                    if (item.Audio.HasValue)
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = item.Audio.Value.ToString();
+                    }
+                    else
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+
+                    _saveItemCommand.GetParameter(index++).Value = item.ServiceName;
+
+                    if (item.Tags.Count > 0)
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.Tags.ToArray());
+                    }
+                    else
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+
+                    _saveItemCommand.GetParameter(index++).Value = item.IsFolder;
+
+                    _saveItemCommand.GetParameter(index++).Value = item.GetBlockUnratedType().ToString();
+
+                    var topParent = item.GetTopParent();
+                    if (topParent != null)
+                    {
+                        //Logger.Debug("Item {0} has top parent {1}", item.Id, topParent.Id);
+                        _saveItemCommand.GetParameter(index++).Value = topParent.Id.ToString("N");
+                    }
+                    else
+                    {
+                        //Logger.Debug("Item {0} has null top parent", item.Id);
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+
+                    var isByName = false;
+                    var byName = item as IItemByName;
+                    if (byName != null)
+                    {
+                        var dualAccess = item as IHasDualAccess;
+                        isByName = dualAccess == null || dualAccess.IsAccessedByName;
+                    }
+                    _saveItemCommand.GetParameter(index++).Value = isByName;
+
+                    _saveItemCommand.GetParameter(index++).Value = item.SourceType.ToString();
+
+                    var trailer = item as Trailer;
+                    if (trailer != null && trailer.TrailerTypes.Count > 0)
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = string.Join("|", trailer.TrailerTypes.Select(i => i.ToString()).ToArray());
+                    }
+                    else
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+
+                    _saveItemCommand.GetParameter(index++).Value = item.CriticRating;
+                    _saveItemCommand.GetParameter(index++).Value = item.CriticRatingSummary;
+
+                    if (!item.DateModifiedDuringLastRefresh.HasValue || item.DateModifiedDuringLastRefresh.Value == default(DateTime))
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+                    else
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = item.DateModifiedDuringLastRefresh.Value;
+                    }
+
+                    var inheritedTags = item.GetInheritedTags();
+                    if (inheritedTags.Count > 0)
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = string.Join("|", inheritedTags.ToArray());
+                    }
+                    else
+                    {
+                        _saveItemCommand.GetParameter(index++).Value = null;
+                    }
+
                     _saveItemCommand.Transaction = transaction;
 
                     _saveItemCommand.ExecuteNonQuery();
+
+                    if (item.SupportsAncestors)
+                    {
+                        UpdateAncestors(item.Id, item.GetAncestorIds().Distinct().ToList(), transaction);
+                    }
                 }
 
                 transaction.Commit();
@@ -641,7 +814,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save items:", e);
+                Logger.ErrorException("Failed to save items:", e);
 
                 if (transaction != null)
                 {
@@ -657,7 +830,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -701,27 +874,37 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             if (type == null)
             {
-                _logger.Debug("Unknown type {0}", typeString);
+                Logger.Debug("Unknown type {0}", typeString);
 
                 return null;
             }
 
-            BaseItem item;
+            BaseItem item = null;
 
             using (var stream = reader.GetMemoryStream(1))
             {
                 try
                 {
                     item = _jsonSerializer.DeserializeFromStream(stream, type) as BaseItem;
-
-                    if (item == null)
-                    {
-                        return null;
-                    }
                 }
                 catch (SerializationException ex)
                 {
-                    _logger.ErrorException("Error deserializing item", ex);
+                    Logger.ErrorException("Error deserializing item", ex);
+                }
+
+                if (item == null)
+                {
+                    try
+                    {
+                        item = Activator.CreateInstance(type) as BaseItem;
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                if (item == null)
+                {
                     return null;
                 }
             }
@@ -842,6 +1025,147 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (!reader.IsDBNull(23))
             {
                 item.DateLastRefreshed = reader.GetDateTime(23).ToUniversalTime();
+            }
+
+            if (!reader.IsDBNull(24))
+            {
+                item.Name = reader.GetString(24);
+            }
+
+            if (!reader.IsDBNull(25))
+            {
+                item.Path = reader.GetString(25);
+            }
+
+            if (!reader.IsDBNull(26))
+            {
+                item.PremiereDate = reader.GetDateTime(26).ToUniversalTime();
+            }
+
+            if (!reader.IsDBNull(27))
+            {
+                item.Overview = reader.GetString(27);
+            }
+
+            if (!reader.IsDBNull(28))
+            {
+                item.ParentIndexNumber = reader.GetInt32(28);
+            }
+
+            if (!reader.IsDBNull(29))
+            {
+                item.ProductionYear = reader.GetInt32(29);
+            }
+
+            if (!reader.IsDBNull(30))
+            {
+                item.OfficialRating = reader.GetString(30);
+            }
+
+            if (!reader.IsDBNull(31))
+            {
+                item.OfficialRatingDescription = reader.GetString(31);
+            }
+
+            if (!reader.IsDBNull(32))
+            {
+                item.HomePageUrl = reader.GetString(32);
+            }
+
+            if (!reader.IsDBNull(33))
+            {
+                item.DisplayMediaType = reader.GetString(33);
+            }
+
+            if (!reader.IsDBNull(34))
+            {
+                item.ForcedSortName = reader.GetString(34);
+            }
+
+            if (!reader.IsDBNull(35))
+            {
+                item.RunTimeTicks = reader.GetInt64(35);
+            }
+
+            if (!reader.IsDBNull(36))
+            {
+                item.VoteCount = reader.GetInt32(36);
+            }
+
+            if (!reader.IsDBNull(37))
+            {
+                item.DateCreated = reader.GetDateTime(37).ToUniversalTime();
+            }
+
+            if (!reader.IsDBNull(38))
+            {
+                item.DateModified = reader.GetDateTime(38).ToUniversalTime();
+            }
+
+            item.Id = reader.GetGuid(39);
+
+            if (!reader.IsDBNull(40))
+            {
+                item.Genres = reader.GetString(40).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+            }
+
+            if (!reader.IsDBNull(41))
+            {
+                item.ParentId = reader.GetGuid(41);
+            }
+
+            if (!reader.IsDBNull(42))
+            {
+                item.Audio = (ProgramAudio)Enum.Parse(typeof(ProgramAudio), reader.GetString(42), true);
+            }
+
+            if (!reader.IsDBNull(43))
+            {
+                item.ServiceName = reader.GetString(43);
+            }
+
+            if (!reader.IsDBNull(44))
+            {
+                item.IsInMixedFolder = reader.GetBoolean(44);
+            }
+
+            if (!reader.IsDBNull(45))
+            {
+                item.DateLastSaved = reader.GetDateTime(45).ToUniversalTime();
+            }
+
+            if (!reader.IsDBNull(46))
+            {
+                item.LockedFields = reader.GetString(46).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => (MetadataFields)Enum.Parse(typeof(MetadataFields), i, true)).ToList();
+            }
+
+            if (!reader.IsDBNull(47))
+            {
+                item.Studios = reader.GetString(47).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+            }
+
+            if (!reader.IsDBNull(48))
+            {
+                item.Tags = reader.GetString(48).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+            }
+
+            if (!reader.IsDBNull(49))
+            {
+                item.SourceType = (SourceType)Enum.Parse(typeof(SourceType), reader.GetString(49), true);
+            }
+
+            var trailer = item as Trailer;
+            if (trailer != null)
+            {
+                if (!reader.IsDBNull(50))
+                {
+                    trailer.TrailerTypes = reader.GetString(50).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => (TrailerType)Enum.Parse(typeof(TrailerType), i, true)).ToList();
+                }
+            }
+
+            if (!reader.IsDBNull(51))
+            {
+                item.DateModifiedDuringLastRefresh = reader.GetDateTime(51).ToUniversalTime();
             }
 
             return item;
@@ -1006,7 +1330,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -1053,7 +1377,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save chapters:", e);
+                Logger.ErrorException("Failed to save chapters:", e);
 
                 if (transaction != null)
                 {
@@ -1069,117 +1393,21 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
+        protected override void CloseConnection()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private readonly object _disposeLock = new object();
-
-        private bool _disposed;
-        private void CheckDisposed()
-        {
-            if (_disposed)
+            if (_connection != null)
             {
-                throw new ObjectDisposedException(GetType().Name + " has been disposed and cannot be accessed.");
-            }
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="dispose"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool dispose)
-        {
-            if (dispose)
-            {
-                _disposed = true;
-
-                try
+                if (_connection.IsOpen())
                 {
-                    lock (_disposeLock)
-                    {
-                        _writeLock.Wait();
-
-                        if (_connection != null)
-                        {
-                            if (_connection.IsOpen())
-                            {
-                                _connection.Close();
-                            }
-
-                            _connection.Dispose();
-                            _connection = null;
-                        }
-                    }
+                    _connection.Close();
                 }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error disposing database", ex);
-                }
-            }
-        }
 
-        public IEnumerable<Guid> GetChildren(Guid parentId)
-        {
-            if (parentId == Guid.Empty)
-            {
-                throw new ArgumentNullException("parentId");
-            }
-
-            CheckDisposed();
-
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "select ItemId from ChildrenIds where ParentId = @ParentId";
-
-                cmd.Parameters.Add(cmd, "@ParentId", DbType.Guid).Value = parentId;
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        yield return reader.GetGuid(0);
-                    }
-                }
-            }
-        }
-
-        public IEnumerable<BaseItem> GetChildrenItems(Guid parentId)
-        {
-            if (parentId == Guid.Empty)
-            {
-                throw new ArgumentNullException("parentId");
-            }
-
-            CheckDisposed();
-
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "select " + string.Join(",", _retriveItemColumns) + " from TypedBaseItems where guid in (select ItemId from ChildrenIds where ParentId = @ParentId)";
-
-                cmd.Parameters.Add(cmd, "@ParentId", DbType.Guid).Value = parentId;
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        var item = GetItem(reader);
-
-                        if (item != null)
-                        {
-                            yield return item;
-                        }
-                    }
-                }
+                _connection.Dispose();
+                _connection = null;
             }
         }
 
@@ -1204,6 +1432,50 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     {
                         var item = GetItem(reader);
 
+                        if (item != null)
+                        {
+                            yield return item;
+                        }
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<BaseItem> GetItemList(InternalItemsQuery query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
+
+            CheckDisposed();
+
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "select " + string.Join(",", _retriveItemColumns) + " from TypedBaseItems";
+
+                var whereClauses = GetWhereClauses(query, cmd, true);
+
+                var whereText = whereClauses.Count == 0 ?
+                    string.Empty :
+                    " where " + string.Join(" AND ", whereClauses.ToArray());
+
+                cmd.CommandText += whereText;
+
+                cmd.CommandText += GetOrderByText(query);
+
+                if (query.Limit.HasValue)
+                {
+                    cmd.CommandText += " LIMIT " + query.Limit.Value.ToString(CultureInfo.InvariantCulture);
+                }
+
+                //Logger.Debug(cmd.CommandText);
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        var item = GetItem(reader);
                         if (item != null)
                         {
                             yield return item;
@@ -1249,7 +1521,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                 cmd.CommandText += "; select count (guid) from TypedBaseItems" + whereTextWithoutPaging;
 
-                _logger.Debug(cmd.CommandText);
+                //Logger.Debug(cmd.CommandText);
 
                 var list = new List<BaseItem>();
                 var count = 0;
@@ -1293,6 +1565,20 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         private string MapOrderByField(string name)
         {
+            if (string.Equals(name, ItemSortBy.AirTime, StringComparison.OrdinalIgnoreCase))
+            {
+                // TODO
+                return "SortName";
+            }
+            if (string.Equals(name, ItemSortBy.Runtime, StringComparison.OrdinalIgnoreCase))
+            {
+                return "RuntimeTicks";
+            }
+            if (string.Equals(name, ItemSortBy.Random, StringComparison.OrdinalIgnoreCase))
+            {
+                return "RANDOM()";
+            }
+
             return name;
         }
 
@@ -1326,9 +1612,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                 var list = new List<Guid>();
 
-                _logger.Debug(cmd.CommandText);
+                //Logger.Debug(cmd.CommandText);
 
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
                 {
                     while (reader.Read())
                     {
@@ -1379,7 +1665,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 var list = new List<Tuple<Guid, string>>();
                 var count = 0;
 
-                _logger.Debug(cmd.CommandText);
+                Logger.Debug(cmd.CommandText);
 
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -1448,7 +1734,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 var list = new List<Guid>();
                 var count = 0;
 
-                _logger.Debug(cmd.CommandText);
+                //Logger.Debug(cmd.CommandText);
 
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -1487,15 +1773,20 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 }
                 cmd.Parameters.Add(cmd, "@SchemaVersion", DbType.Int32).Value = LatestSchemaVersion;
             }
+            if (query.IsHD.HasValue)
+            {
+                whereClauses.Add("IsHD=@IsHD");
+                cmd.Parameters.Add(cmd, "@IsHD", DbType.Boolean).Value = query.IsHD;
+            }
+            if (query.IsLocked.HasValue)
+            {
+                whereClauses.Add("IsLocked=@IsLocked");
+                cmd.Parameters.Add(cmd, "@IsLocked", DbType.Boolean).Value = query.IsLocked;
+            }
             if (query.IsOffline.HasValue)
             {
                 whereClauses.Add("IsOffline=@IsOffline");
                 cmd.Parameters.Add(cmd, "@IsOffline", DbType.Boolean).Value = query.IsOffline;
-            }
-            if (query.LocationType.HasValue)
-            {
-                whereClauses.Add("LocationType=@LocationType");
-                cmd.Parameters.Add(cmd, "@LocationType", DbType.String).Value = query.LocationType.Value;
             }
             if (query.IsMovie.HasValue)
             {
@@ -1511,6 +1802,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 whereClauses.Add("IsSports=@IsSports");
                 cmd.Parameters.Add(cmd, "@IsSports", DbType.Boolean).Value = query.IsSports;
+            }
+            if (query.IsFolder.HasValue)
+            {
+                whereClauses.Add("IsFolder=@IsFolder");
+                cmd.Parameters.Add(cmd, "@IsFolder", DbType.Boolean).Value = query.IsFolder;
             }
 
             var includeTypes = query.IncludeItemTypes.SelectMany(MapIncludeItemTypes).ToArray();
@@ -1554,6 +1850,41 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 cmd.Parameters.Add(cmd, "@ParentId", DbType.Guid).Value = query.ParentId.Value;
             }
 
+            if (!string.IsNullOrWhiteSpace(query.Path))
+            {
+                whereClauses.Add("Path=@Path");
+                cmd.Parameters.Add(cmd, "@Path", DbType.String).Value = query.Path;
+            }
+
+            if (query.MinCommunityRating.HasValue)
+            {
+                whereClauses.Add("CommunityRating>=@MinCommunityRating");
+                cmd.Parameters.Add(cmd, "@MinCommunityRating", DbType.Double).Value = query.MinCommunityRating.Value;
+            }
+
+            if (query.MinIndexNumber.HasValue)
+            {
+                whereClauses.Add("IndexNumber>=@MinIndexNumber");
+                cmd.Parameters.Add(cmd, "@MinIndexNumber", DbType.Int32).Value = query.MinIndexNumber.Value;
+            }
+
+            //if (query.MinPlayers.HasValue)
+            //{
+            //    whereClauses.Add("Players>=@MinPlayers");
+            //    cmd.Parameters.Add(cmd, "@MinPlayers", DbType.Int32).Value = query.MinPlayers.Value;
+            //}
+
+            //if (query.MaxPlayers.HasValue)
+            //{
+            //    whereClauses.Add("Players<=@MaxPlayers");
+            //    cmd.Parameters.Add(cmd, "@MaxPlayers", DbType.Int32).Value = query.MaxPlayers.Value;
+            //}
+
+            if (query.ParentIndexNumber.HasValue)
+            {
+                whereClauses.Add("ParentIndexNumber=@MinEndDate");
+                cmd.Parameters.Add(cmd, "@ParentIndexNumber", DbType.Int32).Value = query.ParentIndexNumber.Value;
+            }
             if (query.MinEndDate.HasValue)
             {
                 whereClauses.Add("EndDate>=@MinEndDate");
@@ -1576,6 +1907,67 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 whereClauses.Add("StartDate<=@MaxStartDate");
                 cmd.Parameters.Add(cmd, "@MaxStartDate", DbType.Date).Value = query.MaxStartDate.Value;
+            }
+
+            if (query.MinPremiereDate.HasValue)
+            {
+                whereClauses.Add("PremiereDate>=@MinPremiereDate");
+                cmd.Parameters.Add(cmd, "@MinPremiereDate", DbType.Date).Value = query.MinPremiereDate.Value;
+            }
+            if (query.MaxPremiereDate.HasValue)
+            {
+                whereClauses.Add("PremiereDate<=@MaxPremiereDate");
+                cmd.Parameters.Add(cmd, "@MaxPremiereDate", DbType.Date).Value = query.MaxPremiereDate.Value;
+            }
+
+            if (query.SourceTypes.Length == 1)
+            {
+                whereClauses.Add("SourceType=@SourceType");
+                cmd.Parameters.Add(cmd, "@SourceType", DbType.String).Value = query.SourceTypes[0];
+            }
+            else if (query.SourceTypes.Length > 1)
+            {
+                var inClause = string.Join(",", query.SourceTypes.Select(i => "'" + i + "'").ToArray());
+                whereClauses.Add(string.Format("SourceType in ({0})", inClause));
+            }
+
+            if (query.ExcludeSourceTypes.Length == 1)
+            {
+                whereClauses.Add("SourceType<>@SourceType");
+                cmd.Parameters.Add(cmd, "@SourceType", DbType.String).Value = query.SourceTypes[0];
+            }
+            else if (query.ExcludeSourceTypes.Length > 1)
+            {
+                var inClause = string.Join(",", query.ExcludeSourceTypes.Select(i => "'" + i + "'").ToArray());
+                whereClauses.Add(string.Format("SourceType not in ({0})", inClause));
+            }
+
+            if (query.TrailerTypes.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var type in query.TrailerTypes)
+                {
+                    clauses.Add("TrailerTypes like @TrailerTypes" + index);
+                    cmd.Parameters.Add(cmd, "@TrailerTypes" + index, DbType.String).Value = "%" + type + "%";
+                    index++;
+                }
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
+            if (query.ExcludeTrailerTypes.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var type in query.ExcludeTrailerTypes)
+                {
+                    clauses.Add("(TrailerTypes is null OR TrailerTypes not like @TrailerTypes" + index + ")");
+                    cmd.Parameters.Add(cmd, "@TrailerTypes" + index, DbType.String).Value = "%" + type + "%";
+                    index++;
+                }
+                var clause = "(" + string.Join(" AND ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
             }
 
             if (query.IsAiring.HasValue)
@@ -1609,21 +2001,55 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             if (query.Genres.Length > 0)
             {
-                var genres = new List<string>();
+                var clauses = new List<string>();
                 var index = 0;
-                foreach (var genre in query.Genres)
+                foreach (var item in query.Genres)
                 {
-                    genres.Add("Genres like @Genres" + index);
-                    cmd.Parameters.Add(cmd, "@Genres" + index, DbType.String).Value = "%" + genre + "%";
+                    clauses.Add("Genres like @Genres" + index);
+                    cmd.Parameters.Add(cmd, "@Genres" + index, DbType.String).Value = "%" + item + "%";
                     index++;
                 }
-                var genreCaluse = "(" + string.Join(" OR ", genres.ToArray()) + ")";
-                whereClauses.Add(genreCaluse);
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
+            if (query.Tags.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var item in query.Tags)
+                {
+                    clauses.Add("Tags like @Tags" + index);
+                    cmd.Parameters.Add(cmd, "@Tags" + index, DbType.String).Value = "%" + item + "%";
+                    index++;
+                }
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
+            if (query.Studios.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var item in query.Studios)
+                {
+                    clauses.Add("Studios like @Studios" + index);
+                    cmd.Parameters.Add(cmd, "@Studios" + index, DbType.String).Value = "%" + item + "%";
+                    index++;
+                }
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
+            if (query.MinParentalRating.HasValue)
+            {
+                whereClauses.Add("InheritedParentalRatingValue<=@MinParentalRating");
+                cmd.Parameters.Add(cmd, "@MinParentalRating", DbType.Int32).Value = query.MinParentalRating.Value;
             }
 
             if (query.MaxParentalRating.HasValue)
             {
-                whereClauses.Add("(ParentalRatingValue is NULL OR ParentalRatingValue<=@MaxParentalRating)");
+                whereClauses.Add("InheritedParentalRatingValue<=@MaxParentalRating");
                 cmd.Parameters.Add(cmd, "@MaxParentalRating", DbType.Int32).Value = query.MaxParentalRating.Value;
             }
 
@@ -1631,11 +2057,23 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 if (query.HasParentalRating.Value)
                 {
-                    whereClauses.Add("ParentalRatingValue NOT NULL");
+                    whereClauses.Add("InheritedParentalRatingValue > 0");
                 }
                 else
                 {
-                    whereClauses.Add("ParentalRatingValue IS NULL");
+                    whereClauses.Add("InheritedParentalRatingValue = 0");
+                }
+            }
+
+            if (query.HasOverview.HasValue)
+            {
+                if (query.HasOverview.Value)
+                {
+                    whereClauses.Add("(Overview not null AND Overview<>'')");
+                }
+                else
+                {
+                    whereClauses.Add("(Overview is null OR Overview='')");
                 }
             }
 
@@ -1645,6 +2083,120 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 {
                     whereClauses.Add("ParentId NOT NULL AND ParentId NOT IN (select guid from TypedBaseItems)");
                 }
+            }
+
+            if (query.Years.Length == 1)
+            {
+                whereClauses.Add("ProductionYear=@Years");
+                cmd.Parameters.Add(cmd, "@Years", DbType.Int32).Value = query.Years[0].ToString();
+            }
+            else if (query.Years.Length > 1)
+            {
+                var val = string.Join(",", query.Years.ToArray());
+
+                whereClauses.Add("ProductionYear in (" + val + ")");
+            }
+
+            if (query.LocationTypes.Length == 1)
+            {
+                whereClauses.Add("LocationType=@LocationType");
+                cmd.Parameters.Add(cmd, "@LocationType", DbType.String).Value = query.LocationTypes[0].ToString();
+            }
+            else if (query.LocationTypes.Length > 1)
+            {
+                var val = string.Join(",", query.LocationTypes.Select(i => "'" + i + "'").ToArray());
+
+                whereClauses.Add("LocationType in (" + val + ")");
+            }
+            if (query.ExcludeLocationTypes.Length == 1)
+            {
+                whereClauses.Add("LocationType<>@ExcludeLocationTypes");
+                cmd.Parameters.Add(cmd, "@ExcludeLocationTypes", DbType.String).Value = query.ExcludeLocationTypes[0].ToString();
+            }
+            else if (query.ExcludeLocationTypes.Length > 1)
+            {
+                var val = string.Join(",", query.ExcludeLocationTypes.Select(i => "'" + i + "'").ToArray());
+
+                whereClauses.Add("LocationType not in (" + val + ")");
+            }
+            if (query.MediaTypes.Length == 1)
+            {
+                whereClauses.Add("MediaType=@MediaTypes");
+                cmd.Parameters.Add(cmd, "@MediaTypes", DbType.String).Value = query.MediaTypes[0].ToString();
+            }
+            if (query.MediaTypes.Length > 1)
+            {
+                var val = string.Join(",", query.MediaTypes.Select(i => "'" + i + "'").ToArray());
+
+                whereClauses.Add("MediaType in (" + val + ")");
+            }
+
+            var enableItemsByName = query.IncludeItemsByName ?? query.IncludeItemTypes.Length > 0;
+
+            if (query.TopParentIds.Length == 1)
+            {
+                if (enableItemsByName)
+                {
+                    whereClauses.Add("(TopParentId=@TopParentId or IsItemByName=@IsItemByName)");
+                    cmd.Parameters.Add(cmd, "@IsItemByName", DbType.Boolean).Value = true;
+                }
+                else
+                {
+                    whereClauses.Add("(TopParentId=@TopParentId)");
+                }
+                cmd.Parameters.Add(cmd, "@TopParentId", DbType.String).Value = query.TopParentIds[0];
+            }
+            if (query.TopParentIds.Length > 1)
+            {
+                var val = string.Join(",", query.TopParentIds.Select(i => "'" + i + "'").ToArray());
+
+                if (enableItemsByName)
+                {
+                    whereClauses.Add("(IsItemByName=@IsItemByName or TopParentId in (" + val + "))");
+                    cmd.Parameters.Add(cmd, "@IsItemByName", DbType.Boolean).Value = true;
+                }
+                else
+                {
+                    whereClauses.Add("(TopParentId in (" + val + "))");
+                }
+            }
+
+            if (query.AncestorIds.Length == 1)
+            {
+                whereClauses.Add("Guid in (select itemId from AncestorIds where AncestorId=@AncestorId)");
+                cmd.Parameters.Add(cmd, "@AncestorId", DbType.Guid).Value = new Guid(query.AncestorIds[0]);
+            }
+            if (query.AncestorIds.Length > 1)
+            {
+                var inClause = string.Join(",", query.AncestorIds.Select(i => "'" + new Guid(i).ToString("N") + "'").ToArray());
+                whereClauses.Add(string.Format("Guid in (select itemId from AncestorIds where AncestorIdText in ({0}))", inClause));
+            }
+
+            if (query.BlockUnratedItems.Length == 1)
+            {
+                whereClauses.Add("(InheritedParentalRatingValue > 0 or UnratedType <> @UnratedType)");
+                cmd.Parameters.Add(cmd, "@UnratedType", DbType.String).Value = query.BlockUnratedItems[0].ToString();
+            }
+            if (query.BlockUnratedItems.Length > 1)
+            {
+                var inClause = string.Join(",", query.BlockUnratedItems.Select(i => "'" + i.ToString() + "'").ToArray());
+                whereClauses.Add(string.Format("(InheritedParentalRatingValue > 0 or UnratedType not in ({0}))", inClause));
+            }
+
+            var excludeTagIndex = 0;
+            foreach (var excludeTag in query.ExcludeTags)
+            {
+                whereClauses.Add("(Tags is null OR Tags not like @excludeTag" + excludeTagIndex + ")");
+                cmd.Parameters.Add(cmd, "@excludeTag" + excludeTagIndex, DbType.String).Value = "%" + excludeTag + "%";
+                excludeTagIndex++;
+            }
+
+            excludeTagIndex = 0;
+            foreach (var excludeTag in query.ExcludeInheritedTags)
+            {
+                whereClauses.Add("(InheritedTags is null OR InheritedTags not like @excludeInheritedTag" + excludeTagIndex +")");
+                cmd.Parameters.Add(cmd, "@excludeInheritedTag" + excludeTagIndex, DbType.String).Value = "%" + excludeTag + "%";
+                excludeTagIndex++;
             }
 
             if (addPaging)
@@ -1679,9 +2231,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
             typeof(MusicGenre),
             typeof(MusicVideo),
             typeof(Movie),
+            typeof(Playlist),
+            typeof(AudioPodcast),
+            typeof(Trailer),
             typeof(BoxSet),
             typeof(Episode),
-            typeof(ChannelVideoItem),
             typeof(Season),
             typeof(Series),
             typeof(Book),
@@ -1703,9 +2257,167 @@ namespace MediaBrowser.Server.Implementations.Persistence
             typeof(AggregateFolder)
         };
 
+        public async Task UpdateInheritedValues(CancellationToken cancellationToken)
+        {
+            await UpdateInheritedParentalRating(cancellationToken).ConfigureAwait(false);
+            await UpdateInheritedTags(cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task UpdateInheritedTags(CancellationToken cancellationToken)
+        {
+            var newValues = new List<Tuple<Guid, string>>();
+
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "select Guid,InheritedTags,(select group_concat(Tags, '|') from TypedBaseItems where (guid=outer.guid) OR (guid in (Select AncestorId from AncestorIds where ItemId=Outer.guid))) as NewInheritedTags from typedbaseitems as Outer where NewInheritedTags <> InheritedTags";
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        var id = reader.GetGuid(0);
+                        string value = reader.IsDBNull(2) ? null : reader.GetString(2);
+
+                        newValues.Add(new Tuple<Guid, string>(id, value));
+                    }
+                }
+            }
+
+            Logger.Debug("UpdateInheritedTags - {0} rows", newValues.Count);
+            if (newValues.Count == 0)
+            {
+                return;
+            }
+
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            IDbTransaction transaction = null;
+
+            try
+            {
+                transaction = _connection.BeginTransaction();
+                
+                foreach (var item in newValues)
+                {
+                    _updateInheritedTagsCommand.GetParameter(0).Value = item.Item1;
+                    _updateInheritedTagsCommand.GetParameter(1).Value = item.Item2;
+
+                    _updateInheritedTagsCommand.Transaction = transaction;
+                    _updateInheritedTagsCommand.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch (OperationCanceledException)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorException("Error running query:", e);
+
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
+            }
+            finally
+            {
+                if (transaction != null)
+                {
+                    transaction.Dispose();
+                }
+
+                WriteLock.Release();
+            }
+        }
+
+        private async Task UpdateInheritedParentalRating(CancellationToken cancellationToken)
+        {
+            var newValues = new List<Tuple<Guid, int>>();
+
+            using (var cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "select Guid,InheritedParentalRatingValue,(select Max(ParentalRatingValue, (select COALESCE(MAX(ParentalRatingValue),0) from TypedBaseItems where guid in (Select AncestorId from AncestorIds where ItemId=Outer.guid)))) as NewInheritedParentalRatingValue from typedbaseitems as Outer where InheritedParentalRatingValue <> NewInheritedParentalRatingValue";
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        var id = reader.GetGuid(0);
+                        var newValue = reader.GetInt32(2);
+
+                        newValues.Add(new Tuple<Guid, int>(id, newValue));
+                    }
+                }
+            }
+
+            Logger.Debug("UpdateInheritedParentalRatings - {0} rows", newValues.Count);
+            if (newValues.Count == 0)
+            {
+                return;
+            }
+
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            IDbTransaction transaction = null;
+
+            try
+            {
+                transaction = _connection.BeginTransaction();
+
+                foreach (var item in newValues)
+                {
+                    _updateInheritedRatingCommand.GetParameter(0).Value = item.Item1;
+                    _updateInheritedRatingCommand.GetParameter(1).Value = item.Item2;
+
+                    _updateInheritedRatingCommand.Transaction = transaction;
+                    _updateInheritedRatingCommand.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch (OperationCanceledException)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorException("Error running query:", e);
+
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
+            }
+            finally
+            {
+                if (transaction != null)
+                {
+                    transaction.Dispose();
+                }
+
+                WriteLock.Release();
+            }
+        }
+
         private static Dictionary<string, string[]> GetTypeMapDictionary()
         {
-            var dict = new Dictionary<string, string[]>();
+            var dict = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var t in KnownTypes)
             {
@@ -1742,18 +2454,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             CheckDisposed();
 
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
             try
             {
                 transaction = _connection.BeginTransaction();
-
-                // First delete children
-                _deleteChildrenCommand.GetParameter(0).Value = id;
-                _deleteChildrenCommand.Transaction = transaction;
-                _deleteChildrenCommand.ExecuteNonQuery();
 
                 // Delete people
                 _deletePeopleCommand.GetParameter(0).Value = id;
@@ -1770,11 +2477,16 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 _deleteStreamsCommand.Transaction = transaction;
                 _deleteStreamsCommand.ExecuteNonQuery();
 
+                // Delete ancestors
+                _deleteAncestorsCommand.GetParameter(0).Value = id;
+                _deleteAncestorsCommand.Transaction = transaction;
+                _deleteAncestorsCommand.ExecuteNonQuery();
+
                 // Delete the item
                 _deleteItemCommand.GetParameter(0).Value = id;
                 _deleteItemCommand.Transaction = transaction;
                 _deleteItemCommand.ExecuteNonQuery();
-                
+
                 transaction.Commit();
             }
             catch (OperationCanceledException)
@@ -1788,7 +2500,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save children:", e);
+                Logger.ErrorException("Failed to save children:", e);
 
                 if (transaction != null)
                 {
@@ -1804,80 +2516,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
-            }
-        }
-
-        public async Task SaveChildren(Guid parentId, IEnumerable<Guid> children, CancellationToken cancellationToken)
-        {
-            if (parentId == Guid.Empty)
-            {
-                throw new ArgumentNullException("parentId");
-            }
-
-            if (children == null)
-            {
-                throw new ArgumentNullException("children");
-            }
-
-            CheckDisposed();
-
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            IDbTransaction transaction = null;
-
-            try
-            {
-                transaction = _connection.BeginTransaction();
-
-                // First delete 
-                _deleteChildrenCommand.GetParameter(0).Value = parentId;
-                _deleteChildrenCommand.Transaction = transaction;
-
-                _deleteChildrenCommand.ExecuteNonQuery();
-
-                foreach (var id in children)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    _saveChildrenCommand.GetParameter(0).Value = parentId;
-                    _saveChildrenCommand.GetParameter(1).Value = id;
-
-                    _saveChildrenCommand.Transaction = transaction;
-
-                    _saveChildrenCommand.ExecuteNonQuery();
-                }
-
-                transaction.Commit();
-            }
-            catch (OperationCanceledException)
-            {
-                if (transaction != null)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
-            }
-            catch (Exception e)
-            {
-                _logger.ErrorException("Failed to save children:", e);
-
-                if (transaction != null)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
-            }
-            finally
-            {
-                if (transaction != null)
-                {
-                    transaction.Dispose();
-                }
-
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -2003,6 +2642,38 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return whereClauses;
         }
 
+        private void UpdateAncestors(Guid itemId, List<Guid> ancestorIds, IDbTransaction transaction)
+        {
+            if (itemId == Guid.Empty)
+            {
+                throw new ArgumentNullException("itemId");
+            }
+
+            if (ancestorIds == null)
+            {
+                throw new ArgumentNullException("ancestorIds");
+            }
+
+            CheckDisposed();
+
+            // First delete 
+            _deleteAncestorsCommand.GetParameter(0).Value = itemId;
+            _deleteAncestorsCommand.Transaction = transaction;
+
+            _deleteAncestorsCommand.ExecuteNonQuery();
+
+            foreach (var ancestorId in ancestorIds)
+            {
+                _saveAncestorCommand.GetParameter(0).Value = itemId;
+                _saveAncestorCommand.GetParameter(1).Value = ancestorId;
+                _saveAncestorCommand.GetParameter(2).Value = ancestorId.ToString("N");
+
+                _saveAncestorCommand.Transaction = transaction;
+
+                _saveAncestorCommand.ExecuteNonQuery();
+            }
+        }
+
         public async Task UpdatePeople(Guid itemId, List<PersonInfo> people)
         {
             if (itemId == Guid.Empty)
@@ -2019,7 +2690,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var cancellationToken = CancellationToken.None;
 
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -2065,7 +2736,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save people:", e);
+                Logger.ErrorException("Failed to save people:", e);
 
                 if (transaction != null)
                 {
@@ -2081,7 +2752,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -2168,7 +2839,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             IDbTransaction transaction = null;
 
@@ -2218,16 +2889,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     _saveStreamCommand.GetParameter(index++).Value = stream.BitDepth;
                     _saveStreamCommand.GetParameter(index++).Value = stream.IsAnamorphic;
                     _saveStreamCommand.GetParameter(index++).Value = stream.RefFrames;
-                    _saveStreamCommand.GetParameter(index++).Value = stream.IsCabac;
 
-                    if (stream.KeyFrames == null || stream.KeyFrames.Count == 0)
-                    {
-                        _saveStreamCommand.GetParameter(index++).Value = null;
-                    }
-                    else
-                    {
-                        _saveStreamCommand.GetParameter(index++).Value = string.Join(",", stream.KeyFrames.Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray());
-                    }
+                    _saveStreamCommand.GetParameter(index++).Value = stream.CodecTag;
+                    _saveStreamCommand.GetParameter(index++).Value = stream.Comment;
+                    _saveStreamCommand.GetParameter(index++).Value = stream.NalLengthSize;
 
                     _saveStreamCommand.Transaction = transaction;
                     _saveStreamCommand.ExecuteNonQuery();
@@ -2246,7 +2911,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             catch (Exception e)
             {
-                _logger.ErrorException("Failed to save media streams:", e);
+                Logger.ErrorException("Failed to save media streams:", e);
 
                 if (transaction != null)
                 {
@@ -2262,7 +2927,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     transaction.Dispose();
                 }
 
-                _writeLock.Release();
+                WriteLock.Release();
             }
         }
 
@@ -2378,16 +3043,17 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             if (!reader.IsDBNull(25))
             {
-                item.IsCabac = reader.GetBoolean(25);
+                item.CodecTag = reader.GetString(25);
             }
 
             if (!reader.IsDBNull(26))
             {
-                var frames = reader.GetString(26);
-                if (!string.IsNullOrWhiteSpace(frames))
-                {
-                    item.KeyFrames = frames.Split(',').Select(i => int.Parse(i, CultureInfo.InvariantCulture)).ToList();
-                }
+                item.Comment = reader.GetString(26);
+            }
+
+            if (!reader.IsDBNull(27))
+            {
+                item.NalLengthSize = reader.GetString(27);
             }
 
             return item;

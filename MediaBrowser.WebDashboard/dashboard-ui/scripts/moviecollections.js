@@ -1,4 +1,4 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     var data = {};
     function getPageData() {
@@ -44,10 +44,10 @@
         var promise1 = ApiClient.getItems(Dashboard.getCurrentUserId(), query);
         var promise2 = Dashboard.getCurrentUser();
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            var result = response1[0];
-            var user = response2[0];
+            var result = responses[0];
+            var user = responses[1];
 
             // Scroll back up so they can see the results from the beginning
             window.scrollTo(0, 0);
@@ -67,17 +67,14 @@
                 addLayoutButton: true,
                 currentLayout: view
 
-            })).trigger('create');
+            }));
 
             if (result.TotalRecordCount) {
-
-                var context = getParameterByName('context');
 
                 if (view == "List") {
 
                     html = LibraryBrowser.getListViewHtml({
                         items: result.Items,
-                        context: context,
                         sortBy: query.SortBy
                     });
                 }
@@ -85,17 +82,16 @@
                     html = LibraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "auto",
-                        context: context,
                         showTitle: true,
                         centerText: true,
-                        lazy: true
+                        lazy: true,
+                        overlayPlayButton: true
                     });
                 }
                 else if (view == "PosterCard") {
                     html = LibraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "auto",
-                        context: context,
                         showTitle: true,
                         cardLayout: true,
                         lazy: true,
@@ -106,18 +102,17 @@
                     html = LibraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "backdrop",
-                        context: context,
                         showTitle: true,
                         centerText: true,
                         lazy: true,
-                        preferThumb: true
+                        preferThumb: true,
+                        overlayPlayButton: true
                     });
                 }
                 else if (view == "ThumbCard") {
                     html = LibraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "backdrop",
-                        context: context,
                         showTitle: true,
                         lazy: true,
                         preferThumb: true,
@@ -202,7 +197,7 @@
         });
     }
 
-    $(document).on('pageinit', "#boxsetsPage", function () {
+    pageIdOn('pageinit', 'boxsetsPage', function () {
 
         var page = this;
 
@@ -210,25 +205,30 @@
 
         initPage(content);
 
-    }).on('pagebeforeshow', "#boxsetsPage", function () {
+    });
+    pageIdOn('pagebeforeshow', 'boxsetsPage', function () {
 
         var page = this;
 
         var content = page;
 
         reloadItems(content);
+
     });
 
-    window.MoviesPage = window.MoviesPage || {};
-    window.MoviesPage.renderCollectionsTab = function (page, tabContent) {
+    return function (view, params, tabContent) {
 
-        if (LibraryBrowser.needsRefresh(tabContent)) {
+        var self = this;
+
+        self.initTab = function () {
+
+            initPage(tabContent);
+        };
+
+        self.renderTab = function () {
+
             reloadItems(tabContent);
-        }
-    };
-    window.MoviesPage.initCollectionsTab = function (page, tabContent) {
-
-        initPage(tabContent);
+        };
     };
 
-})(jQuery, document);
+});

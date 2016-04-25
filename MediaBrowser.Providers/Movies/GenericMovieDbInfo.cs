@@ -14,7 +14,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -104,7 +103,9 @@ namespace MediaBrowser.Providers.Movies
                 dataFilePath = dataFilePath ?? MovieDbProvider.Current.GetDataFilePath(tmdbId, language);
                 movieInfo = movieInfo ?? _jsonSerializer.DeserializeFromFile<MovieDbProvider.CompleteMovieData>(dataFilePath);
 
-                ProcessMainInfo(item, preferredCountryCode, movieInfo);
+                var settings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
+
+                ProcessMainInfo(item, settings, preferredCountryCode, movieInfo);
                 item.HasMetadata = true;
             }
 
@@ -115,9 +116,10 @@ namespace MediaBrowser.Providers.Movies
         /// Processes the main info.
         /// </summary>
         /// <param name="resultItem">The result item.</param>
+        /// <param name="settings">The settings.</param>
         /// <param name="preferredCountryCode">The preferred country code.</param>
         /// <param name="movieData">The movie data.</param>
-        private void ProcessMainInfo(MetadataResult<T> resultItem, string preferredCountryCode, MovieDbProvider.CompleteMovieData movieData)
+        private void ProcessMainInfo(MetadataResult<T> resultItem, TmdbSettingsResult settings, string preferredCountryCode, MovieDbProvider.CompleteMovieData movieData)
         {
             var movie = resultItem.Item;
 
@@ -176,7 +178,7 @@ namespace MediaBrowser.Providers.Movies
 
                 if (movieItem != null)
                 {
-                    movieItem.TmdbCollectionName = movieData.belongs_to_collection.name;
+                    movieItem.CollectionName = movieData.belongs_to_collection.name;
                 }
             }
 
@@ -247,6 +249,7 @@ namespace MediaBrowser.Providers.Movies
             }
 
             resultItem.ResetPeople();
+            var tmdbImageUrl = settings.images.base_url + "original";
 
             //Actors, Directors, Writers - all in People
             //actors come from cast
@@ -254,7 +257,25 @@ namespace MediaBrowser.Providers.Movies
             {
                 foreach (var actor in movieData.casts.cast.OrderBy(a => a.order))
                 {
-                    resultItem.AddPerson(new PersonInfo { Name = actor.name.Trim(), Role = actor.character, Type = PersonType.Actor, SortOrder = actor.order });
+                    var personInfo = new PersonInfo
+                    {
+                        Name = actor.name.Trim(),
+                        Role = actor.character,
+                        Type = PersonType.Actor,
+                        SortOrder = actor.order
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(actor.profile_path))
+                    {
+                        personInfo.ImageUrl = tmdbImageUrl + actor.profile_path;
+                    }
+
+                    if (actor.id > 0)
+                    {
+                        personInfo.SetProviderId(MetadataProviders.Tmdb, actor.id.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    resultItem.AddPerson(personInfo);
                 }
             }
 
@@ -270,7 +291,24 @@ namespace MediaBrowser.Providers.Movies
                         type = PersonType.Writer;
                     }
 
-                    resultItem.AddPerson(new PersonInfo { Name = person.name.Trim(), Role = person.job, Type = type });
+                    var personInfo = new PersonInfo
+                    {
+                        Name = person.name.Trim(),
+                        Role = person.job,
+                        Type = type
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(person.profile_path))
+                    {
+                        personInfo.ImageUrl = tmdbImageUrl + person.profile_path;
+                    }
+
+                    if (person.id > 0)
+                    {
+                        personInfo.SetProviderId(MetadataProviders.Tmdb, person.id.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    resultItem.AddPerson(personInfo);
                 }
             }
 

@@ -5,7 +5,6 @@ using MediaBrowser.Controller.Providers;
 using ServiceStack;
 using System.Threading;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Api
 {
@@ -76,7 +75,8 @@ namespace MediaBrowser.Api
                 ImageRefreshMode = request.ImageRefreshMode,
                 ReplaceAllImages = request.ReplaceAllImages,
                 ReplaceAllMetadata = request.ReplaceAllMetadata,
-                ForceSave = true
+                ForceSave = true,
+                IsAutomated = false
             };
         }
     }

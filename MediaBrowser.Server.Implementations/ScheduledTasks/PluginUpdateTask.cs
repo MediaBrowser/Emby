@@ -72,7 +72,7 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
 
                 try
                 {
-                    await _installationManager.InstallPackage(i, new Progress<double>(), cancellationToken).ConfigureAwait(false);
+                    await _installationManager.InstallPackage(i, true, new Progress<double>(), cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -98,7 +98,7 @@ namespace MediaBrowser.Server.Implementations.ScheduledTasks
                     double percent = numComplete;
                     percent /= packagesToInstall.Count;
 
-                    progress.Report((90 * percent) + 10);
+                    progress.Report(90 * percent + 10);
                 }
             }));
 

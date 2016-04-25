@@ -1,4 +1,4 @@
-﻿(function (window, document, $) {
+﻿define(['jQuery'], function ($) {
 
     window.RatingDialog = function (page) {
 
@@ -74,7 +74,7 @@
                     };
 
                     options.callback(review);
-                } else Logger.log("No callback function provided");
+                } else console.log("No callback function provided");
 
                 return false;
             });
@@ -98,10 +98,10 @@
                 id: id,
                 rating: rating,
                 callback: function (review) {
-                    Logger.log(review);
+                    console.log(review);
                     dialog.close();
 
-                    ApiClient.createPackageReview(review).done(function () {
+                    ApiClient.createPackageReview(review).then(function () {
                         Dashboard.alert({
                             message: Globalize.translate('MessageThankYouForYourReview'),
                             title: Globalize.translate('HeaderThankYou')
@@ -136,4 +136,4 @@
         }
     };
 
-})(window, document, jQuery);
+});

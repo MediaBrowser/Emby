@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
@@ -234,7 +233,7 @@ namespace Emby.Drawing
             var quality = options.Quality;
 
             var outputFormat = GetOutputFormat(options.SupportedOutputFormats[0]);
-            var cacheFilePath = GetCacheFilePath(originalImagePath, newSize, quality, dateModified, outputFormat, options.AddPlayedIndicator, options.PercentPlayed, options.UnplayedCount, options.BackgroundColor);
+            var cacheFilePath = GetCacheFilePath(originalImagePath, newSize, quality, dateModified, outputFormat, options.AddPlayedIndicator, options.PercentPlayed, options.UnplayedCount, options.BackgroundColor, options.ForegroundLayer);
 
             var semaphore = GetLock(cacheFilePath);
 
@@ -257,7 +256,7 @@ namespace Emby.Drawing
 
                     imageProcessingLockTaken = true;
 
-                    _imageEncoder.EncodeImage(originalImagePath, cacheFilePath, newWidth, newHeight, quality, options, outputFormat);
+                    _imageEncoder.EncodeImage(originalImagePath, cacheFilePath, AutoOrient(options.Item), newWidth, newHeight, quality, options, outputFormat);
                 }
 
                 return new Tuple<string, string>(cacheFilePath, GetMimeType(outputFormat, cacheFilePath));
@@ -280,6 +279,32 @@ namespace Emby.Drawing
                 semaphore.Release();
             }
         }
+
+        private bool AutoOrient(IHasImages item)
+        {
+            var photo = item as Photo;
+            if (photo != null && photo.Orientation.HasValue)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //private static  int[][] OPERATIONS = new int[][] {
+        // TopLeft
+        //new int[] {  0, NONE},
+        // TopRight
+        //new int[] {  0, HORIZONTAL},
+        //new int[] {180, NONE},
+        // LeftTop
+        //new int[] {  0, VERTICAL},
+        //new int[] { 90, HORIZONTAL},
+        // RightTop
+        //new int[] { 90, NONE},
+        //new int[] {-90, HORIZONTAL},
+        //new int[] {-90, NONE},
+        //};
 
         private string GetMimeType(ImageFormat format, string path)
         {
@@ -447,7 +472,7 @@ namespace Emby.Drawing
         /// <summary>
         /// Gets the cache file path based on a set of parameters
         /// </summary>
-        private string GetCacheFilePath(string originalPath, ImageSize outputSize, int quality, DateTime dateModified, ImageFormat format, bool addPlayedIndicator, double percentPlayed, int? unwatchedCount, string backgroundColor)
+        private string GetCacheFilePath(string originalPath, ImageSize outputSize, int quality, DateTime dateModified, ImageFormat format, bool addPlayedIndicator, double percentPlayed, int? unwatchedCount, string backgroundColor, string foregroundLayer)
         {
             var filename = originalPath;
 
@@ -479,6 +504,11 @@ namespace Emby.Drawing
             if (!string.IsNullOrEmpty(backgroundColor))
             {
                 filename += "b=" + backgroundColor;
+            }
+
+            if (!string.IsNullOrEmpty(foregroundLayer))
+            {
+                filename += "fl=" + foregroundLayer;
             }
 
             filename += "v=" + Version;

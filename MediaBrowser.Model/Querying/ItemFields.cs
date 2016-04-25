@@ -166,11 +166,6 @@
         PrimaryImageAspectRatio,
 
         /// <summary>
-        /// The original primary image aspect ratio
-        /// </summary>
-        OriginalPrimaryImageAspectRatio,
-        
-        /// <summary>
         /// The revenue
         /// </summary>
         Revenue,
@@ -241,11 +236,6 @@
         VoteCount,
 
         /// <summary>
-        /// The TMDB collection name
-        /// </summary>
-        TmdbCollectionName,
-        
-        /// <summary>
         /// The trailer url of the item
         /// </summary>
         RemoteTrailers,
@@ -258,6 +248,11 @@
         /// <summary>
         /// The season user data
         /// </summary>
-        SeasonUserData
+        SeasonUserData,
+
+        /// <summary>
+        /// The service name
+        /// </summary>
+        ServiceName
     }
 }

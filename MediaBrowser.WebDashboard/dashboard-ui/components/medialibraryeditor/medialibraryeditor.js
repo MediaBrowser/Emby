@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['dialogHelper', 'jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (dialogHelper, $) {
 
     var currentDeferred;
     var hasChanges;
@@ -10,14 +10,16 @@
 
         var refreshAfterChange = currentOptions.refresh;
 
-        ApiClient.addMediaPath(virtualFolder.Name, path, refreshAfterChange).done(function () {
+        ApiClient.addMediaPath(virtualFolder.Name, path, refreshAfterChange).then(function () {
 
             hasChanges = true;
             refreshLibraryFromServer(page);
 
-        }).fail(function () {
+        }, function () {
 
-            Dashboard.showError(Globalize.translate('ErrorAddingMediaPathToVirtualFolder'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('ErrorAddingMediaPathToVirtualFolder'));
+            });
         });
     }
 
@@ -30,22 +32,24 @@
 
         var location = virtualFolder.Locations[index];
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmRemoveMediaLocation'), Globalize.translate('HeaderRemoveMediaLocation'), function (confirmResult) {
+        require(['confirm'], function (confirm) {
 
-            if (confirmResult) {
+            confirm(Globalize.translate('MessageConfirmRemoveMediaLocation'), Globalize.translate('HeaderRemoveMediaLocation')).then(function () {
 
                 var refreshAfterChange = currentOptions.refresh;
 
-                ApiClient.removeMediaPath(virtualFolder.Name, location, refreshAfterChange).done(function () {
+                ApiClient.removeMediaPath(virtualFolder.Name, location, refreshAfterChange).then(function () {
 
                     hasChanges = true;
                     refreshLibraryFromServer($(button).parents('.editorContent')[0]);
 
-                }).fail(function () {
+                }, function () {
 
-                    Dashboard.showError(Globalize.translate('DefaultErrorMessage'));
+                    require(['toast'], function (toast) {
+                        toast(Globalize.translate('DefaultErrorMessage'));
+                    });
                 });
-            }
+            });
         });
     }
 
@@ -70,7 +74,7 @@
 
     function refreshLibraryFromServer(page) {
 
-        ApiClient.getVirtualFolders().done(function (result) {
+        ApiClient.getVirtualFolders().then(function (result) {
 
             var library = result.filter(function (f) {
 
@@ -134,59 +138,59 @@
 
         self.show = function (options) {
 
-            var deferred = DeferredBuilder.Deferred();
+            var deferred = jQuery.Deferred();
 
             currentOptions = options;
             currentDeferred = deferred;
             hasChanges = false;
 
-            require(['components/paperdialoghelper'], function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'components/medialibraryeditor/medialibraryeditor.template.html', true);
 
-                HttpClient.send({
+            xhr.onload = function (e) {
 
-                    type: 'GET',
-                    url: 'components/medialibraryeditor/medialibraryeditor.template.html'
+                var template = this.response;
+                var dlg = dialogHelper.createDialog({
+                    size: 'small',
 
-                }).done(function (template) {
-
-                    var dlg = PaperDialogHelper.createDialog({
-                        size: 'small',
-                        theme: 'a',
-
-                        // In (at least) chrome this is causing the text field to not be editable
-                        modal: false
-                    });
-
-                    var html = '';
-                    html += '<h2 class="dialogHeader">';
-                    html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
-
-                    html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + options.library.Name + '</div>';
-                    html += '</h2>';
-
-                    html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
-                    html += Globalize.translateDocument(template);
-                    html += '</div>';
-
-                    dlg.innerHTML = html;
-                    document.body.appendChild(dlg);
-
-                    var editorContent = dlg.querySelector('.editorContent');
-                    initEditor(editorContent, options);
-
-                    $(dlg).on('iron-overlay-closed', onDialogClosed);
-
-                    PaperDialogHelper.openWithHash(dlg, 'medialibraryeditor');
-
-                    $('.btnCloseDialog', dlg).on('click', function () {
-
-                        PaperDialogHelper.close(dlg);
-                    });
-
-                    refreshLibraryFromServer(editorContent);
+                    // In (at least) chrome this is causing the text field to not be editable
+                    modal: false
                 });
 
-            });
+                dlg.classList.add('ui-body-a');
+                dlg.classList.add('background-theme-a');
+                dlg.classList.add('popupEditor');
+
+                var html = '';
+                html += '<h2 class="dialogHeader">';
+                html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog" tabindex="-1"></paper-fab>';
+
+                html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + options.library.Name + '</div>';
+                html += '</h2>';
+
+                html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
+                html += Globalize.translateDocument(template);
+                html += '</div>';
+
+                dlg.innerHTML = html;
+                document.body.appendChild(dlg);
+
+                var editorContent = dlg.querySelector('.editorContent');
+                initEditor(editorContent, options);
+
+                $(dlg).on('close', onDialogClosed);
+
+                dialogHelper.open(dlg);
+
+                $('.btnCloseDialog', dlg).on('click', function () {
+
+                    dialogHelper.close(dlg);
+                });
+
+                refreshLibraryFromServer(editorContent);
+            }
+
+            xhr.send();
 
             return deferred.promise();
         };

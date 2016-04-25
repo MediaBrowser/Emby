@@ -1,51 +1,43 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Security;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
+using MoreLinq;
 
 namespace MediaBrowser.Server.Implementations.Intros
 {
     public class DefaultIntroProvider : IIntroProvider
     {
         private readonly ISecurityManager _security;
-        private readonly IChannelManager _channelManager;
         private readonly ILocalizationManager _localization;
         private readonly IConfigurationManager _serverConfig;
         private readonly ILibraryManager _libraryManager;
         private readonly IFileSystem _fileSystem;
+        private readonly IMediaSourceManager _mediaSourceManager;
 
-        public DefaultIntroProvider(ISecurityManager security, IChannelManager channelManager, ILocalizationManager localization, IConfigurationManager serverConfig, ILibraryManager libraryManager, IFileSystem fileSystem)
+        public DefaultIntroProvider(ISecurityManager security, ILocalizationManager localization, IConfigurationManager serverConfig, ILibraryManager libraryManager, IFileSystem fileSystem, IMediaSourceManager mediaSourceManager)
         {
             _security = security;
-            _channelManager = channelManager;
             _localization = localization;
             _serverConfig = serverConfig;
             _libraryManager = libraryManager;
             _fileSystem = fileSystem;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         public async Task<IEnumerable<IntroInfo>> GetIntros(BaseItem item, User user)
         {
-            if (!user.Configuration.EnableCinemaMode)
-            {
-                return new List<IntroInfo>();
-            }
-
             var config = GetOptions();
 
             if (item is Movie)
@@ -81,78 +73,50 @@ namespace MediaBrowser.Server.Implementations.Intros
                 AppearsInItemId = item.Id
             });
 
-            if (config.EnableIntrosFromMoviesInLibrary)
-            {
-                var inputItems = _libraryManager.GetItems(new InternalItemsQuery
-                {
-                    IncludeItemTypes = new[] { typeof(Movie).Name },
-
-                    User = user
-
-                }).Items;
-
-                var itemsWithTrailers = inputItems
-                    .Where(i =>
-                    {
-                        var hasTrailers = i as IHasTrailers;
-
-                        if (hasTrailers != null && hasTrailers.LocalTrailerIds.Count > 0)
-                        {
-                            if (i is Movie)
-                            {
-                                return !IsDuplicate(item, i);
-                            }
-                        }
-                        return false;
-                    });
-
-                candidates.AddRange(itemsWithTrailers.Select(i => new ItemWithTrailer
-                {
-                    Item = i,
-                    Type = ItemWithTrailerType.ItemWithTrailer,
-                    User = user,
-                    WatchingItem = item,
-                    WatchingItemPeople = itemPeople,
-                    AllPeople = allPeople,
-                    Random = random,
-                    LibraryManager = _libraryManager
-                }));
-            }
-
             var trailerTypes = new List<TrailerType>();
 
-            if (config.EnableIntrosFromUpcomingTrailers)
+            if (config.EnableIntrosFromMoviesInLibrary)
             {
-                trailerTypes.Add(TrailerType.ComingSoonToTheaters);
-            }
-            if (config.EnableIntrosFromUpcomingDvdMovies)
-            {
-                trailerTypes.Add(TrailerType.ComingSoonToDvd);
-            }
-            if (config.EnableIntrosFromUpcomingStreamingMovies)
-            {
-                trailerTypes.Add(TrailerType.ComingSoonToStreaming);
-            }
-            if (config.EnableIntrosFromSimilarMovies)
-            {
-                trailerTypes.Add(TrailerType.Archive);
+                trailerTypes.Add(TrailerType.LocalTrailer);
             }
 
-            if (trailerTypes.Count > 0 && IsSupporter)
+            if (IsSupporter)
             {
-                var channelTrailers = await _channelManager.GetAllMediaInternal(new AllChannelMediaQuery
+                if (config.EnableIntrosFromUpcomingTrailers)
                 {
-                    ContentTypes = new[] { ChannelMediaContentType.MovieExtra },
-                    ExtraTypes = new[] { ExtraType.Trailer },
-                    UserId = user.Id.ToString("N"),
-                    TrailerTypes = trailerTypes.ToArray()
+                    trailerTypes.Add(TrailerType.ComingSoonToTheaters);
+                }
+                if (config.EnableIntrosFromUpcomingDvdMovies)
+                {
+                    trailerTypes.Add(TrailerType.ComingSoonToDvd);
+                }
+                if (config.EnableIntrosFromUpcomingStreamingMovies)
+                {
+                    trailerTypes.Add(TrailerType.ComingSoonToStreaming);
+                }
+                if (config.EnableIntrosFromSimilarMovies)
+                {
+                    trailerTypes.Add(TrailerType.Archive);
+                }
+            }
 
-                }, CancellationToken.None);
+            if (trailerTypes.Count > 0)
+            {
+                var excludeTrailerTypes = Enum.GetNames(typeof(TrailerType))
+                        .Select(i => (TrailerType)Enum.Parse(typeof(TrailerType), i, true))
+                        .Except(trailerTypes)
+                        .ToArray();
 
-                candidates.AddRange(channelTrailers.Items.Select(i => new ItemWithTrailer
+                var trailerResult = _libraryManager.GetItemList(new InternalItemsQuery
+                {
+                    IncludeItemTypes = new[] { typeof(Trailer).Name },
+                    ExcludeTrailerTypes = excludeTrailerTypes
+                });
+
+                candidates.AddRange(trailerResult.Select(i => new ItemWithTrailer
                 {
                     Item = i,
-                    Type = ItemWithTrailerType.ChannelTrailer,
+                    Type = i.SourceType == SourceType.Channel ? ItemWithTrailerType.ChannelTrailer : ItemWithTrailerType.ItemWithTrailer,
                     User = user,
                     WatchingItem = item,
                     WatchingItemPeople = itemPeople,
@@ -160,7 +124,7 @@ namespace MediaBrowser.Server.Implementations.Intros
                     Random = random,
                     LibraryManager = _libraryManager
                 }));
-            }
+            } 
 
             return GetResult(item, candidates, config, ratingLevel);
         }
@@ -168,7 +132,11 @@ namespace MediaBrowser.Server.Implementations.Intros
         private IEnumerable<IntroInfo> GetResult(BaseItem item, IEnumerable<ItemWithTrailer> candidates, CinemaModeConfiguration config, int? ratingLevel)
         {
             var customIntros = !string.IsNullOrWhiteSpace(config.CustomIntroPath) ?
-                GetCustomIntros(item) :
+                GetCustomIntros(config) :
+                new List<IntroInfo>();
+
+            var mediaInfoIntros = !string.IsNullOrWhiteSpace(config.MediaInfoIntroPath) ?
+                GetMediaInfoIntros(config, item) :
                 new List<IntroInfo>();
 
             var trailerLimit = config.TrailerLimit;
@@ -189,10 +157,11 @@ namespace MediaBrowser.Server.Implementations.Intros
             })
                 .OrderByDescending(i => i.Score)
                 .ThenBy(i => Guid.NewGuid())
-                .ThenByDescending(i => (i.IsPlayed ? 0 : 1))
+                .ThenByDescending(i => i.IsPlayed ? 0 : 1)
                 .Select(i => i.IntroInfo)
                 .Take(trailerLimit)
-                .Concat(customIntros.Take(1));
+                .Concat(customIntros.Take(1))
+                .Concat(mediaInfoIntros);
         }
 
         private bool IsDuplicate(BaseItem playingContent, BaseItem test)
@@ -217,11 +186,11 @@ namespace MediaBrowser.Server.Implementations.Intros
             return _serverConfig.GetConfiguration<CinemaModeConfiguration>("cinemamode");
         }
 
-        private List<IntroInfo> GetCustomIntros(BaseItem item)
+        private List<IntroInfo> GetCustomIntros(CinemaModeConfiguration options)
         {
             try
             {
-                return GetCustomIntroFiles()
+                return GetCustomIntroFiles(options, true, false)
                     .OrderBy(i => Guid.NewGuid())
                     .Select(i => new IntroInfo
                     {
@@ -235,17 +204,151 @@ namespace MediaBrowser.Server.Implementations.Intros
             }
         }
 
-        private IEnumerable<string> GetCustomIntroFiles(CinemaModeConfiguration options = null)
+        private IEnumerable<IntroInfo> GetMediaInfoIntros(CinemaModeConfiguration options, BaseItem item)
         {
-            options = options ?? GetOptions();
-
-            if (string.IsNullOrWhiteSpace(options.CustomIntroPath))
+            try
             {
-                return new List<string>();
+                var hasMediaSources = item as IHasMediaSources;
+
+                if (hasMediaSources == null)
+                {
+                    return new List<IntroInfo>();
+                }
+
+                var mediaSource = _mediaSourceManager.GetStaticMediaSources(hasMediaSources, false)
+                    .FirstOrDefault();
+
+                if (mediaSource == null)
+                {
+                    return new List<IntroInfo>();
+                }
+
+                var videoStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Video);
+                var audioStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
+
+                var allIntros = GetCustomIntroFiles(options, false, true)
+                    .OrderBy(i => Guid.NewGuid())
+                    .Select(i => new IntroInfo
+                    {
+                        Path = i
+
+                    }).ToList();
+
+                var returnResult = new List<IntroInfo>();
+
+                if (videoStream != null)
+                {
+                    returnResult.AddRange(GetMediaInfoIntrosByVideoStream(allIntros, videoStream).Take(1));
+                }
+
+                if (audioStream != null)
+                {
+                    returnResult.AddRange(GetMediaInfoIntrosByAudioStream(allIntros, audioStream).Take(1));
+                }
+
+                returnResult.AddRange(GetMediaInfoIntrosByTags(allIntros, item.Tags).Take(1));
+                
+                return returnResult.DistinctBy(i => i.Path, StringComparer.OrdinalIgnoreCase);
+            }
+            catch (IOException)
+            {
+                return new List<IntroInfo>();
+            }
+        }
+
+        private IEnumerable<IntroInfo> GetMediaInfoIntrosByVideoStream(List<IntroInfo> allIntros, MediaStream stream)
+        {
+            var codec = stream.Codec;
+
+            if (string.IsNullOrWhiteSpace(codec))
+            {
+                return new List<IntroInfo>();
             }
 
-            return _fileSystem.GetFilePaths(options.CustomIntroPath, true)
-                .Where(_libraryManager.IsVideoFile);
+            return allIntros
+                .Where(i => IsMatch(i.Path, codec));
+        }
+
+        private IEnumerable<IntroInfo> GetMediaInfoIntrosByAudioStream(List<IntroInfo> allIntros, MediaStream stream)
+        {
+            var codec = stream.Codec;
+
+            if (string.IsNullOrWhiteSpace(codec))
+            {
+                return new List<IntroInfo>();
+            }
+
+            return allIntros
+                .Where(i => IsAudioMatch(i.Path, stream));
+        }
+
+        private IEnumerable<IntroInfo> GetMediaInfoIntrosByTags(List<IntroInfo> allIntros, List<string> tags)
+        {
+            return allIntros
+                .Where(i => tags.Any(t => IsMatch(i.Path, t)));
+        }
+
+        private bool IsMatch(string file, string attribute)
+        {
+            var filename = Path.GetFileNameWithoutExtension(file) ?? string.Empty;
+            filename = Normalize(filename);
+
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                return false;
+            }
+
+            attribute = Normalize(attribute);
+            if (string.IsNullOrWhiteSpace(attribute))
+            {
+                return false;
+            }
+
+            return string.Equals(filename, attribute, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private string Normalize(string value)
+        {
+            return value;
+        }
+
+        private bool IsAudioMatch(string path, MediaStream stream)
+        {
+            if (!string.IsNullOrWhiteSpace(stream.Codec))
+            {
+                if (IsMatch(path, stream.Codec))
+                {
+                    return true;
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(stream.Profile))
+            {
+                if (IsMatch(path, stream.Profile))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private IEnumerable<string> GetCustomIntroFiles(CinemaModeConfiguration options, bool enableCustomIntros, bool enableMediaInfoIntros)
+        {
+            var list = new List<string>();
+
+            if (enableCustomIntros && !string.IsNullOrWhiteSpace(options.CustomIntroPath))
+            {
+                list.AddRange(_fileSystem.GetFilePaths(options.CustomIntroPath, true)
+                    .Where(_libraryManager.IsVideoFile));
+            }
+
+            if (enableMediaInfoIntros && !string.IsNullOrWhiteSpace(options.MediaInfoIntroPath))
+            {
+                list.AddRange(_fileSystem.GetFilePaths(options.MediaInfoIntroPath, true)
+                    .Where(_libraryManager.IsVideoFile));
+            }
+
+            return list.Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
         private bool FilterByParentalRating(int? ratingLevel, BaseItem item)
@@ -346,7 +449,7 @@ namespace MediaBrowser.Server.Implementations.Intros
 
         public IEnumerable<string> GetAllIntroFiles()
         {
-            return GetCustomIntroFiles();
+            return GetCustomIntroFiles(GetOptions(), true, true);
         }
 
         private bool IsSupporter
@@ -421,7 +524,6 @@ namespace MediaBrowser.Server.Implementations.Intros
 
         internal enum ItemWithTrailerType
         {
-            LibraryTrailer,
             ChannelTrailer,
             ItemWithTrailer
         }

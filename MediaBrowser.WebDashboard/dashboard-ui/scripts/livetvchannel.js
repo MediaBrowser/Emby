@@ -1,4 +1,4 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     function renderPrograms(page, result) {
 
@@ -96,7 +96,7 @@
             html += '</a>';
         }
 
-        $('#childrenContent', page).html(html).createGuideHoverMenu('.tvProgramInfo');
+        $('#childrenContent', page).html(html);
     }
 
     function loadPrograms(page, channelId) {
@@ -108,10 +108,9 @@
             HasAired: false,
             SortBy: "StartDate"
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             renderPrograms(page, result);
-
             Dashboard.hideLoadingMsg();
         });
     }
@@ -120,4 +119,4 @@
         renderPrograms: loadPrograms
     };
 
-})(jQuery, document);
+});

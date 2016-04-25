@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['dialogHelper', 'jQuery', 'paper-checkbox', 'paper-fab'], function (dialogHelper, $) {
 
     var currentItemId;
     var currentItemType;
@@ -6,7 +6,7 @@
     var hasChanges = false;
 
     // These images can be large and we're seeing memory problems in safari
-    var browsableImagePageSize = $.browser.safari ? 6 : 10;
+    var browsableImagePageSize = browserInfo.safari ? 6 : (browserInfo.mobile ? 10 : 40);
 
     var browsableImageStartIndex = 0;
     var browsableImageType = 'Primary';
@@ -38,7 +38,7 @@
             options.ProviderName = provider;
         }
 
-        ApiClient.getAvailableRemoteImages(options).done(function (result) {
+        ApiClient.getAvailableRemoteImages(options).then(function (result) {
 
             renderRemoteImages(page, result, browsableImageType, options.startIndex, options.limit);
 
@@ -56,7 +56,7 @@
     }
 
     function renderRemoteImages(page, imagesResult, imageType, startIndex, limit) {
-        $('.availableImagesPaging', page).html(getPagingHtml(startIndex, limit, imagesResult.TotalRecordCount)).trigger('create');
+        $('.availableImagesPaging', page).html(getPagingHtml(startIndex, limit, imagesResult.TotalRecordCount));
 
         var html = '';
 
@@ -65,7 +65,9 @@
             html += getRemoteImageHtml(imagesResult.Images[i], imageType);
         }
 
-        $('.availableImagesList', page).html(html).lazyChildren();
+        var availableImagesList = page.querySelector('.availableImagesList');
+        availableImagesList.innerHTML = html;
+        ImageLoader.lazyChildren(availableImagesList);
 
         $('.btnNextPage', page).on('click', function () {
             browsableImageStartIndex += browsableImagePageSize;
@@ -125,11 +127,11 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.downloadRemoteImage(options).done(function () {
+        ApiClient.downloadRemoteImage(options).then(function () {
 
             hasChanges = true;
-            var dlg = $(page).parents('paper-dialog')[0];
-            PaperDialogHelper.close(dlg);
+            var dlg = $(page).parents('.dialog')[0];
+            dialogHelper.close(dlg);
         });
     }
 
@@ -260,21 +262,29 @@
 
         Dashboard.showLoadingMsg();
 
-        HttpClient.send({
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'components/imagedownloader/imagedownloader.template.html', true);
 
-            type: 'GET',
-            url: 'components/imagedownloader/imagedownloader.template.html'
+        xhr.onload = function (e) {
 
-        }).done(function (template) {
-
+            var template = this.response;
             currentItemId = itemId;
             currentItemType = itemType;
 
-            var dlg = PaperDialogHelper.createDialog();
+            var dlg = dialogHelper.createDialog({
+                size: 'fullscreen-border',
+                lockScroll: true
+            });
+
+            var theme = 'b';
+
+            dlg.classList.add('ui-body-' + theme);
+            dlg.classList.add('background-theme-' + theme);
+            dlg.classList.add('popupEditor');
 
             var html = '';
             html += '<h2 class="dialogHeader">';
-            html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
+            html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog" tabindex="-1"></paper-fab>';
             html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + Globalize.translate('HeaderSearch') + '</div>';
             html += '</h2>';
 
@@ -286,20 +296,22 @@
             document.body.appendChild(dlg);
 
             // Has to be assigned a z-index after the call to .open() 
-            $(dlg).on('iron-overlay-closed', onDialogClosed);
+            $(dlg).on('close', onDialogClosed);
 
-            PaperDialogHelper.openWithHash(dlg, 'imagedownloader');
+            dialogHelper.open(dlg);
 
             var editorContent = dlg.querySelector('.editorContent');
             initEditor(editorContent);
 
             $('.btnCloseDialog', dlg).on('click', function () {
 
-                PaperDialogHelper.close(dlg);
+                dialogHelper.close(dlg);
             });
 
             reloadBrowsableImages(editorContent);
-        });
+        }
+
+        xhr.send();
     }
 
     function onDialogClosed() {
@@ -309,10 +321,10 @@
         currentDeferred.resolveWith(null, [hasChanges]);
     }
 
-    window.ImageDownloader = {
+    return {
         show: function (itemId, itemType, imageType) {
 
-            var deferred = DeferredBuilder.Deferred();
+            var deferred = jQuery.Deferred();
 
             currentDeferred = deferred;
             hasChanges = false;
@@ -320,12 +332,8 @@
             browsableImageType = imageType || 'Primary';
             selectedProvider = null;
 
-            require(['components/paperdialoghelper'], function () {
-
-                showEditor(itemId, itemType);
-            });
+            showEditor(itemId, itemType);
             return deferred.promise();
         }
     };
-
-})(jQuery, window, document);
+});

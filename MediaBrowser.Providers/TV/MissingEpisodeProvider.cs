@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
@@ -16,7 +15,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -53,7 +51,7 @@ namespace MediaBrowser.Providers.TV
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    _logger.Warn("Series files missing for series id {0}", seriesGroup.Key);
+                    //_logger.Warn("Series files missing for series id {0}", seriesGroup.Key);
                 }
                 catch (Exception ex)
                 {
@@ -66,7 +64,11 @@ namespace MediaBrowser.Providers.TV
         {
             var tvdbId = group.Key;
 
-            var seriesDataPath = TvdbSeriesProvider.GetSeriesDataPath(_config.ApplicationPaths, tvdbId);
+            // Todo: Support series by imdb id
+            var seriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            seriesProviderIds[MetadataProviders.Tvdb.ToString()] = tvdbId;
+
+            var seriesDataPath = TvdbSeriesProvider.GetSeriesDataPath(_config.ApplicationPaths, seriesProviderIds);
 
             var episodeFiles = Directory.EnumerateFiles(seriesDataPath, "*.xml", SearchOption.TopDirectoryOnly)
                 .Select(Path.GetFileNameWithoutExtension)
@@ -311,7 +313,11 @@ namespace MediaBrowser.Providers.TV
             {
                 _logger.Info("Removing missing/unaired episode {0} {1}x{2}", episodeToRemove.Series.Name, episodeToRemove.ParentIndexNumber, episodeToRemove.IndexNumber);
 
-                await _libraryManager.DeleteItem(episodeToRemove).ConfigureAwait(false);
+                await episodeToRemove.Delete(new DeleteOptions
+                {
+                    DeleteFileLocation = true
+
+                }).ConfigureAwait(false);
 
                 hasChanges = true;
             }
@@ -376,7 +382,11 @@ namespace MediaBrowser.Providers.TV
             {
                 _logger.Info("Removing virtual season {0} {1}", seasonToRemove.Series.Name, seasonToRemove.IndexNumber);
 
-                await _libraryManager.DeleteItem(seasonToRemove).ConfigureAwait(false);
+                await seasonToRemove.Delete(new DeleteOptions
+                {
+                    DeleteFileLocation = true
+
+                }).ConfigureAwait(false);
 
                 hasChanges = true;
             }
@@ -410,7 +420,7 @@ namespace MediaBrowser.Providers.TV
                 Name = name,
                 IndexNumber = episodeNumber,
                 ParentIndexNumber = seasonNumber,
-                Id = (series.Id + seasonNumber.ToString(_usCulture) + name).GetMBId(typeof(Episode))
+                Id = _libraryManager.GetNewItemId((series.Id + seasonNumber.ToString(_usCulture) + name), typeof(Episode))
             };
 
             episode.SetParent(season);

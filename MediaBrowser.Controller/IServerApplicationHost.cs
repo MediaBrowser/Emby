@@ -1,6 +1,8 @@
 ﻿using MediaBrowser.Common;
 using MediaBrowser.Model.System;
 using System;
+using System.Collections.Generic;
+using System.Net;
 
 namespace MediaBrowser.Controller
 {
@@ -63,7 +65,7 @@ namespace MediaBrowser.Controller
         /// Gets the local ip address.
         /// </summary>
         /// <value>The local ip address.</value>
-        string LocalIpAddress { get; }
+        List<IPAddress> LocalIpAddresses { get; }
 
         /// <summary>
         /// Gets the local API URL.
@@ -77,5 +79,12 @@ namespace MediaBrowser.Controller
         /// <param name="host">The host.</param>
         /// <returns>System.String.</returns>
         string GetLocalApiUrl(string host);
+
+        /// <summary>
+        /// Gets the local API URL.
+        /// </summary>
+        /// <param name="ipAddress">The ip address.</param>
+        /// <returns>System.String.</returns>
+        string GetLocalApiUrl(IPAddress ipAddress);
     }
 }

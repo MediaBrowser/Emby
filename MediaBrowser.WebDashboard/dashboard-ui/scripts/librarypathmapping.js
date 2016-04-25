@@ -1,27 +1,24 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     var currentConfig;
 
     function remove(page, index) {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmPathSubstitutionDeletion'), Globalize.translate('HeaderConfirmDeletion'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmPathSubstitutionDeletion'), Globalize.translate('HeaderConfirmDeletion')).then(function () {
 
-                ApiClient.getServerConfiguration().done(function (config) {
+                ApiClient.getServerConfiguration().then(function (config) {
 
                     config.PathSubstitutions.splice(index, 1);
 
-                    ApiClient.updateServerConfiguration(config).done(function () {
+                    ApiClient.updateServerConfiguration(config).then(function () {
 
                         reload(page);
                     });
                 });
-            }
-
+            });
         });
-
-
     }
 
     function addSubstitution(page, config) {
@@ -39,47 +36,49 @@
 
         var html = config.PathSubstitutions.map(function (map) {
 
-            var mapHtml = '<tr>';
+            var mapHtml = '';
+            mapHtml += '<paper-icon-item>';
 
-            mapHtml += '<td style="vertical-align:middle;">';
-            mapHtml += map.From;
-            mapHtml += '</td>';
+            mapHtml += '<paper-fab mini icon="folder" class="blue" item-icon></paper-fab>';
 
-            mapHtml += '<td style="vertical-align:middle;">';
-            mapHtml += map.To;
-            mapHtml += '</td>';
+            mapHtml += '<paper-item-body three-line>';
 
-            mapHtml += '<td>';
+            mapHtml += "<div>" + map.From + "</div>";
+            mapHtml += "<div secondary><b>" + Globalize.translate('HeaderTo') + "</b></div>";
+            mapHtml += "<div secondary>" + map.To + "</div>";
+
+            mapHtml += '</paper-item-body>';
+
             mapHtml += '<paper-icon-button data-index="' + index + '" icon="delete" class="btnDeletePath"></paper-icon-button>';
-            mapHtml += '</td>';
 
-            mapHtml += '</tr>';
+            mapHtml += '</paper-icon-item>';
 
             index++;
 
             return mapHtml;
-        });
 
-        var elem = $('.tbodyPathSubstitutions', page).html(html.join('')).parents('table').table('refresh').trigger('create');
+        }).join('');
+
+        if (config.PathSubstitutions.length) {
+            html = '<div class="paperList">' + html + '</div>';
+        } 
+
+        var elem = $('.pathSubstitutions', page).html(html);
 
         $('.btnDeletePath', elem).on('click', function () {
 
             remove(page, parseInt(this.getAttribute('data-index')));
         });
-
-        if (config.PathSubstitutions.length) {
-            $('#tblPaths', page).show();
-        } else {
-            $('#tblPaths', page).hide();
-        }
     }
 
     function loadPage(page, config) {
 
         currentConfig = config;
 
-        reloadPathMappings(page, config);
-        Dashboard.hideLoadingMsg();
+        require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+            reloadPathMappings(page, config);
+            Dashboard.hideLoadingMsg();
+        });
     }
 
     function reload(page) {
@@ -87,7 +86,7 @@
         $('#txtFrom', page).val('');
         $('#txtTo', page).val('');
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             loadPage(page, config);
 
@@ -100,10 +99,10 @@
         var form = this;
         var page = $(form).parents('.page');
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             addSubstitution(page, config);
-            ApiClient.updateServerConfiguration(config).done(function () {
+            ApiClient.updateServerConfiguration(config).then(function () {
 
                 reload(page);
             });
@@ -113,17 +112,39 @@
         return false;
     }
 
+    function getTabs() {
+        return [
+        {
+            href: 'library.html',
+            name: Globalize.translate('TabFolders')
+        },
+         {
+             href: 'librarypathmapping.html',
+             name: Globalize.translate('TabPathSubstitution')
+         },
+         {
+             href: 'librarysettings.html',
+             name: Globalize.translate('TabAdvanced')
+         }];
+    }
+
+
     $(document).on('pageinit', "#libraryPathMappingPage", function () {
+
+        var page = this;
 
         $('.libraryPathMappingForm').off('submit', onSubmit).on('submit', onSubmit);
 
+        page.querySelector('.labelFromHelp').innerHTML = Globalize.translate('LabelFromHelp', 'D:\\Movies');
+
     }).on('pageshow', "#libraryPathMappingPage", function () {
 
+        LibraryMenu.setTabs('librarysetup', 1, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             loadPage(page, config);
 
@@ -135,4 +156,4 @@
 
     });
 
-})(jQuery, document, window);
+});

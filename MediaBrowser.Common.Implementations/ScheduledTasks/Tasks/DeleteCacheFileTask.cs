@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Model.Logging;
 using System;
@@ -128,7 +127,18 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
                 DeleteEmptyFolders(directory);
                 if (!_fileSystem.GetFileSystemEntryPaths(directory).Any())
                 {
-					_fileSystem.DeleteDirectory(directory, false);
+                    try
+                    {
+                        _fileSystem.DeleteDirectory(directory, false);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        _logger.ErrorException("Error deleting directory {0}", ex, directory);
+                    }
+                    catch (IOException ex)
+                    {
+                        _logger.ErrorException("Error deleting directory {0}", ex, directory);
+                    }
                 }
             }
         }
@@ -138,6 +148,10 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks.Tasks
             try
             {
                 _fileSystem.DeleteFile(path);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.ErrorException("Error deleting file {0}", ex, path);
             }
             catch (IOException ex)
             {

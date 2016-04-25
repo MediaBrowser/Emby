@@ -3,15 +3,12 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.LiveTv;
-using MediaBrowser.Model.Users;
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
-using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvProgram : BaseItem, ILiveTvItem, IHasLookupInfo<LiveTvProgramLookupInfo>, IHasStartDate, IHasProgramAttributes
+    public class LiveTvProgram : BaseItem, IHasLookupInfo<LiveTvProgramLookupInfo>, IHasStartDate, IHasProgramAttributes
     {
         /// <summary>
         /// Gets the user data key.
@@ -28,26 +25,29 @@ namespace MediaBrowser.Controller.LiveTv
                     return key;
                 }
             }
-            return GetClientTypeName() + "-" + Name;
+
+            if (IsSeries && !string.IsNullOrWhiteSpace(EpisodeTitle))
+            {
+                var name = GetClientTypeName();
+
+                return name + "-" + Name + (EpisodeTitle ?? string.Empty);
+            }
+
+            return base.CreateUserDataKey();
         }
 
-        /// <summary>
-        /// Gets or sets the type of the channel.
-        /// </summary>
-        /// <value>The type of the channel.</value>
-        public ChannelType ChannelType { get; set; }
+        [IgnoreDataMember]
+        public override SourceType SourceType
+        {
+            get { return SourceType.LiveTV; }
+            set { }
+        }
 
         /// <summary>
         /// The start date of the program, in UTC.
         /// </summary>
         [IgnoreDataMember]
         public DateTime StartDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the audio.
-        /// </summary>
-        /// <value>The audio.</value>
-        public ProgramAudio? Audio { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is repeat.
@@ -62,12 +62,6 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value>The episode title.</value>
         [IgnoreDataMember]
         public string EpisodeTitle { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the service.
-        /// </summary>
-        /// <value>The name of the service.</value>
-        public string ServiceName { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is movie.
@@ -145,14 +139,14 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
-        [IgnoreDataMember]
-        public override string MediaType
-        {
-            get
-            {
-                return ChannelType == ChannelType.TV ? Model.Entities.MediaType.Video : Model.Entities.MediaType.Audio;
-            }
-        }
+        //[IgnoreDataMember]
+        //public override string MediaType
+        //{
+        //    get
+        //    {
+        //        return ChannelType == ChannelType.TV ? Model.Entities.MediaType.Video : Model.Entities.MediaType.Audio;
+        //    }
+        //}
 
         [IgnoreDataMember]
         public bool IsAiring
@@ -181,9 +175,9 @@ namespace MediaBrowser.Controller.LiveTv
             return "Program";
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.LiveTvProgram);
+            return UnratedItem.LiveTvProgram;
         }
 
         protected override string GetInternalMetadataPath(string basePath)
@@ -226,6 +220,15 @@ namespace MediaBrowser.Controller.LiveTv
                 }
 
                 return base.SupportsPeople;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsAncestors
+        {
+            get
+            {
+                return false;
             }
         }
     }

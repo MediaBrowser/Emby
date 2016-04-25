@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="CommonIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CommonIO.1.0.0.5\lib\net45\CommonIO.dll</HintPath>
+      <HintPath>..\packages\CommonIO.1.0.0.9\lib\net45\CommonIO.dll</HintPath>
     </Reference>
     <Reference Include="Patterns.Logging">
       <HintPath>..\packages\Patterns.Logging.1.0.0.2\lib\portable-net45+sl4+wp71+win8+wpa81\Patterns.Logging.dll</HintPath>
@@ -79,14 +79,11 @@
     <Compile Include="Providers\SeriesXmlProvider.cs" />
     <Compile Include="Providers\VideoXmlProvider.cs" />
     <Compile Include="Savers\BoxSetXmlSaver.cs" />
-    <Compile Include="Savers\EpisodeXmlSaver.cs" />
     <Compile Include="Savers\FolderXmlSaver.cs" />
     <Compile Include="Savers\GameSystemXmlSaver.cs" />
     <Compile Include="Savers\GameXmlSaver.cs" />
-    <Compile Include="Savers\MovieXmlSaver.cs" />
     <Compile Include="Savers\PersonXmlSaver.cs" />
     <Compile Include="Savers\PlaylistXmlSaver.cs" />
-    <Compile Include="Savers\SeriesXmlSaver.cs" />
     <Compile Include="Savers\XmlSaverHelpers.cs" />
   </ItemGroup>
   <ItemGroup>

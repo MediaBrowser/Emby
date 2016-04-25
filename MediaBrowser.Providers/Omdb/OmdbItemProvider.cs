@@ -1,12 +1,10 @@
 ﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
@@ -22,7 +20,7 @@ using System.Threading.Tasks;
 namespace MediaBrowser.Providers.Omdb
 {
     public class OmdbItemProvider : IRemoteMetadataProvider<Series, SeriesInfo>,
-        IRemoteMetadataProvider<Movie, MovieInfo>, IRemoteMetadataProvider<ChannelVideoItem, ChannelItemLookupInfo>, IRemoteMetadataProvider<LiveTvProgram, LiveTvProgramLookupInfo>
+        IRemoteMetadataProvider<Movie, MovieInfo>, IRemoteMetadataProvider<Trailer, TrailerInfo>, IRemoteMetadataProvider<LiveTvProgram, LiveTvProgramLookupInfo>
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IHttpClient _httpClient;
@@ -57,15 +55,24 @@ namespace MediaBrowser.Providers.Omdb
             return GetSearchResults(searchInfo, "movie", cancellationToken);
         }
 
-        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ItemLookupInfo searchInfo, string type, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ItemLookupInfo searchInfo, string type, CancellationToken cancellationToken)
         {
-            bool isSearch = false;
+            return GetSearchResultsInternal(searchInfo, type, true, cancellationToken);
+        }
+
+        private async Task<IEnumerable<RemoteSearchResult>> GetSearchResultsInternal(ItemLookupInfo searchInfo, string type, bool isSearch, CancellationToken cancellationToken)
+        {
+            var episodeSearchInfo = searchInfo as EpisodeInfo;
 
             var list = new List<RemoteSearchResult>();
 
             var imdbId = searchInfo.GetProviderId(MetadataProviders.Imdb);
 
-            var url = "http://www.omdbapi.com/?plot=short&r=json";
+            var url = "http://www.omdbapi.com/?plot=full&r=json";
+            if (type == "episode" && episodeSearchInfo != null)
+            {
+                episodeSearchInfo.SeriesProviderIds.TryGetValue(MetadataProviders.Imdb.ToString(), out imdbId);
+            }
 
             var name = searchInfo.Name;
             var year = searchInfo.Year;
@@ -86,13 +93,32 @@ namespace MediaBrowser.Providers.Omdb
                 }
 
                 // &s means search and returns a list of results as opposed to t
-                url += "&s=" + WebUtility.UrlEncode(name);
+                if (isSearch)
+                {
+                    url += "&s=" + WebUtility.UrlEncode(name);
+                }
+                else
+                {
+                    url += "&t=" + WebUtility.UrlEncode(name);
+                }
                 url += "&type=" + type;
-                isSearch = true;
             }
             else
             {
                 url += "&i=" + imdbId;
+                isSearch = false;
+            }
+
+            if (type == "episode")
+            {
+                if (searchInfo.IndexNumber.HasValue)
+                {
+                    url += string.Format(CultureInfo.InvariantCulture, "&Episode={0}", searchInfo.IndexNumber);
+                }
+                if (searchInfo.ParentIndexNumber.HasValue)
+                {
+                    url += string.Format(CultureInfo.InvariantCulture, "&Season={0}", searchInfo.ParentIndexNumber);
+                }
             }
 
             using (var stream = await _httpClient.Get(new HttpRequestOptions
@@ -124,10 +150,20 @@ namespace MediaBrowser.Providers.Omdb
 
                 foreach (var result in resultList)
                 {
-                    var item = new RemoteSearchResult();
+                    var item = new RemoteSearchResult
+                    {
+                        IndexNumber = searchInfo.IndexNumber,
+                        Name = result.Title,
+                        ParentIndexNumber = searchInfo.ParentIndexNumber,
+                        ProviderIds = searchInfo.ProviderIds,
+                        SearchProviderName = Name
+                    };
 
-                    item.SearchProviderName = Name;
-                    item.Name = result.Title;
+                    if (episodeSearchInfo != null && episodeSearchInfo.IndexNumberEnd.HasValue)
+                    {
+                        item.IndexNumberEnd = episodeSearchInfo.IndexNumberEnd.Value;
+                    }
+
                     item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
 
                     int parsedYear;
@@ -135,6 +171,13 @@ namespace MediaBrowser.Providers.Omdb
                         && int.TryParse(result.Year.Substring(0, Math.Min(result.Year.Length, 4)), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedYear))
                     {
                         item.ProductionYear = parsedYear;
+                    }
+
+                    DateTime released;
+                    if (!string.IsNullOrEmpty(result.Released)
+                        && DateTime.TryParse(result.Released, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out released))
+                    {
+                        item.PremiereDate = released;
                     }
 
                     if (!string.IsNullOrWhiteSpace(result.Poster) && !string.Equals(result.Poster, "N/A", StringComparison.OrdinalIgnoreCase))
@@ -149,23 +192,13 @@ namespace MediaBrowser.Providers.Omdb
             return list;
         }
 
-        public Task<MetadataResult<ChannelVideoItem>> GetMetadata(ChannelItemLookupInfo info, CancellationToken cancellationToken)
+        public Task<MetadataResult<Trailer>> GetMetadata(TrailerInfo info, CancellationToken cancellationToken)
         {
-            if (info.ContentType != ChannelMediaContentType.MovieExtra || info.ExtraType != ExtraType.Trailer)
-            {
-                return Task.FromResult(new MetadataResult<ChannelVideoItem>());
-            }
-
-            return GetMovieResult<ChannelVideoItem>(info, cancellationToken);
+            return GetMovieResult<Trailer>(info, cancellationToken);
         }
 
-        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ChannelItemLookupInfo searchInfo, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(TrailerInfo searchInfo, CancellationToken cancellationToken)
         {
-            if (searchInfo.ContentType != ChannelMediaContentType.MovieExtra || searchInfo.ExtraType != ExtraType.Trailer)
-            {
-                return Task.FromResult<IEnumerable<RemoteSearchResult>>(new List<RemoteSearchResult>());
-            }
-
             return GetSearchResults(searchInfo, "movie", cancellationToken);
         }
 
@@ -239,14 +272,14 @@ namespace MediaBrowser.Providers.Omdb
 
         private async Task<string> GetMovieImdbId(ItemLookupInfo info, CancellationToken cancellationToken)
         {
-            var results = await GetSearchResults(info, "movie", cancellationToken).ConfigureAwait(false);
+            var results = await GetSearchResultsInternal(info, "movie", false, cancellationToken).ConfigureAwait(false);
             var first = results.FirstOrDefault();
             return first == null ? null : first.GetProviderId(MetadataProviders.Imdb);
         }
 
         private async Task<string> GetSeriesImdbId(SeriesInfo info, CancellationToken cancellationToken)
         {
-            var results = await GetSearchResults(info, cancellationToken).ConfigureAwait(false);
+            var results = await GetSearchResultsInternal(info, "series", false, cancellationToken).ConfigureAwait(false);
             var first = results.FirstOrDefault();
             return first == null ? null : first.GetProviderId(MetadataProviders.Imdb);
         }
@@ -267,6 +300,8 @@ namespace MediaBrowser.Providers.Omdb
             public string Year { get; set; }
             public string Rated { get; set; }
             public string Released { get; set; }
+            public string Season { get; set; }
+            public string Episode { get; set; }
             public string Runtime { get; set; }
             public string Genre { get; set; }
             public string Director { get; set; }
@@ -281,6 +316,7 @@ namespace MediaBrowser.Providers.Omdb
             public string imdbRating { get; set; }
             public string imdbVotes { get; set; }
             public string imdbID { get; set; }
+            public string seriesID { get; set; }
             public string Type { get; set; }
             public string Response { get; set; }
         }

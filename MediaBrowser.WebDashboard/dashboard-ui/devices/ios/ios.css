@@ -1,18 +1,5 @@
-﻿html, body, .ui-btn, .pageTitle {
-    font-family: San Francisco, Helvetica Neue;
-}
-
-body {
+﻿html {
     font-size: 15px;
-}
-
-.ui-body-b a:visited {
-    color: #007AFF /*{b-link-visited}*/;
-}
-
-.ui-body-b a {
-    color: #007AFF /*{b-link-color}*/;
-    font-weight: 500;
 }
 
 .ui-body-b select {
@@ -32,7 +19,7 @@ body {
     background-attachment: initial;
 }
 
-.background-theme-b, paper-dialog.background-theme-b {
+.background-theme-b, .dialog.background-theme-b {
     background: #181818;
 }
 
@@ -56,6 +43,10 @@ body {
     .viewMenuBar.semiTransparent {
         background-color: #000;
     }
+
+.libraryViewNav {
+    box-shadow: none;
+}
 
     .libraryViewNav a {
         font-weight: 400;
@@ -86,9 +77,13 @@ body {
         flex-grow: 0 !important;
     }
 
-.ui-body-b .paperList {
+.ui-body-b .paperList:not(.criticReviewPaperList) {
     background-color: transparent;
     box-shadow: none;
+}
+
+.criticReviewPaperList {
+    background-color: #262626;
 }
 
 .settingsMenuHeader {
@@ -148,17 +143,12 @@ h1, h1 a {
     position: absolute;
     left: 100px;
     right: 100px;
+    top: 12px;
     text-align: center;
     font-size: 16px;
     margin: 0 auto !important;
     padding: 0 !important;
-}
-
-@media all and (max-width: 400px) {
-
-    .libraryMenuButtonText {
-        display: block;
-    }
+    justify-content: center;
 }
 
 .libraryPanelHeader span {
@@ -185,7 +175,8 @@ paper-tab {
         padding: 0;
     }
 
-.cardBox {
+/* Need the div specifier to gain preference over the value in card.css */
+div.cardBox {
     margin: 5px;
 }
 
@@ -236,4 +227,8 @@ paper-tab {
 
 .localSyncStatus .labelSyncStatus {
     display: none !important;
+}
+
+.videoSubtitles {
+    font-size: 200% !important;
 }

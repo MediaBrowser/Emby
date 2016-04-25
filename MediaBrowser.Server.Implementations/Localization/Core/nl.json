@@ -1,4 +1,5 @@
 {
+    "DbUpgradeMessage": "Een ogenblik geduld terwijl uw Emby Server-database wordt bijgewerkt. {0}% voltooid.",
     "AppDeviceValues": "App: {0}, Apparaat: {1}",
     "UserDownloadingItemWithValues": "{0} download {1}",
     "FolderTypeMixed": "Gemengde inhoud",
@@ -63,7 +64,7 @@
     "ViewTypeLatestGames": "Nieuwste games",
     "ViewTypeRecentlyPlayedGames": "Recent gespeelt",
     "ViewTypeGameFavorites": "Favorieten",
-    "ViewTypeGameSystems": "Gam systemen",
+    "ViewTypeGameSystems": "Game systemen",
     "ViewTypeGameGenres": "Genres",
     "ViewTypeTvResume": "Hervatten",
     "ViewTypeTvNextUp": "Volgende",
@@ -147,7 +148,7 @@
     "HeaderCommunityRating": "Gemeenschap cijfer",
     "HeaderTrailers": "Trailers",
     "HeaderSpecials": "Specials",
-    "HeaderGameSystems": "Spel systemen",
+    "HeaderGameSystems": "Game systemen",
     "HeaderPlayers": "Spelers:",
     "HeaderAlbumArtists": "Album artiesten",
     "HeaderAlbums": "Albums",

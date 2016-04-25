@@ -8,7 +8,6 @@ using SocketHttpListener.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
@@ -18,14 +17,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         private HttpListener _listener;
 
         private readonly ILogger _logger;
-        private readonly Action<string> _endpointListener;
         private readonly string _certificatePath;
 
-        public WebSocketSharpListener(ILogger logger, Action<string> endpointListener,
-            string certificatePath)
+        public WebSocketSharpListener(ILogger logger, string certificatePath)
         {
             _logger = logger;
-            _endpointListener = endpointListener;
             _certificatePath = certificatePath;
         }
 
@@ -80,10 +76,10 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         {
             var request = context.Request;
 
-            LogHttpRequest(request);
-
             if (request.IsWebSocketRequest)
             {
+                LoggerUtils.LogRequest(_logger, request);
+
                 ProcessWebSocketRequest(context);
                 return Task.FromResult(true);
             }
@@ -94,24 +90,6 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             var httpReq = GetRequest(context);
 
             return RequestHandler(httpReq, request.Url);
-        }
-
-        /// <summary>
-        /// Logs the HTTP request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        private void LogHttpRequest(HttpListenerRequest request)
-        {
-            var endpoint = request.LocalEndPoint;
-
-            if (endpoint != null)
-            {
-                var address = endpoint.ToString();
-
-                _endpointListener(address);
-            }
-
-            LogRequest(_logger, request);
         }
 
         private void ProcessWebSocketRequest(HttpListenerContext ctx)
@@ -174,24 +152,6 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             req.RequestAttributes = req.GetAttributes();
 
             return req;
-        }
-
-        /// <summary>
-        /// Logs the request.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="request">The request.</param>
-        private static void LogRequest(ILogger logger, HttpListenerRequest request)
-        {
-            var log = new StringBuilder();
-
-            var headers = string.Join(",", request.Headers.AllKeys.Where(i => !string.Equals(i, "cookie", StringComparison.OrdinalIgnoreCase) && !string.Equals(i, "Referer", StringComparison.OrdinalIgnoreCase)).Select(k => k + "=" + request.Headers[k]));
-
-            log.AppendLine("Ip: " + request.RemoteEndPoint + ". Headers: " + headers);
-
-            var type = request.IsWebSocketRequest ? "Web Socket" : "HTTP " + request.HttpMethod;
-
-            logger.LogMultiline(type + " " + request.Url, LogSeverity.Info, log);
         }
 
         private void HandleError(Exception ex, HttpListenerContext context)

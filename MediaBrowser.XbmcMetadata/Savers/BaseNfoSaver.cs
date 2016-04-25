@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -305,8 +304,19 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
                 if (!string.IsNullOrEmpty(stream.Codec))
                 {
-                    writer.WriteElementString("codec", stream.Codec);
-                    writer.WriteElementString("micodec", stream.Codec);
+                    var codec = stream.Codec;
+
+                    if ((stream.CodecTag ?? string.Empty).IndexOf("xvid", StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        codec = "xvid;";
+                    }
+                    else if ((stream.CodecTag ?? string.Empty).IndexOf("divx", StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        codec = "divx;";
+                    }
+
+                    writer.WriteElementString("codec", codec);
+                    writer.WriteElementString("micodec", codec);
                 }
 
                 if (stream.BitRate.HasValue)
@@ -393,6 +403,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
                                 case Video3DFormat.HalfTopAndBottom:
                                     writer.WriteElementString("format3d", "HTAB");
                                     break;
+                                case Video3DFormat.MVC:
+                                    writer.WriteElementString("format3d", "MVC");
+                                    break;
                             }
                         }
                     }
@@ -404,6 +417,8 @@ namespace MediaBrowser.XbmcMetadata.Savers
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
+
+        public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
 
         /// <summary>
         /// Adds the common nodes.
@@ -461,7 +476,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("type", item.DisplayMediaType);
             }
 
-            writer.WriteElementString("dateadded", item.DateCreated.ToString("yyyy-MM-dd HH:mm:ss"));
+            writer.WriteElementString("dateadded", item.DateCreated.ToLocalTime().ToString(DateAddedFormat));
 
             writer.WriteElementString("title", item.Name ?? string.Empty);
             writer.WriteElementString("originaltitle", item.Name ?? string.Empty);
@@ -615,12 +630,12 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
                 if (item is MusicArtist)
                 {
-                    writer.WriteElementString("formed", item.PremiereDate.Value.ToString(formatString));
+                    writer.WriteElementString("formed", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
                 }
                 else
                 {
-                    writer.WriteElementString("premiered", item.PremiereDate.Value.ToString(formatString));
-                    writer.WriteElementString("releasedate", item.PremiereDate.Value.ToString(formatString));
+                    writer.WriteElementString("premiered", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
+                    writer.WriteElementString("releasedate", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
                 }
             }
 
@@ -630,7 +645,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 {
                     var formatString = options.ReleaseDateFormat;
 
-                    writer.WriteElementString("enddate", item.EndDate.Value.ToString(formatString));
+                    writer.WriteElementString("enddate", item.EndDate.Value.ToLocalTime().ToString(formatString));
                 }
             }
 
@@ -938,7 +953,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
                 if (userdata.LastPlayedDate.HasValue)
                 {
-                    writer.WriteElementString("lastplayed", userdata.LastPlayedDate.Value.ToString("yyyy-MM-dd HH:mm:ss").ToLower());
+                    writer.WriteElementString("lastplayed", userdata.LastPlayedDate.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss").ToLower());
                 }
 
                 writer.WriteStartElement("resume");

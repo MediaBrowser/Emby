@@ -1,90 +1,88 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function loadProfiles(page) {
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getJSON(ApiClient.getUrl("Dlna/ProfileInfos")).done(function (result) {
+        ApiClient.getJSON(ApiClient.getUrl("Dlna/ProfileInfos")).then(function (result) {
 
-            renderProfiles(page, result);
+            renderUserProfiles(page, result);
+            renderSystemProfiles(page, result);
 
             Dashboard.hideLoadingMsg();
         });
 
     }
 
-    function renderProfiles(page, profiles) {
-
-        renderUserProfiles(page, profiles);
-        renderSystemProfiles(page, profiles);
-    }
-
     function renderUserProfiles(page, profiles) {
 
-        profiles = profiles.filter(function (p) {
+        renderProfiles(page, page.querySelector('.customProfiles'), profiles.filter(function (p) {
             return p.Type == 'User';
-        });
-
-        var html = '';
-
-        html += '<ul data-role="listview" data-inset="true" data-split-icon="delete">';
-
-        for (var i = 0, length = profiles.length; i < length; i++) {
-
-            var profile = profiles[i];
-
-            html += '<li>';
-            html += '<a href="dlnaprofile.html?id=' + profile.Id + '">';
-            html += profile.Name;
-            html += '</a>';
-
-            html += '<a href="#" data-icon="delete" class="btnDeleteProfile" data-profileid="' + profile.Id + '">' + Globalize.translate('Delete') + '</a>';
-
-            html += '</li>';
-        }
-
-        html += '</ul>';
-
-        var elem = $('.customProfiles', page).html(html).trigger('create');
-
-        $('.btnDeleteProfile', elem).on('click', function () {
-
-            var id = this.getAttribute('data-profileid');
-            deleteProfile(page, id);
-        });
+        }));
     }
 
     function renderSystemProfiles(page, profiles) {
 
-        profiles = profiles.filter(function (p) {
+        renderProfiles(page, page.querySelector('.systemProfiles'), profiles.filter(function (p) {
             return p.Type == 'System';
+        }));
+    }
+
+    function renderProfiles(page, element, profiles) {
+
+        require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+
+            var html = '';
+
+            if (profiles.length) {
+                html += '<div class="paperList">';
+            }
+
+            for (var i = 0, length = profiles.length; i < length; i++) {
+
+                var profile = profiles[i];
+
+                html += '<paper-icon-item>';
+
+                html += "<a item-icon class='clearLink' href='dlnaprofile.html?id=" + profile.Id + "'>";
+                html += '<paper-fab mini icon="dvr" class="blue"></paper-fab>';
+                html += "</a>";
+
+                html += '<paper-item-body two-line>';
+                html += "<a class='clearLink' href='dlnaprofile.html?id=" + profile.Id + "'>";
+
+                html += "<div>" + profile.Name + "</div>";
+                //html += "<div secondary>" + task.Description + "</div>";
+
+                html += "</a>";
+                html += '</paper-item-body>';
+
+                if (profile.Type == 'User') {
+                    html += '<paper-icon-button icon="delete" class="btnDeleteProfile" data-profileid="' + profile.Id + '" title="' + Globalize.translate('ButtonDelete') + '"></paper-icon-button>';
+                }
+
+                html += '</paper-icon-item>';
+            }
+
+            if (profiles.length) {
+                html += '</div>';
+            }
+
+            element.innerHTML = html;
+
+            $('.btnDeleteProfile', element).on('click', function () {
+
+                var id = this.getAttribute('data-profileid');
+                deleteProfile(page, id);
+            });
         });
-
-        var html = '';
-
-        html += '<ul data-role="listview" data-inset="true">';
-
-        for (var i = 0, length = profiles.length; i < length; i++) {
-
-            var profile = profiles[i];
-
-            html += '<li>';
-            html += '<a href="dlnaprofile.html?id=' + profile.Id + '">';
-            html += profile.Name;
-            html += '</a>';
-            html += '</li>';
-        }
-
-        html += '</ul>';
-
-        $('.systemProfiles', page).html(html).trigger('create');
     }
 
     function deleteProfile(page, id) {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmProfileDeletion'), Globalize.translate('HeaderConfirmProfileDeletion'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmProfileDeletion'), Globalize.translate('HeaderConfirmProfileDeletion')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
@@ -92,24 +90,35 @@
                     type: "DELETE",
                     url: ApiClient.getUrl("Dlna/Profiles/" + id)
 
-                }).done(function () {
+                }).then(function () {
 
                     Dashboard.hideLoadingMsg();
 
                     loadProfiles(page);
                 });
-            }
-
+            });
         });
+    }
 
+    function getTabs() {
+        return [
+        {
+            href: 'dlnasettings.html',
+            name: Globalize.translate('TabSettings')
+        },
+         {
+             href: 'dlnaprofiles.html',
+             name: Globalize.translate('TabProfiles')
+         }];
     }
 
     $(document).on('pageshow', "#dlnaProfilesPage", function () {
 
+        LibraryMenu.setTabs('dlna', 1, getTabs);
         var page = this;
 
         loadProfiles(page);
 
     });
 
-})(jQuery, document, window);
+});

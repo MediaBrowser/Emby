@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Dlna;
@@ -67,7 +66,7 @@ namespace MediaBrowser.Api.Playback.Hls
     {
     }
 
-    [Route("/Videos/{Id}/hlsdynamic/{PlaylistId}/{SegmentId}.ts", "GET")]
+    [Route("/Videos/{Id}/hls1/{PlaylistId}/{SegmentId}.ts", "GET")]
     [Api(Description = "Gets an Http live streaming segment file. Internal use only.")]
     public class GetHlsVideoSegment : VideoStreamRequest
     {
@@ -80,8 +79,8 @@ namespace MediaBrowser.Api.Playback.Hls
         public string SegmentId { get; set; }
     }
 
-    [Route("/Audio/{Id}/hlsdynamic/{PlaylistId}/{SegmentId}.aac", "GET")]
-    [Route("/Audio/{Id}/hlsdynamic/{PlaylistId}/{SegmentId}.ts", "GET")]
+    [Route("/Audio/{Id}/hls1/{PlaylistId}/{SegmentId}.aac", "GET")]
+    [Route("/Audio/{Id}/hls1/{PlaylistId}/{SegmentId}.ts", "GET")]
     [Api(Description = "Gets an Http live streaming segment file. Internal use only.")]
     public class GetHlsAudioSegment : StreamRequest
     {
@@ -173,11 +172,14 @@ namespace MediaBrowser.Api.Playback.Hls
             }
 
             await ApiEntryPoint.Instance.TranscodingStartLock.WaitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            var released = false;
             try
             {
                 if (FileSystem.FileExists(segmentPath))
                 {
                     job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
+                    ApiEntryPoint.Instance.TranscodingStartLock.Release();
+                    released = true;
                     return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
                 }
                 else
@@ -197,9 +199,9 @@ namespace MediaBrowser.Api.Playback.Hls
                         Logger.Debug("Starting transcoding because requestedIndex={0} and currentTranscodingIndex={1}", requestedIndex, currentTranscodingIndex);
                         startTranscoding = true;
                     }
-                    else if ((requestedIndex - currentTranscodingIndex.Value) > segmentGapRequiringTranscodingChange)
+                    else if (requestedIndex - currentTranscodingIndex.Value > segmentGapRequiringTranscodingChange)
                     {
-                        Logger.Debug("Starting transcoding because segmentGap is {0} and max allowed gap is {1}. requestedIndex={2}", (requestedIndex - currentTranscodingIndex.Value), segmentGapRequiringTranscodingChange, requestedIndex);
+                        Logger.Debug("Starting transcoding because segmentGap is {0} and max allowed gap is {1}. requestedIndex={2}", requestedIndex - currentTranscodingIndex.Value, segmentGapRequiringTranscodingChange, requestedIndex);
                         startTranscoding = true;
                     }
                     if (startTranscoding)
@@ -238,7 +240,10 @@ namespace MediaBrowser.Api.Playback.Hls
             }
             finally
             {
-                ApiEntryPoint.Instance.TranscodingStartLock.Release();
+                if (!released)
+                {
+                    ApiEntryPoint.Instance.TranscodingStartLock.Release();
+                }
             }
 
             //Logger.Info("waiting for {0}", segmentPath);
@@ -286,25 +291,6 @@ namespace MediaBrowser.Api.Playback.Hls
         private double[] GetSegmentLengths(StreamState state)
         {
             var result = new List<double>();
-            if (state.VideoRequest != null)
-            {
-                var encoder = GetVideoEncoder(state);
-
-                if (string.Equals(encoder, "copy", StringComparison.OrdinalIgnoreCase))
-                {
-                    var videoStream = state.VideoStream;
-                    if (videoStream.KeyFrames != null && videoStream.KeyFrames.Count > 0)
-                    {
-                        foreach (var frame in videoStream.KeyFrames)
-                        {
-                            var seconds = TimeSpan.FromMilliseconds(frame).TotalSeconds;
-                            seconds -= result.Sum();
-                            result.Add(seconds);
-                        }
-                        return result.ToArray();
-                    }
-                }
-            }
 
             var ticks = state.RunTimeTicks ?? 0;
 
@@ -469,41 +455,6 @@ namespace MediaBrowser.Api.Playback.Hls
                 await Task.Delay(100, cancellationToken).ConfigureAwait(false);
             }
 
-            // if a different file is encoding, it's done
-            //var currentTranscodingIndex = GetCurrentTranscodingIndex(playlistPath);
-            //if (currentTranscodingIndex > segmentIndex)
-            //{
-            //return GetSegmentResult(segmentPath, segmentIndex);
-            //}
-
-            //// Wait for the file to stop being written to, then stream it
-            //var length = new FileInfo(segmentPath).Length;
-            //var eofCount = 0;
-
-            //while (eofCount < 10)
-            //{
-            //    var info = new FileInfo(segmentPath);
-
-            //    if (!info.Exists)
-            //    {
-            //        break;
-            //    }
-
-            //    var newLength = info.Length;
-
-            //    if (newLength == length)
-            //    {
-            //        eofCount++;
-            //    }
-            //    else
-            //    {
-            //        eofCount = 0;
-            //    }
-
-            //    length = newLength;
-            //    await Task.Delay(100, cancellationToken).ConfigureAwait(false);
-            //}
-
             cancellationToken.ThrowIfCancellationRequested();
             return GetSegmentResult(state, segmentPath, segmentIndex, transcodingJob);
         }
@@ -549,19 +500,32 @@ namespace MediaBrowser.Api.Playback.Hls
             return ResultFactory.GetResult(playlistText, MimeTypes.GetMimeType("playlist.m3u8"), new Dictionary<string, string>());
         }
 
+        private bool IsLiveStream(StreamState state)
+        {
+            var isLiveStream = (state.RunTimeTicks ?? 0) == 0;
+
+            if (state.VideoRequest.ForceLiveStream)
+            {
+                return true;
+            }
+
+            return isLiveStream;
+        }
+
         private string GetMasterPlaylistFileText(StreamState state, int totalBitrate)
         {
             var builder = new StringBuilder();
 
             builder.AppendLine("#EXTM3U");
 
-            var isLiveStream = (state.RunTimeTicks ?? 0) == 0;
+            var isLiveStream = IsLiveStream(state);
 
             var queryStringIndex = Request.RawUrl.IndexOf('?');
             var queryString = queryStringIndex == -1 ? string.Empty : Request.RawUrl.Substring(queryStringIndex);
 
             // Main stream
             var playlistUrl = isLiveStream ? "live.m3u8" : "main.m3u8";
+
             playlistUrl += queryString;
 
             var request = state.Request;
@@ -572,12 +536,17 @@ namespace MediaBrowser.Api.Playback.Hls
                 .ToList();
 
             var subtitleGroup = subtitleStreams.Count > 0 &&
-                (request is GetMasterHlsVideoPlaylist) &&
+                request is GetMasterHlsVideoPlaylist &&
                 ((GetMasterHlsVideoPlaylist)request).SubtitleMethod == SubtitleDeliveryMethod.Hls ?
                 "subs" :
                 null;
 
-            AppendPlaylist(builder, playlistUrl, totalBitrate, subtitleGroup);
+            if (!string.IsNullOrWhiteSpace(subtitleGroup))
+            {
+                AddSubtitles(state, subtitleStreams, builder);
+            }
+
+            AppendPlaylist(builder, state, playlistUrl, totalBitrate, subtitleGroup);
 
             if (EnableAdaptiveBitrateStreaming(state, isLiveStream))
             {
@@ -587,18 +556,13 @@ namespace MediaBrowser.Api.Playback.Hls
                 var variation = GetBitrateVariation(totalBitrate);
 
                 var newBitrate = totalBitrate - variation;
-                var variantUrl = ReplaceBitrate(playlistUrl, requestedVideoBitrate, (requestedVideoBitrate - variation));
-                AppendPlaylist(builder, variantUrl, newBitrate, subtitleGroup);
+                var variantUrl = ReplaceBitrate(playlistUrl, requestedVideoBitrate, requestedVideoBitrate - variation);
+                AppendPlaylist(builder, state, variantUrl, newBitrate, subtitleGroup);
 
                 variation *= 2;
                 newBitrate = totalBitrate - variation;
-                variantUrl = ReplaceBitrate(playlistUrl, requestedVideoBitrate, (requestedVideoBitrate - variation));
-                AppendPlaylist(builder, variantUrl, newBitrate, subtitleGroup);
-            }
-
-            if (!string.IsNullOrWhiteSpace(subtitleGroup))
-            {
-                AddSubtitles(state, subtitleStreams, builder);
+                variantUrl = ReplaceBitrate(playlistUrl, requestedVideoBitrate, requestedVideoBitrate - variation);
+                AppendPlaylist(builder, state, variantUrl, newBitrate, subtitleGroup);
             }
 
             return builder.ToString();
@@ -614,11 +578,11 @@ namespace MediaBrowser.Api.Playback.Hls
 
         private void AddSubtitles(StreamState state, IEnumerable<MediaStream> subtitles, StringBuilder builder)
         {
-            var selectedIndex = state.SubtitleStream == null ? (int?)null : state.SubtitleStream.Index;
+            var selectedIndex = state.SubtitleStream == null || state.VideoRequest.SubtitleMethod != SubtitleDeliveryMethod.Hls ? (int?)null : state.SubtitleStream.Index;
 
             foreach (var stream in subtitles)
             {
-                const string format = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"subs\",NAME=\"{0}\",DEFAULT={1},FORCED={2},URI=\"{3}\",LANGUAGE=\"{4}\"";
+                const string format = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"subs\",NAME=\"{0}\",DEFAULT={1},FORCED={2},AUTOSELECT=YES,URI=\"{3}\",LANGUAGE=\"{4}\"";
 
                 var name = stream.Language;
 
@@ -627,10 +591,11 @@ namespace MediaBrowser.Api.Playback.Hls
 
                 if (string.IsNullOrWhiteSpace(name)) name = stream.Codec ?? "Unknown";
 
-                var url = string.Format("{0}/Subtitles/{1}/subtitles.m3u8?SegmentLength={2}",
+                var url = string.Format("{0}/Subtitles/{1}/subtitles.m3u8?SegmentLength={2}&api_key={3}",
                     state.Request.MediaSourceId,
                     stream.Index.ToString(UsCulture),
-                    30.ToString(UsCulture));
+                    30.ToString(UsCulture),
+                    AuthorizationContext.GetAuthorizationInfo(Request).Token);
 
                 var line = string.Format(format,
                     name,
@@ -683,9 +648,15 @@ namespace MediaBrowser.Api.Playback.Hls
             //return state.VideoRequest.VideoBitRate.HasValue;
         }
 
-        private void AppendPlaylist(StringBuilder builder, string url, int bitrate, string subtitleGroup)
+        private void AppendPlaylist(StringBuilder builder, StreamState state, string url, int bitrate, string subtitleGroup)
         {
-            var header = "#EXT-X-STREAM-INF:BANDWIDTH=" + bitrate.ToString(UsCulture);
+            var header = "#EXT-X-STREAM-INF:BANDWIDTH=" + bitrate.ToString(UsCulture) + ",AVERAGE-BANDWIDTH=" + bitrate.ToString(UsCulture);
+
+            // tvos wants resolution, codecs, framerate
+            //if (state.TargetFramerate.HasValue)
+            //{
+            //    header += string.Format(",FRAME-RATE=\"{0}\"", state.TargetFramerate.Value.ToString(CultureInfo.InvariantCulture));
+            //}
 
             if (!string.IsNullOrWhiteSpace(subtitleGroup))
             {
@@ -742,20 +713,26 @@ namespace MediaBrowser.Api.Playback.Hls
             var builder = new StringBuilder();
 
             builder.AppendLine("#EXTM3U");
+            builder.AppendLine("#EXT-X-PLAYLIST-TYPE:VOD");
             builder.AppendLine("#EXT-X-VERSION:3");
-            builder.AppendLine("#EXT-X-TARGETDURATION:" + Math.Ceiling((segmentLengths.Length > 0 ? segmentLengths.Max() : state.SegmentLength)).ToString(UsCulture));
+            builder.AppendLine("#EXT-X-TARGETDURATION:" + Math.Ceiling(segmentLengths.Length > 0 ? segmentLengths.Max() : state.SegmentLength).ToString(UsCulture));
             builder.AppendLine("#EXT-X-MEDIA-SEQUENCE:0");
 
             var queryStringIndex = Request.RawUrl.IndexOf('?');
             var queryString = queryStringIndex == -1 ? string.Empty : Request.RawUrl.Substring(queryStringIndex);
 
+            //if ((Request.UserAgent ?? string.Empty).IndexOf("roku", StringComparison.OrdinalIgnoreCase) != -1)
+            //{
+            //    queryString = string.Empty;
+            //}
+
             var index = 0;
 
             foreach (var length in segmentLengths)
             {
-                builder.AppendLine("#EXTINF:" + length.ToString("0.000000", UsCulture) + ",");
+                builder.AppendLine("#EXTINF:" + length.ToString("0.0000", UsCulture) + ",");
 
-                builder.AppendLine(string.Format("hlsdynamic/{0}/{1}{2}{3}",
+                builder.AppendLine(string.Format("hls1/{0}/{1}{2}{3}",
 
                     name,
                     index.ToString(UsCulture),
@@ -851,8 +828,9 @@ namespace MediaBrowser.Api.Playback.Hls
             // See if we can save come cpu cycles by avoiding encoding
             if (string.Equals(codec, "copy", StringComparison.OrdinalIgnoreCase))
             {
-                if (state.VideoStream != null && IsH264(state.VideoStream))
+                if (state.VideoStream != null && IsH264(state.VideoStream) && !string.Equals(state.VideoStream.NalLengthSize, "0", StringComparison.OrdinalIgnoreCase))
                 {
+                    Logger.Debug("Enabling h264_mp4toannexb due to nal_length_size of {0}", state.VideoStream.NalLengthSize);
                     args += " -bsf:v h264_mp4toannexb";
                 }
 
@@ -863,9 +841,9 @@ namespace MediaBrowser.Api.Playback.Hls
                 var keyFrameArg = string.Format(" -force_key_frames \"expr:gte(t,n_forced*{0})\"",
                     state.SegmentLength.ToString(UsCulture));
 
-                var hasGraphicalSubs = state.SubtitleStream != null && !state.SubtitleStream.IsTextSubtitleStream;
+                var hasGraphicalSubs = state.SubtitleStream != null && !state.SubtitleStream.IsTextSubtitleStream && state.VideoRequest.SubtitleMethod == SubtitleDeliveryMethod.Encode;
 
-                args += " " + GetVideoQualityParam(state, H264Encoder, true) + keyFrameArg;
+                args += " " + GetVideoQualityParam(state, GetH264Encoder(state)) + keyFrameArg;
 
                 //args += " -mixed-refs 0 -refs 3 -x264opts b_pyramid=0:weightb=0:weightp=0";
 
@@ -889,7 +867,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
         private bool EnableCopyTs(StreamState state)
         {
-            return state.SubtitleStream != null && state.SubtitleStream.IsTextSubtitleStream;
+            return state.SubtitleStream != null && state.SubtitleStream.IsTextSubtitleStream && state.VideoRequest.SubtitleMethod == SubtitleDeliveryMethod.Encode;
         }
 
         protected override string GetCommandLineArguments(string outputPath, StreamState state, bool isEncoding)
@@ -964,29 +942,16 @@ namespace MediaBrowser.Api.Playback.Hls
             return isOutputVideo ? ".ts" : ".ts";
         }
 
-        protected override bool CanStreamCopyVideo(VideoStreamRequest request, MediaStream videoStream)
+        protected override bool CanStreamCopyVideo(StreamState state)
         {
-            if (videoStream.KeyFrames == null || videoStream.KeyFrames.Count == 0)
+            var isLiveStream = IsLiveStream(state);
+
+            if (!isLiveStream)
             {
-                Logger.Debug("Cannot stream copy video due to missing keyframe info");
                 return false;
             }
 
-            var previousSegment = 0;
-            foreach (var frame in videoStream.KeyFrames)
-            {
-                var length = frame - previousSegment;
-
-                // Don't allow really long segments because this could result in long download times
-                if (length > 10000)
-                {
-                    Logger.Debug("Cannot stream copy video due to long segment length of {0}ms", length);
-                    return false;
-                }
-                previousSegment = frame;
-            }
-
-            return base.CanStreamCopyVideo(request, videoStream);
+            return base.CanStreamCopyVideo(state);
         }
     }
 }

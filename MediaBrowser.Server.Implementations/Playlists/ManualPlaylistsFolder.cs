@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Server.Implementations.Playlists
 {
@@ -32,11 +31,6 @@ namespace MediaBrowser.Server.Implementations.Playlists
             {
                 return true;
             }
-        }
-
-        public override bool IsHiddenFromUser(User user)
-        {
-            return false;
         }
 
         public override string CollectionType

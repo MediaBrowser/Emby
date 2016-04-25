@@ -21,7 +21,7 @@ namespace MediaBrowser.Common.Implementations.Security
     public class PluginSecurityManager : ISecurityManager
     {
         private const string MBValidateUrl = MbAdmin.HttpsUrl + "service/registration/validate";
-        private const string AppstoreRegUrl = /*MbAdmin.HttpsUrl*/ "http://mb3admin.com/admin/" + "service/appstore/register";
+        private const string AppstoreRegUrl = /*MbAdmin.HttpsUrl*/ "https://mb3admin.com/admin/service/appstore/register";
 
         /// <summary>
         /// The _is MB supporter
@@ -156,20 +156,6 @@ namespace MediaBrowser.Common.Implementations.Security
                     Task.Run(() => LoadAllRegistrationInfo());
                 }
             }
-        }
-
-        public async Task<SupporterInfo> GetSupporterInfo()
-        {
-            return new SupporterInfo
-            {
-                Email = "user@example.com",
-                SupporterKey = "Free Emby",
-                ExpirationDate = null,
-                RegistrationDate = new DateTime(2015,01,01),
-                PlanType = "Lifetime",
-                IsActiveSupporter = true,
-                IsExpiredSupporter = false
-            };
         }
 
         /// <summary>

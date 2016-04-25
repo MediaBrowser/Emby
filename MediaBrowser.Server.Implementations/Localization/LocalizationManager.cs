@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Model.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Model.Entities;
@@ -243,6 +242,8 @@ namespace MediaBrowser.Server.Implementations.Localization
             _allParentalRatings.TryAdd(countryCode, dict);
         }
 
+        private readonly string[] _unratedValues = {"n/a", "unrated", "not rated"};
+
         /// <summary>
         /// Gets the rating level.
         /// </summary>
@@ -251,6 +252,11 @@ namespace MediaBrowser.Server.Implementations.Localization
             if (string.IsNullOrEmpty(rating))
             {
                 throw new ArgumentNullException("rating");
+            }
+
+            if (_unratedValues.Contains(rating, StringComparer.OrdinalIgnoreCase))
+            {
+                return null;
             }
 
             // Fairly common for some users to have "Rated R" in their rating field
@@ -367,10 +373,12 @@ namespace MediaBrowser.Server.Implementations.Localization
                 new LocalizatonOption{ Name="English (United States)", Value="en-us"},
                 new LocalizatonOption{ Name="Finnish", Value="fi"},
                 new LocalizatonOption{ Name="French", Value="fr"},
+                new LocalizatonOption{ Name="French (Canada)", Value="fr-CA"},
                 new LocalizatonOption{ Name="German", Value="de"},
                 new LocalizatonOption{ Name="Greek", Value="el"},
                 new LocalizatonOption{ Name="Hebrew", Value="he"},
                 new LocalizatonOption{ Name="Hungarian", Value="hu"},
+                new LocalizatonOption{ Name="Indonesian", Value="id"},
                 new LocalizatonOption{ Name="Italian", Value="it"},
                 new LocalizatonOption{ Name="Kazakh", Value="kk"},
                 new LocalizatonOption{ Name="Norwegian Bokmål", Value="nb"},

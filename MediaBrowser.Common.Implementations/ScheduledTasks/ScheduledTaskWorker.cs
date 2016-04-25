@@ -103,7 +103,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
             Logger = logger;
             _fileSystem = fileSystem;
 
-            ReloadTriggerEvents(true);
+            InitTriggerEvents();
         }
 
         /// <summary>
@@ -233,11 +233,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// <summary>
         /// The _triggers
         /// </summary>
-        private IEnumerable<ITaskTrigger> _triggers;
-        /// <summary>
-        /// The _triggers sync lock
-        /// </summary>
-        private readonly object _triggersSyncLock = new object();
+        private List<ITaskTrigger> _triggers;
         /// <summary>
         /// Gets the triggers that define when the task will run
         /// </summary>
@@ -247,17 +243,6 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         {
             get
             {
-                if (_triggers == null)
-                {
-                    lock (_triggersSyncLock)
-                    {
-                        if (_triggers == null)
-                        {
-                            _triggers = LoadTriggers();
-                        }
-                    }
-                }
-
                 return _triggers;
             }
             set
@@ -301,6 +286,12 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
 
                 return _id;
             }
+        }
+
+        private void InitTriggerEvents()
+        {
+            _triggers = LoadTriggers();
+            ReloadTriggerEvents(true);
         }
 
         public void ReloadTriggerEvents()
@@ -532,7 +523,7 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
         /// Loads the triggers.
         /// </summary>
         /// <returns>IEnumerable{BaseTaskTrigger}.</returns>
-        private IEnumerable<ITaskTrigger> LoadTriggers()
+        private List<ITaskTrigger> LoadTriggers()
         {
             try
             {
@@ -543,12 +534,12 @@ namespace MediaBrowser.Common.Implementations.ScheduledTasks
             catch (FileNotFoundException)
             {
                 // File doesn't exist. No biggie. Return defaults.
-                return ScheduledTask.GetDefaultTriggers();
+                return ScheduledTask.GetDefaultTriggers().ToList();
             }
             catch (DirectoryNotFoundException)
             {
                 // File doesn't exist. No biggie. Return defaults.
-                return ScheduledTask.GetDefaultTriggers();
+                return ScheduledTask.GetDefaultTriggers().ToList();
             }
         }
 

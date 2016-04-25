@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['dialogHelper', 'appStorage', 'jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (dialogHelper, appStorage, $) {
 
     var currentItem;
 
@@ -11,7 +11,12 @@
 
         var url = 'Videos/' + currentItem.Id + '/Subtitles/' + index;
 
-        $.get(ApiClient.getUrl(url)).done(function (result) {
+        ApiClient.ajax({
+
+            type: 'GET',
+            url: url
+
+        }).then(function (result) {
 
             $('.subtitleContent', page).html(result);
 
@@ -30,7 +35,7 @@
 
         var url = 'Providers/Subtitles/Subtitles/' + id;
 
-        ApiClient.get(ApiClient.getUrl(url)).done(function (result) {
+        ApiClient.get(ApiClient.getUrl(url)).then(function (result) {
 
             $('.subtitleContent', page).html(result);
 
@@ -49,9 +54,11 @@
             type: "POST",
             url: ApiClient.getUrl(url)
 
-        }).done(function () {
+        }).then(function () {
 
-            Dashboard.alert(Globalize.translate('MessageDownloadQueued'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('MessageDownloadQueued'));
+            });
         });
     }
 
@@ -59,9 +66,9 @@
 
         var msg = Globalize.translate('MessageAreYouSureDeleteSubtitles');
 
-        Dashboard.confirm(msg, Globalize.translate('HeaderConfirmDeletion'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(msg, Globalize.translate('HeaderConfirmDeletion')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
@@ -73,12 +80,11 @@
                     type: "DELETE",
                     url: ApiClient.getUrl(url)
 
-                }).done(function () {
+                }).then(function () {
 
                     reload(page, itemId);
                 });
-
-            }
+            });
         });
     }
 
@@ -151,7 +157,7 @@
             html += '</div>';
         }
 
-        var elem = $('.subtitleList', page).html(html).trigger('create');
+        var elem = $('.subtitleList', page).html(html);
 
         $('.btnViewSubtitles', elem).on('click', function () {
 
@@ -184,7 +190,7 @@
         }
         else {
 
-            Dashboard.getCurrentUser().done(function (user) {
+            Dashboard.getCurrentUser().then(function (user) {
 
                 var lang = user.Configuration.SubtitleLanguagePreference;
 
@@ -261,7 +267,7 @@
             html += '</div>';
         }
 
-        var elem = $('.subtitleResults', page).html(html).trigger('create');
+        var elem = $('.subtitleResults', page).html(html);
 
         $('.btnViewSubtitle', elem).on('click', function () {
 
@@ -286,26 +292,39 @@
 
         var url = ApiClient.getUrl('Items/' + currentItem.Id + '/RemoteSearch/Subtitles/' + language);
 
-        ApiClient.getJSON(url).done(function (results) {
+        ApiClient.getJSON(url).then(function (results) {
 
             renderSearchResults(page, results);
         });
     }
 
-    function reload(page, itemId) {
+    function reload(context, itemId) {
 
-        $('.noSearchResults', page).hide();
+        $('.noSearchResults', context).hide();
 
         function onGetItem(item) {
             currentItem = item;
 
-            fillSubtitleList(page, item);
+            fillSubtitleList(context, item);
+            var file = item.Path || '';
+            var index = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
+            if (index > -1) {
+                file = file.substring(index + 1);
+            }
+
+            if (file) {
+                context.querySelector('.pathValue').innerHTML = file;
+                context.querySelector('.originalFile').classList.remove('hide');
+            } else {
+                context.querySelector('.pathValue').innerHTML = '';
+                context.querySelector('.originalFile').classList.add('hide');
+            }
 
             Dashboard.hideLoadingMsg();
         }
 
         if (typeof itemId == 'string') {
-            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).done(onGetItem);
+            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).then(onGetItem);
         }
         else {
             onGetItem(itemId);
@@ -326,22 +345,29 @@
 
         Dashboard.showLoadingMsg();
 
-        HttpClient.send({
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'components/subtitleeditor/subtitleeditor.template.html', true);
 
-            type: 'GET',
-            url: 'components/subtitleeditor/subtitleeditor.template.html'
+        xhr.onload = function (e) {
 
-        }).done(function (template) {
+            var template = this.response;
+            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).then(function (item) {
 
-            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).done(function (item) {
+                var dlg = dialogHelper.createDialog({
+                    size: 'small',
+                    removeOnClose: true
+                });
 
-                var dlg = PaperDialogHelper.createDialog();
+                dlg.classList.add('ui-body-b');
+                dlg.classList.add('background-theme-b');
 
                 var html = '';
-                html += '<h2 class="dialogHeader">';
-                html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
-                html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + item.Name + '</div>';
-                html += '</h2>';
+                html += '<div class="dialogHeader">';
+                html += '<paper-icon-button icon="arrow-back" class="btnCancel" tabindex="-1"></paper-icon-button>';
+                html += '<div class="dialogHeaderTitle">';
+                html += item.Name;
+                html += '</div>';
+                html += '</div>';
 
                 html += '<div class="editorContent">';
                 html += Globalize.translateDocument(template);
@@ -350,43 +376,31 @@
                 dlg.innerHTML = html;
                 document.body.appendChild(dlg);
 
+                dlg.querySelector('.pathLabel').innerHTML = Globalize.translate('MediaInfoFile');
+
                 $('.subtitleSearchForm', dlg).off('submit', onSearchSubmit).on('submit', onSearchSubmit);
 
-                // Has to be assigned a z-index after the call to .open() 
-                $(dlg).on('iron-overlay-closed', onDialogClosed);
-
-                PaperDialogHelper.openWithHash(dlg, 'subtitleeditor');
+                dialogHelper.open(dlg);
 
                 var editorContent = dlg.querySelector('.editorContent');
                 reload(editorContent, item);
 
-                ApiClient.getCultures().done(function (languages) {
+                ApiClient.getCultures().then(function (languages) {
 
                     fillLanguages(editorContent, languages);
                 });
 
-                $('.btnCloseDialog', dlg).on('click', function () {
+                $('.btnCancel', dlg).on('click', function () {
 
-                    PaperDialogHelper.close(dlg);
+                    dialogHelper.close(dlg);
                 });
             });
-        });
-    }
-
-    function onDialogClosed() {
-
-        $(this).remove();
-        Dashboard.hideLoadingMsg();
-    }
-
-    window.SubtitleEditor = {
-        show: function (itemId) {
-
-            require(['components/paperdialoghelper'], function () {
-
-                showEditor(itemId);
-            });
         }
-    };
 
-})(jQuery, window, document);
+        xhr.send();
+    }
+
+    return {
+        show: showEditor
+    };
+});

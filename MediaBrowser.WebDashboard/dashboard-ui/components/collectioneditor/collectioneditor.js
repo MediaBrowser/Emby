@@ -1,9 +1,9 @@
-﻿define([], function () {
+﻿define(['dialogHelper', 'jQuery', 'paper-checkbox', 'paper-input'], function (dialogHelper, $) {
 
     function onSubmit() {
         Dashboard.showLoadingMsg();
 
-        var panel = $(this).parents('paper-dialog')[0];
+        var panel = $(this).parents('.dialog')[0];
 
         var collectionId = $('#selectCollectionToAddTo', panel).val();
 
@@ -33,13 +33,13 @@
             url: url,
             dataType: "json"
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             Dashboard.hideLoadingMsg();
 
             var id = result.Id;
 
-            PaperDialogHelper.close(dlg);
+            dialogHelper.close(dlg);
             redirectToCollection(id);
 
         });
@@ -49,7 +49,7 @@
 
         var context = getParameterByName('context');
 
-        ApiClient.getItem(Dashboard.getCurrentUserId(), id).done(function (item) {
+        ApiClient.getItem(Dashboard.getCurrentUserId(), id).then(function (item) {
 
             Dashboard.navigate(LibraryBrowser.getHref(item, context));
 
@@ -67,13 +67,15 @@
             type: "POST",
             url: url
 
-        }).done(function () {
+        }).then(function () {
 
             Dashboard.hideLoadingMsg();
 
-            PaperDialogHelper.close(dlg);
+            dialogHelper.close(dlg);
 
-            Dashboard.alert(Globalize.translate('MessageItemsAdded'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('MessageItemsAdded'));
+            });
         });
     }
 
@@ -98,7 +100,7 @@
             SortBy: "SortName"
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             var html = '';
 
@@ -119,13 +121,10 @@
 
         var html = '';
 
-        html += '<form class="newCollectionForm" style="max-width:100%;">';
-
-        html += '<br />';
+        html += '<form class="newCollectionForm" style="margin:auto;">';
 
         html += '<div class="fldSelectCollection">';
-        html += '<br />';
-        html += '<label for="selectCollectionToAddTo">' + Globalize.translate('LabelSelectCollection') + '</label>';
+        html += '<label for="selectCollectionToAddTo" class="selectLabel">' + Globalize.translate('LabelSelectCollection') + '</label>';
         html += '<select id="selectCollectionToAddTo" data-mini="true"></select>';
         html += '</div>';
 
@@ -192,39 +191,37 @@
 
             items = items || [];
 
-            require(['components/paperdialoghelper'], function () {
+            var dlg = dialogHelper.createDialog({
+                size: 'small'
+            });
 
-                var dlg = PaperDialogHelper.createDialog({
-                    size: 'small'
-                });
+            dlg.classList.add('ui-body-b');
+            dlg.classList.add('background-theme-b');
 
-                var html = '';
-                html += '<h2 class="dialogHeader">';
-                html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
+            var html = '';
+            var title = items.length ? Globalize.translate('HeaderAddToCollection') : Globalize.translate('HeaderNewCollection');
 
-                var title = items.length ? Globalize.translate('HeaderAddToCollection') : Globalize.translate('HeaderNewCollection');
+            html += '<div class="dialogHeader">';
+            html += '<paper-icon-button icon="arrow-back" class="btnCancel" tabindex="-1"></paper-icon-button>';
+            html += '<div class="dialogHeaderTitle">';
+            html += title;
+            html += '</div>';
+            html += '</div>';
 
-                html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + title + '</div>';
-                html += '</h2>';
+            html += getEditorHtml();
 
-                html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
-                html += getEditorHtml();
-                html += '</div>';
+            dlg.innerHTML = html;
+            document.body.appendChild(dlg);
 
-                dlg.innerHTML = html;
-                document.body.appendChild(dlg);
+            initEditor(dlg, items);
 
-                var editorContent = dlg.querySelector('.editorContent');
-                initEditor(editorContent, items);
+            $(dlg).on('close', onDialogClosed);
 
-                $(dlg).on('iron-overlay-closed', onDialogClosed);
+            dialogHelper.open(dlg);
 
-                PaperDialogHelper.openWithHash(dlg, 'collectioneditor');
+            $('.btnCancel', dlg).on('click', function () {
 
-                $('.btnCloseDialog', dlg).on('click', function () {
-
-                    PaperDialogHelper.close(dlg);
-                });
+                dialogHelper.close(dlg);
             });
         };
     }

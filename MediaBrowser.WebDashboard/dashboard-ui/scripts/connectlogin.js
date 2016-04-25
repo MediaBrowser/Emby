@@ -1,15 +1,15 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     function login(page, username, password) {
 
         Dashboard.showModalLoadingMsg();
 
-        ConnectionManager.loginToConnect(username, password).done(function () {
+        ConnectionManager.loginToConnect(username, password).then(function () {
 
             Dashboard.hideModalLoadingMsg();
             Dashboard.navigate('selectserver.html');
 
-        }).fail(function () {
+        }, function () {
 
             Dashboard.hideModalLoadingMsg();
 
@@ -35,7 +35,7 @@
                     var apiClient = result.ApiClient;
 
                     Dashboard.onServerChanged(apiClient.getCurrentUserId(), apiClient.accessToken(), apiClient);
-                    Dashboard.navigate('index.html');
+                    Dashboard.navigate('home.html');
                 }
                 break;
             case MediaBrowser.ConnectionState.ServerSignIn:
@@ -51,6 +51,13 @@
             case MediaBrowser.ConnectionState.ConnectSignIn:
                 {
                     loadMode(page, 'welcome');
+                }
+                break;
+            case MediaBrowser.ConnectionState.ServerUpdateNeeded:
+                {
+                    Dashboard.alert({
+                        message: Globalize.translate('ServerUpdateNeeded', '<a href="https://emby.media">https://emby.media</a>')
+                    });
                 }
                 break;
             case MediaBrowser.ConnectionState.Unavailable:
@@ -70,7 +77,7 @@
 
         Dashboard.showModalLoadingMsg();
 
-        ConnectionManager.connect().done(function (result) {
+        ConnectionManager.connect().then(function (result) {
 
             handleConnectionResult(page, result);
 
@@ -150,7 +157,7 @@
 
         var page = $(this).parents('.page');
 
-        ConnectionManager.signupForConnect($('#txtSignupEmail', page).val(), $('#txtSignupUsername', page).val(), $('#txtSignupPassword', page).val(), $('#txtSignupPasswordConfirm', page).val()).done(function () {
+        ConnectionManager.signupForConnect($('#txtSignupEmail', page).val(), $('#txtSignupUsername', page).val(), $('#txtSignupPassword', page).val(), $('#txtSignupPasswordConfirm', page).val()).then(function () {
 
             Dashboard.alert({
                 message: Globalize.translate('MessageThankYouForConnectSignUp'),
@@ -159,7 +166,7 @@
                 }
             });
 
-        }).fail(function (result) {
+        }, function (result) {
 
             if (result.errorCode == 'passwordmatch') {
                 Dashboard.alert({
@@ -187,12 +194,12 @@
     }
 
     function requireCaptcha() {
-        return !AppInfo.isNativeApp && getWindowUrl().toLowerCase().indexOf('https') == 0;
+        return !AppInfo.isNativeApp && window.location.href.toLowerCase().indexOf('https') == 0;
     }
 
     function supportInAppSignup() {
         return AppInfo.isNativeApp;
-        return AppInfo.isNativeApp || getWindowUrl().toLowerCase().indexOf('https') == 0;
+        return AppInfo.isNativeApp || window.location.href.toLowerCase().indexOf('https') == 0;
     }
 
     function initSignup(page) {
@@ -249,8 +256,10 @@
 
         if (AppInfo.isNativeApp) {
             terms.classList.add('hide');
+            page.querySelector('.tvAppInfo').classList.add('hide');
         } else {
             terms.classList.remove('hide');
+            page.querySelector('.tvAppInfo').classList.remove('hide');
         }
 
     }).on('pagebeforeshow', "#connectLoginPage", function () {
@@ -262,8 +271,13 @@
         $('#txtSignupPassword', page).val('');
         $('#txtSignupPasswordConfirm', page).val('');
 
-        var link = '<a href="http://emby.media" target="_blank">http://emby.media</a>';
-        $('.embyIntroDownloadMessage', page).html(Globalize.translate('EmbyIntroDownloadMessage', link));
+        if (browserInfo.safari && AppInfo.isNativeApp) {
+            // With apple we can't even have a link to the site
+            $('.embyIntroDownloadMessage', page).html(Globalize.translate('EmbyIntroDownloadMessageWithoutLink'));
+        } else {
+            var link = '<a href="http://emby.media" target="_blank">http://emby.media</a>';
+            $('.embyIntroDownloadMessage', page).html(Globalize.translate('EmbyIntroDownloadMessage', link));
+        }
 
     }).on('pageshow', "#connectLoginPage", function () {
 
@@ -282,11 +296,11 @@
 
         Dashboard.showModalLoadingMsg();
 
-        ConnectionManager.connectToAddress(host).done(function (result) {
+        ConnectionManager.connectToAddress(host).then(function (result) {
 
             handleConnectionResult(page, result);
 
-        }).fail(function () {
+        }, function () {
             handleConnectionResult(page, {
                 State: MediaBrowser.ConnectionState.Unavailable
             });
@@ -302,4 +316,4 @@
         login(page, user, password);
     }
 
-})();
+});

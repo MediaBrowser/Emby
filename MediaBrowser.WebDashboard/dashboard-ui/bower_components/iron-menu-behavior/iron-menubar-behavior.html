@@ -39,12 +39,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       event.detail.keyboardEvent.preventDefault();
     },
 
-    _onLeftKey: function() {
-      this._focusPrevious();
+    get _isRTL() {
+      return window.getComputedStyle(this)['direction'] === 'rtl';
     },
 
-    _onRightKey: function() {
-      this._focusNext();
+    _onLeftKey: function(event) {
+      if (this._isRTL) {
+        this._focusNext();
+      } else {
+        this._focusPrevious();
+      }
+      event.detail.keyboardEvent.preventDefault();
+    },
+
+    _onRightKey: function(event) {
+      if (this._isRTL) {
+        this._focusPrevious();
+      } else {
+        this._focusNext();
+      }
+      event.detail.keyboardEvent.preventDefault();
     },
 
     _onKeydown: function(event) {

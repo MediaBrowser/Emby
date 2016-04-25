@@ -1,4 +1,4 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     var query = {
 
@@ -8,20 +8,21 @@
 
     function deleteSeriesTimer(page, id) {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmSeriesCancellation'), Globalize.translate('HeaderConfirmSeriesCancellation'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmSeriesCancellation'), Globalize.translate('HeaderConfirmSeriesCancellation')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.cancelLiveTvSeriesTimer(id).done(function () {
+                ApiClient.cancelLiveTvSeriesTimer(id).then(function () {
 
-                    Dashboard.alert(Globalize.translate('MessageSeriesCancelled'));
+                    require(['toast'], function (toast) {
+                        toast(Globalize.translate('MessageSeriesCancelled'));
+                    });
 
                     reload(page);
                 });
-            }
-
+            });
         });
     }
 
@@ -102,9 +103,11 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getLiveTvSeriesTimers(query).done(function (result) {
+        ApiClient.getLiveTvSeriesTimers(query).then(function (result) {
 
-            renderTimers(page, result.Items);
+            require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+                renderTimers(page, result.Items);
+            });
 
             LibraryBrowser.setLastRefreshed(page);
         });
@@ -117,4 +120,4 @@
         }
     };
 
-})(jQuery, document);
+});

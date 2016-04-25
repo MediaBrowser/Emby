@@ -1,12 +1,11 @@
-﻿(function ($, window, document) {
+﻿define(['appSettings', 'jQuery'], function (appSettings, $) {
 
     function loadForm(page, user) {
 
-        page.querySelector('#txtSyncPath').value = AppSettings.syncPath();
-        page.querySelector('#chkWifi').checked = AppSettings.syncOnlyOnWifi();
-        page.querySelector('#chkSyncLosslessAudio').checked = AppSettings.syncLosslessAudio();
+        page.querySelector('#txtSyncPath').value = appSettings.syncPath();
+        page.querySelector('#chkWifi').checked = appSettings.syncOnlyOnWifi();
 
-        var uploadServers = AppSettings.cameraUploadServers();
+        var uploadServers = appSettings.cameraUploadServers();
 
         page.querySelector('.uploadServerList').innerHTML = ConnectionManager.getSavedServers().map(function (s) {
 
@@ -22,11 +21,10 @@
 
     function saveUser(page, user) {
 
-        AppSettings.syncPath(page.querySelector('#txtSyncPath').value);
-        AppSettings.syncOnlyOnWifi(page.querySelector('#chkWifi').checked);
-        AppSettings.syncLosslessAudio(page.querySelector('#chkSyncLosslessAudio').checked);
+        appSettings.syncPath(page.querySelector('#txtSyncPath').value);
+        appSettings.syncOnlyOnWifi(page.querySelector('#chkWifi').checked);
 
-        AppSettings.cameraUploadServers($(".chkUploadServer", page).get().filter(function (i) {
+        appSettings.cameraUploadServers($(".chkUploadServer", page).get().filter(function (i) {
 
             return i.checked;
 
@@ -36,7 +34,9 @@
         }));
 
         Dashboard.hideLoadingMsg();
-        Dashboard.alert(Globalize.translate('SettingsSaved'));
+        require(['toast'], function (toast) {
+            toast(Globalize.translate('SettingsSaved'));
+        });
     }
 
     function onSubmit() {
@@ -47,7 +47,7 @@
 
         var userId = getParameterByName('userId') || Dashboard.getCurrentUserId();
 
-        ApiClient.getUser(userId).done(function (user) {
+        ApiClient.getUser(userId).then(function (user) {
 
             saveUser(page, user);
 
@@ -66,7 +66,7 @@
         $('.btnSelectSyncPath', page).on('click', function () {
 
             require(['nativedirectorychooser'], function () {
-                NativeDirectoryChooser.chooseDirectory().done(function (path) {
+                NativeDirectoryChooser.chooseDirectory().then(function (path) {
                     $('#txtSyncPath', page).val(path);
                 });
             });
@@ -80,7 +80,7 @@
 
         var userId = getParameterByName('userId') || Dashboard.getCurrentUserId();
 
-        ApiClient.getUser(userId).done(function (user) {
+        ApiClient.getUser(userId).then(function (user) {
 
             loadForm(page, user);
         });
@@ -92,4 +92,4 @@
         }
     });
 
-})(jQuery, window, document);
+});

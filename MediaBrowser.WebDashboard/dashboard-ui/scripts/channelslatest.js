@@ -1,10 +1,12 @@
-﻿(function ($, document) {
+﻿define([], function () {
 
     function reloadItems(page) {
 
         Dashboard.showLoadingMsg();
 
-        Sections.loadLatestChannelItems(page.querySelector('.latestItems'), Dashboard.getCurrentUserId()).always(function() {
+        Sections.loadLatestChannelItems(page.querySelector('.latestItems'), Dashboard.getCurrentUserId()).then(function() {
+            Dashboard.hideLoadingMsg();
+        }, function () {
             Dashboard.hideLoadingMsg();
         });
     }
@@ -21,15 +23,15 @@
         }
     }
 
-    $(document).on('pageinit', "#channelsPage", function () {
+    pageIdOn('pageinit', "channelsPage", function () {
 
         var page = this;
-        var pages = page.querySelector('neon-animated-pages');
+        var pageTabsContainer = page.querySelector('.pageTabsContainer');
 
-        $(pages).on('tabchange', function () {
-            loadTab(page, parseInt(this.selected));
+        pageTabsContainer.addEventListener('tabchange', function (e) {
+            loadTab(page, parseInt(e.detail.selectedTabIndex));
         });
 
     });
 
-})(jQuery, document);
+});

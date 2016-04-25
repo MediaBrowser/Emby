@@ -44,7 +44,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 var startingPercent = numComplete * percentPerUser * 100;
 
                 var innerProgress = new ActionableProgress<double>();
-                innerProgress.RegisterAction(p => progress.Report(startingPercent + (percentPerUser * p)));
+                innerProgress.RegisterAction(p => progress.Report(startingPercent + percentPerUser * p));
 
                 await DownloadContent(user, cancellationToken, innerProgress).ConfigureAwait(false);
 
@@ -55,7 +55,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
 
             await CleanDatabase(cancellationToken).ConfigureAwait(false);
-            
+
             progress.Report(100);
         }
 
@@ -97,7 +97,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                     innerProgress.RegisterAction(p =>
                     {
                         double innerPercent = startingNumberComplete;
-                        innerPercent += (p / 100);
+                        innerPercent += p / 100;
                         innerPercent /= numItems;
                         progress.Report(innerPercent * 100);
                     });
@@ -123,15 +123,15 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         private async Task CleanDatabase(CancellationToken cancellationToken)
         {
-            var allChannels = await _channelManager.GetChannelsInternal(new ChannelQuery { }, cancellationToken);
+            var installedChannelIds = ((ChannelManager)_channelManager).GetInstalledChannelIds();
 
-            var allIds = _libraryManager.GetItemIds(new InternalItemsQuery
+            var databaseIds = _libraryManager.GetItemIds(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Channel).Name }
             });
 
-            var invalidIds = allIds
-                .Except(allChannels.Items.Select(i => i.Id).ToList())
+            var invalidIds = databaseIds
+                .Except(installedChannelIds)
                 .ToList();
 
             foreach (var id in invalidIds)
@@ -167,10 +167,14 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             var item = _libraryManager.GetItemById(id);
 
+            if (item == null)
+            {
+                return Task.FromResult(true);
+            }
+
             return _libraryManager.DeleteItem(item, new DeleteOptions
             {
                 DeleteFileLocation = false
-
             });
         }
 
@@ -228,9 +232,9 @@ namespace MediaBrowser.Server.Implementations.Channels
                         innerProgress.RegisterAction(p =>
                         {
                             double innerPercent = startingNumberComplete;
-                            innerPercent += (p / 100);
+                            innerPercent += p / 100;
                             innerPercent /= numItems;
-                            progress.Report((innerPercent * 50) + 50);
+                            progress.Report(innerPercent * 50 + 50);
                         });
 
                         await GetAllItems(user, channelId, folder, currentRefreshLevel + 1, maxRefreshLevel, innerProgress, cancellationToken).ConfigureAwait(false);
@@ -243,7 +247,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                     numComplete++;
                     double percent = numComplete;
                     percent /= numItems;
-                    progress.Report((percent * 50) + 50);
+                    progress.Report(percent * 50 + 50);
                 }
             }
 

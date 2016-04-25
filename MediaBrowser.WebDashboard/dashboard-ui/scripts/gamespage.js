@@ -1,31 +1,53 @@
+define(['jQuery'], function ($) {
 
-(function ($, document) {
+    var data = {};
 
-    var view = LibraryBrowser.getDefaultItemsView('Poster', 'List');
+    function getPageData(context) {
+        var key = getSavedQueryKey(context);
+        var pageData = data[key];
 
-    // The base query options
-    var query = {
+        if (!pageData) {
+            pageData = data[key] = {
+                query: {
+                    SortBy: "SortName",
+                    SortOrder: "Ascending",
+                    MediaTypes: "Game",
+                    Recursive: true,
+                    Fields: "Genres,Studios,PrimaryImageAspectRatio,SortName",
+                    ImageTypeLimit: 1,
+                    EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+                    StartIndex: 0,
+                    Limit: LibraryBrowser.getDefaultPageSize()
+                },
+                view: LibraryBrowser.getSavedView(key) || LibraryBrowser.getDefaultItemsView('Poster', 'List')
+            };
 
-        SortBy: "SortName",
-        SortOrder: "Ascending",
-        MediaTypes: "Game",
-        Recursive: true,
-        Fields: "Genres,Studios,PrimaryImageAspectRatio,SortName",
-        StartIndex: 0,
-        ImageTypeLimit: 1,
-        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
-    };
+            pageData.query.ParentId = LibraryMenu.getTopParentId();
+            LibraryBrowser.loadSavedQueryValues(key, pageData.query);
+        }
+        return pageData;
+    }
 
-    function getSavedQueryKey() {
+    function getQuery(context) {
 
-        return LibraryBrowser.getSavedQueryKey();
+        return getPageData(context).query;
+    }
+
+    function getSavedQueryKey(context) {
+
+        if (!context.savedQueryKey) {
+            context.savedQueryKey = LibraryBrowser.getSavedQueryKey('games');
+        }
+        return context.savedQueryKey;
     }
 
     function reloadItems(page) {
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), query).done(function (result) {
+        var query = getQuery(page);
+
+        ApiClient.getItems(Dashboard.getCurrentUserId(), query).then(function (result) {
 
             // Scroll back up so they can see the results from the beginning
             window.scrollTo(0, 0);
@@ -36,12 +58,11 @@
                 startIndex: query.StartIndex,
                 limit: query.Limit,
                 totalRecordCount: result.TotalRecordCount,
-                viewButton: true,
-                showLimit: false
+                showLimit: false,
+                filterButton: true
             }));
 
-            updateFilterControls(page);
-            var trigger = false;
+            var view = getPageData(page).view;
 
             if (view == "List") {
 
@@ -86,120 +107,40 @@
                 reloadItems(page);
             });
 
-            LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+            $('.btnFilter', page).on('click', function () {
+                showFilterMenu(page);
+            });
+
+            LibraryBrowser.saveQueryValues(getSavedQueryKey(page), query);
 
             Dashboard.hideLoadingMsg();
         });
     }
 
-    function updateFilterControls(page) {
+    function showFilterMenu(page) {
 
-        // Reset form values using the last used query
-        $('.radioSortBy', page).each(function () {
+        require(['components/filterdialog/filterdialog'], function (filterDialogFactory) {
 
-            this.checked = (query.SortBy || '').toLowerCase() == this.getAttribute('data-sortby').toLowerCase();
+            var filterDialog = new filterDialogFactory({
+                query: getQuery(page),
+                mode: 'games'
+            });
 
-        }).checkboxradio('refresh');
-
-        $('.radioSortOrder', page).each(function () {
-
-            this.checked = (query.SortOrder || '').toLowerCase() == this.getAttribute('data-sortorder').toLowerCase();
-
-        }).checkboxradio('refresh');
-
-        $('.radioPlayers', page).each(function () {
-
-            var val = this.getAttribute('data-value');
-
-            if (val == "all") {
-
-                this.checked = query.MinPlayers == null;
-            } else {
-                this.checked = query.MinPlayers == val;
-            }
-
-        }).checkboxradio('refresh');
-
-        $('.chkStandardFilter', page).each(function () {
-
-            var filters = "," + (query.Filters || "");
-            var filterName = this.getAttribute('data-filter');
-
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
-        }).checkboxradio('refresh');
-
-        $('#selectView', page).val(view);
-
-        $('.alphabetPicker', page).alphaValue(query.NameStartsWith);
-        $('#selectPageSize', page).val(query.Limit);
-    }
-
-    var filtersLoaded;
-    function reloadFiltersIfNeeded(page) {
-
-        if (!filtersLoaded) {
-
-            filtersLoaded = true;
-
-            QueryFilters.loadFilters(page, Dashboard.getCurrentUserId(), query, function () {
-
+            Events.on(filterDialog, 'filterchange', function () {
                 reloadItems(page);
             });
-        }
+
+            filterDialog.show();
+        });
     }
 
     $(document).on('pageinit', "#gamesPage", function () {
 
         var page = this;
 
-        $('.viewPanel', page).on('panelopen', function () {
-
-            reloadFiltersIfNeeded(page);
-        });
-
-        $('.radioSortBy', this).on('click', function () {
-            query.StartIndex = 0;
-            query.SortBy = this.getAttribute('data-sortby');
-            reloadItems(page);
-        });
-
-        $('.radioSortOrder', this).on('click', function () {
-            query.StartIndex = 0;
-            query.SortOrder = this.getAttribute('data-sortorder');
-            reloadItems(page);
-        });
-
-        $('.radioPlayers', this).on('click', function () {
-
-            query.StartIndex = 0;
-
-            var val = this.getAttribute('data-value');
-
-            query.MinPlayers = val == "all" ? null : val;
-
-            reloadItems(page);
-        });
-
-        $('.chkStandardFilter', this).on('change', function () {
-
-            var filterName = this.getAttribute('data-filter');
-            var filters = query.Filters || "";
-
-            filters = (',' + filters).replace(',' + filterName, '').substring(1);
-
-            if (this.checked) {
-                filters = filters ? (filters + ',' + filterName) : filterName;
-            }
-
-            query.StartIndex = 0;
-            query.Filters = filters;
-
-            reloadItems(page);
-        });
-
         $('.alphabetPicker', this).on('alphaselect', function (e, character) {
 
+            var query = getQuery(page);
             query.NameStartsWithOrGreater = character;
             query.StartIndex = 0;
 
@@ -207,38 +148,16 @@
 
         }).on('alphaclear', function (e) {
 
+            var query = getQuery(page);
             query.NameStartsWithOrGreater = '';
 
-            reloadItems(page);
-        });
-
-        $('#selectView', this).on('change', function () {
-
-            view = this.value;
-
-            if (view == "Timeline") {
-
-                query.SortBy = "PremiereDate";
-                query.SortOrder = "Descending";
-                query.StartIndex = 0;
-                $('#radioPremiereDate', page)[0].click();
-
-            } else {
-                reloadItems(page);
-            }
-
-            LibraryBrowser.saveViewSetting(getSavedQueryKey(), view);
-        });
-
-        $('#selectPageSize', page).on('change', function () {
-            query.Limit = parseInt(this.value);
-            query.StartIndex = 0;
             reloadItems(page);
         });
 
     }).on('pagebeforeshow', "#gamesPage", function () {
 
         var page = this;
+        var query = getQuery(page);
         query.ParentId = LibraryMenu.getTopParentId();
 
         var limit = LibraryBrowser.getDefaultPageSize();
@@ -249,12 +168,11 @@
             query.StartIndex = 0;
         }
 
-        var viewkey = getSavedQueryKey();
+        var viewkey = getSavedQueryKey(page);
 
         LibraryBrowser.loadSavedQueryValues(viewkey, query);
-        QueryFilters.onPageShow(page, query);
 
-        LibraryBrowser.getSavedViewSetting(viewkey).done(function (val) {
+        LibraryBrowser.getSavedViewSetting(viewkey).then(function (val) {
 
             if (val) {
                 $('#selectView', page).val(val).trigger('change');
@@ -262,8 +180,6 @@
                 reloadItems(page);
             }
         });
-
-        updateFilterControls(this);
     });
 
-})(jQuery, document);
+});

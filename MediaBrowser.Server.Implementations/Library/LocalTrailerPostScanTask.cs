@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Linq;
@@ -28,12 +27,14 @@ namespace MediaBrowser.Server.Implementations.Library
                 .Cast<IHasTrailers>()
                 .ToList();
 
-            var channelTrailerResult = await _channelManager.GetAllMediaInternal(new AllChannelMediaQuery
+            var trailers = _libraryManager.GetItemList(new InternalItemsQuery
             {
-                ExtraTypes = new[] { ExtraType.Trailer }
-
-            }, CancellationToken.None);
-            var channelTrailers = channelTrailerResult.Items;
+                IncludeItemTypes = new[] { typeof(Trailer).Name },
+                ExcludeTrailerTypes = new[]
+                {
+                    TrailerType.LocalTrailer
+                }
+            }).ToArray();
 
             var numComplete = 0;
 
@@ -41,7 +42,7 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await AssignTrailers(item, channelTrailers).ConfigureAwait(false);
+                await AssignTrailers(item, trailers).ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;

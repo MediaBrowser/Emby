@@ -1,51 +1,95 @@
-﻿(function () {
+﻿define(['jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function ($) {
 
-    $(document).on('pageshow', "#logPage", function () {
+    function getTabs() {
+        return [
+        {
+            href: 'about.html',
+            name: Globalize.translate('TabAbout')
+        },
+         {
+             href: 'log.html',
+             name: Globalize.translate('TabLogs')
+         },
+         {
+             href: 'supporterkey.html',
+             name: Globalize.translate('TabEmbyPremiere')
+         }];
+    }
 
-        var page = this;
+    return function (view, params) {
 
-        var apiClient = ApiClient;
+        view.querySelector('#chkDebugLog').addEventListener('change', function () {
 
-        apiClient.getJSON(apiClient.getUrl('System/Logs')).done(function (logs) {
+            ApiClient.getServerConfiguration().then(function (config) {
 
-            var html = '';
+                config.EnableDebugLevelLogging = view.querySelector('#chkDebugLog').checked;
 
-            html += '<ul data-role="listview" data-inset="true">';
-
-            html += logs.map(function (log) {
-
-                var logUrl = apiClient.getUrl('System/Logs/Log', {
-                    name: log.Name
-                });
-
-                logUrl += "&api_key=" + apiClient.accessToken();
-
-                var logHtml = '<li><a href="' + logUrl + '" target="_blank">';
-
-                logHtml += '<h3>';
-                logHtml += log.Name;
-                logHtml += '</h3>';
-
-                var date = parseISO8601Date(log.DateModified, { toLocal: true });
-
-                var text = date.toLocaleDateString();
-
-                text += ' ' + LibraryBrowser.getDisplayTime(date);
-
-                logHtml += '<p>' + text + '</p>';
-
-                logHtml += '</li>';
-
-                return logHtml;
-
-            })
-                .join('');
-
-            html += '</ul>';
-
-            Events.trigger($('.serverLogs', page).html(html)[0], 'create');
-
+                ApiClient.updateServerConfiguration(config);
+            });
         });
-    });
 
-})();
+        view.addEventListener('viewbeforeshow', function () {
+
+            LibraryMenu.setTabs('helpadmin', 1, getTabs);
+            Dashboard.showLoadingMsg();
+
+            var apiClient = ApiClient;
+
+            apiClient.getJSON(apiClient.getUrl('System/Logs')).then(function (logs) {
+
+                var html = '';
+
+                html += '<div class="paperList">';
+
+                html += logs.map(function (log) {
+
+                    var logUrl = apiClient.getUrl('System/Logs/Log', {
+                        name: log.Name
+                    });
+
+                    logUrl += "&api_key=" + apiClient.accessToken();
+
+                    var logHtml = '';
+                    logHtml += '<paper-icon-item>';
+
+                    logHtml += '<a item-icon class="clearLink" href="' + logUrl + '" target="_blank">';
+                    logHtml += '<paper-fab mini icon="schedule" class="blue" item-icon></paper-fab>';
+                    logHtml += "</a>";
+
+                    logHtml += '<paper-item-body two-line>';
+                    logHtml += '<a class="clearLink" href="' + logUrl + '" target="_blank">';
+
+                    logHtml += "<div>" + log.Name + "</div>";
+
+                    var date = parseISO8601Date(log.DateModified, { toLocal: true });
+
+                    var text = date.toLocaleDateString();
+
+                    text += ' ' + LibraryBrowser.getDisplayTime(date);
+
+                    logHtml += '<div secondary>' + text + '</div>';
+
+                    logHtml += "</a>";
+                    logHtml += '</paper-item-body>';
+
+                    logHtml += '</paper-icon-item>';
+
+                    return logHtml;
+
+                })
+                    .join('');
+
+                html += '</div>';
+
+                $('.serverLogs', view).html(html);
+                Dashboard.hideLoadingMsg();
+            });
+
+            apiClient.getServerConfiguration().then(function (config) {
+
+                view.querySelector('#chkDebugLog').checked = config.EnableDebugLevelLogging;
+            });
+        });
+
+    };
+});

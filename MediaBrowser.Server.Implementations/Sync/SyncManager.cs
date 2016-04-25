@@ -1,17 +1,14 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Playlists;
 using MediaBrowser.Controller.Sync;
@@ -341,7 +338,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                 if (primaryImage == null)
                 {
-                    var parentWithImage = item.Parents.FirstOrDefault(i => i.HasImage(ImageType.Primary));
+                    var parentWithImage = item.GetParents().FirstOrDefault(i => i.HasImage(ImageType.Primary));
 
                     if (parentWithImage != null)
                     {
@@ -380,7 +377,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             if (primaryImage == null)
             {
-                var parentWithImage = item.Parents.FirstOrDefault(i => i.HasImage(ImageType.Primary));
+                var parentWithImage = item.GetParents().FirstOrDefault(i => i.HasImage(ImageType.Primary));
 
                 if (parentWithImage != null)
                 {
@@ -486,11 +483,16 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private string GetSyncProviderId(ISyncProvider provider)
         {
-            return (provider.GetType().Name).GetMD5().ToString("N");
+            return provider.GetType().Name.GetMD5().ToString("N");
         }
 
         public bool SupportsSync(BaseItem item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
+
             if (item is Playlist)
             {
                 return true;
@@ -531,7 +533,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     }
                 }
 
-                if (item is LiveTvChannel || item is IChannelItem)
+                if (item.SourceType != SourceType.Library)
                 {
                     return false;
                 }
@@ -554,6 +556,12 @@ namespace MediaBrowser.Server.Implementations.Sync
             jobItem.Status = SyncJobItemStatus.Synced;
             jobItem.Progress = 100;
 
+            await UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
+
+            var processor = GetSyncJobProcessor();
+
+            await processor.UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
+
             if (!string.IsNullOrWhiteSpace(jobItem.TemporaryPath))
             {
                 try
@@ -568,12 +576,6 @@ namespace MediaBrowser.Server.Implementations.Sync
                     _logger.ErrorException("Error deleting temporary job file: {0}", ex, jobItem.OutputPath);
                 }
             }
-
-            await UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
-
-            var processor = GetSyncJobProcessor();
-
-            await processor.UpdateJobStatus(jobItem.JobId).ConfigureAwait(false);
         }
 
         private SyncJobProcessor GetSyncJobProcessor()
@@ -640,7 +642,6 @@ namespace MediaBrowser.Server.Implementations.Sync
             dtoOptions.Fields.Remove(ItemFields.MediaStreams);
             dtoOptions.Fields.Remove(ItemFields.IndexOptions);
             dtoOptions.Fields.Remove(ItemFields.MediaSourceCount);
-            dtoOptions.Fields.Remove(ItemFields.OriginalPrimaryImageAspectRatio);
             dtoOptions.Fields.Remove(ItemFields.Path);
             dtoOptions.Fields.Remove(ItemFields.SeriesGenres);
             dtoOptions.Fields.Remove(ItemFields.Settings);
@@ -740,10 +741,10 @@ namespace MediaBrowser.Server.Implementations.Sync
                 var requiresSaving = false;
                 var removeFromDevice = false;
 
-                var libraryItem = _libraryManager.GetItemById(jobItem.ItemId);
-
                 if (request.LocalItemIds.Contains(jobItem.ItemId, StringComparer.OrdinalIgnoreCase))
                 {
+                    var libraryItem = _libraryManager.GetItemById(jobItem.ItemId);
+
                     var job = _repo.GetJob(jobItem.JobId);
                     var user = _userManager.GetUserById(job.UserId);
 
@@ -846,10 +847,10 @@ namespace MediaBrowser.Server.Implementations.Sync
                 var requiresSaving = false;
                 var removeFromDevice = false;
 
-                var libraryItem = _libraryManager.GetItemById(jobItem.ItemId);
-
                 if (request.SyncJobItemIds.Contains(jobItem.Id, StringComparer.OrdinalIgnoreCase))
                 {
+                    var libraryItem = _libraryManager.GetItemById(jobItem.ItemId);
+
                     var job = _repo.GetJob(jobItem.JobId);
                     var user = _userManager.GetUserById(job.UserId);
 
@@ -1011,7 +1012,7 @@ namespace MediaBrowser.Server.Implementations.Sync
         {
             var jobItem = _repo.GetJobItem(id);
 
-            if (jobItem.Status != SyncJobItemStatus.Queued && jobItem.Status != SyncJobItemStatus.ReadyToTransfer && jobItem.Status != SyncJobItemStatus.Converting && jobItem.Status != SyncJobItemStatus.Failed && jobItem.Status != SyncJobItemStatus.Synced)
+            if (jobItem.Status != SyncJobItemStatus.Queued && jobItem.Status != SyncJobItemStatus.ReadyToTransfer && jobItem.Status != SyncJobItemStatus.Converting && jobItem.Status != SyncJobItemStatus.Failed && jobItem.Status != SyncJobItemStatus.Synced && jobItem.Status != SyncJobItemStatus.Transferring)
             {
                 throw new ArgumentException("Operation is not valid for this job item");
             }
@@ -1116,7 +1117,7 @@ namespace MediaBrowser.Server.Implementations.Sync
         public SyncJobOptions GetAudioOptions(SyncJobItem jobItem, SyncJob job)
         {
             var options = GetSyncJobOptions(jobItem.TargetId, null, null);
-
+            
             if (job.Bitrate.HasValue)
             {
                 options.DeviceProfile.MaxStaticBitrate = job.Bitrate.Value;
@@ -1125,7 +1126,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             return options;
         }
 
-        public ISyncProvider GetSyncProvider(SyncJobItem jobItem, SyncJob job)
+        public ISyncProvider GetSyncProvider(SyncJobItem jobItem)
         {
             foreach (var provider in _providers)
             {
@@ -1320,6 +1321,17 @@ namespace MediaBrowser.Server.Implementations.Sync
             }
 
             return list;
+        }
+
+        protected internal void OnConversionComplete(SyncJobItem item)
+        {
+            var syncProvider = GetSyncProvider(item);
+            if (syncProvider is AppSyncProvider)
+            {
+                return;
+            }
+
+            _taskManager.QueueIfNotRunning<ServerSyncScheduledTask>();
         }
     }
 }

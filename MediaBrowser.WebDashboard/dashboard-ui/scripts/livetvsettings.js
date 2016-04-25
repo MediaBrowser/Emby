@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function loadPage(page, config) {
 
@@ -9,6 +9,7 @@
 
         $('#chkMovies', page).checked(config.EnableMovieProviders);
         $('#chkOrganize', page).checked(config.EnableAutoOrganize);
+        $('#chkConvertRecordings', page).checked(config.EnableRecordingEncoding);
 
         $('#txtRecordingPath', page).val(config.RecordingPath || '');
 
@@ -20,25 +21,42 @@
 
     function onSubmit() {
 
-			Dashboard.showLoadingMsg();
+        Dashboard.showLoadingMsg();
 
-            var form = this;
+        var form = this;
 
-            ApiClient.getNamedConfiguration("livetv").done(function (config) {
+        ApiClient.getNamedConfiguration("livetv").then(function (config) {
 
-                config.GuideDays = $('#selectGuideDays', form).val() || null;
-                config.EnableMovieProviders = $('#chkMovies', form).checked();
-                config.EnableAutoOrganize = $('#chkOrganize', form).checked();
-                config.RecordingPath = $('#txtRecordingPath', form).val() || null;
+            config.GuideDays = $('#selectGuideDays', form).val() || null;
+            config.EnableMovieProviders = $('#chkMovies', form).checked();
+            config.EnableAutoOrganize = $('#chkOrganize', form).checked();
+            config.EnableRecordingEncoding = $('#chkConvertRecordings', form).checked();
+            config.RecordingPath = $('#txtRecordingPath', form).val() || null;
 
-                config.PrePaddingSeconds = $('#txtPrePaddingMinutes', form).val() * 60;
-                config.PostPaddingSeconds = $('#txtPostPaddingMinutes', form).val() * 60;
+            config.PrePaddingSeconds = $('#txtPrePaddingMinutes', form).val() * 60;
+            config.PostPaddingSeconds = $('#txtPostPaddingMinutes', form).val() * 60;
 
-                ApiClient.updateNamedConfiguration("livetv", config).done(Dashboard.processServerConfigurationUpdateResult);
-            });
+            ApiClient.updateNamedConfiguration("livetv", config).then(Dashboard.processServerConfigurationUpdateResult);
+        });
 
-            // Disable default form submission
-            return false;
+        // Disable default form submission
+        return false;
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'livetvstatus.html',
+            name: Globalize.translate('TabDevices')
+        },
+         {
+             href: 'livetvsettings.html',
+             name: Globalize.translate('TabSettings')
+         },
+         {
+             href: 'appservices.html?context=livetv',
+             name: Globalize.translate('TabServices')
+         }];
     }
 
     $(document).on('pageinit', "#liveTvSettingsPage", function () {
@@ -68,16 +86,23 @@
 
     }).on('pageshow', "#liveTvSettingsPage", function () {
 
+        LibraryMenu.setTabs('livetvadmin', 1, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;
 
-        ApiClient.getNamedConfiguration("livetv").done(function (config) {
+        ApiClient.getNamedConfiguration("livetv").then(function (config) {
 
             loadPage(page, config);
 
         });
 
+        if (AppInfo.enableSupporterMembership) {
+            page.querySelector('.btnSupporterForConverting a').href = 'https://emby.media/premiere';
+        } else {
+            page.querySelector('.btnSupporterForConverting a').href = '#';
+        }
+
     });
 
-})(jQuery, document, window);
+});

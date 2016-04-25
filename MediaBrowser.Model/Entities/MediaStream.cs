@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
-using MediaBrowser.Model.Dlna;
+﻿using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
 using System.Diagnostics;
 
@@ -29,6 +27,14 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value>The language.</value>
         public string Language { get; set; }
+
+        /// <summary>
+        /// Gets or sets the comment.
+        /// </summary>
+        /// <value>The comment.</value>
+        public string Comment { get; set; }
+
+        public string NalLengthSize { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is interlaced.
@@ -189,6 +195,7 @@ namespace MediaBrowser.Model.Entities
 
             return StringHelper.IndexOfIgnoreCase(codec, "pgs") == -1 &&
                    StringHelper.IndexOfIgnoreCase(codec, "dvd") == -1 &&
+                   StringHelper.IndexOfIgnoreCase(codec, "dvbsub") == -1 &&
                    !StringHelper.EqualsIgnoreCase(codec, "sub");
         }
 
@@ -227,14 +234,5 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value><c>true</c> if this instance is anamorphic; otherwise, <c>false</c>.</value>
         public bool? IsAnamorphic { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is cabac.
-        /// </summary>
-        /// <value><c>null</c> if [is cabac] contains no value, <c>true</c> if [is cabac]; otherwise, <c>false</c>.</value>
-        public bool? IsCabac { get; set; }
-
-        [IgnoreDataMember]
-        public List<int> KeyFrames { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿(function ($, document) {
+﻿define(['jQuery', 'scrollStyles'], function ($) {
 
     function itemsPerRow() {
 
@@ -8,7 +8,7 @@
     }
 
     function enableScrollX() {
-        return $.browser.mobile && AppInfo.enableAppLayouts;
+        return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
     function getSquareShape() {
@@ -30,7 +30,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).done(function (items) {
+        ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).then(function (items) {
 
             var elem = page.querySelector('#recentlyAddedSongs');
             elem.innerHTML = LibraryBrowser.getPosterViewHtml({
@@ -39,11 +39,10 @@
                 showLatestItemsPopup: false,
                 shape: getSquareShape(),
                 showTitle: true,
-                defaultAction: 'play',
                 showParentTitle: true,
                 lazy: true,
                 centerText: true,
-                overlayMoreButton: true
+                overlayPlayButton: true
 
             });
             ImageLoader.lazyChildren(elem);
@@ -70,7 +69,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             var elem;
 
@@ -115,7 +114,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             var elem;
 
@@ -152,13 +151,12 @@
             SortOrder: "Ascending",
             IncludeItemTypes: "Playlist",
             Recursive: true,
-            ParentId: parentId,
             Fields: "PrimaryImageAspectRatio,SortName,CumulativeRunTimeTicks,CanDelete,SyncInfo",
             StartIndex: 0,
             Limit: itemsPerRow()
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             var elem;
 
@@ -174,11 +172,10 @@
                 shape: getSquareShape(),
                 showTitle: true,
                 lazy: true,
-                defaultAction: 'play',
                 coverImage: true,
                 showItemCounts: true,
                 centerText: true,
-                overlayMoreButton: true
+                overlayPlayButton: true
 
             });
             ImageLoader.lazyChildren(itemsContainer);
@@ -208,6 +205,12 @@
             loadPlaylists(tabContent, parentId);
             loadRecentlyPlayed(tabContent, parentId);
             loadFrequentlyPlayed(tabContent, parentId);
+
+            require(['components/favoriteitems'], function (favoriteItems) {
+
+                favoriteItems.render(tabContent, Dashboard.getCurrentUserId(), parentId, ['favoriteArtists', 'favoriteAlbums', 'favoriteSongs']);
+
+            });
         }
     }
 
@@ -229,29 +232,31 @@
                 depends.push('scripts/musicalbums');
                 renderMethod = 'renderAlbumsTab';
                 initMethod = 'initAlbumsTab';
-                depends.push('scripts/queryfilters');
                 break;
             case 2:
                 depends.push('scripts/musicalbumartists');
                 renderMethod = 'renderAlbumArtistsTab';
                 initMethod = 'initAlbumArtistsTab';
-                depends.push('scripts/queryfilters');
                 break;
             case 3:
                 depends.push('scripts/musicartists');
                 renderMethod = 'renderArtistsTab';
                 initMethod = 'initArtistsTab';
-                depends.push('scripts/queryfilters');
                 break;
             case 4:
                 depends.push('scripts/songs');
                 renderMethod = 'renderSongsTab';
-                initMethod = 'initSongsTab';
-                depends.push('scripts/queryfilters');
+                depends.push('paper-icon-item');
+                depends.push('paper-item-body');
                 break;
             case 5:
                 depends.push('scripts/musicgenres');
                 renderMethod = 'renderGenresTab';
+                break;
+            case 6:
+                depends.push('scripts/musicfolders');
+                renderMethod = 'renderFoldersTab';
+                initMethod = 'initFoldersTab';
                 break;
             default:
                 break;
@@ -274,14 +279,14 @@
     window.MusicPage.renderSuggestedTab = loadSuggestionsTab;
     window.MusicPage.initSuggestedTab = initSuggestedTab;
 
-    $(document).on('pageinit', "#musicRecommendedPage", function () {
+    pageIdOn('pageinit', "musicRecommendedPage", function () {
 
         var page = this;
 
         $('.recommendations', page).createCardMenus();
 
         var tabs = page.querySelector('paper-tabs');
-        var pages = page.querySelector('neon-animated-pages');
+        var pageTabsContainer = page.querySelector('.pageTabsContainer');
 
         var baseUrl = 'music.html';
         var topParentId = LibraryMenu.getTopParentId();
@@ -289,13 +294,15 @@
             baseUrl += '?topParentId=' + topParentId;
         }
 
-        LibraryBrowser.configurePaperLibraryTabs(page, tabs, pages, baseUrl);
+        LibraryBrowser.configurePaperLibraryTabs(page, tabs, pageTabsContainer, baseUrl);
 
-        $(pages).on('tabchange', function () {
-            loadTab(page, parseInt(this.selected));
+        pageTabsContainer.addEventListener('tabchange', function (e) {
+            loadTab(page, parseInt(e.detail.selectedTabIndex));
         });
 
-    }).on('pageshow', "#musicRecommendedPage", function () {
+    });
+
+    pageIdOn('pagebeforeshow', "musicRecommendedPage", function () {
 
         var page = this;
 
@@ -305,7 +312,7 @@
 
             if (parentId) {
 
-                ApiClient.getItem(Dashboard.getCurrentUserId(), parentId).done(function (item) {
+                ApiClient.getItem(Dashboard.getCurrentUserId(), parentId).then(function (item) {
 
                     page.setAttribute('data-title', item.Name);
                     LibraryMenu.setTitle(item.Name);
@@ -321,4 +328,4 @@
     });
 
 
-})(jQuery, document);
+});

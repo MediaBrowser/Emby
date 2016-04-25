@@ -1,4 +1,4 @@
-﻿(function (window) {
+﻿define(['jQuery'], function ($) {
 
     function processForgotPasswordResult(page, result) {
 
@@ -44,7 +44,7 @@
                 Pin: $('#txtPin', page).val()
             }
 
-        }).done(function (result) {
+        }).then(function (result) {
 
             processForgotPasswordResult(page, result);
         });
@@ -58,4 +58,4 @@
         $('form', page).off('submit', onSubmit).on('submit', onSubmit);
     });
 
-})(window);
+});

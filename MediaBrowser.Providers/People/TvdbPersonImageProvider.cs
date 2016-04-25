@@ -59,13 +59,13 @@ namespace MediaBrowser.Providers.People
             // Avoid implicitly captured closure
             var itemName = item.Name;
 
-            var seriesWithPerson = _libraryManager.GetItems(new InternalItemsQuery
+            var seriesWithPerson = _libraryManager.GetItemList(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
                 Person = itemName
 
-            }).Items.Cast<Series>()
-                .Where(i => !string.IsNullOrEmpty(i.GetProviderId(MetadataProviders.Tvdb)))
+            }).Cast<Series>()
+                .Where(i => TvdbSeriesProvider.IsValidSeries(i.ProviderIds))
                 .ToList();
 
             var infos = seriesWithPerson.Select(i => GetImageFromSeriesData(i, item.Name, cancellationToken))
@@ -77,7 +77,7 @@ namespace MediaBrowser.Providers.People
 
         private RemoteImageInfo GetImageFromSeriesData(Series series, string personName, CancellationToken cancellationToken)
         {
-            var tvdbPath = TvdbSeriesProvider.GetSeriesDataPath(_config.ApplicationPaths, series.GetProviderId(MetadataProviders.Tvdb));
+            var tvdbPath = TvdbSeriesProvider.GetSeriesDataPath(_config.ApplicationPaths, series.ProviderIds);
 
             var actorXmlPath = Path.Combine(tvdbPath, "actors.xml");
 

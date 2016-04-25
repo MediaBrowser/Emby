@@ -1,17 +1,25 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     var brandingConfigKey = "branding";
     var currentBrandingOptions;
 
     var currentLanguage;
 
-    function loadPage(page, config, languageOptions) {
+    function loadPage(page, config, languageOptions, systemInfo) {
 
-        if (Dashboard.lastSystemInfo) {
-            Dashboard.setPageTitle(Dashboard.lastSystemInfo.ServerName);
+        var os = systemInfo.OperatingSystem.toLowerCase();
+
+        if (os.indexOf('windows') != -1) {
+            $('#windowsStartupDescription', page).show();
+        } else {
+            $('#windowsStartupDescription', page).hide();
         }
 
-        refreshPageTitle(page);
+        if (systemInfo.SupportsAutoRunAtStartup) {
+            $('#fldRunAtStartup', page).show();
+        } else {
+            $('#fldRunAtStartup', page).hide();
+        }
 
         page.querySelector('#txtServerName').value = config.ServerName || '';
         page.querySelector('#txtCachePath').value = config.CachePath || '';
@@ -23,16 +31,33 @@
         })).val(config.UICulture);
 
         currentLanguage = config.UICulture;
+        $('#chkUsageData', page).checked(config.EnableAnonymousUsageReporting);
+        $('#chkRunAtStartup', page).checked(config.RunAtStartup);
+
+        if (systemInfo.CanSelfUpdate) {
+            $('.fldAutomaticUpdates', page).show();
+            $('.lnlAutomaticUpdateLevel', page).html(Globalize.translate('LabelAutomaticUpdateLevel'));
+        } else {
+            $('.fldAutomaticUpdates', page).hide();
+            $('.lnlAutomaticUpdateLevel', page).html(Globalize.translate('LabelAutomaticUpdateLevelForPlugins'));
+        }
+
+        $('#chkEnableAutomaticServerUpdates', page).checked(config.EnableAutoUpdate);
+        $('#chkEnableAutomaticRestart', page).checked(config.EnableAutomaticRestart);
+
+        if (systemInfo.CanSelfRestart) {
+            $('#fldEnableAutomaticRestart', page).show();
+        } else {
+            $('#fldEnableAutomaticRestart', page).hide();
+        }
+
+        $('#selectAutomaticUpdateLevel', page).val(config.SystemUpdateLevel).trigger('change');
+
+        $('#chkEnableDashboardResponseCache', page).checked(config.EnableDashboardResponseCaching);
+        $('#chkEnableMinification', page).checked(config.EnableDashboardResourceMinification);
+        $('#txtDashboardSourcePath', page).val(config.DashboardSourcePath).trigger('change');
 
         Dashboard.hideLoadingMsg();
-    }
-
-    function refreshPageTitle(page) {
-
-        ApiClient.getSystemInfo().done(function (systemInfo) {
-
-            Dashboard.setPageTitle(systemInfo.ServerName);
-        });
     }
 
     function onSubmit() {
@@ -41,7 +66,7 @@
         var form = this;
         var page = $(form).parents('.page');
 
-        ApiClient.getServerConfiguration().done(function (config) {
+        ApiClient.getServerConfiguration().then(function (config) {
 
             config.ServerName = form.querySelector('#txtServerName').value;
             config.UICulture = $('#selectLocalizationLanguage', form).val();
@@ -52,18 +77,27 @@
                 Dashboard.showDashboardRefreshNotification();
             }
 
-            ApiClient.updateServerConfiguration(config).done(function () {
+            config.EnableAnonymousUsageReporting = $('#chkUsageData', form).checked();
+            config.RunAtStartup = $('#chkRunAtStartup', form).checked();
 
-                refreshPageTitle(page);
+            config.SystemUpdateLevel = $('#selectAutomaticUpdateLevel', form).val();
+            config.EnableAutomaticRestart = $('#chkEnableAutomaticRestart', form).checked();
+            config.EnableAutoUpdate = $('#chkEnableAutomaticServerUpdates', form).checked();
 
-                ApiClient.getNamedConfiguration(brandingConfigKey).done(function (brandingConfig) {
+            config.EnableDashboardResourceMinification = $('#chkEnableMinification', form).checked();
+            config.EnableDashboardResponseCaching = $('#chkEnableDashboardResponseCache', form).checked();
+            config.DashboardSourcePath = $('#txtDashboardSourcePath', form).val();
+
+            ApiClient.updateServerConfiguration(config).then(function () {
+
+                ApiClient.getNamedConfiguration(brandingConfigKey).then(function (brandingConfig) {
 
                     brandingConfig.LoginDisclaimer = form.querySelector('#txtLoginDisclaimer').value;
                     brandingConfig.CustomCss = form.querySelector('#txtCustomCss').value;
 
                     var cssChanged = currentBrandingOptions && brandingConfig.CustomCss != currentBrandingOptions.CustomCss;
 
-                    ApiClient.updateNamedConfiguration(brandingConfigKey, brandingConfig).done(Dashboard.processServerConfigurationUpdateResult);
+                    ApiClient.updateNamedConfiguration(brandingConfigKey, brandingConfig).then(Dashboard.processServerConfigurationUpdateResult);
 
                     if (cssChanged) {
                         Dashboard.showDashboardRefreshNotification();
@@ -77,11 +111,19 @@
         return false;
     }
 
-    $(document).on('pageinit', "#dashboardGeneralPage", function () {
+    return function (view, params) {
 
-        var page = this;
+        $('#selectAutomaticUpdateLevel', view).on('change', function () {
 
-        $('#btnSelectCachePath', page).on("click.selectDirectory", function () {
+            if (this.value == "Dev") {
+                $('#devBuildWarning', view).show();
+            } else {
+                $('#devBuildWarning', view).hide();
+            }
+
+        });
+
+        $('#btnSelectCachePath', view).on("click.selectDirectory", function () {
 
             require(['directorybrowser'], function (directoryBrowser) {
 
@@ -92,7 +134,7 @@
                     callback: function (path) {
 
                         if (path) {
-                            page.querySelector('#txtCachePath').value = path;
+                            view.querySelector('#txtCachePath').value = path;
                         }
                         picker.close();
                     },
@@ -104,32 +146,46 @@
             });
         });
 
-        $('.dashboardGeneralForm').off('submit', onSubmit).on('submit', onSubmit);
+        $('#btnSelectDashboardSourcePath', view).on("click.selectDirectory", function () {
 
-    }).on('pageshow', "#dashboardGeneralPage", function () {
+            require(['directorybrowser'], function (directoryBrowser) {
 
-        Dashboard.showLoadingMsg();
+                var picker = new directoryBrowser();
 
-        var page = this;
+                picker.show({
 
-        var promise1 = ApiClient.getServerConfiguration();
+                    callback: function (path) {
 
-        var promise2 = ApiClient.getJSON(ApiClient.getUrl("Localization/Options"));
-
-        $.when(promise1, promise2).done(function (response1, response2) {
-
-            loadPage(page, response1[0], response2[0]);
-
+                        if (path) {
+                            view.querySelector('#txtDashboardSourcePath').value = path;
+                        }
+                        picker.close();
+                    }
+                });
+            });
         });
 
-        ApiClient.getNamedConfiguration(brandingConfigKey).done(function (config) {
+        $('.dashboardGeneralForm', view).off('submit', onSubmit).on('submit', onSubmit);
 
-            currentBrandingOptions = config;
+        view.addEventListener('viewshow', function () {
 
-            page.querySelector('#txtLoginDisclaimer').value = config.LoginDisclaimer || '';
-            page.querySelector('#txtCustomCss').value = config.CustomCss || '';
+            var promise1 = ApiClient.getServerConfiguration();
+            var promise2 = ApiClient.getJSON(ApiClient.getUrl("Localization/Options"));
+            var promise3 = ApiClient.getSystemInfo();
+
+            Promise.all([promise1, promise2, promise3]).then(function (responses) {
+
+                loadPage(view, responses[0], responses[1], responses[2]);
+
+            });
+
+            ApiClient.getNamedConfiguration(brandingConfigKey).then(function (config) {
+
+                currentBrandingOptions = config;
+
+                view.querySelector('#txtLoginDisclaimer').value = config.LoginDisclaimer || '';
+                view.querySelector('#txtCustomCss').value = config.CustomCss || '';
+            });
         });
-
-    });
-
-})(jQuery, document, window);
+    };
+});

@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Net;
@@ -131,7 +130,7 @@ namespace MediaBrowser.Api.Images
         {
             try
             {
-				return _fileSystem.GetFiles(path)
+				return _fileSystem.GetFiles(path, true)
                     .Where(i => BaseItem.SupportedImageExtensions.Contains(i.Extension, StringComparer.Ordinal))
                     .Select(i => new ImageByNameInfo
                     {

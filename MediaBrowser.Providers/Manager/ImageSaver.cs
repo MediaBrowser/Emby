@@ -133,6 +133,7 @@ namespace MediaBrowser.Providers.Manager
             source = memoryStream;
 
             var currentImage = GetCurrentImage(item, type, index);
+            var savedPaths = new List<string>();
 
             using (source)
             {
@@ -146,17 +147,17 @@ namespace MediaBrowser.Providers.Manager
                     {
                         retryPath = retryPaths[currentPathIndex];
                     }
-                    await SaveImageToLocation(source, path, retryPath, cancellationToken).ConfigureAwait(false);
-
+                    var savedPath = await SaveImageToLocation(source, path, retryPath, cancellationToken).ConfigureAwait(false);
+                    savedPaths.Add(savedPath);
                     currentPathIndex++;
                 }
             }
 
             // Set the path into the item
-            SetImagePath(item, type, imageIndex, paths[0]);
+            SetImagePath(item, type, imageIndex, savedPaths[0]);
 
             // Delete the current path
-            if (currentImage != null && currentImage.IsLocalFile && !paths.Contains(currentImage.Path, StringComparer.OrdinalIgnoreCase))
+            if (currentImage != null && currentImage.IsLocalFile && !savedPaths.Contains(currentImage.Path, StringComparer.OrdinalIgnoreCase))
             {
                 var currentPath = currentImage.Path;
 
@@ -184,11 +185,12 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private async Task SaveImageToLocation(Stream source, string path, string retryPath, CancellationToken cancellationToken)
+        private async Task<string> SaveImageToLocation(Stream source, string path, string retryPath, CancellationToken cancellationToken)
         {
             try
             {
                 await SaveImageToLocation(source, path, cancellationToken).ConfigureAwait(false);
+                return path;
             }
             catch (UnauthorizedAccessException)
             {
@@ -207,6 +209,7 @@ namespace MediaBrowser.Providers.Manager
 
             source.Position = 0;
             await SaveImageToLocation(source, retryPath, cancellationToken).ConfigureAwait(false);
+            return retryPath;
         }
 
         /// <summary>
@@ -329,7 +332,55 @@ namespace MediaBrowser.Providers.Manager
         /// </exception>
         private string GetStandardSavePath(IHasImages item, ImageType type, int? imageIndex, string mimeType, bool saveLocally)
         {
+            var season = item as Season;
+            var extension = MimeTypes.ToExtension(mimeType);
+
+            if (type == ImageType.Thumb && saveLocally)
+            {
+                if (season != null && season.IndexNumber.HasValue)
+                {
+                    var seriesFolder = season.SeriesPath;
+
+                    var seasonMarker = season.IndexNumber.Value == 0
+                                           ? "-specials"
+                                           : season.IndexNumber.Value.ToString("00", UsCulture);
+
+                    var imageFilename = "season" + seasonMarker + "-landscape" + extension;
+
+                    return Path.Combine(seriesFolder, imageFilename);
+                }
+
+                if (item.IsInMixedFolder)
+                {
+                    return GetSavePathForItemInMixedFolder(item, type, "landscape", extension);
+                }
+
+                return Path.Combine(item.ContainingFolderPath, "landscape" + extension);
+            }
+
+            if (type == ImageType.Banner && saveLocally)
+            {
+                if (season != null && season.IndexNumber.HasValue)
+                {
+                    var seriesFolder = season.SeriesPath;
+
+                    var seasonMarker = season.IndexNumber.Value == 0
+                                           ? "-specials"
+                                           : season.IndexNumber.Value.ToString("00", UsCulture);
+
+                    var imageFilename = "season" + seasonMarker + "-banner" + extension;
+
+                    return Path.Combine(seriesFolder, imageFilename);
+                }
+            }
+
             string filename;
+            var folderName = item is MusicAlbum || 
+                item is MusicArtist || 
+                item is PhotoAlbum || 
+                (saveLocally && _config.Configuration.ImageSavingConvention == ImageSavingConvention.Legacy) ? 
+                "folder" : 
+                "poster";
 
             switch (type)
             {
@@ -339,11 +390,14 @@ namespace MediaBrowser.Providers.Manager
                 case ImageType.BoxRear:
                     filename = "back";
                     break;
+                case ImageType.Thumb:
+                    filename = "landscape";
+                    break;
                 case ImageType.Disc:
                     filename = item is MusicAlbum ? "cdart" : "disc";
                     break;
                 case ImageType.Primary:
-                    filename = item is Episode ? _fileSystem.GetFileNameWithoutExtension(item.Path) : "folder";
+                    filename = item is Episode ? _fileSystem.GetFileNameWithoutExtension(item.Path) : folderName;
                     break;
                 case ImageType.Backdrop:
                     filename = GetBackdropSaveFilename(item.GetImages(type), "backdrop", "backdrop", imageIndex);
@@ -356,20 +410,18 @@ namespace MediaBrowser.Providers.Manager
                     break;
             }
 
-            var extension = mimeType.Split('/').Last();
-
-            if (string.Equals(extension, "jpeg", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(extension, ".jpeg", StringComparison.OrdinalIgnoreCase))
             {
-                extension = "jpg";
+                extension = ".jpg";
             }
 
-            extension = "." + extension.ToLower();
+            extension = extension.ToLower();
 
             string path = null;
 
             if (saveLocally)
             {
-                if (item is Episode)
+                if (type == ImageType.Primary && item is Episode)
                 {
                     path = Path.Combine(Path.GetDirectoryName(item.Path), "metadata", filename + extension);
                 }
@@ -390,7 +442,7 @@ namespace MediaBrowser.Providers.Manager
             {
                 if (string.IsNullOrEmpty(filename))
                 {
-                    filename = "folder";
+                    filename = folderName;
                 }
                 path = Path.Combine(item.GetInternalMetadataPath(), filename + extension);
             }
@@ -521,45 +573,6 @@ namespace MediaBrowser.Providers.Manager
                 }
 
                 return new[] { Path.Combine(item.ContainingFolderPath, "poster" + extension) };
-            }
-
-            if (type == ImageType.Banner)
-            {
-                if (season != null && season.IndexNumber.HasValue)
-                {
-                    var seriesFolder = season.SeriesPath;
-
-                    var seasonMarker = season.IndexNumber.Value == 0
-                                           ? "-specials"
-                                           : season.IndexNumber.Value.ToString("00", UsCulture);
-
-                    var imageFilename = "season" + seasonMarker + "-banner" + extension;
-
-                    return new[] { Path.Combine(seriesFolder, imageFilename) };
-                }
-            }
-
-            if (type == ImageType.Thumb)
-            {
-                if (season != null && season.IndexNumber.HasValue)
-                {
-                    var seriesFolder = season.SeriesPath;
-
-                    var seasonMarker = season.IndexNumber.Value == 0
-                                           ? "-specials"
-                                           : season.IndexNumber.Value.ToString("00", UsCulture);
-
-                    var imageFilename = "season" + seasonMarker + "-landscape" + extension;
-
-                    return new[] { Path.Combine(seriesFolder, imageFilename) };
-                }
-
-                if (item.IsInMixedFolder)
-                {
-                    return new[] { GetSavePathForItemInMixedFolder(item, type, "landscape", extension) };
-                }
-
-                return new[] { Path.Combine(item.ContainingFolderPath, "landscape" + extension) };
             }
 
             // All other paths are the same

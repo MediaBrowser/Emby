@@ -63,11 +63,11 @@ namespace MediaBrowser.Model.Configuration
         public bool IsPortAuthorized { get; set; }
 
         /// <summary>
-        /// Gets or sets the item by name path.
+        /// Gets or sets a value indicating whether [enable case sensitive item ids].
         /// </summary>
-        /// <value>The item by name path.</value>
-        public string ItemsByNamePath { get; set; }
-
+        /// <value><c>true</c> if [enable case sensitive item ids]; otherwise, <c>false</c>.</value>
+        public bool EnableCaseSensitiveItemIds { get; set; }
+        
         /// <summary>
         /// Gets or sets the metadata path.
         /// </summary>
@@ -91,24 +91,6 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable localized guids]; otherwise, <c>false</c>.</value>
         public bool EnableLocalizedGuids { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [disable startup scan].
-        /// </summary>
-        /// <value><c>true</c> if [disable startup scan]; otherwise, <c>false</c>.</value>
-        public bool DisableStartupScan { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [enable user views].
-        /// </summary>
-        /// <value><c>true</c> if [enable user views]; otherwise, <c>false</c>.</value>
-        public bool EnableUserViews { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [enable library metadata sub folder].
-        /// </summary>
-        /// <value><c>true</c> if [enable library metadata sub folder]; otherwise, <c>false</c>.</value>
-        public bool EnableLibraryMetadataSubFolder { get; set; }
 
         /// <summary>
         /// Gets or sets the preferred metadata language.
@@ -164,7 +146,7 @@ namespace MediaBrowser.Model.Configuration
         /// different directories and files.
         /// </summary>
         /// <value>The file watcher delay.</value>
-        public int RealtimeLibraryMonitorDelay { get; set; }
+        public int LibraryMonitorDelay { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable dashboard response caching].
@@ -179,10 +161,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value>The dashboard source path.</value>
         public string DashboardSourcePath { get; set; }
-
-        public bool MergeMetadataAndImagesByName { get; set; }
-        public bool EnableStandaloneMetadata { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the image saving convention.
         /// </summary>
@@ -203,8 +182,6 @@ namespace MediaBrowser.Model.Configuration
         public PeopleMetadataOptions PeopleMetadataOptions { get; set; }
         public bool FindInternetTrailers { get; set; }
 
-        public string[] InsecureApps9 { get; set; }
-
         public bool SaveMetadataHidden { get; set; }
 
         public NameValuePair[] ContentTypes { get; set; }
@@ -219,21 +196,23 @@ namespace MediaBrowser.Model.Configuration
 
         public int SharingExpirationDays { get; set; }
 
-        public bool DisableXmlSavers { get; set; }
-        public bool EnableWindowsShortcuts { get; set; }
-
-        public bool EnableVideoFrameByFrameAnalysis { get; set; }
-
         public bool EnableDateLastRefresh { get; set; }
 
         public string[] Migrations { get; set; }
+
+        public int MigrationVersion { get; set; }
+
+        public bool DownloadImagesInAdvance { get; set; }
+
+        public bool EnableAnonymousUsageReporting { get; set; }
+        public bool EnableStandaloneMusicKeys { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
         /// </summary>
         public ServerConfiguration()
         {
-            Migrations = new string[] {};
+            Migrations = new string[] { };
 
             ImageSavingConvention = ImageSavingConvention.Compatible;
             PublicPort = 8096;
@@ -243,6 +222,7 @@ namespace MediaBrowser.Model.Configuration
             EnableHttps = false;
             EnableDashboardResponseCaching = true;
             EnableDashboardResourceMinification = true;
+            EnableAnonymousUsageReporting = true;
 
             EnableAutomaticRestart = true;
             DenyIFrameEmbedding = true;
@@ -257,7 +237,7 @@ namespace MediaBrowser.Model.Configuration
             MinResumeDurationSeconds = 300;
 
             EnableLibraryMonitor = AutoOnOff.Auto;
-            RealtimeLibraryMonitorDelay = 40;
+            LibraryMonitorDelay = 60;
 
             EnableInternetProviders = true;
             FindInternetTrailers = true;
@@ -277,11 +257,6 @@ namespace MediaBrowser.Model.Configuration
             UICulture = "en-us";
 
             PeopleMetadataOptions = new PeopleMetadataOptions();
-
-            InsecureApps9 = new[]
-            {
-                "Windows Phone"
-            };
 
             MetadataOptions = new[]
             {
@@ -578,7 +553,7 @@ namespace MediaBrowser.Model.Configuration
                             Type = ImageType.Thumb
                         }
                     },
-                    DisabledMetadataFetchers = new []{ "TheMovieDb" }
+                    DisabledMetadataFetchers = new []{ "The Open Movie Database", "TheMovieDb" }
                 },
 
                 new MetadataOptions(0, 1280)
@@ -599,6 +574,7 @@ namespace MediaBrowser.Model.Configuration
                             Type = ImageType.Primary
                         }
                     },
+                    DisabledMetadataFetchers = new []{ "The Open Movie Database" },
                     DisabledImageFetchers = new []{ "TheMovieDb" }
                 }
             };

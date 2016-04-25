@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function updateSeasonPatternHelp(page, value) {
 
@@ -60,9 +60,9 @@
 
         var tvOptions = config.TvOptions;
 
-        $('#chkEnableTvSorting', page).checked(tvOptions.IsEnabled).checkboxradio('refresh');
-        $('#chkOverwriteExistingEpisodes', page).checked(tvOptions.OverwriteExistingEpisodes).checkboxradio('refresh');
-        $('#chkDeleteEmptyFolders', page).checked(tvOptions.DeleteEmptyFolders).checkboxradio('refresh');
+        $('#chkEnableTvSorting', page).checked(tvOptions.IsEnabled);
+        $('#chkOverwriteExistingEpisodes', page).checked(tvOptions.OverwriteExistingEpisodes);
+        $('#chkDeleteEmptyFolders', page).checked(tvOptions.DeleteEmptyFolders);
 
         $('#txtMinFileSize', page).val(tvOptions.MinFileSizeMb);
         $('#txtSeasonFolderPattern', page).val(tvOptions.SeasonFolderPattern).trigger('change');
@@ -81,7 +81,7 @@
     function onSubmit() {
         var form = this;
 
-        ApiClient.getNamedConfiguration('autoorganize').done(function (config) {
+        ApiClient.getNamedConfiguration('autoorganize').then(function (config) {
 
             var tvOptions = config.TvOptions;
 
@@ -103,10 +103,26 @@
 
             tvOptions.CopyOriginalFile = $('#copyOrMoveFile', form).val();
 
-            ApiClient.updateNamedConfiguration('autoorganize', config).done(Dashboard.processServerConfigurationUpdateResult);
+            ApiClient.updateNamedConfiguration('autoorganize', config).then(Dashboard.processServerConfigurationUpdateResult);
         });
 
         return false;
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'autoorganizelog.html',
+            name: Globalize.translate('TabActivityLog')
+        },
+         {
+             href: 'autoorganizetv.html',
+             name: Globalize.translate('TabTV')
+         },
+         {
+             href: 'autoorganizesmart.html',
+             name: Globalize.translate('TabSmartMatches')
+         }];
     }
 
     $(document).on('pageinit', "#libraryFileOrganizerPage", function () {
@@ -160,9 +176,10 @@
 
         var page = this;
 
-        ApiClient.getNamedConfiguration('autoorganize').done(function (config) {
+        LibraryMenu.setTabs('autoorganize', 1, getTabs);
+
+        ApiClient.getNamedConfiguration('autoorganize').then(function (config) {
             loadPage(page, config);
         });
     });
-
-})(jQuery, document, window);
+});

@@ -1,19 +1,27 @@
-﻿(function () {
+﻿define(['browser', 'appStorage'], function (browser, appStorage) {
 
-    Dashboard.importCss('devices/ie/ie.css');
+    require(['css!devices/ie/ie.css']);
+    var browserSwitchKey = "ieswitchbrowser";
+
+    function getWeek(date) {
+
+        var onejan = new Date(date.getFullYear(), 0, 1);
+        return Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 4);
+    }
 
     function onPageShow() {
 
-        var page = this;
+        var expectedValue;
+        var msg;
 
         if (navigator.userAgent.toLowerCase().indexOf('windows nt 10.') != -1) {
 
-            var expectedValue = new Date().toDateString() + "1";
-            if (appStorage.getItem("ieswitchtoedge") == expectedValue) {
+            expectedValue = new Date().toDateString() + "1";
+            if (appStorage.getItem(browserSwitchKey) == expectedValue) {
                 return;
             }
 
-            var msg = Globalize.translate('MessageTryMicrosoftEdge');
+            msg = Globalize.translate('MessageTryMicrosoftEdge');
 
             msg += "<br/><br/>";
             msg += '<a href="https://www.microsoft.com/en-us/windows/microsoft-edge" target="_blank">' + Globalize.translate('ButtonLearnMore') + '</a>';
@@ -23,13 +31,33 @@
                 title: Globalize.translate('HeaderTryMicrosoftEdge')
             });
 
-            appStorage.setItem("ieswitchtoedge", expectedValue);
-        } else {
-            
+        } else if (!browser.mobile) {
+
+            expectedValue = getWeek(new Date()) + "_7";
+
+            if (appStorage.getItem(browserSwitchKey) == expectedValue) {
+                return;
+            }
+
+            if (!appStorage.getItem(browserSwitchKey)) {
+                appStorage.setItem(browserSwitchKey, expectedValue);
+                return;
+            }
+
+            msg = Globalize.translate('MessageTryModernBrowser');
+
+            msg += "<br/><br/>";
+            msg += '<a href="https://www.google.com/chrome" target="_blank">' + Globalize.translate('ButtonLearnMore') + '</a>';
+
+            Dashboard.alert({
+                message: msg,
+                title: Globalize.translate('HeaderTryModernBrowser')
+            });
         }
+
+        appStorage.setItem(browserSwitchKey, expectedValue);
     }
 
     pageClassOn('pageshow', "libraryPage", onPageShow);
     pageClassOn('pageshow', "type-interior", onPageShow);
-
-})();
+});

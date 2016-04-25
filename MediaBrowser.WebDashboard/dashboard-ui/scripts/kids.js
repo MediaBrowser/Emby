@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function showSignIn(page) {
 
@@ -28,7 +28,7 @@
             EnableImageTypes: "Primary,Backdrop,Thumb"
         };
 
-        ApiClient.getItems(Dashboard.getCurrentUserId(), options).done(function (result) {
+        ApiClient.getItems(Dashboard.getCurrentUserId(), options).then(function (result) {
 
             $('.itemsContainer', page).html(LibraryBrowser.getPosterViewHtml({
 
@@ -120,4 +120,4 @@
         $('.kidsOptionsForm').off('submit', onOptionsSubmit).on('submit', onOptionsSubmit);
     });
 
-})(jQuery, document, window);
+});

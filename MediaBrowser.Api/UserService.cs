@@ -2,7 +2,6 @@
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
-using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Session;
@@ -414,23 +413,6 @@ namespace MediaBrowser.Api
         public async Task<object> Post(AuthenticateUserByName request)
         {
             var auth = AuthorizationContext.GetAuthorizationInfo(Request);
-
-            if (string.IsNullOrWhiteSpace(auth.Client))
-            {
-                auth.Client = "Unknown app";
-            }
-            if (string.IsNullOrWhiteSpace(auth.Device))
-            {
-                auth.Device = "Unknown device";
-            }
-            if (string.IsNullOrWhiteSpace(auth.Version))
-            {
-                auth.Version = "Unknown version";
-            }
-            if (string.IsNullOrWhiteSpace(auth.DeviceId))
-            {
-                auth.DeviceId = "Unknown device id";
-            }
 
             var result = await _sessionMananger.AuthenticateNewSession(new AuthenticationRequest
             {

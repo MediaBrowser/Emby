@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Model.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Resolvers;
@@ -47,11 +46,14 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <summary>
         /// Shoulds the ignore.
         /// </summary>
-        /// <param name="args">The args.</param>
+        /// <param name="fileInfo">The file information.</param>
+        /// <param name="parent">The parent.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        public bool ShouldIgnore(ItemResolveArgs args)
+        public bool ShouldIgnore(FileSystemMetadata fileInfo, BaseItem parent)
         {
-            var filename = args.FileInfo.Name;
+            var filename = fileInfo.Name;
+            var isHidden = (fileInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden;
+            var path = fileInfo.FullName;
 
             // Handle mac .DS_Store
             // https://github.com/MediaBrowser/MediaBrowser/issues/427
@@ -61,21 +63,24 @@ namespace MediaBrowser.Server.Implementations.Library
             }
 
             // Ignore hidden files and folders
-            if (args.IsHidden)
+            if (isHidden)
             {
-                var parentFolderName = Path.GetFileName(Path.GetDirectoryName(args.Path));
+                if (parent == null)
+                {
+                    var parentFolderName = Path.GetFileName(Path.GetDirectoryName(path));
 
-                if (string.Equals(parentFolderName, BaseItem.ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return false;
-                }
-                if (string.Equals(parentFolderName, BaseItem.ThemeVideosFolderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return false;
+                    if (string.Equals(parentFolderName, BaseItem.ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(parentFolderName, BaseItem.ThemeVideosFolderName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
                 }
 
                 // Sometimes these are marked hidden
-                if (_fileSystem.IsRootPath(args.Path))
+                if (_fileSystem.IsRootPath(path))
                 {
                     return false;
                 }
@@ -83,7 +88,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 return true;
             }
 
-            if (args.IsDirectory)
+            if (fileInfo.IsDirectory)
             {
                 // Ignore any folders in our list
                 if (IgnoreFolders.Contains(filename, StringComparer.OrdinalIgnoreCase))
@@ -91,26 +96,29 @@ namespace MediaBrowser.Server.Implementations.Library
                     return true;
                 }
 
-                // Ignore trailer folders but allow it at the collection level
-                if (string.Equals(filename, BaseItem.TrailerFolderName, StringComparison.OrdinalIgnoreCase) &&
-                    !(args.Parent is AggregateFolder) && !(args.Parent is UserRootFolder))
+                if (parent != null)
                 {
-                    return true;
-                }
+                    // Ignore trailer folders but allow it at the collection level
+                    if (string.Equals(filename, BaseItem.TrailerFolderName, StringComparison.OrdinalIgnoreCase) &&
+                        !(parent is AggregateFolder) && !(parent is UserRootFolder))
+                    {
+                        return true;
+                    }
 
-                if (string.Equals(filename, BaseItem.ThemeVideosFolderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
+                    if (string.Equals(filename, BaseItem.ThemeVideosFolderName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
 
-                if (string.Equals(filename, BaseItem.ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
+                    if (string.Equals(filename, BaseItem.ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
             }
             else
             {
-                if (args.Parent != null)
+                if (parent != null)
                 {
                     // Don't resolve these into audio files
                     if (string.Equals(_fileSystem.GetFileNameWithoutExtension(filename), BaseItem.ThemeSongFilename) && _libraryManager.IsAudioFile(filename))

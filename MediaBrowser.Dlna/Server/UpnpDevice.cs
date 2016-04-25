@@ -8,10 +8,10 @@ namespace MediaBrowser.Dlna.Server
         public readonly Uri Descriptor;
         public readonly string Type;
         public readonly string USN;
-        public readonly Guid Uuid;
+        public readonly string Uuid;
         public readonly IPAddress Address;
 
-        public UpnpDevice(Guid aUuid, string aType, Uri aDescriptor, IPAddress address)
+        public UpnpDevice(string aUuid, string aType, Uri aDescriptor, IPAddress address)
         {
             Uuid = aUuid;
             Type = aType;
@@ -19,13 +19,18 @@ namespace MediaBrowser.Dlna.Server
 
             Address = address;
 
-            if (Type.StartsWith("uuid:", StringComparison.OrdinalIgnoreCase))
+            USN = CreateUSN(aUuid, aType);
+        }
+
+        private static string CreateUSN(string aUuid, string aType)
+        {
+            if (aType.StartsWith("uuid:", StringComparison.OrdinalIgnoreCase))
             {
-                USN = Type;
+                return aType;
             }
             else
             {
-                USN = String.Format("uuid:{0}::{1}", Uuid.ToString("N"), Type);
+                return String.Format("uuid:{0}::{1}", aUuid, aType);
             }
         }
     }

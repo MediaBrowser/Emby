@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
@@ -101,9 +100,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
             if (movie != null)
             {
-                if (!string.IsNullOrEmpty(movie.TmdbCollectionName))
+                if (!string.IsNullOrEmpty(movie.CollectionName))
                 {
-                    writer.WriteElementString("set", movie.TmdbCollectionName);
+                    writer.WriteElementString("set", movie.CollectionName);
                 }
             }
         }

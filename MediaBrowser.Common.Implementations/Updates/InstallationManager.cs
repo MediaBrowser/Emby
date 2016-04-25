@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Implementations.Security;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Progress;
@@ -185,7 +184,7 @@ namespace MediaBrowser.Common.Implementations.Updates
             }
         }
 
-        private Tuple<List<PackageInfo>, DateTime> _lastPackageListResult;
+        private DateTime _lastPackageUpdateTime;
 
         /// <summary>
         /// Gets all available packages.
@@ -194,40 +193,88 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// <returns>Task{List{PackageInfo}}.</returns>
         public async Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken)
         {
-            if (_lastPackageListResult != null)
+            try
             {
-                TimeSpan cacheLength;
-
-                switch (_config.CommonConfiguration.SystemUpdateLevel)
+                using (var stream = _fileSystem.OpenRead(PackageCachePath))
                 {
-                    case PackageVersionClass.Beta:
-                        cacheLength = TimeSpan.FromMinutes(30);
-                        break;
-                    case PackageVersionClass.Dev:
-                        cacheLength = TimeSpan.FromMinutes(3);
-                        break;
-                    default:
-                        cacheLength = TimeSpan.FromHours(24);
-                        break;
-                }
+                    var packages = _jsonSerializer.DeserializeFromStream<List<PackageInfo>>(stream).ToList();
 
-                if ((DateTime.UtcNow - _lastPackageListResult.Item2) < cacheLength)
-                {
-                    return _lastPackageListResult.Item1;
+                    if (DateTime.UtcNow - _lastPackageUpdateTime > GetCacheLength())
+                    {
+                        UpdateCachedPackages(CancellationToken.None, false);
+                    }
+
+                    return packages;
                 }
             }
-
-            using (var json = await _httpClient.Get(MbAdmin.HttpUrl + "service/MB3Packages.json", cancellationToken).ConfigureAwait(false))
+            catch (Exception)
             {
-                cancellationToken.ThrowIfCancellationRequested();
 
-                var packages = _jsonSerializer.DeserializeFromStream<List<PackageInfo>>(json).ToList();
+            }
 
-                packages = FilterPackages(packages).ToList();
+            _lastPackageUpdateTime = DateTime.MinValue;
+            await UpdateCachedPackages(cancellationToken, true).ConfigureAwait(false);
+            using (var stream = _fileSystem.OpenRead(PackageCachePath))
+            {
+                return _jsonSerializer.DeserializeFromStream<List<PackageInfo>>(stream).ToList();
+            }
+        }
 
-                _lastPackageListResult = new Tuple<List<PackageInfo>, DateTime>(packages, DateTime.UtcNow);
+        private string PackageCachePath
+        {
+            get { return Path.Combine(_appPaths.CachePath, "serverpackages.json"); }
+        }
 
-                return _lastPackageListResult.Item1;
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1, 1);
+        private async Task UpdateCachedPackages(CancellationToken cancellationToken, bool throwErrors)
+        {
+            await _updateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                if (DateTime.UtcNow - _lastPackageUpdateTime < GetCacheLength())
+                {
+                    return;
+                }
+
+                var tempFile = await _httpClient.GetTempFile(new HttpRequestOptions
+                {
+                    Url = MbAdmin.HttpUrl + "service/MB3Packages.json",
+                    CancellationToken = cancellationToken,
+                    Progress = new Progress<Double>()
+
+                }).ConfigureAwait(false);
+
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(PackageCachePath));
+
+                _fileSystem.CopyFile(tempFile, PackageCachePath, true);
+                _lastPackageUpdateTime = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error updating package cache", ex);
+
+                if (throwErrors)
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+                _updateSemaphore.Release();
+            }
+        }
+
+        private TimeSpan GetCacheLength()
+        {
+            switch (_config.CommonConfiguration.SystemUpdateLevel)
+            {
+                case PackageVersionClass.Beta:
+                    return TimeSpan.FromMinutes(30);
+                case PackageVersionClass.Dev:
+                    return TimeSpan.FromMinutes(3);
+                default:
+                    return TimeSpan.FromHours(24);
             }
         }
 
@@ -389,11 +436,12 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// Installs the package.
         /// </summary>
         /// <param name="package">The package.</param>
+        /// <param name="isPlugin">if set to <c>true</c> [is plugin].</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">package</exception>
-        public async Task InstallPackage(PackageVersionInfo package, IProgress<double> progress, CancellationToken cancellationToken)
+        public async Task InstallPackage(PackageVersionInfo package, bool isPlugin, IProgress<double> progress, CancellationToken cancellationToken)
         {
             if (package == null)
             {
@@ -446,7 +494,7 @@ namespace MediaBrowser.Common.Implementations.Updates
 
             try
             {
-                await InstallPackageInternal(package, innerProgress, linkedToken).ConfigureAwait(false);
+                await InstallPackageInternal(package, isPlugin, innerProgress, linkedToken).ConfigureAwait(false);
 
                 lock (CurrentInstallations)
                 {
@@ -502,18 +550,17 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// Installs the package internal.
         /// </summary>
         /// <param name="package">The package.</param>
+        /// <param name="isPlugin">if set to <c>true</c> [is plugin].</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task InstallPackageInternal(PackageVersionInfo package, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task InstallPackageInternal(PackageVersionInfo package, bool isPlugin, IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Do the install
             await PerformPackageInstallation(progress, package, cancellationToken).ConfigureAwait(false);
 
-            var extension = Path.GetExtension(package.targetFilename) ?? "";
-
             // Do plugin-specific processing
-            if (!string.Equals(extension, ".zip", StringComparison.OrdinalIgnoreCase) && !string.Equals(extension, ".rar", StringComparison.OrdinalIgnoreCase) && !string.Equals(extension, ".7z", StringComparison.OrdinalIgnoreCase))
+            if (isPlugin)
             {
                 // Set last update time if we were installed before
                 var plugin = _applicationHost.Plugins.FirstOrDefault(p => string.Equals(p.Id.ToString(), package.guid, StringComparison.OrdinalIgnoreCase))
@@ -554,7 +601,7 @@ namespace MediaBrowser.Common.Implementations.Updates
             if (packageChecksum != Guid.Empty) // support for legacy uploads for now
             {
                 using (var crypto = new MD5CryptoServiceProvider())
-				using (var stream = new BufferedStream(_fileSystem.OpenRead(tempFile), 100000))
+                using (var stream = new BufferedStream(_fileSystem.OpenRead(tempFile), 100000))
                 {
                     var check = Guid.Parse(BitConverter.ToString(crypto.ComputeHash(stream)).Replace("-", String.Empty));
                     if (check != packageChecksum)
@@ -569,12 +616,12 @@ namespace MediaBrowser.Common.Implementations.Updates
             // Success - move it to the real target 
             try
             {
-				_fileSystem.CreateDirectory(Path.GetDirectoryName(target));
-				_fileSystem.CopyFile(tempFile, target, true);
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(target));
+                _fileSystem.CopyFile(tempFile, target, true);
                 //If it is an archive - write out a version file so we know what it is
                 if (isArchive)
                 {
-					File.WriteAllText(target + ".ver", package.versionStr);
+                    File.WriteAllText(target + ".ver", package.versionStr);
                 }
             }
             catch (IOException e)

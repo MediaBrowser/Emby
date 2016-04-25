@@ -12,7 +12,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Server.Implementations.Library.Validators
 {
@@ -125,10 +124,21 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
 
                     validIds.Add(item.Id);
 
+                    var hasMetdata = !string.IsNullOrWhiteSpace(item.Overview);
+                    var performFullRefresh = !hasMetdata && (DateTime.UtcNow - item.DateLastRefreshed).TotalDays >= 14;
+
+                    var defaultMetadataRefreshMode = performFullRefresh
+                        ? MetadataRefreshMode.FullRefresh
+                        : MetadataRefreshMode.Default;
+
+                    var imageRefreshMode = performFullRefresh
+                        ? ImageRefreshMode.FullRefresh
+                        : ImageRefreshMode.Default;
+
                     var options = new MetadataRefreshOptions(_fileSystem)
                     {
-                        MetadataRefreshMode = person.Value ? MetadataRefreshMode.Default : MetadataRefreshMode.ValidationOnly,
-                        ImageRefreshMode = person.Value ? ImageRefreshMode.Default : ImageRefreshMode.ValidationOnly
+                        MetadataRefreshMode = person.Value ? defaultMetadataRefreshMode : MetadataRefreshMode.ValidationOnly,
+                        ImageRefreshMode = person.Value ? imageRefreshMode : ImageRefreshMode.ValidationOnly
                     };
 
                     await item.RefreshMetadata(options, cancellationToken).ConfigureAwait(false);
@@ -165,11 +175,14 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
 
                 var item = _libraryManager.GetItemById(id);
 
-                await _libraryManager.DeleteItem(item, new DeleteOptions
+                if (item != null)
                 {
-                    DeleteFileLocation = false
+                    await _libraryManager.DeleteItem(item, new DeleteOptions
+                    {
+                        DeleteFileLocation = false
 
-                }).ConfigureAwait(false);
+                    }).ConfigureAwait(false);
+                }
             }
 
             progress.Report(100);

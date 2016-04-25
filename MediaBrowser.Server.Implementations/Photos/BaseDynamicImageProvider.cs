@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -14,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Server.Implementations.Photos
 {
@@ -47,6 +47,41 @@ namespace MediaBrowser.Server.Implementations.Photos
             };
         }
 
+        private IEnumerable<ImageType> GetEnabledImages(IHasImages item)
+        {
+            //var options = ProviderManager.GetMetadataOptions(item);
+
+            return GetSupportedImages(item);
+            //return GetSupportedImages(item).Where(i => IsEnabled(options, i, item)).ToList();
+        }
+
+        private bool IsEnabled(MetadataOptions options, ImageType type, IHasImages item)
+        {
+            if (type == ImageType.Backdrop)
+            {
+                if (item.LockedFields.Contains(MetadataFields.Backdrops))
+                {
+                    return false;
+                }
+            }
+            else if (type == ImageType.Screenshot)
+            {
+                if (item.LockedFields.Contains(MetadataFields.Screenshots))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (item.LockedFields.Contains(MetadataFields.Images))
+                {
+                    return false;
+                }
+            }
+
+            return options.IsEnabled(type);
+        }
+
         public async Task<ItemUpdateType> FetchAsync(T item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
             if (!Supports(item))
@@ -55,7 +90,7 @@ namespace MediaBrowser.Server.Implementations.Photos
             }
 
             var updateType = ItemUpdateType.None;
-            var supportedImages = GetSupportedImages(item).ToList();
+            var supportedImages = GetEnabledImages(item).ToList();
 
             if (supportedImages.Contains(ImageType.Primary))
             {
@@ -68,7 +103,6 @@ namespace MediaBrowser.Server.Implementations.Photos
                 var thumbResult = await FetchAsync(item, ImageType.Thumb, options, cancellationToken).ConfigureAwait(false);
                 updateType = updateType | thumbResult;
             }
-
 
             return updateType;
         }
@@ -220,7 +254,7 @@ namespace MediaBrowser.Server.Implementations.Photos
                 return false;
             }
 
-            var supportedImages = GetSupportedImages(item).ToList();
+            var supportedImages = GetEnabledImages(item).ToList();
 
             if (supportedImages.Contains(ImageType.Primary) && HasChanged(item, ImageType.Primary))
             {
@@ -284,6 +318,26 @@ namespace MediaBrowser.Server.Implementations.Photos
                 // Run before the default image provider which will download placeholders
                 return 0;
             }
+        }
+
+        protected async Task<string> CreateSingleImage(List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType)
+        {
+            var image = itemsWithImages
+                .Where(i => i.HasImage(imageType) && i.GetImageInfo(imageType, 0).IsLocalFile && Path.HasExtension(i.GetImagePath(imageType)))
+                .Select(i => i.GetImagePath(imageType))
+                .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(image))
+            {
+                return null;
+            }
+
+            var ext = Path.GetExtension(image);
+
+            var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ext);
+            File.Copy(image, outputPath);
+
+            return outputPath;
         }
     }
 }

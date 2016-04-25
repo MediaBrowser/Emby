@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -17,6 +16,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Providers.Manager
@@ -129,7 +130,7 @@ namespace MediaBrowser.Providers.Manager
                 {
                     if (!IsEnabled(savedOptions, imageType, item)) continue;
 
-                    if (!item.HasImage(imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
+                    if (!HasImage(item, imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
                     {
                         _logger.Debug("Running {0} for {1}", provider.GetType().Name, item.Path ?? item.Name);
 
@@ -198,6 +199,14 @@ namespace MediaBrowser.Providers.Manager
             ImageType.Thumb
         };
 
+        private bool HasImage(IHasImages item, ImageType type)
+        {
+            var image = item.GetImageInfo(type, 0);
+
+            // if it's a placeholder image then pretend like it's not there so that we can replace it
+            return image != null && !image.IsPlaceholder;
+        }
+
         /// <summary>
         /// Determines if an item already contains the given images
         /// </summary>
@@ -209,7 +218,7 @@ namespace MediaBrowser.Providers.Manager
         /// <returns><c>true</c> if the specified item contains images; otherwise, <c>false</c>.</returns>
         private bool ContainsImages(IHasImages item, List<ImageType> images, MetadataOptions savedOptions, int backdropLimit, int screenshotLimit)
         {
-            if (_singularImages.Any(i => images.Contains(i) && !item.HasImage(i) && savedOptions.GetLimit(i) > 0))
+            if (_singularImages.Any(i => images.Contains(i) && !HasImage(item, i) && savedOptions.GetLimit(i) > 0))
             {
                 return false;
             }
@@ -281,7 +290,7 @@ namespace MediaBrowser.Providers.Manager
                 {
                     if (!IsEnabled(savedOptions, imageType, item)) continue;
 
-                    if (!item.HasImage(imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
+                    if (!HasImage(item, imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
                     {
                         minWidth = savedOptions.GetMinWidth(imageType);
                         var downloaded = await DownloadImage(item, provider, result, list, minWidth, imageType, cancellationToken).ConfigureAwait(false);
@@ -350,9 +359,16 @@ namespace MediaBrowser.Providers.Manager
         private void ClearImages(IHasImages item, ImageType type)
         {
             var deleted = false;
+            var deletedImages = new List<ItemImageInfo>();
 
             foreach (var image in item.GetImages(type).ToList())
             {
+                if (!image.IsLocalFile)
+                {
+                    deletedImages.Add(image);
+                    continue;
+                }
+
                 // Delete the source file
                 var currentFile = new FileInfo(image.Path);
 
@@ -367,6 +383,11 @@ namespace MediaBrowser.Providers.Manager
                     _fileSystem.DeleteFile(currentFile.FullName);
                     deleted = true;
                 }
+            }
+
+            foreach (var image in deletedImages)
+            {
+                item.RemoveImage(image);
             }
 
             if (deleted)
@@ -459,21 +480,20 @@ namespace MediaBrowser.Providers.Manager
             ImageType type,
             CancellationToken cancellationToken)
         {
-            foreach (var image in images.Where(i => i.Type == type))
+            var eligibleImages = images
+                .Where(i => i.Type == type && !(i.Width.HasValue && i.Width.Value < minWidth))
+                .ToList();
+
+            if (EnableImageStub(item, type) && eligibleImages.Count > 0)
             {
-                if (image.Width.HasValue && image.Width.Value < minWidth)
-                {
-                    continue;
-                }
+                SaveImageStub(item, type, eligibleImages.Select(i => i.Url));
+                result.UpdateType = result.UpdateType | ItemUpdateType.ImageUpdate;
+                return true;
+            }
 
+            foreach (var image in eligibleImages)
+            {
                 var url = image.Url;
-
-                if (EnableImageStub(item, type))
-                {
-                    SaveImageStub(item, type, url);
-                    result.UpdateType = result.UpdateType | ItemUpdateType.ImageUpdate;
-                    return true;
-                }
 
                 try
                 {
@@ -500,21 +520,66 @@ namespace MediaBrowser.Providers.Manager
 
         private bool EnableImageStub(IHasImages item, ImageType type)
         {
+            if (item is LiveTvProgram)
+            {
+                return true;
+            }
+
+            if (_config.Configuration.DownloadImagesInAdvance)
+            {
+                return false;
+            }
+
             if (item.LocationType == LocationType.Remote || item.LocationType == LocationType.Virtual)
             {
                 return true;
             }
 
-            return false;
+            if (!item.IsSaveLocalMetadataEnabled())
+            {
+                return true;
+            }
+
+            if (item is IItemByName && !(item is MusicArtist))
+            {
+                var hasDualAccess = item as IHasDualAccess;
+                if (hasDualAccess == null || hasDualAccess.IsAccessedByName)
+                {
+                    return true;
+                }
+            }
+
+            switch (type)
+            {
+                case ImageType.Primary:
+                    return false;
+                case ImageType.Thumb:
+                    return false;
+                case ImageType.Logo:
+                    return false;
+                case ImageType.Backdrop:
+                    return false;
+                case ImageType.Screenshot:
+                    return false;
+                default:
+                    return true;
+            }
         }
 
-        private void SaveImageStub(IHasImages item, ImageType imageType, string url)
+        private void SaveImageStub(IHasImages item, ImageType imageType, IEnumerable<string> urls)
         {
             var newIndex = item.AllowsMultipleImages(imageType) ? item.GetImages(imageType).Count() : 0;
 
+            SaveImageStub(item, imageType, urls, newIndex);
+        }
+
+        private void SaveImageStub(IHasImages item, ImageType imageType, IEnumerable<string> urls, int newIndex)
+        {
+            var path = string.Join("|", urls.Take(1).ToArray());
+
             item.SetImage(new ItemImageInfo
             {
-                Path = url,
+                Path = path,
                 Type = imageType
 
             }, newIndex);
@@ -538,9 +603,9 @@ namespace MediaBrowser.Providers.Manager
 
                 if (EnableImageStub(item, imageType))
                 {
-                    SaveImageStub(item, imageType, url);
+                    SaveImageStub(item, imageType, new[] { url });
                     result.UpdateType = result.UpdateType | ItemUpdateType.ImageUpdate;
-                    return;
+                    continue;
                 }
 
                 try

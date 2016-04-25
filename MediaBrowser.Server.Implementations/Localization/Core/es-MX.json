@@ -1,4 +1,5 @@
 {
+    "DbUpgradeMessage": "Por favor espere mientras la base de datos de su Servidor Emby es actualizada. {0}% completo.",
     "AppDeviceValues": "App: {0}, Dispositivo: {1}",
     "UserDownloadingItemWithValues": "{0} esta descargando {1}",
     "FolderTypeMixed": "Contenido mezclado",
@@ -66,7 +67,7 @@
     "ViewTypeGameSystems": "Sistemas de Juego",
     "ViewTypeGameGenres": "G\u00e9neros",
     "ViewTypeTvResume": "Continuar",
-    "ViewTypeTvNextUp": "Siguiente",
+    "ViewTypeTvNextUp": "A Continuaci\u00f3n",
     "ViewTypeTvLatest": "Recientes",
     "ViewTypeTvShowSeries": "Series",
     "ViewTypeTvGenres": "G\u00e9neros",

@@ -3,11 +3,12 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.MediaInfo;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
+using MediaBrowser.Controller.Channels;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
@@ -24,11 +25,26 @@ namespace MediaBrowser.Controller.Entities.Audio
         IThemeMedia,
         IArchivable
     {
+        public List<ChannelMediaInfo> ChannelMediaSources { get; set; }
+        
         public long? Size { get; set; }
         public string Container { get; set; }
         public int? TotalBitrate { get; set; }
-        public List<string> Tags { get; set; }
         public ExtraType? ExtraType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the artist.
+        /// </summary>
+        /// <value>The artist.</value>
+        public List<string> Artists { get; set; }
+
+        public List<string> AlbumArtists { get; set; }
+
+        /// <summary>
+        /// Gets or sets the album.
+        /// </summary>
+        /// <value>The album.</value>
+        public string Album { get; set; }
 
         [IgnoreDataMember]
         public bool IsThemeMedia
@@ -43,7 +59,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             Artists = new List<string>();
             AlbumArtists = new List<string>();
-            Tags = new List<string>();
         }
 
         [IgnoreDataMember]
@@ -92,14 +107,6 @@ namespace MediaBrowser.Controller.Entities.Audio
                    locationType != LocationType.Virtual;
         }
 
-        /// <summary>
-        /// Gets or sets the artist.
-        /// </summary>
-        /// <value>The artist.</value>
-        public List<string> Artists { get; set; }
-
-        public List<string> AlbumArtists { get; set; }
-        
         [IgnoreDataMember]
         public List<string> AllArtists
         {
@@ -113,12 +120,6 @@ namespace MediaBrowser.Controller.Entities.Audio
 
             }
         }
-
-        /// <summary>
-        /// Gets or sets the album.
-        /// </summary>
-        /// <value>The album.</value>
-        public string Album { get; set; }
 
         [IgnoreDataMember]
         public MusicAlbum AlbumEntity
@@ -155,6 +156,31 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// <returns>System.String.</returns>
         protected override string CreateUserDataKey()
         {
+            if (ConfigurationManager.Configuration.EnableStandaloneMusicKeys)
+            {
+                var songKey = IndexNumber.HasValue ? IndexNumber.Value.ToString("0000") : string.Empty;
+
+
+                if (ParentIndexNumber.HasValue)
+                {
+                    songKey = ParentIndexNumber.Value.ToString("0000") + "-" + songKey;
+                }
+                songKey+= Name;
+
+                if (!string.IsNullOrWhiteSpace(Album))
+                {
+                    songKey = Album + "-" + songKey;
+                }
+
+                var albumArtist = AlbumArtists.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(albumArtist))
+                {
+                    songKey = albumArtist + "-" + songKey;
+                }
+
+                return songKey;
+            }
+
             var parent = AlbumEntity;
 
             if (parent != null)
@@ -164,7 +190,7 @@ namespace MediaBrowser.Controller.Entities.Audio
                 if (IndexNumber.HasValue)
                 {
                     var songKey = (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("0000 - ") : "")
-                                  + (IndexNumber.Value.ToString("0000 - "));
+                                  + IndexNumber.Value.ToString("0000 - ");
 
                     return parentKey + songKey;
                 }
@@ -173,9 +199,13 @@ namespace MediaBrowser.Controller.Entities.Audio
             return base.CreateUserDataKey();
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.Music);
+            if (SourceType == SourceType.Library)
+            {
+                return UnratedItem.Music;
+            }
+            return base.GetBlockUnratedType();
         }
 
         public SongInfo GetLookupInfo()
@@ -191,6 +221,32 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         public virtual IEnumerable<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution)
         {
+            if (SourceType == SourceType.Channel)
+            {
+                var sources = ChannelManager.GetStaticMediaSources(this, false, CancellationToken.None)
+                           .Result.ToList();
+
+                if (sources.Count > 0)
+                {
+                    return sources;
+                }
+
+                var list = new List<MediaSourceInfo>
+                {
+                    GetVersionInfo(this, enablePathSubstitution)
+                };
+
+                foreach (var mediaSource in list)
+                {
+                    if (string.IsNullOrWhiteSpace(mediaSource.Path))
+                    {
+                        mediaSource.Type = MediaSourceType.Placeholder;
+                    }
+                }
+
+                return list;
+            }
+
             var result = new List<MediaSourceInfo>
             {
                 GetVersionInfo(this, enablePathSubstitution)

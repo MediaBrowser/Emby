@@ -1,15 +1,13 @@
 ﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
 
 namespace MediaBrowser.Controller.Entities.Movies
 {
@@ -68,34 +66,18 @@ namespace MediaBrowser.Controller.Entities.Movies
         public double? Revenue { get; set; }
 
         /// <summary>
-        /// Gets or sets the critic rating.
-        /// </summary>
-        /// <value>The critic rating.</value>
-        public float? CriticRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating summary.
-        /// </summary>
-        /// <value>The critic rating summary.</value>
-        public string CriticRatingSummary { get; set; }
-
-        /// <summary>
         /// Gets or sets the name of the TMDB collection.
         /// </summary>
         /// <value>The name of the TMDB collection.</value>
         public string TmdbCollectionName { get; set; }
 
-        /// <summary>
-        /// Gets the trailer ids.
-        /// </summary>
-        /// <returns>List&lt;Guid&gt;.</returns>
-        public List<Guid> GetTrailerIds()
+        [IgnoreDataMember]
+        public string CollectionName
         {
-            var list = LocalTrailerIds.ToList();
-            list.AddRange(RemoteTrailerIds);
-            return list;
+            get { return TmdbCollectionName; }
+            set { TmdbCollectionName = value; }
         }
-
+        
         /// <summary>
         /// Gets the user data key.
         /// </summary>
@@ -130,7 +112,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
             // Must have a parent to have special features
             // In other words, it must be part of the Parent/Child tree
-            if (LocationType == LocationType.FileSystem && Parent != null && !IsInMixedFolder)
+            if (LocationType == LocationType.FileSystem && GetParent() != null && !IsInMixedFolder)
             {
                 var specialFeaturesChanged = await RefreshSpecialFeatures(options, fileSystemChildren, cancellationToken).ConfigureAwait(false);
 
@@ -159,9 +141,9 @@ namespace MediaBrowser.Controller.Entities.Movies
             return itemsChanged;
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.Movie);
+            return UnratedItem.Movie;
         }
 
         public MovieInfo GetLookupInfo()

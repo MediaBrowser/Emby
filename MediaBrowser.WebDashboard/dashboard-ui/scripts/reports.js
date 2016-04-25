@@ -1,4 +1,5 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
+
     var defaultSortBy = "SortName";
     var topItems = 5;
 
@@ -168,11 +169,11 @@
                 break;
             case "StatusImage":
                 if (rRow.HasLockData) {
-                    html += '<img src="css/images/editor/lock.png"  style="width:18px"/>';
+                    html += '<iron-icon icon="lock" style="height:18px"></iron-icon>';
                 }
 
                 if (!rRow.HasLocalTrailer && rRow.RowType === "Movie") {
-                    html += '<img src="css/images/editor/missingtrailer.png" title="Missing local trailer."  style="width:18px"/>';
+                    html += '<iron-icon icon="videocam" title="Missing local trailer." style="height:18px"></iron-icon>';
                 }
 
                 if (!rRow.HasImageTagsPrimary) {
@@ -218,7 +219,7 @@
             html += '</div>';
 
             html += '<div class="detailSectionContent">';
-            html += '<div class="childrenItemsContainer itemsContainer fullWidthItemsContainer" style="text-align: left;">';
+            html += '<div class="childrenItemsContainer itemsContainer" style="text-align: left;">';
             html += '<ul class="itemsListview ui-listview" >';
 
             var l = group.Items.length - 1;
@@ -274,7 +275,7 @@
         var url = "";
 
         url = ApiClient.getUrl("Reports/Headers", query);
-        ApiClient.getJSON(url).done(function (result) {
+        ApiClient.getJSON(url).then(function (result) {
             var selected = "None";
 
             $('#selectReportGroup', page).find('option').remove().end();
@@ -323,7 +324,7 @@
 
 
             $('.listTopPaging', page).html(pagingHtml).trigger('create');
-           // page.querySelector('.listTopPaging').innerHTML = pagingHtml;
+            // page.querySelector('.listTopPaging').innerHTML = pagingHtml;
             $('.listTopPaging', page).show();
 
             $('.listBottomPaging', page).html(pagingHtml).trigger('create');
@@ -438,7 +439,7 @@
                 break;
         }
 
-        ApiClient.getJSON(url).done(function (result) {
+        ApiClient.getJSON(url).then(function (result) {
             updateFilterControls(page);
             renderItems(page, result);
         });
@@ -502,8 +503,10 @@
         $('#chkMissingRating', page).checked(query.HasOfficialRating == false).checkboxradio('refresh');
         $('#chkMissingOverview', page).checked(query.HasOverview == false).checkboxradio('refresh');
         $('#chkYearMismatch', page).checked(query.IsYearMismatched == true).checkboxradio('refresh');
-
         $('#chkIsLocked', page).checked(query.IsLocked == true).checkboxradio('refresh');
+        $('#chkMissingImdbId', page).checked(query.HasImdbId == false).checkboxradio('refresh');
+        $('#chkMissingTmdbId', page).checked(query.HasTmdbId == false).checkboxradio('refresh');
+        $('#chkMissingTvdbId', page).checked(query.HasTvdbId == false).checkboxradio('refresh');
 
         //Episodes
         $('#chkSpecialEpisode', page).checked(query.ParentIndexNumber == 0).checkboxradio('refresh');
@@ -511,6 +514,19 @@
         $('#chkFutureEpisode', page).checked(query.IsUnaired == true).checkboxradio('refresh');
 
         $('#selectIncludeItemTypes').val(query.IncludeItemTypes);
+
+        // isfavorite
+        if (query.IsFavorite == true) {
+            $('#isFavorite').val("true");
+        }
+        else if (query.IsFavorite == false) {
+            $('#isFavorite').val("false");
+        }
+        else {
+            $('#isFavorite').val("-");
+        }
+
+
     }
 
     var filtersLoaded;
@@ -595,6 +611,21 @@
 
         $('#selectPageSize', page).on('change', function () {
             query.Limit = parseInt(this.value);
+            query.StartIndex = 0;
+            reloadItems(page);
+        });
+
+        $('#isFavorite', page).on('change', function () {
+
+            if (this.value == "true") {
+                query.IsFavorite = true;
+            }
+            else if (this.value == "false") {
+                query.IsFavorite = false;
+            }
+            else {
+                query.IsFavorite = null;
+            }
             query.StartIndex = 0;
             reloadItems(page);
         });
@@ -758,6 +789,30 @@
             reloadItems(page);
         });
 
+        $('#chkMissingImdbId', page).on('change', function () {
+
+            query.StartIndex = 0;
+            query.HasImdbId = this.checked ? false : null;
+
+            reloadItems(page);
+        });
+
+        $('#chkMissingTmdbId', page).on('change', function () {
+
+            query.StartIndex = 0;
+            query.HasTmdbId = this.checked ? false : null;
+
+            reloadItems(page);
+        });
+
+        $('#chkMissingTvdbId', page).on('change', function () {
+
+            query.StartIndex = 0;
+            query.HasTvdbId = this.checked ? false : null;
+
+            reloadItems(page);
+        });
+
         $('#chkYearMismatch', page).on('change', function () {
 
             query.StartIndex = 0;
@@ -855,10 +910,6 @@
 	    filtersLoaded = false;
 	    updateFilterControls(this);
 	});
-
-})(jQuery, document);
-
-(function (window) {
 
     function renderOptions(page, selector, cssClass, items) {
 
@@ -1037,7 +1088,7 @@
             ReportView: itemQuery.ReportView
 
 
-        })).done(function (result) {
+        })).then(function (result) {
 
             renderFilters(page, result);
 
@@ -1053,7 +1104,7 @@
             IncludeItemTypes: itemQuery.IncludeItemTypes,
             ReportView: itemQuery.ReportView
 
-        })).done(function (result) {
+        })).then(function (result) {
 
             renderColumnss(page, result);
             var filters = "";
@@ -1091,4 +1142,4 @@
         loadColumns: loadColumns,
         onPageShow: onPageReportColumnsShow
     };
-})(window);
+});

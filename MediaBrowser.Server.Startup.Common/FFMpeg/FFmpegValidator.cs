@@ -1,12 +1,8 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Extensions;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Text;
-using MediaBrowser.Common.IO;
 using System.Collections.Generic;
 using CommonIO;
 
@@ -90,12 +86,12 @@ namespace MediaBrowser.Server.Startup.Common.FFMpeg
                 "libx265",
                 "mpeg4",
                 "msmpeg4",
-                "libvpx",
+                //"libvpx",
                 //"libvpx-vp9",
                 "aac",
                 "ac3",
                 "libmp3lame",
-                "libvorbis",
+                //"libvorbis",
                 "srt"
             };
 

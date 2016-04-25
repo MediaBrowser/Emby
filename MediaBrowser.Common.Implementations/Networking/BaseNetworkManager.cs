@@ -6,77 +6,67 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Threading;
+using MoreLinq;
 
 namespace MediaBrowser.Common.Implementations.Networking
 {
     public abstract class BaseNetworkManager
     {
         protected ILogger Logger { get; private set; }
-        private Timer _clearCacheTimer;
+        private DateTime _lastRefresh;
 
         protected BaseNetworkManager(ILogger logger)
         {
             Logger = logger;
-
-            // Can't use network change events due to a crash in Linux
-            _clearCacheTimer = new Timer(ClearCacheTimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
 
-        private void ClearCacheTimerCallback(object state)
-        {
-            lock (_localIpAddressSyncLock)
-            {
-                _localIpAddresses = null;
-            }
-        }
-
-        private volatile List<string> _localIpAddresses;
+		private List<IPAddress> _localIpAddresses;
         private readonly object _localIpAddressSyncLock = new object();
 
         /// <summary>
         /// Gets the machine's local ip address
         /// </summary>
         /// <returns>IPAddress.</returns>
-        public IEnumerable<string> GetLocalIpAddresses()
+		public IEnumerable<IPAddress> GetLocalIpAddresses()
         {
-            if (_localIpAddresses == null)
+            const int cacheMinutes = 5;
+
+            lock (_localIpAddressSyncLock)
             {
-                lock (_localIpAddressSyncLock)
+                var forceRefresh = (DateTime.UtcNow - _lastRefresh).TotalMinutes >= cacheMinutes;
+
+                if (_localIpAddresses == null || forceRefresh)
                 {
-                    if (_localIpAddresses == null)
-                    {
-                        var addresses = GetLocalIpAddressesInternal().ToList();
+                    var addresses = GetLocalIpAddressesInternal().ToList();
 
-                        _localIpAddresses = addresses;
+                    _localIpAddresses = addresses;
+                    _lastRefresh = DateTime.UtcNow;
 
-                        return addresses;
-                    }
+                    return addresses;
                 }
             }
 
             return _localIpAddresses;
         }
 
-        private IEnumerable<string> GetLocalIpAddressesInternal()
+		private IEnumerable<IPAddress> GetLocalIpAddressesInternal()
         {
             var list = GetIPsDefault()
-                .Where(i => !IPAddress.IsLoopback(i))
-                .Select(i => i.ToString())
-                .Where(FilterIpAddress)
                 .ToList();
 
-            if (list.Count > 0)
+            if (list.Count == 0)
             {
-                return list;
+				list.AddRange(GetLocalIpAddressesFallback());
             }
 
-            return GetLocalIpAddressesFallback().Where(FilterIpAddress);
+			return list.Where(FilterIpAddress).DistinctBy(i => i.ToString());
         }
 
-        private bool FilterIpAddress(string address)
+		private bool FilterIpAddress(IPAddress address)
         {
-            if (address.StartsWith("169.", StringComparison.OrdinalIgnoreCase))
+			var addressString = address.ToString ();
+
+			if (addressString.StartsWith("169.", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
@@ -84,8 +74,16 @@ namespace MediaBrowser.Common.Implementations.Networking
             return true;
         }
 
-        private bool IsInPrivateAddressSpace(string endpoint)
+        public bool IsInPrivateAddressSpace(string endpoint)
         {
+            if (string.Equals(endpoint, "::1", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // Handle ipv4 mapped to ipv6
+            endpoint = endpoint.Replace("::ffff:", string.Empty);
+
             // Private address space:
             // http://en.wikipedia.org/wiki/Private_network
 
@@ -95,9 +93,6 @@ namespace MediaBrowser.Common.Implementations.Networking
             }
 
             return
-
-                // If url was requested with computer name, we may see this
-                endpoint.IndexOf("::", StringComparison.OrdinalIgnoreCase) != -1 ||
 
                 endpoint.StartsWith("localhost", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("127.", StringComparison.OrdinalIgnoreCase) ||
@@ -131,26 +126,41 @@ namespace MediaBrowser.Common.Implementations.Networking
                 throw new ArgumentNullException("endpoint");
             }
 
-            if (IsInPrivateAddressSpace(endpoint))
-            {
-                return true;
-            }
-
-            const int lengthMatch = 4;
-
-            if (endpoint.Length >= lengthMatch)
-            {
-                var prefix = endpoint.Substring(0, lengthMatch);
-
-                if (GetLocalIpAddresses()
-                    .Any(i => i.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return true;
-                }
-            }
-
             IPAddress address;
-            if (resolveHost && !IPAddress.TryParse(endpoint, out address))
+            if (IPAddress.TryParse(endpoint, out address))
+            {
+                var addressString = address.ToString();
+
+                int lengthMatch = 100;
+                if (address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    lengthMatch = 4;
+                    if (IsInPrivateAddressSpace(addressString))
+                    {
+                        return true;
+                    }
+                }
+                else if (address.AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    lengthMatch = 10;
+                    if (IsInPrivateAddressSpace(endpoint))
+                    {
+                        return true;
+                    }
+                }
+
+                // Should be even be doing this with ipv6?
+                if (addressString.Length >= lengthMatch)
+                {
+                    var prefix = addressString.Substring(0, lengthMatch);
+
+					if (GetLocalIpAddresses().Any(i => i.ToString().StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return true;
+                    }
+                }
+            } 
+            else if (resolveHost)
             {
                 Uri uri;
                 if (Uri.TryCreate(endpoint, UriKind.RelativeOrAbsolute, out uri))
@@ -188,33 +198,45 @@ namespace MediaBrowser.Common.Implementations.Networking
             return Dns.GetHostAddresses(hostName);
         }
 
-        private IEnumerable<IPAddress> GetIPsDefault()
-        {
-            foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                var props = adapter.GetIPProperties();
-                var gateways = from ga in props.GatewayAddresses
-                               where !ga.Address.Equals(IPAddress.Any)
-                               select true;
+		private List<IPAddress> GetIPsDefault()
+		{
+			NetworkInterface[] interfaces;
 
-                if (!gateways.Any())
-                {
-                    continue;
-                }
+			try
+			{
+				interfaces = NetworkInterface.GetAllNetworkInterfaces();
+			}
+			catch (Exception ex)
+			{
+				Logger.ErrorException("Error in GetAllNetworkInterfaces", ex);
+				return new List<IPAddress>();
+			}
 
-                foreach (var uni in props.UnicastAddresses)
-                {
-                    var address = uni.Address;
-                    if (address.AddressFamily != AddressFamily.InterNetwork)
-                    {
-                        continue;
-                    }
-                    yield return address;
-                }
-            }
-        }
+			return interfaces.SelectMany(network => {
 
-        private IEnumerable<string> GetLocalIpAddressesFallback()
+				try
+				{
+                    Logger.Debug("Querying interface: {0}. Type: {1}. Status: {2}", network.Name, network.NetworkInterfaceType, network.OperationalStatus);
+
+					var properties = network.GetIPProperties();
+
+					return properties.UnicastAddresses
+                        .Where(i => i.IsDnsEligible)
+                        .Select(i => i.Address)
+                        .Where(i => i.AddressFamily == AddressFamily.InterNetwork)
+						.ToList();
+				}
+				catch (Exception ex)
+				{
+					Logger.ErrorException("Error querying network interface", ex);
+					return new List<IPAddress>();
+				}
+
+			}).DistinctBy(i => i.ToString())
+				.ToList();
+		}
+
+		private IEnumerable<IPAddress> GetLocalIpAddressesFallback()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
 
@@ -222,7 +244,6 @@ namespace MediaBrowser.Common.Implementations.Networking
             // It's not fool-proof so ultimately the consumer will have to examine them and decide
             return host.AddressList
                 .Where(i => i.AddressFamily == AddressFamily.InterNetwork)
-                .Select(i => i.ToString())
                 .Reverse();
         }
 

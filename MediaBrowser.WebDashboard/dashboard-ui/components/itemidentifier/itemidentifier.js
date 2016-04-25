@@ -1,17 +1,10 @@
-﻿(function ($, window, document) {
+﻿define(['dialogHelper', 'jQuery', 'paper-fab', 'paper-input', 'paper-checkbox'], function (dialogHelper, $) {
 
     var currentItem;
+    var currentItemType;
     var currentDeferred;
     var hasChanges = false;
     var currentSearchResult;
-
-    function onIdentificationFormSubmitted() {
-
-        var page = $(this).parents('.editorContent');
-
-        searchForIdentificationResults(page);
-        return false;
-    }
 
     function searchForIdentificationResults(page) {
 
@@ -48,11 +41,13 @@
         });
 
         if (!hasId && !lookupInfo.Name) {
-            Dashboard.alert(Globalize.translate('MessagePleaseEnterNameOrId'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('MessagePleaseEnterNameOrId'));
+            });
             return;
         }
 
-        if (currentItem.GameSystem) {
+        if (currentItem && currentItem.GameSystem) {
             lookupInfo.GameSystem = currentItem.GameSystem;
         }
 
@@ -65,11 +60,12 @@
 
         ApiClient.ajax({
             type: "POST",
-            url: ApiClient.getUrl("Items/RemoteSearch/" + currentItem.Type),
+            url: ApiClient.getUrl("Items/RemoteSearch/" + currentItemType),
             data: JSON.stringify(lookupInfo),
-            contentType: "application/json"
+            contentType: "application/json",
+            dataType: 'json'
 
-        }).done(function (results) {
+        }).then(function (results) {
 
             Dashboard.hideLoadingMsg();
             showIdentificationSearchResults(page, results);
@@ -88,11 +84,10 @@
         for (var i = 0, length = results.length; i < length; i++) {
 
             var result = results[i];
-
             html += getSearchResultHtml(result, i);
         }
 
-        var elem = $('.identificationSearchResultList', page).html(html).trigger('create');
+        var elem = $('.identificationSearchResultList', page).html(html);
 
         $('.searchImage', elem).on('click', function () {
 
@@ -100,8 +95,22 @@
 
             var currentResult = results[index];
 
-            showIdentifyOptions(page, currentResult);
+            if (currentItem != null) {
+
+                showIdentifyOptions(page, currentResult);
+            } else {
+
+                finishFindNewDialog(page, currentResult);
+            }
         });
+    }
+
+    function finishFindNewDialog(dlg, identifyResult) {
+        currentSearchResult = identifyResult;
+        hasChanges = true;
+        Dashboard.hideLoadingMsg();
+
+        dialogHelper.close(dlg);
     }
 
     function showIdentifyOptions(page, identifyResult) {
@@ -141,10 +150,10 @@
         var html = '';
         var cssClass = "card";
 
-        if (currentItem.Type == "Episode") {
+        if (currentItemType == "Episode") {
             cssClass += " backdropCard";
         }
-        else if (currentItem.Type == "MusicAlbum" || currentItem.Type == "MusicArtist") {
+        else if (currentItemType == "MusicAlbum" || currentItemType == "MusicArtist") {
             cssClass += " squareCard";
         }
         else {
@@ -191,14 +200,6 @@
         return ApiClient.getUrl("Items/RemoteSearch/Image", { imageUrl: url, ProviderName: provider });
     }
 
-    function onIdentificationOptionsSubmit() {
-
-        var page = $(this).parents('.editorContent');
-
-        submitIdentficationResult(page);
-        return false;
-    }
-
     function submitIdentficationResult(page) {
 
         Dashboard.showLoadingMsg();
@@ -213,30 +214,24 @@
             data: JSON.stringify(currentSearchResult),
             contentType: "application/json"
 
-        }).done(function () {
+        }).then(function () {
 
             hasChanges = true;
             Dashboard.hideLoadingMsg();
 
-            PaperDialogHelper.close(document.querySelector('.identifyDialog'));
+            dialogHelper.close(page);
 
-        }).fail(function () {
+        }, function () {
 
             Dashboard.hideLoadingMsg();
 
-            PaperDialogHelper.close(document.querySelector('.identifyDialog'));
+            dialogHelper.close(page);
         });
-    }
-
-    function initEditor(page) {
-
-        $('.popupIdentifyForm', page).off('submit', onIdentificationFormSubmitted).on('submit', onIdentificationFormSubmitted);
-        $('.identifyOptionsForm', page).off('submit', onIdentificationOptionsSubmit).on('submit', onIdentificationOptionsSubmit);
     }
 
     function showIdentificationForm(page, item) {
 
-        ApiClient.getJSON(ApiClient.getUrl("Items/" + item.Id + "/ExternalIdInfos")).done(function (idList) {
+        ApiClient.getJSON(ApiClient.getUrl("Items/" + item.Id + "/ExternalIdInfos")).then(function (idList) {
 
             var html = '';
 
@@ -271,9 +266,9 @@
                 $('#txtLookupYear', page).val(item.ProductionYear);
             }
 
-            $('.identifyProviderIds', page).html(html).trigger('create');
+            $('.identifyProviderIds', page).html(html);
 
-            $('.identificationHeader', page).html(Globalize.translate('HeaderIdentify'));
+            page.querySelector('.dialogHeaderTitle').innerHTML = Globalize.translate('HeaderIdentify');
         });
     }
 
@@ -281,43 +276,52 @@
 
         Dashboard.showLoadingMsg();
 
-        HttpClient.send({
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'components/itemidentifier/itemidentifier.template.html', true);
 
-            type: 'GET',
-            url: 'components/itemidentifier/itemidentifier.template.html'
+        xhr.onload = function (e) {
 
-        }).done(function (template) {
-
-            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).done(function (item) {
+            var template = this.response;
+            ApiClient.getItem(Dashboard.getCurrentUserId(), itemId).then(function (item) {
 
                 currentItem = item;
+                currentItemType = currentItem.Type;
 
-                var dlg = PaperDialogHelper.createDialog();
+                var dlg = dialogHelper.createDialog({
+                    size: 'medium'
+                });
+
+                dlg.classList.add('ui-body-b');
+                dlg.classList.add('background-theme-b');
 
                 var html = '';
-                html += '<h2 class="dialogHeader">';
-                html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
-                html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + Globalize.translate('HeaderIdentifyItem') + '</div>';
-                html += '</h2>';
-
-                html += '<div class="editorContent">';
                 html += Globalize.translateDocument(template);
-                html += '</div>';
 
                 dlg.innerHTML = html;
                 document.body.appendChild(dlg);
 
                 // Has to be assigned a z-index after the call to .open() 
-                $(dlg).on('iron-overlay-closed', onDialogClosed);
+                $(dlg).on('close', onDialogClosed);
 
-                PaperDialogHelper.openWithHash(dlg, 'itemidentifier');
+                dialogHelper.open(dlg);
 
-                var editorContent = dlg.querySelector('.editorContent');
-                initEditor(editorContent);
+                dlg.querySelector('.popupIdentifyForm').addEventListener('submit', function (e) {
 
-                $('.btnCloseDialog', dlg).on('click', function () {
+                    e.preventDefault();
+                    searchForIdentificationResults(dlg);
+                    return false;
+                });
 
-                    PaperDialogHelper.close(dlg);
+                dlg.querySelector('.identifyOptionsForm').addEventListener('submit', function (e) {
+
+                    e.preventDefault();
+                    submitIdentficationResult(dlg);
+                    return false;
+                });
+
+                $('.btnCancel', dlg).on('click', function () {
+
+                    dialogHelper.close(dlg);
                 });
 
                 dlg.classList.add('identifyDialog');
@@ -325,7 +329,9 @@
                 showIdentificationForm(dlg, item);
                 Dashboard.hideLoadingMsg();
             });
-        });
+        }
+
+        xhr.send();
     }
 
     function onDialogClosed() {
@@ -335,20 +341,97 @@
         currentDeferred.resolveWith(null, [hasChanges]);
     }
 
-    window.ItemIdentifier = {
+    function showEditorFindNew(itemName, itemYear, itemType, resolveFunc) {
+
+        currentItem = null;
+        currentItemType = itemType;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'components/itemidentifier/itemidentifier.template.html', true);
+
+        xhr.onload = function (e) {
+
+            var template = this.response;
+
+            var dlg = dialogHelper.createDialog({
+                size: 'medium'
+            });
+
+            dlg.classList.add('ui-body-a');
+            dlg.classList.add('background-theme-a');
+
+            var html = '';
+            html += Globalize.translateDocument(template);
+
+            dlg.innerHTML = html;
+            document.body.appendChild(dlg);
+
+            dialogHelper.open(dlg);
+
+            dlg.querySelector('.btnCancel').addEventListener('click', function (e) {
+
+                dialogHelper.close(dlg);
+            });
+
+            dlg.querySelector('.popupIdentifyForm').addEventListener('submit', function (e) {
+
+                e.preventDefault();
+                searchForIdentificationResults(dlg);
+                return false;
+            });
+
+            dlg.addEventListener('close', function () {
+
+                Dashboard.hideLoadingMsg();
+                var foundItem = hasChanges ? currentSearchResult : null;
+
+                resolveFunc(foundItem);
+            });
+
+            dlg.classList.add('identifyDialog');
+
+            showIdentificationFormFindNew(dlg, itemName, itemYear, itemType);
+        }
+
+        xhr.send();
+    }
+
+    function showIdentificationFormFindNew(dlg, itemName, itemYear, itemType) {
+
+        dlg.querySelector('#txtLookupName').value = itemName;
+
+        if (itemType == "Person" || itemType == "BoxSet") {
+
+            dlg.querySelector('.fldLookupYear').classList.add('hide');
+            dlg.querySelector('#txtLookupYear').value = '';
+
+        } else {
+
+            dlg.querySelector('.fldLookupYear').classList.remove('hide');
+            dlg.querySelector('#txtLookupYear').value = itemYear;
+        }
+
+        dlg.querySelector('.dialogHeaderTitle').innerHTML = Globalize.translate('HeaderSearch');
+    }
+
+    return {
         show: function (itemId) {
 
-            var deferred = DeferredBuilder.Deferred();
+            var deferred = jQuery.Deferred();
 
             currentDeferred = deferred;
             hasChanges = false;
 
-            require(['components/paperdialoghelper'], function () {
-
-                showEditor(itemId);
-            });
+            showEditor(itemId);
             return deferred.promise();
+        },
+
+        showFindNew: function (itemName, itemYear, itemType) {
+            return new Promise(function (resolve, reject) {
+
+                hasChanges = false;
+                showEditorFindNew(itemName, itemYear, itemType, resolve);
+            });
         }
     };
-
-})(jQuery, window, document);
+});

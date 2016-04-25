@@ -1,12 +1,30 @@
-﻿(function ($, document) {
+﻿define([], function () {
 
-    $(document).on('pageshow', "#aboutPage", function () {
+    function getTabs() {
+        return [
+        {
+            href: 'about.html',
+            name: Globalize.translate('TabAbout')
+        },
+         {
+             href: 'log.html',
+             name: Globalize.translate('TabLogs')
+         },
+         {
+             href: 'supporterkey.html',
+             name: Globalize.translate('TabEmbyPremiere')
+         }];
+    }
 
-        var page = this;
-        
-        var elem = $('#appVersionNumber', page);
+    return function (view, params) {
 
-        elem.html(elem.html().replace('{0}', ConnectionManager.appVersion()));
-    });
+        var self = this;
 
-})(jQuery, document);
+        view.addEventListener('viewbeforeshow', function (e) {
+            LibraryMenu.setTabs('helpadmin', 0, getTabs);
+            var elem = view.querySelector('#appVersionNumber');
+
+            elem.innerHTML = elem.innerHTML.replace('{0}', ConnectionManager.appVersion());
+        });
+    }
+});

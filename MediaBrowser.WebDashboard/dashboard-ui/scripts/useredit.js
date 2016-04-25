@@ -1,4 +1,4 @@
-﻿(function ($, window, document) {
+﻿define(['jQuery'], function ($) {
 
     var currentUser;
 
@@ -27,28 +27,28 @@
         $('#txtUserName', page).val(user.Name);
         $('#txtConnectUserName', page).val(currentUser.ConnectUserName);
 
-        $('#chkIsAdmin', page).checked(user.Policy.IsAdministrator).checkboxradio("refresh");
+        $('#chkIsAdmin', page).checked(user.Policy.IsAdministrator);
 
-        $('#chkDisabled', page).checked(user.Policy.IsDisabled).checkboxradio("refresh");
-        $('#chkIsHidden', page).checked(user.Policy.IsHidden).checkboxradio("refresh");
-        $('#chkRemoteControlSharedDevices', page).checked(user.Policy.EnableSharedDeviceControl).checkboxradio("refresh");
-        $('#chkEnableRemoteControlOtherUsers', page).checked(user.Policy.EnableRemoteControlOfOtherUsers).checkboxradio("refresh");
+        $('#chkDisabled', page).checked(user.Policy.IsDisabled);
+        $('#chkIsHidden', page).checked(user.Policy.IsHidden);
+        $('#chkRemoteControlSharedDevices', page).checked(user.Policy.EnableSharedDeviceControl);
+        $('#chkEnableRemoteControlOtherUsers', page).checked(user.Policy.EnableRemoteControlOfOtherUsers);
 
-        $('#chkEnableDownloading', page).checked(user.Policy.EnableContentDownloading).checkboxradio("refresh");
+        $('#chkEnableDownloading', page).checked(user.Policy.EnableContentDownloading);
 
-        $('#chkManageLiveTv', page).checked(user.Policy.EnableLiveTvManagement).checkboxradio("refresh");
-        $('#chkEnableLiveTvAccess', page).checked(user.Policy.EnableLiveTvAccess).checkboxradio("refresh");
-        $('#chkEnableContentDeletion', page).checked(user.Policy.EnableContentDeletion).checkboxradio("refresh");
+        $('#chkManageLiveTv', page).checked(user.Policy.EnableLiveTvManagement);
+        $('#chkEnableLiveTvAccess', page).checked(user.Policy.EnableLiveTvAccess);
+        $('#chkEnableContentDeletion', page).checked(user.Policy.EnableContentDeletion);
 
-        $('#chkDisableUserPreferences', page).checked((!user.Policy.EnableUserPreferenceAccess)).checkboxradio("refresh");
+        $('#chkDisableUserPreferences', page).checked((!user.Policy.EnableUserPreferenceAccess));
 
-        $('#chkEnableMediaPlayback', page).checked(user.Policy.EnableMediaPlayback).checkboxradio("refresh");
-        $('#chkEnableAudioPlaybackTranscoding', page).checked(user.Policy.EnableAudioPlaybackTranscoding).checkboxradio("refresh");
-        $('#chkEnableVideoPlaybackTranscoding', page).checked(user.Policy.EnableVideoPlaybackTranscoding).checkboxradio("refresh");
+        $('#chkEnableMediaPlayback', page).checked(user.Policy.EnableMediaPlayback);
+        $('#chkEnableAudioPlaybackTranscoding', page).checked(user.Policy.EnableAudioPlaybackTranscoding);
+        $('#chkEnableVideoPlaybackTranscoding', page).checked(user.Policy.EnableVideoPlaybackTranscoding);
 
-        $('#chkEnableSync', page).checked(user.Policy.EnableSync).checkboxradio("refresh");
-        $('#chkEnableSyncTranscoding', page).checked(user.Policy.EnableSyncTranscoding).checkboxradio("refresh");
-        $('#chkEnableSharing', page).checked(user.Policy.EnablePublicSharing).checkboxradio("refresh");
+        $('#chkEnableSync', page).checked(user.Policy.EnableSync);
+        $('#chkEnableSyncTranscoding', page).checked(user.Policy.EnableSyncTranscoding);
+        $('#chkEnableSharing', page).checked(user.Policy.EnablePublicSharing);
 
         Dashboard.hideLoadingMsg();
     }
@@ -68,7 +68,7 @@
                 type: "DELETE",
                 url: linkUrl
 
-            }).done(function () {
+            }).then(function () {
 
                 Dashboard.alert({
 
@@ -78,7 +78,7 @@
                     callback: actionCallback
 
                 });
-            }).fail(function () {
+            }, function () {
 
                 Dashboard.alert({
 
@@ -99,7 +99,7 @@
                 },
                 dataType: 'json'
 
-            }).done(function (result) {
+            }).then(function (result) {
 
                 var msgKey = result.IsPending ? 'MessagePendingEmbyAccountAdded' : 'MessageEmbyAccountAdded';
 
@@ -109,21 +109,43 @@
 
                     callback: actionCallback
 
-                }).fail(function () {
-
-                    Dashboard.alert({
-
-                        message: Globalize.translate('ErrorAddingEmbyConnectAccount')
-
-                    });
                 });
+
+            }, function () {
+
+                showEmbyConnectErrorMessage('.');
             });
+
         } else {
             if (noActionCallback) {
                 noActionCallback();
             }
         }
+    } function showEmbyConnectErrorMessage(username) {
+
+        var html;
+        var text;
+
+        if (username) {
+
+            html = Globalize.translate('ErrorAddingEmbyConnectAccount1', '<a href="https://emby.media/connect" target="_blank">https://emby.media/connect</a>');
+            html += '<br/><br/>' + Globalize.translate('ErrorAddingEmbyConnectAccount2', 'apps@emby.media');
+
+            text = Globalize.translate('ErrorAddingEmbyConnectAccount1', 'https://emby.media/connect');
+            text += '\n\n' + Globalize.translate('ErrorAddingEmbyConnectAccount2', 'apps@emby.media');
+
+        } else {
+            html = text = Globalize.translate('DefaultErrorMessage');
+        }
+
+        require(['alert'], function (alert) {
+            alert({
+                text: text,
+                html: html
+            });
+        });
     }
+
 
     function onSaveComplete(page, user) {
 
@@ -133,7 +155,9 @@
         var enteredConnectUsername = $('#txtConnectUserName', page).val();
 
         if (currentConnectUsername == enteredConnectUsername) {
-            Dashboard.alert(Globalize.translate('SettingsSaved'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('SettingsSaved'));
+            });
         } else {
 
             updateUserInfo(user, $('#txtConnectUserName', page).val(), function () {
@@ -168,9 +192,9 @@
         user.Policy.EnableSyncTranscoding = $('#chkEnableSyncTranscoding', page).checked();
         user.Policy.EnablePublicSharing = $('#chkEnableSharing', page).checked();
 
-        ApiClient.updateUser(user).done(function () {
+        ApiClient.updateUser(user).then(function () {
 
-            ApiClient.updateUserPolicy(user.Id, user.Policy).done(function () {
+            ApiClient.updateUserPolicy(user.Id, user.Policy).then(function () {
 
                 onSaveComplete(page, user);
             });
@@ -182,7 +206,7 @@
 
         Dashboard.showLoadingMsg();
 
-        getUser().done(function (result) {
+        getUser().then(function (result) {
             saveUser(result, page);
         });
 
@@ -201,7 +225,7 @@
 
         Dashboard.showLoadingMsg();
 
-        getUser().done(function (user) {
+        getUser().then(function (user) {
 
             loadUser(page, user);
         });
@@ -219,4 +243,4 @@
 
     });
 
-})(jQuery, window, document);
+});

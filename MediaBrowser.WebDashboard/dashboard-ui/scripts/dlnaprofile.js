@@ -1,4 +1,4 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     var currentProfile;
 
@@ -14,11 +14,11 @@
         var promise1 = getProfile();
         var promise2 = ApiClient.getUsers();
 
-        $.when(promise1, promise2).done(function (response1, response2) {
+        Promise.all([promise1, promise2]).then(function (responses) {
 
-            currentProfile = response1[0];
+            currentProfile = responses[0];
 
-            renderProfile(page, currentProfile, response2[0]);
+            renderProfile(page, currentProfile, responses[1]);
 
             Dashboard.hideLoadingMsg();
 
@@ -189,7 +189,7 @@
 
             li += '</a>';
 
-            li += '<a class="btnDeleteXmlAttribute" href="#" data-index="' + index + '"></a>';
+            li += '<a class="btnDeleteXmlAttribute" href="#" data-icon="delete" data-index="' + index + '"></a>';
 
             li += '</li>';
 
@@ -256,7 +256,7 @@
 
             li += '</a>';
 
-            li += '<a class="btnDeleteProfile" href="#" data-index="' + index + '"></a>';
+            li += '<a class="btnDeleteProfile" href="#" data-icon="delete" data-index="' + index + '"></a>';
 
             li += '</li>';
 
@@ -501,7 +501,7 @@
         $('#chkEstimateContentLength', popup).checked(transcodingProfile.EstimateContentLength || false).checkboxradio('refresh');
         $('#chkReportByteRangeRequests', popup).checked(transcodingProfile.TranscodeSeekInfo == 'Bytes').checkboxradio('refresh');
 
-        $('.radioTabButton:first', popup).checked(true).checkboxradio('refresh').trigger('change');
+        $('.radioTabButton:first', popup).trigger('click');
 
         popup.popup('open');
     }
@@ -617,7 +617,7 @@
         $('#selectContainerProfileType', popup).val(containerProfile.Type || 'Video').trigger('change');
         $('#txtContainerProfileContainer', popup).val(containerProfile.Container || '');
 
-        $('.radioTabButton:first', popup).checked(true).checkboxradio('refresh').trigger('change');
+        $('.radioTabButton:first', popup).trigger('click');
 
         popup.popup('open');
     }
@@ -719,7 +719,7 @@
         $('#selectCodecProfileType', popup).val(codecProfile.Type || 'Video').trigger('change');
         $('#txtCodecProfileCodec', popup).val(codecProfile.Codec || '');
 
-        $('.radioTabButton:first', popup).checked(true).checkboxradio('refresh').trigger('change');
+        $('.radioTabButton:first', popup).trigger('click');
 
         popup.popup('open');
     }
@@ -827,7 +827,7 @@
         $('#txtResponseProfileAudioCodec', popup).val(responseProfile.AudioCodec || '');
         $('#txtResponseProfileVideoCodec', popup).val(responseProfile.VideoCodec || '');
 
-        $('.radioTabButton:first', popup).checked(true).checkboxradio('refresh').trigger('change');
+        $('.radioTabButton:first', popup).trigger('click');
 
         popup.popup('open');
     }
@@ -864,9 +864,11 @@
                 url: ApiClient.getUrl("Dlna/Profiles/" + id),
                 data: JSON.stringify(profile),
                 contentType: "application/json"
-            }).done(function () {
+            }).then(function () {
 
-                Dashboard.alert('Settings saved.');
+                require(['toast'], function (toast) {
+                    toast('Settings saved.');
+                });
             });
 
         } else {
@@ -876,7 +878,7 @@
                 url: ApiClient.getUrl("Dlna/Profiles"),
                 data: JSON.stringify(profile),
                 contentType: "application/json"
-            }).done(function () {
+            }).then(function () {
 
                 Dashboard.navigate('dlnaprofiles.html');
 
@@ -944,9 +946,13 @@
 
         var page = this;
 
-        $('.radioTabButton', page).on('change', function () {
+        $('.radioTabButton', page).on('click', function () {
 
-            var elem = $('.' + this.value, page);
+            $(this).siblings().removeClass('ui-btn-active');
+            $(this).addClass('ui-btn-active');
+
+            var value = this.tagName == 'A' ? this.getAttribute('data-value') : this.value;
+            var elem = $('.' + value, page);
             elem.siblings('.tabContent').hide();
 
             elem.show();
@@ -1070,8 +1076,7 @@
 
         var page = this;
 
-        $('.radioTabButton', page).checked(false).checkboxradio('refresh');
-        $('#radioInfo', page).checked(true).checkboxradio('refresh').trigger('change');
+        $('#radioInfo', page).trigger('click');
 
         loadProfile(page);
     });
@@ -1169,4 +1174,4 @@
         }
     };
 
-})(jQuery, document, window);
+});

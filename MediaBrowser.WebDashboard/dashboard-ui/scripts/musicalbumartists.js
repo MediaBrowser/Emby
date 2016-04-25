@@ -1,8 +1,8 @@
-﻿(function ($, document) {
+﻿define(['jQuery'], function ($) {
 
     var data = {};
-    function getPageData() {
-        var key = getSavedQueryKey();
+    function getPageData(context) {
+        var key = getSavedQueryKey(context);
         var pageData = data[key];
 
         if (!pageData) {
@@ -26,28 +26,31 @@
         return pageData;
     }
 
-    function getQuery() {
+    function getQuery(context) {
 
-        return getPageData().query;
+        return getPageData(context).query;
     }
 
-    function getSavedQueryKey() {
+    function getSavedQueryKey(context) {
 
-        return LibraryBrowser.getSavedQueryKey('albumartists');
+        if (!context.savedQueryKey) {
+            context.savedQueryKey = LibraryBrowser.getSavedQueryKey('albumartists');
+        }
+        return context.savedQueryKey;
     }
 
-    function reloadItems(page, viewPanel) {
+    function reloadItems(page) {
 
         Dashboard.showLoadingMsg();
 
-        var query = getQuery();
+        var query = getQuery(page);
 
-        ApiClient.getAlbumArtists(Dashboard.getCurrentUserId(), query).done(function (result) {
+        ApiClient.getAlbumArtists(Dashboard.getCurrentUserId(), query).then(function (result) {
 
             // Scroll back up so they can see the results from the beginning
             window.scrollTo(0, 0);
 
-            var view = getPageData().view;
+            var view = getPageData(page).view;
 
             var html = '';
             var pagingHtml = LibraryBrowser.getQueryPagingHtml({
@@ -55,17 +58,15 @@
                 limit: query.Limit,
                 totalRecordCount: result.TotalRecordCount,
                 showLimit: false,
-                viewPanelClass: 'albumArtistsViewPanel',
                 updatePageSizeSetting: false,
                 addLayoutButton: true,
                 currentLayout: view,
-                viewButton: true,
-                viewIcon: 'filter-list'
+                filterButton: true
             });
 
             page.querySelector('.listTopPaging').innerHTML = pagingHtml;
 
-            updateFilterControls(page, viewPanel);
+            updateFilterControls(page);
 
             if (view == "List") {
 
@@ -107,112 +108,85 @@
 
             $('.btnNextPage', page).on('click', function () {
                 query.StartIndex += query.Limit;
-                reloadItems(page, viewPanel);
+                reloadItems(page);
             });
 
             $('.btnPreviousPage', page).on('click', function () {
                 query.StartIndex -= query.Limit;
-                reloadItems(page, viewPanel);
+                reloadItems(page);
             });
 
             $('.btnChangeLayout', page).on('layoutchange', function (e, layout) {
-                getPageData().view = layout;
-                LibraryBrowser.saveViewSetting(getSavedQueryKey(), layout);
-                reloadItems(page, viewPanel);
+                getPageData(page).view = layout;
+                LibraryBrowser.saveViewSetting(getSavedQueryKey(page), layout);
+                reloadItems(page);
             });
 
-            LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+            $('.btnFilter', page).on('click', function () {
+                showFilterMenu(page);
+            });
+
+            LibraryBrowser.saveQueryValues(getSavedQueryKey(page), query);
             LibraryBrowser.setLastRefreshed(page);
             Dashboard.hideLoadingMsg();
         });
     }
 
-    function updateFilterControls(tabContent, viewPanel) {
+    function showFilterMenu(page) {
 
-        var query = getQuery();
+        require(['components/filterdialog/filterdialog'], function (filterDialogFactory) {
 
-        $('.chkStandardFilter', viewPanel).each(function () {
+            var filterDialog = new filterDialogFactory({
+                query: getQuery(page),
+                mode: 'albumartists'
+            });
 
-            var filters = "," + (query.Filters || "");
-            var filterName = this.getAttribute('data-filter');
+            Events.on(filterDialog, 'filterchange', function () {
+                reloadItems(page);
+            });
 
-            this.checked = filters.indexOf(',' + filterName) != -1;
-
+            filterDialog.show();
         });
+    }
+
+    function updateFilterControls(tabContent) {
+
+        var query = getQuery(tabContent);
 
         $('.alphabetPicker', tabContent).alphaValue(query.NameStartsWithOrGreater);
     }
 
-    function reloadFiltersIfNeeded(page, viewPanel) {
-
-        if (!getPageData().filtersLoaded) {
-
-            getPageData().filtersLoaded = true;
-
-            var query = getQuery();
-            QueryFilters.loadFilters(viewPanel, Dashboard.getCurrentUserId(), query, function () {
-
-                reloadItems(page, viewPanel);
-            });
-        }
-    }
-
-    function initPage(tabContent, viewPanel) {
-
-        $(viewPanel).on('panelopen', function () {
-
-            reloadFiltersIfNeeded(tabContent, viewPanel);
-        });
-
-        $('.chkStandardFilter', viewPanel).on('change', function () {
-
-            var query = getQuery();
-            var filterName = this.getAttribute('data-filter');
-            var filters = query.Filters || "";
-
-            filters = (',' + filters).replace(',' + filterName, '').substring(1);
-
-            if (this.checked) {
-                filters = filters ? (filters + ',' + filterName) : filterName;
-            }
-
-            query.StartIndex = 0;
-            query.Filters = filters;
-
-            reloadItems(tabContent, viewPanel);
-        });
+    function initPage(tabContent) {
 
         $('.alphabetPicker', tabContent).on('alphaselect', function (e, character) {
 
-            var query = getQuery();
+            var query = getQuery(tabContent);
 
             query.NameStartsWithOrGreater = character;
             query.StartIndex = 0;
 
-            reloadItems(tabContent, viewPanel);
+            reloadItems(tabContent);
 
         }).on('alphaclear', function (e) {
 
-            var query = getQuery();
+            var query = getQuery(tabContent);
 
             query.NameStartsWithOrGreater = '';
 
-            reloadItems(tabContent, viewPanel);
+            reloadItems(tabContent);
         });
     }
 
     window.MusicPage.initAlbumArtistsTab = function (page, tabContent) {
 
-        var viewPanel = page.querySelector('.albumArtistsViewPanel');
-        initPage(tabContent, viewPanel);
+        initPage(tabContent);
     };
 
     window.MusicPage.renderAlbumArtistsTab = function (page, tabContent) {
 
         if (LibraryBrowser.needsRefresh(tabContent)) {
-            var viewPanel = page.querySelector('.albumArtistsViewPanel');
-            reloadItems(tabContent, viewPanel);
+            reloadItems(tabContent);
         }
     };
 
-})(jQuery, document);
+});

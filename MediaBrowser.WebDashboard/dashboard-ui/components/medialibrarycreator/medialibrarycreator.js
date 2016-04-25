@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['dialogHelper', 'jQuery', 'paper-input', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (dialogHelper, $) {
 
     var currentDeferred;
     var hasChanges;
@@ -8,14 +8,17 @@
     function onSubmit() {
 
         if (paths.length == 0) {
-            Dashboard.alert({
-                message: Globalize.translate('PleaseAddAtLeastOneFolder')
+            require(['alert'], function (alert) {
+                alert({
+                    text: Globalize.translate('PleaseAddAtLeastOneFolder'),
+                    type: 'error'
+                });
             });
             return false;
         }
 
         var form = this;
-        var dlg = $(form).parents('paper-dialog')[0];
+        var dlg = $(form).parents('.dialog')[0];
 
         var name = $('#txtValue', form).val();
         var type = $('#selectCollectionType', form).val();
@@ -24,14 +27,16 @@
             type = null;
         }
 
-        ApiClient.addVirtualFolder(name, type, currentOptions.refresh, paths).done(function () {
+        ApiClient.addVirtualFolder(name, type, currentOptions.refresh, paths).then(function () {
 
             hasChanges = true;
-            PaperDialogHelper.close(dlg);
+            dialogHelper.close(dlg);
 
-        }).fail(function () {
+        }, function () {
 
-            Dashboard.showError(Globalize.translate('ErrorAddingMediaPathToVirtualFolder'));
+            require(['toast'], function (toast) {
+                toast(Globalize.translate('ErrorAddingMediaPathToVirtualFolder'));
+            });
         });
 
         return false;
@@ -58,7 +63,7 @@
                 return;
             }
 
-            var dlg = $(this).parents('paper-dialog')[0];
+            var dlg = $(this).parents('.dialog')[0];
 
             var index = this.selectedIndex;
             if (index != -1) {
@@ -87,7 +92,7 @@
 
     function onAddButtonClick() {
 
-        var page = $(this).parents('.editorContent')[0];
+        var page = $(this).parents('.popupEditor')[0];
 
         require(['directorybrowser'], function (directoryBrowser) {
 
@@ -163,13 +168,12 @@
 
             return p.toLowerCase() != location.toLowerCase();
         });
-        var page = $(this).parents('.editorContent')[0];
+        var page = $(this).parents('.popupEditor')[0];
         renderPaths(page);
     }
 
     function onDialogClosed() {
 
-        $(this).remove();
         Dashboard.hideLoadingMsg();
         currentDeferred.resolveWith(null, [hasChanges]);
     }
@@ -180,62 +184,50 @@
 
         self.show = function (options) {
 
-            var deferred = DeferredBuilder.Deferred();
+            var deferred = jQuery.Deferred();
 
             currentOptions = options;
             currentDeferred = deferred;
             hasChanges = false;
 
-            require(['components/paperdialoghelper'], function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'components/medialibrarycreator/medialibrarycreator.template.html', true);
 
-                HttpClient.send({
+            xhr.onload = function (e) {
 
-                    type: 'GET',
-                    url: 'components/medialibrarycreator/medialibrarycreator.template.html'
+                var template = this.response;
+                var dlg = dialogHelper.createDialog({
+                    size: 'small',
 
-                }).done(function (template) {
+                    // In (at least) chrome this is causing the text field to not be editable
+                    modal: false,
 
-                    var dlg = PaperDialogHelper.createDialog({
-                        size: 'small',
-                        theme: 'a',
-
-                        // In (at least) chrome this is causing the text field to not be editable
-                        modal: false
-                    });
-
-                    var html = '';
-                    html += '<h2 class="dialogHeader">';
-                    html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
-
-                    var title = Globalize.translate('ButtonAddMediaLibrary');
-
-                    html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + title + '</div>';
-                    html += '</h2>';
-
-                    html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
-                    html += Globalize.translateDocument(template);
-                    html += '</div>';
-
-                    dlg.innerHTML = html;
-                    document.body.appendChild(dlg);
-
-                    var editorContent = dlg.querySelector('.editorContent');
-                    initEditor(editorContent, options.collectionTypeOptions);
-
-                    $(dlg).on('iron-overlay-closed', onDialogClosed);
-
-                    PaperDialogHelper.openWithHash(dlg, 'medialibrarycreator');
-
-                    $('.btnCloseDialog', dlg).on('click', function () {
-
-                        PaperDialogHelper.close(dlg);
-                    });
-
-                    paths = [];
-                    renderPaths(editorContent);
+                    removeOnClose: true
                 });
 
-            });
+                dlg.classList.add('ui-body-a');
+                dlg.classList.add('background-theme-a');
+                dlg.classList.add('popupEditor');
+
+                dlg.innerHTML = Globalize.translateDocument(template);
+                document.body.appendChild(dlg);
+
+                initEditor(dlg, options.collectionTypeOptions);
+
+                dlg.addEventListener('close', onDialogClosed);
+
+                dialogHelper.open(dlg);
+
+                dlg.querySelector('.btnCancel').addEventListener('click', function () {
+
+                    dialogHelper.close(dlg);
+                });
+
+                paths = [];
+                renderPaths(dlg);
+            }
+
+            xhr.send();
 
             return deferred.promise();
         };

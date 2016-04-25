@@ -13,7 +13,7 @@
         }
 
         if (Dashboard.lastSystemInfo) {
-            Dashboard.setPageTitle(Dashboard.lastSystemInfo.ServerName);
+            page.querySelector('.serverNameHeader').innerHTML = Dashboard.lastSystemInfo.ServerName;
         }
 
         DashboardPage.newsStartIndex = 0;
@@ -22,8 +22,8 @@
         DashboardPage.pollForInfo(page);
         DashboardPage.startInterval(apiClient);
 
-        $(apiClient).on("websocketmessage", DashboardPage.onWebSocketMessage)
-            .on("websocketopen", DashboardPage.onWebSocketOpen);
+        Events.on(apiClient, 'websocketmessage', DashboardPage.onWebSocketMessage);
+        Events.on(apiClient, 'websocketopen', DashboardPage.onWebSocketOpen);
 
         DashboardPage.lastAppUpdateCheck = null;
         DashboardPage.lastPluginUpdateCheck = null;
@@ -48,7 +48,8 @@
         var apiClient = ApiClient;
 
         if (apiClient) {
-            $(apiClient).off("websocketmessage", DashboardPage.onWebSocketMessage).off("websocketopen", DashboardPage.onWebSocketConnectionChange).off("websocketerror", DashboardPage.onWebSocketConnectionChange).off("websocketclose", DashboardPage.onWebSocketConnectionChange);
+            Events.off(apiClient, 'websocketmessage', DashboardPage.onWebSocketMessage);
+            Events.off(apiClient, 'websocketopen', DashboardPage.onWebSocketOpen);
             DashboardPage.stopInterval(apiClient);
         }
 
@@ -70,16 +71,15 @@
         var list = DashboardPage.sessionsList;
 
         if (list) {
-            Logger.log('refreshSessionsLocally');
             DashboardPage.renderActiveConnections($.mobile.activePage, list);
         }
     },
 
     reloadSystemInfo: function (page) {
 
-        ApiClient.getSystemInfo().done(function (systemInfo) {
+        ApiClient.getSystemInfo().then(function (systemInfo) {
 
-            Dashboard.setPageTitle(systemInfo.ServerName);
+            page.querySelector('.serverNameHeader').innerHTML = systemInfo.ServerName;
             Dashboard.updateSystemInfo(systemInfo);
 
             $('#appVersionNumber', page).html(Globalize.translate('LabelVersionNumber').replace('{0}', systemInfo.Version));
@@ -90,7 +90,11 @@
                 $('#ports', page).html(Globalize.translate('LabelRunningOnPort', '<b>' + systemInfo.HttpServerPortNumber + '</b>'));
             }
 
-            $('.btnRestartContainer', page).visible(systemInfo.CanSelfRestart);
+            if (systemInfo.CanSelfRestart) {
+                $('.btnRestartContainer', page).removeClass('hide');
+            } else {
+                $('.btnRestartContainer', page).addClass('hide');
+            }
 
             DashboardPage.renderUrls(page, systemInfo);
             DashboardPage.renderPendingInstallations(page, systemInfo);
@@ -115,7 +119,7 @@
             Limit: 7
         };
 
-        ApiClient.getProductNews(query).done(function (result) {
+        ApiClient.getProductNews(query).then(function (result) {
 
             var html = result.Items.map(function (item) {
 
@@ -162,7 +166,7 @@
 
             html = html.join('') + pagingHtml;
 
-            var elem = $('.latestNewsItems', page).html(html).trigger('create');
+            var elem = $('.latestNewsItems', page).html(html);
 
             $('.btnNextPage', elem).on('click', function () {
                 DashboardPage.newsStartIndex += query.Limit;
@@ -237,11 +241,11 @@
             return;
         }
 
-        apiClient.getSessions().done(function (sessions) {
+        apiClient.getSessions().then(function (sessions) {
 
             DashboardPage.renderInfo(page, sessions, forceUpdate);
         });
-        apiClient.getScheduledTasks().done(function (tasks) {
+        apiClient.getScheduledTasks().then(function (tasks) {
 
             DashboardPage.renderRunningTasks(page, tasks);
         });
@@ -288,7 +292,7 @@
 
             html += '<div class="' + className + '" id="' + rowId + '">';
 
-            html += '<div class="cardBox">';
+            html += '<div class="cardBox" style="box-shadow:0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);margin:4px;">';
             html += '<div class="cardScalable">';
 
             html += '<div class="cardPadder"></div>';
@@ -321,22 +325,16 @@
 
             html += '</div>';
 
-            html += '<div class="sessionUserInfo">';
+            html += '<div class="sessionNowPlayingTime">' + DashboardPage.getSessionNowPlayingTime(session) + '</div>';
 
-            var userImage = DashboardPage.getUserImage(session);
-            if (userImage) {
-                html += '<div class="sessionUserImage" data-src="' + userImage + '">';
-                html += '<img src="' + userImage + '" />';
-            } else {
-                html += '<div class="sessionUserImage">';
-            }
-            html += '</div>';
+            html += '<div class="sessionNowPlayingStreamInfo">' + DashboardPage.getSessionNowPlayingStreamInfo(session) + '</div>';
 
-            html += '<div class="sessionUserName">';
-            html += DashboardPage.getUsersHtml(session);
-            html += '</div>';
+            //if (session.TranscodingInfo && session.TranscodingInfo.Framerate) {
 
-            html += '</div>';
+            //    html += '<div class="sessionTranscodingFramerate">' + session.TranscodingInfo.Framerate + ' fps</div>';
+            //} else {
+            //    html += '<div class="sessionTranscodingFramerate"></div>';
+            //}
 
             var nowPlayingName = DashboardPage.getNowPlayingName(session);
 
@@ -363,22 +361,23 @@
 
             html += '</div>';
 
-            html += '<div class="cardOverlayTarget">';
-
-            html += '<div class="sessionNowPlayingStreamInfo">' + DashboardPage.getSessionNowPlayingStreamInfo(session) + '</div>';
-            html += '<div class="sessionNowPlayingTime">' + DashboardPage.getSessionNowPlayingTime(session) + '</div>';
-
-            if (session.TranscodingInfo && session.TranscodingInfo.Framerate) {
-
-                html += '<div class="sessionTranscodingFramerate">' + session.TranscodingInfo.Framerate + ' fps</div>';
-            } else {
-                html += '<div class="sessionTranscodingFramerate"></div>';
-            }
-            html += '</div>';
-
             html += '</div>';
 
             // cardScalable
+            html += '</div>';
+
+            html += '<div style="padding:1em;border-top:1px solid #eee;background:#fff;text-align:center;text-transform:uppercase;display:flex;align-items:center;justify-content:center;">';
+
+            var userImage = DashboardPage.getUserImage(session);
+            if (userImage) {
+                html += '<img style="border-radius:50px;margin-right:.5em;" src="' + userImage + '" />';
+            } else {
+                html += '<div style="height:24px;"></div>';
+            }
+
+            html += '<div class="sessionUserName">';
+            html += DashboardPage.getUsersHtml(session) || '&nbsp;';
+            html += '</div>';
             html += '</div>';
 
             // cardBox
@@ -386,10 +385,9 @@
 
             // card
             html += '</div>';
-
         }
 
-        parentElement.append(html).createSessionItemMenus().trigger('create');
+        parentElement.append(html);
 
         $('.deadSession', parentElement).remove();
     },
@@ -398,56 +396,61 @@
 
         var html = '';
 
-        html += '<div>';
+        //html += '<div>';
 
         if (session.TranscodingInfo && session.TranscodingInfo.IsAudioDirect && session.TranscodingInfo.IsVideoDirect) {
             html += Globalize.translate('LabelPlayMethodDirectStream');
         }
         else if (session.PlayState.PlayMethod == 'Transcode') {
             html += Globalize.translate('LabelPlayMethodTranscoding');
+
+            if (session.TranscodingInfo && session.TranscodingInfo.Framerate) {
+
+                html += ' - '+session.TranscodingInfo.Framerate + ' fps';
+            }
         }
         else if (session.PlayState.PlayMethod == 'DirectStream') {
-            html += Globalize.translate('LabelPlayMethodDirectStream');
+            html += Globalize.translate('LabelPlayMethodDirectPlay');
         }
         else if (session.PlayState.PlayMethod == 'DirectPlay') {
             html += Globalize.translate('LabelPlayMethodDirectPlay');
         }
 
-        html += '</div>';
+        //html += '</div>';
 
-        if (session.TranscodingInfo) {
+        //if (session.TranscodingInfo) {
 
-            html += '<br/>';
+        //    html += '<br/>';
 
-            var line = [];
+        //    var line = [];
 
-            if (session.TranscodingInfo.Container) {
+        //    if (session.TranscodingInfo.Container) {
 
-                line.push(session.TranscodingInfo.Container);
-            }
-            if (session.TranscodingInfo.Bitrate) {
+        //        line.push(session.TranscodingInfo.Container);
+        //    }
+        //    if (session.TranscodingInfo.Bitrate) {
 
-                if (session.TranscodingInfo.Bitrate > 1000000) {
-                    line.push((session.TranscodingInfo.Bitrate / 1000000).toFixed(1) + ' Mbps');
-                } else {
-                    line.push(Math.floor(session.TranscodingInfo.Bitrate / 1000) + ' kbps');
-                }
-            }
-            if (line.length) {
+        //        if (session.TranscodingInfo.Bitrate > 1000000) {
+        //            line.push((session.TranscodingInfo.Bitrate / 1000000).toFixed(1) + ' Mbps');
+        //        } else {
+        //            line.push(Math.floor(session.TranscodingInfo.Bitrate / 1000) + ' kbps');
+        //        }
+        //    }
+        //    if (line.length) {
 
-                html += '<div>' + line.join(' ') + '</div>';
-            }
+        //        html += '<div>' + line.join(' ') + '</div>';
+        //    }
 
-            if (session.TranscodingInfo.VideoCodec) {
+        //    if (session.TranscodingInfo.VideoCodec) {
 
-                html += '<div>' + Globalize.translate('LabelVideoCodec').replace('{0}', session.TranscodingInfo.VideoCodec) + '</div>';
-            }
-            if (session.TranscodingInfo.AudioCodec && session.TranscodingInfo.AudioCodec != session.TranscodingInfo.Container) {
+        //        html += '<div>' + Globalize.translate('LabelVideoCodec').replace('{0}', session.TranscodingInfo.VideoCodec) + '</div>';
+        //    }
+        //    if (session.TranscodingInfo.AudioCodec && session.TranscodingInfo.AudioCodec != session.TranscodingInfo.Container) {
 
-                html += '<div>' + Globalize.translate('LabelAudioCodec').replace('{0}', session.TranscodingInfo.AudioCodec) + '</div>';
-            }
+        //        html += '<div>' + Globalize.translate('LabelAudioCodec').replace('{0}', session.TranscodingInfo.AudioCodec) + '</div>';
+        //    }
 
-        }
+        //}
 
         return html;
     },
@@ -578,7 +581,7 @@
         $('.sessionNowPlayingStreamInfo', row).html(DashboardPage.getSessionNowPlayingStreamInfo(session));
         $('.sessionNowPlayingTime', row).html(DashboardPage.getSessionNowPlayingTime(session));
 
-        $('.sessionUserName', row).html(DashboardPage.getUsersHtml(session));
+        $('.sessionUserName', row).html(DashboardPage.getUsersHtml(session) || '&nbsp;');
 
         $('.sessionAppSecondaryText', row).html(DashboardPage.getAppSecondaryText(session));
 
@@ -636,15 +639,6 @@
             if (device.indexOf('chrome') != -1) {
                 imgUrl = 'css/images/clients/chrome.png';
             }
-            else if (device.indexOf('firefox') != -1) {
-                imgUrl = 'css/images/clients/firefox.png';
-            }
-            else if (device.indexOf('internet explorer') != -1) {
-                imgUrl = 'css/images/clients/ie.png';
-            }
-            else if (device.indexOf('safari') != -1) {
-                imgUrl = 'css/images/clients/safari.png';
-            }
             else {
                 imgUrl = 'css/images/clients/html5.png';
             }
@@ -664,10 +658,6 @@
         if (clientLowered == "roku") {
 
             return "<img src='css/images/clients/roku.jpg' />";
-        }
-        if (clientLowered == "windows rt") {
-
-            return "<img src='css/images/clients/windowsrt.png' />";
         }
         if (clientLowered == "windows phone") {
 
@@ -774,7 +764,7 @@
         }
 
 
-        $('#divRunningTasks', page).html(html).trigger('create');
+        $('#divRunningTasks', page).html(html);
     },
 
     renderUrls: function (page, systemInfo) {
@@ -782,6 +772,8 @@
         if (systemInfo.LocalAddress) {
 
             var localAccessHtml = Globalize.translate('LabelLocalAccessUrl', '<a href="' + systemInfo.LocalAddress + '" target="_blank">' + systemInfo.LocalAddress + '</a>');
+
+            //localAccessHtml += '<a class="clearLink" href="https://github.com/MediaBrowser/Wiki/wiki/Connectivity" target="_blank"><paper-icon-button icon="info"></paper-icon-button></a>';
 
             $('.localUrl', page).html(localAccessHtml).show().trigger('create');
         } else {
@@ -811,15 +803,15 @@
 
             DashboardPage.lastAppUpdateCheck = new Date().getTime();
 
-            ApiClient.getAvailableApplicationUpdate().done(function (packageInfo) {
+            ApiClient.getAvailableApplicationUpdate().then(function (packageInfo) {
 
                 var version = packageInfo[0];
 
                 if (!version) {
-                    $('#pUpToDate', page).show();
+                    page.querySelector('#pUpToDate').classList.remove('hide');
                     $('#pUpdateNow', page).hide();
                 } else {
-                    $('#pUpToDate', page).hide();
+                    page.querySelector('#pUpToDate').classList.add('hide');
 
                     $('#pUpdateNow', page).show();
 
@@ -830,7 +822,7 @@
 
         } else {
 
-            $('#pUpToDate', page).hide();
+            page.querySelector('#pUpToDate').classList.add('hide');
 
             $('#pUpdateNow', page).hide();
         }
@@ -869,7 +861,7 @@
 
         DashboardPage.lastPluginUpdateCheck = new Date().getTime();
 
-        ApiClient.getAvailablePluginUpdates().done(function (updates) {
+        ApiClient.getAvailablePluginUpdates().then(function (updates) {
 
             var elem = $('#pPluginUpdates', page);
 
@@ -893,7 +885,7 @@
                 html += '<button type="button" data-icon="arrow-d" data-theme="b" onclick="DashboardPage.installPluginUpdate(this);" data-name="' + update.name + '" data-guid="' + update.guid + '" data-version="' + update.versionStr + '" data-classification="' + update.classification + '">' + Globalize.translate('ButtonUpdateNow') + '</button>';
             }
 
-            elem.html(html).trigger('create');
+            elem.html(html);
 
         });
     },
@@ -909,7 +901,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.installPlugin(name, guid, classification, version).done(function () {
+        ApiClient.installPlugin(name, guid, classification, version).then(function () {
 
             Dashboard.hideLoadingMsg();
         });
@@ -922,14 +914,14 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getScheduledTasks().done(function (tasks) {
+        ApiClient.getScheduledTasks().then(function (tasks) {
 
             var task = tasks.filter(function (t) {
 
                 return t.Key == DashboardPage.systemUpdateTaskKey;
             })[0];
 
-            ApiClient.startScheduledTask(task.Id).done(function () {
+            ApiClient.startScheduledTask(task.Id).then(function () {
 
                 DashboardPage.pollForInfo(page);
 
@@ -942,7 +934,7 @@
 
         var page = $.mobile.activePage;
 
-        ApiClient.stopScheduledTask(id).done(function () {
+        ApiClient.stopScheduledTask(id).then(function () {
 
             DashboardPage.pollForInfo(page);
         });
@@ -951,103 +943,32 @@
 
     restart: function () {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmRestart'), Globalize.translate('HeaderRestart'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmRestart'), Globalize.translate('HeaderRestart')).then(function () {
+
                 $('#btnRestartServer').buttonEnabled(false);
                 $('#btnShutdown').buttonEnabled(false);
                 Dashboard.restartServer();
-            }
-
+            });
         });
     },
 
     shutdown: function () {
 
-        Dashboard.confirm(Globalize.translate('MessageConfirmShutdown'), Globalize.translate('HeaderShutdown'), function (result) {
+        require(['confirm'], function (confirm) {
 
-            if (result) {
+            confirm(Globalize.translate('MessageConfirmShutdown'), Globalize.translate('HeaderShutdown')).then(function () {
+
                 $('#btnRestartServer').buttonEnabled(false);
                 $('#btnShutdown').buttonEnabled(false);
                 ApiClient.shutdownServer();
-            }
-
+            });
         });
     }
 };
 
 $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pagebeforehide', "#dashboardPage", DashboardPage.onPageHide);
-
-(function ($, document, window) {
-
-    var showOverlayTimeout;
-
-    function onHoverOut() {
-
-        if (showOverlayTimeout) {
-            clearTimeout(showOverlayTimeout);
-            showOverlayTimeout = null;
-        }
-
-        var elem = this.querySelector('.cardOverlayTarget');
-
-        if ($(elem).is(':visible')) {
-            require(["jquery", "velocity"], function ($, Velocity) {
-
-                Velocity.animate(elem, { "height": "0" },
-                {
-                    complete: function () {
-                        $(elem).hide();
-                    }
-                });
-            });
-        }
-    }
-
-    $.fn.createSessionItemMenus = function () {
-
-        function onShowTimerExpired(elem) {
-
-            if ($('.itemSelectionPanel:visible', elem).length) {
-                return;
-            }
-
-            var innerElem = $('.cardOverlayTarget', elem);
-
-            innerElem.show().each(function () {
-
-                this.style.height = 0;
-
-            }).animate({ "height": "100%" }, "fast");
-        }
-
-        function onHoverIn() {
-
-            if (showOverlayTimeout) {
-                clearTimeout(showOverlayTimeout);
-                showOverlayTimeout = null;
-            }
-
-            var elem = this;
-
-            showOverlayTimeout = setTimeout(function () {
-
-                onShowTimerExpired(elem);
-
-            }, 1000);
-        }
-
-        if (AppInfo.isTouchPreferred) {
-            /* browser with either Touch Events of Pointer Events
-               running on touch-capable device */
-            return this;
-        }
-
-        return this.off('mouseenter', '.playingSession', onHoverIn).off('mouseleave', '.playingSession', onHoverOut).on('mouseenter', '.playingSession', onHoverIn).on('mouseleave', '.playingSession', onHoverOut);
-    };
-
-})(jQuery, document, window);
-
 
 (function ($, document, window) {
 
@@ -1112,7 +1033,7 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
             });
         }
 
-        $(elem).html(html).trigger('create');
+        $(elem).html(html);
 
         $('.btnNextPage', elem).on('click', function () {
             reloadData(elem, startIndex + limit, limit);
@@ -1153,7 +1074,7 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
             limit: limit,
             minDate: minDate.toISOString()
 
-        })).done(function (result) {
+        })).then(function (result) {
 
             elem.setAttribute('data-activitystartindex', startIndex);
             elem.setAttribute('data-activitylimit', limit);
@@ -1176,7 +1097,8 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
             return;
         }
 
-        $(apiClient).on('websocketmessage', onSocketMessage).on('websocketopen', onSocketOpen);
+        Events.on(apiClient, 'websocketopen', onSocketOpen);
+        Events.on(apiClient, 'websocketmessage', onSocketMessage);
     }
 
     function startListening(apiClient) {
@@ -1220,7 +1142,8 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
         var apiClient = ApiClient;
 
         if (apiClient) {
-            $(apiClient).off('websocketopen', onSocketOpen).off('websocketmessage', onSocketOpen);
+            Events.off(apiClient, 'websocketopen', onSocketOpen);
+            Events.off(apiClient, 'websocketmessage', onSocketMessage);
 
             stopListening(apiClient);
         }
@@ -1248,12 +1171,12 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
 
 (function ($, document, window) {
 
-    var welcomeDismissValue = '11';
+    var welcomeDismissValue = '12';
     var welcomeTourKey = 'welcomeTour';
 
     function dismissWelcome(page, userId) {
 
-        ApiClient.getDisplayPreferences('dashboard', userId, 'dashboard').done(function (result) {
+        ApiClient.getDisplayPreferences('dashboard', userId, 'dashboard').then(function (result) {
 
             result.CustomPrefs[welcomeTourKey] = welcomeDismissValue;
             ApiClient.updateDisplayPreferences('dashboard', result, userId, 'dashboard');
@@ -1266,7 +1189,7 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
 
         var userId = Dashboard.getCurrentUserId();
 
-        apiClient.getDisplayPreferences('dashboard', userId, 'dashboard').done(function (result) {
+        apiClient.getDisplayPreferences('dashboard', userId, 'dashboard').then(function (result) {
 
             if (result.CustomPrefs[welcomeTourKey] == welcomeDismissValue) {
                 $('.welcomeMessage', page).hide();
@@ -1290,27 +1213,35 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
 
     function takeTour(page, userId) {
 
-        Dashboard.loadSwipebox().done(function () {
+        require(['slideshow'], function () {
 
-            $.swipebox([
-                    { href: 'css/images/tour/dashboard/dashboard.png', title: Globalize.translate('DashboardTourDashboard') },
-                    { href: 'css/images/tour/dashboard/help.png', title: Globalize.translate('DashboardTourHelp') },
-                    { href: 'css/images/tour/dashboard/users.png', title: Globalize.translate('DashboardTourUsers') },
-                    { href: 'css/images/tour/dashboard/sync.png', title: Globalize.translate('DashboardTourSync') },
-                    { href: 'css/images/tour/dashboard/cinemamode.png', title: Globalize.translate('DashboardTourCinemaMode') },
-                    { href: 'css/images/tour/dashboard/chapters.png', title: Globalize.translate('DashboardTourChapters') },
-                    { href: 'css/images/tour/dashboard/subtitles.png', title: Globalize.translate('DashboardTourSubtitles') },
-                    { href: 'css/images/tour/dashboard/plugins.png', title: Globalize.translate('DashboardTourPlugins') },
-                    { href: 'css/images/tour/dashboard/notifications.png', title: Globalize.translate('DashboardTourNotifications') },
-                    { href: 'css/images/tour/dashboard/scheduledtasks.png', title: Globalize.translate('DashboardTourScheduledTasks') },
-                    { href: 'css/images/tour/dashboard/mobile.png', title: Globalize.translate('DashboardTourMobile') },
-                    { href: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
-            ], {
-                afterClose: function () {
-                    dismissWelcome(page, userId);
-                    $('.welcomeMessage', page).hide();
-                },
-                hideBarsDelay: 30000
+            var slides = [
+                    { imageUrl: 'css/images/tour/admin/dashboard.png', title: Globalize.translate('DashboardTourDashboard') },
+                    { imageUrl: 'css/images/tour/admin/help.png', title: Globalize.translate('DashboardTourHelp') },
+                    { imageUrl: 'css/images/tour/admin/users.png', title: Globalize.translate('DashboardTourUsers') },
+                    { imageUrl: 'css/images/tour/admin/sync.png', title: Globalize.translate('DashboardTourSync') },
+                    { imageUrl: 'css/images/tour/admin/cinemamode.png', title: Globalize.translate('DashboardTourCinemaMode') },
+                    { imageUrl: 'css/images/tour/admin/chapters.png', title: Globalize.translate('DashboardTourChapters') },
+                    { imageUrl: 'css/images/tour/admin/subtitles.png', title: Globalize.translate('DashboardTourSubtitles') },
+                    { imageUrl: 'css/images/tour/admin/plugins.png', title: Globalize.translate('DashboardTourPlugins') },
+                    { imageUrl: 'css/images/tour/admin/notifications.png', title: Globalize.translate('DashboardTourNotifications') },
+                    { imageUrl: 'css/images/tour/admin/scheduledtasks.png', title: Globalize.translate('DashboardTourScheduledTasks') },
+                    { imageUrl: 'css/images/tour/admin/mobile.png', title: Globalize.translate('DashboardTourMobile') },
+                    { imageUrl: 'css/images/tour/enjoy.jpg', title: Globalize.translate('MessageEnjoyYourStay') }
+            ];
+
+            require(['slideshow'], function (slideshow) {
+
+                var newSlideShow = new slideshow({
+                    slides: slides,
+                    interactive: true,
+                    loop: false
+                });
+
+                newSlideShow.show();
+
+                dismissWelcome(page, userId);
+                $('.welcomeMessage', page).hide();
             });
         });
     }
@@ -1343,13 +1274,16 @@ $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pageb
 
         var page = this;
 
-        Dashboard.getPluginSecurityInfo().done(function (pluginSecurityInfo) {
+        Dashboard.getPluginSecurityInfo().then(function (pluginSecurityInfo) {
 
             if (!$('.customSupporterPromotion', page).length) {
                 $('.supporterPromotion', page).remove();
 
                 if (!pluginSecurityInfo.IsMBSupporter && AppInfo.enableSupporterMembership) {
-                    $('.content-primary', page).append('<div class="supporterPromotion"><a class="btn btnActionAccent" href="http://emby.media/premiere" target="_blank" style="font-size:14px;"><div>' + Globalize.translate('HeaderSupportTheTeam') + '</div><div style="font-weight:normal;font-size:90%;margin-top:5px;">' + Globalize.translate('TextEnjoyBonusFeatures') + '</div></a></div>');
+
+                    var html = '<div class="supporterPromotion"><a class="clearLink" href="http://emby.media/premiere" target="_blank"><paper-button raised class="block" style="text-transform:none;background-color:#52B54B;color:#fff;"><div>' + Globalize.translate('HeaderSupportTheTeam') + '</div><div style="font-weight:normal;margin-top:5px;">' + Globalize.translate('TextEnjoyBonusFeatures') + '</div></paper-button></a></div>';
+
+                    $('.content-primary', page).append(html);
                 }
             }
 

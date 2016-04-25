@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Session;
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using MediaBrowser.Controller.Entities.Audio;
-using MediaBrowser.Controller.LiveTv;
 
 namespace MediaBrowser.Server.Implementations.EntryPoints
 {
@@ -213,8 +211,18 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
 
                 if (userSessions.Count > 0)
                 {
-                    var info = GetLibraryUpdateInfo(itemsAdded, itemsUpdated, itemsRemoved, foldersAddedTo,
-                                                    foldersRemovedFrom, id);
+                    LibraryUpdateInfo info;
+
+                    try
+                    {
+                         info = GetLibraryUpdateInfo(itemsAdded, itemsUpdated, itemsRemoved, foldersAddedTo,
+                                                        foldersRemovedFrom, id);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error in GetLibraryUpdateInfo", ex);
+                        return;
+                    }
 
                     foreach (var userSession in userSessions)
                     {
@@ -272,7 +280,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
                 return false;
             }
 
-            return !(item is IChannelItem) && !(item is ILiveTvItem);
+            return item.SourceType == SourceType.Library;
         }
 
         /// <summary>

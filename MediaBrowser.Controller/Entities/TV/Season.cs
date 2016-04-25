@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Controller.Providers;
+﻿using System;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Users;
@@ -6,6 +7,8 @@ using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Controller.Entities.TV
 {
@@ -30,9 +33,13 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         [IgnoreDataMember]
-        public override BaseItem DisplayParent
+        public override Guid? DisplayParentId
         {
-            get { return Series ?? Parent; }
+            get
+            {
+                var series = Series;
+                return series == null ? ParentId : series.Id;
+            }
         }
 
         // Genre, Rating and Stuido will all be the same
@@ -88,19 +95,6 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         /// <summary>
-        /// Our rating comes from our series
-        /// </summary>
-        [IgnoreDataMember]
-        public override string OfficialRatingForComparison
-        {
-            get
-            {
-                var series = Series;
-                return series != null ? series.OfficialRatingForComparison : base.OfficialRatingForComparison;
-            }
-        }
-
-        /// <summary>
         /// Creates the name of the sort.
         /// </summary>
         /// <returns>System.String.</returns>
@@ -137,6 +131,30 @@ namespace MediaBrowser.Controller.Entities.TV
         public bool IsSpecialSeason
         {
             get { return (IndexNumber ?? -1) == 0; }
+        }
+
+        protected override Task<QueryResult<BaseItem>> GetItemsInternal(InternalItemsQuery query)
+        {
+            var user = query.User;
+
+            Func<BaseItem, bool> filter = i => UserViewBuilder.Filter(i, user, query, UserDataManager, LibraryManager);
+
+            IEnumerable<BaseItem> items;
+
+            if (query.User == null)
+            {
+                items = query.Recursive
+                   ? GetRecursiveChildren(filter)
+                   : Children.Where(filter);
+            }
+            else
+            {
+                items = GetEpisodes(query.User).Where(filter);
+            }
+
+            var result = PostFilterAndSort(items, query);
+
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -232,6 +250,11 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             // Don't block. Let either the entire series rating or episode rating determine it
             return false;
+        }
+
+        public override UnratedItem GetBlockUnratedType()
+        {
+            return UnratedItem.Series;
         }
 
         [IgnoreDataMember]

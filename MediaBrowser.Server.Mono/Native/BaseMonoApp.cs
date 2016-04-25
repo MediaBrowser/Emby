@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MediaBrowser.Controller.Power;
+using MediaBrowser.Server.Startup.Common.FFMpeg;
+using OperatingSystem = MediaBrowser.Server.Startup.Common.OperatingSystem;
 
 namespace MediaBrowser.Server.Mono.Native
 {
@@ -89,7 +92,7 @@ namespace MediaBrowser.Server.Mono.Native
             return list;
         }
 
-        public void AuthorizeServer(int udpPort, int httpServerPort, int httpsPort, string tempDirectory)
+        public void AuthorizeServer(int udpPort, int httpServerPort, int httpsPort, string applicationPath, string tempDirectory)
         {
         }
 
@@ -119,7 +122,7 @@ namespace MediaBrowser.Server.Mono.Native
         {
             get
             {
-                return false;
+				return Environment.OperatingSystem != Startup.Common.OperatingSystem.Osx;
             }
         }
 
@@ -202,6 +205,112 @@ namespace MediaBrowser.Server.Mono.Native
         {
             public string sysname = string.Empty;
             public string machine = string.Empty;
+        }
+
+        public IPowerManagement GetPowerManagement()
+        {
+            return new NullPowerManagement();
+        }
+
+        public FFMpegInstallInfo GetFfmpegInstallInfo()
+        {
+            return GetInfo(Environment);
+        }
+
+        public static FFMpegInstallInfo GetInfo(NativeEnvironment environment)
+        {
+            var info = new FFMpegInstallInfo();
+
+            // Windows builds: http://ffmpeg.zeranoe.com/builds/
+            // Linux builds: http://johnvansickle.com/ffmpeg/
+            // OS X builds: http://ffmpegmac.net/
+            // OS X x64: http://www.evermeet.cx/ffmpeg/
+
+            switch (environment.OperatingSystem)
+            {
+                case OperatingSystem.Bsd:
+                    break;
+                case OperatingSystem.Linux:
+
+                    info.ArchiveType = "7z";
+                    info.Version = "20160215";
+                    break;
+                case OperatingSystem.Osx:
+
+                    info.ArchiveType = "7z";
+
+                    switch (environment.SystemArchitecture)
+                    {
+                        case Architecture.X86_X64:
+                            info.Version = "20160124";
+                            break;
+                        case Architecture.X86:
+                            info.Version = "20150110";
+                            break;
+                    }
+                    break;
+            }
+
+            info.DownloadUrls = GetDownloadUrls(environment);
+
+            return info;
+        }
+
+        private static string[] GetDownloadUrls(NativeEnvironment environment)
+        {
+            switch (environment.OperatingSystem)
+            {
+                case OperatingSystem.Osx:
+
+                    switch (environment.SystemArchitecture)
+                    {
+                        case Architecture.X86_X64:
+                            return new[]
+                            {
+                                "https://github.com/MediaBrowser/Emby.Resources/raw/master/ffmpeg/osx/ffmpeg-x64-2.8.5.7z"
+                            };
+                        case Architecture.X86:
+                            return new[]
+                            {
+                                "https://github.com/MediaBrowser/Emby.Resources/raw/master/ffmpeg/osx/ffmpeg-x86-2.5.3.7z"
+                            };
+                    }
+                    break;
+
+                case OperatingSystem.Linux:
+
+                    switch (environment.SystemArchitecture)
+                    {
+                        case Architecture.X86_X64:
+                            return new[]
+                            {
+                                "https://github.com/MediaBrowser/Emby.Resources/raw/master/ffmpeg/linux/ffmpeg-git-20160215-64bit-static.7z"
+                            };
+                        case Architecture.X86:
+                            return new[]
+                            {
+                                "https://github.com/MediaBrowser/Emby.Resources/raw/master/ffmpeg/linux/ffmpeg-git-20160215-32bit-static.7z"
+                            };
+                        case Architecture.Arm:
+                            return new[]
+                            {
+                                "https://github.com/MediaBrowser/Emby.Resources/raw/master/ffmpeg/linux/ffmpeg-arm.7z"
+                            };
+                    }
+                    break;
+            }
+
+            // No version available 
+            return new string[] { };
+        }
+
+    }
+
+    public class NullPowerManagement : IPowerManagement
+    {
+        public void ScheduleWake(DateTime utcTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

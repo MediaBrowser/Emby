@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
@@ -48,7 +47,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             {
                 var formatString = ConfigurationManager.GetNfoConfiguration().ReleaseDateFormat;
 
-                writer.WriteElementString("disbanded", artist.EndDate.Value.ToString(formatString));
+                writer.WriteElementString("disbanded", artist.EndDate.Value.ToLocalTime().ToString(formatString));
             }
             
             var albums = artist

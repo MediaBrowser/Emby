@@ -1,8 +1,8 @@
-﻿(function () {
+﻿define([], function () {
 
     function onSharingSuccess(options) {
 
-        Logger.log('share success. shareId: ' + options.share.Id);
+        console.log('share success. shareId: ' + options.share.Id);
 
     }
 
@@ -10,7 +10,7 @@
 
         var shareId = options.share.Id;
 
-        Logger.log('share cancelled. shareId: ' + shareId);
+        console.log('share cancelled. shareId: ' + shareId);
 
         // Delete the share since it was cancelled
         ApiClient.ajax({
@@ -25,7 +25,7 @@
 
         Dashboard.showLoadingMsg();
 
-        require(['sharingwidget'], function () {
+        require(['sharingwidget'], function (SharingWidget) {
 
             ApiClient.ajax({
                 type: 'POST',
@@ -36,7 +36,7 @@
                 }),
                 dataType: "json"
 
-            }).done(function (share) {
+            }).then(function (share) {
 
                 var options = {
                     share: share
@@ -45,7 +45,7 @@
                 Dashboard.hideLoadingMsg();
                 SharingWidget.showMenu(options, onSharingSuccess, onSharingCancel);
 
-            }).fail(function () {
+            }, function () {
 
                 Dashboard.hideLoadingMsg();
             });
@@ -56,4 +56,4 @@
         showMenu: showMenu
     };
 
-})();
+});

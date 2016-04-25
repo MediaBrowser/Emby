@@ -1,4 +1,4 @@
-﻿(function(){
+﻿define(['jQuery'], function ($) {
 
 	function onFinish() {
 
@@ -7,7 +7,7 @@
             url: ApiClient.getUrl('Startup/Complete'),
             type: 'POST'
 
-        }).done(function () {
+        }).then(function () {
 
             Dashboard.navigate('dashboard.html');
         });
@@ -18,4 +18,4 @@
     	$('.btnWizardNext', this).on('click', onFinish);
     });
 
-})();
+});

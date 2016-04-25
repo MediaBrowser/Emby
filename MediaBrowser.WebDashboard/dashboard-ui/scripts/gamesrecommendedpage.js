@@ -1,4 +1,4 @@
-(function ($, document) {
+define(['jQuery'], function ($) {
 
     $(document).on('pagebeforeshow', "#gamesRecommendedPage", function () {
 
@@ -17,16 +17,18 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).done(function (items) {
+        ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).then(function (items) {
 
-            $('#recentlyAddedItems', page).html(LibraryBrowser.getPosterViewHtml({
+            var recentlyAddedItems = page.querySelector('#recentlyAddedItems');
+            recentlyAddedItems.innerHTML = LibraryBrowser.getPosterViewHtml({
                 items: items,
                 transparent: true,
                 borderless: true,
                 shape: 'auto',
                 lazy: true
 
-            })).lazyChildren();
+            });
+            ImageLoader.lazyChildren(recentlyAddedItems);
 
         });
 
@@ -44,7 +46,7 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getItems(userId, options).done(function (result) {
+        ApiClient.getItems(userId, options).then(function (result) {
 
             if (result.Items.length) {
                 $('#recentlyPlayedSection', page).show();
@@ -52,17 +54,18 @@
                 $('#recentlyPlayedSection', page).hide();
             }
 
-            $('#recentlyPlayedItems', page).html(LibraryBrowser.getPosterViewHtml({
+            var recentlyPlayedItems = page.querySelector('#recentlyPlayedItems');
+            recentlyPlayedItems.innerHTML = LibraryBrowser.getPosterViewHtml({
                 items: result.Items,
                 transparent: true,
                 borderless: true,
                 shape: 'auto',
                 lazy: true
 
-            })).lazyChildren();
-
+            });
+            ImageLoader.lazyChildren(recentlyPlayedItems);
         });
 
     });
 
-})(jQuery, document);
+});

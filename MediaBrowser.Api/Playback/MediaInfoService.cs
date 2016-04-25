@@ -141,10 +141,10 @@ namespace MediaBrowser.Api.Playback
 
             var profile = request.DeviceProfile;
 
-            var caps = _deviceManager.GetCapabilities(authInfo.DeviceId);
-            if (caps != null)
+            if (profile == null)
             {
-                if (profile == null)
+                var caps = _deviceManager.GetCapabilities(authInfo.DeviceId);
+                if (caps != null)
                 {
                     profile = caps.DeviceProfile;
                 }
@@ -156,7 +156,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var mediaSourceId = request.MediaSourceId;
 
-                SetDeviceSpecificData(request.Id, info, profile, authInfo, request.MaxStreamingBitrate, request.StartTimeTicks ?? 0, mediaSourceId, request.AudioStreamIndex, request.SubtitleStreamIndex);
+                SetDeviceSpecificData(request.Id, info, profile, authInfo, request.MaxStreamingBitrate ?? profile.MaxStreamingBitrate, request.StartTimeTicks ?? 0, mediaSourceId, request.AudioStreamIndex, request.SubtitleStreamIndex);
             }
 
             return ToOptimizedResult(info);
@@ -227,7 +227,7 @@ namespace MediaBrowser.Api.Playback
                 SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex, result.PlaySessionId);
             }
 
-            SortMediaSources(result);
+            SortMediaSources(result, maxBitrate);
         }
 
         private void SetDeviceSpecificData(BaseItem item,
@@ -318,15 +318,17 @@ namespace MediaBrowser.Api.Playback
                 if (streamInfo != null)
                 {
                     streamInfo.PlaySessionId = playSessionId;
-                    SetDeviceSpecificSubtitleInfo(streamInfo, mediaSource, auth.Token);
-                }
 
-                if (streamInfo != null && streamInfo.PlayMethod == PlayMethod.Transcode)
-                {
-                    streamInfo.StartPositionTicks = startTimeTicks;
-                    mediaSource.TranscodingUrl = streamInfo.ToUrl("-", auth.Token).TrimStart('-');
-                    mediaSource.TranscodingContainer = streamInfo.Container;
-                    mediaSource.TranscodingSubProtocol = streamInfo.SubProtocol;
+                    if (streamInfo.PlayMethod == PlayMethod.Transcode)
+                    {
+                        streamInfo.StartPositionTicks = startTimeTicks;
+                        mediaSource.TranscodingUrl = streamInfo.ToUrl("-", auth.Token).TrimStart('-');
+                        mediaSource.TranscodingContainer = streamInfo.Container;
+                        mediaSource.TranscodingSubProtocol = streamInfo.SubProtocol;
+                    }
+
+                    // Do this after the above so that StartPositionTicks is set
+                    SetDeviceSpecificSubtitleInfo(streamInfo, mediaSource, auth.Token);
                 }
             }
         }
@@ -373,7 +375,7 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
-        private void SortMediaSources(PlaybackInfoResponse result)
+        private void SortMediaSources(PlaybackInfoResponse result, int? maxBitrate)
         {
             var originalList = result.MediaSources.ToList();
 
@@ -406,6 +408,23 @@ namespace MediaBrowser.Api.Playback
                     default:
                         return 1;
                 }
+
+            }).ThenBy(i =>
+            {
+                if (maxBitrate.HasValue)
+                {
+                    if (i.Bitrate.HasValue)
+                    {
+                        if (i.Bitrate.Value <= maxBitrate.Value)
+                        {
+                            return 0;
+                        }
+
+                        return 2;
+                    }
+                }
+
+                return 1;
 
             }).ThenBy(originalList.IndexOf)
             .ToList();

@@ -1,10 +1,10 @@
-﻿(function ($, document) {
+﻿define(['scrollStyles'], function () {
 
-    function loadUpcoming(page) {
+    function loadUpcoming(context, params) {
 
         Dashboard.showLoadingMsg();
 
-        var limit = AppInfo.hasLowImageBandwidth ?
+        var limit = AppInfo.hasLowImageBandwidth && !enableScrollX() ?
            24 :
            40;
 
@@ -17,30 +17,27 @@
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        query.ParentId = LibraryMenu.getTopParentId();
+        query.ParentId = params.topParentId;
 
-        ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query)).done(function (result) {
+        ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query)).then(function (result) {
 
             var items = result.Items;
 
             if (items.length) {
-                page.querySelector('.noItemsMessage').style.display = 'none';
+                context.querySelector('.noItemsMessage').style.display = 'none';
             } else {
-                page.querySelector('.noItemsMessage').style.display = 'block';
+                context.querySelector('.noItemsMessage').style.display = 'block';
             }
 
-            var elem = page.querySelector('#upcomingItems');
+            var elem = context.querySelector('#upcomingItems');
             renderUpcoming(elem, items);
 
             Dashboard.hideLoadingMsg();
-
-            LibraryBrowser.setLastRefreshed(page);
-
         });
     }
 
     function enableScrollX() {
-        return $.browser.mobile && AppInfo.enableAppLayouts;
+        return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
     function getThumbShape() {
@@ -65,7 +62,13 @@
             if (item.PremiereDate) {
                 try {
 
-                    dateText = LibraryBrowser.getFutureDateText(parseISO8601Date(item.PremiereDate, { toLocal: true }), true);
+                    var premiereDate = parseISO8601Date(item.PremiereDate, { toLocal: true });
+
+                    if (premiereDate.getDate() == new Date().getDate() - 1) {
+                        dateText = Globalize.translate('Yesterday');
+                    } else {
+                        dateText = LibraryBrowser.getFutureDateText(premiereDate, true);
+                    }
 
                 } catch (err) {
                 }
@@ -122,12 +125,13 @@
         elem.innerHTML = html;
         ImageLoader.lazyChildren(elem);
     }
+    return function (view, params, tabContent) {
 
-    window.TvPage.renderUpcomingTab = function (page, tabContent) {
+        var self = this;
 
-        if (LibraryBrowser.needsRefresh(tabContent)) {
-            loadUpcoming(tabContent);
-        }
+        self.renderTab = function () {
+
+            loadUpcoming(tabContent, params);
+        };
     };
-
-})(jQuery, document);
+});

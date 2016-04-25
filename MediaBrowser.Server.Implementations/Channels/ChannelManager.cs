@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
@@ -26,10 +25,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
 
 namespace MediaBrowser.Server.Implementations.Channels
 {
-    public class ChannelManager : IChannelManager, IDisposable
+    public class ChannelManager : IChannelManager
     {
         private IChannel[] _channels;
 
@@ -47,11 +49,6 @@ namespace MediaBrowser.Server.Implementations.Channels
         private readonly ILocalizationManager _localization;
         private readonly ConcurrentDictionary<Guid, bool> _refreshedItems = new ConcurrentDictionary<Guid, bool>();
 
-        private readonly ConcurrentDictionary<string, int> _downloadCounts = new ConcurrentDictionary<string, int>();
-
-        private Timer _refreshTimer;
-        private Timer _clearDownloadCountsTimer;
-
         public ChannelManager(IUserManager userManager, IDtoService dtoService, ILibraryManager libraryManager, ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IUserDataManager userDataManager, IJsonSerializer jsonSerializer, ILocalizationManager localization, IHttpClient httpClient, IProviderManager providerManager)
         {
             _userManager = userManager;
@@ -65,9 +62,6 @@ namespace MediaBrowser.Server.Implementations.Channels
             _localization = localization;
             _httpClient = httpClient;
             _providerManager = providerManager;
-
-            _refreshTimer = new Timer(s => _refreshedItems.Clear(), null, TimeSpan.FromHours(3), TimeSpan.FromHours(3));
-            _clearDownloadCountsTimer = new Timer(s => _downloadCounts.Clear(), null, TimeSpan.FromHours(24), TimeSpan.FromHours(24));
         }
 
         private TimeSpan CacheLength
@@ -104,6 +98,11 @@ namespace MediaBrowser.Server.Implementations.Channels
                 .OrderBy(i => i.Name);
         }
 
+        public IEnumerable<Guid> GetInstalledChannelIds()
+        {
+            return GetAllChannels().Select(i => GetInternalChannelId(i.Name));
+        }
+
         public Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
         {
             var user = string.IsNullOrWhiteSpace(query.UserId)
@@ -122,7 +121,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 {
                     try
                     {
-                        return (GetChannelProvider(i) is ISupportsLatestMedia) == val;
+                        return GetChannelProvider(i) is ISupportsLatestMedia == val;
                     }
                     catch
                     {
@@ -206,6 +205,8 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         public async Task RefreshChannels(IProgress<double> progress, CancellationToken cancellationToken)
         {
+            _refreshedItems.Clear();
+
             var allChannelsList = GetAllChannels().ToList();
 
             var numComplete = 0;
@@ -249,9 +250,19 @@ namespace MediaBrowser.Server.Implementations.Channels
             return item;
         }
 
-        public async Task<IEnumerable<MediaSourceInfo>> GetStaticMediaSources(IChannelMediaItem item, bool includeCachedVersions, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MediaSourceInfo>> GetStaticMediaSources(BaseItem item, bool includeCachedVersions, CancellationToken cancellationToken)
         {
-            IEnumerable<ChannelMediaInfo> results = item.ChannelMediaSources;
+            IEnumerable<ChannelMediaInfo> results = new List<ChannelMediaInfo>();
+            var video = item as Video;
+            if (video != null)
+            {
+                results = video.ChannelMediaSources;
+            }
+            var audio = item as Audio;
+            if (audio != null)
+            {
+                results = audio.ChannelMediaSources ?? new List<ChannelMediaInfo>();
+            }
 
             var sources = SortMediaInfoResults(results)
                 .Select(i => GetMediaSource(item, i))
@@ -266,7 +277,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             return sources;
         }
 
-        public async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(IChannelMediaItem item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
             var channel = GetChannel(item.ChannelId);
             var channelPlugin = GetChannelProvider(channel);
@@ -320,7 +331,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             return list;
         }
 
-        private IEnumerable<MediaSourceInfo> GetCachedChannelItemMediaSources(IChannelMediaItem item)
+        private IEnumerable<MediaSourceInfo> GetCachedChannelItemMediaSources(BaseItem item)
         {
             var filenamePrefix = item.Id.ToString("N");
             var parentPath = Path.Combine(ChannelDownloadPath, item.ChannelId);
@@ -369,7 +380,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             return new List<MediaSourceInfo>();
         }
 
-        private MediaSourceInfo GetMediaSource(IChannelMediaItem item, ChannelMediaInfo info)
+        private MediaSourceInfo GetMediaSource(BaseItem item, ChannelMediaInfo info)
         {
             var source = info.ToMediaSource();
 
@@ -391,7 +402,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 var val = width.Value;
 
                 var res = list
-                    .OrderBy(i => (i.Width.HasValue && i.Width.Value <= val ? 0 : 1))
+                    .OrderBy(i => i.Width.HasValue && i.Width.Value <= val ? 0 : 1)
                     .ThenBy(i => Math.Abs((i.Width ?? 0) - val))
                     .ThenByDescending(i => i.Width ?? 0)
                     .ThenBy(list.IndexOf)
@@ -408,28 +419,18 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         private async Task<Channel> GetChannel(IChannel channelInfo, CancellationToken cancellationToken)
         {
+            var parentFolder = await GetInternalChannelFolder(cancellationToken).ConfigureAwait(false);
+            var parentFolderId = parentFolder.Id;
+
             var id = GetInternalChannelId(channelInfo.Name);
+            var idString = id.ToString("N");
 
             var path = Channel.GetInternalMetadataPath(_config.ApplicationPaths.InternalMetadataPath, id);
 
             var isNew = false;
-
-            if (!_fileSystem.DirectoryExists(path))
-            {
-                _logger.Debug("Creating directory {0}", path);
-
-                _fileSystem.CreateDirectory(path);
-
-                if (!_fileSystem.DirectoryExists(path))
-                {
-                    throw new IOException("Path not created: " + path);
-                }
-
-                isNew = true;
-            }
+            var forceUpdate = false;
 
             var item = _libraryManager.GetItemById(id) as Channel;
-            var channelId = channelInfo.Name.GetMD5().ToString("N");
 
             if (item == null)
             {
@@ -438,18 +439,29 @@ namespace MediaBrowser.Server.Implementations.Channels
                     Name = channelInfo.Name,
                     Id = id,
                     DateCreated = _fileSystem.GetCreationTimeUtc(path),
-                    DateModified = _fileSystem.GetLastWriteTimeUtc(path),
-                    Path = path,
-                    ChannelId = channelId
+                    DateModified = _fileSystem.GetLastWriteTimeUtc(path)
                 };
 
                 isNew = true;
             }
 
-            if (!string.Equals(item.ChannelId, channelId, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))
             {
                 isNew = true;
             }
+            item.Path = path;
+
+            if (!string.Equals(item.ChannelId, idString, StringComparison.OrdinalIgnoreCase))
+            {
+                forceUpdate = true;
+            }
+            item.ChannelId = idString;
+
+            if (item.ParentId != parentFolderId)
+            {
+                forceUpdate = true;
+            }
+            item.ParentId = parentFolderId;
 
             item.OfficialRating = GetOfficialRating(channelInfo.ParentalRating);
             item.Overview = channelInfo.Description;
@@ -459,13 +471,17 @@ namespace MediaBrowser.Server.Implementations.Channels
             {
                 item.Name = channelInfo.Name;
             }
-            
-            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
+
+            if (isNew)
             {
-                ForceSave = isNew
+                await _libraryManager.CreateItem(item, cancellationToken).ConfigureAwait(false);
+            }
+            else if (forceUpdate)
+            {
+                await item.UpdateToRepository(ItemUpdateType.None, cancellationToken).ConfigureAwait(false);
+            }
 
-            }, cancellationToken);
-
+            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), cancellationToken);
             return item;
         }
 
@@ -488,24 +504,26 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         public Channel GetChannel(string id)
         {
-            return _libraryManager.GetItemById(new Guid(id)) as Channel;
+            return _libraryManager.GetItemById(id) as Channel;
         }
 
         public IEnumerable<ChannelFeatures> GetAllChannelFeatures()
         {
-            var inputItems = _libraryManager.GetItems(new InternalItemsQuery
+            return _libraryManager.GetItemList(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Channel).Name },
                 SortBy = new[] { ItemSortBy.SortName }
 
-            }).Items;
-
-            return inputItems
-                .Select(i => GetChannelFeatures(i.Id.ToString("N")));
+            }).Select(i => GetChannelFeatures(i.Id.ToString("N")));
         }
 
         public ChannelFeatures GetChannelFeatures(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
             var channel = GetChannel(id);
             var channelProvider = GetChannelProvider(channel);
 
@@ -542,8 +560,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             {
                 throw new ArgumentNullException("name");
             }
-
-            return ("Channel " + name).GetMBId(typeof(Channel));
+            return _libraryManager.GetNewItemId("Channel " + name, typeof(Channel));
         }
 
         public async Task<QueryResult<BaseItemDto>> GetLatestChannelItems(AllChannelMediaQuery query, CancellationToken cancellationToken)
@@ -1075,7 +1092,7 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 if (!string.IsNullOrWhiteSpace(folderId))
                 {
-                    var categoryItem = (IChannelItem)_libraryManager.GetItemById(new Guid(folderId));
+                    var categoryItem = _libraryManager.GetItemById(new Guid(folderId));
 
                     query.FolderId = categoryItem.ExternalId;
                 }
@@ -1191,7 +1208,7 @@ namespace MediaBrowser.Server.Implementations.Channels
         }
 
         private T GetItemById<T>(string idString, string channelName, string channnelDataVersion, out bool isNew)
-            where T : BaseItem, IChannelItem, new()
+            where T : BaseItem, new()
         {
             var id = GetIdToHash(idString, channelName).GetMBId(typeof(T));
 
@@ -1225,18 +1242,52 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             BaseItem item;
             bool isNew;
+            bool forceUpdate = false;
 
             if (info.Type == ChannelItemType.Folder)
             {
-                item = GetItemById<ChannelFolderItem>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                if (info.FolderType == ChannelFolderType.MusicAlbum)
+                {
+                    item = GetItemById<MusicAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else if (info.FolderType == ChannelFolderType.PhotoAlbum)
+                {
+                    item = GetItemById<PhotoAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else
+                {
+                    item = GetItemById<Folder>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
             }
             else if (info.MediaType == ChannelMediaType.Audio)
             {
-                item = GetItemById<ChannelAudioItem>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                if (info.ContentType == ChannelMediaContentType.Podcast)
+                {
+                    item = GetItemById<AudioPodcast>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else
+                {
+                    item = GetItemById<Audio>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
             }
             else
             {
-                item = GetItemById<ChannelVideoItem>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                if (info.ContentType == ChannelMediaContentType.Episode)
+                {
+                    item = GetItemById<Episode>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else if (info.ContentType == ChannelMediaContentType.Movie)
+                {
+                    item = GetItemById<Movie>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else if (info.ContentType == ChannelMediaContentType.Trailer || info.ExtraType == ExtraType.Trailer)
+                {
+                    item = GetItemById<Trailer>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else
+                {
+                    item = GetItemById<Video>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
             }
 
             item.RunTimeTicks = info.RunTimeTicks;
@@ -1254,41 +1305,63 @@ namespace MediaBrowser.Server.Implementations.Channels
                 item.ProductionYear = info.ProductionYear;
                 item.ProviderIds = info.ProviderIds;
                 item.OfficialRating = info.OfficialRating;
-
                 item.DateCreated = info.DateCreated ?? DateTime.UtcNow;
+                item.Tags = info.Tags;
             }
 
-            var channelItem = (IChannelItem)item;
-
-            channelItem.ChannelId = internalChannelId.ToString("N");
-
-            if (!string.Equals(channelItem.ExternalId, info.Id, StringComparison.OrdinalIgnoreCase))
+            var trailer = item as Trailer;
+            if (trailer != null)
             {
-                isNew = true;
-            }
-            channelItem.ExternalId = info.Id;
-
-            if (isNew)
-            {
-                channelItem.Tags = info.Tags;
+                if (!info.TrailerTypes.SequenceEqual(trailer.TrailerTypes))
+                {
+                    forceUpdate = true;
+                }
+                trailer.TrailerTypes = info.TrailerTypes;
             }
 
-            var channelMediaItem = item as IChannelMediaItem;
+            item.ChannelId = internalChannelId.ToString("N");
 
-            if (channelMediaItem != null)
+            if (item.ParentId != internalChannelId)
             {
-                channelMediaItem.ContentType = info.ContentType;
-                channelMediaItem.ExtraType = info.ExtraType;
-                channelMediaItem.ChannelMediaSources = info.MediaSources;
+                forceUpdate = true;
+            }
+            item.ParentId = internalChannelId;
+
+            if (!string.Equals(item.ExternalId, info.Id, StringComparison.OrdinalIgnoreCase))
+            {
+                forceUpdate = true;
+            }
+            item.ExternalId = info.Id;
+
+            var channelAudioItem = item as Audio;
+            if (channelAudioItem != null)
+            {
+                channelAudioItem.ExtraType = info.ExtraType;
+                channelAudioItem.ChannelMediaSources = info.MediaSources;
 
                 var mediaSource = info.MediaSources.FirstOrDefault();
-
                 item.Path = mediaSource == null ? null : mediaSource.Path;
             }
 
-            if (!string.IsNullOrWhiteSpace(info.ImageUrl))
+            var channelVideoItem = item as Video;
+            if (channelVideoItem != null)
+            {
+                channelVideoItem.ExtraType = info.ExtraType;
+                channelVideoItem.ChannelMediaSources = info.MediaSources;
+
+                var mediaSource = info.MediaSources.FirstOrDefault();
+                item.Path = mediaSource == null ? null : mediaSource.Path;
+            }
+
+            if (!string.IsNullOrWhiteSpace(info.ImageUrl) && !item.HasImage(ImageType.Primary))
             {
                 item.SetImagePath(ImageType.Primary, info.ImageUrl);
+            }
+
+            if (item.SourceType != SourceType.Channel)
+            {
+                item.SourceType = SourceType.Channel;
+                forceUpdate = true;
             }
 
             if (isNew)
@@ -1299,6 +1372,10 @@ namespace MediaBrowser.Server.Implementations.Channels
                 {
                     await _libraryManager.UpdatePeople(item, info.People ?? new List<PersonInfo>()).ConfigureAwait(false);
                 }
+            }
+            else if (forceUpdate)
+            {
+                await item.UpdateToRepository(ItemUpdateType.None, cancellationToken).ConfigureAwait(false);
             }
 
             return item;
@@ -1324,7 +1401,13 @@ namespace MediaBrowser.Server.Implementations.Channels
 
         internal IChannel GetChannelProvider(Channel channel)
         {
-            var result = GetAllChannels().FirstOrDefault(i => string.Equals(i.Name.GetMD5().ToString("N"), channel.ChannelId, StringComparison.OrdinalIgnoreCase) || string.Equals(i.Name, channel.Name, StringComparison.OrdinalIgnoreCase));
+            if (channel == null)
+            {
+                throw new ArgumentNullException("channel");
+            }
+
+            var result = GetAllChannels()
+                .FirstOrDefault(i => string.Equals(GetInternalChannelId(i.Name).ToString("N"), channel.ChannelId, StringComparison.OrdinalIgnoreCase) || string.Equals(i.Name, channel.Name, StringComparison.OrdinalIgnoreCase));
 
             if (result == null)
             {
@@ -1431,7 +1514,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             return await _libraryManager.GetNamedView(name, "channels", "zz_" + name, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task DownloadChannelItem(IChannelMediaItem item, string destination,
+        public async Task DownloadChannelItem(BaseItem item, string destination,
             IProgress<double> progress, CancellationToken cancellationToken)
         {
             var sources = await GetDynamicMediaSources(item, cancellationToken)
@@ -1447,7 +1530,7 @@ namespace MediaBrowser.Server.Implementations.Channels
         }
 
         private async Task TryDownloadChannelItem(MediaSourceInfo source,
-            IChannelMediaItem item,
+            BaseItem item,
             string destination,
             IProgress<double> progress,
             CancellationToken cancellationToken)
@@ -1459,7 +1542,6 @@ namespace MediaBrowser.Server.Implementations.Channels
                 Progress = new Progress<double>()
             };
 
-            var host = new Uri(source.Path).Host.ToLower();
             var channel = GetChannel(item.ChannelId);
             var channelProvider = GetChannelProvider(channel);
             var features = channelProvider.GetChannelFeatures();
@@ -1470,12 +1552,6 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
 
             var limit = features.DailyDownloadLimit;
-
-            if (!ValidateDownloadLimit(host, limit))
-            {
-                _logger.Error(string.Format("Download limit has been reached for {0}", channel.Name));
-                throw new ChannelDownloadException(string.Format("Download limit has been reached for {0}", channel.Name));
-            }
 
             foreach (var header in source.RequiredHttpHeaders)
             {
@@ -1494,8 +1570,6 @@ namespace MediaBrowser.Server.Implementations.Channels
                     StatusCode = HttpStatusCode.NotFound
                 };
             }
-
-            IncrementDownloadCount(host, limit);
 
             if (string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase) && response.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
             {
@@ -1529,47 +1603,6 @@ namespace MediaBrowser.Server.Implementations.Channels
             catch
             {
 
-            }
-        }
-
-        private void IncrementDownloadCount(string key, int? limit)
-        {
-            if (!limit.HasValue)
-            {
-                return;
-            }
-
-            int current;
-            _downloadCounts.TryGetValue(key, out current);
-
-            current++;
-            _downloadCounts.AddOrUpdate(key, current, (k, v) => current);
-        }
-
-        private bool ValidateDownloadLimit(string key, int? limit)
-        {
-            if (!limit.HasValue)
-            {
-                return true;
-            }
-
-            int current;
-            _downloadCounts.TryGetValue(key, out current);
-
-            return current < limit.Value;
-        }
-
-        public void Dispose()
-        {
-            if (_clearDownloadCountsTimer != null)
-            {
-                _clearDownloadCountsTimer.Dispose();
-                _clearDownloadCountsTimer = null;
-            }
-            if (_refreshTimer != null)
-            {
-                _refreshTimer.Dispose();
-                _refreshTimer = null;
             }
         }
     }

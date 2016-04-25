@@ -1,11 +1,8 @@
 ﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Users;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.Serialization;
 using MediaBrowser.Controller.Entities.Movies;
 
@@ -14,7 +11,6 @@ namespace MediaBrowser.Controller.Entities
     /// <summary>
     /// Class Trailer
     /// </summary>
-    [Obsolete]
     public class Trailer : Video, IHasCriticRating, IHasProductionLocations, IHasBudget, IHasKeywords, IHasTaglines, IHasMetascore, IHasLookupInfo<TrailerInfo>
     {
         public List<string> ProductionLocations { get; set; }
@@ -25,13 +21,22 @@ namespace MediaBrowser.Controller.Entities
             Taglines = new List<string>();
             Keywords = new List<string>();
             ProductionLocations = new List<string>();
+            TrailerTypes = new List<TrailerType> { TrailerType.LocalTrailer };
         }
+
+        public List<TrailerType> TrailerTypes { get; set; }
 
         public float? Metascore { get; set; }
 
         public List<MediaUrl> RemoteTrailers { get; set; }
 
         public List<string> Keywords { get; set; }
+
+        [IgnoreDataMember]
+        public bool IsLocalTrailer
+        {
+            get { return TrailerTypes.Contains(TrailerType.LocalTrailer); }
+        }
 
         /// <summary>
         /// Gets or sets the taglines.
@@ -50,32 +55,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The revenue.</value>
         public double? Revenue { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating.
-        /// </summary>
-        /// <value>The critic rating.</value>
-        public float? CriticRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating summary.
-        /// </summary>
-        /// <value>The critic rating summary.</value>
-        public string CriticRatingSummary { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is local trailer.
-        /// </summary>
-        /// <value><c>true</c> if this instance is local trailer; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public bool IsLocalTrailer
-        {
-            get
-            {
-                // Local trailers are not part of children
-                return Parent == null;
-            }
-        }
 
         protected override string CreateUserDataKey()
         {
@@ -97,18 +76,59 @@ namespace MediaBrowser.Controller.Entities
             return base.CreateUserDataKey();
         }
 
-        protected override bool GetBlockUnratedValue(UserPolicy config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedItems.Contains(UnratedItem.Trailer);
+            return UnratedItem.Trailer;
         }
 
         public TrailerInfo GetLookupInfo()
         {
             var info = GetItemLookupInfo<TrailerInfo>();
 
-            info.IsLocalTrailer = IsLocalTrailer;
+            info.IsLocalTrailer = TrailerTypes.Contains(TrailerType.LocalTrailer);
+
+            if (!IsInMixedFolder)
+            {
+                info.Name = System.IO.Path.GetFileName(ContainingFolderPath);
+            }
 
             return info;
+        }
+
+        public override bool BeforeMetadataRefresh()
+        {
+            var hasChanges = base.BeforeMetadataRefresh();
+
+            if (!ProductionYear.HasValue)
+            {
+                var info = LibraryManager.ParseName(Name);
+
+                var yearInName = info.Year;
+
+                if (yearInName.HasValue)
+                {
+                    ProductionYear = yearInName;
+                    hasChanges = true;
+                }
+                else
+                {
+                    // Try to get the year from the folder name
+                    if (!IsInMixedFolder)
+                    {
+                        info = LibraryManager.ParseName(System.IO.Path.GetFileName(ContainingFolderPath));
+
+                        yearInName = info.Year;
+
+                        if (yearInName.HasValue)
+                        {
+                            ProductionYear = yearInName;
+                            hasChanges = true;
+                        }
+                    }
+                }
+            }
+
+            return hasChanges;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
@@ -26,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CommonIO;
 
 namespace MediaBrowser.Server.Implementations.Dto
@@ -92,10 +92,22 @@ namespace MediaBrowser.Server.Implementations.Dto
             var syncDictionary = GetSyncedItemProgressDictionary(syncJobItems);
 
             var list = new List<BaseItemDto>();
+            var programTuples = new List<Tuple<BaseItem, BaseItemDto>> { };
+            var channelTuples = new List<Tuple<BaseItemDto, LiveTvChannel>> { };
 
             foreach (var item in items)
             {
                 var dto = GetBaseItemDtoInternal(item, options, syncDictionary, user, owner);
+
+                var tvChannel = item as LiveTvChannel;
+                if (tvChannel != null)
+                {
+                    channelTuples.Add(new Tuple<BaseItemDto, LiveTvChannel>(dto, tvChannel));
+                }
+                else if (item is LiveTvProgram)
+                {
+                    programTuples.Add(new Tuple<BaseItem, BaseItemDto>(item, dto));
+                }
 
                 var byName = item as IItemByName;
 
@@ -118,6 +130,17 @@ namespace MediaBrowser.Server.Implementations.Dto
                 list.Add(dto);
             }
 
+            if (programTuples.Count > 0)
+            {
+                var task = _livetvManager().AddInfoToProgramDto(programTuples, options.Fields, user);
+                Task.WaitAll(task);
+            }
+
+            if (channelTuples.Count > 0)
+            {
+                _livetvManager().AddChannelInfo(channelTuples, options, user);
+            }
+
             return list;
         }
 
@@ -138,6 +161,18 @@ namespace MediaBrowser.Server.Implementations.Dto
             var syncProgress = GetSyncedItemProgress(options);
 
             var dto = GetBaseItemDtoInternal(item, options, GetSyncedItemProgressDictionary(syncProgress), user, owner);
+            var tvChannel = item as LiveTvChannel;
+            if (tvChannel != null)
+            {
+                var list = new List<Tuple<BaseItemDto, LiveTvChannel>> { new Tuple<BaseItemDto, LiveTvChannel>(dto, tvChannel) };
+                _livetvManager().AddChannelInfo(list, options, user);
+            }
+            else if (item is LiveTvProgram)
+            {
+                var list = new List<Tuple<BaseItem, BaseItemDto>> { new Tuple<BaseItem, BaseItemDto>(item, dto) };
+                var task = _livetvManager().AddInfoToProgramDto(list, options.Fields, user);
+                Task.WaitAll(task);
+            }
 
             var byName = item as IItemByName;
 
@@ -163,16 +198,11 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             if (person != null)
             {
-                var items = _libraryManager.GetItems(new InternalItemsQuery
+                var items = _libraryManager.GetItemList(new InternalItemsQuery(user)
                 {
                     Person = byName.Name
 
-                }).Items;
-
-                if (user != null)
-                {
-                    return items.Where(i => i.IsVisibleStandalone(user)).ToList();
-                }
+                }, new string[] { });
 
                 return items.ToList();
             }
@@ -217,17 +247,17 @@ namespace MediaBrowser.Server.Implementations.Dto
             }).Items;
         }
 
-        public void FillSyncInfo(IEnumerable<IHasSyncInfo> dtos, DtoOptions options, User user)
+        public void FillSyncInfo(IEnumerable<Tuple<BaseItem, BaseItemDto>> tuples, DtoOptions options, User user)
         {
             if (options.Fields.Contains(ItemFields.SyncInfo))
             {
                 var syncProgress = GetSyncedItemProgress(options);
 
-                foreach (var dto in dtos)
+                foreach (var tuple in tuples)
                 {
-                    var item = _libraryManager.GetItemById(dto.Id);
+                    var item = tuple.Item1;
 
-                    FillSyncInfo(dto, item, syncProgress, options, user);
+                    FillSyncInfo(tuple.Item2, item, syncProgress, options, user);
                 }
             }
         }
@@ -301,6 +331,11 @@ namespace MediaBrowser.Server.Implementations.Dto
                 ServerId = _appHost.SystemId
             };
 
+            if (item.SourceType == SourceType.Channel)
+            {
+                dto.SourceType = item.SourceType.ToString();
+            }
+
             if (fields.Contains(ItemFields.People))
             {
                 AttachPeople(dto, item);
@@ -310,7 +345,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             {
                 try
                 {
-                    AttachPrimaryImageAspectRatio(dto, item, fields);
+                    AttachPrimaryImageAspectRatio(dto, item);
                 }
                 catch (Exception ex)
                 {
@@ -352,15 +387,11 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             AttachBasicFields(dto, item, owner, options);
 
-            var tvChannel = item as LiveTvChannel;
-            if (tvChannel != null)
-            {
-                _livetvManager().AddChannelInfo(dto, tvChannel, options, user);
-            }
-
             var collectionFolder = item as ICollectionFolder;
             if (collectionFolder != null)
             {
+                dto.OriginalCollectionType = collectionFolder.CollectionType;
+
                 dto.CollectionType = user == null ?
                     collectionFolder.CollectionType :
                     collectionFolder.GetViewType(user);
@@ -394,11 +425,6 @@ namespace MediaBrowser.Server.Implementations.Dto
             if (item is ILiveTvRecording)
             {
                 _livetvManager().AddInfoToRecordingDto(item, dto, user);
-            }
-
-            else if (item is LiveTvProgram)
-            {
-                _livetvManager().AddInfoToProgramDto(item, dto, fields.Contains(ItemFields.ChannelInfo), user);
             }
 
             return dto;
@@ -440,6 +466,7 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.EpisodeCount = taggedItems.Count(i => i is Episode);
                 dto.GameCount = taggedItems.Count(i => i is Game);
                 dto.MovieCount = taggedItems.Count(i => i is Movie);
+                dto.TrailerCount = taggedItems.Count(i => i is Trailer);
                 dto.MusicVideoCount = taggedItems.Count(i => i is MusicVideo);
                 dto.SeriesCount = taggedItems.Count(i => i is Series);
                 dto.SongCount = taggedItems.Count(i => i is Audio);
@@ -468,13 +495,15 @@ namespace MediaBrowser.Server.Implementations.Dto
 
                 var folder = (Folder)item;
 
-                dto.ChildCount = GetChildCount(folder, user);
-
-                // These are just far too slow. 
-                // TODO: Disable for CollectionFolder
-                if (!(folder is UserRootFolder) && !(folder is UserView))
+                if (item.SourceType == SourceType.Library)
                 {
-                    SetSpecialCounts(folder, user, dto, fields, syncProgress);
+                    dto.ChildCount = GetChildCount(folder, user);
+
+                    // These are just far too slow. 
+                    if (!(folder is UserRootFolder) && !(folder is UserView) && !(folder is ICollectionFolder))
+                    {
+                        SetSpecialCounts(folder, user, dto, fields, syncProgress);
+                    }
                 }
 
                 dto.UserData.Played = dto.UserData.PlayedPercentage.HasValue && dto.UserData.PlayedPercentage.Value >= 100;
@@ -640,6 +669,8 @@ namespace MediaBrowser.Server.Implementations.Dto
         private IEnumerable<string> GetCacheTags(BaseItem item, ImageType type, int limit)
         {
             return item.GetImages(type)
+                // Convert to a list now in case GetImageCacheTag is slow
+                .ToList()
                 .Select(p => GetImageCacheTag(item, p))
                 .Where(i => i != null)
                 .Take(limit)
@@ -815,7 +846,7 @@ namespace MediaBrowser.Server.Implementations.Dto
         /// <returns>BaseItem.</returns>
         private BaseItem GetParentBackdropItem(BaseItem item, BaseItem owner)
         {
-            var parent = item.Parent ?? owner;
+            var parent = item.GetParent() ?? owner;
 
             while (parent != null)
             {
@@ -824,7 +855,7 @@ namespace MediaBrowser.Server.Implementations.Dto
                     return parent;
                 }
 
-                parent = parent.Parent;
+                parent = parent.GetParent();
             }
 
             return null;
@@ -839,7 +870,7 @@ namespace MediaBrowser.Server.Implementations.Dto
         /// <returns>BaseItem.</returns>
         private BaseItem GetParentImageItem(BaseItem item, ImageType type, BaseItem owner)
         {
-            var parent = item.Parent ?? owner;
+            var parent = item.GetParent() ?? owner;
 
             while (parent != null)
             {
@@ -848,7 +879,7 @@ namespace MediaBrowser.Server.Implementations.Dto
                     return parent;
                 }
 
-                parent = parent.Parent;
+                parent = parent.GetParent();
             }
 
             return null;
@@ -1042,7 +1073,11 @@ namespace MediaBrowser.Server.Implementations.Dto
             dto.IsFolder = item.IsFolder;
             dto.MediaType = item.MediaType;
             dto.LocationType = item.LocationType;
-            dto.IsHD = item.IsHD;
+            if (item.IsHD.HasValue && item.IsHD.Value)
+            {
+                dto.IsHD = item.IsHD;
+            }
+            dto.Audio = item.Audio;
 
             dto.PreferredMetadataCountryCode = item.PreferredMetadataCountryCode;
             dto.PreferredMetadataLanguage = item.PreferredMetadataLanguage;
@@ -1114,10 +1149,10 @@ namespace MediaBrowser.Server.Implementations.Dto
 
             if (fields.Contains(ItemFields.ParentId))
             {
-                var displayParent = item.DisplayParent;
-                if (displayParent != null)
+                var displayParentId = item.DisplayParentId;
+                if (displayParentId.HasValue)
                 {
-                    dto.ParentId = GetDtoId(displayParent);
+                    dto.ParentId = displayParentId.Value.ToString("N");
                 }
             }
 
@@ -1209,15 +1244,15 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.VoteCount = item.VoteCount;
             }
 
-            if (item.IsFolder)
-            {
-                var folder = (Folder)item;
+            //if (item.IsFolder)
+            //{
+            //    var folder = (Folder)item;
 
-                if (fields.Contains(ItemFields.IndexOptions))
-                {
-                    dto.IndexOptions = folder.IndexByOptionStrings.ToArray();
-                }
-            }
+            //    if (fields.Contains(ItemFields.IndexOptions))
+            //    {
+            //        dto.IndexOptions = folder.IndexByOptionStrings.ToArray();
+            //    }
+            //}
 
             var supportsPlaceHolders = item as ISupportsPlaceHolders;
             if (supportsPlaceHolders != null)
@@ -1230,6 +1265,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             if (audio != null)
             {
                 dto.Album = audio.Album;
+                dto.ExtraType = audio.ExtraType;
 
                 var albumParent = audio.AlbumEntity;
 
@@ -1332,6 +1368,8 @@ namespace MediaBrowser.Server.Implementations.Dto
                 {
                     dto.Chapters = GetChapterInfoDtos(item);
                 }
+
+                dto.ExtraType = video.ExtraType;
             }
 
             if (fields.Contains(ItemFields.MediaStreams))
@@ -1355,16 +1393,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                     }
 
                     dto.MediaStreams = mediaStreams;
-                }
-            }
-
-            // Add MovieInfo
-            var movie = item as Movie;
-            if (movie != null)
-            {
-                if (fields.Contains(ItemFields.TmdbCollectionName))
-                {
-                    dto.TmdbCollectionName = movie.TmdbCollectionName;
                 }
             }
 
@@ -1520,17 +1548,14 @@ namespace MediaBrowser.Server.Implementations.Dto
             }
 
             dto.ChannelId = item.ChannelId;
-            
-            var channelItem = item as IChannelItem;
-            if (channelItem != null)
-            {
-                dto.ChannelName = _channelManagerFactory().GetChannel(channelItem.ChannelId).Name;
-            }
 
-            var channelMediaItem = item as IChannelMediaItem;
-            if (channelMediaItem != null)
+            if (item.SourceType == SourceType.Channel && !string.IsNullOrWhiteSpace(item.ChannelId))
             {
-                dto.ExtraType = channelMediaItem.ExtraType;
+                var channel = _libraryManager.GetItemById(item.ChannelId);
+                if (channel != null)
+                {
+                    dto.ChannelName = channel.Name;
+                }
             }
         }
 
@@ -1639,8 +1664,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             {
                 IsFolder = false,
                 Recursive = true,
-                IsVirtualUnaired = false,
-                IsMissing = false,
+                ExcludeLocationTypes = new[] { LocationType.Virtual },
                 User = user
 
             }).Result.Items;
@@ -1742,15 +1766,19 @@ namespace MediaBrowser.Server.Implementations.Dto
         /// </summary>
         /// <param name="dto">The dto.</param>
         /// <param name="item">The item.</param>
-        /// <param name="fields">The fields.</param>
         /// <returns>Task.</returns>
-        public void AttachPrimaryImageAspectRatio(IItemDto dto, IHasImages item, List<ItemFields> fields)
+        public void AttachPrimaryImageAspectRatio(IItemDto dto, IHasImages item)
+        {
+            dto.PrimaryImageAspectRatio = GetPrimaryImageAspectRatio(item);
+        }
+
+        public double? GetPrimaryImageAspectRatio(IHasImages item)
         {
             var imageInfo = item.GetImageInfo(ImageType.Primary, 0);
 
             if (imageInfo == null || !imageInfo.IsLocalFile)
             {
-                return;
+                return null;
             }
 
             ImageSize size;
@@ -1762,15 +1790,7 @@ namespace MediaBrowser.Server.Implementations.Dto
             catch (Exception ex)
             {
                 //_logger.ErrorException("Failed to determine primary image aspect ratio for {0}", ex, path);
-                return;
-            }
-
-            if (fields.Contains(ItemFields.OriginalPrimaryImageAspectRatio))
-            {
-                if (size.Width > 0 && size.Height > 0)
-                {
-                    dto.OriginalPrimaryImageAspectRatio = size.Width / size.Height;
-                }
+                return null;
             }
 
             var supportedEnhancers = _imageProcessor.GetSupportedEnhancers(item, ImageType.Primary).ToList();
@@ -1787,10 +1807,31 @@ namespace MediaBrowser.Server.Implementations.Dto
                 }
             }
 
-            if (size.Width > 0 && size.Height > 0)
+            var width = size.Width;
+            var height = size.Height;
+
+            if (width == 0 || height == 0)
             {
-                dto.PrimaryImageAspectRatio = size.Width / size.Height;
+                return null;
             }
+
+            var photo = item as Photo;
+            if (photo != null && photo.Orientation.HasValue)
+            {
+                switch (photo.Orientation.Value)
+                {
+                    case ImageOrientation.LeftBottom:
+                    case ImageOrientation.LeftTop:
+                    case ImageOrientation.RightBottom:
+                    case ImageOrientation.RightTop:
+                        var temp = height;
+                        height = width;
+                        width = temp;
+                        break;
+                }
+            }
+
+            return width / height;
         }
     }
 }

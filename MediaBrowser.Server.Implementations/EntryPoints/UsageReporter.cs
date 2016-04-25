@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Server.Implementations.EntryPoints
 {
@@ -16,16 +17,18 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         private readonly IApplicationHost _applicationHost;
         private readonly IHttpClient _httpClient;
         private readonly IUserManager _userManager;
-        private const string MbAdminUrl = "http://www.mb3admin.com/admin/";
+        private readonly ILogger _logger;
+        private const string MbAdminUrl = "https://www.mb3admin.com/admin/";
 
-        public UsageReporter(IApplicationHost applicationHost, IHttpClient httpClient, IUserManager userManager)
+        public UsageReporter(IApplicationHost applicationHost, IHttpClient httpClient, IUserManager userManager, ILogger logger)
         {
             _applicationHost = applicationHost;
             _httpClient = httpClient;
             _userManager = userManager;
+            _logger = logger;
         }
 
-        public Task ReportServerUsage(CancellationToken cancellationToken)
+        public async Task ReportServerUsage(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -47,16 +50,43 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             data["linkedusers"] = users.Count(i => i.ConnectLinkType.HasValue && i.ConnectLinkType.Value == UserLinkType.LinkedUser).ToString(CultureInfo.InvariantCulture);
 
             data["plugins"] = string.Join(",", _applicationHost.Plugins.Select(i => i.Id).ToArray());
-            
-            return _httpClient.Post(MbAdminUrl + "service/registration/ping", data, cancellationToken);
+
+            var logErrors = false;
+#if DEBUG
+            logErrors = true;
+#endif
+            var options = new HttpRequestOptions
+            {
+                Url = MbAdminUrl + "service/registration/ping",
+                CancellationToken = cancellationToken,
+
+                // Seeing block length errors
+                EnableHttpCompression = false,
+
+                LogRequest = false,
+                LogErrors = logErrors
+            };
+
+            options.SetPostData(data);
+
+            using (var response = await _httpClient.SendAsync(options, "POST").ConfigureAwait(false))
+            {
+                
+            }
         }
 
-        public Task ReportAppUsage(ClientInfo app, CancellationToken cancellationToken)
+        public async Task ReportAppUsage(ClientInfo app, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(app.DeviceId))
             {
                 throw new ArgumentException("Client info must have a device Id");
             }
+
+            _logger.Info("App Activity: app: {0}, version: {1}, deviceId: {2}, deviceName: {3}",
+                app.AppName ?? "Unknown App",
+                app.AppVersion ?? "Unknown",
+                app.DeviceId,
+                app.DeviceName ?? "Unknown");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -70,7 +100,29 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
                 { "platform", app.DeviceName }, 
             };
 
-            return _httpClient.Post(MbAdminUrl + "service/registration/ping", data, cancellationToken);
+            var logErrors = false;
+
+#if DEBUG
+            logErrors = true;
+#endif
+            var options = new HttpRequestOptions
+            {
+                Url = MbAdminUrl + "service/registration/ping",
+                CancellationToken = cancellationToken,
+
+                // Seeing block length errors
+                EnableHttpCompression = false,
+
+                LogRequest = false,
+                LogErrors = logErrors
+            };
+
+            options.SetPostData(data);
+
+            using (var response = await _httpClient.SendAsync(options, "POST").ConfigureAwait(false))
+            {
+
+            }
         }
     }
 

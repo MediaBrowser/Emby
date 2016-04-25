@@ -10,7 +10,6 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Controller.Security;
 using MediaBrowser.Model.Connect;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
@@ -20,11 +19,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Extensions;
 
 namespace MediaBrowser.Server.Implementations.Connect
 {
@@ -55,7 +55,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             get { return _data.AccessKey; }
         }
 
-        public string DiscoveredWanIpAddress { get; private set; }
+        private IPAddress DiscoveredWanIpAddress { get; set; }
 
         public string WanIpAddress
         {
@@ -63,9 +63,27 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 var address = _config.Configuration.WanDdns;
 
-                if (string.IsNullOrWhiteSpace(address))
+                if (!string.IsNullOrWhiteSpace(address))
                 {
-                    address = DiscoveredWanIpAddress;
+                    try
+                    {
+                        address = new Uri(address).Host;
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(address) && DiscoveredWanIpAddress != null)
+                {
+                    if (DiscoveredWanIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                    {
+                        address = "[" + DiscoveredWanIpAddress + "]";
+                    }
+                    else
+                    {
+                        address = DiscoveredWanIpAddress.ToString();
+                    }
                 }
 
                 return address;
@@ -121,13 +139,12 @@ namespace MediaBrowser.Server.Implementations.Connect
             _securityManager = securityManager;
             _fileSystem = fileSystem;
 
-            _userManager.UserConfigurationUpdated += _userManager_UserConfigurationUpdated;
             _config.ConfigurationUpdated += _config_ConfigurationUpdated;
 
             LoadCachedData();
         }
 
-        internal void OnWanAddressResolved(string address)
+        internal void OnWanAddressResolved(IPAddress address)
         {
             DiscoveredWanIpAddress = address;
 
@@ -232,8 +249,8 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             var postData = new Dictionary<string, string>
             {
-                {"name", _appHost.FriendlyName}, 
-                {"url", wanApiAddress}, 
+                {"name", _appHost.FriendlyName},
+                {"url", wanApiAddress},
                 {"systemId", _appHost.SystemId}
             };
 
@@ -319,7 +336,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
             try
             {
-				_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
                 var json = _json.SerializeToString(_data);
 
@@ -327,7 +344,7 @@ namespace MediaBrowser.Server.Implementations.Connect
 
                 lock (_dataFileLock)
                 {
-					_fileSystem.WriteAllText(path, encrypted, Encoding.UTF8);
+                    _fileSystem.WriteAllText(path, encrypted, Encoding.UTF8);
                 }
             }
             catch (Exception ex)
@@ -344,7 +361,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 lock (_dataFileLock)
                 {
-					var encrypted = _fileSystem.ReadAllText(path, Encoding.UTF8);
+                    var encrypted = _fileSystem.ReadAllText(path, Encoding.UTF8);
 
                     var json = _encryption.DecryptString(encrypted);
 
@@ -384,7 +401,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 await UpdateConnectInfo().ConfigureAwait(false);
             }
-            
+
             await _operationLock.WaitAsync().ConfigureAwait(false);
 
             try
@@ -483,7 +500,7 @@ namespace MediaBrowser.Server.Implementations.Connect
             {
                 await UpdateConnectInfo().ConfigureAwait(false);
             }
-            
+
             await _operationLock.WaitAsync().ConfigureAwait(false);
 
             try
@@ -539,9 +556,22 @@ namespace MediaBrowser.Server.Implementations.Connect
             }
             catch (HttpException ex)
             {
-                if (!ex.StatusCode.HasValue ||
-                    ex.StatusCode.Value != HttpStatusCode.NotFound ||
-                    !Validator.EmailIsValid(connectUsername))
+                if (!ex.StatusCode.HasValue)
+                {
+                    throw;
+                }
+
+                // If they entered a username, then whatever the error is just throw it, for example, user not found
+                if (!Validator.EmailIsValid(connectUsername))
+                {
+                    if (ex.StatusCode.Value == HttpStatusCode.NotFound)
+                    {
+                        throw new ResourceNotFoundException();
+                    }
+                    throw;
+                }
+
+                if (ex.StatusCode.Value != HttpStatusCode.NotFound)
                 {
                     throw;
                 }
@@ -886,8 +916,7 @@ namespace MediaBrowser.Server.Implementations.Connect
         private async Task RefreshGuestNames(List<ServerUserAuthorizationResponse> list, bool refreshImages)
         {
             var users = _userManager.Users
-                .Where(i => !string.IsNullOrEmpty(i.ConnectUserId) &&
-                    (i.ConnectLinkType.HasValue && i.ConnectLinkType.Value == UserLinkType.Guest))
+                .Where(i => !string.IsNullOrEmpty(i.ConnectUserId) && i.ConnectLinkType.HasValue && i.ConnectLinkType.Value == UserLinkType.Guest)
                     .ToList();
 
             foreach (var user in users)
@@ -1071,105 +1100,6 @@ namespace MediaBrowser.Server.Implementations.Connect
             }
         }
 
-        public async Task<ConnectSupporterSummary> GetConnectSupporterSummary()
-        {
-            if (!_securityManager.IsMBSupporter)
-            {
-                return new ConnectSupporterSummary();
-            }
-
-            var url = GetConnectUrl("keyAssociation");
-
-            var options = new HttpRequestOptions
-            {
-                Url = url,
-                CancellationToken = CancellationToken.None
-            };
-
-            var postData = new Dictionary<string, string>
-                {
-                    {"serverId", ConnectServerId},
-                    {"supporterKey", _securityManager.SupporterKey}
-                };
-
-            options.SetPostData(postData);
-
-            SetServerAccessToken(options);
-            SetApplicationHeader(options);
-
-            // No need to examine the response
-            using (var stream = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
-            {
-                return _json.DeserializeFromStream<ConnectSupporterSummary>(stream);
-            }
-        }
-
-        public async Task AddConnectSupporter(string id)
-        {
-            if (!_securityManager.IsMBSupporter)
-            {
-                throw new InvalidOperationException();
-            }
-
-            var url = GetConnectUrl("keyAssociation");
-
-            var options = new HttpRequestOptions
-            {
-                Url = url,
-                CancellationToken = CancellationToken.None
-            };
-
-            var postData = new Dictionary<string, string>
-                {
-                    {"serverId", ConnectServerId},
-                    {"supporterKey", _securityManager.SupporterKey},
-                    {"userId", id}
-                };
-
-            options.SetPostData(postData);
-
-            SetServerAccessToken(options);
-            SetApplicationHeader(options);
-
-            // No need to examine the response
-            using (var stream = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
-            {
-            }
-        }
-
-        public async Task RemoveConnectSupporter(string id)
-        {
-            if (!_securityManager.IsMBSupporter)
-            {
-                throw new InvalidOperationException();
-            }
-
-            var url = GetConnectUrl("keyAssociation");
-
-            var options = new HttpRequestOptions
-            {
-                Url = url,
-                CancellationToken = CancellationToken.None
-            };
-
-            var postData = new Dictionary<string, string>
-                {
-                    {"serverId", ConnectServerId},
-                    {"supporterKey", _securityManager.SupporterKey},
-                    {"userId", id}
-                };
-
-            options.SetPostData(postData);
-
-            SetServerAccessToken(options);
-            SetApplicationHeader(options);
-
-            // No need to examine the response
-            using (var stream = (await _httpClient.SendAsync(options, "DELETE").ConfigureAwait(false)).Content)
-            {
-            }
-        }
-
         public async Task Authenticate(string username, string passwordMd5)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -1199,64 +1129,6 @@ namespace MediaBrowser.Server.Implementations.Connect
             using (var response = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
             {
             }
-        }
-
-        async void _userManager_UserConfigurationUpdated(object sender, GenericEventArgs<User> e)
-        {
-            var user = e.Argument;
-
-            await TryUploadUserPreferences(user, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        private async Task TryUploadUserPreferences(User user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            if (string.IsNullOrEmpty(user.ConnectUserId))
-            {
-                return;
-            }
-            if (string.IsNullOrEmpty(ConnectAccessKey))
-            {
-                return;
-            }
-
-            var url = GetConnectUrl("user/preferences");
-            url += "?userId=" + user.ConnectUserId;
-            url += "&key=userpreferences";
-
-            var options = new HttpRequestOptions
-            {
-                Url = url,
-                CancellationToken = cancellationToken
-            };
-
-            var postData = new Dictionary<string, string>();
-            postData["data"] = _json.SerializeToString(ConnectUserPreferences.FromUserConfiguration(user.Configuration));
-            options.SetPostData(postData);
-
-            SetServerAccessToken(options);
-            SetApplicationHeader(options);
-
-            try
-            {
-                // No need to examine the response
-                using (var stream = (await _httpClient.SendAsync(options, "POST").ConfigureAwait(false)).Content)
-                {
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error uploading user preferences", ex);
-            }
-        }
-
-        private async Task DownloadUserPreferences(User user, CancellationToken cancellationToken)
-        {
-
         }
 
         public async Task<User> GetLocalUser(string connectUserId)

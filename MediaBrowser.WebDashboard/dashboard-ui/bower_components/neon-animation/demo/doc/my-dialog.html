@@ -1,4 +1,5 @@
 <!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -7,30 +8,26 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../paper-styles/paper-styles.html">
+<link rel="import" href="../../../paper-styles/shadow.html">
 <link rel="import" href="../../neon-animation-runner-behavior.html">
 <link rel="import" href="../../animations/scale-up-animation.html">
 <link rel="import" href="../../animations/fade-out-animation.html">
 
 
 <dom-module id="my-dialog">
-
-  <style>
-
-    :host {
-      display: none;
-      padding: 16px;
-      background: white;
-      color: black;
-      margin: 0 auto;
-
-      @apply(--shadow-elevation-2dp);
-    }
-
-  </style>
-
   <template>
-
+    <style>
+      :host {
+        display: none;
+        padding: 16px;
+        background: white;
+        color: black;
+        margin: 0 auto;
+        z-index: 100;
+        position: absolute;
+        @apply(--shadow-elevation-2dp);
+      }
+    </style>
     <content></content>
 
   </template>

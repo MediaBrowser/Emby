@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -249,17 +248,17 @@ namespace MediaBrowser.Providers.Manager
             });
         }
 
-        public IEnumerable<IImageProvider> GetImageProviders(IHasImages item)
+		public IEnumerable<IImageProvider> GetImageProviders(IHasImages item, ImageRefreshOptions refreshOptions)
         {
-            return GetImageProviders(item, GetMetadataOptions(item), false);
+            return GetImageProviders(item, GetMetadataOptions(item), refreshOptions, false);
         }
 
-        private IEnumerable<IImageProvider> GetImageProviders(IHasImages item, MetadataOptions options, bool includeDisabled)
+		private IEnumerable<IImageProvider> GetImageProviders(IHasImages item, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
         {
             // Avoid implicitly captured closure
             var currentOptions = options;
 
-            return ImageProviders.Where(i => CanRefresh(i, item, options, includeDisabled))
+			return ImageProviders.Where(i => CanRefresh(i, item, options, refreshOptions, includeDisabled))
             .OrderBy(i =>
             {
                 // See if there's a user-defined order
@@ -315,7 +314,7 @@ namespace MediaBrowser.Providers.Manager
         {
             var options = GetMetadataOptions(item);
 
-            return GetImageProviders(item, options, includeDisabled).OfType<IRemoteImageProvider>();
+			return GetImageProviders(item, options, new ImageRefreshOptions(new DirectoryService(_fileSystem)), includeDisabled).OfType<IRemoteImageProvider>();
         }
 
         private bool CanRefresh(IMetadataProvider provider, IHasMetadata item, MetadataOptions options, bool includeDisabled, bool checkIsOwnedItem)
@@ -359,14 +358,17 @@ namespace MediaBrowser.Providers.Manager
             return true;
         }
 
-        private bool CanRefresh(IImageProvider provider, IHasImages item, MetadataOptions options, bool includeDisabled)
+		private bool CanRefresh(IImageProvider provider, IHasImages item, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
         {
             if (!includeDisabled)
             {
                 // If locked only allow local providers
                 if (item.IsLocked && !(provider is ILocalImageProvider))
                 {
-                    return false;
+					if (refreshOptions.ImageRefreshMode != ImageRefreshMode.FullRefresh) 
+					{
+						return false;
+					}
                 }
 
                 if (provider is IRemoteImageProvider || provider is IDynamicImageProvider)
@@ -502,7 +504,7 @@ namespace MediaBrowser.Providers.Manager
                 ItemType = typeof(T).Name
             };
 
-            var imageProviders = GetImageProviders(dummy, options, true).ToList();
+			var imageProviders = GetImageProviders(dummy, options, new ImageRefreshOptions(new DirectoryService(_fileSystem)), true).ToList();
 
             AddMetadataPlugins(summary.Plugins, dummy, options);
             AddImagePlugins(summary.Plugins, dummy, imageProviders);
@@ -760,7 +762,6 @@ namespace MediaBrowser.Providers.Manager
 
             var resultList = new List<RemoteSearchResult>();
             var foundProviderIds = new Dictionary<Tuple<string, string>, RemoteSearchResult>();
-            var foundTitleYearStrings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var provider in providers)
             {
@@ -790,22 +791,6 @@ namespace MediaBrowser.Providers.Manager
                                     existingResult.ImageUrl = result.ImageUrl;
                                 }
                             }
-                        }
-
-                        // This is a workaround duplicate check for movies, where intersecting provider ids are not always available
-                        if (typeof(TItemType) == typeof(Movie) || typeof(TItemType) == typeof(Series))
-                        {
-                            var titleYearString = string.Format("{0} ({1})", result.Name, result.ProductionYear);
-
-                            if (foundTitleYearStrings.Contains(titleYearString))
-                            {
-                                bFound = true;
-                            }
-                            else
-                            {
-                                foundTitleYearStrings.Add(titleYearString);
-                            }
-
                         }
 
                         if (!bFound && resultList.Count < maxResults)
@@ -1035,8 +1020,8 @@ namespace MediaBrowser.Providers.Manager
                                         .ToList();
 
             var musicArtists = albums
-                .Select(i => i.Parent)
-                .OfType<MusicArtist>()
+                .Select(i => i.MusicArtist)
+                .Where(i => i != null)
                 .ToList();
 
             var musicArtistRefreshTasks = musicArtists.Select(i => i.ValidateChildren(new Progress<double>(), cancellationToken, options, true));

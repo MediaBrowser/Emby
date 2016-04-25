@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -47,7 +46,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
                         return subItem;
                     }
 
-                    var parent = subItem.Parent;
+                    var parent = subItem.GetParent();
 
                     if (parent != null && parent.HasImage(ImageType.Primary))
                     {

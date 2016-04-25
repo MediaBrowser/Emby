@@ -7,7 +7,6 @@ using MediaBrowser.Common.Implementations.ScheduledTasks;
 using MediaBrowser.Common.Implementations.Security;
 using MediaBrowser.Common.Implementations.Serialization;
 using MediaBrowser.Common.Implementations.Updates;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Progress;
@@ -133,7 +132,7 @@ namespace MediaBrowser.Common.Implementations
         /// Gets the HTTP client.
         /// </summary>
         /// <value>The HTTP client.</value>
-        protected IHttpClient HttpClient { get; private set; }
+        public IHttpClient HttpClient { get; private set; }
         /// <summary>
         /// Gets the network manager.
         /// </summary>
@@ -251,7 +250,7 @@ namespace MediaBrowser.Common.Implementations
             progress.Report(15);
 
             var innerProgress = new ActionableProgress<double>();
-            innerProgress.RegisterAction(p => progress.Report((.8 * p) + 15));
+            innerProgress.RegisterAction(p => progress.Report(.8 * p + 15));
 
             await RegisterResources(innerProgress).ConfigureAwait(false);
 
@@ -453,7 +452,7 @@ namespace MediaBrowser.Common.Implementations
 
 			RegisterSingleInstance<IApplicationPaths>(ApplicationPaths);
 
-			TaskManager = new TaskManager(ApplicationPaths, JsonSerializer, Logger, FileSystemManager);
+			TaskManager = new TaskManager(ApplicationPaths, JsonSerializer, LogManager.GetLogger("TaskManager"), FileSystemManager);
 
 			RegisterSingleInstance(JsonSerializer);
 			RegisterSingleInstance(XmlSerializer);
@@ -465,7 +464,7 @@ namespace MediaBrowser.Common.Implementations
 
 			RegisterSingleInstance(FileSystemManager);
 
-			HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, Logger, FileSystemManager);
+            HttpClient = new HttpClientManager.HttpClientManager(ApplicationPaths, LogManager.GetLogger("HttpClient"), FileSystemManager);
 			RegisterSingleInstance(HttpClient);
 
 			NetworkManager = CreateNetworkManager(LogManager.GetLogger("NetworkManager"));
@@ -474,7 +473,7 @@ namespace MediaBrowser.Common.Implementations
 			SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, LogManager);
 			RegisterSingleInstance(SecurityManager);
 
-			InstallationManager = new InstallationManager(Logger, this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, ConfigurationManager, FileSystemManager);
+            InstallationManager = new InstallationManager(LogManager.GetLogger("InstallationManager"), this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, ConfigurationManager, FileSystemManager);
 			RegisterSingleInstance(InstallationManager);
 
 			ZipClient = new ZipClient(FileSystemManager);
@@ -661,7 +660,7 @@ namespace MediaBrowser.Common.Implementations
         {
             try
             {
-                return Assembly.Load(File.ReadAllBytes((file)));
+                return Assembly.Load(File.ReadAllBytes(file));
             }
             catch (Exception ex)
             {

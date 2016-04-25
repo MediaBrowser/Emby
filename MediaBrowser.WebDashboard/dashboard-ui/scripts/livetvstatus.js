@@ -1,22 +1,22 @@
-﻿(function ($, document, window) {
+﻿define(['jQuery'], function ($) {
 
     function resetTuner(page, id) {
 
         var message = Globalize.translate('MessageConfirmResetTuner');
 
-        Dashboard.confirm(message, Globalize.translate('HeaderResetTuner'), function (confirmResult) {
+        require(['confirm'], function (confirm) {
 
-            if (confirmResult) {
+            confirm(message, Globalize.translate('HeaderResetTuner')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
-                ApiClient.resetLiveTvTuner(id).done(function () {
+                ApiClient.resetLiveTvTuner(id).then(function () {
 
                     Dashboard.hideLoadingMsg();
 
                     reload(page);
                 });
-            }
+            });
         });
     }
 
@@ -74,7 +74,11 @@
                 html += '</div>';
 
                 html += '</paper-item-body>';
-                html += '<paper-icon-button icon="refresh" data-tunerid="' + tuner.Id + '" title="' + Globalize.translate('ButtonResetTuner') + '" class="btnResetTuner"></paper-icon-button>';
+
+                if (tuner.CanReset) {
+                    html += '<paper-icon-button icon="refresh" data-tunerid="' + tuner.Id + '" title="' + Globalize.translate('ButtonResetTuner') + '" class="btnResetTuner"></paper-icon-button>';
+                }
+
                 html += '</paper-icon-item>';
             }
 
@@ -160,7 +164,7 @@
             $('.servicesSection', page).hide();
         }
 
-        $('.servicesList', page).html(servicesToDisplay.map(getServiceHtml).join('')).trigger('create');
+        $('.servicesList', page).html(servicesToDisplay.map(getServiceHtml).join(''));
 
         var tuners = [];
         for (var i = 0, length = liveTvInfo.Services.length; i < length; i++) {
@@ -172,7 +176,7 @@
 
         renderTuners(page, tuners);
 
-        ApiClient.getNamedConfiguration("livetv").done(function (config) {
+        ApiClient.getNamedConfiguration("livetv").then(function (config) {
 
             renderDevices(page, config.TunerHosts);
             renderProviders(page, config.ListingProviders);
@@ -201,7 +205,7 @@
                 html += '<paper-item-body two-line>';
                 html += '<a class="clearLink" href="' + href + '">';
                 html += '<div>';
-                html += getTunerName(device.Type);
+                html += device.FriendlyName || getTunerName(device.Type);
                 html += '</div>';
 
                 html += '<div secondary>';
@@ -231,9 +235,9 @@
 
         var message = Globalize.translate('MessageConfirmDeleteTunerDevice');
 
-        Dashboard.confirm(message, Globalize.translate('HeaderDeleteDevice'), function (confirmResult) {
+        require(['confirm'], function (confirm) {
 
-            if (confirmResult) {
+            confirm(message, Globalize.translate('HeaderDeleteDevice')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
@@ -243,11 +247,11 @@
                         Id: id
                     })
 
-                }).done(function () {
+                }).then(function () {
 
                     reload(page);
                 });
-            }
+            });
         });
     }
 
@@ -255,7 +259,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ApiClient.getLiveTvInfo().done(function (liveTvInfo) {
+        ApiClient.getLiveTvInfo().then(function (liveTvInfo) {
 
             loadPage(page, liveTvInfo);
 
@@ -276,11 +280,11 @@
             }),
             contentType: "application/json"
 
-        }).done(function () {
+        }).then(function () {
 
             reload(page);
 
-        }).fail(function () {
+        }, function () {
             Dashboard.alert({
                 message: Globalize.translate('ErrorAddingTunerDevice')
             });
@@ -333,9 +337,9 @@
 
         var message = Globalize.translate('MessageConfirmDeleteGuideProvider');
 
-        Dashboard.confirm(message, Globalize.translate('HeaderDeleteProvider'), function (confirmResult) {
+        require(['confirm'], function (confirm) {
 
-            if (confirmResult) {
+            confirm(message, Globalize.translate('HeaderDeleteProvider')).then(function () {
 
                 Dashboard.showLoadingMsg();
 
@@ -345,11 +349,15 @@
                         Id: id
                     })
 
-                }).always(function () {
+                }).then(function () {
+
+                    reload(page);
+
+                }, function () {
 
                     reload(page);
                 });
-            }
+            });
         });
     }
 
@@ -363,6 +371,8 @@
                 return 'M3U Playlist';
             case 'hdhomerun':
                 return 'HDHomerun';
+            case 'satip':
+                return 'DVB';
             default:
                 return 'Unknown';
         }
@@ -417,9 +427,9 @@
             id: 'other'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: button,
                 callback: function (id) {
@@ -441,6 +451,11 @@
 
         var menuItems = [];
 
+        //menuItems.push({
+        //    name: getTunerName('satip'),
+        //    id: 'satip'
+        //});
+
         menuItems.push({
             name: 'HDHomerun',
             id: 'hdhomerun'
@@ -456,9 +471,9 @@
             id: 'other'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: button,
                 callback: function (id) {
@@ -474,6 +489,22 @@
             });
 
         });
+    }
+
+    function getTabs() {
+        return [
+        {
+            href: 'livetvstatus.html',
+            name: Globalize.translate('TabDevices')
+        },
+         {
+             href: 'livetvsettings.html',
+             name: Globalize.translate('TabSettings')
+         },
+         {
+             href: 'appservices.html?context=livetv',
+             name: Globalize.translate('TabServices')
+         }];
     }
 
     $(document).on('pageinit', "#liveTvStatusPage", function () {
@@ -495,6 +526,7 @@
 
     }).on('pageshow', "#liveTvStatusPage", function () {
 
+        LibraryMenu.setTabs('livetvadmin', 0, getTabs);
         var page = this;
 
         reload(page);
@@ -517,4 +549,4 @@
 
     });
 
-})(jQuery, document, window);
+});

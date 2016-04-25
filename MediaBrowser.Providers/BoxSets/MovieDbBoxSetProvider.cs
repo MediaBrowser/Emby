@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Movies;
@@ -168,12 +167,11 @@ namespace MediaBrowser.Providers.BoxSets
 
             if (!string.IsNullOrEmpty(language))
             {
-                url += string.Format("&language={0}", language);
-            }
+                url += string.Format("&language={0}", MovieDbProvider.NormalizeLanguage(language));
 
-            var includeImageLanguageParam = MovieDbProvider.GetImageLanguagesParam(language);
-            // Get images in english and with no language
-            url += "&include_image_language=" + includeImageLanguageParam;
+                // Get images in english and with no language
+                url += "&include_image_language=" + MovieDbProvider.GetImageLanguagesParam(language);
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -196,7 +194,13 @@ namespace MediaBrowser.Providers.BoxSets
             {
                 if (!string.IsNullOrEmpty(language) && !string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
                 {
-                    url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey) + "&include_image_language=en,null&language=en";
+                    url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey) + "&language=en";
+
+                    if (!string.IsNullOrEmpty(language))
+                    {
+                        // Get images in english and with no language
+                        url += "&include_image_language=" + MovieDbProvider.GetImageLanguagesParam(language);
+                    }
 
                     using (var json = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
                     {
@@ -239,15 +243,9 @@ namespace MediaBrowser.Providers.BoxSets
 
         private static string GetDataFilePath(IApplicationPaths appPaths, string tmdbId, string preferredLanguage)
         {
-            if (string.IsNullOrWhiteSpace(preferredLanguage))
-            {
-                throw new ArgumentNullException("preferredLanguage");
-            }
-
             var path = GetDataPath(appPaths, tmdbId);
 
-            var filename = string.Format("all-{0}.json",
-                preferredLanguage);
+            var filename = string.Format("all-{0}.json", preferredLanguage ?? string.Empty);
 
             return Path.Combine(path, filename);
         }

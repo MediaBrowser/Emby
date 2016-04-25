@@ -1,10 +1,10 @@
-﻿(function () {
+﻿define(['jQuery'], function ($) {
 
     function connectToServer(page, server) {
 
         Dashboard.showLoadingMsg();
 
-        ConnectionManager.connectToServer(server).done(function (result) {
+        ConnectionManager.connectToServer(server).then(function (result) {
 
             Dashboard.hideLoadingMsg();
 
@@ -15,13 +15,23 @@
                 case MediaBrowser.ConnectionState.SignedIn:
                     {
                         Dashboard.onServerChanged(apiClient.getCurrentUserId(), apiClient.accessToken(), apiClient);
-                        Dashboard.navigate('index.html');
+                        Dashboard.navigate('home.html');
                     }
                     break;
                 case MediaBrowser.ConnectionState.ServerSignIn:
                     {
                         Dashboard.onServerChanged(null, null, apiClient);
                         Dashboard.navigate('login.html?serverid=' + result.Servers[0].Id);
+                    }
+                    break;
+                case MediaBrowser.ConnectionState.ServerUpdateNeeded:
+                    {
+                        Dashboard.alert(alert({
+
+                            text: Globalize.translate('core#ServerUpdateNeeded', 'https://emby.media'),
+                            html: Globalize.translate('core#ServerUpdateNeeded', '<a href="https://emby.media">https://emby.media</a>')
+
+                        }));
                     }
                     break;
                 default:
@@ -34,14 +44,10 @@
 
     function showServerConnectionFailure() {
 
-        // Need the timeout because jquery mobile will not show a popup while another is in process of closing
-        setTimeout(function () {
-            Dashboard.alert({
-                message: Globalize.translate("MessageUnableToConnectToServer"),
-                title: Globalize.translate("HeaderConnectionFailure")
-            });
-
-        }, 300);
+        Dashboard.alert({
+            message: Globalize.translate("MessageUnableToConnectToServer"),
+            title: Globalize.translate("HeaderConnectionFailure")
+        });
     }
 
     function getServerHtml(server) {
@@ -127,12 +133,12 @@
         Dashboard.showModalLoadingMsg();
 
         // Add/Update connect info
-        ConnectionManager.acceptServer(id).done(function () {
+        ConnectionManager.acceptServer(id).then(function () {
 
             Dashboard.hideModalLoadingMsg();
             loadPage(page);
 
-        }).fail(function () {
+        }, function () {
 
             showGeneralError();
         });
@@ -143,13 +149,13 @@
         Dashboard.showModalLoadingMsg();
 
         // Add/Update connect info
-        ConnectionManager.deleteServer(serverId).done(function () {
+        ConnectionManager.deleteServer(serverId).then(function () {
 
             Dashboard.hideModalLoadingMsg();
 
             loadPage(page);
 
-        }).fail(function () {
+        }, function () {
 
             showGeneralError();
 
@@ -161,13 +167,13 @@
         Dashboard.showModalLoadingMsg();
 
         // Add/Update connect info
-        ConnectionManager.rejectServer(id).done(function () {
+        ConnectionManager.rejectServer(id).then(function () {
 
             Dashboard.hideModalLoadingMsg();
 
             loadPage(page);
 
-        }).fail(function () {
+        }, function () {
 
             showGeneralError();
 
@@ -188,9 +194,9 @@
             ironIcon: 'delete'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: elem,
                 callback: function (id) {
@@ -229,9 +235,9 @@
             ironIcon: 'cancel'
         });
 
-        require(['actionsheet'], function () {
+        require(['actionsheet'], function (actionsheet) {
 
-            ActionSheetElement.show({
+            actionsheet.show({
                 items: menuItems,
                 positionTo: elem,
                 callback: function (id) {
@@ -297,7 +303,7 @@
 
         if (ConnectionManager.isLoggedIntoConnect()) {
 
-            ConnectionManager.getUserInvitations().done(function (list) {
+            ConnectionManager.getUserInvitations().then(function (list) {
 
                 renderInvitations(page, list);
 
@@ -314,7 +320,7 @@
 
         Dashboard.showLoadingMsg();
 
-        ConnectionManager.getAvailableServers().done(function (servers) {
+        ConnectionManager.getAvailableServers().then(function (servers) {
 
             servers = servers.slice(0);
 
@@ -334,24 +340,24 @@
 
     function updatePageStyle(page) {
 
-        if (ConnectionManager.isLoggedIntoConnect()) {
+        if (getParameterByName('showuser') == '1') {
             $(page).addClass('libraryPage').addClass('noSecondaryNavPage').removeClass('standalonePage');
         } else {
             $(page).removeClass('libraryPage').removeClass('noSecondaryNavPage').addClass('standalonePage');
         }
     }
 
-    $(document).on('pageinit pagebeforeshow', "#selectServerPage", function () {
+    pageIdOn('pagebeforeshow', "selectServerPage", function () {
 
         var page = this;
         updatePageStyle(page);
+    });
 
-    }).on('pageshow', "#selectServerPage", function () {
+    pageIdOn('pageshow', "selectServerPage", function () {
 
         var page = this;
 
         loadPage(page);
-
     });
 
-})();
+});

@@ -624,6 +624,7 @@ namespace MediaBrowser.Api.Images
                 PercentPlayed = request.PercentPlayed ?? 0,
                 UnplayedCount = request.UnplayedCount,
                 BackgroundColor = request.BackgroundColor,
+                ForegroundLayer = request.ForegroundLayer,
                 SupportedOutputFormats = supportedFormats
             };
 
@@ -637,7 +638,11 @@ namespace MediaBrowser.Api.Images
                 ResponseHeaders = headers,
                 ContentType = imageResult.Item2,
                 IsHeadRequest = isHeadRequest,
-                Path = imageResult.Item1
+                Path = imageResult.Item1,
+
+                // Sometimes imagemagick keeps a hold on the file briefly even after it's done writing to it.
+                // I'd rather do this than add a delay after saving the file
+                FileShare = FileShare.ReadWrite
             });
         }
 
@@ -694,6 +699,7 @@ namespace MediaBrowser.Api.Images
 
         private ImageFormat[] GetClientSupportedFormats()
         {
+            //Logger.Debug("Request types: {0}", string.Join(",", Request.AcceptTypes ?? new string[] { }));
             var supportsWebP = (Request.AcceptTypes ?? new string[] { }).Contains("image/webp", StringComparer.OrdinalIgnoreCase);
 
             var userAgent = Request.UserAgent ?? string.Empty;

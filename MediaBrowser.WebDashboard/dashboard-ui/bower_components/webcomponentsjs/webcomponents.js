@@ -7,13 +7,14 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-// @version 0.7.14
-window.WebComponents = window.WebComponents || {};
-
-(function(scope) {
-  var flags = scope.flags || {};
+// @version 0.7.22
+(function() {
+  window.WebComponents = window.WebComponents || {
+    flags: {}
+  };
   var file = "webcomponents.js";
   var script = document.querySelector('script[src*="' + file + '"]');
+  var flags = {};
   if (!flags.noOpts) {
     location.search.slice(1).split("&").forEach(function(option) {
       var parts = option.split("=");
@@ -51,8 +52,8 @@ window.WebComponents = window.WebComponents || {};
     };
     window.CustomElements.flags.register = flags.register;
   }
-  scope.flags = flags;
-})(WebComponents);
+  WebComponents.flags = flags;
+})();
 
 if (WebComponents.flags.shadow) {
   if (typeof WeakMap === "undefined") {
@@ -351,6 +352,7 @@ if (WebComponents.flags.shadow) {
         });
       });
     }
+    scope.addForwardingProperties = addForwardingProperties;
     scope.assert = assert;
     scope.constructorTable = constructorTable;
     scope.defineGetter = defineGetter;
@@ -1158,6 +1160,24 @@ if (WebComponents.flags.shadow) {
         stopImmediatePropagationTable.set(this, true);
       }
     };
+    var supportsDefaultPrevented = function() {
+      var e = document.createEvent("Event");
+      e.initEvent("test", true, true);
+      e.preventDefault();
+      return e.defaultPrevented;
+    }();
+    if (!supportsDefaultPrevented) {
+      Event.prototype.preventDefault = function() {
+        if (!this.cancelable) return;
+        unsafeUnwrap(this).preventDefault();
+        Object.defineProperty(this, "defaultPrevented", {
+          get: function() {
+            return true;
+          },
+          configurable: true
+        });
+      };
+    }
     registerWrapper(OriginalEvent, Event, document.createEvent("Event"));
     function unwrapOptions(options) {
       if (!options || !options.relatedTarget) return options;
@@ -2752,7 +2772,7 @@ if (WebComponents.flags.shadow) {
         enumerable: true
       });
     }
-    [ "getBoundingClientRect", "getClientRects", "scrollIntoView" ].forEach(methodRequiresRendering);
+    [ "focus", "getBoundingClientRect", "getClientRects", "scrollIntoView" ].forEach(methodRequiresRendering);
     registerWrapper(OriginalHTMLElement, HTMLElement, document.createElement("b"));
     scope.wrappers.HTMLElement = HTMLElement;
     scope.getInnerHTML = getInnerHTML;
@@ -3287,6 +3307,7 @@ if (WebComponents.flags.shadow) {
   })(window.ShadowDOMPolyfill);
   (function(scope) {
     "use strict";
+    var addForwardingProperties = scope.addForwardingProperties;
     var mixin = scope.mixin;
     var registerWrapper = scope.registerWrapper;
     var setWrapper = scope.setWrapper;
@@ -3311,6 +3332,10 @@ if (WebComponents.flags.shadow) {
         unsafeUnwrap(this).texSubImage2D.apply(unsafeUnwrap(this), arguments);
       }
     });
+    var OriginalWebGLRenderingContextBase = Object.getPrototypeOf(OriginalWebGLRenderingContext.prototype);
+    if (OriginalWebGLRenderingContextBase !== Object.prototype) {
+      addForwardingProperties(OriginalWebGLRenderingContextBase, WebGLRenderingContext.prototype);
+    }
     var instanceProperties = /WebKit/.test(navigator.userAgent) ? {
       drawingBufferHeight: null,
       drawingBufferWidth: null
@@ -3354,6 +3379,7 @@ if (WebComponents.flags.shadow) {
     var setInnerHTML = scope.setInnerHTML;
     var unsafeUnwrap = scope.unsafeUnwrap;
     var unwrap = scope.unwrap;
+    var wrap = scope.wrap;
     var shadowHostTable = new WeakMap();
     var nextOlderShadowTreeTable = new WeakMap();
     function ShadowRoot(hostWrapper) {
@@ -3386,6 +3412,25 @@ if (WebComponents.flags.shadow) {
       },
       elementFromPoint: function(x, y) {
         return elementFromPoint(this, this.ownerDocument, x, y);
+      },
+      getSelection: function() {
+        return document.getSelection();
+      },
+      get activeElement() {
+        var unwrappedActiveElement = unwrap(this).ownerDocument.activeElement;
+        if (!unwrappedActiveElement || !unwrappedActiveElement.nodeType) return null;
+        var activeElement = wrap(unwrappedActiveElement);
+        while (!this.contains(activeElement)) {
+          while (activeElement.parentNode) {
+            activeElement = activeElement.parentNode;
+          }
+          if (activeElement.host) {
+            activeElement = activeElement.host;
+          } else {
+            return null;
+          }
+        }
+        return activeElement;
       }
     });
     scope.wrappers.ShadowRoot = ShadowRoot;
@@ -3973,7 +4018,7 @@ if (WebComponents.flags.shadow) {
         unsafeUnwrap(this).removeRange(unwrap(range));
       },
       selectAllChildren: function(node) {
-        unsafeUnwrap(this).selectAllChildren(unwrapIfNeeded(node));
+        unsafeUnwrap(this).selectAllChildren(node instanceof ShadowRoot ? unsafeUnwrap(node.host) : unwrapIfNeeded(node));
       },
       toString: function() {
         return unsafeUnwrap(this).toString();
@@ -4044,6 +4089,7 @@ if (WebComponents.flags.shadow) {
     var ShadowRoot = scope.wrappers.ShadowRoot;
     var TreeScope = scope.TreeScope;
     var cloneNode = scope.cloneNode;
+    var defineGetter = scope.defineGetter;
     var defineWrapGetter = scope.defineWrapGetter;
     var elementFromPoint = scope.elementFromPoint;
     var forwardMethodsToWrapper = scope.forwardMethodsToWrapper;
@@ -4067,6 +4113,22 @@ if (WebComponents.flags.shadow) {
     defineWrapGetter(Document, "documentElement");
     defineWrapGetter(Document, "body");
     defineWrapGetter(Document, "head");
+    defineGetter(Document, "activeElement", function() {
+      var unwrappedActiveElement = unwrap(this).activeElement;
+      if (!unwrappedActiveElement || !unwrappedActiveElement.nodeType) return null;
+      var activeElement = wrap(unwrappedActiveElement);
+      while (!this.contains(activeElement)) {
+        while (activeElement.parentNode) {
+          activeElement = activeElement.parentNode;
+        }
+        if (activeElement.host) {
+          activeElement = activeElement.host;
+        } else {
+          return null;
+        }
+      }
+      return activeElement;
+    });
     function wrapMethod(name) {
       var original = document[name];
       Document.prototype[name] = function() {
@@ -5400,6 +5462,9 @@ if (WebComponents.flags.shadow) {
 })(self);
 
 (function(global) {
+  if (global.JsMutationObserver) {
+    return;
+  }
   var registrationsTable = new WeakMap();
   var setImmediate;
   if (/Trident|Edge/.test(navigator.userAgent)) {
@@ -5695,8 +5760,83 @@ if (WebComponents.flags.shadow) {
     }
   };
   global.JsMutationObserver = JsMutationObserver;
-  if (!global.MutationObserver) global.MutationObserver = JsMutationObserver;
+  if (!global.MutationObserver) {
+    global.MutationObserver = JsMutationObserver;
+    JsMutationObserver._isPolyfilled = true;
+  }
 })(self);
+
+(function(scope) {
+  "use strict";
+  if (!window.performance) {
+    var start = Date.now();
+    window.performance = {
+      now: function() {
+        return Date.now() - start;
+      }
+    };
+  }
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function() {
+      var nativeRaf = window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
+      return nativeRaf ? function(callback) {
+        return nativeRaf(function() {
+          callback(performance.now());
+        });
+      } : function(callback) {
+        return window.setTimeout(callback, 1e3 / 60);
+      };
+    }();
+  }
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function() {
+      return window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || function(id) {
+        clearTimeout(id);
+      };
+    }();
+  }
+  var workingDefaultPrevented = function() {
+    var e = document.createEvent("Event");
+    e.initEvent("foo", true, true);
+    e.preventDefault();
+    return e.defaultPrevented;
+  }();
+  if (!workingDefaultPrevented) {
+    var origPreventDefault = Event.prototype.preventDefault;
+    Event.prototype.preventDefault = function() {
+      if (!this.cancelable) {
+        return;
+      }
+      origPreventDefault.call(this);
+      Object.defineProperty(this, "defaultPrevented", {
+        get: function() {
+          return true;
+        },
+        configurable: true
+      });
+    };
+  }
+  var isIE = /Trident/.test(navigator.userAgent);
+  if (!window.CustomEvent || isIE && typeof window.CustomEvent !== "function") {
+    window.CustomEvent = function(inType, params) {
+      params = params || {};
+      var e = document.createEvent("CustomEvent");
+      e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+      return e;
+    };
+    window.CustomEvent.prototype = window.Event.prototype;
+  }
+  if (!window.Event || isIE && typeof window.Event !== "function") {
+    var origEvent = window.Event;
+    window.Event = function(inType, params) {
+      params = params || {};
+      var e = document.createEvent("Event");
+      e.initEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable));
+      return e;
+    };
+    window.Event.prototype = origEvent.prototype;
+  }
+})(window.WebComponents);
 
 window.HTMLImports = window.HTMLImports || {
   flags: {}
@@ -5773,6 +5913,7 @@ window.HTMLImports = window.HTMLImports || {
     if (importCount) {
       for (var i = 0, imp; i < importCount && (imp = imports[i]); i++) {
         if (isImportLoaded(imp)) {
+          newImports.push(this);
           parsedCount++;
           checkDone();
         } else {
@@ -5899,10 +6040,14 @@ window.HTMLImports.addModule(function(scope) {
       request.open("GET", url, xhr.async);
       request.addEventListener("readystatechange", function(e) {
         if (request.readyState === 4) {
-          var locationHeader = request.getResponseHeader("Location");
           var redirectedUrl = null;
-          if (locationHeader) {
-            var redirectedUrl = locationHeader.substr(0, 1) === "/" ? location.origin + locationHeader : locationHeader;
+          try {
+            var locationHeader = request.getResponseHeader("Location");
+            if (locationHeader) {
+              redirectedUrl = locationHeader.substr(0, 1) === "/" ? location.origin + locationHeader : locationHeader;
+            }
+          } catch (e) {
+            console.error(e.message);
           }
           next.call(nextContext, !xhr.ok(request) && request, request.response || request.responseText, redirectedUrl);
         }
@@ -6220,7 +6365,7 @@ window.HTMLImports.addModule(function(scope) {
       if (doc && this._mayParse.indexOf(doc) < 0) {
         this._mayParse.push(doc);
         var nodes = doc.querySelectorAll(this.parseSelectorsForNode(doc));
-        for (var i = 0, l = nodes.length, p = 0, n; i < l && (n = nodes[i]); i++) {
+        for (var i = 0, l = nodes.length, n; i < l && (n = nodes[i]); i++) {
           if (!this.isParsed(n)) {
             if (this.hasResource(n)) {
               return nodeIsImport(n) ? this.nextToParseInDoc(n.__doc, n) : n;
@@ -6416,22 +6561,6 @@ window.HTMLImports.addModule(function(scope) {
   if (scope.useNative) {
     return;
   }
-  if (!window.CustomEvent || isIE && typeof window.CustomEvent !== "function") {
-    window.CustomEvent = function(inType, params) {
-      params = params || {};
-      var e = document.createEvent("CustomEvent");
-      e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-      e.preventDefault = function() {
-        Object.defineProperty(this, "defaultPrevented", {
-          get: function() {
-            return true;
-          }
-        });
-      };
-      return e;
-    };
-    window.CustomEvent.prototype = window.Event.prototype;
-  }
   initializeModules();
   var rootDocument = scope.rootDocument;
   function bootstrap() {
@@ -6543,8 +6672,9 @@ window.CustomElements.addModule(function(scope) {
       }
     });
   }
-  var hasPolyfillMutations = !window.MutationObserver || window.MutationObserver === window.JsMutationObserver;
-  scope.hasPolyfillMutations = hasPolyfillMutations;
+  var hasThrottledAttached = window.MutationObserver._isPolyfilled && flags["throttle-attached"];
+  scope.hasPolyfillMutations = hasThrottledAttached;
+  scope.hasThrottledAttached = hasThrottledAttached;
   var isPendingMutations = false;
   var pendingMutations = [];
   function deferMutation(fn) {
@@ -6563,7 +6693,7 @@ window.CustomElements.addModule(function(scope) {
     pendingMutations = [];
   }
   function attached(element) {
-    if (hasPolyfillMutations) {
+    if (hasThrottledAttached) {
       deferMutation(function() {
         _attached(element);
       });
@@ -6586,7 +6716,7 @@ window.CustomElements.addModule(function(scope) {
     });
   }
   function detached(element) {
-    if (hasPolyfillMutations) {
+    if (hasThrottledAttached) {
       deferMutation(function() {
         _detached(element);
       });
@@ -6713,6 +6843,11 @@ window.CustomElements.addModule(function(scope) {
 window.CustomElements.addModule(function(scope) {
   var flags = scope.flags;
   function upgrade(node, isAttached) {
+    if (node.localName === "template") {
+      if (window.HTMLTemplateElement && HTMLTemplateElement.decorate) {
+        HTMLTemplateElement.decorate(node);
+      }
+    }
     if (!node.__upgraded__ && node.nodeType === Node.ELEMENT_NODE) {
       var is = node.getAttribute("is");
       var definition = scope.getRegisteredDefinition(node.localName) || scope.getRegisteredDefinition(is);
@@ -6795,6 +6930,9 @@ window.CustomElements.addModule(function(scope) {
       definition.prototype = Object.create(HTMLElement.prototype);
     }
     definition.__name = name.toLowerCase();
+    if (definition.extends) {
+      definition.extends = definition.extends.toLowerCase();
+    }
     definition.lifecycle = definition.lifecycle || {};
     definition.ancestry = ancestry(definition.extends);
     resolveTagName(definition);
@@ -6967,21 +7105,6 @@ window.CustomElements.addModule(function(scope) {
   }
   wrapDomMethodToForceUpgrade(Node.prototype, "cloneNode");
   wrapDomMethodToForceUpgrade(document, "importNode");
-  if (isIE) {
-    (function() {
-      var importNode = document.importNode;
-      document.importNode = function() {
-        var n = importNode.apply(document, arguments);
-        if (n.nodeType == n.DOCUMENT_FRAGMENT_NODE) {
-          var f = document.createDocumentFragment();
-          f.appendChild(n);
-          return f;
-        } else {
-          return n;
-        }
-      };
-    })();
-  }
   document.registerElement = register;
   document.createElement = createElement;
   document.createElementNS = createElementNS;
@@ -7047,22 +7170,6 @@ window.CustomElements.addModule(function(scope) {
       });
     });
   }
-  if (!window.CustomEvent || isIE && typeof window.CustomEvent !== "function") {
-    window.CustomEvent = function(inType, params) {
-      params = params || {};
-      var e = document.createEvent("CustomEvent");
-      e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-      e.preventDefault = function() {
-        Object.defineProperty(this, "defaultPrevented", {
-          get: function() {
-            return true;
-          }
-        });
-      };
-      return e;
-    };
-    window.CustomEvent.prototype = window.Event.prototype;
-  }
   if (document.readyState === "complete" || scope.flags.eager) {
     bootstrap();
   } else if (document.readyState === "interactive" && !window.attachEvent && (!window.HTMLImports || window.HTMLImports.ready)) {
@@ -7084,37 +7191,6 @@ window.CustomElements.addModule(function(scope) {
         return self.apply(scope, args2);
       };
     };
-  }
-})(window.WebComponents);
-
-(function(scope) {
-  "use strict";
-  if (!window.performance) {
-    var start = Date.now();
-    window.performance = {
-      now: function() {
-        return Date.now() - start;
-      }
-    };
-  }
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function() {
-      var nativeRaf = window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
-      return nativeRaf ? function(callback) {
-        return nativeRaf(function() {
-          callback(performance.now());
-        });
-      } : function(callback) {
-        return window.setTimeout(callback, 1e3 / 60);
-      };
-    }();
-  }
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function() {
-      return window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || function(id) {
-        clearTimeout(id);
-      };
-    }();
   }
 })(window.WebComponents);
 

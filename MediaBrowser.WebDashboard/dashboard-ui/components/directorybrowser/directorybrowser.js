@@ -1,14 +1,14 @@
-﻿define([], function () {
+﻿define(['dialogHelper', 'jQuery', 'paper-item', 'paper-input', 'paper-fab', 'paper-item-body'], function (dialogHelper, $) {
 
     var systemInfo;
     function getSystemInfo() {
 
-        var deferred = DeferredBuilder.Deferred();
+        var deferred = jQuery.Deferred();
 
         if (systemInfo) {
             deferred.resolveWith(null, [systemInfo]);
         } else {
-            ApiClient.getPublicSystemInfo().done(function (info) {
+            ApiClient.getPublicSystemInfo().then(function (info) {
                 systemInfo = info;
                 deferred.resolveWith(null, [systemInfo]);
             });
@@ -25,6 +25,9 @@
 
     function refreshDirectoryBrowser(page, path, fileOptions) {
 
+        if (path && typeof(path) !== 'string') {
+            throw new Error('invalid path');
+        }
         Dashboard.showLoadingMsg();
 
         if (path) {
@@ -33,30 +36,23 @@
             $('.networkHeadline').show();
         }
 
-        var promise;
-
-        var parentPathPromise = null;
+        var promises = [];
 
         if (path === "Network") {
-            promise = ApiClient.getNetworkDevices();
+            promises.push(ApiClient.getNetworkDevices());
         }
         else if (path) {
-            promise = ApiClient.getDirectoryContents(path, fileOptions);
-            parentPathPromise = ApiClient.getParentPath(path);
+
+            promises.push(ApiClient.getDirectoryContents(path, fileOptions));
+            promises.push(ApiClient.getParentPath(path));
         } else {
-            promise = ApiClient.getDrives();
+            promises.push(ApiClient.getDrives());
         }
 
-        if (!parentPathPromise) {
-            parentPathPromise = $.Deferred();
-            parentPathPromise.resolveWith(null, []);
-            parentPathPromise = parentPathPromise.promise();
-        }
+        Promise.all(promises).then(function (responses) {
 
-        $.when(promise, parentPathPromise).done(function (response1, response2) {
-
-            var folders = response1[0];
-            var parentPath = response2 && response2.length ? response2[0] || '' : '';
+            var folders = responses[0];
+            var parentPath = responses[1] || '';
 
             $('#txtDirectoryPickerPath', page).val(path || "");
 
@@ -84,7 +80,7 @@
 
             Dashboard.hideLoadingMsg();
 
-        }).fail(function () {
+        }, function () {
 
             $('#txtDirectoryPickerPath', page).val("");
             $('.results', page).html('');
@@ -167,8 +163,6 @@
             } else {
                 refreshDirectoryBrowser(content, path, fileOptions);
             }
-
-
         }).on("click", ".btnRefreshDirectories", function () {
 
             var path = $('#txtDirectoryPickerPath', content).val();
@@ -211,63 +205,63 @@
                 fileOptions.includeFiles = options.includeFiles;
             }
 
-            getSystemInfo().done(function (systemInfo) {
+            getSystemInfo().then(function (systemInfo) {
 
-                require(['components/paperdialoghelper'], function () {
-
-                    var dlg = PaperDialogHelper.createDialog({
-                        theme: 'a',
-                        size: 'medium'
-                    });
-
-                    dlg.classList.add('directoryPicker');
-
-                    var html = '';
-                    html += '<h2 class="dialogHeader">';
-                    html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
-                    html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + (options.header || Globalize.translate('HeaderSelectPath')) + '</div>';
-                    html += '</h2>';
-
-                    html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
-                    html += getEditorHtml(options, systemInfo);
-                    html += '</div>';
-
-                    dlg.innerHTML = html;
-                    document.body.appendChild(dlg);
-
-                    var editorContent = dlg.querySelector('.editorContent');
-                    initEditor(editorContent, options, fileOptions);
-
-                    // Has to be assigned a z-index after the call to .open() 
-                    $(dlg).on('iron-overlay-opened', function () {
-                        this.querySelector('#txtDirectoryPickerPath input').focus();
-                    });
-                    $(dlg).on('iron-overlay-closed', onDialogClosed);
-
-                    PaperDialogHelper.openWithHash(dlg, 'directorybrowser');
-
-                    $('.btnCloseDialog', dlg).on('click', function () {
-
-                        PaperDialogHelper.close(dlg);
-                    });
-
-                    currentDialog = dlg;
-
-                    var txtCurrentPath = $('#txtDirectoryPickerPath', editorContent);
-
-                    if (options.path) {
-                        txtCurrentPath.val(options.path);
-                    }
-
-                    refreshDirectoryBrowser(editorContent, txtCurrentPath.val());
+                var dlg = dialogHelper.createDialog({
+                    size: 'medium'
                 });
+
+                dlg.classList.add('ui-body-a');
+                dlg.classList.add('background-theme-a');
+                dlg.classList.add('popupEditor');
+
+                dlg.classList.add('directoryPicker');
+
+                var html = '';
+                html += '<h2 class="dialogHeader">';
+                html += '<paper-fab icon="arrow-back" mini class="btnCloseDialog"></paper-fab>';
+                html += '<div style="display:inline-block;margin-left:.6em;vertical-align:middle;">' + (options.header || Globalize.translate('HeaderSelectPath')) + '</div>';
+                html += '</h2>';
+
+                html += '<div class="editorContent" style="max-width:800px;margin:auto;">';
+                html += getEditorHtml(options, systemInfo);
+                html += '</div>';
+
+                dlg.innerHTML = html;
+                document.body.appendChild(dlg);
+
+                var editorContent = dlg.querySelector('.editorContent');
+                initEditor(editorContent, options, fileOptions);
+
+                // Has to be assigned a z-index after the call to .open() 
+                $(dlg).on('iron-overlay-opened', function () {
+                    this.querySelector('#txtDirectoryPickerPath input').focus();
+                });
+                $(dlg).on('close', onDialogClosed);
+
+                dialogHelper.open(dlg);
+
+                $('.btnCloseDialog', dlg).on('click', function () {
+
+                    dialogHelper.close(dlg);
+                });
+
+                currentDialog = dlg;
+
+                var txtCurrentPath = $('#txtDirectoryPickerPath', editorContent);
+
+                if (options.path) {
+                    txtCurrentPath.val(options.path);
+                }
+
+                refreshDirectoryBrowser(editorContent, txtCurrentPath.val());
 
             });
         };
 
         self.close = function () {
             if (currentDialog) {
-                PaperDialogHelper.close(currentDialog);
+                dialogHelper.close(currentDialog);
             }
         };
 

@@ -6,7 +6,6 @@ using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using CommonIO;
 
@@ -122,30 +121,6 @@ namespace MediaBrowser.LocalMetadata.Images
 
         private void PopulateImages(IHasImages item, List<LocalImageInfo> images, List<FileSystemMetadata> files, bool supportParentSeriesFiles, IDirectoryService directoryService)
         {
-            var imagePrefix = item.FileNameWithoutExtension + "-";
-            var isInMixedFolder = item.IsInMixedFolder;
-
-            PopulatePrimaryImages(item, images, files, imagePrefix, isInMixedFolder);
-
-            AddImage(files, images, "logo", imagePrefix, isInMixedFolder, ImageType.Logo);
-            AddImage(files, images, "clearart", imagePrefix, isInMixedFolder, ImageType.Art);
-            AddImage(files, images, "disc", imagePrefix, isInMixedFolder, ImageType.Disc);
-            AddImage(files, images, "cdart", imagePrefix, isInMixedFolder, ImageType.Disc);
-            AddImage(files, images, "box", imagePrefix, isInMixedFolder, ImageType.Box);
-            AddImage(files, images, "back", imagePrefix, isInMixedFolder, ImageType.BoxRear);
-            AddImage(files, images, "boxrear", imagePrefix, isInMixedFolder, ImageType.BoxRear);
-            AddImage(files, images, "menu", imagePrefix, isInMixedFolder, ImageType.Menu);
-
-            // Banner
-            AddImage(files, images, "banner", imagePrefix, isInMixedFolder, ImageType.Banner);
-
-            // Thumb
-            AddImage(files, images, "thumb", imagePrefix, isInMixedFolder, ImageType.Thumb);
-            AddImage(files, images, "landscape", imagePrefix, isInMixedFolder, ImageType.Thumb);
-
-            PopulateBackdrops(item, images, files, imagePrefix, isInMixedFolder, directoryService);
-            PopulateScreenshots(images, files, imagePrefix, isInMixedFolder);
-
             if (supportParentSeriesFiles)
             {
                 var season = item as Season;
@@ -155,18 +130,63 @@ namespace MediaBrowser.LocalMetadata.Images
                     PopulateSeasonImagesFromSeriesFolder(season, images, directoryService);
                 }
             }
+            
+            var imagePrefix = item.FileNameWithoutExtension + "-";
+            var isInMixedFolder = item.IsInMixedFolder;
+
+            PopulatePrimaryImages(item, images, files, imagePrefix, isInMixedFolder);
+
+            AddImage(files, images, "logo", imagePrefix, isInMixedFolder, ImageType.Logo);
+            AddImage(files, images, "clearart", imagePrefix, isInMixedFolder, ImageType.Art);
+
+            // For music albums, prefer cdart before disc
+            if (item is MusicAlbum)
+            {
+                AddImage(files, images, "cdart", imagePrefix, isInMixedFolder, ImageType.Disc);
+                AddImage(files, images, "disc", imagePrefix, isInMixedFolder, ImageType.Disc);
+            }
+            else
+            {
+                AddImage(files, images, "disc", imagePrefix, isInMixedFolder, ImageType.Disc);
+                AddImage(files, images, "cdart", imagePrefix, isInMixedFolder, ImageType.Disc);
+            }
+
+            AddImage(files, images, "box", imagePrefix, isInMixedFolder, ImageType.Box);
+            AddImage(files, images, "back", imagePrefix, isInMixedFolder, ImageType.BoxRear);
+            AddImage(files, images, "boxrear", imagePrefix, isInMixedFolder, ImageType.BoxRear);
+            AddImage(files, images, "menu", imagePrefix, isInMixedFolder, ImageType.Menu);
+
+            // Banner
+            AddImage(files, images, "banner", imagePrefix, isInMixedFolder, ImageType.Banner);
+
+            // Thumb
+            AddImage(files, images, "landscape", imagePrefix, isInMixedFolder, ImageType.Thumb);
+            AddImage(files, images, "thumb", imagePrefix, isInMixedFolder, ImageType.Thumb);
+
+            PopulateBackdrops(item, images, files, imagePrefix, isInMixedFolder, directoryService);
+            PopulateScreenshots(images, files, imagePrefix, isInMixedFolder);
         }
 
         private void PopulatePrimaryImages(IHasImages item, List<LocalImageInfo> images, List<FileSystemMetadata> files, string imagePrefix, bool isInMixedFolder)
         {
             var names = new List<string>
             {
-                "folder",
-                "poster",
                 "cover",
                 "default"
             };
 
+            if (item is MusicAlbum || item is MusicArtist || item is PhotoAlbum)
+            {
+                // these prefer folder
+                names.Insert(0, "poster");
+                names.Insert(0, "folder");
+            }
+            else
+            {
+                names.Insert(0, "folder");
+                names.Insert(0, "poster");
+            }
+            
             // Support plex/kodi convention
             if (item is Series)
             {
@@ -201,8 +221,6 @@ namespace MediaBrowser.LocalMetadata.Images
 
         private void PopulateBackdrops(IHasImages item, List<LocalImageInfo> images, List<FileSystemMetadata> files, string imagePrefix, bool isInMixedFolder, IDirectoryService directoryService)
         {
-            PopulateBackdrops(images, files, imagePrefix, "backdrop", "backdrop", isInMixedFolder, ImageType.Backdrop);
-
             if (!string.IsNullOrEmpty(item.Path))
             {
                 var name = item.FileNameWithoutExtension;
@@ -230,6 +248,8 @@ namespace MediaBrowser.LocalMetadata.Images
             {
                 PopulateBackdropsFromExtraFanart(extraFanartFolder.FullName, images, directoryService);
             }
+
+            PopulateBackdrops(images, files, imagePrefix, "backdrop", "backdrop", isInMixedFolder, ImageType.Backdrop);
         }
 
         private void PopulateBackdropsFromExtraFanart(string path, List<LocalImageInfo> images, IDirectoryService directoryService)
