@@ -80,7 +80,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private IDbCommand _updateInheritedRatingCommand;
         private IDbCommand _updateInheritedTagsCommand;
 
-        private const int LatestSchemaVersion = 63;
+        private const int LatestSchemaVersion = 64;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
@@ -1573,6 +1573,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (string.Equals(name, ItemSortBy.Runtime, StringComparison.OrdinalIgnoreCase))
             {
                 return "RuntimeTicks";
+            }
+            if (string.Equals(name, ItemSortBy.IsFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                return "IsFolder";
             }
             if (string.Equals(name, ItemSortBy.Random, StringComparison.OrdinalIgnoreCase))
             {
