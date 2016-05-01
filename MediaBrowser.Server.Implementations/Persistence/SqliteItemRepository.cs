@@ -80,7 +80,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private IDbCommand _updateInheritedRatingCommand;
         private IDbCommand _updateInheritedTagsCommand;
 
-        private const int LatestSchemaVersion = 63;
+        private const int LatestSchemaVersion = 64;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
@@ -1574,6 +1574,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 return "RuntimeTicks";
             }
+            if (string.Equals(name, ItemSortBy.IsFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                return "IsFolder";
+            }
             if (string.Equals(name, ItemSortBy.Random, StringComparison.OrdinalIgnoreCase))
             {
                 return "RANDOM()";
@@ -1953,20 +1957,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     index++;
                 }
                 var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
-                whereClauses.Add(clause);
-            }
-
-            if (query.ExcludeTrailerTypes.Length > 0)
-            {
-                var clauses = new List<string>();
-                var index = 0;
-                foreach (var type in query.ExcludeTrailerTypes)
-                {
-                    clauses.Add("(TrailerTypes is null OR TrailerTypes not like @TrailerTypes" + index + ")");
-                    cmd.Parameters.Add(cmd, "@TrailerTypes" + index, DbType.String).Value = "%" + type + "%";
-                    index++;
-                }
-                var clause = "(" + string.Join(" AND ", clauses.ToArray()) + ")";
                 whereClauses.Add(clause);
             }
 
