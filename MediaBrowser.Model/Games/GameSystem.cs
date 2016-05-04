@@ -20,7 +20,7 @@ namespace MediaBrowser.Model.Games
         public const string Intellivision = "Intellivision";
         public const string MicrosoftXBox = "Xbox";
         public const string MicrosoftXBox360 = "Xbox 360";
-        public const string MicrosoftXBoxOne = "Xbox On";
+        public const string MicrosoftXBoxOne = "Xbox One";
         public const string NeoGeo = "Neo Geo";
         public const string Nintendo64 = "Nintendo 64";
         public const string NintendoDS = "Nintendo DS";
