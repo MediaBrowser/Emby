@@ -19,6 +19,8 @@ namespace MediaBrowser.Model.Games
         public const string CommodoreVic20 = "Commodore Vic-20";
         public const string Intellivision = "Intellivision";
         public const string MicrosoftXBox = "Xbox";
+        public const string MicrosoftXBox360 = "Xbox 360";
+        public const string MicrosoftXBoxOne = "Xbox One";
         public const string NeoGeo = "Neo Geo";
         public const string Nintendo64 = "Nintendo 64";
         public const string NintendoDS = "Nintendo DS";
@@ -28,6 +30,7 @@ namespace MediaBrowser.Model.Games
         public const string NintendoGameCube = "Gamecube";
         public const string VirtualBoy = "Virtual Boy";
         public const string Wii = "Nintendo Wii";
+        public const string WiiU = "Nintendo Wii U";
         public const string DOS = "DOS";
         public const string Windows = "Windows";
         public const string Sega32X = "Sega 32X";
@@ -40,6 +43,8 @@ namespace MediaBrowser.Model.Games
         public const string SegaSaturn = "Sega Saturn";
         public const string SonyPlaystation = "Sony Playstation";
         public const string SonyPlaystation2 = "PS2";
+        public const string SonyPlaystation3 = "PS3";
+        public const string SonyPlaystation4 = "PS4";
         public const string SonyPSP = "PSP";
         public const string TurboGrafx16 = "TurboGrafx 16";
         public const string TurboGrafxCD = "TurboGrafx CD";
