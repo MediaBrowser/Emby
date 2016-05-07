@@ -86,6 +86,7 @@ namespace MediaBrowser.Server.Implementations.Library
         private Task<IEnumerable<SearchHintInfo>> GetSearchHints(SearchQuery query, User user)
         {
             var searchTerm = query.SearchTerm;
+            searchTerm = searchTerm.Trim();
 
             if (searchTerm != null)
             {
@@ -214,8 +215,6 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 throw new ArgumentNullException("input");
             }
-
-            input = input.RemoveDiacritics();
 
             if (string.Equals(input, searchInput, StringComparison.OrdinalIgnoreCase))
             {
