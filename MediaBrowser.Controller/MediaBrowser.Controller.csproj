@@ -177,6 +177,9 @@
     <Compile Include="Entities\PhotoAlbum.cs" />
     <Compile Include="Entities\Share.cs" />
     <Compile Include="Entities\SourceType.cs" />
+    <Compile Include="Entities\SubTypes\IHasSubType.cs" />
+    <Compile Include="Entities\SubTypes\VideoSubTypeAdult.cs" />
+    <Compile Include="Entities\SubTypes\IItemSubType.cs" />
     <Compile Include="Entities\UserView.cs" />
     <Compile Include="Entities\UserViewBuilder.cs" />
     <Compile Include="FileOrganization\IFileOrganizationService.cs" />

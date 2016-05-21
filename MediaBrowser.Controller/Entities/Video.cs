@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Controller.Channels;
+using MediaBrowser.Controller.Entities.SubTypes;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -26,7 +27,8 @@ namespace MediaBrowser.Controller.Entities
         IHasMediaSources,
         IHasShortOverview,
         IThemeMedia,
-        IArchivable
+        IArchivable,
+        IHasSubType
     {
         [IgnoreDataMember]
         public string PrimaryVersionId { get; set; }
@@ -136,6 +138,12 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The aspect ratio.</value>
         public string AspectRatio { get; set; }
+
+        /// <summary>
+        /// Gets or sets the subtype.
+        /// </summary>
+        /// <value>The subtype.</value>
+        public string SubTypeId { get; set; }
 
         public Video()
         {
