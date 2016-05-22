@@ -214,7 +214,6 @@ namespace MediaBrowser.Providers.Manager
             MergeAwards(source, target, lockedFields, replaceData);
             MergeTaglines(source, target, lockedFields, replaceData);
             MergeTrailers(source, target, lockedFields, replaceData);
-            MergeShortOverview(source, target, lockedFields, replaceData);
 
             if (mergeMetadataSettings)
             {
@@ -245,20 +244,6 @@ namespace MediaBrowser.Providers.Manager
             if (sourceHasDisplayOrder != null && targetHasDisplayOrder != null)
             {
                 targetHasDisplayOrder.DisplayOrder = sourceHasDisplayOrder.DisplayOrder;
-            }
-        }
-
-        private static void MergeShortOverview(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
-        {
-            var sourceHasShortOverview = source as IHasShortOverview;
-            var targetHasShortOverview = target as IHasShortOverview;
-
-            if (sourceHasShortOverview != null && targetHasShortOverview != null)
-            {
-                if (replaceData || string.IsNullOrEmpty(targetHasShortOverview.ShortOverview))
-                {
-                    targetHasShortOverview.ShortOverview = sourceHasShortOverview.ShortOverview;
-                }
             }
         }
 

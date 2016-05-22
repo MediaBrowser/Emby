@@ -149,7 +149,6 @@
                 Metascore: $('#txtMetascore', form).val(),
                 AwardSummary: $('#txtAwardSummary', form).val(),
                 Overview: $('#txtOverview', form).val(),
-                ShortOverview: $('#txtShortOverview', form).val(),
                 Status: $('#selectStatus', form).val(),
                 AirDays: getSelectedAirDays(form),
                 AirTime: $('#txtAirTime', form).val(),
@@ -818,7 +817,6 @@
         $('#txtName', context).val(item.Name || "");
         $('#txtOriginalName', context).val(item.OriginalTitle || "");
         context.querySelector('#txtOverview').value = item.Overview || '';
-        $('#txtShortOverview', context).val(item.ShortOverview || "");
         $('#txtTagline', context).val((item.Taglines && item.Taglines.length ? item.Taglines[0] : ''));
         $('#txtSortName', context).val(item.ForcedSortName || "");
         $('#txtDisplayMediaType', context).val(item.DisplayMediaType || "");
@@ -1133,12 +1131,6 @@
                 $('#btnEditImages', context).hide();
             } else {
                 $('#btnEditImages', context).show();
-            }
-
-            if (item.MediaType == "Video" && item.Type != "Episode") {
-                $('#fldShortOverview', context).show();
-            } else {
-                $('#fldShortOverview', context).hide();
             }
 
             if (item.MediaType == "Video" && item.Type != "Episode") {

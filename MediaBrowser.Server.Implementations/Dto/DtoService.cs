@@ -1125,15 +1125,6 @@ namespace MediaBrowser.Server.Implementations.Dto
                 dto.OriginalTitle = item.OriginalTitle;
             }
 
-            if (fields.Contains(ItemFields.ShortOverview))
-            {
-                var hasShortOverview = item as IHasShortOverview;
-                if (hasShortOverview != null)
-                {
-                    dto.ShortOverview = hasShortOverview.ShortOverview;
-                }
-            }
-
             // If there are no backdrops, indicate what parent has them in case the Ui wants to allow inheritance
             if (backdropLimit > 0 && dto.BackdropImageTags.Count == 0)
             {

@@ -56,7 +56,6 @@ namespace MediaBrowser.Api.Reports
 
         //Activity logs
         Overview,
-        ShortOverview,
         Type,
         Date,
         UserPrimaryImage,

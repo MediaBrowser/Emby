@@ -1,5 +1,7 @@
 ﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
 using System;
@@ -28,16 +30,19 @@ namespace MediaBrowser.Providers.Omdb
             Current = this;
         }
 
-        public async Task Fetch(BaseItem item, string imdbId, string language, string country, CancellationToken cancellationToken)
+        public async Task Fetch<T>(MetadataResult<T> result, string imdbId, string language, string country, CancellationToken cancellationToken)
+            where T : BaseItem
         {
             if (string.IsNullOrWhiteSpace(imdbId))
             {
                 throw new ArgumentNullException("imdbId");
             }
 
+            var item = result.Item;
+
             var imdbParam = imdbId.StartsWith("tt", StringComparison.OrdinalIgnoreCase) ? imdbId : "tt" + imdbId;
 
-            var url = string.Format("https://www.omdbapi.com/?i={0}&tomatoes=true", imdbParam);
+            var url = string.Format("https://www.omdbapi.com/?i={0}&plot=full&tomatoes=true&r=json", imdbParam);
 
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
@@ -47,23 +52,19 @@ namespace MediaBrowser.Providers.Omdb
 
             }).ConfigureAwait(false))
             {
-                var result = _jsonSerializer.DeserializeFromStream<RootObject>(stream);
+                var omdbItem = _jsonSerializer.DeserializeFromStream<RootObject>(stream);
 
-                // Only take the name and rating if the user's language is set to english, since Omdb has no localization
-                if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
+                item.Name = omdbItem.Title;
+
+                if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.Name = result.Title;
-
-                    if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
-                    {
-                        item.OfficialRating = result.Rated;
-                    }
+                    item.OfficialRating = omdbItem.Rated;
                 }
 
                 int year;
 
-                if (!string.IsNullOrEmpty(result.Year)
-                    && int.TryParse(result.Year, NumberStyles.Number, _usCulture, out year)
+                if (!string.IsNullOrEmpty(omdbItem.Year) && omdbItem.Year.Length >= 4
+                    && int.TryParse(omdbItem.Year.Substring(0, 4), NumberStyles.Number, _usCulture, out year)
                     && year >= 0)
                 {
                     item.ProductionYear = year;
@@ -76,25 +77,25 @@ namespace MediaBrowser.Providers.Omdb
                     // RT doesn't even have tv series
                     int tomatoMeter;
 
-                    if (!string.IsNullOrEmpty(result.tomatoMeter)
-                        && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
+                    if (!string.IsNullOrEmpty(omdbItem.tomatoMeter)
+                        && int.TryParse(omdbItem.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
                         && tomatoMeter >= 0)
                     {
                         hasCriticRating.CriticRating = tomatoMeter;
                     }
 
-                    if (!string.IsNullOrEmpty(result.tomatoConsensus)
-                        && !string.Equals(result.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
-                        && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(omdbItem.tomatoConsensus)
+                        && !string.Equals(omdbItem.tomatoConsensus, "n/a", StringComparison.OrdinalIgnoreCase)
+                        && !string.Equals(omdbItem.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
                     {
-                        hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
+                        hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(omdbItem.tomatoConsensus);
                     }
                 }
 
                 int voteCount;
 
-                if (!string.IsNullOrEmpty(result.imdbVotes)
-                    && int.TryParse(result.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
+                if (!string.IsNullOrEmpty(omdbItem.imdbVotes)
+                    && int.TryParse(omdbItem.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
                     && voteCount >= 0)
                 {
                     item.VoteCount = voteCount;
@@ -102,26 +103,63 @@ namespace MediaBrowser.Providers.Omdb
 
                 float imdbRating;
 
-                if (!string.IsNullOrEmpty(result.imdbRating)
-                    && float.TryParse(result.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
+                if (!string.IsNullOrEmpty(omdbItem.imdbRating)
+                    && float.TryParse(omdbItem.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
                     && imdbRating >= 0)
                 {
                     item.CommunityRating = imdbRating;
                 }
 
-                if (!string.IsNullOrEmpty(result.Website)
-                        && !string.Equals(result.Website, "n/a", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(omdbItem.Website)
+                        && !string.Equals(omdbItem.Website, "n/a", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.HomePageUrl = result.Website;
+                    item.HomePageUrl = omdbItem.Website;
                 }
 
-                if (!string.IsNullOrWhiteSpace(result.imdbID)
-                        && !string.Equals(result.imdbID, "n/a", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(omdbItem.imdbID)
+                        && !string.Equals(omdbItem.imdbID, "n/a", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
+                    item.SetProviderId(MetadataProviders.Imdb, omdbItem.imdbID);
                 }
 
-                ParseAdditionalMetadata(item, result);
+                if (!string.IsNullOrWhiteSpace(omdbItem.Actors))
+                {
+                    var actorList = omdbItem.Actors.Split(new []{',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var actor in actorList)
+                    {
+                        var person = new PersonInfo
+                        {
+                            Name = actor,
+                            Type = PersonType.Actor
+                        };
+
+                        result.AddPerson(person);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(omdbItem.Director))
+                {
+                    var person = new PersonInfo
+                    {
+                        Name = omdbItem.Director.Trim(),
+                        Type = PersonType.Director
+                    };
+
+                    result.AddPerson(person);
+                }
+
+                if (!string.IsNullOrWhiteSpace(omdbItem.Writer))
+                {
+                    var person = new PersonInfo
+                    {
+                        Name = omdbItem.Writer.Trim(),
+                        Type = PersonType.Writer
+                    };
+
+                    result.AddPerson(person);
+                }
+
+                ParseAdditionalMetadata(item, omdbItem);
             }
         }
 
@@ -162,12 +200,7 @@ namespace MediaBrowser.Providers.Omdb
                 hasAwards.AwardSummary = WebUtility.HtmlDecode(result.Awards);
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                // Imdb plots are usually pretty short
-                hasShortOverview.ShortOverview = result.Plot;
-            }
+            item.Overview = result.Plot;
         }
 
         private bool ShouldFetchGenres(BaseItem item)

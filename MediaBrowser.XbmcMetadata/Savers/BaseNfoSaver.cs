@@ -445,20 +445,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("plot", overview);
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                var outline = (hasShortOverview.ShortOverview ?? string.Empty)
-                    .StripHtml()
-                    .Replace("&quot;", "'");
-
-                writer.WriteElementString("outline", outline);
-            }
-            else
-            {
-                writer.WriteElementString("outline", overview);
-            }
-
             if (!string.IsNullOrWhiteSpace(item.CustomRating))
             {
                 writer.WriteElementString("customrating", item.CustomRating);
