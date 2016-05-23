@@ -120,6 +120,52 @@ namespace MediaBrowser.Providers.TV
         }
     }
 
+    public class TvMazeExternalId : IExternalId
+    {
+        public string Name
+        {
+            get { return "TvMaze"; }
+        }
+
+        public string Key
+        {
+            get { return MetadataProviders.TvMaze.ToString(); }
+        }
+
+        public string UrlFormatString
+        {
+            get { return "http://www.tvmaze.com/shows/{0}"; }
+        }
+
+        public bool Supports(IHasProviderIds item)
+        {
+            return item is Series;
+        }
+    }
+
+    public class TvMazeEpisodeExternalId : IExternalId
+    {
+        public string Name
+        {
+            get { return "TvMaze"; }
+        }
+
+        public string Key
+        {
+            get { return MetadataProviders.TvMaze.ToString(); }
+        }
+
+        public string UrlFormatString
+        {
+            get { return "http://www.tvmaze.com/episodes/{0}"; }
+        }
+
+        public bool Supports(IHasProviderIds item)
+        {
+            return item is Episode;
+        }
+    }
+
     public class TvComPersonExternalId : IExternalId
     {
         public string Name
