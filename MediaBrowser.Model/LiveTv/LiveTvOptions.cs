@@ -7,8 +7,12 @@ namespace MediaBrowser.Model.LiveTv
         public int? GuideDays { get; set; }
         public bool EnableMovieProviders { get; set; }
         public string RecordingPath { get; set; }
+        public string MovieRecordingPath { get; set; }
+        public string SeriesRecordingPath { get; set; }
         public bool EnableAutoOrganize { get; set; }
         public bool EnableRecordingEncoding { get; set; }
+        public bool EnableRecordingSubfolders { get; set; }
+        public bool EnableOriginalAudioWithEncodedRecordings { get; set; }
 
         public List<TunerHostInfo> TunerHosts { get; set; }
         public List<ListingsProviderInfo> ListingProviders { get; set; }
@@ -16,11 +20,15 @@ namespace MediaBrowser.Model.LiveTv
         public int PrePaddingSeconds { get; set; }
         public int PostPaddingSeconds { get; set; }
 
+        public string[] MediaLocationsCreated { get; set; }
+
         public LiveTvOptions()
         {
             EnableMovieProviders = true;
+            EnableRecordingSubfolders = true;
             TunerHosts = new List<TunerHostInfo>();
             ListingProviders = new List<ListingsProviderInfo>();
+            MediaLocationsCreated = new string[] { };
         }
     }
 

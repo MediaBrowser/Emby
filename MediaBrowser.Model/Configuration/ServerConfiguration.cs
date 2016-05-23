@@ -201,6 +201,7 @@ namespace MediaBrowser.Model.Configuration
         public string[] Migrations { get; set; }
 
         public int MigrationVersion { get; set; }
+        public int SchemaVersion { get; set; }
 
         public bool DownloadImagesInAdvance { get; set; }
 
@@ -213,6 +214,9 @@ namespace MediaBrowser.Model.Configuration
         public ServerConfiguration()
         {
             Migrations = new string[] { };
+
+            EnableLocalizedGuids = true;
+            EnableCustomPathSubFolders = true;
 
             ImageSavingConvention = ImageSavingConvention.Compatible;
             PublicPort = 8096;

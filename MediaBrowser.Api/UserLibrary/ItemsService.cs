@@ -138,25 +138,19 @@ namespace MediaBrowser.Api.UserLibrary
 
             if (request.Recursive)
             {
-                var result = await ((Folder)item).GetItems(GetItemsQuery(request, user)).ConfigureAwait(false);
-
-                return result;
+                return await ((Folder)item).GetItems(GetItemsQuery(request, user)).ConfigureAwait(false);
             }
 
             if (user == null)
             {
-                var result = await ((Folder)item).GetItems(GetItemsQuery(request, null)).ConfigureAwait(false);
-
-                return result;
+                return await ((Folder)item).GetItems(GetItemsQuery(request, null)).ConfigureAwait(false);
             }
 
             var userRoot = item as UserRootFolder;
 
             if (userRoot == null)
             {
-                var result = await ((Folder)item).GetItems(GetItemsQuery(request, user)).ConfigureAwait(false);
-
-                return result;
+                return await ((Folder)item).GetItems(GetItemsQuery(request, user)).ConfigureAwait(false);
             }
 
             IEnumerable<BaseItem> items = ((Folder)item).GetChildren(user, true);
@@ -230,7 +224,8 @@ namespace MediaBrowser.Api.UserLibrary
                 ParentId = string.IsNullOrWhiteSpace(request.ParentId) ? (Guid?)null : new Guid(request.ParentId),
                 ParentIndexNumber = request.ParentIndexNumber,
                 AiredDuringSeason = request.AiredDuringSeason,
-                AlbumArtistStartsWithOrGreater = request.AlbumArtistStartsWithOrGreater
+                AlbumArtistStartsWithOrGreater = request.AlbumArtistStartsWithOrGreater,
+                EnableTotalRecordCount = request.EnableTotalRecordCount
             };
 
             if (!string.IsNullOrWhiteSpace(request.Ids))

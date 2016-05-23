@@ -32,16 +32,17 @@ namespace MediaBrowser.Server.Implementations.Notifications
             _appPaths = appPaths;
         }
 
-        public async Task Initialize()
+        public async Task Initialize(IDbConnector dbConnector)
         {
             var dbFile = Path.Combine(_appPaths.DataPath, "notifications.db");
 
-            _connection = await SqliteExtensions.ConnectToDb(dbFile, Logger).ConfigureAwait(false);
+            _connection = await dbConnector.Connect(dbFile).ConfigureAwait(false);
 
             string[] queries = {
 
                                 "create table if not exists Notifications (Id GUID NOT NULL, UserId GUID NOT NULL, Date DATETIME NOT NULL, Name TEXT NOT NULL, Description TEXT, Url TEXT, Level TEXT NOT NULL, IsRead BOOLEAN NOT NULL, Category TEXT NOT NULL, RelatedId TEXT, PRIMARY KEY (Id, UserId))",
-                                "create index if not exists idx_Notifications on Notifications(Id, UserId)",
+                                "create index if not exists idx_Notifications1 on Notifications(Id)",
+                                "create index if not exists idx_Notifications2 on Notifications(UserId)",
 
                                 //pragmas
                                 "pragma temp_store = memory",

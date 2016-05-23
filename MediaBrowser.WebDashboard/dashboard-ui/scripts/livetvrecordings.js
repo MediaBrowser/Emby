@@ -1,4 +1,4 @@
-﻿define(['jQuery'], function ($) {
+﻿define(['jQuery', 'scripts/livetvcomponents'], function ($) {
 
     function getRecordingGroupHtml(group) {
 
@@ -30,12 +30,12 @@
         return html;
     }
 
-    function renderRecordingGroups(page, groups) {
+    function renderRecordingGroups(context, groups) {
 
         if (groups.length) {
-            $('#recordingGroups', page).show();
+            $('#recordingGroups', context).show();
         } else {
-            $('#recordingGroups', page).hide();
+            $('#recordingGroups', context).hide();
         }
 
         var html = '';
@@ -49,9 +49,13 @@
 
         html += '</div>';
 
-        page.querySelector('#recordingGroupItems').innerHTML = html;
+        context.querySelector('#recordingGroupItems').innerHTML = html;
 
         Dashboard.hideLoadingMsg();
+    }
+
+    function enableScrollX() {
+        return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
     function renderRecordings(elem, recordings) {
@@ -63,24 +67,27 @@
         }
 
         var recordingItems = elem.querySelector('.recordingItems');
+
+        if (enableScrollX()) {
+            recordingItems.classList.add('hiddenScrollX');
+        } else {
+            recordingItems.classList.remove('hiddenScrollX');
+        }
+         
         recordingItems.innerHTML = LibraryBrowser.getPosterViewHtml({
             items: recordings,
-            shape: "auto",
+            shape: (enableScrollX() ? 'autooverflow' : 'auto'),
             showTitle: true,
             showParentTitle: true,
-            centerText: true,
             coverImage: true,
             lazy: true,
-            overlayPlayButton: true
-
+            cardLayout: true
         });
 
         ImageLoader.lazyChildren(recordingItems);
     }
 
-    function reload(page) {
-
-        Dashboard.showLoadingMsg();
+    function renderActiveRecordings(context) {
 
         ApiClient.getLiveTvRecordings({
 
@@ -90,21 +97,60 @@
 
         }).then(function (result) {
 
-            renderRecordings(page.querySelector('#activeRecordings'), result.Items);
+            renderRecordings(context.querySelector('#activeRecordings'), result.Items);
 
         });
+    }
+
+    function renderLatestRecordings(context) {
 
         ApiClient.getLiveTvRecordings({
 
             userId: Dashboard.getCurrentUserId(),
-            limit: 12,
+            limit: enableScrollX() ? 12 : 4,
             IsInProgress: false,
             Fields: 'CanDelete,PrimaryImageAspectRatio'
 
         }).then(function (result) {
 
-            renderRecordings(page.querySelector('#latestRecordings'), result.Items);
+            renderRecordings(context.querySelector('#latestRecordings'), result.Items);
         });
+    }
+
+    function renderTimers(context, timers) {
+
+        LiveTvHelpers.getTimersHtml(timers).then(function (html) {
+
+            var elem = context.querySelector('#upcomingRecordings');
+
+            if (html) {
+                elem.classList.remove('hide');
+            } else {
+                elem.classList.add('hide');
+            }
+
+            elem.querySelector('.recordingItems').innerHTML = html;
+
+            ImageLoader.lazyChildren(elem);
+            $(elem).createCardMenus();
+        });
+    }
+
+    function renderUpcomingRecordings(context) {
+
+        ApiClient.getLiveTvTimers().then(function (result) {
+
+            renderTimers(context, result.Items);
+        });
+    }
+
+    function reload(context) {
+
+        Dashboard.showLoadingMsg();
+
+        renderUpcomingRecordings(context);
+        renderActiveRecordings(context);
+        renderLatestRecordings(context);
 
         ApiClient.getLiveTvRecordingGroups({
 
@@ -113,16 +159,21 @@
         }).then(function (result) {
 
             require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
-                renderRecordingGroups(page, result.Items);
+                renderRecordingGroups(context, result.Items);
             });
         });
     }
 
-    window.LiveTvPage.renderRecordingsTab = function (page, tabContent) {
+    return function (view, params, tabContent) {
 
-        if (LibraryBrowser.needsRefresh(tabContent)) {
+        var self = this;
+        tabContent.querySelector('#upcomingRecordings .recordingItems').addEventListener('timercancelled', function () {
             reload(tabContent);
-        }
+        });
+
+        self.renderTab = function () {
+            reload(tabContent);
+        };
     };
 
 });

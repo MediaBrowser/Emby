@@ -18,6 +18,12 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
         },
         showSearch: function () {
             skinManager.getCurrentSkin().search();
+        },
+        showGuide: function () {
+            skinManager.getCurrentSkin().showGuide();
+        },
+        showLiveTV: function () {
+            skinManager.getCurrentSkin().showLiveTV();
         }
     };
 
@@ -71,8 +77,8 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
                     require(['alert'], function (alert) {
                         alert({
 
-                            text: Globalize.translate('core#ServerUpdateNeeded', 'https://emby.media'),
-                            html: Globalize.translate('core#ServerUpdateNeeded', '<a href="https://emby.media">https://emby.media</a>')
+                            text: Globalize.translate('sharedcomponents#ServerUpdateNeeded', 'https://emby.media'),
+                            html: Globalize.translate('sharedcomponents#ServerUpdateNeeded', '<a href="https://emby.media">https://emby.media</a>')
 
                         }).then(function () {
                             embyRouter.showSelectServer();
@@ -167,6 +173,11 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
     var currentViewLoadRequest;
     function sendRouteToViewManager(ctx, next, route, controllerFactory) {
 
+        if (isDummyBackToHome && route.type == 'home') {
+            isDummyBackToHome = false;
+            return;
+        }
+
         cancelCurrentLoadRequest();
 
         var isBackNav = ctx.isBack;
@@ -198,12 +209,11 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
 
         if (!isBackNav) {
             // Don't force a new view for home due to the back menu
-            if (route.type != 'home') {
+            //if (route.type != 'home') {
                 onNewViewNeeded();
                 return;
-            }
+            //}
         }
-
         viewManager.tryRestoreView(currentRequest).then(function () {
 
             // done
@@ -271,17 +281,17 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
         var apiClient = connectionManager.currentApiClient();
         var pathname = ctx.pathname.toLowerCase();
 
-        console.log('Emby.Page - processing path request ' + pathname);
+        console.log('embyRouter - processing path request ' + pathname);
 
         if ((!apiClient || !apiClient.isLoggedIn()) && !route.anonymous) {
-            console.log('Emby.Page - route does not allow anonymous access, redirecting to login');
+            console.log('embyRouter - route does not allow anonymous access, redirecting to login');
             beginConnectionWizard();
             return;
         }
 
         if (apiClient && apiClient.isLoggedIn()) {
 
-            console.log('Emby.Page - user is authenticated');
+            console.log('embyRouter - user is authenticated');
 
             var isCurrentRouteStartup = currentRouteInfo ? currentRouteInfo.route.startup : true;
             if (ctx.isBack && (route.isDefaultRoute || route.startup) && !isCurrentRouteStartup) {
@@ -289,7 +299,7 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
                 return;
             }
             else if (route.isDefaultRoute) {
-                console.log('Emby.Page - loading skin home page');
+                console.log('embyRouter - loading skin home page');
                 skinManager.loadUserSkin();
                 return;
             } else if (route.roles) {
@@ -303,7 +313,7 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
             }
         }
 
-        console.log('Emby.Page - proceeding to ' + pathname);
+        console.log('embyRouter - proceeding to ' + pathname);
         callback();
     }
 
@@ -331,21 +341,21 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
     }
 
     var isHandlingBackToDefault;
+    var isDummyBackToHome;
+
     function handleBackToDefault() {
 
+        isDummyBackToHome = true;
         skinManager.loadUserSkin();
 
         if (isHandlingBackToDefault) {
             return;
         }
 
-        isHandlingBackToDefault = true;
-
         // This must result in a call to either 
         // skinManager.loadUserSkin();
         // Logout
         // Or exit app
-
         skinManager.getCurrentSkin().showBackMenu().then(function () {
 
             isHandlingBackToDefault = false;
@@ -481,11 +491,15 @@ define(['loading', 'viewManager', 'skinManager', 'pluginManager', 'backdrop', 'b
         return show(pluginManager.mapRoute(skin, homeRoute));
     }
 
-    function showItem(item) {
+    function showItem(item, serverId) {
 
         if (typeof (item) === 'string') {
-            Emby.Models.item(item).then(showItem);
-
+            require(['connectionManager'], function (connectionManager) {
+                var apiClient = serverId ? connectionManager.getApiClient(serverId) : connectionManager.currentApiClient();
+                apiClient.getItem(apiClient.getCurrentUserId(), item).then(function (item) {
+                    embyRouter.showItem(item);
+                });
+            });
         } else {
             skinManager.getCurrentSkin().showItem(item);
         }

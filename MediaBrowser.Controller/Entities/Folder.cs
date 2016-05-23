@@ -28,6 +28,9 @@ namespace MediaBrowser.Controller.Entities
         public List<Guid> ThemeSongIds { get; set; }
         public List<Guid> ThemeVideoIds { get; set; }
 
+        [IgnoreDataMember]
+        public DateTime? DateLastMediaAdded { get; set; }
+
         public Folder()
         {
             LinkedChildren = new List<LinkedChild>();
@@ -53,6 +56,36 @@ namespace MediaBrowser.Controller.Entities
             {
                 return true;
             }
+        }
+
+        [IgnoreDataMember]
+        public virtual bool SupportsCumulativeRunTimeTicks
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        [IgnoreDataMember]
+        public virtual bool SupportsDateLastMediaAdded
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override bool RequiresRefresh()
+        {
+            var baseResult = base.RequiresRefresh();
+
+            if (SupportsCumulativeRunTimeTicks && !RunTimeTicks.HasValue)
+            {
+                baseResult = true;
+            }
+
+            return baseResult;
         }
 
         [IgnoreDataMember]
@@ -92,19 +125,6 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value><c>true</c> if this instance is root; otherwise, <c>false</c>.</value>
         public bool IsRoot { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is virtual folder.
-        /// </summary>
-        /// <value><c>true</c> if this instance is virtual folder; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public virtual bool IsVirtualFolder
-        {
-            get
-            {
-                return false;
-            }
-        }
 
         public virtual List<LinkedChild> LinkedChildren { get; set; }
 
@@ -199,8 +219,8 @@ namespace MediaBrowser.Controller.Entities
         /// <returns>Dictionary{System.StringFunc{UserIEnumerable{BaseItem}}}.</returns>
         protected virtual IEnumerable<string> GetIndexByOptions()
         {
-            return new List<string> {            
-                {"None"}, 
+            return new List<string> {
+                {"None"},
                 {"Performer"},
                 {"Genre"},
                 {"Director"},
@@ -252,6 +272,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets the actual children.
         /// </summary>
         /// <value>The actual children.</value>
+        [IgnoreDataMember]
         protected virtual IEnumerable<BaseItem> ActualChildren
         {
             get
@@ -707,8 +728,8 @@ namespace MediaBrowser.Controller.Entities
         {
             return ItemRepository.GetItemIdsList(new InternalItemsQuery
             {
-                ParentId = Id
-
+                ParentId = Id,
+                GroupByPresentationUniqueKey = false
             });
         }
 
@@ -716,7 +737,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var user = query.User;
 
-            if (RequiresPostFiltering(query))
+            if (!query.ForceDirect && RequiresPostFiltering(query))
             {
                 IEnumerable<BaseItem> items;
                 Func<BaseItem, bool> filter = i => UserViewBuilder.Filter(i, user, query, UserDataManager, LibraryManager);
@@ -727,7 +748,7 @@ namespace MediaBrowser.Controller.Entities
                 }
                 else
                 {
-                    items = GetRecursiveChildren(user, filter);
+                    items = GetRecursiveChildren(user, query);
                 }
 
                 return PostFilterAndSort(items, query);
@@ -752,56 +773,61 @@ namespace MediaBrowser.Controller.Entities
                 }
             }
 
+            var supportsUserDataQueries = ConfigurationManager.Configuration.SchemaVersion >= 76;
+
             if (query.SortBy != null && query.SortBy.Length > 0)
             {
-                if (query.SortBy.Contains(ItemSortBy.DatePlayed, StringComparer.OrdinalIgnoreCase))
+                if (!supportsUserDataQueries)
                 {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.DatePlayed");
-                    return true;
+                    if (query.SortBy.Contains(ItemSortBy.DatePlayed, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.IsFavoriteOrLiked");
+                        return true;
+                    }
+                    if (query.SortBy.Contains(ItemSortBy.PlayCount, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.PlayCount");
+                        return true;
+                    }
+                    if (query.SortBy.Contains(ItemSortBy.IsFavoriteOrLiked, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.IsFavoriteOrLiked");
+                        return true;
+                    }
+                    if (query.SortBy.Contains(ItemSortBy.IsPlayed, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.IsPlayed");
+                        return true;
+                    }
+                    if (query.SortBy.Contains(ItemSortBy.IsUnplayed, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.IsUnplayed");
+                        return true;
+                    }
                 }
-                if (query.SortBy.Contains(ItemSortBy.IsFavoriteOrLiked, StringComparer.OrdinalIgnoreCase))
+
+                if (ConfigurationManager.Configuration.SchemaVersion < 79)
                 {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.IsFavoriteOrLiked");
-                    return true;
+                    if (query.SortBy.Contains(ItemSortBy.AlbumArtist, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.AlbumArtist");
+                        return true;
+                    }
+                    if (query.SortBy.Contains(ItemSortBy.Artist, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Query requires post-filtering due to ItemSortBy.Artist");
+                        return true;
+                    }
                 }
-                if (query.SortBy.Contains(ItemSortBy.IsPlayed, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.IsPlayed");
-                    return true;
-                }
-                if (query.SortBy.Contains(ItemSortBy.IsUnplayed, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.IsUnplayed");
-                    return true;
-                }
+
                 if (query.SortBy.Contains(ItemSortBy.AiredEpisodeOrder, StringComparer.OrdinalIgnoreCase))
                 {
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.AiredEpisodeOrder");
                     return true;
                 }
-                if (query.SortBy.Contains(ItemSortBy.Album, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.Album");
-                    return true;
-                }
-                if (query.SortBy.Contains(ItemSortBy.AlbumArtist, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.AlbumArtist");
-                    return true;
-                }
-                if (query.SortBy.Contains(ItemSortBy.Artist, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.Artist");
-                    return true;
-                }
                 if (query.SortBy.Contains(ItemSortBy.Budget, StringComparer.OrdinalIgnoreCase))
                 {
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.Budget");
-                    return true;
-                }
-                if (query.SortBy.Contains(ItemSortBy.DateLastContentAdded, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.DateLastContentAdded");
                     return true;
                 }
                 if (query.SortBy.Contains(ItemSortBy.GameSystem, StringComparer.OrdinalIgnoreCase))
@@ -819,11 +845,6 @@ namespace MediaBrowser.Controller.Entities
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.OfficialRating");
                     return true;
                 }
-                if (query.SortBy.Contains(ItemSortBy.PlayCount, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.PlayCount");
-                    return true;
-                }
                 if (query.SortBy.Contains(ItemSortBy.Players, StringComparer.OrdinalIgnoreCase))
                 {
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.Players");
@@ -837,11 +858,6 @@ namespace MediaBrowser.Controller.Entities
                 if (query.SortBy.Contains(ItemSortBy.SeriesSortName, StringComparer.OrdinalIgnoreCase))
                 {
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.SeriesSortName");
-                    return true;
-                }
-                if (query.SortBy.Contains(ItemSortBy.StartDate, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.StartDate");
                     return true;
                 }
                 if (query.SortBy.Contains(ItemSortBy.Studio, StringComparer.OrdinalIgnoreCase))
@@ -868,34 +884,37 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (query.IsLiked.HasValue)
+            if (!supportsUserDataQueries)
             {
-                Logger.Debug("Query requires post-filtering due to IsLiked");
-                return true;
-            }
+                if (query.IsLiked.HasValue)
+                {
+                    Logger.Debug("Query requires post-filtering due to IsLiked");
+                    return true;
+                }
 
-            if (query.IsFavoriteOrLiked.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsFavoriteOrLiked");
-                return true;
-            }
+                if (query.IsFavoriteOrLiked.HasValue)
+                {
+                    Logger.Debug("Query requires post-filtering due to IsFavoriteOrLiked");
+                    return true;
+                }
 
-            if (query.IsFavorite.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsFavorite");
-                return true;
-            }
+                if (query.IsFavorite.HasValue)
+                {
+                    Logger.Debug("Query requires post-filtering due to IsFavorite");
+                    return true;
+                }
 
-            if (query.IsResumable.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsResumable");
-                return true;
-            }
+                if (query.IsResumable.HasValue)
+                {
+                    Logger.Debug("Query requires post-filtering due to IsResumable");
+                    return true;
+                }
 
-            if (query.IsPlayed.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsPlayed");
-                return true;
+                if (query.IsPlayed.HasValue)
+                {
+                    Logger.Debug("Query requires post-filtering due to IsPlayed");
+                    return true;
+                }
             }
 
             if (query.IsInBoxSet.HasValue)
@@ -1059,30 +1078,6 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(query.NameContains))
-            {
-                Logger.Debug("Query requires post-filtering due to NameContains");
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.NameLessThan))
-            {
-                Logger.Debug("Query requires post-filtering due to NameLessThan");
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.NameStartsWith))
-            {
-                Logger.Debug("Query requires post-filtering due to NameStartsWith");
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.NameStartsWithOrGreater))
-            {
-                Logger.Debug("Query requires post-filtering due to NameStartsWithOrGreater");
-                return true;
-            }
-
             if (query.AirDays.Length > 0)
             {
                 Logger.Debug("Query requires post-filtering due to AirDays");
@@ -1107,16 +1102,13 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (query.AlbumNames.Length > 0)
+            if (ConfigurationManager.Configuration.SchemaVersion < 79)
             {
-                Logger.Debug("Query requires post-filtering due to AlbumNames");
-                return true;
-            }
-
-            if (query.ArtistNames.Length > 0)
-            {
-                Logger.Debug("Query requires post-filtering due to ArtistNames");
-                return true;
+                if (query.ArtistNames.Length > 0)
+                {
+                    Logger.Debug("Query requires post-filtering due to ArtistNames");
+                    return true;
+                }
             }
 
             return false;
@@ -1182,7 +1174,7 @@ namespace MediaBrowser.Controller.Entities
             else
             {
                 items = query.Recursive
-                   ? GetRecursiveChildren(user, filter)
+                   ? GetRecursiveChildren(user, query)
                    : GetChildren(user, true).Where(filter);
             }
 
@@ -1219,19 +1211,14 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// Adds the children to list.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="includeLinkedChildren">if set to <c>true</c> [include linked children].</param>
-        /// <param name="result">The result.</param>
-        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
-        /// <param name="filter">The filter.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private void AddChildren(User user, bool includeLinkedChildren, Dictionary<Guid, BaseItem> result, bool recursive, Func<BaseItem, bool> filter)
+        private void AddChildren(User user, bool includeLinkedChildren, Dictionary<Guid, BaseItem> result, bool recursive, InternalItemsQuery query)
         {
             foreach (var child in GetEligibleChildrenForRecursiveChildren(user))
             {
                 if (child.IsVisible(user))
                 {
-                    if (filter == null || filter(child))
+                    if (query == null || UserViewBuilder.FilterItem(child, query))
                     {
                         result[child.Id] = child;
                     }
@@ -1240,7 +1227,7 @@ namespace MediaBrowser.Controller.Entities
                     {
                         var folder = (Folder)child;
 
-                        folder.AddChildren(user, includeLinkedChildren, result, true, filter);
+                        folder.AddChildren(user, includeLinkedChildren, result, true, query);
                     }
                 }
             }
@@ -1251,7 +1238,7 @@ namespace MediaBrowser.Controller.Entities
                 {
                     if (child.IsVisible(user))
                     {
-                        if (filter == null || filter(child))
+                        if (query == null || UserViewBuilder.FilterItem(child, query))
                         {
                             result[child.Id] = child;
                         }
@@ -1269,10 +1256,10 @@ namespace MediaBrowser.Controller.Entities
         /// <exception cref="System.ArgumentNullException"></exception>
         public IEnumerable<BaseItem> GetRecursiveChildren(User user, bool includeLinkedChildren = true)
         {
-            return GetRecursiveChildren(user, i => true);
+            return GetRecursiveChildren(user, null);
         }
 
-        public virtual IEnumerable<BaseItem> GetRecursiveChildren(User user, Func<BaseItem, bool> filter)
+        public virtual IEnumerable<BaseItem> GetRecursiveChildren(User user, InternalItemsQuery query)
         {
             if (user == null)
             {
@@ -1281,7 +1268,7 @@ namespace MediaBrowser.Controller.Entities
 
             var result = new Dictionary<Guid, BaseItem>();
 
-            AddChildren(user, true, result, true, filter);
+            AddChildren(user, true, result, true, query);
 
             return result.Values;
         }
@@ -1297,33 +1284,42 @@ namespace MediaBrowser.Controller.Entities
 
         public IList<BaseItem> GetRecursiveChildren(Func<BaseItem, bool> filter)
         {
-            var list = new List<BaseItem>();
+            var result = new Dictionary<Guid, BaseItem>();
 
-            AddChildrenToList(list, true, filter);
+            AddChildrenToList(result, true, true, filter);
 
-            return list;
+            return result.Values.ToList();
         }
 
         /// <summary>
         /// Adds the children to list.
         /// </summary>
-        /// <param name="list">The list.</param>
-        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
-        /// <param name="filter">The filter.</param>
-        private void AddChildrenToList(List<BaseItem> list, bool recursive, Func<BaseItem, bool> filter)
+        private void AddChildrenToList(Dictionary<Guid, BaseItem> result, bool includeLinkedChildren, bool recursive, Func<BaseItem, bool> filter)
         {
             foreach (var child in Children)
             {
                 if (filter == null || filter(child))
                 {
-                    list.Add(child);
+                    result[child.Id] = child;
                 }
 
                 if (recursive && child.IsFolder)
                 {
                     var folder = (Folder)child;
 
-                    folder.AddChildrenToList(list, true, filter);
+                    // We can only support includeLinkedChildren for the first folder, or we might end up stuck in a loop of linked items
+                    folder.AddChildrenToList(result, false, true, filter);
+                }
+            }
+
+            if (includeLinkedChildren)
+            {
+                foreach (var child in GetLinkedChildren())
+                {
+                    if (filter == null || filter(child))
+                    {
+                        result[child.Id] = child;
+                    }
                 }
             }
         }
@@ -1529,13 +1525,12 @@ namespace MediaBrowser.Controller.Entities
                 User = user,
                 Recursive = true,
                 IsFolder = false,
-                IsUnaired = false
-
+                EnableTotalRecordCount = false
             };
 
-            if (!user.Configuration.DisplayMissingEpisodes)
+            if (!user.Configuration.DisplayMissingEpisodes || !user.Configuration.DisplayUnairedEpisodes)
             {
-                query.IsMissing = false;
+                query.ExcludeLocationTypes = new[] { LocationType.Virtual };
             }
 
             var itemsResult = await GetItems(query).ConfigureAwait(false);
@@ -1557,7 +1552,8 @@ namespace MediaBrowser.Controller.Entities
             {
                 User = user,
                 Recursive = true,
-                IsFolder = false
+                IsFolder = false,
+                EnableTotalRecordCount = false
 
             }).ConfigureAwait(false);
 
@@ -1567,38 +1563,18 @@ namespace MediaBrowser.Controller.Entities
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Finds an item by path, recursively
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>BaseItem.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public BaseItem FindByPath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (string.Equals(Path, path, StringComparison.OrdinalIgnoreCase))
-            {
-                return this;
-            }
-
-            if (PhysicalLocations.Contains(path, StringComparer.OrdinalIgnoreCase))
-            {
-                return this;
-            }
-
-            return GetRecursiveChildren(i => string.Equals(i.Path, path, StringComparison.OrdinalIgnoreCase) ||
-                (!i.IsFolder && !i.IsInMixedFolder && string.Equals(i.ContainingFolderPath, path, StringComparison.OrdinalIgnoreCase)) ||
-                i.PhysicalLocations.Contains(path, StringComparer.OrdinalIgnoreCase))
-                .FirstOrDefault();
-        }
-
         public override bool IsPlayed(User user)
         {
-            return GetRecursiveChildren(user, i => !i.IsFolder && i.LocationType != LocationType.Virtual)
+            var itemsResult = GetItems(new InternalItemsQuery(user)
+            {
+                Recursive = true,
+                IsFolder = false,
+                ExcludeLocationTypes = new[] { LocationType.Virtual },
+                EnableTotalRecordCount = false
+
+            }).Result;
+
+            return itemsResult.Items
                 .All(i => i.IsPlayed(user));
         }
 
@@ -1607,26 +1583,51 @@ namespace MediaBrowser.Controller.Entities
             return !IsPlayed(user);
         }
 
+        [IgnoreDataMember]
+        public virtual bool SupportsUserDataFromChildren
+        {
+            get
+            {
+                // These are just far too slow. 
+                if (this is ICollectionFolder)
+                {
+                    return false;
+                }
+                if (this is UserView)
+                {
+                    return false;
+                }
+                if (this is UserRootFolder)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public override void FillUserDataDtoValues(UserItemDataDto dto, UserItemData userData, User user)
         {
+            if (!SupportsUserDataFromChildren)
+            {
+                return;
+            }
+
             var recursiveItemCount = 0;
             var unplayed = 0;
 
             double totalPercentPlayed = 0;
 
-            IEnumerable<BaseItem> children;
-            var folder = this;
-
-            var season = folder as Season;
-
-            if (season != null)
+            var itemsResult = GetItems(new InternalItemsQuery(user)
             {
-                children = season.GetEpisodes(user).Where(i => i.LocationType != LocationType.Virtual);
-            }
-            else
-            {
-                children = folder.GetRecursiveChildren(user, i => !i.IsFolder && i.LocationType != LocationType.Virtual);
-            }
+                Recursive = true,
+                IsFolder = false,
+                ExcludeLocationTypes = new[] { LocationType.Virtual },
+                EnableTotalRecordCount = false
+
+            }).Result;
+
+            var children = itemsResult.Items;
 
             // Loop through each recursive child
             foreach (var child in children)
@@ -1635,7 +1636,7 @@ namespace MediaBrowser.Controller.Entities
 
                 var isUnplayed = true;
 
-                var itemUserData = UserDataManager.GetUserData(user.Id, child.GetUserDataKey());
+                var itemUserData = UserDataManager.GetUserData(user, child);
 
                 // Incrememt totalPercentPlayed
                 if (itemUserData != null)

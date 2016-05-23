@@ -1,4 +1,4 @@
-﻿<div id="dashboardPage" data-role="page" class="page type-interior dashboardHomePage" data-require="scripts/dashboardpage,humanedate,buttonenabled,paper-icon-item,paper-item-body,paper-fab,emby-collapsible">
+﻿<div id="dashboardPage" data-role="page" class="page type-interior dashboardHomePage" data-require="scripts/dashboardpage,humanedate,buttonenabled,paper-icon-item,paper-item-body,paper-fab,emby-collapsible,paper-button">
 
     <div data-role="content">
         <div class="content-primary">
@@ -60,6 +60,15 @@
                                 <paper-button raised class="submit" onclick="DashboardPage.restart();"><iron-icon icon="refresh"></iron-icon><span>${ButtonRestartNow}</span></paper-button>
                             </div>
                         </emby-collapsible>
+                    </div>
+
+                    <div class="healthMonitorSection hide" style="margin-top: 2em;">
+                        <h1 style="display:flex;align-items:center;">
+                            <div>${HeaderHealthMonitor}</div>
+                            <button is="paper-icon-button-light" type="button" style="margin-left:.5em;"><iron-icon icon="refresh"></iron-icon></button>
+                        </h1>
+                        <div class="healthMonitor paperList">
+                        </div>
                     </div>
 
                     <div class="activeDevicesCollapsible" style="margin-top: 2em;">

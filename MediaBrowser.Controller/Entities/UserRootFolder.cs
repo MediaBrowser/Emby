@@ -64,15 +64,6 @@ namespace MediaBrowser.Controller.Entities
             return list;
         }
 
-        /// <summary>
-        /// Get the children of this folder from the actual file system
-        /// </summary>
-        /// <returns>IEnumerable{BaseItem}.</returns>
-        protected override IEnumerable<BaseItem> GetNonCachedChildren(IDirectoryService directoryService)
-        {
-            return base.GetNonCachedChildren(directoryService);
-        }
-
         public override bool BeforeMetadataRefresh()
         {
             var hasChanges = base.BeforeMetadataRefresh();
@@ -101,11 +92,6 @@ namespace MediaBrowser.Controller.Entities
             {
                 LibraryManager.RegisterItem(item);
             }
-        }
-
-        public override void FillUserDataDtoValues(UserItemDataDto dto, UserItemData userData, User user)
-        {
-            // Nothing meaninful here and will only waste resources
         }
     }
 }

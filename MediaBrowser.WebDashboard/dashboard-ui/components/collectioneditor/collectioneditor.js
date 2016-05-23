@@ -1,4 +1,4 @@
-﻿define(['dialogHelper', 'jQuery', 'paper-checkbox', 'paper-input'], function (dialogHelper, $) {
+﻿define(['dialogHelper', 'jQuery', 'paper-checkbox', 'paper-input', 'paper-icon-button-light'], function (dialogHelper, $) {
 
     function onSubmit() {
         Dashboard.showLoadingMsg();
@@ -123,7 +123,13 @@
 
         html += '<form class="newCollectionForm" style="margin:auto;">';
 
+        html += '<div>';
+        html += Globalize.translate('CreateCollectionHelp');
+        html += '</div>';
+
         html += '<div class="fldSelectCollection">';
+        html += '<br/>';
+        html += '<br/>';
         html += '<label for="selectCollectionToAddTo" class="selectLabel">' + Globalize.translate('LabelSelectCollection') + '</label>';
         html += '<select id="selectCollectionToAddTo" data-mini="true"></select>';
         html += '</div>';
@@ -201,11 +207,14 @@
             var html = '';
             var title = items.length ? Globalize.translate('HeaderAddToCollection') : Globalize.translate('HeaderNewCollection');
 
-            html += '<div class="dialogHeader">';
-            html += '<paper-icon-button icon="arrow-back" class="btnCancel" tabindex="-1"></paper-icon-button>';
+            html += '<div class="dialogHeader" style="margin:0 0 2em;">';
+            html += '<button is="paper-icon-button-light" class="btnCancel" tabindex="-1"><iron-icon icon="arrow-back"></iron-icon></button>';
             html += '<div class="dialogHeaderTitle">';
             html += title;
             html += '</div>';
+
+            html += '<a href="https://github.com/MediaBrowser/Wiki/wiki/Collections" target="_blank" tabindex="-1" class="clearLink" style="margin-left:auto;margin-right:.5em;display:inline-block;" title="' + Globalize.translate('ButtonHelp') + '"><paper-button class="accent" style="margin:0;font-weight:normal;font-size:13px;padding:.25em;display:flex;align-items:center;"><iron-icon icon="info"></iron-icon><span>' + Globalize.translate('ButtonHelp') + '</span></paper-button></a>';
+
             html += '</div>';
 
             html += getEditorHtml();

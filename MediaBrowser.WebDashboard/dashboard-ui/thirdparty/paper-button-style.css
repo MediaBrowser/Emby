@@ -36,11 +36,11 @@
     }
 
     paper-button.submit {
-        color: #4285f4;
+        color: #52B54B;
     }
 
     paper-button[raised].submit {
-        background: #4285f4;
+        background: #52B54B;
         color: #fff;
     }
 
@@ -54,11 +54,11 @@
     }
 
     paper-button.secondary {
-        color: #52B54B;
+        color: #4285f4;
     }
 
     paper-button[raised].secondary {
-        background: #52B54B;
+        background: #4285f4;
         color: #fff;
     }
 
@@ -525,7 +525,6 @@ paper-radio-group > * {
 }
 
 div.dialogHeader {
-    margin: 0 0 2em !important;
     padding: .35em .5em;
     display: flex;
     align-items: center;
@@ -536,11 +535,6 @@ div.dialogHeader {
 .ui-body-a div.dialogHeader {
     background-color: #52B54B;
     color: #fff;
-}
-
-.ui-body-a .pageContentPaperMaterial {
-    background-color: #fff;
-    padding: 1.5em;
 }
 
 .ui-body-b div.dialogHeader {
