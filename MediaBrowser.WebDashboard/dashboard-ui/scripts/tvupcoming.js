@@ -1,20 +1,17 @@
-﻿define(['scrollStyles'], function () {
+﻿define(['datetime', 'scrollStyles'], function (datetime) {
 
     function loadUpcoming(context, params) {
 
         Dashboard.showLoadingMsg();
 
-        var limit = AppInfo.hasLowImageBandwidth && !enableScrollX() ?
-           24 :
-           40;
-
         var query = {
 
-            Limit: limit,
+            Limit: 40,
             Fields: "AirTime,UserData,SeriesStudio,SyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+            EnableTotalRecordCount: false
         };
 
         query.ParentId = params.topParentId;
@@ -62,7 +59,7 @@
             if (item.PremiereDate) {
                 try {
 
-                    var premiereDate = parseISO8601Date(item.PremiereDate, { toLocal: true });
+                    var premiereDate = datetime.parseISO8601Date(item.PremiereDate, true);
 
                     if (premiereDate.getDate() == new Date().getDate() - 1) {
                         dateText = Globalize.translate('Yesterday');

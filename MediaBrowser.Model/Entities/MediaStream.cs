@@ -1,6 +1,8 @@
-﻿using MediaBrowser.Model.Dlna;
+﻿using System.Collections.Generic;
+using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
 using System.Diagnostics;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Model.Entities
 {
@@ -34,6 +36,95 @@ namespace MediaBrowser.Model.Entities
         /// <value>The comment.</value>
         public string Comment { get; set; }
 
+        public string Title { get; set; }
+
+        public string DisplayTitle
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Title))
+                {
+                    return Title;
+                }
+
+                if (Type == MediaStreamType.Audio)
+                {
+                    List<string> attributes = new List<string>();
+
+                    if (!string.IsNullOrEmpty(Language))
+                    {
+                        attributes.Add(StringHelper.FirstToUpper(Language));
+                    }
+                    if (!string.IsNullOrEmpty(Codec) && !StringHelper.EqualsIgnoreCase(Codec, "dca"))
+                    {
+                        attributes.Add(AudioCodec.GetFriendlyName(Codec));
+                    } 
+                    else if (!string.IsNullOrEmpty(Profile) && !StringHelper.EqualsIgnoreCase(Profile, "lc"))
+                    {
+                        attributes.Add(Profile);
+                    }
+
+                    if (!string.IsNullOrEmpty(ChannelLayout))
+                    {
+                        attributes.Add(ChannelLayout);
+                    }
+                    else if (Channels.HasValue)
+                    {
+                        attributes.Add(StringHelper.ToStringCultureInvariant(Channels.Value) + " ch");
+                    }
+
+                    string name = string.Join(" ", attributes.ToArray());
+
+                    if (IsDefault)
+                    {
+                        name += " (D)";
+                    }
+
+                    return name;
+                }
+
+                if (Type == MediaStreamType.Subtitle)
+                {
+                    List<string> attributes = new List<string>();
+
+                    if (!string.IsNullOrEmpty(Language))
+                    {
+                        attributes.Add(Language);
+                    }
+                    if (!string.IsNullOrEmpty(Codec))
+                    {
+                        attributes.Add(Codec);
+                    }
+
+                    string name = string.Join(" ", attributes.ToArray());
+
+                    if (IsDefault)
+                    {
+                        name += " (D)";
+                    }
+
+                    if (IsForced)
+                    {
+                        name += " (F)";
+                    }
+
+                    if (IsExternal)
+                    {
+                        name += " (EXT)";
+                    }
+
+                    return name;
+                }
+
+                if (Type == MediaStreamType.Video)
+                {
+
+                }
+
+                return null;
+            }
+        }
+
         public string NalLengthSize { get; set; }
 
         /// <summary>
@@ -41,6 +132,8 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value><c>true</c> if this instance is interlaced; otherwise, <c>false</c>.</value>
         public bool IsInterlaced { get; set; }
+
+        public bool? IsAVC { get; set; }
 
         /// <summary>
         /// Gets or sets the channel layout.

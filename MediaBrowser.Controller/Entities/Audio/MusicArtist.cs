@@ -17,7 +17,12 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// </summary>
     public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasProductionLocations, IHasLookupInfo<ArtistInfo>
     {
-        public bool IsAccessedByName { get; set; }
+        [IgnoreDataMember]
+        public bool IsAccessedByName
+        {
+            get { return ParentId == Guid.Empty; }
+        }
+
         public List<string> ProductionLocations { get; set; }
 
         [IgnoreDataMember]
@@ -26,6 +31,15 @@ namespace MediaBrowser.Controller.Entities.Audio
             get
             {
                 return !IsAccessedByName;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsCumulativeRunTimeTicks
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -40,6 +54,25 @@ namespace MediaBrowser.Controller.Entities.Audio
             return !IsAccessedByName;
         }
 
+        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        {
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                query.IncludeItemTypes = new[] { typeof(Audio).Name, typeof(MusicVideo).Name, typeof(MusicAlbum).Name };
+                query.ArtistNames = new[] { Name };
+            }
+
+            // Need this for now since the artist filter isn't yet supported by the db
+            if (ConfigurationManager.Configuration.SchemaVersion < 79)
+            {
+                var filter = GetItemFilter();
+                return LibraryManager.GetItemList(query).Where(filter);
+            }
+
+            return LibraryManager.GetItemList(query);
+        }
+
+        [IgnoreDataMember]
         protected override IEnumerable<BaseItem> ActualChildren
         {
             get
@@ -80,13 +113,12 @@ namespace MediaBrowser.Controller.Entities.Audio
             ProductionLocations = new List<string>();
         }
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        protected override string CreateUserDataKey()
+        public override List<string> GetUserDataKeys()
         {
-            return GetUserDataKey(this);
+            var list = base.GetUserDataKeys();
+
+            list.InsertRange(0, GetUserDataKeys(this));
+            return list;
         }
 
         /// <summary>
@@ -121,16 +153,18 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        private static string GetUserDataKey(MusicArtist item)
+        private static List<string> GetUserDataKeys(MusicArtist item)
         {
+            var list = new List<string>();
             var id = item.GetProviderId(MetadataProviders.MusicBrainzArtist);
 
             if (!string.IsNullOrEmpty(id))
             {
-                return "Artist-Musicbrainz-" + id;
+                list.Add("Artist-Musicbrainz-" + id);
             }
 
-            return "Artist-" + item.Name;
+            list.Add("Artist-" + item.Name);
+            return list;
         }
 
         protected override bool GetBlockUnratedValue(UserPolicy config)

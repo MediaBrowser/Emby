@@ -415,21 +415,10 @@ namespace MediaBrowser.Api
 
         private IEnumerable<Season> FilterVirtualSeasons(GetSeasons request, IEnumerable<Season> items)
         {
-            if (request.IsMissing.HasValue && request.IsVirtualUnaired.HasValue)
-            {
-                var isMissing = request.IsMissing.Value;
-                var isVirtualUnaired = request.IsVirtualUnaired.Value;
-
-                if (!isMissing && !isVirtualUnaired)
-                {
-                    return items.Where(i => !i.IsMissingOrVirtualUnaired);
-                }
-            }
-
             if (request.IsMissing.HasValue)
             {
                 var val = request.IsMissing.Value;
-                items = items.Where(i => i.IsMissingSeason == val);
+                items = items.Where(i => (i.IsMissingSeason) == val);
             }
 
             if (request.IsVirtualUnaired.HasValue)
@@ -508,8 +497,7 @@ namespace MediaBrowser.Api
                 returnItems = UserViewBuilder.FilterForAdjacency(returnItems, request.AdjacentTo);
             }
 
-            var returnList = _libraryManager.ReplaceVideosWithPrimaryVersions(returnItems)
-                .ToList();
+            var returnList = returnItems.ToList();
 
             var pagedItems = ApplyPaging(returnList, request.StartIndex, request.Limit);
 

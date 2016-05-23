@@ -51,13 +51,6 @@
                 text: Globalize.translate('MobileSyncFeatureDescription')
             });
         }
-        else if (AppInfo.isNativeApp) {
-            list.push({
-                name: Globalize.translate('HeaderCloudSync'),
-                icon: 'sync',
-                text: Globalize.translate('CloudSyncFeatureDescription')
-            });
-        }
         else {
             list.push({
                 name: Globalize.translate('HeaderCinemaMode'),
@@ -97,7 +90,7 @@
 
     function showPlaybackOverlay(resolve, reject) {
 
-        require(['dialogHelper', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (dialogHelper) {
+        require(['dialogHelper', 'paper-fab', 'paper-item-body', 'paper-icon-item', 'paper-button'], function (dialogHelper) {
 
             var dlg = dialogHelper.createDialog({
                 size: 'fullscreen-border'
@@ -297,4 +290,5 @@
         }
     };
 
+    return window.RegistrationServices;
 });

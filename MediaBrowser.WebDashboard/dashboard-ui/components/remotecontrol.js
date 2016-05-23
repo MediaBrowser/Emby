@@ -1,4 +1,4 @@
-﻿define(['browser', 'jQuery', 'paper-fab', 'paper-tabs', 'paper-slider', 'paper-icon-button'], function (browser, $) {
+﻿define(['browser', 'datetime', 'jQuery', 'libraryBrowser', 'paper-fab', 'paper-slider'], function (browser, datetime, $, libraryBrowser) {
 
     function showSlideshowMenu(context) {
         require(['scripts/slideshow'], function () {
@@ -32,12 +32,12 @@
             }
 
             var menuItem = {
-                name: name,
+                name: s.DisplayTitle || name,
                 id: s.Index
             };
 
             if (s.Index == currentIndex) {
-                menuItem.ironIcon = 'check';
+                menuItem.selected = true;
             }
 
             return menuItem;
@@ -83,12 +83,12 @@
             }
 
             var menuItem = {
-                name: name,
+                name: s.DisplayTitle || name,
                 id: s.Index
             };
 
             if (s.Index == currentIndex) {
-                menuItem.ironIcon = 'check';
+                menuItem.selected = true;
             }
 
             return menuItem;
@@ -202,7 +202,7 @@
             }
 
             ApiClient.getItem(Dashboard.getCurrentUserId(), item.Id).then(function (fullItem) {
-                context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = LibraryBrowser.getUserDataIconsHtml(fullItem, false);
+                context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = libraryBrowser.getUserDataIconsHtml(fullItem, false);
             });
         } else {
             context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = '';
@@ -343,11 +343,11 @@
             if (playState.PositionTicks == null) {
                 context.querySelector('.positionTime').innerHTML = '--:--';
             } else {
-                context.querySelector('.positionTime').innerHTML = Dashboard.getDisplayTime(playState.PositionTicks);
+                context.querySelector('.positionTime').innerHTML = datetime.getDisplayRunningTime(playState.PositionTicks);
             }
 
             if (item && item.RunTimeTicks != null) {
-                context.querySelector('.runtime').innerHTML = Dashboard.getDisplayTime(item.RunTimeTicks);
+                context.querySelector('.runtime').innerHTML = datetime.getDisplayRunningTime(item.RunTimeTicks);
             } else {
                 context.querySelector('.runtime').innerHTML = '--:--';
             }
@@ -413,24 +413,17 @@
             //    $(".playlist", page).html(html).lazyChildren();
             //});
 
-            var playlistOpen = isPlaylistOpen(context);
+            html += libraryBrowser.getListViewHtml({
+                items: MediaController.playlist(),
+                smallIcon: true
+            });
 
-            if (playlistOpen) {
-
-                html += LibraryBrowser.getListViewHtml({
-                    items: MediaController.playlist(),
-                    smallIcon: true
-                });
-
-                playlistNeedsRefresh = false;
-            }
+            playlistNeedsRefresh = false;
 
             var deps = [];
 
-            if (playlistOpen) {
-                deps.push('paper-icon-item');
-                deps.push('paper-item-body');
-            }
+            deps.push('paper-icon-item');
+            deps.push('paper-item-body');
 
             require(deps, function () {
 
@@ -438,28 +431,21 @@
 
                 itemsContainer.innerHTML = html;
 
-                if (playlistOpen) {
+                var index = MediaController.currentPlaylistIndex();
 
-                    var index = MediaController.currentPlaylistIndex();
+                if (index != -1) {
 
-                    if (index != -1) {
+                    var item = itemsContainer.querySelectorAll('.listItem')[index];
+                    if (item) {
+                        var img = item.querySelector('.listviewImage');
 
-                        var item = itemsContainer.querySelectorAll('.listItem')[index];
-                        if (item) {
-                            var img = item.querySelector('.listviewImage');
-
-                            img.classList.remove('lazy');
-                            img.classList.add('playlistIndexIndicatorImage');
-                        }
+                        img.classList.remove('lazy');
+                        img.classList.add('playlistIndexIndicatorImage');
                     }
                 }
 
                 ImageLoader.lazyChildren(itemsContainer);
             });
-        }
-
-        function isPlaylistOpen(context) {
-            return context.querySelector('paper-tabs').selected == 2;
         }
 
         function onStateChanged(e, state) {
@@ -485,11 +471,7 @@
 
             onStateChanged.call(player, e, state);
 
-            if (isPlaylistOpen(dlg)) {
-                loadPlaylist(dlg);
-            } else {
-                playlistNeedsRefresh = true;
-            }
+            loadPlaylist(dlg);
         }
 
         function onPlaybackStopped(e, state) {
@@ -500,11 +482,7 @@
 
             onStateChanged.call(player, e, {});
 
-            if (isPlaylistOpen(dlg)) {
-                loadPlaylist(dlg);
-            } else {
-                playlistNeedsRefresh = true;
-            }
+            loadPlaylist(dlg);
         }
 
         function releaseCurrentPlayer() {
@@ -557,13 +535,13 @@
 
             if (info.isLocalPlayer) {
 
-                btnCast.icon = 'cast';
+                btnCast.querySelector('iron-icon').icon = 'cast';
                 btnCast.classList.remove('btnActiveCast');
                 context.querySelector('.nowPlayingSelectedPlayer').innerHTML = '';
 
             } else {
 
-                btnCast.icon = 'cast-connected';
+                btnCast.querySelector('iron-icon').icon = 'cast-connected';
                 btnCast.classList.add('btnActiveCast');
                 context.querySelector('.nowPlayingSelectedPlayer').innerHTML = info.deviceName || info.name;
             }
@@ -609,7 +587,7 @@
 
             var mediaItem = parentWithClass(e.target, 'mediaItem');
             if (mediaItem != null) {
-                var info = LibraryBrowser.getListItemInfo(mediaItem);
+                var info = libraryBrowser.getListItemInfo(mediaItem);
 
                 MediaController.currentPlaylistIndex(info.index);
 
@@ -733,7 +711,7 @@
                 ticks /= 100;
                 ticks *= value;
 
-                this.pinValue = Dashboard.getDisplayTime(ticks);
+                this.pinValue = datetime.getDisplayRunningTime(ticks);
             };
 
             context.addEventListener('click', onContextClick);
@@ -793,27 +771,9 @@
             return false;
         }
 
-        function showTab(index) {
+        function init(ownerView, context) {
 
-            var all = dlg.querySelectorAll('.nowPlayingPageTab');
-
-            index = (index || 0).toString();
-
-            for (var i = 0, length = all.length; i < length; i++) {
-
-                var tab = all[i];
-
-                if (tab.getAttribute('data-tab') == index) {
-                    tab.classList.remove('hide');
-                } else {
-                    tab.classList.add('hide');
-                }
-            }
-        }
-
-        function init(context) {
-
-            Dashboard.importCss('css/nowplaying.css');
+            require(['css!css/nowplaying.css']);
             bindEvents(context);
 
             context.querySelector('.sendMessageForm').addEventListener('submit', onMessageSubmit);
@@ -831,39 +791,21 @@
             //    showSlideshowMenu(context);
             //});
 
-            var tabs = context.querySelector('paper-tabs');
+            var mdlTabs = context.querySelector('.libraryViewNav');
 
             if (AppInfo.enableNowPlayingPageBottomTabs) {
-                tabs.classList.remove('hide');
-                context.querySelector('.libraryViewNav').classList.add('hide');
+                context.querySelector('.libraryViewNav').classList.add('bottom');
             } else {
-                tabs.classList.add('hide');
-                context.querySelector('.libraryViewNav').classList.remove('hide');
+                context.querySelector('.libraryViewNav').classList.remove('bottom');
             }
 
-            tabs.noSlide = true;
+            libraryBrowser.configurePaperLibraryTabs(ownerView, mdlTabs, ownerView.querySelectorAll('.pageTabContent'));
 
-            tabs.addEventListener('iron-select', function (e) {
+            mdlTabs.addEventListener('tabchange', function (e) {
 
-                var btn = context.querySelector('.libraryViewNav a.ui-btn-active');
-
-                if (btn) {
-                    btn.classList.remove('ui-btn-active');
-                }
-
-                context.querySelector('.libraryViewNav a[data-index=\'' + e.target.selected + '\']').classList.add('ui-btn-active');
-
-                if (e.target.selected == 2 && playlistNeedsRefresh) {
+                if (e.detail.selectedTabIndex == 2 && playlistNeedsRefresh) {
                     loadPlaylist(context);
                 }
-
-                showTab(e.target.selected);
-            });
-
-            $(context.querySelectorAll('.libraryViewNav a')).on('click', function () {
-                var newSelected = this.getAttribute('data-index');
-
-                tabs.selected = newSelected;
             });
 
             Events.on(MediaController, 'playerchange', onPlayerChange);
@@ -887,25 +829,10 @@
 
             bindToPlayer(context, MediaController.getCurrentPlayer());
 
-            var selected = tab == '#playlist' ? 2 : 0;
-
-            var delay = browser.animate ? 0 : 1000;
-
-            // hack alert. doing this because the neon elements don't seem to be initialized yet
-            setTimeout(function () {
-
-                if (AppInfo.enableNowPlayingPageBottomTabs) {
-                    context.querySelector('paper-tabs').selected = selected;
-                } else {
-
-                    showTab(selected);
-                }
-            }, delay);
-
             updateCastIcon(context);
         }
 
-        self.init = function (context) {
+        self.init = function (ownerView, context) {
 
             dlg = context;
 
@@ -914,7 +841,7 @@
                 context.querySelector('.topRightContainer').style.position = 'relative';
             }
 
-            init(dlg);
+            init(ownerView, dlg);
         };
 
         self.onShow = function () {

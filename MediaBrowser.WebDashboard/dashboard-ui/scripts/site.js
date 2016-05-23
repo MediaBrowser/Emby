@@ -12,13 +12,6 @@
 
 })();
 
-// Compatibility
-window.Logger = {
-    log: function (msg) {
-        console.log(msg);
-    }
-};
-
 var Dashboard = {
 
     isConnectMode: function () {
@@ -168,41 +161,6 @@ var Dashboard = {
             onLogoutDone();
         } else {
             ConnectionManager.logout().then(onLogoutDone);
-        }
-    },
-
-    importCss: function (url) {
-
-        var originalUrl = url;
-        url += "?v=" + AppInfo.appVersion;
-
-        if (!Dashboard.importedCss) {
-            Dashboard.importedCss = [];
-        }
-
-        if (Dashboard.importedCss.indexOf(url) != -1) {
-            return;
-        }
-
-        Dashboard.importedCss.push(url);
-
-        if (document.createStyleSheet) {
-            document.createStyleSheet(url);
-        } else {
-            var link = document.createElement('link');
-            link.setAttribute('rel', 'stylesheet');
-            link.setAttribute('data-url', originalUrl);
-            link.setAttribute('type', 'text/css');
-            link.setAttribute('href', url);
-            document.head.appendChild(link);
-        }
-    },
-
-    removeStylesheet: function (url) {
-
-        var elem = document.querySelector('link[data-url=\'' + url + '\']');
-        if (elem) {
-            elem.parentNode.removeChild(elem);
         }
     },
 
@@ -1143,44 +1101,6 @@ var Dashboard = {
         }
     },
 
-    getDisplayTime: function (ticks) {
-
-        var ticksPerHour = 36000000000;
-        var ticksPerMinute = 600000000;
-        var ticksPerSecond = 10000000;
-
-        var parts = [];
-
-        var hours = ticks / ticksPerHour;
-        hours = Math.floor(hours);
-
-        if (hours) {
-            parts.push(hours);
-        }
-
-        ticks -= (hours * ticksPerHour);
-
-        var minutes = ticks / ticksPerMinute;
-        minutes = Math.floor(minutes);
-
-        ticks -= (minutes * ticksPerMinute);
-
-        if (minutes < 10 && hours) {
-            minutes = '0' + minutes;
-        }
-        parts.push(minutes);
-
-        var seconds = ticks / ticksPerSecond;
-        seconds = Math.floor(seconds);
-
-        if (seconds < 10) {
-            seconds = '0' + seconds;
-        }
-        parts.push(seconds);
-
-        return parts.join(':');
-    },
-
     getSupportedRemoteCommands: function () {
 
         // Full list
@@ -1263,11 +1183,6 @@ var Dashboard = {
 
             options.enableImageEnhancers = false;
         }
-
-        if (AppInfo.forcedImageFormat && options.type != 'Logo') {
-            options.format = AppInfo.forcedImageFormat;
-            options.backgroundColor = '#1c1c1c';
-        }
     },
 
     loadExternalPlayer: function () {
@@ -1291,6 +1206,196 @@ var Dashboard = {
 
     exit: function () {
         Dashboard.logout();
+    },
+
+    getDeviceProfile: function (maxHeight) {
+
+        return new Promise(function (resolve, reject) {
+
+            function updateDeviceProfileForAndroid(profile) {
+
+                // Just here as an easy escape out, if ever needed
+                var enableVlcVideo = true;
+                var enableVlcAudio = window.VlcAudio;
+
+                if (enableVlcVideo) {
+
+                    profile.DirectPlayProfiles.push({
+                        Container: "m4v,3gp,ts,mpegts,mov,xvid,vob,mkv,wmv,asf,ogm,ogv,m2v,avi,mpg,mpeg,mp4,webm",
+                        Type: 'Video',
+                        AudioCodec: 'aac,aac_latm,mp3,ac3,wma,dca,pcm,PCM_S16LE,PCM_S24LE,opus,flac'
+                    });
+
+                    profile.CodecProfiles = profile.CodecProfiles.filter(function (i) {
+                        return i.Type == 'Audio';
+                    });
+
+                    profile.SubtitleProfiles = [];
+                    profile.SubtitleProfiles.push({
+                        Format: 'srt',
+                        Method: 'External'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'srt',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'subrip',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'ass',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'ssa',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'pgs',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'pgssub',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'dvdsub',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'vtt',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'sub',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'idx',
+                        Method: 'Embed'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'smi',
+                        Method: 'Embed'
+                    });
+
+                    profile.CodecProfiles.push({
+                        Type: 'VideoAudio',
+                        Codec: 'aac,mp3',
+                        Conditions: [
+                            {
+                                Condition: 'LessThanEqual',
+                                Property: 'AudioChannels',
+                                Value: '6'
+                            }
+                        ]
+                    });
+
+                    profile.CodecProfiles.push({
+                        Type: 'Video',
+                        Codec: 'h264',
+                        Conditions: [
+                        {
+                            Condition: 'EqualsAny',
+                            Property: 'VideoProfile',
+                            Value: 'high|main|baseline|constrained baseline'
+                        },
+                        {
+                            Condition: 'LessThanEqual',
+                            Property: 'VideoLevel',
+                            Value: '41'
+                        }]
+                    });
+
+                    profile.TranscodingProfiles.filter(function (p) {
+
+                        return p.Type == 'Video' && p.CopyTimestamps == true;
+
+                    }).forEach(function (p) {
+
+                        // Vlc doesn't seem to handle this well
+                        p.CopyTimestamps = false;
+                    });
+
+                    profile.TranscodingProfiles.filter(function (p) {
+
+                        return p.Type == 'Video' && p.VideoCodec == 'h264';
+
+                    }).forEach(function (p) {
+
+                        p.AudioCodec += ',ac3';
+                    });
+                }
+
+                if (enableVlcAudio) {
+
+                    profile.DirectPlayProfiles.push({
+                        Container: "aac,mp3,mpa,wav,wma,mp2,ogg,oga,webma,ape,opus",
+                        Type: 'Audio'
+                    });
+
+                    profile.CodecProfiles = profile.CodecProfiles.filter(function (i) {
+                        return i.Type != 'Audio';
+                    });
+
+                    profile.CodecProfiles.push({
+                        Type: 'Audio',
+                        Conditions: [{
+                            Condition: 'LessThanEqual',
+                            Property: 'AudioChannels',
+                            Value: '2'
+                        }]
+                    });
+                }
+            }
+
+            require(['browserdeviceprofile', 'qualityoptions', 'appSettings'], function (profileBuilder, qualityoptions, appSettings) {
+
+                var supportsCustomSeeking = false;
+                if (!browserInfo.mobile) {
+                    supportsCustomSeeking = true;
+                } else if (AppInfo.isNativeApp && browserInfo.safari) {
+                    if (navigator.userAgent.toLowerCase().indexOf('ipad') == -1) {
+                        // Need to disable it in order to support picture in picture
+                        supportsCustomSeeking = true;
+                    }
+                } else if (AppInfo.isNativeApp) {
+                    supportsCustomSeeking = true;
+                }
+
+                var profile = profileBuilder({
+                    supportsCustomSeeking: supportsCustomSeeking
+                });
+
+                if (!(AppInfo.isNativeApp && browserInfo.android)) {
+                    profile.SubtitleProfiles.push({
+                        Format: 'ass',
+                        Method: 'External'
+                    });
+                    profile.SubtitleProfiles.push({
+                        Format: 'ssa',
+                        Method: 'External'
+                    });
+                }
+
+                var bitrateSetting = appSettings.maxStreamingBitrate();
+
+                if (!maxHeight) {
+                    maxHeight = qualityoptions.getVideoQualityOptions(bitrateSetting).filter(function (q) {
+                        return q.selected;
+                    })[0].maxHeight;
+                }
+
+                if (AppInfo.isNativeApp && browserInfo.android) {
+                    updateDeviceProfileForAndroid(profile);
+                }
+
+                profile.MaxStreamingBitrate = bitrateSetting;
+
+                resolve(profile);
+            });
+        });
     }
 };
 
@@ -1315,7 +1420,6 @@ var AppInfo = {};
         AppInfo.enableDetailPageChapters = true;
         AppInfo.enableDetailsMenuImages = true;
         AppInfo.enableMovieHomeSuggestions = true;
-        AppInfo.enableNavDrawer = true;
         AppInfo.enableSearchInTopMenu = true;
         AppInfo.enableHomeFavorites = true;
         AppInfo.enableNowPlayingBar = true;
@@ -1336,7 +1440,6 @@ var AppInfo = {};
 
             if (isCordova) {
                 //AppInfo.enableSectionTransitions = true;
-                AppInfo.enableNavDrawer = false;
                 AppInfo.enableSearchInTopMenu = false;
                 AppInfo.enableHomeFavorites = false;
                 AppInfo.enableHomeTabs = false;
@@ -1351,8 +1454,6 @@ var AppInfo = {};
                 AppInfo.enableDetailPageChapters = false;
                 AppInfo.enableDetailsMenuImages = false;
                 AppInfo.enableMovieHomeSuggestions = false;
-
-                AppInfo.forcedImageFormat = 'jpg';
             }
         }
 
@@ -1382,8 +1483,6 @@ var AppInfo = {};
 
         // This doesn't perform well on iOS
         AppInfo.enableHeadRoom = !isIOS;
-
-        AppInfo.supportsDownloading = !(AppInfo.isNativeApp && isIOS);
 
         // This currently isn't working on android, unfortunately
         AppInfo.supportsFileInput = !(AppInfo.isNativeApp && isAndroid);
@@ -1423,9 +1522,7 @@ var AppInfo = {};
 
     function getSyncProfile() {
 
-        return getRequirePromise(['scripts/mediaplayer']).then(function () {
-            return MediaPlayer.getDeviceProfile(Math.max(screen.height, screen.width));
-        });
+        return Dashboard.getDeviceProfile(Math.max(screen.height, screen.width));
     }
 
     function onApiClientCreated(e, newApiClient) {
@@ -1438,6 +1535,9 @@ var AppInfo = {};
     }
 
     function defineConnectionManager(connectionManager) {
+
+        window.ConnectionManager = connectionManager;
+
         define('connectionManager', [], function () {
             return connectionManager;
         });
@@ -1445,6 +1545,8 @@ var AppInfo = {};
 
     var localApiClient;
     function bindConnectionManagerEvents(connectionManager, events) {
+
+        Events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
 
         connectionManager.currentApiClient = function () {
 
@@ -1472,76 +1574,52 @@ var AppInfo = {};
     //localStorage.clear();
     function createConnectionManager(credentialProviderFactory, capabilities) {
 
-        var credentialKey = Dashboard.isConnectMode() ? null : 'servercredentials4';
-        var credentialProvider = new credentialProviderFactory(credentialKey);
-
         return getSyncProfile().then(function (deviceProfile) {
 
-            capabilities.DeviceProfile = deviceProfile;
+            return new Promise(function (resolve, reject) {
 
-            window.ConnectionManager = new MediaBrowser.ConnectionManager(credentialProvider, AppInfo.appName, AppInfo.appVersion, AppInfo.deviceName, AppInfo.deviceId, capabilities, window.devicePixelRatio);
+                require(['connectionManagerFactory', 'apphost', 'credentialprovider', 'events'], function (connectionManagerExports, apphost, credentialProvider, events) {
 
-            defineConnectionManager(window.ConnectionManager);
-            bindConnectionManagerEvents(window.ConnectionManager, Events);
+                    window.MediaBrowser = Object.assign(window.MediaBrowser || {}, connectionManagerExports);
 
-            console.log('binding to apiclientcreated');
-            Events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
+                    var credentialProviderInstance = new credentialProvider();
 
-            if (Dashboard.isConnectMode()) {
+                    apphost.appInfo().then(function (appInfo) {
 
-                return Promise.resolve();
+                        var capabilities = Dashboard.capabilities();
+                        capabilities.DeviceProfile = deviceProfile;
 
-            } else {
+                        connectionManager = new MediaBrowser.ConnectionManager(credentialProviderInstance, appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, capabilities, window.devicePixelRatio);
 
-                console.log('loading ApiClient singleton');
+                        defineConnectionManager(connectionManager);
+                        bindConnectionManagerEvents(connectionManager, events);
 
-                return getRequirePromise(['apiclient']).then(function (apiClientFactory) {
+                        if (Dashboard.isConnectMode()) {
 
-                    console.log('creating ApiClient singleton');
+                            resolve();
 
-                    var apiClient = new apiClientFactory(Dashboard.serverAddress(), AppInfo.appName, AppInfo.appVersion, AppInfo.deviceName, AppInfo.deviceId, window.devicePixelRatio);
-                    apiClient.enableAutomaticNetworking = false;
-                    ConnectionManager.addApiClient(apiClient);
-                    Dashboard.importCss(apiClient.getUrl('Branding/Css'));
-                    window.ApiClient = apiClient;
-                    localApiClient = apiClient;
-                    console.log('loaded ApiClient singleton');
+                        } else {
+
+                            console.log('loading ApiClient singleton');
+
+                            return getRequirePromise(['apiclient']).then(function (apiClientFactory) {
+
+                                console.log('creating ApiClient singleton');
+
+                                var apiClient = new apiClientFactory(Dashboard.serverAddress(), appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, window.devicePixelRatio);
+                                apiClient.enableAutomaticNetworking = false;
+                                connectionManager.addApiClient(apiClient);
+                                require(['css!' + apiClient.getUrl('Branding/Css')]);
+                                window.ApiClient = apiClient;
+                                localApiClient = apiClient;
+                                console.log('loaded ApiClient singleton');
+                                resolve();
+                            });
+                        }
+                    });
                 });
-            }
-        });
-    }
-
-    function initFastClick() {
-
-        require(["fastclick"], function (FastClick) {
-
-            FastClick.attach(document.body, {
-                tapDelay: 0
-            });
-
-            function parentWithClass(elem, className) {
-
-                while (!elem.classList || !elem.classList.contains(className)) {
-                    elem = elem.parentNode;
-
-                    if (!elem) {
-                        return null;
-                    }
-                }
-
-                return elem;
-            }
-
-            // Have to work around this issue of fast click breaking the panel dismiss
-            document.body.addEventListener('touchstart', function (e) {
-
-                var tgt = parentWithClass(e.target, 'ui-panel-dismiss');
-                if (tgt) {
-                    $(tgt).click();
-                }
             });
         });
-
     }
 
     function setDocumentClasses(browser) {
@@ -1628,7 +1706,8 @@ var AppInfo = {};
 
         var paths = {
             velocity: bowerPath + "/velocity/velocity.min",
-            tvguide: 'components/tvguide/tvguide',
+            ironCardList: 'components/ironcardlist/ironcardlist',
+            scrollThreshold: 'components/scrollthreshold',
             directorybrowser: 'components/directorybrowser/directorybrowser',
             collectioneditor: 'components/collectioneditor/collectioneditor',
             playlisteditor: 'components/playlisteditor/playlisteditor',
@@ -1642,11 +1721,10 @@ var AppInfo = {};
             humanedate: 'components/humanedate',
             libraryBrowser: 'scripts/librarybrowser',
             chromecasthelpers: 'components/chromecasthelpers',
-            fastclick: bowerPath + '/fastclick/lib/fastclick',
             events: apiClientBowerPath + '/events',
             credentialprovider: apiClientBowerPath + '/credentials',
             apiclient: apiClientBowerPath + '/apiclient',
-            connectionmanagerfactory: apiClientBowerPath + '/connectionmanager',
+            connectionManagerFactory: bowerPath + '/emby-apiclient/connectionmanager',
             visibleinviewport: embyWebComponentsBowerPath + "/visibleinviewport",
             browserdeviceprofile: embyWebComponentsBowerPath + "/browserdeviceprofile",
             browser: embyWebComponentsBowerPath + "/browser",
@@ -1656,12 +1734,17 @@ var AppInfo = {};
             layoutManager: embyWebComponentsBowerPath + "/layoutmanager",
             pageJs: embyWebComponentsBowerPath + '/page.js/page',
             focusManager: embyWebComponentsBowerPath + "/focusmanager",
+            datetime: embyWebComponentsBowerPath + "/datetime",
             globalize: embyWebComponentsBowerPath + "/globalize",
-            imageLoader: embyWebComponentsBowerPath + "/images/imagehelper"
+            itemHelper: embyWebComponentsBowerPath + '/itemhelper',
+            itemShortcuts: embyWebComponentsBowerPath + "/shortcuts",
+            imageLoader: embyWebComponentsBowerPath + "/images/imagehelper",
+            webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min'
         };
 
         if (navigator.webkitPersistentStorage) {
             paths.imageFetcher = embyWebComponentsBowerPath + "/images/persistentimagefetcher";
+            paths.imageFetcher = embyWebComponentsBowerPath + "/images/basicimagefetcher";
         } else if (Dashboard.isRunningInCordova()) {
             paths.imageFetcher = 'cordova/imagestore';
         } else {
@@ -1671,27 +1754,47 @@ var AppInfo = {};
         paths.hlsjs = bowerPath + "/hls.js/dist/hls.min";
 
         if (Dashboard.isRunningInCordova()) {
-            paths.sharingwidget = "cordova/sharingwidget";
+            paths.sharingMenu = "cordova/sharingwidget";
             paths.serverdiscovery = "cordova/serverdiscovery";
             paths.wakeonlan = "cordova/wakeonlan";
             paths.actionsheet = "cordova/actionsheet";
         } else {
-            paths.sharingwidget = "components/sharingwidget";
             paths.serverdiscovery = apiClientBowerPath + "/serverdiscovery";
             paths.wakeonlan = apiClientBowerPath + "/wakeonlan";
 
+            define("sharingMenu", [embyWebComponentsBowerPath + "/sharing/sharingmenu"], returnFirstDependency);
             define("actionsheet", [embyWebComponentsBowerPath + "/actionsheet/actionsheet"], returnFirstDependency);
         }
 
         define("libjass", [bowerPath + "/libjass/libjass", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
 
+        define("recordingCreator", [embyWebComponentsBowerPath + "/recordingcreator/recordingcreator"], returnFirstDependency);
+        define("recordingEditor", [embyWebComponentsBowerPath + "/recordingcreator/recordingeditor"], returnFirstDependency);
+        define("mediaInfo", [embyWebComponentsBowerPath + "/mediainfo/mediainfo"], returnFirstDependency);
         define("backdrop", [embyWebComponentsBowerPath + "/backdrop/backdrop"], returnFirstDependency);
         define("fetchHelper", [embyWebComponentsBowerPath + "/fetchhelper"], returnFirstDependency);
 
-        define("viewManager", [embyWebComponentsBowerPath + "/viewmanager"], function (viewManager) {
+        define("tvguide", [embyWebComponentsBowerPath + "/guide/guide", 'embyRouter'], returnFirstDependency);
+
+        define("viewManager", [embyWebComponentsBowerPath + "/viewmanager/viewmanager"], function (viewManager) {
             viewManager.dispatchPageEvents(true);
             return viewManager;
         });
+
+        // hack for an android test before browserInfo is loaded
+        if (Dashboard.isRunningInCordova() && window.MainActivity) {
+            define("shell", ["cordova/android/shell"], returnFirstDependency);
+        } else {
+            define("shell", [embyWebComponentsBowerPath + "/shell"], returnFirstDependency);
+        }
+
+        define("sharingmanager", [embyWebComponentsBowerPath + "/sharing/sharingmanager"], returnFirstDependency);
+
+        if (Dashboard.isRunningInCordova()) {
+            paths.apphost = "cordova/apphost";
+        } else {
+            paths.apphost = "components/apphost";
+        }
 
         // hack for an android test before browserInfo is loaded
         if (Dashboard.isRunningInCordova() && window.MainActivity) {
@@ -1719,8 +1822,9 @@ var AppInfo = {};
             waitSeconds: 0,
             map: {
                 '*': {
-                    'css': bowerPath + '/emby-webcomponents/requirecss',
-                    'html': bowerPath + '/emby-webcomponents/requirehtml'
+                    'css': bowerPath + '/emby-webcomponents/require/requirecss',
+                    'html': bowerPath + '/emby-webcomponents/require/requirehtml',
+                    'text': bowerPath + '/emby-webcomponents/require/requiretext'
                 }
             },
             urlArgs: urlArgs,
@@ -1735,6 +1839,7 @@ var AppInfo = {};
         // Done
         define("emby-icons", ["html!" + bowerPath + "/emby-icons/emby-icons.html"]);
 
+        define("lazyload-image", ["html!" + bowerPath + "/emby-lazyload-image/lazyload-image.html"]);
         define("paper-spinner", ["html!" + bowerPath + "/paper-spinner/paper-spinner.html"]);
         define("paper-toast", ["html!" + bowerPath + "/paper-toast/paper-toast.html"]);
         define("paper-slider", ["html!" + bowerPath + "/paper-slider/paper-slider.html"]);
@@ -1745,6 +1850,7 @@ var AppInfo = {};
         define("paper-dialog-scrollable", ["html!" + bowerPath + "/paper-dialog-scrollable/paper-dialog-scrollable.html"]);
         define("paper-button", ["html!" + bowerPath + "/paper-button/paper-button.html"]);
         define("paper-icon-button", ["html!" + bowerPath + "/paper-icon-button/paper-icon-button.html"]);
+        define("paper-icon-button-light", ["html!" + bowerPath + "/paper-icon-button/paper-icon-button-light.html", 'css!css/polymer/paper-icon-button-light.css']);
         define("paper-drawer-panel", ["html!" + bowerPath + "/paper-drawer-panel/paper-drawer-panel.html"]);
         define("paper-radio-group", ["html!" + bowerPath + "/paper-radio-group/paper-radio-group.html"]);
         define("paper-radio-button", ["html!" + bowerPath + "/paper-radio-button/paper-radio-button.html"]);
@@ -1762,6 +1868,8 @@ var AppInfo = {};
         define("fade-out-animation", ["html!" + bowerPath + "/neon-animation/animations/fade-out-animation.html"]);
         define("scale-up-animation", ["html!" + bowerPath + "/neon-animation/animations/scale-up-animation.html"]);
         define("paper-fab", ["html!" + bowerPath + "/paper-fab/paper-fab.html"]);
+        define("iron-list", ["html!" + bowerPath + "/iron-list/iron-list.html"]);
+        define("iron-scroll-threshold", ["html!" + bowerPath + "/iron-scroll-threshold/iron-scroll-threshold.html"]);
         define("paper-progress", ["html!" + bowerPath + "/paper-progress/paper-progress.html"]);
         define("paper-input", ["html!" + bowerPath + "/paper-input/paper-input.html"]);
         define("paper-icon-item", ["html!" + bowerPath + "/paper-item/paper-icon-item.html"]);
@@ -1771,8 +1879,6 @@ var AppInfo = {};
         define("emby-collapsible", ["html!" + bowerPath + "/emby-collapsible/emby-collapsible.html"]);
 
         define("jstree", [bowerPath + "/jstree/dist/jstree", "css!thirdparty/jstree/themes/default/style.min.css"]);
-
-        define('jqm', ['thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.js']);
 
         define("jqmbase", ['css!thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.theme.css']);
         define("jqmicons", ['jqmbase', 'css!thirdparty/jquerymobile-1.4.5/jquery.mobile.custom.icons.css']);
@@ -1801,12 +1907,14 @@ var AppInfo = {};
         define('objectassign', [embyWebComponentsBowerPath + '/objectassign']);
         define('webcomponentsjs', [bowerPath + '/webcomponentsjs/webcomponents-lite.min.js']);
         define('native-promise-only', [bowerPath + '/native-promise-only/lib/npo.src']);
+        define("fingerprintjs2", [bowerPath + '/fingerprintjs2/fingerprint2'], returnFirstDependency);
+        define("clearButtonStyle", ['css!' + embyWebComponentsBowerPath + '/clearbutton']);
 
         if (Dashboard.isRunningInCordova()) {
-            define('registrationservices', ['cordova/registrationservices']);
+            define('registrationservices', ['cordova/registrationservices'], returnFirstDependency);
 
         } else {
-            define('registrationservices', ['scripts/registrationservices']);
+            define('registrationservices', ['scripts/registrationservices'], returnFirstDependency);
         }
 
         if (Dashboard.isRunningInCordova()) {
@@ -1826,7 +1934,6 @@ var AppInfo = {};
 
         define("swiper", [bowerPath + "/Swiper/dist/js/swiper.min", "css!" + bowerPath + "/Swiper/dist/css/swiper.min"], returnFirstDependency);
 
-        define("dialogHelper", [embyWebComponentsBowerPath + "/dialoghelper/dialoghelper"], returnFirstDependency);
         define("toast", [embyWebComponentsBowerPath + "/toast/toast"], returnFirstDependency);
         define("scrollHelper", [embyWebComponentsBowerPath + "/scrollhelper"], returnFirstDependency);
 
@@ -1853,6 +1960,12 @@ var AppInfo = {};
                 jQuery.ajax = ApiClient.ajax;
             }
             return jQuery;
+        });
+
+        define("dialogHelper", [embyWebComponentsBowerPath + "/dialoghelper/dialoghelper"], function (dialoghelper) {
+
+            dialoghelper.setOnOpen(onDialogOpen);
+            return dialoghelper;
         });
 
         // alias
@@ -1882,6 +1995,12 @@ var AppInfo = {};
         });
 
         // mock this for now. not used in this app
+        define("playbackManager", [], function () {
+            return {
+            };
+        });
+
+        // mock this for now. not used in this app
         define("pluginManager", [], function () {
             return {
             };
@@ -1897,9 +2016,7 @@ var AppInfo = {};
             };
         });
 
-        define('dialogText', ['globalize'], getDialogText());
-
-        define("router", [embyWebComponentsBowerPath + '/router'], function (embyRouter) {
+        define("embyRouter", [embyWebComponentsBowerPath + '/router'], function (embyRouter) {
 
             embyRouter.showLocalLogin = function (apiClient, serverId, manualLogin) {
                 Dashboard.navigate('login.html?serverid=' + serverId);
@@ -1922,6 +2039,17 @@ var AppInfo = {};
                 Dashboard.navigate('mypreferencesmenu.html?userId=' + ApiClient.getCurrentUserId());
             };
 
+            embyRouter.showItem = function (item) {
+                if (typeof (item) === 'string') {
+                    require(['connectionManager'], function (connectionManager) {
+                        var apiClient = connectionManager.currentApiClient();
+                        apiClient.getItem(apiClient.getCurrentUserId(), item).then(showItem);
+                    });
+                } else {
+                    Dashboard.navigate(LibraryBrowser.getHref(item));
+                }
+            };
+
             return embyRouter;
         });
     }
@@ -1940,14 +2068,13 @@ var AppInfo = {};
         return appSettings;
     }
 
-    function getDialogText() {
-        return function (globalize) {
-            return {
-                get: function (text) {
-                    return globalize.translate('Button' + text);
-                }
-            };
-        };
+    function onDialogOpen(dlg) {
+        if (dlg.classList.contains('formDialog')) {
+            if (!dlg.classList.contains('background-theme-a')) {
+                dlg.classList.add('background-theme-b');
+                dlg.classList.add('ui-body-b');
+            }
+        }
     }
 
     function initRequireWithBrowser(browser) {
@@ -1966,28 +2093,29 @@ var AppInfo = {};
             define("alert", [embyWebComponentsBowerPath + "/alert/alert"], returnFirstDependency);
         }
 
-        if (browser.animate) {
-            define("loading", [embyWebComponentsBowerPath + "/loading/loading"], returnFirstDependency);
-        } else if (browser.tv) {
+        if (browser.tv) {
             define("loading", [embyWebComponentsBowerPath + "/loading/loading-smarttv"], returnFirstDependency);
         } else {
             define("loading", [embyWebComponentsBowerPath + "/loading/loading-lite"], returnFirstDependency);
         }
 
+        define("multi-download", [embyWebComponentsBowerPath + '/multidownload'], returnFirstDependency);
+
         if (Dashboard.isRunningInCordova() && browser.android) {
             define("fileDownloader", ['cordova/android/filedownloader'], returnFirstDependency);
         } else {
-            define("fileDownloader", ['components/filedownloader'], returnFirstDependency);
+            define("fileDownloader", [embyWebComponentsBowerPath + '/filedownloader'], returnFirstDependency);
         }
     }
 
-    function init(hostingAppInfo) {
+    function init() {
 
         if (Dashboard.isRunningInCordova() && browserInfo.android) {
             define("nativedirectorychooser", ["cordova/android/nativedirectorychooser"]);
         }
 
         if (Dashboard.isRunningInCordova() && browserInfo.android) {
+
             if (MainActivity.getChromeVersion() >= 48) {
                 define("audiorenderer", ["scripts/htmlmediarenderer"]);
                 //define("audiorenderer", ["cordova/android/vlcplayer"]);
@@ -1998,7 +2126,7 @@ var AppInfo = {};
             define("videorenderer", ["cordova/android/vlcplayer"]);
         }
         else if (Dashboard.isRunningInCordova() && browserInfo.safari) {
-            define("audiorenderer", ["cordova/ios/vlcplayer"]);
+            define("audiorenderer", ["cordova/audioplayer"]);
             define("videorenderer", ["scripts/htmlmediarenderer"]);
         }
         else {
@@ -2013,17 +2141,9 @@ var AppInfo = {};
             define("localsync", ["scripts/localsync"]);
         }
 
-        define("livetvcss", [], function () {
-            Dashboard.importCss('css/livetv.css');
-            return {};
-        });
-        define("detailtablecss", [], function () {
-            Dashboard.importCss('css/detailtable.css');
-            return {};
-        });
+        define("livetvcss", ['css!css/livetv.css']);
+        define("detailtablecss", ['css!css/detailtable.css']);
         define("tileitemcss", ['css!css/tileitem.css']);
-
-        define("sharingmanager", ["scripts/sharingmanager"]);
 
         if (Dashboard.isRunningInCordova() && browserInfo.safari) {
             define("searchmenu", ["cordova/searchmenu"]);
@@ -2043,10 +2163,6 @@ var AppInfo = {};
         require(deps, function (events) {
 
             window.Events = events;
-
-            for (var i in hostingAppInfo) {
-                AppInfo[i] = hostingAppInfo[i];
-            }
 
             initAfterDependencies();
         });
@@ -2078,10 +2194,10 @@ var AppInfo = {};
             drawer.disableEdgeSwipe = true;
         }
 
-        var deps = [];
-        deps.push('connectionmanagerfactory');
-        deps.push('credentialprovider');
+        // Default is 600px
+        drawer.responsiveWidth = '640px';
 
+        var deps = [];
         deps.push('scripts/extensions');
 
         if (!window.fetch) {
@@ -2092,14 +2208,9 @@ var AppInfo = {};
             deps.push('objectassign');
         }
 
-        require(deps, function (connectionManagerExports, credentialProviderFactory) {
+        require(deps, function () {
 
-            window.MediaBrowser = window.MediaBrowser || {};
-            for (var i in connectionManagerExports) {
-                MediaBrowser[i] = connectionManagerExports[i];
-            }
-
-            createConnectionManager(credentialProviderFactory, Dashboard.capabilities()).then(function () {
+            createConnectionManager().then(function () {
 
                 console.log('initAfterDependencies promises resolved');
                 MediaController.init();
@@ -2108,9 +2219,28 @@ var AppInfo = {};
 
                     window.Globalize = globalize;
 
-                    loadCoreDictionary(globalize).then(onGlobalizeInit);
+                    Promise.all([loadCoreDictionary(globalize), loadSharedComponentsDictionary(globalize)]).then(onGlobalizeInit);
                 });
             });
+        });
+    }
+
+    function loadSharedComponentsDictionary(globalize) {
+
+        var baseUrl = 'bower_components/emby-webcomponents/strings/';
+
+        var languages = ['da', 'en-US', 'es-MX', 'kk', 'nb', 'nl', 'ru'];
+
+        var translations = languages.map(function (i) {
+            return {
+                lang: i,
+                path: baseUrl + i + '.json'
+            };
+        });
+
+        globalize.loadStrings({
+            name: 'sharedcomponents',
+            translations: translations
         });
     }
 
@@ -2205,13 +2335,15 @@ var AppInfo = {};
         defineRoute({
             path: '/channelitems.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/channels.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2236,7 +2368,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/connectlogin.html',
-            dependencies: [],
+            dependencies: ['paper-button'],
             autoFocus: false,
             anonymous: true
         });
@@ -2258,9 +2390,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/dashboardhosting.html',
-            dependencies: [],
+            dependencies: ['paper-checkbox', 'paper-input', 'paper-button'],
             autoFocus: false,
-            roles: 'admin'
+            roles: 'admin',
+            controller: 'scripts/dashboardhosting'
         });
 
         defineRoute({
@@ -2377,9 +2510,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/home.html',
-            dependencies: ['paper-tabs'],
+            dependencies: [],
             autoFocus: false,
-            controller: 'scripts/indexpage'
+            controller: 'scripts/indexpage',
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2391,15 +2525,18 @@ var AppInfo = {};
 
         defineRoute({
             path: '/itemdetails.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button', 'tileitemcss', 'scripts/livetvcomponents', 'paper-fab', 'paper-item-body', 'paper-icon-item', 'paper-icon-button-light'],
+            controller: 'scripts/itemdetailpage',
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/itemlist.html',
             dependencies: ['paper-checkbox', 'scripts/alphapicker'],
             autoFocus: false,
-            controller: 'scripts/itemlistpage'
+            controller: 'scripts/itemlistpage',
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2431,8 +2568,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/livetv.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button', 'livetvcss'],
+            controller: 'scripts/livetvsuggested',
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2474,12 +2613,6 @@ var AppInfo = {};
         });
 
         defineRoute({
-            path: '/livetvtimer.html',
-            dependencies: ['scrollStyles'],
-            autoFocus: false
-        });
-
-        defineRoute({
             path: '/livetvtunerprovider-hdhomerun.html',
             dependencies: [],
             autoFocus: false,
@@ -2510,9 +2643,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/login.html',
-            dependencies: [],
+            dependencies: ['paper-button', 'humanedate', 'paper-input'],
             autoFocus: false,
-            anonymous: true
+            anonymous: true,
+            controller: 'scripts/loginpage'
         });
 
         defineRoute({
@@ -2552,63 +2686,74 @@ var AppInfo = {};
 
         defineRoute({
             path: '/movies.html',
-            dependencies: ['paper-tabs', 'paper-checkbox', 'paper-fab', 'scripts/alphapicker'],
+            dependencies: ['paper-checkbox', 'scripts/alphapicker', 'paper-button'],
             autoFocus: false,
-            controller: 'scripts/moviesrecommended'
+            controller: 'scripts/moviesrecommended',
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/music.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['scripts/alphapicker'],
+            controller: 'scripts/musicrecommended',
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mypreferencesdisplay.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button'],
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mypreferenceshome.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button'],
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mypreferenceslanguages.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button'],
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mypreferencesmenu.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button'],
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/myprofile.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-button'],
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mysync.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mysyncjob.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/mysyncsettings.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2634,14 +2779,17 @@ var AppInfo = {};
 
         defineRoute({
             path: '/nowplaying.html',
-            dependencies: [],
-            autoFocus: false
+            dependencies: ['paper-icon-button-light', 'paper-slider', 'paper-button'],
+            controller: 'scripts/nowplayingpage',
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
             path: '/photos.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2654,7 +2802,8 @@ var AppInfo = {};
         defineRoute({
             path: '/playlists.html',
             dependencies: [],
-            autoFocus: false
+            autoFocus: false,
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2766,9 +2915,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/tv.html',
-            dependencies: ['paper-tabs', 'paper-checkbox'],
+            dependencies: ['paper-checkbox', 'paper-icon-button-light', 'paper-button'],
             autoFocus: false,
-            controller: 'scripts/tvrecommended'
+            controller: 'scripts/tvrecommended',
+            transition: 'fade'
         });
 
         defineRoute({
@@ -2821,9 +2971,10 @@ var AppInfo = {};
 
         defineRoute({
             path: '/wizardfinish.html',
-            dependencies: [],
+            dependencies: ['paper-button'],
             autoFocus: false,
-            anonymous: true
+            anonymous: true,
+            controller: 'scripts/wizardfinishpage'
         });
 
         defineRoute({
@@ -2904,7 +3055,7 @@ var AppInfo = {};
         var deps = [];
 
         deps.push('imageLoader');
-        deps.push('router');
+        deps.push('embyRouter');
         deps.push('layoutManager');
 
         if (!(AppInfo.isNativeApp && browserInfo.android)) {
@@ -2921,10 +3072,6 @@ var AppInfo = {};
         }
 
         loadTheme();
-
-        if (browserInfo.safari && browserInfo.mobile) {
-            initFastClick();
-        }
 
         if (Dashboard.isRunningInCordova()) {
             deps.push('registrationservices');
@@ -2946,6 +3093,8 @@ var AppInfo = {};
         deps.push('scripts/librarymenu');
 
         deps.push('css!css/card.css');
+
+        console.log('onAppReady - loading dependencies');
 
         require(deps, function (imageLoader, pageObjects, layoutManager) {
 
@@ -2987,8 +3136,8 @@ var AppInfo = {};
                 if (browserInfo.safari) {
 
                     postInitDependencies.push('cordova/ios/chromecast');
-
                     postInitDependencies.push('cordova/ios/orientation');
+                    postInitDependencies.push('cordova/ios/remotecontrols');
 
                     if (Dashboard.capabilities().SupportsSync) {
 
@@ -3021,117 +3170,6 @@ var AppInfo = {};
         });
     }
 
-    function getCordovaHostingAppInfo() {
-
-        return new Promise(function (resolve, reject) {
-
-            document.addEventListener("deviceready", function () {
-
-                cordova.getAppVersion.getVersionNumber(function (appVersion) {
-
-                    require(['appStorage'], function (appStorage) {
-
-                        var name = browserInfo.android ? "Emby for Android Mobile" : (browserInfo.safari ? "Emby for iOS" : "Emby Mobile");
-
-                        // Remove special characters
-                        var cleanDeviceName = device.model.replace(/[^\w\s]/gi, '');
-
-                        var deviceId = null;
-
-                        if (window.MainActivity) {
-
-                            deviceId = appStorage.getItem('legacyDeviceId');
-
-                            if (!deviceId) {
-                                deviceId = MainActivity.getLegacyDeviceId();
-                                appStorage.setItem('legacyDeviceId', deviceId);
-                            }
-                        }
-
-                        resolve({
-                            deviceId: deviceId || device.uuid,
-                            deviceName: cleanDeviceName,
-                            appName: name,
-                            appVersion: appVersion
-                        });
-                    });
-
-                });
-
-            }, false);
-        });
-    }
-
-    function getWebHostingAppInfo() {
-
-        return new Promise(function (resolve, reject) {
-
-            require(['appStorage'], function (appStorage) {
-                var deviceName;
-
-                if (browserInfo.chrome) {
-                    deviceName = "Chrome";
-                } else if (browserInfo.edge) {
-                    deviceName = "Edge";
-                } else if (browserInfo.firefox) {
-                    deviceName = "Firefox";
-                } else if (browserInfo.msie) {
-                    deviceName = "Internet Explorer";
-                } else {
-                    deviceName = "Web Browser";
-                }
-
-                if (browserInfo.version) {
-                    deviceName += " " + browserInfo.version;
-                }
-
-                if (browserInfo.ipad) {
-                    deviceName += " Ipad";
-                } else if (browserInfo.iphone) {
-                    deviceName += " Iphone";
-                } else if (browserInfo.android) {
-                    deviceName += " Android";
-                }
-
-                function onDeviceAdAcquired(id) {
-
-                    resolve({
-                        deviceId: id,
-                        deviceName: deviceName,
-                        appName: "Emby Web Client",
-                        appVersion: window.dashboardVersion
-                    });
-                }
-
-                var deviceIdKey = '_deviceId1';
-                var deviceId = appStorage.getItem(deviceIdKey);
-
-                if (deviceId) {
-                    onDeviceAdAcquired(deviceId);
-                } else {
-                    require(['cryptojs-sha1'], function () {
-                        var keys = [];
-                        keys.push(navigator.userAgent);
-                        keys.push((navigator.cpuClass || ""));
-                        keys.push(new Date().getTime());
-                        var randomId = CryptoJS.SHA1(keys.join('|')).toString();
-                        appStorage.setItem(deviceIdKey, randomId);
-                        onDeviceAdAcquired(randomId);
-                    });
-                }
-            });
-        });
-    }
-
-    function getHostingAppInfo() {
-
-        if (Dashboard.isRunningInCordova()) {
-            return getCordovaHostingAppInfo();
-        }
-
-        return getWebHostingAppInfo();
-    }
-
     initRequire();
 
     function onWebComponentsReady() {
@@ -3153,7 +3191,7 @@ var AppInfo = {};
             setAppInfo();
             setDocumentClasses(browser);
 
-            getHostingAppInfo().then(init);
+            init();
         });
     }
 
@@ -3211,6 +3249,7 @@ pageClassOn('viewinit', "page", function () {
 
     page.classList.add("ui-page");
     page.classList.add("ui-page-theme-" + current);
+    page.classList.add("ui-body-" + current);
 
     var contents = page.querySelectorAll("div[data-role='content']");
 
@@ -3238,19 +3277,9 @@ pageClassOn('viewshow', "page", function () {
     if (currentTheme == 'a') {
         docElem.classList.add('background-theme-a');
         docElem.classList.remove('background-theme-b');
-        page.classList.add('ui-body-a');
-        page.classList.remove('ui-body-b');
     } else {
         docElem.classList.add('background-theme-b');
         docElem.classList.remove('background-theme-a');
-        page.classList.add('ui-body-b');
-        page.classList.remove('ui-body-a');
-    }
-
-    if (currentTheme != 'a' && !browserInfo.mobile) {
-        document.documentElement.classList.add('darkScrollbars');
-    } else {
-        document.documentElement.classList.remove('darkScrollbars');
     }
 
     var apiClient = window.ApiClient;

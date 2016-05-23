@@ -19,8 +19,6 @@ namespace MediaBrowser.Controller.Entities
 
         public User User { get; set; }
 
-        public Func<BaseItem, bool> Filter { get; set; }
-
         public bool? IsFolder { get; set; }
         public bool? IsFavorite { get; set; }
         public bool? IsFavoriteOrLiked { get; set; }
@@ -46,8 +44,11 @@ namespace MediaBrowser.Controller.Entities
         public string NameLessThan { get; set; }
         public string NameContains { get; set; }
 
+        public string PresentationUniqueKey { get; set; }
         public string Path { get; set; }
-        
+        public string Name { get; set; }
+        public string SlugName { get; set; }
+
         public string Person { get; set; }
         public string[] PersonIds { get; set; }
         public string[] ItemIds { get; set; }
@@ -106,6 +107,7 @@ namespace MediaBrowser.Controller.Entities
 
         internal List<Guid> ItemIdsFromPersonFilters { get; set; }
         public int? ParentIndexNumber { get; set; }
+        public int? IndexNumber { get; set; }
         public int? MinParentalRating { get; set; }
         public int? MaxParentalRating { get; set; }
 
@@ -130,9 +132,17 @@ namespace MediaBrowser.Controller.Entities
 
         public string[] AlbumNames { get; set; }
         public string[] ArtistNames { get; set; }
-        
+        public string AncestorWithPresentationUniqueKey { get; set; }
+
+        public bool GroupByPresentationUniqueKey { get; set; }
+        public bool EnableTotalRecordCount { get; set; }
+        public bool ForceDirect { get; set; }
+
         public InternalItemsQuery()
         {
+            GroupByPresentationUniqueKey = true;
+            EnableTotalRecordCount = true;
+
             AlbumNames = new string[] { };
             ArtistNames = new string[] { };
             
@@ -170,6 +180,11 @@ namespace MediaBrowser.Controller.Entities
 
         public InternalItemsQuery(User user)
             : this()
+        {
+            SetUser(user);
+        }
+
+        public void SetUser(User user)
         {
             if (user != null)
             {

@@ -121,6 +121,13 @@ namespace MediaBrowser.Api.UserLibrary
             var includeItemTypes = request.GetIncludeItemTypes();
             var mediaTypes = request.GetMediaTypes();
 
+            var query = new InternalItemsQuery(user)
+            {
+                ExcludeItemTypes = excludeItemTypes,
+                IncludeItemTypes = includeItemTypes,
+                MediaTypes = mediaTypes
+            };
+
             Func<BaseItem, bool> filter = i => FilterItem(request, i, excludeItemTypes, includeItemTypes, mediaTypes);
 
             if (parentItem.IsFolder)
@@ -130,7 +137,7 @@ namespace MediaBrowser.Api.UserLibrary
                 if (!string.IsNullOrWhiteSpace(request.UserId))
                 {
                     items = request.Recursive ?
-                        folder.GetRecursiveChildren(user, filter) :
+                        folder.GetRecursiveChildren(user, query) :
                         folder.GetChildren(user, true).Where(filter);
                 }
                 else
@@ -274,7 +281,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 items = items.Where(i =>
                     {
-                        var userdata = UserDataRepository.GetUserData(user.Id, i.GetUserDataKey());
+                        var userdata = UserDataRepository.GetUserData(user, i);
 
                         return userdata != null && userdata.Likes.HasValue && !userdata.Likes.Value;
                     });
@@ -284,7 +291,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 items = items.Where(i =>
                 {
-                    var userdata = UserDataRepository.GetUserData(user.Id, i.GetUserDataKey());
+                    var userdata = UserDataRepository.GetUserData(user, i);
 
                     return userdata != null && userdata.Likes.HasValue && userdata.Likes.Value;
                 });
@@ -294,7 +301,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 items = items.Where(i =>
                 {
-                    var userdata = UserDataRepository.GetUserData(user.Id, i.GetUserDataKey());
+                    var userdata = UserDataRepository.GetUserData(user, i);
 
                     var likes = userdata.Likes ?? false;
                     var favorite = userdata.IsFavorite;
@@ -307,7 +314,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 items = items.Where(i =>
                 {
-                    var userdata = UserDataRepository.GetUserData(user.Id, i.GetUserDataKey());
+                    var userdata = UserDataRepository.GetUserData(user, i);
 
                     return userdata != null && userdata.IsFavorite;
                 });

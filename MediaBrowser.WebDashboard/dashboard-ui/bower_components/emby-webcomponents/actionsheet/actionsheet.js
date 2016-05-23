@@ -1,4 +1,4 @@
-﻿define(['dialogHelper', 'layoutManager', 'dialogText', 'paper-button', 'css!./actionsheet'], function (dialogHelper, layoutManager, dialogText) {
+﻿define(['dialogHelper', 'layoutManager', 'globalize', 'paper-button', 'css!./actionsheet', 'html!./../icons/nav.html', 'scrollStyles'], function (dialogHelper, layoutManager, globalize) {
 
     function parentWithClass(elem, className) {
 
@@ -88,7 +88,8 @@
         // title
         var dialogOptions = {
             removeOnClose: true,
-            enableHistory: options.enableHistory
+            enableHistory: options.enableHistory,
+            scrollY: false
         };
 
         var backButton = false;
@@ -129,10 +130,10 @@
             }
         }
 
-        html += '<div class="actionSheetScroller">';
+        html += '<div class="actionSheetScroller hiddenScrollY">';
 
         options.items.forEach(function (o) {
-            o.ironIcon = o.selected ? 'check' : null;
+            o.ironIcon = o.selected ? 'nav:check' : null;
         });
 
         var itemsWithIcons = options.items.filter(function (o) {
@@ -147,14 +148,7 @@
             dlg.classList.add('centered');
         }
 
-        var enablePaperMenu = !layoutManager.tv;
-        enablePaperMenu = false;
         var itemTagName = 'paper-button';
-
-        if (enablePaperMenu) {
-            html += '<paper-menu>';
-            itemTagName = 'paper-menu-item';
-        }
 
         for (var i = 0, length = options.items.length; i < length; i++) {
 
@@ -173,13 +167,9 @@
             html += '</' + itemTagName + '>';
         }
 
-        if (enablePaperMenu) {
-            html += '</paper-menu>';
-        }
-
         if (options.showCancel) {
             html += '<div class="buttons">';
-            html += '<paper-button class="btnCancel">' + dialogText.get('Cancel') + '</paper-button>';
+            html += '<paper-button class="btnCancel">' + globalize.translate('sharedcomponents#ButtonCancel') + '</paper-button>';
             html += '</div>';
         }
         html += '</div>';

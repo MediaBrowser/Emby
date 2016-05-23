@@ -1,20 +1,51 @@
-define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, imageFetcher) {
+define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser'], function (visibleinviewport, imageFetcher, layoutManager, events, browser) {
 
-    var thresholdX = screen.availWidth;
-    var thresholdY = screen.availHeight;
+    var thresholdX;
+    var thresholdY;
+    var windowSize;
+
+    function resetThresholds() {
+
+        var x = screen.availWidth;
+        var y = screen.availHeight;
+
+        if (layoutManager.mobile) {
+            x *= 2;
+            y *= 2;
+        }
+
+        thresholdX = x;
+        thresholdY = y;
+        resetWindowSize();
+    }
+
+    window.addEventListener("orientationchange", resetThresholds);
+    window.addEventListener('resize', resetThresholds);
+    events.on(layoutManager, 'modechange', resetThresholds);
 
     var wheelEvent = (document.implementation.hasFeature('Event.wheel', '3.0') ? 'wheel' : 'mousewheel');
 
-    function isVisible(elem, windowSize) {
+    function resetWindowSize() {
+        windowSize = {
+            innerHeight: window.innerHeight,
+            innerWidth: window.innerWidth
+        };
+    }
+    resetThresholds();
+
+    function isVisible(elem) {
         return visibleinviewport(elem, true, thresholdX, thresholdY, windowSize);
     }
 
     var self = {};
 
-    function fillImage(elem) {
-        var source = elem.getAttribute('data-src');
+    function fillImage(elem, source, enableEffects) {
+
+        if (!source) {
+            source = elem.getAttribute('data-src');
+        }
         if (source) {
-            if (self.enableFade) {
+            if (self.enableFade && enableEffects !== false) {
                 imageFetcher.loadImage(elem, source).then(fadeIn);
             } else {
                 imageFetcher.loadImage(elem, source);
@@ -24,10 +55,6 @@ define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, image
     }
 
     function fadeIn(elem) {
-
-        if (elem.classList.contains('noFade')) {
-            return;
-        }
 
         var keyframes = [
           { opacity: '0', offset: 0 },
@@ -43,23 +70,89 @@ define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, image
         }
     }
 
+    var supportsCaptureOption = false;
+    try {
+        var opts = Object.defineProperty({}, 'capture', {
+            get: function () {
+                supportsCaptureOption = true;
+            }
+        });
+        window.addEventListener("test", null, opts);
+    } catch (e) { }
+
+    function addEventListenerWithOptions(target, type, handler, options) {
+        var optionsOrCapture = options;
+        if (!supportsCaptureOption) {
+            optionsOrCapture = options.capture;
+        }
+        target.addEventListener(type, handler, optionsOrCapture);
+    }
+
+    function unveilWithIntersection(images) {
+
+        var filledCount = 0;
+
+        var observer = new IntersectionObserver(function (entries) {
+            for (var j = 0, length2 = entries.length; j < length2; j++) {
+                var entry = entries[j];
+                var intersectionRatio = entry.intersectionRatio;
+                if (intersectionRatio) {
+
+                    var target = entry.target;
+                    observer.unobserve(target);
+                    fillImage(target);
+                    filledCount++;
+                }
+            }
+
+            if (filledCount >= images.length) {
+                //observer.disconnect();
+            }
+        },
+        {
+            /* Using default options. Details below */
+        }
+        );
+        // Start observing an element
+        for (var i = 0, length = images.length; i < length; i++) {
+            observer.observe(images[i]);
+        }
+    }
+
+    var supportsIntersectionObserver = function () {
+
+        if (window.IntersectionObserver) {
+
+            // The api exists in chrome 50 but doesn't work
+            if (browser.chrome) {
+
+                var version = parseInt(browser.version.split('.')[0]);
+                return version >= 51;
+            }
+            return true;
+        }
+
+        return false;
+    }();
+
     function unveilElements(images) {
 
         if (!images.length) {
             return;
         }
 
+        if (supportsIntersectionObserver) {
+            unveilWithIntersection(images);
+            return;
+        }
+
+        var filledImages = [];
         var cancellationTokens = [];
+
         function unveilInternal(tokenIndex) {
 
-            var remaining = [];
             var anyFound = false;
             var out = false;
-
-            var windowSize = {
-                innerHeight: window.innerHeight,
-                innerWidth: window.innerWidth
-            };
 
             // TODO: This out construct assumes left to right, top to bottom
 
@@ -68,20 +161,21 @@ define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, image
                 if (cancellationTokens[tokenIndex]) {
                     return;
                 }
+                if (filledImages[i]) {
+                    continue;
+                }
                 var img = images[i];
-                if (!out && isVisible(img, windowSize)) {
+                if (!out && isVisible(img)) {
                     anyFound = true;
+                    filledImages[i] = true;
                     fillImage(img);
                 } else {
 
                     if (anyFound) {
                         out = true;
                     }
-                    remaining.push(img);
                 }
             }
-
-            images = remaining;
 
             if (!images.length) {
                 document.removeEventListener('focus', unveil, true);
@@ -103,35 +197,26 @@ define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, image
             }, 1);
         }
 
-        document.addEventListener('scroll', unveil, true);
+        addEventListenerWithOptions(document, 'scroll', unveil, {
+            capture: true,
+            passive: true
+        });
         document.addEventListener('focus', unveil, true);
-        document.addEventListener(wheelEvent, unveil, true);
-        window.addEventListener('resize', unveil, true);
+        addEventListenerWithOptions(document, wheelEvent, unveil, {
+            capture: true,
+            passive: true
+        });
+        addEventListenerWithOptions(window, 'resize', unveil, {
+            capture: true,
+            passive: true
+        });
 
         unveil();
-    }
-
-    function fillImages(elems) {
-
-        for (var i = 0, length = elems.length; i < length; i++) {
-            var elem = elems[0];
-            var source = elem.getAttribute('data-src');
-            if (source) {
-                ImageStore.setImageInto(elem, source);
-                elem.setAttribute("data-src", '');
-            }
-        }
     }
 
     function lazyChildren(elem) {
 
         unveilElements(elem.getElementsByClassName('lazy'));
-    }
-
-    function lazyImage(elem, url) {
-
-        elem.setAttribute('data-src', url);
-        fillImages([elem]);
     }
 
     function getPrimaryImageAspectRatio(items) {
@@ -199,14 +284,8 @@ define(['visibleinviewport', 'imageFetcher'], function (visibleinviewport, image
         }
     }
 
-    function lazyImage(elem, url) {
-
-        elem.setAttribute('data-src', url);
-        fillImage(elem);
-    }
-
     self.fillImages = fillImages;
-    self.lazyImage = lazyImage;
+    self.lazyImage = fillImage;
     self.lazyChildren = lazyChildren;
     self.getPrimaryImageAspectRatio = getPrimaryImageAspectRatio;
 
