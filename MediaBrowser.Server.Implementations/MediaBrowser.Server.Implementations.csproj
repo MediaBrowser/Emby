@@ -182,6 +182,9 @@
     <Compile Include="Intros\DefaultIntroProvider.cs" />
     <Compile Include="IO\FileRefresher.cs" />
     <Compile Include="IO\LibraryMonitor.cs" />
+    <Compile Include="IO\FileRefreshEventArgs.cs" />
+    <Compile Include="IO\FileRefreshItem.cs" />
+    <Compile Include="IO\FileRefreshQueue.cs" />
     <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
     <Compile Include="Library\LibraryManager.cs" />
     <Compile Include="Library\LocalTrailerPostScanTask.cs" />
