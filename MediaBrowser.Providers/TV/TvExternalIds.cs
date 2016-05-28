@@ -180,7 +180,7 @@ namespace MediaBrowser.Providers.TV
 
         public string UrlFormatString
         {
-            get { return "http://www.tvmaze.com/seasons/{0}"; }
+            get { return "http://www.tvmaze.com/seasons/{0}/season"; }
         }
 
         public bool Supports(IHasProviderIds item)
