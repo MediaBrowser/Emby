@@ -1,7 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Providers.TvMaze;
+using MediaBrowser.Providers.TV.TvMaze.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +20,6 @@ namespace MediaBrowser.Providers.TV.TvMaze
 
             series.Name = mazeSeries.name;
             series.Genres = mazeSeries.genres.ToList();
-
-            // TODO: Download images
-            //if (mazeSeries.image != null && mazeSeries.image.original != null)
 
             // TODO: Do we have a Series property for original language?
             //series = mazeSeries.language;
@@ -82,9 +79,6 @@ namespace MediaBrowser.Providers.TV.TvMaze
             episode.IndexNumber = mazeEpisode.number;
             episode.ParentIndexNumber = mazeEpisode.season;
 
-            // TODO: Download images
-            //if (mazeSeries.image != null && mazeSeries.image.original != null)
-
             if (mazeEpisode.airdate.HasValue)
             {
                 episode.PremiereDate = mazeEpisode.airdate.Value;
@@ -98,6 +92,43 @@ namespace MediaBrowser.Providers.TV.TvMaze
             episode.Overview = StripHtml(mazeEpisode.summary);
 
             return episode;
+        }
+
+        public static Season Convert(MazeSeason mazeSeason)
+        {
+            var season = new Season();
+
+            season.ProviderIds[MetadataProviders.TvMaze.ToString()] = mazeSeason.id.ToString();
+
+            season.Name = mazeSeason.name;
+
+            season.IndexNumber = mazeSeason.number;
+
+            if (mazeSeason.network != null && !string.IsNullOrWhiteSpace(mazeSeason.network.name))
+            {
+                var networkName = mazeSeason.network.name;
+                if (mazeSeason.network.country != null && !string.IsNullOrWhiteSpace(mazeSeason.network.country.code))
+                {
+                    networkName = string.Format("{0} ({1})", mazeSeason.network.name, mazeSeason.network.country.code);
+                }
+
+                season.Studios.Add(networkName);
+            }
+
+            if (mazeSeason.premiereDate.HasValue)
+            {
+                season.PremiereDate = mazeSeason.premiereDate.Value;
+                season.ProductionYear = mazeSeason.premiereDate.Value.Year;
+            }
+
+            if (mazeSeason.endDate.HasValue)
+            {
+                season.EndDate = mazeSeason.endDate.Value;
+            }
+
+            season.Overview = StripHtml(mazeSeason.summary);
+
+            return season;
         }
 
         public static PersonInfo Convert(MazeCastMember mazeMember)

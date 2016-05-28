@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Providers.TvMaze
+﻿namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// Base Links Class points to itself as its only link.

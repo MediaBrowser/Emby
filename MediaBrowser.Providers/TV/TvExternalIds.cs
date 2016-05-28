@@ -166,6 +166,29 @@ namespace MediaBrowser.Providers.TV
         }
     }
 
+    public class TvMazeSeasonExternalId : IExternalId
+    {
+        public string Name
+        {
+            get { return "TvMaze"; }
+        }
+
+        public string Key
+        {
+            get { return MetadataProviders.TvMaze.ToString(); }
+        }
+
+        public string UrlFormatString
+        {
+            get { return "http://www.tvmaze.com/seasons/{0}"; }
+        }
+
+        public bool Supports(IHasProviderIds item)
+        {
+            return item is Season;
+        }
+    }
+
     public class TvComPersonExternalId : IExternalId
     {
         public string Name

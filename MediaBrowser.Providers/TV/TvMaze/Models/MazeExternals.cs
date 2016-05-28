@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Providers.TvMaze
+﻿namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// Identifiers for the series on other scrapers.

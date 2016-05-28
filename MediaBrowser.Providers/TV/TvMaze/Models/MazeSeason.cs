@@ -3,44 +3,48 @@
 namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
-    /// A collection of Information about an Episode on TVMaze.
+    /// A collection of Information about a Season on TVMaze.
     /// </summary>
-    public class MazeEpisode
+    public class MazeSeason
     {
         /// <summary>
-        /// Unique TVMaze Episode Identifier.
+        /// Unique TVMaze Season Identifier.
         /// </summary>
         public uint id { get; set; }
         /// <summary>
-        /// Url to this Episode's Page on the Website.
+        /// Url to this Seasons's Page on the Website.
         /// </summary>
         public Uri url { get; set; }
         /// <summary>
-        /// Name of the Episode.
+        /// Name of the Season.
         /// </summary>
         public string name { get; set; }
         /// <summary>
-        /// Season Number of the Episode.
-        /// </summary>
-        public int? season { get; set; }
-        /// <summary>
-        /// Episode Number in Season for the Episode.
+        /// Season Number.
         /// </summary>
         public int? number { get; set; }
         /// <summary>
-        /// The Day that the Episode was/is First Aired.
+        /// Number of episodes in this season.
         /// </summary>
-        public DateTime? airdate { get; set; }
+        public int? episodeOrder { get; set; }
         /// <summary>
-        /// Specfic Timezone offset time, for the AirTime of the Episode.
+        /// The Day that the first Episode was/is First Aired.
         /// </summary>
-        public DateTimeOffset? airstamp { get; set; }
+        public DateTime? premiereDate { get; set; }
         /// <summary>
-        /// How many minutes the Episode ran for.
+        /// The Day that the last Episode was/is First Aired.
         /// </summary>
-        public int? runtime { get; set; }
+        public DateTime? endDate { get; set; }
         /// <summary>
-        /// Images of the Episode.
+        /// Network of Show.
+        /// </summary>
+        public MazeChannel network { get; set; }
+        /// <summary>
+        /// WebChannel of show.
+        /// </summary>
+        public MazeChannel webChannel { get; set; }
+        /// <summary>
+        /// Images of the Season.
         /// </summary>
         public MazeImage image { get; set; }
         /// <summary>
@@ -51,9 +55,5 @@ namespace MediaBrowser.Providers.TV.TvMaze.Models
         /// Link to it's page on the website.
         /// </summary>
         public MazeLinks _links { get; set; }
-        /// <summary>
-        /// The show that this Episode originates from.
-        /// </summary>
-        public MazeSeries show { get; set; }
     }
 }

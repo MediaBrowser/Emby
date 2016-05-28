@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MediaBrowser.Providers.TvMaze
+namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// A collection of Information about a Series on TVMaze.

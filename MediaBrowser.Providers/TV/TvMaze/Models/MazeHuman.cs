@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MediaBrowser.Providers.TvMaze
+namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     public class MazeHuman
     {

@@ -24,18 +24,18 @@ namespace MediaBrowser.Providers.TV.TvMaze
 {
 
     /// <summary>
-    /// Class RemoteEpisodeProvider
+    /// Class TvMazeSeasonProvider
     /// </summary>
-    class TvMazeEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>, IHasItemChangeMonitor
+    class TvMazeSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasItemChangeMonitor
     {
-        internal static TvMazeEpisodeProvider Current;
+        internal static TvMazeSeasonProvider Current;
         private readonly IFileSystem _fileSystem;
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
         private readonly ILogger _logger;
         private readonly IJsonSerializer _jsonSerializer;
 
-        public TvMazeEpisodeProvider(IJsonSerializer jsonSerializer, IFileSystem fileSystem, IServerConfigurationManager config, IHttpClient httpClient, ILogger logger)
+        public TvMazeSeasonProvider(IJsonSerializer jsonSerializer, IFileSystem fileSystem, IServerConfigurationManager config, IHttpClient httpClient, ILogger logger)
         {
             _jsonSerializer = jsonSerializer;
             _fileSystem = fileSystem;
@@ -45,52 +45,9 @@ namespace MediaBrowser.Providers.TV.TvMaze
             Current = this;
         }
 
-        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(EpisodeInfo searchInfo, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo, CancellationToken cancellationToken)
         {
-            var list = new List<RemoteSearchResult>();
-
-			// The search query must  provide an episode number
-			if (!searchInfo.IndexNumber.HasValue) 
-			{
-				return list;
-			}
-
-            if (TvMazeSeriesProvider.IsValidSeries(searchInfo.SeriesProviderIds))
-            {
-                var seriesDataPath = TvMazeSeriesProvider.GetSeriesDataPath(_config.ApplicationPaths, searchInfo.SeriesProviderIds);
-
-                try
-                {
-                    var metadataResult = FetchEpisodeData(searchInfo, seriesDataPath, cancellationToken);
-
-                    if (metadataResult.HasMetadata)
-                    {
-                        var item = metadataResult.Item;
-
-                        list.Add(new RemoteSearchResult
-                        {
-                            IndexNumber = item.IndexNumber,
-                            Name = item.Name,
-                            ParentIndexNumber = item.ParentIndexNumber,
-                            PremiereDate = item.PremiereDate,
-                            ProductionYear = item.ProductionYear,
-                            ProviderIds = item.ProviderIds,
-                            SearchProviderName = Name,
-                            IndexNumberEnd = item.IndexNumberEnd
-                        });
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    // Don't fail the provider because this will just keep on going and going.
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    // Don't fail the provider because this will just keep on going and going.
-                }
-            }
-
-            return list;
+            return Task.FromResult<IEnumerable<RemoteSearchResult>>(new List<RemoteSearchResult>());
         }
 
         public string Name
@@ -98,20 +55,19 @@ namespace MediaBrowser.Providers.TV.TvMaze
             get { return TvMazeSeriesProvider.Current.Name; }
         }
 
-        public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo searchInfo, CancellationToken cancellationToken)
+        public async Task<MetadataResult<Season>> GetMetadata(SeasonInfo searchInfo, CancellationToken cancellationToken)
         {
-            var result = new MetadataResult<Episode>();
+            var result = new MetadataResult<Season>();
 
             if (TvMazeSeriesProvider.IsValidSeries(searchInfo.SeriesProviderIds) && 
-				(searchInfo.IndexNumber.HasValue || searchInfo.PremiereDate.HasValue))
+				searchInfo.IndexNumber.HasValue)
             {
                 result.QueriedById = true;
-
                 var seriesDataPath = await TvMazeSeriesProvider.Current.EnsureSeriesInfo(searchInfo.SeriesProviderIds, searchInfo.MetadataLanguage, cancellationToken).ConfigureAwait(false);
 
                 try
                 {
-                    result = FetchEpisodeData(searchInfo, seriesDataPath, cancellationToken);
+                    result = FetchSeasonData(searchInfo, seriesDataPath, cancellationToken);
                 }
                 catch (FileNotFoundException)
                 {
@@ -154,22 +110,32 @@ namespace MediaBrowser.Providers.TV.TvMaze
         }
 
         /// <summary>
-        /// Fetches the episode data.
+        /// Fetches the season data.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="seriesDataPath">The series data path.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{Episode}.</returns>
-        private MetadataResult<Episode> FetchEpisodeData(EpisodeInfo id, string seriesDataPath, CancellationToken cancellationToken)
+        /// <returns>Task{Season}.</returns>
+        private MetadataResult<Season> FetchSeasonData(SeasonInfo info, string seriesDataPath, CancellationToken cancellationToken)
         {
-            var episodeFileName = TvMazeSeriesProvider.Current.GetEpisodePath(seriesDataPath, id.ParentIndexNumber.Value, id.IndexNumber.Value);
+            var seasonFileName = TvMazeSeriesProvider.Current.GetSeasonPath(seriesDataPath, info.IndexNumber.Value);
 
-            var mazeEpisode = _jsonSerializer.DeserializeFromFile<MazeEpisode>(episodeFileName);
-            var episode = TvMazeAdapter.Convert(mazeEpisode);
+            var mazeSeason = _jsonSerializer.DeserializeFromFile<MazeSeason>(seasonFileName);
+            var season = TvMazeAdapter.Convert(mazeSeason);
 
-			var result = new MetadataResult<Episode>()
+            if (string.IsNullOrEmpty(season.Name))
+            {
+                season.Name = info.Name;
+            }
+
+            if (!season.IndexNumber.HasValue)
+            {
+                season.IndexNumber = info.IndexNumber.Value;
+            }
+
+            var result = new MetadataResult<Season>()
 			{
-                Item = episode,
+                Item = season,
                 HasMetadata = true
 			};
 
@@ -185,7 +151,5 @@ namespace MediaBrowser.Providers.TV.TvMaze
                 ResourcePool = TvMazeSeriesProvider.Current.TvMazeResourcePool
             });
         }
-
-        public int Order { get { return 0; } }
     }
 }

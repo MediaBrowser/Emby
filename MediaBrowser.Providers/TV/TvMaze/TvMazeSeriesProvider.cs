@@ -22,7 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Providers.TvMaze;
+using MediaBrowser.Providers.TV.TvMaze.Models;
 
 namespace MediaBrowser.Providers.TV.TvMaze
 {
@@ -51,6 +51,7 @@ namespace MediaBrowser.Providers.TV.TvMaze
         private const string SeriesSearchUrl = "http://api.tvmaze.com/search/shows?q={0}";
         private const string UrlSeriesData = "http://api.tvmaze.com/shows/{0}";
         private const string UrlSeriesEpisodes = "http://api.tvmaze.com/shows/{0}/episodes";
+        private const string UrlSeriesSeasons = "http://api.tvmaze.com/shows/{0}/seasons";
         private const string UrlSeriesCast = "http://api.tvmaze.com/shows/{0}/cast";
         private const string UrlByRemoteId = "http://api.tvmaze.com/lookup/shows?{0}={1}";
 
@@ -277,6 +278,7 @@ namespace MediaBrowser.Providers.TV.TvMaze
                         }
 
                         await DownloadEpisodes(seriesDataPath, seriesId, cancellationToken).ConfigureAwait(false);
+                        await DownloadSeasons(seriesDataPath, seriesId, cancellationToken).ConfigureAwait(false);
                         await DownloadCast(seriesDataPath, seriesId, cancellationToken).ConfigureAwait(false);
                     }
 
@@ -526,7 +528,7 @@ namespace MediaBrowser.Providers.TV.TvMaze
         }
 
         /// <summary>
-        /// Extracts info for each episode into invididual json files so that they can be easily accessed
+        /// Extracts cast info for a series.
         /// </summary>
         /// <param name="seriesDataPath">The series data path.</param>
         /// <param name="seriesId">The tvmaze id.</param>
@@ -556,6 +558,38 @@ namespace MediaBrowser.Providers.TV.TvMaze
 
                 var castPath = GetCastPath(seriesDataPath);
                 _jsonSerializer.SerializeToFile(persons.ToArray(), castPath);
+            }
+        }
+
+        /// <summary>
+        /// Extracts info for each season into invididual json files so that they can be easily accessed
+        /// </summary>
+        /// <param name="seriesDataPath">The series data path.</param>
+        /// <param name="seriesId">The tvmaze id.</param>
+        /// <param name="cancellationToken">The cancellationToken.</param>
+        /// <returns>Task.</returns>
+        private async Task DownloadSeasons(string seriesDataPath, string seriesId, CancellationToken cancellationToken)
+        {
+            var url = string.Format(UrlSeriesSeasons, seriesId);
+
+            using (var resultStream = await _httpClient.Get(new HttpRequestOptions
+            {
+                Url = url,
+                ResourcePool = TvMazeResourcePool,
+                CancellationToken = cancellationToken
+
+            }).ConfigureAwait(false))
+            {
+                var mazeSeasons = _jsonSerializer.DeserializeFromStream<MazeSeason[]>(resultStream);
+
+                foreach (var mazeSeason in mazeSeasons)
+                {
+                    if (mazeSeason.number.HasValue)
+                    {
+                        var seasonFilename = GetSeasonPath(seriesDataPath, mazeSeason.number.Value);
+                        _jsonSerializer.SerializeToFile(mazeSeason, seasonFilename);
+                    }
+                }
             }
         }
 
@@ -599,6 +633,13 @@ namespace MediaBrowser.Providers.TV.TvMaze
             var episodeFilename = string.Format("episode-{0}-{1}.json", seasonNumber, episodeNumber);
 
             return Path.Combine(seriesDataPath, episodeFilename);
+        }
+
+        public string GetSeasonPath(string seriesDataPath, int seasonNumber)
+        {
+            var seasonFilename = string.Format("season-{0}.json", seasonNumber);
+
+            return Path.Combine(seriesDataPath, seasonFilename);
         }
 
         private void DeleteCacheFiles(string path)

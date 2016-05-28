@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MediaBrowser.Providers.TvMaze
+namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// Information about a particular Actor.

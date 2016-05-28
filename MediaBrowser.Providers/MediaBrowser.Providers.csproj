@@ -190,6 +190,7 @@
     <Compile Include="TV\TvMaze\Models\MazeChannel.cs" />
     <Compile Include="TV\TvMaze\Models\MazeCountry.cs" />
     <Compile Include="TV\TvMaze\Models\MazeCrewCredit.cs" />
+    <Compile Include="TV\TvMaze\Models\MazeSeason.cs" />
     <Compile Include="TV\TvMaze\Models\MazeEpisode.cs" />
     <Compile Include="TV\TvMaze\Models\MazeExternals.cs" />
     <Compile Include="TV\TvMaze\Models\MazeImage.cs" />
@@ -199,6 +200,8 @@
     <Compile Include="TV\TvMaze\Models\MazeHuman.cs" />
     <Compile Include="TV\TvMaze\Models\MazeRating.cs" />
     <Compile Include="TV\TvMaze\Models\MazeSearchContainer.cs" />
+    <Compile Include="TV\TvMaze\TvMazeSeasonImageProvider.cs" />
+    <Compile Include="TV\TvMaze\TvMazeSeasonProvider.cs" />
     <Compile Include="TV\TvMaze\TvMazeEpisodeProvider.cs" />
     <Compile Include="TV\TvMaze\TvMazeAdapter.cs" />
     <Compile Include="TV\TvMaze\TvMazeSeriesProvider.cs" />

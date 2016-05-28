@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Providers.TvMaze
+﻿namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// Information about a particular Country and Timezone information.

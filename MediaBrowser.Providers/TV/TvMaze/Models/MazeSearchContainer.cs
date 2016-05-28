@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Providers.TvMaze
+﻿namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// A DeSerializable container to display the Show result and score of how close to query it is.

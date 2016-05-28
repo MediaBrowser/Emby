@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MediaBrowser.Providers.TvMaze
+namespace MediaBrowser.Providers.TV.TvMaze.Models
 {
     /// <summary>
     /// Holds links for Images of items.
