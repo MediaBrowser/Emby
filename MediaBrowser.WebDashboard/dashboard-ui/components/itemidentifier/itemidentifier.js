@@ -150,6 +150,15 @@
         var html = '';
         var cssClass = "card";
 
+        var title = result.SearchProviderName || "";
+        title = title + "\n";
+
+        if (result.ProviderIds) {
+            for (var idItem in result.ProviderIds) {
+                title = title + "\n" + idItem + ": " + result.ProviderIds[idItem];
+            }
+        }
+
         if (currentItemType == "Episode") {
             cssClass += " backdropCard";
         }
@@ -160,7 +169,7 @@
             cssClass += " portraitCard";
         }
 
-        html += '<div class="' + cssClass + '">';
+        html += '<div class="' + cssClass + '" title="' + title + '">';
         html += '<div class="cardBox">';
         html += '<div class="cardScalable">';
         html += '<div class="cardPadder"></div>';
@@ -179,7 +188,7 @@
         html += '</div>';
 
         html += '<div class="cardFooter outerCardFooter">';
-        html += '<div class="cardText cardTextCentered">' + result.Name + '</div>';
+        html += '<div class="cardText2Lines cardTextCentered">' + result.Name + '</div>';
 
         html += '<div class="cardText cardTextCentered">';
         html += result.ProductionYear || '&nbsp;';
