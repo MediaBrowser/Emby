@@ -26,7 +26,7 @@ using MediaBrowser.Providers.TvMaze;
 
 namespace MediaBrowser.Providers.TV.TvMaze
 {
-    public class TvMazeSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IItemIdentityProvider<SeriesInfo>, IHasOrder
+    public class TvMazeSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
         internal readonly SemaphoreSlim TvMazeResourcePool = new SemaphoreSlim(2, 2);
         internal static TvMazeSeriesProvider Current { get; private set; }
