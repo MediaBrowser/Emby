@@ -38,7 +38,12 @@ namespace MediaBrowser.Providers.TV
         {
             var result = new MetadataResult<Episode>
             {
-                Item = new Episode()
+                Item = new Episode
+				{
+                    IndexNumber = info.IndexNumber,
+                    ParentIndexNumber = info.ParentIndexNumber,
+                    IndexNumberEnd = info.IndexNumberEnd
+				}
             };
 
             // Allowing this will dramatically increase scan times
@@ -58,7 +63,7 @@ namespace MediaBrowser.Providers.TV
                 result.Item.SetProviderId(MetadataProviders.Imdb, imdbId);
                 result.HasMetadata = true;
 
-                await new OmdbProvider(_jsonSerializer, _httpClient).Fetch(result.Item, imdbId, info.MetadataLanguage, info.MetadataCountryCode, cancellationToken).ConfigureAwait(false);
+                await new OmdbProvider(_jsonSerializer, _httpClient).Fetch(result, imdbId, info.MetadataLanguage, info.MetadataCountryCode, cancellationToken).ConfigureAwait(false);
             }
 
             return result;

@@ -361,22 +361,6 @@ namespace MediaBrowser.XbmcMetadata.Parsers
                         break;
                     }
 
-                case "outline":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            var hasShortOverview = item as IHasShortOverview;
-
-                            if (hasShortOverview != null)
-                            {
-                                hasShortOverview.ShortOverview = val;
-                            }
-                        }
-                        break;
-                    }
-
                 case "biography":
                 case "plot":
                 case "review":

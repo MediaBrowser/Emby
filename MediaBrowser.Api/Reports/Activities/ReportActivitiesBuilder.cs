@@ -97,7 +97,7 @@ namespace MediaBrowser.Api.Reports
                         HeaderMetadata.Type,
                         HeaderMetadata.Severity,
 						HeaderMetadata.Name,
-                        HeaderMetadata.ShortOverview,
+                        //HeaderMetadata.ShortOverview,
 						HeaderMetadata.Overview,
                         //HeaderMetadata.UserId
                         //HeaderMetadata.Item,
@@ -135,11 +135,11 @@ namespace MediaBrowser.Api.Reports
                     option.Header.CanGroup = false;
                     break;
 
-                case HeaderMetadata.ShortOverview:
-                    option.Column = (i, r) => i.ShortOverview;
-                    option.Header.SortField = "";
-                    option.Header.CanGroup = false;
-                    break;
+                //case HeaderMetadata.ShortOverview:
+                //    option.Column = (i, r) => i.ShortOverview;
+                //    option.Header.SortField = "";
+                //    option.Header.CanGroup = false;
+                //    break;
 
                 case HeaderMetadata.Type:
                     option.Column = (i, r) => i.Type;
