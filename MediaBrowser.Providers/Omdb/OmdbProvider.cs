@@ -124,16 +124,19 @@ namespace MediaBrowser.Providers.Omdb
 
                 if (!string.IsNullOrWhiteSpace(omdbItem.Actors))
                 {
-                    var actorList = omdbItem.Actors.Split(new []{',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+                    var actorList = result.Actors.Split(',');
                     foreach (var actor in actorList)
                     {
-                        var person = new PersonInfo
+                        if (!string.IsNullOrWhiteSpace(actor))
                         {
-                            Name = actor,
-                            Type = PersonType.Actor
-                        };
+                            var person = new PersonInfo
+                            {
+                                Name = actor.Trim(),
+                                Type = PersonType.Actor
+                            };
 
-                        result.AddPerson(person);
+                            result.AddPerson(person);
+                        }
                     }
                 }
 
