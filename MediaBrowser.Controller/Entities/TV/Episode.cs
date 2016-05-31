@@ -11,8 +11,20 @@ namespace MediaBrowser.Controller.Entities.TV
     /// <summary>
     /// Class Episode
     /// </summary>
-    public class Episode : Video, IHasLookupInfo<EpisodeInfo>, IHasSeries
+    public class Episode : Video, IHasTrailers, IHasLookupInfo<EpisodeInfo>, IHasSeries
+
     {
+        public Episode()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            LocalTrailerIds = new List<Guid>();
+            RemoteTrailerIds = new List<Guid>();
+        }
+
+        public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
         /// <summary>
         /// Gets the season in which it aired.
         /// </summary>
