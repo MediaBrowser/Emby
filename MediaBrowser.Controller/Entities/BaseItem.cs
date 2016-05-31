@@ -1246,7 +1246,7 @@ namespace MediaBrowser.Controller.Entities
                 lang = ConfigurationManager.Configuration.PreferredMetadataLanguage;
             }
 
-            return lang;
+            return lang.Split('-')[0].ToLower();
         }
 
         /// <summary>
