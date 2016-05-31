@@ -76,7 +76,7 @@ namespace MediaBrowser.Providers.TV
                 RatingType = RatingType.Score
             }));
 
-            var language = item.GetPreferredMetadataLanguage();
+            var language = item.GetPreferredMetadataLanguage().Split('-')[0].ToLower();
 
             var isLanguageEn = string.Equals(language, "en", StringComparison.OrdinalIgnoreCase);
 
