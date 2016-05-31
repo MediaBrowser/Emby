@@ -53,7 +53,7 @@ namespace MediaBrowser.Providers.BoxSets
 
             if (!string.IsNullOrEmpty(tmdbId))
             {
-                var language = item.GetPreferredMetadataLanguage();
+                var language = item.GetPreferredMetadataLanguage().Split('-')[0].ToLower();
 
                 var mainResult = await MovieDbBoxSetProvider.Current.GetMovieDbResult(tmdbId, null, cancellationToken).ConfigureAwait(false);
 
