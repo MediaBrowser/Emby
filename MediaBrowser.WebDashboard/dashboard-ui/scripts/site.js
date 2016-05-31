@@ -1091,14 +1091,10 @@ var Dashboard = {
         });
     },
 
-    setPageTitle: function (title, documentTitle) {
+    setPageTitle: function (title) {
 
         LibraryMenu.setTitle(title || 'Emby');
-
-        documentTitle = documentTitle || title;
-        if (documentTitle) {
-            document.title = documentTitle;
-        }
+        document.title = (title || 'Emby');
     },
 
     getSupportedRemoteCommands: function () {

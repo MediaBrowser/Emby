@@ -426,14 +426,8 @@
             if (selected) {
                 link.classList.add('selectedSidebarLink');
 
-                var title = '';
-
-                var secondaryTitle = (link.innerText || link.textContent).trim();
-                title += secondaryTitle;
-
-                var documentTitle = secondaryTitle;
-
-                Dashboard.setPageTitle(title, documentTitle);
+                var title = (link.innerText || link.textContent).trim();
+                Dashboard.setPageTitle(title);
 
             } else {
                 link.classList.remove('selectedSidebarLink');
