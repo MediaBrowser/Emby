@@ -1,5 +1,7 @@
 ﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
 using System;
@@ -30,16 +32,19 @@ namespace MediaBrowser.Providers.Omdb
             Current = this;
         }
 
-        public async Task Fetch(BaseItem item, string imdbId, string language, string country, CancellationToken cancellationToken)
+        public async Task Fetch<T>(MetadataResult<T> metadataResult, string imdbId, string language, string country, CancellationToken cancellationToken)
+            where T : BaseItem
         {
             if (string.IsNullOrWhiteSpace(imdbId))
             {
                 throw new ArgumentNullException("imdbId");
             }
 
+            var item = metadataResult.Item;
+
             var imdbParam = imdbId.StartsWith("tt", StringComparison.OrdinalIgnoreCase) ? imdbId : "tt" + imdbId;
 
-            var url = string.Format("https://www.omdbapi.com/?i={0}&tomatoes=true", imdbParam);
+            var url = string.Format("https://www.omdbapi.com/?i={0}&plot=full&tomatoes=true&r=json", imdbParam);
 
             using (var stream = await _httpClient.Get(new HttpRequestOptions
             {
@@ -73,8 +78,8 @@ namespace MediaBrowser.Providers.Omdb
 
                 int year;
 
-                if (!string.IsNullOrEmpty(result.Year)
-                    && int.TryParse(result.Year, NumberStyles.Number, _usCulture, out year)
+                if (!string.IsNullOrEmpty(result.Year) && result.Year.Length >= 4
+                    && int.TryParse(result.Year.Substring(0, 4), NumberStyles.Number, _usCulture, out year)
                     && year >= 0)
                 {
                     item.ProductionYear = year;
@@ -129,6 +134,46 @@ namespace MediaBrowser.Providers.Omdb
                     item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
                 }
 
+                if (!string.IsNullOrWhiteSpace(result.Actors))
+                {
+                    var actorList = result.Actors.Split(',');
+                    foreach (var actor in actorList)
+                    {
+                        if (!string.IsNullOrWhiteSpace(actor))
+                        {
+                            var person = new PersonInfo
+                            {
+                                Name = actor.Trim(),
+                                Type = PersonType.Actor
+                            };
+
+                            metadataResult.AddPerson(person);
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.Director))
+                {
+                    var person = new PersonInfo
+                    {
+                        Name = result.Director.Trim(),
+                        Type = PersonType.Director
+                    };
+
+                    metadataResult.AddPerson(person);
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.Writer))
+                {
+                    var person = new PersonInfo
+                    {
+                        Name = result.Writer.Trim(),
+                        Type = PersonType.Writer
+                    };
+
+                    metadataResult.AddPerson(person);
+                }
+
                 ParseAdditionalMetadata(item, result);
             }
         }
@@ -168,12 +213,7 @@ namespace MediaBrowser.Providers.Omdb
                 hasAwards.AwardSummary = WebUtility.HtmlDecode(result.Awards);
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                // Imdb plots are usually pretty short
-                hasShortOverview.ShortOverview = result.Plot;
-            }
+            item.Overview = result.Plot;
         }
 
         private bool ShouldFetchGenres(BaseItem item)
