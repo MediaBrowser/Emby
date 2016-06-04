@@ -578,7 +578,7 @@
                 if (typeof (options) === 'string') {
                     options = { ids: [options] };
                 }
-
+                currentPlayer.stop();
                 currentPlayer.play(options);
             });
         };

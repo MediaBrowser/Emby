@@ -1,17 +1,6 @@
-﻿#mediaPlayer {
-    z-index: 1098;
-    position: fixed;
-    background-color: transparent;
-    background-color: rgba(0, 0, 0, 0.6);
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-#videoPlayer {
+﻿#videoPlayer {
     z-index: 99997;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -36,7 +25,7 @@
 }
 
 .videoControls {
-    position: fixed;
+    position: absolute;
     left: 0;
     bottom: 0;
     right: 0;
@@ -204,7 +193,7 @@
     ***************************************/
 
 #videoPlayer, .itemVideo {
-    position: fixed !important;
+    position: absolute !important;
     top: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
@@ -378,3 +367,18 @@ video::-webkit-media-text-track-background {
     margin: auto;
     display: inline-block;
 }
+
+/*  Mini Player
+    ***************************************/
+
+#mediaPlayer.mini{
+    position: fixed;
+    top: 75% !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 75% !important;
+    width: 25% !important;
+    height: 25% !important;
+    z-index: 99997; /* Show the media player above everything else*/
+}
+/****************************************/
