@@ -370,7 +370,19 @@ video::-webkit-media-text-track-background {
 
 /*  Mini Player
     ***************************************/
-
+#mediaPlayer{
+    position:fixed;
+    top:0%;
+    bottom:0;
+    right:0;
+    left:0%;
+    width:100%;
+    height:100%;
+    z-index: 99997; /* Show the media player above everything else*/
+    transition-timing-function: ease-in-out;
+    transition-duration: .5s;
+    transition-property: height, top, left, right, bottom, width;
+}
 #mediaPlayer.mini{
     position: fixed;
     top: 75% !important;
@@ -379,6 +391,5 @@ video::-webkit-media-text-track-background {
     left: 75% !important;
     width: 25% !important;
     height: 25% !important;
-    z-index: 99997; /* Show the media player above everything else*/
 }
 /****************************************/
