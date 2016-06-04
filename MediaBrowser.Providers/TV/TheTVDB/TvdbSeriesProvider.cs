@@ -713,7 +713,7 @@ namespace MediaBrowser.Providers.TV
                                     DateTime date;
                                     if (DateTime.TryParse(val, out date))
                                     {
-                                        airDate = date.ToUniversalTime();
+                                        airDate = date;
                                     }
                                 }
 
@@ -1016,7 +1016,6 @@ namespace MediaBrowser.Providers.TV
                                     DateTime date;
                                     if (DateTime.TryParse(val, out date))
                                     {
-                                        date = date.ToUniversalTime();
 
                                         item.PremiereDate = date;
                                         item.ProductionYear = date.Year;

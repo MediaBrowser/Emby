@@ -173,7 +173,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.release_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                             {
-                                remoteResult.PremiereDate = r.ToUniversalTime();
+                                remoteResult.PremiereDate = r;
                                 remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                             }
                         }
@@ -225,7 +225,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.first_air_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                             {
-                                remoteResult.PremiereDate = r.ToUniversalTime();
+                                remoteResult.PremiereDate = r;
                                 remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                             }
                         }

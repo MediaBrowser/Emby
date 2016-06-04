@@ -94,7 +94,7 @@ namespace MediaBrowser.Providers.Movies
                     // These dates are always in this exact format
                     if (DateTime.TryParse(obj.release_date, _usCulture, DateTimeStyles.None, out r))
                     {
-                        remoteResult.PremiereDate = r.ToUniversalTime();
+                        remoteResult.PremiereDate = r;
                         remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                     }
                 }
