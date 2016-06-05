@@ -862,7 +862,7 @@
             if (self.isMini()) {
                 //Check that the location of the mouse, or the event is on the mini player, otherwise dont break the idle state of the player
                 //Check the path of the bubble for the video player
-                if (event && event.originalEvent && event.originalEvent.path.indexOf($('#videoPlayer')[0]) === -1) {
+                if (event && event && event.path.indexOf(self.mediaContainer) === -1) {
                     //This event is not displatched to the video player, we can skip triggering the active state
                     return;
                 }

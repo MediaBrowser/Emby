@@ -371,6 +371,7 @@ video::-webkit-media-text-track-background {
 /*  Mini Player
     ***************************************/
 #mediaPlayer{
+    pointer-events: none;
     position:fixed;
     top:0%;
     bottom:0;
@@ -383,6 +384,9 @@ video::-webkit-media-text-track-background {
     transition-duration: .5s;
     transition-property: height, top, left, right, bottom, width;
 }
+#mediaPlayer *{
+    pointer-events: all;
+}
 #mediaPlayer.mini{
     position: fixed;
     top: 75% !important;
@@ -391,5 +395,6 @@ video::-webkit-media-text-track-background {
     left: 75% !important;
     width: 25% !important;
     height: 25% !important;
+    box-shadow: -10px -10px 10px 0px rgba(50, 50, 50, 0.5);
 }
 /****************************************/
