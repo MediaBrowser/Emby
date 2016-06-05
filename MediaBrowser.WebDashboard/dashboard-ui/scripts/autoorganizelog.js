@@ -8,6 +8,19 @@
 
     var currentResult;
 
+    function parentWithClass(elem, className) {
+
+        while (!elem.classList || !elem.classList.contains(className)) {
+            elem = elem.parentNode;
+
+            if (!elem) {
+                return null;
+            }
+        }
+
+        return elem;
+    }
+
     function showStatusMessage(id) {
 
         var item = currentResult.Items.filter(function (i) {
@@ -160,14 +173,19 @@
 
             html += '<tr>';
 
-            html += '<td>';
+            html += '<td class="spinnerCell">';
+            var spinnerActive = item.IsInProgress ? 'active' : '';
+            html += '<paper-spinner class="syncSpinner"' + spinnerActive + ' style="vertical-align: middle; /">';
+            html += '</td>';
+
+            html += '<td data-title="Date">';
 
             var date = datetime.parseISO8601Date(item.Date, true);
             html += date.toLocaleDateString();
 
             html += '</td>';
 
-            html += '<td>';
+            html += '<td data-title="Source" class="fileCell">';
             var status = item.Status;
 
             if (item.IsInProgress) {
@@ -191,12 +209,7 @@
             }
             html += '</td>';
 
-            html += '<td>';
-            var spinnerActive = item.IsInProgress ? 'active' : '';
-            html += '<paper-spinner class="syncSpinner"' + spinnerActive + ' style="vertical-align: middle; /">';
-            html += '</td>';
-
-            html += '<td>';
+            html += '<td data-title="Destination" class="fileCell">';
             html += item.TargetPath || '';
             html += '</td>';
 
@@ -215,28 +228,10 @@
             return html;
         }).join('');
 
-        var elem = $('.resultBody', page).html(rows).parents('.tblOrganizationResults').table('refresh').trigger('create');
+        var resultBody = page.querySelector('.resultBody');
+        resultBody.innerHTML = rows;
 
-        $('.btnShowStatusMessage', elem).on('click', function () {
-
-            var id = this.getAttribute('data-resultid');
-
-            showStatusMessage(id);
-        });
-
-        $('.btnProcessResult', elem).on('click', function () {
-
-            var id = this.getAttribute('data-resultid');
-
-            organizeFile(page, id);
-        });
-
-        $('.btnDeleteResult', elem).on('click', function () {
-
-            var id = this.getAttribute('data-resultid');
-
-            deleteOriginalFile(page, id);
-        });
+        resultBody.addEventListener('click', handleItemClick);
 
         var pagingHtml = LibraryBrowser.getQueryPagingHtml({
             startIndex: query.StartIndex,
@@ -246,42 +241,67 @@
             updatePageSizeSetting: false
         });
 
-        $(page)[0].querySelector('.listTopPaging').innerHTML = pagingHtml;
+        var topPaging = page.querySelector('.listTopPaging');
+        topPaging.innerHTML = pagingHtml;
 
-        if (result.TotalRecordCount > query.Limit && result.TotalRecordCount > 50) {
+        var bottomPaging = page.querySelector('.listBottomPaging');
+        bottomPaging.innerHTML = pagingHtml;
 
-            $('.listBottomPaging', page).html(pagingHtml).trigger('create');
-        } else {
+        var btnNextTop = topPaging.querySelector(".btnNextPage");
+        var btnNextBottom = bottomPaging.querySelector(".btnNextPage");
+        var btnPrevTop = topPaging.querySelector(".btnPreviousPage");
+        var btnPrevBottom = bottomPaging.querySelector(".btnPreviousPage");
 
-            $('.listBottomPaging', page).empty();
-        }
-
-        $('.btnNextPage', page).on('click', function () {
-
+        btnNextTop.addEventListener('click', function () {
             query.StartIndex += query.Limit;
             reloadItems(page, true);
         });
 
-        $('.btnPreviousPage', page).on('click', function () {
+        btnNextBottom.addEventListener('click', function () {
+            query.StartIndex += query.Limit;
+            reloadItems(page, true);
+        });
 
+        btnPrevTop.addEventListener('click', function () {
             query.StartIndex -= query.Limit;
             reloadItems(page, true);
         });
 
+        btnPrevBottom.addEventListener('click', function () {
+            query.StartIndex -= query.Limit;
+            reloadItems(page, true);
+        });
+
+        var btnClearLog = page.querySelector('.btnClearLog');
+
         if (result.TotalRecordCount) {
-            $('.btnClearLog', page).show();
+            btnClearLog.classList.remove('hide');
         } else {
-            $('.btnClearLog', page).hide();
+            btnClearLog.classList.add('hide');
         }
     }
 
-    function onWebSocketMessage(e, msg) {
+    function handleItemClick(e) {
 
-        var page = $.mobile.activePage;
+        var buttonStatus = parentWithClass(e.target, 'btnShowStatusMessage');
+        if (buttonStatus) {
 
-        if ((msg.MessageType == 'ScheduledTaskEnded' && msg.Data.Key == 'AutoOrganize') || msg.MessageType == 'AutoOrganizeUpdate') {
+            var id = buttonStatus.getAttribute('data-resultid');
+            showStatusMessage(id);
+        }
 
-            reloadItems(page, false);
+        var buttonOrganize = parentWithClass(e.target, 'btnProcessResult');
+        if (buttonOrganize) {
+
+            var id = buttonOrganize.getAttribute('data-resultid');
+            organizeFile(e.view, id);
+        }
+
+        var buttonDelete = parentWithClass(e.target, 'btnDeleteResult');
+        if (buttonDelete) {
+
+            var id = buttonDelete.getAttribute('data-resultid');
+            deleteOriginalFile(e.view, id);
         }
     }
 
@@ -301,47 +321,55 @@
          }];
     }
 
-    $(document).on('pageinit', "#libraryFileOrganizerLogPage", function () {
 
-        var page = this;
+    return function (view, params) {
 
-        $('.btnClearLog', page).on('click', function () {
+        function onWebSocketMessage(e, msg) {
+
+            if ((msg.MessageType == 'ScheduledTaskEnded' && msg.Data.Key == 'AutoOrganize') || msg.MessageType == 'AutoOrganizeUpdate') {
+
+                reloadItems(view, false);
+            }
+        }
+
+        var clearButton = view.querySelector('.btnClearLog');
+        clearButton.addEventListener('click', function () {
 
             ApiClient.clearOrganizationLog().then(function () {
-                reloadItems(page, true);
+                reloadItems(view, true);
             }, Dashboard.processErrorResponse);
         });
 
-    }).on('pageshow', '#libraryFileOrganizerLogPage', function () {
+        view.addEventListener('viewshow', function (e) {
 
-        LibraryMenu.setTabs('autoorganize', 0, getTabs);
+            LibraryMenu.setTabs('autoorganize', 0, getTabs);
+            Dashboard.showLoadingMsg();
 
-        var page = this;
+            reloadItems(view, true);
 
-        reloadItems(page, true);
+            //var organizeButton = view.querySelector('.btnOrganize');
 
-        // on here
-        $('.btnOrganize', page).taskButton({
-            mode: 'on',
-            progressElem: page.querySelector('.organizeProgress'),
-            panel: $('.organizeTaskPanel', page),
-            taskKey: 'AutoOrganize'
+            $('.btnOrganize', view).taskButton({
+                mode: 'on',
+                progressElem: view.querySelector('.organizeProgress'),
+                panel: view.querySelector('.organizeTaskPanel'),
+                taskKey: 'AutoOrganize'
+            });
+
+            Events.on(ApiClient, 'websocketmessage', onWebSocketMessage);
         });
 
-        Events.on(ApiClient, 'websocketmessage', onWebSocketMessage);
+        view.addEventListener('viewhide', function (e) {
 
-    }).on('pagebeforehide', '#libraryFileOrganizerLogPage', function () {
+            currentResult = null;
 
-        var page = this;
+            //var organizeButton = view.querySelector('.btnOrganize');
 
-        currentResult = null;
+            $('.btnOrganize', page).taskButton({
+                mode: 'off'
+            });
 
-        // off here
-        $('.btnOrganize', page).taskButton({
-            mode: 'off'
+            Events.off(ApiClient, 'websocketmessage', onWebSocketMessage);
         });
-
-        Events.off(ApiClient, 'websocketmessage', onWebSocketMessage);
-    });
-
+    };
 });
