@@ -10,15 +10,19 @@ define([], function () {
 
         var onLoadHandler = function () {
 
+            setSourceHandler();
+            img.removeEventListener("error", onErrorHandler, false);
+            img.removeEventListener("load", onLoadHandler, false);
+            onLoad(elem);
+        };
+
+        var setSourceHandler = function () {
+
             if (elem.tagName !== "IMG") {
                 elem.style.backgroundImage = "url('" + url + "')";
             } else {
                 elem.setAttribute("src", url);
             }
-
-            img.removeEventListener("error", onErrorHandler, false);
-            img.removeEventListener("load", onLoadHandler, false);
-            onLoad(elem);
         };
 
         var img = new Image();
@@ -27,6 +31,9 @@ define([], function () {
             // only register events if callback function is specified
             img.addEventListener("error", onErrorHandler, false);
             img.addEventListener("load", onLoadHandler, false);
+        }
+        else {
+            setSourceHandler();
         }
 
         img['src'] = url;
