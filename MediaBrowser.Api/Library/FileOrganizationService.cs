@@ -182,11 +182,9 @@ namespace MediaBrowser.Api.Library
                 TargetFolder = request.TargetFolder
             });
 
-            // For async processing (close dialog early instead of waiting until the file has been copied)
-            //var tasks = new Task[] { task };
-            //Task.WaitAll(tasks, 8000);
-
-            Task.WaitAll(task);
+            // Async processing (close dialog early instead of waiting until the file has been copied)
+            // Wait 2s for exceptions that may occur to have them forwarded to the client for immediate error display
+            task.Wait(2000);
         }
 
         public object Get(GetSmartMatchInfos request)
