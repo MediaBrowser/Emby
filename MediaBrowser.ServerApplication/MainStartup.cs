@@ -188,7 +188,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return true;
             }
         }
 
@@ -200,7 +200,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return !_isRunningAsService;
+                return true;
             }
         }
 
@@ -540,10 +540,15 @@ namespace MediaBrowser.ServerApplication
 
         public static void Restart()
         {
-            DisposeAppHost();
-
-            if (!_isRunningAsService)
+            if (_isRunningAsService)
             {
+                RestartWindowsService();
+            }
+            else
+            { 
+                DisposeAppHost();
+
+            
                 //_logger.Info("Hiding server notify icon");
                 //_serverNotifyIcon.Visible = false;
 
@@ -589,6 +594,22 @@ namespace MediaBrowser.ServerApplication
             {
                 service.Stop();
             }
+        }
+        private static void RestartWindowsService()
+        {
+            _logger.Info("Restarting background service");
+
+            var startInfo = new ProcessStartInfo
+            {
+                
+                FileName = "cmd.exe",
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                Verb = "runas",
+                ErrorDialog = false,
+                Arguments = "/c sc stop Emby && sc start Emby"
+            };
+            Process.Start(startInfo);
         }
 
         private static async Task InstallVcredist2013IfNeeded(ApplicationHost appHost, ILogger logger)
