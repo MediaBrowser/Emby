@@ -2213,7 +2213,7 @@
                 var dataSrc = "";
 
                 if (options.lazy && imgUrl) {
-                    imageCssClass += " lazy";
+                    imageCssClass += " lazy cardImageBackground";
                     dataSrc = ' data-src="' + imgUrl + '"';
                 }
 

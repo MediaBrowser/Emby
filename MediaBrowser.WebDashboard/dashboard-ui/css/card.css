@@ -114,6 +114,10 @@
     border-radius: 3px;
 }
 
+.card .cardImageBackground {
+    background-color: rgba(100, 100, 100, .1);
+}
+
 .defaultBackground .cardImage, .ui-body-b .visualCardBox {
     background-color: #262626;
 }

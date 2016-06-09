@@ -1,16 +1,44 @@
 define([], function () {
 
-    function loadImage(elem, url) {
+    function loadImage(elem, url, onLoad) {
 
-        if (elem.tagName !== "IMG") {
+        var onErrorHandler = function () {
+            //addClass(ele, "imageError");
+            img.removeEventListener("error", onErrorHandler, false);
+            img.removeEventListener("load", onLoadHandler, false);
+        };
 
-            elem.style.backgroundImage = "url('" + url + "')";
-            return Promise.resolve(elem);
+        var onLoadHandler = function () {
 
-        } else {
-            elem.setAttribute("src", url);
-            return Promise.resolve(elem);
+            setSourceHandler();
+            img.removeEventListener("error", onErrorHandler, false);
+            img.removeEventListener("load", onLoadHandler, false);
+            onLoad(elem);
+        };
+
+        var setSourceHandler = function () {
+
+            if (elem.tagName !== "IMG") {
+                elem.style.backgroundImage = "url('" + url + "')";
+            } else {
+                elem.setAttribute("src", url);
+            }
+        };
+
+        var img = new Image();
+
+        if (onLoad) {
+            // only register events if callback function is specified
+            img.addEventListener("error", onErrorHandler, false);
+            img.addEventListener("load", onLoadHandler, false);
         }
+        else {
+            setSourceHandler();
+        }
+
+        img['src'] = url;
+
+        return Promise.resolve(elem);
     }
 
     return {

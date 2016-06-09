@@ -65,9 +65,14 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
         }
         if (source) {
             if (enableFade && !layoutManager.tv && enableEffects !== false) {
-                imageFetcher.loadImage(elem, source).then(fadeIn);
+                imageFetcher.loadImage(elem, source, function () {
+                    elem.classList.remove('cardImageBackground');
+                    fadeIn(elem);
+                });
             } else {
-                imageFetcher.loadImage(elem, source);
+                imageFetcher.loadImage(elem, source, function () {
+                    elem.classList.remove('cardImageBackground');
+                });;
             }
             elem.setAttribute("data-src", '');
         }
