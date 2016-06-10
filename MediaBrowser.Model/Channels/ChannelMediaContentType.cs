@@ -18,6 +18,8 @@
 
         TvExtra = 7,
 
-        GameExtra = 8
+        GameExtra = 8,
+
+        Person = 9
     }
 }

@@ -133,7 +133,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             if (query.IsFavorite.HasValue)
             {
                 var val = query.IsFavorite.Value;
-                channels = channels.Where(i => _userDataManager.GetUserData(user,  i).IsFavorite == val)
+                channels = channels.Where(i => _userDataManager.GetUserData(user, i).IsFavorite == val)
                     .ToList();
             }
 
@@ -1280,6 +1280,10 @@ namespace MediaBrowser.Server.Implementations.Channels
                 {
                     item = GetItemById<Movie>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
+                else if (info.ContentType == ChannelMediaContentType.Person)
+                {
+                    item = GetItemById<Person>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
                 else if (info.ContentType == ChannelMediaContentType.Trailer || info.ExtraType == ExtraType.Trailer)
                 {
                     item = GetItemById<Trailer>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
@@ -1341,6 +1345,11 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 var mediaSource = info.MediaSources.FirstOrDefault();
                 item.Path = mediaSource == null ? null : mediaSource.Path;
+
+                if (info.People != null)
+                {
+                    channelAudioItem.Artists = info.People.Select(e => e.Name).ToList();
+                }
             }
 
             var channelVideoItem = item as Video;

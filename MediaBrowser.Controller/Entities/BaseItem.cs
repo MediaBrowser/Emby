@@ -1517,10 +1517,10 @@ namespace MediaBrowser.Controller.Entities
 
         public virtual string GetClientTypeName()
         {
-            if (IsFolder && SourceType == SourceType.Channel && !(this is Channel))
-            {
-                return "ChannelFolderItem";
-            }
+            ////if (IsFolder && SourceType == SourceType.Channel && !(this is Channel))
+            ////{
+            ////    return "ChannelFolderItem";
+            ////}
 
             return GetType().Name;
         }
