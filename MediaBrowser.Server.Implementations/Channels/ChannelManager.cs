@@ -1172,8 +1172,8 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             items = ApplyFilters(items, query.Filters, user);
 
-            var sortBy = query.SortBy.Length == 0 ? new[] { ItemSortBy.SortName } : query.SortBy;
-            items = _libraryManager.Sort(items, user, sortBy, query.SortOrder ?? SortOrder.Ascending);
+            //var sortBy = query.SortBy.Length == 0 ? new[] { ItemSortBy.SortName } : query.SortBy;
+            items = _libraryManager.Sort(items, user, query.SortBy, query.SortOrder ?? SortOrder.Ascending);
 
             var all = items.ToList();
             var totalCount = totalCountFromProvider ?? all.Count;
@@ -1270,6 +1270,14 @@ namespace MediaBrowser.Server.Implementations.Channels
                     item = GetItemById<Audio>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
             }
+            else if (info.MediaType == ChannelMediaType.Photo)
+            {
+                item = GetItemById<Photo>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+            }
+            else if (info.MediaType == ChannelMediaType.Person && info.ContentType == ChannelMediaContentType.Person)
+            {
+                    item = GetItemById<Person>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+            }
             else
             {
                 if (info.ContentType == ChannelMediaContentType.Episode)
@@ -1311,6 +1319,7 @@ namespace MediaBrowser.Server.Implementations.Channels
                 item.OfficialRating = info.OfficialRating;
                 item.DateCreated = info.DateCreated ?? DateTime.UtcNow;
                 item.Tags = info.Tags;
+                item.HomePageUrl = info.HomePageUrl;
             }
 
             var trailer = item as Trailer;
@@ -1336,6 +1345,17 @@ namespace MediaBrowser.Server.Implementations.Channels
                 forceUpdate = true;
             }
             item.ExternalId = info.Id;
+
+            var channelMusicAlbum = item as MusicAlbum;
+            if (channelMusicAlbum != null)
+            {
+                if (info.People != null)
+                {
+                    channelMusicAlbum.AlbumArtists = info.People.Select(e => e.Name).ToList();
+                    channelMusicAlbum.Artists = info.People.Select(e => e.Name).ToList();
+                    forceUpdate = true;
+                }
+            }
 
             var channelAudioItem = item as Audio;
             if (channelAudioItem != null)
