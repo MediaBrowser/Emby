@@ -1334,6 +1334,22 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
             item.ExternalId = info.Id;
 
+            var channelMusicAlbum = item as MusicAlbum;
+            if (channelMusicAlbum != null)
+            {
+                if (info.Artists != null)
+                {
+                    channelMusicAlbum.Artists.AddRange(info.Artists.Where(e => !channelMusicAlbum.Artists.Contains(e)));
+                    forceUpdate = true;
+                }
+
+                if (info.AlbumArtists != null)
+                {
+                    channelMusicAlbum.AlbumArtists.AddRange(info.AlbumArtists.Where(e => !channelMusicAlbum.AlbumArtists.Contains(e)));
+                    forceUpdate = true;
+                }
+            }
+
             var channelAudioItem = item as Audio;
             if (channelAudioItem != null)
             {
@@ -1342,6 +1358,12 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 var mediaSource = info.MediaSources.FirstOrDefault();
                 item.Path = mediaSource == null ? null : mediaSource.Path;
+
+                if (info.Artists != null)
+                {
+                    channelAudioItem.Artists.AddRange(info.Artists.Where(e => !channelAudioItem.Artists.Contains(e)));
+                    forceUpdate = true;
+                }
             }
 
             var channelVideoItem = item as Video;

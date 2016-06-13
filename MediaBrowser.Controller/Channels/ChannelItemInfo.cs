@@ -55,6 +55,10 @@ namespace MediaBrowser.Controller.Channels
 
         public string HomePageUrl { get; set; }
 
+        public List<string> Artists { get; set; }
+
+        public List<string> AlbumArtists { get; set; }
+
         public ChannelItemInfo()
         {
             MediaSources = new List<ChannelMediaInfo>();
