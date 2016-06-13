@@ -133,7 +133,7 @@ namespace MediaBrowser.Server.Implementations.Channels
             if (query.IsFavorite.HasValue)
             {
                 var val = query.IsFavorite.Value;
-                channels = channels.Where(i => _userDataManager.GetUserData(user,  i).IsFavorite == val)
+                channels = channels.Where(i => _userDataManager.GetUserData(user, i).IsFavorite == val)
                     .ToList();
             }
 
@@ -1172,8 +1172,8 @@ namespace MediaBrowser.Server.Implementations.Channels
         {
             items = ApplyFilters(items, query.Filters, user);
 
-            var sortBy = query.SortBy.Length == 0 ? new[] { ItemSortBy.SortName } : query.SortBy;
-            items = _libraryManager.Sort(items, user, sortBy, query.SortOrder ?? SortOrder.Ascending);
+            //var sortBy = query.SortBy.Length == 0 ? new[] { ItemSortBy.SortName } : query.SortBy;
+            items = _libraryManager.Sort(items, user, query.SortBy, query.SortOrder ?? SortOrder.Ascending);
 
             var all = items.ToList();
             var totalCount = totalCountFromProvider ?? all.Count;
@@ -1270,6 +1270,14 @@ namespace MediaBrowser.Server.Implementations.Channels
                     item = GetItemById<Audio>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
             }
+            else if (info.MediaType == ChannelMediaType.Photo)
+            {
+                item = GetItemById<Photo>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+            }
+            else if (info.MediaType == ChannelMediaType.Person && info.ContentType == ChannelMediaContentType.Person)
+            {
+                    item = GetItemById<Person>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+            }
             else
             {
                 if (info.ContentType == ChannelMediaContentType.Episode)
@@ -1279,6 +1287,10 @@ namespace MediaBrowser.Server.Implementations.Channels
                 else if (info.ContentType == ChannelMediaContentType.Movie)
                 {
                     item = GetItemById<Movie>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                }
+                else if (info.ContentType == ChannelMediaContentType.Person)
+                {
+                    item = GetItemById<Person>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
                 else if (info.ContentType == ChannelMediaContentType.Trailer || info.ExtraType == ExtraType.Trailer)
                 {
@@ -1334,6 +1346,17 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
             item.ExternalId = info.Id;
 
+            var channelMusicAlbum = item as MusicAlbum;
+            if (channelMusicAlbum != null)
+            {
+                if (info.People != null)
+                {
+                    channelMusicAlbum.AlbumArtists = info.People.Select(e => e.Name).ToList();
+                    channelMusicAlbum.Artists = info.People.Select(e => e.Name).ToList();
+                    forceUpdate = true;
+                }
+            }
+
             var channelAudioItem = item as Audio;
             if (channelAudioItem != null)
             {
@@ -1342,6 +1365,11 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 var mediaSource = info.MediaSources.FirstOrDefault();
                 item.Path = mediaSource == null ? null : mediaSource.Path;
+
+                if (info.People != null)
+                {
+                    channelAudioItem.Artists = info.People.Select(e => e.Name).ToList();
+                }
             }
 
             var channelVideoItem = item as Video;

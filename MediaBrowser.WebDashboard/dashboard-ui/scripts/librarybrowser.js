@@ -1102,6 +1102,9 @@
                 if (item.Type == "Channel") {
                     return "channelitems.html?id=" + id;
                 }
+                if (item.Type == "MusicAlbum") {
+                    return "itemdetails.html?id=" + id;
+                }
                 if ((item.IsFolder && item.SourceType == 'Channel') || item.Type == 'ChannelFolderItem') {
                     return "channelitems.html?id=" + item.ChannelId + '&folderId=' + item.Id;
                 }
@@ -1110,9 +1113,6 @@
                 }
 
                 if (item.Type == "BoxSet") {
-                    return "itemdetails.html?id=" + id;
-                }
-                if (item.Type == "MusicAlbum") {
                     return "itemdetails.html?id=" + id;
                 }
                 if (item.Type == "GameSystem") {

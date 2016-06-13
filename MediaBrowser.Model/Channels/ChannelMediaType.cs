@@ -6,6 +6,8 @@
 
         Video = 1,
 
-        Photo = 2
+        Photo = 2,
+
+        Person = 3
     }
 }
