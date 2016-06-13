@@ -1254,6 +1254,11 @@ namespace MediaBrowser.Server.Implementations.Channels
                 {
                     item = GetItemById<PhotoAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
+                else if (info.FolderType == ChannelFolderType.MusicArtist)
+                {
+                    item = GetItemById<MusicArtist>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item.SourceType = SourceType.Library;
+                }
                 else
                 {
                     item = GetItemById<Folder>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
@@ -1348,6 +1353,12 @@ namespace MediaBrowser.Server.Implementations.Channels
                     channelMusicAlbum.AlbumArtists.AddRange(info.AlbumArtists.Where(e => !channelMusicAlbum.AlbumArtists.Contains(e)));
                     forceUpdate = true;
                 }
+            }
+
+            var channelMusicArtist = item as MusicArtist;
+            if (channelMusicArtist != null)
+            {
+                channelMusicArtist.ProductionLocations = info.Studios;
             }
 
             var channelAudioItem = item as Audio;
