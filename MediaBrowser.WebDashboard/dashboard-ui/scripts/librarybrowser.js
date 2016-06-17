@@ -2209,11 +2209,15 @@
                 var transition = options.transition === false || !AppInfo.enableSectionTransitions ? '' : ' data-transition="slide"';
                 var onclick = item.onclick ? ' onclick="' + item.onclick + '"' : '';
                 html += '<a' + onclick + transition + ' class="' + anchorCssClass + '" href="' + href + '"' + defaultActionAttribute + '>';
-                html += '<div class="' + imageCssClass + '" style="' + style + '"' + dataSrc + '>';
+
                 if (icon) {
+                    html += '<div class="' + imageCssClass + '" style="' + style + '"' + dataSrc + '>';
                     html += '<iron-icon icon="' + icon + '"></iron-icon>';
+                    html += '</div>';
+                } else {
+                    html += '<img src="css/images/placeholder.png" class="' + imageCssClass + '" style="' + style + '"' + dataSrc + '>';
+                    html += '</img>';
                 }
-                html += '</div>';
 
                 if (item.LocationType == "Virtual" || item.LocationType == "Offline") {
                     if (options.showLocationTypeIndicator !== false) {
