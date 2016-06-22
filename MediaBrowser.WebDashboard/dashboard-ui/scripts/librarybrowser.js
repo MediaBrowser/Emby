@@ -1076,6 +1076,12 @@
                     return "channelitems.html?id=" + id;
                 }
                 if ((item.IsFolder && item.SourceType == 'Channel') || item.Type == 'ChannelFolderItem') {
+                    if (item.UserData && item.UserData.Key) {
+                        if (item.UserData.Key.substring(0, 7) === 'Artist-' || item.UserData.Key.substring(0, 9) === 'playlist_') {
+                            return "itemdetails.html?id=" + id;
+                        }
+                    }
+
                     return "channelitems.html?id=" + item.ChannelId + '&folderId=' + item.Id;
                 }
                 if (item.Type == "Program") {

@@ -1258,6 +1258,11 @@ namespace MediaBrowser.Server.Implementations.Channels
                 {
                     item = GetItemById<PhotoAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
                 }
+                else if (info.FolderType == ChannelFolderType.MusicArtist)
+                {
+                    item = GetItemById<MusicArtist>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item.SourceType = SourceType.Library;
+                }
                 else
                 {
                     item = GetItemById<Folder>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
@@ -1350,6 +1355,28 @@ namespace MediaBrowser.Server.Implementations.Channels
             }
             item.ExternalId = info.Id;
 
+            var channelMusicAlbum = item as MusicAlbum;
+            if (channelMusicAlbum != null)
+            {
+                if (info.Artists != null)
+                {
+                    channelMusicAlbum.Artists.AddRange(info.Artists.Where(e => !channelMusicAlbum.Artists.Contains(e)));
+                    forceUpdate = true;
+                }
+
+                if (info.AlbumArtists != null)
+                {
+                    channelMusicAlbum.AlbumArtists.AddRange(info.AlbumArtists.Where(e => !channelMusicAlbum.AlbumArtists.Contains(e)));
+                    forceUpdate = true;
+                }
+            }
+
+            var channelMusicArtist = item as MusicArtist;
+            if (channelMusicArtist != null)
+            {
+                channelMusicArtist.ProductionLocations = info.Studios;
+            }
+
             var channelAudioItem = item as Audio;
             if (channelAudioItem != null)
             {
@@ -1358,6 +1385,12 @@ namespace MediaBrowser.Server.Implementations.Channels
 
                 var mediaSource = info.MediaSources.FirstOrDefault();
                 item.Path = mediaSource == null ? null : mediaSource.Path;
+
+                if (info.Artists != null)
+                {
+                    channelAudioItem.Artists.AddRange(info.Artists.Where(e => !channelAudioItem.Artists.Contains(e)));
+                    forceUpdate = true;
+                }
             }
 
             var channelVideoItem = item as Video;

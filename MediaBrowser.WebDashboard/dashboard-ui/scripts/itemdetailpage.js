@@ -65,6 +65,14 @@
 
             window.scrollTo(0, 0);
 
+            if (item.AlbumArtists) {
+                item.Type = "MusicAlbum";
+            }
+
+            if (item.UserData && item.UserData.Key && item.UserData.Key.substring(0, 7) === 'Artist-') {
+                item.Type = "MusicArtist";
+            }
+
             renderImage(page, item, user);
 
             setInitialCollapsibleState(page, item, context, user);
