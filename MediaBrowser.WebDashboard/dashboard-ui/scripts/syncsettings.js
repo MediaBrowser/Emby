@@ -57,6 +57,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtSyncTempPath', page).val(),
+
                     callback: function (path) {
                         if (path) {
                             $('#txtSyncTempPath', page).val(path);
