@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Users;
+using MediaBrowser.Providers.Authentication;
 
 namespace MediaBrowser.Controller.Library
 {
@@ -216,5 +217,11 @@ namespace MediaBrowser.Controller.Library
         /// <param name="username">The username.</param>
         /// <returns>System.String.</returns>
         string MakeValidUsername(string username);
+
+        /// <summary>
+        /// Adds the parts.
+        /// </summary>
+        /// <param name="services">Add Directories Providers.</param>
+        void AddParts(IEnumerable<IDirectoriesProvider> providers);
     }
 }

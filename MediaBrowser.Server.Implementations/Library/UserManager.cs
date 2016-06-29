@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Providers.Authentication;
 
 namespace MediaBrowser.Server.Implementations.Library
 {
@@ -70,6 +71,9 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly Func<IConnectManager> _connectFactory;
         private readonly IServerApplicationHost _appHost;
         private readonly IFileSystem _fileSystem;
+
+        private Dictionary<string, IDirectoriesProvider> Directories { get; set; }
+        private IEnumerable<IDirectoriesProvider> DirectoriesProviders { get; set; }
 
         public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, IFileSystem fileSystem)
         {
@@ -1016,6 +1020,11 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 EventHelper.FireEventIfNotNull(UserConfigurationUpdated, this, new GenericEventArgs<User> { Argument = user }, _logger);
             }
+        }
+
+        public void AddParts(IEnumerable<IDirectoriesProvider> providers)
+        {
+            DirectoriesProviders = providers;
         }
     }
 }

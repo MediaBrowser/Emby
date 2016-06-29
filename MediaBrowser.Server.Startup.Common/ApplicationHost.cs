@@ -103,6 +103,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Common.Implementations.Updates;
 using System.Security.Cryptography.X509Certificates;
+using MediaBrowser.Providers.Authentication;
 
 namespace MediaBrowser.Server.Startup.Common
 {
@@ -800,6 +801,8 @@ namespace MediaBrowser.Server.Startup.Common
             ServerManager.AddWebSocketListeners(GetExports<IWebSocketListener>(false));
 
             StartServer();
+
+            UserManager.AddParts(GetExports<IDirectoriesProvider>());
 
             LibraryManager.AddParts(GetExports<IResolverIgnoreRule>(),
                                     GetExports<IVirtualFolderCreator>(),
