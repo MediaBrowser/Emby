@@ -215,8 +215,9 @@ namespace MediaBrowser.Server.Implementations.Library
             return builder.ToString();
         }
 
-        public async Task<bool> AuthenticateUser(string username, string passwordSha1, string passwordMd5, string remoteEndPoint)
+        public async Task<bool> AuthenticateUser(string username, string password, string passwordMd5, string remoteEndPoint)
         {
+            var passwordSha1 = GetSha1String(password);
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentNullException("username");
@@ -648,8 +649,9 @@ namespace MediaBrowser.Server.Implementations.Library
             return ChangeEasyPassword(user, GetSha1String(string.Empty));
         }
 
-        public async Task ChangePassword(User user, string newPasswordSha1)
+        public async Task ChangePassword(User user, string newPassword)
         {
+            var newPasswordSha1 = GetSha1String(newPassword);
             if (user == null)
             {
                 throw new ArgumentNullException("user");

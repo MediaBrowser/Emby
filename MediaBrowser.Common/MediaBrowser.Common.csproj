@@ -68,6 +68,7 @@
     <Compile Include="IApplicationHost.cs" />
     <Compile Include="Net\IHttpClient.cs" />
     <Compile Include="Net\INetworkManager.cs" />
+    <Compile Include="Net\CertUtilities.cs" />
     <Compile Include="Plugins\IDependencyModule.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Progress\ActionableProgress.cs" />

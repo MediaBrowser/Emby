@@ -102,6 +102,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Common.Implementations.Updates;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MediaBrowser.Server.Startup.Common
 {
@@ -909,33 +910,35 @@ namespace MediaBrowser.Server.Startup.Common
 
         private string GetCertificatePath(bool generateCertificate)
         {
-            if (!string.IsNullOrWhiteSpace(ServerConfigurationManager.Configuration.CertificatePath))
-            {
-                // Custom cert
-                return ServerConfigurationManager.Configuration.CertificatePath;
-            }
+            var certPath = ServerConfigurationManager.Configuration.CertificatePath ?? null;
 
-            // Generate self-signed cert
-            var certHost = GetHostnameFromExternalDns(ServerConfigurationManager.Configuration.WanDdns);
-            var certPath = Path.Combine(ServerConfigurationManager.ApplicationPaths.ProgramDataPath, "ssl", "cert_" + certHost.GetMD5().ToString("N") + ".pfx");
-
-            if (generateCertificate)
+            if (String.IsNullOrWhiteSpace(certPath))
             {
-                if (!FileSystemManager.FileExists(certPath))
+                // Generate self-signed cert
+                var certHost = GetHostnameFromExternalDns(ServerConfigurationManager.Configuration.WanDdns);
+                certPath = Path.Combine(ServerConfigurationManager.ApplicationPaths.ProgramDataPath, "ssl", "cert_" + certHost.GetMD5().ToString("N") + ".pfx");
+
+                if (generateCertificate)
                 {
-                    FileSystemManager.CreateDirectory(Path.GetDirectoryName(certPath));
+                    if (!FileSystemManager.FileExists(certPath))
+                    {
+                        FileSystemManager.CreateDirectory(Path.GetDirectoryName(certPath));
 
-                    try
-                    {
-                        NetworkManager.GenerateSelfSignedSslCertificate(certPath, certHost);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.ErrorException("Error creating ssl cert", ex);
-                        return null;
+                        try
+                        {
+                            NetworkManager.GenerateSelfSignedSslCertificate(certPath, certHost);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.ErrorException("Error creating ssl cert", ex);
+                            return null;
+                        }
                     }
                 }
             }
+
+            _certificate = new X509Certificate2(certPath, String.Empty, X509KeyStorageFlags.Exportable);
+            PublicKey = _certificate.PublicKey.ToPEM();
 
             return certPath;
         }
@@ -1340,6 +1343,8 @@ namespace MediaBrowser.Server.Startup.Common
         public event EventHandler HasUpdateAvailableChanged;
 
         private bool _hasUpdateAvailable;
+        private X509Certificate2 _certificate;
+
         public bool HasUpdateAvailable
         {
             get { return _hasUpdateAvailable; }
@@ -1354,6 +1359,11 @@ namespace MediaBrowser.Server.Startup.Common
                     EventHelper.FireEventIfNotNull(HasUpdateAvailableChanged, this, EventArgs.Empty, Logger);
                 }
             }
+        }
+
+        public object PublicKey
+        {
+            get;private set;
         }
 
         /// <summary>
@@ -1438,5 +1448,16 @@ namespace MediaBrowser.Server.Startup.Common
         {
             NativeApp.LaunchUrl(url);
         }
+
+        public string Encrypt(string data)
+        {
+            return CertUtilities.Encrypt(_certificate.PrivateKey, data);
+        }
+
+        public string Decrypt(string encryptedData)
+        {
+            return CertUtilities.Decrypt(_certificate.PrivateKey, encryptedData);
+        }
+
     }
 }

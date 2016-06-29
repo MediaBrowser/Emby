@@ -63,6 +63,12 @@ namespace MediaBrowser.Controller
         string FriendlyName { get; }
 
         /// <summary>
+        /// Gets the RSA public key of the server
+        /// </summary>
+        /// <value>Public Key</value>
+        object PublicKey { get; }
+
+        /// <summary>
         /// Gets the local ip address.
         /// </summary>
         /// <value>The local ip address.</value>
@@ -89,5 +95,9 @@ namespace MediaBrowser.Controller
         string GetLocalApiUrl(IPAddress ipAddress);
 
         void LaunchUrl(string url);
+
+        string Decrypt(string encryptedData);
+
+        string Encrypt(string data);
     }
 }
