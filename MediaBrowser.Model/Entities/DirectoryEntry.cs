@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Model.Entities
 {
-    public enum EntityType { User, Group, Asset, Other };
+    public enum EntryType { User, Group, Asset, Other };
     public class DirectoryEntry
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public EntityType Type { get; set; }
+        public EntryType Type { get; set; }
         public string FQDN { get; set; }
         public string AccountName { get { return FQDN + "/" + Name; } }
         public IDictionary<string, string> Attributes { get; set; }

@@ -423,6 +423,8 @@ namespace MediaBrowser.Server.Startup.Common
         {
             await base.RegisterResources(progress).ConfigureAwait(false);
 
+            RegisterSingleInstance(NativeApp.GetDbConnector());
+
             RegisterSingleInstance<IHttpResultFactory>(new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer));
 
             RegisterSingleInstance<IServerApplicationHost>(this);

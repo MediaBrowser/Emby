@@ -14,13 +14,13 @@ namespace MediaBrowser.Providers.Authentication
 
         Task UpdateUserPassword(string cn, string fqdn, string password, CancellationToken cancellationToken);
 
-        Task<DirectoryEntry> RetrieveEntity(string cn, string fqdn, CancellationToken cancellationToken);
+        Task<DirectoryEntry> RetrieveEntry(string cn, string fqdn, CancellationToken cancellationToken);
 
-        Task DeleteEntity(string cn, string fqdn, CancellationToken cancellationToken);
+        Task DeleteEntry(string cn, string fqdn, CancellationToken cancellationToken);
 
-        Task InsertEntity(DirectoryEntry entity, CancellationToken cancellationToken);
+        Task InsertEntry(DirectoryEntry entity, CancellationToken cancellationToken);
 
-        Task UpdateEntity(DirectoryEntry entity, CancellationToken cancellationToken, string cn = null);
+        Task UpdateEntry(DirectoryEntry entity, CancellationToken cancellationToken, string cn = null);
 
         Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn);
 
