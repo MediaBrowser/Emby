@@ -316,5 +316,7 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
         }
+
+        public string FQDN { get; set; }
     }
 }

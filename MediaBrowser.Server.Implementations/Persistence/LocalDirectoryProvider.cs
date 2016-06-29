@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Controller;
+using MediaBrowser.Model.Db;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
@@ -84,7 +85,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             var serialized = _jsonSerializer.SerializeToBytes(entry.MemberOf);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var commit = new CommitEntry() {
+            var commit = new Query() {
                 Text = "insert into local_domain (cn, type, memberOf, pwd) values (@cn, @type, @memberOf, @pwd)",
             };
             commit.AddValue("@cn", DbType.String, entry.Name);
@@ -96,39 +97,19 @@ namespace MediaBrowser.Server.Implementations.Persistence
         }
 
 
-        public Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn)
+        public async Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn)
         {
-            List<DirectoryEntry> local_domain = new List<DirectoryEntry>();
-
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "select cn, memberOf, pwd, type from local_domain";
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        local_domain.Add(CreateDirectoryEntry(reader));
-                    }
-                }
-            }
-            return Task.FromResult((IEnumerable<DirectoryEntry>)local_domain);
+            var query = new Query() { Text = "select cn, memberOf, pwd, type from local_domain" };
+            return await Read(query, CreateDirectoryEntry);
         }
 
         public async Task DeleteEntry(string cn, string fqdn, CancellationToken cancellationToken)
         {
-            if (fqdn != "Local")
-            {
-                throw new ArgumentNullException("Dont have access to directory");
-            }
-            if (string.IsNullOrWhiteSpace(cn))
-            {
-                throw new ArgumentNullException("invalid entry common name");
-            }
+            ValidEntry(cn, fqdn);
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var commit = new CommitEntry()
+            var commit = new Query()
             {
                 Text = "delete from local_domain where cn=@cn",
             };
@@ -155,23 +136,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return false;
         }
 
-        public Task<DirectoryEntry> RetrieveEntry(string cn, string fqdn, CancellationToken cancellationToken)
+        public async Task<DirectoryEntry> RetrieveEntry(string cn, string fqdn, CancellationToken cancellationToken)
         {
-            DirectoryEntry entry = null;
             ValidEntry(cn, fqdn);
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "select cn, memberOf, pwd, type from local_domain where cn=@cn";
-                cmd.Parameters.Add(cmd, "@cn", DbType.String).Value = cn;
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        entry = CreateDirectoryEntry(reader);
-                    }
-                }
-            }
-            return Task.FromResult(entry);
+            var query = new Query() { Text = "select cn, memberOf, pwd, type from local_domain where cn=@cn" };
+            query.AddValue("@cn", DbType.String, cn);
+            var result = await Read(query, CreateDirectoryEntry);
+            return result.FirstOrDefault();
         }
         private DirectoryEntry CreateDirectoryEntry(IDataReader reader)
         {
@@ -218,7 +189,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var commit = new CommitEntry()
+            var commit = new Query()
             {
                 Text = "Update local_domain SET cn = @newCn, type = @type, memberOf = @memberOf where cn=@cn",
             };
@@ -234,7 +205,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public async Task UpdateUserPassword(string cn, string fqdn, string password, CancellationToken cancellationToken)
         {
             ValidEntry(cn, fqdn);
-            var commit = new CommitEntry()
+            var commit = new Query()
             {
                 Text = "update local_domain SET pwd=@pwd where cn=@cn",
             };
@@ -254,81 +225,5 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
-        private async Task Commit(CommitEntry commit, string errorMsg = "Failed Commit:")
-        {
-
-            using (var connection = await CreateConnection().ConfigureAwait(false))
-            {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = commit.Text;
-
-                        commit.Values.ForEach(v => {
-                            cmd.Parameters.Add(cmd, v.Id, v.Type).Value = v.Value;
-                        });
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException(errorMsg, e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
-            }
-        }
-    }
-    public class CommitEntry
-    {
-        public string Text { get; set; }
-        public List<CommitValue> Values{get; set;}
-
-        public CommitEntry()
-        {
-            Values = new List<CommitValue>();
-        }
-
-        public void AddValue(string id, DbType type, Object value) {
-            Values.Add(new CommitValue() { Id = id, Type = type, Value = value });
-        }
-
-    }
-    public class CommitValue
-    {
-        public string Id { get; set; }
-        public DbType Type { get; set; }
-        public Object Value { get; set; }
     }
 }

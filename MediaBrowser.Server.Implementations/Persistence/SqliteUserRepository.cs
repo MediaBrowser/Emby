@@ -1,12 +1,16 @@
 ﻿using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Persistence;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Db;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +52,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 string[] queries = {
 
-                                "create table if not exists users (guid GUID primary key, data BLOB)",
+                                "create table if not exists users (guid GUID primary key, config BLOB, policy BLOB, data BLOB)",
                                 "create index if not exists idx_users on users(guid)",
                                 "create table if not exists schema_version (table_name primary key, version)",
 
@@ -57,6 +61,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                 connection.RunQueries(queries, Logger);
             }
+            var cols = new Dictionary<string, string>() {
+                { "config","BLOB"},{ "policy","BLOB"},{ "data","BLOB"}
+            };
+            await AddColumns(cols,"users").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -79,55 +87,30 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
+            var commit = new Query()
             {
-                IDbTransaction transaction = null;
+                Text = "replace into users (guid, data) values (@guid, @data)",
+            };
+            commit.AddValue("@guid", DbType.String, user.Id);
+            commit.AddValue("@data", DbType.Binary, serialized);
 
-                try
-                {
-                    transaction = connection.BeginTransaction();
+            await Commit(commit, "Failed to Update User").ConfigureAwait(false);
+ 
+        }
 
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "replace into users (guid, data) values (@1, @2)";
-                        cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = user.Id;
-                        cmd.Parameters.Add(cmd, "@2", DbType.Binary).Value = serialized;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to save user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
+        private User GetUser(IDataReader reader)
+        {
+            var id = reader.GetGuid(0);
+            var user = new User();
+            using (var stream = reader.GetMemoryStream(1))
+            {
+                user = _jsonSerializer.DeserializeFromStream<User>(stream);
+                user.Id = id;
+                user.FQDN = "Local";
             }
+           // using (var stream = reader.GetMemoryStream(2)) { user.Policy = _jsonSerializer.DeserializeFromStream<UserPolicy>(stream); }
+          //  using (var stream = reader.GetMemoryStream(3)) { user.Configuration = _jsonSerializer.DeserializeFromStream<UserConfiguration>(stream); }
+            return user;
         }
 
         /// <summary>
@@ -136,33 +119,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <returns>IEnumerable{User}.</returns>
         public IEnumerable<User> RetrieveAllUsers()
         {
-            var list = new List<User>();
-
-            using (var connection = CreateConnection(true).Result)
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "select guid,data from users";
-
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                    {
-                        while (reader.Read())
-                        {
-                            var id = reader.GetGuid(0);
-
-                            using (var stream = reader.GetMemoryStream(1))
-                            {
-                                var user = _jsonSerializer.DeserializeFromStream<User>(stream);
-                                user.Id = id;
-                                list.Add(user);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return list;
-        }
+            var query = new Query() { Text = "select guid,data,policy,config from users" };
+            return Read<User>(query, GetUser).Result;
+         }
 
         /// <summary>
         /// Deletes the user.
@@ -180,55 +139,69 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
+            var commit = new Query()
             {
-                IDbTransaction transaction = null;
+                Text = "delete from users where guid=@guid",
+            };
+            commit.AddValue("@guid", DbType.String, user.Id);
 
-                try
-                {
-                    transaction = connection.BeginTransaction();
+            await Commit(commit, "Failed to Delete User").ConfigureAwait(false);
+        }
 
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "delete from users where guid=@guid";
-
-                        cmd.Parameters.Add(cmd, "@guid", DbType.Guid).Value = user.Id;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to delete user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
+        public async Task UpdateUserPolicy(User user, CancellationToken cancellationToken)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var serialized = _jsonSerializer.SerializeToBytes(user.Policy);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var commit = new Query()
+            {
+                Text = "replace into users (guid, policy) values (@guid, @policy)",
+            };
+            commit.AddValue("@guid", DbType.String, user.Id);
+            commit.AddValue("@data", DbType.Binary, serialized);
+
+            await Commit(commit, "Failed to Update User Policy").ConfigureAwait(false);
+
+        }
+
+        public async Task UpdateUserConfig(User user, CancellationToken cancellationToken)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var serialized = _jsonSerializer.SerializeToBytes(user.Configuration);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var commit = new Query()
+            {
+                Text = "replace into users (guid, policy) values (@guid, @config)",
+            };
+            commit.AddValue("@guid", DbType.String, user.Id);
+            commit.AddValue("@config", DbType.Binary, serialized);
+
+            await Commit(commit, "Failed to Update User Configuration").ConfigureAwait(false);
+
+        }
+
+        public async Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken)
+        {
+            var query = new Query() { Text = "select guid,data,policy,config from users where guid=@guid" };
+            query.AddValue("@guid", DbType.Guid, guid);
+            var result = await Read<User>(query, GetUser);
+            return result.FirstOrDefault();
         }
     }
 }
