@@ -212,13 +212,6 @@ namespace MediaBrowser.Controller.Library
         Task UpdateUserPolicy(string userId, UserPolicy userPolicy);
 
         /// <summary>
-        /// Makes the valid username.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <returns>System.String.</returns>
-        string MakeValidUsername(string username);
-
-        /// <summary>
         /// Adds the parts.
         /// </summary>
         /// <param name="services">Add Directories Providers.</param>

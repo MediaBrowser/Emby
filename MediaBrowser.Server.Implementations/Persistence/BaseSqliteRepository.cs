@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Model.Db;
+﻿using MediaBrowser.Common.SQL;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Collections.Generic;

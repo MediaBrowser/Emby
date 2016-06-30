@@ -104,6 +104,7 @@ using CommonIO;
 using MediaBrowser.Common.Implementations.Updates;
 using System.Security.Cryptography.X509Certificates;
 using MediaBrowser.Providers.Authentication;
+using MediaBrowser.Common.Security;
 
 namespace MediaBrowser.Server.Startup.Common
 {
@@ -601,7 +602,6 @@ namespace MediaBrowser.Server.Startup.Common
 
             SetStaticProperties();
 
-            await ((UserManager)UserManager).Initialize().ConfigureAwait(false);
         }
 
         private IImageProcessor GetImageProcessor()
@@ -1455,12 +1455,12 @@ namespace MediaBrowser.Server.Startup.Common
 
         public string Encrypt(string data)
         {
-            return CertUtilities.Encrypt(_certificate.PrivateKey, data);
+            return Crypto.Encrypt(_certificate.PrivateKey, data);
         }
 
         public string Decrypt(string encryptedData)
         {
-            return CertUtilities.Decrypt(_certificate.PrivateKey, encryptedData);
+            return Crypto.Decrypt(_certificate.PrivateKey, encryptedData);
         }
 
     }

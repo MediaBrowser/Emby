@@ -112,7 +112,6 @@
     <Compile Include="Connect\PinExchangeResult.cs" />
     <Compile Include="Connect\PinStatusResult.cs" />
     <Compile Include="Connect\UserLinkType.cs" />
-    <Compile Include="Db\Query.cs" />
     <Compile Include="Devices\DeviceOptions.cs" />
     <Compile Include="Devices\DeviceQuery.cs" />
     <Compile Include="Devices\LocalFileInfo.cs" />

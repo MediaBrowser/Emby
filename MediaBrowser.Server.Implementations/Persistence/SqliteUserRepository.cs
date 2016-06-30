@@ -2,7 +2,7 @@
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Db;
+using MediaBrowser.Common.SQL;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
@@ -22,11 +23,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
     public class SqliteUserRepository : BaseSqliteRepository, IUserRepository
     {
         private readonly IJsonSerializer _jsonSerializer;
+        private ILogger _logger;
 
         public SqliteUserRepository(ILogManager logManager, IServerApplicationPaths appPaths, IJsonSerializer jsonSerializer, IDbConnector dbConnector) : base(logManager, dbConnector)
         {
             _jsonSerializer = jsonSerializer;
-
             DbFilePath = Path.Combine(appPaths.DataPath, "users.db");
         }
 
@@ -62,11 +63,17 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 connection.RunQueries(queries, Logger);
             }
             var cols = new Dictionary<string, string>() {
-                { "config","BLOB"},{ "policy","BLOB"},{ "data","BLOB"}
+                { "config","BLOB"},{ "policy","BLOB"},{ "data","BLOB"}, {"guid","GUID" }
             };
             await AddColumns(cols,"users").ConfigureAwait(false);
         }
-
+        public async Task<User> CreateUser(string name, string fqdn, CancellationToken cancellationToken)
+        {
+            var user = InstantiateNewUser(name);
+            user.FQDN = fqdn;
+            await SaveUser(user, cancellationToken).ConfigureAwait(false);
+            return user;
+        }
         /// <summary>
         /// Save a user in the repo
         /// </summary>
@@ -83,17 +90,23 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var serialized = _jsonSerializer.SerializeToBytes(user);
+            var data = _jsonSerializer.SerializeToBytes(user);
+            var config = _jsonSerializer.SerializeToBytes(user.Configuration ?? new UserConfiguration());
+            var policy = _jsonSerializer.SerializeToBytes(user.Policy ?? new UserPolicy());
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var commit = new Query()
             {
-                Text = "replace into users (guid, data) values (@guid, @data)",
+                Text = "replace into users (guid, data, config, policy) values (@guid, @data, @config, @policy)",
             };
-            commit.AddValue("@guid", DbType.String, user.Id);
-            commit.AddValue("@data", DbType.Binary, serialized);
 
+            commit.AddValue("@guid", user.Id);
+            commit.AddValue("@data", data);
+            commit.AddValue("@config", config);
+            commit.AddValue("@policy", policy);
+
+            user.DateLastSaved = DateTime.UtcNow;
             await Commit(commit, "Failed to Update User").ConfigureAwait(false);
  
         }
@@ -108,8 +121,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 user.Id = id;
                 user.FQDN = "Local";
             }
-           // using (var stream = reader.GetMemoryStream(2)) { user.Policy = _jsonSerializer.DeserializeFromStream<UserPolicy>(stream); }
-          //  using (var stream = reader.GetMemoryStream(3)) { user.Configuration = _jsonSerializer.DeserializeFromStream<UserConfiguration>(stream); }
+            using (var stream = reader.GetMemoryStream(2)) { user.Policy = _jsonSerializer.DeserializeFromStream<UserPolicy>(stream); }
+            using (var stream = reader.GetMemoryStream(3)) { user.Configuration = _jsonSerializer.DeserializeFromStream<UserConfiguration>(stream); }
             return user;
         }
 
@@ -120,7 +133,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public IEnumerable<User> RetrieveAllUsers()
         {
             var query = new Query() { Text = "select guid,data,policy,config from users" };
-            return Read<User>(query, GetUser).Result;
+            return Read(query, GetUser).Result;
          }
 
         /// <summary>
@@ -143,7 +156,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 Text = "delete from users where guid=@guid",
             };
-            commit.AddValue("@guid", DbType.String, user.Id);
+            commit.AddValue("@guid", user.Id);
 
             await Commit(commit, "Failed to Delete User").ConfigureAwait(false);
         }
@@ -163,10 +176,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var commit = new Query()
             {
-                Text = "replace into users (guid, policy) values (@guid, @policy)",
+                Text = "Update users SET policy = @policy where guid=@guid"
             };
-            commit.AddValue("@guid", DbType.String, user.Id);
-            commit.AddValue("@data", DbType.Binary, serialized);
+            commit.AddValue("@guid", user.Id);
+            commit.AddValue("@policy", serialized);
 
             await Commit(commit, "Failed to Update User Policy").ConfigureAwait(false);
 
@@ -187,10 +200,10 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var commit = new Query()
             {
-                Text = "replace into users (guid, policy) values (@guid, @config)",
+                Text = "Update users SET config = @config where guid=@guid",
             };
-            commit.AddValue("@guid", DbType.String, user.Id);
-            commit.AddValue("@config", DbType.Binary, serialized);
+            commit.AddValue("@guid", user.Id);
+            commit.AddValue("@config", serialized);
 
             await Commit(commit, "Failed to Update User Configuration").ConfigureAwait(false);
 
@@ -199,9 +212,26 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public async Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken)
         {
             var query = new Query() { Text = "select guid,data,policy,config from users where guid=@guid" };
-            query.AddValue("@guid", DbType.Guid, guid);
-            var result = await Read<User>(query, GetUser);
+            query.AddValue("@guid", guid);
+            var result = await Read(query, GetUser);
             return result.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Instantiates the new user.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>User.</returns>
+        private User InstantiateNewUser(string name)
+        {
+            return new User
+            {
+                Name = name,
+                Id = Guid.NewGuid(),
+                DateCreated = DateTime.UtcNow,
+                DateModified = DateTime.UtcNow,
+                UsesIdForConfigurationPath = true
+            };
         }
     }
 }

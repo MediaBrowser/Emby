@@ -1,5 +1,5 @@
 ﻿using MediaBrowser.Controller;
-using MediaBrowser.Model.Db;
+using MediaBrowser.Common.SQL;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.Security;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
@@ -71,6 +72,20 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                 connection.RunQueries(queries, Logger);
             }
+
+            var entries = await RetrieveAll("Local").ConfigureAwait(false);
+           
+            // There always has to be at least one user.
+            if (entries.FirstOrDefault(e => e.Type == EntryType.User) == null)
+            {
+                var name = MakeValidUsername(Environment.UserName);
+                await InsertEntry(new DirectoryEntry() {
+                    Name = name,
+                    Id = name,
+                    FQDN = "Local"
+                }, CancellationToken.None);
+                
+            }
         }
 
         public async Task InsertEntry(DirectoryEntry entry, CancellationToken cancellationToken)
@@ -91,7 +106,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             commit.AddValue("@cn", DbType.String, entry.Name);
             commit.AddValue("@type", DbType.Int16, entry.Type);
             commit.AddValue("@memberOf", DbType.Binary,serialized);
-            commit.AddValue("@pwd", DbType.String, GetSha1String(String.Empty));
+            commit.AddValue("@pwd", DbType.String, Crypto.GetSha1(String.Empty));
 
             await Commit(commit).ConfigureAwait(false);
         }
@@ -119,7 +134,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         }
 
 
-        public IEnumerable<string> GetDirectories()
+        public IEnumerable<string> GetDomains()
         {
             return new List<string>() { "Local" };
         }
@@ -129,7 +144,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             var user = await RetrieveEntry(cn, fqdn, CancellationToken.None).ConfigureAwait(false);
             if (user != null)
             {
-                password = String.IsNullOrEmpty(password) ? "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" : GetSha1String(password);
+                password = String.IsNullOrEmpty(password) ? "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" : Crypto.GetSha1(password);
                 var pass = (user.GetAttribute("password") ?? "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
                 return string.Equals(pass, password, StringComparison.OrdinalIgnoreCase);
             }
@@ -148,6 +163,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         {
             var entry = new DirectoryEntry()
             {
+                Id = reader.GetString(0),
                 Name = reader.GetString(0),
                 FQDN = "Local",
                 Type = (EntryType)reader.GetInt16(3),
@@ -176,7 +192,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
-        public async Task UpdateEntry(DirectoryEntry entry, CancellationToken cancellationToken, string cn = null)
+        public async Task UpdateEntry(DirectoryEntry entry, CancellationToken cancellationToken, string newCn = null)
         {
             if (entry == null)
             {
@@ -193,16 +209,16 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 Text = "Update local_domain SET cn = @newCn, type = @type, memberOf = @memberOf where cn=@cn",
             };
-            commit.AddValue("@cn", DbType.String, cn ?? entry.Name);
+            commit.AddValue("@cn", DbType.String, entry.Name);
             commit.AddValue("@type", DbType.Int16, entry.Type);
             commit.AddValue("@memberOf", DbType.Binary, serialized);
-            commit.AddValue("@newCn", DbType.String, entry.Name);
+            commit.AddValue("@newCn", DbType.String, newCn ?? entry.Name);
 
             await Commit(commit, "Failed to Update User").ConfigureAwait(false);
     
         }
 
-        public async Task UpdateUserPassword(string cn, string fqdn, string password, CancellationToken cancellationToken)
+        public async Task UpdateUserPassword(string cn, string fqdn, string password)
         {
             ValidEntry(cn, fqdn);
             var commit = new Query()
@@ -210,19 +226,42 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 Text = "update local_domain SET pwd=@pwd where cn=@cn",
             };
             commit.AddValue("@cn", DbType.String, cn);
-            commit.AddValue("@pwd", DbType.String, GetSha1String(String.Empty));
+            commit.AddValue("@pwd", DbType.String, Crypto.GetSha1(String.Empty));
 
             await Commit(commit, "failed to update password").ConfigureAwait(false);
    
         }
 
-        private static string GetSha1String(string str)
+        public static bool IsValidUsername(string username)
         {
-            using (var provider = SHA1.Create())
+            // Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)
+            return username.All(IsValidUsernameCharacter);
+        }
+
+        private static  bool IsValidUsernameCharacter(char i)
+        {
+            return char.IsLetterOrDigit(i) || char.Equals(i, '-') || char.Equals(i, '_') || char.Equals(i, '\'') ||
+                   char.Equals(i, '.');
+        }
+
+        public static string MakeValidUsername(string username)
+        {
+            if (IsValidUsername(username))
             {
-                var hash = provider.ComputeHash(Encoding.UTF8.GetBytes(str));
-                return BitConverter.ToString(hash).Replace("-", string.Empty);
+                return username;
             }
+
+            // Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)
+            var builder = new StringBuilder();
+
+            foreach (var c in username)
+            {
+                if (IsValidUsernameCharacter(c))
+                {
+                    builder.Append(c);
+                }
+            }
+            return builder.ToString();
         }
 
     }

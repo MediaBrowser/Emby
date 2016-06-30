@@ -2,6 +2,7 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Connect;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
@@ -20,17 +21,15 @@ namespace MediaBrowser.Controller.Entities
         public static IUserManager UserManager { get; set; }
         public static IXmlSerializer XmlSerializer { get; set; }
 
+        [IgnoreDataMember]
+        public DirectoryEntry DirectoryEntry { get; set; }
+
         /// <summary>
         /// From now on all user paths will be Id-based. 
         /// This is for backwards compatibility.
         /// </summary>
         public bool UsesIdForConfigurationPath { get; set; }
 
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        /// <value>The password.</value>
-        public string Password { get; set; }
         public string EasyPassword { get; set; }
 
         public string ConnectUserName { get; set; }

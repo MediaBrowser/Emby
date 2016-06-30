@@ -12,18 +12,18 @@ namespace MediaBrowser.Providers.Authentication
     {
         Task<bool> AuthenticateUser(string cn, string fqdn, string password);
 
-        Task UpdateUserPassword(string cn, string fqdn, string password, CancellationToken cancellationToken);
+        Task UpdateUserPassword(string cn, string fqdn, string password);
 
         Task<DirectoryEntry> RetrieveEntry(string cn, string fqdn, CancellationToken cancellationToken);
 
         Task DeleteEntry(string cn, string fqdn, CancellationToken cancellationToken);
 
-        Task InsertEntry(DirectoryEntry entity, CancellationToken cancellationToken);
+        Task InsertEntry(DirectoryEntry entry, CancellationToken cancellationToken);
 
-        Task UpdateEntry(DirectoryEntry entity, CancellationToken cancellationToken, string cn = null);
+        Task UpdateEntry(DirectoryEntry entry, CancellationToken cancellationToken, string cn = null);
 
         Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn);
 
-        IEnumerable<string> GetDirectories();
+        IEnumerable<string> GetDomains();
     }
 }

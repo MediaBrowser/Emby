@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Events;
+﻿using MediaBrowser.Common.Security;
+using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
@@ -72,8 +73,8 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly IServerApplicationHost _appHost;
         private readonly IFileSystem _fileSystem;
 
-        private Dictionary<string, IDirectoriesProvider> Directories { get; set; }
-        private IEnumerable<IDirectoriesProvider> DirectoriesProviders { get; set; }
+        private Dictionary<string, IDirectoriesProvider> DomainsProviders { get; set; }
+        private List<IDirectoriesProvider> DirectoriesProviders { get; set; }
 
         public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, IFileSystem fileSystem)
         {
@@ -165,63 +166,16 @@ namespace MediaBrowser.Server.Implementations.Library
         public async Task Initialize()
         {
             Users = await LoadUsers().ConfigureAwait(false);
-
-            var users = Users.ToList();
-
-            // If there are no local users with admin rights, make them all admins
-            if (!users.Any(i => i.Policy.IsAdministrator))
-            {
-                foreach (var user in users)
-                {
-                    if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value == UserLinkType.LinkedUser)
-                    {
-                        user.Policy.IsAdministrator = true;
-                        await UpdateUserPolicy(user, user.Policy, false).ConfigureAwait(false);
-                    }
-                }
-            }
         }
 
-        public Task<bool> AuthenticateUser(string username, string passwordSha1, string remoteEndPoint)
+        public Task<bool> AuthenticateUser(string username, string password, string remoteEndPoint)
         {
-            return AuthenticateUser(username, passwordSha1, null, remoteEndPoint);
-        }
-
-        public bool IsValidUsername(string username)
-        {
-            // Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)
-            return username.All(IsValidUsernameCharacter);
-        }
-
-        private bool IsValidUsernameCharacter(char i)
-        {
-            return char.IsLetterOrDigit(i) || char.Equals(i, '-') || char.Equals(i, '_') || char.Equals(i, '\'') ||
-                   char.Equals(i, '.');
-        }
-
-        public string MakeValidUsername(string username)
-        {
-            if (IsValidUsername(username))
-            {
-                return username;
-            }
-
-            // Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)
-            var builder = new StringBuilder();
-
-            foreach (var c in username)
-            {
-                if (IsValidUsernameCharacter(c))
-                {
-                    builder.Append(c);
-                }
-            }
-            return builder.ToString();
+            return AuthenticateUser(username, password, null, remoteEndPoint);
         }
 
         public async Task<bool> AuthenticateUser(string username, string password, string passwordMd5, string remoteEndPoint)
         {
-            var passwordSha1 = GetSha1String(password);
+
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentNullException("username");
@@ -245,11 +199,11 @@ namespace MediaBrowser.Server.Implementations.Library
             // Authenticate using local credentials if not a guest
             if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
             {
-                success = string.Equals(GetPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                success = await DomainsProviders[user.FQDN].AuthenticateUser(user.Name, user.FQDN, password);
 
                 if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
                 {
-                    success = string.Equals(GetLocalPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                    success = string.Equals(GetLocalPasswordHash(user), password.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
                 }
             }
 
@@ -257,28 +211,25 @@ namespace MediaBrowser.Server.Implementations.Library
             if (success)
             {
                 user.LastActivityDate = user.LastLoginDate = DateTime.UtcNow;
-                await UpdateUser(user).ConfigureAwait(false);
-                await UpdateInvalidLoginAttemptCount(user, 0).ConfigureAwait(false);
+                UpdateInvalidLoginAttemptCount(user, 0);
             }
             else
             {
-                await UpdateInvalidLoginAttemptCount(user, user.Policy.InvalidLoginAttemptCount + 1).ConfigureAwait(false);
+                UpdateInvalidLoginAttemptCount(user, user.Policy.InvalidLoginAttemptCount + 1);
             }
-
+            await UpdateUser(user).ConfigureAwait(false);
             _logger.Info("Authentication request for {0} {1}.", user.Name, success ? "has succeeded" : "has been denied");
 
             return success;
         }
 
-        private async Task UpdateInvalidLoginAttemptCount(User user, int newValue)
+        private void UpdateInvalidLoginAttemptCount(User user, int newValue)
         {
             if (user.Policy.InvalidLoginAttemptCount != newValue || newValue > 0)
             {
                 user.Policy.InvalidLoginAttemptCount = newValue;
 
-                var maxCount = user.Policy.IsAdministrator ? 
-                    3 : 
-                    5;
+                var maxCount = user.Policy.IsAdministrator ? 3 : 5;
 
                 var fireLockout = false;
 
@@ -290,8 +241,6 @@ namespace MediaBrowser.Server.Implementations.Library
                     //fireLockout = true;
                 }
 
-                await UpdateUserPolicy(user, user.Policy, false).ConfigureAwait(false);
-
                 if (fireLockout)
                 {
                     if (UserLockedOut != null)
@@ -302,37 +251,35 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        private string GetPasswordHash(User user)
-        {
-            return string.IsNullOrEmpty(user.Password)
-                ? GetSha1String(string.Empty)
-                : user.Password;
-        }
-
         private string GetLocalPasswordHash(User user)
         {
             return string.IsNullOrEmpty(user.EasyPassword)
-                ? GetSha1String(string.Empty)
+                ? Crypto.GetSha1(string.Empty)
                 : user.EasyPassword;
         }
 
-        private bool IsPasswordEmpty(string passwordHash)
+        private void GetDomains()
         {
-            return string.Equals(passwordHash, GetSha1String(string.Empty), StringComparison.OrdinalIgnoreCase);
+            _logger.Info("----------Obtainig Domains------------");
+            DomainsProviders = new Dictionary<string, IDirectoriesProvider>();
+            DirectoriesProviders.ToList().ForEach(p =>
+                 p.GetDomains().ToList().ForEach(d => DomainsProviders[d] = p)
+            );
         }
 
-        /// <summary>
-        /// Gets the sha1 string.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <returns>System.String.</returns>
-        private static string GetSha1String(string str)
+        private IEnumerable<User> GetUsers(IEnumerable<DirectoryEntry> entities, List<User> users)
         {
-            using (var provider = SHA1.Create())
+            _logger.Info("----------Getting users------------");
+            var _users = new List<User>();
+            entities.ToList().ForEach(e =>
             {
-                var hash = provider.ComputeHash(Encoding.UTF8.GetBytes(str));
-                return BitConverter.ToString(hash).Replace("-", string.Empty);
-            }
+                var _u = users.FirstOrDefault(u => u.Name == e.Name && e.FQDN == u.FQDN);
+                if (_u == null) {
+                   _u = UserRepository.CreateUser(e.Name,e.FQDN,CancellationToken.None).Result;
+                }
+                _u.DirectoryEntry = e; _users.Add(_u); users.Remove(_u);
+            });
+            return _users;
         }
 
         /// <summary>
@@ -341,27 +288,26 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>IEnumerable{User}.</returns>
         private async Task<IEnumerable<User>> LoadUsers()
         {
-            var users = UserRepository.RetrieveAllUsers().ToList();
+            GetDomains();
+            var users = new List<User>();
+            var _users = UserRepository.RetrieveAllUsers().ToList();
 
-            // There always has to be at least one user.
-            if (users.Count == 0)
+            DomainsProviders.ToList().ForEach(d => users.AddRange(GetUsers(d.Value.RetrieveAll(d.Key).Result, _users)));
+            //_users.ForEach(u => UserRepository.DeleteUser(u, CancellationToken.None));
+            _logger.Info("----------Check ADMIN------------");
+            //At least one local user has to be admin if not make all local users admins
+            if (users.Where(u => (u.FQDN == "Local" && u.Policy.IsAdministrator == true)).Count() == 0)
             {
-                var name = MakeValidUsername(Environment.UserName);
-
-                var user = InstantiateNewUser(name);
-
-                user.DateLastSaved = DateTime.UtcNow;
-
-                await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
-
-                users.Add(user);
-
-                user.Policy.IsAdministrator = true;
-                user.Policy.EnableContentDeletion = true;
-                user.Policy.EnableRemoteControlOfOtherUsers = true;
-                await UpdateUserPolicy(user, user.Policy, false).ConfigureAwait(false);
+                _logger.Info("----------Check------------");
+                foreach (var u in users.Where(u => (u.FQDN == "Local"))){
+                    _logger.Info("----------Check ADMIN2------------");
+                    u.Policy.IsAdministrator = true;
+                    u.Policy.EnableContentDeletion = true;
+                    u.Policy.EnableRemoteControlOfOtherUsers = true;
+                    UserRepository.UpdateUserPolicy(u, CancellationToken.None).Wait();
+                }
             }
-
+            _logger.Info("----------Done with users------------");
             return users;
         }
 
@@ -372,10 +318,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("user");
             }
 
-            var passwordHash = GetPasswordHash(user);
-
-            var hasConfiguredPassword = !IsPasswordEmpty(passwordHash);
-            var hasConfiguredEasyPassword = !IsPasswordEmpty(GetLocalPasswordHash(user));
+            var hasConfiguredPassword = !DomainsProviders[user.FQDN].AuthenticateUser(user.Name, user.FQDN, String.Empty).Result;
+            var hasConfiguredEasyPassword = !(GetLocalPasswordHash(user) == Crypto.GetSha1(String.Empty));
 
             var hasPassword = user.Configuration.EnableLocalPassword && !string.IsNullOrEmpty(remoteEndPoint) && _networkManager.IsInLocalNetwork(remoteEndPoint) ?
                 hasConfiguredEasyPassword :
@@ -423,12 +367,12 @@ namespace MediaBrowser.Server.Implementations.Library
             var dto = GetUserDto(user);
 
             var offlinePasswordHash = GetLocalPasswordHash(user);
-            dto.HasPassword = !IsPasswordEmpty(offlinePasswordHash);
+            dto.HasPassword = !(GetLocalPasswordHash(user) == Crypto.GetSha1(String.Empty));
 
             dto.OfflinePasswordSalt = Guid.NewGuid().ToString("N");
 
             // Hash the pin with the device Id to create a unique result for this device
-            dto.OfflinePassword = GetSha1String((offlinePasswordHash + dto.OfflinePasswordSalt).ToLower());
+            dto.OfflinePassword = Crypto.GetSha1((offlinePasswordHash + dto.OfflinePasswordSalt).ToLower());
 
             dto.ServerName = _appHost.FriendlyName;
 
@@ -490,6 +434,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("The new and old names must be different.");
             }
 
+            await DomainsProviders[user.FQDN].UpdateEntry(user.DirectoryEntry, CancellationToken.None, newName);
+
             await user.Rename(newName);
 
             OnUserUpdated(user);
@@ -532,36 +478,31 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>User.</returns>
         /// <exception cref="System.ArgumentNullException">name</exception>
         /// <exception cref="System.ArgumentException"></exception>
-        public async Task<User> CreateUser(string name)
+        public async Task<User> CreateUser(string name, string fqdn="Local")
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException("name");
             }
 
-            if (!IsValidUsername(name))
+            if (Users.Any(u => u.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && u.FQDN.Equals(fqdn, StringComparison.OrdinalIgnoreCase)))
             {
-                throw new ArgumentException("Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)");
-            }
-
-            if (Users.Any(u => u.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new ArgumentException(string.Format("A user with the name '{0}' already exists.", name));
+                throw new ArgumentException(string.Format("A user with the name '{0}'  already exists on '{1}'.", name,fqdn));
             }
 
             await _userListLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
 
             try
             {
-                var user = InstantiateNewUser(name);
+                if (!Users.Any(u => u.Name == name && u.FQDN == fqdn))
+                {
+                    await DomainsProviders[fqdn].InsertEntry(new DirectoryEntry() { Name = name, FQDN = fqdn }, CancellationToken.None);
+                }
+                var user = await UserRepository.CreateUser(name, fqdn,CancellationToken.None).ConfigureAwait(false);
 
-                var list = Users.ToList();
-                list.Add(user);
-                Users = list;
-
-                user.DateLastSaved = DateTime.UtcNow;
-
-                await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+                var users = Users.ToList();
+                users.Add(user);
+                Users = users;
 
                 EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
@@ -613,20 +554,8 @@ namespace MediaBrowser.Server.Implementations.Library
 
             try
             {
-                var configPath = GetConfigurationFilePath(user);
-
+                await DomainsProviders[user.FQDN].DeleteEntry(user.Name, user.FQDN, CancellationToken.None);
                 await UserRepository.DeleteUser(user, CancellationToken.None).ConfigureAwait(false);
-
-                try
-                {
-                    _fileSystem.DeleteFile(configPath);
-                }
-                catch (IOException ex)
-                {
-                    _logger.ErrorException("Error deleting file {0}", ex, configPath);
-                }
-
-                DeleteUserPolicy(user);
 
                 // Force this to be lazy loaded again
                 Users = await LoadUsers().ConfigureAwait(false);
@@ -645,24 +574,19 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         public Task ResetPassword(User user)
         {
-            return ChangePassword(user, GetSha1String(string.Empty));
+            return ChangePassword(user, Crypto.GetSha1(string.Empty));
         }
 
         public Task ResetEasyPassword(User user)
         {
-            return ChangeEasyPassword(user, GetSha1String(string.Empty));
+            return ChangeEasyPassword(user, Crypto.GetSha1(string.Empty));
         }
 
         public async Task ChangePassword(User user, string newPassword)
         {
-            var newPasswordSha1 = GetSha1String(newPassword);
             if (user == null)
             {
                 throw new ArgumentNullException("user");
-            }
-            if (string.IsNullOrWhiteSpace(newPasswordSha1))
-            {
-                throw new ArgumentNullException("newPasswordSha1");
             }
 
             if (user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
@@ -670,9 +594,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("Passwords for guests cannot be changed.");
             }
 
-            user.Password = newPasswordSha1;
-
-            await UpdateUser(user).ConfigureAwait(false);
+            
+            await DomainsProviders[user.FQDN].UpdateUserPassword(user.Name,user.FQDN,newPassword).ConfigureAwait(false);
 
             EventHelper.FireEventIfNotNull(UserPasswordChanged, this, new GenericEventArgs<User>(user), _logger);
         }
@@ -695,22 +618,7 @@ namespace MediaBrowser.Server.Implementations.Library
             EventHelper.FireEventIfNotNull(UserPasswordChanged, this, new GenericEventArgs<User>(user), _logger);
         }
 
-        /// <summary>
-        /// Instantiates the new user.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>User.</returns>
-        private User InstantiateNewUser(string name)
-        {
-            return new User
-            {
-                Name = name,
-                Id = Guid.NewGuid(),
-                DateCreated = DateTime.UtcNow,
-                DateModified = DateTime.UtcNow,
-                UsesIdForConfigurationPath = true
-            };
-        }
+
 
         private string PasswordResetFile
         {
@@ -747,7 +655,7 @@ namespace MediaBrowser.Server.Implementations.Library
             text.AppendLine(string.Empty);
             text.AppendLine("The pin code will expire at " + expiration.ToLocalTime().ToShortDateString() + " " + expiration.ToLocalTime().ToShortTimeString());
 
-			_fileSystem.WriteAllText(path, text.ToString(), Encoding.UTF8);
+            _fileSystem.WriteAllText(path, text.ToString(), Encoding.UTF8);
 
             var result = new PasswordPinCreationResult
             {
@@ -870,29 +778,11 @@ namespace MediaBrowser.Server.Implementations.Library
 
         public UserPolicy GetUserPolicy(User user)
         {
-            var path = GetPolifyFilePath(user);
-
             try
             {
-                lock (_policySyncLock)
-                {
-                    return (UserPolicy)_xmlSerializer.DeserializeFromFile(typeof(UserPolicy), path);
-                }
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return GetDefaultPolicy(user);
-            }
-            catch (FileNotFoundException)
-            {
-                return GetDefaultPolicy(user);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error reading policy file: {0}", ex, path);
-
-                return GetDefaultPolicy(user);
-            }
+                return UserRepository.RetrieveUser(user.Id, CancellationToken.None).Result.Policy;
+                    }
+            catch { return new UserPolicy(); }
         }
 
         private UserPolicy GetDefaultPolicy(User user)
@@ -903,7 +793,7 @@ namespace MediaBrowser.Server.Implementations.Library
             };
         }
 
-        private readonly object _policySyncLock = new object();
+ 
         public Task UpdateUserPolicy(string userId, UserPolicy userPolicy)
         {
             var user = GetUserById(userId);
@@ -912,85 +802,22 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private async Task UpdateUserPolicy(User user, UserPolicy userPolicy, bool fireEvent)
         {
-            // The xml serializer will output differently if the type is not exact
-            if (userPolicy.GetType() != typeof(UserPolicy))
-            {
-                var json = _jsonSerializer.SerializeToString(userPolicy);
-                userPolicy = _jsonSerializer.DeserializeFromString<UserPolicy>(json);
-            }
-
-            var path = GetPolifyFilePath(user);
-
-			_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
-
-            lock (_policySyncLock)
-            {
-                _xmlSerializer.SerializeToFile(userPolicy, path);
-                user.Policy = userPolicy;
-            }
+            await UserRepository.UpdateUserPolicy(user, CancellationToken.None);
 
             await UpdateConfiguration(user, user.Configuration, true).ConfigureAwait(false);
         }
 
-        private void DeleteUserPolicy(User user)
-        {
-            var path = GetPolifyFilePath(user);
 
-            try
-            {
-                lock (_policySyncLock)
-                {
-                    _fileSystem.DeleteFile(path);
-                }
-            }
-            catch (IOException)
-            {
 
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error deleting policy file", ex);
-            }
-        }
-
-        private string GetPolifyFilePath(User user)
-        {
-            return Path.Combine(user.ConfigurationDirectoryPath, "policy.xml");
-        }
-
-        private string GetConfigurationFilePath(User user)
-        {
-            return Path.Combine(user.ConfigurationDirectoryPath, "config.xml");
-        }
-
+ 
         public UserConfiguration GetUserConfiguration(User user)
         {
-            var path = GetConfigurationFilePath(user);
-
             try
             {
-                lock (_configSyncLock)
-                {
-                    return (UserConfiguration)_xmlSerializer.DeserializeFromFile(typeof(UserConfiguration), path);
-                }
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return new UserConfiguration();
-            }
-            catch (FileNotFoundException)
-            {
-                return new UserConfiguration();
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error reading policy file: {0}", ex, path);
-
-                return new UserConfiguration();
-            }
+                return UserRepository.RetrieveUser(user.Id, CancellationToken.None).Result.Configuration;
+                    } catch { return new UserConfiguration(); }
         }
 
-        private readonly object _configSyncLock = new object();
         public Task UpdateConfiguration(string userId, UserConfiguration config)
         {
             var user = GetUserById(userId);
@@ -999,22 +826,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private async Task UpdateConfiguration(User user, UserConfiguration config, bool fireEvent)
         {
-            var path = GetConfigurationFilePath(user);
-
-            // The xml serializer will output differently if the type is not exact
-            if (config.GetType() != typeof(UserConfiguration))
-            {
-                var json = _jsonSerializer.SerializeToString(config);
-                config = _jsonSerializer.DeserializeFromString<UserConfiguration>(json);
-            }
-
-			_fileSystem.CreateDirectory(Path.GetDirectoryName(path));
-
-            lock (_configSyncLock)
-            {
-                _xmlSerializer.SerializeToFile(config, path);
-                user.Configuration = config;
-            }
+            await UserRepository.UpdateUserConfig(user, CancellationToken.None);
 
             if (fireEvent)
             {
@@ -1024,7 +836,15 @@ namespace MediaBrowser.Server.Implementations.Library
 
         public void AddParts(IEnumerable<IDirectoriesProvider> providers)
         {
-            DirectoriesProviders = providers;
+            _logger.Info("----------ADDING PARTS------------");
+            DirectoriesProviders = providers.ToList();
+            Initialize().Wait();
+            _logger.Info("----------INITIAL------------");
+        }
+
+        public Task<User> CreateUser(string name)
+        {
+            return CreateUser(name, "Local");
         }
     }
 }

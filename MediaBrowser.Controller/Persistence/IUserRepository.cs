@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Controller.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,5 +32,13 @@ namespace MediaBrowser.Controller.Persistence
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
         IEnumerable<User> RetrieveAllUsers();
+
+        Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken);
+
+        Task UpdateUserConfig(User user, CancellationToken cancellationToken);
+
+        Task UpdateUserPolicy(User user, CancellationToken cancellationToken);
+
+        Task<User> CreateUser(string name,string fqdn, CancellationToken cancellationToken);
     }
 }
