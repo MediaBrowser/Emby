@@ -79,58 +79,59 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (entries.FirstOrDefault(e => e.Type == EntryType.User) == null)
             {
                 var name = MakeValidUsername(Environment.UserName);
-                await InsertEntry(new DirectoryEntry() {
-                    Name = name,
-                    Id = name,
-                    FQDN = "Local"
-                }, CancellationToken.None);
-                
+                await CreateEntry(name, "Local").ConfigureAwait(false);                
             }
         }
-
-        public async Task InsertEntry(DirectoryEntry entry, CancellationToken cancellationToken)
+        
+        public async Task<DirectoryEntry> CreateEntry(string cn, string fqdn, IEnumerable<string> memberOf = null, IDictionary<string, string> attributes = null, 
+            EntryType type = EntryType.User, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (entry == null)
+            if (cn == null || fqdn != "Local")
             {
                 throw new ArgumentNullException("Directory Entry");
             }
+            memberOf = memberOf ?? new string[0];
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var serialized = _jsonSerializer.SerializeToBytes(entry.MemberOf);
+            var serialized = _jsonSerializer.SerializeToBytes(memberOf);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var commit = new Query() {
-                Text = "insert into local_domain (cn, type, memberOf, pwd) values (@cn, @type, @memberOf, @pwd)",
+
+            var q = new Query()
+            {
+                Cmd = "insert into local_domain (cn, type, memberOf, pwd) values (@cn, @type, @memberOf, @pwd)",
             };
-            commit.AddValue("@cn", DbType.String, entry.Name);
-            commit.AddValue("@type", DbType.Int16, entry.Type);
-            commit.AddValue("@memberOf", DbType.Binary,serialized);
-            commit.AddValue("@pwd", DbType.String, Crypto.GetSha1(String.Empty));
+            q.AddValue("@cn", cn);
+            q.AddValue("@type", (int)type);
+            q.AddValue("@memberOf", serialized);
+            q.AddValue("@pwd", Crypto.GetSha1(String.Empty));
 
-            await Commit(commit).ConfigureAwait(false);
+            await Commit(q).ConfigureAwait(false);
+
+            return await RetrieveEntry(cn, fqdn, cancellationToken);
+
         }
-
 
         public async Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn)
         {
-            var query = new Query() { Text = "select cn, memberOf, pwd, type from local_domain" };
+            var query = new Query() { Cmd = "select cn, memberOf, pwd, type from local_domain" };
             return await Read(query, CreateDirectoryEntry);
         }
 
-        public async Task DeleteEntry(string cn, string fqdn, CancellationToken cancellationToken)
+        public async Task DeleteEntry(string uid, string fqdn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ValidEntry(cn, fqdn);
+            ValidEntry(uid, fqdn);
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var commit = new Query()
+            var q = new Query()
             {
-                Text = "delete from local_domain where cn=@cn",
+                Cmd = "delete from local_domain where cn=@cn",
+                ErrorMsg = "Failled to Delete Entry"
             };
-            commit.AddValue("@cn", DbType.String, cn);
-            await Commit(commit, "Failed to delete entry").ConfigureAwait(false);
-
+            q.AddValue("@cn",uid);
+            await Commit(q).ConfigureAwait(false);
         }
 
 
@@ -139,9 +140,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return new List<string>() { "Local" };
         }
 
-        public async Task<bool> AuthenticateUser(string cn, string fqdn, string password)
+        public async Task<bool> Authenticate(string uid, string fqdn, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var user = await RetrieveEntry(cn, fqdn, CancellationToken.None).ConfigureAwait(false);
+            var user = await RetrieveEntry(uid, fqdn, CancellationToken.None).ConfigureAwait(false);
             if (user != null)
             {
                 password = String.IsNullOrEmpty(password) ? "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" : Crypto.GetSha1(password);
@@ -151,48 +152,49 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return false;
         }
 
-        public async Task<DirectoryEntry> RetrieveEntry(string cn, string fqdn, CancellationToken cancellationToken)
+        public async Task<DirectoryEntry> RetrieveEntry(string uid, string fqdn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ValidEntry(cn, fqdn);
-            var query = new Query() { Text = "select cn, memberOf, pwd, type from local_domain where cn=@cn" };
-            query.AddValue("@cn", DbType.String, cn);
+            ValidEntry(uid, fqdn);
+            var query = new Query() { Cmd = "select cn, memberOf, pwd, type from local_domain where cn=@cn" };
+            query.AddValue("@cn", uid);
             var result = await Read(query, CreateDirectoryEntry);
             return result.FirstOrDefault();
         }
         private DirectoryEntry CreateDirectoryEntry(IDataReader reader)
         {
+            Logger.Info("Type");
+            Logger.Info("Construct");
             var entry = new DirectoryEntry()
             {
-                Id = reader.GetString(0),
-                Name = reader.GetString(0),
+                UID = reader["cn"] as string,
+                CN = reader["cn"] as string,
                 FQDN = "Local",
-                Type = (EntryType)reader.GetInt16(3),
+                Type = (EntryType)(reader.GetInt32(3)),
                 Attributes = new Dictionary<string, string>()
-                            {
-                               { "password", reader.GetString(2) }
-                            }
+                {
+                    { "password", reader["pwd"] as string }
+                }
             };
             using (var stream = reader.GetMemoryStream(1))
             {
                 var memberOf = _jsonSerializer.DeserializeFromStream<List<string>>(stream);
                 entry.MemberOf = memberOf;
-
             }
             return entry;
         }
-        private void ValidEntry(string cn, string fqdn)
+        private void ValidEntry(string uid, string fqdn)
         {
             if (fqdn != "Local")
             {
                 throw new ArgumentNullException("Dont manage the domain");
             }
-            if (string.IsNullOrWhiteSpace(cn))
+            if (string.IsNullOrWhiteSpace(uid))
             {
-                throw new ArgumentNullException("invalid entry common name");
+                throw new ArgumentNullException("invalid entry uid");
             }
         }
 
-        public async Task UpdateEntry(DirectoryEntry entry, CancellationToken cancellationToken, string newCn = null)
+        public async Task UpdateEntry(string uid, DirectoryEntry entry, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (entry == null)
             {
@@ -207,28 +209,31 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var commit = new Query()
             {
-                Text = "Update local_domain SET cn = @newCn, type = @type, memberOf = @memberOf where cn=@cn",
+                Cmd = "Update local_domain SET cn = @cn, type = @type, memberOf = @memberOf where cn=@uid",
+                ErrorMsg = "Failed to Update directory entry"
             };
-            commit.AddValue("@cn", DbType.String, entry.Name);
-            commit.AddValue("@type", DbType.Int16, entry.Type);
-            commit.AddValue("@memberOf", DbType.Binary, serialized);
-            commit.AddValue("@newCn", DbType.String, newCn ?? entry.Name);
 
-            await Commit(commit, "Failed to Update User").ConfigureAwait(false);
+            commit.AddValue("@uid", uid);
+            commit.AddValue("@type", entry.Type);
+            commit.AddValue("@memberOf", serialized);
+            commit.AddValue("@cn", entry.CN);
+
+            await Commit(commit).ConfigureAwait(false);
     
         }
 
-        public async Task UpdateUserPassword(string cn, string fqdn, string password)
+        public async Task UpdatePassword(string uid, string fqdn, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ValidEntry(cn, fqdn);
+            ValidEntry(uid, fqdn);
             var commit = new Query()
             {
-                Text = "update local_domain SET pwd=@pwd where cn=@cn",
+                Cmd = "update local_domain SET pwd=@pwd where cn=@uid",
+                ErrorMsg = "failed to update password"
             };
-            commit.AddValue("@cn", DbType.String, cn);
-            commit.AddValue("@pwd", DbType.String, Crypto.GetSha1(String.Empty));
+            commit.AddValue("@uid", uid);
+            commit.AddValue("@pwd", Crypto.GetSha1(password));
 
-            await Commit(commit, "failed to update password").ConfigureAwait(false);
+            await Commit(commit).ConfigureAwait(false);
    
         }
 

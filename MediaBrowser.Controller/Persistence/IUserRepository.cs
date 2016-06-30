@@ -1,4 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -17,7 +20,7 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="user">The user.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task DeleteUser(User user, CancellationToken cancellationToken);
+        Task DeleteUser(User user, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Saves the user.
@@ -25,7 +28,7 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="user">The user.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveUser(User user, CancellationToken cancellationToken);
+        Task UpdateEntry(User user, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Retrieves all users.
@@ -33,12 +36,12 @@ namespace MediaBrowser.Controller.Persistence
         /// <returns>IEnumerable{User}.</returns>
         IEnumerable<User> RetrieveAllUsers();
 
-        Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken);
+        Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task UpdateUserConfig(User user, CancellationToken cancellationToken);
+        Task UpdateUserConfig(User user, UserConfiguration config = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task UpdateUserPolicy(User user, CancellationToken cancellationToken);
+        Task UpdateUserPolicy(User user, UserPolicy policy = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<User> CreateUser(string name,string fqdn, CancellationToken cancellationToken);
+        Task<User> CreateUser(DirectoryEntry entry, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

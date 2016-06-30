@@ -150,7 +150,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = query.Text;
+                    cmd.CommandText = query.Cmd;
 
                     query.Values.ForEach(v => {
                         cmd.Parameters.Add(cmd, v.Id, v.Type).Value = v.Value;
@@ -169,6 +169,73 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return result;
         }
 
+        protected async Task<int?> Insert(Query query)
+        {
+            int? uid = null;
+            using (var connection = await CreateConnection().ConfigureAwait(false))
+            {
+                IDbTransaction transaction = null;
+
+                try
+                {
+                    transaction = connection.BeginTransaction();
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = query.Cmd;
+
+                        query.Values.ForEach(v => {
+                            cmd.Parameters.Add(cmd, v.Id, v.Type).Value = v.Value;
+                        });
+
+                        cmd.Transaction = transaction;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT last_insert_rowid()";
+                        uid = (int)cmd.ExecuteScalar();
+                    }
+                    if(query.SuccessMsg != null) Logger.Info(query.SuccessMsg);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (query.ErrorMsg != null) Logger.Info(query.ErrorMsg+" Operation Cancelled");
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException(query.ErrorMsg ?? "Error", e);
+
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
+                finally
+                {
+                    if (transaction != null)
+                    {
+                        transaction.Dispose();
+                    }
+                    
+                }
+                return uid;
+            }
+        }
+
+
         protected async Task Commit(Query query, string errorMsg = "Failed Commit:")
         {
 
@@ -182,7 +249,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     using (var cmd = connection.CreateCommand())
                     {
-                        cmd.CommandText = query.Text;
+                        cmd.CommandText = query.Cmd;
 
                        query.Values.ForEach(v => {
                             cmd.Parameters.Add(cmd, v.Id, v.Type).Value = v.Value;

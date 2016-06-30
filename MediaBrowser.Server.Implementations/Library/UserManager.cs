@@ -199,7 +199,7 @@ namespace MediaBrowser.Server.Implementations.Library
             // Authenticate using local credentials if not a guest
             if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
             {
-                success = await DomainsProviders[user.FQDN].AuthenticateUser(user.Name, user.FQDN, password);
+                success = await DomainsProviders[user.FQDN].Authenticate(user.DomainUid, user.FQDN, password);
 
                 if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
                 {
@@ -267,21 +267,6 @@ namespace MediaBrowser.Server.Implementations.Library
             );
         }
 
-        private IEnumerable<User> GetUsers(IEnumerable<DirectoryEntry> entities, List<User> users)
-        {
-            _logger.Info("----------Getting users------------");
-            var _users = new List<User>();
-            entities.ToList().ForEach(e =>
-            {
-                var _u = users.FirstOrDefault(u => u.Name == e.Name && e.FQDN == u.FQDN);
-                if (_u == null) {
-                   _u = UserRepository.CreateUser(e.Name,e.FQDN,CancellationToken.None).Result;
-                }
-                _u.DirectoryEntry = e; _users.Add(_u); users.Remove(_u);
-            });
-            return _users;
-        }
-
         /// <summary>
         /// Loads the users from the repository
         /// </summary>
@@ -289,11 +274,17 @@ namespace MediaBrowser.Server.Implementations.Library
         private async Task<IEnumerable<User>> LoadUsers()
         {
             GetDomains();
-            var users = new List<User>();
-            var _users = UserRepository.RetrieveAllUsers().ToList();
+            var users = UserRepository.RetrieveAllUsers().ToList();
 
-            DomainsProviders.ToList().ForEach(d => users.AddRange(GetUsers(d.Value.RetrieveAll(d.Key).Result, _users)));
-            //_users.ForEach(u => UserRepository.DeleteUser(u, CancellationToken.None));
+            DomainsProviders.ToList().ForEach(d => {
+                d.Value.RetrieveAll(d.Key).Result.ToList().ForEach(e => {
+                    if(!users.Any(u => u.DomainUid == e.UID && u.FQDN == e.FQDN))
+                    {
+                        users.Add(UserRepository.CreateUser(e).Result);
+                    }
+                });
+            });
+
             _logger.Info("----------Check ADMIN------------");
             //At least one local user has to be admin if not make all local users admins
             if (users.Where(u => (u.FQDN == "Local" && u.Policy.IsAdministrator == true)).Count() == 0)
@@ -304,7 +295,7 @@ namespace MediaBrowser.Server.Implementations.Library
                     u.Policy.IsAdministrator = true;
                     u.Policy.EnableContentDeletion = true;
                     u.Policy.EnableRemoteControlOfOtherUsers = true;
-                    UserRepository.UpdateUserPolicy(u, CancellationToken.None).Wait();
+                    UserRepository.UpdateUserPolicy(u).Wait();
                 }
             }
             _logger.Info("----------Done with users------------");
@@ -318,7 +309,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("user");
             }
 
-            var hasConfiguredPassword = !DomainsProviders[user.FQDN].AuthenticateUser(user.Name, user.FQDN, String.Empty).Result;
+            var hasConfiguredPassword = !DomainsProviders[user.FQDN].Authenticate(user.DomainUid, user.FQDN, String.Empty).Result;
             var hasConfiguredEasyPassword = !(GetLocalPasswordHash(user) == Crypto.GetSha1(String.Empty));
 
             var hasPassword = user.Configuration.EnableLocalPassword && !string.IsNullOrEmpty(remoteEndPoint) && _networkManager.IsInLocalNetwork(remoteEndPoint) ?
@@ -434,7 +425,9 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("The new and old names must be different.");
             }
 
-            await DomainsProviders[user.FQDN].UpdateEntry(user.DirectoryEntry, CancellationToken.None, newName);
+            var e = new DirectoryEntry(user.Name, user.FQDN);
+
+            await DomainsProviders[user.FQDN].UpdateEntry(user.DomainUid, e);
 
             await user.Rename(newName);
 
@@ -459,10 +452,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException(string.Format("User with name '{0}' and Id {1} does not exist.", user.Name, user.Id));
             }
 
-            user.DateModified = DateTime.UtcNow;
-            user.DateLastSaved = DateTime.UtcNow;
-
-            await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+            await UserRepository.UpdateEntry(user, CancellationToken.None).ConfigureAwait(false);
 
             OnUserUpdated(user);
         }
@@ -496,22 +486,23 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 if (!Users.Any(u => u.Name == name && u.FQDN == fqdn))
                 {
-                    await DomainsProviders[fqdn].InsertEntry(new DirectoryEntry() { Name = name, FQDN = fqdn }, CancellationToken.None);
-                }
-                var user = await UserRepository.CreateUser(name, fqdn,CancellationToken.None).ConfigureAwait(false);
+                    var entry = await DomainsProviders[fqdn].CreateEntry(name, fqdn);
+                    var user = await UserRepository.CreateUser(entry).ConfigureAwait(false);   
 
-                var users = Users.ToList();
-                users.Add(user);
-                Users = users;
+                    var users = Users.ToList();
+                    users.Add(user);
+                    Users = users;
 
-                EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
+                    EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
-                return user;
+                    return user;
+              }
             }
             finally
             {
                 _userListLock.Release();
             }
+            return null;
         }
 
         /// <summary>
@@ -595,7 +586,7 @@ namespace MediaBrowser.Server.Implementations.Library
             }
 
             
-            await DomainsProviders[user.FQDN].UpdateUserPassword(user.Name,user.FQDN,newPassword).ConfigureAwait(false);
+            await DomainsProviders[user.FQDN].UpdatePassword(user.DomainUid,user.FQDN,newPassword).ConfigureAwait(false);
 
             EventHelper.FireEventIfNotNull(UserPasswordChanged, this, new GenericEventArgs<User>(user), _logger);
         }
@@ -781,7 +772,7 @@ namespace MediaBrowser.Server.Implementations.Library
             try
             {
                 return UserRepository.RetrieveUser(user.Id, CancellationToken.None).Result.Policy;
-                    }
+             }
             catch { return new UserPolicy(); }
         }
 
@@ -796,13 +787,15 @@ namespace MediaBrowser.Server.Implementations.Library
  
         public Task UpdateUserPolicy(string userId, UserPolicy userPolicy)
         {
+            _logger.Info("Updating policy for userId " + userId);
             var user = GetUserById(userId);
             return UpdateUserPolicy(user, userPolicy, true);
         }
 
         private async Task UpdateUserPolicy(User user, UserPolicy userPolicy, bool fireEvent)
         {
-            await UserRepository.UpdateUserPolicy(user, CancellationToken.None);
+            user.Policy = userPolicy;
+            await UserRepository.UpdateUserPolicy(user,userPolicy);
 
             await UpdateConfiguration(user, user.Configuration, true).ConfigureAwait(false);
         }
@@ -826,7 +819,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private async Task UpdateConfiguration(User user, UserConfiguration config, bool fireEvent)
         {
-            await UserRepository.UpdateUserConfig(user, CancellationToken.None);
+            await UserRepository.UpdateUserConfig(user, config);
 
             if (fireEvent)
             {

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
@@ -53,7 +54,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 string[] queries = {
 
-                                "create table if not exists users (guid GUID primary key, config BLOB, policy BLOB, data BLOB)",
+                                "create table if not exists users (guid GUID primary key, domain_uid VARCHAR(255), fqdn VARCHAR(255), config BLOB, policy BLOB, data BLOB)",
                                 "create index if not exists idx_users on users(guid)",
                                 "create table if not exists schema_version (table_name primary key, version)",
 
@@ -67,12 +68,29 @@ namespace MediaBrowser.Server.Implementations.Persistence
             };
             await AddColumns(cols,"users").ConfigureAwait(false);
         }
-        public async Task<User> CreateUser(string name, string fqdn, CancellationToken cancellationToken)
+        public async Task<User> CreateUser(DirectoryEntry directoryEntry, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var user = InstantiateNewUser(name);
-            user.FQDN = fqdn;
-            await SaveUser(user, cancellationToken).ConfigureAwait(false);
-            return user;
+            var user = InstantiateNewUser(directoryEntry.CN);
+
+            var q = new Query()
+            {
+                Cmd = "insert into users (guid, domain_uid, fqdn, data, config, policy) values (@guid, @uid, @fqdn, @data, @config, @policy)",
+            };
+
+            var data = _jsonSerializer.SerializeToBytes(user);
+            var config = _jsonSerializer.SerializeToBytes(user.Configuration ?? new UserConfiguration());
+            var policy = _jsonSerializer.SerializeToBytes(user.Policy ?? new UserPolicy());
+
+            q.AddValue("@guid", user.Id);
+            q.AddValue("@fqdn", directoryEntry.FQDN);
+            q.AddValue("@uid", directoryEntry.UID);
+            q.AddValue("@data", data);
+            q.AddValue("@config", config);
+            q.AddValue("@policy", policy);
+
+            await Commit(q).ConfigureAwait(false);
+
+            return await RetrieveUser(user.Id, cancellationToken);
         }
         /// <summary>
         /// Save a user in the repo
@@ -81,7 +99,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        public async Task SaveUser(User user, CancellationToken cancellationToken)
+        public async Task UpdateEntry(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
@@ -90,36 +108,40 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
+
+            user.DateModified = DateTime.UtcNow;
+            user.DateLastSaved = DateTime.UtcNow;
+
             var data = _jsonSerializer.SerializeToBytes(user);
-            var config = _jsonSerializer.SerializeToBytes(user.Configuration ?? new UserConfiguration());
-            var policy = _jsonSerializer.SerializeToBytes(user.Policy ?? new UserPolicy());
+            var config = _jsonSerializer.SerializeToBytes(user.Configuration);
+            var policy = _jsonSerializer.SerializeToBytes(user.Policy);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var commit = new Query()
             {
-                Text = "replace into users (guid, data, config, policy) values (@guid, @data, @config, @policy)",
+                Cmd = "UPDATE users SET data=@data, config=@config, policy=@policy WHERE guid=@guid",
+                ErrorMsg = "Failed to Update User"
             };
 
             commit.AddValue("@guid", user.Id);
             commit.AddValue("@data", data);
             commit.AddValue("@config", config);
             commit.AddValue("@policy", policy);
-
-            user.DateLastSaved = DateTime.UtcNow;
-            await Commit(commit, "Failed to Update User").ConfigureAwait(false);
+                        
+            await Commit(commit).ConfigureAwait(false);
  
         }
 
         private User GetUser(IDataReader reader)
         {
-            var id = reader.GetGuid(0);
             var user = new User();
             using (var stream = reader.GetMemoryStream(1))
             {
                 user = _jsonSerializer.DeserializeFromStream<User>(stream);
-                user.Id = id;
-                user.FQDN = "Local";
+                user.Id = reader.GetGuid(0);
+                user.DomainUid = reader["domain_uid"] as string;
+                user.FQDN = reader["fqdn"] as string;
             }
             using (var stream = reader.GetMemoryStream(2)) { user.Policy = _jsonSerializer.DeserializeFromStream<UserPolicy>(stream); }
             using (var stream = reader.GetMemoryStream(3)) { user.Configuration = _jsonSerializer.DeserializeFromStream<UserConfiguration>(stream); }
@@ -132,7 +154,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <returns>IEnumerable{User}.</returns>
         public IEnumerable<User> RetrieveAllUsers()
         {
-            var query = new Query() { Text = "select guid,data,policy,config from users" };
+            var query = new Query() { Cmd = "select guid,data,policy,config,domain_uid,fqdn from users" };
             return Read(query, GetUser).Result;
          }
 
@@ -154,14 +176,15 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             var commit = new Query()
             {
-                Text = "delete from users where guid=@guid",
+                Cmd = "delete from users where guid=@guid",
+                ErrorMsg = "Failed to Delete User"
             };
             commit.AddValue("@guid", user.Id);
 
-            await Commit(commit, "Failed to Delete User").ConfigureAwait(false);
+            await Commit(commit).ConfigureAwait(false);
         }
 
-        public async Task UpdateUserPolicy(User user, CancellationToken cancellationToken)
+        public async Task UpdateUserPolicy(User user, UserPolicy policy =  null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (user == null)
             {
@@ -170,22 +193,23 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var serialized = _jsonSerializer.SerializeToBytes(user.Policy);
+            var serialized = _jsonSerializer.SerializeToBytes(policy ?? user.Policy);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var commit = new Query()
             {
-                Text = "Update users SET policy = @policy where guid=@guid"
+                Cmd = "Update users SET policy=@policy WHERE guid=@guid",
+                ErrorMsg = "Failed to Update User Policy"
             };
             commit.AddValue("@guid", user.Id);
             commit.AddValue("@policy", serialized);
 
-            await Commit(commit, "Failed to Update User Policy").ConfigureAwait(false);
+            await Commit(commit).ConfigureAwait(false);
 
         }
 
-        public async Task UpdateUserConfig(User user, CancellationToken cancellationToken)
+        public async Task UpdateUserConfig(User user, UserConfiguration config = null, CancellationToken cancellationToken=default(CancellationToken))
         {
             if (user == null)
             {
@@ -194,24 +218,25 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var serialized = _jsonSerializer.SerializeToBytes(user.Configuration);
+            var serialized = _jsonSerializer.SerializeToBytes(config ?? user.Configuration);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var commit = new Query()
             {
-                Text = "Update users SET config = @config where guid=@guid",
+                Cmd = "Update users SET config=@config where guid=@guid",
+                ErrorMsg = "Failed to update Configuration"
             };
             commit.AddValue("@guid", user.Id);
             commit.AddValue("@config", serialized);
 
-            await Commit(commit, "Failed to Update User Configuration").ConfigureAwait(false);
+            await Commit(commit).ConfigureAwait(false);
 
         }
 
         public async Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken)
         {
-            var query = new Query() { Text = "select guid,data,policy,config from users where guid=@guid" };
+            var query = new Query() { Cmd = "select guid,data,policy,config,domain_uid,fqdn from users where guid=@guid" };
             query.AddValue("@guid", guid);
             var result = await Read(query, GetUser);
             return result.FirstOrDefault();
@@ -230,7 +255,9 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 Id = Guid.NewGuid(),
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow,
-                UsesIdForConfigurationPath = true
+                DateLastSaved = DateTime.UtcNow,
+                Policy = new UserPolicy(),
+                Configuration = new UserConfiguration()
             };
         }
     }
