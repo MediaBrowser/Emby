@@ -819,6 +819,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private async Task UpdateConfiguration(User user, UserConfiguration config, bool fireEvent)
         {
+            user.Configuration = config;
             await UserRepository.UpdateUserConfig(user, config);
 
             if (fireEvent)
