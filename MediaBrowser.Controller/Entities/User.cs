@@ -21,6 +21,7 @@ namespace MediaBrowser.Controller.Entities
         public static IUserManager UserManager { get; set; }
         public static IXmlSerializer XmlSerializer { get; set; }
 
+        public string DN { get; set; }
         public string DomainUid { get; set; }
 
         public string EasyPassword { get; set; }

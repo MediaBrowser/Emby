@@ -72,7 +72,7 @@ namespace MediaBrowser.Server.Implementations.Library
         private readonly Func<IConnectManager> _connectFactory;
         private readonly IServerApplicationHost _appHost;
         private readonly IFileSystem _fileSystem;
-
+        private string DefaultDomain;
         private Dictionary<string, IDirectoriesProvider> DomainsProviders { get; set; }
         private List<IDirectoriesProvider> DirectoriesProviders { get; set; }
 
@@ -90,7 +90,7 @@ namespace MediaBrowser.Server.Implementations.Library
             _fileSystem = fileSystem;
             ConfigurationManager = configurationManager;
             Users = new List<User>();
-
+            DefaultDomain = "Local";
             DeletePinFile();
         }
 
@@ -160,7 +160,9 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("name");
             }
 
-            return Users.FirstOrDefault(u => string.Equals(u.Name, name, StringComparison.OrdinalIgnoreCase));
+            return Users.FirstOrDefault(i => string.Equals(name, i.DN, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(DefaultDomain + "/" + name, i.DN, StringComparison.OrdinalIgnoreCase));
+            
         }
 
         public async Task Initialize()
@@ -168,21 +170,15 @@ namespace MediaBrowser.Server.Implementations.Library
             Users = await LoadUsers().ConfigureAwait(false);
         }
 
-        public Task<bool> AuthenticateUser(string username, string password, string remoteEndPoint)
+        public Task<bool> AuthenticateUser(string distinguishedName, string password, string remoteEndPoint)
         {
-            return AuthenticateUser(username, password, null, remoteEndPoint);
+            return AuthenticateUser(distinguishedName, password, null, remoteEndPoint);
         }
 
-        public async Task<bool> AuthenticateUser(string username, string password, string passwordMd5, string remoteEndPoint)
+        public async Task<bool> AuthenticateUser(string dn, string password, string passwordMd5, string remoteEndPoint)
         {
 
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentNullException("username");
-            }
-
-            var user = Users
-                .FirstOrDefault(i => string.Equals(username, i.Name, StringComparison.OrdinalIgnoreCase));
+            var user = GetUserByName(dn);
 
             if (user == null)
             {
@@ -260,7 +256,6 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private void GetDomains()
         {
-            _logger.Info("----------Obtainig Domains------------");
             DomainsProviders = new Dictionary<string, IDirectoriesProvider>();
             DirectoriesProviders.ToList().ForEach(p =>
                  p.GetDomains().ToList().ForEach(d => DomainsProviders[d] = p)
@@ -278,27 +273,23 @@ namespace MediaBrowser.Server.Implementations.Library
 
             DomainsProviders.ToList().ForEach(d => {
                 d.Value.RetrieveAll(d.Key).Result.ToList().ForEach(e => {
-                    if(!users.Any(u => u.DomainUid == e.UID && u.FQDN == e.FQDN))
+                    if(!users.Any(u => u.DN == e.DN))
                     {
                         users.Add(UserRepository.CreateUser(e).Result);
                     }
                 });
             });
 
-            _logger.Info("----------Check ADMIN------------");
             //At least one local user has to be admin if not make all local users admins
             if (users.Where(u => (u.FQDN == "Local" && u.Policy.IsAdministrator == true)).Count() == 0)
             {
-                _logger.Info("----------Check------------");
                 foreach (var u in users.Where(u => (u.FQDN == "Local"))){
-                    _logger.Info("----------Check ADMIN2------------");
                     u.Policy.IsAdministrator = true;
                     u.Policy.EnableContentDeletion = true;
                     u.Policy.EnableRemoteControlOfOtherUsers = true;
                     UserRepository.UpdateUserPolicy(u).Wait();
                 }
             }
-            _logger.Info("----------Done with users------------");
             return users;
         }
 
@@ -319,6 +310,8 @@ namespace MediaBrowser.Server.Implementations.Library
             var dto = new UserDto
             {
                 Id = user.Id.ToString("N"),
+                DN = user.DN,
+                FQDN = user.FQDN,
                 Name = user.Name,
                 HasPassword = hasPassword,
                 HasConfiguredPassword = hasConfiguredPassword,
@@ -795,7 +788,7 @@ namespace MediaBrowser.Server.Implementations.Library
         private async Task UpdateUserPolicy(User user, UserPolicy userPolicy, bool fireEvent)
         {
             user.Policy = userPolicy;
-            await UserRepository.UpdateUserPolicy(user,userPolicy);
+            await UserRepository.UpdateUserPolicy(user);
 
             await UpdateConfiguration(user, user.Configuration, true).ConfigureAwait(false);
         }
@@ -820,7 +813,7 @@ namespace MediaBrowser.Server.Implementations.Library
         private async Task UpdateConfiguration(User user, UserConfiguration config, bool fireEvent)
         {
             user.Configuration = config;
-            await UserRepository.UpdateUserConfig(user, config);
+            await UserRepository.UpdateUserConfig(user);
 
             if (fireEvent)
             {

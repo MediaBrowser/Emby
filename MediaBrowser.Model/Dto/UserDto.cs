@@ -50,6 +50,9 @@ namespace MediaBrowser.Model.Dto
         /// <value>The type of the connect link.</value>
         public UserLinkType? ConnectLinkType { get; set; }
         
+        public string DN { get; set; }
+        public string FQDN { get; set; }
+
         /// <summary>
         /// Gets or sets the id.
         /// </summary>

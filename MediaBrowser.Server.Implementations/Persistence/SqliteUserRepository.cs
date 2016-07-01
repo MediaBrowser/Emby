@@ -54,7 +54,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 string[] queries = {
 
-                                "create table if not exists users (guid GUID primary key, domain_uid VARCHAR(255), fqdn VARCHAR(255), config BLOB, policy BLOB, data BLOB)",
+                                "create table if not exists users (guid GUID primary key, dn VARCHAR(255), fqdn VARCHAR(255), config BLOB, policy BLOB, data BLOB)",
                                 "create index if not exists idx_users on users(guid)",
                                 "create table if not exists schema_version (table_name primary key, version)",
 
@@ -64,26 +64,26 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 connection.RunQueries(queries, Logger);
             }
             var cols = new Dictionary<string, string>() {
-                { "config","BLOB"},{ "policy","BLOB"},{ "data","BLOB"}, {"guid","GUID" }
+                { "config","BLOB"},{ "policy","BLOB"},{ "data","BLOB"}, {"guid","GUID" }, {"dn","VARCHAR(255)" },{"fqdn","VARCHAR(255)" }
             };
             await AddColumns(cols,"users").ConfigureAwait(false);
         }
         public async Task<User> CreateUser(DirectoryEntry directoryEntry, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var user = InstantiateNewUser(directoryEntry.CN);
+            var user = InstantiateNewUser(directoryEntry);
 
             var q = new Query()
             {
-                Cmd = "insert into users (guid, domain_uid, fqdn, data, config, policy) values (@guid, @uid, @fqdn, @data, @config, @policy)",
+                Cmd = "insert into users (guid, dn, fqdn, data, config, policy) values (@guid, @dn, @fqdn, @data, @config, @policy)",
             };
 
             var data = _jsonSerializer.SerializeToBytes(user);
-            var config = _jsonSerializer.SerializeToBytes(user.Configuration ?? new UserConfiguration());
-            var policy = _jsonSerializer.SerializeToBytes(user.Policy ?? new UserPolicy());
+            var config = _jsonSerializer.SerializeToBytes(user.Configuration);
+            var policy = _jsonSerializer.SerializeToBytes(user.Policy);
 
             q.AddValue("@guid", user.Id);
-            q.AddValue("@fqdn", directoryEntry.FQDN);
-            q.AddValue("@uid", directoryEntry.UID);
+            q.AddValue("@fqdn", user.FQDN);
+            q.AddValue("@dn", user.DN);
             q.AddValue("@data", data);
             q.AddValue("@config", config);
             q.AddValue("@policy", policy);
@@ -140,7 +140,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 user = _jsonSerializer.DeserializeFromStream<User>(stream);
                 user.Id = reader.GetGuid(0);
-                user.DomainUid = reader["domain_uid"] as string;
+                user.DN = reader["dn"] as string;
                 user.FQDN = reader["fqdn"] as string;
             }
             using (var stream = reader.GetMemoryStream(2)) { user.Policy = _jsonSerializer.DeserializeFromStream<UserPolicy>(stream); }
@@ -154,7 +154,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <returns>IEnumerable{User}.</returns>
         public IEnumerable<User> RetrieveAllUsers()
         {
-            var query = new Query() { Cmd = "select guid,data,policy,config,domain_uid,fqdn from users" };
+            var query = new Query() { Cmd = "select guid,data,policy,config,dn,fqdn from users" };
             return Read(query, GetUser).Result;
          }
 
@@ -236,7 +236,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public async Task<User> RetrieveUser(Guid guid, CancellationToken cancellationToken)
         {
-            var query = new Query() { Cmd = "select guid,data,policy,config,domain_uid,fqdn from users where guid=@guid" };
+            var query = new Query() { Cmd = "select guid,data,policy,config,dn,fqdn from users where guid=@guid" };
             query.AddValue("@guid", guid);
             var result = await Read(query, GetUser);
             return result.FirstOrDefault();
@@ -247,12 +247,15 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>User.</returns>
-        private User InstantiateNewUser(string name)
+        private User InstantiateNewUser(DirectoryEntry entry)
         {
             return new User
             {
-                Name = name,
+                Name = entry.CN,
                 Id = Guid.NewGuid(),
+                DomainUid = entry.UID,
+                DN = entry.DN,
+                FQDN = entry.FQDN,
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow,
                 DateLastSaved = DateTime.UtcNow,

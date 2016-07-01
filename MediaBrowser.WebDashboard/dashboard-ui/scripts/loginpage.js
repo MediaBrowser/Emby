@@ -109,7 +109,7 @@
             html += '<div class="cardScalable">';
 
             html += '<div class="cardPadder"></div>';
-            html += '<a class="cardContent" href="#" data-ajax="false" data-haspw="' + user.HasPassword + '" data-username="' + user.Name + '" data-userid="' + user.Id + '">';
+            html += '<a class="cardContent" href="#" data-ajax="false" data-haspw="' + user.HasPassword + '" data-username="' + user.DN + '" data-userid="' + user.Id + '">';
 
             var imgUrl;
 
@@ -136,7 +136,7 @@
             html += '</div>';
 
             html += '<div class="cardFooter">';
-            html += '<div class="cardText">' + user.Name + '</div>';
+            html += '<div class="cardText">' + user.FQDN+'\\'+user.Name + '</div>';
 
             html += '<div class="cardText">';
             var lastSeen = LoginPage.getLastSeenText(user.LastActivityDate);

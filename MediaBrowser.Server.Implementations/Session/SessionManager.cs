@@ -1334,9 +1334,8 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
-            var user = _userManager.Users
-                .FirstOrDefault(i => string.Equals(request.Username, i.Name, StringComparison.OrdinalIgnoreCase));
-
+            var user = _userManager.GetUserByName(request.Username);
+   
             if (user != null && !string.IsNullOrWhiteSpace(request.DeviceId))
             {
                 if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), request.DeviceId))
