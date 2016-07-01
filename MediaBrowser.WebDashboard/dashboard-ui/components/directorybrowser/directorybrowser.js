@@ -82,7 +82,13 @@
 
             Dashboard.hideLoadingMsg();
 
-        }, function () {
+        }, function (errorResponse) {
+
+            if (errorResponse.status == 404 && path) {
+                // Initial path could not be found. Default to root drives view
+                refreshDirectoryBrowser(page, null, fileOptions);
+                return;
+            }
 
             $('#txtDirectoryPickerPath', page).val("");
             $('.results', page).html('');
