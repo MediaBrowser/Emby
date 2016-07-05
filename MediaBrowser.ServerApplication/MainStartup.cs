@@ -188,7 +188,14 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return true;
+                if (_isRunningAsService)
+                {
+                    return CanRestartWindowsService();
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
 
@@ -200,7 +207,14 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                return true;
+                if (_isRunningAsService)
+                {
+                    return CanRestartWindowsService();
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
 
@@ -601,15 +615,39 @@ namespace MediaBrowser.ServerApplication
 
             var startInfo = new ProcessStartInfo
             {
-                
                 FileName = "cmd.exe",
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = "/c sc stop Emby && sc start Emby"
+                Arguments = String.Format("/c sc stop {0} && sc start {0}", BackgroundService.GetExistingServiceName())
             };
             Process.Start(startInfo);
+        }
+
+        private static bool CanRestartWindowsService()
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                Verb = "runas",
+                ErrorDialog = false,
+                Arguments = String.Format("/c sc query {0}", BackgroundService.GetExistingServiceName())
+            };
+            using (var process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+                if (process.ExitCode == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         private static async Task InstallVcredist2013IfNeeded(ApplicationHost appHost, ILogger logger)
