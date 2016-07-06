@@ -44,11 +44,6 @@ namespace MediaBrowser.Server.Implementations.Session
         private readonly IUserDataManager _userDataRepository;
 
         /// <summary>
-        /// The _user repository
-        /// </summary>
-        private readonly IUserRepository _userRepository;
-
-        /// <summary>
         /// The _logger
         /// </summary>
         private readonly ILogger _logger;
@@ -99,11 +94,10 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private readonly SemaphoreSlim _sessionLock = new SemaphoreSlim(1, 1);
 
-        public SessionManager(IUserDataManager userDataRepository, ILogger logger, IUserRepository userRepository, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager)
+        public SessionManager(IUserDataManager userDataRepository, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager)
         {
             _userDataRepository = userDataRepository;
             _logger = logger;
-            _userRepository = userRepository;
             _libraryManager = libraryManager;
             _userManager = userManager;
             _musicManager = musicManager;
@@ -254,7 +248,7 @@ namespace MediaBrowser.Server.Implementations.Session
                     try
                     {
                         // Save this directly. No need to fire off all the events for this.
-                        await _userRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+                        await _userManager.UpdateUser(user).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -1340,9 +1334,8 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
-            var user = _userManager.Users
-                .FirstOrDefault(i => string.Equals(request.Username, i.Name, StringComparison.OrdinalIgnoreCase));
-
+            var user = _userManager.GetUserByName(request.Username);
+   
             if (user != null && !string.IsNullOrWhiteSpace(request.DeviceId))
             {
                 if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), request.DeviceId))

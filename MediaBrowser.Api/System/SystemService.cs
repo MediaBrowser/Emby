@@ -31,6 +31,12 @@ namespace MediaBrowser.Api.System
 
     }
 
+    [Route("/System/PublicKey", "GET", Summary = "Gets public information about the server")]
+    public class GetPublicKey : IReturn<string>
+    {
+
+    }
+
     [Route("/System/Ping", "POST")]
     public class PingSystem : IReturnVoid
     {
@@ -112,6 +118,11 @@ namespace MediaBrowser.Api.System
         public object Post(PingSystem request)
         {
             return _appHost.Name;
+        }
+
+        public object Get(GetPublicKey request)
+        {
+            return _appHost.PublicKey;
         }
 
         public object Get(GetServerLogs request)

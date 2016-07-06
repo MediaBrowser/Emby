@@ -48,6 +48,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedVersion.cs">
@@ -68,9 +70,12 @@
     <Compile Include="IApplicationHost.cs" />
     <Compile Include="Net\IHttpClient.cs" />
     <Compile Include="Net\INetworkManager.cs" />
+    <Compile Include="Security\CertUtilities.cs" />
     <Compile Include="Plugins\IDependencyModule.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Progress\ActionableProgress.cs" />
+    <Compile Include="Security\Crypto.cs" />
+    <Compile Include="SQL\Query.cs" />
     <Compile Include="ScheduledTasks\IConfigurableScheduledTask.cs" />
     <Compile Include="ScheduledTasks\IHasKey.cs" />
     <Compile Include="ScheduledTasks\IScheduledTask.cs" />
@@ -90,6 +95,7 @@
     <Compile Include="Security\IRequiresRegistration.cs" />
     <Compile Include="Security\ISecurityManager.cs" />
     <Compile Include="Security\PaymentRequiredException.cs" />
+    <Compile Include="SQL\SqlUtilities.cs" />
     <Compile Include="Threading\PeriodicTimer.cs" />
     <Compile Include="Updates\IInstallationManager.cs" />
     <Compile Include="Updates\InstallationEventArgs.cs" />

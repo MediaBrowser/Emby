@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Library;
@@ -103,6 +104,13 @@ namespace MediaBrowser.Api
         /// <value>The password.</value>
         [ApiMember(Name = "Password", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
         public string Password { get; set; }
+
+        /// <summary>
+        /// Is the password Encrypted.
+        /// </summary>
+        /// <value>Encrypted?.</value>
+        [ApiMember(Name = "Encrypted", IsRequired = false, DataType = "bool", ParameterType = "body", Verb = "POST")]
+        public bool? Encrypted { get; set; }
     }
 
     /// <summary>
@@ -127,6 +135,13 @@ namespace MediaBrowser.Api
 
         [ApiMember(Name = "PasswordMd5", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
         public string PasswordMd5 { get; set; }
+
+        /// <summary>
+        /// Is the password Encrypted.
+        /// </summary>
+        /// <value>Encrypted?.</value>
+        [ApiMember(Name = "Encrypted", IsRequired = false, DataType = "bool", ParameterType = "body", Verb = "POST")]
+        public bool? Encrypted { get; set; }
     }
 
     /// <summary>
@@ -159,6 +174,13 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value><c>true</c> if [reset password]; otherwise, <c>false</c>.</value>
         public bool ResetPassword { get; set; }
+
+        /// <summary>
+        /// Is the password Encrypted.
+        /// </summary>
+        /// <value>Encrypted?.</value>
+        [ApiMember(Name = "Encrypted", IsRequired = false, DataType = "bool", ParameterType = "body", Verb = "POST")]
+        public bool? Encrypted { get; set; }
     }
 
     /// <summary>
@@ -256,9 +278,11 @@ namespace MediaBrowser.Api
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
         private readonly IDeviceManager _deviceManager;
+        private readonly IServerApplicationHost _appHost;
 
-        public UserService(IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager)
+        public UserService(IServerApplicationHost appHost, IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager)
         {
+            _appHost = appHost;
             _userManager = userManager;
             _sessionMananger = sessionMananger;
             _config = config;
@@ -406,7 +430,8 @@ namespace MediaBrowser.Api
             return Post(new AuthenticateUserByName
             {
                 Username = user.Name,
-                Password = request.Password
+                Password = request.Password,
+                Encrypted = request.Encrypted ?? false
             });
         }
 
@@ -420,7 +445,7 @@ namespace MediaBrowser.Api
                 AppVersion = auth.Version,
                 DeviceId = auth.DeviceId,
                 DeviceName = auth.Device,
-                PasswordSha1 = request.Password,
+                PasswordSha1 = (request.Encrypted ?? false) ? _appHost.Decrypt(request.Password) : request.Password,
                 PasswordMd5 = request.PasswordMd5,
                 RemoteEndPoint = Request.RemoteIp,
                 Username = request.Username
@@ -457,14 +482,14 @@ namespace MediaBrowser.Api
             }
             else
             {
-                var success = await _userManager.AuthenticateUser(user.Name, request.CurrentPassword, Request.RemoteIp).ConfigureAwait(false);
+                var success = await _userManager.AuthenticateUser(user.Name, (request.Encrypted ?? false) ? _appHost.Decrypt(request.CurrentPassword) : request.CurrentPassword, Request.RemoteIp).ConfigureAwait(false);
 
                 if (!success)
                 {
                     throw new ArgumentException("Invalid user or password entered.");
                 }
 
-                await _userManager.ChangePassword(user, request.NewPassword).ConfigureAwait(false);
+                await _userManager.ChangePassword(user, (request.Encrypted ?? false) ? _appHost.Decrypt(request.NewPassword) : request.NewPassword).ConfigureAwait(false);
 
                 var currentToken = AuthorizationContext.GetAuthorizationInfo(Request).Token;
 

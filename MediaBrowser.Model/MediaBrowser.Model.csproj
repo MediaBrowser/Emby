@@ -135,6 +135,7 @@
     <Compile Include="Dto\MetadataEditorInfo.cs" />
     <Compile Include="Dto\NameIdPair.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
+    <Compile Include="Entities\DirectoryEntry.cs" />
     <Compile Include="FileOrganization\SmartMatchInfo.cs" />
     <Compile Include="MediaInfo\LiveStreamRequest.cs" />
     <Compile Include="MediaInfo\LiveStreamResponse.cs" />
@@ -444,6 +445,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>

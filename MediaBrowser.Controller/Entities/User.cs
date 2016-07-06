@@ -2,6 +2,7 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Connect;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
@@ -20,17 +21,9 @@ namespace MediaBrowser.Controller.Entities
         public static IUserManager UserManager { get; set; }
         public static IXmlSerializer XmlSerializer { get; set; }
 
-        /// <summary>
-        /// From now on all user paths will be Id-based. 
-        /// This is for backwards compatibility.
-        /// </summary>
-        public bool UsesIdForConfigurationPath { get; set; }
+        public string DN { get; set; }
+        public string DomainUid { get; set; }
 
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        /// <value>The password.</value>
-        public string Password { get; set; }
         public string EasyPassword { get; set; }
 
         public string ConnectUserName { get; set; }
@@ -38,25 +31,7 @@ namespace MediaBrowser.Controller.Entities
         public UserLinkType? ConnectLinkType { get; set; }
         public string ConnectAccessKey { get; set; }
 
-        /// <summary>
-        /// Gets or sets the path.
-        /// </summary>
-        /// <value>The path.</value>
-        [IgnoreDataMember]
-        public override string Path
-        {
-            get
-            {
-                // Return this so that metadata providers will look in here
-                return ConfigurationDirectoryPath;
-            }
-            set
-            {
-                base.Path = value;
-            }
-        }
-
-        private string _name;
+         private string _name;
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -73,20 +48,6 @@ namespace MediaBrowser.Controller.Entities
 
                 // lazy load this again
                 SortName = null;
-            }
-        }
-
-        /// <summary>
-        /// Returns the folder containing the item.
-        /// If the item is a folder, it returns the folder itself
-        /// </summary>
-        /// <value>The containing folder path.</value>
-        [IgnoreDataMember]
-        public override string ContainingFolderPath
-        {
-            get
-            {
-                return Path;
             }
         }
 
@@ -186,31 +147,6 @@ namespace MediaBrowser.Controller.Entities
                 throw new ArgumentNullException("newName");
             }
 
-            // If only the casing is changing, leave the file system alone
-            if (!UsesIdForConfigurationPath && !string.Equals(newName, Name, StringComparison.OrdinalIgnoreCase))
-            {
-                UsesIdForConfigurationPath = true;
-
-                // Move configuration
-                var newConfigDirectory = GetConfigurationDirectoryPath(newName);
-                var oldConfigurationDirectory = ConfigurationDirectoryPath;
-
-                // Exceptions will be thrown if these paths already exist
-				if (FileSystem.DirectoryExists(newConfigDirectory))
-                {
-                    FileSystem.DeleteDirectory(newConfigDirectory, true);
-                }
-
-				if (FileSystem.DirectoryExists(oldConfigurationDirectory))
-                {
-					FileSystem.MoveDirectory(oldConfigurationDirectory, newConfigDirectory);
-                }
-                else
-                {
-					FileSystem.CreateDirectory(newConfigDirectory);
-                }
-            }
-
             Name = newName;
 
 			return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(FileSystem))
@@ -228,45 +164,7 @@ namespace MediaBrowser.Controller.Entities
             return UserManager.UpdateUser(this);
         }
 
-        /// <summary>
-        /// Gets the path to the user's configuration directory
-        /// </summary>
-        /// <value>The configuration directory path.</value>
-        [IgnoreDataMember]
-        public string ConfigurationDirectoryPath
-        {
-            get
-            {
-                return GetConfigurationDirectoryPath(Name);
-            }
-        }
-
-        /// <summary>
-        /// Gets the configuration directory path.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <returns>System.String.</returns>
-        private string GetConfigurationDirectoryPath(string username)
-        {
-            var parentPath = ConfigurationManager.ApplicationPaths.UserConfigurationDirectoryPath;
-
-            // Legacy
-            if (!UsesIdForConfigurationPath)
-            {
-                if (string.IsNullOrEmpty(username))
-                {
-                    throw new ArgumentNullException("username");
-                }
-
-                var safeFolderName = FileSystem.GetValidFilename(username);
-
-                return System.IO.Path.Combine(ConfigurationManager.ApplicationPaths.UserConfigurationDirectoryPath, safeFolderName);
-            }
-
-            return System.IO.Path.Combine(parentPath, Id.ToString("N"));
-        }
-
-        public bool IsParentalScheduleAllowed()
+         public bool IsParentalScheduleAllowed()
         {
             return IsParentalScheduleAllowed(DateTime.UtcNow);
         }
@@ -316,5 +214,7 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
         }
+
+        public string FQDN { get; set; }
     }
 }

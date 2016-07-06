@@ -264,6 +264,7 @@
     <Compile Include="Persistence\CleanDatabaseScheduledTask.cs" />
     <Compile Include="Persistence\DataExtensions.cs" />
     <Compile Include="Persistence\IDbConnector.cs" />
+    <Compile Include="Persistence\LocalDirectoryProvider.cs" />
     <Compile Include="Persistence\MediaStreamColumns.cs" />
     <Compile Include="Social\SharingManager.cs" />
     <Compile Include="Social\SharingRepository.cs" />

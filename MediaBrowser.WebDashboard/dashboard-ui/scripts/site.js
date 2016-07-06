@@ -1764,7 +1764,9 @@ var AppInfo = {};
             itemShortcuts: embyWebComponentsBowerPath + "/shortcuts",
             imageLoader: embyWebComponentsBowerPath + "/images/imagehelper",
             serverNotifications: embyWebComponentsBowerPath + '/servernotifications',
-            webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min'
+            webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min',
+            jsencrypt: "thirdparty/jsencrypt.min",
+            text: "bower_components/text/text"
         };
 
         if (navigator.webkitPersistentStorage) {

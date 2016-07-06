@@ -1,4 +1,4 @@
-﻿define(['events'], function (Events) {
+﻿define(['events',"jsencrypt",'text!../System/PublicKey'], function (Events, Crypto, PublicKey) {
 
     /**
      * Creates a new api client instance
@@ -2471,30 +2471,30 @@
 
                 var url = self.getUrl("Users/authenticatebyname");
 
-                require(["cryptojs-sha1"], function () {
-                    var postData = {
-                        password: CryptoJS.SHA1(password || "").toString(),
-                        Username: name
-                    };
+                var postData = {
+                    password: self.encrypt(password || ""),
+                    Username: name,
+                    Encrypted: true
+                };
 
-                    self.ajax({
-                        type: "POST",
-                        url: url,
-                        data: JSON.stringify(postData),
-                        dataType: "json",
-                        contentType: "application/json"
+                self.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify(postData),
+                    dataType: "json",
+                    contentType: "application/json"
 
-                    }).then(function (result) {
+                }).then(function (result) {
 
-                        if (self.onAuthenticated) {
-                            self.onAuthenticated(self, result);
-                        }
+                    if (self.onAuthenticated) {
+                        self.onAuthenticated(self, result);
+                    }
 
-                        resolve(result);
+                    resolve(result);
 
-                    }, reject);
-                });
+                }, reject);
             });
+
         };
 
         /**
@@ -2512,19 +2512,18 @@
                     return;
                 }
 
-                var url = self.getUrl("Users/" + userId + "/Password");
+                var url = self.getUrl("Users/" + userId + "/Password");               
 
-                require(["cryptojs-sha1"], function () {
+                self.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        currentPassword: self.encrypt(currentPassword),
+                        newPassword: self.encrypt(newPassword),
+                        Encrypted: true
+                    }
+                }).then(resolve, reject);
 
-                    self.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            currentPassword: CryptoJS.SHA1(currentPassword).toString(),
-                            newPassword: CryptoJS.SHA1(newPassword).toString()
-                        }
-                    }).then(resolve, reject);
-                });
             });
         };
 
@@ -3532,5 +3531,18 @@
                 return result;
             });
         };
+
+        var rsa = new Crypto.JSEncrypt();
+
+        rsa.setKey(PublicKey);
+
+        self.PublicKey = PublicKey;
+
+        self.encrypt = function (data) {
+            console.log("encrypting");
+            return rsa.encrypt(data);
+        }
     };
+
+
 });
