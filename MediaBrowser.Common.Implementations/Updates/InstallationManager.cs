@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Implementations.Security;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Progress;
@@ -194,13 +193,14 @@ namespace MediaBrowser.Common.Implementations.Updates
         /// <returns>Task{List{PackageInfo}}.</returns>
         public async Task<IEnumerable<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken)
         {
+            _logger.Info("Opening {0}", PackageCachePath);
             try
             {
                 using (var stream = _fileSystem.OpenRead(PackageCachePath))
                 {
                     var packages = _jsonSerializer.DeserializeFromStream<List<PackageInfo>>(stream).ToList();
 
-                    if ((DateTime.UtcNow - _lastPackageUpdateTime) > GetCacheLength())
+                    if (DateTime.UtcNow - _lastPackageUpdateTime > GetCacheLength())
                     {
                         UpdateCachedPackages(CancellationToken.None, false);
                     }
@@ -233,7 +233,7 @@ namespace MediaBrowser.Common.Implementations.Updates
 
             try
             {
-                if ((DateTime.UtcNow - _lastPackageUpdateTime) < GetCacheLength())
+                if (DateTime.UtcNow - _lastPackageUpdateTime < GetCacheLength())
                 {
                     return;
                 }

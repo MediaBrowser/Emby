@@ -106,7 +106,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 }
             });
 
-            HostContext.GlobalResponseFilters.Add(new ResponseFilter(_logger, () => _config.Configuration.DenyIFrameEmbedding).FilterResponse);
+            HostContext.GlobalResponseFilters.Add(new ResponseFilter(_logger).FilterResponse);
         }
 
         public override void OnAfterInit()
@@ -179,6 +179,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private void OnWebSocketConnecting(WebSocketConnectingEventArgs args)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             if (WebSocketConnecting != null)
             {
                 WebSocketConnecting(this, args);
@@ -187,6 +192,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private void OnWebSocketConnected(WebSocketConnectEventArgs args)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             if (WebSocketConnected != null)
             {
                 WebSocketConnected(this, args);
@@ -331,6 +341,13 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
             var httpRes = httpReq.Response;
 
+            if (_disposed)
+            {
+                httpRes.StatusCode = 503;
+                httpRes.Close();
+                return Task.FromResult(true);
+            }
+
             var operationName = httpReq.OperationName;
             var localPath = url.LocalPath;
 
@@ -342,6 +359,19 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             {
                 urlToLog = GetUrlToLog(urlString);
                 LoggerUtils.LogRequest(_logger, urlToLog, httpReq.HttpMethod, httpReq.UserAgent);
+            }
+
+            if (string.Equals(localPath, "/emby/", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(localPath, "/mediabrowser/", StringComparison.OrdinalIgnoreCase))
+            {
+                httpRes.RedirectToUrl(DefaultRedirectPath);
+                return Task.FromResult(true);
+            }
+            if (string.Equals(localPath, "/emby", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(localPath, "/mediabrowser", StringComparison.OrdinalIgnoreCase))
+            {
+                httpRes.RedirectToUrl("emby/" + DefaultRedirectPath);
+                return Task.FromResult(true);
             }
 
             if (string.Equals(localPath, "/mediabrowser/", StringComparison.OrdinalIgnoreCase) ||
@@ -363,16 +393,6 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 }
             }
 
-            if (string.Equals(localPath, "/emby/", StringComparison.OrdinalIgnoreCase))
-            {
-                httpRes.RedirectToUrl(DefaultRedirectPath);
-                return Task.FromResult(true);
-            }
-            if (string.Equals(localPath, "/emby", StringComparison.OrdinalIgnoreCase))
-            {
-                httpRes.RedirectToUrl("emby/" + DefaultRedirectPath);
-                return Task.FromResult(true);
-            }
             if (string.Equals(localPath, "/web", StringComparison.OrdinalIgnoreCase))
             {
                 httpRes.RedirectToUrl(DefaultRedirectPath);

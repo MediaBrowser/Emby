@@ -1,14 +1,13 @@
 ﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MediaBrowser.Controller.Entities
 {
-    public class Game : BaseItem, IHasTrailers, IHasThemeMedia, IHasTags, IHasScreenshots, ISupportsPlaceHolders, IHasLookupInfo<GameInfo>
+    public class Game : BaseItem, IHasTrailers, IHasThemeMedia, IHasScreenshots, ISupportsPlaceHolders, IHasLookupInfo<GameInfo>
     {
         public List<Guid> ThemeSongIds { get; set; }
         public List<Guid> ThemeVideoIds { get; set; }
@@ -77,15 +76,16 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         public List<string> MultiPartGameFiles { get; set; }
 
-        protected override string CreateUserDataKey()
+        public override List<string> GetUserDataKeys()
         {
+            var list = base.GetUserDataKeys();
             var id = this.GetProviderId(MetadataProviders.Gamesdb);
 
             if (!string.IsNullOrEmpty(id))
             {
-                return "Game-Gamesdb-" + id;
+                list.Insert(0, "Game-Gamesdb-" + id);
             }
-            return base.CreateUserDataKey();
+            return list;
         }
 
         public override IEnumerable<string> GetDeletePaths()

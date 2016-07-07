@@ -1,9 +1,6 @@
 ﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Channels;
-using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using System;
 using System.Collections.Generic;
@@ -34,11 +31,6 @@ namespace MediaBrowser.Providers.Movies
         public string Name
         {
             get { return MovieDbProvider.Current.Name; }
-        }
-
-        public bool HasChanged(IHasMetadata item, DateTime date)
-        {
-            return MovieDbProvider.Current.HasChanged(item, date);
         }
 
         public int Order

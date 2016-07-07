@@ -1,5 +1,63 @@
 # Prism Changelog
 
+## 1.5.1 (2016-06-05)
+
+### Updated components
+
+* __Normalize Whitespace__:
+	* FAdd class that disables the normalize whitespace plugin [[`9385c54`](https://github.com/PrismJS/prism/commit/9385c54)]
+* __JavaScript Language__:
+	* Rearrange the `string` and `template-string` token in JavaScript [[`1158e46`](https://github.com/PrismJS/prism/commit/1158e46)]
+* __SQL Language__:
+	* add delimeter and delimeters keywords to sql ([#958](https://github.com/PrismJS/prism/pull/958)) [[`a9ef24e`](https://github.com/PrismJS/prism/commit/a9ef24e)]
+	* add AUTO_INCREMENT and DATE keywords to sql ([#954](https://github.com/PrismJS/prism/pull/954)) [[`caea2af`](https://github.com/PrismJS/prism/commit/caea2af)]
+* __Diff Language__:
+	* Highlight diff lines with only + or - ([#952](https://github.com/PrismJS/prism/pull/952)) [[`4d0526f`](https://github.com/PrismJS/prism/commit/4d0526f)]
+
+### Other changes
+
+* Allow for asynchronous loading of prism.js ([#959](https://github.com/PrismJS/prism/pull/959))
+* Use toLowerCase on language names ([#957](https://github.com/PrismJS/prism/pull/957)) [[`acd9508`](https://github.com/PrismJS/prism/commit/acd9508)]
+* link to index for basic usage - fixes #945 ([#946](https://github.com/PrismJS/prism/pull/946)) [[`6c772d8`](https://github.com/PrismJS/prism/commit/6c772d8)]
+* Fixed monospace typo ([#953](https://github.com/PrismJS/prism/pull/953)) [[`e6c3498`](https://github.com/PrismJS/prism/commit/e6c3498)]
+
+## 1.5.0 (2016-05-01)
+
+### New components
+
+* __Bro Language__ ([#925](https://github.com/PrismJS/prism/pull/925))
+* __Protocol Buffers Language__ ([#938](https://github.com/PrismJS/prism/pull/938)) [[`ae4a4f2`](https://github.com/PrismJS/prism/commit/ae4a4f2)]
+
+### Updated components
+
+* __Keep Markup__:
+	* Fix Keep Markup plugin incorrect highlighting ([#880](https://github.com/PrismJS/prism/pull/880)) [[`24841ef`](https://github.com/PrismJS/prism/commit/24841ef)]
+* __Groovy Language__:
+	* Fix double HTML-encoding bug in Groovy language [[`24a0936`](https://github.com/PrismJS/prism/commit/24a0936)]
+* __Java Language__:
+	* Adding annotation token for Java ([#905](https://github.com/PrismJS/prism/pull/905)) [[`367ace6`](https://github.com/PrismJS/prism/commit/367ace6)]
+* __SAS Language__:
+	* Add missing keywords for SAS ([#922](https://github.com/PrismJS/prism/pull/922))
+* __YAML Language__:
+	* fix hilighting of YAML keys on first line of code block ([#943](https://github.com/PrismJS/prism/pull/943)) [[`f19db81`](https://github.com/PrismJS/prism/commit/f19db81)]
+* __C# Language__:
+	* Support for generic methods in csharp [[`6f75735`](https://github.com/PrismJS/prism/commit/6f75735)]
+
+### New plugins
+
+* __Unescaped Markup__ [[`07d77e5`](https://github.com/PrismJS/prism/commit/07d77e5)]
+* __Normalize Whitespace__ ([#847](https://github.com/PrismJS/prism/pull/847)) [[`e86ec01`](https://github.com/PrismJS/prism/commit/e86ec01)]
+
+### Other changes
+
+* Add JSPM support [[`ad048ab`](https://github.com/PrismJS/prism/commit/ad048ab)]
+* update linear-gradient syntax from `left` to `to right` [[`cd234dc`](https://github.com/PrismJS/prism/commit/cd234dc)]
+* Add after-property to allow ordering of plugins [[`224b7a1`](https://github.com/PrismJS/prism/commit/224b7a1)]
+* Partial solution for the "Comment-like substrings"-problem [[`2705c50`](https://github.com/PrismJS/prism/commit/2705c50)]
+* Add property 'aliasTitles' to components.js [[`54400fb`](https://github.com/PrismJS/prism/commit/54400fb)]
+* Add before-highlightall hook [[`70a8602`](https://github.com/PrismJS/prism/commit/70a8602)]
+* Fix catastrophic backtracking regex issues in JavaScript [[`ab65be2`](https://github.com/PrismJS/prism/commit/ab65be2)]
+
 ## 1.4.1 (2016-02-03)
 
 ### Other changes

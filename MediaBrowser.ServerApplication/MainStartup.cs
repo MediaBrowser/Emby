@@ -217,6 +217,7 @@ namespace MediaBrowser.ServerApplication
         {
             var fileSystem = new WindowsFileSystem(new PatternsLogger(logManager.GetLogger("FileSystem")));
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
+            //fileSystem.AddShortcutHandler(new LnkShortcutHandler(fileSystem));
 
             var nativeApp = new WindowsApp(fileSystem, _logger)
             {
@@ -243,7 +244,9 @@ namespace MediaBrowser.ServerApplication
 
 
             var task = _appHost.Init(initProgress);
-            task = task.ContinueWith(new Action<Task>(a => _appHost.RunStartupTasks()));
+            Task.WaitAll(task);
+
+            task = task.ContinueWith(new Action<Task>(a => _appHost.RunStartupTasks()), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.AttachedToParent);
 
             if (runService)
             {
@@ -253,7 +256,7 @@ namespace MediaBrowser.ServerApplication
             {
                 Task.WaitAll(task);
 
-                task = InstallVcredistIfNeeded(_appHost, _logger);
+                task = InstallVcredist2013IfNeeded(_appHost, _logger);
                 Task.WaitAll(task);
 
                 SystemEvents.SessionEnding += SystemEvents_SessionEnding;
@@ -269,11 +272,13 @@ namespace MediaBrowser.ServerApplication
         }
 
         private static ServerNotifyIcon _serverNotifyIcon;
+        private static TaskScheduler _mainTaskScheduler;
         private static void ShowTrayIcon()
         {
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             _serverNotifyIcon = new ServerNotifyIcon(_appHost.LogManager, _appHost, _appHost.ServerConfigurationManager, _appHost.LocalizationManager);
+            _mainTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             Application.Run();
         }
 
@@ -313,7 +318,19 @@ namespace MediaBrowser.ServerApplication
         {
             if (e.Reason == SessionSwitchReason.SessionLogon)
             {
-                BrowserLauncher.OpenDashboard(_appHost, _logger);
+                BrowserLauncher.OpenDashboard(_appHost);
+            }
+        }
+
+        public static void Invoke(Action action)
+        {
+            if (_isRunningAsService)
+            {
+                action();
+            }
+            else
+            {
+                Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, _mainTaskScheduler ?? TaskScheduler.Current);
             }
         }
 
@@ -551,9 +568,10 @@ namespace MediaBrowser.ServerApplication
 
         private static void ShutdownWindowsApplication()
         {
-            _logger.Info("Calling Application.Exit");
-            Application.Exit();
+            //_logger.Info("Calling Application.Exit");
+            //Application.Exit();
 
+            _logger.Info("Calling Environment.Exit");
             Environment.Exit(0);
 
             _logger.Info("Calling ApplicationTaskCompletionSource.SetResult");
@@ -573,7 +591,7 @@ namespace MediaBrowser.ServerApplication
             }
         }
 
-        private static async Task InstallVcredistIfNeeded(ApplicationHost appHost, ILogger logger)
+        private static async Task InstallVcredist2013IfNeeded(ApplicationHost appHost, ILogger logger)
         {
             try
             {
@@ -587,7 +605,7 @@ namespace MediaBrowser.ServerApplication
 
             try
             {
-                await InstallVcredist().ConfigureAwait(false);
+                await InstallVcredist2013().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -595,13 +613,13 @@ namespace MediaBrowser.ServerApplication
             }
         }
 
-        private async static Task InstallVcredist()
+        private async static Task InstallVcredist2013()
         {
             var httpClient = _appHost.HttpClient;
 
             var tmp = await httpClient.GetTempFile(new HttpRequestOptions
             {
-                Url = GetVcredistUrl(),
+                Url = GetVcredist2013Url(),
                 Progress = new Progress<double>()
 
             }).ConfigureAwait(false);
@@ -627,7 +645,7 @@ namespace MediaBrowser.ServerApplication
             }
         }
 
-        private static string GetVcredistUrl()
+        private static string GetVcredist2013Url()
         {
             if (Environment.Is64BitProcess)
             {

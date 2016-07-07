@@ -1,13 +1,11 @@
-﻿using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Drawing;
+﻿using MediaBrowser.Model.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Entities
 {
-    public class Photo : BaseItem, IHasTags, IHasTaglines
+    public class Photo : BaseItem, IHasTaglines
     {
         public List<string> Taglines { get; set; }
 

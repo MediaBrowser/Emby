@@ -1,17 +1,9 @@
 ﻿using MediaBrowser.Api.UserLibrary;
-using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Dto;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
-using MediaBrowser.Model.Channels;
-using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 using ServiceStack;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Model.Serialization;
@@ -66,7 +58,7 @@ namespace MediaBrowser.Api.Movies
 
             getItems.IncludeItemTypes = "Trailer";
 
-            return new ItemsService(_userManager, _libraryManager, _userDataRepository, _localizationManager, _dtoService, _collectionManager)
+            return new ItemsService(_userManager, _libraryManager, _localizationManager, _dtoService)
             {
                 AuthorizationContext = AuthorizationContext,
                 Logger = Logger,

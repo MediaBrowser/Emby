@@ -5,7 +5,7 @@
         return 'Thumb';
     }
 
-    function loadLatest(context, params) {
+    function getLatestPromise(context, params) {
 
         Dashboard.showLoadingMsg();
 
@@ -13,23 +13,22 @@
 
         var parentId = params.topParentId;
 
-        var limit = 30;
-
-        if (AppInfo.hasLowImageBandwidth) {
-            limit = 16;
-        }
-
         var options = {
 
             IncludeItemTypes: "Episode",
-            Limit: limit,
+            Limit: 30,
             Fields: "PrimaryImageAspectRatio,SyncInfo",
             ParentId: parentId,
             ImageTypeLimit: 1,
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).then(function (items) {
+        return ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options));
+    }
+
+    function loadLatest(context, params, promise) {
+
+        promise.then(function (items) {
 
             var view = getView();
             var html = '';
@@ -78,10 +77,15 @@
     return function (view, params, tabContent) {
 
         var self = this;
+        var latestPromise;
+
+        self.preRender = function () {
+            latestPromise = getLatestPromise(view, params);
+        };
 
         self.renderTab = function() {
 
-            loadLatest(tabContent, params);
+            loadLatest(tabContent, params, latestPromise);
         };
     };
 });

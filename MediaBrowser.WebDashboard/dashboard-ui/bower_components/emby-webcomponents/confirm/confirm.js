@@ -1,4 +1,4 @@
-define(['layoutManager', 'dialogText'], function (layoutManager, dialogText) {
+define(['layoutManager', 'globalize'], function (layoutManager, globalize) {
 
     function showTvConfirm(options) {
         return new Promise(function (resolve, reject) {
@@ -8,12 +8,12 @@ define(['layoutManager', 'dialogText'], function (layoutManager, dialogText) {
                 var items = [];
 
                 items.push({
-                    name: dialogText.get('Ok'),
+                    name: globalize.translate('sharedcomponents#ButtonOk'),
                     id: 'ok'
                 });
 
                 items.push({
-                    name: dialogText.get('Cancel'),
+                    name: globalize.translate('sharedcomponents#ButtonCancel'),
                     id: 'cancel'
                 });
 
@@ -66,15 +66,17 @@ define(['layoutManager', 'dialogText'], function (layoutManager, dialogText) {
             html += '<h2>' + options.title + '</h2>';
         }
 
-        if (options.text) {
-            html += '<div>' + options.text + '</div>';
+        var text = options.html || options.text;
+
+        if (text) {
+            html += '<div>' + text + '</div>';
         }
 
         html += '<div class="buttons">';
 
-        html += '<paper-button class="btnConfirm" autofocus>' + dialogText.get('Ok') + '</paper-button>';
+        html += '<button is="emby-button" type="button" class="btnConfirm" autofocus>' + globalize.translate('sharedcomponents#ButtonOk') + '</button>';
 
-        html += '<paper-button class="btnCancel">' + dialogText.get('Cancel') + '</paper-button>';
+        html += '<button is="emby-button" type="button" class="btnCancel">' + globalize.translate('sharedcomponents#ButtonCancel') + '</button>';
 
         html += '</div>';
 
@@ -104,7 +106,7 @@ define(['layoutManager', 'dialogText'], function (layoutManager, dialogText) {
     function showConfirm(options) {
         return new Promise(function (resolve, reject) {
 
-            require(['dialogHelper', 'paper-button'], function (dialogHelper) {
+            require(['dialogHelper', 'emby-button'], function (dialogHelper) {
                 showConfirmInternal(options, dialogHelper, resolve, reject);
             });
         });

@@ -1,10 +1,8 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Session;
-using MediaBrowser.MediaEncoding.Subtitles;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -44,8 +42,8 @@ namespace MediaBrowser.MediaEncoding.Encoder
             IFileSystem fileSystem,
             IIsoManager isoManager,
             ILibraryManager libraryManager,
-            ISessionManager sessionManager, 
-            ISubtitleEncoder subtitleEncoder, 
+            ISessionManager sessionManager,
+            ISubtitleEncoder subtitleEncoder,
             IMediaSourceManager mediaSourceManager)
         {
             MediaEncoder = mediaEncoder;
@@ -73,12 +71,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
             await AcquireResources(encodingJob, cancellationToken).ConfigureAwait(false);
 
-            var commandLineArgs = GetCommandLineArguments(encodingJob);
-
-            if (GetEncodingOptions().EnableDebugLogging)
-            {
-                commandLineArgs = "-loglevel debug " + commandLineArgs;
-            }
+            var commandLineArgs = await GetCommandLineArguments(encodingJob).ConfigureAwait(false);
 
             var process = new Process
             {
@@ -88,7 +81,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
                     UseShellExecute = false,
 
                     // Must consume both stdout and stderr or deadlocks may occur
-                    RedirectStandardOutput = true,
+                    //RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
 
@@ -138,15 +131,15 @@ namespace MediaBrowser.MediaEncoding.Encoder
             }
 
             cancellationToken.Register(() => Cancel(process, encodingJob));
-            
+
             // MUST read both stdout and stderr asynchronously or a deadlock may occurr
-            process.BeginOutputReadLine();
+            //process.BeginOutputReadLine();
 
             // Important - don't await the log task or we won't be able to kill ffmpeg when the user stops playback
             new JobLogger(Logger).StartStreamingLog(encodingJob, process.StandardError.BaseStream, encodingJob.LogFileStream);
 
             // Wait for the file to exist before proceeeding
-			while (!FileSystem.FileExists(encodingJob.OutputFilePath) && !encodingJob.HasExited)
+            while (!FileSystem.FileExists(encodingJob.OutputFilePath) && !encodingJob.HasExited)
             {
                 await Task.Delay(100, cancellationToken).ConfigureAwait(false);
             }
@@ -271,11 +264,11 @@ namespace MediaBrowser.MediaEncoding.Encoder
             return ConfigurationManager.GetConfiguration<EncodingOptions>("encoding");
         }
 
-        protected abstract string GetCommandLineArguments(EncodingJob job);
+        protected abstract Task<string> GetCommandLineArguments(EncodingJob job);
 
         private string GetOutputFilePath(EncodingJob state)
         {
-            var folder = string.IsNullOrWhiteSpace(state.Options.OutputDirectory) ? 
+            var folder = string.IsNullOrWhiteSpace(state.Options.OutputDirectory) ?
                 ConfigurationManager.ApplicationPaths.TranscodingTempPath :
                 state.Options.OutputDirectory;
 
@@ -368,9 +361,14 @@ namespace MediaBrowser.MediaEncoding.Encoder
         /// <returns>System.String.</returns>
         protected string GetVideoDecoder(EncodingJob state)
         {
-            if (string.Equals(GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
             {
-                if (state.VideoStream != null && !string.IsNullOrWhiteSpace(state.VideoStream.Codec))
+                return null;
+            }
+
+            if (state.VideoStream != null && !string.IsNullOrWhiteSpace(state.VideoStream.Codec))
+            {
+                if (string.Equals(GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
                 {
                     switch (state.MediaSource.VideoStream.Codec.ToLower())
                     {
@@ -378,6 +376,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
                         case "h264":
                             if (MediaEncoder.SupportsDecoder("h264_qsv"))
                             {
+                                // Seeing stalls and failures with decoding. Not worth it compared to encoding.
                                 return "-c:v h264_qsv ";
                             }
                             break;
@@ -537,7 +536,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
         /// <param name="state">The state.</param>
         /// <param name="outputVideoCodec">The output video codec.</param>
         /// <returns>System.String.</returns>
-        protected string GetGraphicalSubtitleParam(EncodingJob state, string outputVideoCodec)
+        protected async Task<string> GetGraphicalSubtitleParam(EncodingJob state, string outputVideoCodec)
         {
             var outputSizeParam = string.Empty;
 
@@ -546,7 +545,8 @@ namespace MediaBrowser.MediaEncoding.Encoder
             // Add resolution params, if specified
             if (request.Width.HasValue || request.Height.HasValue || request.MaxHeight.HasValue || request.MaxWidth.HasValue)
             {
-                outputSizeParam = GetOutputSizeParam(state, outputVideoCodec).TrimEnd('"');
+                outputSizeParam = await GetOutputSizeParam(state, outputVideoCodec).ConfigureAwait(false);
+                outputSizeParam = outputSizeParam.TrimEnd('"');
                 outputSizeParam = "," + outputSizeParam.Substring(outputSizeParam.IndexOf("scale", StringComparison.OrdinalIgnoreCase));
             }
 
@@ -607,10 +607,10 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
             }
 
-            // h264 (libnvenc)
-            else if (string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
+            // h264 (h264_nvenc)
+            else if (string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
             {
-                param = "-preset high-performance";
+                param = "-preset llhq";
             }
 
             // webm
@@ -672,17 +672,20 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
             if (!string.IsNullOrEmpty(state.Options.Profile))
             {
-                param += " -profile:v " + state.Options.Profile;
+                if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase))
+                {
+                    // not supported by h264_omx
+                    param += " -profile:v " + state.Options.Profile;
+                }
             }
 
             var levelString = state.Options.Level.HasValue ? state.Options.Level.Value.ToString(CultureInfo.InvariantCulture) : null;
 
             if (!string.IsNullOrEmpty(levelString))
             {
-                var h264Encoder = EncodingJobFactory.GetH264Encoder(state, GetEncodingOptions());
-
-                // h264_qsv and libnvenc expect levels to be expressed as a decimal. libx264 supports decimal and non-decimal format
-                if (String.Equals(h264Encoder, "h264_qsv", StringComparison.OrdinalIgnoreCase) || String.Equals(h264Encoder, "libnvenc", StringComparison.OrdinalIgnoreCase))
+                // h264_qsv and h264_nvenc expect levels to be expressed as a decimal. libx264 supports decimal and non-decimal format
+                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
                 {
                     switch (levelString)
                     {
@@ -718,13 +721,20 @@ namespace MediaBrowser.MediaEncoding.Encoder
                             break;
                     }
                 }
-                else
+                else if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase))
                 {
                     param += " -level " + levelString;
                 }
             }
 
-            return "-pix_fmt yuv420p " + param;
+            if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
+            {
+                param = "-pix_fmt yuv420p " + param;
+            }
+
+            return param;
         }
 
         protected string GetVideoBitrateParam(EncodingJob state, string videoCodec)
@@ -859,7 +869,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
         /// <param name="outputVideoCodec">The output video codec.</param>
         /// <param name="allowTimeStampCopy">if set to <c>true</c> [allow time stamp copy].</param>
         /// <returns>System.String.</returns>
-        protected string GetOutputSizeParam(EncodingJob state,
+        protected async Task<string> GetOutputSizeParam(EncodingJob state,
             string outputVideoCodec,
             bool allowTimeStampCopy = true)
         {
@@ -936,7 +946,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
             if (state.SubtitleStream != null && state.SubtitleStream.IsTextSubtitleStream && state.Options.SubtitleMethod == SubtitleDeliveryMethod.Encode)
             {
-                var subParam = GetTextSubtitleParam(state);
+                var subParam = await GetTextSubtitleParam(state).ConfigureAwait(false);
 
                 filters.Add(subParam);
 
@@ -959,7 +969,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>System.String.</returns>
-        protected string GetTextSubtitleParam(EncodingJob state)
+        protected async Task<string> GetTextSubtitleParam(EncodingJob state)
         {
             var seconds = Math.Round(TimeSpan.FromTicks(state.Options.StartTimeTicks ?? 0).TotalSeconds);
 
@@ -971,7 +981,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
                 if (!string.IsNullOrEmpty(state.SubtitleStream.Language))
                 {
-                    var charenc = SubtitleEncoder.GetSubtitleFileCharacterSet(subtitlePath, state.MediaSource.Protocol, CancellationToken.None).Result;
+                    var charenc = await SubtitleEncoder.GetSubtitleFileCharacterSet(subtitlePath, state.SubtitleStream.Language, state.MediaSource.Protocol, CancellationToken.None).ConfigureAwait(false);
 
                     if (!string.IsNullOrEmpty(charenc))
                     {
@@ -1004,7 +1014,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
             // Boost volume to 200% when downsampling from 6ch to 2ch
             if (channels.HasValue && channels.Value <= 2)
             {
-                if (state.AudioStream != null && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5)
+                if (state.AudioStream != null && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5 && !GetEncodingOptions().DownMixAudioBoost.Equals(1))
                 {
                     volParam = ",volume=" + GetEncodingOptions().DownMixAudioBoost.ToString(UsCulture);
                 }

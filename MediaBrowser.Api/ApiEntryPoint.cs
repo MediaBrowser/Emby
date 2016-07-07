@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Api.Playback;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
@@ -350,7 +349,7 @@ namespace MediaBrowser.Api
 
             if (job.Type != TranscodingJobType.Progressive)
             {
-                timerDuration = 1800000;
+                timerDuration = 60000;
             }
 
             job.PingTimeout = timerDuration;
@@ -489,13 +488,17 @@ namespace MediaBrowser.Api
                 {
                     try
                     {
-                        Logger.Info("Killing ffmpeg process for {0}", job.Path);
+                        Logger.Info("Stopping ffmpeg process with q command for {0}", job.Path);
 
                         //process.Kill();
                         process.StandardInput.WriteLine("q");
 
                         // Need to wait because killing is asynchronous
-                        process.WaitForExit(5000);
+                        if (!process.WaitForExit(5000))
+                        {
+                            Logger.Info("Killing ffmpeg process for {0}", job.Path);
+                            process.Kill();
+                        }
                     }
                     catch (Exception ex)
                     {

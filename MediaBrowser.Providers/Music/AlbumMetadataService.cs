@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
@@ -16,10 +15,6 @@ namespace MediaBrowser.Providers.Music
 {
     public class AlbumMetadataService : MetadataService<MusicAlbum, AlbumInfo>
     {
-        public AlbumMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem, userDataManager, libraryManager)
-        {
-        }
-
         protected override async Task<ItemUpdateType> BeforeSave(MusicAlbum item, bool isFullRefresh, ItemUpdateType currentUpdateType)
         {
             var updateType = await base.BeforeSave(item, isFullRefresh, currentUpdateType).ConfigureAwait(false);
@@ -166,6 +161,10 @@ namespace MediaBrowser.Providers.Music
             {
                 targetItem.Artists = sourceItem.Artists;
             }
+        }
+
+        public AlbumMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        {
         }
     }
 }

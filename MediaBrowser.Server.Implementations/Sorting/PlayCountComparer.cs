@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Sorting;
 using MediaBrowser.Model.Querying;
 
@@ -35,7 +34,7 @@ namespace MediaBrowser.Server.Implementations.Sorting
         /// <returns>DateTime.</returns>
         private int GetValue(BaseItem x)
         {
-            var userdata = UserDataRepository.GetUserData(User.Id, x.GetUserDataKey());
+            var userdata = UserDataRepository.GetUserData(User, x);
 
             return userdata == null ? 0 : userdata.PlayCount;
         }

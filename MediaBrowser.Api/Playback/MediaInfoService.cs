@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.MediaEncoding;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -66,14 +67,16 @@ namespace MediaBrowser.Api.Playback
         private readonly ILibraryManager _libraryManager;
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
+        private readonly IMediaEncoder _mediaEncoder;
 
-        public MediaInfoService(IMediaSourceManager mediaSourceManager, IDeviceManager deviceManager, ILibraryManager libraryManager, IServerConfigurationManager config, INetworkManager networkManager)
+        public MediaInfoService(IMediaSourceManager mediaSourceManager, IDeviceManager deviceManager, ILibraryManager libraryManager, IServerConfigurationManager config, INetworkManager networkManager, IMediaEncoder mediaEncoder)
         {
             _mediaSourceManager = mediaSourceManager;
             _deviceManager = deviceManager;
             _libraryManager = libraryManager;
             _config = config;
             _networkManager = networkManager;
+            _mediaEncoder = mediaEncoder;
         }
 
         public object Get(GetBitrateTestBytes request)
@@ -227,7 +230,7 @@ namespace MediaBrowser.Api.Playback
                 SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex, result.PlaySessionId);
             }
 
-            SortMediaSources(result);
+            SortMediaSources(result, maxBitrate);
         }
 
         private void SetDeviceSpecificData(BaseItem item,
@@ -241,7 +244,7 @@ namespace MediaBrowser.Api.Playback
             int? subtitleStreamIndex,
             string playSessionId)
         {
-            var streamBuilder = new StreamBuilder(Logger);
+            var streamBuilder = new StreamBuilder(_mediaEncoder, Logger);
 
             var options = new VideoOptions
             {
@@ -375,7 +378,7 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
-        private void SortMediaSources(PlaybackInfoResponse result)
+        private void SortMediaSources(PlaybackInfoResponse result, int? maxBitrate)
         {
             var originalList = result.MediaSources.ToList();
 
@@ -408,6 +411,23 @@ namespace MediaBrowser.Api.Playback
                     default:
                         return 1;
                 }
+
+            }).ThenBy(i =>
+            {
+                if (maxBitrate.HasValue)
+                {
+                    if (i.Bitrate.HasValue)
+                    {
+                        if (i.Bitrate.Value <= maxBitrate.Value)
+                        {
+                            return 0;
+                        }
+
+                        return 2;
+                    }
+                }
+
+                return 1;
 
             }).ThenBy(originalList.IndexOf)
             .ToList();

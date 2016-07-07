@@ -75,7 +75,10 @@
                     html += "<div>";
                     html += "<span class='storeItemReviewText'>";
                     html += new Date(review.timestamp).toDateString();
-                    html += " " + RatingHelpers.getStoreRatingHtml(review.rating, review.id, review.name, true);
+                    if (review.rating) {
+                        html += '<iron-icon icon="star" style="color:#666;height:20px;width:20px;min-height:20px;min-width:20px;margin-right:.25em;"></iron-icon>';
+                        html += review.rating.toFixed(1);
+                    }
                     html += " " + review.title;
                     html += "</span>";
                     if (review.review) {
@@ -133,8 +136,12 @@
         RegistrationServices.renderPluginInfo(page, pkg, pluginSecurityInfo);
 
         //Ratings and Reviews
-        var ratingHtml = RatingHelpers.getStoreRatingHtml(pkg.avgRating, pkg.id, pkg.name);
-        ratingHtml += "<span class='storeReviewCount'>";
+        var ratingHtml = '';
+        if (pkg.avgRating) {
+            ratingHtml += '<iron-icon icon="star" style="color:#666;height:20px;width:20px;min-height:20px;min-width:20px;margin-right:.25em;"></iron-icon>';
+            ratingHtml += pkg.avgRating.toFixed(1);
+        }
+        ratingHtml += "<span>";
         ratingHtml += " " + Globalize.translate('ValueReviewCount').replace('{0}', pkg.totalRatings);
         ratingHtml += "</span>";
 
@@ -199,20 +206,13 @@
 
         var context = getParameterByName('context');
 
-        $('.syncTabs', page).hide();
-        $('.pluginTabs', page).hide();
-        $('.livetvTabs', page).hide();
         $('.notificationsTabs', page).hide();
 
         if (context == 'sync') {
-            $('.syncTabs', page).show();
-
             page.setAttribute('data-helpurl', 'https://github.com/MediaBrowser/Wiki/wiki/Sync');
             Dashboard.setPageTitle(Globalize.translate('TitleSync'));
         }
         else if (context == 'livetv') {
-
-            $('.livetvTabs', page).show();
 
             Dashboard.setPageTitle(Globalize.translate('TitleLiveTV'));
             page.setAttribute('data-helpurl', 'https://github.com/MediaBrowser/Wiki/wiki/Live%20TV');
@@ -225,8 +225,6 @@
             page.setAttribute('data-helpurl', 'https://github.com/MediaBrowser/Wiki/wiki/Notifications');
         }
         else {
-            $('.pluginTabs', page).show();
-
             page.setAttribute('data-helpurl', 'https://github.com/MediaBrowser/Wiki/wiki/Plugins');
             Dashboard.setPageTitle(Globalize.translate('TitlePlugins'));
         }
@@ -242,6 +240,8 @@
             if (confirmed) {
 
                 Dashboard.showLoadingMsg();
+
+                page.querySelector('#btnInstall').disabled = true;
 
                 ApiClient.installPlugin(packageName, guid, updateClass, version).then(function () {
 
@@ -285,8 +285,6 @@
             Dashboard.showLoadingMsg();
 
             var page = $(this).parents('#addPluginPage')[0];
-
-            page.querySelector('#btnInstall').disabled = true;
 
             var name = getParameterByName('name');
             var guid = getParameterByName('guid');

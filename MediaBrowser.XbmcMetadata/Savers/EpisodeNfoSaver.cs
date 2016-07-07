@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
@@ -73,9 +72,19 @@ namespace MediaBrowser.XbmcMetadata.Savers
             {
                 writer.WriteElementString("airsbefore_episode", episode.AirsBeforeEpisodeNumber.Value.ToString(UsCulture));
             }
+            if (episode.AirsBeforeEpisodeNumber.HasValue)
+            {
+                writer.WriteElementString("displayepisode", episode.AirsBeforeEpisodeNumber.Value.ToString(UsCulture));
+            }
             if (episode.AirsBeforeSeasonNumber.HasValue)
             {
                 writer.WriteElementString("airsbefore_season", episode.AirsBeforeSeasonNumber.Value.ToString(UsCulture));
+            }
+
+            var season = episode.AiredSeasonNumber;
+            if (season.HasValue)
+            {
+                writer.WriteElementString("displayseason", season.Value.ToString(UsCulture));
             }
 
             if (episode.DvdEpisodeNumber.HasValue)

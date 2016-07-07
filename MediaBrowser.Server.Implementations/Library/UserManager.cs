@@ -1,6 +1,4 @@
 ﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
@@ -18,7 +16,6 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
@@ -263,7 +260,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 await UpdateInvalidLoginAttemptCount(user, user.Policy.InvalidLoginAttemptCount + 1).ConfigureAwait(false);
             }
 
-            _logger.Info("Authentication request for {0} {1}.", user.Name, (success ? "has succeeded" : "has been denied"));
+            _logger.Info("Authentication request for {0} {1}.", user.Name, success ? "has succeeded" : "has been denied");
 
             return success;
         }
@@ -355,6 +352,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 users.Add(user);
 
                 user.Policy.IsAdministrator = true;
+                user.Policy.EnableContentDeletion = true;
                 user.Policy.EnableRemoteControlOfOtherUsers = true;
                 await UpdateUserPolicy(user, user.Policy, false).ConfigureAwait(false);
             }
@@ -731,7 +729,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             var text = new StringBuilder();
 
-            var localAddress = _appHost.LocalApiUrl ?? string.Empty;
+            var localAddress = _appHost.GetLocalApiUrl().Result ?? string.Empty;
 
             text.AppendLine("Use your web browser to visit:");
             text.AppendLine(string.Empty);

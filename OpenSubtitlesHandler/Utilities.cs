@@ -18,11 +18,8 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +32,7 @@ namespace OpenSubtitlesHandler
     /// </summary>
     public sealed class Utilities
     {
-        private const string XML_RPC_SERVER = "http://api.opensubtitles.org/xml-rpc";
+        private const string XML_RPC_SERVER = "https://api.opensubtitles.org/xml-rpc";
 
         /// <summary>
         /// Compute movie hash
@@ -198,7 +195,7 @@ namespace OpenSubtitlesHandler
                 RequestContentBytes = request,
                 RequestContentType = "text/xml",
                 UserAgent = userAgent,
-                Host = "api.opensubtitles.org:80",
+                Host = "api.opensubtitles.org:443",
                 Url = XML_RPC_SERVER,
 
                 // Response parsing will fail with this enabled

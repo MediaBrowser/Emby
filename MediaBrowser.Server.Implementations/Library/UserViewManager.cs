@@ -1,16 +1,13 @@
 ﻿using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Playlists;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Library;
 using MediaBrowser.Model.Querying;
-using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,7 +105,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 }
             }
 
-            if (user.Configuration.DisplayFoldersView)
+            if (_config.Configuration.EnableFolderView)
             {
                 var name = _localizationManager.GetLocalizedString("ViewType" + CollectionType.Folders);
                 list.Add(await _libraryManager.GetNamedView(name, CollectionType.Folders, string.Empty, cancellationToken).ConfigureAwait(false));
@@ -124,7 +121,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
                 var channels = channelResult.Items;
 
-                if (!user.Configuration.DisplayChannelsInline && channels.Length > 0)
+                if (user.Configuration.EnableChannelView && channels.Length > 0)
                 {
                     list.Add(await _channelManager.GetInternalChannelFolder(cancellationToken).ConfigureAwait(false));
                 }
@@ -205,23 +202,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var includeTypes = request.IncludeItemTypes;
-
-            var currentUser = user;
-
-            var libraryItems = GetItemsForLatestItems(user, request.ParentId, includeTypes, request.Limit ?? 10).Where(i =>
-            {
-                if (request.IsPlayed.HasValue)
-                {
-                    var val = request.IsPlayed.Value;
-                    if (i is Video && i.IsPlayed(currentUser) != val)
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            });
+            var libraryItems = GetItemsForLatestItems(user, request);
 
             var list = new List<Tuple<BaseItem, List<BaseItem>>>();
 
@@ -257,8 +238,13 @@ namespace MediaBrowser.Server.Implementations.Library
             return list;
         }
 
-        private IEnumerable<BaseItem> GetItemsForLatestItems(User user, string parentId, string[] includeItemTypes, int limit)
+        private IEnumerable<BaseItem> GetItemsForLatestItems(User user, LatestItemsQuery request)
         {
+            var parentId = request.ParentId;
+
+            var includeItemTypes = request.IncludeItemTypes;
+            var limit = request.Limit ?? 10;
+
             var parentIds = string.IsNullOrEmpty(parentId)
               ? new string[] { }
               : new[] { parentId };
@@ -279,7 +265,12 @@ namespace MediaBrowser.Server.Implementations.Library
 
             var excludeItemTypes = includeItemTypes.Length == 0 ? new[]
             {
-                typeof(Person).Name, typeof(Studio).Name, typeof(Year).Name, typeof(GameGenre).Name, typeof(MusicGenre).Name, typeof(Genre).Name
+                typeof(Person).Name,
+                typeof(Studio).Name,
+                typeof(Year).Name,
+                typeof(GameGenre).Name,
+                typeof(MusicGenre).Name,
+                typeof(Genre).Name
 
             } : new string[] { };
 
@@ -291,8 +282,9 @@ namespace MediaBrowser.Server.Implementations.Library
                 IsFolder = includeItemTypes.Length == 0 ? false : (bool?)null,
                 ExcludeItemTypes = excludeItemTypes,
                 ExcludeLocationTypes = new[] { LocationType.Virtual },
-                Limit = limit * 20,
-                ExcludeSourceTypes = parentIds.Length == 0 ? new[] { SourceType.Channel, SourceType.LiveTV } : new SourceType[] { }
+                Limit = limit * 5,
+                ExcludeSourceTypes = parentIds.Length == 0 ? new[] { SourceType.Channel, SourceType.LiveTV } : new SourceType[] { },
+                IsPlayed = request.IsPlayed
 
             }, parentIds);
         }

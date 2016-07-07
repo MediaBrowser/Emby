@@ -1,12 +1,7 @@
-﻿<div id="libraryFileOrganizerPage" data-role="page" class="page type-interior organizePage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Auto-Organize" data-require="emby-collapsible,jqmtable,scripts/autoorganizetv,paper-input,paper-checkbox">
+﻿<div id="libraryFileOrganizerPage" data-role="page" class="page type-interior organizePage withTabs" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Auto-Organize" data-require="emby-collapsible,jqmtable,scripts/autoorganizetv,paper-input,paper-checkbox">
 
     <div data-role="content">
         <div class="content-primary">
-            <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                <a href="autoorganizelog.html" data-role="button">${TabActivityLog}</a>
-                <a href="#" data-role="button" class="ui-btn-active">${TabTV}</a>
-                <a href="autoorganizesmart.html" data-role="button">${TabSmartMatches}</a>
-            </div>
 
             <form class="libraryFileOrganizerForm">
 
@@ -20,7 +15,7 @@
                     </li>
                     <li>
                         <paper-input id="txtWatchFolder" label="${LabelWatchFolder}" style="width:85%;display:inline-block;"></paper-input>
-                        <paper-icon-button id="btnSelectWatchFolder" icon="search"></paper-icon-button>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectWatchFolder" title="${ButtonSelectDirectory}"><iron-icon icon="search"></iron-icon></button>
                         <div class="fieldDescription">
                             <div>${LabelWatchFolderHelp}</div>
                         </div>
@@ -156,9 +151,7 @@
 
                 <ul data-role="listview" class="ulForm">
                     <li>
-                        <button type="submit" data-role="none" class="clearButton">
-                            <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
-                        </button>
+                        <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
                     </li>
 
                 </ul>

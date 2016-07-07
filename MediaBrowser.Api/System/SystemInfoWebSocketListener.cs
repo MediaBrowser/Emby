@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller;
+﻿using MediaBrowser.Controller;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
@@ -44,7 +43,7 @@ namespace MediaBrowser.Api.System
         /// <returns>Task{SystemInfo}.</returns>
         protected override Task<SystemInfo> GetDataToSend(WebSocketListenerState state)
         {
-            return Task.FromResult(_appHost.GetSystemInfo());
+            return _appHost.GetSystemInfo();
         }
     }
 }

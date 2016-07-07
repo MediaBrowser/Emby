@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -13,16 +12,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using CommonIO;
 using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Providers.Music
 {
-    public class FanartAlbumProvider : IRemoteImageProvider, IHasChangeMonitor, IHasOrder
+    public class FanartAlbumProvider : IRemoteImageProvider, IHasOrder
     {
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
         private readonly IServerConfigurationManager _config;
@@ -154,6 +152,7 @@ namespace MediaBrowser.Providers.Music
             }
         }
 
+        private Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list,
             List<FanartArtistProvider.FanartArtistImage> images,
             ImageType type,
@@ -181,7 +180,7 @@ namespace MediaBrowser.Providers.Music
                         Width = width,
                         Height = height,
                         ProviderName = Name,
-                        Url = url,
+                        Url = _regex_http.Replace(url, "https://", 1),
                         Language = i.lang
                     };
 
@@ -214,35 +213,6 @@ namespace MediaBrowser.Providers.Music
                 Url = url,
                 ResourcePool = FanartArtistProvider.Current.FanArtResourcePool
             });
-        }
-
-        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService, DateTime date)
-        {
-            var options = FanartSeriesProvider.Current.GetFanartOptions();
-            if (!options.EnableAutomaticUpdates)
-            {
-                return false;
-            }
-
-            var album = (MusicAlbum)item;
-            var artist = album.MusicArtist;
-
-            if (artist != null)
-            {
-                var artistMusicBrainzId = artist.GetProviderId(MetadataProviders.MusicBrainzArtist);
-
-                if (!String.IsNullOrEmpty(artistMusicBrainzId))
-                {
-                    // Process images
-                    var artistJsonPath = FanartArtistProvider.GetArtistJsonPath(_config.CommonApplicationPaths, artistMusicBrainzId);
-
-                    var fileInfo = _fileSystem.GetFileInfo(artistJsonPath);
-
-                    return !fileInfo.Exists || _fileSystem.GetLastWriteTimeUtc(fileInfo) > date;
-                }
-            }
-
-            return false;
         }
     }
 }

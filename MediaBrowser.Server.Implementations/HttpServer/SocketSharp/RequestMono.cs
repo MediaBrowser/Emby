@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web;
+using ServiceStack;
 using ServiceStack.Web;
 
 namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
@@ -26,7 +27,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
             int end = header.IndexOf(ending, ap + 1);
             if (end == -1)
-                return (ending == '"') ? null : header.Substring(ap);
+                return ending == '"' ? null : header.Substring(ap);
 
             return header.Substring(ap + 1, end - ap - 1);
         }
@@ -116,6 +117,21 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             }
         }
 
+        public string Accept
+        {
+            get
+            {
+                return string.IsNullOrEmpty(request.Headers[HttpHeaders.Accept]) ? null : request.Headers[HttpHeaders.Accept];
+            }
+        }
+
+        public string Authorization
+        {
+            get
+            {
+                return string.IsNullOrEmpty(request.Headers[HttpHeaders.Authorization]) ? null : request.Headers[HttpHeaders.Authorization];
+            }
+        }
 
         protected bool validate_cookies, validate_query_string, validate_form;
         protected bool checked_cookies, checked_query_string, checked_form;
@@ -529,7 +545,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             {
                 get
                 {
-                    return (content_type);
+                    return content_type;
                 }
             }
 
@@ -545,7 +561,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             {
                 get
                 {
-                    return (name);
+                    return name;
                 }
             }
 
@@ -553,7 +569,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             {
                 get
                 {
-                    return (stream);
+                    return stream;
                 }
             }
         }
@@ -582,7 +598,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                 if (l2 > l1)
                     return false;
 
-                return (0 == String.Compare(str1, 0, str2, 0, l2, ignore_case, Helpers.InvariantCulture));
+                return 0 == String.Compare(str1, 0, str2, 0, l2, ignore_case, Helpers.InvariantCulture);
             }
 
             public static bool EndsWith(string str1, string str2)
@@ -600,7 +616,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                 if (l2 > l1)
                     return false;
 
-                return (0 == String.Compare(str1, l1 - l2, str2, 0, l2, ignore_case, Helpers.InvariantCulture));
+                return 0 == String.Compare(str1, l1 - l2, str2, 0, l2, ignore_case, Helpers.InvariantCulture);
             }
         }
 
@@ -676,7 +692,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                     {
                         break;
                     }
-                    got_cr = (b == CR);
+                    got_cr = b == CR;
                     sb.Append((char)b);
                 }
 
@@ -781,7 +797,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                     }
                     else if (state == 0)
                     {
-                        got_cr = (c == CR);
+                        got_cr = c == CR;
                         c = data.ReadByte();
                     }
                     else if (state == 1 && c == '-')

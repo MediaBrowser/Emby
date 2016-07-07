@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Dto;
@@ -239,9 +238,9 @@ namespace MediaBrowser.Api.Images
                 }
 
 				if (_fileSystem.FileExists(contentPath))
-                {
-                    return ToStaticFileResult(contentPath);
-                }
+				{
+				    return await ResultFactory.GetStaticFileResult(Request, contentPath).ConfigureAwait(false);
+				}
             }
             catch (DirectoryNotFoundException)
             {
@@ -260,9 +259,9 @@ namespace MediaBrowser.Api.Images
                 contentPath = await reader.ReadToEndAsync().ConfigureAwait(false);
             }
 
-            return ToStaticFileResult(contentPath);
+            return await ResultFactory.GetStaticFileResult(Request, contentPath).ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// Downloads the image.
         /// </summary>

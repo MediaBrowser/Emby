@@ -1,4 +1,4 @@
-﻿define(['jQuery'], function ($) {
+﻿define([], function () {
 
     return function (view, params, tabContent) {
 
@@ -17,8 +17,7 @@
                         IncludeItemTypes: "Series",
                         Recursive: true,
                         Fields: "DateCreated,SyncInfo,ItemCounts",
-                        StartIndex: 0,
-                        Limit: LibraryBrowser.getDefaultPageSize()
+                        StartIndex: 0
                     },
                     view: LibraryBrowser.getSavedView(key) || LibraryBrowser.getDefaultItemsView('Thumb', 'Thumb')
                 };
@@ -39,30 +38,23 @@
             return LibraryBrowser.getSavedQueryKey('genres');
         }
 
-        function reloadItems(context) {
+        function getPromise() {
 
             Dashboard.showLoadingMsg();
             var query = getQuery();
 
-            ApiClient.getGenres(Dashboard.getCurrentUserId(), query).then(function (result) {
+            return ApiClient.getGenres(Dashboard.getCurrentUserId(), query);
+        }
 
-                // Scroll back up so they can see the results from the beginning
-                window.scrollTo(0, 0);
+        function reloadItems(context, promise) {
+
+            var query = getQuery();
+
+            promise.then(function (result) {
 
                 var html = '';
 
-                var viewStyle = getPageData().view;
-
-                $('.listTopPaging', context).html(LibraryBrowser.getQueryPagingHtml({
-                    startIndex: query.StartIndex,
-                    limit: query.Limit,
-                    totalRecordCount: result.TotalRecordCount,
-                    viewButton: false,
-                    showLimit: false,
-                    updatePageSizeSetting: false,
-                    addLayoutButton: true,
-                    currentLayout: viewStyle
-                }));
+                var viewStyle = self.getCurrentViewStyle();
 
                 if (viewStyle == "Thumb") {
                     html = LibraryBrowser.getPosterViewHtml({
@@ -73,7 +65,7 @@
                         showItemCounts: true,
                         centerText: true,
                         lazy: true,
-                        overlayPlayButton: true
+                        overlayMoreButton: true
                     });
                 }
                 else if (viewStyle == "ThumbCard") {
@@ -108,7 +100,7 @@
                         centerText: true,
                         showItemCounts: true,
                         lazy: true,
-                        overlayPlayButton: true
+                        overlayMoreButton: true
                     });
                 }
 
@@ -116,30 +108,51 @@
                 elem.innerHTML = html;
                 ImageLoader.lazyChildren(elem);
 
-                $('.btnNextPage', context).on('click', function () {
-                    query.StartIndex += query.Limit;
-                    reloadItems(context);
-                });
-
-                $('.btnPreviousPage', context).on('click', function () {
-                    query.StartIndex -= query.Limit;
-                    reloadItems(context);
-                });
-
-                $('.btnChangeLayout', context).on('layoutchange', function (e, layout) {
-                    getPageData().view = layout;
-                    LibraryBrowser.saveViewSetting(getSavedQueryKey(), layout);
-                    reloadItems(context);
-                });
-
                 LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
 
                 Dashboard.hideLoadingMsg();
             });
         }
-        self.renderTab = function () {
-
-            reloadItems(tabContent);
+        self.getViewStyles = function () {
+            return 'Poster,PosterCard,Thumb,ThumbCard'.split(',');
         };
+
+        self.getCurrentViewStyle = function () {
+            return getPageData(tabContent).view;
+        };
+
+        self.setCurrentViewStyle = function(viewStyle) {
+            getPageData(tabContent).view = viewStyle;
+            LibraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
+            fullyReload();
+        };
+
+        self.enableViewSelection = true;
+        var promise;
+
+        self.preRender = function () {
+            promise = getPromise();
+        };
+
+        self.renderTab = function () {
+
+            reloadItems(tabContent, promise);
+        };
+
+        function fullyReload() {
+            self.preRender();
+            self.renderTab();
+        }
+
+        var btnSelectView = tabContent.querySelector('.btnSelectView');
+        btnSelectView.addEventListener('click', function (e) {
+
+            LibraryBrowser.showLayoutMenu(e.target, self.getCurrentViewStyle(), self.getViewStyles());
+        });
+
+        btnSelectView.addEventListener('layoutchange', function (e) {
+
+            self.setCurrentViewStyle(e.detail.viewStyle);
+        });
     };
 });

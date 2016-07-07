@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
@@ -113,7 +111,8 @@ namespace MediaBrowser.Common.Implementations.Updates
                     targetFilename = targetFilename,
                     versionStr = version.ToString(),
                     requiredVersionStr = "1.0.0",
-                    description = obj.body
+                    description = obj.body,
+                    infoUrl = obj.html_url
                 }
             };
         }

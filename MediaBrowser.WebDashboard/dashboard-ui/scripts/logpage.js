@@ -1,11 +1,20 @@
-﻿define(['jQuery'], function ($) {
+﻿define(['datetime', 'jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (datetime, $) {
 
-    $(document).on('pagebeforeshow', "#logPage", function () {
+    return function (view, params) {
 
-        var page = this;
-        Dashboard.showLoadingMsg();
+        view.querySelector('#chkDebugLog').addEventListener('change', function () {
 
-        require(['paper-fab', 'paper-item-body', 'paper-icon-item'], function () {
+            ApiClient.getServerConfiguration().then(function (config) {
+
+                config.EnableDebugLevelLogging = view.querySelector('#chkDebugLog').checked;
+
+                ApiClient.updateServerConfiguration(config);
+            });
+        });
+
+        view.addEventListener('viewbeforeshow', function () {
+
+            Dashboard.showLoadingMsg();
 
             var apiClient = ApiClient;
 
@@ -35,11 +44,11 @@
 
                     logHtml += "<div>" + log.Name + "</div>";
 
-                    var date = parseISO8601Date(log.DateModified, { toLocal: true });
+                    var date = datetime.parseISO8601Date(log.DateModified, true);
 
                     var text = date.toLocaleDateString();
 
-                    text += ' ' + LibraryBrowser.getDisplayTime(date);
+                    text += ' ' + datetime.getDisplayTime(date);
 
                     logHtml += '<div secondary>' + text + '</div>';
 
@@ -55,11 +64,15 @@
 
                 html += '</div>';
 
-                $('.serverLogs', page).html(html);
+                $('.serverLogs', view).html(html);
                 Dashboard.hideLoadingMsg();
+            });
 
+            apiClient.getServerConfiguration().then(function (config) {
+
+                view.querySelector('#chkDebugLog').checked = config.EnableDebugLevelLogging;
             });
         });
-    });
 
+    };
 });

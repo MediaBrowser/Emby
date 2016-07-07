@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Server.Implementations.HttpServer
 {
@@ -40,6 +38,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// The us culture
         /// </summary>
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
+
+        public Func<IDisposable> ResultScope { get; set; }
+        public List<Cookie> Cookies { get; private set; }
 
         /// <summary>
         /// Additional HTTP Headers
@@ -83,6 +84,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             Options["Accept-Ranges"] = "bytes";
             StatusCode = HttpStatusCode.PartialContent;
 
+            Cookies = new List<Cookie>();
             SetRangeValues();
         }
 

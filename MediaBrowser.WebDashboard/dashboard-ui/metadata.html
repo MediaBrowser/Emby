@@ -1,15 +1,8 @@
-﻿<div id="metadataConfigurationPage" data-role="page" class="page type-interior metadataConfigurationPage" data-require="scripts/metadataconfigurationpage,paper-checkbox">
+﻿<div id="metadataConfigurationPage" data-role="page" class="page type-interior metadataConfigurationPage withTabs" data-require="scripts/metadataconfigurationpage,paper-checkbox,emby-button">
 
     <div data-role="content">
 
         <div class="content-primary">
-            <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                <a href="#" data-role="button" class="ui-btn-active">${TabBasics}</a>
-                <a href="metadataimages.html" data-role="button">${TabServices}</a>
-                <a href="metadatasubtitles.html" data-role="button">${TabSubtitles}</a>
-                <a href="metadatanfo.html" data-role="button">${TabNfo}</a>
-                <a href="metadataadvanced.html" data-role="button">${TabAdvanced}</a>
-            </div>
 
             <form class="metadataConfigurationForm">
 
@@ -21,6 +14,10 @@
                     <li>
                         <paper-checkbox id="chkSaveLocal">${LabelSaveLocalMetadata}</paper-checkbox>
                         <div class="fieldDescription paperCheckboxFieldDescription">${LabelSaveLocalMetadataHelp}</div>
+                    </li>
+                    <li>
+                        <paper-checkbox id="chkDownloadImagesInAdvance">${OptionDownloadImagesInAdvance}</paper-checkbox>
+                        <div class="fieldDescription paperCheckboxFieldDescription">${OptionDownloadImagesInAdvanceHelp}</div>
                         <br />
                     </li>
                     <li>
@@ -32,9 +29,7 @@
                         <select name="selectCountry" id="selectCountry" data-mini="true" required="required"></select>
                     </li>
                     <li>
-                        <button type="submit" data-role="none" class="clearButton">
-                            <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
-                        </button>
+                        <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
                     </li>
                 </ul>
             </form>

@@ -39,6 +39,17 @@ class PlaylistLoader extends EventHandler {
         retry,
         timeout,
         retryDelay;
+
+    if (this.loading && this.loader) {
+      if (this.url === url && this.id === id1 && this.id2 === id2) {
+        // same request than last pending one, don't do anything
+        return;
+      } else {
+        // one playlist load request is pending, but with different params, abort it before loading new playlist
+        this.loader.abort();
+      }
+    }
+
     this.url = url;
     this.id = id1;
     this.id2 = id2;
@@ -52,6 +63,7 @@ class PlaylistLoader extends EventHandler {
       retryDelay = config.levelLoadingRetryDelay;
     }
     this.loader = typeof(config.pLoader) !== 'undefined' ? new config.pLoader(config) : new config.loader(config);
+    this.loading = true;
     this.loader.load(url, '', this.loadsuccess.bind(this), this.loaderror.bind(this), this.loadtimeout.bind(this), timeout, retry, retryDelay);
   }
 
@@ -75,7 +87,7 @@ class PlaylistLoader extends EventHandler {
         level.width = resolution.width;
         level.height = resolution.height;
       }
-      level.bitrate = attrs.decimalInteger('BANDWIDTH');
+      level.bitrate = attrs.decimalInteger('AVERAGE-BANDWIDTH') || attrs.decimalInteger('BANDWIDTH');
       level.name = attrs.NAME;
 
       var codecs = attrs.CODECS;
@@ -125,7 +137,7 @@ class PlaylistLoader extends EventHandler {
         byteRangeEndOffset,
         byteRangeStartOffset;
 
-    regexp = /(?:#EXT-X-(MEDIA-SEQUENCE):(\d+))|(?:#EXT-X-(TARGETDURATION):(\d+))|(?:#EXT-X-(KEY):(.*))|(?:#EXT(INF):([\d\.]+)[^\r\n]*([\r\n]+[^#|\r\n]+)?)|(?:#EXT-X-(BYTERANGE):([\d]+[@[\d]*)]*[\r\n]+([^#|\r\n]+)?|(?:#EXT-X-(ENDLIST))|(?:#EXT-X-(DIS)CONTINUITY))|(?:#EXT-X-(PROGRAM-DATE-TIME):(.*))/g;
+    regexp = /(?:#EXT-X-(MEDIA-SEQUENCE):(\d+))|(?:#EXT-X-(TARGETDURATION):(\d+))|(?:#EXT-X-(KEY):(.*))|(?:#EXT-X-(START):(.*))|(?:#EXT(INF):([\d\.]+)[^\r\n]*([\r\n]+[^#|\r\n]+)?)|(?:#EXT-X-(BYTERANGE):([\d]+[@[\d]*)]*[\r\n]+([^#|\r\n]+)?|(?:#EXT-X-(ENDLIST))|(?:#EXT-X-(DIS)CONTINUITY))|(?:#EXT-X-(PROGRAM-DATE-TIME):(.*)[\r\n]+([^#|\r\n]+)?)/g;
     while ((result = regexp.exec(string)) !== null) {
       result.shift();
       result = result.filter(function(n) { return (n !== undefined); });
@@ -198,8 +210,20 @@ class PlaylistLoader extends EventHandler {
             }
           }
           break;
+        case 'START':
+          let startParams = result[1];
+          let startAttrs = new AttrList(startParams);
+          let startTimeOffset = startAttrs.decimalFloatingPoint('TIME-OFFSET');
+          if (startTimeOffset) {
+            level.startTimeOffset = startTimeOffset;
+          }
+          break;
         case 'PROGRAM-DATE-TIME':
           programDateTime = new Date(Date.parse(result[1]));
+          if (frag && !frag.url && result.length >= 3) {
+            frag.url = this.resolve(result[2], baseurl);
+            frag.programDateTime = programDateTime;
+          }
           break;
         default:
           break;
@@ -223,6 +247,8 @@ class PlaylistLoader extends EventHandler {
         id2 = this.id2,
         hls = this.hls,
         levels;
+
+    this.loading = false;
     // responseURL not supported on some browsers (it is used to detect URL redirection)
     if (url === undefined) {
       // fallback to initial URL
@@ -268,6 +294,7 @@ class PlaylistLoader extends EventHandler {
     if (this.loader) {
       this.loader.abort();
     }
+    this.loading = false;
     this.hls.trigger(Event.ERROR, {type: ErrorTypes.NETWORK_ERROR, details: details, fatal: fatal, url: this.url, loader: this.loader, response: event.currentTarget, level: this.id, id: this.id2});
   }
 
@@ -283,6 +310,7 @@ class PlaylistLoader extends EventHandler {
     if (this.loader) {
       this.loader.abort();
     }
+    this.loading = false;
     this.hls.trigger(Event.ERROR, {type: ErrorTypes.NETWORK_ERROR, details: details, fatal: fatal, url: this.url, loader: this.loader, level: this.id, id: this.id2});
   }
 }

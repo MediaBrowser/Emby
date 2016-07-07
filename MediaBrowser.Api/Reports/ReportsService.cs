@@ -1,26 +1,15 @@
-﻿using MediaBrowser.Controller.Dto;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Querying;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.Linq;
-using MediaBrowser.Model.Dto;
 using MediaBrowser.Controller.Localization;
-using MediaBrowser.Controller.Entities.Movies;
-using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Api.UserLibrary;
-using MediaBrowser.Controller.Collections;
-using MediaBrowser.Controller.Entities.TV;
 using System;
-using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Activity;
 using MediaBrowser.Controller.Activity;
-using System.IO;
-using System.Text;
 
 namespace MediaBrowser.Api.Reports
 {
@@ -224,7 +213,6 @@ namespace MediaBrowser.Api.Reports
                 NameStartsWith = request.NameStartsWith,
                 NameStartsWithOrGreater = request.NameStartsWithOrGreater,
                 HasImdbId = request.HasImdbId,
-                IsYearMismatched = request.IsYearMismatched,
                 IsPlaceHolder = request.IsPlaceHolder,
                 IsLocked = request.IsLocked,
                 IsInBoxSet = request.IsInBoxSet,
@@ -337,15 +325,15 @@ namespace MediaBrowser.Api.Reports
             }
 
             // Min official rating
-            if (!string.IsNullOrEmpty(request.MinOfficialRating))
+            if (!string.IsNullOrWhiteSpace(request.MinOfficialRating))
             {
                 query.MinParentalRating = _localization.GetRatingLevel(request.MinOfficialRating);
             }
 
             // Max official rating
-            if (!string.IsNullOrEmpty(request.MaxOfficialRating))
+            if (!string.IsNullOrWhiteSpace(request.MaxOfficialRating))
             {
-                query.MaxParentalRating = _localization.GetRatingLevel(request.MinOfficialRating);
+                query.MaxParentalRating = _localization.GetRatingLevel(request.MaxOfficialRating);
             }
 
             // Artists

@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -10,7 +9,6 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Providers.Movies;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -61,7 +59,7 @@ namespace MediaBrowser.Providers.People
 
             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-            var tmdbImageUrl = tmdbSettings.images.base_url + "original";
+            var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
 
             if (!string.IsNullOrEmpty(tmdbId))
             {
@@ -99,7 +97,7 @@ namespace MediaBrowser.Providers.People
 
                     var requestCount = _requestCount;
 
-                    if (requestCount >= 20)
+                    if (requestCount >= 40)
                     {
                         //_logger.Debug("Throttling Tmdb people");
 
@@ -111,7 +109,7 @@ namespace MediaBrowser.Providers.People
                 }
             }
 
-            var url = string.Format(@"http://api.themoviedb.org/3/search/person?api_key={1}&query={0}", WebUtility.UrlEncode(searchInfo.Name), MovieDbProvider.ApiKey);
+            var url = string.Format(@"https://api.themoviedb.org/3/search/person?api_key={1}&query={0}", WebUtility.UrlEncode(searchInfo.Name), MovieDbProvider.ApiKey);
 
             using (var json = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
             {
@@ -236,7 +234,7 @@ namespace MediaBrowser.Providers.People
                 return;
             }
 
-            var url = string.Format(@"http://api.themoviedb.org/3/person/{1}?api_key={0}&append_to_response=credits,images,external_ids", MovieDbProvider.ApiKey, id);
+            var url = string.Format(@"https://api.themoviedb.org/3/person/{1}?api_key={0}&append_to_response=credits,images,external_ids", MovieDbProvider.ApiKey, id);
 
             using (var json = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
             {

@@ -4,7 +4,6 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
-using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,32 +43,6 @@ namespace MediaBrowser.Controller.LiveTv
         {
             get { return SourceType.LiveTV; }
             set { }
-        }
-
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        protected override string CreateUserDataKey()
-        {
-            if (IsMovie)
-            {
-                var key = Movie.GetMovieUserDataKey(this);
-
-                if (!string.IsNullOrWhiteSpace(key))
-                {
-                    return key;
-                }
-            }
-
-            if (IsSeries && !string.IsNullOrWhiteSpace(EpisodeTitle))
-            {
-                var name = GetClientTypeName();
-
-                return name + "-" + Name + (EpisodeTitle ?? string.Empty);
-            }
-
-            return base.CreateUserDataKey();
         }
 
         [IgnoreDataMember]

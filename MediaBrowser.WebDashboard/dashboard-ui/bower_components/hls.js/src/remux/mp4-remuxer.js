@@ -25,7 +25,7 @@ class MP4Remuxer {
   }
 
   insertDiscontinuity() {
-    this._initPTS = this._initDTS = this.nextAacPts = this.nextAvcDts = undefined;
+    this._initPTS = this._initDTS = undefined;
   }
 
   switchLevel() {
@@ -37,13 +37,15 @@ class MP4Remuxer {
     if (!this.ISGenerated) {
       this.generateIS(audioTrack,videoTrack,timeOffset);
     }
-    //logger.log('nb AVC samples:' + videoTrack.samples.length);
-    if (videoTrack.samples.length) {
-      this.remuxVideo(videoTrack,timeOffset,contiguous);
-    }
-    //logger.log('nb AAC samples:' + audioTrack.samples.length);
-    if (audioTrack.samples.length) {
-      this.remuxAudio(audioTrack,timeOffset,contiguous);
+    if (this.ISGenerated) {
+      //logger.log('nb AVC samples:' + videoTrack.samples.length);
+      if (videoTrack.samples.length) {
+        this.remuxVideo(videoTrack,timeOffset,contiguous);
+      }
+      //logger.log('nb AAC samples:' + audioTrack.samples.length);
+      if (audioTrack.samples.length) {
+        this.remuxAudio(audioTrack,timeOffset,contiguous);
+      }
     }
     //logger.log('nb ID3 samples:' + audioTrack.samples.length);
     if (id3Track.samples.length) {
@@ -117,15 +119,15 @@ class MP4Remuxer {
       }
     }
 
-    if(!Object.keys(tracks)) {
-      observer.trigger(Event.ERROR, {type : ErrorTypes.MEDIA_ERROR, details: ErrorDetails.FRAG_PARSING_ERROR, fatal: false, reason: 'no audio/video samples found'});
-    } else {
+    if(Object.keys(tracks).length) {
       observer.trigger(Event.FRAG_PARSING_INIT_SEGMENT,data);
       this.ISGenerated = true;
       if (computePTSDTS) {
         this._initPTS = initPTS;
         this._initDTS = initDTS;
       }
+    } else {
+      observer.trigger(Event.ERROR, {type : ErrorTypes.MEDIA_ERROR, details: ErrorDetails.FRAG_PARSING_ERROR, fatal: false, reason: 'no audio/video samples found'});
     }
   }
 
@@ -143,6 +145,12 @@ class MP4Remuxer {
         pts, dts, ptsnorm, dtsnorm,
         flags,
         samples = [];
+
+    // handle broken streams with PTS < DTS, tolerance up 200ms (18000 in 90kHz timescale)
+    let PTSDTSshift = track.samples.reduce( (prev, curr) => Math.max(Math.min(prev,curr.pts-curr.dts),-18000),0);
+    if (PTSDTSshift < 0) {
+      logger.warn(`PTS < DTS detected in video samples, shifting DTS by ${Math.round(PTSDTSshift/90)} ms to overcome this issue`);
+    }
     /* concatenate the video data and construct the mdat in place
       (need 8 more bytes to fill length and mpdat type) */
     mdat = new Uint8Array(track.len + (4 * track.nbNalu) + 8);
@@ -162,10 +170,11 @@ class MP4Remuxer {
         mp4SampleLength += 4 + unit.data.byteLength;
       }
       pts = avcSample.pts - this._initDTS;
-      dts = avcSample.dts - this._initDTS;
-      // ensure DTS is not bigger than PTS
+      // shift dts by PTSDTSshift, to ensure that PTS >= DTS
+      dts = avcSample.dts - this._initDTS + PTSDTSshift;
+      // ensure DTS is not bigger than PTS // strap belt !!!
       dts = Math.min(pts,dts);
-      //logger.log(`Video/PTS/DTS:${Math.round(pts/90)}/${Math.round(dts/90)}`);
+      //logger.log(`Video/PTS/DTS/ptsnorm/DTSnorm:${Math.round(avcSample.pts/90)}/${Math.round(avcSample.dts/90)}/${Math.round(pts/90)}/${Math.round(dts/90)}`);
       // if not first AVC sample of video track, normalize PTS/DTS with previous sample value
       // and ensure that sample duration is positive
       if (lastDTS !== undefined) {
@@ -188,8 +197,8 @@ class MP4Remuxer {
         ptsnorm = this._PTSNormalize(pts, nextAvcDts);
         dtsnorm = this._PTSNormalize(dts, nextAvcDts);
         delta = Math.round((dtsnorm - nextAvcDts) / 90);
-        // if fragment are contiguous, or delta less than 600ms, ensure there is no overlap/hole between fragments
-        if (contiguous || Math.abs(delta) < 600) {
+        // if fragment are contiguous, detect hole/overlapping between fragments
+        if (contiguous) {
           if (delta) {
             if (delta > 1) {
               logger.log(`AVC:${delta} ms hole between fragments detected,filling it`);
@@ -207,7 +216,7 @@ class MP4Remuxer {
         firstPTS = Math.max(0, ptsnorm);
         firstDTS = Math.max(0, dtsnorm);
       }
-      //console.log('PTS/DTS/initDTS/normPTS/normDTS/relative PTS : ${avcSample.pts}/${avcSample.dts}/${this._initDTS}/${ptsnorm}/${dtsnorm}/${(avcSample.pts/4294967296).toFixed(3)}');
+      //console.log(`PTS/DTS/initDTS/normPTS/normDTS/relative PTS : ${avcSample.pts}/${avcSample.dts}/${this._initDTS}/${ptsnorm}/${dtsnorm}/${(avcSample.pts/4294967296).toFixed(3)});
       mp4Sample = {
         size: mp4SampleLength,
         duration: 0,
@@ -238,8 +247,10 @@ class MP4Remuxer {
     }
     // next AVC sample DTS should be equal to last sample DTS + last sample duration
     this.nextAvcDts = dtsnorm + lastSampleDuration * pes2mp4ScaleFactor;
+    let dropped = track.dropped;
     track.len = 0;
     track.nbNalu = 0;
+    track.dropped = 0;
     if(samples.length && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
       flags = samples[0].flags;
     // chrome workaround, mark first sample as being a Random Access Point to avoid sourcebuffer append issue
@@ -258,7 +269,8 @@ class MP4Remuxer {
       startDTS: firstDTS / pesTimeScale,
       endDTS: this.nextAvcDts / pesTimeScale,
       type: 'video',
-      nb: samples.length
+      nb: samples.length,
+      dropped : dropped
     });
   }
 
@@ -301,7 +313,7 @@ class MP4Remuxer {
         }
         // always adjust sample duration to avoid av sync issue
         mp4Sample.duration = expectedSampleDuration;
-        dtsnorm = expectedSampleDuration * pes2mp4ScaleFactor + lastDTS;
+        ptsnorm = dtsnorm = expectedSampleDuration * pes2mp4ScaleFactor + lastDTS;
       } else {
         let nextAacPts, delta;
         if (contiguous) {
@@ -312,20 +324,20 @@ class MP4Remuxer {
         ptsnorm = this._PTSNormalize(pts, nextAacPts);
         dtsnorm = this._PTSNormalize(dts, nextAacPts);
         delta = Math.round(1000 * (ptsnorm - nextAacPts) / pesTimeScale);
-        // if fragment are contiguous, or delta less than 600ms, ensure there is no overlap/hole between fragments
-        if (contiguous || Math.abs(delta) < 600) {
+        // if fragment are contiguous, detect hole/overlapping between fragments
+        if (contiguous) {
           // log delta
           if (delta) {
             if (delta > 0) {
               logger.log(`${delta} ms hole between AAC samples detected,filling it`);
-              // if we have frame overlap, overlapping for more than half a frame duraion
+              // if we have frame overlap, overlapping for more than half a frame duration
             } else if (delta < -12) {
               // drop overlapping audio frames... browser will deal with it
               logger.log(`${(-delta)} ms overlapping between AAC samples detected, drop frame`);
               track.len -= unit.byteLength;
               continue;
             }
-            // set DTS to next DTS
+            // set PTS/DTS to next PTS/DTS
             ptsnorm = dtsnorm = nextAacPts;
           }
         }

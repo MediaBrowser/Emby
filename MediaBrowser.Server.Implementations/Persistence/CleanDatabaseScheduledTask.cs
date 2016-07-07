@@ -3,7 +3,6 @@ using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Server.Implementations.ScheduledTasks;
@@ -33,7 +33,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private readonly ILocalizationManager _localization;
         private readonly ITaskManager _taskManager;
 
-        public const int MigrationVersion = 20;
+        public const int MigrationVersion = 23;
         public static bool EnableUnavailableMessage = false;
 
         public CleanDatabaseScheduledTask(ILibraryManager libraryManager, IItemRepository itemRepo, ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IHttpServer httpServer, ILocalizationManager localization, ITaskManager taskManager)
@@ -86,7 +86,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             innerProgress = new ActionableProgress<double>();
             innerProgress.RegisterAction(p =>
             {
-                double newPercentCommplete = 40 + (.05 * p);
+                double newPercentCommplete = 40 + .05 * p;
                 OnProgress(newPercentCommplete);
                 progress.Report(newPercentCommplete);
             });
@@ -96,7 +96,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             innerProgress = new ActionableProgress<double>();
             innerProgress.RegisterAction(p =>
             {
-                double newPercentCommplete = 45 + (.55 * p);
+                double newPercentCommplete = 45 + .55 * p;
                 OnProgress(newPercentCommplete);
                 progress.Report(newPercentCommplete);
             });
@@ -108,6 +108,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (_config.Configuration.MigrationVersion < MigrationVersion)
             {
                 _config.Configuration.MigrationVersion = MigrationVersion;
+                _config.SaveConfiguration();
+            }
+
+            if (_config.Configuration.SchemaVersion < SqliteItemRepository.LatestSchemaVersion)
+            {
+                _config.Configuration.SchemaVersion = SqliteItemRepository.LatestSchemaVersion;
                 _config.SaveConfiguration();
             }
 
@@ -140,7 +146,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
         {
             var itemIds = _libraryManager.GetItemIds(new InternalItemsQuery
             {
-                IsCurrentSchema = false
+                IsCurrentSchema = false,
+                ExcludeItemTypes = new[] { typeof(LiveTvProgram).Name }
             });
 
             var numComplete = 0;
@@ -231,14 +238,14 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 // These have their own cleanup routines
                 ExcludeItemTypes = new[]
                 {
-                    typeof(Person).Name, 
-                    typeof(Genre).Name, 
-                    typeof(MusicGenre).Name, 
-                    typeof(GameGenre).Name, 
-                    typeof(Studio).Name, 
-                    typeof(Year).Name, 
-                    typeof(Channel).Name, 
-                    typeof(AggregateFolder).Name, 
+                    typeof(Person).Name,
+                    typeof(Genre).Name,
+                    typeof(MusicGenre).Name,
+                    typeof(GameGenre).Name,
+                    typeof(Studio).Name,
+                    typeof(Year).Name,
+                    typeof(Channel).Name,
+                    typeof(AggregateFolder).Name,
                     typeof(CollectionFolder).Name
                 }
             });
@@ -308,8 +315,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public IEnumerable<ITaskTrigger> GetDefaultTriggers()
         {
-            return new ITaskTrigger[] 
-            { 
+            return new ITaskTrigger[]
+            {
                 new IntervalTrigger{ Interval = TimeSpan.FromHours(24)}
             };
         }

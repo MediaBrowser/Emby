@@ -88,7 +88,7 @@
                 return {
                     name: name,
                     id: t.id,
-                    ironIcon: playerInfo.id == t.id ? 'check' : null
+                    selected: playerInfo.id == t.id
                 };
 
             });
@@ -119,18 +119,25 @@
 
     function showActivePlayerMenu(playerInfo) {
 
-        require(['paper-checkbox', 'fade-in-animation', 'fade-out-animation', 'paper-dialog'], function () {
-            showActivePlayerMenuInternal(playerInfo);
+        require(['dialogHelper', 'emby-checkbox', 'emby-button'], function (dialogHelper) {
+            showActivePlayerMenuInternal(dialogHelper, playerInfo);
         });
     }
 
-    function showActivePlayerMenuInternal(playerInfo) {
+    function showActivePlayerMenuInternal(dialogHelper, playerInfo) {
 
         var html = '';
 
-        var dlg = document.createElement('paper-dialog');
-        dlg.setAttribute('with-backdrop', 'with-backdrop');
-        dlg.setAttribute('role', 'alertdialog');
+        var dialogOptions = {
+            removeOnClose: true
+        };
+
+        dialogOptions.modal = false;
+        dialogOptions.entryAnimationDuration = 160;
+        dialogOptions.exitAnimationDuration = 160;
+        dialogOptions.autoFocus = false;
+
+        var dlg = dialogHelper.createDialog(dialogOptions);
 
         html += '<h2>';
         html += (playerInfo.deviceName || playerInfo.name);
@@ -140,10 +147,11 @@
 
         if (playerInfo.supportedCommands.indexOf('DisplayContent') != -1) {
 
-            html += '<div>';
+            html += '<label class="checkboxContainer" style="margin-bottom:0;">';
             var checkedHtml = MediaController.enableDisplayMirroring() ? ' checked' : '';
-            html += '<paper-checkbox class="chkMirror"' + checkedHtml + '>' + Globalize.translate('OptionEnableDisplayMirroring') + '</paper-checkbox>';
-            html += '</div>';
+            html += '<input type="checkbox" is="emby-checkbox" class="chkMirror"' + checkedHtml + '/>';
+            html += '<span>' + Globalize.translate('OptionEnableDisplayMirroring') + '</span>';
+            html += '</label>';
         }
 
         html += '</div>';
@@ -152,29 +160,47 @@
 
         // On small layouts papepr dialog doesn't respond very well. this button isn't that important here anyway.
         if (screen.availWidth >= 600) {
-            html += '<paper-button onclick="Dashboard.navigate(\'nowplaying.html\');" dialog-dismiss>' + Globalize.translate('ButtonRemoteControl') + '</paper-button>';
+            html += '<button is="emby-button" type="button" class="btnRemoteControl">' + Globalize.translate('ButtonRemoteControl') + '</button>';
         }
 
-        html += '<paper-button dialog-dismiss onclick="MediaController.disconnectFromPlayer();">' + Globalize.translate('ButtonDisconnect') + '</paper-button>';
-        html += '<paper-button dialog-dismiss>' + Globalize.translate('ButtonCancel') + '</paper-button>';
+        html += '<button is="emby-button" type="button" class="btnDisconnect">' + Globalize.translate('ButtonDisconnect') + '</button>';
+        html += '<button is="emby-button" type="button" class="btnCancel">' + Globalize.translate('ButtonCancel') + '</button>';
         html += '</div>';
 
         dlg.innerHTML = html;
 
         document.body.appendChild(dlg);
 
-        setTimeout(function () {
+        var chkMirror = dlg.querySelector('.chkMirror');
 
-            dlg.querySelector('.chkMirror').addEventListener('change', onMirrorChange);
+        if (chkMirror) {
+            chkMirror.addEventListener('change', onMirrorChange);
+        }
 
-            dlg.open();
+        var destination = '';
 
-            // Has to be assigned a z-index after the call to .open() 
-            dlg.addEventListener('iron-overlay-closed', function () {
-                dlg.parentNode.removeChild(dlg);
+        var btnRemoteControl = dlg.querySelector('.btnRemoteControl');
+        if (btnRemoteControl) {
+            btnRemoteControl.addEventListener('click', function () {
+                destination = 'nowplaying.html';
+                dialogHelper.close(dlg);
             });
+        }
 
-        }, 100);
+        dlg.querySelector('.btnDisconnect').addEventListener('click', function () {
+            MediaController.disconnectFromPlayer();
+            dialogHelper.close(dlg);
+        });
+
+        dlg.querySelector('.btnCancel').addEventListener('click', function () {
+            dialogHelper.close(dlg);
+        });
+
+        dialogHelper.open(dlg).then(function () {
+            if (destination) {
+                Dashboard.navigate(destination);
+            }
+        });
     }
 
     function onMirrorChange() {

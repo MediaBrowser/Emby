@@ -40,7 +40,7 @@
         var url = "https://mb3admin.com/admin/service/supporter/retrievekey?email=" + email;
         console.log(url);
         fetchHelper.ajax({
-            
+
             url: url,
             type: 'POST',
             dataType: 'json'
@@ -146,6 +146,18 @@
         }
     };
 
+    function getTabs() {
+        return [
+        {
+            href: 'about.html',
+            name: Globalize.translate('TabAbout')
+        },
+         {
+             href: 'supporterkey.html',
+             name: Globalize.translate('TabEmbyPremiere')
+         }];
+    }
+
     $(document).on('pageinit', "#supporterKeyPage", function () {
 
         var page = this;
@@ -156,6 +168,9 @@
         $('.benefits', page).html(Globalize.translate('HeaderSupporterBenefit', '<a href="http://emby.media/premiere" target="_blank">', '</a>'));
 
     }).on('pageshow', "#supporterKeyPage", function () {
+
+        LibraryMenu.setTabs('helpadmin', 1, getTabs);
+
         var page = this;
         loadUserInfo(page);
         load(page);

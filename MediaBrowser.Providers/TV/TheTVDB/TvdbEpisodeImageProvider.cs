@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
@@ -10,9 +9,7 @@ using MediaBrowser.Model.Providers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -20,7 +17,7 @@ using CommonIO;
 
 namespace MediaBrowser.Providers.TV
 {
-    public class TvdbEpisodeImageProvider : IRemoteImageProvider, IHasChangeMonitor
+    public class TvdbEpisodeImageProvider : IRemoteImageProvider
     {
         private readonly IServerConfigurationManager _config;
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
@@ -175,35 +172,6 @@ namespace MediaBrowser.Providers.TV
                 Url = url,
                 ResourcePool = TvdbSeriesProvider.Current.TvDbResourcePool
             });
-        }
-
-        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService, DateTime date)
-        {
-            var episode = (Episode)item;
-            
-            if (!episode.IsVirtualUnaired)
-            {
-                // For non-unaired items, only enable if configured
-                if (!TvdbSeriesProvider.Current.GetTvDbOptions().EnableAutomaticUpdates)
-                {
-                    return false;
-                }
-            }
-
-            if (!item.HasImage(ImageType.Primary))
-            {
-                var series = episode.Series;
-
-                if (series != null && TvdbSeriesProvider.IsValidSeries(series.ProviderIds))
-                {
-                    // Process images
-					var seriesXmlPath = TvdbSeriesProvider.Current.GetSeriesXmlPath(series.ProviderIds, series.GetPreferredMetadataLanguage());
-
-					return _fileSystem.GetLastWriteTimeUtc(seriesXmlPath) > date;
-                }
-            }
-
-            return false;
         }
     }
 }

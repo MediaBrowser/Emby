@@ -1,4 +1,5 @@
 <!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -37,8 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /**
        * Fired when the list of selectable items changes (e.g., items are
-       * added or removed). The detail of the event is a list of mutation
-       * records that describe what changed.
+       * added or removed). The detail of the event is a mutation record that
+       * describes what changed.
        *
        * @event iron-items-changed
        */
@@ -114,6 +115,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
+       * Default fallback if the selection based on selected with `attrForSelected`
+       * is not found.
+       */
+      fallbackSelection: {
+        type: String,
+        value: null
+      },
+
+      /**
        * The list of items from which a selection can be made.
        */
       items: {
@@ -143,7 +153,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     observers: [
       '_updateAttrForSelected(attrForSelected)',
-      '_updateSelected(selected)'
+      '_updateSelected(selected)',
+      '_checkFallback(fallbackSelection)'
     ],
 
     created: function() {
@@ -210,6 +221,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     /**
+     * Selects the item at the given index.
+     *
+     * @method selectIndex
+     */
+    selectIndex: function(index) {
+      this.select(this._indexToValue(index));
+    },
+
+    /**
      * Force a synchronous update of the `items` property.
      *
      * NOTE: Consider listening for the `iron-items-changed` event to respond to
@@ -227,6 +247,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     get _shouldUpdateSelection() {
       return this.selected != null;
+    },
+
+    _checkFallback: function() {
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
     },
 
     _addListener: function(eventName) {
@@ -250,7 +276,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _updateAttrForSelected: function() {
       if (this._shouldUpdateSelection) {
-        this.selected = this._indexToValue(this.indexOf(this.selectedItem));        
+        this.selected = this._indexToValue(this.indexOf(this.selectedItem));
       }
     },
 
@@ -260,6 +286,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _selectSelected: function(selected) {
       this._selection.select(this._valueToItem(this.selected));
+      // Check for items, since this array is populated only when attached
+      // Since Number(0) is falsy, explicitly check for undefined
+      if (this.fallbackSelection && this.items.length && (this._selection.get() === undefined)) {
+        this.selected = this.fallbackSelection;
+      }
     },
 
     _filterItem: function(node) {
@@ -315,7 +346,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // observe items change under the given node.
     _observeItems: function(node) {
-      return Polymer.dom(node).observeNodes(function(mutations) {
+      return Polymer.dom(node).observeNodes(function(mutation) {
         this._updateItems();
 
         if (this._shouldUpdateSelection) {
@@ -324,7 +355,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // Let other interested parties know about the change so that
         // we don't have to recreate mutation observers everywhere.
-        this.fire('iron-items-changed', mutations, {
+        this.fire('iron-items-changed', mutation, {
           bubbles: false,
           cancelable: false
         });

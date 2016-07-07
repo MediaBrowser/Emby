@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.FileOrganization;
 using MediaBrowser.Controller.Library;
@@ -117,7 +116,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                         premiereDate,
                         options,
                         overwriteExisting,
-						false,
+                        false,
                         result,
                         cancellationToken).ConfigureAwait(false);
                 }
@@ -203,7 +202,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 null,
                 options,
                 true,
-				request.RememberCorrection,
+                request.RememberCorrection,
                 result,
                 cancellationToken).ConfigureAwait(false);
 
@@ -220,7 +219,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             DateTime? premiereDate,
             AutoOrganizeOptions options,
             bool overwriteExisting,
-			bool rememberCorrection,
+            bool rememberCorrection,
             FileOrganizationResult result,
             CancellationToken cancellationToken)
         {
@@ -243,7 +242,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 premiereDate,
                 options,
                 overwriteExisting,
-				rememberCorrection,
+                rememberCorrection,
                 result,
                 cancellationToken);
         }
@@ -256,7 +255,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             DateTime? premiereDate,
             AutoOrganizeOptions options,
             bool overwriteExisting,
-			bool rememberCorrection,
+            bool rememberCorrection,
             FileOrganizationResult result,
             CancellationToken cancellationToken)
         {
@@ -305,7 +304,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                 if (otherDuplicatePaths.Count > 0)
                 {
-                    var msg = string.Format("File '{0}' already exists as '{1}', stopping organization", sourcePath, otherDuplicatePaths);
+                    var msg = string.Format("File '{0}' already exists as these:'{1}'. Stopping organization", sourcePath, string.Join("', '", otherDuplicatePaths));
                     _logger.Info(msg);
                     result.Status = FileSortingStatus.SkippedExisting;
                     result.StatusMessage = msg;
@@ -357,6 +356,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
         private void SaveSmartMatchString(string matchString, Series series, AutoOrganizeOptions options)
         {
+            if (string.IsNullOrEmpty(matchString) || matchString.Length < 3)
+            {
+                return;
+            }
+
             SmartMatchInfo info = options.SmartMatchInfos.FirstOrDefault(i => string.Equals(i.ItemName, series.Name, StringComparison.OrdinalIgnoreCase));
 
             if (info == null)
@@ -537,7 +541,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             result.ExtractedName = nameWithoutYear;
             result.ExtractedYear = yearInName;
 
-            var series = _libraryManager.RootFolder.GetRecursiveChildren(i => i is Series)
+            var series = _libraryManager.GetItemList(new Controller.Entities.InternalItemsQuery
+            {
+                IncludeItemTypes = new[] { typeof(Series).Name },
+                Recursive = true
+            })
                 .Cast<Series>()
                 .Select(i => NameUtils.GetMatchScore(nameWithoutYear, yearInName, i))
                 .Where(i => i.Item2 > 0)
@@ -551,10 +559,13 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                 if (info != null)
                 {
-                    series = _libraryManager.RootFolder
-                        .GetRecursiveChildren(i => i is Series)
-                        .Cast<Series>()
-                        .FirstOrDefault(i => string.Equals(i.Name, info.ItemName, StringComparison.OrdinalIgnoreCase));
+                    series = _libraryManager.GetItemList(new Controller.Entities.InternalItemsQuery
+                    {
+                        IncludeItemTypes = new[] { typeof(Series).Name },
+                        Recursive = true,
+                        Name = info.ItemName
+
+                    }).Cast<Series>().FirstOrDefault();
                 }
             }
 

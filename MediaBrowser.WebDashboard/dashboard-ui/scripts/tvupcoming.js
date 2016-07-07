@@ -1,25 +1,27 @@
-﻿define([], function () {
+﻿define(['datetime', 'scrollStyles'], function (datetime) {
 
-    function loadUpcoming(context, params) {
+    function getUpcomingPromise(context, params) {
 
         Dashboard.showLoadingMsg();
 
-        var limit = AppInfo.hasLowImageBandwidth && !enableScrollX() ?
-           24 :
-           40;
-
         var query = {
 
-            Limit: limit,
+            Limit: 40,
             Fields: "AirTime,UserData,SeriesStudio,SyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+            EnableTotalRecordCount: false
         };
 
         query.ParentId = params.topParentId;
 
-        ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query)).then(function (result) {
+        return ApiClient.getJSON(ApiClient.getUrl("Shows/Upcoming", query));
+    }
+
+    function loadUpcoming(context, params, promise) {
+
+        promise.then(function (result) {
 
             var items = result.Items;
 
@@ -62,7 +64,13 @@
             if (item.PremiereDate) {
                 try {
 
-                    dateText = LibraryBrowser.getFutureDateText(parseISO8601Date(item.PremiereDate, { toLocal: true }), true);
+                    var premiereDate = datetime.parseISO8601Date(item.PremiereDate, true);
+
+                    if (premiereDate.getDate() == new Date().getDate() - 1) {
+                        dateText = Globalize.translate('Yesterday');
+                    } else {
+                        dateText = LibraryBrowser.getFutureDateText(premiereDate, true);
+                    }
 
                 } catch (err) {
                 }
@@ -108,7 +116,8 @@
                 preferThumb: true,
                 lazy: true,
                 showDetailsMenu: true,
-                centerText: true
+                centerText: true,
+                overlayMoreButton: true
 
             });
             html += '</div>';
@@ -117,15 +126,21 @@
         }
 
         elem.innerHTML = html;
+        LibraryBrowser.createCardMenus(elem);
         ImageLoader.lazyChildren(elem);
     }
     return function (view, params, tabContent) {
 
         var self = this;
+        var upcomingPromise;
+
+        self.preRender = function () {
+            upcomingPromise = getUpcomingPromise(view, params);
+        };
 
         self.renderTab = function () {
 
-            loadUpcoming(tabContent, params);
+            loadUpcoming(tabContent, params, upcomingPromise);
         };
     };
 });

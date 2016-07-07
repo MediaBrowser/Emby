@@ -1,25 +1,22 @@
-﻿using MediaBrowser.Controller.Dto;
+﻿using System;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Querying;
 using ServiceStack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Querying;
 
 namespace MediaBrowser.Api.UserLibrary
 {
     [Route("/MusicGenres", "GET", Summary = "Gets all music genres from a given item, folder, or the entire library")]
     public class GetMusicGenres : GetItemsByName
     {
-        public GetMusicGenres()
-        {
-            IncludeItemTypes = typeof(Audio).Name;
-        }
     }
 
     [Route("/MusicGenres/{Name}", "GET", Summary = "Gets a music genre, by name")]
@@ -88,9 +85,14 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetMusicGenres request)
         {
-            var result = GetResult(request);
+            var result = GetResultSlim(request);
 
             return ToOptimizedSerializedResultUsingCache(result);
+        }
+
+        protected override QueryResult<Tuple<BaseItem, ItemCounts>> GetItems(GetItemsByName request, InternalItemsQuery query)
+        {
+            return LibraryManager.GetMusicGenres(query);
         }
 
         /// <summary>
@@ -101,10 +103,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>IEnumerable{Tuple{System.StringFunc{System.Int32}}}.</returns>
         protected override IEnumerable<BaseItem> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
         {
-            return items
-                .SelectMany(i => i.Genres)
-                .DistinctNames()
-                .Select(name => LibraryManager.GetMusicGenre(name));
+            throw new NotImplementedException();
         }
     }
 }

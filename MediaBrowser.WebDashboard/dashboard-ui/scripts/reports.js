@@ -131,7 +131,7 @@
                 break;
             case "LockDataImage":
                 if (rRow.HasLockData) {
-                    html += '<img src="css/images/editor/lock.png"  style="width:18px"/>';
+                    html += '<iron-icon icon="lock" style="height:18px"></iron-icon>';
                 }
                 break;
             case "TagsPrimaryImage":
@@ -169,11 +169,11 @@
                 break;
             case "StatusImage":
                 if (rRow.HasLockData) {
-                    html += '<img src="css/images/editor/lock.png"  style="width:18px"/>';
+                    html += '<iron-icon icon="lock" style="height:18px"></iron-icon>';
                 }
 
                 if (!rRow.HasLocalTrailer && rRow.RowType === "Movie") {
-                    html += '<img src="css/images/editor/missingtrailer.png" title="Missing local trailer."  style="width:18px"/>';
+                    html += '<iron-icon icon="videocam" title="Missing local trailer." style="height:18px"></iron-icon>';
                 }
 
                 if (!rRow.HasImageTagsPrimary) {
@@ -502,7 +502,6 @@
         //Management
         $('#chkMissingRating', page).checked(query.HasOfficialRating == false).checkboxradio('refresh');
         $('#chkMissingOverview', page).checked(query.HasOverview == false).checkboxradio('refresh');
-        $('#chkYearMismatch', page).checked(query.IsYearMismatched == true).checkboxradio('refresh');
         $('#chkIsLocked', page).checked(query.IsLocked == true).checkboxradio('refresh');
         $('#chkMissingImdbId', page).checked(query.HasImdbId == false).checkboxradio('refresh');
         $('#chkMissingTmdbId', page).checked(query.HasTmdbId == false).checkboxradio('refresh');
@@ -809,14 +808,6 @@
 
             query.StartIndex = 0;
             query.HasTvdbId = this.checked ? false : null;
-
-            reloadItems(page);
-        });
-
-        $('#chkYearMismatch', page).on('change', function () {
-
-            query.StartIndex = 0;
-            query.IsYearMismatched = this.checked ? true : null;
 
             reloadItems(page);
         });

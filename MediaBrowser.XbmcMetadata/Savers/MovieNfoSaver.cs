@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
@@ -45,6 +44,13 @@ namespace MediaBrowser.XbmcMetadata.Savers
             }
             else
             {
+                // http://kodi.wiki/view/NFO_files/Movies
+                // movie.nfo will override all and any .nfo files in the same folder as the media files if you use the "Use foldernames for lookups" setting. If you don't, then moviename.nfo is used
+                //if (!item.IsInMixedFolder && item.ItemType == typeof(Movie))
+                //{
+                //    list.Add(Path.Combine(item.ContainingFolderPath, "movie.nfo"));
+                //}
+
                 list.Add(Path.ChangeExtension(item.Path, ".nfo"));
             }
 

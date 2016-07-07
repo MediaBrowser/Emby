@@ -22,7 +22,9 @@ import KeyLoader from './loader/key-loader';
 class Hls {
 
   static isSupported() {
-    return (window.MediaSource && window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E,mp4a.40.2"'));
+    return (window.MediaSource &&
+            typeof window.MediaSource.isTypeSupported === 'function' &&
+            window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E,mp4a.40.2"'));
   }
 
   static get Events() {
@@ -41,12 +43,15 @@ class Hls {
     if(!Hls.defaultConfig) {
        Hls.defaultConfig = {
           autoStartLoad: true,
+          startPosition: -1,
           debug: false,
           capLevelToPlayerSize: false,
           maxBufferLength: 30,
           maxBufferSize: 60 * 1000 * 1000,
           maxBufferHole: 0.5,
           maxSeekHole: 2,
+          seekHoleNudgeDuration : 0.01,
+          stalledInBufferedNudgeThreshold: 10,
           maxFragLookUpTolerance : 0.2,
           liveSyncDurationCount:3,
           liveMaxLatencyDurationCount: Infinity,
@@ -78,7 +83,14 @@ class Hls {
           streamController: StreamController,
           timelineController: TimelineController,
           enableCEA708Captions: true,
-          enableMP2TPassThrough : false
+          enableMP2TPassThrough : false,
+          abrEwmaFastLive: 5,
+          abrEwmaSlowLive: 9,
+          abrEwmaFastVoD: 4,
+          abrEwmaSlowVoD: 15,
+          abrEwmaDefaultEstimate: 5e5, // 500 kbps
+          abrBandWidthFactor : 0.8,
+          abrBandWidthUpFactor : 0.7
         };
     }
     return Hls.defaultConfig;
@@ -141,6 +153,7 @@ class Hls {
     this.playlistLoader.destroy();
     this.fragmentLoader.destroy();
     this.levelController.destroy();
+    this.abrController.destroy();
     this.bufferController.destroy();
     this.capLevelController.destroy();
     this.streamController.destroy();
@@ -170,7 +183,7 @@ class Hls {
     this.trigger(Event.MANIFEST_LOADING, {url: url});
   }
 
-  startLoad(startPosition=0) {
+  startLoad(startPosition=-1) {
     logger.log('startLoad');
     this.levelController.startLoad();
     this.streamController.startLoad(startPosition);

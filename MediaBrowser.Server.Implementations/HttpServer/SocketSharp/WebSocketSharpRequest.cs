@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Web;
 using Funq;
 using MediaBrowser.Model.Logging;
 using ServiceStack;
@@ -23,7 +22,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             this.OperationName = operationName;
             this.RequestAttributes = requestAttributes;
             this.request = httpContext.Request;
-            this.response = new WebSocketSharpResponse(logger, httpContext.Response);
+            this.response = new WebSocketSharpResponse(logger, httpContext.Response, this);
 
             this.RequestPreferences = new RequestPreferences(this);
         }
@@ -137,7 +136,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                 return remoteIp ??
                     (remoteIp = XForwardedFor ??
                                 (NormalizeIp(XRealIp) ??
-                                ((request.RemoteEndPoint != null) ? NormalizeIp(request.RemoteEndPoint.Address.ToString()) : null)));
+                                (request.RemoteEndPoint != null ? NormalizeIp(request.RemoteEndPoint.Address.ToString()) : null)));
             }
         }
 
