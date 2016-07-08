@@ -1362,7 +1362,7 @@ namespace MediaBrowser.Server.Startup.Common
                 cacheLength = TimeSpan.FromMinutes(5);
             }
 
-            var result = await new GithubUpdater(HttpClient, JsonSerializer, cacheLength).CheckForUpdateResult("MediaBrowser", "Emby", ApplicationVersion, updateLevel, _releaseAssetFilename,
+            var result = await new GithubUpdater(HttpClient, JsonSerializer, cacheLength).CheckForUpdateResult("hatharry", "Emby", ApplicationVersion, updateLevel, _releaseAssetFilename,
                     "MBServer", "Mbserver.zip", cancellationToken).ConfigureAwait(false);
 
             HasUpdateAvailable = result.IsUpdateAvailable;
