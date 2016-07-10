@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Providers.Authentication;
+using MediaBrowser.Common.Security;
 
 namespace MediaBrowser.Server.Implementations.Library
 {
@@ -220,18 +221,35 @@ namespace MediaBrowser.Server.Implementations.Library
 
         public async Task<bool> AuthenticateUser(string username, string password, string passwordMd5, string remoteEndPoint)
         {
-            var passwordSha1 = GetSha1String(password);
+
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentNullException("username");
             }
 
+            var domain = "Local";
+            var d = DirectoriesProviders.FirstOrDefault(dir => dir.GetDirectories().Contains(domain));
+            if(d == null) { throw new SecurityException("Invalid username or password entered."); }
+
             var user = Users
-                .FirstOrDefault(i => string.Equals(username, i.Name, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(i => string.Equals(username, i.Name, StringComparison.OrdinalIgnoreCase) || i.ExternalDirectoryEntries.ContainsKey(username));
+
+            var success = await d.AuthenticateUser(username, domain, password);
 
             if (user == null)
             {
-                throw new SecurityException("Invalid username or password entered.");
+                if (success)
+                {
+                    var entry = await d.RetrieveEntry(username, domain, CancellationToken.None);
+                    user = await CreateUser(entry.AccountName);
+                    user.ExternalDirectoryEntries[username] = entry.Id;
+                    await UpdateUser(user);
+                    await UserRepository.UpdateUserPassword(user.Id, password, CancellationToken.None);
+                }
+                else
+                {
+                    throw new SecurityException("Invalid username or password entered.");
+                }
             }
 
             if (user.Policy.IsDisabled)
@@ -239,16 +257,14 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new SecurityException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
             }
 
-            var success = false;
 
             // Authenticate using local credentials if not a guest
             if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
             {
-                success = string.Equals(GetPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
 
                 if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
                 {
-                    success = string.Equals(GetLocalPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                    success = string.Equals(GetLocalPasswordHash(user), Crypto.GetSha1(password ?? String.Empty), StringComparison.OrdinalIgnoreCase);
                 }
             }
 
