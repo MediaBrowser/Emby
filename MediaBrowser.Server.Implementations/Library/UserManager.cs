@@ -368,6 +368,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 user.DateLastSaved = DateTime.UtcNow;
 
                 await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+                await UserRepository.UpdateUserPassword(user.Id, String.Empty, CancellationToken.None);
 
                 users.Add(user);
 
@@ -389,7 +390,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
             var passwordHash = GetPasswordHash(user);
 
-            var hasConfiguredPassword = !IsPasswordEmpty(passwordHash);
+            var hasConfiguredPassword = !UserRepository.AuthenticateUser(user.Name, "Local", String.Empty).Result;
             var hasConfiguredEasyPassword = !IsPasswordEmpty(GetLocalPasswordHash(user));
 
             var hasPassword = user.Configuration.EnableLocalPassword && !string.IsNullOrEmpty(remoteEndPoint) && _networkManager.IsInLocalNetwork(remoteEndPoint) ?
@@ -577,7 +578,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 user.DateLastSaved = DateTime.UtcNow;
 
                 await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
-
+                await UserRepository.UpdateUserPassword(user.Id, String.Empty, CancellationToken.None);
                 EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
                 return user;
@@ -714,9 +715,11 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 Name = name,
                 Id = Guid.NewGuid(),
+                Password = Crypto.GetSha1(String.Empty),
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow,
-                UsesIdForConfigurationPath = true
+                UsesIdForConfigurationPath = true,
+                ExternalDirectoryEntries = new Dictionary<string, string>()
             };
         }
 
@@ -1034,6 +1037,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             DirectoriesProviders = providers;
             UserRepository = (IUserRepository) providers.First(p => p.GetDirectories().Contains("Local"));
+            Initialize().Wait();
         }
     }
 }

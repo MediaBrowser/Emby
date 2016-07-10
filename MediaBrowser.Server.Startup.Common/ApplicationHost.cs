@@ -440,8 +440,6 @@ namespace MediaBrowser.Server.Startup.Common
             UserDataManager = new UserDataManager(LogManager, ServerConfigurationManager);
             RegisterSingleInstance(UserDataManager);
 
-            UserRepository = await GetUserRepository().ConfigureAwait(false);
-
             var displayPreferencesRepo = new SqliteDisplayPreferencesRepository(LogManager, JsonSerializer, ApplicationPaths, NativeApp.GetDbConnector());
             DisplayPreferencesRepository = displayPreferencesRepo;
             RegisterSingleInstance(DisplayPreferencesRepository);
@@ -459,7 +457,7 @@ namespace MediaBrowser.Server.Startup.Common
             SyncRepository = await GetSyncRepository().ConfigureAwait(false);
             RegisterSingleInstance(SyncRepository);
 
-            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager);
+            UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager);
             RegisterSingleInstance(UserManager);
 
             LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => LibraryMonitor, FileSystemManager, () => ProviderManager, () => UserViewManager);
@@ -601,7 +599,7 @@ namespace MediaBrowser.Server.Startup.Common
 
             SetStaticProperties();
 
-            await ((UserManager)UserManager).Initialize().ConfigureAwait(false);
+           // await ((UserManager)UserManager).Initialize().ConfigureAwait(false);
         }
 
         private IImageProcessor GetImageProcessor()
@@ -680,27 +678,6 @@ namespace MediaBrowser.Server.Startup.Common
 
             MediaEncoder = mediaEncoder;
             RegisterSingleInstance(MediaEncoder);
-        }
-
-        /// <summary>
-        /// Gets the user repository.
-        /// </summary>
-        /// <returns>Task{IUserRepository}.</returns>
-        private async Task<IUserRepository> GetUserRepository()
-        {
-            try
-            {
-                var repo = new SqliteUserRepository(LogManager, ApplicationPaths, JsonSerializer, NativeApp.GetDbConnector());
-
-                await repo.Initialize().ConfigureAwait(false);
-
-                return repo;
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error opening user db", ex);
-                throw;
-            }
         }
 
         /// <summary>

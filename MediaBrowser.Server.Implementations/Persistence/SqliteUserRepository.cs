@@ -25,8 +25,18 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public SqliteUserRepository(ILogManager logManager, IServerApplicationPaths appPaths, IJsonSerializer jsonSerializer, IDbConnector dbConnector) : base(logManager, dbConnector)
         {
             _jsonSerializer = jsonSerializer;
-
             DbFilePath = Path.Combine(appPaths.DataPath, "users.db");
+
+            try
+            {
+                Initialize().Wait();
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error opening user db", ex);
+                throw;
+            }
+            
         }
 
         /// <summary>
@@ -93,10 +103,11 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     using (var cmd = connection.CreateCommand())
                     {
-                        cmd.CommandText = "replace into users (guid, data) values (@1, @2)";
+                        cmd.CommandText = "replace into users (guid, data, login_name, password) values (@1, @2, @3, @4)";
                         cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = user.Id;
                         cmd.Parameters.Add(cmd, "@2", DbType.Binary).Value = serialized;
                         cmd.Parameters.Add(cmd, "@3", DbType.String).Value = user.Name;
+                        cmd.Parameters.Add(cmd, "@4", DbType.String).Value = user.Password;
 
                         cmd.Transaction = transaction;
 
@@ -147,7 +158,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "select guid,data from users";
+                    cmd.CommandText = "select guid,data,password from users";
 
                     using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
                     {
@@ -159,6 +170,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                             {
                                 var user = _jsonSerializer.DeserializeFromStream<User>(stream);
                                 user.Id = id;
+                                user.Password = reader.GetString(2);
                                 list.Add(user);
                             }
                         }
@@ -253,7 +265,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     using (var cmd = connection.CreateCommand())
                     {
-                        cmd.CommandText = "update users set password=@2 where guid=@1)";
+                        cmd.CommandText = "update users set password=@2 where guid=@1";
                         cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = id;
                         cmd.Parameters.Add(cmd, "@2", DbType.String).Value = Crypto.GetSha1(password);
 
@@ -296,12 +308,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public async Task<bool> AuthenticateUser(string login_name, string fqdn, string password)
         {
-            password = password ?? Crypto.GetSha1(String.Empty);
+            password = password ?? String.Empty; 
             using (var connection = await CreateConnection(true))
             {
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "select password from users when login_name=@1";
+                    cmd.CommandText = "select password from users where login_name=@1";
                     cmd.Parameters.Add(cmd, "@1", DbType.String).Value = login_name;
 
                     using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
@@ -309,7 +321,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
                         while (reader.Read())
                         {
                             var p = reader.GetString(0);
-                            return String.Equals(password, p, StringComparison.InvariantCultureIgnoreCase);
+                            return String.Equals(Crypto.GetSha1(password), p, StringComparison.InvariantCultureIgnoreCase);
                         }
                     }
                 }
@@ -324,7 +336,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "select guid,login_name,password from users when guid=@1";
+                    cmd.CommandText = "select guid,login_name,password from users where guid=@1";
                     cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = Guid.Parse(uid);
 
                     using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
