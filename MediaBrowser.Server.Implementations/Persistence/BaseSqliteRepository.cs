@@ -1,6 +1,8 @@
 ﻿using MediaBrowser.Model.Logging;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -109,6 +111,110 @@ namespace MediaBrowser.Server.Implementations.Persistence
         protected virtual void CloseConnection()
         {
 
+        }
+
+        /// <summary>
+        /// Save a user in the repo
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.ArgumentNullException">user</exception>
+        public async Task Commit(string command, IEnumerable<Params> parameters = null)
+        {
+            if (String.IsNullOrWhiteSpace(command))
+            {
+                throw new ArgumentNullException("sql command");
+            }
+
+            parameters = parameters ?? new List<Params>();
+
+            using (var connection = await CreateConnection().ConfigureAwait(false))
+            {
+                IDbTransaction transaction = null;
+
+                try
+                {
+                    transaction = connection.BeginTransaction();
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = command;
+                        parameters.ToList().ForEach(p => cmd.Parameters.Add(cmd, p.Name, p.Type).Value = p.Value);
+                        cmd.Transaction = transaction;
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (OperationCanceledException)
+                {
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException("Failed to save user:", e);
+
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
+                finally
+                {
+                    if (transaction != null)
+                    {
+                        transaction.Dispose();
+                    }
+                }
+            }
+        }
+        public IEnumerable<T> Reader<T>(string command, Func<IDataReader, T> createFromEntry, IEnumerable<Params> parameters = null)
+        {
+            var list = new List<T>();
+            if (String.IsNullOrWhiteSpace(command))
+            {
+                throw new ArgumentNullException("sql command");
+            }
+
+            parameters = parameters ?? new List<Params>();
+            using (var connection = CreateConnection(true).Result)
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = command;
+                    parameters.ToList().ForEach(p => cmd.Parameters.Add(cmd, p.Name, p.Type).Value = p.Value);
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(createFromEntry(reader));
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+    }
+
+    public class Params
+    {
+        public string Name { get; set; }
+        public DbType Type { get; set; }
+        public Object Value { get; set; }
+
+        public Params(string name, DbType type, Object value)
+        {
+            Name = name;
+            type = Type;
+            Value = value;
         }
     }
 }

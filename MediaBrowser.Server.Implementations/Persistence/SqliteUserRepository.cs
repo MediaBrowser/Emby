@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Common.Security;
+using System.Linq;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
@@ -73,6 +74,15 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
+        public List<Params> GetUserParams(User user)
+        {
+            return new List<Params>() {
+                new Params("@guid",DbType.Guid,user.Id),
+                new Params("@data",DbType.Binary,user),
+                new Params("@login_name",DbType.String,user.Name)
+            };
+        }
+
         /// <summary>
         /// Save a user in the repo
         /// </summary>
@@ -80,7 +90,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        public async Task SaveUser(User user, CancellationToken cancellationToken)
+        public async Task CreateUser(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
@@ -93,57 +103,37 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
+            await Commit("insert into users (guid, data, login_name, password) values (@guid, @data, @login_name)", GetUserParams(user));
+   
+        }
+
+        public async Task UpdateUser(User user, CancellationToken cancellationToken)
+        {
+            if (user == null)
             {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "replace into users (guid, data, login_name, password) values (@1, @2, @3, @4)";
-                        cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = user.Id;
-                        cmd.Parameters.Add(cmd, "@2", DbType.Binary).Value = serialized;
-                        cmd.Parameters.Add(cmd, "@3", DbType.String).Value = user.Name;
-                        cmd.Parameters.Add(cmd, "@4", DbType.String).Value = user.Password;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to save user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
+                throw new ArgumentNullException("user");
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var serialized = _jsonSerializer.SerializeToBytes(user);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Commit("update users set data=@data, login_name=@login_name where guid=@guid", GetUserParams(user));
+
+        }
+
+        private User GetUser(IDataReader reader)
+        {
+            var id = reader.GetGuid(0);
+            User user = null;
+            using (var stream = reader.GetMemoryStream(1))
+            {
+                user = _jsonSerializer.DeserializeFromStream<User>(stream);
+                user.Id = id;
+            }
+            return user;
         }
 
         /// <summary>
@@ -152,33 +142,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         /// <returns>IEnumerable{User}.</returns>
         public IEnumerable<User> RetrieveAllUsers()
         {
-            var list = new List<User>();
-
-            using (var connection = CreateConnection(true).Result)
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "select guid,data,password from users";
-
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                    {
-                        while (reader.Read())
-                        {
-                            var id = reader.GetGuid(0);
-
-                            using (var stream = reader.GetMemoryStream(1))
-                            {
-                                var user = _jsonSerializer.DeserializeFromStream<User>(stream);
-                                user.Id = id;
-                                user.Password = reader.GetString(2);
-                                list.Add(user);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return list;
+            return Reader("select guid,data,password from users", GetUser);
         }
 
         /// <summary>
@@ -197,55 +161,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
-            {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "delete from users where guid=@guid";
-
-                        cmd.Parameters.Add(cmd, "@guid", DbType.Guid).Value = user.Id;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to delete user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
-            }
+            await Commit("delete from users where guid=@guid", GetUserParams(user));
         }
 
         public async Task UpdateUserPassword(Guid id, string password, CancellationToken cancellationToken)
@@ -254,67 +170,23 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 throw new ArgumentNullException("user");
             }
-
-            using (var connection = await CreateConnection().ConfigureAwait(false))
-            {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "update users set password=@2 where guid=@1";
-                        cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = id;
-                        cmd.Parameters.Add(cmd, "@2", DbType.String).Value = Crypto.GetSha1(password);
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to save user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
-            }
+            List<Params> parameters = new List<Params>() {
+                new Params("@guid",DbType.Guid,id),
+                new Params("@password", DbType.String,Crypto.GetSha1(password))
+            };
+            await Commit("update users set password=@password where guid=@guid", parameters);
         }
 
         public async Task<bool> AuthenticateUser(string login_name, string fqdn, string password)
         {
             password = password ?? String.Empty; 
+
             using (var connection = await CreateConnection(true))
             {
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "select password from users where login_name=@1";
-                    cmd.Parameters.Add(cmd, "@1", DbType.String).Value = login_name;
+                    cmd.CommandText = "select password from users where login_name=@login_name";
+                    cmd.Parameters.Add(cmd, "@login_name", DbType.String).Value = login_name;
 
                     using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
                     {
@@ -329,67 +201,34 @@ namespace MediaBrowser.Server.Implementations.Persistence
             return false;
         }
 
-        public async Task<DirectoryEntry> RetrieveEntry(string uid, string fqdn, CancellationToken cancellationToken)
+        public DirectoryEntry GetEntry(IDataReader reader)
         {
-            var entry = new DirectoryEntry();
-            using (var connection = await CreateConnection(true))
+            var name = reader.GetString(1);
+            var e = new DirectoryEntry()
             {
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "select guid,login_name,password from users where guid=@1";
-                    cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = Guid.Parse(uid);
+                Id = reader.GetGuid(0).ToString(),
+                Name = name,
+                FQDN = "Local",
+                Type = EntryType.User,
+                LoginName = name,
+            };
+            e.SetAttribute("pwd", reader.GetString(2));
+            return e;
+        }
 
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                    {
-                        while (reader.Read())
-                        {
-                            var name = reader.GetString(1);
-                            var e = new DirectoryEntry()
-                            {
-                                Id = reader.GetGuid(0).ToString(),
-                                Name = name,
-                                FQDN = "Local",
-                                Type = EntryType.User,
-                                LoginName = name,
-                            };
-                            e.SetAttribute("pwd", reader.GetString(2));
-                            return e;
-                        }
-                    }
-                }
-            }
-            return entry;
+        public Task<DirectoryEntry> RetrieveEntry(string uid, string fqdn, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(Reader("select guid,login_name,password from users where guid=@guid",
+                GetEntry,
+                new List<Params>() {
+                    new Params("@guid",DbType.Guid,Guid.Parse(uid))
+            })
+            .FirstOrDefault());
         }
 
         public async Task<IEnumerable<DirectoryEntry>> RetrieveAll(string fqdn)
         {
-            var list = new List<DirectoryEntry>();
-
-            using (var connection = await CreateConnection(true))
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "select guid,login_name from users";
-
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                    {
-                        while (reader.Read())
-                        {
-                            var name = reader.GetString(1).ToString();
-                            var entry = new DirectoryEntry()
-                            {
-                                Id = reader.GetGuid(0).ToString(),
-                                Name = name,
-                                FQDN = "Local",
-                                Type = EntryType.User,
-                                LoginName = name
-                            };
-                        }
-                    }
-                }
-            }
-
-            return list;
+            return Reader("select guid,login_name,password from users",GetEntry);
         }
 
         public IEnumerable<string> GetDirectories()

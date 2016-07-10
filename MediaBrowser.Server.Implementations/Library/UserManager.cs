@@ -317,37 +317,16 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        private string GetPasswordHash(User user)
-        {
-            return string.IsNullOrEmpty(user.Password)
-                ? GetSha1String(string.Empty)
-                : user.Password;
-        }
-
         private string GetLocalPasswordHash(User user)
         {
             return string.IsNullOrEmpty(user.EasyPassword)
-                ? GetSha1String(string.Empty)
+                ? Crypto.GetSha1(string.Empty)
                 : user.EasyPassword;
         }
 
         private bool IsPasswordEmpty(string passwordHash)
         {
-            return string.Equals(passwordHash, GetSha1String(string.Empty), StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Gets the sha1 string.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <returns>System.String.</returns>
-        private static string GetSha1String(string str)
-        {
-            using (var provider = SHA1.Create())
-            {
-                var hash = provider.ComputeHash(Encoding.UTF8.GetBytes(str));
-                return BitConverter.ToString(hash).Replace("-", string.Empty);
-            }
+            return string.Equals(passwordHash, Crypto.GetSha1(string.Empty), StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -367,8 +346,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
-                await UserRepository.UpdateUserPassword(user.Id, String.Empty, CancellationToken.None);
+                await UserRepository.CreateUser(user, CancellationToken.None).ConfigureAwait(false);
 
                 users.Add(user);
 
@@ -387,8 +365,6 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 throw new ArgumentNullException("user");
             }
-
-            var passwordHash = GetPasswordHash(user);
 
             var hasConfiguredPassword = !UserRepository.AuthenticateUser(user.Name, "Local", String.Empty).Result;
             var hasConfiguredEasyPassword = !IsPasswordEmpty(GetLocalPasswordHash(user));
@@ -444,7 +420,7 @@ namespace MediaBrowser.Server.Implementations.Library
             dto.OfflinePasswordSalt = Guid.NewGuid().ToString("N");
 
             // Hash the pin with the device Id to create a unique result for this device
-            dto.OfflinePassword = GetSha1String((offlinePasswordHash + dto.OfflinePasswordSalt).ToLower());
+            dto.OfflinePassword = Crypto.GetSha1((offlinePasswordHash + dto.OfflinePasswordSalt).ToLower());
 
             dto.ServerName = _appHost.FriendlyName;
 
@@ -532,7 +508,7 @@ namespace MediaBrowser.Server.Implementations.Library
             user.DateModified = DateTime.UtcNow;
             user.DateLastSaved = DateTime.UtcNow;
 
-            await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+            await UserRepository.UpdateUser(user, CancellationToken.None).ConfigureAwait(false);
 
             OnUserUpdated(user);
         }
@@ -577,7 +553,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                await UserRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+                await UserRepository.CreateUser(user, CancellationToken.None).ConfigureAwait(false);
                 await UserRepository.UpdateUserPassword(user.Id, String.Empty, CancellationToken.None);
                 EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
@@ -661,12 +637,12 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         public Task ResetPassword(User user)
         {
-            return ChangePassword(user, GetSha1String(string.Empty));
+            return ChangePassword(user, Crypto.GetSha1(string.Empty));
         }
 
         public Task ResetEasyPassword(User user)
         {
-            return ChangeEasyPassword(user, GetSha1String(string.Empty));
+            return ChangeEasyPassword(user, Crypto.GetSha1(string.Empty));
         }
 
         public async Task ChangePassword(User user, string newPassword)
@@ -715,7 +691,6 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 Name = name,
                 Id = Guid.NewGuid(),
-                Password = Crypto.GetSha1(String.Empty),
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow,
                 UsesIdForConfigurationPath = true,

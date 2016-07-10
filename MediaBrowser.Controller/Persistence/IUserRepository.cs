@@ -26,7 +26,15 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="user">The user.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveUser(User user, CancellationToken cancellationToken);
+        Task UpdateUser(User user, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Saves the user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task CreateUser(User user, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves all users.

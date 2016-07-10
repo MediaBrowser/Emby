@@ -31,7 +31,6 @@ namespace MediaBrowser.Controller.Entities
         /// Gets or sets the password.
         /// </summary>
         /// <value>The password.</value>
-        public string Password { get; set; }
         public string EasyPassword { get; set; }
 
         public Dictionary<string, string> ExternalDirectoryEntries{get;set;}

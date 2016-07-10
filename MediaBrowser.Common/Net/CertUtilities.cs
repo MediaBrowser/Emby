@@ -62,29 +62,5 @@ namespace MediaBrowser.Common.Net
             X509Certificate2 cert = new X509Certificate2(path, certPass, X509KeyStorageFlags.Exportable);
             return cert.PublicKey.ToPEM();
         }
-
-        public static string Encrypt(AsymmetricAlgorithm key, string data)
-        {
-            var cipher = (RSACryptoServiceProvider) key;
-            try
-            {
-                byte[] decrypted = Encoding.UTF8.GetBytes(data);
-                byte[] encrypted = cipher.Encrypt(decrypted, false);
-                return Convert.ToBase64String(encrypted);
-            }
-            catch { return null; }
-        }
-
-        public static string Decrypt( AsymmetricAlgorithm key, string encryptedData)
-        {
-            var cipher = (RSACryptoServiceProvider)key;
-            try
-            {
-                byte[] encrypted = Convert.FromBase64String(encryptedData.Trim());
-                byte[] decrypted = cipher.Decrypt(encrypted, false);
-                return Encoding.UTF8.GetString(decrypted);
-            }
-            catch { return null; }
-        }
     }
 }
