@@ -88,6 +88,7 @@
     <Compile Include="ScheduledTasks\TaskCompletionEventArgs.cs" />
     <Compile Include="ScheduledTasks\TaskExecutionOptions.cs" />
     <Compile Include="ScheduledTasks\WeeklyTrigger.cs" />
+    <Compile Include="Security\Crypto.cs" />
     <Compile Include="Security\IRequiresRegistration.cs" />
     <Compile Include="Security\ISecurityManager.cs" />
     <Compile Include="Security\PaymentRequiredException.cs" />

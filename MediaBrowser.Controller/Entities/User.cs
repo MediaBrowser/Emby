@@ -5,6 +5,7 @@ using MediaBrowser.Model.Connect;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -32,6 +33,8 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The password.</value>
         public string Password { get; set; }
         public string EasyPassword { get; set; }
+
+        public Dictionary<string, string> ExternalDirectoryEntries{get;set;}
 
         public string ConnectUserName { get; set; }
         public string ConnectUserId { get; set; }

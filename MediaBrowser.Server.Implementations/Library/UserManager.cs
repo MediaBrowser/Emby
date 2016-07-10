@@ -75,10 +75,9 @@ namespace MediaBrowser.Server.Implementations.Library
         private Dictionary<string, IDirectoriesProvider> Directories { get; set; }
         private IEnumerable<IDirectoriesProvider> DirectoriesProviders { get; set; }
 
-        public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, IFileSystem fileSystem)
+        public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, IFileSystem fileSystem)
         {
             _logger = logger;
-            UserRepository = userRepository;
             _xmlSerializer = xmlSerializer;
             _networkManager = networkManager;
             _imageProcessorFactory = imageProcessorFactory;
@@ -655,14 +654,9 @@ namespace MediaBrowser.Server.Implementations.Library
 
         public async Task ChangePassword(User user, string newPassword)
         {
-            var newPasswordSha1 = GetSha1String(newPassword);
             if (user == null)
             {
                 throw new ArgumentNullException("user");
-            }
-            if (string.IsNullOrWhiteSpace(newPasswordSha1))
-            {
-                throw new ArgumentNullException("newPasswordSha1");
             }
 
             if (user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
@@ -670,9 +664,7 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("Passwords for guests cannot be changed.");
             }
 
-            user.Password = newPasswordSha1;
-
-            await UpdateUser(user).ConfigureAwait(false);
+            await UserRepository.UpdateUserPassword(user.Id, newPassword, CancellationToken.None);
 
             EventHelper.FireEventIfNotNull(UserPasswordChanged, this, new GenericEventArgs<User>(user), _logger);
         }
@@ -1025,6 +1017,7 @@ namespace MediaBrowser.Server.Implementations.Library
         public void AddParts(IEnumerable<IDirectoriesProvider> providers)
         {
             DirectoriesProviders = providers;
+            UserRepository = (IUserRepository) providers.First(p => p.GetDirectories().Contains("Local"));
         }
     }
 }

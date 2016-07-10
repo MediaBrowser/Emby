@@ -11,9 +11,10 @@ namespace MediaBrowser.Model.Entities
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string LoginName { get; set; }
         public EntryType Type { get; set; }
         public string FQDN { get; set; }
-        public string AccountName { get { return FQDN + "/" + Name; } }
+        public string AccountName { get { return FQDN + "/" + LoginName; } }
         public IDictionary<string, string> Attributes { get; set; }
         public IEnumerable<string> MemberOf { get; set; }
 
@@ -27,6 +28,10 @@ namespace MediaBrowser.Model.Entities
             var val = def ?? String.Empty;
             Attributes.TryGetValue(name, out val);
             return val;
+        }
+        public void SetAttribute(string name, string value)
+        {
+            Attributes[name] = value;
         }
     }
 }

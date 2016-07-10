@@ -1,4 +1,6 @@
 ﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Providers.Authentication;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ namespace MediaBrowser.Controller.Persistence
     /// <summary>
     /// Provides an interface to implement a User repository
     /// </summary>
-    public interface IUserRepository : IRepository
+    public interface IUserRepository : IRepository, IDirectoriesProvider
     {
         /// <summary>
         /// Deletes the user.
@@ -31,5 +33,8 @@ namespace MediaBrowser.Controller.Persistence
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
         IEnumerable<User> RetrieveAllUsers();
+
+        Task UpdateUserPassword(Guid id, string password, CancellationToken cancellationToken);
+
     }
 }
