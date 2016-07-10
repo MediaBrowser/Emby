@@ -74,12 +74,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
-        public List<Params> GetUserParams(User user)
+        public List<Params> GetUserParams(User user, string password = "")
         {
             return new List<Params>() {
                 new Params("@guid",DbType.Guid,user.Id),
                 new Params("@data",DbType.Binary,user),
-                new Params("@login_name",DbType.String,user.Name)
+                new Params("@login_name",DbType.String,user.Name),
+                new Params("@password", DbType.String, password)
             };
         }
 
@@ -103,8 +104,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await Commit("insert into users (guid, data, login_name, password) values (@guid, @data, @login_name)", GetUserParams(user));
-   
+            await Commit("insert into users (guid, data, login_name, password) values (@guid, @data, @login_name, @password)", GetUserParams(user)); 
         }
 
         public async Task UpdateUser(User user, CancellationToken cancellationToken)
