@@ -106,7 +106,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
                 }
             });
 
-            HostContext.GlobalResponseFilters.Add(new ResponseFilter(_logger, () => _config.Configuration.DenyIFrameEmbedding).FilterResponse);
+            HostContext.GlobalResponseFilters.Add(new ResponseFilter(_logger).FilterResponse);
         }
 
         public override void OnAfterInit()
@@ -179,6 +179,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private void OnWebSocketConnecting(WebSocketConnectingEventArgs args)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             if (WebSocketConnecting != null)
             {
                 WebSocketConnecting(this, args);
@@ -187,6 +192,11 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private void OnWebSocketConnected(WebSocketConnectEventArgs args)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             if (WebSocketConnected != null)
             {
                 WebSocketConnected(this, args);
@@ -330,6 +340,13 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             var date = DateTime.Now;
 
             var httpRes = httpReq.Response;
+
+            if (_disposed)
+            {
+                httpRes.StatusCode = 503;
+                httpRes.Close();
+                return Task.FromResult(true);
+            }
 
             var operationName = httpReq.OperationName;
             var localPath = url.LocalPath;

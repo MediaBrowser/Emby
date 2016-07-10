@@ -15,7 +15,7 @@
                     </li>
                     <li>
                         <paper-input id="txtWatchFolder" label="${LabelWatchFolder}" style="width:85%;display:inline-block;"></paper-input>
-                        <paper-icon-button id="btnSelectWatchFolder" icon="search"></paper-icon-button>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectWatchFolder" title="${ButtonSelectDirectory}"><iron-icon icon="search"></iron-icon></button>
                         <div class="fieldDescription">
                             <div>${LabelWatchFolderHelp}</div>
                         </div>
@@ -151,9 +151,7 @@
 
                 <ul data-role="listview" class="ulForm">
                     <li>
-                        <button type="submit" data-role="none" class="clearButton">
-                            <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
-                        </button>
+                        <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
                     </li>
 
                 </ul>

@@ -1,4 +1,4 @@
-﻿define(['browser', 'jQuery', 'paper-fab', 'paper-tabs', 'paper-slider', 'paper-icon-button'], function (browser, $) {
+﻿define(['browser', 'datetime', 'libraryBrowser'], function (browser, datetime, libraryBrowser) {
 
     function showSlideshowMenu(context) {
         require(['scripts/slideshow'], function () {
@@ -32,12 +32,12 @@
             }
 
             var menuItem = {
-                name: name,
+                name: s.DisplayTitle || name,
                 id: s.Index
             };
 
             if (s.Index == currentIndex) {
-                menuItem.ironIcon = 'check';
+                menuItem.selected = true;
             }
 
             return menuItem;
@@ -83,12 +83,12 @@
             }
 
             var menuItem = {
-                name: name,
+                name: s.DisplayTitle || name,
                 id: s.Index
             };
 
             if (s.Index == currentIndex) {
-                menuItem.ironIcon = 'check';
+                menuItem.selected = true;
             }
 
             return menuItem;
@@ -97,7 +97,7 @@
         menuItems.unshift({
             id: -1,
             name: Globalize.translate('ButtonOff'),
-            ironIcon: currentIndex == null ? 'check' : null
+            selected: currentIndex == null
         });
 
         require(['actionsheet'], function (actionsheet) {
@@ -202,7 +202,7 @@
             }
 
             ApiClient.getItem(Dashboard.getCurrentUserId(), item.Id).then(function (fullItem) {
-                context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = LibraryBrowser.getUserDataIconsHtml(fullItem, false);
+                context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = libraryBrowser.getUserDataIconsHtml(fullItem, false);
             });
         } else {
             context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = '';
@@ -234,8 +234,6 @@
 
     function hideChapterMenu(page) {
 
-        //$('.chapterMenuOverlay', page).hide();
-        //$('.chapterMenu', page).hide();
     }
 
     return function () {
@@ -343,11 +341,11 @@
             if (playState.PositionTicks == null) {
                 context.querySelector('.positionTime').innerHTML = '--:--';
             } else {
-                context.querySelector('.positionTime').innerHTML = Dashboard.getDisplayTime(playState.PositionTicks);
+                context.querySelector('.positionTime').innerHTML = datetime.getDisplayRunningTime(playState.PositionTicks);
             }
 
             if (item && item.RunTimeTicks != null) {
-                context.querySelector('.runtime').innerHTML = Dashboard.getDisplayTime(item.RunTimeTicks);
+                context.querySelector('.runtime').innerHTML = datetime.getDisplayRunningTime(item.RunTimeTicks);
             } else {
                 context.querySelector('.runtime').innerHTML = '--:--';
             }
@@ -373,14 +371,14 @@
             var toggleRepeatButton = context.querySelector('.repeatToggleButton');
 
             if (playState.RepeatMode == 'RepeatAll') {
-                toggleRepeatButton.icon = "repeat";
+                toggleRepeatButton.innerHTML = "<i class='md-icon'>repeat</i>";
                 toggleRepeatButton.classList.add('nowPlayingPageRepeatActive');
             }
             else if (playState.RepeatMode == 'RepeatOne') {
-                toggleRepeatButton.icon = "repeat-one";
+                toggleRepeatButton.innerHTML = "<i class='md-icon'>repeat_one</i>";
                 toggleRepeatButton.classList.add('nowPlayingPageRepeatActive');
             } else {
-                toggleRepeatButton.icon = "repeat";
+                toggleRepeatButton.innerHTML = "<i class='md-icon'>repeat</i>";
                 toggleRepeatButton.classList.remove('nowPlayingPageRepeatActive');
             }
 
@@ -410,27 +408,17 @@
             //        smallIcon: true
             //    });
 
-            //    $(".playlist", page).html(html).lazyChildren();
+            //    page(".playlist").html(html).lazyChildren();
             //});
 
-            var playlistOpen = isPlaylistOpen(context);
+            html += libraryBrowser.getListViewHtml({
+                items: MediaController.playlist(),
+                smallIcon: true
+            });
 
-            if (playlistOpen) {
-
-                html += LibraryBrowser.getListViewHtml({
-                    items: MediaController.playlist(),
-                    smallIcon: true
-                });
-
-                playlistNeedsRefresh = false;
-            }
+            playlistNeedsRefresh = false;
 
             var deps = [];
-
-            if (playlistOpen) {
-                deps.push('paper-icon-item');
-                deps.push('paper-item-body');
-            }
 
             require(deps, function () {
 
@@ -438,28 +426,21 @@
 
                 itemsContainer.innerHTML = html;
 
-                if (playlistOpen) {
+                var index = MediaController.currentPlaylistIndex();
 
-                    var index = MediaController.currentPlaylistIndex();
+                if (index != -1) {
 
-                    if (index != -1) {
+                    var item = itemsContainer.querySelectorAll('.listItem')[index];
+                    if (item) {
+                        var img = item.querySelector('.listItemImage');
 
-                        var item = itemsContainer.querySelectorAll('.listItem')[index];
-                        if (item) {
-                            var img = item.querySelector('.listviewImage');
-
-                            img.classList.remove('lazy');
-                            img.classList.add('playlistIndexIndicatorImage');
-                        }
+                        img.classList.remove('lazy');
+                        img.classList.add('playlistIndexIndicatorImage');
                     }
                 }
 
                 ImageLoader.lazyChildren(itemsContainer);
             });
-        }
-
-        function isPlaylistOpen(context) {
-            return context.querySelector('paper-tabs').selected == 2;
         }
 
         function onStateChanged(e, state) {
@@ -485,11 +466,7 @@
 
             onStateChanged.call(player, e, state);
 
-            if (isPlaylistOpen(dlg)) {
-                loadPlaylist(dlg);
-            } else {
-                playlistNeedsRefresh = true;
-            }
+            loadPlaylist(dlg);
         }
 
         function onPlaybackStopped(e, state) {
@@ -500,11 +477,7 @@
 
             onStateChanged.call(player, e, {});
 
-            if (isPlaylistOpen(dlg)) {
-                loadPlaylist(dlg);
-            } else {
-                playlistNeedsRefresh = true;
-            }
+            loadPlaylist(dlg);
         }
 
         function releaseCurrentPlayer() {
@@ -557,13 +530,13 @@
 
             if (info.isLocalPlayer) {
 
-                btnCast.icon = 'cast';
+                btnCast.querySelector('i').innerHTML = 'cast';
                 btnCast.classList.remove('btnActiveCast');
                 context.querySelector('.nowPlayingSelectedPlayer').innerHTML = '';
 
             } else {
 
-                btnCast.icon = 'cast-connected';
+                btnCast.querySelector('i').innerHTML = 'cast-connected';
                 btnCast.classList.add('btnActiveCast');
                 context.querySelector('.nowPlayingSelectedPlayer').innerHTML = info.deviceName || info.name;
             }
@@ -609,7 +582,7 @@
 
             var mediaItem = parentWithClass(e.target, 'mediaItem');
             if (mediaItem != null) {
-                var info = LibraryBrowser.getListItemInfo(mediaItem);
+                var info = libraryBrowser.getListItemInfo(mediaItem);
 
                 MediaController.currentPlaylistIndex(info.index);
 
@@ -619,22 +592,26 @@
             }
         }
 
+        function onBtnCommandClick() {
+            if (currentPlayer) {
+
+                if (this.classList.contains('repeatToggleButton')) {
+                    toggleRepeat(currentPlayer);
+                } else {
+                    MediaController.sendCommand({
+                        Name: this.getAttribute('data-command')
+
+                    }, currentPlayer);
+                }
+            }
+        }
+
         function bindEvents(context) {
 
-            $('.btnCommand', context).on('click', function () {
-
-                if (currentPlayer) {
-
-                    if (this.classList.contains('repeatToggleButton')) {
-                        toggleRepeat(currentPlayer);
-                    } else {
-                        MediaController.sendCommand({
-                            Name: this.getAttribute('data-command')
-
-                        }, currentPlayer);
-                    }
-                }
-            });
+            var btnCommand = context.querySelectorAll('.btnCommand');
+            for (var i = 0, length = btnCommand.length; i < length; i++) {
+                btnCommand[i].addEventListener('click', onBtnCommandClick);
+            }
 
             context.querySelector('.btnToggleFullscreen').addEventListener('click', function (e) {
 
@@ -720,20 +697,19 @@
                 }
             });
 
-            context.querySelector('.nowPlayingPositionSlider', context)._setPinValue = function (value) {
+            context.querySelector('.nowPlayingPositionSlider', context).getBubbleText = function (value) {
 
                 var state = lastPlayerState;
 
                 if (!state || !state.NowPlayingItem || !state.NowPlayingItem.RunTimeTicks) {
-                    this.pinValue = '--:--';
-                    return;
+                    return '--:--';
                 }
 
                 var ticks = state.NowPlayingItem.RunTimeTicks;
                 ticks /= 100;
                 ticks *= value;
 
-                this.pinValue = Dashboard.getDisplayTime(ticks);
+                return datetime.getDisplayRunningTime(ticks);
             };
 
             context.addEventListener('click', onContextClick);
@@ -754,13 +730,13 @@
                 Name: 'DisplayMessage',
                 Arguments: {
 
-                    Header: $('#txtMessageTitle', form).val(),
-                    Text: $('#txtMessageText', form).val()
+                    Header: form.querySelector('#txtMessageTitle').value,
+                    Text: form.querySelector('#txtMessageText', form).value
                 }
 
             }, currentPlayer);
 
-            $('input', form).val('');
+            form.querySelector('input').value = '';
             require(['toast'], function (toast) {
                 toast('Message sent.');
             });
@@ -778,12 +754,12 @@
                 Name: 'SendString',
                 Arguments: {
 
-                    String: $('#txtTypeText', form).val()
+                    String: form.querySelector('#txtTypeText', form).value
                 }
 
             }, currentPlayer);
 
-            $('input', form).val('');
+            form.querySelector('input').value = '';
             require(['toast'], function (toast) {
                 toast('Text sent.');
             });
@@ -793,27 +769,9 @@
             return false;
         }
 
-        function showTab(index) {
+        function init(ownerView, context) {
 
-            var all = dlg.querySelectorAll('.nowPlayingPageTab');
-
-            index = (index || 0).toString();
-
-            for (var i = 0, length = all.length; i < length; i++) {
-
-                var tab = all[i];
-
-                if (tab.getAttribute('data-tab') == index) {
-                    tab.classList.remove('hide');
-                } else {
-                    tab.classList.add('hide');
-                }
-            }
-        }
-
-        function init(context) {
-
-            Dashboard.importCss('css/nowplaying.css');
+            require(['css!css/nowplaying.css']);
             bindEvents(context);
 
             context.querySelector('.sendMessageForm').addEventListener('submit', onMessageSubmit);
@@ -831,44 +789,26 @@
             //    showSlideshowMenu(context);
             //});
 
-            var tabs = context.querySelector('paper-tabs');
+            var mdlTabs = context.querySelector('.libraryViewNav');
 
             if (AppInfo.enableNowPlayingPageBottomTabs) {
-                tabs.classList.remove('hide');
-                context.querySelector('.libraryViewNav').classList.add('hide');
+                context.querySelector('.libraryViewNav').classList.add('bottom');
             } else {
-                tabs.classList.add('hide');
-                context.querySelector('.libraryViewNav').classList.remove('hide');
+                context.querySelector('.libraryViewNav').classList.remove('bottom');
             }
 
-            tabs.noSlide = true;
+            libraryBrowser.configurePaperLibraryTabs(ownerView, mdlTabs, ownerView.querySelectorAll('.pageTabContent'));
 
-            tabs.addEventListener('iron-select', function (e) {
+            mdlTabs.addEventListener('tabchange', function (e) {
 
-                var btn = context.querySelector('.libraryViewNav a.ui-btn-active');
-
-                if (btn) {
-                    btn.classList.remove('ui-btn-active');
-                }
-
-                context.querySelector('.libraryViewNav a[data-index=\'' + e.target.selected + '\']').classList.add('ui-btn-active');
-
-                if (e.target.selected == 2 && playlistNeedsRefresh) {
+                if (e.detail.selectedTabIndex == 2 && playlistNeedsRefresh) {
                     loadPlaylist(context);
                 }
-
-                showTab(e.target.selected);
-            });
-
-            $(context.querySelectorAll('.libraryViewNav a')).on('click', function () {
-                var newSelected = this.getAttribute('data-index');
-
-                tabs.selected = newSelected;
             });
 
             Events.on(MediaController, 'playerchange', onPlayerChange);
 
-            $(context.querySelector('.itemsContainer')).createCardMenus();
+            libraryBrowser.createCardMenus(context.querySelector('.itemsContainer'));
 
         }
 
@@ -887,25 +827,10 @@
 
             bindToPlayer(context, MediaController.getCurrentPlayer());
 
-            var selected = tab == '#playlist' ? 2 : 0;
-
-            var delay = browser.animate ? 0 : 1000;
-
-            // hack alert. doing this because the neon elements don't seem to be initialized yet
-            setTimeout(function () {
-
-                if (AppInfo.enableNowPlayingPageBottomTabs) {
-                    context.querySelector('paper-tabs').selected = selected;
-                } else {
-
-                    showTab(selected);
-                }
-            }, delay);
-
             updateCastIcon(context);
         }
 
-        self.init = function (context) {
+        self.init = function (ownerView, context) {
 
             dlg = context;
 
@@ -914,7 +839,7 @@
                 context.querySelector('.topRightContainer').style.position = 'relative';
             }
 
-            init(dlg);
+            init(ownerView, dlg);
         };
 
         self.onShow = function () {

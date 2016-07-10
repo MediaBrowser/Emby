@@ -1,20 +1,4 @@
-﻿define(['jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function ($) {
-
-    function getTabs() {
-        return [
-        {
-            href: 'about.html',
-            name: Globalize.translate('TabAbout')
-        },
-         {
-             href: 'log.html',
-             name: Globalize.translate('TabLogs')
-         },
-         {
-             href: 'supporterkey.html',
-             name: Globalize.translate('TabEmbyPremiere')
-         }];
-    }
+﻿define(['datetime', 'jQuery', 'paper-fab', 'paper-item-body', 'paper-icon-item'], function (datetime, $) {
 
     return function (view, params) {
 
@@ -30,7 +14,6 @@
 
         view.addEventListener('viewbeforeshow', function () {
 
-            LibraryMenu.setTabs('helpadmin', 1, getTabs);
             Dashboard.showLoadingMsg();
 
             var apiClient = ApiClient;
@@ -61,11 +44,11 @@
 
                     logHtml += "<div>" + log.Name + "</div>";
 
-                    var date = parseISO8601Date(log.DateModified, { toLocal: true });
+                    var date = datetime.parseISO8601Date(log.DateModified, true);
 
                     var text = date.toLocaleDateString();
 
-                    text += ' ' + LibraryBrowser.getDisplayTime(date);
+                    text += ' ' + datetime.getDisplayTime(date);
 
                     logHtml += '<div secondary>' + text + '</div>';
 

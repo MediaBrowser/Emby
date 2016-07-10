@@ -49,7 +49,7 @@
 
             mapHtml += '</paper-item-body>';
 
-            mapHtml += '<paper-icon-button data-index="' + index + '" icon="delete" class="btnDeletePath"></paper-icon-button>';
+            mapHtml += '<button type="button" is="paper-icon-button-light" data-index="' + index + '" class="btnDeletePath"><iron-icon icon="delete"></iron-icon></button>';
 
             mapHtml += '</paper-icon-item>';
 
@@ -119,6 +119,10 @@
             name: Globalize.translate('TabFolders')
         },
          {
+             href: 'librarydisplay.html',
+             name: Globalize.translate('TabDisplay')
+         },
+         {
              href: 'librarypathmapping.html',
              name: Globalize.translate('TabPathSubstitution')
          },
@@ -139,7 +143,7 @@
 
     }).on('pageshow', "#libraryPathMappingPage", function () {
 
-        LibraryMenu.setTabs('librarysetup', 1, getTabs);
+        LibraryMenu.setTabs('librarysetup', 2, getTabs);
         Dashboard.showLoadingMsg();
 
         var page = this;

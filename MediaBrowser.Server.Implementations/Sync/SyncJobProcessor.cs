@@ -149,6 +149,11 @@ namespace MediaBrowser.Server.Implementations.Sync
         {
             var job = _syncRepo.GetJob(id);
 
+            if (job == null)
+            {
+                return Task.FromResult(true);
+            }
+
             var result = _syncManager.GetJobItems(new SyncJobItemQuery
             {
                 JobId = job.Id,
@@ -229,10 +234,22 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         public async Task<IEnumerable<BaseItem>> GetItemsForSync(SyncCategory? category, string parentId, IEnumerable<string> itemIds, User user, bool unwatchedOnly)
         {
-            var items = category.HasValue ?
-                await GetItemsForSync(category.Value, parentId, user).ConfigureAwait(false) :
-                itemIds.SelectMany(i => GetItemsForSync(i, user));
+            var list = new List<BaseItem>();
 
+            if (category.HasValue)
+            {
+                list = (await GetItemsForSync(category.Value, parentId, user).ConfigureAwait(false)).ToList();
+            }
+            else
+            {
+                foreach (var itemId in itemIds)
+                {
+                    var subList = await GetItemsForSync(itemId, user).ConfigureAwait(false);
+                    list.AddRange(subList);
+                }
+            }
+
+            IEnumerable<BaseItem> items = list;
             items = items.Where(_syncManager.SupportsSync);
 
             if (unwatchedOnly)
@@ -309,7 +326,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             return result.Items;
         }
 
-        private IEnumerable<BaseItem> GetItemsForSync(string id, User user)
+        private async Task<List<BaseItem>> GetItemsForSync(string id, User user)
         {
             var item = _libraryManager.GetItemById(id);
 
@@ -321,38 +338,35 @@ namespace MediaBrowser.Server.Implementations.Sync
             var itemByName = item as IItemByName;
             if (itemByName != null)
             {
-                var itemByNameFilter = itemByName.GetItemFilter();
-
-                return user.RootFolder
-                    .GetRecursiveChildren(user, i => !i.IsFolder && itemByNameFilter(i));
-            }
-
-            var series = item as Series;
-            if (series != null)
-            {
-                return series.GetEpisodes(user, false, false);
-            }
-
-            var season = item as Season;
-            if (season != null)
-            {
-                return season.GetEpisodes(user, false, false);
+                return itemByName.GetTaggedItems(new InternalItemsQuery(user)
+                {
+                    IsFolder = false,
+                    Recursive = true
+                }).ToList();
             }
 
             if (item.IsFolder)
             {
                 var folder = (Folder)item;
-                var items = folder.GetRecursiveChildren(user, i => !i.IsFolder);
+                var itemsResult = await folder.GetItems(new InternalItemsQuery(user)
+                {
+                    Recursive = true,
+                    IsFolder = false
+
+                }).ConfigureAwait(false);
+
+                var items = itemsResult.Items;
 
                 if (!folder.IsPreSorted)
                 {
-                    items = items.OrderBy(i => i.SortName);
+                    items = _libraryManager.Sort(items, user, new[] { ItemSortBy.SortName }, SortOrder.Ascending)
+                        .ToArray();
                 }
 
-                return items;
+                return items.ToList();
             }
 
-            return new[] { item };
+            return new List<BaseItem> { item };
         }
 
         private async Task EnsureSyncJobItems(string targetId, CancellationToken cancellationToken)
@@ -483,6 +497,11 @@ namespace MediaBrowser.Server.Implementations.Sync
 
         private async Task ProcessJobItem(SyncJobItem jobItem, bool enableConversion, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            if (jobItem == null)
+            {
+                throw new ArgumentNullException("jobItem");
+            }
+
             var item = _libraryManager.GetItemById(jobItem.ItemId);
             if (item == null)
             {
@@ -577,7 +596,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             conversionOptions.ItemId = item.Id.ToString("N");
             conversionOptions.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
-            var streamInfo = new StreamBuilder(_logger).BuildVideoItem(conversionOptions);
+            var streamInfo = new StreamBuilder(_mediaEncoder, _logger).BuildVideoItem(conversionOptions);
             var mediaSource = streamInfo.MediaSource;
 
             // No sense creating external subs if we're already burning one into the video
@@ -632,6 +651,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                     }, innerProgress, cancellationToken);
 
+                    jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
                     _syncManager.OnConversionComplete(jobItem);
                 }
                 catch (OperationCanceledException)
@@ -668,6 +688,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     throw new InvalidOperationException(string.Format("Cannot direct stream {0} protocol", mediaSource.Protocol));
                 }
 
+                jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
                 jobItem.MediaSource = mediaSource;
             }
 
@@ -746,7 +767,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
-            using (var stream = await _subtitleEncoder.GetSubtitles(streamInfo.ItemId, streamInfo.MediaSourceId, subtitleStreamIndex, subtitleStreamInfo.Format, 0, null, cancellationToken).ConfigureAwait(false))
+            using (var stream = await _subtitleEncoder.GetSubtitles(streamInfo.ItemId, streamInfo.MediaSourceId, subtitleStreamIndex, subtitleStreamInfo.Format, 0, null, false, cancellationToken).ConfigureAwait(false))
             {
                 using (var fs = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, true))
                 {
@@ -779,7 +800,7 @@ namespace MediaBrowser.Server.Implementations.Sync
             conversionOptions.ItemId = item.Id.ToString("N");
             conversionOptions.MediaSources = _mediaSourceManager.GetStaticMediaSources(item, false, user).ToList();
 
-            var streamInfo = new StreamBuilder(_logger).BuildAudioItem(conversionOptions);
+            var streamInfo = new StreamBuilder(_mediaEncoder, _logger).BuildAudioItem(conversionOptions);
             var mediaSource = streamInfo.MediaSource;
 
             jobItem.MediaSourceId = streamInfo.MediaSourceId;
@@ -819,6 +840,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
                     }, innerProgress, cancellationToken);
 
+                    jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
                     _syncManager.OnConversionComplete(jobItem);
                 }
                 catch (OperationCanceledException)
@@ -855,6 +877,7 @@ namespace MediaBrowser.Server.Implementations.Sync
                     throw new InvalidOperationException(string.Format("Cannot direct stream {0} protocol", mediaSource.Protocol));
                 }
 
+                jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
                 jobItem.MediaSource = mediaSource;
             }
 
@@ -871,6 +894,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             jobItem.Progress = 50;
             jobItem.Status = SyncJobItemStatus.ReadyToTransfer;
+            jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
             await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
         }
 
@@ -880,6 +904,7 @@ namespace MediaBrowser.Server.Implementations.Sync
 
             jobItem.Progress = 50;
             jobItem.Status = SyncJobItemStatus.ReadyToTransfer;
+            jobItem.ItemDateModifiedTicks = item.DateModified.Ticks;
             await _syncManager.UpdateSyncJobItemInternal(jobItem).ConfigureAwait(false);
         }
 

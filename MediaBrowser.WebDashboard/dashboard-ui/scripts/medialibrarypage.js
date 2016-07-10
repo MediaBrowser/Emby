@@ -1,4 +1,4 @@
-﻿define(['jQuery'], function ($) {
+﻿define(['jQuery', 'emby-icons'], function ($) {
 
     function changeCollectionType(page, virtualFolder) {
 
@@ -227,10 +227,8 @@
 
             ImageEditor.show(virtualFolder.ItemId, {
                 theme: 'a'
-            }).then(function (hasChanged) {
-                if (hasChanged) {
-                    reloadLibrary(page);
-                }
+            }).then(function () {
+                reloadLibrary(page);
             });
         });
     }
@@ -346,7 +344,7 @@
 
         if (virtualFolder.showMenu !== false) {
             html += '<div class="cardText" style="text-align:right; float:right;padding-top:5px;">';
-            html += '<paper-icon-button icon="' + AppInfo.moreIcon + '" class="btnCardMenu"></paper-icon-button>';
+            html += '<button type="button" is="paper-icon-button-light" class="btnCardMenu"><iron-icon icon="' + AppInfo.moreIcon + '"></iron-icon></button>';
             html += "</div>";
         }
 
@@ -459,6 +457,10 @@
             href: 'library.html',
             name: Globalize.translate('TabFolders')
         },
+         {
+             href: 'librarydisplay.html',
+             name: Globalize.translate('TabDisplay')
+         },
          {
              href: 'librarypathmapping.html',
              name: Globalize.translate('TabPathSubstitution')

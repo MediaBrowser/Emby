@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Dlna.Didl
@@ -42,8 +43,9 @@ namespace MediaBrowser.Dlna.Didl
         private readonly IMediaSourceManager _mediaSourceManager;
         private readonly ILogger _logger;
         private readonly ILibraryManager _libraryManager;
+        private readonly IMediaEncoder _mediaEncoder;
 
-        public DidlBuilder(DeviceProfile profile, User user, IImageProcessor imageProcessor, string serverAddress, string accessToken, IUserDataManager userDataManager, ILocalizationManager localization, IMediaSourceManager mediaSourceManager, ILogger logger, ILibraryManager libraryManager)
+        public DidlBuilder(DeviceProfile profile, User user, IImageProcessor imageProcessor, string serverAddress, string accessToken, IUserDataManager userDataManager, ILocalizationManager localization, IMediaSourceManager mediaSourceManager, ILogger logger, ILibraryManager libraryManager, IMediaEncoder mediaEncoder)
         {
             _profile = profile;
             _imageProcessor = imageProcessor;
@@ -53,6 +55,7 @@ namespace MediaBrowser.Dlna.Didl
             _mediaSourceManager = mediaSourceManager;
             _logger = logger;
             _libraryManager = libraryManager;
+            _mediaEncoder = mediaEncoder;
             _accessToken = accessToken;
             _user = user;
         }
@@ -142,7 +145,7 @@ namespace MediaBrowser.Dlna.Didl
             {
                 var sources = _mediaSourceManager.GetStaticMediaSources(video, true, _user).ToList();
 
-                streamInfo = new StreamBuilder(GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
+                streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
                 {
                     ItemId = GetClientId(video),
                     MediaSources = sources,
@@ -157,7 +160,7 @@ namespace MediaBrowser.Dlna.Didl
 
             var contentFeatureList = new ContentFeatureBuilder(_profile).BuildVideoHeader(streamInfo.Container,
                 streamInfo.VideoCodec,
-                streamInfo.AudioCodec,
+                streamInfo.TargetAudioCodec,
                 targetWidth,
                 targetHeight,
                 streamInfo.TargetVideoBitDepth,
@@ -304,7 +307,7 @@ namespace MediaBrowser.Dlna.Didl
             }
 
             var mediaProfile = _profile.GetVideoMediaProfile(streamInfo.Container,
-                streamInfo.AudioCodec,
+                streamInfo.TargetAudioCodec,
                 streamInfo.VideoCodec,
                 streamInfo.TargetAudioBitrate,
                 targetWidth,
@@ -385,7 +388,7 @@ namespace MediaBrowser.Dlna.Didl
             {
                 var sources = _mediaSourceManager.GetStaticMediaSources(audio, true, _user).ToList();
 
-                streamInfo = new StreamBuilder(GetStreamBuilderLogger(options)).BuildAudioItem(new AudioOptions
+                streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildAudioItem(new AudioOptions
                {
                    ItemId = GetClientId(audio),
                    MediaSources = sources,
@@ -438,7 +441,7 @@ namespace MediaBrowser.Dlna.Didl
             }
 
             var mediaProfile = _profile.GetAudioMediaProfile(streamInfo.Container,
-                streamInfo.AudioCodec,
+                streamInfo.TargetAudioCodec,
                 targetChannels,
                 targetAudioBitrate);
 
@@ -843,7 +846,7 @@ namespace MediaBrowser.Dlna.Didl
 
             if (item is Video)
             {
-                var userData = _userDataManager.GetUserDataDto(item, _user);
+                var userData = _userDataManager.GetUserDataDto(item, _user).Result;
 
                 playbackPercentage = Convert.ToInt32(userData.PlayedPercentage ?? 0);
                 if (playbackPercentage >= 100 || userData.Played)
@@ -853,7 +856,7 @@ namespace MediaBrowser.Dlna.Didl
             }
             else if (item is Series || item is Season || item is BoxSet)
             {
-                var userData = _userDataManager.GetUserDataDto(item, _user);
+                var userData = _userDataManager.GetUserDataDto(item, _user).Result;
 
                 if (userData.Played)
                 {
@@ -1012,17 +1015,17 @@ namespace MediaBrowser.Dlna.Didl
             int? width = null;
             int? height = null;
 
-            //try
-            //{
-            //    var size = _imageProcessor.GetImageSize(imageInfo);
+            try
+            {
+                var size = _imageProcessor.GetImageSize(imageInfo);
 
-            //    width = Convert.ToInt32(size.Width);
-            //    height = Convert.ToInt32(size.Height);
-            //}
-            //catch
-            //{
+                width = Convert.ToInt32(size.Width);
+                height = Convert.ToInt32(size.Height);
+            }
+            catch
+            {
 
-            //}
+            }
 
             var inputFormat = (Path.GetExtension(imageInfo.Path) ?? string.Empty)
                 .TrimStart('.')

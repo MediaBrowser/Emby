@@ -1,4 +1,4 @@
-﻿define(['jQuery', 'libraryBrowser', 'scrollStyles'], function ($, libraryBrowser) {
+﻿define(['libraryBrowser', 'scrollStyles'], function (libraryBrowser) {
 
     function getView() {
 
@@ -24,16 +24,15 @@
 
     function loadLatest(page, userId, parentId) {
 
-        var limit = 18;
-
         var options = {
 
             IncludeItemTypes: "Movie",
-            Limit: limit,
+            Limit: 18,
             Fields: "PrimaryImageAspectRatio,MediaSourceCount,SyncInfo",
             ParentId: parentId,
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+            EnableTotalRecordCount: false
         };
 
         ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options)).then(function (items) {
@@ -76,7 +75,7 @@
 
     function loadResume(page, userId, parentId) {
 
-        var screenWidth = $(window).width();
+        var screenWidth = window.innerWidth;
 
         var options = {
 
@@ -84,21 +83,22 @@
             SortOrder: "Descending",
             IncludeItemTypes: "Movie",
             Filters: "IsResumable",
-            Limit: screenWidth >= 1920 ? 6 : (screenWidth >= 1600 ? 4 : 3),
+            Limit: screenWidth >= 1920 ? 5 : (screenWidth >= 1600 ? 4 : 3),
             Recursive: true,
             Fields: "PrimaryImageAspectRatio,MediaSourceCount,SyncInfo",
             CollapseBoxSetItems: false,
             ParentId: parentId,
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+            EnableTotalRecordCount: false
         };
 
         ApiClient.getItems(userId, options).then(function (result) {
 
             if (result.Items.length) {
-                $('#resumableSection', page).show();
+                page.querySelector('#resumableSection').classList.remove('hide');
             } else {
-                $('#resumableSection', page).hide();
+                page.querySelector('#resumableSection').classList.add('hide');
             }
 
             var view = getResumeView();
@@ -207,13 +207,13 @@
 
     function loadSuggestions(page, userId, parentId) {
 
-        var screenWidth = $(window).width();
+        var screenWidth = window.innerWidth;
 
         var url = ApiClient.getUrl("Movies/Recommendations", {
 
             userId: userId,
-            categoryLimit: screenWidth >= 1200 ? 4 : 3,
-            ItemLimit: screenWidth >= 1920 ? 9 : (screenWidth >= 1600 ? 8 : (screenWidth >= 1200 ? 7 : 6)),
+            categoryLimit: 6,
+            ItemLimit: screenWidth >= 1920 ? 8 : (screenWidth >= 1600 ? 8 : (screenWidth >= 1200 ? 6 : 5)),
             Fields: "PrimaryImageAspectRatio,MediaSourceCount,SyncInfo",
             ImageTypeLimit: 1,
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
@@ -223,14 +223,14 @@
 
             if (!recommendations.length) {
 
-                $('.noItemsMessage', page).show();
+                page.querySelector('.noItemsMessage').classList.remove('hide');
                 page.querySelector('.recommendations').innerHTML = '';
                 return;
             }
 
             var html = recommendations.map(getRecommendationHtml).join('');
 
-            $('.noItemsMessage', page).hide();
+            page.querySelector('.noItemsMessage').classList.add('hide');
 
             var recs = page.querySelector('.recommendations');
             recs.innerHTML = html;
@@ -241,13 +241,15 @@
     function initSuggestedTab(page, tabContent) {
 
         var containers = tabContent.querySelectorAll('.itemsContainer');
-        if (enableScrollX()) {
-            $(containers).addClass('hiddenScrollX');
-        } else {
-            $(containers).removeClass('hiddenScrollX');
-        }
+        for (var i = 0, length = containers.length; i < length; i++) {
+            if (enableScrollX()) {
+                containers[i].classList.add('hiddenScrollX');
+            } else {
+                containers[i].classList.remove('hiddenScrollX');
+            }
 
-        $(containers).createCardMenus();
+            libraryBrowser.createCardMenus(containers[i]);
+        }
     }
 
     function loadSuggestionsTab(view, params, tabContent) {
@@ -265,25 +267,11 @@
         }
     }
 
-    function onPlaybackStop(e, state) {
-
-        if (state.NowPlayingItem && state.NowPlayingItem.MediaType == 'Video') {
-            var page = $($.mobile.activePage)[0];
-            var pageTabsContainer = page.querySelector('.pageTabsContainer');
-
-            pageTabsContainer.dispatchEvent(new CustomEvent("tabchange", {
-                detail: {
-                    selectedTabIndex: libraryBrowser.selectedTab(pageTabsContainer)
-                }
-            }));
-        }
-    }
-
     return function (view, params) {
 
         var self = this;
 
-        self.initTab = function() {
+        self.initTab = function () {
             var tabContent = view.querySelector('.pageTabContent[data-index=\'' + 0 + '\']');
             initSuggestedTab(view, tabContent);
         };
@@ -293,9 +281,9 @@
             loadSuggestionsTab(view, params, tabContent);
         };
 
-        $('.recommendations', view).createCardMenus();
+        libraryBrowser.createCardMenus(view.querySelector('.recommendations'));
 
-        var pageTabsContainer = view.querySelector('.pageTabsContainer');
+        var mdlTabs = view.querySelector('.libraryViewNav');
 
         var baseUrl = 'movies.html';
         var topParentId = params.topParentId;
@@ -303,14 +291,13 @@
             baseUrl += '?topParentId=' + topParentId;
         }
 
-        libraryBrowser.configurePaperLibraryTabs(view, view.querySelector('paper-tabs'), pageTabsContainer, baseUrl);
+        libraryBrowser.configurePaperLibraryTabs(view, mdlTabs, view.querySelectorAll('.pageTabContent'), [0, 3, 4, 5]);
 
         var tabControllers = [];
         var renderedTabs = [];
 
-        function loadTab(page, index) {
+        function getTabController(page, index, callback) {
 
-            var tabContent = page.querySelector('.pageTabContent[data-index=\'' + index + '\']');
             var depends = [];
 
             switch (index) {
@@ -337,12 +324,14 @@
             }
 
             require(depends, function (controllerFactory) {
-
+                var tabContent;
                 if (index == 0) {
+                    tabContent = view.querySelector('.pageTabContent[data-index=\'' + index + '\']');
                     self.tabContent = tabContent;
                 }
                 var controller = tabControllers[index];
                 if (!controller) {
+                    tabContent = view.querySelector('.pageTabContent[data-index=\'' + index + '\']');
                     controller = index ? new controllerFactory(view, params, tabContent) : self;
                     tabControllers[index] = controller;
 
@@ -351,6 +340,24 @@
                     }
                 }
 
+                callback(controller);
+            });
+        }
+
+        function preLoadTab(page, index) {
+
+            getTabController(page, index, function (controller) {
+                if (renderedTabs.indexOf(index) == -1) {
+                    if (controller.preRender) {
+                        controller.preRender();
+                    }
+                }
+            });
+        }
+
+        function loadTab(page, index) {
+
+            getTabController(page, index, function (controller) {
                 if (renderedTabs.indexOf(index) == -1) {
                     renderedTabs.push(index);
                     controller.renderTab();
@@ -358,7 +365,10 @@
             });
         }
 
-        pageTabsContainer.addEventListener('tabchange', function (e) {
+        mdlTabs.addEventListener('beforetabchange', function (e) {
+            preLoadTab(view, parseInt(e.detail.selectedTabIndex));
+        });
+        mdlTabs.addEventListener('tabchange', function (e) {
             loadTab(view, parseInt(e.detail.selectedTabIndex));
         });
 
@@ -382,6 +392,19 @@
                 }
             }
         });
+
+        function onPlaybackStop(e, state) {
+
+            if (state.NowPlayingItem && state.NowPlayingItem.MediaType == 'Video') {
+
+                renderedTabs = [];
+                mdlTabs.dispatchEvent(new CustomEvent("tabchange", {
+                    detail: {
+                        selectedTabIndex: libraryBrowser.selectedTab(mdlTabs)
+                    }
+                }));
+            }
+        }
 
         view.addEventListener('viewshow', function (e) {
             Events.on(MediaController, 'playbackstop', onPlaybackStop);

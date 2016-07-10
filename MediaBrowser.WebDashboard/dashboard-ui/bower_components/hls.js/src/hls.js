@@ -13,7 +13,7 @@ import CapLevelController from  './controller/cap-level-controller';
 import StreamController from  './controller/stream-controller';
 import LevelController from  './controller/level-controller';
 import TimelineController from './controller/timeline-controller';
-import FPSController from './controller/fps-controller';
+//import FPSController from './controller/fps-controller';
 import {logger, enableLogs} from './utils/logger';
 import XhrLoader from './utils/xhr-loader';
 import EventEmitter from 'events';
@@ -21,13 +21,10 @@ import KeyLoader from './loader/key-loader';
 
 class Hls {
 
-  static get version() {
-    // replaced with browserify-versionify transform
-    return '__VERSION__';
-  }
-
   static isSupported() {
-    return (window.MediaSource && window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E,mp4a.40.2"'));
+    return (window.MediaSource &&
+            typeof window.MediaSource.isTypeSupported === 'function' &&
+            window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E,mp4a.40.2"'));
   }
 
   static get Events() {
@@ -46,14 +43,15 @@ class Hls {
     if(!Hls.defaultConfig) {
        Hls.defaultConfig = {
           autoStartLoad: true,
+          startPosition: -1,
           debug: false,
-          capLevelOnFPSDrop: false,
           capLevelToPlayerSize: false,
           maxBufferLength: 30,
           maxBufferSize: 60 * 1000 * 1000,
           maxBufferHole: 0.5,
           maxSeekHole: 2,
           seekHoleNudgeDuration : 0.01,
+          stalledInBufferedNudgeThreshold: 10,
           maxFragLookUpTolerance : 0.2,
           liveSyncDurationCount:3,
           liveMaxLatencyDurationCount: Infinity,
@@ -73,8 +71,8 @@ class Hls {
           fragLoadingRetryDelay: 1000,
           fragLoadingLoopThreshold: 3,
           startFragPrefetch : false,
-          fpsDroppedMonitoringPeriod: 5000,
-          fpsDroppedMonitoringThreshold: 0.2,
+          // fpsDroppedMonitoringPeriod: 5000,
+          // fpsDroppedMonitoringThreshold: 0.2,
           appendErrorMaxRetry: 3,
           loader: XhrLoader,
           fLoader: undefined,
@@ -82,11 +80,17 @@ class Hls {
           abrController : AbrController,
           bufferController : BufferController,
           capLevelController : CapLevelController,
-          fpsController: FPSController,
           streamController: StreamController,
           timelineController: TimelineController,
           enableCEA708Captions: true,
-          enableMP2TPassThrough : false
+          enableMP2TPassThrough : false,
+          abrEwmaFastLive: 5,
+          abrEwmaSlowLive: 9,
+          abrEwmaFastVoD: 4,
+          abrEwmaSlowVoD: 15,
+          abrEwmaDefaultEstimate: 5e5, // 500 kbps
+          abrBandWidthFactor : 0.8,
+          abrBandWidthUpFactor : 0.7
         };
     }
     return Hls.defaultConfig;
@@ -136,10 +140,10 @@ class Hls {
     this.abrController = new config.abrController(this);
     this.bufferController = new config.bufferController(this);
     this.capLevelController = new config.capLevelController(this);
-    this.fpsController = new config.fpsController(this);
     this.streamController = new config.streamController(this);
     this.timelineController = new config.timelineController(this);
     this.keyLoader = new KeyLoader(this);
+    //this.fpsController = new FPSController(this);
   }
 
   destroy() {
@@ -152,10 +156,10 @@ class Hls {
     this.abrController.destroy();
     this.bufferController.destroy();
     this.capLevelController.destroy();
-    this.fpsController.destroy();
     this.streamController.destroy();
     this.timelineController.destroy();
-    this.keyLoader.destroy();  
+    this.keyLoader.destroy();
+    //this.fpsController.destroy();
     this.url = null;
     this.observer.removeAllListeners();
   }
@@ -179,7 +183,7 @@ class Hls {
     this.trigger(Event.MANIFEST_LOADING, {url: url});
   }
 
-  startLoad(startPosition=0) {
+  startLoad(startPosition=-1) {
     logger.log('startLoad');
     this.levelController.startLoad();
     this.streamController.startLoad(startPosition);

@@ -79,7 +79,7 @@
 
                 matchStringHtml += '</paper-item-body>';
 
-                matchStringHtml += '<paper-icon-button icon="delete" class="btnDeleteMatchEntry" data-index="' + i + '" data-matchindex="' + matchStringIndex + '" title="' + Globalize.translate('ButtonDelete') + '"></paper-icon-button>';
+                matchStringHtml += '<button type="button" is="paper-icon-button-light" class="btnDeleteMatchEntry" data-index="' + i + '" data-matchindex="' + matchStringIndex + '" title="' + Globalize.translate('ButtonDelete') + '"><iron-icon icon="delete"></iron-icon></button>';
 
                 matchStringHtml += '</paper-icon-item>';
                 matchStringIndex++;
@@ -94,15 +94,6 @@
         }
 
         $('.divMatchInfos', page).html(html);
-    }
-
-    function onApiFailure(e) {
-
-        Dashboard.hideLoadingMsg();
-
-        Dashboard.alert({
-            message: Globalize.translate('DefaultErrorMessage')
-        });
     }
 
     function getTabs() {
@@ -142,7 +133,7 @@
 
                 reloadList(page);
 
-            }, onApiFailure);
+            }, Dashboard.processErrorResponse);
 
         });
 

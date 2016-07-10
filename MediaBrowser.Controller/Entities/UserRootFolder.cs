@@ -38,6 +38,11 @@ namespace MediaBrowser.Controller.Entities
             return PostFilterAndSort(result.Where(filter), query);
         }
 
+        public override int GetChildCount(User user)
+        {
+            return GetChildren(user, true).Count();
+        }
+
         [IgnoreDataMember]
         protected override bool SupportsShortcutChildren
         {
@@ -62,15 +67,6 @@ namespace MediaBrowser.Controller.Entities
             list.AddRange(LibraryManager.RootFolder.VirtualChildren);
 
             return list;
-        }
-
-        /// <summary>
-        /// Get the children of this folder from the actual file system
-        /// </summary>
-        /// <returns>IEnumerable{BaseItem}.</returns>
-        protected override IEnumerable<BaseItem> GetNonCachedChildren(IDirectoryService directoryService)
-        {
-            return base.GetNonCachedChildren(directoryService);
         }
 
         public override bool BeforeMetadataRefresh()
@@ -101,11 +97,6 @@ namespace MediaBrowser.Controller.Entities
             {
                 LibraryManager.RegisterItem(item);
             }
-        }
-
-        public override void FillUserDataDtoValues(UserItemDataDto dto, UserItemData userData, User user)
-        {
-            // Nothing meaninful here and will only waste resources
         }
     }
 }

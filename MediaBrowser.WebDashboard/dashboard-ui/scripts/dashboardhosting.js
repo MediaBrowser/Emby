@@ -1,43 +1,49 @@
 ﻿define(['jQuery'], function ($) {
 
-    function loadPage(page, config) {
-
-        $('#txtPortNumber', page).val(config.HttpServerPortNumber);
-        $('#txtPublicPort', page).val(config.PublicPort);
-        $('#txtPublicHttpsPort', page).val(config.PublicHttpsPort);
-
-        $('#chkEnableHttps', page).checked(config.EnableHttps);
-        $('#txtHttpsPort', page).val(config.HttpsPortNumber);
-
-        $('#txtDdns', page).val(config.WanDdns || '');
-        $('#txtCertificatePath', page).val(config.CertificatePath || '');
-
-        $('#chkEnableUpnp', page).checked(config.EnableUPnP);
-
-        Dashboard.hideLoadingMsg();
-    }
-
     function onSubmit() {
-        Dashboard.showLoadingMsg();
-
         var form = this;
+        var localAddress = form.querySelector('#txtLocalAddress').value;
+        var enableUpnp = $('#chkEnableUpnp', form).checked();
 
-        ApiClient.getServerConfiguration().then(function (config) {
+        confirmSelections(localAddress, enableUpnp, function () {
 
-            config.HttpServerPortNumber = $('#txtPortNumber', form).val();
-            config.PublicPort = $('#txtPublicPort', form).val();
-            config.PublicHttpsPort = $('#txtPublicHttpsPort', form).val();
-            config.EnableHttps = $('#chkEnableHttps', form).checked();
-            config.HttpsPortNumber = $('#txtHttpsPort', form).val();
-            config.EnableUPnP = $('#chkEnableUpnp', form).checked();
-            config.WanDdns = $('#txtDdns', form).val();
-            config.CertificatePath = $('#txtCertificatePath', form).val();
+            Dashboard.showLoadingMsg();
 
-            ApiClient.updateServerConfiguration(config).then(Dashboard.processServerConfigurationUpdateResult);
+            ApiClient.getServerConfiguration().then(function (config) {
+
+                config.HttpServerPortNumber = $('#txtPortNumber', form).val();
+                config.PublicPort = $('#txtPublicPort', form).val();
+                config.PublicHttpsPort = $('#txtPublicHttpsPort', form).val();
+                config.EnableHttps = $('#chkEnableHttps', form).checked();
+                config.HttpsPortNumber = $('#txtHttpsPort', form).val();
+                config.EnableUPnP = enableUpnp;
+                config.WanDdns = $('#txtDdns', form).val();
+                config.CertificatePath = $('#txtCertificatePath', form).val();
+
+                config.LocalNetworkAddresses = localAddress ? [localAddress] : [];
+
+                ApiClient.updateServerConfiguration(config).then(Dashboard.processServerConfigurationUpdateResult, Dashboard.processErrorResponse);
+            });
         });
 
         // Disable default form submission
         return false;
+    }
+
+    function confirmSelections(localAddress, enableUpnp, callback) {
+
+        if (localAddress || !enableUpnp) {
+
+            require(['alert'], function (alert) {
+                alert({
+                    title: Globalize.translate('TitleHostingSettings'),
+                    text: Globalize.translate('SettingsWarning')
+                }).then(callback);
+            });
+
+        } else {
+            callback();
+        }
     }
 
     function getTabs() {
@@ -52,24 +58,45 @@
          }];
     }
 
-    $(document).on('pageshow', "#dashboardHostingPage", function () {
+    return function (view, params) {
 
-        LibraryMenu.setTabs('adminadvanced', 0, getTabs);
-        Dashboard.showLoadingMsg();
+        var self = this;
 
-        var page = this;
+        function loadPage(page, config) {
 
-        ApiClient.getServerConfiguration().then(function (config) {
+            $('#txtPortNumber', page).val(config.HttpServerPortNumber);
+            $('#txtPublicPort', page).val(config.PublicPort);
+            $('#txtPublicHttpsPort', page).val(config.PublicHttpsPort);
 
-            loadPage(page, config);
+            page.querySelector('#txtLocalAddress').value = config.LocalNetworkAddresses[0] || '';
 
-        });
+            var chkEnableHttps = page.querySelector('#chkEnableHttps');
+            chkEnableHttps.checked = config.EnableHttps;
 
-    }).on('pageinit', "#dashboardHostingPage", function () {
+            $('#txtHttpsPort', page).val(config.HttpsPortNumber);
 
-        var page = this;
+            $('#txtDdns', page).val(config.WanDdns || '');
 
-        $('#btnSelectCertPath', page).on("click.selectDirectory", function () {
+            var txtCertificatePath = page.querySelector('#txtCertificatePath');
+            txtCertificatePath.value = config.CertificatePath || '';
+
+            $('#chkEnableUpnp', page).checked(config.EnableUPnP);
+
+            onCertPathChange.call(txtCertificatePath);
+
+            Dashboard.hideLoadingMsg();
+        }
+
+        function onCertPathChange() {
+
+            if (this.value) {
+                view.querySelector('#txtDdns').setAttribute('required', 'required');
+            } else {
+                view.querySelector('#txtDdns').removeAttribute('required');
+            }
+        }
+
+        $('#btnSelectCertPath', view).on("click.selectDirectory", function () {
 
             require(['directorybrowser'], function (directoryBrowser) {
 
@@ -83,7 +110,7 @@
                     callback: function (path) {
 
                         if (path) {
-                            $('#txtCertificatePath', page).val(path);
+                            $('#txtCertificatePath', view).val(path);
                         }
                         picker.close();
                     },
@@ -94,6 +121,18 @@
         });
 
         $('.dashboardHostingForm').off('submit', onSubmit).on('submit', onSubmit);
-    });
 
+        view.querySelector('#txtCertificatePath').addEventListener('change', onCertPathChange);
+
+        view.addEventListener('viewshow', function (e) {
+            LibraryMenu.setTabs('adminadvanced', 0, getTabs);
+            Dashboard.showLoadingMsg();
+
+            ApiClient.getServerConfiguration().then(function (config) {
+
+                loadPage(view, config);
+
+            });
+        });
+    };
 });

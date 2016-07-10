@@ -11,13 +11,25 @@ namespace MediaBrowser.Controller.Entities.TV
     /// <summary>
     /// Class Episode
     /// </summary>
-    public class Episode : Video, IHasLookupInfo<EpisodeInfo>, IHasSeries
+    public class Episode : Video, IHasTrailers, IHasLookupInfo<EpisodeInfo>, IHasSeries
     {
-        /// <summary>
-        /// Gets the season in which it aired.
-        /// </summary>
-        /// <value>The aired season.</value>
-        public int? AirsBeforeSeasonNumber { get; set; }
+
+        public Episode()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            LocalTrailerIds = new List<Guid>();
+            RemoteTrailerIds = new List<Guid>();
+        }
+
+        public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
+    /// <summary>
+    /// Gets the season in which it aired.
+    /// </summary>
+    /// <value>The aired season.</value>
+    public int? AirsBeforeSeasonNumber { get; set; }
         public int? AirsAfterSeasonNumber { get; set; }
         public int? AirsBeforeEpisodeNumber { get; set; }
 
@@ -58,25 +70,7 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             get
             {
-                return AirsAfterSeasonNumber ?? AirsBeforeSeasonNumber ?? PhysicalSeasonNumber;
-            }
-        }
-
-        [IgnoreDataMember]
-        public int? PhysicalSeasonNumber
-        {
-            get
-            {
-                var value = ParentIndexNumber;
-
-                if (value.HasValue)
-                {
-                    return value;
-                }
-
-                var season = Season;
-
-                return season != null ? season.IndexNumber : null;
+                return AirsAfterSeasonNumber ?? AirsBeforeSeasonNumber ?? ParentIndexNumber;
             }
         }
 
@@ -98,20 +92,32 @@ namespace MediaBrowser.Controller.Entities.TV
             }
         }
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        protected override string CreateUserDataKey()
+        [IgnoreDataMember]
+        protected override bool EnableDefaultVideoUserDataKeys
         {
-            var series = Series;
+            get
+            {
+                return false;
+            }
+        }
 
+        public override List<string> GetUserDataKeys()
+        {
+            var list = base.GetUserDataKeys();
+
+            var series = Series;
             if (series != null && ParentIndexNumber.HasValue && IndexNumber.HasValue)
             {
-                return series.GetUserDataKey() + ParentIndexNumber.Value.ToString("000") + IndexNumber.Value.ToString("000");
+                var seriesUserDataKeys = series.GetUserDataKeys();
+                var take = seriesUserDataKeys.Count;
+                if (seriesUserDataKeys.Count > 1)
+                {
+                    take--;
+                }
+                list.InsertRange(0, seriesUserDataKeys.Take(take).Select(i => i + ParentIndexNumber.Value.ToString("000") + IndexNumber.Value.ToString("000")));
             }
 
-            return base.CreateUserDataKey();
+            return list;
         }
 
         /// <summary>
@@ -223,12 +229,6 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         [IgnoreDataMember]
-        public bool IsUnaired
-        {
-            get { return PremiereDate.HasValue && PremiereDate.Value.ToLocalTime().Date >= DateTime.Now.Date; }
-        }
-
-        [IgnoreDataMember]
         public bool IsVirtualUnaired
         {
             get { return LocationType == LocationType.Virtual && IsUnaired; }
@@ -308,6 +308,19 @@ namespace MediaBrowser.Controller.Entities.TV
             catch (Exception ex)
             {
                 Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
+            }
+
+            if (!ParentIndexNumber.HasValue)
+            {
+                var season = Season;
+                if (season != null)
+                {
+                    if (season.ParentIndexNumber.HasValue)
+                    {
+                        ParentIndexNumber = season.ParentIndexNumber;
+                        hasChanges = true;
+                    }
+                }
             }
 
             return hasChanges;

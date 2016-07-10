@@ -286,11 +286,19 @@ namespace MediaBrowser.Api.Playback
 
         protected string GetH264Encoder(StreamState state)
         {
-            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "h264_qsv", StringComparison.OrdinalIgnoreCase))
             {
-                
-                    return "h264_qsv";
-               
+                return "h264_qsv";
+            }
+
+            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "nvenc", StringComparison.OrdinalIgnoreCase))
+            {
+                return "h264_nvenc";
+            }
+            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "h264_omx", StringComparison.OrdinalIgnoreCase))
+            {
+                return "h264_omx";
             }
 
             return "libx264";
@@ -330,10 +338,10 @@ namespace MediaBrowser.Api.Playback
 
             }
 
-            // h264 (libnvenc)
-            else if (string.Equals(videoCodec, "libnvenc", StringComparison.OrdinalIgnoreCase))
+            // h264 (h264_nvenc)
+            else if (string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
             {
-                param = "-preset high-performance";
+                param = "-preset default";
             }
 
             // webm
@@ -395,15 +403,18 @@ namespace MediaBrowser.Api.Playback
 
             if (!string.IsNullOrEmpty(state.VideoRequest.Profile))
             {
-                param += " -profile:v " + state.VideoRequest.Profile;
+                if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase))
+                {
+                    // not supported by h264_omx
+                    param += " -profile:v " + state.VideoRequest.Profile;
+                }
             }
 
             if (!string.IsNullOrEmpty(state.VideoRequest.Level))
             {
-                var h264Encoder = GetH264Encoder(state);
-
-                // h264_qsv and libnvenc expect levels to be expressed as a decimal. libx264 supports decimal and non-decimal format
-                if (String.Equals(h264Encoder, "h264_qsv", StringComparison.OrdinalIgnoreCase) || String.Equals(h264Encoder, "libnvenc", StringComparison.OrdinalIgnoreCase))
+                // h264_qsv and h264_nvenc expect levels to be expressed as a decimal. libx264 supports decimal and non-decimal format
+                if (string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
                 {
                     switch (state.VideoRequest.Level)
                     {
@@ -438,16 +449,21 @@ namespace MediaBrowser.Api.Playback
                             param += " -level " + state.VideoRequest.Level;
                             break;
                     }
-
-                    return param;
                 }
-                else
+                else if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase))
                 {
                     param += " -level " + state.VideoRequest.Level;
                 }
             }
 
-            return "-pix_fmt yuv420p " + param;
+            if (!string.Equals(videoCodec, "h264_omx", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(videoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(videoCodec, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
+            {
+                param = "-pix_fmt yuv420p " + param;
+            }
+
+            return param;
         }
 
         protected string GetAudioFilterParam(StreamState state, bool isHls)
@@ -460,7 +476,7 @@ namespace MediaBrowser.Api.Playback
             // Boost volume to 200% when downsampling from 6ch to 2ch
             if (channels.HasValue && channels.Value <= 2)
             {
-                if (state.AudioStream != null && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5)
+                if (state.AudioStream != null && state.AudioStream.Channels.HasValue && state.AudioStream.Channels.Value > 5 && !ApiEntryPoint.Instance.GetEncodingOptions().DownMixAudioBoost.Equals(1))
                 {
                     volParam = ",volume=" + ApiEntryPoint.Instance.GetEncodingOptions().DownMixAudioBoost.ToString(UsCulture);
                 }
@@ -561,14 +577,6 @@ namespace MediaBrowser.Api.Playback
                 var maxHeightParam = request.MaxHeight.Value.ToString(UsCulture);
 
                 filters.Add(string.Format("scale=trunc(oh*a/2)*2:min(ih\\,{0})", maxHeightParam));
-            }
-
-            if (string.Equals(outputVideoCodec, "h264_qsv", StringComparison.OrdinalIgnoreCase))
-            {
-                if (filters.Count > 1)
-                {
-                    //filters[filters.Count - 1] += ":flags=fast_bilinear";
-                }
             }
 
             var output = string.Empty;
@@ -712,15 +720,16 @@ namespace MediaBrowser.Api.Playback
                 inputChannels = null;
             }
 
+            int? resultChannels = null;
             var codec = outputAudioCodec ?? string.Empty;
 
             if (codec.IndexOf("wma", StringComparison.OrdinalIgnoreCase) != -1)
             {
                 // wmav2 currently only supports two channel output
-                return Math.Min(2, inputChannels ?? 2);
+                resultChannels = Math.Min(2, inputChannels ?? 2);
             }
 
-            if (request.MaxAudioChannels.HasValue)
+            else if (request.MaxAudioChannels.HasValue)
             {
                 var channelLimit = codec.IndexOf("mp3", StringComparison.OrdinalIgnoreCase) != -1
                    ? 2
@@ -732,10 +741,18 @@ namespace MediaBrowser.Api.Playback
                 }
 
                 // If we don't have any media info then limit it to 5 to prevent encoding errors due to asking for too many channels
-                return Math.Min(request.MaxAudioChannels.Value, channelLimit);
+                resultChannels = Math.Min(request.MaxAudioChannels.Value, channelLimit);
             }
 
-            return request.AudioChannels;
+            if (resultChannels.HasValue && !string.Equals(codec, "copy", StringComparison.OrdinalIgnoreCase))
+            {
+                if (request.TranscodingMaxAudioChannels.HasValue)
+                {
+                    resultChannels = Math.Min(request.TranscodingMaxAudioChannels.Value, resultChannels.Value);
+                }
+            }
+
+            return resultChannels ?? request.AudioChannels;
         }
 
         /// <summary>
@@ -821,9 +838,14 @@ namespace MediaBrowser.Api.Playback
         /// <returns>System.String.</returns>
         protected string GetVideoDecoder(StreamState state)
         {
-            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
             {
-                if (state.VideoStream != null && !string.IsNullOrWhiteSpace(state.VideoStream.Codec))
+                return null;
+            }
+
+            if (state.VideoStream != null && !string.IsNullOrWhiteSpace(state.VideoStream.Codec))
+            {
+                if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
                 {
                     switch (state.MediaSource.VideoStream.Codec.ToLower())
                     {
@@ -831,6 +853,7 @@ namespace MediaBrowser.Api.Playback
                         case "h264":
                             if (MediaEncoder.SupportsDecoder("h264_qsv"))
                             {
+                                // Seeing stalls and failures with decoding. Not worth it compared to encoding.
                                 return "-c:v h264_qsv ";
                             }
                             break;
@@ -947,13 +970,23 @@ namespace MediaBrowser.Api.Playback
 
             await AcquireResources(state, cancellationTokenSource).ConfigureAwait(false);
 
+            if (state.VideoRequest != null && !string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+            {
+                var auth = AuthorizationContext.GetAuthorizationInfo(Request);
+                if (!string.IsNullOrWhiteSpace(auth.UserId))
+                {
+                    var user = UserManager.GetUserById(auth.UserId);
+                    if (!user.Policy.EnableVideoPlaybackTranscoding)
+                    {
+                        ApiEntryPoint.Instance.OnTranscodeFailedToStart(outputPath, TranscodingJobType, state);
+
+                        throw new ArgumentException("User does not have access to video transcoding");
+                    }
+                }
+            }
+
             var transcodingId = Guid.NewGuid().ToString("N");
             var commandLineArgs = GetCommandLineArguments(outputPath, state, true);
-
-            if (ApiEntryPoint.Instance.GetEncodingOptions().EnableDebugLogging)
-            {
-                commandLineArgs = "-loglevel debug " + commandLineArgs;
-            }
 
             var process = new Process
             {
@@ -963,7 +996,7 @@ namespace MediaBrowser.Api.Playback
                     UseShellExecute = false,
 
                     // Must consume both stdout and stderr or deadlocks may occur
-                    RedirectStandardOutput = true,
+                    //RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
 
@@ -1030,10 +1063,10 @@ namespace MediaBrowser.Api.Playback
             }
 
             // MUST read both stdout and stderr asynchronously or a deadlock may occurr
-            process.BeginOutputReadLine();
+            //process.BeginOutputReadLine();
 
             // Important - don't await the log task or we won't be able to kill ffmpeg when the user stops playback
-            StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream);
+            Task.Run(() => StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream));
 
             // Wait for the file to exist before proceeeding
             while (!FileSystem.FileExists(state.WaitForPath ?? outputPath) && !transcodingJob.HasExited)
@@ -1076,7 +1109,7 @@ namespace MediaBrowser.Api.Playback
             return true;
         }
 
-        private async void StartStreamingLog(TranscodingJob transcodingJob, StreamState state, Stream source, Stream target)
+        private async Task StartStreamingLog(TranscodingJob transcodingJob, StreamState state, Stream source, Stream target)
         {
             try
             {
@@ -1182,7 +1215,7 @@ namespace MediaBrowser.Api.Playback
             }
         }
 
-        private int? GetVideoBitrateParamValue(VideoStreamRequest request, MediaStream videoStream)
+        private int? GetVideoBitrateParamValue(VideoStreamRequest request, MediaStream videoStream, string outputVideoCodec)
         {
             var bitrate = request.VideoBitRate;
 
@@ -1204,6 +1237,18 @@ namespace MediaBrowser.Api.Playback
                     {
                         bitrate = Math.Min(bitrate.Value, videoStream.BitRate.Value);
                     }
+                }
+            }
+
+            if (bitrate.HasValue)
+            {
+                var inputVideoCodec = videoStream == null ? null : videoStream.Codec;
+                bitrate = ResolutionNormalizer.ScaleBitrate(bitrate.Value, inputVideoCodec, outputVideoCodec);
+
+                // If a max bitrate was requested, don't let the scaled bitrate exceed it
+                if (request.VideoBitRate.HasValue)
+                {
+                    bitrate = Math.Min(bitrate.Value, request.VideoBitRate.Value);
                 }
             }
 
@@ -1489,6 +1534,13 @@ namespace MediaBrowser.Api.Playback
                 }
                 else if (i == 25)
                 {
+                    if (videoRequest != null)
+                    {
+                        videoRequest.ForceLiveStream = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
+                else if (i == 26)
+                {
                     if (!string.IsNullOrWhiteSpace(val) && videoRequest != null)
                     {
                         SubtitleDeliveryMethod method;
@@ -1497,6 +1549,10 @@ namespace MediaBrowser.Api.Playback
                             videoRequest.SubtitleMethod = method;
                         }
                     }
+                }
+                else if (i == 27)
+                {
+                    request.TranscodingMaxAudioChannels = int.Parse(val, UsCulture);
                 }
             }
         }
@@ -1589,9 +1645,10 @@ namespace MediaBrowser.Api.Playback
             var state = new StreamState(MediaSourceManager, Logger)
             {
                 Request = request,
-                RequestedUrl = url
+                RequestedUrl = url,
+                UserAgent = Request.UserAgent
             };
-
+            
             //if ((Request.UserAgent ?? string.Empty).IndexOf("iphone", StringComparison.OrdinalIgnoreCase) != -1 ||
             //    (Request.UserAgent ?? string.Empty).IndexOf("ipad", StringComparison.OrdinalIgnoreCase) != -1 ||
             //    (Request.UserAgent ?? string.Empty).IndexOf("ipod", StringComparison.OrdinalIgnoreCase) != -1)
@@ -1602,7 +1659,8 @@ namespace MediaBrowser.Api.Playback
             if (!string.IsNullOrWhiteSpace(request.AudioCodec))
             {
                 state.SupportedAudioCodecs = request.AudioCodec.Split(',').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
-                state.Request.AudioCodec = state.SupportedAudioCodecs.FirstOrDefault();
+                state.Request.AudioCodec = state.SupportedAudioCodecs.FirstOrDefault(i => MediaEncoder.CanEncodeToAudioCodec(i))
+                    ?? state.SupportedAudioCodecs.FirstOrDefault();
             }
 
             var item = LibraryManager.GetItemById(request.Id);
@@ -1656,7 +1714,7 @@ namespace MediaBrowser.Api.Playback
             if (videoRequest != null)
             {
                 state.OutputVideoCodec = state.VideoRequest.VideoCodec;
-                state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream);
+                state.OutputVideoBitrate = GetVideoBitrateParamValue(state.VideoRequest, state.VideoStream, state.OutputVideoCodec);
 
                 if (state.OutputVideoBitrate.HasValue)
                 {
@@ -1800,6 +1858,15 @@ namespace MediaBrowser.Api.Playback
             {
                 if (request.SubtitleMethod == SubtitleDeliveryMethod.Encode)
                 {
+                    return false;
+                }
+            }
+
+            if (string.Equals("h264", videoStream.Codec, StringComparison.OrdinalIgnoreCase))
+            {
+                if (videoStream.IsAVC.HasValue && !videoStream.IsAVC.Value)
+                {
+                    Logger.Debug("Cannot stream copy video. Stream is marked as not AVC");
                     return false;
                 }
             }
@@ -2222,9 +2289,10 @@ namespace MediaBrowser.Api.Playback
 
             if (state.VideoRequest != null)
             {
+                // Important: If this is ever re-enabled, make sure not to use it with wtv because it breaks seeking
                 if (string.Equals(state.OutputContainer, "mkv", StringComparison.OrdinalIgnoreCase) && state.VideoRequest.CopyTimestamps)
                 {
-                    inputModifier += " -noaccurate_seek";
+                    //inputModifier += " -noaccurate_seek";
                 }
             }
 

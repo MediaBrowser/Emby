@@ -49,7 +49,19 @@ define(['browser'], function (browser) {
 
         var typeString;
 
-        if (format == 'opus') {
+        if (format == 'flac') {
+            if (browser.tizen) {
+                return true;
+            }
+        }
+
+        else if (format == 'wma') {
+            if (browser.tizen) {
+                return true;
+            }
+        }
+
+        else if (format == 'opus') {
             typeString = 'audio/ogg; codecs="opus"';
 
             if (document.createElement('audio').canPlayType(typeString).replace(/no/, '')) {
@@ -77,8 +89,15 @@ define(['browser'], function (browser) {
         // Unfortunately there's no real way to detect mkv support
         if (browser.chrome) {
 
+            var userAgent = navigator.userAgent.toLowerCase();
+
             // Not supported on opera tv
             if (browser.operaTv) {
+                return false;
+            }
+
+            // Filter out browsers based on chromium that don't support mkv
+            if (userAgent.indexOf('vivaldi') != -1 || userAgent.indexOf('opera') != -1) {
                 return false;
             }
 
@@ -144,6 +163,11 @@ define(['browser'], function (browser) {
 
     function getMaxBitrate() {
 
+        // 10mbps
+        if (browser.xboxOne) {
+            return 10000000;
+        }
+
         var userAgent = navigator.userAgent.toLowerCase();
 
         if (browser.tizen) {
@@ -163,6 +187,8 @@ define(['browser'], function (browser) {
     return function (options) {
 
         options = options || {};
+        var physicalAudioChannels = options.audioChannels || 2;
+
         var bitrateSetting = getMaxBitrate();
 
         var videoTestElement = document.createElement('video');
@@ -244,7 +270,7 @@ define(['browser'], function (browser) {
             profile.DirectPlayProfiles.push(i);
         });
 
-        ['opus', 'mp3', 'aac', 'flac', 'webma'].filter(canPlayAudioFormat).forEach(function (audioFormat) {
+        ['opus', 'mp3', 'aac', 'flac', 'webma', 'wma'].filter(canPlayAudioFormat).forEach(function (audioFormat) {
 
             profile.DirectPlayProfiles.push({
                 Container: audioFormat == 'webma' ? 'webma,webm' : audioFormat,
@@ -288,26 +314,34 @@ define(['browser'], function (browser) {
             });
         });
 
+        var copyTimestamps = false;
+        if (browser.chrome) {
+            copyTimestamps = true;
+        }
+
         // Can't use mkv on mobile because we have to use the native player controls and they won't be able to seek it
-        if (canPlayMkv && options.supportsCustomSeeking) {
+        if (canPlayMkv && options.supportsCustomSeeking && !browser.tizen) {
             profile.TranscodingProfiles.push({
                 Container: 'mkv',
                 Type: 'Video',
                 AudioCodec: videoAudioCodecs.join(','),
                 VideoCodec: 'h264',
                 Context: 'Streaming',
-                CopyTimestamps: true
+                CopyTimestamps: copyTimestamps
             });
         }
 
-        if (canPlayTs) {
+        if (canPlayTs && options.supportsCustomSeeking && !browser.tizen) {
             profile.TranscodingProfiles.push({
                 Container: 'ts',
                 Type: 'Video',
                 AudioCodec: videoAudioCodecs.join(','),
                 VideoCodec: 'h264',
                 Context: 'Streaming',
-                CopyTimestamps: true
+                CopyTimestamps: copyTimestamps,
+                // If audio transcoding is needed, limit channels to number of physical audio channels
+                // Trying to transcode to 5 channels when there are only 2 speakers generally does not sound good
+                MaxAudioChannels: physicalAudioChannels.toString()
             });
         }
 
@@ -318,9 +352,21 @@ define(['browser'], function (browser) {
                 AudioCodec: hlsVideoAudioCodecs.join(','),
                 VideoCodec: 'h264',
                 Context: 'Streaming',
-                Protocol: 'hls',
-                // Can't use this when autoplay is not supported
-                ForceLiveStream: options.supportsCustomSeeking ? true : false
+                Protocol: 'hls'
+            });
+        }
+
+        // Put mp4 ahead of webm
+        if (browser.firefox) {
+            profile.TranscodingProfiles.push({
+                Container: 'mp4',
+                Type: 'Video',
+                AudioCodec: videoAudioCodecs.join(','),
+                VideoCodec: 'h264',
+                Context: 'Streaming',
+                Protocol: 'http'
+                // Edit: Can't use this in firefox because we're seeing situations of no sound when downmixing from 6 channel to 2
+                //MaxAudioChannels: physicalAudioChannels.toString()
             });
         }
 
@@ -332,7 +378,10 @@ define(['browser'], function (browser) {
                 AudioCodec: 'vorbis',
                 VideoCodec: 'vpx',
                 Context: 'Streaming',
-                Protocol: 'http'
+                Protocol: 'http',
+                // If audio transcoding is needed, limit channels to number of physical audio channels
+                // Trying to transcode to 5 channels when there are only 2 speakers generally does not sound good
+                MaxAudioChannels: physicalAudioChannels.toString()
             });
         }
 
@@ -342,7 +391,10 @@ define(['browser'], function (browser) {
             AudioCodec: videoAudioCodecs.join(','),
             VideoCodec: 'h264',
             Context: 'Streaming',
-            Protocol: 'http'
+            Protocol: 'http',
+            // If audio transcoding is needed, limit channels to number of physical audio channels
+            // Trying to transcode to 5 channels when there are only 2 speakers generally does not sound good
+            MaxAudioChannels: physicalAudioChannels.toString()
         });
 
         profile.TranscodingProfiles.push({
@@ -385,6 +437,11 @@ define(['browser'], function (browser) {
                         Value: videoAudioChannels
                     },
                     {
+                        Condition: 'LessThanEqual',
+                        Property: 'AudioBitrate',
+                        Value: '128000'
+                    },
+                    {
                         Condition: 'Equals',
                         Property: 'IsSecondaryAudio',
                         Value: 'false',
@@ -411,6 +468,12 @@ define(['browser'], function (browser) {
             ]
         });
 
+        var maxLevel = '41';
+
+        if (browser.chrome && !browser.mobile) {
+            maxLevel = '51';
+        }
+
         profile.CodecProfiles.push({
             Type: 'Video',
             Codec: 'h264',
@@ -429,7 +492,7 @@ define(['browser'], function (browser) {
             {
                 Condition: 'LessThanEqual',
                 Property: 'VideoLevel',
-                Value: '41'
+                Value: maxLevel
             }]
         });
 

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Server.Implementations.ScheduledTasks;
@@ -110,6 +111,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 _config.SaveConfiguration();
             }
 
+            if (_config.Configuration.SchemaVersion < SqliteItemRepository.LatestSchemaVersion)
+            {
+                _config.Configuration.SchemaVersion = SqliteItemRepository.LatestSchemaVersion;
+                _config.SaveConfiguration();
+            }
+
             if (EnableUnavailableMessage)
             {
                 EnableUnavailableMessage = false;
@@ -139,7 +146,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
         {
             var itemIds = _libraryManager.GetItemIds(new InternalItemsQuery
             {
-                IsCurrentSchema = false
+                IsCurrentSchema = false,
+                ExcludeItemTypes = new[] { typeof(LiveTvProgram).Name }
             });
 
             var numComplete = 0;
@@ -230,14 +238,14 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 // These have their own cleanup routines
                 ExcludeItemTypes = new[]
                 {
-                    typeof(Person).Name, 
-                    typeof(Genre).Name, 
-                    typeof(MusicGenre).Name, 
-                    typeof(GameGenre).Name, 
-                    typeof(Studio).Name, 
-                    typeof(Year).Name, 
-                    typeof(Channel).Name, 
-                    typeof(AggregateFolder).Name, 
+                    typeof(Person).Name,
+                    typeof(Genre).Name,
+                    typeof(MusicGenre).Name,
+                    typeof(GameGenre).Name,
+                    typeof(Studio).Name,
+                    typeof(Year).Name,
+                    typeof(Channel).Name,
+                    typeof(AggregateFolder).Name,
                     typeof(CollectionFolder).Name
                 }
             });
@@ -307,8 +315,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public IEnumerable<ITaskTrigger> GetDefaultTriggers()
         {
-            return new ITaskTrigger[] 
-            { 
+            return new ITaskTrigger[]
+            {
                 new IntervalTrigger{ Interval = TimeSpan.FromHours(24)}
             };
         }

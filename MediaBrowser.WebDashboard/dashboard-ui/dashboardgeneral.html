@@ -47,7 +47,7 @@
                     <ul data-role="listview" class="ulForm">
                         <li>
                             <paper-input type="text" id="txtCachePath" label="${LabelCachePath}" style="display:inline-block;width:85%;"></paper-input>
-                            <paper-icon-button id="btnSelectCachePath" icon="search">${ButtonSelectDirectory}</paper-icon-button>
+                            <button type="button" is="paper-icon-button-light" id="btnSelectCachePath" title="${ButtonSelectDirectory}"><iron-icon icon="search"></iron-icon></button>
                             <div class="fieldDescription">${LabelCachePathHelp}</div>
                         </li>
                     </ul>
@@ -114,7 +114,7 @@
                     <ul data-role="listview" class="ulForm">
                         <li>
                             <paper-input type="text" id="txtDashboardSourcePath" label="${LabelDashboardSourcePath}" style="display: inline-block; width: 80%;"></paper-input>
-                            <paper-icon-button id="btnSelectDashboardSourcePath" icon="search" title="${ButtonSelectDirectory}"></paper-icon-button>
+                            <button type="button" is="paper-icon-button-light" id="btnSelectDashboardSourcePath" title="${ButtonSelectDirectory}"><iron-icon icon="search"></iron-icon></button>
                             <div class="fieldDescription">${LabelDashboardSourcePathHelp}</div>
                         </li>
                     </ul>
@@ -122,9 +122,7 @@
                 <br />
                 <ul data-role="listview" class="ulForm">
                     <li>
-                        <button type="submit" data-role="none" class="clearButton">
-                            <paper-button raised class="submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></paper-button>
-                        </button>
+                        <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
                     </li>
 
                 </ul>

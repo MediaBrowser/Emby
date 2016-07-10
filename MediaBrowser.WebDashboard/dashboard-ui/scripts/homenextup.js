@@ -1,28 +1,21 @@
-﻿define(['jQuery'], function ($) {
+﻿define([], function () {
 
-    function reload(page) {
-
-        Dashboard.showLoadingMsg();
-
-        loadNextUp(page, 'home-nextup');
-    }
-
-    function loadNextUp(page) {
-
-        var limit = AppInfo.hasLowImageBandwidth ?
-         16 :
-         24;
+    function getNextUpPromise() {
 
         var query = {
 
-            Limit: limit,
+            Limit: 24,
             Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated,SyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ImageTypeLimit: 1,
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
         };
 
-        ApiClient.getNextUpEpisodes(query).then(function (result) {
+        return ApiClient.getNextUpEpisodes(query);
+    }
+    function loadNextUp(page, promise) {
+
+        promise.then(function (result) {
 
             if (result.Items.length) {
                 page.querySelector('.noNextUpItems').classList.add('hide');
@@ -55,10 +48,16 @@
     return function (view, params, tabContent) {
 
         var self = this;
+        var nextUpPromise;
+
+        self.preRender = function () {
+            nextUpPromise = getNextUpPromise();
+        };
 
         self.renderTab = function () {
 
-            reload(tabContent);
+            Dashboard.showLoadingMsg();
+            loadNextUp(view, nextUpPromise);
         };
     };
 

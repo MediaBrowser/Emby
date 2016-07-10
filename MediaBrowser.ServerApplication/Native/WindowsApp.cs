@@ -7,8 +7,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using CommonIO;
 using MediaBrowser.Controller.Power;
+using MediaBrowser.Model.System;
+using MediaBrowser.Server.Implementations.Persistence;
 using MediaBrowser.Server.Startup.Common.FFMpeg;
 using OperatingSystem = MediaBrowser.Server.Startup.Common.OperatingSystem;
 
@@ -51,7 +54,7 @@ namespace MediaBrowser.ServerApplication.Native
                 return new NativeEnvironment
                 {
                     OperatingSystem = OperatingSystem.Windows,
-                    SystemArchitecture = System.Environment.Is64BitOperatingSystem ? Architecture.X86_X64 : Architecture.X86,
+                    SystemArchitecture = System.Environment.Is64BitOperatingSystem ? Architecture.X64 : Architecture.X86,
                     OperatingSystemVersionString = System.Environment.OSVersion.VersionString
                 };
             }
@@ -137,7 +140,12 @@ namespace MediaBrowser.ServerApplication.Native
 
         public void PreventSystemStandby()
         {
-            Standby.PreventSystemStandby();
+            MainStartup.Invoke(Standby.PreventSleep);
+        }
+
+        public void AllowSystemStandby()
+        {
+            MainStartup.Invoke(Standby.AllowSleep);
         }
 
         public IPowerManagement GetPowerManagement()
@@ -151,10 +159,7 @@ namespace MediaBrowser.ServerApplication.Native
 
             info.FFMpegFilename = "ffmpeg.exe";
             info.FFProbeFilename = "ffprobe.exe";
-            info.Version = "20160401";
-            info.ArchiveType = "7z";
-            info.IsEmbedded = true;
-            info.DownloadUrls = GetDownloadUrls();
+            info.Version = "0";
 
             return info;
         }
@@ -185,6 +190,11 @@ namespace MediaBrowser.ServerApplication.Native
             }
         }
 
+        public IDbConnector GetDbConnector()
+        {
+            return new DbConnector(_logger);
+        }
+
         /// <summary>
         /// Processes the exited.
         /// </summary>
@@ -193,19 +203,6 @@ namespace MediaBrowser.ServerApplication.Native
         private static void ProcessExited(object sender, EventArgs e)
         {
             ((Process)sender).Dispose();
-        }
-
-        private string[] GetDownloadUrls()
-        {
-            switch (Environment.SystemArchitecture)
-            {
-                case Architecture.X86_X64:
-                    return new[] { "MediaBrowser.ServerApplication.ffmpeg.ffmpegx64.7z" };
-                case Architecture.X86:
-                    return new[] { "MediaBrowser.ServerApplication.ffmpeg.ffmpegx86.7z" };
-            }
-
-            return new string[] { };
         }
     }
 }

@@ -13,15 +13,27 @@ namespace MediaBrowser.Model.Dlna
     {
         private readonly ILocalPlayer _localPlayer;
         private readonly ILogger _logger;
+        private readonly ITranscoderSupport _transcoderSupport;
 
-        public StreamBuilder(ILocalPlayer localPlayer, ILogger logger)
+        public StreamBuilder(ILocalPlayer localPlayer, ITranscoderSupport transcoderSupport, ILogger logger)
         {
+            _transcoderSupport = transcoderSupport;
             _localPlayer = localPlayer;
             _logger = logger;
         }
 
+        public StreamBuilder(ITranscoderSupport transcoderSupport, ILogger logger)
+            : this(new NullLocalPlayer(), transcoderSupport, logger)
+        {
+        }
+
+        public StreamBuilder(ILocalPlayer localPlayer, ILogger logger)
+            : this(localPlayer, new FullTranscoderSupport(), logger)
+        {
+        }
+
         public StreamBuilder(ILogger logger)
-            : this(new NullLocalPlayer(), logger)
+            : this(new NullLocalPlayer(), new FullTranscoderSupport(), logger)
         {
         }
 
@@ -185,8 +197,11 @@ namespace MediaBrowser.Model.Dlna
             {
                 if (i.Type == playlistItem.MediaType && i.Context == options.Context)
                 {
-                    transcodingProfile = i;
-                    break;
+                    if (_transcoderSupport.CanEncodeToAudioCodec(i.AudioCodec ?? i.Container))
+                    {
+                        transcodingProfile = i;
+                        break;
+                    }
                 }
             }
 
@@ -201,7 +216,15 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
                 playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 playlistItem.Container = transcodingProfile.Container;
-                playlistItem.AudioCodec = transcodingProfile.AudioCodec;
+
+                if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
+                {
+                    playlistItem.AudioCodecs = new string[] { };
+                }
+                else
+                {
+                    playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
+                }
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
 
                 List<CodecProfile> audioCodecProfiles = new List<CodecProfile>();
@@ -424,26 +447,20 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
                 playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
 
-                // TODO: We should probably preserve the full list and sent it to the server that way
-                string[] supportedAudioCodecs = transcodingProfile.AudioCodec.Split(',');
-                string inputAudioCodec = audioStream == null ? null : audioStream.Codec;
-                foreach (string supportedAudioCodec in supportedAudioCodecs)
-                {
-                    if (StringHelper.EqualsIgnoreCase(supportedAudioCodec, inputAudioCodec))
-                    {
-                        playlistItem.AudioCodec = supportedAudioCodec;
-                        break;
-                    }
-                }
-
-                if (string.IsNullOrEmpty(playlistItem.AudioCodec))
-                {
-                    playlistItem.AudioCodec = supportedAudioCodecs[0];
-                }
+                playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
 
                 playlistItem.VideoCodec = transcodingProfile.VideoCodec;
                 playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
                 playlistItem.ForceLiveStream = transcodingProfile.ForceLiveStream;
+
+                if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
+                {
+                    int transcodingMaxAudioChannels;
+                    if (IntHelper.TryParseCultureInvariant(transcodingProfile.MaxAudioChannels, out transcodingMaxAudioChannels))
+                    {
+                        playlistItem.TranscodingMaxAudioChannels = transcodingMaxAudioChannels;
+                    }
+                }
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
                 playlistItem.AudioStreamIndex = audioStreamIndex;
 
@@ -464,7 +481,7 @@ namespace MediaBrowser.Model.Dlna
                 List<ProfileCondition> audioTranscodingConditions = new List<ProfileCondition>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
                 {
-                    if (i.Type == CodecType.VideoAudio && i.ContainsCodec(playlistItem.AudioCodec, transcodingProfile.Container))
+                    if (i.Type == CodecType.VideoAudio && i.ContainsCodec(playlistItem.TargetAudioCodec, transcodingProfile.Container))
                     {
                         foreach (ProfileCondition c in i.Conditions)
                         {
@@ -818,17 +835,17 @@ namespace MediaBrowser.Model.Dlna
                 {
                     bool requiresConversion = !StringHelper.EqualsIgnoreCase(subtitleStream.Codec, profile.Format);
 
-                    if (requiresConversion && !allowConversion)
-                    {
-                        continue;
-                    }
-
                     if (!requiresConversion)
                     {
                         return profile;
                     }
 
-                    if (subtitleStream.IsTextSubtitleStream && subtitleStream.SupportsExternalStream)
+                    if (!allowConversion)
+                    {
+                        continue;
+                    }
+
+                    if (subtitleStream.IsTextSubtitleStream && subtitleStream.SupportsExternalStream && subtitleStream.SupportsSubtitleConversionTo(profile.Format))
                     {
                         return profile;
                     }
@@ -1038,6 +1055,18 @@ namespace MediaBrowser.Model.Dlna
                 }
             }
 
+            // Check audio codec
+            List<string> audioCodecs = profile.GetAudioCodecs();
+            if (audioCodecs.Count > 0)
+            {
+                // Check audio codecs
+                string audioCodec = audioStream == null ? null : audioStream.Codec;
+                if (string.IsNullOrEmpty(audioCodec) || !ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -1073,6 +1102,7 @@ namespace MediaBrowser.Model.Dlna
                 }
             }
 
+            // Check audio codec
             List<string> audioCodecs = profile.GetAudioCodecs();
             if (audioCodecs.Count > 0)
             {

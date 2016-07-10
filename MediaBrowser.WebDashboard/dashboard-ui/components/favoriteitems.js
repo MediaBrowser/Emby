@@ -40,7 +40,8 @@
             Recursive: true,
             Fields: "PrimaryImageAspectRatio,SyncInfo",
             CollapseBoxSetItems: false,
-            ExcludeLocationTypes: "Virtual"
+            ExcludeLocationTypes: "Virtual",
+            EnableTotalRecordCount: false
         };
 
         if (topParentId) {
@@ -51,7 +52,7 @@
             options.Limit = screenWidth >= 1920 ? 10 : (screenWidth >= 1440 ? 8 : 6);
 
             if (enableScrollX()) {
-                options.Limit = 16;
+                options.Limit = 20;
             }
         }
 
@@ -73,10 +74,10 @@
                 html += '<div>';
                 html += '<h1 style="display:inline-block; vertical-align:middle;" class="listHeader">' + Globalize.translate(section.name) + '</h1>';
 
-                if (result.TotalRecordCount > result.Items.length) {
+                if (options.Limit && result.Items.length >= options.Limit) {
                     var href = "secondaryitems.html?type=" + section.types + "&filters=IsFavorite&titlekey=" + section.name;
 
-                    html += '<a class="clearLink" href="' + href + '" style="margin-left:2em;"><paper-button raised class="more mini">' + Globalize.translate('ButtonMore') + '</paper-button></a>';
+                    html += '<a class="clearLink" href="' + href + '" style="margin-left:2em;"><button is="emby-button" type="button" class="raised more mini">' + Globalize.translate('ButtonMore') + '</button></a>';
                 }
 
                 html += '</div>';
@@ -161,8 +162,6 @@
 
         Promise.all(promises).then(function () {
             Dashboard.hideLoadingMsg();
-
-            libraryBrowser.setLastRefreshed(page);
         });
     }
 

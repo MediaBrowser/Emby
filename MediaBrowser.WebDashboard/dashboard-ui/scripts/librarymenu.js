@@ -1,47 +1,40 @@
-﻿define(['imageLoader', 'layoutManager', 'jQuery', 'paper-icon-button', 'paper-button', 'emby-icons'], function (imageLoader, layoutManager, $) {
+﻿define(['imageLoader', 'layoutManager', 'viewManager', 'navdrawer', 'paper-icon-button-light', 'material-icons'], function (imageLoader, layoutManager, viewManager, navdrawer) {
 
-    var mainDrawerPanel = document.querySelector('.mainDrawerPanel');
+    var navDrawerElement = document.querySelector('.mainDrawer');
+    var navDrawerScrollContainer = navDrawerElement.querySelector('.scrollContainer');
+    var navDrawerInstance;
 
     function renderHeader() {
 
         var html = '';
 
         html += '<div class="primaryIcons">';
-        var backIcon = browserInfo.safari ? 'chevron-left' : 'arrow-back';
+        var backIcon = browserInfo.safari ? 'chevron_left' : 'arrow_back';
 
-        html += '<paper-icon-button icon="' + backIcon + '" class="headerButton headerButtonLeft headerBackButton hide"></paper-icon-button>';
+        html += '<button type="button" is="paper-icon-button-light" class="headerButton headerButtonLeft headerBackButton hide autoSize"><i class="md-icon">' + backIcon + '</i></button>';
 
-        if (AppInfo.enableNavDrawer) {
-            html += '<paper-icon-button icon="menu" class="headerButton mainDrawerButton barsMenuButton headerButtonLeft"></paper-icon-button>';
-        }
-
-        html += '<paper-icon-button icon="menu" class="headerButton headerAppsButton barsMenuButton headerButtonLeft"></paper-icon-button>';
+        html += '<button type="button" is="paper-icon-button-light" class="headerButton mainDrawerButton barsMenuButton headerButtonLeft autoSize"><i class="md-icon">menu</i></button>';
+        html += '<button type="button" is="paper-icon-button-light" class="headerButton headerAppsButton barsMenuButton headerButtonLeft autoSize"><i class="md-icon">menu</i></button>';
 
         html += '<div class="libraryMenuButtonText headerButton">' + Globalize.translate('ButtonHome') + '</div>';
 
         html += '<div class="viewMenuSecondary">';
 
         html += '<span class="headerSelectedPlayer"></span>';
-        html += '<paper-icon-button icon="cast" class="btnCast headerButton headerButtonRight hide"></paper-icon-button>';
+        html += '<button is="paper-icon-button-light" class="btnCast headerButton headerButtonRight hide autoSize"><i class="md-icon">cast</i></button>';
 
         if (AppInfo.enableSearchInTopMenu) {
-            html += '<paper-icon-button icon="search" class="headerButton headerButtonRight headerSearchButton hide" onclick="Search.showSearchPanel();"></paper-icon-button>';
-            html += '<div class="viewMenuSearch hide">';
-            html += '<form class="viewMenuSearchForm">';
-            html += '<input type="text" data-role="none" data-type="search" class="headerSearchInput" autocomplete="off" spellcheck="off" />';
-            html += '<paper-icon-button icon="close" class="btnCloseSearch"></paper-icon-button>';
-            html += '</form>';
-            html += '</div>';
+            html += '<button type="button" is="paper-icon-button-light" class="headerButton headerButtonRight headerSearchButton hide autoSize"><i class="md-icon">search</i></button>';
         }
 
-        html += '<paper-icon-button icon="mic" class="headerButton headerButtonRight headerVoiceButton hide"></paper-icon-button>';
+        html += '<button is="paper-icon-button-light" class="headerButton headerButtonRight headerVoiceButton hide autoSize"><i class="md-icon">mic</i></button>';
 
-        html += '<paper-button class="headerButton headerButtonRight btnNotifications subdued" type="button" title="Notifications"><div class="btnNotificationsInner">0</div></paper-button>';
+        html += '<button is="paper-icon-button-light" class="headerButton headerButtonRight btnNotifications"><div class="btnNotificationsInner">0</div></button>';
 
-        html += '<paper-icon-button icon="person" class="headerButton headerButtonRight headerUserButton"></paper-icon-button>';
+        html += '<button is="paper-icon-button-light" class="headerButton headerButtonRight headerUserButton autoSize"><i class="md-icon">person</i></button>';
 
         if (!browserInfo.mobile && !Dashboard.isConnectMode()) {
-            html += '<paper-icon-button icon="settings" class="headerButton headerButtonRight dashboardEntryHeaderButton" onclick="return LibraryMenu.onSettingsClicked(event);"></paper-icon-button>';
+            html += '<button is="paper-icon-button-light" class="headerButton headerButtonRight dashboardEntryHeaderButton autoSize" onclick="return LibraryMenu.onSettingsClicked(event);"><i class="md-icon">settings</i></button>';
         }
 
         html += '</div>';
@@ -75,6 +68,9 @@
     function updateUserInHeader(user) {
 
         var header = document.querySelector('.viewMenuBar');
+        if (!header) {
+            return;
+        }
 
         var headerUserButton = header.querySelector('.headerUserButton');
         var hasImage;
@@ -87,11 +83,11 @@
                 var url = user.imageUrl;
 
                 if (user.supportsImageParams) {
-                    url += "&height=" + (userButtonHeight * Math.max(window.devicePixelRatio || 1, 2));
+                    url += "&height=" + Math.round((userButtonHeight * Math.max(window.devicePixelRatio || 1, 2)));
                 }
 
                 if (headerUserButton) {
-                    updateHeaderUserButton(headerUserButton, url, null);
+                    updateHeaderUserButton(headerUserButton, url);
                     hasImage = true;
                 }
             }
@@ -99,7 +95,7 @@
 
         if (headerUserButton && !hasImage) {
 
-            updateHeaderUserButton(headerUserButton, null, 'person');
+            updateHeaderUserButton(headerUserButton, null);
         }
         if (user) {
             updateLocalUser(user.localUser);
@@ -108,28 +104,17 @@
         requiresUserRefresh = false;
     }
 
-    function updateHeaderUserButton(headerUserButton, src, icon) {
-
-        var oldButton = headerUserButton;
-
-        // There seems to be a bug in paper-icon-button where it doesn't refresh it's display after switching between icon and src image
-        // So work around that by just replacing the element altogether
-
-        var headerUserButton = document.createElement('paper-icon-button');
-        headerUserButton.className = oldButton.className;
-        headerUserButton.addEventListener('click', onHeaderUserButtonClick);
+    function updateHeaderUserButton(headerUserButton, src) {
 
         if (src) {
             headerUserButton.classList.add('headerUserButtonRound');
-            headerUserButton.src = src;
-        } else if (icon) {
-            headerUserButton.classList.remove('headerUserButtonRound');
-            headerUserButton.icon = icon;
+            headerUserButton.classList.remove('autoSize');
+            headerUserButton.innerHTML = '<img src="' + src + '" />';
         } else {
             headerUserButton.classList.remove('headerUserButtonRound');
+            headerUserButton.classList.add('autoSize');
+            headerUserButton.innerHTML = '<i class="md-icon">person</i>';
         }
-
-        oldButton.parentNode.replaceChild(headerUserButton, oldButton);
     }
 
     function updateLocalUser(user) {
@@ -184,6 +169,10 @@
         });
     }
 
+    function showSearch() {
+        Dashboard.navigate('search.html');
+    }
+
     function onHeaderUserButtonClick(e) {
         Dashboard.showUserFlyout(e.target);
     }
@@ -210,7 +199,7 @@
             html += '<div class="adminAppsMenuRow">';
 
             html += '<a class="adminAppsButton" href="home.html">';
-            html += '<paper-icon-button icon="home"></paper-icon-button>';
+            html += '<button is="paper-icon-button-light" class="autoSize"><i class="md-icon">home</i></button>';
             html += '<div>' + Globalize.translate('ButtonHome') + '</div>';
             html += '</a>';
 
@@ -219,11 +208,11 @@
             html += '<div class="adminAppsMenuRow">';
 
             html += '<a class="adminAppsButton" href="edititemmetadata.html">';
-            html += '<paper-icon-button icon="mode-edit"></paper-icon-button>';
+            html += '<button is="paper-icon-button-light" class="autoSize"><i class="md-icon">mode_edit</i></button>';
             html += '<div>' + Globalize.translate('ButtonMetadataManager') + '</div>';
             html += '</a>';
             html += '<a class="adminAppsButton" href="reports.html">';
-            html += '<paper-icon-button icon="insert-chart"></paper-icon-button>';
+            html += '<button is="paper-icon-button-light" class="autoSize"><i class="md-icon">insert_chart</i></button>';
             html += '<div>' + Globalize.translate('ButtonReports') + '</div>';
             html += '</a>';
 
@@ -261,6 +250,11 @@
             headerVoiceButton.addEventListener('click', showVoice);
         }
 
+        var headerSearchButton = document.querySelector('.headerSearchButton');
+        if (headerSearchButton) {
+            headerSearchButton.addEventListener('click', showSearch);
+        }
+
         var headerUserButton = document.querySelector('.headerUserButton');
         if (headerUserButton) {
             headerUserButton.addEventListener('click', onHeaderUserButtonClick);
@@ -289,17 +283,16 @@
 
     function toggleMainDrawer() {
 
-        if (mainDrawerPanel.selected == 'drawer') {
-            closeMainDrawer(mainDrawerPanel);
+        if (navDrawerInstance.isVisible) {
+            closeMainDrawer();
         } else {
-            openMainDrawer(mainDrawerPanel);
+            openMainDrawer();
         }
     }
 
-    function openMainDrawer(drawerPanel) {
+    function openMainDrawer() {
 
-        drawerPanel = drawerPanel || document.querySelector('.mainDrawerPanel');
-        drawerPanel.openDrawer();
+        navDrawerInstance.open();
         lastOpenTime = new Date().getTime();
     }
 
@@ -309,16 +302,13 @@
             document.body.classList.add('bodyWithPopupOpen');
         }
     }
-    function closeMainDrawer(drawerPanel) {
+    function closeMainDrawer() {
 
-        drawerPanel = drawerPanel || document.querySelector('.mainDrawerPanel');
-        drawerPanel.closeDrawer();
+        navDrawerInstance.close();
     }
     function onMainDrawerSelect(e) {
 
-        var drawer = e.target;
-
-        if (drawer.selected != 'drawer') {
+        if (!navDrawerInstance.isVisible) {
             document.body.classList.remove('bodyWithPopupOpen');
         } else {
             onMainDrawerOpened();
@@ -334,11 +324,11 @@
         var homeHref = window.ApiClient ? 'home.html' : 'selectserver.html?showuser=1';
 
         html += '<a class="lnkMediaFolder sidebarLink" href="' + homeHref + '" onclick="return LibraryMenu.onLinkClicked(event, this);">';
-        html += '<div style="background-image:url(\'css/images/mblogoicon.png\');width:' + 28 + 'px;height:' + 28 + 'px;background-size:contain;background-repeat:no-repeat;background-position:center center;border-radius:1000px;vertical-align:middle;margin:0 1.6em 0 1.5em;display:inline-block;"></div>';
+        html += '<div style="background-image:url(\'css/images/mblogoicon.png\');width:' + 28 + 'px;height:' + 28 + 'px;background-size:contain;background-repeat:no-repeat;background-position:center center;border-radius:1000px;vertical-align:middle;margin:0 1.85em 0 1.55em;display:inline-block;"></div>';
         html += Globalize.translate('ButtonHome');
         html += '</a>';
 
-        html += '<a class="sidebarLink lnkMediaFolder" data-itemid="remote" href="nowplaying.html" onclick="return LibraryMenu.onLinkClicked(event, this);"><iron-icon icon="tablet-android" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonRemote') + '</span></a>';
+        html += '<a class="sidebarLink lnkMediaFolder" data-itemid="remote" href="nowplaying.html" onclick="return LibraryMenu.onLinkClicked(event, this);"><i class="md-icon sidebarLinkIcon">tablet_android</i><span class="sidebarLinkText">' + Globalize.translate('ButtonRemote') + '</span></a>';
 
         html += '<div class="sidebarDivider"></div>';
 
@@ -355,11 +345,11 @@
             html += Globalize.translate('HeaderAdmin');
             html += '</div>';
 
-            html += '<a class="sidebarLink lnkMediaFolder lnkManageServer" data-itemid="dashboard" href="#"><iron-icon icon="dashboard" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonManageServer') + '</span></a>';
-            html += '<a class="sidebarLink lnkMediaFolder editorViewMenu" data-itemid="editor" onclick="return LibraryMenu.onLinkClicked(event, this);" href="edititemmetadata.html"><iron-icon icon="mode-edit" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonMetadataManager') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder lnkManageServer" data-itemid="dashboard" href="#"><i class="md-icon sidebarLinkIcon">dashboard</i><span class="sidebarLinkText">' + Globalize.translate('ButtonManageServer') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder editorViewMenu" data-itemid="editor" onclick="return LibraryMenu.onLinkClicked(event, this);" href="edititemmetadata.html"><i class="md-icon sidebarLinkIcon">mode_edit</i><span class="sidebarLinkText">' + Globalize.translate('ButtonMetadataManager') + '</span></a>';
 
             if (!browserInfo.mobile) {
-                html += '<a class="sidebarLink lnkMediaFolder" data-itemid="reports" onclick="return LibraryMenu.onLinkClicked(event, this);" href="reports.html"><iron-icon icon="insert-chart" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonReports') + '</span></a>';
+                html += '<a class="sidebarLink lnkMediaFolder" data-itemid="reports" onclick="return LibraryMenu.onLinkClicked(event, this);" href="reports.html"><i class="md-icon sidebarLinkIcon">insert_chart</i><span class="sidebarLinkText">' + Globalize.translate('ButtonReports') + '</span></a>';
             }
             html += '</div>';
         }
@@ -369,38 +359,32 @@
         html += '<div class="sidebarDivider"></div>';
 
         if (user.localUser && (AppInfo.isNativeApp && browserInfo.android)) {
-            html += '<a class="sidebarLink lnkMediaFolder lnkMySettings" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mypreferencesmenu.html?userId=' + user.localUser.Id + '"><iron-icon icon="settings" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonSettings') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder lnkMySettings" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mypreferencesmenu.html?userId=' + user.localUser.Id + '"><i class="md-icon sidebarLinkIcon">settings</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSettings') + '</span></a>';
         }
 
-        html += '<a class="sidebarLink lnkMediaFolder lnkMySync" data-itemid="mysync" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mysync.html"><iron-icon icon="sync" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonSync') + '</span></a>';
+        html += '<a class="sidebarLink lnkMediaFolder lnkMySync" data-itemid="mysync" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mysync.html"><i class="md-icon sidebarLinkIcon">sync</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSync') + '</span></a>';
 
         if (Dashboard.isConnectMode()) {
-            html += '<a class="sidebarLink lnkMediaFolder" data-itemid="selectserver" onclick="return LibraryMenu.onLinkClicked(event, this);" href="selectserver.html?showuser=1"><iron-icon icon="wifi" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonSelectServer') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder" data-itemid="selectserver" onclick="return LibraryMenu.onLinkClicked(event, this);" href="selectserver.html?showuser=1"><i class="md-icon sidebarLinkIcon">wifi</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSelectServer') + '</span></a>';
         }
 
         if (user.localUser) {
-            html += '<a class="sidebarLink lnkMediaFolder" data-itemid="logout" onclick="return LibraryMenu.onLogoutClicked(this);" href="#"><iron-icon icon="lock" class="sidebarLinkIcon"></iron-icon><span class="sidebarLinkText">' + Globalize.translate('ButtonSignOut') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder" data-itemid="logout" onclick="return LibraryMenu.onLogoutClicked(this);" href="#"><i class="md-icon sidebarLinkIcon">lock</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSignOut') + '</span></a>';
         }
 
         html += '</div>';
 
-        var drawer = mainDrawerPanel.querySelector('.mainDrawer');
+        navDrawerScrollContainer.innerHTML = html;
 
-        drawer.innerHTML = html;
-
-        var lnkManageServer = drawer.querySelector('.lnkManageServer');
+        var lnkManageServer = navDrawerScrollContainer.querySelector('.lnkManageServer');
         if (lnkManageServer) {
             lnkManageServer.addEventListener('click', onManageServerClicked);
         }
-
-        require(['imageLoader'], function (imageLoader) {
-            imageLoader.fillImages(mainDrawerPanel.getElementsByClassName('lazy'));
-        });
     }
 
     function refreshDashboardInfoInDrawer(page, user) {
 
-        if (!mainDrawerPanel.querySelector('.adminDrawerLogo')) {
+        if (!navDrawerScrollContainer.querySelector('.adminDrawerLogo')) {
             createDashboardMenu(page);
         } else {
             updateDashboardMenuSelectedItem();
@@ -422,7 +406,7 @@
 
     function updateDashboardMenuSelectedItem() {
 
-        var links = mainDrawerPanel.querySelectorAll('.sidebarLink');
+        var links = navDrawerScrollContainer.querySelectorAll('.sidebarLink');
 
         for (var i = 0, length = links.length; i < length; i++) {
             var link = links[i];
@@ -431,7 +415,7 @@
 
             var pageIds = link.getAttribute('data-pageids');
             if (pageIds) {
-                selected = pageIds.split(',').indexOf($.mobile.activePage.id) != -1
+                selected = pageIds.split(',').indexOf(viewManager.currentView().id) != -1
             }
 
             if (selected) {
@@ -439,6 +423,7 @@
 
                 var title = '';
 
+                link = link.querySelector('span') || link;
                 var secondaryTitle = (link.innerText || link.textContent).trim();
                 title += secondaryTitle;
 
@@ -455,15 +440,6 @@
     function createDashboardMenu() {
         var html = '';
 
-        //html += '<div class="userHeader">';
-        //html += '<div class="userHeaderActionMenu">';
-        //html += '<div>';
-        //html += localUser.Name;
-        //html += '</div>';
-        //html += '<paper-icon-button icon="expand-more"></paper-icon-button>';
-        //html += '</div>';
-        //html += '</div>';
-
         html += '<a class="adminDrawerLogo clearLink" href="home.html">'
         html += '<img src="css/images/logo.png" />';
         html += '</a>';
@@ -472,7 +448,7 @@
 
         html = html.split('href=').join('onclick="return LibraryMenu.onLinkClicked(event, this);" href=');
 
-        mainDrawerPanel.querySelector('.mainDrawer').innerHTML = html;
+        navDrawerScrollContainer.innerHTML = html;
 
         updateDashboardMenuSelectedItem();
     }
@@ -501,7 +477,7 @@
                 if (view.CollectionType == 'livetv') {
 
                     view.ImageTags = {};
-                    view.icon = 'live-tv';
+                    view.icon = 'live_tv';
                     view.onclick = "LibraryBrowser.showTab('livetv.html', 0);";
 
                     var guideView = Object.assign({}, view);
@@ -511,14 +487,6 @@
                     guideView.url = 'livetv.html?tab=1';
                     guideView.onclick = "LibraryBrowser.showTab('livetv.html', 1);";
                     list.push(guideView);
-
-                    var recordedTvView = Object.assign({}, view);
-                    recordedTvView.Name = Globalize.translate('ButtonRecordedTv');
-                    recordedTvView.ImageTags = {};
-                    recordedTvView.icon = 'video-library';
-                    recordedTvView.url = 'livetv.html?tab=3';
-                    recordedTvView.onclick = "LibraryBrowser.showTab('livetv.html', 3);";
-                    list.push(recordedTvView);
                 }
             }
 
@@ -586,19 +554,19 @@
                 }
 
                 if (i.CollectionType == "photos") {
-                    icon = 'photo-library';
+                    icon = 'photo_library';
                     color = "#009688";
                 }
                 else if (i.CollectionType == "music" || i.CollectionType == "musicvideos") {
-                    icon = 'library-music';
+                    icon = 'library_music';
                     color = '#FB8521';
                 }
                 else if (i.CollectionType == "books") {
-                    icon = 'library-books';
+                    icon = 'library_books';
                     color = "#1AA1E1";
                 }
                 else if (i.CollectionType == "playlists") {
-                    icon = 'view-list';
+                    icon = 'view_list';
                     color = "#795548";
                 }
                 else if (i.CollectionType == "games") {
@@ -606,7 +574,7 @@
                     color = "#F44336";
                 }
                 else if (i.CollectionType == "movies") {
-                    icon = 'video-library';
+                    icon = 'video_library';
                     color = '#CE5043';
                 }
                 else if (i.CollectionType == "channels" || i.Type == 'Channel') {
@@ -618,14 +586,14 @@
                     color = "#4CAF50";
                 }
                 else if (i.CollectionType == "livetv") {
-                    icon = 'live-tv';
+                    icon = 'live_tv';
                     color = "#293AAE";
                 }
 
                 icon = i.icon || icon;
 
                 var onclick = i.onclick ? ' function(){' + i.onclick + '}' : 'null';
-                return '<a data-itemid="' + itemId + '" class="lnkMediaFolder sidebarLink" onclick="return LibraryMenu.onLinkClicked(event, this, ' + onclick + ');" href="' + getItemHref(i, i.CollectionType) + '"><iron-icon icon="' + icon + '" class="sidebarLinkIcon" style="color:' + color + '"></iron-icon><span class="sectionName">' + i.Name + '</span></a>';
+                return '<a data-itemid="' + itemId + '" class="lnkMediaFolder sidebarLink" onclick="return LibraryMenu.onLinkClicked(event, this, ' + onclick + ');" href="' + getItemHref(i, i.CollectionType) + '"><i class="md-icon sidebarLinkIcon" style="color:' + color + '">' + icon + '</i><span class="sectionName">' + i.Name + '</span></a>';
 
             }).join('');
 
@@ -652,6 +620,11 @@
         return getParameterByName('topParentId') || null;
     }
 
+    function getNavigateDelay() {
+        // On mobile devices don't navigate until after the closing animation has completed or it may stutter
+        return browserInfo.mobile ? 320 : 200;;
+    }
+
     window.LibraryMenu = {
         getTopParentId: getTopParentId,
 
@@ -667,8 +640,6 @@
                 setTimeout(function () {
                     closeMainDrawer();
 
-                    // On mobile devices don't navigate until after the closing animation has completed or it may stutter
-                    var delay = browserInfo.mobile ? 350 : 200;
 
                     setTimeout(function () {
                         if (action) {
@@ -676,7 +647,7 @@
                         } else {
                             Dashboard.navigate(link.href);
                         }
-                    }, delay);
+                    }, getNavigateDelay());
 
                 }, 50);
             }
@@ -692,12 +663,9 @@
 
                 closeMainDrawer();
 
-                // On mobile devices don't navigate until after the closing animation has completed or it may stutter
-                var delay = browserInfo.mobile ? 350 : 200;
-
                 setTimeout(function () {
                     Dashboard.logout();
-                }, delay);
+                }, getNavigateDelay());
             }
 
             return false;
@@ -725,7 +693,7 @@
             if (!type) {
                 if (LibraryMenu.tabType) {
 
-                    mainDrawerPanel.classList.remove('withTallToolbar');
+                    document.body.classList.remove('withTallToolbar');
                     viewMenuBarTabs = document.querySelector('.viewMenuBarTabs');
                     viewMenuBarTabs.innerHTML = '';
                     viewMenuBarTabs.classList.add('hide');
@@ -751,7 +719,7 @@
                         return '<paper-tab link><a class="clearLink paperTabLink" href="' + t.href + '"><div>' + t.name + '</div></a></paper-tab>';
 
                     }).join('') + '</paper-tabs>';
-                    mainDrawerPanel.classList.add('withTallToolbar');
+                    document.body.classList.add('withTallToolbar');
                     LibraryMenu.tabType = type;
                 });
                 return;
@@ -765,16 +733,19 @@
 
             var html = title;
 
-            var page = $.mobile.activePage;
+            var page = viewManager.currentView();
             if (page) {
                 var helpUrl = page.getAttribute('data-helpurl');
 
                 if (helpUrl) {
-                    html += '<a href="' + helpUrl + '" target="_blank" class="clearLink" style="margin-left:1em;" title="' + Globalize.translate('ButtonHelp') + '"><paper-icon-button icon="info"></paper-icon-button></a>';
+                    html += '<a href="' + helpUrl + '" target="_blank" class="clearLink" style="margin-left:2em;" title="' + Globalize.translate('ButtonHelp') + '"><button is="emby-button" type="button" class="accent" style="margin:0;font-weight:normal;font-size:14px;padding:.25em;display:block;align-items:center;"><i class="md-icon">info</i><span>' + Globalize.translate('ButtonHelp') + '</span></button></a>';
                 }
             }
 
-            document.querySelector('.libraryMenuButtonText').innerHTML = html;
+            var libraryMenuButtonText = document.querySelector('.libraryMenuButtonText');
+            if (libraryMenuButtonText) {
+                libraryMenuButtonText.innerHTML = html;
+            }
         },
 
         setBackButtonVisible: function (visible) {
@@ -822,18 +793,22 @@
 
         var btnCast = context.querySelector('.btnCast');
 
+        if (!btnCast) {
+            return;
+        }
+
         var info = MediaController.getPlayerInfo();
 
         if (info.isLocalPlayer) {
 
-            btnCast.icon = 'cast';
+            btnCast.querySelector('i').innerHTML = 'cast';
             btnCast.classList.remove('btnActiveCast');
 
             context.querySelector('.headerSelectedPlayer').innerHTML = '';
 
         } else {
 
-            btnCast.icon = 'cast-connected';
+            btnCast.querySelector('i').icon = 'cast_connected';
             btnCast.classList.add('btnActiveCast');
             context.querySelector('.headerSelectedPlayer').innerHTML = info.deviceName || info.name;
         }
@@ -927,16 +902,18 @@
 
         var viewMenuBar = document.querySelector('.viewMenuBar');
 
-        if (page.classList.contains('standalonePage')) {
-            viewMenuBar.classList.add('hide');
-        } else {
-            viewMenuBar.classList.remove('hide');
-        }
+        if (viewMenuBar) {
+            if (page.classList.contains('standalonePage')) {
+                viewMenuBar.classList.add('hide');
+            } else {
+                viewMenuBar.classList.remove('hide');
+            }
 
-        if (page.classList.contains('type-interior') && !layoutManager.mobile) {
-            viewMenuBar.classList.add('headroomDisabled');
-        } else {
-            viewMenuBar.classList.remove('headroomDisabled');
+            if (page.classList.contains('type-interior') && !layoutManager.mobile) {
+                viewMenuBar.classList.add('headroomDisabled');
+            } else {
+                viewMenuBar.classList.remove('headroomDisabled');
+            }
         }
 
         if (requiresUserRefresh) {
@@ -976,14 +953,14 @@
 
         if (isDashboardPage) {
             refreshDashboardInfoInDrawer(page);
-            mainDrawerPanel.forceNarrow = false;
+            //mainDrawerPanel.forceNarrow = false;
         } else {
 
-            if (mainDrawerPanel.classList.contains('adminDrawerPanel')) {
+            if (navDrawerElement.classList.contains('adminDrawer')) {
                 refreshLibraryDrawer();
             }
 
-            mainDrawerPanel.forceNarrow = true;
+            //mainDrawerPanel.forceNarrow = true;
         }
 
         setDrawerClass(page);
@@ -1095,9 +1072,7 @@
         var admin = false;
 
         if (!page) {
-            if (window.$ && window.$.mobile) {
-                page = $.mobile.activePage;
-            }
+            page = viewManager.currentView();
         }
 
         if (page && page.classList.contains('type-interior')) {
@@ -1105,11 +1080,11 @@
         }
 
         if (admin) {
-            mainDrawerPanel.classList.add('adminDrawerPanel');
-            mainDrawerPanel.classList.remove('darkDrawerPanel');
+            navDrawerElement.classList.add('adminDrawer');
+            navDrawerElement.classList.remove('darkDrawer');
         } else {
-            mainDrawerPanel.classList.add('darkDrawerPanel');
-            mainDrawerPanel.classList.remove('adminDrawerPanel');
+            navDrawerElement.classList.add('darkDrawer');
+            navDrawerElement.classList.remove('adminDrawer');
         }
     }
 
@@ -1125,8 +1100,34 @@
         });
     }
 
-    mainDrawerPanel.addEventListener('iron-select', onMainDrawerSelect);
+    function getNavDrawerOptions() {
 
+        var drawerWidth = screen.availWidth - 50;
+        // At least 240
+        drawerWidth = Math.max(drawerWidth, 240);
+        // But not exceeding 270
+        drawerWidth = Math.min(drawerWidth, 270);
+
+        var disableEdgeSwipe = false;
+
+        if (browserInfo.safari) {
+            disableEdgeSwipe = true;
+        }
+
+        // Default is 600px
+        //drawer.responsiveWidth = '640px';
+
+        return {
+            target: navDrawerElement,
+            onChange: onMainDrawerSelect,
+            width: drawerWidth,
+            disableEdgeSwipe: disableEdgeSwipe,
+            edgeSwipeElement: document.querySelector('.mainDrawerPanelContent')
+        };
+    }
+
+    navDrawerInstance = new navdrawer(getNavDrawerOptions());
+    navDrawerElement.classList.remove('hide');
     renderHeader();
 
     Events.on(ConnectionManager, 'apiclientcreated', function (e, apiClient) {
@@ -1135,17 +1136,10 @@
 
     Events.on(ConnectionManager, 'localusersignedin', function (e, user) {
         setDrawerClass();
-        var apiClient = ConnectionManager.getApiClient(user.ServerId);
         ConnectionManager.user(ConnectionManager.getApiClient(user.ServerId)).then(function (user) {
             refreshLibraryDrawer(user);
             updateUserInHeader(user);
         });
-
-        if (!AppInfo.isNativeApp) {
-            require(['components/servertestermessage'], function (message) {
-                message.show(apiClient);
-            });
-        }
     });
 
     Events.on(ConnectionManager, 'localusersignedout', updateUserInHeader);
