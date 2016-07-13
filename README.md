@@ -36,20 +36,3 @@ If you're a new user looking to install Emby Server, please head over to [emby.m
 ## Visit our community: ##
 
 http://emby.media/community
-
-## Images
-
-![Android](https://dl.dropboxusercontent.com/u/4038856/android1.png)
-![Android](https://dl.dropboxusercontent.com/u/4038856/android2.png)
-![Html5](https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/apps/html5.png)
-![iOS](https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/apps/ios_1.jpg)
-![iOS](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/ios_2.jpg)
-![Emby Theater](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/mbt.png)
-![Emby Theater](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/mbt1.png)
-![Windows Phone](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/winphone.png)
-![Roku](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/roku2.jpg)
-![iOS](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/ios_3.jpg)
-![Dashboard](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/dashboard.png)
-![iOS](http://i.imgur.com/prrzxMc.jpg)
-![iOS](http://i.imgur.com/c9Vd1w5.jpg)
-
