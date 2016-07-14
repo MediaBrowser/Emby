@@ -23,3 +23,8 @@ If you're a new user looking to install Emby Server, please head over to [emby.m
 ## Visit our community: ##
 
 http://emby.media/community
+
+
+## Visit the Developer ##
+
+If you use this software, consider supporting the developer by paying for an [Emby Premiere subscription](http://emby.media/premiere.html).
