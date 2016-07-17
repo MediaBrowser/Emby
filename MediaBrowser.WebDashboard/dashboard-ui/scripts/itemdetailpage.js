@@ -298,9 +298,7 @@
 
         var section = page.querySelector('.nextUpSection');
 
-        var userData = item.UserData || {};
-
-        if (item.Type != 'Series' || !userData.PlayedPercentage) {
+        if (item.Type != 'Series') {
             section.classList.add('hide');
             return;
         }
@@ -500,7 +498,7 @@
         }
 
         var artist = page.querySelectorAll('.artist');
-        for (i = 0, length = itemMiscInfo.length; i < length; i++) {
+        for (i = 0, length = artist.length; i < length; i++) {
             if (item.ArtistItems && item.ArtistItems.length && item.Type != "MusicAlbum") {
                 artist[i].classList.remove('hide');
                 artist[i].innerHTML = getArtistLinksHtml(item.ArtistItems, context);
@@ -2155,8 +2153,8 @@
         childrenItemsContainer.addEventListener('playallfromhere', function (e) {
             LibraryBrowser.playAllFromHere(_childrenItemsFunction, e.detail.index);
         });
-        childrenItemsContainer.addEventListener('playallfromhere', function (e) {
-            LibraryBrowser.playAllFromHere(_childrenItemsFunction, e.detail.index);
+        childrenItemsContainer.addEventListener('queueallfromhere', function (e) {
+            LibraryBrowser.queueAllFromHere(_childrenItemsFunction, e.detail.index);
         });
 
         view.addEventListener('click', function (e) {
