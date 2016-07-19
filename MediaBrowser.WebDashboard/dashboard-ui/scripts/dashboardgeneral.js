@@ -131,6 +131,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: view.querySelector('#txtCachePath').value,
+
                     callback: function (path) {
 
                         if (path) {
@@ -154,6 +157,7 @@
 
                 picker.show({
 
+                    path: view.querySelector('#txtDashboardSourcePath').value,
                     callback: function (path) {
 
                         if (path) {

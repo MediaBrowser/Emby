@@ -110,6 +110,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtRecordingPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {
@@ -129,6 +132,9 @@
 
                 picker.show({
 
+                    includeHidden: true,
+                    path: $('#txtMovieRecordingPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {
@@ -147,6 +153,9 @@
                 var picker = new directoryBrowser();
 
                 picker.show({
+
+                    includeHidden: true,
+                    path: $('#txtSeriesRecordingPath', page).val(),
 
                     callback: function (path) {
 

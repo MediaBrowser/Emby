@@ -42,9 +42,11 @@
             promises.push(ApiClient.getNetworkDevices());
         }
         else if (path) {
-
             promises.push(ApiClient.getDirectoryContents(path, fileOptions));
-            promises.push(ApiClient.getParentPath(path));
+            parentPathPromise = ApiClient.getParentPath(path).then(function (response) {
+                return response;
+            });
+			promises.push(parentPathPromise);
         } else {
             promises.push(ApiClient.getDrives());
         }
@@ -80,7 +82,13 @@
 
             Dashboard.hideLoadingMsg();
 
-        }, function () {
+        }, function (errorResponse) {
+
+            if (errorResponse.status == 404 && path) {
+                // Initial path could not be found. Default to root drives view
+                refreshDirectoryBrowser(page, null, fileOptions);
+                return;
+            }
 
             $('#txtDirectoryPickerPath', page).val("");
             $('.results', page).html('');
@@ -93,6 +101,10 @@
 
         var html = '';
         html += '<paper-item role="menuitem" class="' + cssClass + '" data-type="' + type + '" data-path="' + path + '">';
+
+        var icon = (type == 'File') ? 'menu' : 'folder';
+        html += '<iron-icon icon="' + icon + '" style="margin-right: 10px;" ></iron-icon>';
+
         html += '<paper-item-body>';
         html += name;
         html += '</paper-item-body>';
@@ -206,6 +218,10 @@
                 fileOptions.includeFiles = options.includeFiles;
             }
 
+            if (options.includeHidden != null) {
+                fileOptions.includeHidden = options.includeHidden;
+            }
+
             getSystemInfo().then(function (systemInfo) {
 
                 var dlg = dialogHelper.createDialog({
@@ -255,7 +271,7 @@
                     txtCurrentPath.val(options.path);
                 }
 
-                refreshDirectoryBrowser(editorContent, txtCurrentPath.val());
+                refreshDirectoryBrowser(editorContent, txtCurrentPath.val(), fileOptions);
 
             });
         };

@@ -85,6 +85,8 @@
 
                 picker.show({
 
+                    path: $('#txtCustomIntrosPath', page).val(),
+
                     callback: function (path) {
 
                         if (path) {

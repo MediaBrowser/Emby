@@ -155,6 +155,8 @@
 
                 picker.show({
 
+                    path: view.querySelector('#txtWatchFolder').value,
+
                     callback: function (path) {
 
                         if (path) {
