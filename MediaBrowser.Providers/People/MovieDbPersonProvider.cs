@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.People
 {
@@ -186,12 +187,12 @@ namespace MediaBrowser.Providers.People
 
                 if (DateTime.TryParseExact(info.birthday, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out date))
                 {
-                    item.PremiereDate = date.ToUniversalTime();
+                    item.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(date, ProviderUtils.GetUsEasternTimeZoneInfo());
                 }
 
                 if (DateTime.TryParseExact(info.deathday, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out date))
                 {
-                    item.EndDate = date.ToUniversalTime();
+                    item.EndDate = TimeZoneInfo.ConvertTimeToUtc(date, ProviderUtils.GetUsEasternTimeZoneInfo());
                 }
 
                 item.SetProviderId(MetadataProviders.Tmdb, info.id.ToString(_usCulture));

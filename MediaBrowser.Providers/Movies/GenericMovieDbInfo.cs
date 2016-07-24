@@ -14,6 +14,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -223,7 +224,7 @@ namespace MediaBrowser.Providers.Movies
                 // These dates are always in this exact format
                 if (DateTime.TryParse(movieData.release_date, _usCulture, DateTimeStyles.None, out r))
                 {
-                    movie.PremiereDate = r.ToUniversalTime();
+                    movie.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                     movie.ProductionYear = movie.PremiereDate.Value.Year;
                 }
             }
