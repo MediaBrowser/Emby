@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser', 'appSettings', 'scrollStyles', 'emby-button', 'paper-icon-button-light'], function (LibraryBrowser, appSettings) {
+﻿define(['libraryBrowser', 'appSettings', 'components/groupedcards', 'scrollStyles', 'emby-button', 'paper-icon-button-light', 'emby-itemscontainer'], function (LibraryBrowser, appSettings, groupedcards) {
 
     function getUserViews(userId) {
 
@@ -50,11 +50,11 @@
 
             switch (item.CollectionType) {
                 case "movies":
-                    icon = "local-movies";
+                    icon = "local_movies";
                     backgroundColor = 'rgba(176, 94, 81, 0.9)';
                     break;
                 case "music":
-                    icon = "library-music";
+                    icon = "library_music";
                     backgroundColor = 'rgba(217, 145, 67, 0.9)';
                     break;
                 case "photos":
@@ -62,11 +62,11 @@
                     backgroundColor = 'rgba(127, 0, 0, 0.9)';
                     break;
                 case "livetv":
-                    icon = "live-tv";
+                    icon = "live_tv";
                     backgroundColor = 'rgba(217, 145, 67, 0.9)';
                     break;
                 case "tvshows":
-                    icon = "live-tv";
+                    icon = "live_tv";
                     backgroundColor = 'rgba(77, 88, 164, 0.9)';
                     break;
                 case "games":
@@ -74,15 +74,15 @@
                     backgroundColor = 'rgba(183, 202, 72, 0.9)';
                     break;
                 case "trailers":
-                    icon = "local-movies";
+                    icon = "local_movies";
                     backgroundColor = 'rgba(176, 94, 81, 0.9)';
                     break;
                 case "homevideos":
-                    icon = "video-library";
+                    icon = "video_library";
                     backgroundColor = 'rgba(110, 52, 32, 0.9)';
                     break;
                 case "musicvideos":
-                    icon = "video-library";
+                    icon = "video_library";
                     backgroundColor = 'rgba(143, 54, 168, 0.9)';
                     break;
                 case "books":
@@ -111,11 +111,11 @@
 
             icon = item.icon || icon;
 
-            html += '<a' + onclick + ' data-itemid="' + item.Id + '" class="' + cssClass + '" href="' + href + '">';
+            html += '<a' + onclick + ' data-id="' + item.Id + '" class="' + cssClass + '" href="' + href + '">';
             html += '<div class="cardBox" style="background-color:' + backgroundColor + ';margin:4px;border-radius:4px;">';
 
             html += "<div class='cardText' style='padding:8px 10px;color:#fff;'>";
-            html += '<iron-icon icon="' + icon + '"></iron-icon>';
+            html += '<i class="md-icon">' + icon + '</i>';
             html += '<span style="margin-left:.7em;">' + item.Name + '</span>';
             html += "</div>";
 
@@ -228,7 +228,7 @@
 
         var html = '';
         html += '<div>';
-        html += '<h1>Try Emby Theater<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Try Emby Theater<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var nameText = AppInfo.isNativeApp ? 'Emby Theater' : '<a href="https://emby.media/download" target="_blank">Emby Theater</a>';
         html += '<p>A beautiful app for your TV and large screen tablet. ' + nameText + ' runs on Windows, Xbox One, Google Chrome, FireFox, Microsoft Edge and Opera.</p>';
@@ -246,7 +246,7 @@
 
         var html = '';
         html += '<div>';
-        html += '<h1>Try Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Try Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var cardTarget = AppInfo.isNativeApp ? '' : 'https://emby.media/premiere';
         var learnMoreText = AppInfo.isNativeApp ? '' : '<a href="https://emby.media/premiere" target="_blank">Learn more</a>';
@@ -265,7 +265,7 @@
     function getUpgradeMobileLayoutsInfo() {
         var html = '';
         html += '<div>';
-        html += '<h1>Unlock Improved Layouts with Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Unlock Improved Layouts with Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var cardTarget = AppInfo.isNativeApp ? '' : 'https://emby.media/premiere';
         var learnMoreText = AppInfo.isNativeApp ? '' : '<a href="https://emby.media/premiere" target="_blank">Learn more</a>';
@@ -302,7 +302,7 @@
 
                 html += '</div>';
 
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer">';
 
                 html += LibraryBrowser.getPosterViewHtml({
                     items: items,
@@ -321,9 +321,8 @@
             }
 
             elem.innerHTML = html;
+            elem.addEventListener('click', groupedcards.onItemsContainerClick);
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -347,9 +346,9 @@
             if (items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestMovies') + '</h1>';
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer">';
                 }
                 html += LibraryBrowser.getPosterViewHtml({
                     items: items,
@@ -366,8 +365,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -391,9 +388,9 @@
             if (items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestEpisodes') + '</h1>';
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer">';
                 }
 
                 html += LibraryBrowser.getPosterViewHtml({
@@ -411,8 +408,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -434,7 +429,7 @@
 
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestChannelMedia') + '</h1>';
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer">';
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
                     shape: 'auto',
@@ -449,8 +444,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -478,9 +471,9 @@
                 var scrollX = enableScrollX() && browserInfo.safari && screenWidth > 800;
 
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer homeTopViews">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer homeTopViews">';
                 } else {
-                    html += '<div class="itemsContainer homeTopViews">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer homeTopViews">';
                 }
                 html += LibraryBrowser.getPosterViewHtml({
                     items: items,
@@ -506,8 +499,6 @@
 
                 elem.innerHTML = html + infoHtml;
                 ImageLoader.lazyChildren(elem);
-
-                LibraryBrowser.createCardMenus(elem, { showDetailsMenu: false });
             });
         });
     }
@@ -539,9 +530,9 @@
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderResume') + '</h1>';
                 if (enableScrollX()) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer">';
                 }
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
@@ -562,7 +553,6 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -584,9 +574,9 @@
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderNextUp') + '</h1>';
                 if (enableScrollX()) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer">';
                 }
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
@@ -606,7 +596,6 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -667,7 +656,7 @@
                 html += '<a href="channelitems.html?id=' + channel.Id + '" class="clearLink" style="margin-left:2em;"><button is="emby-button" type="button" class="raised more mini"><span>' + Globalize.translate('ButtonMore') + '</span></button></a>';
                 html += '</div>';
 
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" is="emby-itemscontainer" class="itemsContainer">';
                 html += LibraryBrowser.getPosterViewHtml({
                     items: result.Items,
                     shape: 'autohome',
@@ -685,8 +674,6 @@
             var elem = page.querySelector('#channel' + channel.Id + '');
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -715,9 +702,9 @@
             }
 
             if (enableScrollX()) {
-                html += '<div class="hiddenScrollX itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
             } else {
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer">';
             }
             html += LibraryBrowser.getPosterViewHtml({
                 items: result.Items,
@@ -734,7 +721,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 

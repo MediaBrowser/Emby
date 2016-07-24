@@ -783,10 +783,14 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
             return null;
         };
 
-        self.displayContent = function (options) {
+        self.displayContent = function (cmd) {
 
-            // Handle it the same as a remote control command
-            Dashboard.onBrowseCommand(options);
+            var apiClient = ApiClient;
+            apiClient.getItem(apiClient.getCurrentUserId(), cmd.ItemId).then(function (item) {
+                require(['embyRouter'], function (embyRouter) {
+                    embyRouter.showItem(item);
+                });
+            });
         };
 
         self.getItemsForPlayback = function (query) {
@@ -1260,7 +1264,9 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
             nowPlayingItem.PremiereDate = item.PremiereDate;
             nowPlayingItem.SeriesName = item.SeriesName;
             nowPlayingItem.Album = item.Album;
+            nowPlayingItem.AlbumId = item.AlbumId;
             nowPlayingItem.Artists = item.Artists;
+            nowPlayingItem.ArtistItems = item.ArtistItems;
 
             var imageTags = item.ImageTags || {};
 

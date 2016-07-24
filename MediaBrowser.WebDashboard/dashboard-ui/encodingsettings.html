@@ -9,7 +9,7 @@
                     <select is="emby-select" id="selectVideoDecoder" label="${LabelHardwareAccelerationType}">
                         <option value="">${OptionNone}</option>
                         <option value="qsv">Intel Quick Sync</option>
-                        <option value="h264_omx">h264_omx (experimental)</option>
+                        <option value="h264_omx">OpenMAX OMX (experimental)</option>
                         <option value="nvenc">Nvidia NVENC (experimental)</option>
                     </select>
                     <div class="fieldDescription">${LabelHardwareAccelerationTypeHelp}</div>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div>
-                    <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
+                    <button is="emby-button" type="submit" class="raised submit block"><i class="md-icon">check</i><span>${ButtonSave}</span></button>
                 </div>
             </form>
         </div>

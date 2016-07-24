@@ -1,4 +1,4 @@
-﻿<div id="supporterKeyPage" data-role="page" class="page type-interior withTabs" data-require="jqmcollapsible,scripts/supporterkeypage,emby-input,emby-button">
+﻿<div id="supporterKeyPage" data-role="page" class="page type-interior withTabs" data-require="emby-collapse,scripts/supporterkeypage,emby-input,emby-button">
 
     <div data-role="content">
         <div class="content-primary">
@@ -13,7 +13,7 @@
                     <div class="supporterContainer hide">
                         <br />
                         <a class="clearLink" href="http://emby.media/premiere" target="_blank">
-                            <button is="emby-button" type="button" class="raised block accent"><iron-icon icon="check"></iron-icon><span>${HeaderBecomeProjectSupporter}</span></button>
+                            <button is="emby-button" type="button" class="raised block accent"><i class="md-icon">check</i><span>${HeaderBecomeProjectSupporter}</span></button>
                         </a>
                     </div>
                 </div>
@@ -44,29 +44,26 @@
 
                     </div>
                     <p>
-                        <button is="emby-button" type="submit" id="mbLegacyKeyBtn" class="raised block submit"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
+                        <button is="emby-button" type="submit" id="mbLegacyKeyBtn" class="raised block submit"><i class="md-icon">check</i><span>${ButtonSave}</span></button>
                     </p>
                 </form>
                 <br />
-                <div data-role="collapsible">
-                    <h3>${HeaderForgotKey}</h3>
-                    <div>
+                <div is="emby-collapse" title="${HeaderForgotKey}">
+                    <div class="collapseContent">
                         <form id="lostKeyForm">
                             <div style="margin: 1em 0;" class="inputContainer">
                                 <input is="emby-input" type="email" required id="txtEmail" label="${LabelEmailAddress}" />
                                 <div class="fieldDescription">${LabelSupporterEmailAddress}</div>
                             </div>
                             <p>
-                                <button is="emby-button" type="submit" id="mbRetrieveKeyBtn" class="raised block submit"><iron-icon icon="check"></iron-icon><span>${ButtonRetrieveKey}</span></button>
+                                <button is="emby-button" type="submit" id="mbRetrieveKeyBtn" class="raised block submit"><i class="md-icon">check</i><span>${ButtonRetrieveKey}</span></button>
                             </p>
                         </form>
                     </div>
                 </div>
 
-                <div data-role="collapsible">
-                    <h3>${HeaderMultipleKeyLinking}</h3>
-                    <div>
-
+                <div is="emby-collapse" title="${HeaderMultipleKeyLinking}">
+                    <div class="collapseContent">
                         <form id="linkKeysForm">
                             <p>
                                 ${MultipleKeyLinkingHelp}
@@ -84,7 +81,7 @@
                                 <input is="emby-input" type="password" required id="txtOldKey" label="${LabelOldSupporterKey}" />
                             </div>
                             <p>
-                                <button is="emby-button" type="submit" id="mbLinkKeysBtn" class="raised block submit"><iron-icon icon="check"></iron-icon><span>${ButtonLinkKeys}</span></button>
+                                <button is="emby-button" type="submit" id="mbLinkKeysBtn" class="raised block submit"><i class="md-icon">check</i><span>${ButtonLinkKeys}</span></button>
                             </p>
                         </form>
                     </div>

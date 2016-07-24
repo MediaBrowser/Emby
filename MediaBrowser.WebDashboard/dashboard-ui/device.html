@@ -1,4 +1,4 @@
-﻿<div id="devicePage" data-role="page" class="page type-interior devicesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Devices" data-require="scripts/device,paper-input,emby-button">
+﻿<div id="devicePage" data-role="page" class="page type-interior devicesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Devices" data-require="jqmlistview,scripts/device,paper-input,emby-button">
 
     <div data-role="content">
         <div class="content-primary">
@@ -17,14 +17,14 @@
                         </li>
                         <li id="fldCameraUploadPath" style="display:none;">
                             <paper-input id="txtUploadPath" label="${LabelCameraUploadPath}" style="width:85%;display:inline-block;"></paper-input>
-                            <button type="button" is="paper-icon-button-light" id="btnSelectUploadPath" title="${ButtonSelectDirectory}"><iron-icon icon="search"></iron-icon></button>
+                            <button type="button" is="paper-icon-button-light" id="btnSelectUploadPath" title="${ButtonSelectDirectory}" class="autoSize"><i class="md-icon">search</i></button>
                             <div class="fieldDescription">${LabelCameraUploadPathHelp}</div>
                         </li>
 
                     </ul><br />
                     <ul data-role="listview" class="ulForm">
                         <li>
-                            <button is="emby-button" type="submit" class="raised submit block"><iron-icon icon="check"></iron-icon><span>${ButtonSave}</span></button>
+                            <button is="emby-button" type="submit" class="raised submit block"><i class="md-icon">check</i><span>${ButtonSave}</span></button>
                         </li>
                     </ul>
 

@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['libraryBrowser'], function (libraryBrowser) {
 
     return function (view, params, tabContent) {
 
@@ -19,11 +19,11 @@
                         Fields: "DateCreated,SyncInfo,ItemCounts",
                         StartIndex: 0
                     },
-                    view: LibraryBrowser.getSavedView(key) || LibraryBrowser.getDefaultItemsView('Thumb', 'Thumb')
+                    view: libraryBrowser.getSavedView(key) || libraryBrowser.getDefaultItemsView('PosterCard', 'PosterCard')
                 };
 
                 pageData.query.ParentId = params.topParentId;
-                LibraryBrowser.loadSavedQueryValues(key, pageData.query);
+                libraryBrowser.loadSavedQueryValues(key, pageData.query);
             }
             return pageData;
         }
@@ -35,7 +35,7 @@
 
         function getSavedQueryKey() {
 
-            return LibraryBrowser.getSavedQueryKey('genres');
+            return libraryBrowser.getSavedQueryKey('genres');
         }
 
         function getPromise() {
@@ -57,7 +57,7 @@
                 var viewStyle = self.getCurrentViewStyle();
 
                 if (viewStyle == "Thumb") {
-                    html = LibraryBrowser.getPosterViewHtml({
+                    html = libraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "backdrop",
                         preferThumb: true,
@@ -65,12 +65,13 @@
                         showItemCounts: true,
                         centerText: true,
                         lazy: true,
-                        overlayMoreButton: true
+                        overlayMoreButton: true,
+                        showTitle: true
                     });
                 }
                 else if (viewStyle == "ThumbCard") {
 
-                    html = LibraryBrowser.getPosterViewHtml({
+                    html = libraryBrowser.getPosterViewHtml({
                         items: result.Items,
                         shape: "backdrop",
                         preferThumb: true,
@@ -82,9 +83,9 @@
                     });
                 }
                 else if (viewStyle == "PosterCard") {
-                    html = LibraryBrowser.getPosterViewHtml({
+                    html = libraryBrowser.getPosterViewHtml({
                         items: result.Items,
-                        shape: "portrait",
+                        shape: "auto",
                         context: 'music',
                         showItemCounts: true,
                         lazy: true,
@@ -93,14 +94,15 @@
                     });
                 }
                 else if (viewStyle == "Poster") {
-                    html = LibraryBrowser.getPosterViewHtml({
+                    html = libraryBrowser.getPosterViewHtml({
                         items: result.Items,
-                        shape: "portrait",
+                        shape: "auto",
                         context: 'music',
                         centerText: true,
                         showItemCounts: true,
                         lazy: true,
-                        overlayMoreButton: true
+                        overlayMoreButton: true,
+                        showTitle: true
                     });
                 }
 
@@ -108,7 +110,7 @@
                 elem.innerHTML = html;
                 ImageLoader.lazyChildren(elem);
 
-                LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+                libraryBrowser.saveQueryValues(getSavedQueryKey(), query);
 
                 Dashboard.hideLoadingMsg();
             });
@@ -123,7 +125,7 @@
 
         self.setCurrentViewStyle = function (viewStyle) {
             getPageData(tabContent).view = viewStyle;
-            LibraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
+            libraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
             fullyReload();
         };
 
@@ -147,7 +149,7 @@
         var btnSelectView = tabContent.querySelector('.btnSelectView');
         btnSelectView.addEventListener('click', function (e) {
 
-            LibraryBrowser.showLayoutMenu(e.target, self.getCurrentViewStyle(), self.getViewStyles());
+            libraryBrowser.showLayoutMenu(e.target, self.getCurrentViewStyle(), self.getViewStyles());
         });
 
         btnSelectView.addEventListener('layoutchange', function (e) {

@@ -157,25 +157,6 @@ paper-icon-button paper-ripple {
     color: #444 !important;
 }
 
-paper-tabs {
-    background-color: #020202;
-    color: #fff;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-paper-tab {
-    text-transform: uppercase;
-    font-weight: 400;
-}
-
-paper-tabs #selectionBar {
-    background-color: #52B54B !important;
-}
-
-paper-tabs paper-ripple {
-    color: #52B54B !important;
-}
-
 paper-fab {
     vertical-align: middle;
     display: inline-flex !important;
@@ -242,19 +223,6 @@ paper-fab.accent {
 .fab.red {
     background-color: #e57373 !important;
 }
-
-paper-menu-item {
-    padding: .35em .5em;
-    cursor: pointer;
-}
-
-    paper-menu-item iron-icon {
-        margin-right: 1.5em;
-    }
-
-    paper-menu-item:hover {
-        background: #eee;
-    }
 
 .scrollablePaperTabs paper-icon-button {
     display: none !important;
@@ -394,10 +362,6 @@ paper-dropdown-menu {
         display: block;
     }
 
-paper-radio-group > * {
-    padding: .5em;
-}
-
 div.dialogHeader {
     padding: .35em .5em;
     display: flex;
@@ -438,18 +402,6 @@ div.dialogHeader {
 
 .dialog.popupEditor {
     padding-bottom: 100px;
-}
-
-.paper-toggle-button-0 .toggle-label.paper-toggle-button {
-    color: inherit;
-}
-
-paper-toggle-button #toggleButton, paper-toggle-button[checked] #toggleBar {
-    background-color: #52B54B;
-}
-
-paper-toggle-button paper-ripple {
-    color: #52B54B;
 }
 
 .formDialog.background-theme-b {

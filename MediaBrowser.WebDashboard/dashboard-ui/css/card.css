@@ -3,51 +3,10 @@
     text-align: left;
     position: relative;
     contain: style;
-    /*box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);*/
 }
-
-    /*.itemsContainer .card {
-    contain: layout style;
-}
-
-.itemsContainer {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-    .itemsContainer.smoothScrollX, .itemsContainer.hiddenScrollX {
-        display: block;
-    }*/
-
     .card, .card a {
         text-decoration: none;
         font-weight: 400 !important;
-    }
-
-.cardOverlayTarget {
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    top: 0;
-    background-color: rgba(0, 0, 0, .85);
-    z-index: 998;
-    line-height: initial;
-}
-
-.cardOverlayInner {
-    padding: 11px 12px 10px;
-}
-
-    .cardOverlayInner button:last-child {
-        margin-right: 0 !important;
-    }
-
-    .cardOverlayInner p {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
 .buttonCard:hover .cardBox {
@@ -113,7 +72,7 @@
 }
 
 .defaultBackground .cardImage, .ui-body-b .visualCardBox {
-    background-color: #2a2a2a;
+    background-color: #222326;
 }
 
 .cardScalable {
@@ -154,26 +113,6 @@
         opacity: .5;
     }
 
-    /*.preview-overlay-container {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    -moz-opacity: 0;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    -webkit-transition: all .25s ease;
-    -moz-transition: all .25s ease;
-    -o-transition: all .25s ease;
-    transition: all .25s ease;
-    background: rgba(0,0,0,0.4);
-    cursor: pointer;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-}*/
-
     .cardContent .cardFooter {
         position: absolute;
         bottom: 0;
@@ -207,7 +146,7 @@
 }
 
 .visualCardBox .outerCardFooter {
-    padding: 3px;
+    padding: .5em .3em;
     position: relative;
 }
 
@@ -237,10 +176,6 @@
     font-size: 115%;
 }
 
-.cardOverlayInner {
-    color: #fff;
-}
-
 .cardTextCentered {
     text-align: center;
 }
@@ -259,7 +194,7 @@
 }
 
 .outerCardFooter .cardText + .cardText {
-    opacity: .8;
+    opacity: .6;
 }
 
 .outerCardFooter .cardText:first-child {
@@ -357,14 +292,6 @@
 
     .backdropCard {
         width: 100% !important;
-    }
-}
-
-@media all and (max-width: 1200px) {
-
-    .portraitCard .cardOverlayInner {
-        padding-left: 7px;
-        padding-right: 7px;
     }
 }
 
@@ -610,53 +537,6 @@
         width: 25%;
     }
 }
-
-/** homePageSmallBackdropCard */
-.homePageSmallBackdropCard .cardPadder {
-    padding-bottom: 56.25%;
-}
-
-
-.homePageSmallBackdropCard {
-    width: 50%;
-}
-
-@media all and (min-width: 540px) {
-
-    .homePageSmallBackdropCard {
-        width: 33.333%;
-    }
-}
-
-@media all and (min-width: 600px) {
-
-    .homePageSmallBackdropCard {
-        width: 25%;
-    }
-}
-
-@media all and (min-width: 800px) {
-
-    .homePageSmallBackdropCard {
-        width: 20%;
-    }
-}
-
-@media all and (min-width: 1100px) {
-
-    .homePageSmallBackdropCard {
-        width: 16.66666666666667%;
-    }
-}
-
-@media all and (min-width: 1440px) {
-
-    .homePageSmallBackdropCard {
-        width: 12.5%;
-    }
-}
-
-
 
 /** horizontalBackdropCard */
 .horizontalBackdropCard .cardPadder {
