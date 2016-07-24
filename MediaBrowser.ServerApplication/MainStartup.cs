@@ -664,6 +664,8 @@ namespace MediaBrowser.ServerApplication
         {
             _logger.Info("Restarting background service");
 
+            OnServiceShutdown();
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
@@ -671,7 +673,7 @@ namespace MediaBrowser.ServerApplication
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = String.Format("/c sc stop {0} && sc start {0}", BackgroundService.GetExistingServiceName())
+                Arguments = String.Format("/c sc stop {0} & sc start {0}", BackgroundService.GetExistingServiceName())
             };
             Process.Start(startInfo);
         }
