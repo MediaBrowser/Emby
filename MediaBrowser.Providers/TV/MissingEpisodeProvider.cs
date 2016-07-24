@@ -19,6 +19,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Xml;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -511,7 +512,7 @@ namespace MediaBrowser.Providers.TV
                                                 DateTime date;
                                                 if (DateTime.TryParse(val, out date))
                                                 {
-                                                    airDate = date.ToUniversalTime();
+                                                    TimeZoneInfo.ConvertTimeToUtc(date, ProviderUtils.GetUsEasternTimeZoneInfo());
                                                 }
                                             }
 
