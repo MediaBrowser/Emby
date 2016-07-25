@@ -605,15 +605,14 @@ namespace MediaBrowser.ServerApplication
 
         public static void Restart()
         {
+            DisposeAppHost();
+
             if (_isRunningAsService)
             {
                 RestartWindowsService();
             }
             else
             { 
-                DisposeAppHost();
-
-            
                 //_logger.Info("Hiding server notify icon");
                 //_serverNotifyIcon.Visible = false;
 
@@ -663,8 +662,6 @@ namespace MediaBrowser.ServerApplication
         private static void RestartWindowsService()
         {
             _logger.Info("Restarting background service");
-
-            OnServiceShutdown();
 
             var startInfo = new ProcessStartInfo
             {
