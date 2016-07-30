@@ -27,22 +27,22 @@ namespace XmlRpcHandler
         { }
         public XmlRpcValueBasic(string data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.String; }
+        { type = XmlRpcBasicValueType.String; }
         public XmlRpcValueBasic(int data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.Int; }
+        { type = XmlRpcBasicValueType.Int; }
         public XmlRpcValueBasic(double data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.Double; }
+        { type = XmlRpcBasicValueType.Double; }
         public XmlRpcValueBasic(DateTime data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.dateTime_iso8601; }
+        { type = XmlRpcBasicValueType.dateTime_iso8601; }
         public XmlRpcValueBasic(bool data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.Boolean; }
+        { type = XmlRpcBasicValueType.Boolean; }
         public XmlRpcValueBasic(long data)
             : base(data)
-        { this.type = XmlRpcBasicValueType.base64; }
+        { type = XmlRpcBasicValueType.base64; }
         public XmlRpcValueBasic(object data, XmlRpcBasicValueType type)
             : base(data)
         { this.type = type; }

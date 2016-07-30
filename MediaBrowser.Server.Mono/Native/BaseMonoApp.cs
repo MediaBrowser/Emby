@@ -83,7 +83,7 @@ namespace MediaBrowser.Server.Mono.Native
         {
             var list = new List<Assembly>();
 
-            if (Environment.OperatingSystem == Startup.Common.OperatingSystem.Linux)
+            if (Environment.OperatingSystem == OperatingSystem.Linux)
             {
                 list.AddRange(GetLinuxAssemblies());
             }
@@ -132,7 +132,7 @@ namespace MediaBrowser.Server.Mono.Native
         {
             get
             {
-				return Environment.OperatingSystem != Startup.Common.OperatingSystem.Osx;
+				return Environment.OperatingSystem != OperatingSystem.Osx;
             }
         }
 
@@ -149,7 +149,7 @@ namespace MediaBrowser.Server.Mono.Native
         {
             var info = new NativeEnvironment
             {
-                OperatingSystem = Startup.Common.OperatingSystem.Linux
+                OperatingSystem = OperatingSystem.Linux
             };
 
             var uname = GetUnixName();
@@ -158,15 +158,15 @@ namespace MediaBrowser.Server.Mono.Native
 
             if (string.Equals(sysName, "Darwin", StringComparison.OrdinalIgnoreCase))
             {
-                info.OperatingSystem = Startup.Common.OperatingSystem.Osx;
+                info.OperatingSystem = OperatingSystem.Osx;
             }
             else if (string.Equals(sysName, "Linux", StringComparison.OrdinalIgnoreCase))
             {
-                info.OperatingSystem = Startup.Common.OperatingSystem.Linux;
+                info.OperatingSystem = OperatingSystem.Linux;
             }
             else if (string.Equals(sysName, "BSD", StringComparison.OrdinalIgnoreCase))
             {
-                info.OperatingSystem = Startup.Common.OperatingSystem.Bsd;
+                info.OperatingSystem = OperatingSystem.Bsd;
             }
 
             var archX86 = new Regex("(i|I)[3-6]86");

@@ -312,7 +312,7 @@ namespace MediaBrowser.Providers.People
             /// Gets or sets the results.
             /// </summary>
             /// <value>The results.</value>
-            public List<MovieDbPersonProvider.PersonSearchResult> Results { get; set; }
+            public List<PersonSearchResult> Results { get; set; }
             /// <summary>
             /// Gets or sets the total_ pages.
             /// </summary>

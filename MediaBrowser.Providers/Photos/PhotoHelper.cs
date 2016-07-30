@@ -73,7 +73,7 @@ namespace MediaBrowser.Providers.Photos
                 if (ds.Contains(s))
                 {
                     i++;
-                    ds = ds.Remove(ds.IndexOf(s, System.StringComparison.Ordinal), d);
+                    ds = ds.Remove(ds.IndexOf(s, StringComparison.Ordinal), d);
                 }
             }
             return i;

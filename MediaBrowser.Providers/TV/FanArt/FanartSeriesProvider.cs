@@ -163,7 +163,7 @@ namespace MediaBrowser.Providers.TV
             PopulateImages(list, obj.tvposter, ImageType.Primary, 1000, 1426);
         }
 
-        private Regex _regex_http = new Regex("^http://");
+        private readonly Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list,
             List<Image> images,
             ImageType type,

@@ -55,16 +55,16 @@ namespace MediaBrowser.Server.Mono.Security {
     public class X520 {
 
 		public abstract class AttributeTypeAndValue {
-			private string oid;
+			private readonly string oid;
 			private string attrValue;
-			private int upperBound;
-			private byte encoding;
+			private readonly int upperBound;
+			private readonly byte encoding;
 
 			protected AttributeTypeAndValue (string oid, int upperBound)
 			{
 				this.oid = oid;
 				this.upperBound = upperBound;
-				this.encoding = 0xFF;
+				encoding = 0xFF;
 			}
 
 			protected AttributeTypeAndValue (string oid, int upperBound, byte encoding) 

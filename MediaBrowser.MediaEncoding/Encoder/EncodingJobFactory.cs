@@ -220,7 +220,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
             }
             else
             {
-                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio, true);
+                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio);
             }
 
             state.MediaSource = mediaSource;

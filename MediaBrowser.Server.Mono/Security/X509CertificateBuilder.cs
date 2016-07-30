@@ -77,7 +77,7 @@ namespace MediaBrowser.Server.Mono.Security {
 		private AsymmetricAlgorithm aa;
 		private byte[] issuerUniqueID;
 		private byte[] subjectUniqueID;
-		private X509ExtensionCollection extensions;
+		private readonly X509ExtensionCollection extensions;
 
 		public X509CertificateBuilder () : this (3) {}
 	

@@ -32,13 +32,13 @@ namespace MediaBrowser.Api.Reports
         public ReportStatResult GetResult(BaseItem[] items, ReportIncludeItemTypes reportIncludeItemTypes, int topItem = 5)
         {
             ReportStatResult result = new ReportStatResult();
-            result = this.GetResultGenres(result, items, topItem);
-            result = this.GetResultStudios(result, items, topItem);
-            result = this.GetResultPersons(result, items, topItem);
-            result = this.GetResultProductionYears(result, items, topItem);
-            result = this.GetResulProductionLocations(result, items, topItem);
-            result = this.GetResultCommunityRatings(result, items, topItem);
-            result = this.GetResultParentalRatings(result, items, topItem);
+            result = GetResultGenres(result, items, topItem);
+            result = GetResultStudios(result, items, topItem);
+            result = GetResultPersons(result, items, topItem);
+            result = GetResultProductionYears(result, items, topItem);
+            result = GetResulProductionLocations(result, items, topItem);
+            result = GetResultCommunityRatings(result, items, topItem);
+            result = GetResultParentalRatings(result, items, topItem);
 
             switch (reportIncludeItemTypes)
             {
@@ -107,7 +107,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The resul production locations. </returns>
         private ReportStatResult GetResulProductionLocations(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.Countries), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.Countries), topItem,
                         items.OfType<IHasProductionLocations>()
                         .Where(x => x.ProductionLocations != null)
                         .SelectMany(x => x.ProductionLocations)
@@ -131,7 +131,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The result community ratings. </returns>
         private ReportStatResult GetResultCommunityRatings(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.CommunityRating), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.CommunityRating), topItem,
                        items.Where(x => x.CommunityRating != null && x.CommunityRating > 0)
                            .GroupBy(x => x.CommunityRating)
                            .OrderByDescending(x => x.Count())
@@ -153,7 +153,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The result genres. </returns>
         private ReportStatResult GetResultGenres(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.Genres), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.Genres), topItem,
                             items.SelectMany(x => x.Genres)
                                 .GroupBy(x => x)
                                 .OrderByDescending(x => x.Count())
@@ -175,7 +175,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The result parental ratings. </returns>
         private ReportStatResult GetResultParentalRatings(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.ParentalRatings), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.ParentalRatings), topItem,
                        items.Where(x => x.OfficialRating != null)
                            .GroupBy(x => x.OfficialRating)
                            .OrderByDescending(x => x.Count())
@@ -216,7 +216,7 @@ namespace MediaBrowser.Api.Reports
                                 .OrderByDescending(x => x.Count())
                                 .Take(topItem);
                 if (ps != null && ps.Count() > 0)
-                    this.GetGroups(result, GetLocalizedHeader(item), topItem,
+                    GetGroups(result, GetLocalizedHeader(item), topItem,
                             ps.Select(x => new ReportStatItem
                                     {
                                         Name = x.Key,
@@ -236,7 +236,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The result production years. </returns>
         private ReportStatResult GetResultProductionYears(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.Year), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.Year), topItem,
                     items.Where(x => x.ProductionYear != null && x.ProductionYear > 0)
                         .GroupBy(x => x.ProductionYear)
                         .OrderByDescending(x => x.Count())
@@ -258,7 +258,7 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The result studios. </returns>
         private ReportStatResult GetResultStudios(ReportStatResult result, BaseItem[] items, int topItem = 5)
         {
-            this.GetGroups(result, GetLocalizedHeader(HeaderMetadata.Studios), topItem,
+            GetGroups(result, GetLocalizedHeader(HeaderMetadata.Studios), topItem,
                                     items.SelectMany(x => x.Studios)
                                         .GroupBy(x => x)
                                         .OrderByDescending(x => x.Count())

@@ -58,7 +58,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         {
             try
             {
-                var task = this.ProcessRequestAsync(context);
+                var task = ProcessRequestAsync(context);
                 task.ContinueWith(x => HandleError(x.Exception, context), TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.AttachedToParent);
 
                 //if (task.Status == TaskStatus.Created)

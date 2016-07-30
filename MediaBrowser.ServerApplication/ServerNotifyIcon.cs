@@ -12,15 +12,15 @@ namespace MediaBrowser.ServerApplication
     public class ServerNotifyIcon : IDisposable
     {
         private NotifyIcon notifyIcon1;
-        private ContextMenuStrip contextMenuStrip1;
-        private ToolStripMenuItem cmdExit;
-        private ToolStripMenuItem cmdBrowse;
-        private ToolStripMenuItem cmdConfigure;
-        private ToolStripSeparator toolStripSeparator2;
-        private ToolStripMenuItem cmdRestart;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem cmdCommunity;
-        private Container components;
+        private readonly ContextMenuStrip contextMenuStrip1;
+        private readonly ToolStripMenuItem cmdExit;
+        private readonly ToolStripMenuItem cmdBrowse;
+        private readonly ToolStripMenuItem cmdConfigure;
+        private readonly ToolStripSeparator toolStripSeparator2;
+        private readonly ToolStripMenuItem cmdRestart;
+        private readonly ToolStripSeparator toolStripSeparator1;
+        private readonly ToolStripMenuItem cmdCommunity;
+        private readonly Container components;
 
         private readonly ILogger _logger;
         private readonly IServerApplicationHost _appHost;
@@ -42,9 +42,9 @@ namespace MediaBrowser.ServerApplication
             _appHost = appHost;
             _configurationManager = configurationManager;
 
-            components = new System.ComponentModel.Container();
+            components = new Container();
 
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            var resources = new ComponentResourceManager(typeof(MainForm));
             contextMenuStrip1 = new ContextMenuStrip(components);
             notifyIcon1 = new NotifyIcon(components);
 

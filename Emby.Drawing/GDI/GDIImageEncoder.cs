@@ -81,7 +81,7 @@ namespace Emby.Drawing.GDI
                 {
                     _fileSystem.CreateDirectory(Path.GetDirectoryName(outputPath));
 
-                    using (var outputStream = _fileSystem.GetFileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.Read, false))
+                    using (var outputStream = _fileSystem.GetFileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
                         croppedImage.Save(System.Drawing.Imaging.ImageFormat.Png, outputStream, 100);
                     }
@@ -134,7 +134,7 @@ namespace Emby.Drawing.GDI
                         _fileSystem.CreateDirectory(Path.GetDirectoryName(cacheFilePath));
 
                         // Save to the cache location
-                        using (var cacheFileStream = _fileSystem.GetFileStream(cacheFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, false))
+                        using (var cacheFileStream = _fileSystem.GetFileStream(cacheFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
                         {
                             // Save to the memory stream
                             thumbnail.Save(outputFormat, cacheFileStream, quality);

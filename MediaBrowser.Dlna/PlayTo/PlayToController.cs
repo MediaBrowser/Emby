@@ -297,7 +297,7 @@ namespace MediaBrowser.Dlna.PlayTo
 
         public async Task SendPlayCommand(PlayRequest command, CancellationToken cancellationToken)
         {
-            _logger.Debug("{0} - Received PlayRequest: {1}", this._session.DeviceName, command.PlayCommand);
+            _logger.Debug("{0} - Received PlayRequest: {1}", _session.DeviceName, command.PlayCommand);
 
             var user = String.IsNullOrEmpty(command.ControllingUserId) ? null : _userManager.GetUserById(command.ControllingUserId);
 

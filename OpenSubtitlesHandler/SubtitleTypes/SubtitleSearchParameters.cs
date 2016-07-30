@@ -30,9 +30,9 @@ namespace OpenSubtitlesHandler
             this.movieHash = movieHash;
             this.movieByteSize = movieByteSize;
             this.imdbid = imdbid;
-            this._episode = episode;
-            this._season = season;
-            this._query = query;
+            _episode = episode;
+            _season = season;
+            _query = query;
         }
 
         private string subLanguageId;

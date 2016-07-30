@@ -33,14 +33,14 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
         public int StatusCode
         {
-            get { return this.response.StatusCode; }
-            set { this.response.StatusCode = value; }
+            get { return response.StatusCode; }
+            set { response.StatusCode = value; }
         }
 
         public string StatusDescription
         {
-            get { return this.response.StatusDescription; }
-            set { this.response.StatusDescription = value; }
+            get { return response.StatusDescription; }
+            set { response.StatusDescription = value; }
         }
 
         public string ContentType
@@ -99,13 +99,13 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
         public void Close()
         {
-            if (!this.IsClosed)
+            if (!IsClosed)
             {
-                this.IsClosed = true;
+                IsClosed = true;
 
                 try
                 {
-                    this.response.CloseOutputStream(_logger);
+                    response.CloseOutputStream(_logger);
                 }
                 catch (Exception ex)
                 {

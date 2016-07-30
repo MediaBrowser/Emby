@@ -94,7 +94,7 @@ namespace MediaBrowser.Server.Mono.Security {
 			private int _version;
 			private string _algorithm;
 			private byte[] _key;
-			private ArrayList _list;
+			private readonly ArrayList _list;
 
 			public PrivateKeyInfo () 
 			{

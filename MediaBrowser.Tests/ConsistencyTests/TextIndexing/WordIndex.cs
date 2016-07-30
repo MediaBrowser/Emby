@@ -12,7 +12,7 @@ namespace MediaBrowser.Tests.ConsistencyTests.TextIndexing
         public void AddWordOccurrence(string word, string fileName, string fullPath, int lineNumber, int wordIndex)
         {
             WordOccurrences current;
-            if (!this.TryGetValue(word, out current))
+            if (!TryGetValue(word, out current))
             {
                 current = new WordOccurrences();
                 this[word] = current;
@@ -24,7 +24,7 @@ namespace MediaBrowser.Tests.ConsistencyTests.TextIndexing
         public WordOccurrences Find(string word)
         {
            WordOccurrences found;
-           if (this.TryGetValue(word, out found))
+           if (TryGetValue(word, out found))
            {
                return found;
            }

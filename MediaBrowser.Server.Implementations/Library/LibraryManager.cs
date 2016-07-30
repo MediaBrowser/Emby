@@ -1116,7 +1116,7 @@ namespace MediaBrowser.Server.Implementations.Library
             innerProgress.RegisterAction(pct => progress.Report(2 + pct * .73));
 
             // Now validate the entire media library
-            await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: true).ConfigureAwait(false);
+            await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(_fileSystem)).ConfigureAwait(false);
 
             progress.Report(75);
 
@@ -1238,7 +1238,7 @@ namespace MediaBrowser.Server.Implementations.Library
 
         private string GetCollectionType(string path)
         {
-            return _fileSystem.GetFiles(path, false)
+            return _fileSystem.GetFiles(path)
                 .Where(i => string.Equals(i.Extension, ".collection", StringComparison.OrdinalIgnoreCase))
                 .Select(i => _fileSystem.GetFileNameWithoutExtension(i))
                 .FirstOrDefault();
@@ -2408,7 +2408,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var files = owner.IsInMixedFolder ? new List<FileSystemMetadata>() : fileSystemChildren.Where(i => i.IsDirectory)
                 .Where(i => string.Equals(i.Name, BaseItem.TrailerFolderName, StringComparison.OrdinalIgnoreCase))
-                .SelectMany(i => _fileSystem.GetFiles(i.FullName, false))
+                .SelectMany(i => _fileSystem.GetFiles(i.FullName))
                 .ToList();
 
             var videoListResolver = new VideoListResolver(GetNamingOptions(), new PatternsLogger());
@@ -2457,7 +2457,7 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var files = fileSystemChildren.Where(i => i.IsDirectory)
                 .Where(i => string.Equals(i.Name, "extras", StringComparison.OrdinalIgnoreCase) || string.Equals(i.Name, "specials", StringComparison.OrdinalIgnoreCase))
-                .SelectMany(i => _fileSystem.GetFiles(i.FullName, false))
+                .SelectMany(i => _fileSystem.GetFiles(i.FullName))
                 .ToList();
 
             var videoListResolver = new VideoListResolver(GetNamingOptions(), new PatternsLogger());

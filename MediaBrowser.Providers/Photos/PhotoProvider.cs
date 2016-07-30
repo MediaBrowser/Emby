@@ -31,7 +31,7 @@ namespace MediaBrowser.Providers.Photos
 
             try
             {
-                using (var file = TagLib.File.Create(item.Path))
+                using (var file = File.Create(item.Path))
                 {
                     var image = file as TagLib.Image.File;
 

@@ -155,7 +155,7 @@ namespace MediaBrowser.Server.Mono.Security {
 		
 		public class X509CertificateEnumerator : IEnumerator {
 
-			private IEnumerator enumerator;
+			private readonly IEnumerator enumerator;
 
 			// Constructors
 			

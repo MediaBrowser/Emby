@@ -58,7 +58,7 @@ namespace OpenSubtitlesHandler.Console
     /// <summary>
     /// Console Debug Args
     /// </summary>
-    public class DebugEventArgs : System.EventArgs
+    public class DebugEventArgs : EventArgs
     {
         public DebugCode Code { get; private set; }
         public string Text { get; private set; }
@@ -70,8 +70,8 @@ namespace OpenSubtitlesHandler.Console
         /// <param name="code">The status</param>
         public DebugEventArgs(string text, DebugCode code)
         {
-            this.Text = text;
-            this.Code = code;
+            Text = text;
+            Code = code;
         }
     }
     public struct DebugLine

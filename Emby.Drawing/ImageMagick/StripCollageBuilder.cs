@@ -80,7 +80,7 @@ namespace Emby.Drawing.ImageMagick
                             {
                                 using (var greyPixelWand = new PixelWand(ColorName.Grey70))
                                 {
-                                    mwr.CurrentImage.ResizeImage(wandList.CurrentImage.Width, (wandList.CurrentImage.Height / 2), FilterTypes.LanczosFilter, 1);
+                                    mwr.CurrentImage.ResizeImage(wandList.CurrentImage.Width, (wandList.CurrentImage.Height / 2), FilterTypes.LanczosFilter);
                                     mwr.CurrentImage.FlipImage();
 
                                     mwr.CurrentImage.AlphaChannel = AlphaChannelType.DeactivateAlphaChannel;
@@ -145,7 +145,7 @@ namespace Emby.Drawing.ImageMagick
                             {
                                 using (var greyPixelWand = new PixelWand(ColorName.Grey70))
                                 {
-                                    mwr.CurrentImage.ResizeImage(wandList.CurrentImage.Width, (wandList.CurrentImage.Height / 2), FilterTypes.LanczosFilter, 1);
+                                    mwr.CurrentImage.ResizeImage(wandList.CurrentImage.Width, (wandList.CurrentImage.Height / 2), FilterTypes.LanczosFilter);
                                     mwr.CurrentImage.FlipImage();
 
                                     mwr.CurrentImage.AlphaChannel = AlphaChannelType.DeactivateAlphaChannel;

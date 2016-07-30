@@ -40,7 +40,7 @@ namespace MediaBrowser.Server.Mono.Security {
 	 */
     public sealed class X509ExtensionCollection : CollectionBase, IEnumerable {
 
-		private bool readOnly;
+		private readonly bool readOnly;
 
 		public X509ExtensionCollection () : base ()
 		{
