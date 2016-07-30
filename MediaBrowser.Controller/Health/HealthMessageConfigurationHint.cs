@@ -11,7 +11,7 @@ namespace MediaBrowser.Controller.Health
     /// Health message regarding Emby configuration.
     /// </summary>
     /// <seealso cref="MediaBrowser.Controller.Health.HealthMessageBase" />
-    class HealthMessageConfigurationHint : HealthMessageBase
+    public class HealthMessageConfigurationHint : HealthMessageBase
     {
         private readonly string messagePhrase;
 
@@ -24,7 +24,7 @@ namespace MediaBrowser.Controller.Health
         /// <param name="infoCategory">The information category.</param>
         /// <param name="localizationManager">The localization manager.</param>
         /// <param name="messagePhrase">The message phrase.</param>
-        protected HealthMessageConfigurationHint(Object reporter, Guid infoGuid, HealthMessageVerdict verdict, String infoCategory, ILocalizationManager localizationManager, string messagePhrase)
+        public HealthMessageConfigurationHint(Object reporter, Guid infoGuid, HealthMessageVerdict verdict, String infoCategory, ILocalizationManager localizationManager, string messagePhrase)
             : base (reporter, infoGuid, verdict, infoCategory, localizationManager)
         {
             this.messagePhrase = messagePhrase;

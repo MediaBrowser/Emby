@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Controller.Health;
 using System.Collections.Generic;
+using MediaBrowser.Controller.Localization;
 
 namespace MediaBrowser.Server.Implementations.FileOrganization
 {
@@ -27,14 +28,24 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
         private readonly IServerManager _serverManager;
+        private readonly ILocalizationManager _localizationManager;
         private readonly List<HealthMessageBase> _messages = new List<HealthMessageBase>();
 
-        public HealthReporter(ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IServerManager serverManager)
+        public HealthReporter(ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IServerManager serverManager, ILocalizationManager localizationManager)
         {
             _logger = logger;
             _config = config;
             _fileSystem = fileSystem;
             _serverManager = serverManager;
+            _localizationManager = localizationManager;
+        }
+
+        ILocalizationManager LocalizationManager
+        {
+            get
+            {
+                return _localizationManager;
+            }
         }
 
         public void AddHealthMessage(HealthMessageBase healthMessage, bool replaceExistingById = true)
