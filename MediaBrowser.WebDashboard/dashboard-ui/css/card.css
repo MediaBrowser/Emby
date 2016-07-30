@@ -166,6 +166,17 @@
     line-height: 1.4;
 }
 
+.cardText2Lines {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap:normal;
+    white-space:normal;
+    padding: 5px 5px 2px;
+    font-weight: 400;
+    line-height: 1.4em;
+    height: 2.8em;
+}
+
 .cardButtonContainer {
     text-align: right;
     float: right;
