@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Linq;
 using CommonIO;
+using MediaBrowser.Controller.Health;
 
 namespace MediaBrowser.Server.Implementations.Configuration
 {
@@ -24,6 +25,7 @@ namespace MediaBrowser.Server.Implementations.Configuration
     /// </summary>
     public class ServerConfigurationManager : BaseConfigurationManager, IServerConfigurationManager
     {
+        private IHealthReporter _healthReporter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfigurationManager" /> class.
@@ -32,10 +34,12 @@ namespace MediaBrowser.Server.Implementations.Configuration
         /// <param name="logManager">The log manager.</param>
         /// <param name="xmlSerializer">The XML serializer.</param>
         /// <param name="fileSystem">The file system.</param>
-        public ServerConfigurationManager(IApplicationPaths applicationPaths, ILogManager logManager, IXmlSerializer xmlSerializer, IFileSystem fileSystem)
+        public ServerConfigurationManager(IApplicationPaths applicationPaths, ILogManager logManager, IXmlSerializer xmlSerializer, IFileSystem fileSystem, IHealthReporter healthReporter)
             : base(applicationPaths, logManager, xmlSerializer, fileSystem)
         {
             UpdateMetadataPath();
+            _healthReporter = healthReporter;
+            CheckConfigurationHealth();
         }
 
         public event EventHandler<GenericEventArgs<ServerConfiguration>> ConfigurationUpdating;
@@ -75,6 +79,8 @@ namespace MediaBrowser.Server.Implementations.Configuration
             UpdateMetadataPath();
 
             base.OnConfigurationUpdated();
+
+            CheckConfigurationHealth();
         }
 
         public override void AddParts(IEnumerable<IConfigurationFactory> factories)
@@ -156,14 +162,14 @@ namespace MediaBrowser.Server.Implementations.Configuration
         /// </summary>
         /// <param name="newConfig">The new configuration.</param>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
-        private void ValidateSslCertificate(BaseApplicationConfiguration newConfig)
+        private void ValidateSslCertificate(BaseApplicationConfiguration newConfig, bool throwOnChangeOnly = true)
         {
             var serverConfig = (ServerConfiguration)newConfig;
 
             var newPath = serverConfig.CertificatePath;
 
             if (!string.IsNullOrWhiteSpace(newPath)
-                && !string.Equals(Configuration.CertificatePath ?? string.Empty, newPath))
+                && (!string.Equals(Configuration.CertificatePath ?? string.Empty, newPath) || !throwOnChangeOnly))
             {
                 // Validate
                 if (!FileSystem.FileExists(newPath))
@@ -189,12 +195,12 @@ namespace MediaBrowser.Server.Implementations.Configuration
         /// </summary>
         /// <param name="newConfig">The new configuration.</param>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
-        private void ValidateMetadataPath(ServerConfiguration newConfig)
+        private void ValidateMetadataPath(ServerConfiguration newConfig, bool throwOnChangeOnly = true)
         {
             var newPath = newConfig.MetadataPath;
 
             if (!string.IsNullOrWhiteSpace(newPath)
-                && !string.Equals(Configuration.MetadataPath ?? string.Empty, newPath))
+                && (!string.Equals(Configuration.MetadataPath ?? string.Empty, newPath) || !throwOnChangeOnly))
             {
                 // Validate
                 if (!FileSystem.DirectoryExists(newPath))
@@ -252,6 +258,63 @@ namespace MediaBrowser.Server.Implementations.Configuration
             }
 
             return options;
+        }
+
+        private void CheckConfigurationHealth()
+        {
+            // "You have disabled web response caching. This setting can affect performance. Please enable this setting unless you are doing active development.";
+            var msg1 = new HealthMessage(this, "HealthMsgResponseCaching", HealthMessageType.Configuration, HealthMessageSeverity.Warning, "ServerConfig|DevOptions");
+            _healthReporter.AddRemoveHealthMessage(!Configuration.EnableDashboardResponseCaching, msg1);
+
+            // "You have disabled web resource minification. This setting can affect performance. Please enable this setting unless you are doing active development.";
+            var msg2 = new HealthMessage(this, "HealthMsgResourceMinification", HealthMessageType.Configuration, HealthMessageSeverity.Warning, "ServerConfig|DevOptions");
+            _healthReporter.AddRemoveHealthMessage(!Configuration.EnableDashboardResponseCaching, msg2);
+
+            // "You have configured and alternate web client source path. This can cause problems due to mismatching versions. Please remove this setting unless you are doing active development.";
+            var msg3 = new HealthMessage(this, "HealthMsgWebClientPath", HealthMessageType.Configuration, HealthMessageSeverity.Warning, "ServerConfig|DevOptions");
+            _healthReporter.AddRemoveHealthMessage(!string.IsNullOrWhiteSpace(Configuration.DashboardSourcePath), msg3);
+
+            var isCachePathUnc = !string.IsNullOrWhiteSpace(Configuration.CachePath) && Configuration.CachePath.StartsWith(@"\\");
+
+            // "You have specified a network locaction as cache path. This can seriously affect performance. Please consider using a local folder for caching instead.";
+            var msg4 = new HealthMessage(this, "HealthMsgCachePath", HealthMessageType.Configuration, HealthMessageSeverity.Warning, "ServerConfig|Advanced");
+            _healthReporter.AddRemoveHealthMessage(isCachePathUnc, msg4);
+
+            try
+            {
+                ValidateMetadataPath(Configuration, false);
+                _healthReporter.RemoveHealthMessagesById(this, "HealthMsgMetadataPath");
+            }
+            catch (Exception ex)
+            {
+                // string.Format("You have configured an invalid metadata path: {0}", ex.Message);
+                var msg = new HealthMessage(this, "HealthMsgMetadataPath", HealthMessageType.Configuration, HealthMessageSeverity.Problem, "ServerConfig|Advanced", ex.Message);
+                _healthReporter.AddHealthMessage(msg);
+            }
+
+            try
+            {
+                ValidatePathSubstitutions(Configuration);
+                _healthReporter.RemoveHealthMessagesById(this, "HealthMsgSubstitutionPath");
+            }
+            catch (Exception ex)
+            {
+                // string.Format("You have an invalid configuration for path substitution: {0}", ex.Message);
+                var msg = new HealthMessage(this, "HealthMsgSubstitutionPath", HealthMessageType.Configuration, HealthMessageSeverity.Problem, "Library|PathSubstitution", ex.Message);
+                _healthReporter.AddHealthMessage(msg);
+            }
+
+            try
+            {
+                ValidateSslCertificate(Configuration, false);
+                _healthReporter.RemoveHealthMessagesById(this, "HealthMsgSslPath");
+            }
+            catch (Exception ex)
+            {
+                // string.Format("You have an invalid SSL certificate configuration: {0}", ex.Message);
+                var msg = new HealthMessage(this, "HealthMsgSslPath", HealthMessageType.Configuration, HealthMessageSeverity.Problem, "Advanced|Hosting", ex.Message);
+                _healthReporter.AddHealthMessage(msg);
+            }
         }
     }
 }
