@@ -175,7 +175,9 @@ namespace MediaBrowser.Api.Playback.Progressive
                         ResponseHeaders = responseHeaders,
                         ContentType = contentType,
                         IsHeadRequest = isHeadRequest,
-                        Path = outputPath
+                        Path = outputPath,
+                        FileShare = FileShare.ReadWrite
+
                     }).ConfigureAwait(false);
                 }
                 finally
@@ -187,8 +189,7 @@ namespace MediaBrowser.Api.Playback.Progressive
             // Need to start ffmpeg
             try
             {
-                return await GetStreamResult(state, responseHeaders, isHeadRequest, cancellationTokenSource)
-                            .ConfigureAwait(false);
+                return await GetStreamResult(state, responseHeaders, isHeadRequest, cancellationTokenSource).ConfigureAwait(false);
             }
             catch
             {
@@ -347,7 +348,7 @@ namespace MediaBrowser.Api.Playback.Progressive
                     outputHeaders[item.Key] = item.Value;
                 }
 
-                Func<Stream,Task> streamWriter = stream => new ProgressiveFileCopier(FileSystem, job, Logger).StreamFile(outputPath, stream);
+                Func<Stream,Task> streamWriter = stream => new ProgressiveFileCopier(FileSystem, job, Logger).StreamFile(outputPath, stream, CancellationToken.None);
 
                 return ResultFactory.GetAsyncStreamWriter(streamWriter, outputHeaders);
             }

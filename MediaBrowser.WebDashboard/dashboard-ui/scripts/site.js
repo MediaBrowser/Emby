@@ -1,4 +1,31 @@
-﻿var Dashboard = {
+﻿function getWindowLocationSearch(win) {
+
+    var search = (win || window).location.search;
+
+    if (!search) {
+
+        var index = window.location.href.indexOf('?');
+        if (index != -1) {
+            search = window.location.href.substring(index);
+        }
+    }
+
+    return search || '';
+}
+
+function getParameterByName(name, url) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS, "i");
+
+    var results = regex.exec(url || getWindowLocationSearch());
+    if (results == null)
+        return "";
+    else
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var Dashboard = {
 
     isConnectMode: function () {
 
@@ -145,58 +172,6 @@
                 Dashboard.showDashboardRefreshNotification();
             }
         }
-
-        Dashboard.showInProgressInstallations(info.InProgressInstallations);
-    },
-
-    showInProgressInstallations: function (installations) {
-
-        installations = installations || [];
-
-        for (var i = 0, length = installations.length; i < length; i++) {
-
-            var installation = installations[i];
-
-            var percent = installation.PercentComplete || 0;
-
-            if (percent < 100) {
-                Dashboard.showPackageInstallNotification(installation, "progress");
-            }
-        }
-
-        if (installations.length) {
-
-            Dashboard.ensureInstallRefreshInterval();
-        } else {
-            Dashboard.stopInstallRefreshInterval();
-        }
-    },
-
-    ensureInstallRefreshInterval: function () {
-
-        if (!Dashboard.installRefreshInterval) {
-
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("SystemInfoStart", "0,500");
-            }
-            Dashboard.installRefreshInterval = 1;
-        }
-    },
-
-    stopInstallRefreshInterval: function () {
-
-        if (Dashboard.installRefreshInterval) {
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("SystemInfoStop");
-            }
-            Dashboard.installRefreshInterval = null;
-        }
-    },
-
-    cancelInstallation: function (id) {
-
-        ApiClient.cancelPackageInstallation(id).then(Dashboard.refreshSystemInfoFromServer, Dashboard.refreshSystemInfoFromServer);
-
     },
 
     showServerRestartWarning: function (systemInfo) {
@@ -441,10 +416,16 @@
 
     restartServer: function () {
 
+        var apiClient = window.ApiClient;
+
+        if (!apiClient) {
+            return;
+        }
+
         Dashboard.suppressAjaxErrors = true;
         Dashboard.showLoadingMsg();
 
-        ApiClient.restartServer().then(function () {
+        apiClient.restartServer().then(function () {
 
             setTimeout(function () {
                 Dashboard.reloadPageWhenServerAvailable();
@@ -457,8 +438,14 @@
 
     reloadPageWhenServerAvailable: function (retryCount) {
 
+        var apiClient = window.ApiClient;
+
+        if (!apiClient) {
+            return;
+        }
+
         // Don't use apiclient method because we don't want it reporting authentication under the old version
-        ApiClient.getJSON(ApiClient.getUrl("System/Info")).then(function (info) {
+        apiClient.getJSON(apiClient.getUrl("System/Info")).then(function (info) {
 
             // If this is back to false, the restart completed
             if (!info.HasPendingRestart) {
@@ -493,7 +480,7 @@
 
     getPluginSecurityInfo: function () {
 
-        var apiClient = ApiClient;
+        var apiClient = window.ApiClient;
 
         if (!apiClient) {
 
@@ -545,8 +532,7 @@
 
             if (page.classList.contains('standalonePage')) {
 
-                headerHtml += '<img class="imgLogoIcon" src="css/images/mblogoicon.png" />';
-                headerHtml += '<span class="logoLibraryMenuButtonText">EMBY</span>';
+                headerHtml += '<img class="imgLogoIcon" src="css/images/logo.png" />';
             }
 
             headerHtml += '</a>';
@@ -728,9 +714,9 @@
             pageIds: [],
             icon: 'insert_chart'
         }, {
-            name: Globalize.translate('TabHelp'),
+            name: Globalize.translate('TabAbout'),
             href: "about.html",
-            icon: 'help',
+            icon: 'info',
             color: '#679C34',
             divider: true,
             pageIds: ['aboutPage']
@@ -754,105 +740,6 @@
         else if (msg.MessageType === "RestartRequired") {
             Dashboard.updateSystemInfo(msg.Data);
         }
-        else if (msg.MessageType === "PackageInstallationCompleted") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "completed");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessageType === "PackageInstallationFailed") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "failed");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessageType === "PackageInstallationCancelled") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "cancelled");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessaapiclientcgeType === "PackageInstalling") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "progress");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-    },
-
-    showPackageInstallNotification: function (installation, status) {
-
-        if (AppInfo.isNativeApp) {
-            return;
-        }
-
-        var html = '';
-
-        if (status == 'completed') {
-            html += '<img src="css/images/notifications/done.png" class="notificationIcon" />';
-        }
-        else if (status == 'cancelled') {
-            html += '<img src="css/images/notifications/info.png" class="notificationIcon" />';
-        }
-        else if (status == 'failed') {
-            html += '<img src="css/images/notifications/error.png" class="notificationIcon" />';
-        }
-        else if (status == 'progress') {
-            html += '<img src="css/images/notifications/download.png" class="notificationIcon" />';
-        }
-
-        html += '<span style="margin-right: 1em;">';
-
-        if (status == 'completed') {
-            html += Globalize.translate('LabelPackageInstallCompleted').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'cancelled') {
-            html += Globalize.translate('LabelPackageInstallCancelled').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'failed') {
-            html += Globalize.translate('LabelPackageInstallFailed').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'progress') {
-            html += Globalize.translate('LabelInstallingPackage').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-
-        html += '</span>';
-
-        if (status == 'progress') {
-
-            var percentComplete = Math.round(installation.PercentComplete || 0);
-
-            html += '<progress style="margin-right: 1em;" max="100" value="' + percentComplete + '" title="' + percentComplete + '%">';
-            html += '' + percentComplete + '%';
-            html += '</progress>';
-
-            if (percentComplete < 100) {
-                html += '<button is="emby-button" type="button" class="raised cancelDark mini" onclick="this.disabled=\'disabled\';Dashboard.cancelInstallation(\'' + installation.Id + '\');"><iron-icon icon="cancel"></iron-icon><span>' + Globalize.translate('ButtonCancel') + '</span></button>';
-            }
-        }
-
-        var timeout = 0;
-
-        if (status == 'cancelled') {
-            timeout = 2000;
-        }
-
-        var forceShow = status != "progress";
-        var allowHide = status != "progress" && status != 'cancelled';
-
-        Dashboard.showFooterNotification({ html: html, id: installation.Id, timeout: timeout, forceShow: forceShow, allowHide: allowHide });
     },
 
     setPageTitle: function (title, documentTitle) {
@@ -958,7 +845,7 @@
 
                     quality -= 5;
                 } else {
-                    quality -= 15;
+                    quality -= 20;
                 }
             }
             options.quality = quality;
@@ -1197,24 +1084,12 @@ var AppInfo = {};
 
 (function () {
 
-    function isTouchDevice() {
-        return (('ontouchstart' in window)
-             || (navigator.MaxTouchPoints > 0)
-             || (navigator.msMaxTouchPoints > 0));
-    }
-
     function setAppInfo() {
-
-        if (isTouchDevice()) {
-            AppInfo.isTouchPreferred = true;
-        }
 
         var isCordova = Dashboard.isRunningInCordova();
 
-        AppInfo.enableDetailPageChapters = true;
         AppInfo.enableSearchInTopMenu = true;
         AppInfo.enableHomeFavorites = true;
-        AppInfo.enableNowPlayingBar = true;
         AppInfo.enableHomeTabs = true;
         AppInfo.enableNowPlayingPageBottomTabs = true;
         AppInfo.enableAutoSave = browserInfo.mobile;
@@ -1236,20 +1111,7 @@ var AppInfo = {};
                 AppInfo.enableHomeFavorites = false;
                 AppInfo.enableHomeTabs = false;
                 AppInfo.enableNowPlayingPageBottomTabs = false;
-
-                // Disable the now playing bar for the iphone since we already have the now playing tab at the bottom
-                if (navigator.userAgent.toString().toLowerCase().indexOf('iphone') != -1) {
-                    AppInfo.enableNowPlayingBar = false;
-                }
-
-            } else {
-                AppInfo.enableDetailPageChapters = false;
             }
-        }
-
-        if (!AppInfo.hasLowImageBandwidth) {
-            AppInfo.enableStudioTabs = true;
-            AppInfo.enableTvEpisodesTab = true;
         }
 
         AppInfo.supportsExternalPlayers = true;
@@ -1332,7 +1194,8 @@ var AppInfo = {};
     var localApiClient;
     function bindConnectionManagerEvents(connectionManager, events) {
 
-        Events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
+        window.Events = events;
+        events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
 
         connectionManager.currentApiClient = function () {
 
@@ -1412,10 +1275,6 @@ var AppInfo = {};
 
         var elem = document.documentElement;
 
-        if (AppInfo.isTouchPreferred) {
-            elem.classList.add('touch');
-        }
-
         if (!AppInfo.enableSupporterMembership) {
             elem.classList.add('supporterMembershipDisabled');
         }
@@ -1458,15 +1317,7 @@ var AppInfo = {};
 
     function getBowerPath() {
 
-        var bowerPath = "bower_components";
-
-        // Put the version into the bower path since we can't easily put a query string param on html imports
-        // Emby server will handle this
-        if (Dashboard.isConnectMode() && !Dashboard.isRunningInCordova()) {
-            //bowerPath += window.dashboardVersion;
-        }
-
-        return bowerPath;
+        return "bower_components";
     }
 
     function getLayoutManager(layoutManager) {
@@ -1488,7 +1339,6 @@ var AppInfo = {};
             velocity: bowerPath + "/velocity/velocity.min",
             ironCardList: 'components/ironcardlist/ironcardlist',
             scrollThreshold: 'components/scrollthreshold',
-            directorybrowser: 'components/directorybrowser/directorybrowser',
             playlisteditor: 'components/playlisteditor/playlisteditor',
             medialibrarycreator: 'components/medialibrarycreator/medialibrarycreator',
             medialibraryeditor: 'components/medialibraryeditor/medialibraryeditor',
@@ -1509,7 +1359,6 @@ var AppInfo = {};
             browser: embyWebComponentsBowerPath + "/browser",
             inputManager: embyWebComponentsBowerPath + "/inputmanager",
             qualityoptions: embyWebComponentsBowerPath + "/qualityoptions",
-            connectservice: apiClientBowerPath + '/connectservice',
             hammer: bowerPath + "/hammerjs/hammer.min",
             pageJs: embyWebComponentsBowerPath + '/page.js/page',
             focusManager: embyWebComponentsBowerPath + "/focusmanager",
@@ -1547,6 +1396,10 @@ var AppInfo = {};
         }
 
         define("libjass", [bowerPath + "/libjass/libjass.min", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
+
+        define("directorybrowser", ["components/directorybrowser/directorybrowser"], returnFirstDependency);
+        define("metadataEditor", [embyWebComponentsBowerPath + "/metadataeditor/metadataeditor"], returnFirstDependency);
+        define("personEditor", [embyWebComponentsBowerPath + "/metadataeditor/personeditor"], returnFirstDependency);
 
         define("emby-collapse", [embyWebComponentsBowerPath + "/emby-collapse/emby-collapse"], returnFirstDependency);
         define("emby-button", [embyWebComponentsBowerPath + "/emby-button/emby-button"], returnFirstDependency);
@@ -1783,7 +1636,7 @@ var AppInfo = {};
                 currentPlaylistIndex: function (options) {
                     return MediaController.currentPlaylistIndex(options);
                 },
-                canQueueMediaType: function(mediaType) {
+                canQueueMediaType: function (mediaType) {
                     return MediaController.canQueueMediaType(mediaType);
                 },
                 canPlay: function (item) {
@@ -1856,6 +1709,14 @@ var AppInfo = {};
 
             embyRouter.showGuide = function () {
                 Dashboard.navigate('livetv.html?tab=1');
+            };
+
+            embyRouter.goHome = function () {
+                Dashboard.navigate('home.html');
+            };
+
+            embyRouter.showSearch = function () {
+                Dashboard.navigate('search.html');
             };
 
             embyRouter.showLiveTV = function () {
@@ -1994,13 +1855,10 @@ var AppInfo = {};
         define("buttonenabled", ["legacy/buttonenabled"]);
 
         var deps = [];
-        deps.push('events');
 
         deps.push('scripts/mediacontroller');
 
-        require(deps, function (events) {
-
-            window.Events = events;
+        require(deps, function () {
 
             initAfterDependencies();
         });
@@ -2017,7 +1875,6 @@ var AppInfo = {};
     function initAfterDependencies() {
 
         var deps = [];
-        deps.push('scripts/extensions');
 
         if (!window.fetch) {
             deps.push('fetch');
@@ -2048,7 +1905,7 @@ var AppInfo = {};
 
         var baseUrl = 'bower_components/emby-webcomponents/strings/';
 
-        var languages = ['da', 'de', 'en-US', 'es-MX', 'fr', 'kk', 'nb', 'nl', 'pt-BR', 'pt-PT', 'ru', 'sv', 'zh-TW'];
+        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-AR', 'es-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
 
         var translations = languages.map(function (i) {
             return {
@@ -2910,8 +2767,6 @@ var AppInfo = {};
             deps.push('css!devices/android/android.css');
         } else if (AppInfo.isNativeApp && browserInfo.safari) {
             deps.push('css!devices/ios/ios.css');
-        } else if (AppInfo.isNativeApp && browserInfo.edge) {
-            deps.push('css!devices/windowsphone/wp.css');
         }
 
         loadTheme();
@@ -2952,7 +2807,6 @@ var AppInfo = {};
 
             postInitDependencies.push('scripts/thememediaplayer');
             postInitDependencies.push('scripts/remotecontrol');
-            postInitDependencies.push('css!css/notifications.css');
             postInitDependencies.push('css!css/chromecast.css');
             postInitDependencies.push('scripts/autobackdrops');
 
@@ -2982,9 +2836,7 @@ var AppInfo = {};
                 postInitDependencies.push('scripts/chromecast');
             }
 
-            if (AppInfo.enableNowPlayingBar) {
-                postInitDependencies.push('scripts/nowplayingbar');
-            }
+            postInitDependencies.push('scripts/nowplayingbar');
 
             if (AppInfo.isNativeApp && browserInfo.safari) {
 
@@ -3001,8 +2853,12 @@ var AppInfo = {};
 
             postInitDependencies.push('bower_components/emby-webcomponents/input/api');
 
+            if (navigator.serviceWorker && !AppInfo.isNativeApp) {
+                navigator.serviceWorker.register('serviceworker.js');
+            }
+
             if (window.Notification && !AppInfo.isNativeApp) {
-                postInitDependencies.push('bower_components/emby-webcomponents/librarychangednotifications');
+                postInitDependencies.push('bower_components/emby-webcomponents/notifications/notifications');
             }
 
             require(postInitDependencies);
