@@ -180,7 +180,13 @@
     <Compile Include="Entities\UserView.cs" />
     <Compile Include="Entities\UserViewBuilder.cs" />
     <Compile Include="FileOrganization\IFileOrganizationService.cs" />
-    <Compile Include="Health\IHealthMonitor.cs" />
+    <Compile Include="Health\HealthMessageLocalized.cs" />
+    <Compile Include="Health\HealthMessageType.cs" />
+    <Compile Include="Health\HealthMessageSeverity.cs" />
+    <Compile Include="Health\HealthMessage.cs" />
+    <Compile Include="Health\IHealthReporter.cs" />
+    <Compile Include="Health\IHealthService.cs" />
+    <Compile Include="Health\HealthQuery.cs" />
     <Compile Include="IO\ThrottledStream.cs" />
     <Compile Include="Library\DeleteOptions.cs" />
     <Compile Include="Library\ILibraryPostScanTask.cs" />
