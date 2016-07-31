@@ -639,6 +639,15 @@
             return self.getJSON(url);
         };
 
+        self.getHealthMessages = function (options) {
+
+            options = options || {};
+
+            var url = self.getUrl("Health/Messages", options);
+
+            return self.getJSON(url);
+        };
+
         self.getDownloadSpeed = function (byteSize) {
 
             var url = self.getUrl('Playback/BitrateTest', {
