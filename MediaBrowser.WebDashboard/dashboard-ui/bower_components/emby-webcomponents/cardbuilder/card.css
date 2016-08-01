@@ -179,6 +179,10 @@ button.cardContent {
     background-clip: content-box !important;
 }
 
+.chapterCardImageContainer {
+    background-color: #000;
+}
+
 button.cardImageContainer {
     border: 0;
     padding: 0;
@@ -345,10 +349,6 @@ button.cardImageContainer {
 
 .defaultCardColor5 {
     background-color: #F57F17;
-}
-
-.scalableCard.personCard {
-    width: 14.285714285714285714285714285714%;
 }
 
 .scalableCard.backdropCard {
@@ -578,4 +578,8 @@ button.cardImageContainer {
 
 .layout-tv .scalableCard.portraitCard {
     width: 16.66666666666666667%;
+}
+
+.layout-tv .scalableCard.personCard {
+    width: 14.285714285714285714285714285714%;
 }
