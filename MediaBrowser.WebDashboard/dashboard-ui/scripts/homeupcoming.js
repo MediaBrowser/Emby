@@ -64,7 +64,7 @@
 
                     var premiereDate = datetime.parseISO8601Date(item.PremiereDate, true);
 
-                    if (premiereDate.getDate() == new Date().getDate() - 1) {
+                    if (datetime.isYesterday(premiereDate)) {
                         dateText = Globalize.translate('Yesterday');
                     } else {
                         dateText = LibraryBrowser.getFutureDateText(premiereDate, true);
