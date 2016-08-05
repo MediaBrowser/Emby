@@ -19,12 +19,12 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
         public WebSocketSharpRequest(HttpListenerContext httpContext, string operationName, RequestAttributes requestAttributes, ILogger logger)
         {
-            this.OperationName = operationName;
-            this.RequestAttributes = requestAttributes;
-            this.request = httpContext.Request;
-            this.response = new WebSocketSharpResponse(logger, httpContext.Response, this);
+            OperationName = operationName;
+            RequestAttributes = requestAttributes;
+            request = httpContext.Request;
+            response = new WebSocketSharpResponse(logger, httpContext.Response, this);
 
-            this.RequestPreferences = new RequestPreferences(this);
+            RequestPreferences = new RequestPreferences(this);
         }
 
         public HttpListenerRequest HttpRequest
@@ -259,7 +259,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             }
             set
             {
-                this.responseContentType = value;
+                responseContentType = value;
                 HasExplicitResponseContentType = true;
             }
         }
@@ -271,7 +271,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         {
             get
             {
-                if (this.pathInfo == null)
+                if (pathInfo == null)
                 {
                     var mode = HostContext.Config.HandlerFactoryPath;
 
@@ -279,20 +279,20 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                     if (pos != -1)
                     {
                         var path = request.RawUrl.Substring(0, pos);
-                        this.pathInfo = HttpRequestExtensions.GetPathInfo(
+                        pathInfo = HttpRequestExtensions.GetPathInfo(
                             path,
                             mode,
                             mode ?? "");
                     }
                     else
                     {
-                        this.pathInfo = request.RawUrl;
+                        pathInfo = request.RawUrl;
                     }
 
-                    this.pathInfo = this.pathInfo.UrlDecode();
-                    this.pathInfo = NormalizePathInfo(pathInfo, mode);
+                    pathInfo = pathInfo.UrlDecode();
+                    pathInfo = NormalizePathInfo(pathInfo, mode);
                 }
-                return this.pathInfo;
+                return pathInfo;
             }
         }
 
@@ -304,9 +304,9 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                 if (cookies == null)
                 {
                     cookies = new Dictionary<string, System.Net.Cookie>();
-                    for (var i = 0; i < this.request.Cookies.Count; i++)
+                    for (var i = 0; i < request.Cookies.Count; i++)
                     {
-                        var httpCookie = this.request.Cookies[i];
+                        var httpCookie = request.Cookies[i];
                         cookies[httpCookie.Name] = new System.Net.Cookie(httpCookie.Name, httpCookie.Value, httpCookie.Path, httpCookie.Domain);
                     }
                 }
@@ -335,7 +335,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
         private NameValueCollectionWrapper formData;
         public INameValueCollection FormData
         {
-            get { return formData ?? (formData = new NameValueCollectionWrapper(this.Form)); }
+            get { return formData ?? (formData = new NameValueCollectionWrapper(Form)); }
         }
 
         public bool IsLocal

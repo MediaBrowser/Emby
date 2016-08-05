@@ -289,10 +289,10 @@ namespace MediaBrowser.Providers.TV
             {
                 foreach (var video in seriesInfo.videos.results)
                 {
-                    if (video.type.Equals("trailer", System.StringComparison.OrdinalIgnoreCase)
-                        || video.type.Equals("clip", System.StringComparison.OrdinalIgnoreCase))
+                    if (video.type.Equals("trailer", StringComparison.OrdinalIgnoreCase)
+                        || video.type.Equals("clip", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (video.site.Equals("youtube", System.StringComparison.OrdinalIgnoreCase))
+                        if (video.site.Equals("youtube", StringComparison.OrdinalIgnoreCase))
                         {
                             var videoUrl = string.Format("http://www.youtube.com/watch?v={0}", video.key);
                             series.AddTrailerUrl(videoUrl, true);

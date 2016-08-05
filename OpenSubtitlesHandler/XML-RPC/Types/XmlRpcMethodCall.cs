@@ -33,7 +33,7 @@ namespace XmlRpcHandler
         public XmlRpcMethodCall(string name)
         {
             this.name = name;
-            this.parameters = new List<IXmlRpcValue>();
+            parameters = new List<IXmlRpcValue>();
         }
         /// <summary>
         /// A method call

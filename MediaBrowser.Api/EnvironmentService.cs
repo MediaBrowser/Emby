@@ -113,7 +113,7 @@ namespace MediaBrowser.Api
         /// The _network manager
         /// </summary>
         private readonly INetworkManager _networkManager;
-        private IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EnvironmentService" /> class.

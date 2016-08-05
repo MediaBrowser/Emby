@@ -42,7 +42,7 @@ namespace MediaBrowser.Server.Mono.Security {
 
     public class ASN1 {
 
-		private byte m_nTag;
+		private readonly byte m_nTag;
 		private byte[] m_aValue;
 		private ArrayList elist;
 
@@ -133,7 +133,7 @@ namespace MediaBrowser.Server.Mono.Security {
 
 		public bool Equals (byte[] asn1) 
 		{
-			return CompareArray (this.GetBytes (), asn1);
+			return CompareArray (GetBytes (), asn1);
 		}
 
 		public bool CompareValue (byte[] value) 

@@ -50,7 +50,7 @@ namespace MediaBrowser.Api.Reports
         {
             if (!string.IsNullOrEmpty(reportColumns))
             {
-                var s = reportColumns.Split('|').Select(x => ReportHelper.GetHeaderMetadataType(x)).Where(x => x != HeaderMetadata.None);
+                var s = reportColumns.Split('|').Select(x => GetHeaderMetadataType(x)).Where(x => x != HeaderMetadata.None);
                 return s.ToList();
             }
             else

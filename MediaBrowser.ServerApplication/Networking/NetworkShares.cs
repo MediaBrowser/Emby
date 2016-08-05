@@ -32,11 +32,11 @@ namespace MediaBrowser.ServerApplication.Networking
     {
         #region Private data
 
-        private string _server;
-        private string _netName;
-        private string _path;
-        private ShareType _shareType;
-        private string _remark;
+        private readonly string _server;
+        private readonly string _netName;
+        private readonly string _path;
+        private readonly ShareType _shareType;
+        private readonly string _remark;
 
         #endregion
 
@@ -531,7 +531,7 @@ namespace MediaBrowser.ServerApplication.Networking
         #endregion
 
         /// <summary>The name of the server this collection represents</summary>
-        private string _server;
+        private readonly string _server;
 
         #region Constructor
 

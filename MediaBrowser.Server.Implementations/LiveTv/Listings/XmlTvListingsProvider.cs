@@ -112,7 +112,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
             }
 
             var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
-            var reader = new XmlTvReader(path, GetLanguage(), null);
+            var reader = new XmlTvReader(path, GetLanguage());
 
             var results = reader.GetProgrammes(channelNumber, startDateUtc, endDateUtc, cancellationToken);
             return results.Select(p => new ProgramInfo()
@@ -157,7 +157,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         {
             // Add the channel image url
             var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
-            var reader = new XmlTvReader(path, GetLanguage(), null);
+            var reader = new XmlTvReader(path, GetLanguage());
             var results = reader.GetChannels().ToList();
 
             if (channels != null)
@@ -190,7 +190,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         {
             // In theory this should never be called because there is always only one lineup
             var path = await GetXml(info.Path, CancellationToken.None).ConfigureAwait(false);
-            var reader = new XmlTvReader(path, GetLanguage(), null);
+            var reader = new XmlTvReader(path, GetLanguage());
             var results = reader.GetChannels();
 
             // Should this method be async?
@@ -201,7 +201,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.Listings
         {
             // In theory this should never be called because there is always only one lineup
             var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
-            var reader = new XmlTvReader(path, GetLanguage(), null);
+            var reader = new XmlTvReader(path, GetLanguage());
             var results = reader.GetChannels();
 
             // Should this method be async?

@@ -15,7 +15,7 @@ namespace MediaBrowser.Common.Implementations.Archiving
     /// </summary>
     public class ZipClient : IZipClient
     {
-		private IFileSystem _fileSystem;
+		private readonly IFileSystem _fileSystem;
 
 		public ZipClient(IFileSystem fileSystem) 
 		{

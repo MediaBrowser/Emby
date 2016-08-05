@@ -99,19 +99,19 @@ namespace MediaBrowser.Tests.ConsistencyTests
         [TestMethod]
         public void ReportStringUsage()
         {
-            this.CheckDashboardStrings(false);
+            CheckDashboardStrings(false);
         }
 
         [TestMethod]
         public void ReportUnusedStrings()
         {
-            this.CheckDashboardStrings(true);
+            CheckDashboardStrings(true);
         }
 
         private void CheckDashboardStrings(Boolean unusedOnly)
         {
             // Init Folders
-            var currentDir = System.IO.Directory.GetCurrentDirectory();
+            var currentDir = Directory.GetCurrentDirectory();
             Trace("CurrentDir: {0}", currentDir);
 
             var rootFolderInfo = ResolveFolder(currentDir, WebFolder);
@@ -129,7 +129,7 @@ namespace MediaBrowser.Tests.ConsistencyTests
             }
 
             int lineNumbers;
-            var stringsDic = this.CreateStringsDictionary(new FileInfo(stringsFileName), out lineNumbers);
+            var stringsDic = CreateStringsDictionary(new FileInfo(stringsFileName), out lineNumbers);
 
             Trace("Loaded {0} strings from strings file containing {1} lines", stringsDic.Count, lineNumbers);
 

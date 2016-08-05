@@ -6,7 +6,7 @@ namespace MediaBrowser.Tests.ConsistencyTests.TextIndexing
     {
         public void AddOccurrence(string fileName, string fullPath, int lineNumber, int wordIndex)
         {
-            this.Add(new WordOccurrence(fileName, fullPath, lineNumber, wordIndex));
+            Add(new WordOccurrence(fileName, fullPath, lineNumber, wordIndex));
         }
 
     }

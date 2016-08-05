@@ -96,7 +96,7 @@ namespace MediaBrowser.Server.Mono.Security {
 		private byte[] subjectUniqueID;
 		private X509ExtensionCollection extensions;
 
-		private static string encoding_error = ("Input data cannot be coded as a valid certificate.");
+		private static readonly string encoding_error = ("Input data cannot be coded as a valid certificate.");
 
 
 		// that's were the real job is!
@@ -400,11 +400,11 @@ namespace MediaBrowser.Server.Mono.Security {
 						byte[] sig = new byte [40];
 						// parts may be less than 20 bytes (i.e. first bytes were 0x00)
 						// parts may be more than 20 bytes (i.e. first byte > 0x80, negative)
-						int s1 = System.Math.Max (0, part1.Length - 20);
-						int e1 = System.Math.Max (0, 20 - part1.Length);
+						int s1 = Math.Max (0, part1.Length - 20);
+						int e1 = Math.Max (0, 20 - part1.Length);
 						Buffer.BlockCopy (part1, s1, sig, e1, part1.Length - s1);
-						int s2 = System.Math.Max (0, part2.Length - 20);
-						int e2 = System.Math.Max (20, 40 - part2.Length);
+						int s2 = Math.Max (0, part2.Length - 20);
+						int e2 = Math.Max (20, 40 - part2.Length);
 						Buffer.BlockCopy (part2, s2, sig, e2, part2.Length - s2);
 						return sig;
 
@@ -475,7 +475,7 @@ namespace MediaBrowser.Server.Mono.Security {
 			DSASignatureDeformatter v = new DSASignatureDeformatter (dsa);
 			// only SHA-1 is supported
 			v.SetHashAlgorithm ("SHA1");
-			return v.VerifySignature (this.Hash, this.Signature);
+			return v.VerifySignature (Hash, Signature);
 		}
 
 		internal bool VerifySignature (RSA rsa) 
@@ -485,7 +485,7 @@ namespace MediaBrowser.Server.Mono.Security {
 				return false;
 			RSAPKCS1SignatureDeformatter v = new RSAPKCS1SignatureDeformatter (rsa);
 			v.SetHashAlgorithm (PKCS1.HashNameFromOid (m_signaturealgo));
-			return v.VerifySignature (this.Hash, this.Signature);
+			return v.VerifySignature (Hash, Signature);
 		}
 
 		public bool VerifySignature (AsymmetricAlgorithm aa) 

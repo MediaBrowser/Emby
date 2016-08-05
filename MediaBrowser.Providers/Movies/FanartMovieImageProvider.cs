@@ -186,7 +186,7 @@ namespace MediaBrowser.Providers.Movies
             PopulateImages(list, obj.moviebackground, ImageType.Backdrop, 1920, 1080);
         }
 
-        private Regex _regex_http = new Regex("^http://");
+        private readonly Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list, List<Image> images, ImageType type, int width, int height)
         {
             if (images == null)

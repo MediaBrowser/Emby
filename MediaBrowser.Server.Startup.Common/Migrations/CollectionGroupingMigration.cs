@@ -17,7 +17,7 @@ namespace MediaBrowser.Server.Startup.Common.Migrations
 
         public void Run()
         {
-            var migrationKey = this.GetType().Name;
+            var migrationKey = GetType().Name;
             var migrationKeyList = _config.Configuration.Migrations.ToList();
 
             if (!migrationKeyList.Contains(migrationKey))

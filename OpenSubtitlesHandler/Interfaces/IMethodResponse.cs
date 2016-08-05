@@ -39,12 +39,12 @@ namespace OpenSubtitlesHandler
 
         protected virtual void LoadAttributes()
         {
-            foreach (Attribute attr in Attribute.GetCustomAttributes(this.GetType()))
+            foreach (Attribute attr in Attribute.GetCustomAttributes(GetType()))
             {
                 if (attr.GetType() == typeof(MethodResponseDescription))
                 {
-                    this.name = ((MethodResponseDescription)attr).Name;
-                    this.message = ((MethodResponseDescription)attr).Message;
+                    name = ((MethodResponseDescription)attr).Name;
+                    message = ((MethodResponseDescription)attr).Message;
                     break;
                 }
             }

@@ -24,7 +24,7 @@ namespace MediaBrowser.Dlna.ContentDirectory
             _logger = logger;
         }
 
-        private static XNamespace UNamespace = "u";
+        private static readonly XNamespace UNamespace = "u";
         
         public async Task<QueryResult<ChannelItemInfo>> Browse(ContentDirectoryBrowseRequest request, CancellationToken cancellationToken)
         {

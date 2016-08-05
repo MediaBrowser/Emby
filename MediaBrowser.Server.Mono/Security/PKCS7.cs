@@ -198,9 +198,9 @@ namespace MediaBrowser.Server.Mono.Security {
 		 */
 		public class EncryptedData {
 			private byte _version;
-			private ContentInfo _content;
-			private ContentInfo _encryptionAlgorithm;
-			private byte[] _encrypted;
+			private readonly ContentInfo _content;
+			private readonly ContentInfo _encryptionAlgorithm;
+			private readonly byte[] _encrypted;
 
 			public EncryptedData () 
 			{
@@ -300,10 +300,10 @@ namespace MediaBrowser.Server.Mono.Security {
 		 */
 		public class EnvelopedData {
 			private byte _version;
-			private ContentInfo _content;
-			private ContentInfo _encryptionAlgorithm;
-			private ArrayList _recipientInfos;
-			private byte[] _encrypted;
+			private readonly ContentInfo _content;
+			private readonly ContentInfo _encryptionAlgorithm;
+			private readonly ArrayList _recipientInfos;
+			private readonly byte[] _encrypted;
 
 			public EnvelopedData () 
 			{
@@ -450,12 +450,12 @@ namespace MediaBrowser.Server.Mono.Security {
 		 */
 		public class RecipientInfo {
 
-			private int _version;
-			private string _oid;
-			private byte[] _key;
-			private byte[] _ski;
-			private string _issuer;
-			private byte[] _serial;
+			private readonly int _version;
+			private readonly string _oid;
+			private readonly byte[] _key;
+			private readonly byte[] _ski;
+			private readonly string _issuer;
+			private readonly byte[] _serial;
 
 			public RecipientInfo () {}
 
@@ -536,10 +536,10 @@ namespace MediaBrowser.Server.Mono.Security {
 		public class SignedData {
 			private byte version;
 			private string hashAlgorithm;
-			private ContentInfo contentInfo;
-			private X509CertificateCollection certs;
-			private ArrayList crls;
-			private SignerInfo signerInfo;
+			private readonly ContentInfo contentInfo;
+			private readonly X509CertificateCollection certs;
+			private readonly ArrayList crls;
+			private readonly SignerInfo signerInfo;
 			private bool mda;
 			private bool signed;
 
@@ -775,12 +775,12 @@ namespace MediaBrowser.Server.Mono.Security {
 			private X509Certificate x509;
 			private string hashAlgorithm;
 			private AsymmetricAlgorithm key;
-			private ArrayList authenticatedAttributes;
-			private ArrayList unauthenticatedAttributes;
+			private readonly ArrayList authenticatedAttributes;
+			private readonly ArrayList unauthenticatedAttributes;
 			private byte[] signature;
-			private string issuer;
-			private byte[] serial;
-			private byte[] ski;
+			private readonly string issuer;
+			private readonly byte[] serial;
+			private readonly byte[] ski;
 
 			public SignerInfo () 
 			{
@@ -919,7 +919,7 @@ namespace MediaBrowser.Server.Mono.Security {
 				// version Version -> Version ::= INTEGER
 				signerInfo.Add (new ASN1 (0x02, ver));
 				// issuerAndSerialNumber IssuerAndSerialNumber,
-				signerInfo.Add (PKCS7.IssuerAndSerialNumber (x509));
+				signerInfo.Add (IssuerAndSerialNumber (x509));
 				// digestAlgorithm DigestAlgorithmIdentifier,
 				string hashOid = CryptoConfig.MapNameToOID (hashAlgorithm);
 				signerInfo.Add (AlgorithmIdentifier (hashOid));
@@ -933,7 +933,7 @@ namespace MediaBrowser.Server.Mono.Security {
 				}
 				// digestEncryptionAlgorithm DigestEncryptionAlgorithmIdentifier,
 				if (key is RSA) {
-					signerInfo.Add (AlgorithmIdentifier (PKCS7.Oid.rsaEncryption));
+					signerInfo.Add (AlgorithmIdentifier (Oid.rsaEncryption));
 
 					if (aa != null) {
 						// Calculate the signature here; otherwise it must be set from SignedData

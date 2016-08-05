@@ -982,7 +982,7 @@ namespace MediaBrowser.Providers.Manager
                 {
                     var folder = (Folder)child;
 
-                    await folder.ValidateChildren(new Progress<double>(), CancellationToken.None, options, true).ConfigureAwait(false);
+                    await folder.ValidateChildren(new Progress<double>(), CancellationToken.None, options).ConfigureAwait(false);
                 }
             }
         }
@@ -1002,7 +1002,7 @@ namespace MediaBrowser.Providers.Manager
                 .Where(i => i != null)
                 .ToList();
 
-            var musicArtistRefreshTasks = musicArtists.Select(i => i.ValidateChildren(new Progress<double>(), cancellationToken, options, true));
+            var musicArtistRefreshTasks = musicArtists.Select(i => i.ValidateChildren(new Progress<double>(), cancellationToken, options));
 
             await Task.WhenAll(musicArtistRefreshTasks).ConfigureAwait(false);
 

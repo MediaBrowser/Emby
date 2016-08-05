@@ -319,7 +319,7 @@ namespace MediaBrowser.Providers.TV
             return false;
         }
 
-        private SemaphoreSlim _ensureSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _ensureSemaphore = new SemaphoreSlim(1, 1);
         internal async Task<string> EnsureSeriesInfo(Dictionary<string, string> seriesProviderIds, string preferredMetadataLanguage, CancellationToken cancellationToken)
         {
             await _ensureSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);

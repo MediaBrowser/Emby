@@ -30,7 +30,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="logger">The logger.</param>
         public Profiler(string name, ILogger logger)
         {
-            this._name = name;
+            _name = name;
 
             _logger = logger;
 

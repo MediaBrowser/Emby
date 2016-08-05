@@ -137,7 +137,7 @@ namespace MediaBrowser.Providers.TV
 
                     await series.RefreshMetadata(new MetadataRefreshOptions(directoryService), cancellationToken).ConfigureAwait(false);
 
-                    await series.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService), true)
+                    await series.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService))
                         .ConfigureAwait(false);
                 }
             }

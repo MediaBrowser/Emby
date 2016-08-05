@@ -1892,7 +1892,7 @@ namespace MediaBrowser.Api.Playback
             }
             else
             {
-                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio, true);
+                state.AudioStream = GetMediaStream(mediaStreams, null, MediaStreamType.Audio);
             }
 
             state.MediaSource = mediaSource;

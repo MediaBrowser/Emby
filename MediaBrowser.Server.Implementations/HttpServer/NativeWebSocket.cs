@@ -27,7 +27,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// Gets or sets the web socket.
         /// </summary>
         /// <value>The web socket.</value>
-        private System.Net.WebSockets.WebSocket WebSocket { get; set; }
+        private WebSocket WebSocket { get; set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 

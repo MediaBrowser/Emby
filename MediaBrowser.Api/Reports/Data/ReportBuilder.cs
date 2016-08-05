@@ -36,9 +36,9 @@ namespace MediaBrowser.Api.Reports
             ReportIncludeItemTypes reportRowType = ReportHelper.GetRowType(request.IncludeItemTypes);
             ReportDisplayType displayType = ReportHelper.GetReportDisplayType(request.DisplayType);
 
-            List<ReportOptions<BaseItem>> options = this.GetReportOptions<BaseItem>(request,
-                () => this.GetDefaultHeaderMetadata(reportRowType),
-                (hm) => this.GetOption(hm)).Where(x => this.DisplayTypeVisible(x.Header.DisplayType, displayType)).ToList();
+            List<ReportOptions<BaseItem>> options = GetReportOptions<BaseItem>(request,
+                () => GetDefaultHeaderMetadata(reportRowType),
+                (hm) => GetOption(hm)).Where(x => DisplayTypeVisible(x.Header.DisplayType, displayType)).ToList();
 
             var headers = GetHeaders<BaseItem>(options);
             var rows = GetReportRows(items, options);
@@ -77,7 +77,7 @@ namespace MediaBrowser.Api.Reports
         protected internal override List<ReportHeader> GetHeaders<H>(H request)
         {
             ReportIncludeItemTypes reportRowType = ReportHelper.GetRowType(request.IncludeItemTypes);
-            return this.GetHeaders<BaseItem>(request, () => this.GetDefaultHeaderMetadata(reportRowType), (hm) => this.GetOption(hm));
+            return GetHeaders<BaseItem>(request, () => GetDefaultHeaderMetadata(reportRowType), (hm) => GetOption(hm));
         }
 
         #endregion
@@ -350,25 +350,25 @@ namespace MediaBrowser.Api.Reports
                     option.Header.DisplayType = ReportDisplayType.Screen;
                     break;
                 case HeaderMetadata.Locked:
-                    option.Column = (i, r) => this.GetBoolString(r.HasLockData);
+                    option.Column = (i, r) => GetBoolString(r.HasLockData);
                     option.Header.ItemViewType = ItemViewType.LockDataImage;
                     option.Header.CanGroup = false;
                     option.Header.DisplayType = ReportDisplayType.Export;
                     break;
                 case HeaderMetadata.ImagePrimary:
-                    option.Column = (i, r) => this.GetBoolString(r.HasImageTagsPrimary);
+                    option.Column = (i, r) => GetBoolString(r.HasImageTagsPrimary);
                     option.Header.ItemViewType = ItemViewType.TagsPrimaryImage;
                     option.Header.CanGroup = false;
                     option.Header.DisplayType = ReportDisplayType.Export;
                     break;
                 case HeaderMetadata.ImageBackdrop:
-                    option.Column = (i, r) => this.GetBoolString(r.HasImageTagsBackdrop);
+                    option.Column = (i, r) => GetBoolString(r.HasImageTagsBackdrop);
                     option.Header.ItemViewType = ItemViewType.TagsBackdropImage;
                     option.Header.CanGroup = false;
                     option.Header.DisplayType = ReportDisplayType.Export;
                     break;
                 case HeaderMetadata.ImageLogo:
-                    option.Column = (i, r) => this.GetBoolString(r.HasImageTagsLogo);
+                    option.Column = (i, r) => GetBoolString(r.HasImageTagsLogo);
                     option.Header.ItemViewType = ItemViewType.TagsLogoImage;
                     option.Header.CanGroup = false;
                     option.Header.DisplayType = ReportDisplayType.Export;
@@ -395,7 +395,7 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.Runtime:
-                    option.Column = (i, r) => this.GetRuntimeDateTime(i.RunTimeTicks);
+                    option.Column = (i, r) => GetRuntimeDateTime(i.RunTimeTicks);
                     option.Header.HeaderFieldType = ReportFieldType.Minutes;
                     option.Header.SortField = "Runtime,SortName";
                     break;
@@ -405,29 +405,29 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.Season:
-                    option.Column = (i, r) => this.GetEpisode(i);
+                    option.Column = (i, r) => GetEpisode(i);
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.Header.SortField = "SortName";
                     break;
 
                 case HeaderMetadata.SeasonNumber:
-                    option.Column = (i, r) => this.GetObject<Season, string>(i, (x) => x.IndexNumber == null ? "" : x.IndexNumber.ToString());
+                    option.Column = (i, r) => GetObject<Season, string>(i, (x) => x.IndexNumber == null ? "" : x.IndexNumber.ToString());
                     option.Header.SortField = "IndexNumber";
                     option.Header.HeaderFieldType = ReportFieldType.Int;
                     break;
 
                 case HeaderMetadata.Series:
-                    option.Column = (i, r) => this.GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
+                    option.Column = (i, r) => GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.Header.SortField = "SeriesSortName,SortName";
                     break;
 
                 case HeaderMetadata.EpisodeSeries:
-                    option.Column = (i, r) => this.GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
+                    option.Column = (i, r) => GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.ItemID = (i) =>
                     {
-                        Series series = this.GetObject<Episode, Series>(i, (x) => x.Series);
+                        Series series = GetObject<Episode, Series>(i, (x) => x.Series);
                         if (series == null)
                             return string.Empty;
                         return series.Id;
@@ -437,11 +437,11 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.EpisodeSeason:
-                    option.Column = (i, r) => this.GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
+                    option.Column = (i, r) => GetObject<IHasSeries, string>(i, (x) => x.SeriesName);
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.ItemID = (i) =>
                     {
-                        Season season = this.GetObject<Episode, Season>(i, (x) => x.Season);
+                        Season season = GetObject<Episode, Season>(i, (x) => x.Season);
                         if (season == null)
                             return string.Empty;
                         return season.Id;
@@ -451,14 +451,14 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.Network:
-                    option.Column = (i, r) => this.GetListAsString(i.Studios);
-                    option.ItemID = (i) => this.GetStudioID(i.Studios.FirstOrDefault());
+                    option.Column = (i, r) => GetListAsString(i.Studios);
+                    option.ItemID = (i) => GetStudioID(i.Studios.FirstOrDefault());
                     option.Header.ItemViewType = ItemViewType.ItemByNameDetails;
                     option.Header.SortField = "Studio,SortName";
                     break;
 
                 case HeaderMetadata.Year:
-                    option.Column = (i, r) => this.GetSeriesProductionYear(i);
+                    option.Column = (i, r) => GetSeriesProductionYear(i);
                     option.Header.SortField = "ProductionYear,PremiereDate,SortName";
                     break;
 
@@ -473,52 +473,52 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.Trailers:
-                    option.Column = (i, r) => this.GetBoolString(r.HasLocalTrailer);
+                    option.Column = (i, r) => GetBoolString(r.HasLocalTrailer);
                     option.Header.ItemViewType = ItemViewType.TrailersImage;
                     break;
 
                 case HeaderMetadata.Specials:
-                    option.Column = (i, r) => this.GetBoolString(r.HasSpecials);
+                    option.Column = (i, r) => GetBoolString(r.HasSpecials);
                     option.Header.ItemViewType = ItemViewType.SpecialsImage;
                     break;
 
                 case HeaderMetadata.GameSystem:
-                    option.Column = (i, r) => this.GetObject<Game, string>(i, (x) => x.GameSystem);
+                    option.Column = (i, r) => GetObject<Game, string>(i, (x) => x.GameSystem);
                     option.Header.SortField = "GameSystem,SortName";
                     break;
 
                 case HeaderMetadata.Players:
-                    option.Column = (i, r) => this.GetObject<Game, int?>(i, (x) => x.PlayersSupported);
+                    option.Column = (i, r) => GetObject<Game, int?>(i, (x) => x.PlayersSupported);
                     option.Header.SortField = "Players,GameSystem,SortName";
                     break;
 
                 case HeaderMetadata.AlbumArtist:
-                    option.Column = (i, r) => this.GetObject<MusicAlbum, string>(i, (x) => x.AlbumArtist);
-                    option.ItemID = (i) => this.GetPersonID(this.GetObject<MusicAlbum, string>(i, (x) => x.AlbumArtist));
+                    option.Column = (i, r) => GetObject<MusicAlbum, string>(i, (x) => x.AlbumArtist);
+                    option.ItemID = (i) => GetPersonID(GetObject<MusicAlbum, string>(i, (x) => x.AlbumArtist));
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.Header.SortField = "AlbumArtist,Album,SortName";
 
                     break;
                 case HeaderMetadata.MusicArtist:
-                    option.Column = (i, r) => this.GetObject<MusicArtist, string>(i, (x) => x.GetLookupInfo().Name);
+                    option.Column = (i, r) => GetObject<MusicArtist, string>(i, (x) => x.GetLookupInfo().Name);
                     option.Header.ItemViewType = ItemViewType.Detail;
                     option.Header.SortField = "AlbumArtist,Album,SortName";
                     internalHeader = HeaderMetadata.AlbumArtist;
                     break;
                 case HeaderMetadata.AudioAlbumArtist:
-                    option.Column = (i, r) => this.GetListAsString(this.GetObject<Audio, List<string>>(i, (x) => x.AlbumArtists));
+                    option.Column = (i, r) => GetListAsString(GetObject<Audio, List<string>>(i, (x) => x.AlbumArtists));
                     option.Header.SortField = "AlbumArtist,Album,SortName";
                     internalHeader = HeaderMetadata.AlbumArtist;
                     break;
 
                 case HeaderMetadata.AudioAlbum:
-                    option.Column = (i, r) => this.GetObject<Audio, string>(i, (x) => x.Album);
+                    option.Column = (i, r) => GetObject<Audio, string>(i, (x) => x.Album);
                     option.Header.SortField = "Album,SortName";
                     internalHeader = HeaderMetadata.Album;
                     break;
 
                 case HeaderMetadata.Countries:
-                    option.Column = (i, r) => this.GetListAsString(this.GetObject<IHasProductionLocations, List<string>>(i, (x) => x.ProductionLocations));
+                    option.Column = (i, r) => GetListAsString(GetObject<IHasProductionLocations, List<string>>(i, (x) => x.ProductionLocations));
                     break;
 
                 case HeaderMetadata.Disc:
@@ -530,31 +530,31 @@ namespace MediaBrowser.Api.Reports
                     break;
 
                 case HeaderMetadata.Tracks:
-                    option.Column = (i, r) => this.GetObject<MusicAlbum, List<Audio>>(i, (x) => x.Tracks.ToList(), new List<Audio>()).Count();
+                    option.Column = (i, r) => GetObject<MusicAlbum, List<Audio>>(i, (x) => x.Tracks.ToList(), new List<Audio>()).Count();
                     break;
 
                 case HeaderMetadata.Audio:
-                    option.Column = (i, r) => this.GetAudioStream(i);
+                    option.Column = (i, r) => GetAudioStream(i);
                     break;
 
                 case HeaderMetadata.EmbeddedImage:
                     break;
 
                 case HeaderMetadata.Video:
-                    option.Column = (i, r) => this.GetVideoStream(i);
+                    option.Column = (i, r) => GetVideoStream(i);
                     break;
 
                 case HeaderMetadata.Resolution:
-                    option.Column = (i, r) => this.GetVideoResolution(i);
+                    option.Column = (i, r) => GetVideoResolution(i);
                     break;
 
                 case HeaderMetadata.Subtitles:
-                    option.Column = (i, r) => this.GetBoolString(r.HasSubtitles);
+                    option.Column = (i, r) => GetBoolString(r.HasSubtitles);
                     option.Header.ItemViewType = ItemViewType.SubtitleImage;
                     break;
 
                 case HeaderMetadata.Genres:
-                    option.Column = (i, r) => this.GetListAsString(i.Genres);
+                    option.Column = (i, r) => GetListAsString(i.Genres);
                     break;
 
             }

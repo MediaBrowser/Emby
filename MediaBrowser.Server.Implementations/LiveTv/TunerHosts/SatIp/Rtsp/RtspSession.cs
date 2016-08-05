@@ -33,7 +33,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         private static readonly Regex RegexRtspSessionHeader = new Regex(@"\s*([^\s;]+)(;timeout=(\d+))?");
         private const int DefaultRtspSessionTimeout = 30;    // unit = s
         private static readonly Regex RegexDescribeResponseSignalInfo = new Regex(@";tuner=\d+,(\d+),(\d+),(\d+),", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        private string _address;
+        private readonly string _address;
         private string _rtspSessionId;
 
         public string RtspSessionId

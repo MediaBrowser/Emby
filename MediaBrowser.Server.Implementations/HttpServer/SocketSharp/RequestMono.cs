@@ -399,22 +399,22 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
 
         public sealed class HttpPostedFile
         {
-            string name;
-            string content_type;
-            Stream stream;
+            readonly string name;
+            readonly string content_type;
+            readonly Stream stream;
 
             class ReadSubStream : Stream
             {
-                Stream s;
-                long offset;
-                long end;
+                readonly Stream s;
+                readonly long offset;
+                readonly long end;
                 long position;
 
                 public ReadSubStream(Stream s, long offset, long length)
                 {
                     this.s = s;
                     this.offset = offset;
-                    this.end = offset + length;
+                    end = offset + length;
                     position = offset;
                 }
 
@@ -545,7 +545,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
             {
                 this.name = name;
                 this.content_type = content_type;
-                this.stream = new ReadSubStream(base_stream, offset, length);
+                stream = new ReadSubStream(base_stream, offset, length);
             }
 
             public string ContentType
@@ -646,13 +646,13 @@ namespace MediaBrowser.Server.Implementations.HttpServer.SocketSharp
                 }
             }
 
-            Stream data;
-            string boundary;
-            byte[] boundary_bytes;
-            byte[] buffer;
+            readonly Stream data;
+            readonly string boundary;
+            readonly byte[] boundary_bytes;
+            readonly byte[] buffer;
             bool at_eof;
-            Encoding encoding;
-            StringBuilder sb;
+            readonly Encoding encoding;
+            readonly StringBuilder sb;
 
             const byte HYPHEN = (byte)'-', LF = (byte)'\n', CR = (byte)'\r';
 

@@ -38,9 +38,9 @@ namespace MediaBrowser.Api.Reports
         public ReportResult GetResult(QueryResult<ActivityLogEntry> queryResult, IReportsQuery request)
         {
             ReportDisplayType displayType = ReportHelper.GetReportDisplayType(request.DisplayType);
-            List<ReportOptions<ActivityLogEntry>> options = this.GetReportOptions<ActivityLogEntry>(request,
-                () => this.GetDefaultHeaderMetadata(),
-                (hm) => this.GetOption(hm)).Where(x => this.DisplayTypeVisible(x.Header.DisplayType, displayType)).ToList();
+            List<ReportOptions<ActivityLogEntry>> options = GetReportOptions<ActivityLogEntry>(request,
+                () => GetDefaultHeaderMetadata(),
+                (hm) => GetOption(hm)).Where(x => DisplayTypeVisible(x.Header.DisplayType, displayType)).ToList();
 
             var headers = GetHeaders<ActivityLogEntry>(options);
             var rows = GetReportRows(queryResult.Items, options);
@@ -78,7 +78,7 @@ namespace MediaBrowser.Api.Reports
         /// <seealso cref="M:MediaBrowser.Api.Reports.ReportBuilderBase.GetHeaders{H}(H)"/>
         protected internal override List<ReportHeader> GetHeaders<H>(H request)
         {
-            return this.GetHeaders<ActivityLogEntry>(request, () => this.GetDefaultHeaderMetadata(), (hm) => this.GetOption(hm));
+            return GetHeaders<ActivityLogEntry>(request, () => GetDefaultHeaderMetadata(), (hm) => GetOption(hm));
         }
 
         #endregion
@@ -164,7 +164,7 @@ namespace MediaBrowser.Api.Reports
                     {
                         if (!string.IsNullOrEmpty(i.UserId))
                         {
-                            MediaBrowser.Controller.Entities.User user = _userManager.GetUserById(i.UserId);
+                            Controller.Entities.User user = _userManager.GetUserById(i.UserId);
                             if (user != null)
                             {
                                 var dto = _userManager.GetUserDto(user);
@@ -188,7 +188,7 @@ namespace MediaBrowser.Api.Reports
                     {
                         if (!string.IsNullOrEmpty(i.UserId))
                         {
-                            MediaBrowser.Controller.Entities.User user = _userManager.GetUserById(i.UserId);
+                            Controller.Entities.User user = _userManager.GetUserById(i.UserId);
                             if (user != null)
                                 return user.Name;
                         }

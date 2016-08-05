@@ -78,7 +78,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             RangeHeader = rangeHeader;
             SourceStream = source;
             IsHeadRequest = isHeadRequest;
-            this._logger = logger;
+            _logger = logger;
 
             ContentType = contentType;
             Options["Content-Type"] = contentType;

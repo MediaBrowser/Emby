@@ -151,7 +151,7 @@ namespace MediaBrowser.Providers.Music
             }
         }
 
-        private Regex _regex_http = new Regex("^http://");
+        private readonly Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list,
             List<FanartArtistProvider.FanartArtistImage> images,
             ImageType type,

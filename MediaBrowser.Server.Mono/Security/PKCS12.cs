@@ -61,8 +61,8 @@ namespace MediaBrowser.Server.Mono.Security {
 
 
 	internal class SafeBag {
-		private string _bagOID;
-		private ASN1 _asn1;
+		private readonly string _bagOID;
+		private readonly ASN1 _asn1;
 
 		public SafeBag(string bagOID, ASN1 asn1) {
 			_bagOID = bagOID;
@@ -110,9 +110,9 @@ namespace MediaBrowser.Server.Mono.Security {
 				MAC
 			}
 
-			static private byte[] keyDiversifier = { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
-			static private byte[] ivDiversifier  = { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 };
-			static private byte[] macDiversifier = { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 };
+			static private readonly byte[] keyDiversifier = { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
+			static private readonly byte[] ivDiversifier  = { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 };
+			static private readonly byte[] macDiversifier = { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 };
 
 			private string _hashName;
 			private int _iterations;
@@ -252,14 +252,14 @@ namespace MediaBrowser.Server.Mono.Security {
 
 		//private int _version;
 		private byte[] _password;
-		private ArrayList _keyBags;
-		private ArrayList _secretBags;
-		private X509CertificateCollection _certs;
+		private readonly ArrayList _keyBags;
+		private readonly ArrayList _secretBags;
+		private readonly X509CertificateCollection _certs;
 		private bool _keyBagsChanged;
 		private bool _secretBagsChanged;
 		private bool _certsChanged;
 		private int _iterations;
-		private ArrayList _safeBags;
+		private readonly ArrayList _safeBags;
 		private RandomNumberGenerator _rng;
 
 		// constructors
@@ -563,7 +563,7 @@ namespace MediaBrowser.Server.Mono.Security {
 			int keyLength = 8;	// 64 bits (default)
 			int ivLength = 8;	// 64 bits (default)
 
-			PKCS12.DeriveBytes pd = new PKCS12.DeriveBytes ();
+			DeriveBytes pd = new DeriveBytes ();
 			pd.Password = _password; 
 			pd.Salt = salt;
 			pd.IterationCount = iterationCount;
@@ -602,34 +602,34 @@ namespace MediaBrowser.Server.Mono.Security {
 					algorithm = "RC2";
 					keyLength = 4;		// default
 					break;
-				case PKCS12.pbeWithSHAAnd128BitRC4: 		// no unit test available
+				case pbeWithSHAAnd128BitRC4: 		// no unit test available
 					pd.HashName = "SHA1";
 					algorithm = "RC4";
 					keyLength = 16;
 					ivLength = 0;		// N/A
 					break;
-				case PKCS12.pbeWithSHAAnd40BitRC4: 		// no unit test available
+				case pbeWithSHAAnd40BitRC4: 		// no unit test available
 					pd.HashName = "SHA1";
 					algorithm = "RC4";
 					keyLength = 5;
 					ivLength = 0;		// N/A
 					break;
-				case PKCS12.pbeWithSHAAnd3KeyTripleDESCBC: 
+				case pbeWithSHAAnd3KeyTripleDESCBC: 
 					pd.HashName = "SHA1";
 					algorithm = "TripleDES";
 					keyLength = 24;
 					break;
-				case PKCS12.pbeWithSHAAnd2KeyTripleDESCBC:	// no unit test available
+				case pbeWithSHAAnd2KeyTripleDESCBC:	// no unit test available
 					pd.HashName = "SHA1";
 					algorithm = "TripleDES";
 					keyLength = 16;
 					break;
-				case PKCS12.pbeWithSHAAnd128BitRC2CBC: 		// no unit test available
+				case pbeWithSHAAnd128BitRC2CBC: 		// no unit test available
 					pd.HashName = "SHA1";
 					algorithm = "RC2";
 					keyLength = 16;
 					break;
-				case PKCS12.pbeWithSHAAnd40BitRC2CBC: 
+				case pbeWithSHAAnd40BitRC2CBC: 
 					pd.HashName = "SHA1";
 					algorithm = "RC2";
 					keyLength = 5;
@@ -1073,13 +1073,13 @@ namespace MediaBrowser.Server.Mono.Security {
 
 		private byte[] MAC (byte[] password, byte[] salt, int iterations, byte[] data) 
 		{
-			PKCS12.DeriveBytes pd = new PKCS12.DeriveBytes ();
+			DeriveBytes pd = new DeriveBytes ();
 			pd.HashName = "SHA1";
 			pd.Password = password;
 			pd.Salt = salt;
 			pd.IterationCount = iterations;
 
-			HMACSHA1 hmac = (HMACSHA1) HMACSHA1.Create ();
+			HMACSHA1 hmac = (HMACSHA1) HMAC.Create ();
 			hmac.Key = pd.DeriveMAC (20);
 			return hmac.ComputeHash (data, 0, data.Length);
 		}
@@ -1902,7 +1902,7 @@ namespace MediaBrowser.Server.Mono.Security {
 			} else {
 				clone = new PKCS12 (GetBytes ());
 			}
-			clone.IterationCount = this.IterationCount;
+			clone.IterationCount = IterationCount;
 
 			return clone;
 		}

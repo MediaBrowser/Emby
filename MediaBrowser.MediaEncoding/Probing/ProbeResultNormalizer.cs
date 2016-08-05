@@ -724,7 +724,7 @@ namespace MediaBrowser.MediaEncoding.Probing
             }
         }
 
-        private void SetSize(InternalMediaInfoResult data, Model.MediaInfo.MediaInfo info)
+        private void SetSize(InternalMediaInfoResult data, MediaInfo info)
         {
             if (data.format != null)
             {

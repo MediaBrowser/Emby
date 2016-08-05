@@ -54,7 +54,7 @@ namespace MediaBrowser.Api.Reports
         protected List<ReportHeader> GetActiveHeaders<T>(List<ReportOptions<T>> options, ReportDisplayType displayType)
         {
             List<ReportHeader> headers = new List<ReportHeader>();
-            foreach (ReportOptions<T> option in options.Where(x => this.DisplayTypeVisible(x.Header.DisplayType, displayType)))
+            foreach (ReportOptions<T> option in options.Where(x => DisplayTypeVisible(x.Header.DisplayType, displayType)))
             {
                 headers.Add(option.Header);
             }
@@ -131,8 +131,8 @@ namespace MediaBrowser.Api.Reports
         /// <returns> The headers. </returns>
         protected List<ReportHeader> GetHeaders<T>(IReportsHeader request, Func<List<HeaderMetadata>> getHeadersMetadata, Func<HeaderMetadata, ReportOptions<T>> getOptions)
         {
-            List<ReportOptions<T>> options = this.GetReportOptions(request, getHeadersMetadata, getOptions);
-            return this.GetHeaders(options);
+            List<ReportOptions<T>> options = GetReportOptions(request, getHeadersMetadata, getOptions);
+            return GetHeaders(options);
         }
 
         /// <summary> Gets list as string. </summary>
@@ -220,7 +220,7 @@ namespace MediaBrowser.Api.Reports
             foreach (HeaderMetadata header in headersMetadata)
             {
                 ReportOptions<T> headerOptions = getOptions(header);
-                if (this.DisplayTypeVisible(headerOptions.Header.DisplayType, displayType))
+                if (DisplayTypeVisible(headerOptions.Header.DisplayType, displayType))
                     options.Add(headerOptions);
             }
 
@@ -230,7 +230,7 @@ namespace MediaBrowser.Api.Reports
                 foreach (ReportHeader header in options.Select(x => x.Header))
                 {
 
-                    if (this.DisplayTypeVisible(header.DisplayType, displayType))
+                    if (DisplayTypeVisible(header.DisplayType, displayType))
                     {
                        
                         if (!headersMetadataFiltered.Contains(header.FieldName) && displayType != ReportDisplayType.Export)
