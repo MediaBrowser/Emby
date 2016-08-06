@@ -19,7 +19,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommonIO.Windows;
-using Emby.Drawing.ImageMagick;
 using ImageMagickSharp;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Server.Implementations.Logging;
@@ -637,6 +636,12 @@ namespace MediaBrowser.ServerApplication
 
         private static void ShutdownWindowsApplication()
         {
+            if (_serverNotifyIcon != null)
+            {
+                _serverNotifyIcon.Dispose();
+                _serverNotifyIcon = null;
+            }
+
             //_logger.Info("Calling Application.Exit");
             //Application.Exit();
 
