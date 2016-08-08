@@ -118,9 +118,8 @@
     <Compile Include="Devices\DeviceInfo.cs" />
     <Compile Include="Devices\DevicesOptions.cs" />
     <Compile Include="Dlna\EncodingContext.cs" />
-    <Compile Include="Dlna\ILocalPlayer.cs" />
+    <Compile Include="Dlna\ITranscoderSupport.cs" />
     <Compile Include="Dlna\StreamInfoSorter.cs" />
-    <Compile Include="Dlna\NullLocalPlayer.cs" />
     <Compile Include="Dlna\PlaybackErrorCode.cs" />
     <Compile Include="Dlna\PlaybackException.cs" />
     <Compile Include="Dlna\ResolutionConfiguration.cs" />
@@ -229,7 +228,6 @@
     <Compile Include="Entities\SortOrder.cs" />
     <Compile Include="Events\GenericEventArgs.cs" />
     <Compile Include="Extensions\DoubleHelper.cs" />
-    <Compile Include="Extensions\IHasPropertyChangedEvent.cs" />
     <Compile Include="Extensions\IntHelper.cs" />
     <Compile Include="Extensions\ListHelper.cs" />
     <Compile Include="Extensions\StringHelper.cs" />

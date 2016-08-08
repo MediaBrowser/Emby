@@ -1,4 +1,4 @@
-﻿define(['datetime', 'scrollStyles'], function (datetime) {
+﻿define(['datetime', 'cardBuilder', 'emby-itemscontainer', 'scrollStyles'], function (datetime, cardBuilder) {
 
     function getUpcomingPromise() {
 
@@ -7,7 +7,7 @@
         var query = {
 
             Limit: 40,
-            Fields: "AirTime,UserData,SeriesStudio,SyncInfo",
+            Fields: "AirTime,UserData",
             UserId: Dashboard.getCurrentUserId(),
             ImageTypeLimit: 1,
             EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
@@ -100,23 +100,23 @@
             html += '<h1 class="listHeader">' + group.name + '</h1>';
 
             if (enableScrollX()) {
-                html += '<div class="itemsContainer hiddenScrollX">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer hiddenScrollX">';
             } else {
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
             }
 
-            html += LibraryBrowser.getPosterViewHtml({
+            html += cardBuilder.getCardsHtml({
                 items: group.items,
                 showLocationTypeIndicator: false,
                 shape: getThumbShape(),
                 showTitle: true,
-                showPremiereDate: true,
                 preferThumb: true,
                 lazy: true,
                 showDetailsMenu: true,
                 centerText: true,
                 context: 'home-upcoming',
-                overlayMoreButton: true
+                overlayMoreButton: true,
+                showParentTitle: true
 
             });
             html += '</div>';
@@ -125,7 +125,6 @@
         }
 
         elem.innerHTML = html;
-        LibraryBrowser.createCardMenus(elem);
         ImageLoader.lazyChildren(elem);
     }
     return function (view, params, tabContent) {

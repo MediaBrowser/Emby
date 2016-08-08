@@ -286,22 +286,41 @@ namespace MediaBrowser.Api.Playback
 
         protected string GetH264Encoder(StreamState state)
         {
-            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+            var defaultEncoder = "libx264";
+
+            // Only use alternative encoders for video files.
+            // When using concat with folder rips, if the mfx session fails to initialize, ffmpeg will be stuck retrying and will not exit gracefully
+            // Since transcoding of folder rips is expiremental anyway, it's not worth adding additional variables such as this.
+            if (state.VideoType == VideoType.VideoFile)
             {
-                return "h264_qsv";
+                var hwType = ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType;
+
+                if (string.Equals(hwType, "qsv", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(hwType, "h264_qsv", StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetAvailableEncoder("h264_qsv", defaultEncoder);
+                }
+
+                if (string.Equals(hwType, "nvenc", StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetAvailableEncoder("h264_nvenc", defaultEncoder);
+                }
+                if (string.Equals(hwType, "h264_omx", StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetAvailableEncoder("h264_omx", defaultEncoder);
+                }
             }
 
-            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "nvenc", StringComparison.OrdinalIgnoreCase))
-            {
-                return "h264_nvenc";
-            }
-            if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "h264_omx", StringComparison.OrdinalIgnoreCase))
-            {
-                return "h264_omx";
-            }
+            return defaultEncoder;
+        }
 
-            return "libx264";
+        private string GetAvailableEncoder(string preferredEncoder, string defaultEncoder)
+        {
+            if (MediaEncoder.SupportsEncoder(preferredEncoder))
+            {
+                return preferredEncoder;
+            }
+            return defaultEncoder;
         }
 
         /// <summary>
@@ -843,6 +862,14 @@ namespace MediaBrowser.Api.Playback
                 return null;
             }
 
+            // Only use alternative encoders for video files.
+            // When using concat with folder rips, if the mfx session fails to initialize, ffmpeg will be stuck retrying and will not exit gracefully
+            // Since transcoding of folder rips is expiremental anyway, it's not worth adding additional variables such as this.
+            if (state.VideoType != VideoType.VideoFile)
+            {
+                return null;
+            }
+
             if (state.VideoStream != null && !string.IsNullOrWhiteSpace(state.VideoStream.Codec))
             {
                 if (string.Equals(ApiEntryPoint.Instance.GetEncodingOptions().HardwareAccelerationType, "qsv", StringComparison.OrdinalIgnoreCase))
@@ -1066,7 +1093,7 @@ namespace MediaBrowser.Api.Playback
             //process.BeginOutputReadLine();
 
             // Important - don't await the log task or we won't be able to kill ffmpeg when the user stops playback
-            Task.Run(() => StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream));
+            var task = Task.Run(() => StartStreamingLog(transcodingJob, state, process.StandardError.BaseStream, state.LogFileStream));
 
             // Wait for the file to exist before proceeeding
             while (!FileSystem.FileExists(state.WaitForPath ?? outputPath) && !transcodingJob.HasExited)
@@ -1554,6 +1581,13 @@ namespace MediaBrowser.Api.Playback
                 {
                     request.TranscodingMaxAudioChannels = int.Parse(val, UsCulture);
                 }
+                else if (i == 28)
+                {
+                    if (videoRequest != null)
+                    {
+                        videoRequest.EnableSubtitlesInManifest = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
             }
         }
 
@@ -1648,7 +1682,7 @@ namespace MediaBrowser.Api.Playback
                 RequestedUrl = url,
                 UserAgent = Request.UserAgent
             };
-            
+
             //if ((Request.UserAgent ?? string.Empty).IndexOf("iphone", StringComparison.OrdinalIgnoreCase) != -1 ||
             //    (Request.UserAgent ?? string.Empty).IndexOf("ipad", StringComparison.OrdinalIgnoreCase) != -1 ||
             //    (Request.UserAgent ?? string.Empty).IndexOf("ipod", StringComparison.OrdinalIgnoreCase) != -1)
@@ -1749,10 +1783,36 @@ namespace MediaBrowser.Api.Playback
             {
                 state.OutputVideoCodec = "copy";
             }
+            else
+            {
+                // If the user doesn't have access to transcoding, then force stream copy, regardless of whether it will be compatible or not
+                var auth = AuthorizationContext.GetAuthorizationInfo(Request);
+                if (!string.IsNullOrWhiteSpace(auth.UserId))
+                {
+                    var user = UserManager.GetUserById(auth.UserId);
+                    if (!user.Policy.EnableVideoPlaybackTranscoding)
+                    {
+                        state.OutputVideoCodec = "copy";
+                    }
+                }
+            }
 
             if (state.AudioStream != null && CanStreamCopyAudio(state, state.SupportedAudioCodecs))
             {
                 state.OutputAudioCodec = "copy";
+            }
+            else
+            {
+                // If the user doesn't have access to transcoding, then force stream copy, regardless of whether it will be compatible or not
+                var auth = AuthorizationContext.GetAuthorizationInfo(Request);
+                if (!string.IsNullOrWhiteSpace(auth.UserId))
+                {
+                    var user = UserManager.GetUserById(auth.UserId);
+                    if (!user.Policy.EnableAudioPlaybackTranscoding)
+                    {
+                        state.OutputAudioCodec = "copy";
+                    }
+                }
             }
         }
 
@@ -2126,6 +2186,7 @@ namespace MediaBrowser.Api.Playback
                     {
                         state.VideoRequest.CopyTimestamps = transcodingProfile.CopyTimestamps;
                         state.VideoRequest.ForceLiveStream = transcodingProfile.ForceLiveStream;
+                        state.VideoRequest.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
                     }
                 }
             }

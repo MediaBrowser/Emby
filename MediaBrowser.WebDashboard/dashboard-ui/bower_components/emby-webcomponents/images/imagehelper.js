@@ -1,4 +1,4 @@
-define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser'], function (visibleinviewport, imageFetcher, layoutManager, events, browser) {
+define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser', 'dom'], function (visibleinviewport, imageFetcher, layoutManager, events, browser, dom) {
 
     var thresholdX;
     var thresholdY;
@@ -56,7 +56,7 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
     var wheelEvent = (document.implementation.hasFeature('Event.wheel', '3.0') ? 'wheel' : 'mousewheel');
     var self = {};
 
-    var enableFade = browser.animate && !browser.mobile && !browser.operaTv;
+    var enableFade = browser.animate && !browser.slow;
 
     function fillImage(elem, source, enableEffects) {
 
@@ -69,7 +69,7 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
             } else {
                 imageFetcher.loadImage(elem, source);
             }
-            elem.setAttribute("data-src", '');
+            elem.removeAttribute("data-src");
         }
     }
 
@@ -91,24 +91,6 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
         }
     }
 
-    var supportsCaptureOption = false;
-    try {
-        var opts = Object.defineProperty({}, 'capture', {
-            get: function () {
-                supportsCaptureOption = true;
-            }
-        });
-        window.addEventListener("test", null, opts);
-    } catch (e) { }
-
-    function addEventListenerWithOptions(target, type, handler, options) {
-        var optionsOrCapture = options;
-        if (!supportsCaptureOption) {
-            optionsOrCapture = options.capture;
-        }
-        target.addEventListener(type, handler, optionsOrCapture);
-    }
-
     function unveilWithIntersection(images, root) {
 
         var filledCount = 0;
@@ -124,10 +106,6 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
                 observer.unobserve(target);
                 fillImage(target);
                 filledCount++;
-            }
-
-            if (filledCount >= images.length) {
-                observer.disconnect();
             }
         },
         options
@@ -181,10 +159,22 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
             }
 
             if (!images.length) {
-                document.removeEventListener('focus', unveil, true);
-                document.removeEventListener('scroll', unveil, true);
-                document.removeEventListener(wheelEvent, unveil, true);
-                window.removeEventListener('resize', unveil, true);
+                dom.removeEventListener(document, 'focus', unveil, {
+                    capture: true,
+                    passive: true
+                });
+                dom.removeEventListener(document, 'scroll', unveil, {
+                    capture: true,
+                    passive: true
+                });
+                dom.removeEventListener(document, wheelEvent, unveil, {
+                    capture: true,
+                    passive: true
+                });
+                dom.removeEventListener(window, 'resize', unveil, {
+                    capture: true,
+                    passive: true
+                });
             }
         }
 
@@ -200,16 +190,19 @@ define(['visibleinviewport', 'imageFetcher', 'layoutManager', 'events', 'browser
             }, 1);
         }
 
-        addEventListenerWithOptions(document, 'scroll', unveil, {
+        dom.addEventListener(document, 'focus', unveil, {
             capture: true,
             passive: true
         });
-        document.addEventListener('focus', unveil, true);
-        addEventListenerWithOptions(document, wheelEvent, unveil, {
+        dom.addEventListener(document, 'scroll', unveil, {
             capture: true,
             passive: true
         });
-        addEventListenerWithOptions(window, 'resize', unveil, {
+        dom.addEventListener(document, wheelEvent, unveil, {
+            capture: true,
+            passive: true
+        });
+        dom.addEventListener(window, 'resize', unveil, {
             capture: true,
             passive: true
         });

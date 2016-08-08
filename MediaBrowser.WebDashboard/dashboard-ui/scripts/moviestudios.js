@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['libraryBrowser', 'cardBuilder'], function (libraryBrowser, cardBuilder) {
 
     // The base query options
     var data = {};
@@ -15,7 +15,7 @@
                     SortOrder: "Ascending",
                     IncludeItemTypes: "Movie",
                     Recursive: true,
-                    Fields: "DateCreated,ItemCounts",
+                    Fields: "DateCreated,ItemCounts,PrimaryImageAspectRatio",
                     StartIndex: 0
                 }
             };
@@ -27,7 +27,7 @@
 
     function getSavedQueryKey() {
 
-        return LibraryBrowser.getSavedQueryKey('studios');
+        return libraryBrowser.getSavedQueryKey('studios');
     }
 
     function getPromise(context, params) {
@@ -42,23 +42,17 @@
 
         promise.then(function (result) {
 
-            var html = '';
-
-            html += LibraryBrowser.getPosterViewHtml({
-                items: result.Items,
+            var elem = context.querySelector('#items');
+            cardBuilder.buildCards(result.Items, {
+                itemsContainer: elem,
                 shape: "backdrop",
-                showTitle: false,
-                context: 'movies',
                 preferThumb: true,
+                showTitle: false,
+                scalable: true,
                 showItemCounts: true,
                 centerText: true,
-                lazy: true
-
+                overlayMoreButton: true
             });
-
-            var elem = context.querySelector('#items');
-            elem.innerHTML = html;
-            ImageLoader.lazyChildren(elem);
 
             Dashboard.hideLoadingMsg();
         });

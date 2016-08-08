@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['libraryBrowser', 'cardBuilder'], function (libraryBrowser, cardBuilder) {
 
     return function (view, params, tabContent) {
 
@@ -16,14 +16,14 @@
                         SortOrder: "Ascending",
                         IncludeItemTypes: "Series",
                         Recursive: true,
-                        Fields: "DateCreated,SyncInfo,ItemCounts",
+                        Fields: "DateCreated,ItemCounts,PrimaryImageAspectRatio",
                         StartIndex: 0
                     },
-                    view: LibraryBrowser.getSavedView(key) || LibraryBrowser.getDefaultItemsView('Thumb', 'Thumb')
+                    view: libraryBrowser.getSavedView(key) || 'Thumb'
                 };
 
                 pageData.query.ParentId = params.topParentId;
-                LibraryBrowser.loadSavedQueryValues(key, pageData.query);
+                libraryBrowser.loadSavedQueryValues(key, pageData.query);
             }
             return pageData;
         }
@@ -35,7 +35,7 @@
 
         function getSavedQueryKey() {
 
-            return LibraryBrowser.getSavedQueryKey('genres');
+            return libraryBrowser.getSavedQueryKey('genres');
         }
 
         function getPromise() {
@@ -55,60 +55,57 @@
                 var html = '';
 
                 var viewStyle = self.getCurrentViewStyle();
+                var elem = context.querySelector('#items');
 
                 if (viewStyle == "Thumb") {
-                    html = LibraryBrowser.getPosterViewHtml({
-                        items: result.Items,
+                    cardBuilder.buildCards(result.Items, {
+                        itemsContainer: elem,
                         shape: "backdrop",
                         preferThumb: true,
-                        context: 'tv',
+                        showTitle: true,
+                        scalable: true,
                         showItemCounts: true,
                         centerText: true,
-                        lazy: true,
                         overlayMoreButton: true
                     });
                 }
                 else if (viewStyle == "ThumbCard") {
 
-                    html = LibraryBrowser.getPosterViewHtml({
-                        items: result.Items,
+                    cardBuilder.buildCards(result.Items, {
+                        itemsContainer: elem,
                         shape: "backdrop",
                         preferThumb: true,
-                        context: 'tv',
-                        showItemCounts: true,
-                        cardLayout: true,
                         showTitle: true,
-                        lazy: true
+                        scalable: true,
+                        showItemCounts: true,
+                        centerText: true,
+                        cardLayout: true
                     });
                 }
                 else if (viewStyle == "PosterCard") {
-                    html = LibraryBrowser.getPosterViewHtml({
-                        items: result.Items,
-                        shape: "portrait",
-                        context: 'tv',
+                    cardBuilder.buildCards(result.Items, {
+                        itemsContainer: elem,
+                        shape: "auto",
+                        showTitle: true,
+                        scalable: true,
                         showItemCounts: true,
-                        lazy: true,
-                        cardLayout: true,
-                        showTitle: true
+                        centerText: true,
+                        cardLayout: true
                     });
                 }
                 else if (viewStyle == "Poster") {
-                    html = LibraryBrowser.getPosterViewHtml({
-                        items: result.Items,
-                        shape: "portrait",
-                        context: 'tv',
-                        centerText: true,
+                    cardBuilder.buildCards(result.Items, {
+                        itemsContainer: elem,
+                        shape: "auto",
+                        showTitle: true,
+                        scalable: true,
                         showItemCounts: true,
-                        lazy: true,
+                        centerText: true,
                         overlayMoreButton: true
                     });
                 }
 
-                var elem = context.querySelector('#items');
-                elem.innerHTML = html;
-                ImageLoader.lazyChildren(elem);
-
-                LibraryBrowser.saveQueryValues(getSavedQueryKey(), query);
+                libraryBrowser.saveQueryValues(getSavedQueryKey(), query);
 
                 Dashboard.hideLoadingMsg();
             });
@@ -121,9 +118,9 @@
             return getPageData(tabContent).view;
         };
 
-        self.setCurrentViewStyle = function(viewStyle) {
+        self.setCurrentViewStyle = function (viewStyle) {
             getPageData(tabContent).view = viewStyle;
-            LibraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
+            libraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
             fullyReload();
         };
 
@@ -147,7 +144,7 @@
         var btnSelectView = tabContent.querySelector('.btnSelectView');
         btnSelectView.addEventListener('click', function (e) {
 
-            LibraryBrowser.showLayoutMenu(e.target, self.getCurrentViewStyle(), self.getViewStyles());
+            libraryBrowser.showLayoutMenu(e.target, self.getCurrentViewStyle(), self.getViewStyles());
         });
 
         btnSelectView.addEventListener('layoutchange', function (e) {

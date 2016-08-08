@@ -1,4 +1,4 @@
-﻿define(['dialogHelper', 'globalize', 'layoutManager', 'mediaInfo', 'apphost', 'connectionManager', 'require', 'loading', 'scrollHelper', 'scrollStyles', 'emby-button', 'emby-collapsible', 'emby-input', 'paper-icon-button-light', 'css!./../formdialog', 'css!./recordingcreator', 'material-icons'], function (dialogHelper, globalize, layoutManager, mediaInfo, appHost, connectionManager, require, loading, scrollHelper) {
+﻿define(['dialogHelper', 'globalize', 'layoutManager', 'mediaInfo', 'apphost', 'connectionManager', 'require', 'loading', 'scrollHelper', 'scrollStyles', 'emby-button', 'emby-collapse', 'emby-input', 'paper-icon-button-light', 'css!./../formdialog', 'css!./recordingcreator', 'material-icons'], function (dialogHelper, globalize, layoutManager, mediaInfo, appHost, connectionManager, require, loading, scrollHelper) {
 
     var currentDialog;
     var recordingUpdated = false;
@@ -15,7 +15,7 @@
         context.querySelector('.itemGenres').innerHTML = (programInfo.Genres || []).join(' / ');
         context.querySelector('.itemOverview').innerHTML = programInfo.Overview || '';
 
-        var timerPageImageContainer = context.querySelector('.timerPageImageContainer');
+        //var timerPageImageContainer = context.querySelector('.timerPageImageContainer');
 
         context.querySelector('.itemMiscInfoPrimary').innerHTML = mediaInfo.getPrimaryMediaInfoHtml(programInfo);
         context.querySelector('.itemMiscInfoSecondary').innerHTML = mediaInfo.getSecondaryMediaInfoHtml(programInfo);
@@ -134,14 +134,17 @@
                 dlg.addEventListener('close', function () {
 
                     if (recordingUpdated) {
-                        resolve();
+                        resolve({
+                            updated: true,
+                            deleted: false
+                        });
                     } else {
                         reject();
                     }
                 });
 
                 if (layoutManager.tv) {
-                    scrollHelper.centerFocus.on(dlg.querySelector('.dialogContent'), false);
+                    scrollHelper.centerFocus.on(dlg.querySelector('.formDialogContent'), false);
                 }
 
                 init(dlg);

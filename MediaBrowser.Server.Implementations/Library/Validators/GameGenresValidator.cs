@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
 using System;
@@ -35,25 +34,22 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var items = _libraryManager.RootFolder.GetRecursiveChildren(i => i is Game)
-                .SelectMany(i => i.Genres)
-                .DistinctNames()
+            var items = _libraryManager.GetGameGenres(new InternalItemsQuery
+            {
+                IncludeItemTypes = new[] { typeof(Game).Name }
+            })
+                .Items
+                .Select(i => i.Item1)
                 .ToList();
 
             var numComplete = 0;
             var count = items.Count;
 
-            var validIds = new List<Guid>();
-
-            foreach (var name in items)
+            foreach (var item in items)
             {
                 try
                 {
-                    var itemByName = _libraryManager.GetGameGenre(name);
-
-                    validIds.Add(itemByName.Id);
-
-                    await itemByName.RefreshMetadata(cancellationToken).ConfigureAwait(false);
+                    await item.RefreshMetadata(cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -62,7 +58,7 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error refreshing {0}", ex, name);
+                    _logger.ErrorException("Error refreshing {0}", ex, item.Name);
                 }
 
                 numComplete++;
@@ -71,28 +67,6 @@ namespace MediaBrowser.Server.Implementations.Library.Validators
                 percent *= 100;
 
                 progress.Report(percent);
-            }
-
-            var allIds = _libraryManager.GetItemIds(new InternalItemsQuery
-            {
-                IncludeItemTypes = new[] { typeof(GameGenre).Name }
-            });
-
-            var invalidIds = allIds
-                .Except(validIds)
-                .ToList();
-
-            foreach (var id in invalidIds)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                
-                var item = _libraryManager.GetItemById(id);
-
-                await _libraryManager.DeleteItem(item, new DeleteOptions
-                {
-                    DeleteFileLocation = false
-
-                }).ConfigureAwait(false);
             }
 
             progress.Report(100);

@@ -257,8 +257,7 @@ namespace MediaBrowser.Api.Playback.Hls
             return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
         }
 
-        // 256k
-        private const int BufferSize = 262144;
+        private const int BufferSize = 81920;
 
         private long GetStartPositionTicks(StreamState state, int requestedIndex)
         {
@@ -525,9 +524,15 @@ namespace MediaBrowser.Api.Playback.Hls
 
             var subtitleGroup = subtitleStreams.Count > 0 &&
                 request is GetMasterHlsVideoPlaylist &&
-                ((GetMasterHlsVideoPlaylist)request).SubtitleMethod == SubtitleDeliveryMethod.Hls ?
+                (state.VideoRequest.SubtitleMethod == SubtitleDeliveryMethod.Hls || state.VideoRequest.EnableSubtitlesInManifest) ?
                 "subs" :
                 null;
+
+            // If we're burning in subtitles then don't add additional subs to the manifest
+            if (state.SubtitleStream != null && state.VideoRequest.SubtitleMethod == SubtitleDeliveryMethod.Encode)
+            {
+                subtitleGroup = null;
+            }
 
             if (!string.IsNullOrWhiteSpace(subtitleGroup))
             {
@@ -572,12 +577,10 @@ namespace MediaBrowser.Api.Playback.Hls
             {
                 const string format = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"subs\",NAME=\"{0}\",DEFAULT={1},FORCED={2},AUTOSELECT=YES,URI=\"{3}\",LANGUAGE=\"{4}\"";
 
-                var name = stream.Language;
+                var name = stream.DisplayTitle;
 
                 var isDefault = selectedIndex.HasValue && selectedIndex.Value == stream.Index;
                 var isForced = stream.IsForced;
-
-                if (string.IsNullOrWhiteSpace(name)) name = stream.Codec ?? "Unknown";
 
                 var url = string.Format("{0}/Subtitles/{1}/subtitles.m3u8?SegmentLength={2}&api_key={3}",
                     state.Request.MediaSourceId,
@@ -937,18 +940,6 @@ namespace MediaBrowser.Api.Playback.Hls
         protected string GetSegmentFileExtension(bool isOutputVideo)
         {
             return isOutputVideo ? ".ts" : ".ts";
-        }
-
-        protected override bool CanStreamCopyVideo(StreamState state)
-        {
-            var isLiveStream = IsLiveStream(state);
-
-            //if (!isLiveStream && Request.QueryString["AllowCustomSegmenting"] != "true")
-            //{
-            //    return false;
-            //}
-
-            return base.CanStreamCopyVideo(state);
         }
     }
 }

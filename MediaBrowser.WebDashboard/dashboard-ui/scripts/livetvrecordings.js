@@ -1,4 +1,4 @@
-﻿define(['scripts/livetvcomponents', 'emby-button', 'listViewStyle'], function () {
+﻿define(['components/categorysyncbuttons', 'cardBuilder', 'scripts/livetvcomponents', 'emby-button', 'listViewStyle', 'emby-itemscontainer'], function (categorysyncbuttons, cardBuilder) {
 
     function getRecordingGroupHtml(group) {
 
@@ -70,11 +70,13 @@
 
         if (enableScrollX()) {
             recordingItems.classList.add('hiddenScrollX');
+            recordingItems.classList.remove('vertical-wrap');
         } else {
             recordingItems.classList.remove('hiddenScrollX');
+            recordingItems.classList.add('vertical-wrap');
         }
 
-        recordingItems.innerHTML = LibraryBrowser.getPosterViewHtml({
+        recordingItems.innerHTML = cardBuilder.getCardsHtml({
             items: recordings,
             shape: (enableScrollX() ? 'autooverflow' : 'auto'),
             showTitle: true,
@@ -149,7 +151,6 @@
             elem.querySelector('.recordingItems').innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -184,6 +185,8 @@
     return function (view, params, tabContent) {
 
         var self = this;
+
+        categorysyncbuttons.init(tabContent);
         tabContent.querySelector('#activeRecordings .recordingItems').addEventListener('timercancelled', function () {
             reload(tabContent);
         });

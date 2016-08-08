@@ -1,16 +1,29 @@
-﻿(function () {
+﻿function getWindowLocationSearch(win) {
 
-    function onOneDocumentClick() {
+    var search = (win || window).location.search;
 
-        document.removeEventListener('click', onOneDocumentClick);
+    if (!search) {
 
-        if (window.Notification) {
-            Notification.requestPermission();
+        var index = window.location.href.indexOf('?');
+        if (index != -1) {
+            search = window.location.href.substring(index);
         }
     }
-    document.addEventListener('click', onOneDocumentClick);
 
-})();
+    return search || '';
+}
+
+function getParameterByName(name, url) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS, "i");
+
+    var results = regex.exec(url || getWindowLocationSearch());
+    if (results == null)
+        return "";
+    else
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
 var Dashboard = {
 
@@ -35,26 +48,11 @@ var Dashboard = {
 
         if (data.status == 401) {
 
-            var url = data.url.toLowerCase();
+            if (data.errorCode == "ParentalControl") {
 
-            // Don't bounce to login on failures to contact our external servers
-            if (url.indexOf('emby.media') != -1 || url.indexOf('mb3admin.com') != -1) {
-                Dashboard.hideLoadingMsg();
-                return;
-            }
-
-            // Don't bounce if the failure is in a sync service
-            if (url.indexOf('/sync') != -1) {
-                Dashboard.hideLoadingMsg();
-                return;
-            }
-
-            // Bounce to the login screen, but not if a password entry fails, obviously
-            if (url.indexOf('/password') == -1 &&
-                url.indexOf('/authenticate') == -1 &&
-                !ViewManager.currentView().classList.contains('.standalonePage')) {
-
-                if (data.errorCode == "ParentalControl") {
+                var currentView = ViewManager.currentView();
+                // Bounce to the login screen, but not if a password entry fails, obviously
+                if (currentView && !currentView.classList.contains('.standalonePage')) {
 
                     Dashboard.alert({
                         message: Globalize.translate('MessageLoggedOutParentalControl'),
@@ -62,27 +60,9 @@ var Dashboard = {
                             Dashboard.logout(false);
                         }
                     });
-
-                } else {
-                    Dashboard.logout(false);
                 }
+
             }
-            return;
-            Dashboard.hideLoadingMsg();
-        }
-    },
-
-    onPopupOpen: function () {
-        Dashboard.popupCount = (Dashboard.popupCount || 0) + 1;
-        document.body.classList.add('bodyWithPopupOpen');
-    },
-
-    onPopupClose: function () {
-
-        Dashboard.popupCount = (Dashboard.popupCount || 1) - 1;
-
-        if (!Dashboard.popupCount) {
-            document.body.classList.remove('bodyWithPopupOpen');
         }
     },
 
@@ -192,58 +172,6 @@ var Dashboard = {
                 Dashboard.showDashboardRefreshNotification();
             }
         }
-
-        Dashboard.showInProgressInstallations(info.InProgressInstallations);
-    },
-
-    showInProgressInstallations: function (installations) {
-
-        installations = installations || [];
-
-        for (var i = 0, length = installations.length; i < length; i++) {
-
-            var installation = installations[i];
-
-            var percent = installation.PercentComplete || 0;
-
-            if (percent < 100) {
-                Dashboard.showPackageInstallNotification(installation, "progress");
-            }
-        }
-
-        if (installations.length) {
-
-            Dashboard.ensureInstallRefreshInterval();
-        } else {
-            Dashboard.stopInstallRefreshInterval();
-        }
-    },
-
-    ensureInstallRefreshInterval: function () {
-
-        if (!Dashboard.installRefreshInterval) {
-
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("SystemInfoStart", "0,500");
-            }
-            Dashboard.installRefreshInterval = 1;
-        }
-    },
-
-    stopInstallRefreshInterval: function () {
-
-        if (Dashboard.installRefreshInterval) {
-            if (ApiClient.isWebSocketOpen()) {
-                ApiClient.sendWebSocketMessage("SystemInfoStop");
-            }
-            Dashboard.installRefreshInterval = null;
-        }
-    },
-
-    cancelInstallation: function (id) {
-
-        ApiClient.cancelPackageInstallation(id).then(Dashboard.refreshSystemInfoFromServer, Dashboard.refreshSystemInfoFromServer);
-
     },
 
     showServerRestartWarning: function (systemInfo) {
@@ -415,32 +343,6 @@ var Dashboard = {
         });
     },
 
-    getModalLoadingMsg: function () {
-
-        var elem = document.querySelector('.modalLoading');
-
-        if (!elem) {
-
-            elem = document.createElement('modalLoading');
-            elem.classList.add('modalLoading');
-            elem.classList.add('hide');
-            document.body.appendChild(elem);
-
-        }
-
-        return elem;
-    },
-
-    showModalLoadingMsg: function () {
-        Dashboard.getModalLoadingMsg().classList.remove('hide');
-        Dashboard.showLoadingMsg();
-    },
-
-    hideModalLoadingMsg: function () {
-        Dashboard.getModalLoadingMsg().classList.add('hide');
-        Dashboard.hideLoadingMsg();
-    },
-
     processPluginConfigurationUpdateResult: function () {
 
         Dashboard.hideLoadingMsg();
@@ -514,10 +416,16 @@ var Dashboard = {
 
     restartServer: function () {
 
+        var apiClient = window.ApiClient;
+
+        if (!apiClient) {
+            return;
+        }
+
         Dashboard.suppressAjaxErrors = true;
         Dashboard.showLoadingMsg();
 
-        ApiClient.restartServer().then(function () {
+        apiClient.restartServer().then(function () {
 
             setTimeout(function () {
                 Dashboard.reloadPageWhenServerAvailable();
@@ -530,8 +438,14 @@ var Dashboard = {
 
     reloadPageWhenServerAvailable: function (retryCount) {
 
+        var apiClient = window.ApiClient;
+
+        if (!apiClient) {
+            return;
+        }
+
         // Don't use apiclient method because we don't want it reporting authentication under the old version
-        ApiClient.getJSON(ApiClient.getUrl("System/Info")).then(function (info) {
+        apiClient.getJSON(apiClient.getUrl("System/Info")).then(function (info) {
 
             // If this is back to false, the restart completed
             if (!info.HasPendingRestart) {
@@ -566,7 +480,7 @@ var Dashboard = {
 
     getPluginSecurityInfo: function () {
 
-        var apiClient = ApiClient;
+        var apiClient = window.ApiClient;
 
         if (!apiClient) {
 
@@ -618,8 +532,7 @@ var Dashboard = {
 
             if (page.classList.contains('standalonePage')) {
 
-                headerHtml += '<img class="imgLogoIcon" src="css/images/mblogoicon.png" />';
-                headerHtml += '<span class="logoLibraryMenuButtonText">EMBY</span>';
+                headerHtml += '<img class="imgLogoIcon" src="css/images/logo.png" />';
             }
 
             headerHtml += '</a>';
@@ -784,16 +697,26 @@ var Dashboard = {
             name: Globalize.translate('TabLogs'),
             href: "log.html",
             pageIds: ['logPage'],
-            icon: 'folder-open'
+            icon: 'folder_open'
         }, {
             name: Globalize.translate('TabScheduledTasks'),
             href: "scheduledtasks.html",
             pageIds: ['scheduledTasksPage', 'scheduledTaskPage'],
             icon: 'schedule'
         }, {
-            name: Globalize.translate('TabHelp'),
+            name: Globalize.translate('ButtonMetadataManager'),
+            href: "edititemmetadata.html",
+            pageIds: [],
+            icon: 'mode_edit'
+        }, {
+            name: Globalize.translate('ButtonReports'),
+            href: "reports.html",
+            pageIds: [],
+            icon: 'insert_chart'
+        }, {
+            name: Globalize.translate('TabAbout'),
             href: "about.html",
-            icon: 'help',
+            icon: 'info',
             color: '#679C34',
             divider: true,
             pageIds: ['aboutPage']
@@ -801,87 +724,11 @@ var Dashboard = {
 
     },
 
-    processGeneralCommand: function (cmd) {
-
-        // Full list
-        // https://github.com/MediaBrowser/MediaBrowser/blob/master/MediaBrowser.Model/Session/GeneralCommand.cs#L23
-
-        switch (cmd.Name) {
-
-            case 'GoHome':
-                Dashboard.navigate('home.html');
-                break;
-            case 'GoToSettings':
-                Dashboard.navigate('dashboard.html');
-                break;
-            case 'DisplayContent':
-                Dashboard.onBrowseCommand(cmd.Arguments);
-                break;
-            case 'GoToSearch':
-                Dashboard.navigate('search.html');
-                break;
-            case 'DisplayMessage':
-                {
-                    var args = cmd.Arguments;
-
-                    if (args.TimeoutMs && window.Notification && Notification.permission === "granted") {
-
-                        var notification = {
-                            title: args.Header,
-                            body: args.Text,
-                            vibrate: true,
-                            timeout: args.TimeoutMs
-                        };
-
-                        var notif = new Notification(notification.title, notification);
-
-                        if (notif.show) {
-                            notif.show();
-                        }
-
-                        if (notification.timeout) {
-                            setTimeout(function () {
-
-                                if (notif.close) {
-                                    notif.close();
-                                }
-                                else if (notif.cancel) {
-                                    notif.cancel();
-                                }
-                            }, notification.timeout);
-                        }
-                    }
-                    else {
-                        Dashboard.alert({ title: args.Header, message: args.Text });
-                    }
-
-                    break;
-                }
-            case 'VolumeUp':
-            case 'VolumeDown':
-            case 'Mute':
-            case 'Unmute':
-            case 'ToggleMute':
-            case 'SetVolume':
-            case 'SetAudioStreamIndex':
-            case 'SetSubtitleStreamIndex':
-            case 'ToggleFullscreen':
-            case 'SetRepeatMode':
-                break;
-            default:
-                console.log('Unrecognized command: ' + cmd.Name);
-                break;
-        }
-    },
-
     onWebSocketMessageReceived: function (e, data) {
 
         var msg = data;
 
-        if (msg.MessageType === "LibraryChanged") {
-            Dashboard.processLibraryUpdateNotification(msg.Data);
-        }
-        else if (msg.MessageType === "ServerShuttingDown") {
+        if (msg.MessageType === "ServerShuttingDown") {
             Dashboard.hideServerRestartWarning();
         }
         else if (msg.MessageType === "ServerRestarting") {
@@ -893,220 +740,6 @@ var Dashboard = {
         else if (msg.MessageType === "RestartRequired") {
             Dashboard.updateSystemInfo(msg.Data);
         }
-        else if (msg.MessageType === "PackageInstallationCompleted") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "completed");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessageType === "PackageInstallationFailed") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "failed");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessageType === "PackageInstallationCancelled") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "cancelled");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessaapiclientcgeType === "PackageInstalling") {
-            Dashboard.getCurrentUser().then(function (currentUser) {
-
-                if (currentUser.Policy.IsAdministrator) {
-                    Dashboard.showPackageInstallNotification(msg.Data, "progress");
-                    Dashboard.refreshSystemInfoFromServer();
-                }
-            });
-        }
-        else if (msg.MessageType === "GeneralCommand") {
-
-            var cmd = msg.Data;
-            // Media Controller should catch this
-            //Dashboard.processGeneralCommand(cmd);
-        }
-    },
-
-    onBrowseCommand: function (cmd) {
-
-        var url;
-
-        var type = (cmd.ItemType || "").toLowerCase();
-
-        if (type == "genre") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-        else if (type == "musicgenre") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-        else if (type == "gamegenre") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-        else if (type == "studio") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-        else if (type == "person") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-        else if (type == "musicartist") {
-            url = "itemdetails.html?id=" + cmd.ItemId;
-        }
-
-        if (url) {
-            Dashboard.navigate(url);
-            return;
-        }
-
-        ApiClient.getItem(Dashboard.getCurrentUserId(), cmd.ItemId).then(function (item) {
-
-            Dashboard.navigate(LibraryBrowser.getHref(item, null, ''));
-
-        });
-
-    },
-
-    showPackageInstallNotification: function (installation, status) {
-
-        if (AppInfo.isNativeApp) {
-            return;
-        }
-
-        var html = '';
-
-        if (status == 'completed') {
-            html += '<img src="css/images/notifications/done.png" class="notificationIcon" />';
-        }
-        else if (status == 'cancelled') {
-            html += '<img src="css/images/notifications/info.png" class="notificationIcon" />';
-        }
-        else if (status == 'failed') {
-            html += '<img src="css/images/notifications/error.png" class="notificationIcon" />';
-        }
-        else if (status == 'progress') {
-            html += '<img src="css/images/notifications/download.png" class="notificationIcon" />';
-        }
-
-        html += '<span style="margin-right: 1em;">';
-
-        if (status == 'completed') {
-            html += Globalize.translate('LabelPackageInstallCompleted').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'cancelled') {
-            html += Globalize.translate('LabelPackageInstallCancelled').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'failed') {
-            html += Globalize.translate('LabelPackageInstallFailed').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-        else if (status == 'progress') {
-            html += Globalize.translate('LabelInstallingPackage').replace('{0}', installation.Name + ' ' + installation.Version);
-        }
-
-        html += '</span>';
-
-        if (status == 'progress') {
-
-            var percentComplete = Math.round(installation.PercentComplete || 0);
-
-            html += '<progress style="margin-right: 1em;" max="100" value="' + percentComplete + '" title="' + percentComplete + '%">';
-            html += '' + percentComplete + '%';
-            html += '</progress>';
-
-            if (percentComplete < 100) {
-                html += '<button is="emby-button" type="button" class="raised cancelDark mini" onclick="this.disabled=\'disabled\';Dashboard.cancelInstallation(\'' + installation.Id + '\');"><iron-icon icon="cancel"></iron-icon><span>' + Globalize.translate('ButtonCancel') + '</span></button>';
-            }
-        }
-
-        var timeout = 0;
-
-        if (status == 'cancelled') {
-            timeout = 2000;
-        }
-
-        var forceShow = status != "progress";
-        var allowHide = status != "progress" && status != 'cancelled';
-
-        Dashboard.showFooterNotification({ html: html, id: installation.Id, timeout: timeout, forceShow: forceShow, allowHide: allowHide });
-    },
-
-    processLibraryUpdateNotification: function (data) {
-
-        var newItems = data.ItemsAdded;
-
-        if (!newItems.length || AppInfo.isNativeApp || !window.Notification || Notification.permission !== "granted") {
-            return;
-        }
-
-        ApiClient.getItems(Dashboard.getCurrentUserId(), {
-
-            Recursive: true,
-            Limit: 3,
-            Filters: "IsNotFolder",
-            SortBy: "DateCreated",
-            SortOrder: "Descending",
-            ImageTypes: "Primary",
-            Ids: newItems.join(',')
-
-        }).then(function (result) {
-
-            var items = result.Items;
-
-            for (var i = 0, length = Math.min(items.length, 2) ; i < length; i++) {
-
-                var item = items[i];
-
-                var notification = {
-                    title: "New " + item.Type,
-                    body: item.Name,
-                    timeout: 15000,
-                    vibrate: true,
-
-                    data: {
-                        options: {
-                            url: LibraryBrowser.getHref(item)
-                        }
-                    }
-                };
-
-                var imageTags = item.ImageTags || {};
-
-                if (imageTags.Primary) {
-
-                    notification.icon = ApiClient.getScaledImageUrl(item.Id, {
-                        width: 60,
-                        tag: imageTags.Primary,
-                        type: "Primary"
-                    });
-                }
-
-                var notif = new Notification(notification.title, notification);
-
-                if (notif.show) {
-                    notif.show();
-                }
-
-                if (notification.timeout) {
-                    setTimeout(function () {
-
-                        if (notif.close) {
-                            notif.close();
-                        }
-                        else if (notif.cancel) {
-                            notif.cancel();
-                        }
-                    }, notification.timeout);
-                }
-            }
-        });
     },
 
     setPageTitle: function (title, documentTitle) {
@@ -1170,40 +803,52 @@ var Dashboard = {
         return caps;
     },
 
-    getDefaultImageQuality: function (imageType) {
-
-        var quality = 90;
-        var isBackdrop = imageType.toLowerCase() == 'backdrop';
-
-        if (isBackdrop) {
-            quality -= 10;
-        }
-
-        if (AppInfo.hasLowImageBandwidth) {
-
-            // The native app can handle a little bit more than safari
-            if (AppInfo.isNativeApp) {
-
-                if (isBackdrop) {
-                    quality -= 5;
-                } else {
-                    quality -= 10;
-                }
-
-            } else {
-
-                quality -= 40;
-            }
-        }
-
-        return quality;
-    },
-
     normalizeImageOptions: function (options) {
 
         if (AppInfo.hasLowImageBandwidth) {
 
             options.enableImageEnhancers = false;
+        }
+
+        var setQuality;
+        if (options.maxWidth) {
+            setQuality = true;
+        }
+
+        if (options.width) {
+            setQuality = true;
+        }
+
+        if (options.maxHeight) {
+            setQuality = true;
+        }
+
+        if (options.height) {
+            setQuality = true;
+        }
+
+        if (setQuality) {
+            var quality = 90;
+
+            if ((options.type || '').toLowerCase() == 'backdrop') {
+                quality -= 10;
+            }
+
+            if (browserInfo.slow) {
+                quality -= 40;
+            }
+
+            if (AppInfo.hasLowImageBandwidth) {
+
+                // The native app can handle a little bit more than safari
+                if (AppInfo.isNativeApp) {
+
+                    quality -= 5;
+                } else {
+                    quality -= 20;
+                }
+            }
+            options.quality = quality;
         }
     },
 
@@ -1247,7 +892,7 @@ var Dashboard = {
                     profile.DirectPlayProfiles.push({
                         Container: "m4v,3gp,ts,mpegts,mov,xvid,vob,mkv,wmv,asf,ogm,ogv,m2v,avi,mpg,mpeg,mp4,webm,wtv",
                         Type: 'Video',
-                        AudioCodec: 'aac,aac_latm,mp2,mp3,ac3,wma,dca,pcm,PCM_S16LE,PCM_S24LE,opus,flac'
+                        AudioCodec: 'aac,aac_latm,mp2,mp3,ac3,wma,dca,dts,pcm,PCM_S16LE,PCM_S24LE,opus,flac'
                     });
 
                     profile.CodecProfiles = profile.CodecProfiles.filter(function (i) {
@@ -1439,36 +1084,21 @@ var AppInfo = {};
 
 (function () {
 
-    function isTouchDevice() {
-        return (('ontouchstart' in window)
-             || (navigator.MaxTouchPoints > 0)
-             || (navigator.msMaxTouchPoints > 0));
-    }
-
     function setAppInfo() {
-
-        if (isTouchDevice()) {
-            AppInfo.isTouchPreferred = true;
-        }
 
         var isCordova = Dashboard.isRunningInCordova();
 
-        AppInfo.enableDetailPageChapters = true;
-        AppInfo.enableDetailsMenuImages = true;
-        AppInfo.enableMovieHomeSuggestions = true;
         AppInfo.enableSearchInTopMenu = true;
         AppInfo.enableHomeFavorites = true;
-        AppInfo.enableNowPlayingBar = true;
         AppInfo.enableHomeTabs = true;
         AppInfo.enableNowPlayingPageBottomTabs = true;
-        AppInfo.enableAutoSave = browserInfo.mobile;
+        AppInfo.enableAutoSave = browserInfo.touch;
         AppInfo.enableHashBang = Dashboard.isRunningInCordova();
 
         AppInfo.enableAppStorePolicy = isCordova;
 
         var isIOS = browserInfo.ipad || browserInfo.iphone;
         var isAndroid = browserInfo.android;
-        var isMobile = browserInfo.mobile;
 
         if (isIOS) {
 
@@ -1480,22 +1110,7 @@ var AppInfo = {};
                 AppInfo.enableHomeFavorites = false;
                 AppInfo.enableHomeTabs = false;
                 AppInfo.enableNowPlayingPageBottomTabs = false;
-
-                // Disable the now playing bar for the iphone since we already have the now playing tab at the bottom
-                if (navigator.userAgent.toString().toLowerCase().indexOf('iphone') != -1) {
-                    AppInfo.enableNowPlayingBar = false;
-                }
-
-            } else {
-                AppInfo.enableDetailPageChapters = false;
-                AppInfo.enableDetailsMenuImages = false;
-                AppInfo.enableMovieHomeSuggestions = false;
             }
-        }
-
-        if (!AppInfo.hasLowImageBandwidth) {
-            AppInfo.enableStudioTabs = true;
-            AppInfo.enableTvEpisodesTab = true;
         }
 
         AppInfo.supportsExternalPlayers = true;
@@ -1511,10 +1126,6 @@ var AppInfo = {};
         }
         else {
             AppInfo.enableSupporterMembership = true;
-
-            if (!isAndroid && !isIOS) {
-                AppInfo.enableAppLayouts = true;
-            }
         }
 
         // This doesn't perform well on iOS
@@ -1523,7 +1134,7 @@ var AppInfo = {};
         // This currently isn't working on android, unfortunately
         AppInfo.supportsFileInput = !(AppInfo.isNativeApp && isAndroid);
 
-        AppInfo.hasPhysicalVolumeButtons = isCordova || isMobile;
+        AppInfo.hasPhysicalVolumeButtons = isCordova || browserInfo.mobile;
 
         AppInfo.enableBackButton = isIOS && (window.navigator.standalone || AppInfo.isNativeApp);
 
@@ -1547,7 +1158,6 @@ var AppInfo = {};
             };
         }
 
-        apiClient.getDefaultImageQuality = Dashboard.getDefaultImageQuality;
         apiClient.normalizeImageOptions = Dashboard.normalizeImageOptions;
 
         Events.off(apiClient, 'websocketmessage', Dashboard.onWebSocketMessageReceived);
@@ -1583,7 +1193,8 @@ var AppInfo = {};
     var localApiClient;
     function bindConnectionManagerEvents(connectionManager, events) {
 
-        Events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
+        window.Events = events;
+        events.on(ConnectionManager, 'apiclientcreated', onApiClientCreated);
 
         connectionManager.currentApiClient = function () {
 
@@ -1663,10 +1274,6 @@ var AppInfo = {};
 
         var elem = document.documentElement;
 
-        if (AppInfo.isTouchPreferred) {
-            elem.classList.add('touch');
-        }
-
         if (!AppInfo.enableSupporterMembership) {
             elem.classList.add('supporterMembershipDisabled');
         }
@@ -1709,15 +1316,13 @@ var AppInfo = {};
 
     function getBowerPath() {
 
-        var bowerPath = "bower_components";
+        return "bower_components";
+    }
 
-        // Put the version into the bower path since we can't easily put a query string param on html imports
-        // Emby server will handle this
-        if (Dashboard.isConnectMode() && !Dashboard.isRunningInCordova()) {
-            //bowerPath += window.dashboardVersion;
-        }
+    function getLayoutManager(layoutManager) {
 
-        return bowerPath;
+        layoutManager.init();
+        return layoutManager;
     }
 
     function initRequire() {
@@ -1733,14 +1338,13 @@ var AppInfo = {};
             velocity: bowerPath + "/velocity/velocity.min",
             ironCardList: 'components/ironcardlist/ironcardlist',
             scrollThreshold: 'components/scrollthreshold',
-            directorybrowser: 'components/directorybrowser/directorybrowser',
             playlisteditor: 'components/playlisteditor/playlisteditor',
             medialibrarycreator: 'components/medialibrarycreator/medialibrarycreator',
             medialibraryeditor: 'components/medialibraryeditor/medialibraryeditor',
             howler: bowerPath + '/howler.js/howler.min',
             sortable: bowerPath + '/Sortable/Sortable.min',
             isMobile: bowerPath + '/isMobile/isMobile.min',
-            headroom: bowerPath + '/headroom.js/dist/headroom.min',
+            headroom: bowerPath + '/headroom.js/dist/headroom',
             masonry: bowerPath + '/masonry/dist/masonry.pkgd.min',
             humanedate: 'components/humanedate',
             libraryBrowser: 'scripts/librarybrowser',
@@ -1752,10 +1356,9 @@ var AppInfo = {};
             visibleinviewport: embyWebComponentsBowerPath + "/visibleinviewport",
             browserdeviceprofile: embyWebComponentsBowerPath + "/browserdeviceprofile",
             browser: embyWebComponentsBowerPath + "/browser",
+            inputManager: embyWebComponentsBowerPath + "/inputmanager",
             qualityoptions: embyWebComponentsBowerPath + "/qualityoptions",
-            connectservice: apiClientBowerPath + '/connectservice',
             hammer: bowerPath + "/hammerjs/hammer.min",
-            layoutManager: embyWebComponentsBowerPath + "/layoutmanager",
             pageJs: embyWebComponentsBowerPath + '/page.js/page',
             focusManager: embyWebComponentsBowerPath + "/focusmanager",
             datetime: embyWebComponentsBowerPath + "/datetime",
@@ -1778,23 +1381,34 @@ var AppInfo = {};
 
         paths.hlsjs = bowerPath + "/hls.js/dist/hls.min";
 
+        if ((window.chrome && window.chrome.sockets) || Dashboard.isRunningInCordova()) {
+            paths.serverdiscovery = apiClientBowerPath + "/serverdiscovery-chrome";
+        } else {
+            paths.serverdiscovery = apiClientBowerPath + "/serverdiscovery";
+        }
+
         if (Dashboard.isRunningInCordova()) {
             paths.sharingMenu = "cordova/sharingwidget";
-            paths.serverdiscovery = "cordova/serverdiscovery";
             paths.wakeonlan = "cordova/wakeonlan";
             paths.actionsheet = "cordova/actionsheet";
         } else {
-            paths.serverdiscovery = apiClientBowerPath + "/serverdiscovery";
             paths.wakeonlan = apiClientBowerPath + "/wakeonlan";
 
             define("sharingMenu", [embyWebComponentsBowerPath + "/sharing/sharingmenu"], returnFirstDependency);
             define("actionsheet", [embyWebComponentsBowerPath + "/actionsheet/actionsheet"], returnFirstDependency);
         }
 
-        define("libjass", [bowerPath + "/libjass/libjass", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
+        define("libjass", [bowerPath + "/libjass/libjass.min", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
+
+        define("directorybrowser", ["components/directorybrowser/directorybrowser"], returnFirstDependency);
+        define("metadataEditor", [embyWebComponentsBowerPath + "/metadataeditor/metadataeditor"], returnFirstDependency);
+        define("personEditor", [embyWebComponentsBowerPath + "/metadataeditor/personeditor"], returnFirstDependency);
 
         define("emby-collapse", [embyWebComponentsBowerPath + "/emby-collapse/emby-collapse"], returnFirstDependency);
         define("emby-button", [embyWebComponentsBowerPath + "/emby-button/emby-button"], returnFirstDependency);
+        define("emby-itemscontainer", [embyWebComponentsBowerPath + "/emby-itemscontainer/emby-itemscontainer"], returnFirstDependency);
+        define("itemHoverMenu", [embyWebComponentsBowerPath + "/itemhovermenu/itemhovermenu"], returnFirstDependency);
+        define("multiSelect", [embyWebComponentsBowerPath + "/multiselect/multiselect"], returnFirstDependency);
         define("alphaPicker", [embyWebComponentsBowerPath + "/alphapicker/alphapicker"], returnFirstDependency);
         define("paper-icon-button-light", [embyWebComponentsBowerPath + "/emby-button/paper-icon-button-light"]);
 
@@ -1802,18 +1416,32 @@ var AppInfo = {};
         define("emby-select", [embyWebComponentsBowerPath + "/emby-select/emby-select"], returnFirstDependency);
         define("emby-slider", [embyWebComponentsBowerPath + "/emby-slider/emby-slider"], returnFirstDependency);
         define("emby-checkbox", [embyWebComponentsBowerPath + "/emby-checkbox/emby-checkbox"], returnFirstDependency);
+        define("emby-radio", [embyWebComponentsBowerPath + "/emby-radio/emby-radio"], returnFirstDependency);
         define("emby-textarea", [embyWebComponentsBowerPath + "/emby-textarea/emby-textarea"], returnFirstDependency);
         define("collectionEditor", [embyWebComponentsBowerPath + "/collectioneditor/collectioneditor"], returnFirstDependency);
         define("playlistEditor", [embyWebComponentsBowerPath + "/playlisteditor/playlisteditor"], returnFirstDependency);
         define("recordingCreator", [embyWebComponentsBowerPath + "/recordingcreator/recordingcreator"], returnFirstDependency);
         define("recordingEditor", [embyWebComponentsBowerPath + "/recordingcreator/recordingeditor"], returnFirstDependency);
         define("subtitleEditor", [embyWebComponentsBowerPath + "/subtitleeditor/subtitleeditor"], returnFirstDependency);
+        define("itemIdentifier", [embyWebComponentsBowerPath + "/itemidentifier/itemidentifier"], returnFirstDependency);
         define("mediaInfo", [embyWebComponentsBowerPath + "/mediainfo/mediainfo"], returnFirstDependency);
+        define("itemContextMenu", [embyWebComponentsBowerPath + "/itemcontextmenu"], returnFirstDependency);
+        define("dom", [embyWebComponentsBowerPath + "/dom"], returnFirstDependency);
+        define("layoutManager", [embyWebComponentsBowerPath + "/layoutmanager"], getLayoutManager);
+        define("playMenu", [embyWebComponentsBowerPath + "/playmenu"], returnFirstDependency);
         define("refreshDialog", [embyWebComponentsBowerPath + "/refreshdialog/refreshdialog"], returnFirstDependency);
         define("backdrop", [embyWebComponentsBowerPath + "/backdrop/backdrop"], returnFirstDependency);
         define("fetchHelper", [embyWebComponentsBowerPath + "/fetchhelper"], returnFirstDependency);
 
+        define("cardStyle", ['css!' + embyWebComponentsBowerPath + "/cardbuilder/card"], returnFirstDependency);
+        define("cardBuilder", [embyWebComponentsBowerPath + "/cardbuilder/cardbuilder"], returnFirstDependency);
+        define("peoplecardbuilder", [embyWebComponentsBowerPath + "/cardbuilder/peoplecardbuilder"], returnFirstDependency);
+        define("chaptercardbuilder", [embyWebComponentsBowerPath + "/cardbuilder/chaptercardbuilder"], returnFirstDependency);
+
         define("tvguide", [embyWebComponentsBowerPath + "/guide/guide", 'embyRouter'], returnFirstDependency);
+        define("voiceDialog", [embyWebComponentsBowerPath + "/voice/voicedialog"], returnFirstDependency);
+        define("voiceReceiver", [embyWebComponentsBowerPath + "/voice/voicereceiver"], returnFirstDependency);
+        define("voiceProcessor", [embyWebComponentsBowerPath + "/voice/voiceprocessor"], returnFirstDependency);
 
         define("viewManager", [embyWebComponentsBowerPath + "/viewmanager/viewmanager"], function (viewManager) {
             window.ViewManager = viewManager;
@@ -1878,25 +1506,15 @@ var AppInfo = {};
         // Done
         define("emby-icons", ['webcomponentsjs', "html!" + bowerPath + "/emby-icons/emby-icons.html"]);
 
-        define("paper-spinner", ['webcomponentsjs', "html!" + bowerPath + "/paper-spinner/paper-spinner.html"]);
-        define("paper-tabs", ['webcomponentsjs', "html!" + bowerPath + "/paper-tabs/paper-tabs.html"]);
         define("paper-button", ["html!" + bowerPath + "/paper-button/paper-button.html"]);
         define("paper-icon-button", ["html!" + bowerPath + "/paper-icon-button/paper-icon-button.html"]);
-        define("paper-radio-group", ["html!" + bowerPath + "/paper-radio-group/paper-radio-group.html"]);
-        define("paper-radio-button", ['webcomponentsjs', "html!" + bowerPath + "/paper-radio-button/paper-radio-button.html"]);
-        define("paper-toggle-button", ['webcomponentsjs', "html!" + bowerPath + "/paper-toggle-button/paper-toggle-button.html"]);
 
         define("paper-textarea", ['webcomponentsjs', "html!" + bowerPath + "/paper-input/paper-textarea.html"]);
-        define("paper-item", ["html!" + bowerPath + "/paper-item/paper-item.html"]);
         define("paper-checkbox", ["html!" + bowerPath + "/paper-checkbox/paper-checkbox.html"]);
-        define("paper-fab", ["emby-icons", "html!" + bowerPath + "/paper-fab/paper-fab.html"]);
         define("paper-progress", ["html!" + bowerPath + "/paper-progress/paper-progress.html"]);
         define("paper-input", ['webcomponentsjs', "html!" + bowerPath + "/paper-input/paper-input.html"]);
-        define("paper-icon-item", ['webcomponentsjs', "html!" + bowerPath + "/paper-item/paper-icon-item.html"]);
-        define("paper-item-body", ["html!" + bowerPath + "/paper-item/paper-item-body.html"]);
 
         define("paper-collapse-item", ["html!" + bowerPath + "/paper-collapse-item/paper-collapse-item.html"]);
-        define("emby-collapsible", ['webcomponentsjs', "emby-button", "html!" + bowerPath + "/emby-collapsible/emby-collapsible.html"]);
 
         define("jstree", [bowerPath + "/jstree/dist/jstree", "css!thirdparty/jstree/themes/default/style.min.css"]);
 
@@ -1922,7 +1540,6 @@ var AppInfo = {};
 
         define("jqmpanel", ['jqmbase', "thirdparty/jquerymobile-1.4.5/jqm.panel", 'css!thirdparty/jquerymobile-1.4.5/jqm.panel.css']);
 
-        define("iron-icon-set", ["html!" + bowerPath + "/iron-icon/iron-icon.html", "html!" + bowerPath + "/iron-iconset-svg/iron-iconset-svg.html"]);
         define("slideshow", [embyWebComponentsBowerPath + "/slideshow/slideshow"], returnFirstDependency);
 
         define('fetch', [bowerPath + '/fetch/fetch']);
@@ -1930,8 +1547,11 @@ var AppInfo = {};
         define('native-promise-only', [bowerPath + '/native-promise-only/lib/npo.src']);
         define("fingerprintjs2", [bowerPath + '/fingerprintjs2/fingerprint2'], returnFirstDependency);
         define("clearButtonStyle", ['css!' + embyWebComponentsBowerPath + '/clearbutton']);
+        define("userdataButtons", [embyWebComponentsBowerPath + "/userdatabuttons/userdatabuttons"], returnFirstDependency);
         define("listView", [embyWebComponentsBowerPath + "/listview/listview"], returnFirstDependency);
         define("listViewStyle", ['css!' + embyWebComponentsBowerPath + "/listview/listview"], returnFirstDependency);
+        define("formDialogStyle", ['css!' + embyWebComponentsBowerPath + "/formdialog"], returnFirstDependency);
+        define("indicators", [embyWebComponentsBowerPath + "/indicators/indicators"], returnFirstDependency);
 
         if ('registerElement' in document && 'content' in document.createElement('template')) {
             define('webcomponentsjs', []);
@@ -1947,11 +1567,11 @@ var AppInfo = {};
         }
 
         if (Dashboard.isRunningInCordova()) {
-            define("localassetmanager", ["cordova/localassetmanager"]);
-            define("fileupload", ["cordova/fileupload"]);
+            define("localassetmanager", ["cordova/localassetmanager"], returnFirstDependency);
+            define("fileupload", ["cordova/fileupload"], returnFirstDependency);
         } else {
-            define("localassetmanager", [apiClientBowerPath + "/localassetmanager"]);
-            define("fileupload", [apiClientBowerPath + "/fileupload"]);
+            define("localassetmanager", [apiClientBowerPath + "/localassetmanager"], returnFirstDependency);
+            define("fileupload", [apiClientBowerPath + "/fileupload"], returnFirstDependency);
         }
         define("connectionmanager", [apiClientBowerPath + "/connectionmanager"]);
 
@@ -1963,11 +1583,13 @@ var AppInfo = {};
 
         define("swiper", [bowerPath + "/Swiper/dist/js/swiper.min", "css!" + bowerPath + "/Swiper/dist/css/swiper.min"], returnFirstDependency);
 
+        define("scroller", [embyWebComponentsBowerPath + "/scroller/smoothscroller"], returnFirstDependency);
         define("toast", [embyWebComponentsBowerPath + "/toast/toast"], returnFirstDependency);
         define("scrollHelper", [embyWebComponentsBowerPath + "/scrollhelper"], returnFirstDependency);
 
         define("appSettings", [embyWebComponentsBowerPath + "/appsettings"], updateAppSettings);
-        define("userSettings", [embyWebComponentsBowerPath + "/usersettings"], returnFirstDependency);
+        define("userSettings", [embyWebComponentsBowerPath + "/usersettings/usersettings"], returnFirstDependency);
+        define("userSettingsBuilder", [embyWebComponentsBowerPath + "/usersettings/usersettingsbuilder"], returnFirstDependency);
 
         define("material-icons", ['css!' + embyWebComponentsBowerPath + '/fonts/material-icons/style']);
         define("robotoFont", ['css!' + embyWebComponentsBowerPath + '/fonts/roboto/style']);
@@ -2009,20 +1631,34 @@ var AppInfo = {};
         });
 
         // mock this for now. not used in this app
-        define("inputManager", [], function () {
-            return {
-                on: function () {
-                },
-                off: function () {
-                }
-            };
-        });
-
-        // mock this for now. not used in this app
         define("playbackManager", [], function () {
             return {
                 isPlayingVideo: function () {
                     return false;
+                },
+                play: function (options) {
+                    MediaController.play(options);
+                },
+                currentPlaylistIndex: function (options) {
+                    return MediaController.currentPlaylistIndex(options);
+                },
+                canQueueMediaType: function (mediaType) {
+                    return MediaController.canQueueMediaType(mediaType);
+                },
+                canPlay: function (item) {
+                    return MediaController.canPlay(item);
+                },
+                canQueue: function (item) {
+                    return MediaController.canQueueMediaType(item.MediaType, item.Type);
+                },
+                instantMix: function (item) {
+                    return MediaController.instantMix(item);
+                },
+                shuffle: function (item) {
+                    return MediaController.shuffle(item);
+                },
+                pause: function () {
+                    return MediaController.pause();
                 }
             };
         });
@@ -2083,6 +1719,30 @@ var AppInfo = {};
                 Dashboard.navigate('mypreferencesmenu.html?userId=' + ApiClient.getCurrentUserId());
             };
 
+            embyRouter.showGuide = function () {
+                Dashboard.navigate('livetv.html?tab=1');
+            };
+
+            embyRouter.goHome = function () {
+                Dashboard.navigate('home.html');
+            };
+
+            embyRouter.showSearch = function () {
+                Dashboard.navigate('search.html');
+            };
+
+            embyRouter.showLiveTV = function () {
+                Dashboard.navigate('livetv.html');
+            };
+
+            embyRouter.showRecordedTV = function () {
+                Dashboard.navigate('livetv.html?tab=3');
+            };
+
+            embyRouter.showFavorites = function () {
+                Dashboard.navigate('home.html?tab=3');
+            };
+
             function showItem(item) {
                 if (typeof (item) === 'string') {
                     require(['connectionManager'], function (connectionManager) {
@@ -2137,6 +1797,8 @@ var AppInfo = {};
             define("alert", [embyWebComponentsBowerPath + "/alert/alert"], returnFirstDependency);
         }
 
+        define("dialog", [embyWebComponentsBowerPath + "/dialog/dialog"], returnFirstDependency);
+
         if (preferNativeAlerts && window.confirm) {
             define("confirm", [embyWebComponentsBowerPath + "/confirm/nativeconfirm"], returnFirstDependency);
         } else {
@@ -2149,8 +1811,9 @@ var AppInfo = {};
             define("prompt", [embyWebComponentsBowerPath + "/prompt/prompt"], returnFirstDependency);
         }
 
-        if (browser.tv && !browser.animate) {
-            define("loading", [embyWebComponentsBowerPath + "/loading/loading-smarttv"], returnFirstDependency);
+        if (browser.tizen || browser.operaTv) {
+            // Need the older version due to artifacts
+            define("loading", [embyWebComponentsBowerPath + "/loading/loading-legacy"], returnFirstDependency);
         } else {
             define("loading", [embyWebComponentsBowerPath + "/loading/loading-lite"], returnFirstDependency);
         }
@@ -2174,6 +1837,7 @@ var AppInfo = {};
 
             if (MainActivity.getChromeVersion() >= 48) {
                 define("audiorenderer", ["scripts/htmlmediarenderer"]);
+                //window.VlcAudio = true;
                 //define("audiorenderer", ["cordova/android/vlcplayer"]);
             } else {
                 window.VlcAudio = true;
@@ -2199,18 +1863,14 @@ var AppInfo = {};
 
         define("livetvcss", ['css!css/livetv.css']);
         define("detailtablecss", ['css!css/detailtable.css']);
-        define("tileitemcss", ['css!css/tileitem.css']);
 
         define("buttonenabled", ["legacy/buttonenabled"]);
 
         var deps = [];
-        deps.push('events');
 
         deps.push('scripts/mediacontroller');
 
-        require(deps, function (events) {
-
-            window.Events = events;
+        require(deps, function () {
 
             initAfterDependencies();
         });
@@ -2227,7 +1887,6 @@ var AppInfo = {};
     function initAfterDependencies() {
 
         var deps = [];
-        deps.push('scripts/extensions');
 
         if (!window.fetch) {
             deps.push('fetch');
@@ -2258,7 +1917,7 @@ var AppInfo = {};
 
         var baseUrl = 'bower_components/emby-webcomponents/strings/';
 
-        var languages = ['da', 'de', 'en-US', 'es-MX', 'kk', 'nb', 'nl', 'pt-BR', 'pt-PT', 'ru'];
+        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-AR', 'es-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
 
         var translations = languages.map(function (i) {
             return {
@@ -2406,7 +2065,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/dashboardgeneral.html',
-            dependencies: ['emby-collapsible', 'paper-textarea', 'paper-input', 'paper-checkbox'],
+            dependencies: ['emby-collapse', 'paper-textarea', 'paper-input', 'paper-checkbox', 'jqmlistview'],
             controller: 'scripts/dashboardgeneral',
             autoFocus: false,
             roles: 'admin'
@@ -2551,7 +2210,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/itemdetails.html',
-            dependencies: ['emby-button', 'tileitemcss', 'scripts/livetvcomponents', 'paper-icon-button-light', 'listViewStyle'],
+            dependencies: ['emby-button', 'scripts/livetvcomponents', 'paper-icon-button-light', 'emby-itemscontainer'],
             controller: 'scripts/itemdetailpage',
             autoFocus: false,
             transition: 'fade'
@@ -2595,7 +2254,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/librarysettings.html',
-            dependencies: ['emby-collapsible', 'paper-input', 'paper-checkbox', 'emby-button'],
+            dependencies: ['emby-collapse', 'paper-input', 'paper-checkbox', 'emby-button', 'jqmlistview'],
             autoFocus: false,
             roles: 'admin',
             controller: 'scripts/librarysettings'
@@ -2671,7 +2330,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/log.html',
-            dependencies: ['paper-toggle-button'],
+            dependencies: ['emby-checkbox'],
             roles: 'admin',
             controller: 'scripts/logpage'
         });
@@ -2821,7 +2480,7 @@ var AppInfo = {};
 
         defineRoute({
             path: '/nowplaying.html',
-            dependencies: ['paper-icon-button-light', 'emby-slider', 'emby-button', 'emby-input'],
+            dependencies: ['paper-icon-button-light', 'emby-slider', 'emby-button', 'emby-input', 'emby-itemscontainer'],
             controller: 'scripts/nowplayingpage',
             autoFocus: false,
             transition: 'fade'
@@ -2845,7 +2504,8 @@ var AppInfo = {};
             path: '/playlists.html',
             dependencies: [],
             autoFocus: false,
-            transition: 'fade'
+            transition: 'fade',
+            controller: 'scripts/playlists'
         });
 
         defineRoute({
@@ -3110,7 +2770,6 @@ var AppInfo = {};
 
         deps.push('imageLoader');
         deps.push('embyRouter');
-        deps.push('layoutManager');
 
         if (!(AppInfo.isNativeApp && browserInfo.android)) {
             document.documentElement.classList.add('minimumSizeTabs');
@@ -3121,8 +2780,6 @@ var AppInfo = {};
             deps.push('css!devices/android/android.css');
         } else if (AppInfo.isNativeApp && browserInfo.safari) {
             deps.push('css!devices/ios/ios.css');
-        } else if (AppInfo.isNativeApp && browserInfo.edge) {
-            deps.push('css!devices/windowsphone/wp.css');
         }
 
         loadTheme();
@@ -3138,20 +2795,15 @@ var AppInfo = {};
             }
         }
 
-        deps.push('scripts/librarylist');
         deps.push('scripts/librarymenu');
-
-        deps.push('css!css/card.css');
 
         console.log('onAppReady - loading dependencies');
 
-        require(deps, function (imageLoader, pageObjects, layoutManager) {
+        require(deps, function (imageLoader, pageObjects) {
 
             console.log('Loaded dependencies in onAppReady');
 
             window.ImageLoader = imageLoader;
-
-            layoutManager.init();
 
             window.Emby = {};
             window.Emby.Page = pageObjects;
@@ -3166,7 +2818,6 @@ var AppInfo = {};
 
             postInitDependencies.push('scripts/thememediaplayer');
             postInitDependencies.push('scripts/remotecontrol');
-            postInitDependencies.push('css!css/notifications.css');
             postInitDependencies.push('css!css/chromecast.css');
             postInitDependencies.push('scripts/autobackdrops');
 
@@ -3196,9 +2847,7 @@ var AppInfo = {};
                 postInitDependencies.push('scripts/chromecast');
             }
 
-            if (AppInfo.enableNowPlayingBar) {
-                postInitDependencies.push('scripts/nowplayingbar');
-            }
+            postInitDependencies.push('scripts/nowplayingbar');
 
             if (AppInfo.isNativeApp && browserInfo.safari) {
 
@@ -3213,13 +2862,25 @@ var AppInfo = {};
                 postInitDependencies.push('robotoFont');
             }
 
+            postInitDependencies.push('bower_components/emby-webcomponents/input/api');
+
+            if (!browserInfo.tv && !AppInfo.isNativeApp) {
+                if (navigator.serviceWorker) {
+                    navigator.serviceWorker.register('serviceworker.js');
+                }
+
+                if (window.Notification) {
+                    postInitDependencies.push('bower_components/emby-webcomponents/notifications/notifications');
+                }
+            }
+
             require(postInitDependencies);
             upgradeLayouts();
         });
     }
 
     function upgradeLayouts() {
-        if (!AppInfo.enableAppLayouts && browserInfo.mobile) {
+        if (!AppInfo.enableAppLayouts) {
             Dashboard.getPluginSecurityInfo().then(function (info) {
                 if (info.IsMBSupporter) {
                     AppInfo.enableAppLayouts = true;
@@ -3333,32 +2994,5 @@ pageClassOn('viewshow', "page", function () {
         docElem.classList.remove('background-theme-a');
     }
 
-    var apiClient = window.ApiClient;
-
     Dashboard.ensureHeader(page);
-
-    if (apiClient && apiClient.isLoggedIn() && !apiClient.isWebSocketOpen()) {
-        Dashboard.refreshSystemInfoFromServer();
-    }
-
 });
-
-window.addEventListener("beforeunload", function () {
-
-    var apiClient = window.ApiClient;
-
-    // Close the connection gracefully when possible
-    if (apiClient && apiClient.isWebSocketOpen()) {
-
-        var localActivePlayers = MediaController.getPlayers().filter(function (p) {
-
-            return p.isLocalPlayer && p.isPlaying();
-        });
-
-        if (!localActivePlayers.length) {
-            console.log('Sending close web socket command');
-            apiClient.closeWebSocket();
-        }
-    }
-});
-

@@ -12,7 +12,6 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Events;
-using MediaBrowser.Model.FileOrganization;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
@@ -26,8 +25,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
-using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Power;
@@ -58,8 +55,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public static EmbyTV Current;
 
-        public event EventHandler DataSourceChanged;
-        public event EventHandler<RecordingStatusChangedEventArgs> RecordingStatusChanged;
+        public event EventHandler DataSourceChanged { add { } remove { } }
+        public event EventHandler<RecordingStatusChangedEventArgs> RecordingStatusChanged { add { } remove { } }
 
         private readonly ConcurrentDictionary<string, ActiveRecordingInfo> _activeRecordings =
             new ConcurrentDictionary<string, ActiveRecordingInfo>(StringComparer.OrdinalIgnoreCase);

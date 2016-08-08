@@ -1,4 +1,4 @@
-define(['jQuery'], function ($) {
+define(['jQuery', 'listView'], function ($, listView) {
 
     var data = {};
 
@@ -19,7 +19,7 @@ define(['jQuery'], function ($) {
                     StartIndex: 0,
                     Limit: LibraryBrowser.getDefaultPageSize()
                 },
-                view: LibraryBrowser.getSavedView(key) || LibraryBrowser.getDefaultItemsView('Poster', 'List')
+                view: LibraryBrowser.getSavedView(key) || 'Poster'
             };
 
             pageData.query.ParentId = LibraryMenu.getTopParentId();
@@ -66,7 +66,7 @@ define(['jQuery'], function ($) {
 
             if (view == "List") {
 
-                html = LibraryBrowser.getListViewHtml({
+                html = listView.getListViewHtml({
                     items: result.Items,
                     context: 'games',
                     sortBy: query.SortBy

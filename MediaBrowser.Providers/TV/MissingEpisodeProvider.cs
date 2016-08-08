@@ -133,11 +133,9 @@ namespace MediaBrowser.Providers.TV
             {
                 foreach (var series in group)
                 {
-                    var directoryService = new DirectoryService(_fileSystem);
+                    var directoryService = new DirectoryService(_logger, _fileSystem);
 
-                    await series.RefreshMetadata(new MetadataRefreshOptions(directoryService)
-                    {
-                    }, cancellationToken).ConfigureAwait(false);
+                    await series.RefreshMetadata(new MetadataRefreshOptions(directoryService), cancellationToken).ConfigureAwait(false);
 
                     await series.ValidateChildren(new Progress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService), true)
                         .ConfigureAwait(false);
@@ -429,16 +427,16 @@ namespace MediaBrowser.Providers.TV
                 IndexNumber = episodeNumber,
                 ParentIndexNumber = seasonNumber,
                 Id = _libraryManager.GetNewItemId((series.Id + seasonNumber.ToString(_usCulture) + name), typeof(Episode)),
-                IsVirtualItem = true
+                IsVirtualItem = true,
+                SeasonId = season == null ? (Guid?)null : season.Id,
+                SeriesId = series.Id
             };
 
             episode.SetParent(season);
 
             await season.AddChild(episode, cancellationToken).ConfigureAwait(false);
 
-            await episode.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
-            {
-            }, cancellationToken).ConfigureAwait(false);
+            await episode.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

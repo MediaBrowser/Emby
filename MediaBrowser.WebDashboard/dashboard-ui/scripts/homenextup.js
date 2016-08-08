@@ -1,14 +1,14 @@
-﻿define([], function () {
+﻿define(['components/categorysyncbuttons', 'cardBuilder', 'emby-itemscontainer'], function (categorysyncbuttons, cardBuilder) {
 
     function getNextUpPromise() {
 
         var query = {
 
             Limit: 24,
-            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated,SyncInfo",
+            Fields: "PrimaryImageAspectRatio,SeriesInfo,DateCreated,BasicSyncInfo",
             UserId: Dashboard.getCurrentUserId(),
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Thumb"
         };
 
         return ApiClient.getNextUpEpisodes(query);
@@ -25,7 +25,7 @@
 
             var html = '';
 
-            html += LibraryBrowser.getPosterViewHtml({
+            html += cardBuilder.getCardsHtml({
                 items: result.Items,
                 shape: "backdrop",
                 showTitle: true,
@@ -49,6 +49,8 @@
 
         var self = this;
         var nextUpPromise;
+
+        categorysyncbuttons.init(view);
 
         self.preRender = function () {
             nextUpPromise = getNextUpPromise();

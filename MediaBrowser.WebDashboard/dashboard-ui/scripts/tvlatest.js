@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['components/categorysyncbuttons', 'components/groupedcards', 'cardBuilder'], function (categorysyncbuttons, groupedcards, cardBuilder) {
 
     function getView() {
 
@@ -17,10 +17,10 @@
 
             IncludeItemTypes: "Episode",
             Limit: 30,
-            Fields: "PrimaryImageAspectRatio,SyncInfo",
+            Fields: "PrimaryImageAspectRatio,BasicSyncInfo",
             ParentId: parentId,
             ImageTypeLimit: 1,
-            EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+            EnableImageTypes: "Primary,Backdrop,Thumb"
         };
 
         return ApiClient.getJSON(ApiClient.getUrl('Users/' + userId + '/Items/Latest', options));
@@ -35,7 +35,7 @@
 
             if (view == 'ThumbCard') {
 
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     shape: "backdrop",
                     preferThumb: true,
@@ -51,7 +51,7 @@
 
             } else if (view == 'Thumb') {
 
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     shape: "backdrop",
                     preferThumb: true,
@@ -77,15 +77,18 @@
     return function (view, params, tabContent) {
 
         var self = this;
-        var latestPromise;
+
+        categorysyncbuttons.init(tabContent);        var latestPromise;
 
         self.preRender = function () {
             latestPromise = getLatestPromise(view, params);
         };
 
-        self.renderTab = function() {
+        self.renderTab = function () {
 
             loadLatest(tabContent, params, latestPromise);
         };
+
+        tabContent.querySelector('#latestEpisodes').addEventListener('click', groupedcards.onItemsContainerClick);
     };
 });

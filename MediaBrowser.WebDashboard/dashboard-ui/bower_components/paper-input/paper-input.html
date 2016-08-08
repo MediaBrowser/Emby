@@ -74,6 +74,10 @@ style this element.
         display: block;
       }
 
+      :host([focused]) {
+        outline: none;
+      }
+
       :host([hidden]) {
         display: none !important;
       }
@@ -93,13 +97,17 @@ style this element.
       input:-ms-input-placeholder {
         color: var(--paper-input-container-color, --secondary-text-color);
       }
+
+      label {
+        pointer-events: none;
+      }
     </style>
 
     <paper-input-container no-label-float="[[noLabelFloat]]" always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]" auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
 
       <content select="[prefix]"></content>
 
-      <label hidden$="[[!label]]" aria-hidden="true">[[label]]</label>
+      <label hidden$="[[!label]]" aria-hidden="true" for="input">[[label]]</label>
 
       <input is="iron-input" id="input"
         aria-labelledby$="[[_ariaLabelledBy]]"
@@ -139,7 +147,7 @@ style this element.
       <content select="[suffix]"></content>
 
       <template is="dom-if" if="[[errorMessage]]">
-        <paper-input-error>[[errorMessage]]</paper-input-error>
+        <paper-input-error aria-live="assertive">[[errorMessage]]</paper-input-error>
       </template>
 
       <template is="dom-if" if="[[charCounter]]">

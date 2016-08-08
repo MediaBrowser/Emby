@@ -1,0 +1,49 @@
+﻿.cardOverlayTarget {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .85);
+    z-index: 998;
+    line-height: initial;
+    font-size: initial;
+}
+
+.cardOverlayInner {
+    padding: .5em;
+    color: #fff;
+    text-align: left;
+    font-size: 90%;
+}
+
+.cardOverlayMediaInfo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 1em 0;
+    color: #ddd;
+}
+
+.cardOverlayButtons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cardOverlayFab {
+    background-color: #282828 !important;
+    margin-right: .25em !important;
+}
+
+.withHoverMenu {
+    overflow: hidden;
+}
+
+@media all and (max-width: 1200px) {
+
+    .cardOverlayInner {
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+}

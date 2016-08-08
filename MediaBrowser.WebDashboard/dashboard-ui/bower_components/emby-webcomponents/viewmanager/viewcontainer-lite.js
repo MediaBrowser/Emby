@@ -150,7 +150,7 @@ define(['browser', 'css!./viewcontainer-lite'], function (browser) {
 
         return new Promise(function (resolve, reject) {
             var timings = {
-                duration: 200,
+                duration: 300,
                 iterations: 1,
                 easing: 'ease-out',
                 fill: 'both'
@@ -247,7 +247,10 @@ define(['browser', 'css!./viewcontainer-lite'], function (browser) {
     }
 
     function triggerDestroy(view) {
-        view.dispatchEvent(new CustomEvent("viewdestroy", {}));
+
+        view.dispatchEvent(new CustomEvent('viewdestroy', {
+            cancelable: false
+        }));
     }
 
     function reset() {

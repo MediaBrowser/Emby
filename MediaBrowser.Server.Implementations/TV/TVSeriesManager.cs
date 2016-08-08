@@ -50,6 +50,11 @@ namespace MediaBrowser.Server.Implementations.TV
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(presentationUniqueKey) && limit.HasValue)
+            {
+                limit = limit.Value + 10;
+            }
+
             var items = _libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
@@ -89,6 +94,11 @@ namespace MediaBrowser.Server.Implementations.TV
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(presentationUniqueKey) && limit.HasValue)
+            {
+                limit = limit.Value + 10;
+            }
+
             var items = _libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
@@ -109,13 +119,31 @@ namespace MediaBrowser.Server.Implementations.TV
             // Avoid implicitly captured closure
             var currentUser = user;
 
-            return series
+            var allNextUp = series
                 .Select(i => GetNextUp(i, currentUser))
+                .Where(i => i.Item1 != null)
                 // Include if an episode was found, and either the series is not unwatched or the specific series was requested
-                .Where(i => i.Item1 != null && (!i.Item3 || !string.IsNullOrWhiteSpace(request.SeriesId)))
                 .OrderByDescending(i => i.Item2)
                 .ThenByDescending(i => i.Item1.PremiereDate ?? DateTime.MinValue)
-                .Select(i => i.Item1);
+                .ToList();
+
+            // If viewing all next up for all series, remove first episodes
+            if (string.IsNullOrWhiteSpace(request.SeriesId))
+            {
+                var withoutFirstEpisode = allNextUp
+                    .Where(i => !i.Item3)
+                    .ToList();
+
+                // But if that returns empty, keep those first episodes (avoid completely empty view)
+                if (withoutFirstEpisode.Count > 0)
+                {
+                    allNextUp = withoutFirstEpisode;
+                }
+            }
+
+            return allNextUp
+                .Select(i => i.Item1)
+                .Take(request.Limit ?? int.MaxValue);
         }
 
         private string GetUniqueSeriesKey(BaseItem series)
@@ -143,7 +171,6 @@ namespace MediaBrowser.Server.Implementations.TV
                 SortOrder = SortOrder.Descending,
                 IsPlayed = true,
                 Limit = 1,
-                IsVirtualItem = false,
                 ParentIndexNumberNotEquals = 0
 
             }).FirstOrDefault();

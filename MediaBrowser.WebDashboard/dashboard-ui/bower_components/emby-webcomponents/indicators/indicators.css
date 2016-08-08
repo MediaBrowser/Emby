@@ -1,6 +1,7 @@
 .itemProgressBar {
     background: rgba(0,0,0,.5);
     position: relative;
+    height: .35em;
 }
 
 .itemProgressBarForeground {
@@ -8,8 +9,77 @@
     top: 0;
     left: 0;
     bottom: 0;
+    background-color: #52B54B;
+}
+
+.indicator {
+    border-radius: 500px;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    width: 2em;
+    height: 2em;
 }
 
 .timerIndicator {
     color: #CB272A;
+}
+
+.indicator + .indicator {
+    margin-left: .25em;
+}
+
+.indicatorIcon {
+    width: auto;
+    height: auto;
+    font-size: 1.6em;
+}
+
+.countIndicator {
+    background: rgba(82,181,75,1);
+    border-radius: 500px;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #fff;
+}
+
+.playedIndicator {
+    background: rgba(82,181,75,1);
+    border-radius: 500px;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.syncIndicator {
+    color: #fff;
+    border-radius: 500px;
+}
+
+.emptySyncIndicator {
+    background: #ccc;
+    color: #333;
+}
+
+.fullSyncIndicator {
+    color: #673AB7;
+    padding: 0;
+    border: 4px solid #673AB7;
+    background: #fff;
+    width: auto;
+    height: auto;
+}
+
+.fullSyncIndicatorIcon {
+    margin: -3px;
 }

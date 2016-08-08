@@ -1,4 +1,4 @@
-﻿define(['events', 'libraryBrowser', 'imageLoader'], function (events, libraryBrowser, imageLoader) {
+﻿define(['events', 'libraryBrowser', 'imageLoader', 'listView', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, listView) {
 
     return function (view, params, tabContent) {
 
@@ -17,11 +17,11 @@
                         SortOrder: "Ascending",
                         IncludeItemTypes: "Audio",
                         Recursive: true,
-                        Fields: "AudioInfo,ParentId,SyncInfo",
+                        Fields: "AudioInfo,ParentId",
                         Limit: 100,
                         StartIndex: 0,
                         ImageTypeLimit: 1,
-                        EnableImageTypes: "Primary,Backdrop,Banner,Thumb"
+                        EnableImageTypes: "Primary"
                     }
                 };
 
@@ -68,10 +68,9 @@
                     filterButton: false
                 });
 
-                var html = LibraryBrowser.getListViewHtml({
+                var html = listView.getListViewHtml({
                     items: result.Items,
-                    showIndex: true,
-                    defaultAction: 'play',
+                    action: 'playallfromhere',
                     smallIcon: true
                 });
 

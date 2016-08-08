@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Controller.Providers;
+﻿using System;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,7 +18,32 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
+        [IgnoreDataMember]
         public string SeriesName { get; set; }
+        [IgnoreDataMember]
+        public Guid? SeriesId { get; set; }
+        [IgnoreDataMember]
+        public string SeriesSortName { get; set; }
+
+        public string FindSeriesSortName()
+        {
+            return SeriesSortName;
+        }
+        public string FindSeriesName()
+        {
+            return SeriesName;
+        }
+
+        [IgnoreDataMember]
+        public override bool EnableForceSaveOnDateModifiedChange
+        {
+            get { return true; }
+        }
+
+        public Guid? FindSeriesId()
+        {
+            return SeriesId;
+        }
 
         public override bool CanDownload()
         {

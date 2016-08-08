@@ -1,4 +1,4 @@
-﻿define(['fetchHelper', 'jQuery'], function (fetchHelper, $) {
+﻿define(['fetchHelper', 'jQuery', 'registrationservices'], function (fetchHelper, $, registrationServices) {
 
     function load(page) {
         Dashboard.showLoadingMsg();
@@ -146,16 +146,11 @@
         }
     };
 
-    function getTabs() {
-        return [
-        {
-            href: 'about.html',
-            name: Globalize.translate('TabAbout')
-        },
-         {
-             href: 'supporterkey.html',
-             name: Globalize.translate('TabEmbyPremiere')
-         }];
+    function onSupporterLinkClick(e) {
+
+        registrationServices.showPremiereInfo();
+        e.preventDefault();
+        e.stopPropagation();
     }
 
     $(document).on('pageinit', "#supporterKeyPage", function () {
@@ -165,11 +160,11 @@
         $('#lostKeyForm', this).on('submit', retrieveSupporterKey);
         $('#linkKeysForm', this).on('submit', SupporterKeyPage.linkSupporterKeys);
 
-        $('.benefits', page).html(Globalize.translate('HeaderSupporterBenefit', '<a href="http://emby.media/premiere" target="_blank">', '</a>'));
+        page.querySelector('.benefits').innerHTML = Globalize.translate('HeaderSupporterBenefit', '<a class="lnkPremiere" href="http://emby.media/premiere" target="_blank">', '</a>');
+
+        page.querySelector('.lnkPremiere').addEventListener('click', onSupporterLinkClick);
 
     }).on('pageshow', "#supporterKeyPage", function () {
-
-        LibraryMenu.setTabs('helpadmin', 1, getTabs);
 
         var page = this;
         loadUserInfo(page);

@@ -197,6 +197,8 @@
         /// </summary>
         SeriesGenres,
 
+        SeriesPrimaryImage,
+
         /// <summary>
         /// The series studio
         /// </summary>
@@ -217,6 +219,7 @@
         /// </summary>
         Studios,
 
+        BasicSyncInfo,
         /// <summary>
         /// The synchronize information
         /// </summary>

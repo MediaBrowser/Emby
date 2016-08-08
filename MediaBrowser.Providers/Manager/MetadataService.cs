@@ -138,10 +138,26 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            var isFirstRefresh = GetLastRefreshDate(item) == default(DateTime);
+            var isFirstRefresh = item.DateLastRefreshed == default(DateTime);
 
             var beforeSaveResult = await BeforeSave(itemOfType, isFirstRefresh || refreshOptions.ReplaceAllMetadata || refreshOptions.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || requiresRefresh, updateType).ConfigureAwait(false);
             updateType = updateType | beforeSaveResult;
+
+            if (item.LocationType == LocationType.FileSystem)
+            {
+                var file = refreshOptions.DirectoryService.GetFile(item.Path);
+                if (file != null)
+                {
+                    var fileLastWriteTime = file.LastWriteTimeUtc;
+                    if (item.EnableForceSaveOnDateModifiedChange && fileLastWriteTime != item.DateModified)
+                    {
+                        Logger.Debug("Date modified for {0}. Old date {1} new date {2} Id {3}", item.Path, item.DateModified, fileLastWriteTime, item.Id);
+                        requiresRefresh = true;
+                    }
+
+                    item.DateModified = fileLastWriteTime;
+                }
+            }
 
             // Save if changes were made, or it's never been saved before
             if (refreshOptions.ForceSave || updateType > ItemUpdateType.None || isFirstRefresh || refreshOptions.ReplaceAllMetadata || requiresRefresh)
@@ -155,12 +171,10 @@ namespace MediaBrowser.Providers.Manager
                 if (hasRefreshedMetadata && hasRefreshedImages)
                 {
                     item.DateLastRefreshed = DateTime.UtcNow;
-                    item.DateModifiedDuringLastRefresh = item.DateModified;
                 }
                 else
                 {
                     item.DateLastRefreshed = default(DateTime);
-                    item.DateModifiedDuringLastRefresh = null;
                 }
 
                 // Save to database
@@ -177,11 +191,6 @@ namespace MediaBrowser.Providers.Manager
             lookupInfo.ProviderIds = result.ProviderIds;
             lookupInfo.Name = result.Name;
             lookupInfo.Year = result.ProductionYear;
-        }
-
-        private DateTime GetLastRefreshDate(IHasMetadata item)
-        {
-            return item.DateLastRefreshed;
         }
 
         protected async Task SaveItem(MetadataResult<TItemType> result, ItemUpdateType reason, CancellationToken cancellationToken)
@@ -340,9 +349,6 @@ namespace MediaBrowser.Providers.Manager
 
             if (!runAllProviders)
             {
-                // Avoid implicitly captured closure
-                var currentItem = item;
-
                 var providersWithChanges = providers
                     .Where(i =>
                     {
@@ -350,12 +356,6 @@ namespace MediaBrowser.Providers.Manager
                         if (hasFileChangeMonitor != null)
                         {
                             return HasChanged(item, hasFileChangeMonitor, options.DirectoryService);
-                        }
-
-                        var hasChangeMonitor = i as IHasChangeMonitor;
-                        if (hasChangeMonitor != null)
-                        {
-                            return HasChanged(item, hasChangeMonitor, currentItem.DateLastSaved, options.DirectoryService);
                         }
 
                         return false;
@@ -638,7 +638,6 @@ namespace MediaBrowser.Providers.Manager
                     }
                     else
                     {
-                        refreshResult.Failures++;
                         Logger.Debug("{0} returned no metadata for {1}", providerName, logName);
                     }
                 }
@@ -708,27 +707,6 @@ namespace MediaBrowser.Providers.Manager
                 //if (hasChanged)
                 //{
                 //    Logger.Debug("{0} reports change to {1}", changeMonitor.GetType().Name, item.Path ?? item.Name);
-                //}
-
-                return hasChanged;
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error in {0}.HasChanged", ex, changeMonitor.GetType().Name);
-                return false;
-            }
-        }
-
-        private bool HasChanged(IHasMetadata item, IHasChangeMonitor changeMonitor, DateTime date, IDirectoryService directoryService)
-        {
-            try
-            {
-                var hasChanged = changeMonitor.HasChanged(item, directoryService, date);
-
-                //if (hasChanged)
-                //{
-                //    Logger.Debug("{0} reports change to {1} since {2}", changeMonitor.GetType().Name,
-                //        item.Path ?? item.Name, date);
                 //}
 
                 return hasChanged;

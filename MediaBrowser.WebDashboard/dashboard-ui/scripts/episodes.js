@@ -1,4 +1,4 @@
-﻿define(['events', 'libraryBrowser', 'imageLoader', 'jQuery'], function (events, libraryBrowser, imageLoader, $) {
+﻿define(['events', 'libraryBrowser', 'imageLoader', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, listView, cardBuilder) {
 
     return function (view, params, tabContent) {
 
@@ -18,15 +18,15 @@
                         SortOrder: "Ascending",
                         IncludeItemTypes: "Episode",
                         Recursive: true,
-                        Fields: "PrimaryImageAspectRatio,MediaSourceCount,UserData,SyncInfo",
+                        Fields: "PrimaryImageAspectRatio,MediaSourceCount,UserData",
                         IsMissing: false,
                         IsVirtualUnaired: false,
                         ImageTypeLimit: 1,
-                        EnableImageTypes: "Primary,Backdrop,Banner,Thumb",
+                        EnableImageTypes: "Primary,Backdrop,Thumb",
                         StartIndex: 0,
                         Limit: pageSize
                     },
-                    view: libraryBrowser.getSavedView(key) || libraryBrowser.getDefaultItemsView('Poster', 'Poster')
+                    view: libraryBrowser.getSavedView(key) || 'Poster'
                 };
 
                 pageData.query.ParentId = params.topParentId;
@@ -46,6 +46,25 @@
                 context.savedQueryKey = libraryBrowser.getSavedQueryKey('episodes');
             }
             return context.savedQueryKey;
+        }
+
+        function onViewStyleChange() {
+
+            var viewStyle = self.getCurrentViewStyle();
+
+            var itemsContainer = tabContent.querySelector('.itemsContainer');
+
+            if (viewStyle == "List") {
+
+                itemsContainer.classList.add('vertical-list');
+                itemsContainer.classList.remove('vertical-wrap');
+            }
+            else {
+
+                itemsContainer.classList.remove('vertical-list');
+                itemsContainer.classList.add('vertical-wrap');
+            }
+            itemsContainer.innerHTML = '';
         }
 
         function reloadItems(page) {
@@ -73,53 +92,67 @@
                 var viewStyle = self.getCurrentViewStyle();
 
                 var html;
+                var itemsContainer = tabContent.querySelector('.itemsContainer');
 
                 if (viewStyle == "List") {
 
-                    html = libraryBrowser.getListViewHtml({
+                    html = listView.getListViewHtml({
                         items: result.Items,
-                        sortBy: query.SortBy
+                        sortBy: query.SortBy,
+                        showParentTitle: true
                     });
                 }
                 else if (viewStyle == "PosterCard") {
-                    html = libraryBrowser.getPosterViewHtml({
+
+                    html = cardBuilder.getCardsHtml({
                         items: result.Items,
                         shape: "backdrop",
                         showTitle: true,
                         showParentTitle: true,
-                        lazy: true,
-                        cardLayout: true,
-                        showDetailsMenu: true
+                        scalable: true,
+                        cardLayout: true
                     });
                 }
                 else {
 
                     // poster
-                    html = libraryBrowser.getPosterViewHtml({
+                    html = cardBuilder.getCardsHtml({
                         items: result.Items,
                         shape: "backdrop",
                         showTitle: true,
                         showParentTitle: true,
                         overlayText: true,
-                        lazy: true,
-                        showDetailsMenu: true,
+                        scalable: true,
                         overlayPlayButton: true
                     });
                 }
 
-                $('.paging', tabContent).html(pagingHtml);
+                var i, length;
+                var elems = tabContent.querySelectorAll('.paging');
+                for (i = 0, length = elems.length; i < length; i++) {
+                    elems[i].innerHTML = pagingHtml;
+                }
 
-                $('.btnNextPage', tabContent).on('click', function () {
+                function onNextPageClick() {
                     query.StartIndex += query.Limit;
                     reloadItems(tabContent);
-                });
+                }
 
-                $('.btnPreviousPage', tabContent).on('click', function () {
+                function onPreviousPageClick() {
                     query.StartIndex -= query.Limit;
                     reloadItems(tabContent);
-                });
+                }
 
-                var itemsContainer = tabContent.querySelector('.itemsContainer');
+                elems = tabContent.querySelectorAll('.btnNextPage');
+                for (i = 0, length = elems.length; i < length; i++) {
+                    elems[i].addEventListener('click', onNextPageClick);
+                }
+
+                elems = tabContent.querySelectorAll('.btnPreviousPage');
+                for (i = 0, length = elems.length; i < length; i++) {
+                    elems[i].addEventListener('click', onPreviousPageClick);
+                }
+
                 itemsContainer.innerHTML = html;
                 imageLoader.lazyChildren(itemsContainer);
 
@@ -213,6 +246,7 @@
                 var viewStyle = e.detail.viewStyle;
                 getPageData(tabContent).view = viewStyle;
                 libraryBrowser.saveViewSetting(getSavedQueryKey(tabContent), viewStyle);
+                onViewStyleChange();
                 reloadItems(tabContent);
             });
         }
@@ -222,6 +256,7 @@
         };
 
         initPage(tabContent);
+        onViewStyleChange();
 
         self.renderTab = function () {
 

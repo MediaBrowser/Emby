@@ -2,7 +2,7 @@
 
     function enableAnimation(elem) {
 
-        if (browser.mobile) {
+        if (browser.slow) {
             return false;
         }
 
@@ -77,7 +77,6 @@
         function cancelAnimation() {
             var animation = currentAnimation;
             if (animation) {
-                console.log('Cancelling backdrop animation');
                 animation.cancel();
                 currentAnimation = null;
             }
@@ -124,32 +123,32 @@
         internalBackdrop(false);
     }
 
-    var skinContainer;
-    function getSkinContainer() {
-        if (!skinContainer) {
-            skinContainer = document.querySelector('.skinContainer');
+    var backgroundContainer;
+    function getBackgroundContainer() {
+        if (!backgroundContainer) {
+            backgroundContainer = document.querySelector('.backgroundContainer');
         }
-        return skinContainer;
+        return backgroundContainer;
     }
-    function setSkinContainerBackgroundEnabled() {
+    function setBackgroundContainerBackgroundEnabled() {
 
         if (hasInternalBackdrop || hasExternalBackdrop) {
-            getSkinContainer().classList.add('withBackdrop');
+            getBackgroundContainer().classList.add('withBackdrop');
         } else {
-            getSkinContainer().classList.remove('withBackdrop');
+            getBackgroundContainer().classList.remove('withBackdrop');
         }
     }
 
     var hasInternalBackdrop;
     function internalBackdrop(enabled) {
         hasInternalBackdrop = enabled;
-        setSkinContainerBackgroundEnabled();
+        setBackgroundContainerBackgroundEnabled();
     }
 
     var hasExternalBackdrop;
     function externalBackdrop(enabled) {
         hasExternalBackdrop = enabled;
-        setSkinContainerBackgroundEnabled();
+        setBackgroundContainerBackgroundEnabled();
     }
 
     function getRandom(min, max) {

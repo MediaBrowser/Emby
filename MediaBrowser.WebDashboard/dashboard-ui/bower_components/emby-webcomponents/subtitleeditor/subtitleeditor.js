@@ -1,4 +1,4 @@
-﻿define(['dialogHelper', 'require', 'layoutManager', 'globalize', 'scrollHelper', 'appStorage', 'connectionManager', 'loading', 'focusManager', 'emby-select', 'listViewStyle', 'paper-icon-button-light', 'css!./../formdialog', 'material-icons', 'css!./subtitleeditor', 'emby-button'], function (dialogHelper, require, layoutManager, globalize, scrollHelper, appStorage, connectionManager, loading, focusManager) {
+﻿define(['dialogHelper', 'require', 'layoutManager', 'globalize', 'appStorage', 'connectionManager', 'loading', 'focusManager', 'dom', 'apphost', 'emby-select', 'listViewStyle', 'paper-icon-button-light', 'css!./../formdialog', 'material-icons', 'css!./subtitleeditor', 'emby-button'], function (dialogHelper, require, layoutManager, globalize, appStorage, connectionManager, loading, focusManager, dom, appHost) {
 
     var currentItem;
     var hasChanges;
@@ -107,7 +107,7 @@
             html += '<h1>' + globalize.translate('sharedcomponents#MySubtitles') + '</h1>';
 
             if (layoutManager.tv) {
-                html += '<div class="paperList clear">';
+                html += '<div class="paperList paperList-clear">';
             } else {
                 html += '<div class="paperList">';
             }
@@ -125,9 +125,9 @@
 
                 itemHtml += '<div class="listItemBody two-line">';
 
-                itemHtml += '<h3 class="listItemBodyText">';
+                itemHtml += '<div>';
                 itemHtml += s.DisplayTitle || '';
-                itemHtml += '</h3>';
+                itemHtml += '</div>';
 
                 if (s.Path) {
                     itemHtml += '<div class="secondary listItemBodyText">' + (s.Path) + '</div>';
@@ -138,7 +138,7 @@
 
                 if (!layoutManager.tv) {
                     if (s.Path) {
-                        itemHtml += '<button is="paper-icon-button-light" data-index="' + s.Index + '" title="' + globalize.translate('sharedcomponents#Delete') + '" class="btnDelete"><i class="md-icon">delete</i></button>';
+                        itemHtml += '<button is="paper-icon-button-light" data-index="' + s.Index + '" title="' + globalize.translate('sharedcomponents#Delete') + '" class="btnDelete listItemButton"><i class="md-icon">delete</i></button>';
                     }
                 }
 
@@ -210,6 +210,8 @@
 
         context.querySelector('.noSearchResults').classList.add('hide');
 
+        var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
+
         for (var i = 0, length = results.length; i < length; i++) {
 
             var result = results[i];
@@ -223,7 +225,7 @@
                 }
                 html += '<h1>' + provider + '</h1>';
                 if (layoutManager.tv) {
-                    html += '<div class="paperList clear">';
+                    html += '<div class="paperList paperList-clear">';
                 } else {
                     html += '<div class="paperList">';
                 }
@@ -241,7 +243,7 @@
 
             //html += '<a class="btnViewSubtitle" href="#" data-subid="' + result.Id + '">';
 
-            html += '<h3 class="listItemBodyText">' + (result.Name) + '</h3>';
+            html += '<div>' + (result.Name) + '</div>';
             html += '<div class="secondary listItemBodyText">' + (result.Format) + '</div>';
 
             if (result.Comment) {
@@ -252,10 +254,10 @@
 
             html += '</div>';
 
-            html += '<div class="secondary">' + /*(result.CommunityRating || 0) + ' / ' +*/ (result.DownloadCount || 0) + '</div>';
+            html += '<div class="secondary listItemAside">' + /*(result.CommunityRating || 0) + ' / ' +*/ (result.DownloadCount || 0) + '</div>';
 
             if (!layoutManager.tv) {
-                html += '<button type="button" is="paper-icon-button-light" data-subid="' + result.Id + '" class="btnOptions"><i class="md-icon">more_vert</i></button>';
+                html += '<button type="button" is="paper-icon-button-light" data-subid="' + result.Id + '" class="btnOptions listItemButton"><i class="md-icon">' + moreIcon + '</i></button>';
             }
 
             html += '</' + tagName + '>';
@@ -326,25 +328,12 @@
         }
     }
 
-    function parentWithClass(elem, className) {
-
-        while (!elem.classList || !elem.classList.contains(className)) {
-            elem = elem.parentNode;
-
-            if (!elem) {
-                return null;
-            }
-        }
-
-        return elem;
-    }
-
     function onSearchSubmit(e) {
         var form = this;
 
         var lang = form.querySelector('#selectLanguage', form).value;
 
-        searchForSubtitles(parentWithClass(form, 'dialogContent'), lang);
+        searchForSubtitles(dom.parentWithClass(form, 'formDialogContent'), lang);
 
         e.preventDefault();
         return false;
@@ -352,20 +341,20 @@
 
     function onSubtitleListClick(e) {
 
-        var btnDelete = parentWithClass(e.target, 'btnDelete');
+        var btnDelete = dom.parentWithClass(e.target, 'btnDelete');
         if (btnDelete) {
             var index = btnDelete.getAttribute('data-index');
-            var context = parentWithClass(btnDelete, 'subtitleEditorDialog');
+            var context = dom.parentWithClass(btnDelete, 'subtitleEditorDialog');
             deleteLocalSubtitle(context, index);
         }
     }
 
     function onSubtitleResultsClick(e) {
 
-        var btnOptions = parentWithClass(e.target, 'btnOptions');
+        var btnOptions = dom.parentWithClass(e.target, 'btnOptions');
         if (btnOptions) {
             var subtitleId = btnOptions.getAttribute('data-subid');
-            var context = parentWithClass(btnOptions, 'subtitleEditorDialog');
+            var context = dom.parentWithClass(btnOptions, 'subtitleEditorDialog');
             showDownloadOptions(btnOptions, context, subtitleId);
         }
     }
@@ -400,6 +389,13 @@
         });
     }
 
+    function centerFocus(elem, horiz, on) {
+        require(['scrollHelper'], function (scrollHelper) {
+            var fn = on ? 'on' : 'off';
+            scrollHelper.centerFocus[fn](elem, horiz);
+        });
+    }
+
     function showEditorInternal(itemId, serverId, template) {
 
         hasChanges = false;
@@ -408,7 +404,8 @@
         return apiClient.getItem(apiClient.getCurrentUserId(), itemId).then(function (item) {
 
             var dialogOptions = {
-                removeOnClose: true
+                removeOnClose: true,
+                scrollY: false
             };
 
             if (layoutManager.tv) {
@@ -425,20 +422,20 @@
             dlg.innerHTML = globalize.translateDocument(template, 'sharedcomponents');
             document.body.appendChild(dlg);
 
-            dlg.querySelector('.originalFileLabel').innerHTML = globalize.translate('sharedcomponents#File');
+            dlg.querySelector('.originalSubtitleFileLabel').innerHTML = globalize.translate('sharedcomponents#File');
 
             dlg.querySelector('.subtitleSearchForm').addEventListener('submit', onSearchSubmit);
 
             var btnSubmit = dlg.querySelector('.btnSubmit');
 
             if (layoutManager.tv) {
-                scrollHelper.centerFocus.on(dlg.querySelector('.dialogContent'), false);
+                centerFocus(dlg.querySelector('.formDialogContent'), false, true);
                 dlg.querySelector('.btnSearchSubtitles').classList.add('hide');
             } else {
                 btnSubmit.classList.add('hide');
             }
 
-            var editorContent = dlg.querySelector('.dialogContent');
+            var editorContent = dlg.querySelector('.formDialogContent');
 
             dlg.querySelector('.subtitleList').addEventListener('click', onSubtitleListClick);
             dlg.querySelector('.subtitleResults').addEventListener('click', onSubtitleResultsClick);
@@ -456,6 +453,10 @@
             return new Promise(function (resolve, reject) {
 
                 dlg.addEventListener('close', function () {
+
+                    if (layoutManager.tv) {
+                        centerFocus(dlg.querySelector('.formDialogContent'), false, false);
+                    }
 
                     if (hasChanges) {
                         resolve();

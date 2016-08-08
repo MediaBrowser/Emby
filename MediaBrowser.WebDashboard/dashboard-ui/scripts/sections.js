@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser', 'appSettings', 'scrollStyles', 'emby-button', 'paper-icon-button-light'], function (LibraryBrowser, appSettings) {
+﻿define(['libraryBrowser', 'cardBuilder', 'appSettings', 'components/groupedcards', 'scrollStyles', 'emby-button', 'paper-icon-button-light', 'emby-itemscontainer'], function (LibraryBrowser, cardBuilder, appSettings, groupedcards) {
 
     function getUserViews(userId) {
 
@@ -46,51 +46,40 @@
             var item = items[i];
 
             var icon;
-            var backgroundColor = 'rgba(82, 181, 75, 0.9)';
 
             switch (item.CollectionType) {
                 case "movies":
-                    icon = "local-movies";
-                    backgroundColor = 'rgba(176, 94, 81, 0.9)';
+                    icon = "local_movies";
                     break;
                 case "music":
-                    icon = "library-music";
-                    backgroundColor = 'rgba(217, 145, 67, 0.9)';
+                    icon = "library_music";
                     break;
                 case "photos":
                     icon = "photo";
-                    backgroundColor = 'rgba(127, 0, 0, 0.9)';
                     break;
                 case "livetv":
-                    icon = "live-tv";
-                    backgroundColor = 'rgba(217, 145, 67, 0.9)';
+                    icon = "live_tv";
                     break;
                 case "tvshows":
-                    icon = "live-tv";
-                    backgroundColor = 'rgba(77, 88, 164, 0.9)';
+                    icon = "live_tv";
                     break;
                 case "games":
                     icon = "folder";
-                    backgroundColor = 'rgba(183, 202, 72, 0.9)';
                     break;
                 case "trailers":
-                    icon = "local-movies";
-                    backgroundColor = 'rgba(176, 94, 81, 0.9)';
+                    icon = "local_movies";
                     break;
                 case "homevideos":
-                    icon = "video-library";
-                    backgroundColor = 'rgba(110, 52, 32, 0.9)';
+                    icon = "video_library";
                     break;
                 case "musicvideos":
-                    icon = "video-library";
-                    backgroundColor = 'rgba(143, 54, 168, 0.9)';
+                    icon = "video_library";
                     break;
                 case "books":
                     icon = "folder";
                     break;
                 case "channels":
                     icon = "folder";
-                    backgroundColor = 'rgba(51, 136, 204, 0.9)';
                     break;
                 case "playlists":
                     icon = "folder";
@@ -111,11 +100,11 @@
 
             icon = item.icon || icon;
 
-            html += '<a' + onclick + ' data-itemid="' + item.Id + '" class="' + cssClass + '" href="' + href + '">';
-            html += '<div class="cardBox" style="background-color:' + backgroundColor + ';margin:4px;border-radius:4px;">';
+            html += '<a' + onclick + ' data-id="' + item.Id + '" class="' + cssClass + '" href="' + href + '" style="min-width:12.5%;">';
+            html += '<div class="cardBox ' + cardBuilder.getDefaultColorClass(item.Name) + '" style="margin:4px;">';
 
-            html += "<div class='cardText' style='padding:8px 10px;color:#fff;'>";
-            html += '<iron-icon icon="' + icon + '"></iron-icon>';
+            html += "<div class='cardText'>";
+            html += '<i class="md-icon">' + icon + '</i>';
             html += '<span style="margin-left:.7em;">' + item.Name + '</span>';
             html += "</div>";
 
@@ -136,7 +125,7 @@
             if (index) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderMyMedia') + '</h1>';
             }
-            html += '<div>';
+            html += '<div style="display:flex;flex-wrap:wrap;">';
             html += getLibraryButtonsHtml(items);
             html += '</div>';
 
@@ -203,7 +192,7 @@
     function getCard(img, target, shape) {
 
         shape = shape || 'backdropCard';
-        var html = '<div class="card ' + shape + '"><div class="cardBox"><div class="cardScalable"><div class="cardPadder"></div>';
+        var html = '<div class="card scalableCard ' + shape + '"><div class="cardBox"><div class="cardScalable"><div class="cardPadder"></div>';
 
         if (target) {
             html += '<a class="cardContent" href="' + target + '" target="_blank">';
@@ -228,11 +217,11 @@
 
         var html = '';
         html += '<div>';
-        html += '<h1>Try Emby Theater<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Try Emby Theater<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var nameText = AppInfo.isNativeApp ? 'Emby Theater' : '<a href="https://emby.media/download" target="_blank">Emby Theater</a>';
         html += '<p>A beautiful app for your TV and large screen tablet. ' + nameText + ' runs on Windows, Xbox One, Google Chrome, FireFox, Microsoft Edge and Opera.</p>';
-        html += '<div class="itemsContainer">';
+        html += '<div class="itemsContainer vertical-wrap">';
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', 'https://emby.media/download');
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', 'https://emby.media/download');
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', 'https://emby.media/download');
@@ -246,13 +235,13 @@
 
         var html = '';
         html += '<div>';
-        html += '<h1>Try Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Try Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var cardTarget = AppInfo.isNativeApp ? '' : 'https://emby.media/premiere';
         var learnMoreText = AppInfo.isNativeApp ? '' : '<a href="https://emby.media/premiere" target="_blank">Learn more</a>';
 
         html += '<p>Design beautiful Cover Art, enjoy free access to Emby apps, and more. ' + learnMoreText + '</p>';
-        html += '<div class="itemsContainer">';
+        html += '<div class="itemsContainer vertical-wrap">';
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater1.png', cardTarget);
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater2.png', cardTarget);
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/theater3.png', cardTarget);
@@ -265,13 +254,13 @@
     function getUpgradeMobileLayoutsInfo() {
         var html = '';
         html += '<div>';
-        html += '<h1>Unlock Improved Layouts with Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();"><iron-icon icon="close"></iron-icon></button></h1>';
+        html += '<h1>Unlock Improved Layouts with Emby Premiere<button is="paper-icon-button-light" style="margin-left:1em;" onclick="this.parentNode.parentNode.remove();" class="autoSize"><i class="md-icon">close</i></button></h1>';
 
         var cardTarget = AppInfo.isNativeApp ? '' : 'https://emby.media/premiere';
         var learnMoreText = AppInfo.isNativeApp ? '' : '<a href="https://emby.media/premiere" target="_blank">Learn more</a>';
 
         html += '<p>Combined horizontal and vertical swiping, better detail layouts, and more. ' + learnMoreText + '</p>';
-        html += '<div class="itemsContainer">';
+        html += '<div class="itemsContainer vertical-wrap">';
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/ms1.png', cardTarget, 'portraitCard');
         html += getCard('https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/ms2.png', cardTarget, 'portraitCard');
         html += '</div>';
@@ -302,9 +291,9 @@
 
                 html += '</div>';
 
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
 
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     preferThumb: true,
                     shape: 'backdrop',
@@ -321,9 +310,8 @@
             }
 
             elem.innerHTML = html;
+            elem.addEventListener('click', groupedcards.onItemsContainerClick);
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -347,11 +335,11 @@
             if (items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestMovies') + '</h1>';
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
                 }
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     shape: getPortraitShape(),
                     showUnplayedIndicator: false,
@@ -366,8 +354,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -391,12 +377,12 @@
             if (items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestEpisodes') + '</h1>';
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
                 }
 
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     preferThumb: true,
                     shape: getThumbShape(),
@@ -411,8 +397,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -434,8 +418,9 @@
 
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderLatestChannelMedia') + '</h1>';
-                html += '<div class="itemsContainer">';
-                html += LibraryBrowser.getPosterViewHtml({
+                html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
+
+                html += cardBuilder.getCardsHtml({
                     items: result.Items,
                     shape: 'auto',
                     showTitle: true,
@@ -449,8 +434,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -478,11 +461,11 @@
                 var scrollX = enableScrollX() && browserInfo.safari && screenWidth > 800;
 
                 if (scrollX) {
-                    html += '<div class="hiddenScrollX itemsContainer homeTopViews">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer homeTopViews">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
                 }
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: items,
                     shape: scrollX ? 'overflowBackdrop' : shape,
                     showTitle: showTitles,
@@ -506,8 +489,6 @@
 
                 elem.innerHTML = html + infoHtml;
                 ImageLoader.lazyChildren(elem);
-
-                LibraryBrowser.createCardMenus(elem, { showDetailsMenu: false });
             });
         });
     }
@@ -539,11 +520,11 @@
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderResume') + '</h1>';
                 if (enableScrollX()) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
                 }
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: result.Items,
                     preferThumb: true,
                     shape: getThumbShape(),
@@ -562,7 +543,6 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -584,11 +564,11 @@
             if (result.Items.length) {
                 html += '<h1 class="listHeader">' + Globalize.translate('HeaderNextUp') + '</h1>';
                 if (enableScrollX()) {
-                    html += '<div class="hiddenScrollX itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
                 } else {
-                    html += '<div class="itemsContainer">';
+                    html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
                 }
-                html += LibraryBrowser.getPosterViewHtml({
+                html += cardBuilder.getCardsHtml({
                     items: result.Items,
                     preferThumb: true,
                     shape: getThumbShape(),
@@ -606,7 +586,6 @@
             elem.innerHTML = html;
 
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -667,8 +646,8 @@
                 html += '<a href="channelitems.html?id=' + channel.Id + '" class="clearLink" style="margin-left:2em;"><button is="emby-button" type="button" class="raised more mini"><span>' + Globalize.translate('ButtonMore') + '</span></button></a>';
                 html += '</div>';
 
-                html += '<div class="itemsContainer">';
-                html += LibraryBrowser.getPosterViewHtml({
+                html += '<div is="emby-itemscontainer" is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
+                html += cardBuilder.getCardsHtml({
                     items: result.Items,
                     shape: 'autohome',
                     defaultShape: 'square',
@@ -685,8 +664,6 @@
             var elem = page.querySelector('#channel' + channel.Id + '');
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 
@@ -715,11 +692,11 @@
             }
 
             if (enableScrollX()) {
-                html += '<div class="hiddenScrollX itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="hiddenScrollX itemsContainer">';
             } else {
-                html += '<div class="itemsContainer">';
+                html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
             }
-            html += LibraryBrowser.getPosterViewHtml({
+            html += cardBuilder.getCardsHtml({
                 items: result.Items,
                 shape: enableScrollX() ? 'autooverflow' : 'auto',
                 showTitle: true,
@@ -734,7 +711,6 @@
 
             elem.innerHTML = html;
             ImageLoader.lazyChildren(elem);
-            LibraryBrowser.createCardMenus(elem);
         });
     }
 

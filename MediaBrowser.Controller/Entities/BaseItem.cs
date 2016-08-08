@@ -455,7 +455,10 @@ namespace MediaBrowser.Controller.Entities
         public DateTime DateLastRefreshed { get; set; }
 
         [IgnoreDataMember]
-        public DateTime? DateModifiedDuringLastRefresh { get; set; }
+        public virtual bool EnableForceSaveOnDateModifiedChange
+        {
+            get { return false; }
+        }
 
         /// <summary>
         /// The logger
@@ -1000,7 +1003,7 @@ namespace MediaBrowser.Controller.Entities
 
         public Task RefreshMetadata(CancellationToken cancellationToken)
         {
-            return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(FileSystem)), cancellationToken);
+            return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(Logger, FileSystem)), cancellationToken);
         }
 
         /// <summary>
@@ -1878,7 +1881,7 @@ namespace MediaBrowser.Controller.Entities
                 return new ItemImageInfo
                 {
                     Path = path,
-                    DateModified = FileSystem.GetLastWriteTimeUtc(path),
+                    DateModified = chapter.ImageDateModified,
                     Type = imageType
                 };
             }

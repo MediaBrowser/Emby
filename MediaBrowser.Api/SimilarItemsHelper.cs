@@ -25,6 +25,8 @@ namespace MediaBrowser.Api
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Id { get; set; }
+
+        public string ExcludeArtistIds { get; set; }
     }
 
     public class BaseGetSimilarItems : IReturn<ItemsResult>, IHasItemFields
@@ -69,6 +71,12 @@ namespace MediaBrowser.Api
                 IncludeItemTypes = includeTypes.Select(i => i.Name).ToArray(),
                 Recursive = true
             };
+
+            // ExcludeArtistIds
+            if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
+            {
+                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+            }
 
             var inputItems = libraryManager.GetItemList(query);
 

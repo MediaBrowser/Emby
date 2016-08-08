@@ -1,4 +1,4 @@
-﻿define(['jQuery', 'emby-icons'], function ($) {
+﻿define(['jQuery', 'apphost', 'cardStyle'], function ($, appHost) {
 
     function changeCollectionType(page, virtualFolder) {
 
@@ -112,7 +112,7 @@
         menuItems.push({
             name: Globalize.translate('ButtonManageFolders'),
             id: 'edit',
-            ironIcon: 'folder-open'
+            ironIcon: 'folder_open'
         });
 
         menuItems.push({
@@ -124,7 +124,7 @@
         menuItems.push({
             name: Globalize.translate('ButtonRename'),
             id: 'rename',
-            ironIcon: 'mode-edit'
+            ironIcon: 'mode_edit'
         });
 
         require(['actionsheet'], function (actionsheet) {
@@ -180,7 +180,7 @@
 
         virtualFolders.push({
             Name: Globalize.translate('ButtonAddMediaLibrary'),
-            icon: 'add-circle',
+            icon: 'add_circle',
             Locations: [],
             showType: false,
             showLocations: false,
@@ -197,6 +197,8 @@
 
         var divVirtualFolders = page.querySelector('#divVirtualFolders');
         divVirtualFolders.innerHTML = html;
+        divVirtualFolders.classList.add('itemsContainer');
+        divVirtualFolders.classList.add('vertical-wrap');
 
         $('.btnCardMenu', divVirtualFolders).on('click', function () {
             showCardMenu(page, this, virtualFolders);
@@ -255,23 +257,23 @@
 
         switch (type) {
             case "movies":
-                return "local-movies";
+                return "local_movies";
             case "music":
-                return "library-music";
+                return "library_music";
             case "photos":
                 return "photo";
             case "livetv":
-                return "live-tv";
+                return "live_tv";
             case "tvshows":
-                return "live-tv";
+                return "live_tv";
             case "games":
                 return "folder";
             case "trailers":
-                return "local-movies";
+                return "local_movies";
             case "homevideos":
-                return "video-library";
+                return "video_library";
             case "musicvideos":
-                return "video-library";
+                return "video_library";
             case "books":
                 return "folder";
             case "channels":
@@ -293,7 +295,7 @@
             style += "min-width:33.3%;";
         }
 
-        html += '<div class="card backdropCard" style="' + style + '" data-index="' + index + '">';
+        html += '<div class="card backdropCard scalableCard" style="' + style + '" data-index="' + index + '">';
 
         html += '<div class="cardBox visualCardBox">';
         html += '<div class="cardScalable">';
@@ -310,12 +312,26 @@
         }
 
         if (imgUrl) {
-            html += '<div class="cardImage editLibrary" style="cursor:pointer;background-image:url(\'' + imgUrl + '\');"></div>';
+            html += '<div class="cardImageContainer editLibrary" style="cursor:pointer;background-image:url(\'' + imgUrl + '\');"></div>';
         } else if (!virtualFolder.showNameWithIcon) {
-            html += '<div class="cardImage editLibrary iconCardImage" style="cursor:pointer;">';
-            html += '<iron-icon icon="' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '"></iron-icon>';
+            html += '<div class="cardImageContainer editLibrary" style="cursor:pointer;">';
+            html += '<i class="cardImageIcon md-icon" style="color:#444;">' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '</i>';
 
             html += '</div>';
+        }
+
+        if (!imgUrl && virtualFolder.showNameWithIcon) {
+            html += '<h1 class="cardImageContainer addLibrary" style="position:absolute;top:0;left:0;right:0;bottom:0;cursor:pointer;flex-direction:column;">';
+
+            html += '<i class="cardImageIcon md-icon" style="font-size:300%;color:#888;height:auto;width:auto;">' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '</i>';
+
+            if (virtualFolder.showNameWithIcon) {
+                html += '<div style="margin:1em 0;position:width:100%;font-weight:500;color:#444;">';
+                html += virtualFolder.Name;
+                html += "</div>";
+            }
+
+            html += '</h1>';
         }
 
         // cardContent
@@ -324,27 +340,13 @@
         // cardScalable
         html += "</div>";
 
-        if (!imgUrl && virtualFolder.showNameWithIcon) {
-            html += '<h1 class="cardImage iconCardImage addLibrary" style="position:absolute;top:0;left:0;right:0;bottom:0;cursor:pointer;">';
-
-            html += '<div>';
-            html += '<iron-icon icon="' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '" style="width:45%;height:45%;color:#888;"></iron-icon>';
-
-            if (virtualFolder.showNameWithIcon) {
-                html += '<div style="margin:1.5em 0;position:width:100%;font-weight:500;color:#444;">';
-                html += virtualFolder.Name;
-                html += "</div>";
-            }
-            html += "</div>";
-
-            html += '</h1>';
-        }
-
         html += '<div class="cardFooter">';
 
         if (virtualFolder.showMenu !== false) {
-            html += '<div class="cardText" style="text-align:right; float:right;padding-top:5px;">';
-            html += '<button type="button" is="paper-icon-button-light" class="btnCardMenu"><iron-icon icon="' + AppInfo.moreIcon + '"></iron-icon></button>';
+            var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
+
+            html += '<div style="text-align:right; float:right;padding-top:5px;">';
+            html += '<button type="button" is="paper-icon-button-light" class="btnCardMenu autoSize"><i class="md-icon">' + moreIcon + '</i></button>';
             html += "</div>";
         }
 

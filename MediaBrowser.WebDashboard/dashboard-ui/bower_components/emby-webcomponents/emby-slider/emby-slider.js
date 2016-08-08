@@ -16,24 +16,20 @@
 
     function updateValues(range, backgroundLower, backgroundUpper) {
 
-        //if (fraction === 0) {
-        //    range.classList.add('is-lowest-value');
-        //} else {
-        //    range.classList.remove('is-lowest-value');
-        //}
+        var value = range.value;
+        requestAnimationFrame(function () {
 
-        if (backgroundLower) {
-            var fraction = (range.value - range.min) / (range.max - range.min);
+            if (backgroundLower) {
+                var fraction = (value - range.min) / (range.max - range.min);
 
-            backgroundLower.style.flex = fraction;
-            backgroundLower.style.webkitFlex = fraction;
-            backgroundUpper.style.flex = 1 - fraction;
-            backgroundUpper.style.webkitFlex = 1 - fraction;
-        }
+                backgroundLower.style.flex = fraction;
+                backgroundUpper.style.flex = 1 - fraction;
+            }
+        });
     }
 
     function updateBubble(range, bubble) {
-        
+
         var value = range.value;
         bubble.style.left = (value - 1) + '%';
 
@@ -71,15 +67,22 @@
         var backgroundUpper = containerElement.querySelector('.mdl-slider__background-upper');
         var sliderBubble = containerElement.querySelector('.sliderBubble');
 
+        var hasHideClass = sliderBubble.classList.contains('hide');
+
         this.addEventListener('input', function (e) {
             this.dragging = true;
             updateBubble(this, sliderBubble);
-            sliderBubble.classList.remove('hide');
+
+            if (hasHideClass) {
+                sliderBubble.classList.remove('hide');
+                hasHideClass = false;
+            }
         });
         this.addEventListener('change', function () {
             this.dragging = false;
             updateValues(this, backgroundLower, backgroundUpper);
             sliderBubble.classList.add('hide');
+            hasHideClass = true;
         });
 
         if (!supportsNativeProgressStyle) {

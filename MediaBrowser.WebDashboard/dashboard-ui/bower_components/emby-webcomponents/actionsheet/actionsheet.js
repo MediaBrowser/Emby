@@ -1,17 +1,4 @@
-﻿define(['dialogHelper', 'layoutManager', 'globalize', 'browser', 'emby-button', 'css!./actionsheet', 'material-icons', 'scrollStyles'], function (dialogHelper, layoutManager, globalize, browser) {
-
-    function parentWithClass(elem, className) {
-
-        while (!elem.classList || !elem.classList.contains(className)) {
-            elem = elem.parentNode;
-
-            if (!elem) {
-                return null;
-            }
-        }
-
-        return elem;
-    }
+﻿define(['dialogHelper', 'layoutManager', 'globalize', 'browser', 'dom', 'emby-button', 'css!./actionsheet', 'material-icons', 'scrollStyles'], function (dialogHelper, layoutManager, globalize, browser, dom) {
 
     function getOffsets(elems) {
 
@@ -84,10 +71,10 @@
         return pos;
     }
 
-    function addCenterFocus(dlg) {
-
+    function centerFocus(elem, horiz, on) {
         require(['scrollHelper'], function (scrollHelper) {
-            scrollHelper.centerFocus.on(dlg.querySelector('.actionSheetScroller'), false);
+            var fn = on ? 'on' : 'off';
+            scrollHelper.centerFocus[fn](elem, horiz);
         });
     }
 
@@ -104,42 +91,34 @@
         };
 
         var backButton = false;
+        var isFullscreen;
 
         if (layoutManager.tv) {
             dialogOptions.size = 'fullscreen';
+            isFullscreen = true;
             backButton = true;
             dialogOptions.autoFocus = true;
         } else {
 
             dialogOptions.modal = false;
-            dialogOptions.entryAnimationDuration = 160;
-            dialogOptions.exitAnimationDuration = 200;
+            dialogOptions.entryAnimationDuration = 140;
+            dialogOptions.exitAnimationDuration = 180;
             dialogOptions.autoFocus = false;
         }
 
         var dlg = dialogHelper.createDialog(dialogOptions);
 
+        if (isFullscreen) {
+            dlg.classList.add('actionsheet-fullscreen');
+        }
+
         if (!layoutManager.tv) {
-            dlg.classList.add('extraSpacing');
+            dlg.classList.add('actionsheet-extraSpacing');
         }
 
         dlg.classList.add('actionSheet');
 
         var html = '';
-        html += '<div class="actionSheetContent">';
-
-        if (options.title) {
-
-            if (layoutManager.tv) {
-                html += '<h1 class="actionSheetTitle">';
-                html += options.title;
-                html += '</h1>';
-            } else {
-                html += '<h2 class="actionSheetTitle">';
-                html += options.title;
-                html += '</h2>';
-            }
-        }
 
         var scrollType = layoutManager.desktop ? 'smoothScrollY' : 'hiddenScrollY';
         var style = (browser.noFlex || browser.firefox) ? 'max-height:400px;' : '';
@@ -149,7 +128,6 @@
             var minWidth = window.innerWidth >= 300 ? 240 : 200;
             style += "min-width:" + minWidth + "px;";
         }
-        html += '<div class="actionSheetScroller ' + scrollType + '" style="' + style + '">';
 
         var i, length, option;
         var renderIcon = false;
@@ -167,8 +145,30 @@
         var center = options.title && (!renderIcon /*|| itemsWithIcons.length != options.items.length*/);
 
         if (center) {
-            dlg.classList.add('centered');
+            html += '<div class="actionSheetContent actionSheetContent-centered">';
+        } else {
+            html += '<div class="actionSheetContent">';
         }
+
+        if (options.title) {
+
+            if (layoutManager.tv) {
+                html += '<h1 class="actionSheetTitle">';
+                html += options.title;
+                html += '</h1>';
+            } else {
+                html += '<h2 class="actionSheetTitle">';
+                html += options.title;
+                html += '</h2>';
+            }
+        }
+        if (options.text) {
+            html += '<p class="actionSheetText">';
+            html += options.text;
+            html += '</p>';
+        }
+
+        html += '<div class="actionSheetScroller ' + scrollType + '" style="' + style + '">';
 
         var itemTagName = 'button';
 
@@ -199,7 +199,7 @@
         dlg.innerHTML = html;
 
         if (layoutManager.tv) {
-            addCenterFocus(dlg);
+            centerFocus(dlg.querySelector('.actionSheetScroller'), false, true);
         }
 
         if (options.showCancel) {
@@ -216,7 +216,7 @@
 
         dlg.addEventListener('click', function (e) {
 
-            var actionSheetMenuItem = parentWithClass(e.target, 'actionSheetMenuItem');
+            var actionSheetMenuItem = dom.parentWithClass(e.target, 'actionSheetMenuItem');
 
             if (actionSheetMenuItem) {
                 selectedId = actionSheetMenuItem.getAttribute('data-id');
@@ -225,9 +225,25 @@
 
         });
 
+        var timeout;
+        if (options.timeout) {
+            timeout = setTimeout(function () {
+                dialogHelper.close(dlg);
+            }, options.timeout);
+        }
+
         return new Promise(function (resolve, reject) {
 
             dlg.addEventListener('close', function () {
+
+                if (layoutManager.tv) {
+                    centerFocus(dlg.querySelector('.actionSheetScroller'), false, false);
+                }
+
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
 
                 if (selectedId != null) {
                     if (options.callback) {
@@ -235,6 +251,8 @@
                     }
 
                     resolve(selectedId);
+                } else {
+                    reject();
                 }
             });
 

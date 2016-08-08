@@ -161,6 +161,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isTrue(inputContent.classList.contains('label-is-floating'), 'label is floating');
       });
 
+      test('label does not receive pointer events', function() {
+        var input = fixture('always-float-label');
+        var label = Polymer.dom(input.root).querySelector('label');
+        assert.equal(getComputedStyle(label).pointerEvents, 'none');
+      });
+
       test('error message is displayed', function() {
         var input = fixture('error');
         forceXIfStamp(input);
@@ -209,6 +215,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         assert.equal(ironInput.selectionStart, 2, 'selectionStart is preserved');
         assert.equal(ironInput.selectionEnd, 2, 'selectionEnd is preserved');
+      });
+
+      test('setting autofocus to true implictly acquires focus', function(done) {
+        var input = fixture('basic');
+        var inputFocusSpy = sinon.spy(input.inputElement, 'focus');
+        window.setTimeout(function() {
+          assert(inputFocusSpy.called);
+          done();
+        }, 50);
+        input.autofocus = true;
+      });
+
+      test('autofocus doesn\'t grab focus if another element already has it', function(done) {
+        var inputs = fixture('multiple-inputs');
+        var inputFocusSpies = inputs.map(function(input) {
+          return sinon.spy(input.inputElement, 'focus');
+        });
+        window.setTimeout(function() {
+          assert(inputFocusSpies[0].called, 'first autofocus input with grabbed focus');
+          assert(!inputFocusSpies[1].called, 'second autofocus input let first input keep focus');
+          done();
+        }, 50);
+        inputs[0].autofocus = true;
+        inputs[1].autofocus = true; // Shouldn't cause focus to change
       });
 
     });

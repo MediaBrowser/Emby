@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['libraryBrowser', 'cardStyle'], function (libraryBrowser) {
 
     function getApiClient() {
 
@@ -98,13 +98,38 @@
         }
     }
 
+    var metroColors = ["#6FBD45", "#4BB3DD", "#4164A5", "#E12026", "#800080", "#E1B222", "#008040", "#0094FF", "#FF00C7", "#FF870F", "#7F0037"];
+
+    function getRandomMetroColor() {
+
+        var index = Math.floor(Math.random() * (metroColors.length - 1));
+
+        return metroColors[index];
+    }
+
+    function getMetroColor(str) {
+
+        if (str) {
+            var character = String(str.substr(0, 1).charCodeAt());
+            var sum = 0;
+            for (var i = 0; i < character.length; i++) {
+                sum += parseInt(character.charAt(i));
+            }
+            var index = String(sum).substr(-1);
+
+            return metroColors[index];
+        } else {
+            return getRandomMetroColor();
+        }
+    }
+
     function loadUserList(context, apiClient, users) {
         var html = "";
 
         for (var i = 0, length = users.length; i < length; i++) {
             var user = users[i];
 
-            html += '<div class="card squareCard bottomPaddedCard"><div class="cardBox visualCardBox">';
+            html += '<div class="card squareCard bottomPaddedCard scalableCard"><div class="cardBox visualCardBox">';
 
             html += '<div class="cardScalable">';
 
@@ -121,15 +146,15 @@
                     type: "Primary"
                 });
 
-                html += '<div class="cardImage" style="background-image:url(\'' + imgUrl + '\');"></div>';
+                html += '<div class="cardImageContainer coveredImage noScale" style="background-image:url(\'' + imgUrl + '\');"></div>';
             }
             else {
 
-                var background = LibraryBrowser.getMetroColor(user.Id);
+                var background = getMetroColor(user.Id);
 
                 imgUrl = 'css/images/logindefault.png';
 
-                html += '<div class="cardImage" style="background-image:url(\'' + imgUrl + '\');background-color:' + background + ';"></div>';
+                html += '<div class="cardImageContainer coveredImage noScale" style="background-image:url(\'' + imgUrl + '\');background-color:' + background + ';"></div>';
             }
 
             html += '</a>';
@@ -173,7 +198,7 @@
 
         var self = this;
 
-        view.querySelector('#divUsers').addEventListener('click', function(e) {
+        view.querySelector('#divUsers').addEventListener('click', function (e) {
             var cardContent = parentWithClass(e.target, 'cardContent');
 
             if (cardContent) {
@@ -184,6 +209,7 @@
                 var haspw = cardContent.getAttribute('data-haspw');
 
                 if (id == 'manual') {
+                    context.querySelector('#txtManualName').value = '';
                     showManualForm(context, true);
                 }
                 else if (haspw == 'false') {
@@ -216,6 +242,7 @@
         });
 
         view.querySelector('.btnManual').addEventListener('click', function () {
+            view.querySelector('#txtManualName').value = '';
             showManualForm(view, true);
         });
 
@@ -227,6 +254,7 @@
 
                 if (!users.length) {
 
+                    view.querySelector('#txtManualName').value = '';
                     showManualForm(view, false, false);
 
                 } else {

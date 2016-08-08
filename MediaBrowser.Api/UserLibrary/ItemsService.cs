@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Controller.Collections;
-using MediaBrowser.Controller.Dto;
+﻿using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
@@ -101,7 +100,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
         
-            var result = await GetItemsToSerialize(request, user).ConfigureAwait(false);
+            var result = await GetQueryResult(request, user).ConfigureAwait(false);
 
             if (result == null)
             {
@@ -135,7 +134,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         /// <param name="user">The user.</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
-        private async Task<QueryResult<BaseItem>> GetItemsToSerialize(GetItems request, User user)
+        private async Task<QueryResult<BaseItem>> GetQueryResult(GetItems request, User user)
         {
             var item = string.IsNullOrEmpty(request.ParentId) ?
                 user == null ? _libraryManager.RootFolder : user.RootFolder :
@@ -263,7 +262,8 @@ namespace MediaBrowser.Api.UserLibrary
                 ParentIndexNumber = request.ParentIndexNumber,
                 AiredDuringSeason = request.AiredDuringSeason,
                 AlbumArtistStartsWithOrGreater = request.AlbumArtistStartsWithOrGreater,
-                EnableTotalRecordCount = request.EnableTotalRecordCount
+                EnableTotalRecordCount = request.EnableTotalRecordCount,
+                ExcludeItemIds = request.GetExcludeItemIds()
             };
 
             if (!string.IsNullOrWhiteSpace(request.Ids))
@@ -365,6 +365,12 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrEmpty(request.Artists))
             {
                 query.ArtistNames = request.Artists.Split('|');
+            }
+
+            // ExcludeArtistIds
+            if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
+            {
+                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
             }
 
             // Albums

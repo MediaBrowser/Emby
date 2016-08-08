@@ -1,12 +1,17 @@
-define([], function () {
+define(['dom'], function (dom) {
 
-    function autoFocus(view, defaultToFirst) {
+    function autoFocus(view, defaultToFirst, findAutoFocusElement) {
 
-        var element = view.querySelector('*[autofocus]');
-        if (element) {
-            focus(element);
-            return element;
-        } else if (defaultToFirst !== false) {
+        var element;
+        if (findAutoFocusElement !== false) {
+            element = view.querySelector('*[autofocus]');
+            if (element) {
+                focus(element);
+                return element;
+            }
+        }
+
+        if (defaultToFirst !== false) {
             element = getFocusableElements(view)[0];
 
             if (element) {
@@ -163,8 +168,8 @@ define([], function () {
 
         var offset = getOffset(elem, windowData);
 
-        var posY = offset.top - windowData.pageXOffset;
-        var posX = offset.left - windowData.pageYOffset;
+        var posY = offset.top - windowData.pageYOffset;
+        var posX = offset.left - windowData.pageXOffset;
 
         var width = elem.offsetWidth;
         var height = elem.offsetHeight;
@@ -190,11 +195,11 @@ define([], function () {
         var container = activeElement ? getFocusContainer(activeElement, direction) : document.body;
 
         if (!activeElement) {
-            autoFocus(container, true);
+            autoFocus(container, true, false);
             return;
         }
 
-        var focusableContainer = parentWithClass(activeElement, 'focusable');
+        var focusableContainer = dom.parentWithClass(activeElement, 'focusable');
 
         var doc = activeElement.ownerDocument;
         var windowData = getWindowData(doc.defaultView, doc.documentElement);
@@ -273,27 +278,14 @@ define([], function () {
             var nearestElement = nearest[0].node;
 
             // See if there's a focusable container, and if so, send the focus command to that
-            var nearestElementFocusableParent = parentWithClass(nearestElement, 'focusable');
+            var nearestElementFocusableParent = dom.parentWithClass(nearestElement, 'focusable');
             if (nearestElementFocusableParent && nearestElementFocusableParent != nearestElement && activeElement) {
-                if (parentWithClass(activeElement, 'focusable') != nearestElementFocusableParent) {
+                if (dom.parentWithClass(activeElement, 'focusable') != nearestElementFocusableParent) {
                     nearestElement = nearestElementFocusableParent;
                 }
             }
             focus(nearestElement);
         }
-    }
-
-    function parentWithClass(elem, className) {
-
-        while (!elem.classList || !elem.classList.contains(className)) {
-            elem = elem.parentNode;
-
-            if (!elem) {
-                return null;
-            }
-        }
-
-        return elem;
     }
 
     function intersectsInternal(a1, a2, b1, b2) {

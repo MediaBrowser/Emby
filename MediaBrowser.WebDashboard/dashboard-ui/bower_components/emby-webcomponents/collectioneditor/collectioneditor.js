@@ -1,4 +1,4 @@
-﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'scrollHelper', 'embyRouter', 'globalize', 'emby-checkbox', 'emby-input', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, scrollHelper, embyRouter, globalize) {
+﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'embyRouter', 'globalize', 'emby-checkbox', 'emby-input', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, embyRouter, globalize) {
 
     var currentServerId;
 
@@ -137,8 +137,8 @@
 
         var html = '';
 
-        html += '<div class="dialogContent smoothScrollY">';
-        html += '<div class="dialogContentInner centeredContent">';
+        html += '<div class="formDialogContent smoothScrollY" style="padding-top:2em;">';
+        html += '<div class="dialogContentInner dialog-content-centered">';
         html += '<form class="newCollectionForm" style="margin:auto;">';
 
         html += '<div>';
@@ -215,6 +215,13 @@
         }
     }
 
+    function centerFocus(elem, horiz, on) {
+        require(['scrollHelper'], function (scrollHelper) {
+            var fn = on ? 'on' : 'off';
+            scrollHelper.centerFocus[fn](elem, horiz);
+        });
+    }
+
     function collectioneditor() {
 
         var self = this;
@@ -240,11 +247,11 @@
             dlg.classList.add('formDialog');
 
             var html = '';
-            var title = items.length ? globalize.translate('sharedcomponents#AddToCollection') : globalize.translate('sharedcomponents#NewCollection');
+            var title = items.length ? globalize.translate('sharedcomponents#HeaderAddToCollection') : globalize.translate('sharedcomponents#NewCollection');
 
-            html += '<div class="dialogHeader" style="margin:0 0 2em;">';
-            html += '<button is="paper-icon-button-light" class="btnCancel autoSize" tabindex="-1"><i class="md-icon">arrow_back</i></button>';
-            html += '<div class="dialogHeaderTitle">';
+            html += '<div class="formDialogHeader">';
+            html += '<button is="paper-icon-button-light" class="btnCancel autoSize" tabindex="-1"><i class="md-icon">&#xE5C4;</i></button>';
+            html += '<div class="formDialogHeaderTitle">';
             html += title;
             html += '</div>';
 
@@ -265,10 +272,14 @@
             });
 
             if (layoutManager.tv) {
-                scrollHelper.centerFocus.on(dlg.querySelector('.dialogContent'), false);
+                centerFocus(dlg.querySelector('.formDialogContent'), false, true);
             }
 
             return new Promise(function (resolve, reject) {
+
+                if (layoutManager.tv) {
+                    centerFocus(dlg.querySelector('.formDialogContent'), false, false);
+                }
 
                 dlg.addEventListener('close', resolve);
                 dialogHelper.open(dlg);

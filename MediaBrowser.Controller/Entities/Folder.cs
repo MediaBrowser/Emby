@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Progress;
-using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Dto;
@@ -279,7 +278,7 @@ namespace MediaBrowser.Controller.Entities
 
         public Task ValidateChildren(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            return ValidateChildren(progress, cancellationToken, new MetadataRefreshOptions(new DirectoryService(FileSystem)));
+            return ValidateChildren(progress, cancellationToken, new MetadataRefreshOptions(new DirectoryService(Logger, FileSystem)));
         }
 
         /// <summary>
@@ -373,13 +372,6 @@ namespace MediaBrowser.Controller.Entities
 
                     if (currentChildren.TryGetValue(child.Id, out currentChild) && IsValidFromResolver(currentChild, child))
                     {
-                        var currentChildLocationType = currentChild.LocationType;
-                        if (currentChildLocationType != LocationType.Remote &&
-                            currentChildLocationType != LocationType.Virtual)
-                        {
-                            currentChild.DateModified = child.DateModified;
-                        }
-
                         await UpdateIsOffline(currentChild, false).ConfigureAwait(false);
                         validChildren.Add(currentChild);
 
@@ -760,11 +752,6 @@ namespace MediaBrowser.Controller.Entities
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.Revenue");
                     return true;
                 }
-                if (query.SortBy.Contains(ItemSortBy.SeriesSortName, StringComparer.OrdinalIgnoreCase))
-                {
-                    Logger.Debug("Query requires post-filtering due to ItemSortBy.SeriesSortName");
-                    return true;
-                }
                 if (query.SortBy.Contains(ItemSortBy.VideoBitRate, StringComparer.OrdinalIgnoreCase))
                 {
                     Logger.Debug("Query requires post-filtering due to ItemSortBy.VideoBitRate");
@@ -859,24 +846,6 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (query.IsMissing.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsMissing");
-                return true;
-            }
-
-            if (query.IsUnaired.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsUnaired");
-                return true;
-            }
-
-            if (query.IsVirtualUnaired.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsVirtualUnaired");
-                return true;
-            }
-
             if (UserViewBuilder.CollapseBoxSetItems(query, this, query.User, ConfigurationManager))
             {
                 Logger.Debug("Query requires post-filtering due to CollapseBoxSetItems");
@@ -949,10 +918,7 @@ namespace MediaBrowser.Controller.Entities
                 catch
                 {
                     // Already logged at lower levels
-                    return new QueryResult<BaseItem>
-                    {
-
-                    };
+                    return new QueryResult<BaseItem>();
                 }
             }
 

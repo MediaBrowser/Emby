@@ -138,6 +138,7 @@ namespace MediaBrowser.Controller.Entities
 
         public string[] AlbumNames { get; set; }
         public string[] ArtistNames { get; set; }
+        public string[] ExcludeArtistIds { get; set; }
         public string AncestorWithPresentationUniqueKey { get; set; }
 
         public bool GroupByPresentationUniqueKey { get; set; }
@@ -153,6 +154,7 @@ namespace MediaBrowser.Controller.Entities
 
             AlbumNames = new string[] { };
             ArtistNames = new string[] { };
+            ExcludeArtistIds = new string[] { };
             ExcludeProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             BlockUnratedItems = new UnratedItem[] { };

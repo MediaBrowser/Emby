@@ -2,16 +2,16 @@
 
     function login(page, username, password) {
 
-        Dashboard.showModalLoadingMsg();
+        Dashboard.showLoadingMsg();
 
         ConnectionManager.loginToConnect(username, password).then(function () {
 
-            Dashboard.hideModalLoadingMsg();
+            Dashboard.hideLoadingMsg();
             Dashboard.navigate('selectserver.html');
 
         }, function () {
 
-            Dashboard.hideModalLoadingMsg();
+            Dashboard.hideLoadingMsg();
 
             Dashboard.alert({
                 message: Globalize.translate('MessageInvalidUser'),
@@ -26,7 +26,7 @@
 
     function handleConnectionResult(page, result) {
 
-        Dashboard.hideModalLoadingMsg();
+        Dashboard.hideLoadingMsg();
 
         switch (result.State) {
 
@@ -75,7 +75,7 @@
 
     function loadAppConnection(page) {
 
-        Dashboard.showModalLoadingMsg();
+        Dashboard.showLoadingMsg();
 
         ConnectionManager.connect().then(function (result) {
 
@@ -139,10 +139,10 @@
     }
 
     function supportInAppSignup() {
-        return AppInfo.isNativeApp;
         return AppInfo.isNativeApp || window.location.href.toLowerCase().indexOf('https') == 0;
     }
 
+    var greWidgetId;
     function initSignup(page) {
 
         if (!supportInAppSignup()) {
@@ -153,8 +153,16 @@
             return;
         }
 
-        require(['https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit'], function () {
+        require(['https://www.google.com/recaptcha/api.js?render=explicit'], function () {
 
+            setTimeout(function () {
+                var recaptchaContainer = page.querySelector('.recaptchaContainer');
+
+                greWidgetId = grecaptcha.render(recaptchaContainer, {
+                    'sitekey': '6Le2LAgTAAAAAK06Wvttt_yUnbISTy6q3Azqp9po',
+                    'theme': 'dark'
+                });
+            }, 100);
         });
     }
 
@@ -167,7 +175,7 @@
             host += ':' + port;
         }
 
-        Dashboard.showModalLoadingMsg();
+        Dashboard.showLoadingMsg();
 
         ConnectionManager.connectToAddress(host).then(function (result) {
 
@@ -214,7 +222,17 @@
 
             var page = view;
 
-            ConnectionManager.signupForConnect(page.querySelector('#txtSignupEmail', page).value, page.querySelector('#txtSignupUsername', page).value, page.querySelector('#txtSignupPassword', page).value, page.querySelector('#txtSignupPasswordConfirm', page).value).then(function () {
+            var greResponse = greWidgetId ? grecaptcha.getResponse(greWidgetId) : null;
+
+            ConnectionManager.signupForConnect({
+
+                email: page.querySelector('#txtSignupEmail', page).value,
+                username: page.querySelector('#txtSignupUsername', page).value,
+                password: page.querySelector('#txtSignupPassword', page).value,
+                passwordConfirm: page.querySelector('#txtSignupPasswordConfirm', page).value,
+                grecaptcha: greResponse
+
+            }).then(function () {
 
                 Dashboard.alert({
                     message: Globalize.translate('MessageThankYouForConnectSignUp'),

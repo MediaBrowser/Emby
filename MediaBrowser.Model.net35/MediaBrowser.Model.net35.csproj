@@ -318,17 +318,14 @@
     <Compile Include="..\MediaBrowser.Model\Dlna\HttpHeaderInfo.cs">
       <Link>Dlna\HttpHeaderInfo.cs</Link>
     </Compile>
-    <Compile Include="..\MediaBrowser.Model\Dlna\ILocalPlayer.cs">
-      <Link>Dlna\ILocalPlayer.cs</Link>
+    <Compile Include="..\MediaBrowser.Model\Dlna\ITranscoderSupport.cs">
+      <Link>Dlna\ITranscoderSupport.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\MediaFormatProfile.cs">
       <Link>Dlna\MediaFormatProfile.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\MediaFormatProfileResolver.cs">
       <Link>Dlna\MediaFormatProfileResolver.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Dlna\NullLocalPlayer.cs">
-      <Link>Dlna\NullLocalPlayer.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Dlna\PlaybackErrorCode.cs">
       <Link>Dlna\PlaybackErrorCode.cs</Link>
@@ -590,9 +587,6 @@
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Extensions\FloatHelper.cs">
       <Link>Extensions\FloatHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\MediaBrowser.Model\Extensions\IHasPropertyChangedEvent.cs">
-      <Link>Extensions\IHasPropertyChangedEvent.cs</Link>
     </Compile>
     <Compile Include="..\MediaBrowser.Model\Extensions\IntHelper.cs">
       <Link>Extensions\IntHelper.cs</Link>

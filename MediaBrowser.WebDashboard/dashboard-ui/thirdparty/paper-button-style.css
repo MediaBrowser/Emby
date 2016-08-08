@@ -1,109 +1,103 @@
-﻿button[is="emby-button"]:not(.fab).blue {
+﻿button.emby-button:not(.fab).blue {
     color: #03a9f4;
 }
 
-    button[is="emby-button"]:not(.fab).blue:hover {
+    button.emby-button:not(.fab).blue:hover {
         background: #e1f5f3;
     }
 
-button[is="emby-button"].fab.blue, paper-fab.blue {
+button.emby-button.fab.blue {
     background: #03a9f4;
 }
 
-button[is="emby-button"].menuButton {
+button.emby-button.menuButton {
     color: #212121;
     text-align: left;
 }
 
-    button[is="emby-button"].menuButton:hover {
+    button.emby-button.menuButton:hover {
         background: #e1f5f3;
     }
 
 
-button[is="emby-button"].submit {
+button.emby-button.submit {
     color: #52B54B;
 }
 
-button[is="emby-button"].raised.submit, button[is="emby-button"].raised:not(.subdued):not(.cancel) {
+button.emby-button.raised.submit, button.emby-button.raised:not(.subdued):not(.cancel) {
     background: #52B54B;
     color: #fff;
 }
 
-button[is="emby-button"].more {
+button.emby-button.more {
     color: #EC407A;
 }
 
-button[is="emby-button"].raised.more {
+button.emby-button.raised.more {
     background: #EC407A;
     color: #fff;
 }
 
-button[is="emby-button"].secondary {
+button.emby-button.secondary {
     color: #4285f4;
 }
 
-button[is="emby-button"].raised.secondary {
+button.emby-button.raised.secondary {
     background: #4285f4;
     color: #fff;
 }
 
-button[is="emby-button"].accent {
+button.emby-button.accent {
     color: #52B54B;
 }
 
-button[is="emby-button"].raised.accent {
+button.emby-button.raised.accent {
     background: #52B54B;
     color: #fff;
 }
 
-button[is="emby-button"].alt {
+button.emby-button.alt {
     color: #F57F17;
 }
 
-button[is="emby-button"].raised.alt {
+button.emby-button.raised.alt {
     background: #F57F17;
     color: #fff;
 }
 
-.ui-body-b button[is="emby-button"].cancel {
+.ui-body-b button.emby-button.cancel {
     color: #444;
 }
 
-.ui-body-b button[is="emby-button"].raised.cancel {
+.ui-body-b button.emby-button.raised.cancel {
     background: #444;
     color: #fff;
 }
 
-button[is="emby-button"].cancelDark {
+button.emby-button.cancelDark {
     color: #444;
 }
 
-button[is="emby-button"].raised.cancelDark {
+button.emby-button.raised.cancelDark {
     background: #444;
     color: #fff;
 }
 
-.ui-body-b button[is="emby-button"].subdued:not([disabled]) {
+.ui-body-b button.emby-button.subdued:not([disabled]) {
     color: #404040;
 }
 
-.ui-body-b button[is="emby-button"].raised.subdued:not([disabled]) {
+.ui-body-b button.emby-button.raised.subdued:not([disabled]) {
     background: #404040;
     color: #fff;
 }
 
-.ui-body-b button[is="emby-button"].raised[disabled].subduedd {
+.ui-body-b button.emby-button.raised[disabled].subduedd {
     background: #111;
 }
 
-button[is="emby-button"] span {
+button.emby-button span {
     vertical-align: middle;
-}
-
-button[is="emby-button"].iconRight iron-icon {
-    position: absolute;
-    right: 5px;
-    top: 5px;
 }
 
 .clearButton {
@@ -126,109 +120,14 @@ button[is="emby-button"].iconRight iron-icon {
     color: inherit !important;
 }
 
-button[is="emby-button"].mini:not(.fab) {
+button.emby-button.mini:not(.fab) {
     padding: 0.4em 0.7em;
 }
 
-    button[is="emby-button"].mini:not(.fab) iron-icon {
-        height: 20px;
-        width: 20px;
-    }
-
-paper-toast {
-    z-index: 9999999;
-}
-
-button[is="emby-button"].notext {
+button.emby-button.notext {
     min-width: 2.8em;
     padding-left: .25em !important;
     padding-right: .25em !important;
-}
-
-    button[is="emby-button"].notext iron-icon {
-        margin-right: 0;
-    }
-
-paper-icon-button paper-ripple {
-    color: inherit !important;
-}
-
-.ui-body-b paper-icon-button[disabled] {
-    color: #444 !important;
-}
-
-paper-tabs {
-    background-color: #020202;
-    color: #fff;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-paper-tab {
-    text-transform: uppercase;
-    font-weight: 400;
-}
-
-paper-tabs #selectionBar {
-    background-color: #52B54B !important;
-}
-
-paper-tabs paper-ripple {
-    color: #52B54B !important;
-}
-
-paper-fab {
-    vertical-align: middle;
-    display: inline-flex !important;
-}
-
-    paper-fab.mini {
-        width: 22px;
-        height: 22px;
-    }
-
-        paper-fab.mini iron-icon {
-            width: 22px;
-            height: 22px;
-        }
-
-.ui-body-a paper-fab.subdued {
-    background: #fff;
-    color: #000;
-}
-
-    .ui-body-a paper-fab.subdued paper-material.keyboard-focus {
-        background: #686868 !important;
-    }
-
-.ui-body-b paper-fab.subdued {
-    background: #404040;
-    color: #fff;
-}
-
-    .ui-body-b paper-fab.subdued paper-material.keyboard-focus {
-        background: #686868 !important;
-    }
-
-.ui-body-b paper-fab[disabled].subdued {
-    background: #222;
-}
-
-paper-fab.white {
-    background: #fff;
-    color: #000;
-}
-
-    paper-fab.white paper-material.keyboard-focus {
-        background: #01579b !important;
-        color: #fff;
-    }
-
-paper-fab.square {
-    border-radius: 5px;
-}
-
-paper-fab.accent {
-    background-color: #52B54B;
 }
 
 .fab.green {
@@ -243,159 +142,12 @@ paper-fab.accent {
     background-color: #e57373 !important;
 }
 
-paper-menu-item {
-    padding: .35em .5em;
-    cursor: pointer;
-}
-
-    paper-menu-item iron-icon {
-        margin-right: 1.5em;
-    }
-
-    paper-menu-item:hover {
-        background: #eee;
-    }
-
-.scrollablePaperTabs paper-icon-button {
-    display: none !important;
-}
-
-.ui-body-b paper-item-body [secondary] {
-    color: #aaa;
-}
-
-.ui-body-b paper-checkbox paper-ripple {
-    color: #fff !important;
-}
-
-.ui-body-b paper-checkbox #checkboxLabel.paper-checkbox {
-    color: inherit;
-}
-
-.ui-body-a .paperCheckboxFieldDescription {
-    color: #333;
-}
-
-.ui-body-b .paperCheckboxFieldDescription {
+.ui-body-b .paperListLabel, .ui-body-b .fieldDescription, .ui-body-b .selectLabelUnfocused, .ui-body-b .inputLabelUnfocused, .ui-body-b .textareaLabelUnfocused {
     color: #ccc;
-}
-
-.ui-body-b paper-checkbox #checkbox.paper-checkbox {
-    border-color: #dedede;
-}
-
-.ui-body-a paper-checkbox #checkbox.checked.paper-checkbox {
-    background-color: #52B54B;
-    border-color: #52B54B;
-}
-
-.ui-body-b paper-checkbox #checkbox.checked.paper-checkbox {
-    background-color: #52B54B;
-    border-color: #52B54B;
-}
-
-paper-checkbox #checkboxContainer {
-    width: 22px !important;
-    height: 22px !important;
-}
-
-paper-checkbox paper-ripple {
-    top: -13px !important;
-    left: -13px !important;
-}
-
-paper-checkbox #checkmark {
-    border-right-width: 4px !important;
-    border-bottom-width: 4px !important;
-}
-
-.paperCheckboxList paper-checkbox {
-    display: block;
-    padding: .5em 0;
-}
-
-paper-input label, paper-textarea label {
-    font-size: 18px !important;
-    font-family: inherit !important;
-}
-
-.paperListLabel {
-    font-size: 16px;
-    margin-bottom: .5em;
-}
-
-.ui-body-b .paper-input-container-0 .input-content.paper-input-container label, .ui-body-b .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-b paper-textarea label, .ui-body-b .paperListLabel, .ui-body-b .fieldDescription {
-    color: #ccc;
-}
-
-.ui-body-a .inputLabel, .ui-body-a .textareaLabel {
-    color: #555;
-}
-
-    .ui-body-a .inputLabel.focused:not(.blank), .ui-body-a .textareaLabel.focused:not(.blank) {
-        color: green;
-    }
-
-.ui-body-b .selectLabelUnfocused, .ui-body-b .inputLabel, .ui-body-b .textareaLabel {
-    color: #ccc;
-}
-
-.ui-body-a .paper-input-container-0 .input-content.paper-input-container label, .ui-body-a .paper-input-container-0 .input-content.paper-input-container .paper-input-label, .ui-body-a paper-textarea label, .ui-body-a .selectLabel, .ui-body-a .paperListLabel, .ui-body-a .fieldDescription {
-    color: #555;
-}
-
-.ui-body-a .paper-input-container-0 .input-content.label-is-highlighted.paper-input-container label, .ui-body-a .paper-input-container-0 .input-content.label-is-highlighted.paper-input-container .paper-input-label {
-    color: green;
-}
-
-.ui-body-b .paper-input-container-0 .input-content.label-is-highlighted.paper-input-container label, .ui-body-b .paper-input-container-0 .input-content.label-is-highlighted.paper-input-container .paper-input-label {
-    color: #52B54B;
-}
-
-.ui-body-b .paper-input-container-0 .input-content.paper-input-container input, .ui-body-b .paper-input-container-0 .input-content.paper-input-container textarea, .ui-body-b .paper-input-container-0 .input-content.paper-input-container iron-autogrow-textarea, .ui-body-b .paper-input-container-0 .input-content.paper-input-container .paper-input-input {
-    color: #fff;
-}
-
-paper-input .focused-line, paper-textarea .focused-line {
-    background-color: #52B54B !important;
-}
-
-.ui-body-b .unfocused-line.paper-input-container, .ui-body-b .unfocused-line.paper-textarea-container {
-    background: #454545;
-}
-
-paper-textarea.mono textarea {
-    font-family: monospace !important;
-}
-
-.paperList {
-    padding: .5em 0;
-    margin: 12px auto;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-    background-color: #fff;
-}
-
-.paperCheckboxList.paperList {
-    padding: .5em 1em;
 }
 
 .ui-body-b .paperList {
     background-color: #2b2b2b;
-}
-
-paper-dropdown-menu {
-    text-align: left;
-    margin: auto;
-    width: 100%;
-    display: inline-block;
-}
-
-    paper-dropdown-menu paper-item {
-        display: block;
-    }
-
-paper-radio-group > * {
-    padding: .5em;
 }
 
 div.dialogHeader {
@@ -406,21 +158,21 @@ div.dialogHeader {
     font-size: 110%;
 }
 
-.ui-body-a div.dialogHeader {
+.ui-body-a div.formDialogHeader {
     background-color: #52B54B;
     color: #fff;
 }
 
-.ui-body-a .dialogHeader a {
+.ui-body-a .formDialogHeader a {
     color: #fff !important;
     text-transform: uppercase;
 }
 
-.ui-body-b div.dialogHeader {
+.ui-body-b div.formDialogHeader {
     background-color: #101010;
 }
 
-.dialogHeaderTitle {
+.formDialogHeaderTitle {
     margin-left: .75em;
 }
 
@@ -431,7 +183,7 @@ div.dialogHeader {
     margin-top: .7em;
 }
 
-.dialogHeader button {
+.formDialogHeader button {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -440,22 +192,6 @@ div.dialogHeader {
     padding-bottom: 100px;
 }
 
-.paper-toggle-button-0 .toggle-label.paper-toggle-button {
-    color: inherit;
-}
-
-paper-toggle-button #toggleButton, paper-toggle-button[checked] #toggleBar {
-    background-color: #52B54B;
-}
-
-paper-toggle-button paper-ripple {
-    color: #52B54B;
-}
-
 .formDialog.background-theme-b {
     background-color: #181818;
-}
-
-.ui-body-b .listItem .secondary {
-    color: #aaa;
 }
