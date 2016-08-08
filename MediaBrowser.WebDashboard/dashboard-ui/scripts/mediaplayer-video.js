@@ -53,6 +53,7 @@
             var videoPlayerElement = document.querySelector('#videoPlayer');
 
             fadeOut(videoPlayerElement);
+            videoPlayerElement.parentElement.classList.remove('mini');
             videoPlayerElement.classList.remove('fullscreenVideo');
             videoPlayerElement.classList.remove('idlePlayer');
 
@@ -85,6 +86,26 @@
         self.isFullScreen = function () {
             return document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement ? true : false;
         };
+
+        self.isMini = function () {
+            return self.mediaContainer.classList.contains('mini');
+        };
+
+        self.toggleMini = function () {
+            if (self.isFullScreen()) {
+                self.exitFullScreen();
+            }
+            self.isMini() ? self.exitMini() : self.enterMini();
+        };
+        self.enterMini = function () {
+            //make the player mini, then remove the 'bodyWithPopupOpen' class to allow navigation on the body
+            self.mediaContainer.classList.add('mini');
+            document.body.classList.remove('bodyWithPopupOpen');
+        }
+        self.exitMini = function () {
+            self.mediaContainer.classList.remove('mini');
+            document.body.classList.add('bodyWithPopupOpen');
+        }
 
         self.showSubtitleMenu = function () {
 
@@ -773,6 +794,7 @@
 
             html += '<button is="paper-icon-button-light" class="mediaButton castButton autoSize" onclick="MediaController.showPlayerSelection(this, false);"><i class="md-icon">cast</i></button>';
             html += '<button is="paper-icon-button-light" class="mediaButton fullscreenButton autoSize" onclick="MediaPlayer.toggleFullscreen();" id="video-fullscreenButton"><i class="md-icon">fullscreen</i></button>';
+            html += '<button is="paper-icon-button-light" class="mediaButton miniButton autoSize" onclick="MediaPlayer.toggleMini();" id="video-miniButton"><i class="md-icon">picture_in_picture_alt</i></button>';
             html += '<button is="paper-icon-button-light" class="mediaButton infoButton autoSize" onclick="MediaPlayer.toggleInfo();"><i class="md-icon">info</i></button>';
 
             html += '</div>';
@@ -783,6 +805,8 @@
 
             var div = document.createElement('div');
             div.innerHTML = html;
+            div.id = "mediaPlayer";
+            self.mediaContainer = div;
             document.body.appendChild(div);
         }
 
@@ -832,7 +856,17 @@
         }
 
         var idleHandlerTimeout;
-        function idleHandler() {
+        function idleHandler(event) {
+
+
+            if (self.isMini()) {
+                //Check that the location of the mouse, or the event is on the mini player, otherwise dont break the idle state of the player
+                //Check the path of the bubble for the video player
+                if (event && event && event.path.indexOf(self.mediaContainer) === -1) {
+                    //This event is not displatched to the video player, we can skip triggering the active state
+                    return;
+                }
+            }
 
             if (idleHandlerTimeout) {
                 window.clearTimeout(idleHandlerTimeout);
@@ -879,7 +913,9 @@
         }
 
         function enterFullScreen() {
-
+            if (self.isMini()) {
+                self.exitMini();
+            }
             document.querySelector("#videoPlayer").classList.add("fullscreenVideo");
         }
 
@@ -891,7 +927,9 @@
         function onPopState() {
             // Stop playback on browser back button nav
             window.removeEventListener("popstate", onPopState);
-            self.stop();
+            if (!self.isMini()) {
+                self.stop();
+            }
             return;
         }
 
@@ -914,7 +952,7 @@
             lastMousePosition.x = evt.clientX;
             lastMousePosition.y = evt.clientY;
 
-            idleHandler();
+            idleHandler(evt);
         }
 
         function bindEventsForPlayback(mediaRenderer) {
