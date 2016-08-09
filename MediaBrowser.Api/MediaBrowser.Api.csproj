@@ -80,6 +80,7 @@
     <Compile Include="FilterService.cs" />
     <Compile Include="IHasDtoOptions.cs" />
     <Compile Include="Library\ChapterService.cs" />
+    <Compile Include="HealthService.cs" />
     <Compile Include="Playback\MediaInfoService.cs" />
     <Compile Include="Playback\TranscodingThrottler.cs" />
     <Compile Include="PlaylistService.cs" />

@@ -1,21 +1,5 @@
 ﻿define(['datetime', 'jQuery', 'cardStyle'], function (datetime, $) {
 
-    function renderNoHealthAlertsMessage(page) {
-
-        var html = '<p style="padding:0 .5em;display:flex;align-items:center;">';
-
-        html += '<iron-icon icon="check" style="margin-right:.5em;background-color: #52B54B;border-radius:1em;color: #fff;"></iron-icon>';
-
-        html += Globalize.translate('HealthMonitorNoAlerts') + '</p>';
-
-        page.querySelector('.healthMonitor').innerHTML = html;
-    }
-
-    function refreshHealthMonitor(page) {
-
-        renderNoHealthAlertsMessage(page);
-    }
-
     window.DashboardPage = {
 
         newsStartIndex: 0,
@@ -61,7 +45,7 @@
                 api_key: ApiClient.accessToken()
             }));
 
-            refreshHealthMonitor(page);
+            DashboardPage.reloadHealth(page);
         },
 
         onPageHide: function () {
@@ -202,6 +186,63 @@
                     DashboardPage.newsStartIndex -= query.Limit;
                     DashboardPage.reloadNews(page);
                 });
+            });
+
+        },
+
+        reloadHealth: function (page) {
+
+            var query = {
+                WarningsOnly: true
+            };
+
+            var noWarningshtml = '<p style="padding:0 .5em;display:flex;align-items:center;">';
+            noWarningshtml += '<iron-icon icon="check" style="margin-right:.5em;background-color: #52B54B;border-radius:1em;color: #fff;"></iron-icon>';
+            noWarningshtml += Globalize.translate('HealthMonitorNoAlerts') + '</p>';
+
+            ApiClient.getHealthMessages(query).then(function (result) {
+
+                var html = result.Items.map(function (item) {
+
+                    var color = item.Severity == 'Problem' ? '#cc0000' : '#dcbf01';
+                    var icon = item.Severity == 'Problem' ? 'error' : 'warning';
+
+                    var itemHtml = '';
+
+                    //itemHtml += '<a class="clearLink" href="' + item.Link + '" target="_blank">';
+                    itemHtml += '<div class="listItem">';
+
+                    itemHtml += '<i class="listItemIcon md-icon" style="background-color:' + color + '">' + icon + '</i>';
+
+                    itemHtml += '<div class="listItemBody two-line">';
+
+                    itemHtml += '<h3 class="listItemBodyText">';
+                    itemHtml += item.SeverityText + ': ' + item.MessageTypeText;
+                    itemHtml += '</h3>';
+
+                    itemHtml += '<div class="listItemBodyText secondary listItemBodyText-nowrap">';
+                    itemHtml += item.MessageText;
+                    itemHtml += '</div>';
+
+                    //itemHtml += '<div class="listItemBodyText secondary">';
+                    //itemHtml += item.AreaText;
+                    //itemHtml += '</div>';
+
+                    itemHtml += '</div>';
+
+                    itemHtml += '</div>';
+                    //itemHtml += '</a>';
+
+                    return itemHtml;
+                });
+
+                if (result.Items && result.Items.length > 0) {
+
+                    page.querySelector('.healthMonitor').innerHTML = html.join('');
+
+                } else {
+                    page.querySelector('.healthMonitor').innerHTML = noWarningshtml;
+                }
             });
 
         },
