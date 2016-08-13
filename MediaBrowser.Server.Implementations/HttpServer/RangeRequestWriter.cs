@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ServiceStack;
+using MediaBrowser.Controller.Net;
 
 namespace MediaBrowser.Server.Implementations.HttpServer
 {
@@ -66,24 +67,36 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         /// </summary>
         /// <param name="rangeHeader">The range header.</param>
         /// <param name="source">The source.</param>
-        /// <param name="contentType">Type of the content.</param>
-        /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
-        public RangeRequestWriter(string rangeHeader, Stream source, string contentType, bool isHeadRequest, ILogger logger)
+        /// <param name="resultOptions">Result options.</param>
+        public RangeRequestWriter(string rangeHeader, Stream source, StaticResultOptions resultOptions, ILogger logger)
         {
-            if (string.IsNullOrEmpty(contentType))
+            if (string.IsNullOrEmpty(resultOptions.ContentType))
             {
                 throw new ArgumentNullException("contentType");
             }
 
             RangeHeader = rangeHeader;
             SourceStream = source;
-            IsHeadRequest = isHeadRequest;
+            IsHeadRequest = resultOptions.IsHeadRequest;
             this._logger = logger;
 
-            ContentType = contentType;
-            Options["Content-Type"] = contentType;
+            ContentType = resultOptions.ContentType;
+            Options["Content-Type"] = resultOptions.ContentType;
             Options["Accept-Ranges"] = "bytes";
             StatusCode = HttpStatusCode.PartialContent;
+
+            if (!resultOptions.CacheDuration.HasValue)
+            {
+                resultOptions.CacheDuration = TimeSpan.FromDays(1);
+            }
+
+            if (resultOptions.DateLastModified.HasValue)
+            {
+                Options["Cache-Control"] = string.Format("public, max-age={0}", resultOptions.CacheDuration.Value.TotalSeconds);
+                Options["Last-Modified"] = resultOptions.DateLastModified.Value.ToString("R", DateTimeFormatInfo.InvariantInfo);
+                Options["Expires"] = resultOptions.DateLastModified.Value.Add(resultOptions.CacheDuration.Value).ToString("R", DateTimeFormatInfo.InvariantInfo);
+                Options["ETag"] = string.Format("\"{0}\"", resultOptions.CacheKey.ToString("N"));
+            }
 
             Cookies = new List<Cookie>();
             SetRangeValues();

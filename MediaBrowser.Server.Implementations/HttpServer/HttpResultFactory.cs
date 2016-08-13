@@ -393,12 +393,15 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
             var key = cacheKey.ToString("N");
 
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
-
-            if (result != null)
+            if (string.IsNullOrEmpty(requestContext.GetHeader("Range")))
             {
-                return result;
+                // See if the result is already cached in the browser - but not for range requests
+                var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
+
+                if (result != null)
+                {
+                    return result;
+                }
             }
 
             var compress = ShouldCompressResponse(requestContext, contentType);
@@ -476,7 +479,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
                 if (!string.IsNullOrEmpty(rangeHeader))
                 {
-                    return new RangeRequestWriter(rangeHeader, stream, contentType, isHeadRequest, _logger)
+                    return new RangeRequestWriter(rangeHeader, stream, options, _logger)
                     {
                         OnComplete = options.OnComplete
                     };
