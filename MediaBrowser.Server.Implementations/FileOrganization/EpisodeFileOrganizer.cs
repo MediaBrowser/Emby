@@ -208,6 +208,12 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
 
+            if (result.Status != FileSortingStatus.Success)
+            {
+                // Display message in client
+                throw new Exception(result.StatusMessage);
+            }
+
             return result;
         }
 
@@ -263,16 +269,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var originalExtractedSeriesString = result.ExtractedName;
 
+            try
+            {
             // Proceed to sort the file
             var newPath = await GetNewPath(sourcePath, series, seasonNumber, episodeNumber, endingEpiosdeNumber, premiereDate, options.TvOptions, cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(newPath))
             {
                 var msg = string.Format("Unable to sort {0} because target path could not be determined.", sourcePath);
-                result.Status = FileSortingStatus.Failure;
-                result.StatusMessage = msg;
-                _logger.Warn(msg);
-                return;
+                throw new Exception(msg);
             }
 
             _logger.Info("Sorting file {0} to new path {1}", sourcePath, newPath);
@@ -346,6 +351,14 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                         _libraryMonitor.ReportFileSystemChangeComplete(path, true);
                     }
                 }
+            }
+            }
+            catch (Exception ex)
+            {
+                result.Status = FileSortingStatus.Failure;
+                result.StatusMessage = ex.Message;
+                _logger.Warn(ex.Message);
+                return;
             }
 
             if (rememberCorrection)
@@ -616,7 +629,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 var msg = string.Format("No provider metadata found for {0} season {1} episode {2}", series.Name, seasonNumber, episodeNumber);
                 _logger.Warn(msg);
-                return null;
+                throw new Exception(msg);
             }
 
             var episodeName = episode.Name;
@@ -715,6 +728,11 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var pattern = endingEpisodeNumber.HasValue ? options.MultiEpisodeNamePattern : options.EpisodeNamePattern;
 
+            if (string.IsNullOrWhiteSpace(pattern))
+            {
+                throw new Exception("GetEpisodeFileName: Configured episode name pattern is empty!");
+            }
+
             var result = pattern.Replace("%sn", seriesName)
                 .Replace("%s.n", seriesName.Replace(" ", "."))
                 .Replace("%s_n", seriesName.Replace(" ", "_"))
@@ -759,8 +777,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 // There may be cases where reducing the title length may still not be sufficient to
                 // stay below maxLength
                 var msg = string.Format("Unable to generate an episode file name shorter than {0} characters to constrain to the max path limit", maxLength);
-                _logger.Warn(msg);
-                return string.Empty;
+                throw new Exception(msg);
             }
 
             return result;
