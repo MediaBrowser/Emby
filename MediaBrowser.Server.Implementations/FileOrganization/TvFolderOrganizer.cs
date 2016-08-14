@@ -75,15 +75,15 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
                     try
                     {
-                        var result = await organizer.OrganizeEpisodeFile(file.FullName, options, options.TvOptions.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
-                        if (result.Status == FileSortingStatus.Success && !processedFolders.Contains(file.DirectoryName, StringComparer.OrdinalIgnoreCase))
+                        await organizer.OrganizeEpisodeFile(file.FullName, options, options.TvOptions.OverwriteExistingEpisodes, cancellationToken).ConfigureAwait(false);
+                        if (!processedFolders.Contains(file.DirectoryName, StringComparer.OrdinalIgnoreCase))
                         {
                             processedFolders.Add(file.DirectoryName);
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.ErrorException("Error organizing episode {0}", ex, file.FullName);
+                        _logger.ErrorException("Error organizing episode {0}. (File: {1])", ex, file.FullName);
                     }
 
                     numComplete++;
