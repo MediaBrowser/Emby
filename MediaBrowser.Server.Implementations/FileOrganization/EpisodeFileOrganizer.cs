@@ -67,6 +67,8 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             {
                 result.Status = FileSortingStatus.Failure;
                 result.StatusMessage = "Path is locked by other processes. Please try again later.";
+                _logger.Warn("{0}: {1}", result.StatusMessage, path);
+                await _organizationService.SaveResult(result, CancellationToken.None).ConfigureAwait(false);
                 return result;
             }
 
@@ -269,6 +271,18 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
 
             var originalExtractedSeriesString = result.ExtractedName;
 
+            bool isNew = string.IsNullOrWhiteSpace(result.Id);
+
+            if (isNew)
+            {
+                await _organizationService.SaveResult(result, cancellationToken);
+            }
+
+            if (!_organizationService.AddToInProgressList(result, isNew))
+            {
+                throw new Exception("File is currently processed otherwise. Please try again later.");
+            }
+            
             try
             {
             // Proceed to sort the file
@@ -359,6 +373,10 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
                 result.StatusMessage = ex.Message;
                 _logger.Warn(ex.Message);
                 return;
+            }
+            finally
+            {
+                _organizationService.RemoveFromInprogressList(result);
             }
 
             if (rememberCorrection)
@@ -518,7 +536,7 @@ namespace MediaBrowser.Server.Implementations.FileOrganization
             }
             catch (Exception ex)
             {
-                var errorMsg = string.Format("Failed to move file from {0} to {1}", result.OriginalPath, result.TargetPath);
+                var errorMsg = string.Format("Failed to move file from {0} to {1}: {2}", result.OriginalPath, result.TargetPath, ex.Message);
 
                 result.Status = FileSortingStatus.Failure;
                 result.StatusMessage = errorMsg;
