@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Logging;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         protected SemaphoreSlim WriteLock = new SemaphoreSlim(1, 1);
         protected readonly IDbConnector DbConnector;
         protected ILogger Logger;
+        protected IDbConnection Connection;
 
         protected string DbFilePath { get; set; }
 
@@ -109,6 +111,58 @@ namespace MediaBrowser.Server.Implementations.Persistence
         protected virtual void CloseConnection()
         {
 
+        }
+
+        public async Task Commit(string command, CancellationToken cancellationToken, IEnumerable<Params> parameters = null, string errorMsg = "Commit Failed: ")
+        {
+            var conn = Connection ?? await CreateConnection().ConfigureAwait(false);
+            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                conn.Commit(command, parameters, errorMsg);
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorException(errorMsg, e);
+                throw;
+            }
+            finally
+            {
+                if (Connection == null) conn.Dispose();
+                WriteLock.Release();
+            }
+        }
+
+        public IEnumerable<T> Reader<T>(string command, Func<IDataReader, T> createFromEntry, IEnumerable<Params> parameters = null)
+        {
+            var conn = Connection ?? CreateConnection().Result;
+            var result = conn.Read(command, createFromEntry, parameters);
+            if (Connection == null) conn.Dispose();
+            return result;
+        }
+    }
+
+    public class Params
+    {
+        public string Name { get; set; }
+        public DbType Type { get; set; }
+        public object Value { get; set; }
+
+        public Params(string name, DbType type, object value)
+        {
+            Name = name;
+            Type = type;
+            Value = value;
+        }
+
+        public void AddToCommand(IDbCommand cmd)
+        {
+            var param = cmd.CreateParameter();
+
+            param.ParameterName = Name;
+            param.DbType = Type;
+            param.Value = Value;
+            cmd.Parameters.Add(param);
         }
     }
 }
