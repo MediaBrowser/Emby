@@ -63,6 +63,15 @@ namespace MediaBrowser.Api
 
             Instance = this;
             _sessionManager.PlaybackProgress += _sessionManager_PlaybackProgress;
+            _sessionManager.PlaybackStart += _sessionManager_PlaybackStart;
+        }
+
+        private void _sessionManager_PlaybackStart(object sender, PlaybackProgressEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(e.PlaySessionId))
+            {
+                PingTranscodingJob(e.PlaySessionId, e.IsPaused);
+            }
         }
 
         void _sessionManager_PlaybackProgress(object sender, PlaybackProgressEventArgs e)
@@ -183,13 +192,13 @@ namespace MediaBrowser.Api
 
                 _activeTranscodingJobs.Add(job);
 
-                ReportTranscodingProgress(job, state, null, null, null, null);
+                ReportTranscodingProgress(job, state, null, null, null, null, null);
 
                 return job;
             }
         }
 
-        public void ReportTranscodingProgress(TranscodingJob job, StreamState state, TimeSpan? transcodingPosition, float? framerate, double? percentComplete, long? bytesTranscoded)
+        public void ReportTranscodingProgress(TranscodingJob job, StreamState state, TimeSpan? transcodingPosition, float? framerate, double? percentComplete, long? bytesTranscoded, int? bitRate)
         {
             var ticks = transcodingPosition.HasValue ? transcodingPosition.Value.Ticks : (long?)null;
 
@@ -199,6 +208,7 @@ namespace MediaBrowser.Api
                 job.CompletionPercentage = percentComplete;
                 job.TranscodingPositionTicks = ticks;
                 job.BytesTranscoded = bytesTranscoded;
+                job.BitRate = bitRate;
             }
 
             var deviceId = state.Request.DeviceId;
@@ -210,7 +220,7 @@ namespace MediaBrowser.Api
 
                 _sessionManager.ReportTranscodingInfo(deviceId, new TranscodingInfo
                 {
-                    Bitrate = state.TotalOutputBitrate,
+                    Bitrate = bitRate ?? state.TotalOutputBitrate,
                     AudioCodec = audioCodec,
                     VideoCodec = videoCodec,
                     Container = state.OutputContainer,
@@ -401,7 +411,7 @@ namespace MediaBrowser.Api
                 }
             }
 
-            Logger.Debug("Transcoding kill timer stopped for JobId {0} PlaySessionId {1}. Killing transcoding", job.Id, job.PlaySessionId);
+            Logger.Info("Transcoding kill timer stopped for JobId {0} PlaySessionId {1}. Killing transcoding", job.Id, job.PlaySessionId);
 
             KillTranscodingJob(job, true, path => true);
         }
@@ -685,6 +695,7 @@ namespace MediaBrowser.Api
 
         public long? BytesDownloaded { get; set; }
         public long? BytesTranscoded { get; set; }
+        public int? BitRate { get; set; }
 
         public long? TranscodingPositionTicks { get; set; }
         public long? DownloadPositionTicks { get; set; }

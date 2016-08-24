@@ -34,8 +34,9 @@
 
     function getPosition(options, dlg) {
 
-        var windowHeight = window.innerHeight;
-        var windowWidth = window.innerWidth;
+        var windowSize = dom.getWindowSize();
+        var windowHeight = windowSize.innerHeight;
+        var windowWidth = windowSize.innerWidth;
 
         if (windowHeight < 540) {
             return null;
@@ -125,7 +126,7 @@
 
         // Admittedly a hack but right now the scrollbar is being factored into the width which is causing truncation
         if (options.items.length > 20) {
-            var minWidth = window.innerWidth >= 300 ? 240 : 200;
+            var minWidth = dom.getWindowSize().innerWidth >= 300 ? 240 : 200;
             style += "min-width:" + minWidth + "px;";
         }
 
@@ -170,14 +171,14 @@
 
         html += '<div class="actionSheetScroller ' + scrollType + '" style="' + style + '">';
 
-        var itemTagName = 'button';
+        var menuItemClass = browser.noFlex || browser.firefox ? 'actionSheetMenuItem actionSheetMenuItem-noflex' : 'actionSheetMenuItem';
 
         for (i = 0, length = options.items.length; i < length; i++) {
 
             option = options.items[i];
 
             var autoFocus = option.selected ? ' autoFocus' : '';
-            html += '<' + itemTagName + autoFocus + ' is="emby-button" type="button" class="actionSheetMenuItem" data-id="' + (option.id || option.value) + '">';
+            html += '<button' + autoFocus + ' is="emby-button" type="button" class="' + menuItemClass + '" data-id="' + (option.id || option.value) + '">';
 
             if (option.icon) {
                 html += '<i class="actionSheetItemIcon md-icon">' + option.icon + '</i>';
@@ -186,7 +187,7 @@
                 html += '<i class="actionSheetItemIcon md-icon" style="visibility:hidden;">check</i>';
             }
             html += '<div class="actionSheetItemText">' + (option.name || option.textContent || option.innerText) + '</div>';
-            html += '</' + itemTagName + '>';
+            html += '</button>';
         }
 
         if (options.showCancel) {

@@ -1,5 +1,5 @@
-define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo', 'focusManager', 'indicators', 'globalize', 'layoutManager', 'apphost', 'emby-button', 'css!./card', 'paper-icon-button-light', 'clearButtonStyle'],
-    function (datetime, imageLoader, connectionManager, itemHelper, mediaInfo, focusManager, indicators, globalize, layoutManager, appHost) {
+define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo', 'focusManager', 'indicators', 'globalize', 'layoutManager', 'apphost', 'dom', 'emby-button', 'css!./card', 'paper-icon-button-light', 'clearButtonStyle'],
+    function (datetime, imageLoader, connectionManager, itemHelper, mediaInfo, focusManager, indicators, globalize, layoutManager, appHost, dom) {
 
         // Regular Expressions for parsing tags and attributes
         var SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
@@ -118,7 +118,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
         function getImageWidth(shape) {
 
-            var screenWidth = window.innerWidth;
+            var screenWidth = dom.getWindowSize().innerWidth;
 
             if (isResizable(screenWidth)) {
                 var roundScreenTo = 100;
@@ -669,7 +669,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             return 'defaultCardColor' + getDefaultColorIndex(str);
         }
 
-        function getCardTextLines(lines, cssClass, forceLines) {
+        function getCardTextLines(lines, cssClass, forceLines, addSecondaryClass) {
 
             var html = '';
 
@@ -679,6 +679,10 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             for (i = 0, length = lines.length; i < length; i++) {
 
                 var text = lines[i];
+
+                if (i == 1 && addSecondaryClass) {
+                    cssClass += ' cardText-secondary';
+                }
 
                 if (text) {
                     html += "<div class='" + cssClass + "'>";
@@ -698,7 +702,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             return html;
         }
 
-        function getCardFooterText(item, options, showTitle, imgUrl, footerClass, progressHtml, isOuterFooter) {
+        function getCardFooterText(item, options, showTitle, forceName, imgUrl, footerClass, progressHtml, isOuterFooter) {
 
             var html = '';
 
@@ -865,7 +869,11 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
             }
 
-            html += getCardTextLines(lines, cssClass, !options.overlayText);
+            if (showTitle && forceName && lines.length == 1) {
+                lines = [];
+            }
+
+            html += getCardTextLines(lines, cssClass, !options.overlayText, isOuterFooter);
 
             if (progressHtml) {
                 html += progressHtml;
@@ -1008,6 +1016,19 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             var imgInfo = getCardImageUrl(item, apiClient, options);
             var imgUrl = imgInfo.imgUrl;
 
+            var forceName = imgInfo.forceName || !imgUrl;
+
+            var showTitle = options.showTitle == 'auto' ? true : (options.showTitle || item.Type == 'PhotoAlbum' || item.Type == 'Folder');
+            var overlayText = options.overlayText;
+
+            if (forceName && !options.cardLayout) {
+                showTitle = imgUrl;
+
+                if (overlayText == null) {
+                    overlayText = true;
+                }
+            }
+
             var cardImageContainerClass = 'cardImageContainer';
             if (options.coverImage || imgInfo.coverImage) {
                 cardImageContainerClass += ' coveredImage';
@@ -1023,6 +1044,49 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var separateCardBox = scalable;
             var cardBoxClass = options.cardLayout ? 'cardBox visualCardBox' : 'cardBox';
+
+            if (!layoutManager.tv) {
+                cardBoxClass += ' cardBox-mobile';
+            } else {
+                cardBoxClass += ' cardBox-focustransform';
+            }
+
+            var footerCssClass;
+            var progressHtml = indicators.getProgressBarHtml(item);
+
+            var innerCardFooter = '';
+
+            var footerOverlayed = false;
+
+            if (overlayText) {
+
+                footerCssClass = progressHtml ? 'innerCardFooter fullInnerCardFooter' : 'innerCardFooter';
+                innerCardFooter += getCardFooterText(item, options, showTitle, forceName, imgUrl, footerCssClass, progressHtml, false);
+                footerOverlayed = true;
+            }
+            else if (progressHtml) {
+                innerCardFooter += '<div class="innerCardFooter fullInnerCardFooter innerCardFooterClear">';
+                innerCardFooter += progressHtml;
+                innerCardFooter += '</div>';
+
+                progressHtml = '';
+            }
+
+            var mediaSourceCount = item.MediaSourceCount || 1;
+            if (mediaSourceCount > 1) {
+                innerCardFooter += '<div class="mediaSourceIndicator">' + mediaSourceCount + '</div>';
+            }
+
+            var outerCardFooter = '';
+            if (!overlayText && !footerOverlayed) {
+                footerCssClass = options.cardLayout ? 'cardFooter' : 'cardFooter transparent';
+                outerCardFooter = getCardFooterText(item, options, showTitle, forceName, imgUrl, footerCssClass, progressHtml, true);
+            }
+
+            if (outerCardFooter && !options.cardLayout && options.allowBottomPadding !== false) {
+                cardBoxClass += ' cardBox-bottompadded';
+            }
+
             if (!separateCardBox) {
                 cardImageContainerClass += " " + cardBoxClass;
             }
@@ -1069,13 +1133,14 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     cardContentClose = '</button>';
                 }
                 cardImageContainerOpen = imgUrl ? ('<div class="' + cardImageContainerClass + ' lazy" data-src="' + imgUrl + '">') : ('<div class="' + cardImageContainerClass + '">');
-                cardImageContainerOpen = '<div class="' + cardBoxClass + '"><div class="cardScalable"><div class="cardPadder"></div>' + cardContentOpen + cardImageContainerOpen;
+                cardImageContainerOpen = '<div class="' + cardBoxClass + '"><div class="cardScalable"><div class="cardPadder-' + options.shape + '"></div>' + cardContentOpen + cardImageContainerOpen;
                 cardBoxClose = '</div>';
                 cardScalableClose = '</div>';
                 cardImageContainerClose = '</div>';
             } else {
 
                 if (overlayButtons && !separateCardBox) {
+                    cardImageContainerClass += ' cardImageContainerClass-button';
                     cardImageContainerOpen = imgUrl ? ('<button type="button" data-action="' + action + '" class="itemAction ' + cardImageContainerClass + ' lazy" data-src="' + imgUrl + '">') : ('<button type="button" data-action="' + action + '" class="itemAction ' + cardImageContainerClass + '">');
                     cardImageContainerClose = '</button>';
 
@@ -1102,57 +1167,12 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             }
 
             if (indicatorsHtml) {
-                cardImageContainerOpen += '<div class="indicators">' + indicatorsHtml + '</div>';
-            }
-
-            var forceName = imgInfo.forceName;
-
-            var showTitle = options.showTitle == 'auto' ? true : (options.showTitle || item.Type == 'PhotoAlbum' || item.Type == 'Folder');
-            var overlayText = options.overlayText;
-
-            if (forceName && !options.cardLayout) {
-                showTitle = imgUrl;
-
-                if (overlayText == null) {
-                    overlayText = true;
-                }
+                cardImageContainerOpen += '<div class="cardIndicators ' + options.shape + 'CardIndicators">' + indicatorsHtml + '</div>';
             }
 
             if (!imgUrl) {
                 var defaultName = item.EpisodeTitle ? item.Name : itemHelper.getDisplayName(item);
                 cardImageContainerOpen += '<div class="cardText cardCenteredText">' + defaultName + '</div>';
-            }
-
-            var footerCssClass;
-            var progressHtml = indicators.getProgressBarHtml(item);
-
-            var innerCardFooter = '';
-
-            var footerOverlayed = false;
-
-            if (overlayText) {
-
-                footerCssClass = progressHtml ? 'innerCardFooter fullInnerCardFooter' : 'innerCardFooter';
-                innerCardFooter += getCardFooterText(item, options, showTitle, imgUrl, footerCssClass, progressHtml, false);
-                footerOverlayed = true;
-            }
-            else if (progressHtml) {
-                innerCardFooter += '<div class="innerCardFooter fullInnerCardFooter innerCardFooterClear">';
-                innerCardFooter += progressHtml;
-                innerCardFooter += '</div>';
-
-                progressHtml = '';
-            }
-
-            var mediaSourceCount = item.MediaSourceCount || 1;
-            if (mediaSourceCount > 1) {
-                innerCardFooter += '<div class="mediaSourceIndicator">' + mediaSourceCount + '</div>';
-            }
-
-            var outerCardFooter = '';
-            if (!overlayText && !footerOverlayed) {
-                footerCssClass = options.cardLayout ? 'cardFooter' : 'cardFooter transparent';
-                outerCardFooter = getCardFooterText(item, options, showTitle, imgUrl, footerCssClass, progressHtml, true);
             }
 
             var tagName = (layoutManager.tv || !scalable) && !overlayButtons ? 'button' : 'div';
@@ -1178,10 +1198,6 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 actionAttribute = ' data-action="' + action + '"';
             } else {
                 actionAttribute = '';
-            }
-
-            if (outerCardFooter && !options.cardLayout) {
-                className += ' bottomPaddedCard';
             }
 
             var positionTicksData = item.UserData && item.UserData.PlaybackPositionTicks ? (' data-positionticks="' + item.UserData.PlaybackPositionTicks + '"') : '';

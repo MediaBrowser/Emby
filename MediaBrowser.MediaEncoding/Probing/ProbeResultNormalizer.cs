@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using CommonIO;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 
@@ -168,6 +169,12 @@ namespace MediaBrowser.MediaEncoding.Probing
                 }
 
                 ExtractTimestamp(info);
+
+                var stereoMode = GetDictionaryValue(tags, "stereo_mode");
+                if (string.Equals(stereoMode, "left_right", StringComparison.OrdinalIgnoreCase))
+                {
+                    info.Video3DFormat = Video3DFormat.FullSideBySide;
+                }
             }
 
             return info;
@@ -787,7 +794,7 @@ namespace MediaBrowser.MediaEncoding.Probing
             if (!string.IsNullOrWhiteSpace(artists))
             {
                 audio.Artists = SplitArtists(artists, new[] { '/', ';' }, false)
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .DistinctNames()
                     .ToList();
             }
             else
@@ -800,7 +807,7 @@ namespace MediaBrowser.MediaEncoding.Probing
                 else
                 {
                     audio.Artists = SplitArtists(artist, _nameDelimiters, true)
-                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .DistinctNames()
                         .ToList();
                 }
             }
@@ -822,7 +829,7 @@ namespace MediaBrowser.MediaEncoding.Probing
             else
             {
                 audio.AlbumArtists = SplitArtists(albumArtist, _nameDelimiters, true)
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .DistinctNames()
                     .ToList();
 
             }

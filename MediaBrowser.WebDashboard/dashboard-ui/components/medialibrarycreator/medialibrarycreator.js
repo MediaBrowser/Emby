@@ -1,4 +1,4 @@
-﻿define(['dialogHelper', 'jQuery', 'emby-input', 'emby-select', 'paper-icon-button-light', 'listViewStyle', 'formDialogStyle'], function (dialogHelper, $) {
+﻿define(['dialogHelper', 'jQuery', 'components/libraryoptionseditor/libraryoptionseditor', 'emby-input', 'emby-select', 'paper-icon-button-light', 'listViewStyle', 'formDialogStyle'], function (dialogHelper, $, libraryoptionseditor) {
 
     var currentDeferred;
     var hasChanges;
@@ -27,7 +27,9 @@
             type = null;
         }
 
-        ApiClient.addVirtualFolder(name, type, currentOptions.refresh, paths).then(function () {
+        var libraryOptions = libraryoptionseditor.getLibraryOptions(dlg.querySelector('.libraryOptions'));
+
+        ApiClient.addVirtualFolder(name, type, currentOptions.refresh, paths, libraryOptions).then(function () {
 
             hasChanges = true;
             dialogHelper.close(dlg);
@@ -59,11 +61,15 @@
 
         $('#selectCollectionType', page).html(getCollectionTypeOptionsHtml(collectionTypeOptions)).val('').on('change', function () {
 
-            if (this.value == 'mixed') {
-                return;
-            }
+            var value = this.value;
 
             var dlg = $(this).parents('.dialog')[0];
+
+            libraryoptionseditor.setContentType(dlg.querySelector('.libraryOptions'), value);
+
+            if (value == 'mixed') {
+                return;
+            }
 
             var index = this.selectedIndex;
             if (index != -1) {
@@ -71,8 +77,6 @@
                 var name = this.options[index].innerHTML
                     .replace('*', '')
                     .replace('&amp;', '&');
-
-                var value = this.value;
 
                 $('#txtValue', dlg).val(name);
 
@@ -92,7 +96,7 @@
 
     function onAddButtonClick() {
 
-        var page = $(this).parents('.popupEditor')[0];
+        var page = $(this).parents('.dlg-librarycreator')[0];
 
         require(['directorybrowser'], function (directoryBrowser) {
 
@@ -124,7 +128,7 @@
         html += '<div class="listItemBodyText">' + path + '</div>';
         html += '</div>';
 
-        html += '<button is="paper-icon-button-light"" class="btnRemovePath" data-index="' + index + '"><i class="md-icon">remove_circle</i></button>';
+        html += '<button is="paper-icon-button-light"" class="listItemButton btnRemovePath" data-index="' + index + '"><i class="md-icon">remove_circle</i></button>';
 
         html += '</div>';
 
@@ -168,7 +172,7 @@
 
             return p.toLowerCase() != location.toLowerCase();
         });
-        var page = $(this).parents('.popupEditor')[0];
+        var page = $(this).parents('.dlg-librarycreator')[0];
         renderPaths(page);
     }
 
@@ -176,6 +180,10 @@
 
         Dashboard.hideLoadingMsg();
         currentDeferred.resolveWith(null, [hasChanges]);
+    }
+
+    function initLibraryOptions(dlg) {
+        libraryoptionseditor.embed(dlg.querySelector('.libraryOptions'));
     }
 
     function editor() {
@@ -207,7 +215,7 @@
 
                 dlg.classList.add('ui-body-a');
                 dlg.classList.add('background-theme-a');
-                dlg.classList.add('popupEditor');
+                dlg.classList.add('dlg-librarycreator');
 
                 dlg.innerHTML = Globalize.translateDocument(template);
                 document.body.appendChild(dlg);
@@ -225,6 +233,7 @@
 
                 paths = [];
                 renderPaths(dlg);
+                initLibraryOptions(dlg);
             }
 
             xhr.send();

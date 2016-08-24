@@ -151,7 +151,7 @@
                     var itemHtml = '';
 
                     itemHtml += '<a class="clearLink" href="' + item.Link + '" target="_blank">';
-                    itemHtml += '<div class="listItem">';
+                    itemHtml += '<div class="listItem listItem-noborder">';
 
                     itemHtml += '<i class="listItemIcon md-icon">dvr</i>';
 
@@ -309,7 +309,7 @@
 
                 var nowPlayingItem = session.NowPlayingItem;
 
-                var className = nowPlayingItem ? 'scalableCard card activeSession' : 'scalableCard card activeSession';
+                var className = nowPlayingItem ? 'scalableCard card activeSession backdropCard' : 'scalableCard card activeSession backdropCard';
 
                 if (session.TranscodingInfo && session.TranscodingInfo.CompletionPercentage) {
                     className += ' transcodingSession';
@@ -320,7 +320,7 @@
                 html += '<div class="cardBox visualCardBox">';
                 html += '<div class="cardScalable">';
 
-                html += '<div class="cardPadder"></div>';
+                html += '<div class="cardPadder cardPadder-backdrop"></div>';
                 html += '<div class="cardContent">';
 
                 html += '<div class="sessionNowPlayingContent"';
@@ -1034,7 +1034,7 @@
 
             var html = '';
 
-            html += '<div class="listItem">';
+            html += '<div class="listItem listItem-noborder">';
 
             var color = entry.Severity == 'Error' || entry.Severity == 'Fatal' || entry.Severity == 'Warn' ? '#cc0000' : '#52B54B';
 

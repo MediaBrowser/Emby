@@ -119,6 +119,12 @@
                 var tagName = layoutManager.tv ? 'button' : 'div';
                 var className = layoutManager.tv && s.Path ? 'listItem btnDelete' : 'listItem';
 
+                if (layoutManager.tv) {
+                    className += ' listItem-focusscale listItem-button';
+                }
+
+                className += ' listItem-noborder';
+
                 itemHtml += '<' + tagName + ' class="' + className + '" data-index="' + s.Index + '">';
 
                 itemHtml += '<i class="listItemIcon md-icon">closed_caption</i>';
@@ -234,6 +240,9 @@
 
             var tagName = layoutManager.tv ? 'button' : 'div';
             var className = layoutManager.tv ? 'listItem btnOptions' : 'listItem';
+            if (layoutManager.tv) {
+                className += ' listItem-focusscale listItem-button';
+            }
 
             html += '<' + tagName + ' class="' + className + '" data-subid="' + result.Id + '">';
 

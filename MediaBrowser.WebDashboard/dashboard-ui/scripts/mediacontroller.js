@@ -121,7 +121,7 @@
 
     function showActivePlayerMenu(playerInfo) {
 
-        require(['dialogHelper', 'emby-checkbox', 'emby-button'], function (dialogHelper) {
+        require(['dialogHelper', 'dialog', 'emby-checkbox', 'emby-button'], function (dialogHelper) {
             showActivePlayerMenuInternal(dialogHelper, playerInfo);
         });
     }
@@ -141,11 +141,14 @@
 
         var dlg = dialogHelper.createDialog(dialogOptions);
 
+        dlg.classList.add('promptDialog');
+
+        html += '<div class="promptDialogContent">';
         html += '<h2>';
         html += (playerInfo.deviceName || playerInfo.name);
         html += '</h2>';
 
-        html += '<div style="padding:0 2em;">';
+        html += '<div>';
 
         if (playerInfo.supportedCommands.indexOf('DisplayContent') != -1) {
 
@@ -158,17 +161,18 @@
 
         html += '</div>';
 
-        html += '<div class="buttons">';
+        html += '<div class="promptDialogButtons">';
 
         // On small layouts papepr dialog doesn't respond very well. this button isn't that important here anyway.
         if (screen.availWidth >= 600) {
-            html += '<button is="emby-button" type="button" class="btnRemoteControl">' + Globalize.translate('ButtonRemoteControl') + '</button>';
+            html += '<button is="emby-button" type="button" class="btnRemoteControl promptDialogButton">' + Globalize.translate('ButtonRemoteControl') + '</button>';
         }
 
-        html += '<button is="emby-button" type="button" class="btnDisconnect">' + Globalize.translate('ButtonDisconnect') + '</button>';
-        html += '<button is="emby-button" type="button" class="btnCancel">' + Globalize.translate('ButtonCancel') + '</button>';
+        html += '<button is="emby-button" type="button" class="btnDisconnect promptDialogButton">' + Globalize.translate('ButtonDisconnect') + '</button>';
+        html += '<button is="emby-button" type="button" class="btnCancel promptDialogButton">' + Globalize.translate('ButtonCancel') + '</button>';
         html += '</div>';
 
+        html += '</div>';
         dlg.innerHTML = html;
 
         document.body.appendChild(dlg);
@@ -209,72 +213,12 @@
         MediaController.enableDisplayMirroring(this.checked);
     }
 
-    function bindKeys(controller) {
-
-        var self = this;
-        var keyResult = {};
-
-        self.keyBinding = function (e) {
-
-            if (bypass()) return;
-
-            console.log("keyCode", e.keyCode);
-
-            if (keyResult[e.keyCode]) {
-                e.preventDefault();
-                keyResult[e.keyCode](e);
-            }
-        };
-
-        self.keyPrevent = function (e) {
-
-            if (bypass()) return;
-
-            var codes = [32, 38, 40, 37, 39, 81, 77, 65, 84, 83, 70];
-
-            if (codes.indexOf(e.keyCode) != -1) {
-                e.preventDefault();
-            }
-        };
-
-        keyResult[32] = function () { // spacebar
-
-            var player = controller.getCurrentPlayer();
-
-            player.getPlayerState().then(function (result) {
-
-                var state = result;
-
-                if (state.NowPlayingItem && state.PlayState) {
-                    if (state.PlayState.IsPaused) {
-                        player.unpause();
-                    } else {
-                        player.pause();
-                    }
-                }
-            });
-        };
-
-        var bypass = function () {
-            // Get active elem to see what type it is
-            var active = document.activeElement;
-            var type = active.type || active.tagName.toLowerCase();
-            return (type === "text" || type === "select" || type === "textarea" || type == "password");
-        };
-    }
-
     function mediaController() {
 
         var self = this;
         var currentPlayer;
         var currentTargetInfo;
         var players = [];
-
-        var keys = new bindKeys(self);
-
-        window.addEventListener('keydown', keys.keyBinding);
-        window.addEventListener('keypress', keys.keyPrevent);
-        window.addEventListener('keyup', keys.keyPrevent);
 
         self.registerPlayer = function (player) {
 
@@ -518,11 +462,11 @@
                 return;
             }
 
-            requirejs(["registrationservices"], function () {
+            requirejs(["registrationservices"], function (registrationServices) {
 
                 self.playbackTimeLimitMs = null;
 
-                RegistrationServices.validateFeature('playback').then(fn, function () {
+                registrationServices.validateFeature('playback').then(fn, function () {
 
                     self.playbackTimeLimitMs = lockedTimeLimitMs;
                     startAutoStopTimer();
