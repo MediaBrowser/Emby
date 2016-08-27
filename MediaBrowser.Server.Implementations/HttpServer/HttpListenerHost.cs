@@ -35,7 +35,7 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         private readonly List<IRestfulService> _restServices = new List<IRestfulService>();
 
         private IHttpListener _listener;
-
+ 
         private readonly ContainerAdapter _containerAdapter;
 
         public event EventHandler<WebSocketConnectEventArgs> WebSocketConnected;
@@ -650,6 +650,16 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             CertificatePath = certificatePath;
             UrlPrefixes = urlPrefixes.ToList();
             Start(UrlPrefixes.First());
+        }
+
+        public object InternalRouteRequest(string route, string verb, object originalRequest, string jsonData = null)
+        {
+            var restPath = ServiceController.GetRestPathForRequest(verb, route);
+            var fromInstance = ServiceStack.Text.JsonSerializer.DeserializeFromString(jsonData, restPath.RequestType);
+            IRequest baseRequest = originalRequest is IRequest ? (IRequest) originalRequest : null;
+            var parameters = baseRequest == null ? new Dictionary<string, string>() : baseRequest.GetRequestParams();
+            var request = restPath.CreateRequest(route, parameters, fromInstance);
+            return ServiceController.Execute(request, baseRequest);
         }
     }
 }
