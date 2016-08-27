@@ -101,11 +101,6 @@ namespace MediaBrowser.MediaEncoding.Probing
                 info.Overview = overview;
             }
 
-            if (!string.IsNullOrWhiteSpace(shortOverview))
-            {
-                info.ShortOverview = shortOverview;
-            }
-
             var title = FFProbeHelpers.GetDictionaryValue(tags, "title");
             if (!string.IsNullOrWhiteSpace(title))
             {

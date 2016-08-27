@@ -150,7 +150,6 @@
     <Compile Include="Entities\IHasProgramAttributes.cs" />
     <Compile Include="Entities\IHasScreenshots.cs" />
     <Compile Include="Entities\IHasSeries.cs" />
-    <Compile Include="Entities\IHasShortOverview.cs" />
     <Compile Include="Entities\IHasSpecialFeatures.cs" />
     <Compile Include="Entities\IHasStartDate.cs" />
     <Compile Include="Entities\IHasTaglines.cs" />

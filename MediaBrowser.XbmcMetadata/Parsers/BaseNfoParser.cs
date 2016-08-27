@@ -365,15 +365,11 @@ namespace MediaBrowser.XbmcMetadata.Parsers
                     {
                         var val = reader.ReadElementContentAsString();
 
-                        if (!string.IsNullOrWhiteSpace(val))
+                        if (!string.IsNullOrWhiteSpace(val) && string.IsNullOrWhiteSpace(item.Overview))
                         {
-                            var hasShortOverview = item as IHasShortOverview;
-
-                            if (hasShortOverview != null)
-                            {
-                                hasShortOverview.ShortOverview = val;
-                            }
+                            item.Overview = val;
                         }
+
                         break;
                     }
 
