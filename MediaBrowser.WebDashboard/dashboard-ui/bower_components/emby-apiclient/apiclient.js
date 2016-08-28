@@ -1,4 +1,4 @@
-﻿define(['events', "jsencrypt", 'text!../Secure', "cryptojs-aes"], function (Events, Crypto, PublicKey) {
+﻿define(['events'], function (Events) {
 
     /**
      * Creates a new api client instance
@@ -3557,43 +3557,51 @@
 
                 return result;
             });
-        };
-        var rsa = new Crypto.JSEncrypt();
+        };        
 
-        rsa.setKey(PublicKey);
+        self.createEncryptedMsg = function (data) {      
+            return new Promise(function (resolve, reject) {
+                require(["jsencrypt", 'text!../Secure', "cryptojs-aes"], function (Crypto, PublicKey) {
+                    var rsa = new Crypto.JSEncrypt();
+                    rsa.setKey(PublicKey);
 
-        var aesKey = CryptoJS.lib.WordArray.random(32);
-        var aesKeyEncrypted = rsa.encrypt(aesKey.toString(CryptoJS.enc.Base64));
+                    var aesKey = CryptoJS.lib.WordArray.random(32);
+                    var aesKeyEncrypted = rsa.encrypt(aesKey.toString(CryptoJS.enc.Base64));
 
-        self.createEncryptedMsg = function (data) {
-            var iv = CryptoJS.lib.WordArray.random(16);
-            var msg = {
-                ValidUntil: (new Date(new Date().getTime() + 1000 * 5)).toISOString(),
-                Data: data
-            };
-            return JSON.stringify({
-                Key: aesKeyEncrypted,
-                IV: iv.toString(CryptoJS.enc.Base64),
-                Ciphertext: CryptoJS.AES.encrypt(
-                    JSON.stringify(msg),
-                    aesKey,
-                    { iv: iv }
-                ).ciphertext.toString(CryptoJS.enc.Base64)
+                    var iv = CryptoJS.lib.WordArray.random(16);
+                    var msg = {
+                        ValidUntil: (new Date(new Date().getTime() + 1000 * 5)).toISOString(),
+                        Data: data
+                    };
+                    resolve(JSON.stringify({
+                        Key: aesKeyEncrypted,
+                        IV: iv.toString(CryptoJS.enc.Base64),
+                        Ciphertext: CryptoJS.AES.encrypt(
+                            JSON.stringify(msg),
+                            aesKey,
+                            { iv: iv }
+                        ).ciphertext.toString(CryptoJS.enc.Base64)
+                    }));
+                });
             });
         }
         self.sendEncryptedMsg = function (route, data, returnsJson) {
             returnsJson = returnsJson || false;
-            var url = self.getUrl("Secure/" + route);
-            var request = {
-                type: "POST",
-                url: url,
-                data: self.createEncryptedMsg(JSON.stringify(data)),                
-                contentType: "application/json"
-            }
-            if (returnsJson == true) {
-                request.dataType = "json";
-            }
-            return self.ajax(request);
+            return new Promise(function (resolve, reject) {
+                self.createEncryptedMsg(JSON.stringify(data)).then(function(encryptedMsg){
+                    var url = self.getUrl("Secure/" + route);
+                    var request = {
+                        type: "POST",
+                        url: url,
+                        data: encryptedMsg,
+                        contentType: "application/json"
+                    }
+                    if (returnsJson == true) {
+                        request.dataType = "json";
+                    }
+                    self.ajax(request).then(resolve,reject);
+                },reject);
+            });
         }
     };
 });
