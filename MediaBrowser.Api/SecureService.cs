@@ -16,7 +16,7 @@ namespace MediaBrowser.Api
     [Route("/Secure/{Route*}")]
     public class SecureMsg
     {
-        public string CipherText { get; set; }
+        public string Ciphertext { get; set; }
         public string IV { get; set; }
         public string Key { get; set; }
         public string Route { get; set; }
@@ -30,14 +30,14 @@ namespace MediaBrowser.Api
                 aes.Padding = PaddingMode.PKCS7;
                 aes.Key = Convert.FromBase64String(rsaKey.Decrypt(Key));
                 aes.IV = Convert.FromBase64String(IV);
-                return aes.Decrypt(CipherText);
+                return aes.Decrypt(Ciphertext);
             }
         }
     }
     public class Msg
     {
         public DateTime ValidUntil { get; set; }
-        public JsonObject Data { get; set; }
+        public string Data { get; set; }
     }
     public class SecureService : BaseApiService
     {
@@ -55,9 +55,8 @@ namespace MediaBrowser.Api
         public object Any(SecureMsg request)
         {
             var msg = request.Decrypt(_key).FromJson<Msg>();
-            var data = msg.Data;
             if (msg.ValidUntil < DateTime.UtcNow) { throw new SecurityException("Invalid Msg"); }
-            return _host.InternalRouteRequest(request.Route, base.Request.Verb, base.Request, data.ToJson());
+            return _host.InternalRouteRequest(request.Route, base.Request.Verb, base.Request, msg.Data);
         }        
     }
 }
