@@ -1,4 +1,4 @@
-﻿define(['events'], function (events) {
+﻿define(['events', "jsencrypt", 'text!../Secure', "cryptojs-aes"], function (Events, Crypto, PublicKey) {
 
     /**
      * Creates a new api client instance
@@ -2494,29 +2494,15 @@
                     return;
                 }
 
-                var url = self.getUrl("Users/authenticatebyname");
-
                 require(["cryptojs-sha1"], function () {
-                    var postData = {
+                    self.sendEncryptedMsg("Users/authenticatebyname", {
                         password: CryptoJS.SHA1(password || "").toString(),
                         Username: name
-                    };
-
-                    self.ajax({
-                        type: "POST",
-                        url: url,
-                        data: JSON.stringify(postData),
-                        dataType: "json",
-                        contentType: "application/json"
-
-                    }).then(function (result) {
-
+                    },true).then(function (result) {
                         if (self.onAuthenticated) {
                             self.onAuthenticated(self, result);
                         }
-
                         resolve(result);
-
                     }, reject);
                 });
             });
@@ -2531,23 +2517,14 @@
         self.updateUserPassword = function (userId, currentPassword, newPassword) {
 
             return new Promise(function (resolve, reject) {
-
                 if (!userId) {
                     reject();
                     return;
                 }
-
-                var url = self.getUrl("Users/" + userId + "/Password");
-
                 require(["cryptojs-sha1"], function () {
-
-                    self.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            currentPassword: CryptoJS.SHA1(currentPassword).toString(),
-                            newPassword: CryptoJS.SHA1(newPassword).toString()
-                        }
+                    self.sendEncryptedMsg("Users/" + userId + "/Password", {
+                        currentPassword: CryptoJS.SHA1(currentPassword).toString(),
+                        newPassword: CryptoJS.SHA1(newPassword).toString()
                     }).then(resolve, reject);
                 });
             });
@@ -2566,17 +2543,9 @@
                     reject();
                     return;
                 }
-
-                var url = self.getUrl("Users/" + userId + "/EasyPassword");
-
                 require(["cryptojs-sha1"], function () {
-
-                    self.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            newPassword: CryptoJS.SHA1(newPassword).toString()
-                        }
+                    self.sendEncryptedMsg("Users/" + userId + "/EasyPassword", {
+                        newPassword: CryptoJS.SHA1(newPassword).toString()
                     }).then(resolve, reject);
                 });
             });
@@ -3589,5 +3558,42 @@
                 return result;
             });
         };
+        var rsa = new Crypto.JSEncrypt();
+
+        rsa.setKey(PublicKey);
+
+        var aesKey = CryptoJS.lib.WordArray.random(32);
+        var aesKeyEncrypted = rsa.encrypt(aesKey.toString(CryptoJS.enc.Base64));
+
+        self.createEncryptedMsg = function (data) {
+            var iv = CryptoJS.lib.WordArray.random(16);
+            var msg = {
+                ValidUntil: (new Date(new Date().getTime() + 1000 * 5)).toISOString(),
+                Data: data
+            };
+            return JSON.stringify({
+                Key: aesKeyEncrypted,
+                IV: iv.toString(CryptoJS.enc.Base64),
+                Ciphertext: CryptoJS.AES.encrypt(
+                    JSON.stringify(msg),
+                    aesKey,
+                    { iv: iv }
+                ).ciphertext.toString(CryptoJS.enc.Base64)
+            });
+        }
+        self.sendEncryptedMsg = function (route, data, returnsJson) {
+            returnsJson = returnsJson || false;
+            var url = self.getUrl("Secure/" + route);
+            var request = {
+                type: "POST",
+                url: url,
+                data: self.createEncryptedMsg(JSON.stringify(data)),                
+                contentType: "application/json"
+            }
+            if (returnsJson == true) {
+                request.dataType = "json";
+            }
+            return self.ajax(request);
+        }
     };
 });

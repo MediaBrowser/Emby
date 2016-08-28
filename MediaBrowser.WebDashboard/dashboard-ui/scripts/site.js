@@ -1237,8 +1237,17 @@ var AppInfo = {};
             itemShortcuts: embyWebComponentsBowerPath + "/shortcuts",
             imageLoader: embyWebComponentsBowerPath + "/images/imagehelper",
             serverNotifications: embyWebComponentsBowerPath + '/servernotifications',
-            webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min'
-        };
+            webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min',
+            jsencrypt: "thirdparty/jsencrypt.min",
+            text: "bower_components/text/text",
+            'cryptojs': bowerPath +"/cryptojslib/components/core-min",
+            'cryptojs-md5': bowerPath +"/cryptojslib/components/md5-min",
+            'cryptojs-cipher-core':  bowerPath +"/cryptojslib/components/cipher-core-min",
+            'cryptojs-evpkdf':  bowerPath +"/cryptojslib/components/evpkdf-min",
+            'cryptojs-enc-base64':  bowerPath +"/cryptojslib/components/enc-base64-min",
+            'cryptojs-sha1':  bowerPath +"/cryptojslib/components/sha1-min",
+            'cryptojs-aes':  bowerPath +"/cryptojslib/components/aes-min"
+        };      
 
         paths.hlsjs = bowerPath + "/hls.js/dist/hls.min";
 
@@ -1338,16 +1347,13 @@ var AppInfo = {};
             paths.appStorage = getAppStorage(apiClientBowerPath);
         }
 
-        var sha1Path = bowerPath + "/cryptojslib/components/sha1-min";
-        var md5Path = bowerPath + "/cryptojslib/components/md5-min";
-        var shim = {};
-
-        shim[sha1Path] = {
-            deps: [bowerPath + "/cryptojslib/components/core-min"]
-        };
-
-        shim[md5Path] = {
-            deps: [bowerPath + "/cryptojslib/components/core-min"]
+        var shim = {
+            'cryptojs-aes': ['cryptojs-md5','cryptojs-cipher-core','cryptojs-evpkdf','cryptojs-enc-base64','cryptojs'],
+            'cryptojs-sha1':['cryptojs'],
+            'cryptojs-md5': ['cryptojs'],
+            'cryptojs-cipher-core': ['cryptojs'],
+            'cryptojs-evpkdf': ['cryptojs'],
+            'cryptojs-enc-base64': ['cryptojs']
         };
 
         requirejs.config({
@@ -1364,9 +1370,6 @@ var AppInfo = {};
             paths: paths,
             shim: shim
         });
-
-        define("cryptojs-sha1", [sha1Path]);
-        define("cryptojs-md5", [md5Path]);
 
         define("paper-checkbox", ["html!" + bowerPath + "/paper-checkbox/paper-checkbox.html"]);
 
