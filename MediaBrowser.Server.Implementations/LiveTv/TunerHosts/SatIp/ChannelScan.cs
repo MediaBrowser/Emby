@@ -67,7 +67,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp
                                 tuning = string.Format("src={0}&freq={1}&pol={2}&sr={3}&fec={4}&msys=dvbs&mtype={5}&pids=0,16,17,18,20", source, strArray[0], strArray[1].ToLower(), strArray[2], strArray[3], strArray[5].ToLower());
                             }
 
-                            rtspSession.Setup(tuning, "unicast");
+                            rtspSession.Setup(tuning, TransmissionMode.Unicast);
 
                             rtspSession.Play(string.Empty);
 

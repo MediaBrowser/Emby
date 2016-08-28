@@ -88,12 +88,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public string RtspStreamId
         {
             get { return _rtspStreamId; }
-            set { if (_rtspStreamId != value) { _rtspStreamId = value; OnPropertyChanged("RtspStreamId"); } }
+            set { if (_rtspStreamId != value) { _rtspStreamId = value;  } }
         }
         public string RtspStreamUrl
         {
             get { return _rtspStreamUrl; }
-            set { if (_rtspStreamUrl != value) { _rtspStreamUrl = value; OnPropertyChanged("RtspStreamUrl"); } }
+            set { if (_rtspStreamUrl != value) { _rtspStreamUrl = value;  } }
         }
 
         public int RtspSessionTimeToLive
@@ -104,7 +104,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                     _rtspSessionTimeToLive = DefaultRtspSessionTimeout;
                 return _rtspSessionTimeToLive * 1000 - 20;
             }
-            set { if (_rtspSessionTimeToLive != value) { _rtspSessionTimeToLive = value; OnPropertyChanged("RtspSessionTimeToLive"); } }
+            set { if (_rtspSessionTimeToLive != value) { _rtspSessionTimeToLive = value;  } }
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 if (_destination != value)
                 {
                     _destination = value;
-                    OnPropertyChanged("Destination");
+                    
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 if (_source != value)
                 {
                     _source = value;
-                    OnPropertyChanged("Source");
+                    
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             {
                 return _serverRtpPort;
             }
-            set { if (_serverRtpPort != value) { _serverRtpPort = value; OnPropertyChanged("ServerRtpPort"); } }
+            set { if (_serverRtpPort != value) { _serverRtpPort = value;  } }
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public int ServerRtcpPort
         {
             get { return _serverRtcpPort; }
-            set { if (_serverRtcpPort != value) { _serverRtcpPort = value; OnPropertyChanged("ServerRtcpPort"); } }
+            set { if (_serverRtcpPort != value) { _serverRtcpPort = value;  } }
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public int ClientRtpPort
         {
             get { return _clientRtpPort; }
-            set { if (_clientRtpPort != value) { _clientRtpPort = value; OnPropertyChanged("ClientRtpPort"); } }
+            set { if (_clientRtpPort != value) { _clientRtpPort = value;  } }
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public int ClientRtcpPort
         {
             get { return _clientRtcpPort; }
-            set { if (_clientRtcpPort != value) { _clientRtcpPort = value; OnPropertyChanged("ClientRtcpPort"); } }
+            set { if (_clientRtcpPort != value) { _clientRtcpPort = value;  } }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public int RtpPort
         {
             get { return _rtpPort; }
-            set { if (_rtpPort != value) { _rtpPort = value; OnPropertyChanged("RtpPort"); } }
+            set { if (_rtpPort != value) { _rtpPort = value;  } }
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
         public int RtcpPort
         {
             get { return _rtcpPort; }
-            set { if (_rtcpPort != value) { _rtcpPort = value; OnPropertyChanged("RtcpPort"); } }
+            set { if (_rtcpPort != value) { _rtcpPort = value;  } }
         }
 
         #endregion
@@ -232,19 +232,19 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 if (_transport != value)
                 {
                     _transport = value;
-                    OnPropertyChanged("Transport");
+                    
                 }
             }
         }
         public int SignalLevel
         {
             get { return _signalLevel; }
-            set { if (_signalLevel != value) { _signalLevel = value; OnPropertyChanged("SignalLevel"); } }
+            set { if (_signalLevel != value) { _signalLevel = value;  } }
         }
         public int SignalQuality
         {
             get { return _signalQuality; }
-            set { if (_signalQuality != value) { _signalQuality = value; OnPropertyChanged("SignalQuality"); } }
+            set { if (_signalQuality != value) { _signalQuality = value; } }
         }
 
         #endregion
@@ -306,14 +306,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                                 var ports = parts[1].Split('-');
                                 var rtp = int.Parse(ports[0]);
                                 var rtcp = int.Parse(ports[1]);
-                                //if (!rtp.Equals(_rtpPort))
-                                //{
-                                //    Logger.Error("SAT>IP base: server specified RTP client port {0} instead of {1}", rtp, _rtpPort);
-                                //}
-                                //if (!rtcp.Equals(_rtcpPort))
-                                //{
-                                //    Logger.Error("SAT>IP base: server specified RTCP client port {0} instead of {1}", rtcp, _rtcpPort);
-                                //}
+                                
                                 _rtpPort = rtp;
                                 _rtcpPort = rtcp;
                             }
@@ -399,12 +392,12 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
 
         #region Public Methods
 
-        public RtspStatusCode Setup(string query, string transporttype)
+        public RtspStatusCode Setup(string query, TransmissionMode transporttype)
         {
 
             RtspRequest request;
             RtspResponse response;
-            //_rtspClient = new RtspClient(_rtspDevice.ServerAddress);
+            
             if ((_rtspSocket == null))
             {
                 Connect();
@@ -414,10 +407,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 request = new RtspRequest(RtspMethod.Setup, string.Format("rtsp://{0}:{1}/?{2}", _address, 554, query), 1, 0);
                 switch (transporttype)
                 {
-                    case "multicast":
+                    case TransmissionMode.Multicast:
                         request.Headers.Add("Transport", string.Format("RTP/AVP;multicast"));
                         break;
-                    case "unicast":
+                    case TransmissionMode.Unicast:
                         var activeTcpConnections = IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections();
                         var usedPorts = new HashSet<int>();
                         foreach (var connection in activeTcpConnections)
@@ -443,10 +436,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 request = new RtspRequest(RtspMethod.Setup, string.Format("rtsp://{0}:{1}/?{2}", _address, 554, query), 1, 0);
                 switch (transporttype)
                 {
-                    case "multicast":
+                    case TransmissionMode.Multicast:
                         request.Headers.Add("Transport", string.Format("RTP/AVP;multicast"));
                         break;
-                    case "unicast":
+                    case TransmissionMode.Unicast:
                         request.Headers.Add("Transport", string.Format("RTP/AVP;unicast;client_port={0}-{1}", _clientRtpPort, _clientRtcpPort));
                         break;
                 }
@@ -455,10 +448,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             SendRequest(request);
             ReceiveResponse(out response);
 
-            //if (_rtspClient.SendRequest(request, out response) != RtspStatusCode.Ok)
-            //{
-            //    Logger.Error("Failed to tune, non-OK RTSP SETUP status code {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //}
+            
             if (!response.Headers.TryGetValue("com.ses.streamID", out _rtspStreamId))
             {
                 _logger.Error(string.Format("Failed to tune, not able to locate Stream ID header in RTSP SETUP response"));
@@ -484,7 +474,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             {
                 Connect();
             }
-            //_rtspClient = new RtspClient(_rtspDevice.ServerAddress);
+            
             RtspResponse response;
             string data;
             if (string.IsNullOrEmpty(query))
@@ -501,11 +491,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             request.Headers.Add("Session", _rtspSessionId);
             SendRequest(request);
             ReceiveResponse(out response);
-            //if (_rtspClient.SendRequest(request, out response) != RtspStatusCode.Ok)
-            //{
-            //    Logger.Error("Failed to tune, non-OK RTSP SETUP status code {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //}
-            //Logger.Info("RtspSession-Play : \r\n {0}", response);
+            
             string sessionHeader;
             if (!response.Headers.TryGetValue("Session", out sessionHeader))
             {
@@ -526,7 +512,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             {
                 Connect();
             }
-            //_rtspClient = new RtspClient(_rtspDevice.ServerAddress);
+            
             RtspRequest request;
             RtspResponse response;
 
@@ -542,11 +528,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             }
             SendRequest(request);
             ReceiveResponse(out response);
-            //if (_rtspClient.SendRequest(request, out response) != RtspStatusCode.Ok)
-            //{
-            //    Logger.Error("Failed to tune, non-OK RTSP SETUP status code {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //}
-            //Logger.Info("RtspSession-Options : \r\n {0}", response);
+           
             string sessionHeader;
             if (!response.Headers.TryGetValue("Session", out sessionHeader))
             {
@@ -567,7 +549,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             {
                 Connect();
             }
-            //_rtspClient = new RtspClient(_rtspDevice.ServerAddress);
+           
             RtspRequest request;
             RtspResponse response;
             level = 0;
@@ -587,11 +569,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             }
             SendRequest(request);
             ReceiveResponse(out response);
-            //if (_rtspClient.SendRequest(request, out response) != RtspStatusCode.Ok)
-            //{
-            //    Logger.Error("Failed to tune, non-OK RTSP Describe status code {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //}
-            //Logger.Info("RtspSession-Describe : \r\n {0}", response);
+            
             string sessionHeader;
             if (!response.Headers.TryGetValue("Session", out sessionHeader))
             {
@@ -607,20 +585,6 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
                 quality = int.Parse(m.Groups[3].Captures[0].Value) * 100 / 15;   // quality: 0..15 => 0..100
 
             }
-            /*              
-                v=0
-                o=- 1378633020884883 1 IN IP4 192.168.2.108
-                s=SatIPServer:1 4
-                t=0 0
-                a=tool:idl4k
-                m=video 52780 RTP/AVP 33
-                c=IN IP4 0.0.0.0
-                b=AS:5000
-                a=control:stream=4
-                a=fmtp:33 ver=1.0;tuner=1,0,0,0,12344,h,dvbs2,,off,,22000,34;pids=0,100,101,102,103,106
-                =sendonly
-             */
-
 
             return response.StatusCode;
         }
@@ -631,40 +595,22 @@ namespace MediaBrowser.Server.Implementations.LiveTv.TunerHosts.SatIp.Rtsp
             {
                 Connect();
             }
-            //_rtspClient = new RtspClient(_rtspDevice.ServerAddress);
+            
             RtspResponse response;
 
             var request = new RtspRequest(RtspMethod.Teardown, string.Format("rtsp://{0}:{1}/stream={2}", _address, 554, _rtspStreamId), 1, 0);
             request.Headers.Add("Session", _rtspSessionId);
             SendRequest(request);
             ReceiveResponse(out response);
-            //if (_rtspClient.SendRequest(request, out response) != RtspStatusCode.Ok)
-            //{
-            //    Logger.Error("Failed to tune, non-OK RTSP Teardown status code {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //}            
+                      
             return response.StatusCode;
         }
 
         #endregion
 
-        #region Public Events
+        
 
-        ////public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
-
-        #region Protected Methods
-
-        protected void OnPropertyChanged(string name)
-        {
-            //var handler = PropertyChanged;
-            //if (handler != null)
-            //{
-            //    handler(this, new PropertyChangedEventArgs(name));
-            //}
-        }
-
-        #endregion
+        
 
         public void Dispose()
         {
