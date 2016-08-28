@@ -1176,7 +1176,6 @@ var AppInfo = {};
             serverNotifications: embyWebComponentsBowerPath + '/servernotifications',
             webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min',
             jsencrypt: "thirdparty/jsencrypt.min",
-            text: "bower_components/text/text",
             'cryptojs': bowerPath +"/cryptojslib/components/core-min",
             'cryptojs-md5': bowerPath +"/cryptojslib/components/md5-min",
             'cryptojs-cipher-core':  bowerPath +"/cryptojslib/components/cipher-core-min",
