@@ -92,7 +92,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
         private IDbCommand _deleteImagesCommand;
         private IDbCommand _saveImagesCommand;
 
-        private IDbCommand _updateInheritedRatingCommand;
         private IDbCommand _updateInheritedTagsCommand;
 
         public const int LatestSchemaVersion = 109;
@@ -211,7 +210,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             _connection.AddColumn(Logger, "TypedBaseItems", "ProductionYear", "INT");
             _connection.AddColumn(Logger, "TypedBaseItems", "ParentId", "GUID");
             _connection.AddColumn(Logger, "TypedBaseItems", "Genres", "Text");
-            _connection.AddColumn(Logger, "TypedBaseItems", "ParentalRatingValue", "INT");
             _connection.AddColumn(Logger, "TypedBaseItems", "SchemaVersion", "INT");
             _connection.AddColumn(Logger, "TypedBaseItems", "SortName", "Text");
             _connection.AddColumn(Logger, "TypedBaseItems", "RunTimeTicks", "BIGINT");
@@ -413,7 +411,8 @@ namespace MediaBrowser.Server.Implementations.Persistence
             "SeasonId",
             "SeriesId",
             "SeriesSortName",
-            "PresentationUniqueKey"
+            "PresentationUniqueKey",
+            "InheritedParentalRatingValue"
         };
 
         private readonly string[] _mediaStreamSaveColumns =
@@ -488,7 +487,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 "ProductionYear",
                 "ParentId",
                 "Genres",
-                "ParentalRatingValue",
                 "InheritedParentalRatingValue",
                 "SchemaVersion",
                 "SortName",
@@ -612,11 +610,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
             {
                 _saveStreamCommand.Parameters.Add(_saveStreamCommand, "@" + col);
             }
-
-            _updateInheritedRatingCommand = _connection.CreateCommand();
-            _updateInheritedRatingCommand.CommandText = "Update TypedBaseItems set InheritedParentalRatingValue=@InheritedParentalRatingValue where Guid=@Guid";
-            _updateInheritedRatingCommand.Parameters.Add(_updateInheritedRatingCommand, "@Guid");
-            _updateInheritedRatingCommand.Parameters.Add(_updateInheritedRatingCommand, "@InheritedParentalRatingValue");
 
             _updateInheritedTagsCommand = _connection.CreateCommand();
             _updateInheritedTagsCommand.CommandText = "Update TypedBaseItems set InheritedTags=@InheritedTags where Guid=@Guid";
@@ -795,7 +788,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
                     }
 
                     _saveItemCommand.GetParameter(index++).Value = string.Join("|", item.Genres.ToArray());
-                    _saveItemCommand.GetParameter(index++).Value = item.GetParentalRatingValue() ?? 0;
                     _saveItemCommand.GetParameter(index++).Value = item.GetInheritedParentalRatingValue() ?? 0;
 
                     _saveItemCommand.GetParameter(index++).Value = LatestSchemaVersion;
@@ -945,7 +937,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     _saveItemCommand.GetParameter(index++).Value = item.Album;
 
-                    _saveItemCommand.GetParameter(index++).Value = item.IsVirtualItem || (!item.IsFolder && item.LocationType == LocationType.Virtual);
+                    _saveItemCommand.GetParameter(index++).Value = item.IsVirtualItem;
 
                     var hasSeries = item as IHasSeries;
                     if (hasSeries != null)
@@ -1458,6 +1450,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
             if (!reader.IsDBNull(index))
             {
                 item.PresentationUniqueKey = reader.GetString(index);
+            }
+            index++;
+
+            if (!reader.IsDBNull(index))
+            {
+                item.InheritedParentalRatingValue = reader.GetInt32(index);
             }
             index++;
 
@@ -3405,7 +3403,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public async Task UpdateInheritedValues(CancellationToken cancellationToken)
         {
-            await UpdateInheritedParentalRating(cancellationToken).ConfigureAwait(false);
             await UpdateInheritedTags(cancellationToken).ConfigureAwait(false);
         }
 
@@ -3450,82 +3447,6 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                     _updateInheritedTagsCommand.Transaction = transaction;
                     _updateInheritedTagsCommand.ExecuteNonQuery();
-                }
-
-                transaction.Commit();
-            }
-            catch (OperationCanceledException)
-            {
-                if (transaction != null)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
-            }
-            catch (Exception e)
-            {
-                Logger.ErrorException("Error running query:", e);
-
-                if (transaction != null)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
-            }
-            finally
-            {
-                if (transaction != null)
-                {
-                    transaction.Dispose();
-                }
-
-                WriteLock.Release();
-            }
-        }
-
-        private async Task UpdateInheritedParentalRating(CancellationToken cancellationToken)
-        {
-            var newValues = new List<Tuple<Guid, int>>();
-
-            using (var cmd = _connection.CreateCommand())
-            {
-                cmd.CommandText = "select Guid,InheritedParentalRatingValue,(select Max(InheritedParentalRatingValue, (select COALESCE(MAX(InheritedParentalRatingValue),0) from TypedBaseItems where guid in (Select AncestorId from AncestorIds where ItemId=Outer.guid)))) as NewInheritedParentalRatingValue from typedbaseitems as Outer where InheritedParentalRatingValue <> NewInheritedParentalRatingValue";
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                {
-                    while (reader.Read())
-                    {
-                        var id = reader.GetGuid(0);
-                        var newValue = reader.GetInt32(2);
-
-                        newValues.Add(new Tuple<Guid, int>(id, newValue));
-                    }
-                }
-            }
-
-            Logger.Debug("UpdateInheritedParentalRatings - {0} rows", newValues.Count);
-            if (newValues.Count == 0)
-            {
-                return;
-            }
-
-            await WriteLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            IDbTransaction transaction = null;
-
-            try
-            {
-                transaction = _connection.BeginTransaction();
-
-                foreach (var item in newValues)
-                {
-                    _updateInheritedRatingCommand.GetParameter(0).Value = item.Item1;
-                    _updateInheritedRatingCommand.GetParameter(1).Value = item.Item2;
-
-                    _updateInheritedRatingCommand.Transaction = transaction;
-                    _updateInheritedRatingCommand.ExecuteNonQuery();
                 }
 
                 transaction.Commit();
@@ -4286,6 +4207,12 @@ namespace MediaBrowser.Server.Implementations.Persistence
             var index = 0;
             foreach (var image in images)
             {
+                if (string.IsNullOrWhiteSpace(image.Path))
+                {
+                    // Invalid
+                    continue;
+                }
+
                 _saveImagesCommand.GetParameter(0).Value = itemId;
                 _saveImagesCommand.GetParameter(1).Value = image.Type;
                 _saveImagesCommand.GetParameter(2).Value = image.Path;

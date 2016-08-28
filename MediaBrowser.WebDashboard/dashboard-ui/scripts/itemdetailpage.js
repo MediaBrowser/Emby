@@ -1531,16 +1531,7 @@
 
             renderThemeSongs(page, themeSongs);
             renderThemeVideos(page, themeVideos);
-
-            page.dispatchEvent(new CustomEvent("thememediadownload", {
-                detail: {
-                    themeMediaResult: result
-                },
-                bubbles: true
-            }));
-
         });
-
     }
 
     function renderThemeSongs(page, items) {
@@ -1829,7 +1820,7 @@
 
             var item = items[i];
 
-            var cssClass = "card backdropCard scalableCard";
+            var cssClass = "card backdropCard scalableCard backdropCard-scalable";
 
             var href = "itemdetails.html?id=" + item.Id;
 
@@ -2050,7 +2041,8 @@
     function onSyncClick() {
         require(['syncDialog'], function (syncDialog) {
             syncDialog.showMenu({
-                items: [currentItem]
+                items: [currentItem],
+                serverId: ApiClient.serverId()
             });
         });
     }
@@ -2066,7 +2058,10 @@
             if (this.checked) {
                 require(['syncDialog'], function (syncDialog) {
                     syncDialog.showMenu({
-                        items: [currentItem]
+                        items: [currentItem],
+                        isLocalSync: true,
+                        serverId: ApiClient.serverId()
+
                     }).then(function () {
                         reload(view, params);
                     }, resetSyncStatus);

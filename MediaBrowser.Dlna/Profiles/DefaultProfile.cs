@@ -33,7 +33,6 @@ namespace MediaBrowser.Dlna.Profiles
             MaxStreamingBitrate = 20000000;
             MaxStaticBitrate = 20000000;
             MusicStreamingTranscodingBitrate = 192000;
-            MusicSyncBitrate = 192000;
 
             EnableAlbumArtInDidl = false;
 
@@ -75,6 +74,15 @@ namespace MediaBrowser.Dlna.Profiles
                 {
                     Container = "mp3,wma,aac,wav",
                     Type = DlnaProfileType.Audio
+                }
+            };
+
+            SubtitleProfiles = new[]
+            {
+                new SubtitleProfile
+                {
+                    Format = "srt",
+                    Method = SubtitleDeliveryMethod.Embed
                 }
             };
 

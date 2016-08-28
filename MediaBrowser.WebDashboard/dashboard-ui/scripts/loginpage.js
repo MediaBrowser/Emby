@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser', 'cardStyle'], function (libraryBrowser) {
+﻿define(['appSettings', 'cardStyle', 'emby-checkbox'], function (appSettings) {
 
     function getApiClient() {
 
@@ -82,6 +82,8 @@
 
     function showManualForm(context, showCancel, focusPassword) {
 
+        context.querySelector('.chkRememberLogin').checked = appSettings.enableAutoLogin();
+
         context.querySelector('.manualLoginForm').classList.remove('hide');
         context.querySelector('.visualLoginForm').classList.add('hide');
 
@@ -129,9 +131,9 @@
         for (var i = 0, length = users.length; i < length; i++) {
             var user = users[i];
 
-            html += '<div class="card squareCard scalableCard"><div class="cardBox cardBox-bottompadded visualCardBox">';
+            html += '<div class="card squareCard scalableCard squareCard-scalable"><div class="cardBox cardBox-bottompadded visualCardBox">';
 
-            html += '<div class="cardScalable">';
+            html += '<div class="cardScalable visualCardBox-cardScalable">';
 
             html += '<div class="cardPadder cardPadder-square"></div>';
             html += '<a class="cardContent" href="#" data-ajax="false" data-haspw="' + user.HasPassword + '" data-username="' + user.Name + '" data-userid="' + user.Id + '">';
@@ -146,7 +148,7 @@
                     type: "Primary"
                 });
 
-                html += '<div class="cardImageContainer coveredImage noScale" style="background-image:url(\'' + imgUrl + '\');"></div>';
+                html += '<div class="cardImageContainer coveredImage coveredImage-noScale" style="background-image:url(\'' + imgUrl + '\');"></div>';
             }
             else {
 
@@ -154,13 +156,13 @@
 
                 imgUrl = 'css/images/logindefault.png';
 
-                html += '<div class="cardImageContainer coveredImage noScale" style="background-image:url(\'' + imgUrl + '\');background-color:' + background + ';"></div>';
+                html += '<div class="cardImageContainer coveredImage coveredImage-noScale" style="background-image:url(\'' + imgUrl + '\');background-color:' + background + ';"></div>';
             }
 
             html += '</a>';
             html += '</div>';
 
-            html += '<div class="cardFooter">';
+            html += '<div class="cardFooter visualCardBox-cardFooter">';
             html += '<div class="cardText">' + user.Name + '</div>';
 
             html += '<div class="cardText cardText-secondary">';
@@ -224,6 +226,8 @@
         });
 
         view.querySelector('.manualLoginForm').addEventListener('submit', function (e) {
+
+            appSettings.enableAutoLogin(view.querySelector('.chkRememberLogin').checked);
 
             var apiClient = getApiClient();
             LoginPage.authenticateUserByName(view, apiClient, view.querySelector('#txtManualName').value, view.querySelector('#txtManualPassword').value);

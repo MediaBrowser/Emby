@@ -43,10 +43,10 @@
             configPageUrl :
             null;
 
-        html += "<div data-id='" + plugin.Id + "' data-name='" + plugin.Name + "' class='card backdropCard scalableCard'>";
+        html += "<div data-id='" + plugin.Id + "' data-name='" + plugin.Name + "' class='card backdropCard scalableCard backdropCard-scalable'>";
 
         html += '<div class="cardBox cardBox-bottompadded visualCardBox">';
-        html += '<div class="cardScalable">';
+        html += '<div class="cardScalable visualCardBox-cardScalable">';
 
         html += '<div class="cardPadder cardPadder-backdrop"></div>';
 
@@ -81,7 +81,7 @@
         // cardScalable
         html += "</div>";
 
-        html += '<div class="cardFooter">';
+        html += '<div class="cardFooter visualCardBox-cardFooter">';
 
         html += '<div style="text-align:right; float:right;padding-top:5px;">';
         html += '<button type="button" is="paper-icon-button-light" class="btnCardMenu autoSize"><i class="md-icon">more_vert</i></button>';

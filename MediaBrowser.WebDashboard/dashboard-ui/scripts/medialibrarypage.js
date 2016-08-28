@@ -297,10 +297,10 @@
             style += "min-width:33.3%;";
         }
 
-        html += '<div class="card backdropCard scalableCard" style="' + style + '" data-index="' + index + '">';
+        html += '<div class="card backdropCard scalableCard backdropCard-scalable" style="' + style + '" data-index="' + index + '">';
 
         html += '<div class="cardBox visualCardBox">';
-        html += '<div class="cardScalable">';
+        html += '<div class="cardScalable visualCardBox-cardScalable">';
 
         html += '<div class="cardPadder cardPadder-backdrop"></div>';
 
@@ -342,7 +342,7 @@
         // cardScalable
         html += "</div>";
 
-        html += '<div class="cardFooter">';
+        html += '<div class="cardFooter visualCardBox-cardFooter">';
 
         if (virtualFolder.showMenu !== false) {
             var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';

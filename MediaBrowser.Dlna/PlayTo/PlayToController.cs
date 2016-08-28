@@ -99,11 +99,11 @@ namespace MediaBrowser.Dlna.PlayTo
         public void Init(Device device)
         {
             _device = device;
+            _device.OnDeviceUnavailable = OnDeviceUnavailable;
             _device.PlaybackStart += _device_PlaybackStart;
             _device.PlaybackProgress += _device_PlaybackProgress;
             _device.PlaybackStopped += _device_PlaybackStopped;
             _device.MediaChanged += _device_MediaChanged;
-            _device.OnDeviceUnavailable = OnDeviceUnavailable;
 
             _device.Start();
 
@@ -221,7 +221,7 @@ namespace MediaBrowser.Dlna.PlayTo
             {
                 await _sessionManager.OnPlaybackStopped(new PlaybackStopInfo
                 {
-                    ItemId = mediaInfo.Id,
+                    ItemId = streamInfo.ItemId,
                     SessionId = _session.Id,
                     PositionTicks = positionTicks,
                     MediaSourceId = streamInfo.MediaSourceId

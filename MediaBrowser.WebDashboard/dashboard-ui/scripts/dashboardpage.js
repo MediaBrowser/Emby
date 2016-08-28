@@ -16,9 +16,22 @@
         renderNoHealthAlertsMessage(page);
     }
 
+    function onConnectionHelpClick(e) {
+
+        e.preventDefault();
+        return false;
+    }
+
     window.DashboardPage = {
 
         newsStartIndex: 0,
+
+        onPageInit: function () {
+
+            var page = this;
+
+            page.querySelector('.btnConnectionHelp').addEventListener('click', onConnectionHelpClick);
+        },
 
         onPageShow: function () {
 
@@ -309,7 +322,7 @@
 
                 var nowPlayingItem = session.NowPlayingItem;
 
-                var className = nowPlayingItem ? 'scalableCard card activeSession backdropCard' : 'scalableCard card activeSession backdropCard';
+                var className = nowPlayingItem ? 'scalableCard card activeSession backdropCard backdropCard-scalable' : 'scalableCard card activeSession backdropCard backdropCard-scalable';
 
                 if (session.TranscodingInfo && session.TranscodingInfo.CompletionPercentage) {
                     className += ' transcodingSession';
@@ -318,7 +331,7 @@
                 html += '<div class="' + className + '" id="' + rowId + '">';
 
                 html += '<div class="cardBox visualCardBox">';
-                html += '<div class="cardScalable">';
+                html += '<div class="cardScalable visualCardBox-cardScalable">';
 
                 html += '<div class="cardPadder cardPadder-backdrop"></div>';
                 html += '<div class="cardContent">';
@@ -1026,7 +1039,7 @@
         }
     };
 
-    $(document).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pagebeforehide', "#dashboardPage", DashboardPage.onPageHide);
+    $(document).on('pageinit', "#dashboardPage", DashboardPage.onPageInit).on('pageshow', "#dashboardPage", DashboardPage.onPageShow).on('pagebeforehide', "#dashboardPage", DashboardPage.onPageHide);
 
     (function ($, document, window) {
 
