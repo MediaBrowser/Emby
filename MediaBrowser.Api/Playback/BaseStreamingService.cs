@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using CommonIO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -1010,6 +1011,24 @@ namespace MediaBrowser.Api.Playback
             return MediaEncoder.GetInputArgument(inputPath, protocol);
         }
 
+        /// <summary>
+        /// Gets the duration argument.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <returns>System.String.</returns>
+        protected string GetOutputDurationArgument(StreamState state)
+        {
+            if (state.UsingQuickSeek)
+            {
+                if (state.RunTimeTicks.HasValue && state.RunTimeTicks.Value > 0)
+                {
+                    return string.Format("-t {0}", MediaEncoder.GetTimeParameter(state.RunTimeTicks.Value));
+                }
+            }
+
+            return string.Empty;
+        }
+
         private async Task AcquireResources(StreamState state, CancellationTokenSource cancellationTokenSource)
         {
             if (state.VideoType == VideoType.Iso && state.IsoType.HasValue && IsoManager.CanMount(state.MediaPath))
@@ -1668,6 +1687,10 @@ namespace MediaBrowser.Api.Playback
                 {
                     request.Tag = val;
                 }
+                else if (i == 30)
+                {
+                    request.TryQuickSeek = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
+                }
             }
         }
 
@@ -1845,6 +1868,11 @@ namespace MediaBrowser.Api.Playback
                 }
             }
 
+            if (request.TryQuickSeek)
+            {
+                state.UsingQuickSeek = CanUseQuickSeek(ServerConfigurationManager.Configuration, request.Static, state.InputProtocol, state.OutputContainer, state.RunTimeTicks);
+            }
+
             ApplyDeviceProfileSettings(state);
 
             if (videoRequest != null)
@@ -1855,6 +1883,25 @@ namespace MediaBrowser.Api.Playback
             state.OutputFilePath = GetOutputFilePath(state);
 
             return state;
+        }
+
+        public static bool CanUseQuickSeek(ServerConfiguration config, bool isStatic, MediaProtocol protocol, string outputContainer, long? runTimeTicks)
+        {
+            if (config.EnableQuickSeek
+                && !isStatic
+                && !string.IsNullOrWhiteSpace(outputContainer)
+                && protocol == MediaProtocol.File
+                && runTimeTicks.HasValue && runTimeTicks.Value > 0)
+            {
+                var quickSeekContainers = new List<string> { "mkv" };
+
+                if (quickSeekContainers.Contains(outputContainer, StringComparer.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void TryStreamCopy(StreamState state, VideoStreamRequest videoRequest)
