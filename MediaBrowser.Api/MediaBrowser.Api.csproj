@@ -59,6 +59,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="ServiceStack.Interfaces">
       <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Interfaces.dll</HintPath>
@@ -81,6 +82,7 @@
     <Compile Include="IHasDtoOptions.cs" />
     <Compile Include="Library\ChapterService.cs" />
     <Compile Include="Playback\MediaInfoService.cs" />
+    <Compile Include="Playback\Progressive\ProgressiveRangeWriter.cs" />
     <Compile Include="Playback\TranscodingThrottler.cs" />
     <Compile Include="PlaylistService.cs" />
     <Compile Include="Reports\Activities\ReportActivitiesBuilder.cs" />
