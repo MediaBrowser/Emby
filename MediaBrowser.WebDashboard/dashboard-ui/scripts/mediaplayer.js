@@ -6,6 +6,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
 
         var currentProgressInterval;
         var currentPlaylistIndex = -1;
+        var canQuickSeek = true;
 
         self.currentMediaRenderer = null;
         self.currentItem = null;
@@ -56,7 +57,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
         };
 
         // Returns true if the player can seek using native client-side seeking functions
-        function canPlayerSeek() {
+        function canPlayerSeek(time) {
 
             var mediaRenderer = self.currentMediaRenderer;
             var currentSrc = (self.getCurrentSrc(mediaRenderer) || '').toLowerCase();
@@ -64,8 +65,40 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
             if (currentSrc.indexOf('.m3u8') != -1) {
                 return true;
             } else {
-                var duration = mediaRenderer.duration();
-                return duration && !isNaN(duration) && duration != Number.POSITIVE_INFINITY && duration != Number.NEGATIVE_INFINITY;
+
+                if (currentSrc.indexOf('tryquickseek=true') == -1) {
+
+                    // Use legacy check via duration:
+                    var duration = mediaRenderer.duration();
+                    return duration && !isNaN(duration) && duration != Number.POSITIVE_INFINITY && duration != Number.NEGATIVE_INFINITY;
+                }
+
+                if (!mediaRenderer.isInSeekableRange(time)) {
+                    console.log('canPlayerSeek: FALSE (not in seekable range)');
+                    return false;
+                }
+
+                if (mediaRenderer.isInBufferedRange(time)) {
+                    console.log('canPlayerSeek: TRUE (is in buffered range)');
+                    return true;
+                }
+
+                var currentTicks = self.getCurrentTicks();
+                var currentTimeMs = currentTicks / 10000;
+
+                // for files that are transcoded on-the-fly, the decision whether to 
+                // seek locally or create a new stream on the server is complex
+                if ((time > currentTimeMs) && (time < currentTimeMs + 120000)) {
+
+                    // in case of quick seek allow skipping forward 2min without starting a new transcoding process
+                    // TODO: At this point we should perform some calculation using the current download speed
+                    // and the encoding bitrate to make a decision whether to seek in the current stream or start a new stream
+                    console.log('canPlayerSeek: TRUE (less than 2min forward)');
+                    return true;
+                }
+
+                console.log('canPlayerSeek: FALSE (out of range)');
+                return false;
             }
         }
 
@@ -152,10 +185,11 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
         self.changeStream = function (ticks, params) {
 
             var mediaRenderer = self.currentMediaRenderer;
+            var time = ticks / 10000;
 
-            if (canPlayerSeek() && params == null) {
+            if (canPlayerSeek(time) && params == null) {
 
-                mediaRenderer.currentTime(ticks / 10000);
+                mediaRenderer.currentTime(time);
                 return;
             }
 
@@ -178,7 +212,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                     subtitleStreamIndex = parseInt(subtitleStreamIndex);
                 }
 
-                MediaController.getPlaybackInfo(self.currentItem.Id, deviceProfile, ticks, self.currentMediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId).then(function (result) {
+                MediaController.getPlaybackInfo(self.currentItem.Id, deviceProfile, ticks, canQuickSeek, self.currentMediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId).then(function (result) {
 
                     if (validatePlaybackInfoResult(result)) {
 
@@ -285,9 +319,11 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                 }
             }
 
+            var time = ticks / 10000;
+
             if (positionSlider) {
 
-                positionSlider.disabled = !((self.currentDurationTicks || 0) > 0 || canPlayerSeek());
+                positionSlider.disabled = !((self.currentDurationTicks || 0) > 0 || canPlayerSeek(time));
             }
 
             if (currentTimeElement) {
@@ -687,7 +723,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                 Dashboard.showLoadingMsg();
             }
 
-            MediaController.getPlaybackInfo(item.Id, deviceProfile, startPosition).then(function (playbackInfoResult) {
+            MediaController.getPlaybackInfo(item.Id, deviceProfile, startPosition, canQuickSeek).then(function (playbackInfoResult) {
 
                 if (validatePlaybackInfoResult(playbackInfoResult)) {
 
@@ -896,6 +932,24 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                     });
                 }
             }
+        };
+
+        self.skipBackward = function () {
+
+            var ticks = self.getCurrentTicks();
+
+            ticks -= 10000000 * 5; // 5s
+
+            self.changeStream(ticks);
+        };
+
+        self.skipForward = function () {
+
+            var ticks = self.getCurrentTicks();
+
+            ticks += 10000000 * 20; // 20s
+
+            self.changeStream(ticks);
         };
 
         self.queueItemsNext = function (items) {
@@ -1236,7 +1290,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                     RunTimeTicks: mediaSource.RunTimeTicks
                 };
 
-                state.PlayState.CanSeek = (mediaSource.RunTimeTicks || 0) > 0 || canPlayerSeek();
+                state.PlayState.CanSeek = (mediaSource.RunTimeTicks || 0) > 0 || canPlayerSeek(mediaSource.RunTimeTicks / 10000);
             }
 
             if (item) {

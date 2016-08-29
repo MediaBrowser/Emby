@@ -33,13 +33,6 @@
             }
         };
 
-        function setClass(elems, method, className) {
-
-            for (var i = 0, length = elems.length; i < length; i++) {
-                elems[i].classList[method](className);
-            }
-        }
-
         self.resetEnhancements = function () {
 
             if (!initComplete) {
@@ -56,15 +49,15 @@
             videoPlayerElement.classList.remove('fullscreenVideo');
             videoPlayerElement.classList.remove('idlePlayer');
 
-            setClass(document.querySelectorAll('.hiddenOnIdle'), 'remove', 'inactive');
+            self.removeClass('hiddenOnIdle', 'inactive');
             var video = videoPlayerElement.querySelector('video');
             if (video) {
                 video.parentNode.removeChild(video);
             }
 
-            document.querySelector('.mediaButton.infoButton').classList.remove('active');
-            document.querySelector('.videoControls .nowPlayingInfo').classList.add('hide');
-            document.querySelector('.videoControls').classList.add('hiddenOnIdle');
+            self.removeClass('.mediaButton.infoButton', 'active');
+            self.addClass('.videoControls .nowPlayingInfo', 'hide');
+            self.addClass('.videoControls', 'hiddenOnIdle');
         };
 
         self.exitFullScreen = function () {
@@ -85,6 +78,24 @@
         self.isFullScreen = function () {
             return document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement ? true : false;
         };
+
+        self.addClass = function (selector, className) {
+
+            var elems = document.querySelectorAll(selector);
+
+            for (var i = 0, length = elems.length; i < length; i++) {
+                elems[i].classList.add(className);
+            }
+        }
+
+        self.removeClass = function (selector, className) {
+
+            var elems = document.querySelectorAll(selector);
+
+            for (var i = 0, length = elems.length; i < length; i++) {
+                elems[i].classList.remove(className);
+            }
+        }
 
         self.showSubtitleMenu = function () {
 
@@ -423,7 +434,7 @@
                         selectedNowPlayingTabButton.classList.remove('selectedNowPlayingTabButton');
                     }
                     this.classList.add('selectedNowPlayingTabButton');
-                    setClass(document.querySelectorAll('.nowPlayingTab'), 'add', 'hide');
+                    self.addClass('.nowPlayingTab', 'hiddenOnIdlehide');
                     document.querySelector('.' + this.getAttribute('data-tab')).classList.remove('hide');
                 }
             }
@@ -729,8 +740,10 @@
             html += '<div class="videoTopControlsLogo"></div>';
             html += '<div class="videoAdvancedControls">';
 
-            html += '<button is="paper-icon-button-light" class="previousTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.previousTrack();"><i class="md-icon">skip_previous</i></button>';
-            html += '<button is="paper-icon-button-light" class="nextTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.nextTrack();"><i class="md-icon">skip_next</i></button>';
+            html += '<button is="paper-icon-button-light" class="previousTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.previousTrack();"><i class="md-icon">chevron_left</i></button>';
+            html += '<button is="paper-icon-button-light" class="skipBackButton mediaButton videoSkipControl hide autoSize" onclick="MediaPlayer.skipBackward();"><i class="md-icon">skip_previous</i></button>';
+            html += '<button is="paper-icon-button-light" class="skipForwardButton mediaButton videoSkipControl hide autoSize" onclick="MediaPlayer.skipForward();"><i class="md-icon">skip_next</i></button>';
+            html += '<button is="paper-icon-button-light" class="nextTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.nextTrack();"><i class="md-icon">chevron_right</i></button>';
 
             // Embedding onclicks due to issues not firing in cordova safari
             html += '<button is="paper-icon-button-light" class="mediaButton videoAudioButton autoSize" onclick="MediaPlayer.showAudioTracksFlyout();"><i class="md-icon">audiotrack</i></button>';
@@ -753,10 +766,12 @@
             html += '</div>'; // guide
 
             html += '<div class="videoControlButtons">';
-            html += '<button is="paper-icon-button-light" class="previousTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.previousTrack();"><i class="md-icon">skip_previous</i></button>';
+            html += '<button is="paper-icon-button-light" class="previousTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.previousTrack();"><i class="md-icon">chevron_left</i></button>';
+            html += '<button is="paper-icon-button-light" class="skipBackButton mediaButton videoSkipControl hide autoSize" onclick="MediaPlayer.skipBackward();"><i class="md-icon">skip_previous</i></button>';
             html += '<button is="paper-icon-button-light" id="video-playButton" class="mediaButton unpauseButton autoSize" onclick="MediaPlayer.unpause();"><i class="md-icon">play_arrow</i></button>';
             html += '<button is="paper-icon-button-light" id="video-pauseButton" class="mediaButton pauseButton autoSize" onclick="MediaPlayer.pause();"><i class="md-icon">pause</i></button>';
-            html += '<button is="paper-icon-button-light" class="nextTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.nextTrack();"><i class="md-icon">skip_next</i></button>';
+            html += '<button is="paper-icon-button-light" class="skipForwardButton mediaButton videoSkipControl hide autoSize" onclick="MediaPlayer.skipForward();"><i class="md-icon">skip_next</i></button>';
+            html += '<button is="paper-icon-button-light" class="nextTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.nextTrack();"><i class="md-icon">chevron_right</i></button>';
 
             html += '<div class="sliderContainer videoPositionSliderContainer" style="display:inline-flex;margin-right:2em;">';
             html += '<input type="range" is="emby-slider" pin step=".1" min="0" max="100" value="0" class="videoPositionSlider" />';
@@ -839,7 +854,7 @@
             }
 
             if (idleState == true) {
-                setClass(document.querySelectorAll('.hiddenOnIdle'), 'remove', 'inactive');
+                self.removeClass('.hiddenOnIdle', 'inactive');
                 document.querySelector('#videoPlayer').classList.remove('idlePlayer');
             }
 
@@ -847,7 +862,7 @@
 
             idleHandlerTimeout = window.setTimeout(function () {
                 idleState = true;
-                setClass(document.querySelectorAll('.hiddenOnIdle'), 'add', 'inactive');
+                self.addClass('.hiddenOnIdle', 'inactive');
                 document.querySelector('#videoPlayer').classList.add('idlePlayer');
             }, 3500);
         }
@@ -1110,8 +1125,11 @@
             document.querySelector('#video-playButton').classList.add('hide');
             document.querySelector('#video-pauseButton').classList.remove('hide');
 
-            document.querySelector('.videoTrackControl').classList.add('hide');
+            self.addClass('.videoTrackControl', 'hide');
             document.querySelector('.videoQualityButton').classList.remove('hide');
+
+            // For testing: Always display skip buttons
+            self.removeClass('.videoSkipControl', 'hide');
 
             if (mediaStreams.filter(function (s) {
                 return s.Type == "Audio";
@@ -1307,7 +1325,7 @@
             }
 
             if (length < 2) {
-                document.querySelector('.videoTrackControl').classList.add('hide');
+                self.addClass('.videoTrackControl', 'hide');
                 return;
             }
 

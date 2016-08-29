@@ -259,6 +259,60 @@
             return null;
         };
 
+        self.isInSeekableRange = function (time) {
+
+            var timeSeconds = time / 1000;
+
+            if (mediaElement) {
+
+                var seekable = mediaElement.seekable;
+ 
+                for (var i = 0, len = seekable.length; i < len; i++) {
+
+                    if (timeSeconds >= seekable.start(i) && timeSeconds <= seekable.end(i)) {
+                        console.log('htmlmediarenderer.isInSeekableRange: returned  true');
+                        return true;
+                    }
+                }
+
+                console.log('htmlmediarenderer.isInSeekableRange: returned  false');
+
+                return false;
+            }
+
+            return false;
+        };
+
+        self.isInBufferedRange = function (time) {
+
+            var timeSeconds = time / 1000;
+
+            if (timeSeconds == 0) {
+                // Sometimes, in Chrome the buffered.start is like 0.4 instead of 0, so add 1s tolerance
+                timeSeconds = 1;
+            }
+
+            if (mediaElement) {
+
+                var buffered = mediaElement.buffered;
+ 
+                var minRange = Number.MAX_VALUE;
+                var maxRange = 0;
+ 
+                for (var i = 0, len = buffered.length; i < len; i++) {
+
+                    minRange = Math.min(minRange, buffered.start(i));
+                    maxRange = Math.max(maxRange, buffered.end(i));
+                }
+
+                console.log('htmlmediarenderer.isInBufferedRange: Start: ' + minRange + ' End: ' + maxRange + '    Value: ' + timeSeconds);
+
+                return (timeSeconds >= minRange) && (timeSeconds < maxRange);
+            }
+
+            return false;
+        };
+
         self.stop = function () {
 
             destroyCustomTrack(mediaElement);
