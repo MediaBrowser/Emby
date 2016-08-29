@@ -1,4 +1,4 @@
-﻿define(['events'], function (Events) {
+﻿define(['events'], function (events) {
 
     /**
      * Creates a new api client instance
