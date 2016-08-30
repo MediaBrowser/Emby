@@ -719,7 +719,7 @@
                 var url;
                 var shape = 'portrait';
 
-                var imageHeight = 360;
+                var imageHeight = 480;
                 var detectRatio = false;
 
                 if (preferThumb && imageTags.Thumb) {
