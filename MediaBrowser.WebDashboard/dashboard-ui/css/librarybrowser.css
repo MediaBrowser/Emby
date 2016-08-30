@@ -216,6 +216,7 @@
 
 .itemOverview {
     white-space: pre-wrap;
+    font-size: 20px;
 }
 
 a.itemTag:hover {
