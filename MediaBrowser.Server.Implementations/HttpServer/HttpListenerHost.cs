@@ -34,6 +34,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
 
         private readonly List<IRestfulService> _restServices = new List<IRestfulService>();
 
+        private readonly List<IHttpRawHandler> _rawHandlers = new List<IHttpRawHandler>();
+
         private IHttpListener _listener;
 
         private readonly ContainerAdapter _containerAdapter;
@@ -60,6 +62,8 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             _logger = logManager.GetLogger("HttpServer");
 
             _containerAdapter = new ContainerAdapter(applicationHost);
+
+            RawHttpHandlers.Add(ProcessRequestRaw);
         }
 
         public string GlobalResponse { get; set; }
@@ -158,6 +162,17 @@ namespace MediaBrowser.Server.Implementations.HttpServer
         {
             StartListener();
             return this;
+        }
+
+        public void AddHttpRawHandler(IHttpRawHandler handler)
+        {
+            lock (_rawHandlers)
+            {
+                if (!_rawHandlers.Contains(handler))
+                {
+                    _rawHandlers.Add(handler);
+                }
+            }
         }
 
         /// <summary>
@@ -665,5 +680,27 @@ namespace MediaBrowser.Server.Implementations.HttpServer
             UrlPrefixes = urlPrefixes.ToList();
             Start(UrlPrefixes.First());
         }
+
+        public virtual HttpAsyncTaskHandler ProcessRequestRaw(IHttpRequest request)
+        {
+            List<IHttpRawHandler> rawHandlers;
+
+            lock (_rawHandlers)
+            {
+                rawHandlers = _rawHandlers.ToList();
+            }
+
+            foreach (var rawHandler in rawHandlers)
+            {
+                var action = rawHandler.ProcessRawRequest(request);
+                if (action != null)
+                {
+                    return new CustomActionHandler(action);
+                }
+            }
+
+            return null;
+        }
+
     }
 }
