@@ -52,5 +52,7 @@ namespace MediaBrowser.Controller.Net
         /// If set, all requests will respond with this message
         /// </summary>
         string GlobalResponse { get; set; }
+
+        void AddHttpRawHandler(IHttpRawHandler handler);
     }
 }

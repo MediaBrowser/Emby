@@ -239,6 +239,7 @@
     <Compile Include="Net\IAsyncStreamSource.cs" />
     <Compile Include="Net\IHasResultFactory.cs" />
     <Compile Include="Net\IHasSession.cs" />
+    <Compile Include="Net\IHttpRawHandler.cs" />
     <Compile Include="Net\IHttpResultFactory.cs" />
     <Compile Include="Net\IHttpServer.cs" />
     <Compile Include="Net\IRestfulService.cs" />
