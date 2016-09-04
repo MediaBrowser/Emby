@@ -322,6 +322,7 @@
     <Compile Include="RelatedMedia\IRelatedMediaProvider.cs" />
     <Compile Include="Security\AuthenticationInfo.cs" />
     <Compile Include="Security\AuthenticationInfoQuery.cs" />
+    <Compile Include="Security\IAuthenticationProvider.cs" />
     <Compile Include="Security\IAuthenticationRepository.cs" />
     <Compile Include="Security\IEncryptionManager.cs" />
     <Compile Include="Session\AuthenticationRequest.cs" />

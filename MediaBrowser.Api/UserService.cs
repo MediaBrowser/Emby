@@ -420,7 +420,7 @@ namespace MediaBrowser.Api
                 AppVersion = auth.Version,
                 DeviceId = auth.DeviceId,
                 DeviceName = auth.Device,
-                PasswordSha1 = request.Password,
+                Password = request.Password,
                 PasswordMd5 = request.PasswordMd5,
                 RemoteEndPoint = Request.RemoteIp,
                 Username = request.Username

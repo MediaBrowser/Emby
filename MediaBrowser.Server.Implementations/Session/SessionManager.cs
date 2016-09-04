@@ -1347,7 +1347,7 @@ namespace MediaBrowser.Server.Implementations.Session
 
             if (enforcePassword)
             {
-                var result = await _userManager.AuthenticateUser(request.Username, request.PasswordSha1, request.PasswordMd5, request.RemoteEndPoint).ConfigureAwait(false);
+                var result = await _userManager.AuthenticateUser(request.Username, request.Password, request.PasswordMd5, request.RemoteEndPoint).ConfigureAwait(false);
 
                 if (!result)
                 {
