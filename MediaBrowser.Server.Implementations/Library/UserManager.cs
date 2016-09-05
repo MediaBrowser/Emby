@@ -265,7 +265,7 @@ namespace MediaBrowser.Server.Implementations.Library
             return success;
         }
 
-        private async Task UpdateInvalidLoginAttemptCount(User user, int newValue)
+        public async Task UpdateInvalidLoginAttemptCount(User user, int newValue)
         {
             if (user.Policy.InvalidLoginAttemptCount != newValue || newValue > 0)
             {
