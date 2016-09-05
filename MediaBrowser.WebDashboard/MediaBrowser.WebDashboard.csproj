@@ -93,6 +93,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+	<Content Include="dashboard-ui\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="dashboard-ui\bower_components\cryptojslib\.bower.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -835,9 +838,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="dashboard-ui\bower_components\emby-webcomponents\notifications\notifications.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="dashboard-ui\bower_components\emby-webcomponents\page.js\page.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="dashboard-ui\bower_components\emby-webcomponents\playlisteditor\playlisteditor.js">
@@ -2735,6 +2735,13 @@
     <Content Include="dashboard-ui\autoorganizesmart.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\fullscreen\fullscreen-doubleclick.js" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\fullscreen\fullscreenmanager.js" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\imageeditor\imageeditor.js" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\imageeditor\imageeditor.template.html" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\pagejs\page.js" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\serviceworker\notifications.js" />
+    <Content Include="dashboard-ui\bower_components\emby-webcomponents\serviceworker\sync.js" />
     <Content Include="dashboard-ui\camerauploadsettings.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

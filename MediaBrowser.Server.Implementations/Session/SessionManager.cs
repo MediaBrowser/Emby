@@ -54,6 +54,7 @@ namespace MediaBrowser.Server.Implementations.Session
         private readonly IDtoService _dtoService;
         private readonly IImageProcessor _imageProcessor;
         private readonly IMediaSourceManager _mediaSourceManager;
+        private readonly IAuthenticationManager _authManager;
 
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
@@ -94,7 +95,9 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private readonly SemaphoreSlim _sessionLock = new SemaphoreSlim(1, 1);
 
-        public SessionManager(IUserDataManager userDataManager, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager)
+        public SessionManager(IUserDataManager userDataManager, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager,
+            IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient,
+            IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IAuthenticationManager authManager)
         {
             _userDataManager = userDataManager;
             _logger = logger;
@@ -109,6 +112,7 @@ namespace MediaBrowser.Server.Implementations.Session
             _authRepo = authRepo;
             _deviceManager = deviceManager;
             _mediaSourceManager = mediaSourceManager;
+            _authManager = authManager;
 
             _deviceManager.DeviceOptionsUpdated += _deviceManager_DeviceOptionsUpdated;
         }
@@ -1334,48 +1338,33 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
-            var user = _userManager.Users
-                .FirstOrDefault(i => string.Equals(request.Username, i.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (user != null && !string.IsNullOrWhiteSpace(request.DeviceId))
+            request.EnforcePassword = enforcePassword;
+            try
             {
-                if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), request.DeviceId))
-                {
-                    throw new SecurityException("User is not allowed access from this device.");
-                }
+                var result = await _authManager.Authenticate(request);
+                var token = await GetAuthorizationToken(result.User.Id, request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
+                var user = _userManager.GetUserById(result.User.Id);
+
+                EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
+
+                var session = await LogSessionActivity(request.App,
+                    request.AppVersion,
+                    request.DeviceId,
+                    request.DeviceName,
+                    request.RemoteEndPoint,
+                    user
+                ).ConfigureAwait(false);
+
+                result.SessionInfo = GetSessionInfoDto(session);
+                result.AccessToken = token;
+
+                return result;
             }
-
-            if (enforcePassword)
+            catch(Exception e)
             {
-                var result = await _userManager.AuthenticateUser(request.Username, request.Password, request.PasswordMd5, request.RemoteEndPoint).ConfigureAwait(false);
-
-                if (!result)
-                {
-                    EventHelper.FireEventIfNotNull(AuthenticationFailed, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
-
-                    throw new SecurityException("Invalid user or password entered.");
-                }
-            }
-
-            var token = await GetAuthorizationToken(user.Id.ToString("N"), request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
-
-            EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
-
-            var session = await LogSessionActivity(request.App,
-                request.AppVersion,
-                request.DeviceId,
-                request.DeviceName,
-                request.RemoteEndPoint,
-                user)
-                .ConfigureAwait(false);
-
-            return new AuthenticationResult
-            {
-                User = _userManager.GetUserDto(user, request.RemoteEndPoint),
-                SessionInfo = GetSessionInfoDto(session),
-                AccessToken = token,
-                ServerId = _appHost.SystemId
-            };
+                EventHelper.FireEventIfNotNull(AuthenticationFailed, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
+                throw e;
+            }       
         }
 
 

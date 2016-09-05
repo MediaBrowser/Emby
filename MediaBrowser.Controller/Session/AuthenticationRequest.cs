@@ -34,5 +34,10 @@ namespace MediaBrowser.Controller.Session
                 }
             }
         }
+
+        public AuthenticationRequest()
+        {
+            Domain = _defaultDomain;
+        }
     }
 }

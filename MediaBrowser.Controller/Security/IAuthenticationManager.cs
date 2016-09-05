@@ -16,5 +16,7 @@ namespace MediaBrowser.Controller.Security
         event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationSucceeded;
 
         Task<AuthenticationResult> Authenticate(AuthenticationRequest authRequest);
+
+        void AddProviders(IEnumerable<IAuthenticationProvider> authProviders);
     }
 }

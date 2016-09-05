@@ -4,6 +4,7 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Security;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Connect;
@@ -256,14 +257,16 @@ namespace MediaBrowser.Api
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
         private readonly IDeviceManager _deviceManager;
+        private readonly IAuthenticationManager _authManager;
 
-        public UserService(IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager)
+        public UserService(IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager, IAuthenticationManager authManager)
         {
             _userManager = userManager;
             _sessionMananger = sessionMananger;
             _config = config;
             _networkManager = networkManager;
             _deviceManager = deviceManager;
+            _authManager = authManager;
         }
 
         public object Get(GetPublicUsers request)
@@ -457,12 +460,13 @@ namespace MediaBrowser.Api
             }
             else
             {
-                var success = await _userManager.AuthenticateUser(user.Name, request.CurrentPassword, Request.RemoteIp).ConfigureAwait(false);
+                var authRequest = new AuthenticationRequest() {
+                    Username = user.Name,
+                    Password = request.CurrentPassword,
+                    RemoteEndPoint = Request.RemoteIp
+                };
 
-                if (!success)
-                {
-                    throw new ArgumentException("Invalid user or password entered.");
-                }
+                await _authManager.Authenticate(authRequest).ConfigureAwait(false);
 
                 await _userManager.ChangePassword(user, request.NewPassword).ConfigureAwait(false);
 

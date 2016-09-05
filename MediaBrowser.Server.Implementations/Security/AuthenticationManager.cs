@@ -13,10 +13,11 @@ using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Common.Events;
 using MediaBrowser.Common;
+using ServiceStack;
 
 namespace MediaBrowser.Server.Implementations.Security
 {
-    class AuthenticationManager : IAuthenticationManager
+    public class AuthenticationManager : IAuthenticationManager
     {
         public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationFailed;
         public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationSucceeded;
@@ -48,9 +49,10 @@ namespace MediaBrowser.Server.Implementations.Security
             }
 
             var result = false;
-
+            _logger.Info(request.ToJson());
             foreach(var authProvider in _authProviders)
             {
+                _logger.Info("Trying provider: " + authProvider.GetType().ToString());
                 result = (await authProvider.Authenticate(request).ConfigureAwait(false)) || result;
             }
 
@@ -68,6 +70,12 @@ namespace MediaBrowser.Server.Implementations.Security
                 User = _userManager.GetUserDto(user, request.RemoteEndPoint),
                 ServerId = _appHost.SystemId
             };
+        }
+
+        public void AddProviders(IEnumerable<IAuthenticationProvider> authProviders)
+        {
+            _authProviders.Clear();
+            _authProviders.AddRange(authProviders);
         }
     }
 }

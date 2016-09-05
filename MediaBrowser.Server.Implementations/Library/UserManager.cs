@@ -178,11 +178,6 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        public Task<bool> AuthenticateUser(string username, string passwordSha1, string remoteEndPoint)
-        {
-            return AuthenticateUser(username, passwordSha1, null, remoteEndPoint);
-        }
-
         public bool IsValidUsername(string username)
         {
             // Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)
@@ -213,56 +208,6 @@ namespace MediaBrowser.Server.Implementations.Library
                 }
             }
             return builder.ToString();
-        }
-
-        public async Task<bool> AuthenticateUser(string username, string passwordSha1, string passwordMd5, string remoteEndPoint)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentNullException("username");
-            }
-
-            var user = Users
-                .FirstOrDefault(i => string.Equals(username, i.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (user == null)
-            {
-                throw new SecurityException("Invalid username or password entered.");
-            }
-
-            if (user.Policy.IsDisabled)
-            {
-                throw new SecurityException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
-            }
-
-            var success = false;
-
-            // Authenticate using local credentials if not a guest
-            if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
-            {
-                success = string.Equals(GetPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
-
-                if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
-                {
-                    success = string.Equals(GetLocalPasswordHash(user), passwordSha1.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
-                }
-            }
-
-            // Update LastActivityDate and LastLoginDate, then save
-            if (success)
-            {
-                user.LastActivityDate = user.LastLoginDate = DateTime.UtcNow;
-                await UpdateUser(user).ConfigureAwait(false);
-                await UpdateInvalidLoginAttemptCount(user, 0).ConfigureAwait(false);
-            }
-            else
-            {
-                await UpdateInvalidLoginAttemptCount(user, user.Policy.InvalidLoginAttemptCount + 1).ConfigureAwait(false);
-            }
-
-            _logger.Info("Authentication request for {0} {1}.", user.Name, success ? "has succeeded" : "has been denied");
-
-            return success;
         }
 
         public async Task UpdateInvalidLoginAttemptCount(User user, int newValue)
