@@ -49,10 +49,10 @@ namespace MediaBrowser.Server.Implementations.Security
             }
 
             var result = false;
-            _logger.Info(request.ToJson());
+
             foreach(var authProvider in _authProviders)
             {
-                _logger.Info("Trying provider: " + authProvider.GetType().ToString());
+                _logger.Debug("Trying Authentication Provider: " + authProvider.GetType().ToString());
                 result = (await authProvider.Authenticate(request).ConfigureAwait(false)) || result;
             }
 

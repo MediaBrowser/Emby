@@ -465,7 +465,7 @@ namespace MediaBrowser.Api
 
                 await _authManager.Authenticate(authRequest).ConfigureAwait(false);
 
-                await _userManager.ChangePassword(user, request.NewPassword).ConfigureAwait(false);
+                await _userManager.ChangePassword(user, request.NewPassword, Request.Headers.AllKeys.Contains("X-EMBY-SECURE")).ConfigureAwait(false);
 
                 var currentToken = AuthorizationContext.GetAuthorizationInfo(Request).Token;
 
@@ -496,7 +496,7 @@ namespace MediaBrowser.Api
             }
             else
             {
-                await _userManager.ChangeEasyPassword(user, request.NewPassword).ConfigureAwait(false);
+                await _userManager.ChangeEasyPassword(user, request.NewPassword, Request.Headers.AllKeys.Contains("X-EMBY-SECURE")).ConfigureAwait(false);
             }
         }
 

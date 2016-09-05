@@ -128,7 +128,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="user">The user.</param>
         /// <param name="newPasswordSha1">The new password sha1.</param>
         /// <returns>Task.</returns>
-        Task ChangePassword(User user, string newPasswordSha1);
+        Task ChangePassword(User user, string newPassword, bool isHashed);
 
         /// <summary>
         /// Changes the easy password.
@@ -136,7 +136,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="user">The user.</param>
         /// <param name="newPasswordSha1">The new password sha1.</param>
         /// <returns>Task.</returns>
-        Task ChangeEasyPassword(User user, string newPasswordSha1);
+        Task ChangeEasyPassword(User user, string newPassword, bool isHashed);
         
         /// <summary>
         /// Gets the user dto.

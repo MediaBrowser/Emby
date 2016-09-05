@@ -56,6 +56,7 @@ namespace MediaBrowser.Api
         {
             var msg = request.Decrypt(_key).FromJson<Msg>();
             if (msg.ValidUntil < DateTime.UtcNow) { throw new SecurityException("Invalid Msg"); }
+            Request.Headers.Add("X-EMBY-SECURE", "TRUE");
             return _host.InternalRouteRequest(request.Route, base.Request.Verb, base.Request, msg.Data);
         }        
     }

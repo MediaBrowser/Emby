@@ -54,11 +54,11 @@ namespace MediaBrowser.Providers.Security
             // Authenticate using local credentials if not a guest
             if ((!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest) &&  !success)
             {
-                success = string.Equals(user.Password ?? string.Empty.GetSha1Hash(), authRequest.Password.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                success = CheckPassword(user.Password, authRequest.Password);
 
                 if (!success && _networkManager.IsInLocalNetwork(authRequest.RemoteEndPoint) && user.Configuration.EnableLocalPassword)
                 {
-                    success = string.Equals(user.EasyPassword ?? string.Empty.GetSha1Hash(), authRequest.Password.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                    success = CheckPassword(user.EasyPassword, authRequest.Password);
                 }
             }
 
@@ -77,6 +77,16 @@ namespace MediaBrowser.Providers.Security
             _logger.Info("Authentication request for {0} {1}.", user.Name, success ? "has succeeded" : "has been denied");
 
             return success;
+        }
+
+        private bool CheckPassword(string password, string challenge)
+        {
+            var pwd = password ?? string.Empty.GetSha1Hash();
+            //Check if password is already hashed
+            var success = string.Equals(pwd, challenge.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+            if (success) return true;
+            //Check password  unhashed
+            return string.Equals(pwd, challenge.GetSha1Hash());
         }
     }
 }

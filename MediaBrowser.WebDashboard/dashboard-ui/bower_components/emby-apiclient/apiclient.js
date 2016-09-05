@@ -2494,17 +2494,16 @@
                     return;
                 }
 
-                require(["cryptojs-sha1"], function () {
-                    self.sendEncryptedMsg("Users/authenticatebyname", {
-                        password: CryptoJS.SHA1(password || "").toString(),
-                        Username: name
-                    },true).then(function (result) {
-                        if (self.onAuthenticated) {
-                            self.onAuthenticated(self, result);
-                        }
-                        resolve(result);
-                    }, reject);
-                });
+                self.sendEncryptedMsg("Users/authenticatebyname", {
+                    password: password || "",
+                    Username: name
+                },true).then(function (result) {
+                    if (self.onAuthenticated) {
+                        self.onAuthenticated(self, result);
+                    }
+                    resolve(result);
+                }, reject);
+
             });
         };
 
@@ -2521,12 +2520,11 @@
                     reject();
                     return;
                 }
-                require(["cryptojs-sha1"], function () {
-                    self.sendEncryptedMsg("Users/" + userId + "/Password", {
-                        currentPassword: CryptoJS.SHA1(currentPassword).toString(),
-                        newPassword: CryptoJS.SHA1(newPassword).toString()
-                    }).then(resolve, reject);
-                });
+                self.sendEncryptedMsg("Users/" + userId + "/Password", {
+                    CurrentPassword: currentPassword || "",
+                    NewPassword: newPassword || ""
+                }).then(resolve, reject);
+
             });
         };
 
@@ -2543,11 +2541,9 @@
                     reject();
                     return;
                 }
-                require(["cryptojs-sha1"], function () {
-                    self.sendEncryptedMsg("Users/" + userId + "/EasyPassword", {
-                        newPassword: CryptoJS.SHA1(newPassword).toString()
-                    }).then(resolve, reject);
-                });
+                self.sendEncryptedMsg("Users/" + userId + "/EasyPassword", {
+                    NewPassword: newPassword || ""
+                }).then(resolve, reject);
             });
         };
 

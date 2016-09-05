@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonIO;
+using MediaBrowser.Common.Security;
 
 namespace MediaBrowser.Server.Implementations.Library
 {
@@ -242,39 +243,6 @@ namespace MediaBrowser.Server.Implementations.Library
             }
         }
 
-        private string GetPasswordHash(User user)
-        {
-            return string.IsNullOrEmpty(user.Password)
-                ? GetSha1String(string.Empty)
-                : user.Password;
-        }
-
-        private string GetLocalPasswordHash(User user)
-        {
-            return string.IsNullOrEmpty(user.EasyPassword)
-                ? GetSha1String(string.Empty)
-                : user.EasyPassword;
-        }
-
-        private bool IsPasswordEmpty(string passwordHash)
-        {
-            return string.Equals(passwordHash, GetSha1String(string.Empty), StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Gets the sha1 string.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <returns>System.String.</returns>
-        private static string GetSha1String(string str)
-        {
-            using (var provider = SHA1.Create())
-            {
-                var hash = provider.ComputeHash(Encoding.UTF8.GetBytes(str));
-                return BitConverter.ToString(hash).Replace("-", string.Empty);
-            }
-        }
-
         /// <summary>
         /// Loads the users from the repository
         /// </summary>
@@ -305,6 +273,12 @@ namespace MediaBrowser.Server.Implementations.Library
             return users;
         }
 
+        private bool IsPasswordEmpty(string password)
+        {
+            var pwd = password ?? string.Empty.GetSha1Hash();
+            return string.Equals(pwd, string.Empty.GetSha1Hash(), StringComparison.OrdinalIgnoreCase);
+        }
+
         public UserDto GetUserDto(User user, string remoteEndPoint = null)
         {
             if (user == null)
@@ -312,10 +286,8 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentNullException("user");
             }
 
-            var passwordHash = GetPasswordHash(user);
-
-            var hasConfiguredPassword = !IsPasswordEmpty(passwordHash);
-            var hasConfiguredEasyPassword = !IsPasswordEmpty(GetLocalPasswordHash(user));
+            var hasConfiguredPassword = !IsPasswordEmpty(user.Password);
+            var hasConfiguredEasyPassword = !IsPasswordEmpty(user.EasyPassword);
 
             var hasPassword = user.Configuration.EnableLocalPassword && !string.IsNullOrEmpty(remoteEndPoint) && _networkManager.IsInLocalNetwork(remoteEndPoint) ?
                 hasConfiguredEasyPassword :
@@ -362,13 +334,13 @@ namespace MediaBrowser.Server.Implementations.Library
         {
             var dto = GetUserDto(user);
 
-            var offlinePasswordHash = GetLocalPasswordHash(user);
+            var offlinePasswordHash = user.EasyPassword ?? string.Empty.GetSha1Hash();
             dto.HasPassword = !IsPasswordEmpty(offlinePasswordHash);
 
             dto.OfflinePasswordSalt = Guid.NewGuid().ToString("N");
 
             // Hash the pin with the device Id to create a unique result for this device
-            dto.OfflinePassword = GetSha1String((offlinePasswordHash + dto.OfflinePasswordSalt).ToLower());
+            dto.OfflinePassword = offlinePasswordHash.GetSha1Hash(dto.OfflinePasswordSalt).ToLower();
 
             dto.ServerName = _appHost.FriendlyName;
 
@@ -585,23 +557,24 @@ namespace MediaBrowser.Server.Implementations.Library
         /// <returns>Task.</returns>
         public Task ResetPassword(User user)
         {
-            return ChangePassword(user, GetSha1String(string.Empty));
+            return ChangePassword(user, string.Empty);
         }
 
         public Task ResetEasyPassword(User user)
         {
-            return ChangeEasyPassword(user, GetSha1String(string.Empty));
+            return ChangeEasyPassword(user, string.Empty);
         }
 
-        public async Task ChangePassword(User user, string newPasswordSha1)
+        public async Task ChangePassword(User user, string newPassword, bool isHashed = false)
         {
+            _logger.Info("Password" + newPassword ?? "NULL");
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            if (string.IsNullOrWhiteSpace(newPasswordSha1))
+            if (string.IsNullOrEmpty(newPassword) && isHashed)
             {
-                throw new ArgumentNullException("newPasswordSha1");
+                throw new ArgumentNullException("newPassword");
             }
 
             if (user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
@@ -609,25 +582,25 @@ namespace MediaBrowser.Server.Implementations.Library
                 throw new ArgumentException("Passwords for guests cannot be changed.");
             }
 
-            user.Password = newPasswordSha1;
+            user.Password = isHashed ? newPassword : newPassword.GetSha1Hash();
 
             await UpdateUser(user).ConfigureAwait(false);
 
             EventHelper.FireEventIfNotNull(UserPasswordChanged, this, new GenericEventArgs<User>(user), _logger);
         }
 
-        public async Task ChangeEasyPassword(User user, string newPasswordSha1)
+        public async Task ChangeEasyPassword(User user, string newPassword, bool isHashed = false)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            if (string.IsNullOrWhiteSpace(newPasswordSha1))
+            if (string.IsNullOrEmpty(newPassword) && isHashed)
             {
                 throw new ArgumentNullException("newPasswordSha1");
             }
 
-            user.EasyPassword = newPasswordSha1;
+            user.EasyPassword = isHashed ? newPassword : newPassword.GetSha1Hash();
 
             await UpdateUser(user).ConfigureAwait(false);
 
