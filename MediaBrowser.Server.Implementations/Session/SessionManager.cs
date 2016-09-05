@@ -69,10 +69,6 @@ namespace MediaBrowser.Server.Implementations.Session
         private readonly ConcurrentDictionary<string, SessionInfo> _activeConnections =
             new ConcurrentDictionary<string, SessionInfo>(StringComparer.OrdinalIgnoreCase);
 
-        public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationFailed;
-
-        public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationSucceeded;
-
         /// <summary>
         /// Occurs when [playback start].
         /// </summary>
@@ -1339,32 +1335,23 @@ namespace MediaBrowser.Server.Implementations.Session
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
             request.EnforcePassword = enforcePassword;
-            try
-            {
-                var result = await _authManager.Authenticate(request);
-                var token = await GetAuthorizationToken(result.User.Id, request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
-                var user = _userManager.GetUserById(result.User.Id);
 
-                EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
+            var result = await _authManager.Authenticate(request);
+            var token = await GetAuthorizationToken(result.User.Id, request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
+            var user = _userManager.GetUserById(result.User.Id);
 
-                var session = await LogSessionActivity(request.App,
-                    request.AppVersion,
-                    request.DeviceId,
-                    request.DeviceName,
-                    request.RemoteEndPoint,
-                    user
-                ).ConfigureAwait(false);
+            var session = await LogSessionActivity(request.App,
+                request.AppVersion,
+                request.DeviceId,
+                request.DeviceName,
+                request.RemoteEndPoint,
+                user
+            ).ConfigureAwait(false);
 
-                result.SessionInfo = GetSessionInfoDto(session);
-                result.AccessToken = token;
+            result.SessionInfo = GetSessionInfoDto(session);
+            result.AccessToken = token;
 
-                return result;
-            }
-            catch(Exception e)
-            {
-                EventHelper.FireEventIfNotNull(AuthenticationFailed, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
-                throw e;
-            }       
+            return result;   
         }
 
 

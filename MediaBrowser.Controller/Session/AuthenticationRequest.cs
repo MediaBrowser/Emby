@@ -8,7 +8,6 @@ namespace MediaBrowser.Controller.Session
         public string Username { get; set; }
         public string Domain { get; set; } 
         public string Password { get; set; }
-        public string PasswordMd5 { get; set; }
         public string App { get; set; }
         public string AppVersion { get; set; }
         public string DeviceId { get; set; }
