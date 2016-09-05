@@ -38,7 +38,7 @@ namespace MediaBrowser.Server.Implementations.Security
         }
         public async Task<AuthenticationResult> Authenticate(AuthenticationRequest request)
         {
-            var user = _userManager.GetUserByName(request.Username);
+            var user = _userManager.GetUserByName(request.DistinguishedName);
 
             if (user != null && !string.IsNullOrWhiteSpace(request.DeviceId))
             {

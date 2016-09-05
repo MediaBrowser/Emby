@@ -155,8 +155,7 @@ namespace MediaBrowser.Server.Implementations.Library
             {
                 throw new ArgumentNullException("name");
             }
-
-            return Users.FirstOrDefault(u => string.Equals(u.Name, name, StringComparison.OrdinalIgnoreCase));
+            return Users.FirstOrDefault(u => u.DistinguishedNames.Contains(name) || string.Equals(u.Name, name.Replace(@"local.emby.media\",""), StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task Initialize()

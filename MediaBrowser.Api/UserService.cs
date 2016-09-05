@@ -423,8 +423,7 @@ namespace MediaBrowser.Api
                 DeviceName = auth.Device,
                 Password = request.Password,
                 RemoteEndPoint = Request.RemoteIp,
-                Username = request.Username
-
+                DistinguishedName = request.Username
             }).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
