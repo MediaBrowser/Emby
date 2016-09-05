@@ -281,6 +281,7 @@
     <Compile Include="Persistence\DataExtensions.cs" />
     <Compile Include="Persistence\IDbConnector.cs" />
     <Compile Include="Persistence\MediaStreamColumns.cs" />
+    <Compile Include="Security\AuthenticationManager.cs" />
     <Compile Include="Social\SharingManager.cs" />
     <Compile Include="Social\SharingRepository.cs" />
     <Compile Include="Sorting\StartDateComparer.cs" />

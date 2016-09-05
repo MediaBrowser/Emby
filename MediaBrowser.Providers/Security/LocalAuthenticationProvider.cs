@@ -49,10 +49,10 @@ namespace MediaBrowser.Providers.Security
                 throw new SecurityException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
             }
 
-            var success = false;
+            var success = !authRequest.EnforcePassword;
 
             // Authenticate using local credentials if not a guest
-            if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
+            if ((!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest) &&  !success)
             {
                 success = string.Equals(user.Password ?? string.Empty.GetSha1Hash(), authRequest.Password.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
 

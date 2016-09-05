@@ -14,6 +14,7 @@ namespace MediaBrowser.Controller.Session
         public string DeviceId { get; set; }
         public string DeviceName { get; set; }
         public string RemoteEndPoint { get; set; }
+        public bool EnforcePassword { get; set; } = true;
 
         public string DistinguishedName
         {

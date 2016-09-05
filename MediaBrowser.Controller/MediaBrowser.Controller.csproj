@@ -324,6 +324,7 @@
     <Compile Include="Security\AuthenticationInfoQuery.cs" />
     <Compile Include="Security\IAuthenticationProvider.cs" />
     <Compile Include="Security\IAuthenticationRepository.cs" />
+    <Compile Include="Security\IAuthenticationManager.cs" />
     <Compile Include="Security\IEncryptionManager.cs" />
     <Compile Include="Session\AuthenticationRequest.cs" />
     <Compile Include="Social\ISharingManager.cs" />
