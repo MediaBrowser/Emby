@@ -5,6 +5,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Providers.Manager;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -182,7 +183,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.release_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                             {
-                                remoteResult.PremiereDate = r.ToUniversalTime();
+                                remoteResult.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                                 remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                             }
                         }
@@ -239,7 +240,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.first_air_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                             {
-                                remoteResult.PremiereDate = r.ToUniversalTime();
+                                remoteResult.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                                 remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                             }
                         }
