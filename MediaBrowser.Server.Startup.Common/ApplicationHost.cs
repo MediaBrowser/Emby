@@ -205,6 +205,8 @@ namespace MediaBrowser.Server.Startup.Common
         private IMediaSourceManager MediaSourceManager { get; set; }
         private IPlaylistManager PlaylistManager { get; set; }
 
+        private IAuthenticationManager AuthenticationManager { get; set; }
+
         private readonly StartupOptions _startupOptions;
         private readonly string _releaseAssetFilename;
 
@@ -435,8 +437,7 @@ namespace MediaBrowser.Server.Startup.Common
             RegisterSingleInstance(UserDataManager);
 
             UserRepository = await GetUserRepository().ConfigureAwait(false);
-            RegisterSingleInstance(UserRepository);
-
+            
             var displayPreferencesRepo = new SqliteDisplayPreferencesRepository(LogManager, JsonSerializer, ApplicationPaths, NativeApp.GetDbConnector());
             DisplayPreferencesRepository = displayPreferencesRepo;
             RegisterSingleInstance(DisplayPreferencesRepository);
@@ -517,7 +518,10 @@ namespace MediaBrowser.Server.Startup.Common
             MediaSourceManager = new MediaSourceManager(ItemRepository, UserManager, LibraryManager, LogManager.GetLogger("MediaSourceManager"), JsonSerializer, FileSystemManager, UserDataManager);
             RegisterSingleInstance(MediaSourceManager);
 
-            SessionManager = new SessionManager(UserDataManager, LogManager.GetLogger("SessionManager"), UserRepository, LibraryManager, UserManager, musicManager, DtoService, ImageProcessor, JsonSerializer, this, HttpClient, AuthenticationRepository, DeviceManager, MediaSourceManager);
+            AuthenticationManager = new Implementations.Security.AuthenticationManager(UserManager, DeviceManager, this, Logger);
+            RegisterSingleInstance<IAuthenticationManager>(AuthenticationManager);
+
+            SessionManager = new SessionManager(UserDataManager, LogManager.GetLogger("SessionManager"), LibraryManager, UserManager, musicManager, DtoService, ImageProcessor, JsonSerializer, this, HttpClient, AuthenticationRepository, DeviceManager, MediaSourceManager, AuthenticationManager);
             RegisterSingleInstance(SessionManager);
 
             var dlnaManager = new DlnaManager(XmlSerializer, FileSystemManager, ApplicationPaths, LogManager.GetLogger("Dlna"), JsonSerializer, this);
@@ -807,6 +811,8 @@ namespace MediaBrowser.Server.Startup.Common
             ServerManager.AddWebSocketListeners(GetExports<IWebSocketListener>(false));
 
             StartServer();
+
+            AuthenticationManager.AddProviders(GetExports<IAuthenticationProvider>());
 
             LibraryManager.AddParts(GetExports<IResolverIgnoreRule>(),
                                     GetExports<IVirtualFolderCreator>(),

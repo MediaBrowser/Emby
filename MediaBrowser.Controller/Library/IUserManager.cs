@@ -57,17 +57,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="name">The name.</param>
         /// <returns>User.</returns>
         User GetUserByName(string name);
-
-        /// <summary>
-        /// Authenticates a User and returns a result indicating whether or not it succeeded
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="passwordSha1">The password sha1.</param>
-        /// <param name="remoteEndPoint">The remote end point.</param>
-        /// <returns>Task{System.Boolean}.</returns>
-        /// <exception cref="System.ArgumentNullException">user</exception>
-        Task<bool> AuthenticateUser(string username, string passwordSha1, string remoteEndPoint);
-        
+       
         /// <summary>
         /// Refreshes metadata for each user
         /// </summary>
@@ -138,7 +128,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="user">The user.</param>
         /// <param name="newPasswordSha1">The new password sha1.</param>
         /// <returns>Task.</returns>
-        Task ChangePassword(User user, string newPasswordSha1);
+        Task ChangePassword(User user, string newPassword, bool isHashed);
 
         /// <summary>
         /// Changes the easy password.
@@ -146,7 +136,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="user">The user.</param>
         /// <param name="newPasswordSha1">The new password sha1.</param>
         /// <returns>Task.</returns>
-        Task ChangeEasyPassword(User user, string newPasswordSha1);
+        Task ChangeEasyPassword(User user, string newPassword, bool isHashed);
         
         /// <summary>
         /// Gets the user dto.
@@ -155,16 +145,6 @@ namespace MediaBrowser.Controller.Library
         /// <param name="remoteEndPoint">The remote end point.</param>
         /// <returns>UserDto.</returns>
         UserDto GetUserDto(User user, string remoteEndPoint = null);
-
-        /// <summary>
-        /// Authenticates the user.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="passwordSha1">The password sha1.</param>
-        /// <param name="passwordMd5">The password MD5.</param>
-        /// <param name="remoteEndPoint">The remote end point.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        Task<bool> AuthenticateUser(string username, string passwordSha1, string passwordMd5, string remoteEndPoint);
 
         /// <summary>
         /// Starts the forgot password process.

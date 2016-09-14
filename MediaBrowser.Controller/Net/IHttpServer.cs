@@ -52,5 +52,7 @@ namespace MediaBrowser.Controller.Net
         /// If set, all requests will respond with this message
         /// </summary>
         string GlobalResponse { get; set; }
+
+        object InternalRouteRequest(string route, string verb, object originalRequest, string jsonData = null);
     }
 }

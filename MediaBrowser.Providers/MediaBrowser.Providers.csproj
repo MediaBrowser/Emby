@@ -155,6 +155,7 @@
     <Compile Include="Playlists\PlaylistMetadataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Manager\ProviderUtils.cs" />
+    <Compile Include="Security\LocalAuthenticationProvider.cs" />
     <Compile Include="Studios\StudiosImageProvider.cs" />
     <Compile Include="Studios\StudioMetadataService.cs" />
     <Compile Include="Subtitles\ConfigurationExtension.cs" />
@@ -199,6 +200,10 @@
     <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
       <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
       <Name>MediaBrowser.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.Server.Implementations\MediaBrowser.Server.Implementations.csproj">
+      <Project>{2E781478-814D-4A48-9D80-BFF206441A65}</Project>
+      <Name>MediaBrowser.Server.Implementations</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenSubtitlesHandler\OpenSubtitlesHandler.csproj">
       <Project>{4a4402d4-e910-443b-b8fc-2c18286a2ca0}</Project>

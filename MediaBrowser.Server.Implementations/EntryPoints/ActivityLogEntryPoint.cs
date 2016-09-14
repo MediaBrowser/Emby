@@ -10,6 +10,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Controller.Security;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Controller.Subtitles;
 using MediaBrowser.Model.Activity;
@@ -40,8 +41,11 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
         private readonly IUserManager _userManager;
         private readonly IServerConfigurationManager _config;
         private readonly IServerApplicationHost _appHost;
+        private readonly IAuthenticationManager _authManager;
 
-        public ActivityLogEntryPoint(ISessionManager sessionManager, ITaskManager taskManager, IActivityManager activityManager, ILocalizationManager localization, IInstallationManager installationManager, ILibraryManager libraryManager, ISubtitleManager subManager, IUserManager userManager, IServerConfigurationManager config, IServerApplicationHost appHost)
+        public ActivityLogEntryPoint(ISessionManager sessionManager, ITaskManager taskManager, IActivityManager activityManager, ILocalizationManager localization,
+            IInstallationManager installationManager, ILibraryManager libraryManager, ISubtitleManager subManager, IUserManager userManager,
+            IServerConfigurationManager config, IServerApplicationHost appHost, IAuthenticationManager authManager)
         {
             //_logger = _logManager.GetLogger("ActivityLogEntryPoint");
             _sessionManager = sessionManager;
@@ -55,6 +59,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             _config = config;
             //_logManager = logManager;
             _appHost = appHost;
+            _authManager = authManager;
         }
 
         public void Run()
@@ -69,9 +74,10 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             //_libraryManager.ItemAdded += _libraryManager_ItemAdded;
             //_libraryManager.ItemRemoved += _libraryManager_ItemRemoved;
 
+            _authManager.AuthenticationFailed += _authManager_AuthenticationFailed;
+            _authManager.AuthenticationSucceeded += _authManager_AuthenticationSucceeded;
+
             _sessionManager.SessionStarted += _sessionManager_SessionStarted;
-            _sessionManager.AuthenticationFailed += _sessionManager_AuthenticationFailed;
-            _sessionManager.AuthenticationSucceeded += _sessionManager_AuthenticationSucceeded;
             _sessionManager.SessionEnded += _sessionManager_SessionEnded;
 
             _sessionManager.PlaybackStart += _sessionManager_PlaybackStart;
@@ -208,7 +214,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             });
         }
 
-        void _sessionManager_AuthenticationSucceeded(object sender, GenericEventArgs<AuthenticationRequest> e)
+        void _authManager_AuthenticationSucceeded(object sender, GenericEventArgs<AuthenticationRequest> e)
         {
             CreateLogEntry(new ActivityLogEntry
             {
@@ -218,7 +224,7 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             });
         }
 
-        void _sessionManager_AuthenticationFailed(object sender, GenericEventArgs<AuthenticationRequest> e)
+        void _authManager_AuthenticationFailed(object sender, GenericEventArgs<AuthenticationRequest> e)
         {
             CreateLogEntry(new ActivityLogEntry
             {
@@ -476,9 +482,10 @@ namespace MediaBrowser.Server.Implementations.EntryPoints
             _libraryManager.ItemAdded -= _libraryManager_ItemAdded;
             _libraryManager.ItemRemoved -= _libraryManager_ItemRemoved;
 
+            _authManager.AuthenticationFailed -= _authManager_AuthenticationFailed;
+            _authManager.AuthenticationSucceeded -= _authManager_AuthenticationSucceeded;
+
             _sessionManager.SessionStarted -= _sessionManager_SessionStarted;
-            _sessionManager.AuthenticationFailed -= _sessionManager_AuthenticationFailed;
-            _sessionManager.AuthenticationSucceeded -= _sessionManager_AuthenticationSucceeded;
             _sessionManager.SessionEnded -= _sessionManager_SessionEnded;
 
             _sessionManager.PlaybackStart -= _sessionManager_PlaybackStart;

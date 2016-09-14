@@ -5,6 +5,7 @@ using MediaBrowser.Model.Connect;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Users;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -37,6 +38,8 @@ namespace MediaBrowser.Controller.Entities
         public string ConnectUserId { get; set; }
         public UserLinkType? ConnectLinkType { get; set; }
         public string ConnectAccessKey { get; set; }
+
+        public List<string> DistinguishedNames { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the path.

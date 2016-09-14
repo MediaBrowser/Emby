@@ -4,6 +4,7 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Security;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Connect;
@@ -125,8 +126,6 @@ namespace MediaBrowser.Api
         [ApiMember(Name = "Password", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
         public string Password { get; set; }
 
-        [ApiMember(Name = "PasswordMd5", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
-        public string PasswordMd5 { get; set; }
     }
 
     /// <summary>
@@ -256,14 +255,16 @@ namespace MediaBrowser.Api
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
         private readonly IDeviceManager _deviceManager;
+        private readonly IAuthenticationManager _authManager;
 
-        public UserService(IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager)
+        public UserService(IUserManager userManager, ISessionManager sessionMananger, IServerConfigurationManager config, INetworkManager networkManager, IDeviceManager deviceManager, IAuthenticationManager authManager)
         {
             _userManager = userManager;
             _sessionMananger = sessionMananger;
             _config = config;
             _networkManager = networkManager;
             _deviceManager = deviceManager;
+            _authManager = authManager;
         }
 
         public object Get(GetPublicUsers request)
@@ -420,11 +421,9 @@ namespace MediaBrowser.Api
                 AppVersion = auth.Version,
                 DeviceId = auth.DeviceId,
                 DeviceName = auth.Device,
-                PasswordSha1 = request.Password,
-                PasswordMd5 = request.PasswordMd5,
+                Password = request.Password,
                 RemoteEndPoint = Request.RemoteIp,
-                Username = request.Username
-
+                DistinguishedName = request.Username
             }).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
@@ -457,14 +456,15 @@ namespace MediaBrowser.Api
             }
             else
             {
-                var success = await _userManager.AuthenticateUser(user.Name, request.CurrentPassword, Request.RemoteIp).ConfigureAwait(false);
+                var authRequest = new AuthenticationRequest() {
+                    Username = user.Name,
+                    Password = request.CurrentPassword,
+                    RemoteEndPoint = Request.RemoteIp
+                };
 
-                if (!success)
-                {
-                    throw new ArgumentException("Invalid user or password entered.");
-                }
+                await _authManager.Authenticate(authRequest).ConfigureAwait(false);
 
-                await _userManager.ChangePassword(user, request.NewPassword).ConfigureAwait(false);
+                await _userManager.ChangePassword(user, request.NewPassword, Request.Headers.AllKeys.Contains("X-EMBY-SECURE")).ConfigureAwait(false);
 
                 var currentToken = AuthorizationContext.GetAuthorizationInfo(Request).Token;
 
@@ -495,7 +495,7 @@ namespace MediaBrowser.Api
             }
             else
             {
-                await _userManager.ChangeEasyPassword(user, request.NewPassword).ConfigureAwait(false);
+                await _userManager.ChangeEasyPassword(user, request.NewPassword, Request.Headers.AllKeys.Contains("X-EMBY-SECURE")).ConfigureAwait(false);
             }
         }
 

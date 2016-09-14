@@ -41,12 +41,7 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <summary>
         /// The _user data repository
         /// </summary>
-        private readonly IUserDataManager _userDataRepository;
-
-        /// <summary>
-        /// The _user repository
-        /// </summary>
-        private readonly IUserRepository _userRepository;
+        private readonly IUserDataManager _userDataManager;
 
         /// <summary>
         /// The _logger
@@ -59,6 +54,7 @@ namespace MediaBrowser.Server.Implementations.Session
         private readonly IDtoService _dtoService;
         private readonly IImageProcessor _imageProcessor;
         private readonly IMediaSourceManager _mediaSourceManager;
+        private readonly IAuthenticationManager _authManager;
 
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
@@ -72,10 +68,6 @@ namespace MediaBrowser.Server.Implementations.Session
         /// </summary>
         private readonly ConcurrentDictionary<string, SessionInfo> _activeConnections =
             new ConcurrentDictionary<string, SessionInfo>(StringComparer.OrdinalIgnoreCase);
-
-        public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationFailed;
-
-        public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationSucceeded;
 
         /// <summary>
         /// Occurs when [playback start].
@@ -99,11 +91,12 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private readonly SemaphoreSlim _sessionLock = new SemaphoreSlim(1, 1);
 
-        public SessionManager(IUserDataManager userDataRepository, ILogger logger, IUserRepository userRepository, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager)
+        public SessionManager(IUserDataManager userDataManager, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager,
+            IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient,
+            IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IAuthenticationManager authManager)
         {
-            _userDataRepository = userDataRepository;
+            _userDataManager = userDataManager;
             _logger = logger;
-            _userRepository = userRepository;
             _libraryManager = libraryManager;
             _userManager = userManager;
             _musicManager = musicManager;
@@ -115,6 +108,7 @@ namespace MediaBrowser.Server.Implementations.Session
             _authRepo = authRepo;
             _deviceManager = deviceManager;
             _mediaSourceManager = mediaSourceManager;
+            _authManager = authManager;
 
             _deviceManager.DeviceOptionsUpdated += _deviceManager_DeviceOptionsUpdated;
         }
@@ -253,8 +247,7 @@ namespace MediaBrowser.Server.Implementations.Session
                 {
                     try
                     {
-                        // Save this directly. No need to fire off all the events for this.
-                        await _userRepository.SaveUser(user, CancellationToken.None).ConfigureAwait(false);
+                        await _userManager.UpdateUser(user).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -638,7 +631,7 @@ namespace MediaBrowser.Server.Implementations.Session
         /// <returns>Task.</returns>
         private async Task OnPlaybackStart(Guid userId, IHasUserData item)
         {
-            var data = _userDataRepository.GetUserData(userId, item);
+            var data = _userDataManager.GetUserData(userId, item);
 
             data.PlayCount++;
             data.LastPlayedDate = DateTime.UtcNow;
@@ -648,7 +641,7 @@ namespace MediaBrowser.Server.Implementations.Session
                 data.Played = true;
             }
 
-            await _userDataRepository.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackStart, CancellationToken.None).ConfigureAwait(false);
+            await _userDataManager.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackStart, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -715,17 +708,17 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private async Task OnPlaybackProgress(User user, BaseItem item, PlaybackProgressInfo info)
         {
-            var data = _userDataRepository.GetUserData(user.Id, item);
+            var data = _userDataManager.GetUserData(user.Id, item);
 
             var positionTicks = info.PositionTicks;
 
             if (positionTicks.HasValue)
             {
-                _userDataRepository.UpdatePlayState(item, data, positionTicks.Value);
+                _userDataManager.UpdatePlayState(item, data, positionTicks.Value);
 
                 UpdatePlaybackSettings(user, info, data);
 
-                await _userDataRepository.SaveUserData(user.Id, item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None).ConfigureAwait(false);
+                await _userDataManager.SaveUserData(user.Id, item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None).ConfigureAwait(false);
             }
         }
 
@@ -851,11 +844,11 @@ namespace MediaBrowser.Server.Implementations.Session
 
             if (!playbackFailed)
             {
-                var data = _userDataRepository.GetUserData(userId, item);
+                var data = _userDataManager.GetUserData(userId, item);
 
                 if (positionTicks.HasValue)
                 {
-                    playedToCompletion = _userDataRepository.UpdatePlayState(item, data, positionTicks.Value);
+                    playedToCompletion = _userDataManager.UpdatePlayState(item, data, positionTicks.Value);
                 }
                 else
                 {
@@ -866,7 +859,7 @@ namespace MediaBrowser.Server.Implementations.Session
                     playedToCompletion = true;
                 }
 
-                await _userDataRepository.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackFinished, CancellationToken.None).ConfigureAwait(false);
+                await _userDataManager.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackFinished, CancellationToken.None).ConfigureAwait(false);
             }
 
             return playedToCompletion;
@@ -1341,48 +1334,24 @@ namespace MediaBrowser.Server.Implementations.Session
 
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
-            var user = _userManager.Users
-                .FirstOrDefault(i => string.Equals(request.Username, i.Name, StringComparison.OrdinalIgnoreCase));
+            request.EnforcePassword = enforcePassword;
 
-            if (user != null && !string.IsNullOrWhiteSpace(request.DeviceId))
-            {
-                if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), request.DeviceId))
-                {
-                    throw new SecurityException("User is not allowed access from this device.");
-                }
-            }
-
-            if (enforcePassword)
-            {
-                var result = await _userManager.AuthenticateUser(request.Username, request.PasswordSha1, request.PasswordMd5, request.RemoteEndPoint).ConfigureAwait(false);
-
-                if (!result)
-                {
-                    EventHelper.FireEventIfNotNull(AuthenticationFailed, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
-
-                    throw new SecurityException("Invalid user or password entered.");
-                }
-            }
-
-            var token = await GetAuthorizationToken(user.Id.ToString("N"), request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
-
-            EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
+            var result = await _authManager.Authenticate(request);
+            var token = await GetAuthorizationToken(result.User.Id, request.DeviceId, request.App, request.AppVersion, request.DeviceName).ConfigureAwait(false);
+            var user = _userManager.GetUserById(result.User.Id);
 
             var session = await LogSessionActivity(request.App,
                 request.AppVersion,
                 request.DeviceId,
                 request.DeviceName,
                 request.RemoteEndPoint,
-                user)
-                .ConfigureAwait(false);
+                user
+            ).ConfigureAwait(false);
 
-            return new AuthenticationResult
-            {
-                User = _userManager.GetUserDto(user, request.RemoteEndPoint),
-                SessionInfo = GetSessionInfoDto(session),
-                AccessToken = token,
-                ServerId = _appHost.SystemId
-            };
+            result.SessionInfo = GetSessionInfoDto(session);
+            result.AccessToken = token;
+
+            return result;   
         }
 
 
