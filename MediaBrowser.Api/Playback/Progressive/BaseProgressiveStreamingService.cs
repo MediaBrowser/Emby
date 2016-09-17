@@ -308,15 +308,15 @@ namespace MediaBrowser.Api.Playback.Progressive
             // Use the command line args with a dummy playlist path
             var outputPath = state.OutputFilePath;
 
-            responseHeaders["Accept-Ranges"] = "none";
+            responseHeaders["Accept-Ranges"] = state.UsingQuickSeek ? "bytes" : "none";
 
             var contentType = state.GetMimeType(outputPath);
 
             // TODO: The isHeadRequest is only here because ServiceStack will add Content-Length=0 to the response
             // What we really want to do is hunt that down and remove that
-            var contentLength = state.EstimateContentLength || isHeadRequest ? GetEstimatedContentLength(state) : null;
+            var contentLength = GetEstimatedContentLength(state);
 
-            if (contentLength.HasValue)
+            if (contentLength.HasValue && (state.EstimateContentLength || isHeadRequest))
             {
                 responseHeaders["Content-Length"] = contentLength.Value.ToString(UsCulture);
             }
@@ -370,7 +370,18 @@ namespace MediaBrowser.Api.Playback.Progressive
                     outputHeaders[item.Key] = item.Value;
                 }
 
-                var streamSource = new ProgressiveFileCopier(FileSystem, outputPath, outputHeaders, job, Logger, CancellationToken.None);
+                IAsyncStreamSource streamSource;
+
+                var rangeHeader = GetHeader("Range");
+
+                if (state.UsingQuickSeek && !string.IsNullOrWhiteSpace(rangeHeader))
+                {
+                    streamSource = new ProgressiveRangeWriter(state, rangeHeader, FileSystem, contentLength, outputHeaders, job, Logger, CancellationToken.None);
+                }
+                else
+                {
+                    streamSource = new ProgressiveFileCopier(FileSystem, outputPath, outputHeaders, job, Logger, CancellationToken.None);
+                }
 
                 return ResultFactory.GetAsyncStreamWriter(streamSource);
             }

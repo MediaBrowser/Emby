@@ -886,7 +886,7 @@
 
         }
 
-        self.getPlaybackInfo = function (itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId) {
+        self.getPlaybackInfo = function (itemId, deviceProfile, startPosition, canQuickSeek, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId) {
 
             return new Promise(function (resolve, reject) {
 
@@ -905,21 +905,21 @@
                                 return;
                             }
 
-                            getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, resolve, reject);
+                            getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, canQuickSeek, resolve, reject);
                         });
                         return;
                     }
 
-                    getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, resolve, reject);
+                    getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, canQuickSeek, resolve, reject);
                 });
             });
         }
 
-        function getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, resolve, reject) {
-            self.getPlaybackInfoInternal(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId).then(resolve, reject);
+        function getPlaybackInfoWithoutLocalMediaSource(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, canQuickSeek, resolve, reject) {
+            self.getPlaybackInfoInternal(itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, canQuickSeek).then(resolve, reject);
         }
 
-        self.getPlaybackInfoInternal = function (itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId) {
+        self.getPlaybackInfoInternal = function (itemId, deviceProfile, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId, canQuickSeek) {
 
             var postData = {
                 DeviceProfile: deviceProfile
@@ -941,6 +941,9 @@
             }
             if (liveStreamId) {
                 query.LiveStreamId = liveStreamId;
+            }
+            if (canQuickSeek) {
+                query.CanQuickSeek = canQuickSeek;
             }
 
             return ApiClient.ajax({

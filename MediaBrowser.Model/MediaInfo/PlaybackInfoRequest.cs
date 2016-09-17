@@ -20,6 +20,8 @@ namespace MediaBrowser.Model.MediaInfo
 
         public string LiveStreamId { get; set; }
         
+        public bool? CanQuickSeek { get; set; }
+
         public DeviceProfile DeviceProfile { get; set; }
     }
 }

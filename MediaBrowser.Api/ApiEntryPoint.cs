@@ -707,9 +707,12 @@ namespace MediaBrowser.Api
         public DateTime LastPingDate { get; set; }
         public int PingTimeout { get; set; }
 
+        public DateTime CreatedAtUtc { get; private set; }
+
         public TranscodingJob(ILogger logger)
         {
             Logger = logger;
+            CreatedAtUtc = DateTime.UtcNow;
         }
 
         public void StopKillTimer()
