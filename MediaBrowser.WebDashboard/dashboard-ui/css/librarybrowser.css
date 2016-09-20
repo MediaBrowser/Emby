@@ -194,6 +194,7 @@
 
 .itemOverview {
     white-space: pre-wrap;
+    font-size: 20px;
 }
 
 a.itemTag:hover {
@@ -739,7 +740,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
 
 @media all and (min-width: 750px) {
     .detailPageContent {
-        max-width: 950px;
+        max-width: 95%;
     }
 }
 
