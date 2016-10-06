@@ -59,6 +59,27 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
         }
 
+        private List<Params> GetUserParams(User user)
+        {
+            var serialized = _jsonSerializer.SerializeToBytes(user);
+            return new List<Params>() {
+                new Params("@guid",DbType.Guid,user.Id),
+                new Params("@data",DbType.Binary,serialized)
+            };
+        }
+
+        private User GetUser(IDataReader reader)
+        {
+            var id = reader.GetGuid(0);
+            User user = null;
+            using (var stream = reader.GetMemoryStream(1))
+            {
+                user = _jsonSerializer.DeserializeFromStream<User>(stream);
+                user.Id = id;
+            }
+            return user;
+        }
+
         /// <summary>
         /// Save a user in the repo
         /// </summary>
@@ -79,55 +100,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
-            {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "replace into users (guid, data) values (@1, @2)";
-                        cmd.Parameters.Add(cmd, "@1", DbType.Guid).Value = user.Id;
-                        cmd.Parameters.Add(cmd, "@2", DbType.Binary).Value = serialized;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to save user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
-            }
+            await Commit("replace into users (guid, data) values (@guid, @data)", cancellationToken, GetUserParams(user), "Failed to save user: ");
         }
 
         /// <summary>
@@ -137,31 +110,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
         public IEnumerable<User> RetrieveAllUsers()
         {
             var list = new List<User>();
-
-            using (var connection = CreateConnection(true).Result)
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "select guid,data from users";
-
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
-                    {
-                        while (reader.Read())
-                        {
-                            var id = reader.GetGuid(0);
-
-                            using (var stream = reader.GetMemoryStream(1))
-                            {
-                                var user = _jsonSerializer.DeserializeFromStream<User>(stream);
-                                user.Id = id;
-                                list.Add(user);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return list;
+            return Reader("select guid,data from users", GetUser);
         }
 
         /// <summary>
@@ -180,55 +129,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = await CreateConnection().ConfigureAwait(false))
-            {
-                IDbTransaction transaction = null;
-
-                try
-                {
-                    transaction = connection.BeginTransaction();
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "delete from users where guid=@guid";
-
-                        cmd.Parameters.Add(cmd, "@guid", DbType.Guid).Value = user.Id;
-
-                        cmd.Transaction = transaction;
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (OperationCanceledException)
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException("Failed to delete user:", e);
-
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-
-                    throw;
-                }
-                finally
-                {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
-                }
-            }
+            await Commit("delete from users where guid=@guid", cancellationToken, GetUserParams(user));
         }
     }
 }

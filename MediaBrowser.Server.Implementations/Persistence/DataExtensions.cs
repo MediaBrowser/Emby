@@ -4,6 +4,8 @@ using MediaBrowser.Model.Serialization;
 using System;
 using System.Data;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaBrowser.Server.Implementations.Persistence
 {
@@ -180,5 +182,77 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
             connection.RunQueries(new[] { builder.ToString() }, logger);
         }
-    }
+        public static void Commit(this IDbConnection connection, string command, IEnumerable<Params> parameters = null, string errorMsg = "Commit Failed: ")
+        {
+            if (String.IsNullOrWhiteSpace(command))
+            {
+                throw new ArgumentNullException("sql command");
+            }
+
+            parameters = parameters ?? new List<Params>();
+
+            IDbTransaction transaction = null;
+
+            try
+            {
+                transaction = connection.BeginTransaction();
+
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = command;
+                    parameters.ToList().ForEach(p => p.AddToCommand(cmd));
+                    cmd.Transaction = transaction;
+                    cmd.ExecuteNonQuery();
+                }
+                transaction.Commit();
+            }
+            catch (OperationCanceledException)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            catch (Exception e)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                if (transaction != null)
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+        public static IEnumerable<T> Read<T>(this IDbConnection connection, string command, Func<IDataReader, T> createFromEntry, IEnumerable<Params> parameters = null)
+        {
+            var list = new List<T>();
+            if (String.IsNullOrWhiteSpace(command))
+            {
+                throw new ArgumentNullException("sql command");
+            }
+
+            parameters = parameters ?? new List<Params>();
+
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = command;
+                parameters.ToList().ForEach(p => p.AddToCommand(cmd));
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(createFromEntry(reader));
+                    }
+                }
+            }
+            return list;
+        }
+    } 
 }
