@@ -203,6 +203,7 @@ namespace MediaBrowser.Model.Configuration
         public string[] CodecsUsed { get; set; }
         public bool EnableChannelView { get; set; }
         public bool EnableExternalContentInSuggestions { get; set; }
+        public bool EnableQuickSeek { get; set; }
 
         public int ImageExtractionTimeoutMs { get; set; }
         /// <summary>

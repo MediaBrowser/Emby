@@ -151,6 +151,8 @@ namespace MediaBrowser.Api.Playback
 
         public long? EncodingDurationTicks { get; set; }
 
+        public bool UsingQuickSeek { get; set; }
+
         public string GetMimeType(string outputPath)
         {
             if (!string.IsNullOrEmpty(MimeType))

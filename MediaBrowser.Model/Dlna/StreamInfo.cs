@@ -78,6 +78,8 @@ namespace MediaBrowser.Model.Dlna
         public string PlaySessionId { get; set; }
         public List<MediaSourceInfo> AllMediaSources { get; set; }
 
+        public bool TryQuickSeek { get; set; }
+
         public string MediaSourceId
         {
             get
@@ -264,6 +266,7 @@ namespace MediaBrowser.Model.Dlna
             list.Add(new NameValuePair("EnableSubtitlesInManifest", item.EnableSubtitlesInManifest.ToString().ToLower()));
 
             list.Add(new NameValuePair("Tag", item.MediaSource.ETag ?? string.Empty));
+            list.Add(new NameValuePair("TryQuickSeek",  item.TryQuickSeek.ToString().ToLower()));
 
             return list;
         }

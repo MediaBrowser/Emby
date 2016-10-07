@@ -75,6 +75,7 @@ namespace MediaBrowser.Api.Playback
         public string PlaySessionId { get; set; }
         public string LiveStreamId { get; set; }
         public string Tag { get; set; }
+        public bool TryQuickSeek { get; set; }
     }
 
     public class VideoStreamRequest : StreamRequest
