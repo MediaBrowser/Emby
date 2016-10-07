@@ -280,12 +280,6 @@ namespace MediaBrowser.Api
                 hasTaglines.Taglines = request.Taglines;
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                hasShortOverview.ShortOverview = request.ShortOverview;
-            }
-
             item.Keywords = request.Keywords;
 
             if (request.Studios != null)

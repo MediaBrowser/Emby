@@ -72,7 +72,6 @@ namespace MediaBrowser.Controller.Entities
 
         public long? Size { get; set; }
         public string Container { get; set; }
-        public string ShortOverview { get; set; }
 
         public List<ItemImageInfo> ImageInfos { get; set; }
 

@@ -585,12 +585,6 @@ namespace MediaBrowser.Dlna.Didl
             {
                 var desc = item.Overview;
 
-                var hasShortOverview = item as IHasShortOverview;
-                if (hasShortOverview != null && !string.IsNullOrEmpty(hasShortOverview.ShortOverview))
-                {
-                    desc = hasShortOverview.ShortOverview;
-                }
-
                 if (!string.IsNullOrWhiteSpace(desc))
                 {
                     AddValue(element, "dc", "description", desc, NS_DC);

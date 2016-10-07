@@ -286,15 +286,6 @@ namespace MediaBrowser.LocalMetadata.Savers
                 }
             }
             
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                if (!string.IsNullOrEmpty(hasShortOverview.ShortOverview))
-                {
-                    builder.Append("<ShortOverview><![CDATA[" + hasShortOverview.ShortOverview + "]]></ShortOverview>");
-                }
-            }
-
             if (!string.IsNullOrEmpty(item.CustomRating))
             {
                 builder.Append("<CustomRating>" + SecurityElement.Escape(item.CustomRating) + "</CustomRating>");

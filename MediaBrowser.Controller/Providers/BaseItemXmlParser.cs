@@ -286,23 +286,6 @@ namespace MediaBrowser.Controller.Providers
                         break;
                     }
 
-                case "ShortOverview":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            var hasShortOverview = item as IHasShortOverview;
-
-                            if (hasShortOverview != null)
-                            {
-                                hasShortOverview.ShortOverview = val;
-                            }
-                        }
-
-                        break;
-                    }
-
                 case "CriticRatingSummary":
                     {
                         var val = reader.ReadElementContentAsString();

@@ -185,6 +185,7 @@
         /// <summary>
         /// The short overview
         /// </summary>
+        /// <remarks>Deprecated.</remarks>
         ShortOverview,
 
         /// <summary>
