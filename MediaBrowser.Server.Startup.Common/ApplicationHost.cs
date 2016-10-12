@@ -318,6 +318,9 @@ namespace MediaBrowser.Server.Startup.Common
         /// <summary>
         /// Runs the startup tasks.
         /// </summary>
+        /// <summary>
+        /// Runs the startup tasks.
+        /// </summary>
         public override async Task RunStartupTasks()
         {
             await PerformPreInitMigrations().ConfigureAwait(false);
