@@ -71,7 +71,7 @@ namespace MediaBrowser.ServerApplication
 
             if (_isRunningAsService)
             {
-                //_canRestartService = CanRestartWindowsService();
+                _canRestartService = CanRestartWindowsService();
             }
 
             var currentProcess = Process.GetCurrentProcess();
@@ -704,7 +704,7 @@ namespace MediaBrowser.ServerApplication
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = String.Format("/c sc stop {0} & sc start {0} & sc start {0}", BackgroundService.GetExistingServiceName())
+                Arguments = String.Format("/c sc stop {0} & timeout 5 /nobreak & sc start {0}", BackgroundService.GetExistingServiceName())
             };
             Process.Start(startInfo);
         }
