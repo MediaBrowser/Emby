@@ -5,6 +5,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace MediaBrowser.Controller.LiveTv
@@ -77,14 +78,17 @@ namespace MediaBrowser.Controller.LiveTv
 
         protected override string CreateSortName()
         {
-            double number = 0;
-
             if (!string.IsNullOrEmpty(Number))
             {
-                double.TryParse(Number, out number);
+                double number = 0;
+
+                if (double.TryParse(Number, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+                {
+                    return number.ToString("00000-") + (Name ?? string.Empty);
+                }
             }
 
-            return number.ToString("000-") + (Name ?? string.Empty);
+            return Number + "-" + (Name ?? string.Empty);
         }
 
         [IgnoreDataMember]

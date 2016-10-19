@@ -45,11 +45,10 @@
                     showTitle: true,
                     showParentTitle: true,
                     overlayText: false,
-                    centerText: true,
+                    centerText: !supportsImageAnalysis,
                     overlayPlayButton: true,
                     cardLayout: supportsImageAnalysis,
-                    vibrant: supportsImageAnalysis,
-                    cardFooterAside: 'none'
+                    vibrant: supportsImageAnalysis
                 });
 
                 Dashboard.hideLoadingMsg();
@@ -99,6 +98,8 @@
 
                 var container = view.querySelector('#resumableItems');
 
+                var cardLayout = appHost.preferVisualCards;
+
                 cardBuilder.buildCards(result.Items, {
                     itemsContainer: container,
                     preferThumb: true,
@@ -107,9 +108,10 @@
                     showTitle: true,
                     showParentTitle: true,
                     overlayText: false,
-                    centerText: true,
+                    centerText: !cardLayout,
                     overlayPlayButton: true,
-                    allowBottomPadding: allowBottomPadding
+                    allowBottomPadding: allowBottomPadding,
+                    cardLayout: cardLayout
                 });
             });
         }

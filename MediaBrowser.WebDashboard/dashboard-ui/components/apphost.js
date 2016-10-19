@@ -148,19 +148,18 @@ define(['appStorage', 'browser'], function (appStorage, browser) {
             features.push('fullscreen');
         }
 
-        if (!browser.slow) {
+        if (browser.chrome || (browser.safari && !browser.slow) || (browser.edge && !browser.slow)) {
             features.push('imageanalysis');
         }
 
         return features;
     }();
 
-
     var appInfo;
     var version = window.dashboardVersion || '3.0';
 
     return {
-        dvrFeatureCode: Dashboard.isConnectMode() ? 'dvr' : 'dvrl',
+        dvrFeatureCode: 'dvr',
         getWindowState: function () {
             return document.windowState || 'Normal';
         },
@@ -189,6 +188,7 @@ define(['appStorage', 'browser'], function (appStorage, browser) {
             var features = [];
 
             features.push('playback');
+            features.push('livetv');
 
             return features;
         },
@@ -211,7 +211,7 @@ define(['appStorage', 'browser'], function (appStorage, browser) {
             });
         },
         capabilities: getCapabilities,
-
+        preferVisualCards: browser.android || browser.chrome,
         moreIcon: browser.safari || browser.edge ? 'dots-horiz' : 'dots-vert'
     };
 });

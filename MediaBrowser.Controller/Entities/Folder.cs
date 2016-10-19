@@ -61,6 +61,15 @@ namespace MediaBrowser.Controller.Entities
             get { return false; }
         }
 
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Gets a value indicating whether this instance is folder.
         /// </summary>
@@ -798,18 +807,6 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (query.HasThemeSong.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to HasThemeSong");
-                return true;
-            }
-
-            if (query.HasThemeVideo.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to HasThemeVideo");
-                return true;
-            }
-
             // Filter by VideoType
             if (query.VideoTypes.Length > 0)
             {
@@ -1071,7 +1068,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var result = new Dictionary<Guid, BaseItem>();
 
-            AddChildrenToList(result, true, true, filter);
+            AddChildrenToList(result, includeLinkedChildren, true, filter);
 
             return result.Values.ToList();
         }

@@ -99,17 +99,22 @@
 
                 Dashboard.hideLoadingMsg();
 
-                actionsheet.show({
+                var menuOptions = {
                     title: Globalize.translate('HeaderSelectPlayer'),
                     items: menuItems,
                     positionTo: button,
 
-                    // Unfortunately we can't allow the url to change or chromecast will throw a security error
-                    // Might be able to solve this in the future by moving the dialogs to hashbangs
-                    enableHistory: enableHistory !== false && !browser.chrome,
                     resolveOnClick: true
 
-                }).then(function (id) {
+                };
+
+                // Unfortunately we can't allow the url to change or chromecast will throw a security error
+                // Might be able to solve this in the future by moving the dialogs to hashbangs
+                if (!((enableHistory !== false && !browser.chrome) || AppInfo.isNativeApp)) {
+                    menuOptions.enableHistory = false;
+                }
+
+                actionsheet.show(menuOptions).then(function (id) {
 
                     var target = targets.filter(function (t) {
                         return t.id == id;
@@ -148,8 +153,8 @@
 
         dlg.classList.add('promptDialog');
 
-        html += '<div class="promptDialogContent" style="padding:1em;">';
-        html += '<h2>';
+        html += '<div class="promptDialogContent" style="padding:1.5em;">';
+        html += '<h2 style="margin-top:.5em;">';
         html += (playerInfo.deviceName || playerInfo.name);
         html += '</h2>';
 
@@ -157,7 +162,7 @@
 
         if (playerInfo.supportedCommands.indexOf('DisplayContent') != -1) {
 
-            html += '<label class="checkboxContainer" style="margin-bottom:0;">';
+            html += '<label class="checkboxContainer">';
             var checkedHtml = MediaController.enableDisplayMirroring() ? ' checked' : '';
             html += '<input type="checkbox" is="emby-checkbox" class="chkMirror"' + checkedHtml + '/>';
             html += '<span>' + Globalize.translate('OptionEnableDisplayMirroring') + '</span>';
@@ -166,15 +171,11 @@
 
         html += '</div>';
 
-        html += '<div class="promptDialogButtons">';
+        html += '<div style="margin-top:1em;display:flex;justify-content: flex-end;">';
 
-        // On small layouts papepr dialog doesn't respond very well. this button isn't that important here anyway.
-        if (screen.availWidth >= 600) {
-            html += '<button is="emby-button" type="button" class="btnRemoteControl promptDialogButton">' + Globalize.translate('ButtonRemoteControl') + '</button>';
-        }
-
-        html += '<button is="emby-button" type="button" class="btnDisconnect promptDialogButton">' + Globalize.translate('ButtonDisconnect') + '</button>';
-        html += '<button is="emby-button" type="button" class="btnCancel promptDialogButton">' + Globalize.translate('ButtonCancel') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnRemoteControl promptDialogButton">' + Globalize.translate('ButtonRemoteControl') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnDisconnect promptDialogButton ">' + Globalize.translate('ButtonDisconnect') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnCancel promptDialogButton">' + Globalize.translate('ButtonCancel') + '</button>';
         html += '</div>';
 
         html += '</div>';
@@ -465,7 +466,7 @@
                 return;
             }
 
-            requirejs(["registrationservices"], function (registrationServices) {
+            requirejs(["registrationServices"], function (registrationServices) {
 
                 self.playbackTimeLimitMs = null;
 

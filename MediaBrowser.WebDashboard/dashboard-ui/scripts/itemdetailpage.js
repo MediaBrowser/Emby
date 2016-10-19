@@ -448,6 +448,11 @@
 
         if (item.Type == 'Series') {
 
+            renderSeriesSchedule(page, item, user);
+        }
+
+        if (item.Type == 'Series') {
+
             renderNextUp(page, item, user);
         } else {
             page.querySelector('.nextUpSection').classList.add('hide');
@@ -862,14 +867,18 @@
 
             var shape = item.Type == "MusicAlbum" || item.Type == "MusicArtist" ? getSquareShape() : getPortraitShape();
 
+            var supportsImageAnalysis = appHost.supports('imageanalysis');
+
             html += cardBuilder.getCardsHtml({
                 items: result.Items,
                 shape: shape,
                 showParentTitle: item.Type == "MusicAlbum",
-                centerText: true,
+                centerText: !supportsImageAnalysis,
                 showTitle: item.Type == "MusicAlbum" || item.Type == "Game" || item.Type == "MusicArtist",
                 coverImage: item.Type == "MusicAlbum" || item.Type == "MusicArtist",
-                overlayPlayButton: true
+                overlayPlayButton: true,
+                cardLayout: supportsImageAnalysis,
+                vibrant: supportsImageAnalysis
             });
             html += '</div>';
 
@@ -928,17 +937,23 @@
             } else {
                 html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
             }
+
+            var supportsImageAnalysis = appHost.supports('imageanalysis');
+            var cardLayout = supportsImageAnalysis && (item.Type == "MusicAlbum" || item.Type == "Game" || item.Type == "MusicArtist");
+
             html += cardBuilder.getCardsHtml({
                 items: result.Items,
                 shape: shape,
                 showParentTitle: item.Type == "MusicAlbum",
-                centerText: true,
+                centerText: !cardLayout,
                 showTitle: item.Type == "MusicAlbum" || item.Type == "Game" || item.Type == "MusicArtist",
                 context: context,
                 lazy: true,
                 showDetailsMenu: true,
                 coverImage: item.Type == "MusicAlbum" || item.Type == "MusicArtist",
-                overlayPlayButton: true
+                overlayPlayButton: true,
+                cardLayout: cardLayout,
+                vibrant: cardLayout && supportsImageAnalysis
             });
             html += '</div>';
 
@@ -1233,10 +1248,49 @@
 
     function renderChannelGuide(page, item, user) {
 
-        require('scripts/livetvcomponents,scripts/livetvchannel,livetvcss'.split(','), function () {
+        require('scripts/livetvchannel,scripts/livetvcomponents,livetvcss'.split(','), function (liveTvChannelPage) {
 
+            liveTvChannelPage.renderPrograms(page, item.Id);
+        });
+    }
 
-            LiveTvChannelPage.renderPrograms(page, item.Id);
+    function renderSeriesSchedule(page, item, user) {
+
+        return;
+        ApiClient.getLiveTvPrograms({
+
+            UserId: Dashboard.getCurrentUserId(),
+            HasAired: false,
+            SortBy: "StartDate",
+            EnableTotalRecordCount: false,
+            EnableImages: false,
+            ImageTypeLimit: 0,
+            Limit: 50,
+            EnableUserData: false,
+            LibrarySeriesId: item.Id
+
+        }).then(function (result) {
+
+            if (result.Items.length) {
+                page.querySelector('#seriesScheduleSection').classList.remove('hide');
+
+            } else {
+                page.querySelector('#seriesScheduleSection').classList.add('hide');
+            }
+
+            page.querySelector('#seriesScheduleList').innerHTML = listView.getListViewHtml({
+                items: result.Items,
+                enableUserDataButtons: false,
+                showParentTitle: false,
+                image: false,
+                showProgramDateTime: true,
+                mediaInfo: false,
+                showTitle: true,
+                moreButton: false,
+                action: 'programdialog'
+            });
+
+            Dashboard.hideLoadingMsg();
         });
     }
 

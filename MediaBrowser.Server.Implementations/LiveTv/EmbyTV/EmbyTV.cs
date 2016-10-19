@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using CommonIO;
+using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
@@ -59,8 +60,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
         public static EmbyTV Current;
 
-        public event EventHandler DataSourceChanged { add { } remove { } }
-        public event EventHandler<RecordingStatusChangedEventArgs> RecordingStatusChanged { add { } remove { } }
+        public event EventHandler DataSourceChanged;
+        public event EventHandler<RecordingStatusChangedEventArgs> RecordingStatusChanged;
 
         private readonly ConcurrentDictionary<string, ActiveRecordingInfo> _activeRecordings =
             new ConcurrentDictionary<string, ActiveRecordingInfo>(StringComparer.OrdinalIgnoreCase);
@@ -740,7 +741,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             {
                 PostPaddingSeconds = Math.Max(config.PostPaddingSeconds, 0),
                 PrePaddingSeconds = Math.Max(config.PrePaddingSeconds, 0),
-                RecordAnyChannel = true,
+                RecordAnyChannel = false,
                 RecordAnyTime = true,
                 RecordNewOnly = true,
 
@@ -760,9 +761,10 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             {
                 defaults.SeriesId = program.SeriesId;
                 defaults.ProgramId = program.Id;
+                defaults.RecordNewOnly = !program.IsRepeat;
             }
 
-            defaults.SkipEpisodesInLibrary = true;
+            defaults.SkipEpisodesInLibrary = defaults.RecordNewOnly;
             defaults.KeepUntil = KeepUntil.UntilDeleted;
 
             return Task.FromResult(defaults);
@@ -1009,7 +1011,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             throw new NotImplementedException();
         }
 
-        public Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
+        public async Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
         {
             ActiveRecordingInfo info;
 
@@ -1017,22 +1019,27 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
             if (_activeRecordings.TryGetValue(recordingId, out info))
             {
-                return Task.FromResult(new List<MediaSourceInfo>
+                var stream = new MediaSourceInfo
                 {
-                    new MediaSourceInfo
-                    {
-                        Path = _appHost.GetLocalApiUrl("localhost") + "/LiveTv/LiveRecordings/" + recordingId + "/stream",
-                        Id = recordingId,
-                        SupportsDirectPlay = false,
-                        SupportsDirectStream = true,
-                        SupportsTranscoding = true,
-                        IsInfiniteStream = true,
-                        RequiresOpening = false,
-                        RequiresClosing = false,
-                        Protocol = Model.MediaInfo.MediaProtocol.Http,
-                        BufferMs = 0
-                    }
-                });
+                    Path = _appHost.GetLocalApiUrl("localhost") + "/LiveTv/LiveRecordings/" + recordingId + "/stream",
+                    Id = recordingId,
+                    SupportsDirectPlay = false,
+                    SupportsDirectStream = true,
+                    SupportsTranscoding = true,
+                    IsInfiniteStream = true,
+                    RequiresOpening = false,
+                    RequiresClosing = false,
+                    Protocol = Model.MediaInfo.MediaProtocol.Http,
+                    BufferMs = 0
+                };
+
+                var isAudio = false;
+                await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
+
+                return new List<MediaSourceInfo>
+                {
+                    stream
+                };
             }
 
             throw new FileNotFoundException();
@@ -1258,6 +1265,8 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
 
             string liveStreamId = null;
 
+            OnRecordingStatusChanged();
+
             try
             {
                 var allMediaSources = await GetChannelStreamMediaSources(timer.ChannelId, CancellationToken.None).ConfigureAwait(false);
@@ -1353,6 +1362,16 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
             {
                 _timerProvider.Delete(timer);
             }
+
+            OnRecordingStatusChanged();
+        }
+
+        private void OnRecordingStatusChanged()
+        {
+            EventHelper.FireEventIfNotNull(RecordingStatusChanged, this, new RecordingStatusChangedEventArgs
+            {
+
+            }, _logger);
         }
 
         private async void EnforceKeepUpTo(TimerInfo timer)
@@ -1835,23 +1854,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv.EmbyTV
                         ParentIndexNumber = program.SeasonNumber.Value,
                         IndexNumber = program.EpisodeNumber.Value,
                         AncestorIds = seriesIds,
-                        ExcludeLocationTypes = new[] { LocationType.Virtual }
-                    });
-
-                    if (result.TotalRecordCount > 0)
-                    {
-                        return true;
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(program.EpisodeTitle))
-                {
-                    var result = _libraryManager.GetItemsResult(new InternalItemsQuery
-                    {
-                        IncludeItemTypes = new[] { typeof(Episode).Name },
-                        Name = program.EpisodeTitle,
-                        AncestorIds = seriesIds,
-                        ExcludeLocationTypes = new[] { LocationType.Virtual }
+                        IsVirtualItem = false
                     });
 
                     if (result.TotalRecordCount > 0)

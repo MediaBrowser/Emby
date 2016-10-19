@@ -1,4 +1,5 @@
 ﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'userSettings', 'embyRouter', 'globalize', 'emby-input', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, userSettings, embyRouter, globalize) {
+    'use strict';
 
     var currentServerId;
 
@@ -140,7 +141,7 @@
         html += '<div class="dialogContentInner dialog-content-centered">';
         html += '<form style="margin:auto;">';
 
-        html += '<div class="fldSelectPlaylist">';
+        html += '<div class="fldSelectPlaylist selectContainer">';
         html += '<select is="emby-select" id="selectPlaylistToAddTo" label="' + globalize.translate('sharedcomponents#LabelPlaylist') + '" autofocus></select>';
         html += '</div>';
 

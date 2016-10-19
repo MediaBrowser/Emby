@@ -121,7 +121,13 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             foreach (var service in _services)
             {
                 service.DataSourceChanged += service_DataSourceChanged;
+                service.RecordingStatusChanged += Service_RecordingStatusChanged;
             }
+        }
+
+        private void Service_RecordingStatusChanged(object sender, RecordingStatusChangedEventArgs e)
+        {
+            _lastRecordingRefreshTime = DateTime.MinValue;
         }
 
         public List<ITunerHost> TunerHosts
@@ -871,6 +877,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                 SortOrder = query.SortOrder ?? SortOrder.Ascending,
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
                 TopParentIds = new[] { topFolder.Id.ToString("N") },
+                Name = query.Name,
                 DtoOptions = options
             };
 
@@ -1746,7 +1753,7 @@ namespace MediaBrowser.Server.Implementations.LiveTv
 
         public async Task AddInfoToProgramDto(List<Tuple<BaseItem, BaseItemDto>> tuples, List<ItemFields> fields, User user = null)
         {
-            var recordingTuples = new List<Tuple<BaseItemDto, string, string, string>>();
+            var programTuples = new List<Tuple<BaseItemDto, string, string, string>>();
 
             foreach (var tuple in tuples)
             {
@@ -1806,18 +1813,17 @@ namespace MediaBrowser.Server.Implementations.LiveTv
                     }
                 }
 
-                var service = GetService(program);
-                var serviceName = service == null ? null : service.Name;
+                var serviceName = program.ServiceName;
 
                 if (fields.Contains(ItemFields.ServiceName))
                 {
                     dto.ServiceName = serviceName;
                 }
 
-                recordingTuples.Add(new Tuple<BaseItemDto, string, string, string>(dto, serviceName, program.ExternalId, program.ExternalSeriesIdLegacy));
+                programTuples.Add(new Tuple<BaseItemDto, string, string, string>(dto, serviceName, program.ExternalId, program.ExternalSeriesIdLegacy));
             }
 
-            await AddRecordingInfo(recordingTuples, CancellationToken.None).ConfigureAwait(false);
+            await AddRecordingInfo(programTuples, CancellationToken.None).ConfigureAwait(false);
         }
 
         public void AddInfoToRecordingDto(BaseItem item, BaseItemDto dto, User user = null)
@@ -2298,6 +2304,18 @@ namespace MediaBrowser.Server.Implementations.LiveTv
             }
 
             var info = await service.GetNewTimerDefaultsAsync(cancellationToken, programInfo).ConfigureAwait(false);
+
+            info.RecordAnyTime = true;
+            info.Days = new List<DayOfWeek>
+            {
+                DayOfWeek.Sunday,
+                DayOfWeek.Monday,
+                DayOfWeek.Tuesday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Thursday,
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday
+            };
 
             info.Id = null;
 

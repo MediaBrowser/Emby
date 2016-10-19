@@ -1188,7 +1188,7 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
         public ItemImageInfo ItemImageInfoFromValueString(string value)
         {
-            var parts = value.Split(new[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = value.Split(new[] { '*' }, StringSplitOptions.None);
 
             var image = new ItemImageInfo();
 
@@ -1633,14 +1633,13 @@ namespace MediaBrowser.Server.Implementations.Persistence
             }
             index++;
 
-            if (query.HasField(ItemFields.ServiceName))
+            // TODO: Even if not needed by apps, the server needs it internally
+            // But get this excluded from contexts where it is not needed
+            if (!reader.IsDBNull(index))
             {
-                if (!reader.IsDBNull(index))
-                {
-                    item.ServiceName = reader.GetString(index);
-                }
-                index++;
+                item.ServiceName = reader.GetString(index);
             }
+            index++;
 
             if (!reader.IsDBNull(index))
             {
@@ -1875,17 +1874,23 @@ namespace MediaBrowser.Server.Implementations.Persistence
                 index++;
             }
 
-            if (!reader.IsDBNull(index))
+            if (query.HasField(ItemFields.ThemeSongIds))
             {
-                item.ThemeSongIds = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => new Guid(i)).ToList();
+                if (!reader.IsDBNull(index))
+                {
+                    item.ThemeSongIds = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => new Guid(i)).ToList();
+                }
+                index++;
             }
-            index++;
 
-            if (!reader.IsDBNull(index))
+            if (query.HasField(ItemFields.ThemeVideoIds))
             {
-                item.ThemeVideoIds = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => new Guid(i)).ToList();
+                if (!reader.IsDBNull(index))
+                {
+                    item.ThemeVideoIds = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => new Guid(i)).ToList();
+                }
+                index++;
             }
-            index++;
 
             if (string.IsNullOrWhiteSpace(item.Tagline))
             {
@@ -3825,6 +3830,28 @@ namespace MediaBrowser.Server.Implementations.Persistence
 
                 clause += ")";
                 whereClauses.Add(clause);
+            }
+            if (query.HasThemeSong.HasValue)
+            {
+                if (query.HasThemeSong.Value)
+                {
+                    whereClauses.Add("ThemeSongIds not null");
+                }
+                else
+                {
+                    whereClauses.Add("ThemeSongIds is null");
+                }
+            }
+            if (query.HasThemeVideo.HasValue)
+            {
+                if (query.HasThemeVideo.Value)
+                {
+                    whereClauses.Add("ThemeVideoIds not null");
+                }
+                else
+                {
+                    whereClauses.Add("ThemeVideoIds is null");
+                }
             }
 
             //var enableItemsByName = query.IncludeItemsByName ?? query.IncludeItemTypes.Length > 0;

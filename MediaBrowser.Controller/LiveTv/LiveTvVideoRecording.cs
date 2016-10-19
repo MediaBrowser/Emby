@@ -55,6 +55,24 @@ namespace MediaBrowser.Controller.LiveTv
         }
 
         [IgnoreDataMember]
+        protected override bool SupportsIsInMixedFolderDetection
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return Status == RecordingStatus.Completed && base.SupportsPlayedStatus;
+            }
+        }
+
+        [IgnoreDataMember]
         public override LocationType LocationType
         {
             get
@@ -112,7 +130,11 @@ namespace MediaBrowser.Controller.LiveTv
 
         public override bool CanDelete()
         {
-            return Status == RecordingStatus.Completed;
+            if (string.Equals(ServiceName, "Emby", StringComparison.OrdinalIgnoreCase))
+            {
+                return Status == RecordingStatus.Completed;
+            }
+            return true;
         }
 
         public override bool IsAuthorizedToDelete(User user)

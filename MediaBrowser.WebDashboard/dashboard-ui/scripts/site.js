@@ -1119,7 +1119,7 @@ var AppInfo = {};
         var headroom = new Headroom([], {
             // or scroll tolerance per direction
             tolerance: {
-                down: 20,
+                down: 0,
                 up: 0
             },
             classes: {
@@ -1155,7 +1155,7 @@ var AppInfo = {};
 
         var paths = {
             velocity: bowerPath + "/velocity/velocity.min",
-            vibrant: bowerPath + "/vibrant/dist/vibrant.min",
+            vibrant: bowerPath + "/vibrant/dist/vibrant",
             ironCardList: 'components/ironcardlist/ironcardlist',
             scrollThreshold: 'components/scrollthreshold',
             playlisteditor: 'components/playlisteditor/playlisteditor',
@@ -1185,7 +1185,6 @@ var AppInfo = {};
             globalize: embyWebComponentsBowerPath + "/globalize",
             itemHelper: embyWebComponentsBowerPath + '/itemhelper',
             itemShortcuts: embyWebComponentsBowerPath + "/shortcuts",
-            imageLoader: embyWebComponentsBowerPath + "/images/imagehelper",
             serverNotifications: embyWebComponentsBowerPath + '/servernotifications',
             webAnimations: bowerPath + '/web-animations-js/web-animations-next-lite.min'
         };
@@ -1203,16 +1202,15 @@ var AppInfo = {};
         if (Dashboard.isRunningInCordova()) {
             paths.sharingMenu = "cordova/sharingwidget";
             paths.wakeonlan = "cordova/wakeonlan";
-            paths.actionsheet = "cordova/actionsheet";
         } else {
             paths.wakeonlan = apiClientBowerPath + "/wakeonlan";
 
             define("sharingMenu", [embyWebComponentsBowerPath + "/sharing/sharingmenu"], returnFirstDependency);
-            define("actionsheet", ["webActionSheet"], returnFirstDependency);
         }
 
         define("libjass", [bowerPath + "/libjass/libjass.min", "css!" + bowerPath + "/libjass/libjass"], returnFirstDependency);
 
+        define("imageLoader", [embyWebComponentsBowerPath + "/images/imagehelper"], returnFirstDependency);
         define("syncJobList", ["components/syncjoblist/syncjoblist"], returnFirstDependency);
         define("appfooter", ["components/appfooter/appfooter"], returnFirstDependency);
         define("dockedtabs", ["components/dockedtabs/dockedtabs"], returnFirstDependency);
@@ -1361,17 +1359,14 @@ var AppInfo = {};
         define("formDialogStyle", ['css!' + embyWebComponentsBowerPath + "/formdialog"], returnFirstDependency);
         define("indicators", [embyWebComponentsBowerPath + "/indicators/indicators"], returnFirstDependency);
 
-        if (Dashboard.isRunningInCordova()) {
-            define('registrationservices', ['cordova/registrationservices'], returnFirstDependency);
-
-        } else {
-            define('registrationservices', ['scripts/registrationservices'], returnFirstDependency);
-        }
+        define("registrationServices", [embyWebComponentsBowerPath + "/registrationservices/registrationservices"], returnFirstDependency);
 
         if (Dashboard.isRunningInCordova()) {
+            define("iapManager", ["cordova/iap"], returnFirstDependency);
             define("localassetmanager", ["cordova/localassetmanager"], returnFirstDependency);
             define("fileupload", ["cordova/fileupload"], returnFirstDependency);
         } else {
+            define("iapManager", ["components/iap"], returnFirstDependency);
             define("localassetmanager", [apiClientBowerPath + "/localassetmanager"], returnFirstDependency);
             define("fileupload", [apiClientBowerPath + "/fileupload"], returnFirstDependency);
         }
@@ -1422,9 +1417,7 @@ var AppInfo = {};
         });
 
         // alias
-        define("historyManager", [], function () {
-            return Emby.Page;
-        });
+        define("historyManager", ['embyRouter'], returnFirstDependency);
 
         define("headroom-window", ['headroom'], createWindowHeadroom);
         define("hammer-main", ['hammer'], createMainContentHammer);
@@ -1620,6 +1613,12 @@ var AppInfo = {};
         var bowerPath = getBowerPath();
 
         var embyWebComponentsBowerPath = bowerPath + '/emby-webcomponents';
+
+        if (Dashboard.isRunningInCordova()) {
+            define("actionsheet", ["cordova/actionsheet"], returnFirstDependency);
+        } else {
+            define("actionsheet", ["webActionSheet"], returnFirstDependency);
+        }
 
         if (!('registerElement' in document)) {
             if (browser.msie) {
@@ -2590,13 +2589,6 @@ var AppInfo = {};
         });
 
         defineRoute({
-            path: '/wizardservice.html',
-            dependencies: ['dashboardcss'],
-            autoFocus: false,
-            anonymous: true
-        });
-
-        defineRoute({
             path: '/wizardsettings.html',
             dependencies: ['dashboardcss'],
             autoFocus: false,
@@ -2662,7 +2654,7 @@ var AppInfo = {};
         loadTheme();
 
         if (Dashboard.isRunningInCordova()) {
-            deps.push('registrationservices');
+            deps.push('registrationServices');
 
             if (browserInfo.android) {
                 deps.push('cordova/android/androidcredentials');
@@ -2681,7 +2673,6 @@ var AppInfo = {};
 
             window.Emby = {};
             window.Emby.Page = pageObjects;
-            window.Emby.TransparencyLevel = pageObjects.TransparencyLevel;
             defineCoreRoutes();
             Emby.Page.start({
                 click: true,

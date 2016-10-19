@@ -24,7 +24,6 @@ namespace MediaBrowser.Controller.Entities
         IHasAspectRatio,
         ISupportsPlaceHolders,
         IHasMediaSources,
-        IHasShortOverview,
         IThemeMedia
     {
         [IgnoreDataMember]
@@ -41,6 +40,24 @@ namespace MediaBrowser.Controller.Entities
             get
             {
                 return ExtraType.HasValue && ExtraType.Value == Model.Entities.ExtraType.ThemeVideo;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        protected override bool SupportsIsInMixedFolderDetection
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -409,7 +426,7 @@ namespace MediaBrowser.Controller.Entities
             if (IsStacked)
             {
                 var tasks = AdditionalParts
-                    .Select(i => RefreshMetadataForOwnedVideo(options, i, cancellationToken));
+                    .Select(i => RefreshMetadataForOwnedVideo(options, true, i, cancellationToken));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
@@ -424,7 +441,7 @@ namespace MediaBrowser.Controller.Entities
                     RefreshLinkedAlternateVersions();
 
                     var tasks = LocalAlternateVersions
-                        .Select(i => RefreshMetadataForOwnedVideo(options, i, cancellationToken));
+                        .Select(i => RefreshMetadataForOwnedVideo(options, false, i, cancellationToken));
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
