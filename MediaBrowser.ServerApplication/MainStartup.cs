@@ -699,12 +699,13 @@ namespace MediaBrowser.ServerApplication
 
             var startInfo = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
+                FileName = "powershell.exe",
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = String.Format("/c sc stop {0} & timeout 5 /nobreak & sc start {0}", BackgroundService.GetExistingServiceName())
+                Arguments = String.Format("& {{Restart-Service {0}; Wait-Process Mediabrowser.Updater; Start-Service {0}}}", 
+                BackgroundService.GetExistingServiceName())
             };
             Process.Start(startInfo);
         }
@@ -713,12 +714,12 @@ namespace MediaBrowser.ServerApplication
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
+                FileName = "powershell.exe",
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = String.Format("/c sc query {0}", BackgroundService.GetExistingServiceName())
+                Arguments = String.Format("& {{Restart-Service {0} -WhatIf}}", BackgroundService.GetExistingServiceName())
             };
             using (var process = Process.Start(startInfo))
             {
