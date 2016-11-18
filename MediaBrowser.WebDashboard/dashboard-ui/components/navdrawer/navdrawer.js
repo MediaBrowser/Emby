@@ -1,4 +1,5 @@
 ﻿define(['browser', 'css!./navdrawer', 'scrollStyles'], function (browser) {
+    'use strict';
 
     return function (options) {
 
@@ -24,7 +25,7 @@
             self = this;
 
             defaults = {
-                width: 280,
+                width: 260,
                 handleSize: 30,
                 disableMask: false,
                 maxMaskOpacity: 0.5
@@ -96,7 +97,7 @@
             if (options.disableEdgeSwipe) {
                 return;
             }
-
+            return;
             require(['hammer-main'], initEdgeSwipeInternal);
         }
 

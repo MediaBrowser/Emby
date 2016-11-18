@@ -8,27 +8,34 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Channels;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.Channels;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
     /// <summary>
     /// Class Folder
     /// </summary>
-    public class Folder : BaseItem, IHasThemeMedia
+    public class Folder : BaseItem
     {
         public static IUserManager UserManager { get; set; }
         public static IUserViewManager UserViewManager { get; set; }
 
-        public List<Guid> ThemeSongIds { get; set; }
-        public List<Guid> ThemeVideoIds { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is root.
+        /// </summary>
+        /// <value><c>true</c> if this instance is root; otherwise, <c>false</c>.</value>
+        public bool IsRoot { get; set; }
+
+        public virtual List<LinkedChild> LinkedChildren { get; set; }
 
         [IgnoreDataMember]
         public DateTime? DateLastMediaAdded { get; set; }
@@ -36,15 +43,33 @@ namespace MediaBrowser.Controller.Entities
         public Folder()
         {
             LinkedChildren = new List<LinkedChild>();
+        }
 
-            ThemeSongIds = new List<Guid>();
-            ThemeVideoIds = new List<Guid>();
+        [IgnoreDataMember]
+        public override bool SupportsThemeMedia
+        {
+            get { return true; }
         }
 
         [IgnoreDataMember]
         public virtual bool IsPreSorted
         {
             get { return false; }
+        }
+
+        [IgnoreDataMember]
+        public virtual bool IsPhysicalRoot
+        {
+            get { return false; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return true;
+            }
         }
 
         /// <summary>
@@ -117,19 +142,6 @@ namespace MediaBrowser.Controller.Entities
             return true;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is physical root.
-        /// </summary>
-        /// <value><c>true</c> if this instance is physical root; otherwise, <c>false</c>.</value>
-        public bool IsPhysicalRoot { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is root.
-        /// </summary>
-        /// <value><c>true</c> if this instance is root; otherwise, <c>false</c>.</value>
-        public bool IsRoot { get; set; }
-
-        public virtual List<LinkedChild> LinkedChildren { get; set; }
-
         [IgnoreDataMember]
         protected virtual bool SupportsShortcutChildren
         {
@@ -178,8 +190,6 @@ namespace MediaBrowser.Controller.Entities
             item.SetParent(null);
         }
 
-        #region Indexing
-
         /// <summary>
         /// Returns the valid set of index by options for this folder type.
         /// Override or extend to modify.
@@ -206,8 +216,6 @@ namespace MediaBrowser.Controller.Entities
         {
             get { return GetIndexByOptions(); }
         }
-
-        #endregion
 
         /// <summary>
         /// Gets the actual children.
@@ -801,18 +809,6 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (query.HasThemeSong.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to HasThemeSong");
-                return true;
-            }
-
-            if (query.HasThemeVideo.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to HasThemeVideo");
-                return true;
-            }
-
             // Filter by VideoType
             if (query.VideoTypes.Length > 0)
             {
@@ -1074,7 +1070,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var result = new Dictionary<Guid, BaseItem>();
 
-            AddChildrenToList(result, true, true, filter);
+            AddChildrenToList(result, includeLinkedChildren, true, filter);
 
             return result.Values.ToList();
         }
@@ -1149,29 +1145,19 @@ namespace MediaBrowser.Controller.Entities
             return LinkedChildren
                 .Select(i =>
                 {
-                    var requiresPostFilter = true;
-
-                    if (!string.IsNullOrWhiteSpace(i.Path))
-                    {
-                        requiresPostFilter = false;
-
-                        if (!locations.Any(l => FileSystem.ContainsSubPath(l, i.Path)))
-                        {
-                            return null;
-                        }
-                    }
-
                     var child = GetLinkedChild(i);
 
-                    if (requiresPostFilter && child != null)
+                    if (child != null)
                     {
-                        if (string.IsNullOrWhiteSpace(child.Path))
+                        var childLocationType = child.LocationType;
+                        if (childLocationType == LocationType.Remote || childLocationType == LocationType.Virtual)
                         {
-                            Logger.Debug("Found LinkedChild with null path: {0}", child.Name);
-                            return child;
+                            if (!child.IsVisibleStandalone(user))
+                            {
+                                return null;
+                            }
                         }
-
-                        if (!locations.Any(l => FileSystem.ContainsSubPath(l, child.Path)))
+                        else if (childLocationType == LocationType.FileSystem && !locations.Any(l => FileSystem.ContainsSubPath(l, child.Path)))
                         {
                             return null;
                         }
@@ -1233,7 +1219,7 @@ namespace MediaBrowser.Controller.Entities
             if (SupportsShortcutChildren)
             {
                 newShortcutLinks = fileSystemChildren
-                    .Where(i => (i.Attributes & FileAttributes.Directory) != FileAttributes.Directory && FileSystem.IsShortcut(i.FullName))
+                    .Where(i => !i.IsDirectory && FileSystem.IsShortcut(i.FullName))
                     .Select(i =>
                     {
                         try

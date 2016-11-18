@@ -9,7 +9,6 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Session;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +17,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Playback
 {
@@ -72,8 +72,9 @@ namespace MediaBrowser.Api.Playback
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IUserManager _userManager;
         private readonly IJsonSerializer _json;
+        private readonly IAuthorizationContext _authContext;
 
-        public MediaInfoService(IMediaSourceManager mediaSourceManager, IDeviceManager deviceManager, ILibraryManager libraryManager, IServerConfigurationManager config, INetworkManager networkManager, IMediaEncoder mediaEncoder, IUserManager userManager, IJsonSerializer json)
+        public MediaInfoService(IMediaSourceManager mediaSourceManager, IDeviceManager deviceManager, ILibraryManager libraryManager, IServerConfigurationManager config, INetworkManager networkManager, IMediaEncoder mediaEncoder, IUserManager userManager, IJsonSerializer json, IAuthorizationContext authContext)
         {
             _mediaSourceManager = mediaSourceManager;
             _deviceManager = deviceManager;
@@ -83,6 +84,7 @@ namespace MediaBrowser.Api.Playback
             _mediaEncoder = mediaEncoder;
             _userManager = userManager;
             _json = json;
+            _authContext = authContext;
         }
 
         public object Get(GetBitrateTestBytes request)
@@ -105,9 +107,9 @@ namespace MediaBrowser.Api.Playback
 
         public async Task<object> Post(OpenMediaSource request)
         {
-            var authInfo = AuthorizationContext.GetAuthorizationInfo(Request);
+            var authInfo = _authContext.GetAuthorizationInfo(Request);
 
-            var result = await _mediaSourceManager.OpenLiveStream(request, false, CancellationToken.None).ConfigureAwait(false);
+            var result = await _mediaSourceManager.OpenLiveStream(request, true, CancellationToken.None).ConfigureAwait(false);
 
             var profile = request.DeviceProfile;
             if (profile == null)
@@ -125,7 +127,7 @@ namespace MediaBrowser.Api.Playback
 
                 SetDeviceSpecificData(item, result.MediaSource, profile, authInfo, request.MaxStreamingBitrate,
                     request.StartTimeTicks ?? 0, result.MediaSource.Id, request.AudioStreamIndex,
-                    request.SubtitleStreamIndex, request.PlaySessionId, request.UserId);
+                    request.SubtitleStreamIndex, request.MaxAudioChannels, request.PlaySessionId, request.UserId);
             }
             else
             {
@@ -140,13 +142,13 @@ namespace MediaBrowser.Api.Playback
 
         public void Post(CloseMediaSource request)
         {
-            var task = _mediaSourceManager.CloseLiveStream(request.LiveStreamId, CancellationToken.None);
+            var task = _mediaSourceManager.CloseLiveStream(request.LiveStreamId);
             Task.WaitAll(task);
         }
 
         public async Task<object> Post(GetPostedPlaybackInfo request)
         {
-            var authInfo = AuthorizationContext.GetAuthorizationInfo(Request);
+            var authInfo = _authContext.GetAuthorizationInfo(Request);
 
             var profile = request.DeviceProfile;
 
@@ -167,7 +169,7 @@ namespace MediaBrowser.Api.Playback
             {
                 var mediaSourceId = request.MediaSourceId;
 
-                SetDeviceSpecificData(request.Id, info, profile, authInfo, request.MaxStreamingBitrate ?? profile.MaxStreamingBitrate, request.StartTimeTicks ?? 0, mediaSourceId, request.AudioStreamIndex, request.SubtitleStreamIndex, request.UserId);
+                SetDeviceSpecificData(request.Id, info, profile, authInfo, request.MaxStreamingBitrate ?? profile.MaxStreamingBitrate, request.StartTimeTicks ?? 0, mediaSourceId, request.AudioStreamIndex, request.SubtitleStreamIndex, request.MaxAudioChannels, request.UserId);
             }
 
             return ToOptimizedResult(info);
@@ -230,13 +232,14 @@ namespace MediaBrowser.Api.Playback
             string mediaSourceId,
             int? audioStreamIndex,
             int? subtitleStreamIndex,
+            int? maxAudioChannels,
             string userId)
         {
             var item = _libraryManager.GetItemById(itemId);
 
             foreach (var mediaSource in result.MediaSources)
             {
-                SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex, result.PlaySessionId, userId);
+                SetDeviceSpecificData(item, mediaSource, profile, auth, maxBitrate, startTimeTicks, mediaSourceId, audioStreamIndex, subtitleStreamIndex, maxAudioChannels, result.PlaySessionId, userId);
             }
 
             SortMediaSources(result, maxBitrate);
@@ -251,6 +254,7 @@ namespace MediaBrowser.Api.Playback
             string mediaSourceId,
             int? audioStreamIndex,
             int? subtitleStreamIndex,
+            int? maxAudioChannels,
             string playSessionId,
             string userId)
         {
@@ -262,7 +266,8 @@ namespace MediaBrowser.Api.Playback
                 Context = EncodingContext.Streaming,
                 DeviceId = auth.DeviceId,
                 ItemId = item.Id.ToString("N"),
-                Profile = profile
+                Profile = profile,
+                MaxAudioChannels = maxAudioChannels
             };
 
             if (string.Equals(mediaSourceId, mediaSource.Id, StringComparison.OrdinalIgnoreCase))

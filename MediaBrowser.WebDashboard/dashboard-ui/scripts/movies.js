@@ -1,4 +1,5 @@
-﻿define(['events', 'libraryBrowser', 'imageLoader', 'alphaPicker', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, alphaPicker, listView, cardBuilder) {
+﻿define(['events', 'libraryBrowser', 'imageLoader', 'alphaPicker', 'listView', 'cardBuilder', 'apphost', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, alphaPicker, listView, cardBuilder, appHost) {
+    'use strict';
 
     return function (view, params, tabContent) {
 
@@ -92,6 +93,8 @@
                 var html;
                 var viewStyle = self.getCurrentViewStyle();
 
+                var supportsImageAnalysis = appHost.supports('imageanalysis');
+
                 if (viewStyle == "Thumb") {
 
                     html = cardBuilder.getCardsHtml({
@@ -113,7 +116,8 @@
                         lazy: true,
                         cardLayout: true,
                         showTitle: true,
-                        showYear: true
+                        showYear: true,
+                        vibrant: supportsImageAnalysis
                     });
                 }
                 else if (viewStyle == "Banner") {
@@ -143,7 +147,8 @@
                         showTitle: true,
                         showYear: true,
                         lazy: true,
-                        cardLayout: true
+                        cardLayout: true,
+                        vibrant: supportsImageAnalysis
                     });
                 }
                 else {
@@ -288,10 +293,6 @@
                         {
                             name: Globalize.translate('OptionRuntime'),
                             id: 'Runtime,SortName'
-                        },
-                        {
-                            name: Globalize.translate('OptionVideoBitrate'),
-                            id: 'VideoBitRate,SortName'
                         }],
                     callback: function () {
                         getQuery(tabContent).StartIndex = 0;

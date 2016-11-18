@@ -1,4 +1,5 @@
 ﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'embyRouter', 'globalize', 'emby-input', 'emby-checkbox', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, embyRouter, globalize) {
+    'use strict';
 
     function parentWithClass(elem, className) {
 
@@ -41,7 +42,7 @@
 
         html += '<br />';
         html += '<div class="formDialogFooter">';
-        html += '<button is="emby-button" type="submit" class="raised btnSubmit block formDialogFooterItem button-submit">' + globalize.translate('sharedcomponents#ButtonOk') + '</button>';
+        html += '<button is="emby-button" type="submit" class="raised btnSubmit block formDialogFooterItem button-submit">' + globalize.translate('sharedcomponents#Refresh') + '</button>';
         html += '</div>';
 
         html += '</form>';
@@ -71,7 +72,7 @@
             var apiClient = connectionManager.getApiClient(options.serverId);
 
             var replaceAllImages = dlg.querySelector('.chkReplaceImages').checked;
-            var replaceAllMetadata = dlg.querySelector('#selectMetadataRefreshMode').value == 'all';
+            var replaceAllMetadata = dlg.querySelector('#selectMetadataRefreshMode').value === 'all';
 
             options.itemIds.forEach(function (itemId) {
                 apiClient.refreshItem(itemId, {

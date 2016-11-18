@@ -1,4 +1,5 @@
-﻿define(['appStorage', 'emby-button'], function (appStorage) {
+﻿define(['userSettings', 'emby-button'], function (userSettings) {
+    'use strict';
 
     return function (options) {
 
@@ -77,36 +78,8 @@
         function onButtonClick() {
 
             var button = this;
-            var id = button.getAttribute('data-taskid');
-
-            var key = 'scheduledTaskButton' + options.taskKey;
-            var expectedValue = new Date().getMonth() + '6';
-
-            if (appStorage.getItem(key) == expectedValue) {
-                onScheduledTaskMessageConfirmed(id);
-            } else {
-
-                var msg = Globalize.translate('ConfirmMessageScheduledTaskButton');
-                msg += '<br/>';
-                msg += '<div style="margin-top:1em;">';
-                msg += '<a class="clearLink" href="scheduledtasks.html"><button is="emby-button" type="button" style="color:#3f51b5!important;margin:0;">' + Globalize.translate('ButtonScheduledTasks') + '</button></a>';
-                msg += '</div>';
-
-                require(['confirm'], function (confirm) {
-
-                    confirm({
-
-                        title: Globalize.translate('HeaderConfirmation'),
-                        html: msg,
-                        text: Globalize.translate('ConfirmMessageScheduledTaskButton') + "\n\n" + Globalize.translate('ButtonScheduledTasks')
-
-                    }).then(function () {
-                        appStorage.setItem(key, expectedValue);
-                        onScheduledTaskMessageConfirmed(id);
-                    });
-
-                });
-            }
+            var taskId = button.getAttribute('data-taskid');
+            onScheduledTaskMessageConfirmed(taskId);
         }
 
         function onSocketOpen() {
@@ -161,7 +134,7 @@
             Events.off(ApiClient, 'websocketopen', onSocketOpen);
             stopInterval();
 
-        } else  {
+        } else {
 
             button.addEventListener('click', onButtonClick);
 

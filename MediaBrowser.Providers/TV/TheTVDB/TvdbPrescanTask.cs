@@ -14,8 +14,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -48,6 +51,7 @@ namespace MediaBrowser.Providers.TV
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
         private readonly ILibraryManager _libraryManager;
+        private readonly IXmlReaderSettingsFactory _xmlSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TvdbPrescanTask"/> class.
@@ -55,13 +59,14 @@ namespace MediaBrowser.Providers.TV
         /// <param name="logger">The logger.</param>
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="config">The config.</param>
-        public TvdbPrescanTask(ILogger logger, IHttpClient httpClient, IServerConfigurationManager config, IFileSystem fileSystem, ILibraryManager libraryManager)
+        public TvdbPrescanTask(ILogger logger, IHttpClient httpClient, IServerConfigurationManager config, IFileSystem fileSystem, ILibraryManager libraryManager, IXmlReaderSettingsFactory xmlSettings)
         {
             _logger = logger;
             _httpClient = httpClient;
             _config = config;
             _fileSystem = fileSystem;
             _libraryManager = libraryManager;
+            _xmlSettings = xmlSettings;
         }
 
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");
@@ -74,12 +79,6 @@ namespace MediaBrowser.Providers.TV
         /// <returns>Task.</returns>
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            if (!_config.Configuration.EnableInternetProviders)
-            {
-                progress.Report(100);
-                return;
-            }
-
             var seriesConfig = _config.Configuration.MetadataOptions.FirstOrDefault(i => string.Equals(i.ItemType, typeof(Series).Name, StringComparison.OrdinalIgnoreCase));
 
             if (seriesConfig != null && seriesConfig.DisabledMetadataFetchers.Contains(TvdbSeriesProvider.Current.Name, StringComparer.OrdinalIgnoreCase))
@@ -107,7 +106,7 @@ namespace MediaBrowser.Providers.TV
 
             string newUpdateTime;
 
-            var existingDirectories = Directory.EnumerateDirectories(path)
+            var existingDirectories = _fileSystem.GetDirectoryPaths(path)
                 .Select(Path.GetFileName)
                 .ToList();
 
@@ -116,7 +115,9 @@ namespace MediaBrowser.Providers.TV
                 IncludeItemTypes = new[] { typeof(Series).Name },
                 Recursive = true,
                 GroupByPresentationUniqueKey = false
-            }).Cast<Series>();
+
+            }).Cast<Series>()
+            .ToList();
 
             var seriesIdsInLibrary = seriesList
                .Where(i => !string.IsNullOrEmpty(i.GetProviderId(MetadataProviders.Tvdb)))
@@ -125,6 +126,13 @@ namespace MediaBrowser.Providers.TV
 
             var missingSeries = seriesIdsInLibrary.Except(existingDirectories, StringComparer.OrdinalIgnoreCase)
                 .ToList();
+
+            var enableInternetProviders = seriesList.Count == 0 ? false : seriesList[0].IsInternetMetadataEnabled();
+            if (!enableInternetProviders)
+            {
+                progress.Report(100);
+                return;
+            }
 
             // If this is our first time, update all series
             if (string.IsNullOrEmpty(lastUpdateTime))
@@ -175,13 +183,11 @@ namespace MediaBrowser.Providers.TV
         /// <returns>System.String.</returns>
         private string GetUpdateTime(Stream response)
         {
-            var settings = new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                IgnoreProcessingInstructions = true,
-                IgnoreComments = true,
-                ValidationType = ValidationType.None
-            };
+            var settings = _xmlSettings.Create(false);
+
+            settings.CheckCharacters = false;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreComments = true;
 
             using (var streamReader = new StreamReader(response, Encoding.UTF8))
             {
@@ -189,9 +195,10 @@ namespace MediaBrowser.Providers.TV
                 using (var reader = XmlReader.Create(streamReader, settings))
                 {
                     reader.MoveToContent();
+                    reader.Read();
 
                     // Loop through each element
-                    while (reader.Read())
+                    while (!reader.EOF)
                     {
                         if (reader.NodeType == XmlNodeType.Element)
                         {
@@ -205,6 +212,10 @@ namespace MediaBrowser.Providers.TV
                                     reader.Skip();
                                     break;
                             }
+                        }
+                        else
+                        {
+                            reader.Read();
                         }
                     }
                 }
@@ -248,13 +259,11 @@ namespace MediaBrowser.Providers.TV
             string updateTime = null;
             var idList = new List<string>();
 
-            var settings = new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                IgnoreProcessingInstructions = true,
-                IgnoreComments = true,
-                ValidationType = ValidationType.None
-            };
+            var settings = _xmlSettings.Create(false);
+
+            settings.CheckCharacters = false;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreComments = true;
 
             using (var streamReader = new StreamReader(stream, Encoding.UTF8))
             {
@@ -262,9 +271,10 @@ namespace MediaBrowser.Providers.TV
                 using (var reader = XmlReader.Create(streamReader, settings))
                 {
                     reader.MoveToContent();
+                    reader.Read();
 
                     // Loop through each element
-                    while (reader.Read())
+                    while (!reader.EOF)
                     {
                         if (reader.NodeType == XmlNodeType.Element)
                         {
@@ -285,6 +295,10 @@ namespace MediaBrowser.Providers.TV
                                     reader.Skip();
                                     break;
                             }
+                        }
+                        else
+                        {
+                            reader.Read();
                         }
                     }
                 }

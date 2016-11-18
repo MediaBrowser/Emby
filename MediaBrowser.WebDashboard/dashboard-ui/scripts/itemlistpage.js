@@ -1,4 +1,5 @@
 ﻿define(['libraryBrowser', 'alphaPicker', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (libraryBrowser, alphaPicker, listView, cardBuilder) {
+    'use strict';
 
     return function (view, params) {
 
@@ -120,6 +121,7 @@
                     posterOptions.showYear = true;
                     posterOptions.cardLayout = true;
                     posterOptions.centerText = false;
+                    posterOptions.vibrant = true;
 
                     html = cardBuilder.getCardsHtml(posterOptions);
                 }

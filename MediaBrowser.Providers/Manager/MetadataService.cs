@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Providers;
 
@@ -353,19 +353,16 @@ namespace MediaBrowser.Providers.Manager
         {
             var updateType = ItemUpdateType.None;
 
-            if (isFullRefresh || currentUpdateType > ItemUpdateType.None)
+            var folder = item as Folder;
+            if (folder != null && folder.SupportsDateLastMediaAdded)
             {
-                var folder = item as Folder;
-                if (folder != null && folder.SupportsDateLastMediaAdded)
-                {
-                    var items = folder.GetRecursiveChildren(i => !i.IsFolder).Select(i => i.DateCreated).ToList();
-                    var date = items.Count == 0 ? (DateTime?)null : items.Max();
+                var items = folder.GetRecursiveChildren(i => !i.IsFolder).Select(i => i.DateCreated).ToList();
+                var date = items.Count == 0 ? (DateTime?)null : items.Max();
 
-                    if ((!folder.DateLastMediaAdded.HasValue && date.HasValue) || folder.DateLastMediaAdded != date)
-                    {
-                        folder.DateLastMediaAdded = date;
-                        updateType = ItemUpdateType.MetadataEdit;
-                    }
+                if ((!folder.DateLastMediaAdded.HasValue && date.HasValue) || folder.DateLastMediaAdded != date)
+                {
+                    folder.DateLastMediaAdded = date;
+                    updateType = ItemUpdateType.MetadataImport;
                 }
             }
 
@@ -539,7 +536,7 @@ namespace MediaBrowser.Providers.Manager
                         refreshResult.UpdateType = refreshResult.UpdateType | ItemUpdateType.MetadataImport;
 
                         // Only one local provider allowed per item
-                        if (IsFullLocalMetadata(localItem.Item))
+                        if (item.IsLocked || IsFullLocalMetadata(localItem.Item))
                         {
                             hasLocalMetadata = true;
                         }

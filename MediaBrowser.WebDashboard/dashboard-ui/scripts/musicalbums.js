@@ -1,4 +1,5 @@
 ﻿define(['events', 'libraryBrowser', 'imageLoader', 'alphaPicker', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, alphaPicker, listView, cardBuilder) {
+    'use strict';
 
     return function (view, params, tabContent) {
 
@@ -110,7 +111,8 @@
                         coverImage: true,
                         showParentTitle: true,
                         lazy: true,
-                        cardLayout: true
+                        cardLayout: true,
+                        vibrant: true
                     });
                 }
                 else {

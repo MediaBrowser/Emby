@@ -1,23 +1,23 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
-using ServiceStack;
-using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using CommonIO;
-using WebMarkupMin.Core;
+using MediaBrowser.Common.Plugins;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Plugins;
+using MediaBrowser.Model.Reflection;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.WebDashboard.Api
 {
@@ -79,19 +79,19 @@ namespace MediaBrowser.WebDashboard.Api
     /// <summary>
     /// Class DashboardService
     /// </summary>
-    public class DashboardService : IRestfulService, IHasResultFactory
+    public class DashboardService : IService, IRequiresRequest
     {
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
         /// <value>The logger.</value>
-        public ILogger Logger { get; set; }
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Gets or sets the HTTP result factory.
         /// </summary>
         /// <value>The HTTP result factory.</value>
-        public IHttpResultFactory ResultFactory { get; set; }
+        private readonly IHttpResultFactory _resultFactory;
 
         /// <summary>
         /// Gets or sets the request context.
@@ -112,6 +112,7 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly IFileSystem _fileSystem;
         private readonly ILocalizationManager _localization;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IAssemblyInfo _assemblyInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
@@ -119,13 +120,16 @@ namespace MediaBrowser.WebDashboard.Api
         /// <param name="appHost">The app host.</param>
         /// <param name="serverConfigurationManager">The server configuration manager.</param>
         /// <param name="fileSystem">The file system.</param>
-        public DashboardService(IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer)
+        public DashboardService(IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory)
         {
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
             _fileSystem = fileSystem;
             _localization = localization;
             _jsonSerializer = jsonSerializer;
+            _assemblyInfo = assemblyInfo;
+            _logger = logger;
+            _resultFactory = resultFactory;
         }
 
         /// <summary>
@@ -135,9 +139,32 @@ namespace MediaBrowser.WebDashboard.Api
         /// <returns>System.Object.</returns>
         public Task<object> Get(GetDashboardConfigurationPage request)
         {
-            var page = ServerEntryPoint.Instance.PluginConfigurationPages.First(p => p.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase));
+            IPlugin plugin = null;
+            Stream stream = null;
 
-            return ResultFactory.GetStaticResult(Request, page.Plugin.Version.ToString().GetMD5(), null, null, MimeTypes.GetMimeType("page.html"), () => GetPackageCreator().ModifyHtml("dummy.html", page.GetHtmlStream(), null, _appHost.ApplicationVersion.ToString(), null, false));
+            var page = ServerEntryPoint.Instance.PluginConfigurationPages.FirstOrDefault(p => string.Equals(p.Name, request.Name, StringComparison.OrdinalIgnoreCase));
+            if (page != null)
+            {
+                plugin = page.Plugin;
+                stream = page.GetHtmlStream();
+            }
+
+            if (plugin == null)
+            {
+                var altPage = GetPluginPages().FirstOrDefault(p => string.Equals(p.Item1.Name, request.Name, StringComparison.OrdinalIgnoreCase));
+                if (altPage != null)
+                {
+                    plugin = altPage.Item2;
+                    stream = _assemblyInfo.GetManifestResourceStream(plugin.GetType(), altPage.Item1.EmbeddedResourcePath);
+                }
+            }
+
+            if (plugin != null && stream != null)
+            {
+                return _resultFactory.GetStaticResult(Request, plugin.Version.ToString().GetMD5(), null, null, MimeTypes.GetMimeType("page.html"), () => GetPackageCreator().ModifyHtml("dummy.html", stream, null, _appHost.ApplicationVersion.ToString(), null, false));
+            }
+
+            throw new ResourceNotFoundException();
         }
 
         /// <summary>
@@ -165,7 +192,7 @@ namespace MediaBrowser.WebDashboard.Api
 
             if (request.PageType.HasValue)
             {
-                pages = pages.Where(p => p.ConfigurationPageType == request.PageType.Value);
+                pages = pages.Where(p => p.ConfigurationPageType == request.PageType.Value).ToList();
             }
 
             // Don't allow a failing plugin to fail them all
@@ -178,14 +205,38 @@ namespace MediaBrowser.WebDashboard.Api
                 }
                 catch (Exception ex)
                 {
-                    Logger.ErrorException("Error getting plugin information from {0}", ex, p.GetType().Name);
+                    _logger.ErrorException("Error getting plugin information from {0}", ex, p.GetType().Name);
                     return null;
                 }
             })
                 .Where(i => i != null)
                 .ToList();
 
-            return ResultFactory.GetOptimizedResult(Request, configPages);
+            configPages.AddRange(_appHost.Plugins.SelectMany(GetConfigPages));
+
+            return _resultFactory.GetOptimizedResult(Request, configPages);
+        }
+
+        private IEnumerable<Tuple<PluginPageInfo, IPlugin>> GetPluginPages()
+        {
+            return _appHost.Plugins.SelectMany(GetPluginPages);
+        }
+
+        private IEnumerable<Tuple<PluginPageInfo, IPlugin>> GetPluginPages(IPlugin plugin)
+        {
+            var hasConfig = plugin as IHasWebPages;
+
+            if (hasConfig == null)
+            {
+                return new List<Tuple<PluginPageInfo, IPlugin>>();
+            }
+
+            return hasConfig.GetPages().Select(i => new Tuple<PluginPageInfo, IPlugin>(i, plugin));
+        }
+
+        private IEnumerable<ConfigurationPageInfo> GetConfigPages(IPlugin plugin)
+        {
+            return GetPluginPages(plugin).Select(i => new ConfigurationPageInfo(plugin, i.Item1));
         }
 
         public object Get(GetRobotsTxt request)
@@ -231,7 +282,7 @@ namespace MediaBrowser.WebDashboard.Api
                 !contentType.StartsWith("font/", StringComparison.OrdinalIgnoreCase))
             {
                 var stream = await GetResourceStream(path, localizationCulture).ConfigureAwait(false);
-                return ResultFactory.GetResult(stream, contentType);
+                return _resultFactory.GetResult(stream, contentType);
             }
 
             TimeSpan? cacheDuration = null;
@@ -243,11 +294,9 @@ namespace MediaBrowser.WebDashboard.Api
                 cacheDuration = TimeSpan.FromDays(365);
             }
 
-            var assembly = GetType().Assembly.GetName();
+            var cacheKey = (_appHost.ApplicationVersion.ToString() + (localizationCulture ?? string.Empty) + path).GetMD5();
 
-            var cacheKey = (assembly.Version + (localizationCulture ?? string.Empty) + path).GetMD5();
-
-            return await ResultFactory.GetStaticResult(Request, cacheKey, null, cacheDuration, contentType, () => GetResourceStream(path, localizationCulture)).ConfigureAwait(false);
+            return await _resultFactory.GetStaticResult(Request, cacheKey, null, cacheDuration, contentType, () => GetResourceStream(path, localizationCulture)).ConfigureAwait(false);
         }
 
         private string GetLocalizationCulture()
@@ -271,7 +320,7 @@ namespace MediaBrowser.WebDashboard.Api
 
         private PackageCreator GetPackageCreator()
         {
-            return new PackageCreator(_fileSystem, _localization, Logger, _serverConfigurationManager, _jsonSerializer);
+            return new PackageCreator(_fileSystem, _localization, _logger, _serverConfigurationManager, _jsonSerializer);
         }
 
         private List<string> GetDeployIgnoreExtensions()
@@ -289,7 +338,7 @@ namespace MediaBrowser.WebDashboard.Api
             return list;
         }
 
-        private List<Tuple<string,bool>> GetDeployIgnoreFilenames()
+        private List<Tuple<string, bool>> GetDeployIgnoreFilenames()
         {
             var list = new List<Tuple<string, bool>>();
 
@@ -313,8 +362,11 @@ namespace MediaBrowser.WebDashboard.Api
 
         public async Task<object> Get(GetDashboardPackage request)
         {
-            var path = Path.Combine(_serverConfigurationManager.ApplicationPaths.ProgramDataPath,
-                "webclient-dump");
+            var mode = request.Mode;
+
+            var path = string.Equals(mode, "cordova", StringComparison.OrdinalIgnoreCase) ?
+                Path.Combine(_serverConfigurationManager.ApplicationPaths.ProgramDataPath, "webclient-dump")
+                : "C:\\dev\\emby-web-mobile\\src";
 
             try
             {
@@ -333,16 +385,20 @@ namespace MediaBrowser.WebDashboard.Api
 
             var appVersion = _appHost.ApplicationVersion.ToString();
 
-            var mode = request.Mode;
-
             // Try to trim the output size a bit
             var bowerPath = Path.Combine(path, "bower_components");
 
-            GetDeployIgnoreExtensions().ForEach(i => DeleteFilesByExtension(bowerPath, i));
+            foreach (var ext in GetDeployIgnoreExtensions())
+            {
+                DeleteFilesByExtension(bowerPath, ext);
+            }
 
             DeleteFilesByExtension(bowerPath, ".json", "strings\\");
 
-            GetDeployIgnoreFilenames().ForEach(i => DeleteFilesByName(bowerPath, i.Item1, i.Item2));
+            foreach (var ignore in GetDeployIgnoreFilenames())
+            {
+                DeleteFilesByName(bowerPath, ignore.Item1, ignore.Item2);
+            }
 
             DeleteFoldersByName(bowerPath, "demo");
             DeleteFoldersByName(bowerPath, "test");
@@ -371,11 +427,6 @@ namespace MediaBrowser.WebDashboard.Api
             {
                 // Delete things that are unneeded in an attempt to keep the output as trim as possible
                 _fileSystem.DeleteDirectory(Path.Combine(path, "css", "images", "tour"), true);
-            }
-            else
-            {
-                MinifyCssDirectory(path);
-                MinifyJsDirectory(path);
             }
 
             await DumpHtml(creator.DashboardUIPath, path, mode, culture, appVersion);
@@ -444,83 +495,11 @@ namespace MediaBrowser.WebDashboard.Api
             }
         }
 
-        private void MinifyCssDirectory(string path)
-        {
-            foreach (var file in Directory.GetFiles(path, "*.css", SearchOption.AllDirectories))
-            {
-                if (file.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    continue;
-                }
-                if (file.IndexOf("bower_", StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var text = _fileSystem.ReadAllText(file, Encoding.UTF8);
-
-                    var result = new KristensenCssMinifier().Minify(text, false, Encoding.UTF8);
-
-                    if (result.Errors.Count > 0)
-                    {
-                        Logger.Error("Error minifying css: " + result.Errors[0].Message);
-                    }
-                    else
-                    {
-                        text = result.MinifiedContent;
-                        _fileSystem.WriteAllText(file, text, Encoding.UTF8);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error minifying css", ex);
-                }
-            }
-        }
-
-        private void MinifyJsDirectory(string path)
-        {
-            foreach (var file in Directory.GetFiles(path, "*.js", SearchOption.AllDirectories))
-            {
-                if (file.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    continue;
-                }
-                if (file.IndexOf("bower_", StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var text = _fileSystem.ReadAllText(file, Encoding.UTF8);
-
-                    var result = new CrockfordJsMinifier().Minify(text, false, Encoding.UTF8);
-
-                    if (result.Errors.Count > 0)
-                    {
-                        Logger.Error("Error minifying javascript: " + result.Errors[0].Message);
-                    }
-                    else
-                    {
-                        text = result.MinifiedContent;
-                        _fileSystem.WriteAllText(file, text, Encoding.UTF8);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error minifying css", ex);
-                }
-            }
-        }
-
         private async Task DumpHtml(string source, string destination, string mode, string culture, string appVersion)
         {
-            foreach (var file in Directory.GetFiles(source, "*", SearchOption.TopDirectoryOnly))
+            foreach (var file in _fileSystem.GetFiles(source))
             {
-                var filename = Path.GetFileName(file);
+                var filename = file.Name;
 
                 await DumpFile(filename, Path.Combine(destination, filename), mode, culture, appVersion).ConfigureAwait(false);
             }
@@ -528,9 +507,9 @@ namespace MediaBrowser.WebDashboard.Api
 
         private async Task DumpFile(string resourceVirtualPath, string destinationFilePath, string mode, string culture, string appVersion)
         {
-            using (var stream = await GetPackageCreator().GetResource(resourceVirtualPath, mode, culture, appVersion, true).ConfigureAwait(false))
+            using (var stream = await GetPackageCreator().GetResource(resourceVirtualPath, mode, culture, appVersion, false).ConfigureAwait(false))
             {
-                using (var fs = _fileSystem.GetFileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var fs = _fileSystem.GetFileStream(destinationFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
                 {
                     stream.CopyTo(fs);
                 }
@@ -542,14 +521,12 @@ namespace MediaBrowser.WebDashboard.Api
             _fileSystem.CreateDirectory(destination);
 
             //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(source, "*",
-                SearchOption.AllDirectories))
-                _fileSystem.CreateDirectory(dirPath.Replace(source, destination));
+            foreach (var dirPath in _fileSystem.GetDirectories(source, true))
+                _fileSystem.CreateDirectory(dirPath.FullName.Replace(source, destination));
 
             //Copy all the files & Replaces any files with the same name
-            foreach (string newPath in Directory.GetFiles(source, "*.*",
-                SearchOption.AllDirectories))
-                _fileSystem.CopyFile(newPath, newPath.Replace(source, destination), true);
+            foreach (var newPath in _fileSystem.GetFiles(source, true))
+                _fileSystem.CopyFile(newPath.FullName, newPath.FullName.Replace(source, destination), true);
         }
     }
 

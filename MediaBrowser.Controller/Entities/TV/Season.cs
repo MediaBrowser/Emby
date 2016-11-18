@@ -2,12 +2,11 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Users;
-using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities.TV
 {
@@ -36,7 +35,7 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
@@ -153,8 +152,6 @@ namespace MediaBrowser.Controller.Entities.TV
             var user = query.User;
 
             Func<BaseItem, bool> filter = i => UserViewBuilder.Filter(i, user, query, UserDataManager, LibraryManager);
-
-            var id = Guid.NewGuid().ToString("N");
 
             var items = GetEpisodes(user).Where(filter);
 

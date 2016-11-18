@@ -6,13 +6,12 @@ using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -21,8 +20,6 @@ namespace MediaBrowser.Providers.MediaInfo
     /// </summary>
     public class AudioImageProvider : IDynamicImageProvider, IHasItemChangeMonitor
     {
-        private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new ConcurrentDictionary<string, SemaphoreSlim>();
-
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
@@ -65,41 +62,25 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!_fileSystem.FileExists(path))
             {
-                var semaphore = GetLock(path);
+                _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
-                // Acquire a lock
-                await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                var imageStream = imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("front", StringComparison.OrdinalIgnoreCase) != -1) ??
+                    imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("cover", StringComparison.OrdinalIgnoreCase) != -1) ??
+                    imageStreams.FirstOrDefault();
+
+                var imageStreamIndex = imageStream == null ? (int?)null : imageStream.Index;
+
+                var tempFile = await _mediaEncoder.ExtractAudioImage(item.Path, imageStreamIndex, cancellationToken).ConfigureAwait(false);
+
+                _fileSystem.CopyFile(tempFile, path, true);
 
                 try
                 {
-                    // Check again in case it was saved while waiting for the lock
-                    if (!_fileSystem.FileExists(path))
-                    {
-                        _fileSystem.CreateDirectory(Path.GetDirectoryName(path));
-
-                        var imageStream = imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("front", StringComparison.OrdinalIgnoreCase) != -1) ??
-                            imageStreams.FirstOrDefault(i => (i.Comment ?? string.Empty).IndexOf("cover", StringComparison.OrdinalIgnoreCase) != -1) ??
-                            imageStreams.FirstOrDefault();
-
-                        var imageStreamIndex = imageStream == null ? (int?)null : imageStream.Index;
-
-                        var tempFile = await _mediaEncoder.ExtractAudioImage(item.Path, imageStreamIndex, cancellationToken).ConfigureAwait(false);
-
-                        File.Copy(tempFile, path, true);
-
-                        try
-                        {
-                            File.Delete(tempFile);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
+                    _fileSystem.DeleteFile(tempFile);
                 }
-                finally
+                catch
                 {
-                    semaphore.Release();
+
                 }
             }
 
@@ -143,16 +124,6 @@ namespace MediaBrowser.Providers.MediaInfo
             }
         }
 
-        /// <summary>
-        /// Gets the lock.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns>SemaphoreSlim.</returns>
-        private SemaphoreSlim GetLock(string filename)
-        {
-            return _locks.GetOrAdd(filename, key => new SemaphoreSlim(1, 1));
-        }
-
         public string Name
         {
             get { return "Image Extractor"; }
@@ -162,7 +133,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var audio = item as Audio;
 
-            return item.LocationType == LocationType.FileSystem && audio != null && !audio.IsArchive;
+            return item.LocationType == LocationType.FileSystem && audio != null;
         }
 
         public bool HasChanged(IHasMetadata item, IDirectoryService directoryService)

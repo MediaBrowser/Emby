@@ -1,4 +1,5 @@
 ﻿define(['jQuery', 'cardStyle'], function ($) {
+    'use strict';
 
     // The base query options
     var query = {
@@ -96,7 +97,7 @@
 
         if (!options.categories) {
             currentCategory = Globalize.translate('HeaderTopPlugins');
-            html += '<div class="detailSectionHeader">' + currentCategory + '</div>';
+            html += '<div class="detailSectionHeader"><h1>' + currentCategory + '</h1></div>';
             var topPlugins = allPlugins.slice(0).sort(function (a, b) {
 
                 if (a.installs > b.installs) {
@@ -153,7 +154,7 @@
                         html += '<br/>';
                     }
 
-                    html += '<div class="detailSectionHeader">' + category + '</div>';
+                    html += '<div class="detailSectionHeader"><h1>' + category + '</h1></div>';
                     html += '<div class="itemsContainer vertical-wrap">';
                     hasOpenTag = true;
                 }
@@ -223,22 +224,20 @@
         html += plugin.name;
         html += "</div>";
 
-        if (!plugin.isExternal) {
-            html += "<div class='cardText' style='display:flex;align-items:center;'>";
+        //    html += "<div class='cardText' style='display:flex;align-items:center;'>";
 
-            if (plugin.avgRating) {
-                html += '<i class="md-icon" style="color:#cc3333;margin-right:.25em;">star</i>';
-                html += plugin.avgRating.toFixed(1);
-            }
+        //    if (plugin.avgRating) {
+        //        html += '<i class="md-icon" style="color:#cc3333;margin-right:.25em;">star</i>';
+        //        html += plugin.avgRating.toFixed(1);
+        //    }
 
-            if (plugin.totalRatings) {
-                html += "<div style='margin-left:.5em;'>";
-                html += " " + Globalize.translate('LabelNumberReviews').replace("{0}", plugin.totalRatings);
-            }
-            html += "</div>";
+        //    if (plugin.totalRatings) {
+        //        html += "<div style='margin-left:.5em;'>";
+        //        html += " " + Globalize.translate('LabelNumberReviews').replace("{0}", plugin.totalRatings);
+        //    }
+        //    html += "</div>";
 
-            html += "</div>";
-        }
+        //    html += "</div>";
 
         var installedPlugin = plugin.isApp ? null : installedPlugins.filter(function (ip) {
             return ip.Id == plugin.guid;

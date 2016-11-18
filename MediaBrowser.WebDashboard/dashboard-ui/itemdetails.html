@@ -104,8 +104,14 @@
                 <h1 id="peopleHeader">
                     ${HeaderCastCrew}
                 </h1>
-                <div id="castContent" class="itemsContainer"></div>
+                <div id="castContent" is="emby-itemscontainer" class="itemsContainer"></div>
                 <button is="emby-button" type="button" class="raised more morePeople hide">${ButtonMore}</button>
+            </div>
+            <div id="seriesScheduleSection" class="detailSection hide">
+                <h1>
+                    ${HeaderUpcomingOnTV}
+                </h1>
+                <div id="seriesScheduleList" is="emby-itemscontainer" class="itemsContainer vertical-list"></div>
             </div>
 
             <div class="detailSection photoInfo hide">
@@ -134,8 +140,8 @@
                 <div id="moreFromItems"></div>
             </div>
             <div id="similarCollapsible" class="detailSection hide">
-                <h1 class="similiarHeader"></h1>
-                <div id="similarContent"></div>
+                <h1>${HeaderMoreLikeThis}</h1>
+                <div class="similarContent"></div>
             </div>
             <div id="criticReviewsCollapsible" class="detailSection hide">
                 <h1>
@@ -158,12 +164,9 @@
             </div>
 
             <div id="scenesCollapsible" class="detailSection hide">
-                <div style="display: flex; align-items: center; margin: .5em 0;">
-                    <h1 style="margin: 0;">
-                        ${HeaderScenes}
-                    </h1>
-                    <button is="paper-icon-button-light" class="chapterSettingsButton hide"><i class="md-icon">settings</i></button>
-                </div>
+                <h1>
+                    ${HeaderScenes}
+                </h1>
                 <div is="emby-itemscontainer" id="scenesContent" class="itemsContainer"></div>
                 <button is="emby-button" type="button" class="raised more moreScenes hide">${ButtonMore}</button>
             </div>

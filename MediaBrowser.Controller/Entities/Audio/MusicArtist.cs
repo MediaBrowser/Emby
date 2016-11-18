@@ -6,25 +6,25 @@ using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Extensions;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
     /// <summary>
     /// Class MusicArtist
     /// </summary>
-    public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasProductionLocations, IHasLookupInfo<ArtistInfo>
+    public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasLookupInfo<ArtistInfo>
     {
         [IgnoreDataMember]
         public bool IsAccessedByName
         {
             get { return ParentId == Guid.Empty; }
         }
-
-        public List<string> ProductionLocations { get; set; }
 
         [IgnoreDataMember]
         public override bool IsFolder
@@ -48,6 +48,15 @@ namespace MediaBrowser.Controller.Entities.Audio
         public override bool SupportsAddingToPlaylist
         {
             get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
+            }
         }
 
         public override bool CanDelete()
@@ -109,11 +118,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
 
             return base.ValidateChildrenInternal(progress, cancellationToken, recursive, refreshChildMetadata, refreshOptions, directoryService);
-        }
-
-        public MusicArtist()
-        {
-            ProductionLocations = new List<string>();
         }
 
         public override List<string> GetUserDataKeys()

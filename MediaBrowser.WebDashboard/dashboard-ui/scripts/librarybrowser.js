@@ -1,4 +1,5 @@
 ﻿define(['viewManager', 'appSettings', 'appStorage', 'apphost', 'datetime', 'itemHelper', 'mediaInfo', 'scroller', 'indicators', 'dom', 'browser', 'imageLoader', 'scrollStyles'], function (viewManager, appSettings, appStorage, appHost, datetime, itemHelper, mediaInfo, scroller, indicators, dom, browser) {
+    'use strict';
 
     function fadeInRight(elem) {
 
@@ -264,6 +265,10 @@
 
                 // Handle search hints
                 var id = item.Id || item.ItemId;
+
+                if (item.Type == "SeriesTimer") {
+                    return "livetvseriestimer.html?id=" + id;
+                }
 
                 if (item.CollectionType == 'livetv') {
                     return 'livetv.html';

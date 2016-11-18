@@ -1,4 +1,5 @@
 ﻿define(['jQuery', 'fnchecked'], function ($) {
+    'use strict';
 
     function loadPage(page, config) {
 
@@ -11,6 +12,7 @@
         $('#chkOrganize', page).checked(config.EnableAutoOrganize);
         $('#chkConvertRecordings', page).checked(config.EnableRecordingEncoding);
         $('#chkPreserveAudio', page).checked(config.EnableOriginalAudioWithEncodedRecordings || false);
+        $('#chkPreserveVideo', page).checked(config.RecordedVideoCodec == 'copy');
 
         $('#txtPrePaddingMinutes', page).val(config.PrePaddingSeconds / 60);
         $('#txtPostPaddingMinutes', page).val(config.PostPaddingSeconds / 60);
@@ -38,6 +40,7 @@
             config.EnableAutoOrganize = $('#chkOrganize', form).checked();
             config.EnableRecordingEncoding = $('#chkConvertRecordings', form).checked();
             config.EnableOriginalAudioWithEncodedRecordings = $('#chkPreserveAudio', form).checked();
+            config.RecordedVideoCodec = $('#chkPreserveVideo', form).checked() ? 'copy' : null;
 
             var recordingPath = form.querySelector('#txtRecordingPath').value || null;
             var movieRecordingPath = form.querySelector('#txtMovieRecordingPath').value || null;

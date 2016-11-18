@@ -1,11 +1,10 @@
 ﻿using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
-using System.Xml.Serialization;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Dlna
 {
-    [XmlRoot("Profile")]
     public class DeviceProfile
     {
         /// <summary>
@@ -14,10 +13,9 @@ namespace MediaBrowser.Model.Dlna
         /// <value>The name.</value>
         public string Name { get; set; }
 
-        [XmlIgnore]
         public string Id { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public DeviceProfileType ProfileType { get; set; }
 
         /// <summary>
@@ -285,7 +283,8 @@ namespace MediaBrowser.Model.Dlna
             int? refFrames,
             int? numVideoStreams,
             int? numAudioStreams,
-            string videoCodecTag)
+            string videoCodecTag,
+            bool? isAvc)
         {
             container = StringHelper.TrimStart(container ?? string.Empty, '.');
 
@@ -319,7 +318,7 @@ namespace MediaBrowser.Model.Dlna
                 var anyOff = false;
                 foreach (ProfileCondition c in i.Conditions)
                 {
-                    if (!conditionProcessor.IsVideoConditionSatisfied(c, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, refFrames, numVideoStreams, numAudioStreams, videoCodecTag))
+                    if (!conditionProcessor.IsVideoConditionSatisfied(c, width, height, bitDepth, videoBitrate, videoProfile, videoLevel, videoFramerate, packetLength, timestamp, isAnamorphic, refFrames, numVideoStreams, numAudioStreams, videoCodecTag, isAvc))
                     {
                         anyOff = true;
                         break;

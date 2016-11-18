@@ -1,4 +1,5 @@
 ﻿define(['jQuery', 'apphost', 'scripts/taskbutton', 'cardStyle'], function ($, appHost, taskButton) {
+    'use strict';
 
     function changeCollectionType(page, virtualFolder) {
 
@@ -75,7 +76,8 @@
         require(['prompt'], function (prompt) {
 
             prompt({
-                label: Globalize.translate('LabelNewName')
+                label: Globalize.translate('LabelNewName'),
+                confirmText: Globalize.translate('ButtonRename')
 
             }).then(function (newName) {
                 if (newName && newName != virtualFolder.Name) {
@@ -328,7 +330,7 @@
         if (!imgUrl && virtualFolder.showNameWithIcon) {
             html += '<h1 class="cardImageContainer addLibrary" style="position:absolute;top:0;left:0;right:0;bottom:0;cursor:pointer;flex-direction:column;">';
 
-            html += '<i class="cardImageIcon md-icon" style="font-size:300%;color:#888;height:auto;width:auto;">' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '</i>';
+            html += '<i class="cardImageIcon md-icon" style="font-size:240%;color:#888;height:auto;width:auto;">' + (virtualFolder.icon || getIcon(virtualFolder.CollectionType)) + '</i>';
 
             if (virtualFolder.showNameWithIcon) {
                 html += '<div style="margin:1em 0;position:width:100%;font-weight:500;color:#444;">';
@@ -435,7 +437,7 @@
         return [
         {
             href: 'library.html',
-            name: Globalize.translate('TabFolders')
+            name: Globalize.translate('HeaderLibraries')
         },
          {
              href: 'librarydisplay.html',

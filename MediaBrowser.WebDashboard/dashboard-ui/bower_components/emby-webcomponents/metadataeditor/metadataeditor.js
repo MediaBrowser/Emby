@@ -1,4 +1,5 @@
-﻿define(['itemHelper', 'dom', 'layoutManager', 'dialogHelper', 'datetime', 'loading', 'focusManager', 'connectionManager', 'globalize', 'require', 'shell', 'dom', 'emby-checkbox', 'emby-input', 'emby-select', 'listViewStyle', 'emby-textarea', 'emby-button', 'paper-icon-button-light', 'css!./../formdialog'], function (itemHelper, dom, layoutManager, dialogHelper, datetime, loading, focusManager, connectionManager, globalize, require, shell, dom) {
+﻿define(['itemHelper', 'dom', 'layoutManager', 'dialogHelper', 'datetime', 'loading', 'focusManager', 'connectionManager', 'globalize', 'require', 'shell', 'emby-checkbox', 'emby-input', 'emby-select', 'listViewStyle', 'emby-textarea', 'emby-button', 'paper-icon-button-light', 'css!./../formdialog'], function (itemHelper, dom, layoutManager, dialogHelper, datetime, loading, focusManager, connectionManager, globalize, require, shell) {
+    'use strict';
 
     var currentContext;
     var metadataEditorInfo;
@@ -33,7 +34,7 @@
 
             var newContentType = form.querySelector('#selectContentType').value || '';
 
-            if ((metadataEditorInfo.ContentType || '') != newContentType) {
+            if ((metadataEditorInfo.ContentType || '') !== newContentType) {
 
                 apiClient.ajax({
 
@@ -104,7 +105,7 @@
             var parts = date.toISOString().split('T');
 
             // If the date is the same, preserve the time
-            if (parts[0].indexOf(val) == 0) {
+            if (parts[0].indexOf(val) === 0) {
 
                 var iso = parts[1];
 
@@ -156,7 +157,6 @@
                 AirDays: getSelectedAirDays(form),
                 AirTime: form.querySelector('#txtAirTime').value,
                 Genres: editableListViewValues(form.querySelector("#listGenres")),
-                ProductionLocations: editableListViewValues(form.querySelector("#listCountries")),
                 Tags: editableListViewValues(form.querySelector("#listTags")),
                 Keywords: editableListViewValues(form.querySelector("#listKeywords")),
                 Studios: editableListViewValues(form.querySelector("#listStudios")).map(function (element) { return { Name: element }; }),
@@ -190,14 +190,14 @@
             item.PreferredMetadataLanguage = form.querySelector('#selectLanguage').value;
             item.PreferredMetadataCountryCode = form.querySelector('#selectCountry').value;
 
-            if (currentItem.Type == "Person") {
+            if (currentItem.Type === "Person") {
 
                 var placeOfBirth = form.querySelector('#txtPlaceOfBirth').value;
 
                 item.ProductionLocations = placeOfBirth ? [placeOfBirth] : [];
             }
 
-            if (currentItem.Type == "Series") {
+            if (currentItem.Type === "Series") {
 
                 // 600000000
                 var seriesRuntime = form.querySelector('#txtSeriesRuntime').value;
@@ -249,7 +249,7 @@
 
             personEditor.show(person).then(function (updatedPerson) {
 
-                var isNew = index == -1;
+                var isNew = index === -1;
 
                 if (isNew) {
                     currentItem.People.push(updatedPerson);
@@ -263,9 +263,12 @@
     function showMoreMenu(context, button, user) {
 
         require(['itemContextMenu'], function (itemContextMenu) {
+
+            var item = currentItem;
+
             itemContextMenu.show({
 
-                item: currentItem,
+                item: item,
                 positionTo: button,
                 edit: false,
                 editImages: true,
@@ -278,13 +281,26 @@
             }).then(function (result) {
 
                 if (result.deleted) {
-                    Emby.Page.goHome();
+                    afterDeleted(context, item);
 
                 } else if (result.updated) {
-                    reload(context, currentItem.Id, currentItem.ServerId);
+                    reload(context, item.Id, item.ServerId);
                 }
             });
         });
+    }
+
+    function afterDeleted(context, item) {
+
+        var parentId = item.ParentId || item.SeasonId || item.SeriesId;
+
+        if (parentId) {
+            reload(context, parentId, item.ServerId);
+        } else {
+            require(['embyRouter'], function (embyRouter) {
+                embyRouter.goHome();
+            });
+        }
     }
 
     function onWebSocketMessageReceived(e, data) {
@@ -293,7 +309,7 @@
 
         if (msg.MessageType === "LibraryChanged") {
 
-            if (msg.Data.ItemsUpdated.indexOf(currentItem.Id) != -1) {
+            if (msg.Data.ItemsUpdated.indexOf(currentItem.Id) !== -1) {
 
                 console.log('Item updated - reloading metadata');
                 reload(currentContext, currentItem.Id, currentItem.ServerId);
@@ -385,16 +401,17 @@
 
         context.querySelector('#peopleList').addEventListener('click', function (e) {
 
+            var index;
             var btnDeletePerson = dom.parentWithClass(e.target, 'btnDeletePerson');
             if (btnDeletePerson) {
-                var index = parseInt(btnDeletePerson.getAttribute('data-index'));
+                index = parseInt(btnDeletePerson.getAttribute('data-index'));
                 currentItem.People.splice(index, 1);
                 populatePeople(context, currentItem.People);
             }
 
             var btnEditPerson = dom.parentWithClass(e.target, 'btnEditPerson');
             if (btnEditPerson) {
-                var index = parseInt(btnEditPerson.getAttribute('data-index'));
+                index = parseInt(btnEditPerson.getAttribute('data-index'));
                 editPerson(context, currentItem.People[index], index);
             }
         });
@@ -520,7 +537,7 @@
     // Context is optional and restricts the querySelector to the context
     function hideElement(selector, context, multiple) {
         context = context || document;
-        if (typeof selector == 'string') {
+        if (typeof selector === 'string') {
 
             var elements = multiple ? context.querySelectorAll(selector) : [context.querySelector(selector)];
 
@@ -539,7 +556,7 @@
     // Context is optional and restricts the querySelector to the context
     function showElement(selector, context, multiple) {
         context = context || document;
-        if (typeof selector == 'string') {
+        if (typeof selector === 'string') {
 
             var elements = multiple ? context.querySelectorAll(selector) : [context.querySelector(selector)];
 
@@ -554,31 +571,31 @@
     }
 
     function setFieldVisibilities(context, item) {
-        if (item.Path && item.LocationType != 'Remote') {
+        if (item.Path && item.LocationType !== 'Remote') {
             showElement('#fldPath', context);
         } else {
             hideElement('#fldPath', context);
         }
 
-        if (item.Type == "Series" || item.Type == "Movie" || item.Type == "Trailer") {
+        if (item.Type === "Series" || item.Type === "Movie" || item.Type === "Trailer") {
             showElement('#fldOriginalName', context);
         } else {
             hideElement('#fldOriginalName', context);
         }
 
-        if (item.Type == "Series") {
+        if (item.Type === "Series") {
             showElement('#fldSeriesRuntime', context);
         } else {
             hideElement('#fldSeriesRuntime', context);
         }
 
-        if (item.Type == "Series" || item.Type == "Person") {
+        if (item.Type === "Series" || item.Type === "Person") {
             showElement('#fldEndDate', context);
         } else {
             hideElement('#fldEndDate', context);
         }
 
-        if (item.Type == "Movie" || item.MediaType == "Game" || item.MediaType == "Trailer" || item.Type == "MusicVideo") {
+        if (item.Type === "Movie" || item.MediaType === "Game" || item.MediaType === "Trailer" || item.Type === "MusicVideo") {
             showElement('#fldBudget', context);
             showElement('#fldRevenue', context);
         } else {
@@ -586,19 +603,19 @@
             hideElement('#fldRevenue', context);
         }
 
-        if (item.Type == "MusicAlbum") {
+        if (item.Type === "MusicAlbum") {
             showElement('#albumAssociationMessage', context);
         } else {
-            hideElement('#albumAssociationMessage', context)
+            hideElement('#albumAssociationMessage', context);
         }
 
-        if (item.MediaType == "Game") {
+        if (item.MediaType === "Game") {
             showElement('#fldPlayers', context);
         } else {
             hideElement('#fldPlayers', context);
         }
 
-        if (item.Type == "Movie" || item.Type == "Trailer") {
+        if (item.Type === "Movie" || item.Type === "Trailer") {
             showElement('#fldCriticRating', context);
             showElement('#fldCriticRatingSummary', context);
         } else {
@@ -606,19 +623,19 @@
             hideElement('#fldCriticRatingSummary', context);
         }
 
-        if (item.Type == "Movie") {
+        if (item.Type === "Movie") {
             showElement('#fldAwardSummary', context);
         } else {
             hideElement('#fldAwardSummary', context);
         }
 
-        if (item.Type == "Movie" || item.Type == "Trailer") {
+        if (item.Type === "Movie" || item.Type === "Trailer") {
             showElement('#fldMetascore', context);
         } else {
             hideElement('#fldMetascore', context);
         }
 
-        if (item.Type == "Series") {
+        if (item.Type === "Series") {
             showElement('#fldStatus', context);
             showElement('#fldAirDays', context);
             showElement('#fldAirTime', context);
@@ -628,19 +645,19 @@
             hideElement('#fldAirTime', context);
         }
 
-        if (item.MediaType == "Video" && item.Type != "TvChannel") {
+        if (item.MediaType === "Video" && item.Type !== "TvChannel") {
             showElement('#fld3dFormat', context);
         } else {
             hideElement('#fld3dFormat', context);
         }
 
-        if (item.Type == "Audio") {
+        if (item.Type === "Audio") {
             showElement('#fldAlbumArtist', context);
         } else {
             hideElement('#fldAlbumArtist', context);
         }
 
-        if (item.Type == "Audio" || item.Type == "MusicVideo") {
+        if (item.Type === "Audio" || item.Type === "MusicVideo") {
             showElement('#fldArtist', context);
             showElement('#fldAlbum', context);
         } else {
@@ -648,26 +665,26 @@
             hideElement('#fldAlbum', context);
         }
 
-        if (item.Type == "Episode") {
+        if (item.Type === "Episode") {
             showElement('#collapsibleDvdEpisodeInfo', context);
         } else {
             hideElement('#collapsibleDvdEpisodeInfo', context);
         }
 
-        if (item.Type == "Episode" && item.ParentIndexNumber == 0) {
+        if (item.Type === "Episode" && item.ParentIndexNumber === 0) {
             showElement('#collapsibleSpecialEpisodeInfo', context);
         } else {
             hideElement('#collapsibleSpecialEpisodeInfo', context);
         }
 
-        if (item.Type == "Person" || item.Type == "Genre" || item.Type == "Studio" || item.Type == "GameGenre" || item.Type == "MusicGenre" || item.Type == "TvChannel") {
+        if (item.Type === "Person" || item.Type === "Genre" || item.Type === "Studio" || item.Type === "GameGenre" || item.Type === "MusicGenre" || item.Type === "TvChannel") {
             hideElement('#fldCommunityRating', context);
             hideElement('#fldCommunityVoteCount', context);
             hideElement('#genresCollapsible', context);
             hideElement('#peopleCollapsible', context);
             hideElement('#studiosCollapsible', context);
 
-            if (item.Type == "TvChannel") {
+            if (item.Type === "TvChannel") {
                 showElement('#fldOfficialRating', context);
             } else {
                 hideElement('#fldOfficialRating', context);
@@ -683,13 +700,7 @@
             showElement('#fldCustomRating', context);
         }
 
-        if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "MusicArtist") {
-            showElement('#countriesCollapsible', context);
-        } else {
-            hideElement('#countriesCollapsible', context);
-        }
-
-        if (item.Type == "TvChannel") {
+        if (item.Type === "TvChannel") {
             hideElement('#tagsCollapsible', context);
             hideElement('#metadataSettingsCollapsible', context);
             hideElement('#fldPremiereDate', context);
@@ -703,19 +714,19 @@
             showElement('#fldYear', context);
         }
 
-        if (item.Type == "Movie" || item.Type == "Trailer" || item.Type == "BoxSet") {
+        if (item.Type === "Movie" || item.Type === "Trailer" || item.Type === "BoxSet") {
             showElement('#keywordsCollapsible', context);
         } else {
             hideElement('#keywordsCollapsible', context);
         }
 
-        if (item.MediaType == "Video" && item.Type != "TvChannel") {
+        if (item.MediaType === "Video" && item.Type !== "TvChannel") {
             showElement('#fldSourceType', context);
         } else {
             hideElement('#fldSourceType', context);
         }
 
-        if (item.Type == "Person") {
+        if (item.Type === "Person") {
             //todo
             context.querySelector('#txtProductionYear').label(globalize.translate('sharedcomponents#LabelBirthYear'));
             context.querySelector("#txtPremiereDate").label(globalize.translate('sharedcomponents#LabelBirthDate'));
@@ -728,20 +739,20 @@
             hideElement('#fldPlaceOfBirth');
         }
 
-        if (item.MediaType == "Video" && item.Type != "TvChannel") {
+        if (item.MediaType === "Video" && item.Type !== "TvChannel") {
             showElement('#fldOriginalAspectRatio');
         } else {
             hideElement('#fldOriginalAspectRatio');
         }
 
-        if (item.Type == "Audio" || item.Type == "Episode" || item.Type == "Season") {
+        if (item.Type === "Audio" || item.Type === "Episode" || item.Type === "Season") {
             showElement('#fldIndexNumber');
 
-            if (item.Type == "Episode") {
+            if (item.Type === "Episode") {
                 context.querySelector('#txtIndexNumber').label(globalize.translate('sharedcomponents#LabelEpisodeNumber'));
-            } else if (item.Type == "Season") {
+            } else if (item.Type === "Season") {
                 context.querySelector('#txtIndexNumber').label(globalize.translate('sharedcomponents#LabelSeasonNumber'));
-            } else if (item.Type == "Audio") {
+            } else if (item.Type === "Audio") {
                 context.querySelector('#txtIndexNumber').label(globalize.translate('sharedcomponents#LabelTrackNumber'));
             } else {
                 context.querySelector('#txtIndexNumber').label(globalize.translate('sharedcomponents#LabelNumber'));
@@ -750,12 +761,12 @@
             hideElement('#fldIndexNumber');
         }
 
-        if (item.Type == "Audio" || item.Type == "Episode") {
+        if (item.Type === "Audio" || item.Type === "Episode") {
             showElement('#fldParentIndexNumber');
 
-            if (item.Type == "Episode") {
+            if (item.Type === "Episode") {
                 context.querySelector('#txtParentIndexNumber').label(globalize.translate('LabelSeasonNumber'));
-            } else if (item.Type == "Audio") {
+            } else if (item.Type === "Audio") {
                 context.querySelector('#txtParentIndexNumber').label(globalize.translate('LabelDiscNumber'));
             } else {
                 context.querySelector('#txtParentIndexNumber').label(globalize.translate('LabelParentNumber'));
@@ -764,7 +775,7 @@
             hideElement('#fldParentIndexNumber', context);
         }
 
-        if (item.Type == "BoxSet") {
+        if (item.Type === "BoxSet") {
             showElement('#fldDisplayOrder', context);
 
             context.querySelector('#selectDisplayOrder').innerHTML = '<option value="SortName">' + globalize.translate('sharedcomponents#SortName') + '</option><option value="PremiereDate">' + globalize.translate('sharedcomponents#ReleaseDate') + '</option>';
@@ -775,7 +786,7 @@
 
         var displaySettingFields = context.querySelectorAll('.fldDisplaySetting');
         var hiddenDisplaySettingFields = Array.prototype.filter.call(displaySettingFields, function (field) {
-            return field.style.display != 'none';
+            return field.style.display !== 'none';
 
         });
         if (hiddenDisplaySettingFields.length) {
@@ -806,10 +817,9 @@
         context.querySelector('#select3dFormat', context).value = item.Video3DFormat || "";
 
         Array.prototype.forEach.call(context.querySelectorAll('.chkAirDay', context), function (el) {
-            el.checked = (item.AirDays || []).indexOf(el.getAttribute('data-day')) != -1;
+            el.checked = (item.AirDays || []).indexOf(el.getAttribute('data-day')) !== -1;
         });
 
-        populateListView(context.querySelector('#listCountries'), item.ProductionLocations || []);
         populateListView(context.querySelector('#listGenres'), item.Genres);
         populatePeople(context, item.People || []);
 
@@ -822,9 +832,9 @@
         var chkLockData = context.querySelector("#chkLockData");
         chkLockData.checked = lockData;
         if (chkLockData.checked) {
-            hideElement('.providerSettingsContainer', context)
+            hideElement('.providerSettingsContainer', context);
         } else {
-            showElement('.providerSettingsContainer', context)
+            showElement('.providerSettingsContainer', context);
         }
         populateInternetProviderSettings(context, item, item.LockedFields);
 
@@ -949,7 +959,7 @@
 
             ratings.push({ Name: rating.Name, Value: rating.Name });
 
-            if (rating.Name == currentValue) {
+            if (rating.Name === currentValue) {
                 currentValueFound = true;
             }
         }
@@ -1029,7 +1039,7 @@
             html += (person.Name || '');
             html += '</div>';
 
-            if (person.Role && person.Role != lastType) {
+            if (person.Role && person.Role !== lastType) {
                 html += '<div class="secondary">' + (person.Role) + '</div>';
             }
 
@@ -1052,7 +1062,7 @@
             var field = fields[i];
             var name = field.name;
             var value = field.value || field.name;
-            var checkedHtml = currentFields.indexOf(value) == -1 ? ' checked' : '';
+            var checkedHtml = currentFields.indexOf(value) === -1 ? ' checked' : '';
             html += '<label>';
             html += '<input type="checkbox" is="emby-checkbox" class="selectLockedField" data-value="' + value + '"' + checkedHtml + '/>';
             html += '<span>' + name + '</span>';
@@ -1063,7 +1073,7 @@
 
     function populateInternetProviderSettings(context, item, lockedFields) {
         var container = context.querySelector('.providerSettingsContainer');
-        lockedFields = lockedFields || new Array();
+        lockedFields = lockedFields || [];
 
         var metadatafields = [
             { name: globalize.translate('sharedcomponents#Name'), value: "Name" },
@@ -1073,13 +1083,13 @@
             { name: globalize.translate('sharedcomponents#People'), value: "Cast" }
         ];
 
-        if (item.Type == "Person") {
+        if (item.Type === "Person") {
             metadatafields.push({ name: globalize.translate('sharedcomponents#BirthLocation'), value: "ProductionLocations" });
         } else {
             metadatafields.push({ name: globalize.translate('sharedcomponents#ProductionLocations'), value: "ProductionLocations" });
         }
 
-        if (item.Type == "Series") {
+        if (item.Type === "Series") {
             metadatafields.push({ name: globalize.translate('Runtime'), value: "Runtime" });
         }
 
@@ -1089,7 +1099,7 @@
         metadatafields.push({ name: globalize.translate('sharedcomponents#Images'), value: "Images" });
         metadatafields.push({ name: globalize.translate('sharedcomponents#Backdrops'), value: "Backdrops" });
 
-        if (item.Type == "Game") {
+        if (item.Type === "Game") {
             metadatafields.push({ name: globalize.translate('sharedcomponents#Screenshots'), value: "Screenshots" });
         }
 
@@ -1125,13 +1135,13 @@
             setFieldVisibilities(context, item);
             fillItemInfo(context, item, metadataEditorInfo.ParentalRatingOptions);
 
-            if (item.MediaType == "Video" && item.Type != "Episode") {
+            if (item.MediaType === "Video" && item.Type !== "Episode") {
                 showElement('#fldShortOverview', context);
             } else {
                 hideElement('#fldShortOverview', context);
             }
 
-            if (item.MediaType == "Video" && item.Type != "Episode") {
+            if (item.MediaType === "Video" && item.Type !== "Episode") {
                 showElement('#fldTagline', context);
             } else {
                 hideElement('#fldTagline', context);

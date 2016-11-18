@@ -35,8 +35,10 @@ namespace MediaBrowser.Model.Dlna
         public string VideoCodec { get; set; }
         public string VideoProfile { get; set; }
 
+        public bool RequireAvc { get; set; }
         public bool CopyTimestamps { get; set; }
         public bool EnableSubtitlesInManifest { get; set; }
+        public bool EnableSplittingOnNonKeyFrames { get; set; }
         public string[] AudioCodecs { get; set; }
 
         public int? AudioStreamIndex { get; set; }
@@ -215,13 +217,26 @@ namespace MediaBrowser.Model.Dlna
             list.Add(new NameValuePair("MaxWidth", item.MaxWidth.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxWidth.Value) : string.Empty));
             list.Add(new NameValuePair("MaxHeight", item.MaxHeight.HasValue ? StringHelper.ToStringCultureInvariant(item.MaxHeight.Value) : string.Empty));
 
-            if (StringHelper.EqualsIgnoreCase(item.SubProtocol, "hls"))
+            var forceStartPosition = false;
+            long startPositionTicks = item.StartPositionTicks;
+            //if (item.MediaSource.DateLiveStreamOpened.HasValue && startPositionTicks == 0)
+            //{
+            //    var elapsed = DateTime.UtcNow - item.MediaSource.DateLiveStreamOpened.Value;
+            //    elapsed -= TimeSpan.FromSeconds(20);
+            //    if (elapsed.TotalSeconds >= 0)
+            //    {
+            //        startPositionTicks = elapsed.Ticks + startPositionTicks;
+            //        forceStartPosition = true;
+            //    }
+            //}
+
+            if (StringHelper.EqualsIgnoreCase(item.SubProtocol, "hls") && !forceStartPosition)
             {
                 list.Add(new NameValuePair("StartTimeTicks", string.Empty));
             }
             else
             {
-                list.Add(new NameValuePair("StartTimeTicks", StringHelper.ToStringCultureInvariant(item.StartPositionTicks)));
+                list.Add(new NameValuePair("StartTimeTicks", StringHelper.ToStringCultureInvariant(startPositionTicks)));
             }
 
             list.Add(new NameValuePair("Level", item.VideoLevel.HasValue ? StringHelper.ToStringCultureInvariant(item.VideoLevel.Value) : string.Empty));
@@ -251,6 +266,8 @@ namespace MediaBrowser.Model.Dlna
             list.Add(new NameValuePair("EnableSubtitlesInManifest", item.EnableSubtitlesInManifest.ToString().ToLower()));
 
             list.Add(new NameValuePair("Tag", item.MediaSource.ETag ?? string.Empty));
+            list.Add(new NameValuePair("EnableSplittingOnNonKeyFrames", item.EnableSplittingOnNonKeyFrames.ToString().ToLower()));
+            list.Add(new NameValuePair("RequireAvc", item.RequireAvc.ToString().ToLower()));
 
             return list;
         }
@@ -660,6 +677,19 @@ namespace MediaBrowser.Model.Dlna
                 }
 
                 return false;
+            }
+        }
+
+        public bool? IsTargetAVC
+        {
+            get
+            {
+                if (IsDirectStream)
+                {
+                    return TargetVideoStream == null ? null : TargetVideoStream.IsAVC;
+                }
+
+                return true;
             }
         }
 

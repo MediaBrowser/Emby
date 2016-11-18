@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -14,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Tasks;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -24,14 +26,16 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly ISubtitleManager _subtitleManager;
         private readonly IMediaSourceManager _mediaSourceManager;
         private readonly ILogger _logger;
+        private readonly IJsonSerializer _json;
 
-        public SubtitleScheduledTask(ILibraryManager libraryManager, IServerConfigurationManager config, ISubtitleManager subtitleManager, ILogger logger, IMediaSourceManager mediaSourceManager)
+        public SubtitleScheduledTask(ILibraryManager libraryManager, IJsonSerializer json, IServerConfigurationManager config, ISubtitleManager subtitleManager, ILogger logger, IMediaSourceManager mediaSourceManager)
         {
             _libraryManager = libraryManager;
             _config = config;
             _subtitleManager = subtitleManager;
             _logger = logger;
             _mediaSourceManager = mediaSourceManager;
+            _json = json;
         }
 
         public string Name
@@ -58,26 +62,36 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var options = GetOptions();
 
-            var videos = _libraryManager.RootFolder
-                .GetRecursiveChildren(i =>
-                {
-                    if (!(i is Video))
-                    {
-                        return false;
-                    }
+            var types = new List<string>();
 
-                    if (i.LocationType == LocationType.Remote || i.LocationType == LocationType.Virtual)
-                    {
-                        return false;
-                    }
+            if (options.DownloadEpisodeSubtitles)
+            {
+                types.Add("Episode");
+            }
+            if (options.DownloadMovieSubtitles)
+            {
+                types.Add("Movie");
+            }
 
-                    return (options.DownloadEpisodeSubtitles &&
-                            i is Episode) ||
-                           (options.DownloadMovieSubtitles &&
-                            i is Movie);
-                })
-                .Cast<Video>()
+            if (types.Count == 0)
+            {
+                return;
+            }
+
+            var videos = _libraryManager.GetItemList(new InternalItemsQuery
+            {
+                MediaTypes = new string[] { MediaType.Video },
+                IsVirtualItem = false,
+                ExcludeLocationTypes = new LocationType[] { LocationType.Remote, LocationType.Virtual },
+                IncludeItemTypes = types.ToArray()
+
+            }).OfType<Video>()
                 .ToList();
+
+            if (videos.Count == 0)
+            {
+                return;
+            }
 
             var numComplete = 0;
 
@@ -101,7 +115,7 @@ namespace MediaBrowser.Providers.MediaInfo
             }
         }
 
-        private async Task DownloadSubtitles(Video video, SubtitleOptions options, CancellationToken cancellationToken)
+        private async Task<bool> DownloadSubtitles(Video video, SubtitleOptions options, CancellationToken cancellationToken)
         {
             if ((options.DownloadEpisodeSubtitles &&
                 video is Episode) ||
@@ -124,16 +138,27 @@ namespace MediaBrowser.Providers.MediaInfo
                 if (downloadedLanguages.Count > 0)
                 {
                     await video.RefreshMetadata(cancellationToken).ConfigureAwait(false);
+                    return false;
                 }
+
+                return true;
             }
+
+            return false;
         }
 
-        public IEnumerable<ITaskTrigger> GetDefaultTriggers()
+        public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
-            return new ITaskTrigger[]
-                {
-                new IntervalTrigger{ Interval = TimeSpan.FromHours(8)}
-                };
+            return new[] { 
+            
+                // Every so often
+                new TaskTriggerInfo { Type = TaskTriggerInfo.TriggerInterval, IntervalTicks = TimeSpan.FromHours(24).Ticks}
+            };
+        }
+
+        public string Key
+        {
+            get { return "DownloadSubtitles"; }
         }
     }
 }

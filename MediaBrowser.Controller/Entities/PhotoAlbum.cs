@@ -1,7 +1,7 @@
 ﻿using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Users;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -13,6 +13,15 @@ namespace MediaBrowser.Controller.Entities
             get
             {
                 return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
             }
         }
 

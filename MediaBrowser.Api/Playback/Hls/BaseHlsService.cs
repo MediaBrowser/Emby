@@ -13,7 +13,10 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Api.Playback.Hls
 {
@@ -22,11 +25,6 @@ namespace MediaBrowser.Api.Playback.Hls
     /// </summary>
     public abstract class BaseHlsService : BaseStreamingService
     {
-        protected BaseHlsService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IZipClient zipClient, IJsonSerializer jsonSerializer)
-            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, dlnaManager, subtitleEncoder, deviceManager, mediaSourceManager, zipClient, jsonSerializer)
-        {
-        }
-
         /// <summary>
         /// Gets the audio arguments.
         /// </summary>
@@ -87,7 +85,8 @@ namespace MediaBrowser.Api.Playback.Hls
 
             if (!FileSystem.FileExists(playlist))
             {
-                await ApiEntryPoint.Instance.TranscodingStartLock.WaitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                var transcodingLock = ApiEntryPoint.Instance.GetTranscodingLock(playlist);
+                await transcodingLock.WaitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                 try
                 {
                     if (!FileSystem.FileExists(playlist))
@@ -104,13 +103,13 @@ namespace MediaBrowser.Api.Playback.Hls
                             throw;
                         }
 
-                        var waitForSegments = state.SegmentLength >= 10 ? 2 : (state.SegmentLength > 3 || !isLive ? 3 : 4);
+                        var waitForSegments = state.SegmentLength >= 10 ? 2 : (state.SegmentLength > 3 || !isLive ? 3 : 3);
                         await WaitForMinimumSegmentCount(playlist, waitForSegments, cancellationTokenSource.Token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    ApiEntryPoint.Instance.TranscodingStartLock.Release();
+                    transcodingLock.Release();
                 }
             }
 
@@ -144,7 +143,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
         private string GetLivePlaylistText(string path, int segmentLength)
         {
-            using (var stream = FileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var stream = FileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite))
             {
                 using (var reader = new StreamReader(stream))
                 {
@@ -182,32 +181,41 @@ namespace MediaBrowser.Api.Playback.Hls
         {
             Logger.Debug("Waiting for {0} segments in {1}", segmentCount, playlist);
 
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                // Need to use FileShare.ReadWrite because we're reading the file at the same time it's being written
-                using (var fileStream = GetPlaylistFileStream(playlist))
+                try
                 {
-                    using (var reader = new StreamReader(fileStream))
+                    // Need to use FileShareMode.ReadWrite because we're reading the file at the same time it's being written
+                    using (var fileStream = GetPlaylistFileStream(playlist))
                     {
-                        var count = 0;
-
-                        while (!reader.EndOfStream)
+                        using (var reader = new StreamReader(fileStream))
                         {
-                            var line = await reader.ReadLineAsync().ConfigureAwait(false);
+                            var count = 0;
 
-                            if (line.IndexOf("#EXTINF:", StringComparison.OrdinalIgnoreCase) != -1)
+                            while (!reader.EndOfStream)
                             {
-                                count++;
-                                if (count >= segmentCount)
+                                var line = await reader.ReadLineAsync().ConfigureAwait(false);
+
+                                if (line.IndexOf("#EXTINF:", StringComparison.OrdinalIgnoreCase) != -1)
                                 {
-                                    Logger.Debug("Finished waiting for {0} segments in {1}", segmentCount, playlist);
-                                    return;
+                                    count++;
+                                    if (count >= segmentCount)
+                                    {
+                                        Logger.Debug("Finished waiting for {0} segments in {1}", segmentCount, playlist);
+                                        return;
+                                    }
                                 }
                             }
+                            await Task.Delay(100, cancellationToken).ConfigureAwait(false);
                         }
-                        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
                     }
                 }
+                catch (IOException)
+                {
+                    // May get an error if the file is locked
+                }
+
+                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -217,11 +225,11 @@ namespace MediaBrowser.Api.Playback.Hls
 
             try
             {
-                return FileSystem.GetFileStream(tmpPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
+                return FileSystem.GetFileStream(tmpPath, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, true);
             }
             catch (IOException)
             {
-                return FileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
+                return FileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, true);
             }
         }
 
@@ -246,6 +254,9 @@ namespace MediaBrowser.Api.Playback.Hls
                     "hls/" + Path.GetFileNameWithoutExtension(outputPath));
             }
 
+            // add when stream copying? 
+            // -avoid_negative_ts make_zero -fflags +genpts
+
             var args = string.Format("{0} {1} {2} -map_metadata -1 -threads {3} {4} {5} -sc_threshold 0 {6} -hls_time {7} -start_number {8} -hls_list_size {9}{10} -y \"{11}\"",
                 itsOffset,
                 inputModifier,
@@ -264,6 +275,11 @@ namespace MediaBrowser.Api.Playback.Hls
             return args;
         }
 
+        protected override string GetDefaultH264Preset()
+        {
+            return "veryfast";
+        }
+
         protected virtual int GetStartNumber(StreamState state)
         {
             return 0;
@@ -274,6 +290,10 @@ namespace MediaBrowser.Api.Playback.Hls
             var isLiveStream = (state.RunTimeTicks ?? 0) == 0;
 
             return isLiveStream;
+        }
+
+        public BaseHlsService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IZipClient zipClient, IJsonSerializer jsonSerializer, IAuthorizationContext authorizationContext) : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, dlnaManager, subtitleEncoder, deviceManager, mediaSourceManager, zipClient, jsonSerializer, authorizationContext)
+        {
         }
     }
 }

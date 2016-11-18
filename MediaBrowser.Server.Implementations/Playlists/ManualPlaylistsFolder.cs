@@ -1,10 +1,13 @@
-﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Playlists;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CommonIO;
+using System.Threading.Tasks;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Playlists;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Querying;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Server.Implementations.Playlists
 {
@@ -17,7 +20,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
 
         public override bool IsVisible(User user)
         {
-            return base.IsVisible(user) && GetChildren(user, false).Any();
+            return base.IsVisible(user) && GetChildren(user, true).Any();
         }
 
         protected override IEnumerable<BaseItem> GetEligibleChildrenForRecursiveChildren(User user)
@@ -25,6 +28,7 @@ namespace MediaBrowser.Server.Implementations.Playlists
             return base.GetEligibleChildrenForRecursiveChildren(user).OfType<Playlist>();
         }
 
+        [IgnoreDataMember]
         public override bool IsHidden
         {
             get
@@ -33,33 +37,16 @@ namespace MediaBrowser.Server.Implementations.Playlists
             }
         }
 
+        [IgnoreDataMember]
         public override string CollectionType
         {
-            get { return Model.Entities.CollectionType.Playlists; }
-        }
-    }
-
-    public class PlaylistsDynamicFolder : IVirtualFolderCreator
-    {
-        private readonly IApplicationPaths _appPaths;
-        private readonly IFileSystem _fileSystem;
-
-        public PlaylistsDynamicFolder(IApplicationPaths appPaths, IFileSystem fileSystem)
-        {
-            _appPaths = appPaths;
-            _fileSystem = fileSystem;
+            get { return MediaBrowser.Model.Entities.CollectionType.Playlists; }
         }
 
-        public BasePluginFolder GetFolder()
+        protected override Task<QueryResult<BaseItem>> GetItemsInternal(InternalItemsQuery query)
         {
-            var path = Path.Combine(_appPaths.DataPath, "playlists");
-
-			_fileSystem.CreateDirectory(path);
-
-            return new PlaylistsFolder
-            {
-                Path = path
-            };
+            query.Recursive = false;
+            return base.GetItemsInternal(query);
         }
     }
 }

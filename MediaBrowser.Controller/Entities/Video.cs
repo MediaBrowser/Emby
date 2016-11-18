@@ -8,12 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
 using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Channels;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -23,10 +25,7 @@ namespace MediaBrowser.Controller.Entities
     public class Video : BaseItem,
         IHasAspectRatio,
         ISupportsPlaceHolders,
-        IHasMediaSources,
-        IHasShortOverview,
-        IThemeMedia,
-        IArchivable
+        IHasMediaSources
     {
         [IgnoreDataMember]
         public string PrimaryVersionId { get; set; }
@@ -37,11 +36,20 @@ namespace MediaBrowser.Controller.Entities
         public List<ChannelMediaInfo> ChannelMediaSources { get; set; }
 
         [IgnoreDataMember]
-        public bool IsThemeMedia
+        public override bool SupportsPlayedStatus
         {
             get
             {
-                return ExtraType.HasValue && ExtraType.Value == Model.Entities.ExtraType.ThemeVideo;
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        protected override bool SupportsIsInMixedFolderDetection
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -64,8 +72,11 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        public int? TotalBitrate { get; set; }
-        public ExtraType? ExtraType { get; set; }
+        [IgnoreDataMember]
+        public override bool SupportsThemeMedia
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// Gets or sets the timestamp.
@@ -88,12 +99,6 @@ namespace MediaBrowser.Controller.Entities
         public bool IsPlaceHolder { get; set; }
         public bool IsShortcut { get; set; }
         public string ShortcutPath { get; set; }
-
-        /// <summary>
-        /// Gets or sets the video bit rate.
-        /// </summary>
-        /// <value>The video bit rate.</value>
-        public int? VideoBitRate { get; set; }
 
         /// <summary>
         /// Gets or sets the default index of the video stream.
@@ -165,7 +170,7 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public override bool SupportsAddingToPlaylist
         {
-            get { return LocationType == LocationType.FileSystem && RunTimeTicks.HasValue; }
+            get { return true; }
         }
 
         [IgnoreDataMember]
@@ -195,21 +200,6 @@ namespace MediaBrowser.Controller.Entities
         public bool HasLocalAlternateVersions
         {
             get { return LocalAlternateVersions.Count > 0; }
-        }
-
-        [IgnoreDataMember]
-        public bool IsArchive
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(Path))
-                {
-                    return false;
-                }
-                var ext = System.IO.Path.GetExtension(Path) ?? string.Empty;
-
-                return new[] { ".zip", ".rar", ".7z" }.Contains(ext, StringComparer.OrdinalIgnoreCase);
-            }
         }
 
         public IEnumerable<Guid> GetAdditionalPartIds()
@@ -419,7 +409,7 @@ namespace MediaBrowser.Controller.Entities
             if (IsStacked)
             {
                 var tasks = AdditionalParts
-                    .Select(i => RefreshMetadataForOwnedVideo(options, i, cancellationToken));
+                    .Select(i => RefreshMetadataForOwnedVideo(options, true, i, cancellationToken));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
@@ -434,7 +424,7 @@ namespace MediaBrowser.Controller.Entities
                     RefreshLinkedAlternateVersions();
 
                     var tasks = LocalAlternateVersions
-                        .Select(i => RefreshMetadataForOwnedVideo(options, i, cancellationToken));
+                        .Select(i => RefreshMetadataForOwnedVideo(options, false, i, cancellationToken));
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
@@ -480,7 +470,7 @@ namespace MediaBrowser.Controller.Entities
 
         public override IEnumerable<string> GetDeletePaths()
         {
-            if (!IsInMixedFolder)
+            if (!DetectIsInMixedFolder())
             {
                 return new[] { ContainingFolderPath };
             }

@@ -1,8 +1,9 @@
 define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutManager', 'globalize', 'datetime', 'userdataButtons', 'apphost', 'css!./listview'], function (itemHelper, mediaInfo, indicators, connectionManager, layoutManager, globalize, datetime, userdataButtons, appHost) {
+    'use strict';
 
     function getIndex(item, options) {
 
-        if (options.index == 'disc') {
+        if (options.index === 'disc') {
 
             return item.ParentIndexNumber == null ? '' : globalize.translate('sharedcomponents#ValueDiscNumber', item.ParentIndexNumber);
         }
@@ -10,9 +11,11 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
         var sortBy = (options.sortBy || '').toLowerCase();
         var code, name;
 
-        if (sortBy.indexOf('sortname') == 0) {
+        if (sortBy.indexOf('sortname') === 0) {
 
-            if (item.Type == 'Episode') return '';
+            if (item.Type === 'Episode') {
+                return '';
+            }
 
             // SortName
             name = (item.SortName || item.Name || '?')[0].toUpperCase();
@@ -24,11 +27,11 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             return name.toUpperCase();
         }
-        if (sortBy.indexOf('officialrating') == 0) {
+        if (sortBy.indexOf('officialrating') === 0) {
 
             return item.OfficialRating || globalize.translate('sharedcomponents#Unrated');
         }
-        if (sortBy.indexOf('communityrating') == 0) {
+        if (sortBy.indexOf('communityrating') === 0) {
 
             if (item.CommunityRating == null) {
                 return globalize.translate('sharedcomponents#Unrated');
@@ -36,7 +39,7 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             return Math.floor(item.CommunityRating);
         }
-        if (sortBy.indexOf('criticrating') == 0) {
+        if (sortBy.indexOf('criticrating') === 0) {
 
             if (item.CriticRating == null) {
                 return globalize.translate('sharedcomponents#Unrated');
@@ -44,7 +47,7 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             return Math.floor(item.CriticRating);
         }
-        if (sortBy.indexOf('metascore') == 0) {
+        if (sortBy.indexOf('metascore') === 0) {
 
             if (item.Metascore == null) {
                 return globalize.translate('sharedcomponents#Unrated');
@@ -52,10 +55,12 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             return Math.floor(item.Metascore);
         }
-        if (sortBy.indexOf('albumartist') == 0) {
+        if (sortBy.indexOf('albumartist') === 0) {
 
             // SortName
-            if (!item.AlbumArtist) return '';
+            if (!item.AlbumArtist) {
+                return '';
+            }
 
             name = item.AlbumArtist[0].toUpperCase();
 
@@ -78,9 +83,9 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
             type: "Primary"
         };
 
-        if (item.ImageTags && item.ImageTags['Primary']) {
+        if (item.ImageTags && item.ImageTags.Primary) {
 
-            options.tag = item.ImageTags['Primary'];
+            options.tag = item.ImageTags.Primary;
             return apiClient.getScaledImageUrl(item.Id, options);
         }
 
@@ -111,6 +116,12 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
         for (var i = 0, length = textlines.length; i < length; i++) {
 
+            var text = textlines[i];
+
+            if (!text) {
+                continue;
+            }
+
             if (i === 0) {
                 if (isLargeStyle) {
                     html += '<h2 class="listItemBodyText">';
@@ -138,12 +149,12 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
         var groupTitle = '';
         var action = options.action || 'link';
 
-        var isLargeStyle = options.imageSize == 'large';
+        var isLargeStyle = options.imageSize === 'large';
         var enableOverview = options.enableOverview;
 
         var clickEntireItem = layoutManager.tv ? true : false;
         var outerTagName = clickEntireItem ? 'button' : 'div';
-        var enableSideMediaInfo = options.enableSideMediaInfo != null ? options.enableSideMediaInfo : clickEntireItem;
+        var enableSideMediaInfo = options.enableSideMediaInfo != null ? options.enableSideMediaInfo : true;
 
         var outerHtml = '';
 
@@ -157,13 +168,13 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
                 var itemGroupTitle = getIndex(item, options);
 
-                if (itemGroupTitle != groupTitle) {
+                if (itemGroupTitle !== groupTitle) {
 
                     if (html) {
                         html += '</div>';
                     }
 
-                    if (i == 0) {
+                    if (i === 0) {
                         html += '<h1 class="listGroupHeader listGroupHeader-first">';
                     }
                     else {
@@ -178,10 +189,12 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
                 }
             }
 
-            var cssClass = "listItem listItem-nosidepadding";
+            var cssClass = "listItem";
 
-            if (options.border !== false) {
-                cssClass += ' listItem-border';
+            if (options.highlight !== false) {
+                if (i % 2 === 1) {
+                    cssClass += ' listItem-odd';
+                }
             }
 
             if (clickEntireItem) {
@@ -242,23 +255,32 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
                 html += '</div>';
             }
 
-            if (options.showProgramTimeColumn) {
-                html += '<div class="listItemBody listItemBody-nogrow listItemBody-rightborder"><div class="listItemBodyText">';
-                html += datetime.getDisplayTime(datetime.parseISO8601Date(item.StartDate));
-                html += ' - ';
-                html += datetime.getDisplayTime(datetime.parseISO8601Date(item.EndDate));
-                html += '</div></div>';
-            }
-
             var textlines = [];
 
+            if (options.showProgramDateTime) {
+                textlines.push(datetime.toLocaleString(datetime.parseISO8601Date(item.StartDate), {
+
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                }));
+            }
+
+            if (options.showProgramTime) {
+                textlines.push(datetime.getDisplayTime(datetime.parseISO8601Date(item.StartDate)));
+            }
+
+            var parentTitle = null;
+
             if (options.showParentTitle) {
-                if (item.Type == 'Episode') {
-                    textlines.push(item.SeriesName || '&nbsp;');
+                if (item.Type === 'Episode') {
+                    parentTitle = item.SeriesName;
                 }
 
-                if (item.IsSeries) {
-                    textlines.push(item.Name || '&nbsp;');
+                else if (item.IsSeries) {
+                    parentTitle = item.Name;
                 }
             }
 
@@ -267,50 +289,76 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
             if (options.showIndexNumber && item.IndexNumber != null) {
                 displayName = item.IndexNumber + ". " + displayName;
             }
-            if (displayName) {
+
+            if (options.showParentTitle && options.parentTitleWithTitle) {
+
+                if (displayName) {
+
+                    if (parentTitle) {
+                        parentTitle += ' - ';
+                    }
+                    parentTitle = (parentTitle || '') + displayName;
+                }
+
+                textlines.push(parentTitle || '');
+            }
+            else if (options.showParentTitle) {
+                textlines.push(parentTitle || '');
+            }
+
+            if (displayName && !options.parentTitleWithTitle) {
                 textlines.push(displayName);
             }
 
-            if (item.ArtistItems && item.Type != 'MusicAlbum') {
-                textlines.push(item.ArtistItems.map(function (a) {
-                    return a.Name;
+            if (options.artist !== false) {
+                if (item.ArtistItems && item.Type !== 'MusicAlbum') {
+                    textlines.push(item.ArtistItems.map(function (a) {
+                        return a.Name;
 
-                }).join(', ') || '&nbsp;');
+                    }).join(', '));
+                }
+
+                if (item.AlbumArtist && item.Type === 'MusicAlbum') {
+                    textlines.push(item.AlbumArtist);
+                }
             }
 
-            if (item.AlbumArtist && item.Type == 'MusicAlbum') {
-                textlines.push(item.AlbumArtist || '&nbsp;');
+            if (item.Type === 'Game') {
+                textlines.push(item.GameSystem);
             }
 
-            if (item.Type == 'Game') {
-                textlines.push(item.GameSystem || '&nbsp;');
-            }
-
-            if (item.Type == 'TvChannel') {
+            if (item.Type === 'TvChannel') {
 
                 if (item.CurrentProgram) {
                     textlines.push(itemHelper.getDisplayName(item.CurrentProgram));
                 }
             }
 
-            cssClass = 'listItemBody two-line';
+            cssClass = 'listItemBody';
             if (!clickEntireItem) {
                 cssClass += ' itemAction';
             }
 
+            if (options.image === false) {
+                cssClass += ' itemAction listItemBody-noleftpadding';
+            }
+
             html += '<div class="' + cssClass + '">';
 
-            var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
+            var moreIcon = appHost.moreIcon === 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
 
             html += getTextLinesHtml(textlines, isLargeStyle);
 
-            if (!enableSideMediaInfo) {
+            if (options.mediaInfo !== false) {
+                if (!enableSideMediaInfo) {
 
-                var mediaInfoClass = 'secondary listItemMediaInfo listItemBodyText';
+                    var mediaInfoClass = 'secondary listItemMediaInfo listItemBodyText';
 
-                html += '<div class="' + mediaInfoClass + '">' + mediaInfo.getPrimaryMediaInfoHtml(item, {
-                    episodeTitle: false
-                }) + '</div>';
+                    html += '<div class="' + mediaInfoClass + '">' + mediaInfo.getPrimaryMediaInfoHtml(item, {
+                        episodeTitle: false,
+                        originalAirDate: false
+                    }) + '</div>';
+                }
             }
 
             if (enableOverview && item.Overview) {
@@ -321,18 +369,32 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             html += '</div>';
 
-            if (enableSideMediaInfo) {
-                html += '<div class="secondary listItemMediaInfo">' + mediaInfo.getPrimaryMediaInfoHtml(item, {
+            if (options.mediaInfo !== false) {
+                if (enableSideMediaInfo) {
+                    html += '<div class="secondary listItemMediaInfo">' + mediaInfo.getPrimaryMediaInfoHtml(item, {
 
-                    year: false,
-                    container: false,
-                    episodeTitle: false
+                        year: false,
+                        container: false,
+                        episodeTitle: false
 
-                }) + '</div>';
+                    }) + '</div>';
+                }
+            }
+
+            if (!options.recordButton && (item.Type === 'Timer' || item.Type === 'Program')) {
+                html += indicators.getTimerIndicator(item).replace('indicatorIcon', 'indicatorIcon listItemAside');
             }
 
             if (!clickEntireItem) {
-                html += '<button is="paper-icon-button-light" class="listItemButton itemAction autoSize" data-action="menu"><i class="md-icon">' + moreIcon + '</i></button>';
+
+                if (options.moreButton !== false) {
+                    html += '<button is="paper-icon-button-light" class="listItemButton itemAction autoSize" data-action="menu"><i class="md-icon">' + moreIcon + '</i></button>';
+                }
+
+                if (options.recordButton) {
+
+                    html += '<button is="paper-icon-button-light" class="listItemButton itemAction autoSize" data-action="programdialog">' + indicators.getTimerIndicator(item) + '</button>';
+                }
 
                 if (options.enableUserDataButtons !== false) {
                     html += '<span class="listViewUserDataButtons">';

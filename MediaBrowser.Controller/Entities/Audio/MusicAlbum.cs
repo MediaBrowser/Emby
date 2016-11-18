@@ -5,7 +5,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Users;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Library;
@@ -17,6 +17,9 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// </summary>
     public class MusicAlbum : Folder, IHasAlbumArtist, IHasArtist, IHasMusicGenres, IHasLookupInfo<AlbumInfo>, IMetadataContainer
     {
+        public List<string> AlbumArtists { get; set; }
+        public List<string> Artists { get; set; }
+
         public MusicAlbum()
         {
             Artists = new List<string>();
@@ -45,6 +48,15 @@ namespace MediaBrowser.Controller.Entities.Audio
                     }
                 }
                 return artist;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -83,8 +95,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             get { return false; }
         }
 
-        public List<string> AlbumArtists { get; set; }
-
         /// <summary>
         /// Gets the tracks.
         /// </summary>
@@ -102,8 +112,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             return Tracks;
         }
-
-        public List<string> Artists { get; set; }
 
         public override List<string> GetUserDataKeys()
         {

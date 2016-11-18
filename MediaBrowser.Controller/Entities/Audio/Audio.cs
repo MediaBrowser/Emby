@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Channels;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
@@ -22,14 +22,9 @@ namespace MediaBrowser.Controller.Entities.Audio
         IHasArtist,
         IHasMusicGenres,
         IHasLookupInfo<SongInfo>,
-        IHasMediaSources,
-        IThemeMedia,
-        IArchivable
+        IHasMediaSources
     {
         public List<ChannelMediaInfo> ChannelMediaSources { get; set; }
-
-        public int? TotalBitrate { get; set; }
-        public ExtraType? ExtraType { get; set; }
 
         /// <summary>
         /// Gets or sets the artist.
@@ -38,15 +33,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         public List<string> Artists { get; set; }
 
         public List<string> AlbumArtists { get; set; }
-
-        [IgnoreDataMember]
-        public bool IsThemeMedia
-        {
-            get
-            {
-                return ExtraType.HasValue && ExtraType.Value == Model.Entities.ExtraType.ThemeSong;
-            }
-        }
 
         [IgnoreDataMember]
         public override bool EnableRefreshOnDateModifiedChange
@@ -61,9 +47,18 @@ namespace MediaBrowser.Controller.Entities.Audio
         }
 
         [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
         public override bool SupportsAddingToPlaylist
         {
-            get { return LocationType == LocationType.FileSystem && RunTimeTicks.HasValue; }
+            get { return true; }
         }
 
         [IgnoreDataMember]
@@ -81,21 +76,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             get
             {
                 return AlbumEntity;
-            }
-        }
-
-        [IgnoreDataMember]
-        public bool IsArchive
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(Path))
-                {
-                    return false;
-                }
-                var ext = System.IO.Path.GetExtension(Path) ?? string.Empty;
-
-                return new[] { ".zip", ".rar", ".7z" }.Contains(ext, StringComparer.OrdinalIgnoreCase);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿define(['appStorage', 'events', 'browser'], function (appStorage, events, browser) {
+    'use strict';
 
     var currentDisplayInfo;
     var datetime;
@@ -99,17 +100,22 @@
 
                 Dashboard.hideLoadingMsg();
 
-                actionsheet.show({
+                var menuOptions = {
                     title: Globalize.translate('HeaderSelectPlayer'),
                     items: menuItems,
                     positionTo: button,
 
-                    // Unfortunately we can't allow the url to change or chromecast will throw a security error
-                    // Might be able to solve this in the future by moving the dialogs to hashbangs
-                    enableHistory: enableHistory !== false && !browser.chrome,
                     resolveOnClick: true
 
-                }).then(function (id) {
+                };
+
+                // Unfortunately we can't allow the url to change or chromecast will throw a security error
+                // Might be able to solve this in the future by moving the dialogs to hashbangs
+                if (!((enableHistory !== false && !browser.chrome) || AppInfo.isNativeApp)) {
+                    menuOptions.enableHistory = false;
+                }
+
+                actionsheet.show(menuOptions).then(function (id) {
 
                     var target = targets.filter(function (t) {
                         return t.id == id;
@@ -148,8 +154,8 @@
 
         dlg.classList.add('promptDialog');
 
-        html += '<div class="promptDialogContent" style="padding:1em;">';
-        html += '<h2>';
+        html += '<div class="promptDialogContent" style="padding:1.5em;">';
+        html += '<h2 style="margin-top:.5em;">';
         html += (playerInfo.deviceName || playerInfo.name);
         html += '</h2>';
 
@@ -157,7 +163,7 @@
 
         if (playerInfo.supportedCommands.indexOf('DisplayContent') != -1) {
 
-            html += '<label class="checkboxContainer" style="margin-bottom:0;">';
+            html += '<label class="checkboxContainer">';
             var checkedHtml = MediaController.enableDisplayMirroring() ? ' checked' : '';
             html += '<input type="checkbox" is="emby-checkbox" class="chkMirror"' + checkedHtml + '/>';
             html += '<span>' + Globalize.translate('OptionEnableDisplayMirroring') + '</span>';
@@ -166,15 +172,11 @@
 
         html += '</div>';
 
-        html += '<div class="promptDialogButtons">';
+        html += '<div style="margin-top:1em;display:flex;justify-content: flex-end;">';
 
-        // On small layouts papepr dialog doesn't respond very well. this button isn't that important here anyway.
-        if (screen.availWidth >= 600) {
-            html += '<button is="emby-button" type="button" class="btnRemoteControl promptDialogButton">' + Globalize.translate('ButtonRemoteControl') + '</button>';
-        }
-
-        html += '<button is="emby-button" type="button" class="btnDisconnect promptDialogButton">' + Globalize.translate('ButtonDisconnect') + '</button>';
-        html += '<button is="emby-button" type="button" class="btnCancel promptDialogButton">' + Globalize.translate('ButtonCancel') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnRemoteControl promptDialogButton">' + Globalize.translate('ButtonRemoteControl') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnDisconnect promptDialogButton ">' + Globalize.translate('ButtonDisconnect') + '</button>';
+        html += '<button is="emby-button" type="button" class="button-flat button-accent-flat btnCancel promptDialogButton">' + Globalize.translate('ButtonCancel') + '</button>';
         html += '</div>';
 
         html += '</div>';
@@ -376,18 +378,18 @@
 
             if (playerInfo.supportedCommands.indexOf('EndSession') != -1) {
 
-                var menuItems = [];
-
-                menuItems.push({
-                    name: Globalize.translate('ButtonYes'),
-                    id: 'yes'
-                });
-                menuItems.push({
-                    name: Globalize.translate('ButtonNo'),
-                    id: 'no'
-                });
-
                 require(['dialog'], function (dialog) {
+
+                    var menuItems = [];
+
+                    menuItems.push({
+                        name: Globalize.translate('ButtonYes'),
+                        id: 'yes'
+                    });
+                    menuItems.push({
+                        name: Globalize.translate('ButtonNo'),
+                        id: 'no'
+                    });
 
                     dialog({
                         buttons: menuItems,
@@ -458,22 +460,24 @@
             });
         };
 
-        function doWithPlaybackValidation(player, fn) {
+        function validatePlayback(player) {
 
             if (!player.isLocalPlayer) {
-                fn();
-                return;
+                return Promise.resolve();
             }
 
-            requirejs(["registrationservices"], function (registrationServices) {
+            return new Promise(function (resolve, reject) {
 
-                self.playbackTimeLimitMs = null;
+                requirejs(["registrationServices"], function (registrationServices) {
 
-                registrationServices.validateFeature('playback').then(fn, function () {
+                    self.playbackTimeLimitMs = null;
 
-                    self.playbackTimeLimitMs = lockedTimeLimitMs;
-                    startAutoStopTimer();
-                    fn();
+                    registrationServices.validateFeature('playback').then(resolve, function () {
+
+                        self.playbackTimeLimitMs = lockedTimeLimitMs;
+                        startAutoStopTimer();
+                        resolve();
+                    });
                 });
             });
         }
@@ -523,16 +527,16 @@
 
             if (options.enableRemotePlayers === false) {
                 if (!currentPlayer.isLocalPlayer) {
-                    return;
+                    return Promise.reject();
                 }
             }
 
-            doWithPlaybackValidation(currentPlayer, function () {
+            return validatePlayback(currentPlayer).then(function () {
                 if (typeof (options) === 'string') {
                     options = { ids: [options] };
                 }
 
-                currentPlayer.play(options);
+                return currentPlayer.play(options);
             });
         };
 
@@ -543,7 +547,7 @@
                 id = id.Id;
             }
 
-            doWithPlaybackValidation(currentPlayer, function () {
+            validatePlayback(currentPlayer).then(function () {
                 currentPlayer.shuffle(id);
             });
         };
@@ -555,7 +559,7 @@
                 id = id.Id;
             }
 
-            doWithPlaybackValidation(currentPlayer, function () {
+            validatePlayback(currentPlayer).then(function () {
                 currentPlayer.instantMix(id);
             });
         };
@@ -979,7 +983,7 @@
             });
         };
 
-        self.supportsDirectPlay = function (mediaSource) {
+        self.supportsDirectPlay = function (mediaSource, itemType) {
 
             return new Promise(function (resolve, reject) {
                 if (mediaSource.SupportsDirectPlay) {
@@ -992,6 +996,7 @@
                         }
                         else {
                             var val = mediaSource.Path.toLowerCase().replace('https:', 'http').indexOf(ApiClient.serverAddress().toLowerCase().replace('https:', 'http').substring(0, 14)) == 0;
+                            //resolve(val || itemType !== 'TvChannel');
                             resolve(val);
                         }
                     }

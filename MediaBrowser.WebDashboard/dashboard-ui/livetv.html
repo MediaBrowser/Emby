@@ -29,61 +29,61 @@
         </div>
     </div>
 
-    <div class="is-active pageTabContent ehsContent" id="suggestionsTab" data-index="0">
+    <div class="is-active pageTabContent ehsContent fullWidth" id="suggestionsTab" data-index="0">
+        <div id="activeRecordings" class="homePageSection hide">
+            <h1 class="listHeader">${HeaderActiveRecordings}</h1>
+            <div is="emby-itemscontainer" class="recordingItems itemsContainer"></div>
+            <br />
+        </div>
         <div id="activePrograms" class="homePageSection">
             <div>
                 <h1 class="listHeader" style="display: inline-block; vertical-align: middle;">${HeaderWhatsOnTV}</h1>
                 <a href="livetvitems.html?type=Programs&IsAiring=true" class="clearLink" style="margin-left: 1em; vertical-align: middle;"><button is="emby-button" type="button" class="raised more mini noIcon">${ButtonMoreItems}</button></a>
             </div>
             <div is="emby-itemscontainer" class="activeProgramItems itemsContainer"></div>
-            <br />
         </div>
-        <div id="upcomingTvMovies" class="homePageSection" style="margin-top: 1em;">
+        <div id="upcomingTvMovies" class="homePageSection">
             <div>
                 <h1 class="listHeader" style="display: inline-block; vertical-align: middle;">${HeaderUpcomingMovies}</h1>
                 <a href="livetvitems.html?type=Programs&IsMovie=true" class="clearLink" style="margin-left: 1em; vertical-align: middle;"><button is="emby-button" type="button" class="raised more mini noIcon">${ButtonMoreItems}</button></a>
             </div>
             <div is="emby-itemscontainer" class="upcomingTvMovieItems itemsContainer"></div>
-            <br />
         </div>
-        <div id="upcomingSports" class="homePageSection" style="margin-top: 1em;">
+        <div id="upcomingSports" class="homePageSection">
             <div>
                 <h1 class="listHeader" style="display: inline-block; vertical-align: middle;">${HeaderUpcomingSports}</h1>
                 <a href="livetvitems.html?type=Programs&IsSports=true" class="clearLink" style="margin-left: 1em; vertical-align: middle;"><button is="emby-button" type="button" class="raised more mini noIcon">${ButtonMoreItems}</button></a>
             </div>
             <div is="emby-itemscontainer" class="upcomingSportsItems itemsContainer"></div>
-            <br />
         </div>
-        <div id="upcomingKids" class="homePageSection" style="margin-top: 1em;">
+        <div id="upcomingKids" class="homePageSection">
             <div>
                 <h1 class="listHeader" style="display: inline-block; vertical-align: middle;">${HeaderUpcomingForKids}</h1>
                 <a href="livetvitems.html?type=Programs&IsKids=true" class="clearLink" style="margin-left: 1em; vertical-align: middle;"><button is="emby-button" type="button" class="raised more mini noIcon">${ButtonMoreItems}</button></a>
             </div>
             <div is="emby-itemscontainer" class="upcomingKidsItems itemsContainer"></div>
-            <br />
         </div>
-        <div id="upcomingPrograms" class="homePageSection" style="margin-top: 1em;">
+        <div id="upcomingPrograms" class="homePageSection">
             <div>
                 <h1 class="listHeader" style="display: inline-block; vertical-align: middle;">${HeaderUpcomingPrograms}</h1>
                 <a href="livetvitems.html?type=Programs&IsKids=false&IsMovie=false&IsSports=false" class="clearLink" style="margin-left: 1em; vertical-align: middle;"><button is="emby-button" type="button" class="raised more mini noIcon">${ButtonMoreItems}</button></a>
             </div>
             <div is="emby-itemscontainer" class="upcomingProgramItems itemsContainer"></div>
-            <br />
         </div>
     </div>
     <div class="pageTabContent ehsContent fullWidth flexPageTabContent absolutePageTabContent" id="guideTab" data-index="1" style="width:auto;padding-top:0; padding-bottom: 0;">
     </div>
     <div class="pageTabContent ehsContent" id="channelsTab" data-index="2">
-        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:.7em .5em;">
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em 1em;">
             <div class="paging"></div>
             <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
         </div>
         <div is="emby-itemscontainer" id="items" class="itemsContainer vertical-wrap"></div>
     </div>
-    <div class="pageTabContent ehsContent" id="recordingsTab" data-index="3">
+    <div class="pageTabContent ehsContent fullWidth" id="recordingsTab" data-index="3">
         <div id="activeRecordings" class="homePageSection hide">
             <h1 class="listHeader">${HeaderActiveRecordings}</h1>
-            <div class="recordingItems"></div>
+            <div is="emby-itemscontainer" class="recordingItems itemsContainer"></div>
             <br />
         </div>
         <div id="latestRecordings" class="homePageSection hide">
@@ -136,10 +136,10 @@
             <div id="recordingGroupItems"></div>
         </div>
     </div>
-    <div class="pageTabContent ehsContent" id="scheduleTab" data-index="4">
+    <div class="pageTabContent ehsContent fullWidth" id="scheduleTab" data-index="4">
         <div id="activeRecordings" class="homePageSection hide">
             <h1 class="listHeader">${HeaderActiveRecordings}</h1>
-            <div class="recordingItems"></div>
+            <div is="emby-itemscontainer" class="recordingItems itemsContainer"></div>
             <br />
         </div>
         <div id="upcomingRecordings" class="homePageSection hide">
@@ -148,8 +148,7 @@
         </div>
     </div>
     <div class="pageTabContent ehsContent" id="seriesTab" data-index="5">
-        <div style="max-width: 700px; margin: 0 auto;" id="items">
-        </div>
+        <div is="emby-itemscontainer" class="vertical-wrap itemsContainer centered" id="items"></div>
     </div>
 
     <div data-role="content">

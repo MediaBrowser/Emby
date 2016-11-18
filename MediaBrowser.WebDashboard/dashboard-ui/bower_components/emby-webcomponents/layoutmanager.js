@@ -1,8 +1,9 @@
 define(['browser', 'appSettings', 'events'], function (browser, appSettings, events) {
+    'use strict';
 
     function setLayout(self, layout, selectedLayout) {
 
-        if (layout == selectedLayout) {
+        if (layout === selectedLayout) {
             self[layout] = true;
             document.documentElement.classList.add('layout-' + layout);
         } else {
@@ -11,13 +12,13 @@ define(['browser', 'appSettings', 'events'], function (browser, appSettings, eve
         }
     }
 
-    function layoutManager() {
+    function LayoutManager() {
 
         var self = this;
 
         self.setLayout = function (layout, save) {
 
-            if (!layout || layout == 'auto') {
+            if (!layout || layout === 'auto') {
                 self.autoLayout();
 
                 if (save !== false) {
@@ -61,7 +62,7 @@ define(['browser', 'appSettings', 'events'], function (browser, appSettings, eve
                 self.autoLayout();
             }
         };
-    };
+    }
 
-    return new layoutManager();
+    return new LayoutManager();
 });

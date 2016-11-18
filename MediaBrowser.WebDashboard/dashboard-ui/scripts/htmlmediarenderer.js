@@ -1,4 +1,5 @@
 ﻿define(['browser'], function (browser) {
+    'use strict';
 
     var supportsTextTracks;
     var hlsPlayer;
@@ -195,7 +196,7 @@
                 }
 
                 // For now don't do this in edge because we lose some native audio support
-                if (browser.edge) {
+                if (browser.edge && browser.mobile) {
                     return false;
                 }
 
@@ -424,6 +425,27 @@
                         hls.on(Hls.Events.MANIFEST_PARSED, function () {
                             elem.play();
                         });
+
+                        hls.on(Hls.Events.ERROR, function (event, data) {
+                            if (data.fatal) {
+                                switch (data.type) {
+                                    case Hls.ErrorTypes.NETWORK_ERROR:
+                                        // try to recover network error
+                                        console.log("fatal network error encountered, try to recover");
+                                        hls.startLoad();
+                                        break;
+                                    case Hls.ErrorTypes.MEDIA_ERROR:
+                                        console.log("fatal media error encountered, try to recover");
+                                        hls.recoverMediaError();
+                                        break;
+                                    default:
+                                        // cannot recover
+                                        hls.destroy();
+                                        break;
+                                }
+                            }
+                        });
+
                         hlsPlayer = hls;
                     });
 
@@ -536,11 +558,6 @@
         };
 
         function enableNativeTrackSupport(track) {
-
-            if (browser.safari && browser.mobile) {
-                // Leave it to apple to have different behavior between safari on ios vs osx
-                return false;
-            }
 
             if (browser.firefox) {
                 if ((currentSrc || '').toLowerCase().indexOf('.m3u8') != -1) {

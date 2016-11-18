@@ -1,4 +1,5 @@
 ﻿define(['dialogHelper', 'layoutManager', 'globalize', 'browser', 'dom', 'emby-button', 'css!./actionsheet', 'material-icons', 'scrollStyles'], function (dialogHelper, layoutManager, globalize, browser, dom) {
+    'use strict';
 
     function getOffsets(elems) {
 
@@ -25,7 +26,9 @@
 
             results[i] = {
                 top: box.top,
-                left: box.left
+                left: box.left,
+                width: box.width,
+                height: box.height
             };
         }
 
@@ -44,11 +47,11 @@
 
         var pos = getOffsets([options.positionTo])[0];
 
-        if (options.positionY != 'top') {
-            pos.top += options.positionTo.offsetHeight / 2;
+        if (options.positionY !== 'top') {
+            pos.top += (pos.height || 0) / 2;
         }
 
-        pos.left += options.positionTo.offsetWidth / 2;
+        pos.left += (pos.width || 0) / 2;
 
         var height = dlg.offsetHeight || 300;
         var width = dlg.offsetWidth || 160;
@@ -94,9 +97,7 @@
         var dialogOptions = {
             removeOnClose: true,
             enableHistory: options.enableHistory,
-            scrollY: false,
-            entryAnimation: options.entryAnimation,
-            exitAnimation: options.exitAnimation
+            scrollY: false
         };
 
         var backButton = false;
@@ -110,8 +111,10 @@
         } else {
 
             dialogOptions.modal = false;
+            dialogOptions.entryAnimation = options.entryAnimation;
+            dialogOptions.exitAnimation = options.exitAnimation;
             dialogOptions.entryAnimationDuration = options.entryAnimationDuration || 140;
-            dialogOptions.exitAnimationDuration = options.exitAnimationDuration || 180;
+            dialogOptions.exitAnimationDuration = options.exitAnimationDuration || 160;
             dialogOptions.autoFocus = false;
         }
 
@@ -298,13 +301,22 @@
 
             dialogHelper.open(dlg);
 
-            var pos = options.positionTo && dialogOptions.size !== 'fullscreen' ? getPosition(options, dlg) : null;
+            // Make sure the above open has completed so that we can query offsetWidth and offsetHeight
+            // This was needed in safari, but in chrome this is causing the dialog to change position while animating
+            var setPositions = function () {
+                var pos = options.positionTo && dialogOptions.size !== 'fullscreen' ? getPosition(options, dlg) : null;
 
-            if (pos) {
-                dlg.style.position = 'fixed';
-                dlg.style.margin = 0;
-                dlg.style.left = pos.left + 'px';
-                dlg.style.top = pos.top + 'px';
+                if (pos) {
+                    dlg.style.position = 'fixed';
+                    dlg.style.margin = 0;
+                    dlg.style.left = pos.left + 'px';
+                    dlg.style.top = pos.top + 'px';
+                }
+            };
+            if (browser.safari) {
+                setTimeout(setPositions, 0);
+            } else {
+                setPositions();
             }
         });
     }

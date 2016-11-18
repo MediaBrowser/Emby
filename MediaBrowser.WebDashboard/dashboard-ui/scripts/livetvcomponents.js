@@ -1,11 +1,12 @@
-﻿define(['datetime', 'cardBuilder'], function (datetime, cardBuilder) {
+﻿define(['datetime', 'cardBuilder', 'apphost'], function (datetime, cardBuilder, appHost) {
+    'use strict';
 
     function enableScrollX() {
         return browserInfo.mobile && AppInfo.enableAppLayouts;
     }
 
-    function getSquareShape() {
-        return enableScrollX() ? 'overflowSquare' : 'square';
+    function getBackdropShape() {
+        return enableScrollX() ? 'overflowBackdrop' : 'backdrop';
     }
 
     function getTimersHtml(timers, options) {
@@ -81,16 +82,24 @@
                 html += '<div is="emby-itemscontainer" class="itemsContainer vertical-wrap">';
             }
 
+            var supportsImageAnalysis = appHost.supports('imageanalysis');
+            var cardLayout = appHost.preferVisualCards || supportsImageAnalysis;
+
             html += cardBuilder.getCardsHtml({
                 items: group.items,
-                shape: getSquareShape(),
-                showTitle: true,
+                shape: getBackdropShape(),
+                showParentTitleOrTitle: true,
                 showAirTime: true,
+                showAirEndTime: true,
                 showChannelName: true,
-                lazy: true,
-                cardLayout: true,
+                cardLayout: cardLayout,
+                centerText: !cardLayout,
+                vibrant: supportsImageAnalysis,
                 action: 'edit',
-                cardFooterAside: 'none'
+                cardFooterAside: 'none',
+                preferThumb: true,
+                coverImage: true,
+                overlayText: false
 
             });
             html += '</div>';
@@ -104,28 +113,6 @@
     }
 
     window.LiveTvHelpers = {
-
-        getDaysOfWeek: function () {
-
-            var days = [
-                'Sunday',
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday'
-            ];
-
-            return days.map(function (d) {
-
-                return {
-                    name: d,
-                    value: d
-                };
-
-            });
-        },
 
         getTimersHtml: getTimersHtml
 

@@ -1,4 +1,5 @@
 define(['playbackManager', 'userSettings'], function (playbackManager, userSettings) {
+    'use strict';
 
     var currentOwnerId;
     var currentThemeIds = [];
@@ -13,17 +14,17 @@ define(['playbackManager', 'userSettings'], function (playbackManager, userSetti
                 return;
             }
 
-            currentThemeIds = items.map(function (i) {
-                return i.Id;
-            });
-
-            currentOwnerId = ownerId;
-
             if (enabled(items[0].MediaType)) {
+                currentThemeIds = items.map(function (i) {
+                    return i.Id;
+                });
+
                 playbackManager.play({
                     items: items,
                     fullscreen: false,
                     enableRemotePlayers: false
+                }).then(function () {
+                    currentOwnerId = ownerId;
                 });
             }
 
@@ -39,7 +40,7 @@ define(['playbackManager', 'userSettings'], function (playbackManager, userSetti
 
     function enabled(mediaType) {
 
-        if (mediaType == 'Video') {
+        if (mediaType === 'Video') {
             return userSettings.enableThemeVideos();
         }
 
@@ -55,7 +56,7 @@ define(['playbackManager', 'userSettings'], function (playbackManager, userSetti
 
                 var ownerId = themeMediaResult.ThemeVideosResult.Items.length ? themeMediaResult.ThemeVideosResult.OwnerId : themeMediaResult.ThemeSongsResult.OwnerId;
 
-                if (ownerId != currentOwnerId) {
+                if (ownerId !== currentOwnerId) {
 
                     var items = themeMediaResult.ThemeVideosResult.Items.length ? themeMediaResult.ThemeVideosResult.Items : themeMediaResult.ThemeSongsResult.Items;
 
@@ -87,8 +88,8 @@ define(['playbackManager', 'userSettings'], function (playbackManager, userSetti
 
     }, true);
 
-    //Events.on(Emby.PlaybackManager, 'playbackstart', function (e, player) {
-    //    var item = Emby.PlaybackManager.currentItem(player);
+    //Events.on(playbackManager, 'playbackstart', function (e, player) {
+    //    var item = playbackManager.currentItem(player);
     //    // User played something manually
     //    if (currentThemeIds.indexOf(item.Id) == -1) {
     //        currentOwnerId = null;

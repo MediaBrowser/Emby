@@ -1,4 +1,5 @@
 ﻿define(['itemShortcuts', 'connectionManager', 'layoutManager', 'browser', 'dom', 'loading', 'serverNotifications', 'events', 'registerElement'], function (itemShortcuts, connectionManager, layoutManager, browser, dom, loading, serverNotifications, events) {
+    'use strict';
 
     var ItemsContainerProtoType = Object.create(HTMLDivElement.prototype);
 
@@ -241,7 +242,9 @@
         if (browser.touch) {
             this.addEventListener('contextmenu', disableEvent);
         } else {
-            this.addEventListener('contextmenu', onContextMenu);
+            if (this.getAttribute('data-contextmenu') !== 'false') {
+                this.addEventListener('contextmenu', onContextMenu);
+            }
         }
 
         if (layoutManager.desktop) {

@@ -1,38 +1,14 @@
 define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo', 'focusManager', 'indicators', 'globalize', 'layoutManager', 'apphost', 'dom', 'emby-button', 'css!./card', 'paper-icon-button-light', 'clearButtonStyle'],
     function (datetime, imageLoader, connectionManager, itemHelper, mediaInfo, focusManager, indicators, globalize, layoutManager, appHost, dom) {
+        'use strict';
 
-        // Regular Expressions for parsing tags and attributes
-        var SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
-          // Match everything outside of normal chars and " (quote character)
-          NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g;
-
-        /**
-         * Escapes all potentially dangerous characters, so that the
-         * resulting string can be safely inserted into attribute or
-         * element text.
-         * @param value
-         * @returns {string} escaped text
-         */
-        function htmlEncode(value) {
-            return value.
-              replace(/&/g, '&amp;').
-              replace(SURROGATE_PAIR_REGEXP, function (value) {
-                  var hi = value.charCodeAt(0);
-                  var low = value.charCodeAt(1);
-                  return '&#' + (((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000) + ';';
-              }).
-              replace(NON_ALPHANUMERIC_REGEXP, function (value) {
-                  return '&#' + value.charCodeAt(0) + ';';
-              }).
-              replace(/</g, '&lt;').
-              replace(/>/g, '&gt;');
-        }
+        var devicePixelRatio = window.devicePixelRatio || 1;
 
         function getCardsHtml(items, options) {
 
             var apiClient = connectionManager.currentApiClient();
 
-            if (arguments.length == 1) {
+            if (arguments.length === 1) {
 
                 options = arguments[0];
                 items = options.items;
@@ -48,55 +24,126 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             switch (shape) {
 
                 case 'portrait':
-                    if (screenWidth >= 2200) return 10;
-                    if (screenWidth >= 2100) return 9;
-                    if (screenWidth >= 1600) return 8;
-                    if (screenWidth >= 1400) return 7;
-                    if (screenWidth >= 1200) return 6;
-                    if (screenWidth >= 800) return 5;
-                    if (screenWidth >= 640) return 4;
+                    if (screenWidth >= 2200) {
+                        return 10;
+                    }
+                    if (screenWidth >= 2100) {
+                        return 9;
+                    }
+                    if (screenWidth >= 1600) {
+                        return 8;
+                    }
+                    if (screenWidth >= 1400) {
+                        return 7;
+                    }
+                    if (screenWidth >= 1200) {
+                        return 6;
+                    }
+                    if (screenWidth >= 800) {
+                        return 5;
+                    }
+                    if (screenWidth >= 640) {
+                        return 4;
+                    }
                     return 3;
                 case 'square':
-                    if (screenWidth >= 2100) return 9;
-                    if (screenWidth >= 1800) return 8;
-                    if (screenWidth >= 1400) return 7;
-                    if (screenWidth >= 1200) return 6;
-                    if (screenWidth >= 900) return 5;
-                    if (screenWidth >= 700) return 4;
-                    if (screenWidth >= 500) return 3;
+                    if (screenWidth >= 2100) {
+                        return 9;
+                    }
+                    if (screenWidth >= 1800) {
+                        return 8;
+                    }
+                    if (screenWidth >= 1400) {
+                        return 7;
+                    }
+                    if (screenWidth >= 1200) {
+                        return 6;
+                    }
+                    if (screenWidth >= 900) {
+                        return 5;
+                    }
+                    if (screenWidth >= 700) {
+                        return 4;
+                    }
+                    if (screenWidth >= 500) {
+                        return 3;
+                    }
                     return 2;
                 case 'banner':
-                    if (screenWidth >= 2200) return 4;
-                    if (screenWidth >= 1200) return 3;
-                    if (screenWidth >= 800) return 2;
+                    if (screenWidth >= 2200) {
+                        return 4;
+                    }
+                    if (screenWidth >= 1200) {
+                        return 3;
+                    }
+                    if (screenWidth >= 800) {
+                        return 2;
+                    }
                     return 1;
                 case 'backdrop':
-                    if (screenWidth >= 2500) return 6;
-                    if (screenWidth >= 2100) return 5;
-                    if (screenWidth >= 1200) return 4;
-                    if (screenWidth >= 770) return 3;
-                    if (screenWidth >= 420) return 2;
+                    if (screenWidth >= 2500) {
+                        return 6;
+                    }
+                    if (screenWidth >= 1600) {
+                        return 5;
+                    }
+                    if (screenWidth >= 1200) {
+                        return 4;
+                    }
+                    if (screenWidth >= 770) {
+                        return 3;
+                    }
+                    if (screenWidth >= 420) {
+                        return 2;
+                    }
                     return 1;
                 case 'smallBackdrop':
-                    if (screenWidth >= 1440) return 8;
-                    if (screenWidth >= 1100) return 6;
-                    if (screenWidth >= 800) return 5;
-                    if (screenWidth >= 600) return 4;
-                    if (screenWidth >= 540) return 3;
-                    if (screenWidth >= 420) return 2;
+                    if (screenWidth >= 1440) {
+                        return 8;
+                    }
+                    if (screenWidth >= 1100) {
+                        return 6;
+                    }
+                    if (screenWidth >= 800) {
+                        return 5;
+                    }
+                    if (screenWidth >= 600) {
+                        return 4;
+                    }
+                    if (screenWidth >= 540) {
+                        return 3;
+                    }
+                    if (screenWidth >= 420) {
+                        return 2;
+                    }
                     return 1;
                 case 'overflowPortrait':
-                    if (screenWidth >= 1000) return 100 / 23;
-                    if (screenWidth >= 640) return 100 / 36;
-                    return 2.5;
+                    if (screenWidth >= 1000) {
+                        return 100 / 22;
+                    }
+                    if (screenWidth >= 540) {
+                        return 100 / 30;
+                    }
+                    return 100 / 42;
                 case 'overflowSquare':
-                    if (screenWidth >= 1000) return 100 / 22;
-                    if (screenWidth >= 640) return 100 / 30;
+                    if (screenWidth >= 1000) {
+                        return 100 / 22;
+                    }
+                    if (screenWidth >= 540) {
+                        return 100 / 30;
+                    }
                     return 100 / 42;
                 case 'overflowBackdrop':
-                    if (screenWidth >= 1000) return 100 / 40;
-                    if (screenWidth >= 640) return 100 / 60;
-                    return 100 / 84;
+                    if (screenWidth >= 1000) {
+                        return 100 / 40;
+                    }
+                    if (screenWidth >= 640) {
+                        return 100 / 56;
+                    }
+                    if (screenWidth >= 540) {
+                        return 100 / 64;
+                    }
+                    return 100 / 72;
                 default:
                     return 4;
             }
@@ -122,7 +169,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (isResizable(screenWidth)) {
                 var roundScreenTo = 100;
-                screenWidth = Math.ceil(screenWidth / roundScreenTo) * roundScreenTo;
+                screenWidth = Math.floor(screenWidth / roundScreenTo) * roundScreenTo;
             }
 
             if (window.screen) {
@@ -142,29 +189,29 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var primaryImageAspectRatio = imageLoader.getPrimaryImageAspectRatio(items);
 
-            var isThumbAspectRatio = primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1.777777778) < .3;
-            var isSquareAspectRatio = primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1) < .33 ||
-                primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1.3333334) < .01;
+            var isThumbAspectRatio = primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1.777777778) < 0.3;
+            var isSquareAspectRatio = primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1) < 0.33 ||
+                primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 1.3333334) < 0.01;
 
-            if (options.shape == 'auto' || options.shape == 'autohome' || options.shape == 'autooverflow' || options.shape == 'autoVertical') {
+            if (options.shape === 'auto' || options.shape === 'autohome' || options.shape === 'autooverflow' || options.shape === 'autoVertical') {
 
                 if (options.preferThumb === true || isThumbAspectRatio) {
-                    options.shape = options.shape == 'autooverflow' ? 'overflowBackdrop' : 'backdrop';
+                    options.shape = options.shape === 'autooverflow' ? 'overflowBackdrop' : 'backdrop';
                 } else if (isSquareAspectRatio) {
                     options.coverImage = true;
-                    options.shape = options.shape == 'autooverflow' ? 'overflowSquare' : 'square';
+                    options.shape = options.shape === 'autooverflow' ? 'overflowSquare' : 'square';
                 } else if (primaryImageAspectRatio && primaryImageAspectRatio > 1.9) {
                     options.shape = 'banner';
                     options.coverImage = true;
-                } else if (primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 0.6666667) < .2) {
-                    options.shape = options.shape == 'autooverflow' ? 'overflowPortrait' : 'portrait';
+                } else if (primaryImageAspectRatio && Math.abs(primaryImageAspectRatio - 0.6666667) < 0.2) {
+                    options.shape = options.shape === 'autooverflow' ? 'overflowPortrait' : 'portrait';
                 } else {
-                    options.shape = options.defaultShape || (options.shape == 'autooverflow' ? 'overflowSquare' : 'square');
+                    options.shape = options.defaultShape || (options.shape === 'autooverflow' ? 'overflowSquare' : 'square');
                 }
             }
 
-            if (options.preferThumb == 'auto') {
-                options.preferThumb = options.shape == 'backdrop' || options.shape == 'overflowBackdrop';
+            if (options.preferThumb === 'auto') {
+                options.preferThumb = options.shape === 'backdrop' || options.shape === 'overflowBackdrop';
             }
 
             options.uiAspect = getDesiredAspect(options.shape);
@@ -179,13 +226,13 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             }
 
             if (layoutManager.tv) {
-                if (options.shape == 'backdrop') {
+                if (options.shape === 'backdrop') {
                     options.width = options.width || 500;
                 }
-                else if (options.shape == 'portrait') {
+                else if (options.shape === 'portrait') {
                     options.width = options.width || 243;
                 }
-                else if (options.shape == 'square') {
+                else if (options.shape === 'square') {
                     options.width = options.width || 243;
                 }
             }
@@ -197,13 +244,17 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var isVertical;
 
-            if (options.shape == 'autoVertical') {
+            if (options.shape === 'autoVertical') {
                 isVertical = true;
+            }
+
+            if (options.vibrant && !appHost.supports('imageanalysis')) {
+                options.vibrant = false;
             }
 
             setCardData(items, options);
 
-            if (options.indexBy == 'Genres') {
+            if (options.indexBy === 'Genres') {
                 return buildCardsByGenreHtmlInternal(items, apiClient, options);
             }
 
@@ -211,6 +262,10 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (options.shape) {
                 className += ' ' + options.shape + 'Card';
+            }
+
+            if (options.cardCssClass) {
+                className += ' ' + options.cardCssClass;
             }
 
             var html = '';
@@ -229,7 +284,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 if (options.indexBy) {
                     var newIndexValue = '';
 
-                    if (options.indexBy == 'PremiereDate') {
+                    if (options.indexBy === 'PremiereDate') {
                         if (item.PremiereDate) {
                             try {
 
@@ -240,19 +295,19 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                         }
                     }
 
-                    else if (options.indexBy == 'Genres') {
+                    else if (options.indexBy === 'Genres') {
                         newIndexValue = item.Name;
                     }
 
-                    else if (options.indexBy == 'ProductionYear') {
+                    else if (options.indexBy === 'ProductionYear') {
                         newIndexValue = item.ProductionYear;
                     }
 
-                    else if (options.indexBy == 'CommunityRating') {
-                        newIndexValue = item.CommunityRating ? (Math.floor(item.CommunityRating) + (item.CommunityRating % 1 >= .5 ? .5 : 0)) + '+' : null;
+                    else if (options.indexBy === 'CommunityRating') {
+                        newIndexValue = item.CommunityRating ? (Math.floor(item.CommunityRating) + (item.CommunityRating % 1 >= 0.5 ? 0.5 : 0)) + '+' : null;
                     }
 
-                    if (newIndexValue != currentIndexValue) {
+                    if (newIndexValue !== currentIndexValue) {
 
                         if (hasOpenRow) {
                             html += '</div>';
@@ -284,7 +339,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     }
                 }
 
-                if (options.rows && itemsInRow == 0) {
+                if (options.rows && itemsInRow === 0) {
 
                     if (hasOpenRow) {
                         html += '</div>';
@@ -322,6 +377,19 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             return html;
         }
 
+        function filterItemsByGenre(items, genre) {
+
+            var genreLower = genre.toLowerCase();
+            return items.filter(function (currentItem) {
+
+                return currentItem.Genres.filter(function (g) {
+
+                    return g.toLowerCase() === genreLower;
+
+                }).length > 0;
+            });
+        }
+
         function buildCardsByGenreHtmlInternal(items, apiClient, options) {
 
             var className = 'card';
@@ -334,19 +402,43 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var loopItems = options.genres;
 
+            var itemsInRow;
+            var hasOpenRow;
+
+            var onGenre = function (renderItem) {
+
+                var currentItemHtml = '';
+
+                if (options.rows && itemsInRow === 0) {
+
+                    if (hasOpenRow) {
+                        currentItemHtml += '</div>';
+                        hasOpenRow = false;
+                    }
+
+                    currentItemHtml += '<div class="cardColumn">';
+                    hasOpenRow = true;
+                }
+
+                var cardClass = className;
+                currentItemHtml += buildCard(i, renderItem, apiClient, options, cardClass);
+
+                itemsInRow++;
+
+                if (options.rows && itemsInRow >= options.rows) {
+                    currentItemHtml += '</div>';
+                    hasOpenRow = false;
+                    itemsInRow = 0;
+                }
+
+                return currentItemHtml;
+            };
+
             for (var i = 0, length = loopItems.length; i < length; i++) {
 
                 var item = loopItems[i];
 
-                var genreLower = item.Name.toLowerCase();
-                var renderItems = items.filter(function (currentItem) {
-
-                    return currentItem.Genres.filter(function (g) {
-
-                        return g.toLowerCase() == genreLower;
-
-                    }).length > 0;
-                });
+                var renderItems = filterItemsByGenre(items, item.Name);
 
                 if (!renderItems.length) {
                     continue;
@@ -361,39 +453,10 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     showMoreButton = true;
                 }
 
-                var itemsInRow = 0;
-                var hasOpenRow = false;
+                itemsInRow = 0;
+                hasOpenRow = false;
 
-                html += renderItems.map(function (renderItem) {
-
-                    var currentItemHtml = '';
-
-                    if (options.rows && itemsInRow == 0) {
-
-                        if (hasOpenRow) {
-                            currentItemHtml += '</div>';
-                            hasOpenRow = false;
-                        }
-
-                        currentItemHtml += '<div class="cardColumn">';
-                        hasOpenRow = true;
-                    }
-
-                    var cardClass = className;
-                    currentItemHtml += buildCard(i, renderItem, apiClient, options, cardClass);
-
-                    itemsInRow++;
-
-                    if (options.rows && itemsInRow >= options.rows) {
-                        currentItemHtml += '</div>';
-                        hasOpenRow = false;
-                        itemsInRow = 0;
-                    }
-
-                    return currentItemHtml;
-
-                }).join('');
-
+                html += renderItems.map(onGenre).join('');
 
                 if (showMoreButton) {
                     html += '<div class="listItemsMoreButtonContainer">';
@@ -412,13 +475,13 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (shape) {
                 shape = shape.toLowerCase();
-                if (shape.indexOf('portrait') != -1) {
+                if (shape.indexOf('portrait') !== -1) {
                     return (2 / 3);
                 }
-                if (shape.indexOf('backdrop') != -1) {
+                if (shape.indexOf('backdrop') !== -1) {
                     return (16 / 9);
                 }
-                if (shape.indexOf('square') != -1) {
+                if (shape.indexOf('square') !== -1) {
                     return 1;
                 }
             }
@@ -436,6 +499,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             var forceName = false;
             var imgUrl = null;
             var coverImage = false;
+            var uiAspect = null;
 
             if (options.preferThumb && item.ImageTags && item.ImageTags.Thumb) {
 
@@ -461,7 +525,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     tag: item.SeriesThumbImageTag
                 });
 
-            } else if (options.preferThumb && item.ParentThumbItemId && options.inheritThumb !== false) {
+            } else if (options.preferThumb && item.ParentThumbItemId && options.inheritThumb !== false && item.MediaType !== 'Photo') {
 
                 imgUrl = apiClient.getScaledImageUrl(item.ParentThumbItemId, {
                     type: "Thumb",
@@ -495,9 +559,9 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
 
                 if (primaryImageAspectRatio) {
-                    var uiAspect = getDesiredAspect(options.shape);
+                    uiAspect = getDesiredAspect(options.shape);
                     if (uiAspect) {
-                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= .2;
+                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= 0.2;
                     }
                 }
 
@@ -517,9 +581,9 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
 
                 if (primaryImageAspectRatio) {
-                    var uiAspect = getDesiredAspect(options.shape);
+                    uiAspect = getDesiredAspect(options.shape);
                     if (uiAspect) {
-                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= .2;
+                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= 0.2;
                     }
                 }
             }
@@ -543,13 +607,13 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 });
 
                 if (primaryImageAspectRatio) {
-                    var uiAspect = getDesiredAspect(options.shape);
+                    uiAspect = getDesiredAspect(options.shape);
                     if (uiAspect) {
-                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= .2;
+                        coverImage = Math.abs(primaryImageAspectRatio - uiAspect) <= 0.2;
                     }
                 }
             }
-            else if (item.Type == 'Season' && item.ImageTags && item.ImageTags.Thumb) {
+            else if (item.Type === 'Season' && item.ImageTags && item.ImageTags.Thumb) {
 
                 imgUrl = apiClient.getScaledImageUrl(item.Id, {
                     type: "Thumb",
@@ -625,7 +689,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             return 'defaultCardColor' + getDefaultColorIndex(str);
         }
 
-        function getCardTextLines(lines, cssClass, forceLines, isOuterFooter, cardLayout) {
+        function getCardTextLines(lines, cssClass, forceLines, isOuterFooter, cardLayout, addRightMargin, maxLines) {
 
             var html = '';
 
@@ -634,25 +698,33 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             for (i = 0, length = lines.length; i < length; i++) {
 
+                var currentCssClass = cssClass;
                 var text = lines[i];
 
-                if (i == 1 && isOuterFooter) {
-                    cssClass += ' cardText-secondary';
+                if (valid > 0 && isOuterFooter) {
+                    currentCssClass += ' cardText-secondary';
                 }
 
-                if (isOuterFooter && cardLayout) {
-                    cssClass += ' cardText-rightmargin';
+                if (addRightMargin) {
+                    currentCssClass += ' cardText-rightmargin';
                 }
 
                 if (text) {
-                    html += "<div class='" + cssClass + "'>";
+                    html += "<div class='" + currentCssClass + "'>";
                     html += text;
                     html += "</div>";
                     valid++;
+
+                    if (maxLines && valid >= maxLines) {
+                        break;
+                    }
                 }
             }
 
             if (forceLines) {
+
+                length = Math.min(lines.length, maxLines || lines.length);
+
                 while (valid < length) {
                     html += "<div class='" + cssClass + "'>&nbsp;</div>";
                     valid++;
@@ -662,7 +734,12 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             return html;
         }
 
-        function getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerClass, progressHtml, isOuterFooter) {
+        function isUsingLiveTvNaming(item) {
+            return item.Type === 'Program' || item.Type === 'Timer' || item.Type === 'Recording';
+        }
+
+        var uniqueFooterIndex = 0;
+        function getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerClass, progressHtml, isOuterFooter, cardFooterId, vibrantSwatch) {
 
             var html = '';
 
@@ -670,24 +747,22 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (isOuterFooter && options.cardLayout && !layoutManager.tv) {
 
-                if (options.cardFooterAside == 'logo') {
-
-                }
-                else if (options.cardFooterAside != 'none') {
-                    var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
+                if (options.cardFooterAside !== 'none') {
+                    var moreIcon = appHost.moreIcon === 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
                     html += '<button is="paper-icon-button-light" class="itemAction btnCardOptions autoSize" data-action="menu"><i class="md-icon">' + moreIcon + '</i></button>';
                 }
             }
 
-            var cssClass = options.centerText && !options.cardLayout ? "cardText cardTextCentered" : "cardText";
+            var cssClass = options.centerText ? "cardText cardTextCentered" : "cardText";
 
             var lines = [];
+            var parentTitleUnderneath = item.Type === 'MusicAlbum' || item.Type === 'Audio' || item.Type === 'MusicVideo';
+            var titleAdded;
 
             if (showOtherText) {
-                var parentTitleUnderneath = item.Type == 'MusicAlbum' || item.Type == 'Audio' || item.Type == 'MusicVideo';
                 if ((options.showParentTitle || options.showParentTitleOrTitle) && !parentTitleUnderneath) {
 
-                    if (isOuterFooter && item.Type == 'Episode' && item.SeriesName && item.SeriesId) {
+                    if (isOuterFooter && item.Type === 'Episode' && item.SeriesName && item.SeriesId) {
 
                         lines.push(getTextActionButton({
                             Id: item.SeriesId,
@@ -698,20 +773,35 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     }
                     else {
 
-                        var parentTitle = item.EpisodeTitle ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || "");
+                        if (isUsingLiveTvNaming(item)) {
 
-                        if (parentTitle || options.showParentTitle) {
-                            lines.push(parentTitle);
+                            lines.push(item.Name);
+
+                            if (!item.IsSeries) {
+                                titleAdded = true;
+                            }
+
+                        } else {
+                            var parentTitle = item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || "";
+
+                            if (parentTitle || showTitle) {
+                                lines.push(parentTitle);
+                            }
                         }
                     }
                 }
             }
 
-            if (showTitle || forceName || (options.showParentTitleOrTitle && !lines.length)) {
+            var showMediaTitle = (showTitle && !titleAdded) || (options.showParentTitleOrTitle && !lines.length);
+            if (!showMediaTitle && !titleAdded && (showTitle || forceName)) {
+                showMediaTitle = true;
+            }
 
-                var name = options.showTitle == 'auto' && !item.IsFolder && item.MediaType == 'Photo' ? '' : itemHelper.getDisplayName(item);
+            if (showMediaTitle) {
 
-                lines.push(htmlEncode(name));
+                var name = options.showTitle === 'auto' && !item.IsFolder && item.MediaType === 'Photo' ? '' : itemHelper.getDisplayName(item);
+
+                lines.push(name);
             }
 
             if (showOtherText) {
@@ -722,7 +812,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                         item.AlbumArtists[0].IsFolder = true;
                         lines.push(getTextActionButton(item.AlbumArtists[0]));
                     } else {
-                        lines.push(item.EpisodeTitle ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || ""));
+                        lines.push(isUsingLiveTvNaming(item) ? item.Name : (item.SeriesName || item.Album || item.AlbumArtist || item.GameSystem || ""));
                     }
                 }
 
@@ -745,7 +835,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     var songLine = '';
 
                     if (item.SongCount) {
-                        songLine = item.SongCount == 1 ?
+                        songLine = item.SongCount === 1 ?
                         globalize.translate('sharedcomponents#ValueOneSong') :
                         globalize.translate('sharedcomponents#ValueSongCount', item.SongCount);
                     }
@@ -784,24 +874,21 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     }
                 }
 
-                if (options.showChannelName) {
-
-                    lines.push(item.ChannelName || '');
-                }
-
                 if (options.showAirTime) {
 
-                    var airTimeText;
+                    var airTimeText = '';
                     if (item.StartDate) {
 
                         try {
                             var date = datetime.parseISO8601Date(item.StartDate);
 
-                            airTimeText = datetime.toLocaleDateString(date, { weekday: 'short', month: 'short', day: 'numeric' });
+                            if (options.showAirDateTime) {
+                                airTimeText += datetime.toLocaleDateString(date, { weekday: 'short', month: 'short', day: 'numeric' }) + ' ';
+                            }
 
-                            airTimeText += ' ' + datetime.getDisplayTime(date);
+                            airTimeText += datetime.getDisplayTime(date);
 
-                            if (item.EndDate) {
+                            if (item.EndDate && options.showAirEndTime) {
                                 date = datetime.parseISO8601Date(item.EndDate);
                                 airTimeText += ' - ' + datetime.getDisplayTime(date);
                             }
@@ -814,38 +901,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     lines.push(airTimeText || '');
                 }
 
-                if (options.showCurrentProgram && item.Type == 'TvChannel') {
-
-                    if (item.CurrentProgram) {
-                        lines.push(item.CurrentProgram.Name);
-                    } else {
-                        lines.push('');
-                    }
-                }
-
-                if (options.showSeriesYear) {
-
-                    if (item.Status == "Continuing") {
-
-                        lines.push(globalize.translate('sharedcomponents#SeriesYearToPresent', item.ProductionYear || ''));
-
-                    } else {
-                        lines.push(item.ProductionYear || '');
-                    }
-
-                }
-
-                if (options.showProgramAirInfo) {
-
-                    var text;
-                    if (item.StartDate) {
-                        var startDate = datetime.parseISO8601Date(item.StartDate, true);
-                        text = datetime.toLocaleDateString(startDate, { weekday: 'short', month: 'short', day: 'numeric' }) + ' ' + datetime.getDisplayTime(startDate);
-                    } else {
-                        text = '';
-                    }
-
-                    lines.push(text || '&nbsp;');
+                if (options.showChannelName) {
 
                     if (item.ChannelId) {
 
@@ -875,20 +931,86 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                         lines.push(item.ChannelName || '&nbsp;');
                     }
                 }
+
+                if (options.showCurrentProgram && item.Type === 'TvChannel') {
+
+                    if (item.CurrentProgram) {
+                        lines.push(item.CurrentProgram.Name);
+                    } else {
+                        lines.push('');
+                    }
+                }
+
+                if (options.showSeriesYear) {
+
+                    if (item.Status === "Continuing") {
+
+                        lines.push(globalize.translate('sharedcomponents#SeriesYearToPresent', item.ProductionYear || ''));
+
+                    } else {
+
+                        if (item.EndDate && item.ProductionYear) {
+                            lines.push(item.ProductionYear + ' - ' + datetime.parseISO8601Date(item.EndDate).getFullYear());
+                        } else {
+                            lines.push(item.ProductionYear || '');
+                        }
+                    }
+
+                }
+
+                if (options.showSeriesTimerTime) {
+                    if (item.RecordAnyTime) {
+
+                        lines.push(globalize.translate('sharedcomponents#Anytime'));
+                    } else {
+                        lines.push(datetime.getDisplayTime(item.StartDate));
+                    }
+                }
+
+                if (options.showSeriesTimerChannel) {
+                    if (item.RecordAnyChannel) {
+                        lines.push(globalize.translate('sharedcomponents#AllChannels'));
+                    }
+                    else {
+                        lines.push(item.ChannelName || globalize.translate('sharedcomponents#OneChannel'));
+                    }
+                }
+
+                if (options.showPersonRoleOrType) {
+                    if (item.Role) {
+                        lines.push('as ' + item.Role);
+                    }
+                    else if (item.Type) {
+                        lines.push(globalize.translate('sharedcomponents#' + item.Type));
+                    } else {
+                        lines.push('');
+                    }
+                }
             }
 
-            if ((showTitle || !imgUrl) && forceName && overlayText && lines.length == 1) {
+            if ((showTitle || !imgUrl) && forceName && overlayText && lines.length === 1) {
                 lines = [];
             }
 
-            html += getCardTextLines(lines, cssClass, !options.overlayText, isOuterFooter, options.cardLayout);
+            html += getCardTextLines(lines, cssClass, !options.overlayText, isOuterFooter, options.cardLayout, isOuterFooter && options.cardLayout && !options.centerText, options.lines);
 
             if (progressHtml) {
                 html += progressHtml;
             }
 
             if (html) {
-                html = '<div class="' + footerClass + '">' + html;
+
+                var style = '';
+
+                if (options.vibrant && vibrantSwatch) {
+                    var swatch = vibrantSwatch.split('|');
+                    if (swatch.length) {
+
+                        var index = 0;
+                        style = ' style="color:' + swatch[index + 1] + ';background-color:' + swatch[index] + ';"';
+                    }
+                }
+                html = '<div id="' + cardFooterId + '" class="' + footerClass + '"' + style + '>' + html;
 
                 //cardFooter
                 html += "</div>";
@@ -916,7 +1038,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var childText;
 
-            if (item.Type == 'Playlist') {
+            if (item.Type === 'Playlist') {
 
                 childText = '';
 
@@ -926,20 +1048,20 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
                     minutes = minutes || 1;
 
-                    childText += globalize.translate('ValueMinutes', Math.round(minutes));
+                    childText += globalize.translate('sharedcomponents#ValueMinutes', Math.round(minutes));
 
                 } else {
-                    childText += globalize.translate('ValueMinutes', 0);
+                    childText += globalize.translate('sharedcomponents#ValueMinutes', 0);
                 }
 
                 counts.push(childText);
 
             }
-            else if (item.Type == 'Genre' || item.Type == 'Studio') {
+            else if (item.Type === 'Genre' || item.Type === 'Studio') {
 
                 if (item.MovieCount) {
 
-                    childText = item.MovieCount == 1 ?
+                    childText = item.MovieCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneMovie') :
                     globalize.translate('sharedcomponents#ValueMovieCount', item.MovieCount);
 
@@ -948,7 +1070,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
                 if (item.SeriesCount) {
 
-                    childText = item.SeriesCount == 1 ?
+                    childText = item.SeriesCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneSeries') :
                     globalize.translate('sharedcomponents#ValueSeriesCount', item.SeriesCount);
 
@@ -956,7 +1078,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
                 if (item.EpisodeCount) {
 
-                    childText = item.EpisodeCount == 1 ?
+                    childText = item.EpisodeCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneEpisode') :
                     globalize.translate('sharedcomponents#ValueEpisodeCount', item.EpisodeCount);
 
@@ -964,28 +1086,28 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
                 if (item.GameCount) {
 
-                    childText = item.GameCount == 1 ?
+                    childText = item.GameCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneGame') :
                     globalize.translate('sharedcomponents#ValueGameCount', item.GameCount);
 
                     counts.push(childText);
                 }
 
-            } else if (item.Type == 'GameGenre') {
+            } else if (item.Type === 'GameGenre') {
 
                 if (item.GameCount) {
 
-                    childText = item.GameCount == 1 ?
+                    childText = item.GameCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneGame') :
                     globalize.translate('sharedcomponents#ValueGameCount', item.GameCount);
 
                     counts.push(childText);
                 }
-            } else if (item.Type == 'MusicGenre' || options.context == "MusicArtist") {
+            } else if (item.Type === 'MusicGenre' || options.context === "MusicArtist") {
 
                 if (item.AlbumCount) {
 
-                    childText = item.AlbumCount == 1 ?
+                    childText = item.AlbumCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneAlbum') :
                     globalize.translate('sharedcomponents#ValueAlbumCount', item.AlbumCount);
 
@@ -993,7 +1115,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
                 if (item.SongCount) {
 
-                    childText = item.SongCount == 1 ?
+                    childText = item.SongCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneSong') :
                     globalize.translate('sharedcomponents#ValueSongCount', item.SongCount);
 
@@ -1001,16 +1123,16 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 }
                 if (item.MusicVideoCount) {
 
-                    childText = item.MusicVideoCount == 1 ?
+                    childText = item.MusicVideoCount === 1 ?
                     globalize.translate('sharedcomponents#ValueOneMusicVideo') :
                     globalize.translate('sharedcomponents#ValueMusicVideoCount', item.MusicVideoCount);
 
                     counts.push(childText);
                 }
 
-            } else if (item.Type == 'Series') {
+            } else if (item.Type === 'Series') {
 
-                childText = item.RecursiveItemCount == 1 ?
+                childText = item.RecursiveItemCount === 1 ?
                 globalize.translate('sharedcomponents#ValueOneEpisode') :
                 globalize.translate('sharedcomponents#ValueEpisodeCount', item.RecursiveItemCount);
 
@@ -1032,9 +1154,9 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             var imgInfo = getCardImageUrl(item, apiClient, options);
             var imgUrl = imgInfo.imgUrl;
 
-            var forceName = imgInfo.forceName || !imgUrl;
+            var forceName = imgInfo.forceName;
 
-            var showTitle = options.showTitle == 'auto' ? true : (options.showTitle || item.Type == 'PhotoAlbum' || item.Type == 'Folder');
+            var showTitle = options.showTitle === 'auto' ? true : (options.showTitle || item.Type === 'PhotoAlbum' || item.Type === 'Folder');
             var overlayText = options.overlayText;
 
             if (forceName && !options.cardLayout) {
@@ -1045,10 +1167,12 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             }
 
             var cardImageContainerClass = 'cardImageContainer';
-            if (options.coverImage || imgInfo.coverImage) {
+            var coveredImage = options.coverImage || imgInfo.coverImage;
+
+            if (coveredImage) {
                 cardImageContainerClass += ' coveredImage';
 
-                if (item.MediaType == 'Photo' || item.Type == 'PhotoAlbum' || item.Type == 'Folder' || item.Type == 'Program') {
+                if (item.MediaType === 'Photo' || item.Type === 'PhotoAlbum' || item.Type === 'Folder' || item.ProgramInfo || item.Type === 'Program' || item.Type === 'Recording') {
                     cardImageContainerClass += ' coveredImage-noScale';
                 }
             }
@@ -1060,9 +1184,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             var separateCardBox = scalable;
             var cardBoxClass = options.cardLayout ? 'cardBox visualCardBox' : 'cardBox';
 
-            if (!layoutManager.tv) {
-                cardBoxClass += ' cardBox-mobile';
-            } else {
+            if (layoutManager.tv) {
                 cardBoxClass += ' cardBox-focustransform';
             }
 
@@ -1073,10 +1195,13 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var footerOverlayed = false;
 
+            var cardFooterId = 'cardFooter' + uniqueFooterIndex;
+            uniqueFooterIndex++;
+
             if (overlayText) {
 
                 footerCssClass = progressHtml ? 'innerCardFooter fullInnerCardFooter' : 'innerCardFooter';
-                innerCardFooter += getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerCssClass, progressHtml, false);
+                innerCardFooter += getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerCssClass, progressHtml, false, cardFooterId);
                 footerOverlayed = true;
             }
             else if (progressHtml) {
@@ -1092,10 +1217,12 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 innerCardFooter += '<div class="mediaSourceIndicator">' + mediaSourceCount + '</div>';
             }
 
+            var vibrantSwatch = options.vibrant && imgUrl ? imageLoader.getCachedVibrantInfo(imgUrl) : null;
+
             var outerCardFooter = '';
             if (!overlayText && !footerOverlayed) {
                 footerCssClass = options.cardLayout ? 'cardFooter visualCardBox-cardFooter' : 'cardFooter transparent';
-                outerCardFooter = getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerCssClass, progressHtml, true);
+                outerCardFooter = getCardFooterText(item, apiClient, options, showTitle, forceName, overlayText, imgUrl, footerCssClass, progressHtml, true, cardFooterId, vibrantSwatch);
             }
 
             if (outerCardFooter && !options.cardLayout && options.allowBottomPadding !== false) {
@@ -1112,15 +1239,15 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 var overlayPlayButton = options.overlayPlayButton;
 
                 if (overlayPlayButton == null && !options.overlayMoreButton && !options.cardLayout) {
-                    overlayPlayButton = item.MediaType == 'Video';
+                    overlayPlayButton = item.MediaType === 'Video';
                 }
 
-                if (overlayPlayButton && !item.IsPlaceHolder && (item.LocationType != 'Virtual' || !item.MediaType || item.Type == 'Program') && item.Type != 'Person' && item.PlayAccess == 'Full') {
-                    overlayButtons += '<button is="paper-icon-button-light" class="cardOverlayButton itemAction autoSize" data-action="playmenu" onclick="return false;"><i class="md-icon">play_arrow</i></button>';
+                if (overlayPlayButton && !item.IsPlaceHolder && (item.LocationType !== 'Virtual' || !item.MediaType || item.Type === 'Program') && item.Type !== 'Person' && item.PlayAccess === 'Full') {
+                    overlayButtons += '<button is="paper-icon-button-light" class="cardOverlayButton itemAction autoSize" data-action="play" onclick="return false;"><i class="md-icon">play_arrow</i></button>';
                 }
                 if (options.overlayMoreButton) {
 
-                    var moreIcon = appHost.moreIcon == 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
+                    var moreIcon = appHost.moreIcon === 'dots-horiz' ? '&#xE5D3;' : '&#xE5D4;';
 
                     overlayButtons += '<button is="paper-icon-button-light" class="cardOverlayButton itemAction autoSize" data-action="menu" onclick="return false;"><i class="md-icon">' + moreIcon + '</i></button>';
                 }
@@ -1147,7 +1274,23 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                     cardContentOpen = '<button type="button" class="clearButton cardContent itemAction" data-action="' + action + '">';
                     cardContentClose = '</button>';
                 }
-                cardImageContainerOpen = imgUrl ? ('<div class="' + cardImageContainerClass + ' lazy" data-src="' + imgUrl + '">') : ('<div class="' + cardImageContainerClass + '">');
+
+                if (options.vibrant && imgUrl && !vibrantSwatch) {
+                    cardImageContainerOpen = '<div class="' + cardImageContainerClass + '">';
+
+                    var imgClass = 'cardImage cardImage-img lazy';
+                    if (coveredImage) {
+                        if (devicePixelRatio === 1) {
+                            imgClass += ' coveredImage-noscale-img';
+                        } else {
+                            imgClass += ' coveredImage-img';
+                        }
+                    }
+                    cardImageContainerOpen += '<img crossOrigin="Anonymous" class="' + imgClass + '" data-vibrant="' + cardFooterId + '" data-swatch="db" data-src="' + imgUrl + '" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />';
+
+                } else {
+                    cardImageContainerOpen = imgUrl ? ('<div class="' + cardImageContainerClass + ' lazy" data-src="' + imgUrl + '">') : ('<div class="' + cardImageContainerClass + '">');
+                }
 
                 var cardScalableClass = options.cardLayout ? 'cardScalable visualCardBox-cardScalable' : 'cardScalable';
                 cardImageContainerOpen = '<div class="' + cardBoxClass + '"><div class="' + cardScalableClass + '"><div class="cardPadder-' + options.shape + '"></div>' + cardContentOpen + cardImageContainerOpen;
@@ -1188,8 +1331,8 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             }
 
             if (!imgUrl) {
-                var defaultName = item.EpisodeTitle ? item.Name : itemHelper.getDisplayName(item);
-                cardImageContainerOpen += '<div class="cardText cardCenteredText">' + defaultName + '</div>';
+                var defaultName = isUsingLiveTvNaming(item) ? item.Name : itemHelper.getDisplayName(item);
+                cardImageContainerOpen += '<div class="cardText cardDefaultText">' + defaultName + '</div>';
             }
 
             var tagName = (layoutManager.tv || !scalable) && !overlayButtons ? 'button' : 'div';
@@ -1210,14 +1353,14 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             var actionAttribute;
 
-            if (tagName == 'button') {
+            if (tagName === 'button') {
                 className += " itemAction";
                 actionAttribute = ' data-action="' + action + '"';
             } else {
                 actionAttribute = '';
             }
 
-            if (item.Type != 'MusicAlbum' && item.Type != 'MusicArtist' && item.Type != 'Audio') {
+            if (item.Type !== 'MusicAlbum' && item.Type !== 'MusicArtist' && item.Type !== 'Audio') {
                 className += ' card-withuserdata';
             }
 
@@ -1229,10 +1372,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             var channelIdData = item.ChannelId ? (' data-channelid="' + item.ChannelId + '"') : '';
             var contextData = options.context ? (' data-context="' + options.context + '"') : '';
 
-            return '\
-<' + tagName + ' data-index="' + index + '"' + timerAttributes + actionAttribute + ' data-isfolder="' + (item.IsFolder || false) + '" data-serverid="' + (item.ServerId) + '" data-id="' + (item.Id || item.ItemId) + '" data-type="' + item.Type + '"' + mediaTypeData + collectionTypeData + channelIdData + positionTicksData + collectionIdData + playlistIdData + contextData + ' data-prefix="' + prefix + '" class="' + className + '"> \
-' + cardImageContainerOpen + innerCardFooter + cardImageContainerClose + cardContentClose + overlayButtons + cardScalableClose + outerCardFooter + cardBoxClose + '\
-</' + tagName + '>';
+            return '<' + tagName + ' data-index="' + index + '"' + timerAttributes + actionAttribute + ' data-isfolder="' + (item.IsFolder || false) + '" data-serverid="' + (item.ServerId || options.serverId) + '" data-id="' + (item.Id || item.ItemId) + '" data-type="' + item.Type + '"' + mediaTypeData + collectionTypeData + channelIdData + positionTicksData + collectionIdData + playlistIdData + contextData + ' data-prefix="' + prefix + '" class="' + className + '">' + cardImageContainerOpen + innerCardFooter + cardImageContainerClose + cardContentClose + overlayButtons + cardScalableClose + outerCardFooter + cardBoxClose + '</' + tagName + '>';
         }
 
         function buildCards(items, options) {
@@ -1257,7 +1397,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (html) {
 
-                if (options.itemsContainer.cardBuilderHtml != html) {
+                if (options.itemsContainer.cardBuilderHtml !== html) {
                     options.itemsContainer.innerHTML = html;
 
                     if (items.length < 50) {
@@ -1278,7 +1418,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 focusManager.autoFocus(options.itemsContainer, true);
             }
 
-            if (options.indexBy == 'Genres') {
+            if (options.indexBy === 'Genres') {
                 options.itemsContainer.addEventListener('click', onItemsContainerClick);
             }
         }
@@ -1305,9 +1445,11 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 var value = listItemsMoreButton.getAttribute('data-indexvalue');
                 var parentid = listItemsMoreButton.getAttribute('data-parentid');
 
-                Emby.Page.showGenre({
-                    ParentId: parentid,
-                    Id: value
+                require(['embyRouter'], function (embyRouter) {
+                    embyRouter.showGenre({
+                        ParentId: parentid,
+                        Id: value
+                    });
                 });
             }
         }
@@ -1334,31 +1476,35 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
         function updateUserData(card, userData) {
 
             var type = card.getAttribute('data-type');
-            var enableCountIndicator = type == 'Series' || type == 'BoxSet' || type == 'Season';
-            var indicatorsElem;
+            var enableCountIndicator = type === 'Series' || type === 'BoxSet' || type === 'Season';
+            var indicatorsElem = null;
+            var playedIndicator = null;
+            var countIndicator = null;
+            var itemProgressBar = null;
 
             if (userData.Played) {
 
-                var playedIndicator = card.querySelector('.playedIndicator');
+                playedIndicator = card.querySelector('.playedIndicator');
 
                 if (!playedIndicator) {
 
                     playedIndicator = document.createElement('div');
                     playedIndicator.classList.add('playedIndicator');
+                    playedIndicator.classList.add('indicator');
                     indicatorsElem = ensureIndicators(card, indicatorsElem);
                     indicatorsElem.appendChild(playedIndicator);
                 }
-                playedIndicator.innerHTML = '<i class="md-icon">check</i>';
+                playedIndicator.innerHTML = '<i class="md-icon indicatorIcon">check</i>';
             } else {
 
-                var playedIndicator = card.querySelector('.playedIndicator');
+                playedIndicator = card.querySelector('.playedIndicator');
                 if (playedIndicator) {
 
                     playedIndicator.parentNode.removeChild(playedIndicator);
                 }
             }
             if (userData.UnplayedItemCount) {
-                var countIndicator = card.querySelector('.countIndicator');
+                countIndicator = card.querySelector('.countIndicator');
 
                 if (!countIndicator) {
 
@@ -1370,7 +1516,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
                 countIndicator.innerHTML = userData.UnplayedItemCount;
             } else if (enableCountIndicator) {
 
-                var countIndicator = card.querySelector('.countIndicator');
+                countIndicator = card.querySelector('.countIndicator');
                 if (countIndicator) {
 
                     countIndicator.parentNode.removeChild(countIndicator);
@@ -1385,7 +1531,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
 
             if (progressHtml) {
 
-                var itemProgressBar = card.querySelector('.itemProgressBar');
+                itemProgressBar = card.querySelector('.itemProgressBar');
 
                 if (!itemProgressBar) {
                     itemProgressBar = document.createElement('div');
@@ -1405,7 +1551,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
             }
             else {
 
-                var itemProgressBar = card.querySelector('.itemProgressBar');
+                itemProgressBar = card.querySelector('.itemProgressBar');
                 if (itemProgressBar) {
                     itemProgressBar.parentNode.removeChild(itemProgressBar);
                 }
@@ -1422,7 +1568,7 @@ define(['datetime', 'imageLoader', 'connectionManager', 'itemHelper', 'mediaInfo
         }
 
         function onTimerCreated(programId, newTimerId, itemsContainer) {
-            
+
             var cells = itemsContainer.querySelectorAll('.card[data-id="' + programId + '"]');
 
             for (var i = 0, length = cells.length; i < length; i++) {

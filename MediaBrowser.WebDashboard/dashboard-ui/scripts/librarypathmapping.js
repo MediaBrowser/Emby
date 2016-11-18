@@ -1,4 +1,5 @@
 ﻿define(['jQuery', 'listViewStyle'], function ($) {
+    'use strict';
 
     var currentConfig;
 
@@ -114,7 +115,7 @@
         return [
         {
             href: 'library.html',
-            name: Globalize.translate('TabFolders')
+            name: Globalize.translate('HeaderLibraries')
         },
          {
              href: 'librarydisplay.html',
@@ -136,8 +137,6 @@
         var page = this;
 
         $('.libraryPathMappingForm').off('submit', onSubmit).on('submit', onSubmit);
-
-        page.querySelector('.labelFromHelp').innerHTML = Globalize.translate('LabelFromHelp', 'D:\\Movies');
 
     }).on('pageshow', "#libraryPathMappingPage", function () {
 

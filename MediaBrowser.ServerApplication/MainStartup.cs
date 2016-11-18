@@ -1,8 +1,6 @@
-﻿using MediaBrowser.Common.Implementations.Logging;
-using MediaBrowser.Model.Logging;
+﻿using MediaBrowser.Model.Logging;
 using MediaBrowser.Server.Implementations;
 using MediaBrowser.Server.Startup.Common;
-using MediaBrowser.Server.Startup.Common.Browser;
 using MediaBrowser.ServerApplication.Native;
 using MediaBrowser.ServerApplication.Splash;
 using MediaBrowser.ServerApplication.Updates;
@@ -19,10 +17,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonIO.Windows;
+using Emby.Common.Implementations.EnvironmentInfo;
+using Emby.Common.Implementations.IO;
+using Emby.Common.Implementations.Logging;
+using Emby.Common.Implementations.Networking;
+using Emby.Common.Implementations.Security;
+using Emby.Server.Core;
+using Emby.Server.Core.Browser;
+using Emby.Server.Implementations.IO;
 using ImageMagickSharp;
 using MediaBrowser.Common.Net;
-using MediaBrowser.Server.Implementations.Logging;
+using MediaBrowser.Server.Startup.Common.IO;
 
 namespace MediaBrowser.ServerApplication
 {
@@ -32,12 +37,14 @@ namespace MediaBrowser.ServerApplication
 
         private static ILogger _logger;
 
-        private static bool _isRunningAsService = false;
+        public static bool IsRunningAsService = false;
         private static bool _canRestartService = false;
         private static bool _appHostDisposed;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool SetDllDirectory(string lpPathName);
+
+        public static string ApplicationPath;
 
         public static bool TryGetLocalFromUncDirectory(string local, out string unc)
         {
@@ -62,28 +69,28 @@ namespace MediaBrowser.ServerApplication
             return false;
         }
         /// <summary>
-         /// Defines the entry point of the application.
-         /// </summary>
+        /// Defines the entry point of the application.
+        /// </summary>
         public static void Main()
         {
             var options = new StartupOptions();
-            _isRunningAsService = options.ContainsOption("-service");
+            IsRunningAsService = options.ContainsOption("-service");
 
-            if (_isRunningAsService)
+            if (IsRunningAsService)
             {
-                _canRestartService = CanRestartWindowsService();
+                //_canRestartService = CanRestartWindowsService();
             }
 
             var currentProcess = Process.GetCurrentProcess();
 
-            var applicationPath = currentProcess.MainModule.FileName;
-            var architecturePath = Path.Combine(Path.GetDirectoryName(applicationPath), Environment.Is64BitProcess ? "x64" : "x86");
+            ApplicationPath = currentProcess.MainModule.FileName;
+            var architecturePath = Path.Combine(Path.GetDirectoryName(ApplicationPath), Environment.Is64BitProcess ? "x64" : "x86");
 
             Wand.SetMagickCoderModulePath(architecturePath);
 
             var success = SetDllDirectory(architecturePath);
 
-            var appPaths = CreateApplicationPaths(applicationPath, _isRunningAsService);
+            var appPaths = CreateApplicationPaths(ApplicationPath, IsRunningAsService);
 
             var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
             logManager.ReloadLogger(LogSeverity.Debug);
@@ -97,7 +104,7 @@ namespace MediaBrowser.ServerApplication
             if (options.ContainsOption("-installservice"))
             {
                 logger.Info("Performing service installation");
-                InstallService(applicationPath, logger);
+                InstallService(ApplicationPath, logger);
                 return;
             }
 
@@ -105,7 +112,7 @@ namespace MediaBrowser.ServerApplication
             if (options.ContainsOption("-installserviceasadmin"))
             {
                 logger.Info("Performing service installation");
-                RunServiceInstallation(applicationPath);
+                RunServiceInstallation(ApplicationPath);
                 return;
             }
 
@@ -113,7 +120,7 @@ namespace MediaBrowser.ServerApplication
             if (options.ContainsOption("-uninstallservice"))
             {
                 logger.Info("Performing service uninstallation");
-                UninstallService(applicationPath, logger);
+                UninstallService(ApplicationPath, logger);
                 return;
             }
 
@@ -121,15 +128,15 @@ namespace MediaBrowser.ServerApplication
             if (options.ContainsOption("-uninstallserviceasadmin"))
             {
                 logger.Info("Performing service uninstallation");
-                RunServiceUninstallation(applicationPath);
+                RunServiceUninstallation(ApplicationPath);
                 return;
             }
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            RunServiceInstallationIfNeeded(applicationPath);
+            RunServiceInstallationIfNeeded(ApplicationPath);
 
-            if (IsAlreadyRunning(applicationPath, currentProcess))
+            if (IsAlreadyRunning(ApplicationPath, currentProcess))
             {
                 logger.Info("Shutting down because another instance of Emby Server is already running.");
                 return;
@@ -143,7 +150,7 @@ namespace MediaBrowser.ServerApplication
 
             try
             {
-                RunApplication(appPaths, logManager, _isRunningAsService, options);
+                RunApplication(appPaths, logManager, IsRunningAsService, options);
             }
             finally
             {
@@ -192,14 +199,14 @@ namespace MediaBrowser.ServerApplication
             {
                 _logger.Info("Found a duplicate process. Giving it time to exit.");
 
-                if (!duplicate.WaitForExit(20000))
+                if (!duplicate.WaitForExit(30000))
                 {
                     _logger.Info("The duplicate process did not exit.");
                     return true;
                 }
             }
 
-            if (!_isRunningAsService)
+            if (!IsRunningAsService)
             {
                 return IsAlreadyRunningAsService(applicationPath);
             }
@@ -245,6 +252,8 @@ namespace MediaBrowser.ServerApplication
         /// <returns>ServerApplicationPaths.</returns>
         private static ServerApplicationPaths CreateApplicationPaths(string applicationPath, bool runAsService)
         {
+            var appFolderPath = Path.GetDirectoryName(applicationPath);
+
             var resourcesPath = Path.GetDirectoryName(applicationPath);
 
             if (runAsService)
@@ -253,10 +262,10 @@ namespace MediaBrowser.ServerApplication
 
                 var programDataPath = Path.GetDirectoryName(systemPath);
 
-                return new ServerApplicationPaths(programDataPath, applicationPath, resourcesPath);
+                return new ServerApplicationPaths(programDataPath, appFolderPath, resourcesPath);
             }
 
-            return new ServerApplicationPaths(ApplicationPathHelper.GetProgramDataPath(applicationPath), applicationPath, resourcesPath);
+            return new ServerApplicationPaths(ApplicationPathHelper.GetProgramDataPath(applicationPath), appFolderPath, resourcesPath);
         }
 
         /// <summary>
@@ -267,7 +276,7 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                if (_isRunningAsService)
+                if (IsRunningAsService)
                 {
                     return _canRestartService;
                 }
@@ -286,7 +295,11 @@ namespace MediaBrowser.ServerApplication
         {
             get
             {
-                if (_isRunningAsService)
+#if DEBUG
+                return false;
+#endif
+
+                if (IsRunningAsService)
                 {
                     return _canRestartService;
                 }
@@ -308,21 +321,25 @@ namespace MediaBrowser.ServerApplication
         /// <param name="options">The options.</param>
         private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager, bool runService, StartupOptions options)
         {
-            var fileSystem = new WindowsFileSystem(new PatternsLogger(logManager.GetLogger("FileSystem")));
+            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), true, true, true);
+            fileSystem.AddShortcutHandler(new LnkShortcutHandler());
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
-            //fileSystem.AddShortcutHandler(new LnkShortcutHandler(fileSystem));
 
-            var nativeApp = new WindowsApp(fileSystem, _logger)
-            {
-                IsRunningAsService = runService
-            };
+            var imageEncoder = ImageEncoderHelper.GetImageEncoder(_logger, logManager, fileSystem, options, () => _appHost.HttpClient, appPaths);
 
-            _appHost = new ApplicationHost(appPaths,
+            _appHost = new WindowsAppHost(appPaths,
                 logManager,
                 options,
                 fileSystem,
+                new PowerManagement(),
                 "emby.windows.zip",
-                nativeApp);
+                new EnvironmentInfo(),
+                imageEncoder,
+                new Server.Startup.Common.SystemEvents(logManager.GetLogger("SystemEvents")),
+                new RecyclableMemoryStreamProvider(),
+                new NetworkManager(logManager.GetLogger("NetworkManager")),
+                GenerateCertificate,
+                () => Environment.UserDomainName);
 
             var initProgress = new Progress<double>();
 
@@ -351,8 +368,7 @@ namespace MediaBrowser.ServerApplication
                 task = InstallVcredist2013IfNeeded(_appHost, _logger);
                 Task.WaitAll(task);
 
-                SystemEvents.SessionEnding += SystemEvents_SessionEnding;
-                SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+                Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
 
                 HideSplashScreen();
 
@@ -361,6 +377,11 @@ namespace MediaBrowser.ServerApplication
                 task = ApplicationTaskCompletionSource.Task;
                 Task.WaitAll(task);
             }
+        }
+
+        private static void GenerateCertificate(string certPath, string certHost)
+        {
+            CertificateGenerator.CreateSelfSignCertificatePfx(certPath, certHost, _logger);
         }
 
         private static ServerNotifyIcon _serverNotifyIcon;
@@ -416,7 +437,7 @@ namespace MediaBrowser.ServerApplication
 
         public static void Invoke(Action action)
         {
-            if (_isRunningAsService)
+            if (IsRunningAsService)
             {
                 action();
             }
@@ -548,19 +569,6 @@ namespace MediaBrowser.ServerApplication
         }
 
         /// <summary>
-        /// Handles the SessionEnding event of the SystemEvents control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="SessionEndingEventArgs"/> instance containing the event data.</param>
-        static void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
-        {
-            if (e.Reason == SessionEndReasons.SystemShutdown || !_isRunningAsService)
-            {
-                Shutdown();
-            }
-        }
-
-        /// <summary>
         /// Handles the UnhandledException event of the CurrentDomain control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -571,7 +579,7 @@ namespace MediaBrowser.ServerApplication
 
             new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager).Log(exception);
 
-            if (!_isRunningAsService)
+            if (!IsRunningAsService)
             {
                 MessageBox.Show("Unhandled exception: " + exception.Message);
             }
@@ -599,7 +607,7 @@ namespace MediaBrowser.ServerApplication
                 // Update is there - execute update
                 try
                 {
-                    var serviceName = _isRunningAsService ? BackgroundService.GetExistingServiceName() : string.Empty;
+                    var serviceName = IsRunningAsService ? BackgroundService.GetExistingServiceName() : string.Empty;
                     new ApplicationUpdater().UpdateApplication(appPaths, updateArchive, logger, serviceName);
 
                     // And just let the app exit so it can update
@@ -618,7 +626,7 @@ namespace MediaBrowser.ServerApplication
 
         public static void Shutdown()
         {
-            if (_isRunningAsService)
+            if (IsRunningAsService)
             {
                 ShutdownWindowsService();
             }
@@ -634,7 +642,7 @@ namespace MediaBrowser.ServerApplication
         {
             DisposeAppHost();
 
-            if (_isRunningAsService)
+            if (IsRunningAsService)
             {
                 RestartWindowsService();
             }
@@ -645,7 +653,7 @@ namespace MediaBrowser.ServerApplication
 
                 _logger.Info("Starting new instance");
                 //Application.Restart();
-                Process.Start(_appHost.ServerConfigurationManager.ApplicationPaths.ApplicationPath);
+                Process.Start(ApplicationPath);
 
                 ShutdownWindowsApplication();
             }
@@ -704,7 +712,7 @@ namespace MediaBrowser.ServerApplication
                 WindowStyle = ProcessWindowStyle.Hidden,
                 Verb = "runas",
                 ErrorDialog = false,
-                Arguments = String.Format("/c sc stop {0} & sc start {0}", BackgroundService.GetExistingServiceName())
+                Arguments = String.Format("/c sc stop {0} & sc start {0} & sc start {0}", BackgroundService.GetExistingServiceName())
             };
             Process.Start(startInfo);
         }

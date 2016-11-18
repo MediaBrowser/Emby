@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Api.Movies;
 using MediaBrowser.Api.Music;
-using MediaBrowser.Controller.Activity;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -8,7 +7,6 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.Localization;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.TV;
@@ -16,7 +14,6 @@ using MediaBrowser.Model.Activity;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,8 +21,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Library
 {
@@ -322,13 +323,9 @@ namespace MediaBrowser.Api.Library
 
             if (item is Game)
             {
-                return new GamesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService)
+                return new GamesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
                 {
-                    AuthorizationContext = AuthorizationContext,
-                    Logger = Logger,
                     Request = Request,
-                    SessionContext = SessionContext,
-                    ResultFactory = ResultFactory
 
                 }.Get(new GetSimilarGames
                 {
@@ -340,13 +337,9 @@ namespace MediaBrowser.Api.Library
             }
             if (item is MusicAlbum)
             {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService)
+                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
                 {
-                    AuthorizationContext = AuthorizationContext,
-                    Logger = Logger,
                     Request = Request,
-                    SessionContext = SessionContext,
-                    ResultFactory = ResultFactory
 
                 }.Get(new GetSimilarAlbums
                 {
@@ -359,13 +352,9 @@ namespace MediaBrowser.Api.Library
             }
             if (item is MusicArtist)
             {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService)
+                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
                 {
-                    AuthorizationContext = AuthorizationContext,
-                    Logger = Logger,
                     Request = Request,
-                    SessionContext = SessionContext,
-                    ResultFactory = ResultFactory
 
                 }.Get(new GetSimilarArtists
                 {
@@ -380,13 +369,9 @@ namespace MediaBrowser.Api.Library
 
             if (item is Movie || (program != null && program.IsMovie) || item is Trailer)
             {
-                return new MoviesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _config)
+                return new MoviesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _config, _authContext)
                 {
-                    AuthorizationContext = AuthorizationContext,
-                    Logger = Logger,
                     Request = Request,
-                    SessionContext = SessionContext,
-                    ResultFactory = ResultFactory
 
                 }.Get(new GetSimilarMovies
                 {
@@ -399,13 +384,9 @@ namespace MediaBrowser.Api.Library
 
             if (item is Series || (program != null && program.IsSeries))
             {
-                return new TvShowsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _tvManager)
+                return new TvShowsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _tvManager, _authContext)
                 {
-                    AuthorizationContext = AuthorizationContext,
-                    Logger = Logger,
                     Request = Request,
-                    SessionContext = SessionContext,
-                    ResultFactory = ResultFactory
 
                 }.Get(new GetSimilarShows
                 {
@@ -430,7 +411,7 @@ namespace MediaBrowser.Api.Library
                 items = items.Where(i => i.IsHidden == val).ToList();
             }
 
-            var dtoOptions = GetDtoOptions(request);
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
             var result = new ItemsResult
             {
@@ -611,7 +592,7 @@ namespace MediaBrowser.Api.Library
 
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
 
-            var dtoOptions = GetDtoOptions(request);
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
             BaseItem parent = item.GetParent();
 
@@ -835,14 +816,14 @@ namespace MediaBrowser.Api.Library
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
 
-            while (GetThemeSongIds(item).Count == 0 && request.InheritFromParent && item.GetParent() != null)
+            while (item.ThemeSongIds.Count == 0 && request.InheritFromParent && item.GetParent() != null)
             {
                 item = item.GetParent();
             }
 
-            var dtoOptions = GetDtoOptions(request);
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
-            var dtos = GetThemeSongIds(item).Select(_libraryManager.GetItemById)
+            var dtos = item.ThemeSongIds.Select(_libraryManager.GetItemById)
                             .Where(i => i != null)
                             .OrderBy(i => i.SortName)
                             .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
@@ -879,14 +860,14 @@ namespace MediaBrowser.Api.Library
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
 
-            while (GetThemeVideoIds(item).Count == 0 && request.InheritFromParent && item.GetParent() != null)
+            while (item.ThemeVideoIds.Count == 0 && request.InheritFromParent && item.GetParent() != null)
             {
                 item = item.GetParent();
             }
 
-            var dtoOptions = GetDtoOptions(request);
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
-            var dtos = GetThemeVideoIds(item).Select(_libraryManager.GetItemById)
+            var dtos = item.ThemeVideoIds.Select(_libraryManager.GetItemById)
                             .Where(i => i != null)
                             .OrderBy(i => i.SortName)
                             .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
@@ -899,30 +880,6 @@ namespace MediaBrowser.Api.Library
                 TotalRecordCount = items.Length,
                 OwnerId = _dtoService.GetDtoId(item)
             };
-        }
-
-        private List<Guid> GetThemeVideoIds(BaseItem item)
-        {
-            var i = item as IHasThemeMedia;
-
-            if (i != null)
-            {
-                return i.ThemeVideoIds;
-            }
-
-            return new List<Guid>();
-        }
-
-        private List<Guid> GetThemeSongIds(BaseItem item)
-        {
-            var i = item as IHasThemeMedia;
-
-            if (i != null)
-            {
-                return i.ThemeSongIds;
-            }
-
-            return new List<Guid>();
         }
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");

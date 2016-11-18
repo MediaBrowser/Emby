@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
-using MoreLinq;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -35,6 +35,15 @@ namespace MediaBrowser.Controller.Entities
             get
             {
                 return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -68,7 +77,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 return new LibraryOptions();
             }
-            catch (DirectoryNotFoundException)
+            catch (IOException)
             {
                 return new LibraryOptions();
             }
@@ -111,7 +120,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 LibraryOptions[path] = options;
 
-                options.SchemaVersion = 2;
+                options.SchemaVersion = 3;
                 XmlSerializer.SerializeToFile(options, GetLibraryOptionsPath(path));
             }
         }

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -12,6 +12,13 @@ namespace MediaBrowser.Model.LiveTv
     [DebuggerDisplay("Name = {Name}")]
     public class SeriesTimerInfoDto : BaseTimerInfoDto
     {
+        public SeriesTimerInfoDto()
+        {
+            ImageTags = new Dictionary<ImageType, string>();
+            Days = new List<DayOfWeek>();
+            Type = "SeriesTimer";
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether [record any time].
         /// </summary>
@@ -62,10 +69,36 @@ namespace MediaBrowser.Model.LiveTv
             get { return ImageTags != null && ImageTags.ContainsKey(ImageType.Primary); }
         }
 
-        public SeriesTimerInfoDto()
-        {
-            ImageTags = new Dictionary<ImageType, string>();
-            Days = new List<DayOfWeek>();
-        }
+        /// <summary>
+        /// Gets or sets the parent thumb item id.
+        /// </summary>
+        /// <value>The parent thumb item id.</value>
+        public string ParentThumbItemId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent thumb image tag.
+        /// </summary>
+        /// <value>The parent thumb image tag.</value>
+        public string ParentThumbImageTag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent primary image item identifier.
+        /// </summary>
+        /// <value>The parent primary image item identifier.</value>
+        public string ParentPrimaryImageItemId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent primary image tag.
+        /// </summary>
+        /// <value>The parent primary image tag.</value>
+        public string ParentPrimaryImageTag { get; set; }
+    }
+
+    public enum KeepUntil
+    {
+        UntilDeleted,
+        UntilSpaceNeeded,
+        UntilWatched,
+        UntilDate
     }
 }

@@ -1,4 +1,5 @@
 define(['browser'], function (browser) {
+    'use strict';
 
     var mainAnimatedPages = document.querySelector('.mainAnimatedPages');
     var allPages = [];
@@ -45,10 +46,8 @@ define(['browser'], function (browser) {
 
         if (isPluginpage) {
             dependencies.push('jqmpopup');
-            dependencies.push('jqmcollapsible');
             dependencies.push('legacy/dashboard');
             dependencies.push('legacy/selectmenu');
-            dependencies.push('jqmcontrolgroup');
             dependencies.push('jqmlistview');
             dependencies.push('fnchecked');
         }

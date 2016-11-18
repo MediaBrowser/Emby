@@ -1,10 +1,11 @@
 ﻿define(['apphost', 'globalize', 'syncJobList', 'events', 'localsync', 'emby-button', 'paper-icon-button-light'], function (appHost, globalize, syncJobList, events, localSync) {
+    'use strict';
 
     function initSupporterInfo(view, params) {
 
         view.querySelector('.btnSyncSupporter').addEventListener('click', function () {
 
-            requirejs(["registrationservices"], function (registrationServices) {
+            requirejs(["registrationServices"], function (registrationServices) {
                 registrationServices.validateFeature('sync');
             });
         });

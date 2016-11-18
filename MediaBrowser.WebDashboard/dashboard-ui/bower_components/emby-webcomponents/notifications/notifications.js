@@ -1,4 +1,5 @@
 define(['serverNotifications', 'playbackManager', 'events', 'globalize', 'require'], function (serverNotifications, playbackManager, events, globalize, require) {
+    'use strict';
 
     function onOneDocumentClick() {
 
@@ -91,9 +92,15 @@ define(['serverNotifications', 'playbackManager', 'events', 'globalize', 'requir
             return;
         }
 
+        var body = item.Name;
+
+        if (item.SeriesName) {
+            body = item.SeriesName + ' - ' + body;
+        }
+
         var notification = {
             title: "New " + item.Type,
-            body: item.Name,
+            body: body,
             vibrate: true,
             tag: "newItem" + item.Id,
             data: {
@@ -165,18 +172,18 @@ define(['serverNotifications', 'playbackManager', 'events', 'globalize', 'requir
                 data: {}
             };
 
-            if (status == 'completed') {
+            if (status === 'completed') {
                 notification.title = globalize.translate('sharedcomponents#PackageInstallCompleted').replace('{0}', installation.Name + ' ' + installation.Version);
                 notification.vibrate = true;
             }
-            else if (status == 'cancelled') {
+            else if (status === 'cancelled') {
                 notification.title = globalize.translate('sharedcomponents#PackageInstallCancelled').replace('{0}', installation.Name + ' ' + installation.Version);
             }
-            else if (status == 'failed') {
+            else if (status === 'failed') {
                 notification.title = globalize.translate('sharedcomponents#PackageInstallFailed').replace('{0}', installation.Name + ' ' + installation.Version);
                 notification.vibrate = true;
             }
-            else if (status == 'progress') {
+            else if (status === 'progress') {
                 notification.title = globalize.translate('sharedcomponents#InstallingPackage').replace('{0}', installation.Name + ' ' + installation.Version);
 
                 notification.actions =
@@ -191,14 +198,14 @@ define(['serverNotifications', 'playbackManager', 'events', 'globalize', 'requir
                 notification.data.id = installation.id;
             }
 
-            if (status == 'progress') {
+            if (status === 'progress') {
 
                 var percentComplete = Math.round(installation.PercentComplete || 0);
 
                 notification.body = percentComplete + '% complete.';
             }
 
-            var timeout = status == 'cancelled' ? 5000 : 0;
+            var timeout = status === 'cancelled' ? 5000 : 0;
 
             showNotification(notification, timeout, apiClient);
         });

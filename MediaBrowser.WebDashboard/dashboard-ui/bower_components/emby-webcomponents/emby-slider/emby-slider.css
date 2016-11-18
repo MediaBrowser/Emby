@@ -16,7 +16,7 @@ _:-ms-input-placeholder, :root .mdl-slider {
     -ms-user-select: none;
     user-select: none;
     outline: 0;
-    padding: 0;
+    padding: 1.5em 0;
     color: #52B54B;
     -webkit-align-self: center;
     -ms-flex-item-align: center;
@@ -24,6 +24,8 @@ _:-ms-input-placeholder, :root .mdl-slider {
     z-index: 1;
     cursor: pointer;
     margin: 0;
+    /* Disable webkit tap highlighting */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
     /**************************** Tracks ****************************/
     /**************************** Thumbs ****************************/
     /**************************** 0-value ****************************/
@@ -223,4 +225,8 @@ _:-ms-input-placeholder, :root .mdl-slider {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.sliderBubbleText {
+    margin: 0;
 }

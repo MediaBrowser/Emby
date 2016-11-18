@@ -1,4 +1,5 @@
-﻿(function () {
+﻿define(['appSettings', 'backdrop', 'browser', 'globalize', 'require', 'paper-icon-button-light'], function (appSettings, backdrop, browser, globalize, require) {
+    'use strict';
 
     var lastSound = 0;
     var iconCreated;
@@ -12,18 +13,18 @@
 
         if (!destroyed) {
 
-            if (appStorage.getItem(cancelKey) == cancelValue) {
+            if (appSettings.get(cancelKey) == cancelValue) {
 
                 destroyed = true;
                 return;
             }
 
-            require(['css!themes/halloween/style.css']);
+            if (!browser.mobile) {
 
-            if (!browserInfo.mobile) {
+                require(['css!./style.css']);
 
                 if (!page.classList.contains('itemDetailPage')) {
-                    Backdrops.setBackdropUrl(page, 'themes/halloween/bg.jpg');
+                    backdrop.setBackdrop('themes/halloween/bg.jpg');
                 }
 
                 if (lastSound == 0) {
@@ -31,9 +32,9 @@
                 } else if ((new Date().getTime() - lastSound) > 30000) {
                     playSound('http://github.com/MediaBrowser/Emby.Resources/raw/master/themes/halloween/howl.wav');
                 }
-            }
 
-            addIcon();
+                addIcon();
+            }
         }
     }
 
@@ -45,37 +46,45 @@
 
         iconCreated = true;
 
-        var elem = document.createElement('paper-icon-button');
-        elem.icon = 'info';
-        elem.classList.add('halloweenInfoButton');
-        $(elem).on('click', onIconClick);
-
         var viewMenuSecondary = document.querySelector('.viewMenuSecondary');
 
         if (viewMenuSecondary) {
-            viewMenuSecondary.insertBefore(elem, viewMenuSecondary.childNodes[0]);
+
+            var html = '<button is="paper-icon-button-light" class="halloweenInfoButton"><i class="md-icon">info</i></button>';
+
+            viewMenuSecondary.insertAdjacentHTML('afterbegin', html);
+
+            viewMenuSecondary.querySelector('.halloweenInfoButton').addEventListener('click', onIconClick);
         }
     }
 
     function onIconClick() {
 
-        // todo: switch this to action sheet
+        require(['dialog'], function (dialog) {
+            dialog({
 
-        //require(['dialog'], function (dialog) {
-        //    dialog({
+                title: "Happy Halloween",
+                text: "Happy Halloween from the Emby Team. We hope your Halloween is spooktacular! Would you like to allow the Halloween theme to continue?",
 
-        //        title: "Happy Halloween",
-        //        message: "Happy Halloween from the Emby Team. We hope your Halloween is spooktacular! Would you like to allow the Halloween theme to continue?",
-        //        callback: function (result) {
+                buttons: [
+                    {
+                        id: 'yes',
+                        name: globalize.translate('ButtonYes'),
+                        type: 'submit'
+                    },
+                    {
+                        id: 'no',
+                        name: globalize.translate('ButtonNo'),
+                        type: 'cancel'
+                    }
+                ]
 
-        //            if (result == 1) {
-        //                destroyTheme();
-        //            }
-        //        },
-
-        //        buttons: [Globalize.translate('ButtonYes'), Globalize.translate('ButtonNo')]
-        //    });
-        //});
+            }).then(function (result) {
+                if (result == 'no') {
+                    destroyTheme();
+                }
+            });
+        });
     }
 
     function destroyTheme() {
@@ -91,16 +100,12 @@
             currentSound.stop();
         }
 
-        Dashboard.removeStylesheet('themes/halloween/style.css');
-        Backdrops.clear();
-        appStorage.setItem(cancelKey, cancelValue);
+        backdrop.clear();
+        appSettings.set(cancelKey, cancelValue);
+        window.location.reload(true);
     }
 
     pageClassOn('pageshow', "libraryPage", onPageShow);
-
-    if ($($.mobile.activePage)[0].classList.contains('libraryPage')) {
-        onPageShow.call($($.mobile.activePage)[0]);
-    }
 
     function playSound(path, volume) {
 
@@ -117,4 +122,4 @@
         });
     }
 
-})();
+});

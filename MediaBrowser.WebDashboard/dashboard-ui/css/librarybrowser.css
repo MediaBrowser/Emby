@@ -9,12 +9,10 @@
 
 .background-theme-b .backgroundContainer, .dialog.background-theme-b {
     background-color: #121314;
-    /*background: radial-gradient(circle, #282828, #141414);*/
 }
 
     .background-theme-b .backgroundContainer.withBackdrop {
         background-color: rgba(6, 6,6, .9);
-        /*background: radial-gradient(circle, #282828, #141414);*/
     }
 
 .ui-body-b {
@@ -43,8 +41,12 @@
     contain: style;
 }
 
-.pageWithAbsoluteTabs .pageTabContent, .libraryPage > .ui-content {
+.libraryPage > .ui-content {
     padding-top: 10px;
+}
+
+.pageWithAbsoluteTabs .pageTabContent {
+    padding-top: 2.2em;
 }
 
 /*.pageWithAbsoluteTabs .pageTabContent {
@@ -87,12 +89,8 @@
 }
 
 .homePageSection {
-    margin-top: 20px;
+    margin-bottom: 3.6em;
 }
-
-    .homePageSection + .homePageSection {
-        margin-top: 30px;
-    }
 
 .sectionHeaderButton {
     vertical-align: middle;
@@ -126,6 +124,10 @@
     }
 }
 
+.ehsContent:not(.fullWidth), .ehsContent .pageTabContent {
+    width: 98%;
+}
+
 @media all and (min-width: 1200px) {
 
     .ehsContent:not(.fullWidth), .ehsContent .pageTabContent {
@@ -133,10 +135,24 @@
     }
 }
 
-@media all and (min-width: 2560px) {
+.homePageSection h1 {
+    padding-left: .55em;
+}
 
-    .ehsContent:not(.fullWidth), .ehsContent .pageTabContent {
-        width: 96%;
+.homePageSection .itemsContainer {
+    padding-left: .7em;
+    padding-right: .7em;
+}
+
+@media all and (min-width: 1200px) {
+
+    .homePageSection h1 {
+        padding-left: 2.2vw;
+    }
+
+    .homePageSection .itemsContainer {
+        padding-left: 2vw;
+        padding-right: 2vw;
     }
 }
 
@@ -154,7 +170,6 @@
 
 .listPaging {
     text-align: center;
-    margin: .5em 0 .5em;
 }
 
 .viewControls + .listTopPaging {
@@ -512,25 +527,13 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
+    margin: 1.5em 0 1em;
+    display: flex;
+    align-items: center;
 }
 
-.ui-body-a .detailSectionHeader {
-    border: 1px solid #ddd;
-    border-width: 0 0 1px 0;
-}
-
-.ui-body-b .detailSectionHeader {
-    border: 1px solid #444;
-    border-width: 0 0 1px 0;
-}
-
-.detailSectionHeader, .detailSectionHeader h3 {
-    font-size: 20px;
-    font-weight: 400;
-}
-
-    .detailSectionHeader button {
-        font-size: 13px;
+    .detailSectionHeader > h1 {
+        margin: 0;
     }
 
 .detailSectionHeaderButton {
@@ -700,10 +703,6 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-}
-
-.mediaInfoItem {
-    white-space: nowrap;
 }
 
 @media all and (max-width: 600px) {
@@ -956,7 +955,7 @@ span.itemCommunityRating:not(:empty) + .userDataIcons {
 @media all and (min-width: 1000px) {
 
     .itemDetailPage .portraitCard-scalable {
-        width: 25% !important;
+        width: 20% !important;
     }
 
     .itemDetailPage .squareCard-scalable {

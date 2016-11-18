@@ -9,6 +9,7 @@ namespace MediaBrowser.Controller.LiveTv
         public TimerInfo()
         {
             Genres = new List<string>();
+            KeepUntil = KeepUntil.UntilDeleted;
         }
 
         /// <summary>
@@ -100,14 +101,18 @@ namespace MediaBrowser.Controller.LiveTv
         public bool IsMovie { get; set; }
         public bool IsKids { get; set; }
         public bool IsSports { get; set; }
+        public bool IsNews { get; set; }
         public int? ProductionYear { get; set; }
         public string EpisodeTitle { get; set; }
         public DateTime? OriginalAirDate { get; set; }
         public bool IsProgramSeries { get; set; }
+        public bool IsRepeat { get; set; }
         public string HomePageUrl { get; set; }
         public float? CommunityRating { get; set; }
         public string ShortOverview { get; set; }
         public string OfficialRating { get; set; }
         public List<string> Genres { get; set; }
+        public string RecordingPath { get; set; }
+        public KeepUntil KeepUntil { get; set; }
     }
 }

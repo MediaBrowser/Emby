@@ -1,4 +1,5 @@
 ﻿define(['listView', 'cardBuilder', 'emby-itemscontainer'], function (listView, cardBuilder) {
+    'use strict';
 
     function renderItems(page, item) {
 
@@ -128,7 +129,9 @@
                     overlayMoreButton: true,
                     preferThumb: true,
                     overlayText: false,
-                    showProgramAirInfo: true
+                    showAirTime: true,
+                    showAirDateTime: true,
+                    showChannelName: true
                 });
                 break;
 

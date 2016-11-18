@@ -1,4 +1,5 @@
-﻿define(['jQuery', 'registrationservices', 'emby-checkbox', 'emby-input', 'listViewStyle', 'paper-icon-button-light'], function ($, registrationServices) {
+﻿define(['jQuery', 'registrationServices', 'emby-checkbox', 'emby-input', 'listViewStyle', 'paper-icon-button-light'], function ($, registrationServices) {
+    'use strict';
 
     return function (page, providerId, options) {
 
@@ -34,6 +35,7 @@
                     page.querySelector('.txtNews').value = (info.NewsCategories || []).join('|');
                     page.querySelector('.txtSports').value = (info.SportsCategories || []).join('|');
                     page.querySelector('.txtMovies').value = (info.MovieCategories || []).join('|');
+                    page.querySelector('.txtMoviePrefix').value = info.MoviePrefix || '';
 
                     page.querySelector('.chkAllTuners').checked = info.EnableAllTuners;
 
@@ -71,6 +73,8 @@
                 info.Type = 'xmltv';
 
                 info.Path = page.querySelector('.txtPath').value;
+
+                info.MoviePrefix = page.querySelector('.txtMoviePrefix') || null;
 
                 info.MovieCategories = getCategories(page.querySelector('.txtMovies'));
                 info.KidsCategories = getCategories(page.querySelector('.txtKids'));

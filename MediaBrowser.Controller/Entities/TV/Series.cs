@@ -6,28 +6,25 @@ using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Providers;
-using MoreLinq;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities.TV
 {
     /// <summary>
     /// Class Series
     /// </summary>
-    public class Series : Folder, IHasTrailers, IHasDisplayOrder, IHasLookupInfo<SeriesInfo>, IHasSpecialFeatures, IMetadataContainer, IHasOriginalTitle
+    public class Series : Folder, IHasTrailers, IHasDisplayOrder, IHasLookupInfo<SeriesInfo>, IMetadataContainer
     {
-        public List<Guid> SpecialFeatureIds { get; set; }
-
         public int? AnimeSeriesIndex { get; set; }
 
         public Series()
         {
             AirDays = new List<DayOfWeek>();
 
-            SpecialFeatureIds = new List<Guid>();
             RemoteTrailers = new List<MediaUrl>();
             LocalTrailerIds = new List<Guid>();
             RemoteTrailerIds = new List<Guid>();
@@ -109,6 +106,12 @@ namespace MediaBrowser.Controller.Entities.TV
 
         private string AddLibrariesToPresentationUniqueKey(string key)
         {
+            var lang = GetPreferredMetadataLanguage();
+            if (!string.IsNullOrWhiteSpace(lang))
+            {
+                key += "-" + lang;
+            }
+
             var folders = LibraryManager.GetCollectionFolders(this)
                 .Select(i => i.Id.ToString("N"))
                 .ToArray();
@@ -212,8 +215,8 @@ namespace MediaBrowser.Controller.Entities.TV
             var query = new InternalItemsQuery(user)
             {
                 AncestorWithPresentationUniqueKey = seriesKey,
-                IncludeItemTypes = new[] {typeof (Season).Name},
-                SortBy = new[] {ItemSortBy.SortName}
+                IncludeItemTypes = new[] { typeof(Season).Name },
+                SortBy = new[] { ItemSortBy.SortName }
             };
 
             if (!config.DisplayMissingEpisodes && !config.DisplayUnairedEpisodes)
@@ -270,8 +273,8 @@ namespace MediaBrowser.Controller.Entities.TV
             var query = new InternalItemsQuery(user)
             {
                 AncestorWithPresentationUniqueKey = seriesKey,
-                IncludeItemTypes = new[] {typeof (Episode).Name, typeof (Season).Name},
-                SortBy = new[] {ItemSortBy.SortName}
+                IncludeItemTypes = new[] { typeof(Episode).Name, typeof(Season).Name },
+                SortBy = new[] { ItemSortBy.SortName }
             };
             var config = user.Configuration;
             if (!config.DisplayMissingEpisodes && !config.DisplayUnairedEpisodes)

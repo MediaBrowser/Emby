@@ -1,4 +1,5 @@
 ﻿define(['datetime', 'listView'], function (datetime, listView) {
+    'use strict';
 
     function isSameDay(date1, date2) {
 
@@ -27,7 +28,9 @@
                         enableUserDataButtons: false,
                         showParentTitle: true,
                         image: false,
-                        showProgramTimeColumn: true
+                        showProgramTime: true,
+                        mediaInfo: false,
+                        parentTitleWithTitle: true
 
                     }) + '</div>';
                 }
@@ -53,7 +56,8 @@
             SortBy: "StartDate",
             EnableTotalRecordCount: false,
             EnableImages: false,
-            ImageTypeLimit: 0
+            ImageTypeLimit: 0,
+            EnableUserData: false
 
         }).then(function (result) {
 
@@ -62,7 +66,7 @@
         });
     }
 
-    window.LiveTvChannelPage = {
+    return {
         renderPrograms: loadPrograms
     };
 

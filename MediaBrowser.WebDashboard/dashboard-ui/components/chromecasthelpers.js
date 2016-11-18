@@ -1,4 +1,5 @@
 ﻿define([], function () {
+    'use strict';
 
     // LinkParser
     //
@@ -213,6 +214,7 @@
 
             parse: function (text) {
                 var links = [];
+                var match;
 
                 while (match = linkRegExp.exec(text)) {
                     // console.log(matches);
@@ -264,18 +266,12 @@
         var serverAddress = apiClient.serverAddress();
 
         if (isValidIpAddress(serverAddress) && !isLocalIpAddress(serverAddress)) {
-            return new Promise(function (resolve, reject) {
-
-                resolve(serverAddress);
-            });
+            return Promise.resolve(serverAddress);
         }
 
         var cachedValue = getCachedValue(serverAddress);
         if (cachedValue) {
-            return new Promise(function (resolve, reject) {
-
-                resolve(cachedValue);
-            });
+            return Promise.resolve(cachedValue);
         }
 
         return apiClient.getJSON(apiClient.getUrl('System/Endpoint')).then(function (endpoint) {

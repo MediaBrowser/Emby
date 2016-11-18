@@ -6,7 +6,7 @@ using MediaBrowser.Model.LiveTv;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Library;
 
@@ -19,6 +19,7 @@ namespace MediaBrowser.Controller.LiveTv
         [IgnoreDataMember]
         public bool IsSeries { get; set; }
         public string SeriesTimerId { get; set; }
+        public string TimerId { get; set; }
         [IgnoreDataMember]
         public DateTime StartDate { get; set; }
         public RecordingStatus Status { get; set; }
@@ -50,6 +51,24 @@ namespace MediaBrowser.Controller.LiveTv
             get
             {
                 return Model.Entities.MediaType.Video;
+            }
+        }
+
+        [IgnoreDataMember]
+        protected override bool SupportsIsInMixedFolderDetection
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return Status == RecordingStatus.Completed && base.SupportsPlayedStatus;
             }
         }
 
@@ -111,6 +130,10 @@ namespace MediaBrowser.Controller.LiveTv
 
         public override bool CanDelete()
         {
+            if (string.Equals(ServiceName, "Emby", StringComparison.OrdinalIgnoreCase))
+            {
+                return Status == RecordingStatus.Completed;
+            }
             return true;
         }
 

@@ -1,4 +1,5 @@
 ﻿define(['libraryBrowser', 'cardBuilder'], function (libraryBrowser, cardBuilder) {
+    'use strict';
 
     return function (view, params, tabContent) {
 
@@ -79,7 +80,8 @@
                         showItemCounts: true,
                         cardLayout: true,
                         showTitle: true,
-                        lazy: true
+                        lazy: true,
+                        vibrant: true
                     });
                 }
                 else if (viewStyle == "PosterCard") {
@@ -90,7 +92,8 @@
                         showItemCounts: true,
                         lazy: true,
                         cardLayout: true,
-                        showTitle: true
+                        showTitle: true,
+                        vibrant: true
                     });
                 }
                 else if (viewStyle == "Poster") {

@@ -8,14 +8,14 @@ using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
-using MoreLinq;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.LiveTv;
+using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Movies
 {
@@ -90,6 +90,7 @@ namespace MediaBrowser.Api.Movies
         private readonly IItemRepository _itemRepo;
         private readonly IDtoService _dtoService;
         private readonly IServerConfigurationManager _config;
+        private readonly IAuthorizationContext _authContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MoviesService" /> class.
@@ -99,7 +100,7 @@ namespace MediaBrowser.Api.Movies
         /// <param name="libraryManager">The library manager.</param>
         /// <param name="itemRepo">The item repo.</param>
         /// <param name="dtoService">The dto service.</param>
-        public MoviesService(IUserManager userManager, IUserDataManager userDataRepository, ILibraryManager libraryManager, IItemRepository itemRepo, IDtoService dtoService, IServerConfigurationManager config)
+        public MoviesService(IUserManager userManager, IUserDataManager userDataRepository, ILibraryManager libraryManager, IItemRepository itemRepo, IDtoService dtoService, IServerConfigurationManager config, IAuthorizationContext authContext)
         {
             _userManager = userManager;
             _userDataRepository = userDataRepository;
@@ -107,6 +108,7 @@ namespace MediaBrowser.Api.Movies
             _itemRepo = itemRepo;
             _dtoService = dtoService;
             _config = config;
+            _authContext = authContext;
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace MediaBrowser.Api.Movies
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var dtoOptions = GetDtoOptions(request);
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
             dtoOptions.Fields = request.GetItemFields().ToList();
 
@@ -156,17 +158,18 @@ namespace MediaBrowser.Api.Movies
                 itemTypes.Add(typeof(LiveTvProgram).Name);
             }
 
+            var dtoOptions = GetDtoOptions(_authContext, request);
+
             var itemsResult = _libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 Limit = request.Limit,
                 IncludeItemTypes = itemTypes.ToArray(),
                 IsMovie = true,
                 SimilarTo = item,
-                EnableGroupByMetadataKey = true
+                EnableGroupByMetadataKey = true,
+                DtoOptions = dtoOptions
 
             }).ToList();
-
-            var dtoOptions = GetDtoOptions(request);
 
             var result = new QueryResult<BaseItemDto>
             {
@@ -198,7 +201,8 @@ namespace MediaBrowser.Api.Movies
                 Limit = 7,
                 ParentId = parentIdGuid,
                 Recursive = true,
-                IsPlayed = true
+                IsPlayed = true,
+                DtoOptions = dtoOptions
             };
 
             var recentlyPlayedMovies = _libraryManager.GetItemList(query).ToList();
@@ -221,7 +225,8 @@ namespace MediaBrowser.Api.Movies
                 ExcludeItemIds = recentlyPlayedMovies.Select(i => i.Id.ToString("N")).ToArray(),
                 EnableGroupByMetadataKey = true,
                 ParentId = parentIdGuid,
-                Recursive = true
+                Recursive = true,
+                DtoOptions = dtoOptions
 
             }).ToList();
 
@@ -302,7 +307,8 @@ namespace MediaBrowser.Api.Movies
                     PersonTypes = new[] { PersonType.Director },
                     IncludeItemTypes = itemTypes.ToArray(),
                     IsMovie = true,
-                    EnableGroupByMetadataKey = true
+                    EnableGroupByMetadataKey = true,
+                    DtoOptions = dtoOptions
 
                 }).DistinctBy(i => i.GetProviderId(MetadataProviders.Imdb) ?? Guid.NewGuid().ToString("N"))
                 .Take(itemLimit)
@@ -339,7 +345,8 @@ namespace MediaBrowser.Api.Movies
                     Limit = itemLimit + 2,
                     IncludeItemTypes = itemTypes.ToArray(),
                     IsMovie = true,
-                    EnableGroupByMetadataKey = true
+                    EnableGroupByMetadataKey = true,
+                    DtoOptions = dtoOptions
 
                 }).DistinctBy(i => i.GetProviderId(MetadataProviders.Imdb) ?? Guid.NewGuid().ToString("N"))
                 .Take(itemLimit)
@@ -375,7 +382,8 @@ namespace MediaBrowser.Api.Movies
                     IncludeItemTypes = itemTypes.ToArray(),
                     IsMovie = true,
                     SimilarTo = item,
-                    EnableGroupByMetadataKey = true
+                    EnableGroupByMetadataKey = true,
+                    DtoOptions = dtoOptions
 
                 }).ToList();
 

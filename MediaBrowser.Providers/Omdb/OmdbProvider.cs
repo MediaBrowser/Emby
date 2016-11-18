@@ -1,4 +1,4 @@
-﻿using CommonIO;
+﻿using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -14,6 +14,8 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
 
 namespace MediaBrowser.Providers.Omdb
 {
@@ -35,90 +37,6 @@ namespace MediaBrowser.Providers.Omdb
         }
 
         public async Task Fetch<T>(MetadataResult<T> itemResult, string imdbId, string language, string country, CancellationToken cancellationToken)
-            where T :BaseItem
-        {
-            if (string.IsNullOrWhiteSpace(imdbId))
-            {
-                throw new ArgumentNullException("imdbId");
-            }
-
-            T item = itemResult.Item;
-
-            var result = await GetRootObject(imdbId, cancellationToken);
-
-                // Only take the name and rating if the user's language is set to english, since Omdb has no localization
-                if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.Name = result.Title;
-
-                    if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
-                    {
-                        item.OfficialRating = result.Rated;
-                    }
-                }
-
-                int year;
-
-                if (!string.IsNullOrEmpty(result.Year) && result.Year.Length >= 4
-                    && int.TryParse(result.Year.Substring(0, 4), NumberStyles.Number, _usCulture, out year)
-                    && year >= 0)
-                {
-                    item.ProductionYear = year;
-                }
-
-                var hasCriticRating = item as IHasCriticRating;
-                if (hasCriticRating != null)
-                {
-                    // Seeing some bogus RT data on omdb for series, so filter it out here
-                    // RT doesn't even have tv series
-                    int tomatoMeter;
-
-                    if (!string.IsNullOrEmpty(result.tomatoMeter)
-                        && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
-                        && tomatoMeter >= 0)
-                    {
-                        hasCriticRating.CriticRating = tomatoMeter;
-                    }
-
-                    if (!string.IsNullOrEmpty(result.tomatoConsensus)
-                        && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
-                    {
-                        hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
-                    }
-                }
-
-                int voteCount;
-
-                if (!string.IsNullOrEmpty(result.imdbVotes)
-                    && int.TryParse(result.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
-                    && voteCount >= 0)
-                {
-                    item.VoteCount = voteCount;
-                }
-
-                float imdbRating;
-
-                if (!string.IsNullOrEmpty(result.imdbRating)
-                    && float.TryParse(result.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
-                    && imdbRating >= 0)
-                {
-                    item.CommunityRating = imdbRating;
-                }
-
-                if (!string.IsNullOrEmpty(result.Website))
-                {
-                    item.HomePageUrl = result.Website;
-                }
-
-                if (!string.IsNullOrWhiteSpace(result.imdbID))
-                {
-                    item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
-                }
-
-                ParseAdditionalMetadata(itemResult, result);
-        }
-
-        public async Task<bool> FetchEpisodeData<T>(MetadataResult<T> itemResult, int episodeNumber, int seasonNumber, string imdbId, string language, string country, CancellationToken cancellationToken)
             where T : BaseItem
         {
             if (string.IsNullOrWhiteSpace(imdbId))
@@ -128,24 +46,7 @@ namespace MediaBrowser.Providers.Omdb
 
             T item = itemResult.Item;
 
-            var seasonResult = await GetSeasonRootObject(imdbId, seasonNumber, cancellationToken);
-
-            RootObject result = null;
-
-            foreach (var episode in seasonResult.Episodes)
-            {
-                if (episode.Episode == episodeNumber)
-                {
-                    result = episode;
-                    break;
-                }
-            }
-
-            if (result == null)
-            {
-                return false;
-            }
-
+            var result = await GetRootObject(imdbId, cancellationToken);
 
             // Only take the name and rating if the user's language is set to english, since Omdb has no localization
             if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
@@ -167,25 +68,122 @@ namespace MediaBrowser.Providers.Omdb
                 item.ProductionYear = year;
             }
 
-            var hasCriticRating = item as IHasCriticRating;
-            if (hasCriticRating != null)
+            // Seeing some bogus RT data on omdb for series, so filter it out here
+            // RT doesn't even have tv series
+            int tomatoMeter;
+
+            if (!string.IsNullOrEmpty(result.tomatoMeter)
+                && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
+                && tomatoMeter >= 0)
             {
-                // Seeing some bogus RT data on omdb for series, so filter it out here
-                // RT doesn't even have tv series
-                int tomatoMeter;
+                item.CriticRating = tomatoMeter;
+            }
 
-                if (!string.IsNullOrEmpty(result.tomatoMeter)
-                    && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
-                    && tomatoMeter >= 0)
-                {
-                    hasCriticRating.CriticRating = tomatoMeter;
-                }
+            if (!string.IsNullOrEmpty(result.tomatoConsensus)
+                && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+            {
+                item.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
+            }
 
-                if (!string.IsNullOrEmpty(result.tomatoConsensus)
-                    && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+            int voteCount;
+
+            if (!string.IsNullOrEmpty(result.imdbVotes)
+                && int.TryParse(result.imdbVotes, NumberStyles.Number, _usCulture, out voteCount)
+                && voteCount >= 0)
+            {
+                item.VoteCount = voteCount;
+            }
+
+            float imdbRating;
+
+            if (!string.IsNullOrEmpty(result.imdbRating)
+                && float.TryParse(result.imdbRating, NumberStyles.Any, _usCulture, out imdbRating)
+                && imdbRating >= 0)
+            {
+                item.CommunityRating = imdbRating;
+            }
+
+            if (!string.IsNullOrEmpty(result.Website))
+            {
+                item.HomePageUrl = result.Website;
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.imdbID))
+            {
+                item.SetProviderId(MetadataProviders.Imdb, result.imdbID);
+            }
+
+            ParseAdditionalMetadata(itemResult, result);
+        }
+
+        public async Task<bool> FetchEpisodeData<T>(MetadataResult<T> itemResult, int episodeNumber, int seasonNumber, string imdbId, string language, string country, CancellationToken cancellationToken)
+            where T : BaseItem
+        {
+            if (string.IsNullOrWhiteSpace(imdbId))
+            {
+                throw new ArgumentNullException("imdbId");
+            }
+
+            T item = itemResult.Item;
+
+            var seasonResult = await GetSeasonRootObject(imdbId, seasonNumber, cancellationToken).ConfigureAwait(false);
+
+            if (seasonResult == null)
+            {
+                return false;
+            }
+
+            RootObject result = null;
+
+            foreach (var episode in (seasonResult.Episodes ?? new RootObject[] { }))
+            {
+                if (episode.Episode == episodeNumber)
                 {
-                    hasCriticRating.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
+                    result = episode;
+                    break;
                 }
+            }
+
+            if (result == null)
+            {
+                return false;
+            }
+
+            // Only take the name and rating if the user's language is set to english, since Omdb has no localization
+            if (string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
+            {
+                item.Name = result.Title;
+
+                if (string.Equals(country, "us", StringComparison.OrdinalIgnoreCase))
+                {
+                    item.OfficialRating = result.Rated;
+                }
+            }
+
+            int year;
+
+            if (!string.IsNullOrEmpty(result.Year) && result.Year.Length >= 4
+                && int.TryParse(result.Year.Substring(0, 4), NumberStyles.Number, _usCulture, out year)
+                && year >= 0)
+            {
+                item.ProductionYear = year;
+            }
+
+            // Seeing some bogus RT data on omdb for series, so filter it out here
+            // RT doesn't even have tv series
+            int tomatoMeter;
+
+            if (!string.IsNullOrEmpty(result.tomatoMeter)
+                && int.TryParse(result.tomatoMeter, NumberStyles.Integer, _usCulture, out tomatoMeter)
+                && tomatoMeter >= 0)
+            {
+                item.CriticRating = tomatoMeter;
+            }
+
+            if (!string.IsNullOrEmpty(result.tomatoConsensus)
+                && !string.Equals(result.tomatoConsensus, "No consensus yet.", StringComparison.OrdinalIgnoreCase))
+            {
+                item.CriticRatingSummary = WebUtility.HtmlDecode(result.tomatoConsensus);
             }
 
             int voteCount;
@@ -227,7 +225,7 @@ namespace MediaBrowser.Providers.Omdb
 
             string resultString;
 
-            using (Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 131072))
+            using (Stream stream = _fileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read))
             {
                 using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                 {
@@ -246,7 +244,7 @@ namespace MediaBrowser.Providers.Omdb
 
             string resultString;
 
-            using (Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 131072))
+            using (Stream stream = _fileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read))
             {
                 using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                 {
@@ -302,7 +300,8 @@ namespace MediaBrowser.Providers.Omdb
             {
                 Url = url,
                 ResourcePool = ResourcePool,
-                CancellationToken = cancellationToken
+                CancellationToken = cancellationToken,
+                BufferContent = true
 
             }).ConfigureAwait(false))
             {
@@ -342,7 +341,8 @@ namespace MediaBrowser.Providers.Omdb
             {
                 Url = url,
                 ResourcePool = ResourcePool,
-                CancellationToken = cancellationToken
+                CancellationToken = cancellationToken,
+                BufferContent = true
 
             }).ConfigureAwait(false))
             {
@@ -420,12 +420,8 @@ namespace MediaBrowser.Providers.Omdb
                 hasAwards.AwardSummary = WebUtility.HtmlDecode(result.Awards);
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
-            {
-                // Imdb plots are usually pretty short
-                hasShortOverview.ShortOverview = result.Plot;
-            }
+            // Imdb plots are usually pretty short
+            item.ShortOverview = result.Plot;
 
             //if (!string.IsNullOrWhiteSpace(result.Director))
             //{

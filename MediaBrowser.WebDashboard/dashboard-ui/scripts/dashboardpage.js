@@ -1,4 +1,5 @@
-﻿define(['datetime', 'jQuery', 'dom', 'cardStyle', 'listViewStyle'], function (datetime, $, dom) {
+﻿define(['datetime', 'jQuery', 'dom', 'humanedate', 'cardStyle', 'listViewStyle'], function (datetime, $, dom) {
+    'use strict';
 
     function renderNoHealthAlertsMessage(page) {
 
@@ -32,7 +33,7 @@
                 label: Globalize.translate('LabelFriendlyServerName'),
                 description: Globalize.translate('LabelFriendlyServerNameHelp'),
                 value: page.querySelector('.serverNameHeader').innerHTML,
-                submitText: Globalize.translate('ButtonSave')
+                confirmText: Globalize.translate('ButtonSave')
 
             }).then(function (value) {
 
@@ -176,6 +177,12 @@
                 } else {
                     $('#btnUpdateApplicationContainer', page).hide();
                     $('#btnManualUpdateContainer', page).show();
+                }
+
+                if (systemInfo.PackageName == 'synology') {
+                    $('#btnManualUpdateContainer').html(Globalize.translate('SynologyUpdateInstructions'));
+                } else {
+                    $('#btnManualUpdateContainer').html('<a href="http://emby.media/download" target="_blank">' + Globalize.translate('PleaseUpdateManually') + '</a>');
                 }
 
                 DashboardPage.renderPaths(page, systemInfo);
@@ -444,7 +451,7 @@
                 html += '<div style="display:flex;align-items:center;justify-content:center;text-transform:uppercase;">';
                 var userImage = DashboardPage.getUserImage(session);
                 if (userImage) {
-                    html += '<img style="border-radius:50px;margin-right:.5em;" src="' + userImage + '" />';
+                    html += '<img style="height:24px;border-radius:50px;margin-right:.5em;" src="' + userImage + '" />';
                 } else {
                     html += '<div style="height:24px;"></div>';
                 }
@@ -852,11 +859,13 @@
 
         renderUrls: function (page, systemInfo) {
 
+            var helpButton = '<a href="https://github.com/MediaBrowser/Wiki/wiki/Connectivity" target="_blank" style="margin-left:1em;color:#fff;background:#52B54B;padding:.25em 1em;border-radius:.5em;">' + Globalize.translate('ButtonHelp') + '</a>';
+
             if (systemInfo.LocalAddress) {
 
                 var localAccessHtml = Globalize.translate('LabelLocalAccessUrl', '<a href="' + systemInfo.LocalAddress + '" target="_blank">' + systemInfo.LocalAddress + '</a>');
 
-                $('.localUrl', page).html(localAccessHtml).show().trigger('create');
+                $('.localUrl', page).html(localAccessHtml + helpButton).show().trigger('create');
             } else {
                 $('.externalUrl', page).hide();
             }
@@ -867,7 +876,7 @@
 
                 var remoteAccessHtml = Globalize.translate('LabelRemoteAccessUrl', '<a href="' + externalUrl + '" target="_blank">' + externalUrl + '</a>');
 
-                $('.externalUrl', page).html(remoteAccessHtml).show().trigger('create');
+                $('.externalUrl', page).html(remoteAccessHtml + helpButton).show().trigger('create');
             } else {
                 $('.externalUrl', page).hide();
             }

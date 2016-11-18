@@ -19,7 +19,6 @@
     /* If this is raised, make sure it does not overlap bottom footer */
     z-index: 1;
     margin: 0 !important;
-    width: 100% !important;
     /* Page needs to supply padding */
     top: 102px !important;
     transition: transform 200ms ease-out;
@@ -74,25 +73,20 @@
 
 .libraryMenuButtonText {
     text-decoration: none;
-    font-weight: 400 !important;
     display: inline-flex;
     vertical-align: middle;
     padding-left: 0 !important;
     cursor: default;
-    position: relative;
-    top: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     align-items: center;
-    margin-left: .75em;
-    font-size: 108%;
+    margin: 0 0 0 .5em;
     /* Avoid pushing right header off the screen */
     flex-shrink: 1;
 }
 
 .viewMenuBar {
-    font-weight: bold;
     position: fixed;
     right: 0;
     left: 0;
@@ -102,7 +96,6 @@
     height: 50px;
     display: flex;
     flex-direction: column;
-    font-size: 13px;
 }
 
 .hiddenViewMenuBar .viewMenuBar {
@@ -128,7 +121,6 @@
 }
 
 .ui-body-b .libraryViewNav {
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),1px 5px 1px rgba(0,0,0,.12);
     position: fixed;
     right: 0;
     left: 0;
@@ -157,7 +149,6 @@
 }
 
     .dashboardDocument .viewMenuBar {
-        background-color: #333;
         height: auto;
     }
 
@@ -167,10 +158,6 @@
 
     .dashboardDocument.withTallToolbar .primaryIcons {
         padding-bottom: 0;
-    }
-
-    .dashboardDocument .viewMenuBar #selectionBar {
-        height: 3px;
     }
 
 .viewMenuBarTabs {
@@ -245,14 +232,8 @@ body:not(.dashboardDocument) .btnNotifications {
         margin-left: 1.6em;
     }
 
-i.sidebarLinkIcon {
-    font-size: 120%;
-    height: auto;
-    width: auto;
-}
-
 .darkDrawer i.sidebarLinkIcon {
-    margin-left: 1em;
+    margin-left: 1.9em;
 }
 
 .darkDrawer .sidebarLinkText, .darkDrawer .sidebarLink {

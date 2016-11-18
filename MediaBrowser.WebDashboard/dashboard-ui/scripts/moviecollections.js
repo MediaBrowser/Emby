@@ -1,4 +1,5 @@
-﻿define(['events', 'libraryBrowser', 'imageLoader', 'alphaPicker', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, alphaPicker, listView, cardBuilder) {
+﻿define(['events', 'libraryBrowser', 'imageLoader', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, listView, cardBuilder) {
+    'use strict';
 
     return function (view, params, tabContent) {
 
@@ -113,7 +114,8 @@
                         lazy: true,
                         cardLayout: true,
                         showTitle: true,
-                        showItemCounts: true
+                        showItemCounts: true,
+                        vibrant: true
                     });
                 }
                 else if (viewStyle == "Banner") {
@@ -141,10 +143,10 @@
                         shape: "auto",
                         context: 'movies',
                         showTitle: true,
-                        showYear: true,
-                        lazy: true,
+                        centerText: false,
                         cardLayout: true,
-                        showItemCounts: true
+                        showItemCounts: true,
+                        vibrant: true
                     });
                 }
                 else {
@@ -203,25 +205,9 @@
 
         function updateFilterControls(tabContent) {
 
-            var query = getQuery(tabContent);
-            self.alphaPicker.value(query.NameStartsWithOrGreater);
         }
 
         function initPage(tabContent) {
-
-            var alphaPickerElement = tabContent.querySelector('.alphaPicker');
-            alphaPickerElement.addEventListener('alphavaluechanged', function (e) {
-                var newValue = e.detail.value;
-                var query = getQuery(tabContent);
-                query.NameStartsWithOrGreater = newValue;
-                query.StartIndex = 0;
-                reloadItems(tabContent);
-            });
-
-            self.alphaPicker = new alphaPicker({
-                element: alphaPickerElement,
-                valueChangeEvent: 'click'
-            });
 
             tabContent.querySelector('.btnSort').addEventListener('click', function (e) {
                 libraryBrowser.showSortMenu({

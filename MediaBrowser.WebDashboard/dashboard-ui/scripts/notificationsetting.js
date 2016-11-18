@@ -1,4 +1,5 @@
-﻿define(['jQuery', 'emby-checkbox'], function ($) {
+﻿define(['jQuery', 'emby-checkbox', 'fnchecked'], function ($) {
+    'use strict';
 
     var notificationsConfigurationKey = "notifications";
 
@@ -153,6 +154,7 @@
 
             ApiClient.updateNamedConfiguration(notificationsConfigurationKey, notificationOptions).then(function (r) {
 
+                Dashboard.processServerConfigurationUpdateResult();
                 Dashboard.navigate('notificationsettings.html');
             });
 

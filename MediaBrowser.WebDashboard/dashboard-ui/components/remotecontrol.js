@@ -1,4 +1,5 @@
 ﻿define(['browser', 'datetime', 'libraryBrowser', 'listView', 'userdataButtons', 'cardStyle'], function (browser, datetime, libraryBrowser, listView, userdataButtons) {
+    'use strict';
 
     function showSlideshowMenu(context) {
         require(['scripts/slideshow'], function () {
@@ -202,14 +203,17 @@
             }
 
             ApiClient.getItem(Dashboard.getCurrentUserId(), item.Id).then(function (fullItem) {
-                context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = userdataButtons.getIconsHtml({
+                userdataButtons.fill({
                     item: fullItem,
                     includePlayed: false,
-                    style: 'fab-mini'
+                    style: 'fab-mini',
+                    element: context.querySelector('.nowPlayingPageUserDataButtons')
                 });
             });
         } else {
-            context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = '';
+            userdataButtons.destroy({
+                element: context.querySelector('.nowPlayingPageUserDataButtons')
+            });
         }
     }
 

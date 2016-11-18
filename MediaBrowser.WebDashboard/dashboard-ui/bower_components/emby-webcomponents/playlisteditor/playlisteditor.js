@@ -1,6 +1,6 @@
-﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'embyRouter', 'globalize', 'emby-input', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, embyRouter, globalize) {
+﻿define(['shell', 'dialogHelper', 'loading', 'layoutManager', 'connectionManager', 'userSettings', 'embyRouter', 'globalize', 'emby-input', 'paper-icon-button-light', 'emby-select', 'material-icons', 'css!./../formdialog', 'emby-button'], function (shell, dialogHelper, loading, layoutManager, connectionManager, userSettings, embyRouter, globalize) {
+    'use strict';
 
-    var lastPlaylistId = '';
     var currentServerId;
 
     function parentWithClass(elem, className) {
@@ -26,7 +26,7 @@
         var apiClient = connectionManager.getApiClient(currentServerId);
 
         if (playlistId) {
-            lastPlaylistId = playlistId;
+            userSettings.set('playlisteditor-lastplaylistid', playlistId);
             addToPlaylist(apiClient, panel, playlistId);
         } else {
             createPlaylist(apiClient, panel);
@@ -126,7 +126,13 @@
             });
 
             select.innerHTML = html;
-            select.value = lastPlaylistId || '';
+            select.value = userSettings.get('playlisteditor-lastplaylistid') || '';
+            
+            // If the value is empty set it again, in case we tried to set a lastplaylistid that is no longer valid
+            if (!select.value) {
+                select.value = '';
+            }
+
             triggerChange(select);
 
             loading.hide();
@@ -141,7 +147,7 @@
         html += '<div class="dialogContentInner dialog-content-centered">';
         html += '<form style="margin:auto;">';
 
-        html += '<div class="fldSelectPlaylist">';
+        html += '<div class="fldSelectPlaylist selectContainer">';
         html += '<select is="emby-select" id="selectPlaylistToAddTo" label="' + globalize.translate('sharedcomponents#LabelPlaylist') + '" autofocus></select>';
         html += '</div>';
 

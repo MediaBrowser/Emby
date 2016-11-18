@@ -1,12 +1,11 @@
 ﻿define(['jQuery', 'fnchecked'], function ($) {
+    'use strict';
 
     function load(page, config, allCultures, allCountries) {
         if (!config || !allCultures || !allCountries) {
             return;
         }
 
-        page.querySelector('#chkEnableInternetProviders').checked = config.EnableInternetProviders;
-        page.querySelector('#chkSaveLocal').checked = config.SaveLocalMeta;
         $('#selectLanguage', page).val(config.PreferredMetadataLanguage);
         $('#selectCountry', page).val(config.MetadataCountryCode);
 
@@ -20,8 +19,6 @@
 
         ApiClient.getServerConfiguration().then(function (config) {
 
-            config.EnableInternetProviders = form.querySelector('#chkEnableInternetProviders').checked;
-            config.SaveLocalMeta = form.querySelector('#chkSaveLocal').checked;
             config.PreferredMetadataLanguage = $('#selectLanguage', form).val();
             config.MetadataCountryCode = $('#selectCountry', form).val();
 

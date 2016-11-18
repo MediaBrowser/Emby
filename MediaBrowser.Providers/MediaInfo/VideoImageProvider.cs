@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -134,7 +133,7 @@ namespace MediaBrowser.Providers.MediaInfo
                         }
                     }
 
-                    extractedImagePath = await _mediaEncoder.ExtractVideoImage(inputPath, protocol, videoIndex, cancellationToken).ConfigureAwait(false);
+                    extractedImagePath = await _mediaEncoder.ExtractVideoImage(inputPath, item.Container, protocol, videoIndex, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -145,7 +144,7 @@ namespace MediaBrowser.Providers.MediaInfo
                                           ? TimeSpan.FromTicks(Convert.ToInt64(item.RunTimeTicks.Value * .1))
                                           : TimeSpan.FromSeconds(10);
 
-                    extractedImagePath = await _mediaEncoder.ExtractVideoImage(inputPath, protocol, item.Video3DFormat, imageOffset, cancellationToken).ConfigureAwait(false);
+                    extractedImagePath = await _mediaEncoder.ExtractVideoImage(inputPath, item.Container, protocol, item.Video3DFormat, imageOffset, cancellationToken).ConfigureAwait(false);
                 }
 
                 return new DynamicImageResponse
@@ -174,8 +173,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var video = item as Video;
 
-            if (item.LocationType == LocationType.FileSystem && video != null && !video.IsPlaceHolder &&
-                !video.IsShortcut && !video.IsArchive)
+            if (item.LocationType == LocationType.FileSystem && video != null && !video.IsPlaceHolder && !video.IsShortcut)
             {
                 return true;
             }

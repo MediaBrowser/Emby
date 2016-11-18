@@ -1,4 +1,5 @@
-﻿define(['jQuery', 'paper-icon-button-light', 'cardStyle'], function ($) {
+﻿define(['jQuery', 'humanedate', 'paper-icon-button-light', 'cardStyle'], function ($) {
+    'use strict';
 
     function deleteUser(page, id) {
 
@@ -152,6 +153,16 @@
         html += user.Name;
         html += "</div>";
 
+        html += '<div class="cardText cardText-secondary">';
+        var lastSeen = getLastSeenText(user.LastActivityDate);
+        if (lastSeen != "") {
+            html += lastSeen;
+        }
+        else {
+            html += "&nbsp;";
+        }
+        html += '</div>';
+
         // cardFooter
         html += "</div>";
 
@@ -162,6 +173,15 @@
         html += "</div>";
 
         return html;
+    }
+
+    function getLastSeenText(lastActivityDate) {
+
+        if (!lastActivityDate) {
+            return "";
+        }
+
+        return "Last seen " + humane_date(lastActivityDate);
     }
 
     function getUserSectionHtml(users, addConnectIndicator) {

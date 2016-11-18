@@ -16,6 +16,7 @@ namespace MediaBrowser.Model.LiveTv
         public string RecordingEncodingFormat { get; set; }
         public bool EnableRecordingSubfolders { get; set; }
         public bool EnableOriginalAudioWithEncodedRecordings { get; set; }
+        public string RecordedVideoCodec { get; set; }
 
         public List<TunerHostInfo> TunerHosts { get; set; }
         public List<ListingsProviderInfo> ListingProviders { get; set; }
@@ -82,6 +83,7 @@ namespace MediaBrowser.Model.LiveTv
         public string[] KidsCategories { get; set; }
         public string[] MovieCategories { get; set; }
         public NameValuePair[] ChannelMappings { get; set; }
+        public string MoviePrefix { get; set; }
 
         public ListingsProviderInfo()
         {

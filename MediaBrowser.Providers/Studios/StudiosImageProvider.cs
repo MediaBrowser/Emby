@@ -11,7 +11,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.Studios
 {
@@ -37,7 +39,7 @@ namespace MediaBrowser.Providers.Studios
 
         public static string ProviderName
         {
-            get { return "Media Browser Designs"; }
+            get { return "Emby Designs"; }
         }
 
         public bool Supports(IHasImages item)
@@ -88,7 +90,7 @@ namespace MediaBrowser.Providers.Studios
 
         private RemoteImageInfo GetImage(IHasImages item, string filename, ImageType type, string remoteFilename)
         {
-            var list = ImageUtils.GetAvailableImages(filename);
+            var list = ImageUtils.GetAvailableImages(filename, _fileSystem);
 
             var match = ImageUtils.FindMatch(item, list);
 
@@ -137,7 +139,7 @@ namespace MediaBrowser.Providers.Studios
             {
                 CancellationToken = cancellationToken,
                 Url = url,
-                ResourcePool = GenreImageProvider.ImageDownloadResourcePool
+                BufferContent = false
             });
         }
     }

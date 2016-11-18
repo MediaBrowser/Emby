@@ -1,27 +1,28 @@
 ﻿define([], function () {
+    'use strict';
 
     function isTv() {
 
         // This is going to be really difficult to get right
         var userAgent = navigator.userAgent.toLowerCase();
 
-        if (userAgent.indexOf('tv') != -1) {
+        if (userAgent.indexOf('tv') !== -1) {
             return true;
         }
 
-        if (userAgent.indexOf('samsungbrowser') != -1) {
+        if (userAgent.indexOf('samsungbrowser') !== -1) {
             return true;
         }
 
-        if (userAgent.indexOf('nintendo') != -1) {
+        if (userAgent.indexOf('nintendo') !== -1) {
             return true;
         }
 
-        if (userAgent.indexOf('viera') != -1) {
+        if (userAgent.indexOf('viera') !== -1) {
             return true;
         }
 
-        if (userAgent.indexOf('webos') != -1) {
+        if (userAgent.indexOf('webos') !== -1) {
             return true;
         }
 
@@ -45,7 +46,7 @@
         var lower = userAgent.toLowerCase();
 
         for (var i = 0, length = terms.length; i < length; i++) {
-            if (lower.indexOf(terms[i]) != -1) {
+            if (lower.indexOf(terms[i]) !== -1) {
                 return true;
             }
         }
@@ -128,6 +129,8 @@
             ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
             [];
 
+        var versionMatch = /(version)[ \/]([\w.]+)/.exec(ua);
+
         var platform_match = /(ipad)/.exec(ua) ||
             /(iphone)/.exec(ua) ||
             /(android)/.exec(ua) ||
@@ -135,27 +138,41 @@
 
         var browser = match[1] || "";
 
-        if (browser == "edge") {
+        if (browser === "edge") {
             platform_match = [""];
         } else {
-            if (ua.indexOf("windows phone") != -1 || ua.indexOf("iemobile") != -1) {
+            if (ua.indexOf("windows phone") !== -1 || ua.indexOf("iemobile") !== -1) {
 
                 // http://www.neowin.net/news/ie11-fakes-user-agent-to-fool-gmail-in-windows-phone-81-gdr1-update
                 browser = "msie";
             }
-            else if (ua.indexOf("like gecko") != -1 && ua.indexOf('webkit') == -1 && ua.indexOf('opera') == -1 && ua.indexOf('chrome') == -1 && ua.indexOf('safari') == -1) {
+            else if (ua.indexOf("like gecko") !== -1 && ua.indexOf('webkit') === -1 && ua.indexOf('opera') === -1 && ua.indexOf('chrome') === -1 && ua.indexOf('safari') === -1) {
                 browser = "msie";
             }
         }
 
-        if (browser == 'opr') {
+        if (browser === 'opr') {
             browser = 'opera';
+        }
+
+        var version;
+        if (versionMatch && versionMatch.length > 2) {
+            version = versionMatch[2];
+        }
+
+        version = version || match[2] || "0";
+
+        var versionMajor = parseInt(version.split('.')[0]);
+
+        if (isNaN(versionMajor)) {
+            versionMajor = 0;
         }
 
         return {
             browser: browser,
-            version: match[2] || "0",
-            platform: platform_match[0] || ""
+            version: version,
+            platform: platform_match[0] || "",
+            versionMajor: versionMajor
         };
     };
 
@@ -166,17 +183,18 @@
     if (matched.browser) {
         browser[matched.browser] = true;
         browser.version = matched.version;
+        browser.versionMajor = matched.versionMajor;
     }
 
     if (matched.platform) {
         browser[matched.platform] = true;
     }
 
-    if (!browser.chrome && !browser.msie && !browser.edge && !browser.opera && userAgent.toLowerCase().indexOf("webkit") != -1) {
+    if (!browser.chrome && !browser.msie && !browser.edge && !browser.opera && userAgent.toLowerCase().indexOf("webkit") !== -1) {
         browser.safari = true;
     }
 
-    if (userAgent.toLowerCase().indexOf("playstation 4") != -1) {
+    if (userAgent.toLowerCase().indexOf("playstation 4") !== -1) {
         browser.ps4 = true;
         browser.tv = true;
     }
@@ -185,14 +203,14 @@
         browser.mobile = true;
     }
 
-    browser.xboxOne = userAgent.toLowerCase().indexOf('xbox') != -1;
+    browser.xboxOne = userAgent.toLowerCase().indexOf('xbox') !== -1;
     browser.animate = document.documentElement.animate != null;
-    browser.tizen = userAgent.toLowerCase().indexOf('tizen') != -1 || userAgent.toLowerCase().indexOf('smarthub') != -1;
-    browser.web0s = userAgent.toLowerCase().indexOf('Web0S'.toLowerCase()) != -1;
-    browser.edgeUwp = browser.edge && userAgent.toLowerCase().indexOf('msapphost') != -1;
+    browser.tizen = userAgent.toLowerCase().indexOf('tizen') !== -1 || userAgent.toLowerCase().indexOf('smarthub') !== -1;
+    browser.web0s = userAgent.toLowerCase().indexOf('Web0S'.toLowerCase()) !== -1;
+    browser.edgeUwp = browser.edge && userAgent.toLowerCase().indexOf('msapphost') !== -1;
 
     browser.tv = isTv();
-    browser.operaTv = browser.tv && userAgent.toLowerCase().indexOf('opr/') != -1;
+    browser.operaTv = browser.tv && userAgent.toLowerCase().indexOf('opr/') !== -1;
 
     if (!isStyleSupported('display', 'flex')) {
         browser.noFlex = true;

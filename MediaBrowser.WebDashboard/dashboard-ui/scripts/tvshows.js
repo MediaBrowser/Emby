@@ -1,4 +1,5 @@
-﻿define(['events', 'libraryBrowser', 'imageLoader', 'alphaPicker', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, alphaPicker, listView, cardBuilder) {
+﻿define(['events', 'libraryBrowser', 'imageLoader', 'listView', 'cardBuilder', 'apphost', 'emby-itemscontainer'], function (events, libraryBrowser, imageLoader, listView, cardBuilder, appHost) {
+    'use strict';
 
     return function (view, params, tabContent) {
 
@@ -92,6 +93,8 @@
                 var html;
                 var viewStyle = self.getCurrentViewStyle();
 
+                var supportsImageAnalysis = appHost.supports('imageanalysis');
+
                 if (viewStyle == "Thumb") {
 
                     html = cardBuilder.getCardsHtml({
@@ -100,7 +103,7 @@
                         preferThumb: true,
                         context: 'tv',
                         lazy: true,
-                        overlayPlayButton: true
+                        overlayMoreButton: true
                     });
                 }
                 else if (viewStyle == "ThumbCard") {
@@ -113,7 +116,8 @@
                         lazy: true,
                         cardLayout: true,
                         showTitle: true,
-                        showSeriesYear: true
+                        showSeriesYear: true,
+                        vibrant: supportsImageAnalysis
                     });
                 }
                 else if (viewStyle == "Banner") {
@@ -141,9 +145,10 @@
                         shape: "portrait",
                         context: 'tv',
                         showTitle: true,
-                        showYear: true,
+                        showSeriesYear: true,
                         lazy: true,
-                        cardLayout: true
+                        cardLayout: true,
+                        vibrant: supportsImageAnalysis
                     });
                 }
                 else {
@@ -155,7 +160,7 @@
                         context: 'tv',
                         centerText: true,
                         lazy: true,
-                        overlayPlayButton: true
+                        overlayMoreButton: true
                     });
                 }
 
@@ -215,25 +220,9 @@
 
         function updateFilterControls(tabContent) {
 
-            var query = getQuery(tabContent);
-            self.alphaPicker.value(query.NameStartsWithOrGreater);
         }
 
         function initPage(tabContent) {
-
-            var alphaPickerElement = tabContent.querySelector('.alphaPicker');
-            alphaPickerElement.addEventListener('alphavaluechanged', function (e) {
-                var newValue = e.detail.value;
-                var query = getQuery(tabContent);
-                query.NameStartsWithOrGreater = newValue;
-                query.StartIndex = 0;
-                reloadItems(tabContent);
-            });
-
-            self.alphaPicker = new alphaPicker({
-                element: alphaPickerElement,
-                valueChangeEvent: 'click'
-            });
 
             tabContent.querySelector('.btnFilter').addEventListener('click', function () {
                 self.showFilterMenu();

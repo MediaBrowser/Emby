@@ -5,11 +5,12 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Globalization;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvChannel : BaseItem, IHasMediaSources
+    public class LiveTvChannel : BaseItem, IHasMediaSources, IHasProgramAttributes
     {
         public override List<string> GetUserDataKeys()
         {
@@ -77,14 +78,17 @@ namespace MediaBrowser.Controller.LiveTv
 
         protected override string CreateSortName()
         {
-            double number = 0;
-
             if (!string.IsNullOrEmpty(Number))
             {
-                double.TryParse(Number, out number);
+                double number = 0;
+
+                if (double.TryParse(Number, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+                {
+                    return number.ToString("00000-") + (Name ?? string.Empty);
+                }
             }
 
-            return number.ToString("000-") + (Name ?? string.Empty);
+            return Number + "-" + (Name ?? string.Empty);
         }
 
         [IgnoreDataMember]
@@ -137,5 +141,56 @@ namespace MediaBrowser.Controller.LiveTv
         {
             return false;
         }
+
+        [IgnoreDataMember]
+        public bool IsMovie { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is sports.
+        /// </summary>
+        /// <value><c>true</c> if this instance is sports; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsSports { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is series.
+        /// </summary>
+        /// <value><c>true</c> if this instance is series; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsSeries { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is live.
+        /// </summary>
+        /// <value><c>true</c> if this instance is live; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsLive { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is news.
+        /// </summary>
+        /// <value><c>true</c> if this instance is news; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsNews { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is kids.
+        /// </summary>
+        /// <value><c>true</c> if this instance is kids; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsKids { get; set; }
+
+        [IgnoreDataMember]
+        public bool IsPremiere { get; set; }
+
+        [IgnoreDataMember]
+        public bool IsRepeat { get; set; }
+
+        /// <summary>
+        /// Gets or sets the episode title.
+        /// </summary>
+        /// <value>The episode title.</value>
+        [IgnoreDataMember]
+        public string EpisodeTitle { get; set; }
     }
 }

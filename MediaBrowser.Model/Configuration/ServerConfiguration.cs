@@ -8,6 +8,9 @@ namespace MediaBrowser.Model.Configuration
     /// </summary>
     public class ServerConfiguration : BaseApplicationConfiguration
     {
+        public const int DefaultHttpPort = 8096;
+        public const int DefaultHttpsPort = 8920;
+
         /// <summary>
         /// Gets or sets a value indicating whether [enable u pn p].
         /// </summary>
@@ -73,6 +76,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value>The metadata path.</value>
         public string MetadataPath { get; set; }
+        public string MetadataNetworkPath { get; set; }
 
         public string LastVersion { get; set; }
 
@@ -167,6 +171,9 @@ namespace MediaBrowser.Model.Configuration
         public MetadataOptions[] MetadataOptions { get; set; }
 
         public bool EnableAutomaticRestart { get; set; }
+        public bool SkipDeserializationForBasicTypes { get; set; }
+        public bool SkipDeserializationForPrograms { get; set; }
+        public bool SkipDeserializationForAudio { get; set; }
 
         public PathSubstitution[] PathSubstitutions { get; set; }
 
@@ -202,6 +209,7 @@ namespace MediaBrowser.Model.Configuration
         public string[] CodecsUsed { get; set; }
         public bool EnableChannelView { get; set; }
         public bool EnableExternalContentInSuggestions { get; set; }
+        public bool EnableSimpleArtistDetection { get; set; }
 
         public int ImageExtractionTimeoutMs { get; set; }
         /// <summary>
@@ -220,10 +228,10 @@ namespace MediaBrowser.Model.Configuration
             EnableExternalContentInSuggestions = true;
 
             ImageSavingConvention = ImageSavingConvention.Compatible;
-            PublicPort = 8096;
-            PublicHttpsPort = 8920;
-            HttpServerPortNumber = 8096;
-            HttpsPortNumber = 8920;
+            PublicPort = DefaultHttpPort;
+            PublicHttpsPort = DefaultHttpsPort;
+            HttpServerPortNumber = DefaultHttpPort;
+            HttpsPortNumber = DefaultHttpsPort;
             EnableHttps = false;
             EnableDashboardResponseCaching = true;
             EnableDashboardResourceMinification = true;
@@ -431,7 +439,8 @@ namespace MediaBrowser.Model.Configuration
                             Limit = 0,
                             Type = ImageType.Disc
                         }
-                    }
+                    },
+                    DisabledMetadataFetchers = new []{ "TheAudioDB" }
                 },
 
                 new MetadataOptions(1, 1280)
@@ -469,7 +478,8 @@ namespace MediaBrowser.Model.Configuration
                             Limit = 0,
                             Type = ImageType.Logo
                         }
-                    }
+                    },
+                    DisabledMetadataFetchers = new []{ "TheAudioDB" }
                 },
 
                 new MetadataOptions(1, 1280)

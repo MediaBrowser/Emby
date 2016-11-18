@@ -1,4 +1,5 @@
 ﻿define(['globalize', 'emby-checkbox'], function (globalize) {
+    'use strict';
 
     function embed(parent, contentType, libraryOptions) {
 
@@ -35,14 +36,18 @@
 
         if (contentType == 'homevideos' || contentType == 'photos') {
             parent.querySelector('.chkEnablePhotosContainer').classList.remove('hide');
+            parent.querySelector('.chkDownloadImagesInAdvanceContainer').classList.add('hide');
+            parent.querySelector('.chkEnableInternetProvidersContainer').classList.add('hide');
         } else {
             parent.querySelector('.chkEnablePhotosContainer').classList.add('hide');
+            parent.querySelector('.chkDownloadImagesInAdvanceContainer').classList.remove('hide');
+            parent.querySelector('.chkEnableInternetProvidersContainer').classList.remove('hide');
         }
 
-        if (contentType == 'homevideos') {
-            parent.querySelector('.chkDownloadImagesInAdvanceContainer').classList.add('hide');
+        if (contentType == 'photos') {
+            parent.querySelector('.chkSaveLocalContainer').classList.add('hide');
         } else {
-            parent.querySelector('.chkDownloadImagesInAdvanceContainer').classList.remove('hide');
+            parent.querySelector('.chkSaveLocalContainer').classList.remove('hide');
         }
 
         if (contentType == 'tvshows' || contentType == 'movies' || contentType == 'homevideos' || contentType == 'musicvideos' || contentType == 'mixed' || !contentType) {
@@ -62,7 +67,9 @@
             EnableRealtimeMonitor: parent.querySelector('.chkEnableRealtimeMonitor').checked,
             ExtractChapterImagesDuringLibraryScan: parent.querySelector('.chkExtractChaptersDuringLibraryScan').checked,
             EnableChapterImageExtraction: parent.querySelector('.chkExtractChapterImages').checked,
-            DownloadImagesInAdvance: parent.querySelector('#chkDownloadImagesInAdvance').checked
+            DownloadImagesInAdvance: parent.querySelector('#chkDownloadImagesInAdvance').checked,
+            EnableInternetProviders: parent.querySelector('#chkEnableInternetProviders').checked,
+            SaveLocalMetadata: parent.querySelector('#chkSaveLocal').checked
         };
 
         return options;
@@ -76,6 +83,8 @@
         parent.querySelector('.chkExtractChaptersDuringLibraryScan').checked = options.ExtractChapterImagesDuringLibraryScan;
         parent.querySelector('.chkExtractChapterImages').checked = options.EnableChapterImageExtraction;
         parent.querySelector('#chkDownloadImagesInAdvance').checked = options.DownloadImagesInAdvance;
+        parent.querySelector('#chkEnableInternetProviders').checked = options.EnableInternetProviders;
+        parent.querySelector('#chkSaveLocal').checked = options.SaveLocalMetadata;
     }
 
     return {

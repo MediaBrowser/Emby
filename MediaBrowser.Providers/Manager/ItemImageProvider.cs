@@ -15,8 +15,12 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 
@@ -154,16 +158,16 @@ namespace MediaBrowser.Providers.Manager
                                 {
                                     var mimeType = MimeTypes.GetMimeType(response.Path);
 
-                                    var stream = _fileSystem.GetFileStream(response.Path, FileMode.Open, FileAccess.Read, FileShare.Read, true);
+                                    var stream = _fileSystem.GetFileStream(response.Path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read, true);
 
-                                    await _providerManager.SaveImage(item, stream, mimeType, imageType, null, response.InternalCacheKey, cancellationToken).ConfigureAwait(false);
+                                    await _providerManager.SaveImage(item, stream, mimeType, imageType, null, cancellationToken).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 var mimeType = "image/" + response.Format.ToString().ToLower();
 
-                                await _providerManager.SaveImage(item, response.Stream, mimeType, imageType, null, response.InternalCacheKey, cancellationToken).ConfigureAwait(false);
+                                await _providerManager.SaveImage(item, response.Stream, mimeType, imageType, null, cancellationToken).ConfigureAwait(false);
                             }
 
                             downloadedImages.Add(imageType);
@@ -370,14 +374,14 @@ namespace MediaBrowser.Providers.Manager
                 }
 
                 // Delete the source file
-                var currentFile = new FileInfo(image.Path);
+                var currentFile = _fileSystem.GetFileInfo(image.Path);
 
                 // Deletion will fail if the file is hidden so remove the attribute first
                 if (currentFile.Exists)
                 {
-                    if ((currentFile.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    if (currentFile.IsHidden)
                     {
-                        currentFile.Attributes &= ~FileAttributes.Hidden;
+                        _fileSystem.SetHidden(currentFile.FullName, false);
                     }
 
                     _fileSystem.DeleteFile(currentFile.FullName);
@@ -552,15 +556,7 @@ namespace MediaBrowser.Providers.Manager
             switch (type)
             {
                 case ImageType.Primary:
-                    return false;
-                case ImageType.Thumb:
-                    return false;
-                case ImageType.Logo:
-                    return false;
-                case ImageType.Backdrop:
-                    return false;
-                case ImageType.Screenshot:
-                    return false;
+                    return !(item is Movie || item is Series || item is Game);
                 default:
                     return true;
             }
@@ -617,7 +613,7 @@ namespace MediaBrowser.Providers.Manager
                     {
                         try
                         {
-                            if (item.GetImages(imageType).Any(i => new FileInfo(i.Path).Length == response.ContentLength.Value))
+                            if (item.GetImages(imageType).Any(i => _fileSystem.GetFileInfo(i.Path).Length == response.ContentLength.Value))
                             {
                                 response.Content.Dispose();
                                 continue;

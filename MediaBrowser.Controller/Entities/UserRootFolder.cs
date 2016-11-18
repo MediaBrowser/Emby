@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+﻿using MediaBrowser.Model.Serialization;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Library;
 using MediaBrowser.Model.Querying;
@@ -30,6 +30,15 @@ namespace MediaBrowser.Controller.Entities
                 }
 
                 return _childrenIds.Select(LibraryManager.GetItemById).Where(i => i != null).ToList();
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
             }
         }
 

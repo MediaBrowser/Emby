@@ -2,30 +2,24 @@
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using MediaBrowser.Model.Providers;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
     /// <summary>
     /// Class Trailer
     /// </summary>
-    public class Trailer : Video, IHasCriticRating, IHasProductionLocations, IHasBudget, IHasTaglines, IHasMetascore, IHasOriginalTitle, IHasLookupInfo<TrailerInfo>
+    public class Trailer : Video, IHasLookupInfo<TrailerInfo>
     {
-        public List<string> ProductionLocations { get; set; }
-
         public Trailer()
         {
             RemoteTrailers = new List<MediaUrl>();
-            Taglines = new List<string>();
             Keywords = new List<string>();
-            ProductionLocations = new List<string>();
             TrailerTypes = new List<TrailerType> { TrailerType.LocalTrailer };
         }
 
         public List<TrailerType> TrailerTypes { get; set; }
-
-        public float? Metascore { get; set; }
 
         public List<MediaUrl> RemoteTrailers { get; set; }
 
@@ -34,24 +28,6 @@ namespace MediaBrowser.Controller.Entities
         {
             get { return TrailerTypes.Contains(TrailerType.LocalTrailer); }
         }
-
-        /// <summary>
-        /// Gets or sets the taglines.
-        /// </summary>
-        /// <value>The taglines.</value>
-        public List<string> Taglines { get; set; }
-
-        /// <summary>
-        /// Gets or sets the budget.
-        /// </summary>
-        /// <value>The budget.</value>
-        public double? Budget { get; set; }
-
-        /// <summary>
-        /// Gets or sets the revenue.
-        /// </summary>
-        /// <value>The revenue.</value>
-        public double? Revenue { get; set; }
 
         public override UnratedItem GetBlockUnratedType()
         {
@@ -64,7 +40,7 @@ namespace MediaBrowser.Controller.Entities
 
             info.IsLocalTrailer = TrailerTypes.Contains(TrailerType.LocalTrailer);
 
-            if (!IsInMixedFolder && LocationType == LocationType.FileSystem)
+            if (!DetectIsInMixedFolder() && LocationType == LocationType.FileSystem)
             {
                 info.Name = System.IO.Path.GetFileName(ContainingFolderPath);
             }
@@ -90,7 +66,7 @@ namespace MediaBrowser.Controller.Entities
                 else
                 {
                     // Try to get the year from the folder name
-                    if (!IsInMixedFolder)
+                    if (!DetectIsInMixedFolder())
                     {
                         info = LibraryManager.ParseName(System.IO.Path.GetFileName(ContainingFolderPath));
 

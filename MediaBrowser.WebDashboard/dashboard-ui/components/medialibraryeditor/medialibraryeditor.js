@@ -1,4 +1,5 @@
 ﻿define(['dialogHelper', 'dom', 'components/libraryoptionseditor/libraryoptionseditor', 'emby-button', 'listViewStyle', 'paper-icon-button-light', 'formDialogStyle'], function (dialogHelper, dom, libraryoptionseditor) {
+    'use strict';
 
     var currentDeferred;
     var hasChanges;
@@ -25,7 +26,6 @@
 
     function updateMediaLocation(page, path, networkSharePath) {
         var virtualFolder = currentOptions.library;
-
         ApiClient.updateMediaPath(virtualFolder.Name, {
 
             Path: path,

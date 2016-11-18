@@ -1,4 +1,5 @@
-﻿define(['imageLoader', 'layoutManager', 'viewManager', 'libraryBrowser', 'apphost', 'paper-icon-button-light', 'material-icons'], function (imageLoader, layoutManager, viewManager, libraryBrowser, appHost) {
+﻿define(['imageLoader', 'layoutManager', 'viewManager', 'libraryBrowser', 'apphost', 'embyRouter', 'paper-icon-button-light', 'material-icons'], function (imageLoader, layoutManager, viewManager, libraryBrowser, appHost, embyRouter) {
+    'use strict';
 
     var enableBottomTabs = AppInfo.isNativeApp;
     var enableLibraryNavDrawer = !enableBottomTabs;
@@ -21,7 +22,7 @@
         html += '<button type="button" is="paper-icon-button-light" class="headerButton mainDrawerButton barsMenuButton headerButtonLeft hide"><i class="md-icon">menu</i></button>';
         html += '<button type="button" is="paper-icon-button-light" class="headerButton headerAppsButton barsMenuButton headerButtonLeft"><i class="md-icon">home</i></button>';
 
-        html += '<div class="libraryMenuButtonText headerButton">' + Globalize.translate('ButtonHome') + '</div>';
+        html += '<h3 class="libraryMenuButtonText headerButton">' + Globalize.translate('ButtonHome') + '</h3>';
 
         html += '<div class="viewMenuSecondary">';
 
@@ -60,7 +61,7 @@
 
     function onBackClick() {
 
-        Emby.Page.back();
+        embyRouter.back();
     }
 
     function updateUserInHeader(user) {
@@ -307,7 +308,7 @@
         html += '<div class="sidebarDivider"></div>';
 
         if (user.localUser && (AppInfo.isNativeApp && browserInfo.android)) {
-            html += '<a class="sidebarLink lnkMediaFolder lnkMySettings" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mypreferencesmenu.html?userId=' + user.localUser.Id + '"><i class="md-icon sidebarLinkIcon">settings</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSettings') + '</span></a>';
+            html += '<a class="sidebarLink lnkMediaFolder lnkMySettings" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mypreferencesmenu.html"><i class="md-icon sidebarLinkIcon">settings</i><span class="sidebarLinkText">' + Globalize.translate('ButtonSettings') + '</span></a>';
         }
 
         html += '<a class="sidebarLink lnkMediaFolder lnkManageOffline" data-itemid="manageoffline" onclick="return LibraryMenu.onLinkClicked(event, this);" href="mysync.html?mode=offline"><i class="md-icon sidebarLinkIcon">file_download</i><span class="sidebarLinkText">' + Globalize.translate('ManageOfflineDownloads') + '</span></a>';
@@ -908,7 +909,7 @@
         var backButton = document.querySelector('.headerBackButton');
 
         if (backButton) {
-            if (page.getAttribute('data-backbutton') == 'true' && Emby.Page.canGoBack()) {
+            if (page.getAttribute('data-backbutton') == 'true' && embyRouter.canGoBack()) {
                 backButton.classList.remove('hide');
             } else {
                 backButton.classList.add('hide');
@@ -984,7 +985,7 @@
         // At least 240
         drawerWidth = Math.max(drawerWidth, 240);
         // But not exceeding 280
-        drawerWidth = Math.min(drawerWidth, 280);
+        drawerWidth = Math.min(drawerWidth, 260);
 
         var disableEdgeSwipe = false;
 

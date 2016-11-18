@@ -1,4 +1,5 @@
 ﻿define(['appSettings', 'emby-checkbox'], function (appSettings) {
+    'use strict';
 
     function loadForm(page, user) {
 
@@ -28,6 +29,11 @@
         }
 
         appSettings.cameraUploadServers(cameraUploadServers);
+
+        if (window.MainActivity) {
+            // TODO: isolate into android app
+            MainActivity.authorizeStorage();
+        }
 
         Dashboard.hideLoadingMsg();
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
 using System.Diagnostics;
@@ -47,7 +48,7 @@ namespace MediaBrowser.Model.Entities
             {
                 if (!string.IsNullOrEmpty(Title))
                 {
-                    return Title;
+                    return AddLanguageIfNeeded(Title);
                 }
 
                 if (Type == MediaStreamType.Audio)
@@ -113,6 +114,16 @@ namespace MediaBrowser.Model.Entities
 
                 return null;
             }
+        }
+
+        private string AddLanguageIfNeeded(string title)
+        {
+            if (!string.IsNullOrEmpty(Language) && !string.Equals(Language, "und", StringComparison.OrdinalIgnoreCase) && title.IndexOf(Language, StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                title = StringHelper.FirstToUpper(Language) + " " + title;
+            }
+
+            return title;
         }
 
         public string NalLengthSize { get; set; }
@@ -279,7 +290,8 @@ namespace MediaBrowser.Model.Entities
             return StringHelper.IndexOfIgnoreCase(codec, "pgs") == -1 &&
                    StringHelper.IndexOfIgnoreCase(codec, "dvd") == -1 &&
                    StringHelper.IndexOfIgnoreCase(codec, "dvbsub") == -1 &&
-                   !StringHelper.EqualsIgnoreCase(codec, "sub");
+                   !StringHelper.EqualsIgnoreCase(codec, "sub") &&
+                   !StringHelper.EqualsIgnoreCase(codec, "dvb_subtitle");
         }
 
         public bool SupportsSubtitleConversionTo(string codec)

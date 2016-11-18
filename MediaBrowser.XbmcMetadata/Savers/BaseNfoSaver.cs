@@ -18,8 +18,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Xml;
-using CommonIO;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Xml;
 
 namespace MediaBrowser.XbmcMetadata.Savers
 {
@@ -105,9 +108,10 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
         }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-        protected BaseNfoSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger)
+        protected BaseNfoSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IXmlReaderSettingsFactory xmlReaderSettingsFactory)
         {
             Logger = logger;
+            XmlReaderSettingsFactory = xmlReaderSettingsFactory;
             UserDataManager = userDataManager;
             UserManager = userManager;
             LibraryManager = libraryManager;
@@ -121,6 +125,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
         protected IUserManager UserManager { get; private set; }
         protected IUserDataManager UserDataManager { get; private set; }
         protected ILogger Logger { get; private set; }
+        protected IXmlReaderSettingsFactory XmlReaderSettingsFactory { get; private set; }
 
         protected ItemUpdateType MinimumUpdateType
         {
@@ -203,32 +208,33 @@ namespace MediaBrowser.XbmcMetadata.Savers
         {
             FileSystem.CreateDirectory(Path.GetDirectoryName(path));
 
-            var file = new FileInfo(path);
+            var file = FileSystem.GetFileInfo(path);
 
             var wasHidden = false;
 
             // This will fail if the file is hidden
             if (file.Exists)
             {
-                if ((file.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                if (file.IsHidden)
                 {
-                    file.Attributes &= ~FileAttributes.Hidden;
+                    FileSystem.SetHidden(path, false);
 
                     wasHidden = true;
                 }
+                if (file.IsReadOnly)
+                {
+                    FileSystem.SetReadOnly(path, false);
+                }
             }
 
-            using (var filestream = FileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var filestream = FileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
             {
                 stream.CopyTo(filestream);
             }
 
             if (wasHidden || ConfigurationManager.Configuration.SaveMetadataHidden)
             {
-                file.Refresh();
-
-                // Add back the attribute
-                file.Attributes |= FileAttributes.Hidden;
+                FileSystem.SetHidden(path, true);
             }
         }
 
@@ -269,13 +275,13 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
                 try
                 {
-                    AddCustomTags(xmlPath, tagsUsed, writer, Logger);
+                    AddCustomTags(xmlPath, tagsUsed, writer, Logger, FileSystem);
                 }
                 catch (FileNotFoundException)
                 {
 
                 }
-                catch (DirectoryNotFoundException)
+                catch (IOException)
                 {
 
                 }
@@ -428,7 +434,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
         /// <returns>Task.</returns>
         public static void AddCommonNodes(BaseItem item, XmlWriter writer, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataRepo, IFileSystem fileSystem, IServerConfigurationManager config)
         {
-            var writtenProviderIds = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            var writtenProviderIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             var overview = (item.Overview ?? string.Empty)
                 .StripHtml()
@@ -449,10 +455,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("plot", overview);
             }
 
-            var hasShortOverview = item as IHasShortOverview;
-            if (hasShortOverview != null)
+            if (item is Video)
             {
-                var outline = (hasShortOverview.ShortOverview ?? string.Empty)
+                var outline = (item.ShortOverview ?? string.Empty)
                     .StripHtml()
                     .Replace("&quot;", "'");
 
@@ -484,13 +489,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
             writer.WriteElementString("title", item.Name ?? string.Empty);
 
-            var hasOriginalTitle = item as IHasOriginalTitle;
-            if (hasOriginalTitle != null)
+            if (!string.IsNullOrWhiteSpace(item.OriginalTitle))
             {
-                if (!string.IsNullOrEmpty(hasOriginalTitle.OriginalTitle))
-                {
-                    writer.WriteElementString("originaltitle", hasOriginalTitle.OriginalTitle ?? string.Empty);
-                }
+                writer.WriteElementString("originaltitle", item.OriginalTitle);
             }
 
             var people = libraryManager.GetPeople(item);
@@ -658,19 +659,14 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 }
             }
 
-            var hasCriticRating = item as IHasCriticRating;
-
-            if (hasCriticRating != null)
+            if (item.CriticRating.HasValue)
             {
-                if (hasCriticRating.CriticRating.HasValue)
-                {
-                    writer.WriteElementString("criticrating", hasCriticRating.CriticRating.Value.ToString(UsCulture));
-                }
+                writer.WriteElementString("criticrating", item.CriticRating.Value.ToString(UsCulture));
+            }
 
-                if (!string.IsNullOrEmpty(hasCriticRating.CriticRatingSummary))
-                {
-                    writer.WriteElementString("criticratingsummary", hasCriticRating.CriticRatingSummary);
-                }
+            if (!string.IsNullOrEmpty(item.CriticRatingSummary))
+            {
+                writer.WriteElementString("criticratingsummary", item.CriticRatingSummary);
             }
 
             var hasDisplayOrder = item as IHasDisplayOrder;
@@ -718,22 +714,14 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 writer.WriteElementString("runtime", Convert.ToInt32(timespan.TotalMinutes).ToString(UsCulture));
             }
 
-            var hasTaglines = item as IHasTaglines;
-            if (hasTaglines != null)
+            if (!string.IsNullOrWhiteSpace(item.Tagline))
             {
-                foreach (var tagline in hasTaglines.Taglines)
-                {
-                    writer.WriteElementString("tagline", tagline);
-                }
+                writer.WriteElementString("tagline", item.Tagline);
             }
 
-            var hasProductionLocations = item as IHasProductionLocations;
-            if (hasProductionLocations != null)
+            foreach (var country in item.ProductionLocations)
             {
-                foreach (var country in hasProductionLocations.ProductionLocations)
-                {
-                    writer.WriteElementString("country", country);
-                }
+                writer.WriteElementString("country", country);
             }
 
             foreach (var genre in item.Genres)
@@ -1048,56 +1036,57 @@ namespace MediaBrowser.XbmcMetadata.Savers
             return string.Equals(person.Type, type, StringComparison.OrdinalIgnoreCase) || string.Equals(person.Role, type, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static void AddCustomTags(string path, List<string> xmlTagsUsed, XmlWriter writer, ILogger logger)
+        private void AddCustomTags(string path, List<string> xmlTagsUsed, XmlWriter writer, ILogger logger, IFileSystem fileSystem)
         {
-            var settings = new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                IgnoreProcessingInstructions = true,
-                IgnoreComments = true,
-                ValidationType = ValidationType.None
-            };
+            var settings = XmlReaderSettingsFactory.Create(false);
 
-            using (var streamReader = GetStreamReader(path))
+            settings.CheckCharacters = false;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreComments = true;
+
+            using (var fileStream = fileSystem.OpenRead(path))
             {
-                // Use XmlReader for best performance
-                using (var reader = XmlReader.Create(streamReader, settings))
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
                 {
-                    try
+                    // Use XmlReader for best performance
+                    using (var reader = XmlReader.Create(streamReader, settings))
                     {
-                        reader.MoveToContent();
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.ErrorException("Error reading existing xml tags from {0}.", ex, path);
-                        return;
-                    }
-
-                    // Loop through each element
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Element)
+                        try
                         {
-                            var name = reader.Name;
+                            reader.MoveToContent();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.ErrorException("Error reading existing xml tags from {0}.", ex, path);
+                            return;
+                        }
 
-                            if (!CommonTags.ContainsKey(name) && !xmlTagsUsed.Contains(name, StringComparer.OrdinalIgnoreCase))
+                        reader.Read();
+
+                        // Loop through each element
+                        while (!reader.EOF)
+                        {
+                            if (reader.NodeType == XmlNodeType.Element)
                             {
-                                writer.WriteNode(reader, false);
+                                var name = reader.Name;
+
+                                if (!CommonTags.ContainsKey(name) && !xmlTagsUsed.Contains(name, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    writer.WriteNode(reader, false);
+                                }
+                                else
+                                {
+                                    reader.Skip();
+                                }
                             }
                             else
                             {
-                                reader.Skip();
+                                reader.Read();
                             }
                         }
                     }
                 }
             }
-
-        }
-
-        public static StreamReader GetStreamReader(string path)
-        {
-            return new StreamReader(path, Encoding.UTF8);
         }
     }
 }

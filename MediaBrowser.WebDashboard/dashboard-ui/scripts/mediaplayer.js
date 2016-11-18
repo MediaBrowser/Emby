@@ -1,4 +1,5 @@
-define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appSettings, userSettings, appStorage, datetime) {
+define(['appSettings', 'userSettings', 'appStorage', 'datetime', 'browser'], function (appSettings, userSettings, appStorage, datetime, browser) {
+    'use strict';
 
     function mediaPlayer() {
 
@@ -96,7 +97,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
 
             var intervalTime = ApiClient.isWebSocketOpen() ? 1200 : 5000;
             // Ease up with safari because it doesn't perform as well
-            if (browserInfo.safari) {
+            if (browser.safari) {
                 intervalTime = Math.max(intervalTime, 5000);
             }
             self.lastProgressReport = 0;
@@ -146,6 +147,26 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
             return window.MediaSource != null;
         };
 
+        function getProfileOptions(item) {
+
+            var options = {};
+
+            if (!AppInfo.isNativeApp) {
+                var disableHlsVideoAudioCodecs = [];
+
+                if (!self.canPlayNativeHls() || (browser.edge && !item.RunTimeTicks)) {
+                    // hls.js does not support these
+                    disableHlsVideoAudioCodecs.push('mp3');
+                    disableHlsVideoAudioCodecs.push('ac3');
+                }
+
+                options.enableMkvProgressive = false;
+                options.disableHlsVideoAudioCodecs = disableHlsVideoAudioCodecs;
+            }
+
+            return options;
+        }
+
         self.changeStream = function (ticks, params) {
 
             var mediaRenderer = self.currentMediaRenderer;
@@ -163,13 +184,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
             var playSessionId = getParameterByName('PlaySessionId', currentSrc);
             var liveStreamId = getParameterByName('LiveStreamId', currentSrc);
 
-            Dashboard.getDeviceProfile(null, {
-
-                enableMkvProgressive: self.currentMediaSource.RunTimeTicks != null,
-                enableTsProgressive: self.currentMediaSource.RunTimeTicks != null,
-                enableHls: !browserInfo.firefox || self.currentMediaSource.RunTimeTicks == null
-
-            }).then(function (deviceProfile) {
+            Dashboard.getDeviceProfile(null, getProfileOptions(self.currentMediaSource)).then(function (deviceProfile) {
 
                 var audioStreamIndex = params.AudioStreamIndex == null ? (getParameterByName('AudioStreamIndex', currentSrc) || null) : params.AudioStreamIndex;
                 if (typeof (audioStreamIndex) == 'string') {
@@ -417,26 +432,26 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
 
             Dashboard.showLoadingMsg();
 
-            Dashboard.getCurrentUser().then(function (user) {
+            return Dashboard.getCurrentUser().then(function (user) {
 
                 if (options.items) {
 
-                    translateItemsForPlayback(options.items, true).then(function (items) {
+                    return translateItemsForPlayback(options.items, true).then(function (items) {
 
-                        self.playWithIntros(items, options, user);
+                        return self.playWithIntros(items, options, user);
                     });
 
                 } else {
 
-                    self.getItemsForPlayback({
+                    return self.getItemsForPlayback({
 
                         Ids: options.ids.join(',')
 
                     }).then(function (result) {
 
-                        translateItemsForPlayback(result.Items, true).then(function (items) {
+                        return translateItemsForPlayback(result.Items, true).then(function (items) {
 
-                            self.playWithIntros(items, options, user);
+                            return self.playWithIntros(items, options, user);
                         });
 
                     });
@@ -472,12 +487,14 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                 });
 
             });
+            // Todo: rework above methods to use promises
+            return Promise.resolve();
         };
 
-        function getOptimalMediaSource(mediaType, versions) {
+        function getOptimalMediaSource(mediaType, itemType, versions) {
 
             var promises = versions.map(function (v) {
-                return MediaController.supportsDirectPlay(v);
+                return MediaController.supportsDirectPlay(v, itemType);
             });
 
             return Promise.all(promises).then(function (responses) {
@@ -677,12 +694,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
 
             var onBitrateDetected = function () {
 
-                Dashboard.getDeviceProfile(null, {
-                    
-                    enableMkvProgressive: item.RunTimeTicks != null,
-                    enableTsProgressive: item.RunTimeTicks != null
-
-                }).then(function (deviceProfile) {
+                Dashboard.getDeviceProfile(null, getProfileOptions(item)).then(function (deviceProfile) {
                     playOnDeviceProfileCreated(deviceProfile, item, startPosition, callback);
                 });
             };
@@ -718,14 +730,14 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
 
                 if (validatePlaybackInfoResult(playbackInfoResult)) {
 
-                    getOptimalMediaSource(item.MediaType, playbackInfoResult.MediaSources).then(function (mediaSource) {
+                    getOptimalMediaSource(item.MediaType, item.Type, playbackInfoResult.MediaSources).then(function (mediaSource) {
                         if (mediaSource) {
 
                             if (mediaSource.RequiresOpening) {
 
                                 MediaController.getLiveStream(item.Id, playbackInfoResult.PlaySessionId, deviceProfile, startPosition, mediaSource, null, null).then(function (openLiveStreamResult) {
 
-                                    MediaController.supportsDirectPlay(openLiveStreamResult.MediaSource).then(function (result) {
+                                    MediaController.supportsDirectPlay(openLiveStreamResult.MediaSource, item.Type).then(function (result) {
 
                                         openLiveStreamResult.MediaSource.enableDirectPlay = result;
                                         callback(openLiveStreamResult.MediaSource);
@@ -1478,7 +1490,7 @@ define(['appSettings', 'userSettings', 'appStorage', 'datetime'], function (appS
                 return true;
             }
 
-            if (browserInfo.mobile) {
+            if (browser.mobile) {
                 return false;
             }
 

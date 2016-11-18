@@ -3,14 +3,17 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonIO;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Net;
 using System.Collections.Generic;
-using ServiceStack.Web;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
-    public class ProgressiveFileCopier : IAsyncStreamSource, IHasOptions
+    public class ProgressiveFileCopier : IAsyncStreamWriter, IHasHeaders
     {
         private readonly IFileSystem _fileSystem;
         private readonly TranscodingJob _job;
@@ -23,6 +26,10 @@ namespace MediaBrowser.Api.Playback.Progressive
         private const int BufferSize = 81920;
 
         private long _bytesWritten = 0;
+        public long StartPosition { get; set; }
+        public bool AllowEndOfFile = true;
+
+        private readonly IDirectStreamProvider _directStreamProvider;
 
         public ProgressiveFileCopier(IFileSystem fileSystem, string path, Dictionary<string, string> outputHeaders, TranscodingJob job, ILogger logger, CancellationToken cancellationToken)
         {
@@ -34,7 +41,16 @@ namespace MediaBrowser.Api.Playback.Progressive
             _cancellationToken = cancellationToken;
         }
 
-        public IDictionary<string, string> Options
+        public ProgressiveFileCopier(IDirectStreamProvider directStreamProvider, Dictionary<string, string> outputHeaders, TranscodingJob job, ILogger logger, CancellationToken cancellationToken)
+        {
+            _directStreamProvider = directStreamProvider;
+            _outputHeaders = outputHeaders;
+            _job = job;
+            _logger = logger;
+            _cancellationToken = cancellationToken;
+        }
+
+        public IDictionary<string, string> Headers
         {
             get
             {
@@ -42,17 +58,33 @@ namespace MediaBrowser.Api.Playback.Progressive
             }
         }
 
-        public async Task WriteToAsync(Stream outputStream)
+        private Stream GetInputStream()
+        {
+            return _fileSystem.GetFileStream(_path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, true);
+        }
+
+        public async Task WriteToAsync(Stream outputStream, CancellationToken cancellationToken)
         {
             try
             {
+                if (_directStreamProvider != null)
+                {
+                    await _directStreamProvider.CopyToAsync(outputStream, _cancellationToken).ConfigureAwait(false);
+                    return;
+                }
+
                 var eofCount = 0;
 
-                using (var fs = _fileSystem.GetFileStream(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
+                using (var inputStream = GetInputStream())
                 {
-                    while (eofCount < 15)
+                    if (StartPosition > 0)
                     {
-                        var bytesRead = await CopyToAsyncInternal(fs, outputStream, BufferSize, _cancellationToken).ConfigureAwait(false);
+                        inputStream.Position = StartPosition;
+                    }
+
+                    while (eofCount < 15 || !AllowEndOfFile)
+                    {
+                        var bytesRead = await CopyToAsyncInternal(inputStream, outputStream, BufferSize, _cancellationToken).ConfigureAwait(false);
 
                         //var position = fs.Position;
                         //_logger.Debug("Streamed {0} bytes to position {1} from file {2}", bytesRead, position, path);

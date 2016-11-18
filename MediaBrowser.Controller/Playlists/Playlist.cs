@@ -5,7 +5,7 @@ using MediaBrowser.Model.Querying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Providers;
 
@@ -28,6 +28,15 @@ namespace MediaBrowser.Controller.Playlists
             get
             {
                 return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return string.Equals(MediaType, "Video", StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -198,15 +207,15 @@ namespace MediaBrowser.Controller.Playlists
 
         public override bool IsVisible(User user)
         {
-            if (base.IsVisible(user))
-            {
-                var userId = user.Id.ToString("N");
+            var userId = user.Id.ToString("N");
 
-                return Shares.Any(i => string.Equals(userId, i.UserId, StringComparison.OrdinalIgnoreCase)) ||
-                    string.Equals(OwnerUserId, userId, StringComparison.OrdinalIgnoreCase);
-            }
+            return Shares.Any(i => string.Equals(userId, i.UserId, StringComparison.OrdinalIgnoreCase)) ||
+                string.Equals(OwnerUserId, userId, StringComparison.OrdinalIgnoreCase);
+        }
 
-            return false;
+        public override bool IsVisibleStandalone(User user)
+        {
+            return IsVisible(user);
         }
     }
 }

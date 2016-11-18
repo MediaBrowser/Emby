@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+﻿using MediaBrowser.Model.Serialization;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using System;
@@ -23,6 +23,15 @@ namespace MediaBrowser.Controller.Entities
             get
             {
                 return Id;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿define(['dialogHelper', 'layoutManager', 'globalize', './social-share-kit-1.0.10/dist/js/social-share-kit.min', 'css!./social-share-kit-1.0.10/dist/css/social-share-kit.css', 'emby-button'], function (dialogHelper, layoutManager, globalize) {
+    'use strict';
 
     function showMenu(options) {
 
@@ -16,15 +17,15 @@
         html += '<div class="ssk-group ssk-round ssk-lg">';
 
         // We can only do facebook if we can guarantee that the current page is available over the internet, since FB will try to probe it.
-        html += '<a href="#" class="ssk ssk-facebook"></a>';
+        html += '<a href="#" class="ssk ssk-facebook" style="color:#fff;"></a>';
 
-        html += '<a href="#" class="ssk ssk-twitter"></a>';
-        html += '<a href="#" class="ssk ssk-google-plus"></a>';
-        html += '<a href="#" class="ssk ssk-pinterest"></a>';
-        html += '<a href="#" class="ssk ssk-tumblr"></a>';
+        html += '<a href="#" class="ssk ssk-twitter" style="color:#fff;"></a>';
+        html += '<a href="#" class="ssk ssk-google-plus" style="color:#fff;"></a>';
+        html += '<a href="#" class="ssk ssk-pinterest" style="color:#fff;"></a>';
+        html += '<a href="#" class="ssk ssk-tumblr" style="color:#fff;"></a>';
         html += '</div>';
 
-        dlg.style['padding'] = '.5em 1.5em 1.5em';
+        dlg.style.padding = '.5em 1.5em 1.5em';
 
         dlg.innerHTML = html;
 

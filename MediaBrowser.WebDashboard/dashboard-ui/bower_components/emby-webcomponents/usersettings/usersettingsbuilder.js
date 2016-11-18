@@ -1,4 +1,5 @@
 define(['appSettings', 'events', 'browser'], function (appsettings, events, browser) {
+    'use strict';
 
     return function () {
 
@@ -6,8 +7,13 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
         var currentUserId;
         var currentApiClient;
         var displayPrefs;
+        var saveTimeout;
 
         self.setUserInfo = function (userId, apiClient) {
+
+            if (saveTimeout) {
+                clearTimeout(saveTimeout);
+            }
 
             currentUserId = userId;
             currentApiClient = apiClient;
@@ -23,7 +29,6 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
             });
         };
 
-        var saveTimeout;
         function onSaveTimeout() {
             saveTimeout = null;
             currentApiClient.updateDisplayPreferences('usersettings', displayPrefs, currentUserId, 'emby');
@@ -50,7 +55,7 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
                 saveServerPreferences();
             }
 
-            if (currentValue != value) {
+            if (currentValue !== value) {
                 events.trigger(self, 'change', [name]);
             }
         };
@@ -79,7 +84,7 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
             val = self.get('enableCinemaMode', false);
 
             if (val) {
-                return val != 'false';
+                return val !== 'false';
             }
 
             return true;
@@ -94,7 +99,7 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
             val = self.get('enableThemeSongs', false);
 
             if (val) {
-                return val != 'false';
+                return val !== 'false';
             }
 
             return true;
@@ -109,7 +114,7 @@ define(['appSettings', 'events', 'browser'], function (appsettings, events, brow
             val = self.get('enableThemeVideos', false);
 
             if (val) {
-                return val != 'false';
+                return val !== 'false';
             }
 
             return !browser.slow;

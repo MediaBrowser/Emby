@@ -1,4 +1,5 @@
 ﻿define(['appSettings', 'paper-icon-button-light'], function (appSettings) {
+    'use strict';
 
     function updatePageStyle(page) {
 
@@ -15,10 +16,7 @@
 
     function showServerConnectionFailure() {
 
-        Dashboard.alert({
-            message: Globalize.translate("MessageUnableToConnectToServer"),
-            title: Globalize.translate("HeaderConnectionFailure")
-        });
+        alertText(Globalize.translate('MessageUnableToConnectToServer'), Globalize.translate("HeaderConnectionFailure"));
     }
 
     function getServerHtml(server) {
@@ -69,12 +67,23 @@
         page.querySelector('.serverList').innerHTML = html;
     }
 
+    function alertText(text, title) {
+        alertTextWithOptions({
+            title: title,
+            text: text
+        });
+    }
+
+    function alertTextWithOptions(options) {
+        require(['alert'], function (alert) {
+            alert(options);
+        });
+    }
+
     function showGeneralError() {
 
         Dashboard.hideLoadingMsg();
-        Dashboard.alert({
-            message: Globalize.translate('DefaultErrorMessage')
-        });
+        alertText(Globalize.translate('DefaultErrorMessage'));
     }
 
     function parentWithClass(elem, className) {
@@ -124,12 +133,10 @@
                         break;
                     case MediaBrowser.ConnectionState.ServerUpdateNeeded:
                         {
-                            Dashboard.alert(alert({
-
+                            alertTextWithOptions({
                                 text: Globalize.translate('core#ServerUpdateNeeded', 'https://emby.media'),
                                 html: Globalize.translate('core#ServerUpdateNeeded', '<a href="https://emby.media">https://emby.media</a>')
-
-                            }));
+                            });
                         }
                         break;
                     default:
@@ -284,7 +291,7 @@
 
             html += '</div>';
 
-            html += '<button is="paper-icon-button-light" class="btnInviteMenu autoSize"><i class="md-icon">' + AppInfo.moreIcon.replace('-','_') + '</i></button>';
+            html += '<button is="paper-icon-button-light" class="btnInviteMenu autoSize"><i class="md-icon">' + AppInfo.moreIcon.replace('-', '_') + '</i></button>';
 
             html += '</div>';
 

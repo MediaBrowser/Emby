@@ -1,8 +1,10 @@
-﻿using ServiceStack.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Controller.Net
 {
@@ -12,14 +14,6 @@ namespace MediaBrowser.Controller.Net
     public interface IHttpResultFactory
     {
         /// <summary>
-        /// Throws the error.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="errorMessage">The error message.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        void ThrowError(int statusCode, string errorMessage, IDictionary<string, string> responseHeaders = null);
-        
-        /// <summary>
         /// Gets the result.
         /// </summary>
         /// <param name="content">The content.</param>
@@ -27,8 +21,6 @@ namespace MediaBrowser.Controller.Net
         /// <param name="responseHeaders">The response headers.</param>
         /// <returns>System.Object.</returns>
         object GetResult(object content, string contentType, IDictionary<string,string> responseHeaders = null);
-
-        object GetAsyncStreamWriter(IAsyncStreamSource streamSource);
 
         /// <summary>
         /// Gets the optimized result.
@@ -105,7 +97,7 @@ namespace MediaBrowser.Controller.Net
         /// <param name="path">The path.</param>
         /// <param name="fileShare">The file share.</param>
         /// <returns>System.Object.</returns>
-        Task<object> GetStaticFileResult(IRequest requestContext, string path, FileShare fileShare = FileShare.Read);
+        Task<object> GetStaticFileResult(IRequest requestContext, string path, FileShareMode fileShare = FileShareMode.Read);
 
         /// <summary>
         /// Gets the static file result.
