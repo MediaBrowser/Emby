@@ -12,17 +12,22 @@ namespace Emby.Server.Implementations.Data
     public abstract class BaseSqliteRepository : IDisposable
     {
         protected string DbFilePath { get; set; }
-        protected ReaderWriterLockSlim WriteLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        protected ReaderWriterLockSlim WriteLock;
+
         protected ILogger Logger { get; private set; }
 
         protected BaseSqliteRepository(ILogger logger)
         {
             Logger = logger;
+
+            WriteLock = AllowLockRecursion ?
+              new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion) :
+              new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         }
 
-        protected virtual bool EnableConnectionPooling
+        protected virtual bool AllowLockRecursion
         {
-            get { return true; }
+            get { return false; }
         }
 
         static BaseSqliteRepository()
@@ -33,11 +38,31 @@ namespace Emby.Server.Implementations.Data
             //CheckOk(rc);
         }
 
-        protected virtual SQLiteDatabaseConnection CreateConnection(bool isReadOnly = false)
+        private static bool _versionLogged;
+
+        private string _defaultWal;
+
+        protected SQLiteDatabaseConnection CreateConnection(bool isReadOnly = false)
         {
+            if (!_versionLogged)
+            {
+                _versionLogged = true;
+                Logger.Info("Sqlite version: " + SQLite3.Version);
+                Logger.Info("Sqlite compiler options: " + string.Join(",", SQLite3.CompilerOptions.ToArray()));
+            }
+
             ConnectionFlags connectionFlags;
 
-            //isReadOnly = false;
+            if (isReadOnly)
+            {
+                //Logger.Info("Opening read connection");
+            }
+            else
+            {
+                //Logger.Info("Opening write connection");
+            }
+
+            isReadOnly = false;
 
             if (isReadOnly)
             {
@@ -51,46 +76,50 @@ namespace Emby.Server.Implementations.Data
                 connectionFlags |= ConnectionFlags.ReadWrite;
             }
 
-            if (EnableConnectionPooling)
-            {
-                connectionFlags |= ConnectionFlags.SharedCached;
-            }
-            else
-            {
-                connectionFlags |= ConnectionFlags.PrivateCache;
-            }
-
+            connectionFlags |= ConnectionFlags.SharedCached;
             connectionFlags |= ConnectionFlags.NoMutex;
 
             var db = SQLite3.Open(DbFilePath, connectionFlags, null);
 
+            if (string.IsNullOrWhiteSpace(_defaultWal))
+            {
+                _defaultWal = db.Query("PRAGMA journal_mode").SelectScalarString().First();
+            }
+
             var queries = new List<string>
             {
-                "pragma default_temp_store = memory",
-                "PRAGMA page_size=4096",
-                "PRAGMA journal_mode=WAL",
-                "PRAGMA temp_store=memory",
-                "PRAGMA synchronous=Normal",
+                "PRAGMA temp_store = memory",
+                //"PRAGMA journal_mode=WAL"
                 //"PRAGMA cache size=-10000"
             };
 
-            var cacheSize = CacheSize;
-            if (cacheSize.HasValue)
-            {
-                
-            }
-
-            if (EnableExclusiveMode)
-            {
-                queries.Add("PRAGMA locking_mode=EXCLUSIVE");
-            }
-
-            //foreach (var query in queries)
+            //var cacheSize = CacheSize;
+            //if (cacheSize.HasValue)
             //{
-            //    db.Execute(query);
+
             //}
 
-            db.ExecuteAll(string.Join(";", queries.ToArray()));
+            ////foreach (var query in queries)
+            ////{
+            ////    db.Execute(query);
+            ////}
+
+            //Logger.Info("synchronous: " + db.Query("PRAGMA synchronous").SelectScalarString().First());
+            //Logger.Info("temp_store: " + db.Query("PRAGMA temp_store").SelectScalarString().First());
+
+            if (!string.Equals(_defaultWal, "wal", StringComparison.OrdinalIgnoreCase))
+            {
+                queries.Add("PRAGMA journal_mode=WAL");
+
+                using (WriteLock.Write())
+                {
+                    db.ExecuteAll(string.Join(";", queries.ToArray()));
+                }
+            }
+            else
+            {
+                db.ExecuteAll(string.Join(";", queries.ToArray()));
+            }
 
             return db;
         }
@@ -101,11 +130,6 @@ namespace Emby.Server.Implementations.Data
             {
                 return null;
             }
-        }
-
-        protected virtual bool EnableExclusiveMode
-        {
-            get { return false; }
         }
 
         internal static void CheckOk(int rc)
@@ -197,11 +221,7 @@ namespace Emby.Server.Implementations.Data
                 return;
             }
 
-            connection.ExecuteAll(string.Join(";", new string[]
-            {
-                "alter table " + table,
-                "add column " + columnName + " " + type + " NULL"
-            }));
+            connection.Execute("alter table " + table + " add column " + columnName + " " + type + " NULL");
         }
     }
 
