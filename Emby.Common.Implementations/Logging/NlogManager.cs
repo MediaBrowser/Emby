@@ -627,7 +627,7 @@ namespace Emby.Common.Implementations.Logging
 		/// <item><description>Method calls will be omitted unless the library is compiled with DEBUG defined.</description></item>
 		/// </list>
 		/// </summary>
-		//[System.Diagnostics.Conditional("DEBUG")]
+		[System.Diagnostics.Conditional("DEBUG")]
 		private static void DBGFileWriter(string logDirectory, string message)
 		{
 			
