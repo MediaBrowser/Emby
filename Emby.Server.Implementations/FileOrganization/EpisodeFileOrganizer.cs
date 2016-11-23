@@ -517,7 +517,7 @@ namespace Emby.Server.Implementations.FileOrganization
                 .ToList();
         }
 
-        private void PerformFileSorting(TvFileOrganizationOptions options, FileOrganizationResult result)
+        protected void PerformFileSorting(TvFileOrganizationOptions options, FileOrganizationResult result)
         {
             // We should probably handle this earlier so that we never even make it this far
             if (string.Equals(result.OriginalPath, result.TargetPath, StringComparison.OrdinalIgnoreCase))
