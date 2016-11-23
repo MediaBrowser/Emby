@@ -179,6 +179,19 @@ namespace Emby.Server.Implementations.FileOrganization
             }
         }
 
+        public async Task PerformMovieOrganization(MovieFileOrganizationRequest request)
+        {
+            var organizer = new MovieFileOrganizer(this, _config, _fileSystem, _logger, _libraryManager,
+                _libraryMonitor, _providerManager);
+
+            var result = await organizer.OrganizeWithCorrection(request, GetAutoOrganizeOptions(), CancellationToken.None).ConfigureAwait(false); ;
+
+            if (result.Status != FileSortingStatus.Success)
+            {
+                throw new Exception(result.StatusMessage);
+            }
+        }
+
         public QueryResult<SmartMatchInfo> GetSmartMatchInfos(FileOrganizationResultQuery query)
         {
             if (query == null)

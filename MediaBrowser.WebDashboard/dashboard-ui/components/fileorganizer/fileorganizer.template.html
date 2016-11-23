@@ -5,37 +5,56 @@
 
 <div class="formDialogContent smoothScrollY" style="padding-top: 2em;">
     <div class="dialogContentInner dialog-content-centered">
-        <form class="episodeCorrectionForm">
+        <div id="typeContainer" style="margin:auto;">
+            <h3 class="selectContainer fldSelectContentType">
+                <select is="emby-select" id="selectContentType" label="Organize Content Type" required>
+                    <option value="episode" selected>Series Episode</option>
+                    <option value="movie">Movie</option>
+                </select>
+            </h3>
+        </div>
 
-            <p><span class="inputFile"></span></p>
+        <form id="organizeSeries" class="episodeCorrectionForm" style="margin:auto;">
 
-            <div class="selectContainer">
-                <div style="display: flex; align-items: center;">
-                    <div style="flex-grow:1; position: relative;">
-                        <select is="emby-select" id="selectSeries" data-mini="true" required="required" label="${LabelSeries}"></select>
+            <p><span class="fieldDescription">Filename:</span> <span class="inputFile"></span></p>
+            <p class="paraInputSeriesName"><span class="fieldDescription">Extracted Series Name:</span> <span class="inputSeriesName"></span></p>
+            <p class="paraInputYear"><span class="fieldDescription">Extracted Year:</span> <span class="inputYear"></span></p>
+
+            <div style="margin: 2em 0 0;">
+                <div style="display:flex; align-items:center;">
+                    <div style="flex-grow:1;">
+                        <select is="emby-select" id="selectSeries" label="${LabelSeries}" required style="margin-bottom: 0;"></select>
                     </div>
-                    <button type="button" is="paper-icon-button-light" id="btnNewSeries" class="autoSize"><i class="md-icon">add</i></button>
+                    <button type="button" is="emby-button" id="btnNewSeries" class="raised btnNewSeries submit mini" title="${ButtonNew}" style="margin-left:1em; margin-bottom: 1em;">
+                        <i class="md-icon">add</i>
+                        <span>${ButtonNew}</span>
+                    </button>
                 </div>
             </div>
-            <div class="fldSelectSeriesFolder hide selectContainer">
-                <select id="selectSeriesFolder" is="emby-select" label="Series root folder:"></select>
+            <div class="selectContainer fldSelectSeriesFolder hide">
+                <select is="emby-select" id="selectSeriesFolder" label="Series Root Folder" required></select>
+                <div class="fieldDescription"></div>
             </div>
+
+
             <div class="inputContainer">
                 <input is="emby-input" id="txtSeason" type="number" pattern="[0-9]*" required min="0" label="${LabelSeasonNumber}" />
             </div>
+
             <div class="inputContainer">
                 <input is="emby-input" id="txtEpisode" type="number" pattern="[0-9]*" required min="0" label="${LabelEpisodeNumber}" />
             </div>
+
             <div class="inputContainer">
                 <input is="emby-input" id="txtEndingEpisode" type="number" pattern="[0-9]*" min="0" label="${LabelEndingEpisodeNumber}" />
                 <div class="fieldDescription">${LabelEndingEpisodeNumberHelp}</div>
             </div>
-            <div class="fldRemember hide checkboxContainer checkboxContainer-withDescription">
+
+            <div class="fldRemember hide">
                 <label class="checkboxContainer">
-                    <input is="emby-checkbox" id="chkRememberCorrection" type="checkbox" />
-                    <span>${OptionRememberOrganizeCorrection}</span>
+                    <input type="checkbox" is="emby-checkbox" id="chkRememberCorrection" />
+                    <span>${OptionRememberOrganizeCorrection} <span class="extractedName" style="font-weight: bold; font-style: italic" /></span>
                 </label>
-                <div class="extractedName hide fieldDescription checkboxFieldDescription"></div>
             </div>
 
             <br />
@@ -48,5 +67,38 @@
             </div>
 
         </form>
+
+        <form class="organizeMovieForm hide" id="organizeMovies" style="margin:auto;">
+
+            <p><span class="fieldDescription">Filename:</span> <span class="inputFile2"></span></p>
+            <p class="paraInputSeriesName2"><span class="fieldDescription">Extracted Series Name:</span> <span class="inputSeriesName2"></span></p>
+            <p class="paraInputYear2"><span class="fieldDescription">Extracted Year:</span> <span class="inputYear2"></span></p>
+
+            <div style="margin: 2em 0 1em;">
+                <button is="emby-button" type="button" class="raised block" id="btnIdentifyMovie">
+                    <i class="md-icon">check</i>
+                    <span>Identify Movie</span>
+                </button>
+            </div>
+
+            <div id="identifiedMovie" class="hide">
+                <div class="inputContainer">
+                    <input is="emby-input" id="txtSelectedMovie" type="text" required readonly label="Identified Movie" />
+                </div>
+
+                <div class="selectContainer fldSelectMovieFolder">
+                    <select is="emby-select" id="selectMovieFolder" label="Movie Root Folder" required></select>
+                    <div class="fieldDescription"></div>
+                </div>
+
+                <button is="emby-button" type="submit" class="raised submit block">
+                    <i class="md-icon">check</i>
+                    <span>${ButtonOk}</span>
+                </button>
+            </div>
+            <input id="hfResultIdMovie" type="hidden" />
+        </form>
+
+        <div id="bottomspace" style="min-height: 1em;" />
     </div>
 </div>
