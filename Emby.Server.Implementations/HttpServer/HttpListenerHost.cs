@@ -259,6 +259,13 @@ namespace Emby.Server.Implementations.HttpServer
                 var statusCode = GetStatusCode(ex);
                 httpRes.StatusCode = statusCode;
 
+                if (!string.IsNullOrEmpty(ex.Message))
+                {
+                    var error = ex.Message.Replace(Environment.NewLine, " ");
+                    error = ResponseFilter.RemoveControlCharacters(error);
+                    httpRes.AddHeader("X-Application-Error-Code", error);
+                }
+
                 httpRes.ContentType = "text/html";
                 Write(httpRes, ex.Message);
             }
