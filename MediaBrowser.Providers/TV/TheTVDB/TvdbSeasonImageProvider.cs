@@ -126,9 +126,10 @@ namespace MediaBrowser.Providers.TV
                     using (var reader = XmlReader.Create(streamReader, settings))
                     {
                         reader.MoveToContent();
+                        reader.Read();
 
                         // Loop through each element
-                        while (reader.Read())
+                        while (!reader.EOF && reader.ReadState == ReadState.Interactive)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
 
@@ -138,6 +139,11 @@ namespace MediaBrowser.Providers.TV
                                 {
                                     case "Banner":
                                         {
+                                            if (reader.IsEmptyElement)
+                                            {
+                                                reader.Read();
+                                                continue;
+                                            }
                                             using (var subtree = reader.ReadSubtree())
                                             {
                                                 AddImage(subtree, list, seasonNumber);
@@ -148,6 +154,10 @@ namespace MediaBrowser.Providers.TV
                                         reader.Skip();
                                         break;
                                 }
+                            }
+                            else
+                            {
+                                reader.Read();
                             }
                         }
                     }
@@ -195,7 +205,11 @@ namespace MediaBrowser.Providers.TV
             int? voteCount = null;
             string thumbnailUrl = null;
 
-            while (reader.Read())
+            reader.MoveToContent();
+            reader.Read();
+
+            // Loop through each element
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
@@ -295,6 +309,10 @@ namespace MediaBrowser.Providers.TV
                             reader.Skip();
                             break;
                     }
+                }
+                else
+                {
+                    reader.Read();
                 }
             }
 

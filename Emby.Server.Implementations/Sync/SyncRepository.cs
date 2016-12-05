@@ -43,12 +43,7 @@ namespace Emby.Server.Implementations.Sync
         {
             using (var connection = CreateConnection())
             {
-                connection.ExecuteAll(string.Join(";", new[]
-                {
-                                "PRAGMA page_size=4096",
-                                "pragma default_temp_store = memory",
-                                "pragma temp_store = memory"
-                }));
+                RunDefaultInitialization(connection);
 
                 string[] queries = {
 
@@ -79,7 +74,15 @@ namespace Emby.Server.Implementations.Sync
 
                     existingColumnNames = GetColumnNames(db, "SyncJobItems");
                     AddColumn(db, "SyncJobItems", "ItemDateModifiedTicks", "BIGINT", existingColumnNames);
-                });
+                }, TransactionMode);
+            }
+        }
+
+        protected override bool EnableTempStoreMemory
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -229,7 +232,6 @@ namespace Emby.Server.Implementations.Sync
                         commandText = "update SyncJobs set TargetId=?,Name=?,Profile=?,Quality=?,Bitrate=?,Status=?,Progress=?,UserId=?,ItemIds=?,Category=?,ParentId=?,UnwatchedOnly=?,ItemLimit=?,SyncNewContent=?,DateCreated=?,DateLastModified=?,ItemCount=? where Id=?";
                     }
 
-                    paramList.Add(job.Id.ToGuidParamValue());
                     paramList.Add(job.TargetId);
                     paramList.Add(job.Name);
                     paramList.Add(job.Profile);
@@ -249,10 +251,19 @@ namespace Emby.Server.Implementations.Sync
                     paramList.Add(job.DateLastModified.ToDateTimeParamValue());
                     paramList.Add(job.ItemCount);
 
+                    if (insert)
+                    {
+                        paramList.Insert(0, job.Id.ToGuidParamValue());
+                    }
+                    else
+                    {
+                        paramList.Add(job.Id.ToGuidParamValue());
+                    }
+
                     connection.RunInTransaction(conn =>
                     {
                         conn.Execute(commandText, paramList.ToArray());
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -274,7 +285,7 @@ namespace Emby.Server.Implementations.Sync
                     {
                         conn.Execute("delete from SyncJobs where Id=?", id.ToGuidParamValue());
                         conn.Execute("delete from SyncJobItems where JobId=?", id);
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -516,9 +527,23 @@ namespace Emby.Server.Implementations.Sync
                     commandText += " where " + string.Join(" AND ", whereClauses.ToArray());
                 }
 
+                var statementTexts = new List<string>
+                {
+                    commandText
+                };
+
+                commandText = commandText
+                    .Replace("select ItemId,Status,Progress from SyncJobItems", "select ItemIds,Status,Progress from SyncJobs")
+                    .Replace("'Synced'", "'Completed','CompletedWithError'");
+
+                statementTexts.Add(commandText);
+
                 using (WriteLock.Read())
                 {
-                    using (var statement = connection.PrepareStatement(commandText))
+                    var statements = connection.PrepareAll(string.Join(";", statementTexts.ToArray()))
+                        .ToList();
+
+                    using (var statement = statements[0])
                     {
                         if (!string.IsNullOrWhiteSpace(query.TargetId))
                         {
@@ -532,13 +557,9 @@ namespace Emby.Server.Implementations.Sync
                         LogQueryTime("GetSyncedItemProgresses", commandText, now);
                     }
 
-                    commandText = commandText
-                        .Replace("select ItemId,Status,Progress from SyncJobItems", "select ItemIds,Status,Progress from SyncJobs")
-                        .Replace("'Synced'", "'Completed','CompletedWithError'");
-
                     now = DateTime.UtcNow;
 
-                    using (var statement = connection.PrepareStatement(commandText))
+                    using (var statement = statements[1])
                     {
                         if (!string.IsNullOrWhiteSpace(query.TargetId))
                         {
@@ -688,7 +709,6 @@ namespace Emby.Server.Implementations.Sync
                     }
 
                     var paramList = new List<object>();
-                    paramList.Add(jobItem.Id.ToGuidParamValue());
                     paramList.Add(jobItem.ItemId);
                     paramList.Add(jobItem.ItemName);
                     paramList.Add(jobItem.MediaSourceId);
@@ -706,10 +726,19 @@ namespace Emby.Server.Implementations.Sync
                     paramList.Add(jobItem.JobItemIndex);
                     paramList.Add(jobItem.ItemDateModifiedTicks);
 
+                    if (insert)
+                    {
+                        paramList.Insert(0, jobItem.Id.ToGuidParamValue());
+                    }
+                    else
+                    {
+                        paramList.Add(jobItem.Id.ToGuidParamValue());
+                    }
+
                     connection.RunInTransaction(conn =>
                     {
                         conn.Execute(commandText, paramList.ToArray());
-                    });
+                    }, TransactionMode);
                 }
             }
         }

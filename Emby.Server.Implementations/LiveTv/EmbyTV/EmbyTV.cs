@@ -1311,7 +1311,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     timer.Status = RecordingStatus.InProgress;
                     _timerProvider.AddOrUpdate(timer, false);
 
-                    SaveNfo(timer, recordPath, seriesPath);
+                    SaveRecordingMetadata(timer, recordPath, seriesPath);
                     EnforceKeepUpTo(timer);
                 };
 
@@ -1597,33 +1597,174 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             ((IProcess)sender).Dispose();
         }
 
-        private void SaveNfo(TimerInfo timer, string recordingPath, string seriesPath)
+        private async Task SaveRecordingImage(string recordingPath, LiveTvProgram program, ItemImageInfo image)
+        {
+            if (!image.IsLocalFile)
+            {
+                image = await _libraryManager.ConvertImageToLocal(program, image, 0).ConfigureAwait(false);
+            }
+
+            string imageSaveFilenameWithoutExtension = null;
+
+            switch (image.Type)
+            {
+                case ImageType.Primary:
+
+                    if (program.IsSeries)
+                    {
+                        imageSaveFilenameWithoutExtension = Path.GetFileNameWithoutExtension(recordingPath) + "-thumb";
+                    }
+                    else
+                    {
+                        imageSaveFilenameWithoutExtension = "poster";
+                    }
+
+                    break;
+                case ImageType.Logo:
+                    imageSaveFilenameWithoutExtension = "logo";
+                    break;
+                case ImageType.Thumb:
+                    imageSaveFilenameWithoutExtension = "landscape";
+                    break;
+                case ImageType.Backdrop:
+                    imageSaveFilenameWithoutExtension = "fanart";
+                    break;
+                default:
+                    break;
+            }
+
+            if (string.IsNullOrWhiteSpace(imageSaveFilenameWithoutExtension))
+            {
+                return;
+            }
+
+            var imageSavePath = Path.Combine(Path.GetDirectoryName(recordingPath), imageSaveFilenameWithoutExtension);
+
+            // preserve original image extension
+            imageSavePath = Path.ChangeExtension(imageSavePath, Path.GetExtension(image.Path));
+
+            _fileSystem.CopyFile(image.Path, imageSavePath, true);
+        }
+
+        private async Task SaveRecordingImages(string recordingPath, LiveTvProgram program)
+        {
+            var image = program.GetImageInfo(ImageType.Primary, 0);
+
+            if (image != null && program.IsMovie)
+            {
+                try
+                {
+                    await SaveRecordingImage(recordingPath, program, image).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error saving recording image", ex);
+                }
+            }
+
+            if (!program.IsSeries)
+            {
+                image = program.GetImageInfo(ImageType.Backdrop, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        await SaveRecordingImage(recordingPath, program, image).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error saving recording image", ex);
+                    }
+                }
+
+                image = program.GetImageInfo(ImageType.Thumb, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        await SaveRecordingImage(recordingPath, program, image).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error saving recording image", ex);
+                    }
+                }
+
+                image = program.GetImageInfo(ImageType.Logo, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        await SaveRecordingImage(recordingPath, program, image).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error saving recording image", ex);
+                    }
+                }
+            }
+        }
+
+        private async void SaveRecordingMetadata(TimerInfo timer, string recordingPath, string seriesPath)
         {
             try
             {
+                var program = string.IsNullOrWhiteSpace(timer.ProgramId) ? null : _libraryManager.GetItemList(new InternalItemsQuery
+                {
+                    IncludeItemTypes = new[] { typeof(LiveTvProgram).Name },
+                    Limit = 1,
+                    ExternalId = timer.ProgramId
+
+                }).FirstOrDefault() as LiveTvProgram;
+
+                // dummy this up
+                if (program == null)
+                {
+                    program = new LiveTvProgram
+                    {
+                        Name = timer.Name,
+                        HomePageUrl = timer.HomePageUrl,
+                        ShortOverview = timer.ShortOverview,
+                        Overview = timer.Overview,
+                        Genres = timer.Genres,
+                        CommunityRating = timer.CommunityRating,
+                        OfficialRating = timer.OfficialRating,
+                        ProductionYear = timer.ProductionYear,
+                        PremiereDate = timer.OriginalAirDate,
+                        IndexNumber = timer.EpisodeNumber,
+                        ParentIndexNumber = timer.SeasonNumber
+                    };
+                }
+
                 if (timer.IsSports)
                 {
-                    AddGenre(timer.Genres, "Sports");
+                    AddGenre(program.Genres, "Sports");
                 }
                 if (timer.IsKids)
                 {
-                    AddGenre(timer.Genres, "Kids");
-                    AddGenre(timer.Genres, "Children");
+                    AddGenre(program.Genres, "Kids");
+                    AddGenre(program.Genres, "Children");
                 }
                 if (timer.IsNews)
                 {
-                    AddGenre(timer.Genres, "News");
+                    AddGenre(program.Genres, "News");
                 }
 
                 if (timer.IsProgramSeries)
                 {
-                    SaveSeriesNfo(timer, recordingPath, seriesPath);
-                    SaveVideoNfo(timer, recordingPath, false);
+                    SaveSeriesNfo(timer, seriesPath);
+                    SaveVideoNfo(timer, recordingPath, program, false);
                 }
                 else if (!timer.IsMovie || timer.IsSports || timer.IsNews)
                 {
-                    SaveVideoNfo(timer, recordingPath, true);
+                    SaveVideoNfo(timer, recordingPath, program, true);
                 }
+                else
+                {
+                    SaveVideoNfo(timer, recordingPath, program, false);
+                }
+
+                await SaveRecordingImages(recordingPath, program).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -1631,7 +1772,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private void SaveSeriesNfo(TimerInfo timer, string recordingPath, string seriesPath)
+        private void SaveSeriesNfo(TimerInfo timer, string seriesPath)
         {
             var nfoPath = Path.Combine(seriesPath, "tvshow.nfo");
 
@@ -1676,7 +1817,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         }
 
         public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
-        private void SaveVideoNfo(TimerInfo timer, string recordingPath, bool lockData)
+        private void SaveVideoNfo(TimerInfo timer, string recordingPath, BaseItem item, bool lockData)
         {
             var nfoPath = Path.ChangeExtension(recordingPath, ".nfo");
 
@@ -1694,6 +1835,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     CloseOutput = false
                 };
 
+                var options = _config.GetNfoConfiguration();
+
                 using (XmlWriter writer = XmlWriter.Create(stream, settings))
                 {
                     writer.WriteStartDocument(true);
@@ -1707,45 +1850,64 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                             writer.WriteElementString("title", timer.EpisodeTitle);
                         }
 
-                        if (timer.OriginalAirDate.HasValue)
+                        if (item.PremiereDate.HasValue)
                         {
-                            var formatString = _config.GetNfoConfiguration().ReleaseDateFormat;
+                            var formatString = options.ReleaseDateFormat;
 
-                            writer.WriteElementString("aired", timer.OriginalAirDate.Value.ToLocalTime().ToString(formatString));
+                            writer.WriteElementString("aired", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
                         }
 
-                        if (timer.EpisodeNumber.HasValue)
+                        if (item.IndexNumber.HasValue)
                         {
-                            writer.WriteElementString("episode", timer.EpisodeNumber.Value.ToString(CultureInfo.InvariantCulture));
+                            writer.WriteElementString("episode", item.IndexNumber.Value.ToString(CultureInfo.InvariantCulture));
                         }
 
-                        if (timer.SeasonNumber.HasValue)
+                        if (item.ParentIndexNumber.HasValue)
                         {
-                            writer.WriteElementString("season", timer.SeasonNumber.Value.ToString(CultureInfo.InvariantCulture));
+                            writer.WriteElementString("season", item.ParentIndexNumber.Value.ToString(CultureInfo.InvariantCulture));
                         }
                     }
                     else
                     {
                         writer.WriteStartElement("movie");
 
-                        if (!string.IsNullOrWhiteSpace(timer.Name))
+                        if (!string.IsNullOrWhiteSpace(item.Name))
                         {
-                            writer.WriteElementString("title", timer.Name);
+                            writer.WriteElementString("title", item.Name);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(item.OriginalTitle))
+                        {
+                            writer.WriteElementString("originaltitle", item.OriginalTitle);
+                        }
+
+                        if (item.PremiereDate.HasValue)
+                        {
+                            var formatString = options.ReleaseDateFormat;
+
+                            writer.WriteElementString("premiered", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
+                            writer.WriteElementString("releasedate", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
                         }
                     }
 
                     writer.WriteElementString("dateadded", DateTime.UtcNow.ToLocalTime().ToString(DateAddedFormat));
 
-                    if (timer.ProductionYear.HasValue)
+                    if (item.ProductionYear.HasValue)
                     {
-                        writer.WriteElementString("year", timer.ProductionYear.Value.ToString(CultureInfo.InvariantCulture));
-                    }
-                    if (!string.IsNullOrEmpty(timer.OfficialRating))
-                    {
-                        writer.WriteElementString("mpaa", timer.OfficialRating);
+                        writer.WriteElementString("year", item.ProductionYear.Value.ToString(CultureInfo.InvariantCulture));
                     }
 
-                    var overview = (timer.Overview ?? string.Empty)
+                    if (!string.IsNullOrEmpty(item.OfficialRating))
+                    {
+                        writer.WriteElementString("mpaa", item.OfficialRating);
+                    }
+
+                    if (!string.IsNullOrEmpty(item.OfficialRatingDescription))
+                    {
+                        writer.WriteElementString("mpaadescription", item.OfficialRatingDescription);
+                    }
+
+                    var overview = (item.Overview ?? string.Empty)
                         .StripHtml()
                         .Replace("&quot;", "'");
 
@@ -1756,30 +1918,127 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         writer.WriteElementString("lockdata", true.ToString().ToLower());
                     }
 
-                    if (timer.CommunityRating.HasValue)
+                    if (item.CommunityRating.HasValue)
                     {
-                        writer.WriteElementString("rating", timer.CommunityRating.Value.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteElementString("rating", item.CommunityRating.Value.ToString(CultureInfo.InvariantCulture));
                     }
 
-                    foreach (var genre in timer.Genres)
+                    foreach (var genre in item.Genres)
                     {
                         writer.WriteElementString("genre", genre);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(timer.ShortOverview))
+                    if (!string.IsNullOrWhiteSpace(item.ShortOverview))
                     {
-                        writer.WriteElementString("outline", timer.ShortOverview);
+                        writer.WriteElementString("outline", item.ShortOverview);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(timer.HomePageUrl))
+                    if (!string.IsNullOrWhiteSpace(item.HomePageUrl))
                     {
-                        writer.WriteElementString("website", timer.HomePageUrl);
+                        writer.WriteElementString("website", item.HomePageUrl);
+                    }
+
+                    var people = item.Id == Guid.Empty ? new List<PersonInfo>() : _libraryManager.GetPeople(item);
+
+                    var directors = people
+                        .Where(i => IsPersonType(i, PersonType.Director))
+                        .Select(i => i.Name)
+                        .ToList();
+
+                    foreach (var person in directors)
+                    {
+                        writer.WriteElementString("director", person);
+                    }
+
+                    var writers = people
+                        .Where(i => IsPersonType(i, PersonType.Writer))
+                        .Select(i => i.Name)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    foreach (var person in writers)
+                    {
+                        writer.WriteElementString("writer", person);
+                    }
+
+                    foreach (var person in writers)
+                    {
+                        writer.WriteElementString("credits", person);
+                    }
+
+                    var rt = item.GetProviderId(MetadataProviders.RottenTomatoes);
+
+                    if (!string.IsNullOrEmpty(rt))
+                    {
+                        writer.WriteElementString("rottentomatoesid", rt);
+                    }
+
+                    var tmdbCollection = item.GetProviderId(MetadataProviders.TmdbCollection);
+
+                    if (!string.IsNullOrEmpty(tmdbCollection))
+                    {
+                        writer.WriteElementString("collectionnumber", tmdbCollection);
+                    }
+
+                    var imdb = item.GetProviderId(MetadataProviders.Imdb);
+                    if (!string.IsNullOrEmpty(imdb))
+                    {
+                        if (item is Series)
+                        {
+                            writer.WriteElementString("imdb_id", imdb);
+                        }
+                        else
+                        {
+                            writer.WriteElementString("imdbid", imdb);
+                        }
+                    }
+
+                    var tvdb = item.GetProviderId(MetadataProviders.Tvdb);
+                    if (!string.IsNullOrEmpty(tvdb))
+                    {
+                        writer.WriteElementString("tvdbid", tvdb);
+                    }
+
+                    var tmdb = item.GetProviderId(MetadataProviders.Tmdb);
+                    if (!string.IsNullOrEmpty(tmdb))
+                    {
+                        writer.WriteElementString("tmdbid", tmdb);
+                    }
+
+                    if (item.CriticRating.HasValue)
+                    {
+                        writer.WriteElementString("criticrating", item.CriticRating.Value.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    if (!string.IsNullOrEmpty(item.CriticRatingSummary))
+                    {
+                        writer.WriteElementString("criticratingsummary", item.CriticRatingSummary);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.Tagline))
+                    {
+                        writer.WriteElementString("tagline", item.Tagline);
+                    }
+
+                    foreach (var studio in item.Studios)
+                    {
+                        writer.WriteElementString("studio", studio);
+                    }
+
+                    if (item.VoteCount.HasValue)
+                    {
+                        writer.WriteElementString("votes", item.VoteCount.Value.ToString(CultureInfo.InvariantCulture));
                     }
 
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
             }
+        }
+
+        private static bool IsPersonType(PersonInfo person, string type)
+        {
+            return string.Equals(person.Type, type, StringComparison.OrdinalIgnoreCase) || string.Equals(person.Role, type, StringComparison.OrdinalIgnoreCase);
         }
 
         private void AddGenre(List<string> genres, string genre)
@@ -1914,6 +2173,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                             {
                                 enabledTimersForSeries.Add(existingTimer);
                             }
+
+                            existingTimer.KeepUntil = seriesTimer.KeepUntil;
+                            existingTimer.IsPostPaddingRequired = seriesTimer.IsPostPaddingRequired;
+                            existingTimer.IsPrePaddingRequired = seriesTimer.IsPrePaddingRequired;
+                            existingTimer.PostPaddingSeconds = seriesTimer.PostPaddingSeconds;
+                            existingTimer.PrePaddingSeconds = seriesTimer.PrePaddingSeconds;
+                            existingTimer.Priority = seriesTimer.Priority;
 
                             existingTimer.SeriesTimerId = seriesTimer.Id;
                             _timerProvider.Update(existingTimer);

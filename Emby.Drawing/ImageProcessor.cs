@@ -236,7 +236,7 @@ namespace Emby.Drawing
             var quality = options.Quality;
 
             var outputFormat = GetOutputFormat(options.SupportedOutputFormats[0]);
-            var cacheFilePath = GetCacheFilePath(originalImagePath, newSize, quality, dateModified, outputFormat, options.AddPlayedIndicator, options.PercentPlayed, options.UnplayedCount, options.BackgroundColor, options.ForegroundLayer);
+            var cacheFilePath = GetCacheFilePath(originalImagePath, newSize, quality, dateModified, outputFormat, options.AddPlayedIndicator, options.PercentPlayed, options.UnplayedCount, options.Blur, options.BackgroundColor, options.ForegroundLayer);
 
             var imageProcessingLockTaken = false;
 
@@ -432,16 +432,11 @@ namespace Emby.Drawing
                 return GetResult(croppedImagePath);
             }
 
-            var imageProcessingLockTaken = false;
-
             try
             {
                 _fileSystem.CreateDirectory(Path.GetDirectoryName(croppedImagePath));
                 var tmpPath = Path.ChangeExtension(Path.Combine(_appPaths.TempDirectory, Guid.NewGuid().ToString("N")), Path.GetExtension(croppedImagePath));
                 _fileSystem.CreateDirectory(Path.GetDirectoryName(tmpPath));
-
-                await _imageProcessingSemaphore.WaitAsync().ConfigureAwait(false);
-                imageProcessingLockTaken = true;
 
                 _imageEncoder.CropWhiteSpace(originalImagePath, tmpPath);
                 CopyFile(tmpPath, croppedImagePath);
@@ -459,13 +454,6 @@ namespace Emby.Drawing
 
                 return new Tuple<string, DateTime>(originalImagePath, dateModified);
             }
-            finally
-            {
-                if (imageProcessingLockTaken)
-                {
-                    _imageProcessingSemaphore.Release();
-                }
-            }
         }
 
         private Tuple<string, DateTime> GetResult(string path)
@@ -481,7 +469,7 @@ namespace Emby.Drawing
         /// <summary>
         /// Gets the cache file path based on a set of parameters
         /// </summary>
-        private string GetCacheFilePath(string originalPath, ImageSize outputSize, int quality, DateTime dateModified, ImageFormat format, bool addPlayedIndicator, double percentPlayed, int? unwatchedCount, string backgroundColor, string foregroundLayer)
+        private string GetCacheFilePath(string originalPath, ImageSize outputSize, int quality, DateTime dateModified, ImageFormat format, bool addPlayedIndicator, double percentPlayed, int? unwatchedCount, int? blur, string backgroundColor, string foregroundLayer)
         {
             var filename = originalPath;
 
@@ -508,6 +496,11 @@ namespace Emby.Drawing
             if (unwatchedCount.HasValue)
             {
                 filename += "p=" + unwatchedCount.Value;
+            }
+
+            if (blur.HasValue)
+            {
+                filename += "blur=" + blur.Value;
             }
 
             if (!string.IsNullOrEmpty(backgroundColor))
@@ -904,20 +897,11 @@ namespace Emby.Drawing
 
         public async Task CreateImageCollage(ImageCollageOptions options)
         {
-            await _imageProcessingSemaphore.WaitAsync().ConfigureAwait(false);
+            _logger.Info("Creating image collage and saving to {0}", options.OutputPath);
 
-            try
-            {
-                _logger.Info("Creating image collage and saving to {0}", options.OutputPath);
+            _imageEncoder.CreateImageCollage(options);
 
-                _imageEncoder.CreateImageCollage(options);
-
-                _logger.Info("Completed creation of image collage and saved to {0}", options.OutputPath);
-            }
-            finally
-            {
-                _imageProcessingSemaphore.Release();
-            }
+            _logger.Info("Completed creation of image collage and saved to {0}", options.OutputPath);
         }
 
         public IEnumerable<IImageEnhancer> GetSupportedEnhancers(IHasImages item, ImageType imageType)

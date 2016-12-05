@@ -414,9 +414,9 @@ namespace Emby.Server.Implementations.HttpServer
                     httpRes.StatusCode = 200;
                     httpRes.AddHeader("Access-Control-Allow-Origin", "*");
                     httpRes.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-                    httpRes.AddHeader("Access-Control-Allow-Headers",
-                        "Content-Type, Authorization, Range, X-MediaBrowser-Token, X-Emby-Authorization");
-                    httpRes.ContentType = "text/html";
+                    httpRes.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range, X-MediaBrowser-Token, X-Emby-Authorization");
+                    httpRes.ContentType = "text/plain";
+                    Write(httpRes, string.Empty);
                     return;
                 }
 
@@ -518,7 +518,7 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
-                var handler = HttpHandlerFactory.GetHandler(httpReq);
+                var handler = HttpHandlerFactory.GetHandler(httpReq, _logger);
 
                 if (handler != null)
                 {

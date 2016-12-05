@@ -1,4 +1,4 @@
-﻿define(['libraryBrowser', 'listView', 'cardBuilder', 'emby-itemscontainer'], function (libraryBrowser, listView, cardBuilder) {
+﻿define(['libraryBrowser', 'listView', 'cardBuilder', 'imageLoader', 'emby-itemscontainer'], function (libraryBrowser, listView, cardBuilder, imageLoader) {
     'use strict';
 
     return function (view, params) {
@@ -6,6 +6,10 @@
         var data = {};
 
         function addCurrentItemToQuery(query, item) {
+
+            if (params.parentId) {
+                query.ParentId = params.parentId;
+            }
 
             if (item.Type == "Person") {
                 query.PersonIds = item.Id;
@@ -186,7 +190,7 @@
                 }
 
                 itemsContainer.innerHTML = html + pagingHtml;
-                ImageLoader.lazyChildren(itemsContainer);
+                imageLoader.lazyChildren(itemsContainer);
 
                 var i, length;
                 var elems;
@@ -217,9 +221,41 @@
 
         view.addEventListener('click', onListItemClick);
 
+        function getItemPromise() {
+
+            var id = params.genreId || params.studioId || params.artistId || params.parentId;
+
+            if (id) {
+                return ApiClient.getItem(Dashboard.getCurrentUserId(), id);
+            }
+
+            var name = params.genre;
+
+            if (name) {
+                return ApiClient.getGenre(name, Dashboard.getCurrentUserId());
+            }
+
+            name = params.musicgenre;
+
+            if (name) {
+                return ApiClient.getMusicGenre(name, Dashboard.getCurrentUserId());
+            }
+
+            name = params.gamegenre;
+
+            if (name) {
+                return ApiClient.getGameGenre(name, Dashboard.getCurrentUserId());
+            }
+
+            return null;
+        }
+
         view.addEventListener('viewbeforeshow', function (e) {
-            if (params.parentId) {
-                ApiClient.getItem(Dashboard.getCurrentUserId(), params.parentId).then(function (parent) {
+
+            var parentPromise = getItemPromise();
+
+            if (parentPromise) {
+                parentPromise.then(function (parent) {
                     LibraryMenu.setTitle(parent.Name);
 
                     onViewStyleChange(parent);

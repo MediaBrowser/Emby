@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Emby.Dlna.Didl;
+using MediaBrowser.Controller.Extensions;
 using MediaBrowser.Model.Xml;
 
 namespace Emby.Dlna.Service
@@ -16,7 +17,7 @@ namespace Emby.Dlna.Service
     public abstract class BaseControlHandler
     {
         private const string NS_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
-        
+
         protected readonly IServerConfigurationManager Config;
         protected readonly ILogger Logger;
         protected readonly IXmlReaderSettingsFactory XmlReaderSettingsFactory;
@@ -109,7 +110,7 @@ namespace Emby.Dlna.Service
             }
 
             var xml = builder.ToString().Replace("xmlns:m=", "xmlns:u=");
-            
+
             var controlResponse = new ControlResponse
             {
                 Xml = xml,
@@ -129,19 +130,27 @@ namespace Emby.Dlna.Service
             reader.Read();
 
             // Loop through each element
-            while (!reader.EOF)
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     switch (reader.LocalName)
                     {
                         case "Body":
-                        {
-                            using (var subReader = reader.ReadSubtree())
                             {
-                                return ParseBodyTag(subReader);
+                                if (!reader.IsEmptyElement)
+                                {
+                                    using (var subReader = reader.ReadSubtree())
+                                    {
+                                        return ParseBodyTag(subReader);
+                                    }
+                                }
+                                else
+                                {
+                                    reader.Read();
+                                }
+                                break;
                             }
-                        }
                         default:
                             {
                                 reader.Skip();
@@ -166,18 +175,24 @@ namespace Emby.Dlna.Service
             reader.Read();
 
             // Loop through each element
-            while (!reader.EOF)
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     result.LocalName = reader.LocalName;
                     result.NamespaceURI = reader.NamespaceURI;
 
-                    using (var subReader = reader.ReadSubtree())
+                    if (!reader.IsEmptyElement)
                     {
-                        result.Headers = ParseFirstBodyChild(subReader);
-
-                        return result;
+                        using (var subReader = reader.ReadSubtree())
+                        {
+                            ParseFirstBodyChild(subReader, result.Headers);
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        reader.Read();
                     }
                 }
                 else
@@ -189,37 +204,34 @@ namespace Emby.Dlna.Service
             return result;
         }
 
-        private Headers ParseFirstBodyChild(XmlReader reader)
+        private void ParseFirstBodyChild(XmlReader reader, IDictionary<string,string> headers)
         {
-            var result = new Headers();
-
             reader.MoveToContent();
             reader.Read();
 
             // Loop through each element
-            while (!reader.EOF)
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    result.Add(reader.LocalName, reader.ReadElementContentAsString());
+                    // TODO: Should we be doing this here, or should it be handled earlier when decoding the request?
+                    headers[reader.LocalName.RemoveDiacritics()] = reader.ReadElementContentAsString();
                 }
                 else
                 {
                     reader.Read();
                 }
             }
-
-            return result;
         }
 
         private class ControlRequestInfo
         {
             public string LocalName;
             public string NamespaceURI;
-            public Headers Headers = new Headers();
+            public IDictionary<string, string> Headers = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        protected abstract IEnumerable<KeyValuePair<string, string>> GetResult(string methodName, Headers methodParams);
+        protected abstract IEnumerable<KeyValuePair<string, string>> GetResult(string methodName, IDictionary<string, string> methodParams);
 
         private void LogRequest(ControlRequest request)
         {

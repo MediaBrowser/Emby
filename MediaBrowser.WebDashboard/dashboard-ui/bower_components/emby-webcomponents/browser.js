@@ -116,6 +116,50 @@
         return false;
     }
 
+    var _supportsCssAnimation;
+    var _supportsCssAnimationWithPrefix;
+    function supportsCssAnimation(allowPrefix) {
+
+        if (allowPrefix) {
+            if (_supportsCssAnimationWithPrefix === true || _supportsCssAnimationWithPrefix === false) {
+                return _supportsCssAnimationWithPrefix;
+            }
+        } else {
+            if (_supportsCssAnimation === true || _supportsCssAnimation === false) {
+                return _supportsCssAnimation;
+            }
+        }
+
+        var animation = false,
+            animationstring = 'animation',
+            keyframeprefix = '',
+            domPrefixes = ['Webkit', 'O', 'Moz'],
+            pfx = '',
+            elm = document.createElement('div');
+
+        if (elm.style.animationName !== undefined) { animation = true; }
+
+        if (animation === false && allowPrefix) {
+            for (var i = 0; i < domPrefixes.length; i++) {
+                if (elm.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+                    pfx = domPrefixes[i];
+                    animationstring = pfx + 'Animation';
+                    keyframeprefix = '-' + pfx.toLowerCase() + '-';
+                    animation = true;
+                    break;
+                }
+            }
+        }
+
+        if (allowPrefix) {
+            _supportsCssAnimationWithPrefix = animation;
+            return _supportsCssAnimationWithPrefix;
+        } else {
+            _supportsCssAnimation = animation;
+            return _supportsCssAnimation;
+        }
+    }
+
     var uaMatch = function (ua) {
         ua = ua.toLowerCase();
 
@@ -225,6 +269,10 @@
     }
 
     browser.keyboard = hasKeyboard(browser);
+    browser.supportsCssAnimation = supportsCssAnimation;
+
+    browser.osx = userAgent.toLowerCase().indexOf('os x') !== -1;
+    browser.iOS = browser.ipad || browser.iphone || browser.ipod;
 
     return browser;
 });

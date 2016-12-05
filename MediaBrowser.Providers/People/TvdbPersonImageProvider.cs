@@ -114,9 +114,10 @@ namespace MediaBrowser.Providers.People
                     using (var reader = XmlReader.Create(streamReader, settings))
                     {
                         reader.MoveToContent();
+                        reader.Read();
 
                         // Loop through each element
-                        while (reader.Read())
+                        while (!reader.EOF && reader.ReadState == ReadState.Interactive)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
 
@@ -126,6 +127,11 @@ namespace MediaBrowser.Providers.People
                                 {
                                     case "Actor":
                                         {
+                                            if (reader.IsEmptyElement)
+                                            {
+                                                reader.Read();
+                                                continue;
+                                            }
                                             using (var subtree = reader.ReadSubtree())
                                             {
                                                 var info = FetchImageInfoFromActorNode(personName, subtree);
@@ -141,6 +147,10 @@ namespace MediaBrowser.Providers.People
                                         reader.Skip();
                                         break;
                                 }
+                            }
+                            else
+                            {
+                                reader.Read();
                             }
                         }
                     }
@@ -158,12 +168,14 @@ namespace MediaBrowser.Providers.People
         /// <returns>System.String.</returns>
         private RemoteImageInfo FetchImageInfoFromActorNode(string personName, XmlReader reader)
         {
-            reader.MoveToContent();
-
             string name = null;
             string image = null;
 
-            while (reader.Read())
+            reader.MoveToContent();
+            reader.Read();
+
+            // Loop through each element
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
@@ -185,6 +197,10 @@ namespace MediaBrowser.Providers.People
                             reader.Skip();
                             break;
                     }
+                }
+                else
+                {
+                    reader.Read();
                 }
             }
 

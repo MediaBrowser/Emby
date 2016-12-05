@@ -267,7 +267,7 @@ define(['browser'], function (browser) {
         // Only put mp3 first if mkv support is there
         // Otherwise with HLS and mp3 audio we're seeing some browsers
         // safari is lying
-        if ((videoTestElement.canPlayType('audio/mp4; codecs="ac-3"').replace(/no/, '') && !browser.safari) || browser.edgeUwp || browser.tizen || browser.web0s) {
+        if ((videoTestElement.canPlayType('audio/mp4; codecs="ac-3"').replace(/no/, '') && !browser.osx && !browser.iOS) || browser.edgeUwp || browser.tizen || browser.web0s) {
             videoAudioCodecs.push('ac3');
 
             // This works in edge desktop, but not mobile
@@ -300,7 +300,7 @@ define(['browser'], function (browser) {
             hlsVideoAudioCodecs.push('mp3');
         }
 
-        if (browser.tizen) {
+        if (browser.tizen || options.supportsDts) {
             videoAudioCodecs.push('dca');
             videoAudioCodecs.push('dts');
         }
@@ -336,7 +336,8 @@ define(['browser'], function (browser) {
         }
         
         if (browser.tizen) {
-            mp4VideoCodecs.push('mpeg2video')
+            mp4VideoCodecs.push('mpeg2video');
+            mp4VideoCodecs.push('vc1');
         }
         
         if (canPlayMkv && mp4VideoCodecs.length) {
@@ -392,7 +393,7 @@ define(['browser'], function (browser) {
 
         profile.TranscodingProfiles = [];
 
-        ['opus', 'mp3', 'aac'].filter(canPlayAudioFormat).forEach(function (audioFormat) {
+        ['opus', 'mp3', 'aac', 'wav'].filter(canPlayAudioFormat).forEach(function (audioFormat) {
 
             profile.TranscodingProfiles.push({
                 Container: audioFormat,
@@ -439,7 +440,7 @@ define(['browser'], function (browser) {
                 Context: 'Streaming',
                 Protocol: 'hls',
                 MaxAudioChannels: physicalAudioChannels.toString(),
-                EnableSplittingOnNonKeyFrames: browser.safari ? true : false
+                EnableSplittingOnNonKeyFrames: (browser.osx || browser.iOS) ? true : false
             });
         }
 

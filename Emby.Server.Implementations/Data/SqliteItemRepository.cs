@@ -30,6 +30,7 @@ using MediaBrowser.Server.Implementations.Playlists;
 using MediaBrowser.Model.Reflection;
 using SQLitePCL.pretty;
 using MediaBrowser.Model.System;
+using MediaBrowser.Model.Threading;
 
 namespace Emby.Server.Implementations.Data
 {
@@ -68,11 +69,13 @@ namespace Emby.Server.Implementations.Data
         private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environmentInfo;
+        private readonly ITimerFactory _timerFactory;
+        private ITimer _shrinkMemoryTimer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
         /// </summary>
-        public SqliteItemRepository(IServerConfigurationManager config, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo)
+        public SqliteItemRepository(IServerConfigurationManager config, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo, ITimerFactory timerFactory)
             : base(logger)
         {
             if (config == null)
@@ -89,6 +92,7 @@ namespace Emby.Server.Implementations.Data
             _memoryStreamProvider = memoryStreamProvider;
             _fileSystem = fileSystem;
             _environmentInfo = environmentInfo;
+            _timerFactory = timerFactory;
             _typeMapper = new TypeMapper(assemblyInfo);
 
             _criticReviewsPath = Path.Combine(_config.ApplicationPaths.DataPath, "critic-reviews");
@@ -119,6 +123,14 @@ namespace Emby.Server.Implementations.Data
             }
         }
 
+        protected override bool EnableTempStoreMemory
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         private SQLiteDatabaseConnection _backgroundConnection;
         protected override void CloseConnection()
         {
@@ -128,6 +140,12 @@ namespace Emby.Server.Implementations.Data
             {
                 _backgroundConnection.Dispose();
                 _backgroundConnection = null;
+            }
+
+            if (_shrinkMemoryTimer != null)
+            {
+                _shrinkMemoryTimer.Dispose();
+                _shrinkMemoryTimer = null;
             }
         }
 
@@ -139,12 +157,7 @@ namespace Emby.Server.Implementations.Data
         {
             using (var connection = CreateConnection())
             {
-                connection.ExecuteAll(string.Join(";", new[]
-                {
-                                "PRAGMA page_size=4096",
-                                "PRAGMA default_temp_store=memory",
-                                "PRAGMA temp_store=memory"
-                }));
+                RunDefaultInitialization(connection);
 
                 var createMediaStreamsTableCommand
                    = "create table if not exists mediastreams (ItemId GUID, StreamIndex INT, StreamType TEXT, Codec TEXT, Language TEXT, ChannelLayout TEXT, Profile TEXT, AspectRatio TEXT, Path TEXT, IsInterlaced BIT, BitRate INT NULL, Channels INT NULL, SampleRate INT NULL, IsDefault BIT, IsForced BIT, IsExternal BIT, Height INT NULL, Width INT NULL, AverageFrameRate FLOAT NULL, RealFrameRate FLOAT NULL, Level FLOAT NULL, PixelFormat TEXT, BitDepth INT NULL, IsAnamorphic BIT NULL, RefFrames INT NULL, CodecTag TEXT NULL, Comment TEXT NULL, NalLengthSize TEXT NULL, IsAvc BIT NULL, Title TEXT NULL, TimeBase TEXT NULL, CodecTimeBase TEXT NULL, PRIMARY KEY (ItemId, StreamIndex))";
@@ -170,7 +183,9 @@ namespace Emby.Server.Implementations.Data
 
                                 createMediaStreamsTableCommand,
 
-                                "create index if not exists idx_mediastreams1 on mediastreams(ItemId)"
+                                "create index if not exists idx_mediastreams1 on mediastreams(ItemId)",
+
+                                "pragma shrink_memory"
 
                                };
 
@@ -296,7 +311,7 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "MediaStreams", "RefFrames", "INT", existingColumnNames);
                     AddColumn(db, "MediaStreams", "KeyFrames", "TEXT", existingColumnNames);
                     AddColumn(db, "MediaStreams", "IsAnamorphic", "BIT", existingColumnNames);
-                });
+                }, TransactionMode);
 
                 string[] postQueries =
 
@@ -362,13 +377,35 @@ namespace Emby.Server.Implementations.Data
 
                 connection.RunQueries(postQueries);
 
-                //SqliteExtensions.Attach(_connection, Path.Combine(_config.ApplicationPaths.DataPath, "userdata_v2.db"), "UserDataDb");
                 //await Vacuum(_connection).ConfigureAwait(false);
             }
 
             userDataRepo.Initialize(WriteLock);
 
             _backgroundConnection = CreateConnection(true);
+
+            _shrinkMemoryTimer = _timerFactory.Create(OnShrinkMemoryTimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(30));
+        }
+
+        private void OnShrinkMemoryTimerCallback(object state)
+        {
+            try
+            {
+                using (var connection = CreateConnection())
+                {
+                    using (WriteLock.Write())
+                    {
+                        connection.RunQueries(new string[]
+                        {
+                            "pragma shrink_memory"
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error running shrink memory", ex);
+            }
         }
 
         private readonly string[] _retriveItemColumns =
@@ -655,7 +692,7 @@ namespace Emby.Server.Implementations.Data
                     connection.RunInTransaction(db =>
                     {
                         SaveItemsInTranscation(db, tuples);
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -664,11 +701,18 @@ namespace Emby.Server.Implementations.Data
         {
             var requiresReset = false;
 
-            using (var saveItemStatement = db.PrepareStatement(GetSaveItemCommandText()))
+            var statements = db.PrepareAll(string.Join(";", new string[]
             {
-                using (var deleteAncestorsStatement = db.PrepareStatement("delete from AncestorIds where ItemId=@ItemId"))
+                GetSaveItemCommandText(),
+                "delete from AncestorIds where ItemId=@ItemId",
+                "insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values (@ItemId, @AncestorId, @AncestorIdText)"
+            })).ToList();
+
+            using (var saveItemStatement = statements[0])
+            {
+                using (var deleteAncestorsStatement = statements[1])
                 {
-                    using (var updateAncestorsStatement = db.PrepareStatement("insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values (@ItemId, @AncestorId, @AncestorIdText)"))
+                    using (var updateAncestorsStatement = statements[2])
                     {
                         foreach (var tuple in tuples)
                         {
@@ -1115,7 +1159,9 @@ namespace Emby.Server.Implementations.Data
                 return null;
             }
 
-            return string.Join("|", images.Select(ToValueString).ToArray());
+            var imageStrings = images.Where(i => !string.IsNullOrWhiteSpace(i.Path)).Select(ToValueString).ToArray();
+
+            return string.Join("|", imageStrings);
         }
 
         private void DeserializeImages(string value, BaseItem item)
@@ -1134,7 +1180,12 @@ namespace Emby.Server.Implementations.Data
 
             foreach (var part in parts)
             {
-                item.ImageInfos.Add(ItemImageInfoFromValueString(part));
+                var image = ItemImageInfoFromValueString(part);
+
+                if (image != null)
+                {
+                    item.ImageInfos.Add(image);
+                }
             }
         }
 
@@ -1142,7 +1193,14 @@ namespace Emby.Server.Implementations.Data
         {
             var delimeter = "*";
 
-            return (image.Path ?? string.Empty) +
+            var path = image.Path;
+
+            if (path == null)
+            {
+                path = string.Empty;
+            }
+
+            return path +
                 delimeter +
                 image.DateModified.Ticks.ToString(CultureInfo.InvariantCulture) +
                 delimeter +
@@ -1154,6 +1212,11 @@ namespace Emby.Server.Implementations.Data
         public ItemImageInfo ItemImageInfoFromValueString(string value)
         {
             var parts = value.Split(new[] { '*' }, StringSplitOptions.None);
+
+            if (parts.Length != 4)
+            {
+                return null;
+            }
 
             var image = new ItemImageInfo();
 
@@ -2143,7 +2206,7 @@ namespace Emby.Server.Implementations.Data
                                 index++;
                             }
                         }
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -2576,16 +2639,42 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
+            var totalRecordCount = 0;
+            var isReturningZeroItems = query.Limit.HasValue && query.Limit <= 0;
+
+            var statementTexts = new List<string>();
+            if (!isReturningZeroItems)
+            {
+                statementTexts.Add(commandText);
+            }
+            if (query.EnableTotalRecordCount)
+            {
+                commandText = string.Empty;
+
+                if (EnableGroupByPresentationUniqueKey(query))
+                {
+                    commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
+                }
+                else
+                {
+                    commandText += " select count (guid)" + GetFromText();
+                }
+
+                commandText += GetJoinUserDataText(query);
+                commandText += whereTextWithoutPaging;
+                statementTexts.Add(commandText);
+            }
+
             using (var connection = CreateConnection(true))
             {
                 using (WriteLock.Read())
                 {
-                    var totalRecordCount = 0;
-                    var isReturningZeroItems = query.Limit.HasValue && query.Limit <= 0;
+                    var statements = connection.PrepareAll(string.Join(";", statementTexts.ToArray()))
+                        .ToList();
 
                     if (!isReturningZeroItems)
                     {
-                        using (var statement = connection.PrepareStatement(commandText))
+                        using (var statement = statements[0])
                         {
                             if (EnableJoinUserData(query))
                             {
@@ -2608,33 +2697,22 @@ namespace Emby.Server.Implementations.Data
                         }
                     }
 
-                    commandText = string.Empty;
-
-                    if (EnableGroupByPresentationUniqueKey(query))
+                    if (query.EnableTotalRecordCount)
                     {
-                        commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
-                    }
-                    else
-                    {
-                        commandText += " select count (guid)" + GetFromText();
-                    }
-
-                    commandText += GetJoinUserDataText(query);
-                    commandText += whereTextWithoutPaging;
-
-                    using (var statement = connection.PrepareStatement(commandText))
-                    {
-                        if (EnableJoinUserData(query))
+                        using (var statement = statements[statements.Count - 1])
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            if (EnableJoinUserData(query))
+                            {
+                                statement.TryBind("@UserId", query.User.Id);
+                            }
+
+                            BindSimilarParams(query, statement);
+
+                            // Running this again will bind the params
+                            GetWhereClauses(query, statement);
+
+                            totalRecordCount = statement.ExecuteQuery().SelectScalarInt().First();
                         }
-
-                        BindSimilarParams(query, statement);
-
-                        // Running this again will bind the params
-                        GetWhereClauses(query, statement);
-
-                        totalRecordCount = statement.ExecuteQuery().SelectScalarInt().First();
                     }
 
                     LogQueryTime("GetItems", commandText, now);
@@ -2966,58 +3044,77 @@ namespace Emby.Server.Implementations.Data
             }
 
             var list = new List<Guid>();
+            var isReturningZeroItems = query.Limit.HasValue && query.Limit <= 0;
+
+            var statementTexts = new List<string>();
+            if (!isReturningZeroItems)
+            {
+                statementTexts.Add(commandText);
+            }
+            if (query.EnableTotalRecordCount)
+            {
+                commandText = string.Empty;
+
+                if (EnableGroupByPresentationUniqueKey(query))
+                {
+                    commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
+                }
+                else
+                {
+                    commandText += " select count (guid)" + GetFromText();
+                }
+
+                commandText += GetJoinUserDataText(query);
+                commandText += whereTextWithoutPaging;
+                statementTexts.Add(commandText);
+            }
 
             using (var connection = CreateConnection(true))
             {
+                var statements = connection.PrepareAll(string.Join(";", statementTexts.ToArray()))
+                    .ToList();
+
                 using (WriteLock.Read())
                 {
                     var totalRecordCount = 0;
 
-                    using (var statement = connection.PrepareStatement(commandText))
+                    if (!isReturningZeroItems)
                     {
-                        if (EnableJoinUserData(query))
+                        using (var statement = statements[0])
                         {
-                            statement.TryBind("@UserId", query.User.Id);
-                        }
+                            if (EnableJoinUserData(query))
+                            {
+                                statement.TryBind("@UserId", query.User.Id);
+                            }
 
-                        BindSimilarParams(query, statement);
+                            BindSimilarParams(query, statement);
 
-                        // Running this again will bind the params
-                        GetWhereClauses(query, statement);
+                            // Running this again will bind the params
+                            GetWhereClauses(query, statement);
 
-                        foreach (var row in statement.ExecuteQuery())
-                        {
-                            list.Add(row[0].ReadGuid());
+                            foreach (var row in statement.ExecuteQuery())
+                            {
+                                list.Add(row[0].ReadGuid());
+                            }
                         }
                     }
 
-                    commandText = string.Empty;
-
-                    if (EnableGroupByPresentationUniqueKey(query))
+                    if (query.EnableTotalRecordCount)
                     {
-                        commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
-                    }
-                    else
-                    {
-                        commandText += " select count (guid)" + GetFromText();
-                    }
-
-                    commandText += GetJoinUserDataText(query);
-                    commandText += whereTextWithoutPaging;
-
-                    using (var statement = connection.PrepareStatement(commandText))
-                    {
-                        if (EnableJoinUserData(query))
+                        using (var statement = statements[statements.Count - 1])
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            if (EnableJoinUserData(query))
+                            {
+                                statement.TryBind("@UserId", query.User.Id);
+                            }
+
+                            BindSimilarParams(query, statement);
+
+                            // Running this again will bind the params
+                            GetWhereClauses(query, statement);
+
+                            totalRecordCount = statement.ExecuteQuery().SelectScalarInt().First();
                         }
-
-                        BindSimilarParams(query, statement);
-
-                        // Running this again will bind the params
-                        GetWhereClauses(query, statement);
-
-                        totalRecordCount = statement.ExecuteQuery().SelectScalarInt().First();
                     }
 
                     LogQueryTime("GetItemIds", commandText, now);
@@ -3528,6 +3625,15 @@ namespace Emby.Server.Implementations.Data
                 if (statement != null)
                 {
                     statement.TryBind("@ExternalSeriesId", query.ExternalSeriesId);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.ExternalId))
+            {
+                whereClauses.Add("ExternalId=@ExternalId");
+                if (statement != null)
+                {
+                    statement.TryBind("@ExternalId", query.ExternalId);
                 }
             }
 
@@ -4420,7 +4526,7 @@ namespace Emby.Server.Implementations.Data
 
                         // Delete the item
                         ExecuteWithSingleParam(db, "delete from TypedBaseItems where guid=@Id", id.ToGuidParamValue());
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -4875,13 +4981,29 @@ namespace Emby.Server.Implementations.Data
             var list = new List<Tuple<BaseItem, ItemCounts>>();
             var count = 0;
 
+            var statementTexts = new List<string>();
+            if (!isReturningZeroItems)
+            {
+                statementTexts.Add(commandText);
+            }
+            if (query.EnableTotalRecordCount)
+            {
+                var countText = "select count (distinct PresentationUniqueKey)" + GetFromText();
+
+                countText += GetJoinUserDataText(query);
+                countText += whereText;
+                statementTexts.Add(countText);
+            }
+
             using (var connection = CreateConnection(true))
             {
                 using (WriteLock.Read())
                 {
+                    var statements = connection.PrepareAll(string.Join(";", statementTexts.ToArray())).ToList();
+
                     if (!isReturningZeroItems)
                     {
-                        using (var statement = connection.PrepareStatement(commandText))
+                        using (var statement = statements[0])
                         {
                             statement.TryBind("@SelectType", returnType);
                             if (EnableJoinUserData(query))
@@ -4919,7 +5041,7 @@ namespace Emby.Server.Implementations.Data
                         commandText += GetJoinUserDataText(query);
                         commandText += whereText;
 
-                        using (var statement = connection.PrepareStatement(commandText))
+                        using (var statement = statements[statements.Count - 1])
                         {
                             statement.TryBind("@SelectType", returnType);
                             if (EnableJoinUserData(query))

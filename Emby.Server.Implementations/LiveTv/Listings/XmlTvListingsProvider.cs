@@ -77,7 +77,9 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
                 // It's going to come back gzipped regardless of this value
                 // So we need to make sure the decompression method is set to gzip
-                EnableHttpCompression = true
+                EnableHttpCompression = true,
+
+                UserAgent = "Emby/3.0"
 
             }).ConfigureAwait(false);
 
@@ -141,7 +143,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 ProductionYear = !p.CopyrightDate.HasValue ? (int?)null : p.CopyrightDate.Value.Year,
                 SeasonNumber = p.Episode == null ? null : p.Episode.Series,
                 IsSeries = p.Episode != null,
-                IsRepeat = p.IsRepeat,
+                IsRepeat = p.IsPreviouslyShown && !p.IsNew,
                 IsPremiere = p.Premiere != null,
                 IsKids = p.Categories.Any(c => info.KidsCategories.Contains(c, StringComparer.OrdinalIgnoreCase)),
                 IsMovie = p.Categories.Any(c => info.MovieCategories.Contains(c, StringComparer.OrdinalIgnoreCase)),

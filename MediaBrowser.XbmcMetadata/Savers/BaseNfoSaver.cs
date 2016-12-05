@@ -911,17 +911,14 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
             var image = item.GetImageInfo(ImageType.Primary, 0);
 
-            if (image != null && image.IsLocalFile)
+            if (image != null)
             {
-                writer.WriteElementString("poster", GetPathToSave(image.Path, libraryManager, config));
+                writer.WriteElementString("poster", GetImagePathToSave(image, libraryManager, config));
             }
 
             foreach (var backdrop in item.GetImages(ImageType.Backdrop))
             {
-                if (backdrop.IsLocalFile)
-                {
-                    writer.WriteElementString("fanart", GetPathToSave(backdrop.Path, libraryManager, config));
-                }
+                writer.WriteElementString("fanart", GetImagePathToSave(backdrop, libraryManager, config));
             }
 
             writer.WriteEndElement();
@@ -1012,9 +1009,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     var personEntity = libraryManager.GetPerson(person.Name);
                     var image = personEntity.GetImageInfo(ImageType.Primary, 0);
 
-                    if (image != null && image.IsLocalFile)
+                    if (image != null)
                     {
-                        writer.WriteElementString("thumb", GetPathToSave(image.Path, libraryManager, config));
+                        writer.WriteElementString("thumb", GetImagePathToSave(image, libraryManager, config));
                     }
                 }
                 catch (Exception)
@@ -1026,9 +1023,14 @@ namespace MediaBrowser.XbmcMetadata.Savers
             }
         }
 
-        private static string GetPathToSave(string path, ILibraryManager libraryManager, IServerConfigurationManager config)
+        private static string GetImagePathToSave(ItemImageInfo image, ILibraryManager libraryManager, IServerConfigurationManager config)
         {
-            return libraryManager.GetPathAfterNetworkSubstitution(path);
+            if (!image.IsLocalFile)
+            {
+                return image.Path;
+            }
+
+            return libraryManager.GetPathAfterNetworkSubstitution(image.Path);
         }
 
         private static bool IsPersonType(PersonInfo person, string type)
@@ -1064,7 +1066,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
                         reader.Read();
 
                         // Loop through each element
-                        while (!reader.EOF)
+                        while (!reader.EOF && reader.ReadState == ReadState.Interactive)
                         {
                             if (reader.NodeType == XmlNodeType.Element)
                             {

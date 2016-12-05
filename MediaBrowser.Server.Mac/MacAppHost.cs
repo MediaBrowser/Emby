@@ -22,7 +22,7 @@ namespace MediaBrowser.Server.Mac
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -105,28 +105,6 @@ namespace MediaBrowser.Server.Mac
         protected override void ConfigureAutoRunInternal(bool autorun)
         {
             throw new NotImplementedException();
-        }
-
-        public override void LaunchUrl(string url)
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = url
-                },
-
-                EnableRaisingEvents = true,
-            };
-
-            process.Exited += ProcessExited;
-
-            process.Start();
-        }
-
-        private static void ProcessExited(object sender, EventArgs e)
-        {
-            ((Process)sender).Dispose();
         }
 
         protected override void EnableLoopbackInternal(string appName)

@@ -51,8 +51,6 @@ namespace Emby.Server.Implementations.Data
             {
                 string[] queries = {
 
-                                "pragma temp_store = memory",
-
                                 "create table if not exists userdata (key nvarchar, userId GUID, rating float null, played bit, playCount int, isFavorite bit, playbackPositionTicks bigint, lastPlayedDate datetime null)",
 
                                 "create table if not exists DataSettings (IsUserDataImported bit)",
@@ -78,9 +76,17 @@ namespace Emby.Server.Implementations.Data
 
                     AddColumn(db, "userdata", "AudioStreamIndex", "int", existingColumnNames);
                     AddColumn(db, "userdata", "SubtitleStreamIndex", "int", existingColumnNames);
-                });
+                }, TransactionMode);
 
                 ImportUserDataIfNeeded(connection);
+            }
+        }
+
+        protected override bool EnableTempStoreMemory
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -108,7 +114,7 @@ namespace Emby.Server.Implementations.Data
                     statement.TryBind("@IsUserDataImported", true);
                     statement.MoveNext();
                 }
-            });
+            }, TransactionMode);
         }
 
         private void ImportUserData(IDatabaseConnection connection, string file)
@@ -120,7 +126,7 @@ namespace Emby.Server.Implementations.Data
             connection.RunInTransaction(db =>
             {
                 db.Execute("REPLACE INTO userdata(" + columns + ") SELECT " + columns + " FROM UserDataBackup.userdata;");
-            });
+            }, TransactionMode);
         }
 
         /// <summary>
@@ -189,7 +195,7 @@ namespace Emby.Server.Implementations.Data
                     connection.RunInTransaction(db =>
                     {
                         SaveUserData(db, userId, key, userData);
-                    });
+                    }, TransactionMode);
                 }
             }
         }
@@ -263,7 +269,7 @@ namespace Emby.Server.Implementations.Data
                         {
                             SaveUserData(db, userId, userItemData.Key, userItemData);
                         }
-                    });
+                    }, TransactionMode);
                 }
             }
         }
