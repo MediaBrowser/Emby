@@ -1223,7 +1223,7 @@ define(['appSettings', 'userSettings', 'datetime', 'browser'], function (appSett
         }
 
         self.isPlaying = function () {
-            return self.playlist.length > 0;
+            return self.currentMediaRenderer ? !self.currentMediaRenderer.paused() : false;
         };
 
         self.getPlayerState = function () {
