@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Emby.Common.Implementations</RootNamespace>
+    <AssemblyName>Emby.Common.Implementations</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;NET46;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>NET46;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MediaBrowser.Common">
+      <HintPath>..\..\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model">
+      <HintPath>..\..\MediaBrowser.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.0-betaV15\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\packages\SimpleInjector.3.2.4\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.4.5.4\lib\net45\ServiceStack.Text.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseApplicationHost.cs" />
+    <Compile Include="BaseApplicationPaths.cs" />
+    <Compile Include="Archiving\ZipClient.cs" />
+    <Compile Include="Configuration\BaseConfigurationManager.cs" />
+    <Compile Include="Configuration\ConfigurationHelper.cs" />
+    <Compile Include="Cryptography\CryptographyProvider.cs" />
+    <Compile Include="Devices\DeviceId.cs" />
+    <Compile Include="Diagnostics\CommonProcess.cs" />
+    <Compile Include="Diagnostics\ProcessFactory.cs" />
+    <Compile Include="EnvironmentInfo\EnvironmentInfo.cs" />
+    <Compile Include="HttpClientManager\HttpClientInfo.cs" />
+    <Compile Include="HttpClientManager\HttpClientManager.cs" />
+    <Compile Include="IO\IsoManager.cs" />
+    <Compile Include="IO\ManagedFileSystem.cs" />
+    <Compile Include="Logging\NLogger.cs" />
+    <Compile Include="Logging\NlogManager.cs" />
+    <Compile Include="Net\DisposableManagedObjectBase.cs" />
+    <Compile Include="Net\NetSocket.cs" />
+    <Compile Include="Net\SocketAcceptor.cs" />
+    <Compile Include="Net\SocketFactory.cs" />
+    <Compile Include="Net\UdpSocket.cs" />
+    <Compile Include="Networking\NetworkManager.cs" />
+    <Compile Include="Reflection\AssemblyInfo.cs" />
+    <Compile Include="ScheduledTasks\DailyTrigger.cs" />
+    <Compile Include="ScheduledTasks\IntervalTrigger.cs" />
+    <Compile Include="ScheduledTasks\ScheduledTaskWorker.cs" />
+    <Compile Include="ScheduledTasks\StartupTrigger.cs" />
+    <Compile Include="ScheduledTasks\SystemEventTrigger.cs" />
+    <Compile Include="ScheduledTasks\TaskManager.cs" />
+    <Compile Include="ScheduledTasks\WeeklyTrigger.cs" />
+    <Compile Include="ScheduledTasks\Tasks\DeleteCacheFileTask.cs" />
+    <Compile Include="ScheduledTasks\Tasks\DeleteLogFileTask.cs" />
+    <Compile Include="ScheduledTasks\Tasks\ReloadLoggerFileTask.cs" />
+    <Compile Include="Serialization\JsonSerializer.cs" />
+    <Compile Include="Serialization\XmlSerializer.cs" />
+    <Compile Include="TextEncoding\TextEncoding.cs" />
+    <Compile Include="Threading\CommonTimer.cs" />
+    <Compile Include="Threading\TimerFactory.cs" />
+    <Compile Include="Xml\XmlReaderSettingsFactory.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

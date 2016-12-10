@@ -48,8 +48,19 @@ namespace MediaBrowser.Server.Mono
 
             var appPaths = CreateApplicationPaths(applicationPath, customProgramDataPath);
 
-            var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
-            logManager.ReloadLogger(LogSeverity.Info);
+			//
+			// Use new Constructor and ReloadLogger method available in PR #2304, which
+			// enables custom filters to be applied to the log and uses the configured
+			// LogSeverity level from initial startup, rather than switching back to Info
+			// until the configuration settings are read.
+			//
+
+			// var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
+			// logManager.ReloadLogger(LogSeverity.Info);
+
+			var logManager = new NlogManager(appPaths.LogDirectoryPath, "server", appPaths.ConfigurationDirectoryPath);
+			logManager.ReloadLogger();
+
             logManager.AddConsoleOutput();
 
             var logger = _logger = logManager.GetLogger("Main");
@@ -262,6 +273,14 @@ namespace MediaBrowser.Server.Mono
 
         public static void Restart(StartupOptions startupOptions)
         {
+
+			//
+			// Although slightly crude, this is all that is required to address https://emby.media/community/index.php?/topic/41245-server-restart-via-web-ui/
+			//
+
+			_logger.Info("Delaying restart by 10,000ms to allow web resources to complete loading.");
+			System.Threading.Thread.Sleep(10000);
+
             _logger.Info("Disposing app host");
             _appHost.Dispose();
 
