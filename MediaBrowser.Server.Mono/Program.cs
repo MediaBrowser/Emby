@@ -66,7 +66,7 @@ namespace MediaBrowser.Server.Mono
             var logger = _logger = logManager.GetLogger("Main");
 
             ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
-
+            
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             try
