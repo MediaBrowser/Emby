@@ -3,15 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emby.Common.Implementations", "Emby.Common.Implementations.csproj", "{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaBrowser.Common", "..\MediaBrowser.Common\MediaBrowser.Common.csproj", "{9142EEFA-7570-41E1-BFCC-468BB571AF2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaBrowser.Model", "..\MediaBrowser.Model\MediaBrowser.Model.csproj", "{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Release Mono|Any CPU = Release Mono|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Release Mono|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C1CB1C8-E78E-40EA-B35D-29200C3D5515}.Release Mono|Any CPU.Build.0 = Debug|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Release Mono|Any CPU.ActiveCfg = Release Mono|Any CPU
+		{9142EEFA-7570-41E1-BFCC-468BB571AF2F}.Release Mono|Any CPU.Build.0 = Release Mono|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Release Mono|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}.Release Mono|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

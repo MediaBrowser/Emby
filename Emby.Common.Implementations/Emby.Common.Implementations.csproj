@@ -29,12 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="MediaBrowser.Common">
-      <HintPath>..\..\MediaBrowser.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="MediaBrowser.Model">
-      <HintPath>..\..\MediaBrowser.Model.dll</HintPath>
-    </Reference>
     <Reference Include="SharpCompress">
       <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
@@ -90,6 +84,16 @@
     <Compile Include="Threading\CommonTimer.cs" />
     <Compile Include="Threading\TimerFactory.cs" />
     <Compile Include="Xml\XmlReaderSettingsFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
+      <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
+      <Name>MediaBrowser.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
+      <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
+      <Name>MediaBrowser.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
