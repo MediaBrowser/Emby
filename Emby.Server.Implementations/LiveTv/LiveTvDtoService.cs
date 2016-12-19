@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Model.Dto;
 
 namespace Emby.Server.Implementations.LiveTv
 {
@@ -80,6 +81,11 @@ namespace Emby.Server.Implementations.LiveTv
                 }
 
                 dto.ProgramInfo.SeriesTimerId = dto.SeriesTimerId;
+
+                if (!string.IsNullOrWhiteSpace(info.SeriesTimerId))
+                {
+                    FillImages(dto.ProgramInfo, info.Name, info.SeriesId);
+                }
             }
 
             if (channel != null)
@@ -131,17 +137,17 @@ namespace Emby.Server.Implementations.LiveTv
 
             dto.DayPattern = info.Days == null ? null : GetDayPattern(info.Days);
 
-            FillImages(dto, info);
+            FillImages(dto, info.Name, info.SeriesId);
 
             return dto;
         }
 
-        private void FillImages(SeriesTimerInfoDto dto, SeriesTimerInfo info)
+        private void FillImages(BaseItemDto dto, string seriesName, string programSeriesId)
         {
             var librarySeries = _libraryManager.GetItemList(new InternalItemsQuery
             {
                 IncludeItemTypes = new string[] { typeof(Series).Name },
-                Name = info.Name,
+                Name = seriesName,
                 Limit = 1,
                 ImageTypes = new ImageType[] { ImageType.Thumb }
 
@@ -161,14 +167,29 @@ namespace Emby.Server.Implementations.LiveTv
                     {
                     }
                 }
+                image = librarySeries.GetImageInfo(ImageType.Backdrop, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        dto.ParentBackdropImageTags = new List<string>
+                            {
+                                _imageProcessor.GetImageCacheTag(librarySeries, image)
+                            };
+                        dto.ParentBackdropItemId = librarySeries.Id.ToString("N");
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
             }
 
-            if (!string.IsNullOrWhiteSpace(info.SeriesId))
+            if (!string.IsNullOrWhiteSpace(programSeriesId))
             {
                 var program = _libraryManager.GetItemList(new InternalItemsQuery
                 {
                     IncludeItemTypes = new string[] { typeof(LiveTvProgram).Name },
-                    ExternalSeriesId = info.SeriesId,
+                    ExternalSeriesId = programSeriesId,
                     Limit = 1,
                     ImageTypes = new ImageType[] { ImageType.Primary }
 
@@ -186,6 +207,115 @@ namespace Emby.Server.Implementations.LiveTv
                         }
                         catch (Exception ex)
                         {
+                        }
+                    }
+
+                    if (dto.ParentBackdropImageTags == null || dto.ParentBackdropImageTags.Count == 0)
+                    {
+                        image = program.GetImageInfo(ImageType.Backdrop, 0);
+                        if (image != null)
+                        {
+                            try
+                            {
+                                dto.ParentBackdropImageTags = new List<string>
+                            {
+                                _imageProcessor.GetImageCacheTag(program, image)
+                            };
+                                dto.ParentBackdropItemId = program.Id.ToString("N");
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void FillImages(SeriesTimerInfoDto dto, string seriesName, string programSeriesId)
+        {
+            var librarySeries = _libraryManager.GetItemList(new InternalItemsQuery
+            {
+                IncludeItemTypes = new string[] { typeof(Series).Name },
+                Name = seriesName,
+                Limit = 1,
+                ImageTypes = new ImageType[] { ImageType.Thumb }
+
+            }).FirstOrDefault();
+
+            if (librarySeries != null)
+            {
+                var image = librarySeries.GetImageInfo(ImageType.Thumb, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        dto.ParentThumbImageTag = _imageProcessor.GetImageCacheTag(librarySeries, image);
+                        dto.ParentThumbItemId = librarySeries.Id.ToString("N");
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+                image = librarySeries.GetImageInfo(ImageType.Backdrop, 0);
+                if (image != null)
+                {
+                    try
+                    {
+                        dto.ParentBackdropImageTags = new List<string>
+                            {
+                                _imageProcessor.GetImageCacheTag(librarySeries, image)
+                            };
+                        dto.ParentBackdropItemId = librarySeries.Id.ToString("N");
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(programSeriesId))
+            {
+                var program = _libraryManager.GetItemList(new InternalItemsQuery
+                {
+                    IncludeItemTypes = new string[] { typeof(LiveTvProgram).Name },
+                    ExternalSeriesId = programSeriesId,
+                    Limit = 1,
+                    ImageTypes = new ImageType[] { ImageType.Primary }
+
+                }).FirstOrDefault();
+
+                if (program != null)
+                {
+                    var image = program.GetImageInfo(ImageType.Primary, 0);
+                    if (image != null)
+                    {
+                        try
+                        {
+                            dto.ParentPrimaryImageTag = _imageProcessor.GetImageCacheTag(program, image);
+                            dto.ParentPrimaryImageItemId = program.Id.ToString("N");
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
+
+                    if (dto.ParentBackdropImageTags == null || dto.ParentBackdropImageTags.Count == 0)
+                    {
+                        image = program.GetImageInfo(ImageType.Backdrop, 0);
+                        if (image != null)
+                        {
+                            try
+                            {
+                                dto.ParentBackdropImageTags = new List<string>
+                            {
+                                _imageProcessor.GetImageCacheTag(program, image)
+                            };
+                                dto.ParentBackdropItemId = program.Id.ToString("N");
+                            }
+                            catch (Exception ex)
+                            {
+                            }
                         }
                     }
                 }
