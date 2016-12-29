@@ -1030,17 +1030,24 @@ namespace Emby.Server.Implementations.Sync
                 {
                     await CancelJobItem(jobItem.Id).ConfigureAwait(false);
                 }
+
+                var syncJobResult = await GetJobs(new SyncJobQuery
+                {
+                    ItemId = item,
+                    TargetId = targetId
+
+                }).ConfigureAwait(false);
+
+                foreach (var job in syncJobResult.Items)
+                {
+                    await CancelJob(job.Id).ConfigureAwait(false);
+                }
             }
         }
 
         public async Task CancelJobItem(string id)
         {
             var jobItem = _repo.GetJobItem(id);
-
-            if (jobItem.Status != SyncJobItemStatus.Queued && jobItem.Status != SyncJobItemStatus.ReadyToTransfer && jobItem.Status != SyncJobItemStatus.Converting && jobItem.Status != SyncJobItemStatus.Failed && jobItem.Status != SyncJobItemStatus.Synced && jobItem.Status != SyncJobItemStatus.Transferring)
-            {
-                throw new ArgumentException("Operation is not valid for this job item");
-            }
 
             jobItem.Status = SyncJobItemStatus.Cancelled;
 
