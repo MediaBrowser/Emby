@@ -1520,12 +1520,6 @@ var AppInfo = {};
         });
 
         // mock this for now. not used in this app
-        define("playbackManager", [], function () {
-            return {
-            };
-        });
-
-        // mock this for now. not used in this app
         define("pluginManager", [], function () {
             return {
             };
