@@ -205,7 +205,8 @@ namespace MediaBrowser.Api.Playback
             }
             else
             {
-                args += "-map -0:v";
+                // No known video stream
+                args += "-vn";
             }
 
             if (state.AudioStream != null)
@@ -395,8 +396,6 @@ namespace MediaBrowser.Api.Playback
                 {
                     param += " -crf 23";
                 }
-
-                param += " -tune zerolatency";
             }
 
             else if (string.Equals(videoEncoder, "libx265", StringComparison.OrdinalIgnoreCase))
@@ -534,6 +533,11 @@ namespace MediaBrowser.Api.Playback
                 {
                     param += " -level " + level;
                 }
+            }
+
+            if (string.Equals(videoEncoder, "libx264", StringComparison.OrdinalIgnoreCase))
+            {
+                param += " -x264opts:0 subme=0:rc_lookahead=10:me_range=4:me=dia:no_chroma_me:8x8dct=0:partitions=none";
             }
 
             if (!string.Equals(videoEncoder, "h264_omx", StringComparison.OrdinalIgnoreCase) &&
@@ -1492,8 +1496,16 @@ namespace MediaBrowser.Api.Playback
                     return string.Format(" -b:v {0}", bitrate.Value.ToString(UsCulture));
                 }
 
+                if (string.Equals(videoCodec, "libx264", StringComparison.OrdinalIgnoreCase))
+                {
+                    // h264
+                    return string.Format(" -maxrate {0} -bufsize {1}",
+                        bitrate.Value.ToString(UsCulture),
+                        (bitrate.Value * 2).ToString(UsCulture));
+                }
+
                 // h264
-                return string.Format(" -maxrate {0} -bufsize {1}",
+                return string.Format(" -b:v {0} -maxrate {0} -bufsize {1}",
                     bitrate.Value.ToString(UsCulture),
                     (bitrate.Value * 2).ToString(UsCulture));
             }
@@ -1975,7 +1987,7 @@ namespace MediaBrowser.Api.Playback
                 if (state.OutputVideoBitrate.HasValue && !string.Equals(state.OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     var resolution = ResolutionNormalizer.Normalize(
-                        state.VideoStream == null ? (int?) null : state.VideoStream.BitRate,
+                        state.VideoStream == null ? (int?)null : state.VideoStream.BitRate,
                         state.OutputVideoBitrate.Value,
                         state.VideoStream == null ? null : state.VideoStream.Codec,
                         state.OutputVideoCodec,
@@ -2691,6 +2703,28 @@ namespace MediaBrowser.Api.Playback
                 {
                     //inputModifier += " -noaccurate_seek";
                 }
+
+                foreach (var stream in state.MediaSource.MediaStreams)
+                {
+                    if (!stream.IsExternal && stream.Type != MediaStreamType.Subtitle)
+                    {
+                        if (!string.IsNullOrWhiteSpace(stream.Codec) && stream.Index != -1)
+                        {
+                            inputModifier += " -codec:" + stream.Index.ToString(UsCulture) + " " + stream.Codec;
+                        }
+                    }
+                }
+                //var videoStream = state.VideoStream;
+                //if (videoStream != null && !string.IsNullOrWhiteSpace(videoStream.Codec))
+                //{
+                //    inputModifier += "  -codec:0 " + videoStream.Codec;
+
+                //    var audioStream = state.AudioStream;
+                //    if (audioStream != null && !string.IsNullOrWhiteSpace(audioStream.Codec))
+                //    {
+                //        inputModifier += "  -codec:1 " + audioStream.Codec;
+                //    }
+                //}
             }
 
             return inputModifier;

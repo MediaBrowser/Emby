@@ -418,7 +418,9 @@
 
                     requireHlsPlayer(function () {
                         var hls = new Hls({
-                            manifestLoadingTimeOut: 20000
+                            manifestLoadingTimeOut: 20000,
+                            //debug: true,
+                            appendErrorMaxRetry: 6
                         });
                         hls.loadSource(val);
                         hls.attachMedia(elem);
@@ -427,7 +429,12 @@
                         });
 
                         hls.on(Hls.Events.ERROR, function (event, data) {
-                            if (data.fatal) {
+                            var hlsError = 'HLS Error: Type: ' + data.type + ' Details: ' + (data.details || '') + ' Fatal: ';
+
+                            if (!data.fatal) {
+                                console.error(hlsError + 'false');
+                            } else {
+                                console.error(hlsError + 'true');
                                 switch (data.type) {
                                     case Hls.ErrorTypes.NETWORK_ERROR:
                                         // try to recover network error
