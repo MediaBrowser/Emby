@@ -715,7 +715,7 @@
             html += '<button is="paper-icon-button-light" class="nextTrackButton mediaButton videoTrackControl hide autoSize" onclick="MediaPlayer.nextTrack();"><i class="md-icon">skip_next</i></button>';
 
             html += '<div class="sliderContainer videoPositionSliderContainer" style="display:inline-flex;margin-right:2em;">';
-            html += '<input type="range" is="emby-slider" pin step=".1" min="0" max="100" value="0" class="videoPositionSlider" />';
+            html += '<input type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="videoPositionSlider" />';
             html += '</div>'; // guide
 
             html += '<div class="currentTime">--:--</div>';
