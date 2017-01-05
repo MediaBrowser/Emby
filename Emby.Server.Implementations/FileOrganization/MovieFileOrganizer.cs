@@ -58,7 +58,7 @@ namespace Emby.Server.Implementations.FileOrganization
         {
             _logger.Info("Sorting file {0} into movie folder {1}", sourcePath, targetPath);
 
-            if (!_organizationService.AddToInProgressList(result, true))
+            if (!_organizationService.AddToInProgressList(result, false))
             {
                 throw new Exception("File is currently processed otherwise. Please try again later.");
             }
@@ -117,56 +117,6 @@ namespace Emby.Server.Implementations.FileOrganization
                 _organizationService.RemoveFromInprogressList(result);
             }
         }
-
-        //private void PerformFileSorting(TvFileOrganizationOptions options, FileOrganizationResult result)
-        //{
-        //    _libraryMonitor.ReportFileSystemChangeBeginning(result.TargetPath);
-
-        //    _fileSystem.CreateDirectory(Path.GetDirectoryName(result.TargetPath));
-
-        //    var targetAlreadyExists = _fileSystem.FileExists(result.TargetPath);
-
-        //    try
-        //    {
-        //        if (targetAlreadyExists || options.CopyOriginalFile)
-        //        {
-        //            _fileSystem.CopyFile(result.OriginalPath, result.TargetPath, true);
-        //        }
-        //        else
-        //        {
-        //            _fileSystem.MoveFile(result.OriginalPath, result.TargetPath);
-        //        }
-
-        //        result.Status = FileSortingStatus.Success;
-        //        result.StatusMessage = string.Empty;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errorMsg = string.Format("Failed to move file from {0} to {1}: {2}", result.OriginalPath, result.TargetPath, ex.Message);
-
-        //        result.Status = FileSortingStatus.Failure;
-        //        result.StatusMessage = errorMsg;
-        //        _logger.ErrorException(errorMsg, ex);
-
-        //        return;
-        //    }
-        //    finally
-        //    {
-        //        _libraryMonitor.ReportFileSystemChangeComplete(result.TargetPath, true);
-        //    }
-
-        //    if (targetAlreadyExists && !options.CopyOriginalFile)
-        //    {
-        //        try
-        //        {
-        //            _fileSystem.DeleteFile(result.OriginalPath);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _logger.ErrorException("Error deleting {0}", ex, result.OriginalPath);
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Gets the new path.
