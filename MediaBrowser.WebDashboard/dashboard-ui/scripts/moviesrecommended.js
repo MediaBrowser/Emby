@@ -147,6 +147,7 @@
 
         var url = ApiClient.getUrl("Movies/Recommendations", {
 
+            ParentId: parentId,
             userId: userId,
             categoryLimit: 6,
             ItemLimit: screenWidth >= 1920 ? 8 : (screenWidth >= 1600 ? 8 : (screenWidth >= 1200 ? 6 : 5)),
