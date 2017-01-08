@@ -93,7 +93,7 @@ namespace MediaBrowser.Api.Playback
                     {
                         return 3;
                     }
-                    return 6;
+                    return 10;
                 }
 
                 return 3;
