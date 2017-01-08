@@ -575,7 +575,13 @@ namespace Emby.Server.Implementations.HttpServer
         private void Write(IResponse response, string text)
         {
             var bOutput = Encoding.UTF8.GetBytes(text);
-            response.SetContentLength(bOutput.Length);
+
+            try
+            {
+                response.SetContentLength(bOutput.Length);
+            }
+            catch (Exception)
+            {}
 
             var outputStream = response.OutputStream;
             outputStream.Write(bOutput, 0, bOutput.Length);
