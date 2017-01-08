@@ -227,7 +227,7 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                                         break;
                                     case Hls.ErrorTypes.MEDIA_ERROR:
                                         console.log("fatal media error encountered, try to recover");
-                                        hls.recoverMediaError();
+                                        handleMediaError();
                                         break;
                                     default:
                                         // cannot recover
@@ -277,6 +277,36 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
                 setCurrentTrackElement(currentTrackIndex);
                 return playWithPromise(elem);
+            }
+        }
+
+        var recoverDecodingErrorDate, recoverSwapAudioCodecDate;
+
+        function handleMediaError() {
+
+            if (!hlsPlayer) {
+                return;
+            }
+
+            var now = Date.now();
+
+            if (window.performance && window.performance.now) {
+                now = performance.now();
+            }
+
+            if (!recoverDecodingErrorDate || (now - recoverDecodingErrorDate) > 3000) {
+                recoverDecodingErrorDate = now;
+                console.log('try to recover media Error ...');
+                hlsPlayer.recoverMediaError();
+            } else {
+                if (!recoverSwapAudioCodecDate || (now - recoverSwapAudioCodecDate) > 3000) {
+                    recoverSwapAudioCodecDate = now;
+                    console.log('try to swap Audio Codec and recover media Error ...');
+                    hlsPlayer.swapAudioCodec();
+                    hlsPlayer.recoverMediaError();
+                } else {
+                    console.error('cannot recover, last media error recovery failed ...');
+                }
             }
         }
 
@@ -646,10 +676,8 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
         function onError() {
 
-            destroyCustomTrack(this);
-            var errorCode = this.error ? this.error.code : '';
-            errorCode = (errorCode || '').toString();
-            console.log('Media element error code: ' + errorCode);
+            var errorCode = this.error ? (this.error.code || 0) : 0;
+            console.log('Media element error code: ' + errorCode.toString());
 
             var type;
 
@@ -664,11 +692,15 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                     break;
                 case 3:
                     // MEDIA_ERR_DECODE
+                    handleMediaError();
+                    return;
                     break;
                 case 4:
                     // MEDIA_ERR_SRC_NOT_SUPPORTED
                     break;
             }
+
+            destroyCustomTrack(this);
 
             //events.trigger(self, 'error', [
             //{
@@ -708,7 +740,7 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                 // simple playback should use the native support
                 if (mediaSource.RunTimeTicks) {
                     //if (!browser.edge) {
-                        return false;
+                    return false;
                     //}
                 }
 
