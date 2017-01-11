@@ -8,7 +8,6 @@
     var nowPlayingImageElement;
     var nowPlayingTextElement;
     var nowPlayingUserData;
-    var unmuteButton;
     var muteButton;
     var volumeSlider;
     var volumeSliderContainer;
@@ -54,7 +53,6 @@
         html += '<div class="nowPlayingBarRight">';
 
         html += '<button is="paper-icon-button-light" class="muteButton mediaButton autoSize"><i class="md-icon">volume_up</i></button>';
-        html += '<button is="paper-icon-button-light" class="unmuteButton mediaButton autoSize"><i class="md-icon">volume_off</i></button>';
 
         html += '<div class="sliderContainer nowPlayingBarVolumeSliderContainer hide" style="width:100px;vertical-align:middle;display:inline-flex;">';
         html += '<input type="range" is="emby-slider" pin step="1" min="0" max="100" value="0" class="nowPlayingBarVolumeSlider"/>';
@@ -146,20 +144,11 @@
         nowPlayingTextElement = elem.querySelector('.nowPlayingBarText');
         nowPlayingUserData = elem.querySelector('.nowPlayingBarUserDataButtons');
 
-        unmuteButton = elem.querySelector('.unmuteButton');
-        unmuteButton.addEventListener('click', function () {
-
-            if (currentPlayer) {
-                currentPlayer.setMute(false);
-            }
-
-        });
-
         muteButton = elem.querySelector('.muteButton');
         muteButton.addEventListener('click', function () {
 
             if (currentPlayer) {
-                currentPlayer.setMute(true);
+                playbackManager.toggleMute(currentPlayer);
             }
 
         });
@@ -403,7 +392,7 @@
         }
 
         if (currentTimeElement) {
-            
+
             var timeText = positionTicks == null ? '--:--' : datetime.getDisplayRunningTime(positionTicks);
 
             if (runtimeTicks) {
@@ -419,23 +408,16 @@
         var supportedCommands = currentPlayerSupportedCommands;
 
         var showMuteButton = true;
-        var showUnmuteButton = true;
         var showVolumeSlider = true;
 
-        if (supportedCommands.indexOf('Mute') == -1) {
+        if (supportedCommands.indexOf('ToggleMute') == -1) {
             showMuteButton = false;
-        }
-
-        if (supportedCommands.indexOf('Unmute') == -1) {
-            showUnmuteButton = false;
         }
 
         if (isMuted) {
-
-            showMuteButton = false;
+            muteButton.querySelector('i').innerHTML = '&#xE04F;';
         } else {
-
-            showUnmuteButton = false;
+            muteButton.querySelector('i').innerHTML = '&#xE050;';
         }
 
         if (supportedCommands.indexOf('SetVolume') == -1) {
@@ -444,7 +426,6 @@
 
         if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
             showMuteButton = false;
-            showUnmuteButton = false;
             showVolumeSlider = false;
         }
 
@@ -452,12 +433,6 @@
             showButton(muteButton);
         } else {
             hideButton(muteButton);
-        }
-
-        if (showUnmuteButton) {
-            showButton(unmuteButton);
-        } else {
-            hideButton(unmuteButton);
         }
 
         // See bindEvents for why this is necessary
@@ -489,6 +464,10 @@
     }
 
     function seriesImageUrl(item, options) {
+
+        if (!item) {
+            throw new Error('item cannot be null!');
+        }
 
         if (item.Type !== 'Episode') {
             return null;
@@ -528,21 +507,23 @@
 
     function imageUrl(item, options) {
 
+        if (!item) {
+            throw new Error('item cannot be null!');
+        }
+
         options = options || {};
         options.type = options.type || "Primary";
 
         if (item.ImageTags && item.ImageTags[options.type]) {
 
             options.tag = item.ImageTags[options.type];
-            return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.Id, options);
+            return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.PrimaryImageItemId || item.Id, options);
         }
 
-        if (options.type === 'Primary') {
-            if (item.AlbumId && item.AlbumPrimaryImageTag) {
+        if (item.AlbumId && item.AlbumPrimaryImageTag) {
 
-                options.tag = item.AlbumPrimaryImageTag;
-                return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.AlbumId, options);
-            }
+            options.tag = item.AlbumPrimaryImageTag;
+            return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.AlbumId, options);
         }
 
         return null;
@@ -551,7 +532,9 @@
     var currentImgUrl;
     function updateNowPlayingInfo(state) {
 
-        nowPlayingTextElement.innerHTML = nowPlayingHelper.getNowPlayingNames(state.NowPlayingItem).map(function (nowPlayingName) {
+        var nowPlayingItem = state.NowPlayingItem;
+
+        nowPlayingTextElement.innerHTML = nowPlayingItem ? nowPlayingHelper.getNowPlayingNames(nowPlayingItem).map(function (nowPlayingName) {
 
             if (nowPlayingName.item) {
                 return '<div>' + getTextActionButton(nowPlayingName.item, nowPlayingName.text) + '</div>';
@@ -559,24 +542,27 @@
 
             return '<div>' + nowPlayingName.text + '</div>';
 
-        }).join('');
+        }).join('') : '';
 
         var imgHeight = 70;
-        var nowPlayingItem = state.NowPlayingItem;
 
-        var url = seriesImageUrl(nowPlayingItem, {
+        var url = nowPlayingItem ? (seriesImageUrl(nowPlayingItem, {
             height: imgHeight
         }) || imageUrl(nowPlayingItem, {
             height: imgHeight
-        });
+        })) : null;
 
-        if (url == currentImgUrl) {
+        if (url === currentImgUrl) {
             return;
         }
 
         currentImgUrl = url;
 
         imageLoader.lazyImage(nowPlayingImageElement, url);
+
+        userdataButtons.destroy({
+            element: nowPlayingUserData
+        });
 
         if (nowPlayingItem.Id) {
             ApiClient.getItem(Dashboard.getCurrentUserId(), nowPlayingItem.Id).then(function (item) {
@@ -585,10 +571,6 @@
                     includePlayed: false,
                     element: nowPlayingUserData
                 });
-            });
-        } else {
-            userdataButtons.destroy({
-                element: nowPlayingUserData
             });
         }
     }
@@ -617,7 +599,20 @@
         // Don't call getNowPlayingBar here because we don't want to end up creating it just to hide it
         var elem = document.getElementsByClassName('nowPlayingBar')[0];
         if (elem) {
-            slideDown(elem);
+
+            // If it's not currently visible, don't bother with the animation
+            // transitionend events not firing in mobile chrome/safari when hidden
+            if (document.body.classList.contains('hiddenNowPlayingBar')) {
+
+                dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
+                    once: true
+                });
+                elem.classList.add('hide');
+                elem.classList.add('nowPlayingBar-hidden');
+
+            } else {
+                slideDown(elem);
+            }
         }
     }
 
@@ -681,8 +676,6 @@
         lastUpdateTime = now;
 
         var player = this;
-        var state = lastPlayerState;
-        var nowPlayingItem = state.NowPlayingItem || {};
         currentRuntimeTicks = playbackManager.duration(player);
         updateTimeDisplay(playbackManager.currentTime(player), currentRuntimeTicks);
     }

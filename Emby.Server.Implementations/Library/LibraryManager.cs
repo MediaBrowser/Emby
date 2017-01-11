@@ -2010,7 +2010,7 @@ namespace Emby.Server.Implementations.Library
 
         private string GetContentTypeOverride(string path, bool inherit)
         {
-            var nameValuePair = ConfigurationManager.Configuration.ContentTypes.FirstOrDefault(i => string.Equals(i.Name, path, StringComparison.OrdinalIgnoreCase) || (inherit && !string.IsNullOrWhiteSpace(i.Name) && _fileSystem.ContainsSubPath(i.Name, path)));
+            var nameValuePair = ConfigurationManager.Configuration.ContentTypes.FirstOrDefault(i => _fileSystem.AreEqual(i.Name, path) || (inherit && !string.IsNullOrWhiteSpace(i.Name) && _fileSystem.ContainsSubPath(i.Name, path)));
             if (nameValuePair != null)
             {
                 return nameValuePair.Value;
@@ -2480,6 +2480,8 @@ namespace Emby.Server.Implementations.Library
                 options.VideoFileExtensions.Remove(".rar");
                 options.VideoFileExtensions.Remove(".zip");
             }
+
+            options.VideoFileExtensions.Add(".tp");
 
             return options;
         }
@@ -3064,7 +3066,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     removeList.Add(contentType);
                 }
-                else if (string.Equals(path, contentType.Name, StringComparison.OrdinalIgnoreCase)
+                else if (_fileSystem.AreEqual(path, contentType.Name)
                     || _fileSystem.ContainsSubPath(path, contentType.Name))
                 {
                     removeList.Add(contentType);

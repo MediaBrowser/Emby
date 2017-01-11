@@ -47,7 +47,7 @@
         if (item.ImageTags && item.ImageTags[options.type]) {
 
             options.tag = item.ImageTags[options.type];
-            return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.Id, options);
+            return connectionManager.getApiClient(item.ServerId).getScaledImageUrl(item.PrimaryImageItemId || item.Id, options);
         }
 
         if (options.type === 'Primary') {
@@ -88,6 +88,7 @@
         var currentRuntimeTicks = 0;
         var lastUpdateTime = 0;
         var isEnabled;
+        var currentItem;
 
         var nowPlayingVolumeSlider = view.querySelector('.osdVolumeSlider');
         var nowPlayingVolumeSliderContainer = view.querySelector('.osdVolumeSliderContainer');
@@ -98,27 +99,18 @@
         var nowPlayingDurationText = view.querySelector('.osdDurationText');
         var endsAtText = view.querySelector('.endsAtText');
 
-        var scenePicker = view.querySelector('.scenePicker');
-        var isScenePickerRendered;
         var btnRewind = view.querySelector('.btnRewind');
         var btnFastForward = view.querySelector('.btnFastForward');
 
         var transitionEndEventName = dom.whichTransitionEvent();
 
-        function getHeaderElement() {
-            return document.querySelector('.skinHeader');
-        }
-
-        function getOsdBottom() {
-            return view.querySelector('.videoOsdBottom');
-        }
+        var headerElement = document.querySelector('.skinHeader');
+        var osdBottomElement = document.querySelector('.videoOsdBottom');
 
         function updateNowPlayingInfo(state) {
 
-            scenePicker.innerHTML = '';
-            isScenePickerRendered = false;
-
             var item = state.NowPlayingItem;
+            currentItem = item;
 
             setPoster(item);
 
@@ -209,15 +201,15 @@
 
         function showOsd() {
 
-            slideDownToShow(getHeaderElement());
-            slideUpToShow(getOsdBottom());
+            slideDownToShow(headerElement);
+            slideUpToShow(osdBottomElement);
             startHideTimer();
         }
 
         function hideOsd() {
 
-            slideUpToHide(getHeaderElement());
-            slideDownToHide(getOsdBottom());
+            slideUpToHide(headerElement);
+            slideDownToHide(osdBottomElement);
         }
 
         var hideTimeout;
@@ -380,15 +372,17 @@
 
         function updateFullscreenIcon() {
             if (playbackManager.isFullscreen(currentPlayer)) {
+                view.querySelector('.btnFullscreen').setAttribute('title', globalize.translate('ExitFullscreen'));
                 view.querySelector('.btnFullscreen i').innerHTML = '&#xE5D1;';
             } else {
+                view.querySelector('.btnFullscreen').setAttribute('title', globalize.translate('Fullscreen'));
                 view.querySelector('.btnFullscreen i').innerHTML = '&#xE5D0;';
             }
         }
 
         view.addEventListener('viewbeforeshow', function (e) {
 
-            getHeaderElement().classList.add('osdHeader');
+            headerElement.classList.add('osdHeader');
             // Make sure the UI is completely transparent
             Emby.Page.setTransparency('full');
         });
@@ -398,18 +392,33 @@
             events.on(playbackManager, 'playerchange', onPlayerChange);
             bindToPlayer(playbackManager.getCurrentPlayer());
 
-            document.addEventListener('mousemove', onMouseMove);
+            dom.addEventListener(document, 'mousemove', onMouseMove, {
+                passive: true
+            });
+            document.body.classList.add('autoScrollY');
 
             showOsd();
 
             inputManager.on(window, onInputCommand);
+
+            dom.addEventListener(window, 'keydown', onWindowKeyDown, {
+                passive: true
+            });
         });
 
         view.addEventListener('viewbeforehide', function () {
+
+            dom.removeEventListener(window, 'keydown', onWindowKeyDown, {
+                passive: true
+            });
+
             stopHideTimer();
-            getHeaderElement().classList.remove('osdHeader');
-            getHeaderElement().classList.remove('osdHeader-hidden');
-            document.removeEventListener('mousemove', onMouseMove);
+            headerElement.classList.remove('osdHeader');
+            headerElement.classList.remove('osdHeader-hidden');
+            dom.removeEventListener(document, 'mousemove', onMouseMove, {
+                passive: true
+            });
+            document.body.classList.remove('autoScrollY');
 
             inputManager.off(window, onInputCommand);
             events.off(playbackManager, 'playerchange', onPlayerChange);
@@ -429,6 +438,10 @@
 
         view.querySelector('.btnFullscreen').addEventListener('click', function () {
             playbackManager.toggleFullscreen(currentPlayer);
+        });
+
+        view.querySelector('.btnPip').addEventListener('click', function () {
+            playbackManager.togglePictureInPicture(currentPlayer);
         });
 
         view.querySelector('.btnSettings').addEventListener('click', onSettingsButtonClick);
@@ -635,6 +648,12 @@
                 view.querySelector('.btnFullscreen').classList.remove('hide');
             }
 
+            if (supportedCommands.indexOf('PictureInPicture') === -1) {
+                view.querySelector('.btnPip').classList.add('hide');
+            } else {
+                view.querySelector('.btnPip').classList.remove('hide');
+            }
+
             updateFullscreenIcon();
         }
 
@@ -685,8 +704,10 @@
             }
 
             if (isMuted) {
+                view.querySelector('.buttonMute').setAttribute('title', globalize.translate('Unmute'));
                 view.querySelector('.buttonMute i').innerHTML = '&#xE04F;';
             } else {
+                view.querySelector('.buttonMute').setAttribute('title', globalize.translate('Mute'));
                 view.querySelector('.buttonMute i').innerHTML = '&#xE050;';
             }
 
@@ -895,18 +916,15 @@
 
         view.addEventListener('viewhide', function () {
 
-            getHeaderElement().classList.remove('hide');
+            headerElement.classList.remove('hide');
         });
 
-        dom.addEventListener(window, 'keydown', function (e) {
-
+        function onWindowKeyDown(e) {
             if (e.keyCode === 32 && !isOsdOpen()) {
                 playbackManager.playPause(currentPlayer);
                 showOsd();
             }
-        }, {
-            passive: true
-        });
+        }
 
         view.querySelector('.pageContainer').addEventListener('click', function () {
 
@@ -929,7 +947,6 @@
 
         nowPlayingPositionSlider.addEventListener('change', function () {
 
-            stopScenePickerTimer();
             if (currentPlayer) {
 
                 var newPercent = parseFloat(this.value);
@@ -938,7 +955,67 @@
             }
         });
 
-        nowPlayingPositionSlider.getBubbleText = function (value) {
+        function getImgUrl(item, chapter, index, maxWidth, apiClient) {
+
+            if (chapter.ImageTag) {
+
+                return apiClient.getScaledImageUrl(item.Id, {
+                    maxWidth: maxWidth,
+                    tag: chapter.ImageTag,
+                    type: "Chapter",
+                    index: index
+                });
+            }
+
+            return null;
+        }
+
+        function getChapterBubbleHtml(apiClient, item, chapters, positionTicks) {
+
+            var chapter;
+            var index = -1;
+
+            for (var i = 0, length = chapters.length; i < length; i++) {
+
+                var currentChapter = chapters[i];
+
+                if (positionTicks >= currentChapter.StartPositionTicks) {
+                    chapter = currentChapter;
+                    index = i;
+                }
+            }
+
+            if (!chapter) {
+                return null;
+            }
+
+            var src = getImgUrl(item, chapter, index, 400, apiClient);
+
+            if (src) {
+
+                var html = '<div class="chapterThumbContainer">';
+                html += '<img class="chapterThumb" src="' + src + '" />';
+
+                html += '<div class="chapterThumbTextContainer">';
+                html += '<div class="chapterThumbText chapterThumbText-dim">';
+                html += chapter.Name;
+                html += '</div>';
+                html += '<h1 class="chapterThumbText">';
+                html += datetime.getDisplayRunningTime(positionTicks);
+                html += '</h1>';
+                html += '</div>';
+
+                html += '</div>';
+
+                return html;
+            }
+
+            return null;
+        }
+
+        nowPlayingPositionSlider.getBubbleHtml = function (value) {
+
+            showOsd();
 
             if (!currentRuntimeTicks) {
                 return '--:--';
@@ -948,7 +1025,16 @@
             ticks /= 100;
             ticks *= value;
 
-            return datetime.getDisplayRunningTime(ticks);
+            var item = currentItem;
+            if (item && item.Chapters && item.Chapters[0].ImageTag) {
+                var html = getChapterBubbleHtml(connectionManager.getApiClient(item.ServerId), item, item.Chapters, ticks);
+
+                if (html) {
+                    return html;
+                }
+            }
+
+            return '<h1 class="sliderBubbleText">' + datetime.getDisplayRunningTime(ticks) + '</h1>';
         };
 
         view.querySelector('.btnPreviousTrack').addEventListener('click', function () {
@@ -979,112 +1065,6 @@
         view.querySelector('.btnAudio').addEventListener('click', showAudioTrackSelection);
         view.querySelector('.btnSubtitles').addEventListener('click', showSubtitleTrackSelection);
 
-        function getChapterHtml(item, chapter, index, maxWidth, apiClient) {
-
-            var html = '';
-
-            var src = getImgUrl(item, chapter, index, maxWidth, apiClient);
-
-            if (src) {
-
-                var pct = currentRuntimeTicks ? (chapter.StartPositionTicks / currentRuntimeTicks) : 0;
-                pct *= 100;
-                chapterPcts[index] = pct;
-
-                html += '<img data-index="' + index + '" class="chapterThumb" src="' + src + '" />';
-            }
-
-            return html;
-        }
-
-        function getImgUrl(item, chapter, index, maxWidth, apiClient) {
-
-            if (chapter.ImageTag) {
-
-                return apiClient.getScaledImageUrl(item.Id, {
-                    maxWidth: maxWidth,
-                    tag: chapter.ImageTag,
-                    type: "Chapter",
-                    index: index
-                });
-            }
-
-            return null;
-        }
-
-        function renderScenePicker(progressPct) {
-
-            chapterPcts = [];
-            var item = playbackManager.currentItem(currentPlayer);
-            if (!item) {
-                return;
-            }
-
-            var chapters = item.Chapters || [];
-
-            var currentIndex = -1;
-
-            var apiClient = connectionManager.getApiClient(item.ServerId);
-
-            scenePicker.innerHTML = chapters.map(function (chapter) {
-                currentIndex++;
-                return getChapterHtml(item, chapter, currentIndex, 400, apiClient);
-            }).join('');
-
-            imageLoader.lazyChildren(scenePicker);
-            fadeIn(scenePicker, progressPct);
-        }
-
-        var hideScenePickerTimeout;
-        var chapterPcts = [];
-
-        function showScenePicker() {
-
-            var progressPct = nowPlayingPositionSlider.value;
-
-            if (!isScenePickerRendered) {
-                isScenePickerRendered = true;
-                renderScenePicker();
-            } else {
-                fadeIn(scenePicker, progressPct);
-            }
-
-            if (hideScenePickerTimeout) {
-                clearTimeout(hideScenePickerTimeout);
-            }
-            hideScenePickerTimeout = setTimeout(hideScenePicker, 1600);
-        }
-
-        function hideScenePicker() {
-            fadeOut(scenePicker);
-        }
-
-        var showScenePickerTimeout;
-
-        function startScenePickerTimer() {
-            if (!showScenePickerTimeout) {
-                showScenePickerTimeout = setTimeout(showScenePicker, 100);
-            }
-        }
-
-        function stopScenePickerTimer() {
-            if (showScenePickerTimeout) {
-                clearTimeout(showScenePickerTimeout);
-                showScenePickerTimeout = null;
-            }
-        }
-
-        dom.addEventListener(nowPlayingPositionSlider, 'input', function () {
-
-            if (scenePicker.classList.contains('hide')) {
-                startScenePickerTimer();
-            } else {
-                showScenePicker();
-            }
-        }, {
-            passive: true
-        });
-
         function onViewHideStopPlayback() {
 
             if (playbackManager.isPlayingVideo()) {
@@ -1101,67 +1081,6 @@
                 // or 
                 //Emby.Page.setTransparency(Emby.TransparencyLevel.Backdrop);
             }
-        }
-
-        function fadeIn(elem, pct) {
-
-            if (!elem.classList.contains('hide')) {
-                selectChapterThumb(elem, pct);
-                return;
-            }
-
-            elem.classList.remove('hide');
-
-            var keyframes = [
-                { opacity: '0', offset: 0 },
-                { opacity: '1', offset: 1 }
-            ];
-            var timing = { duration: 300, iterations: 1 };
-            elem.animate(keyframes, timing).onfinish = function () {
-                selectChapterThumb(elem, pct);
-            };
-        }
-
-        function selectChapterThumb(elem, pct) {
-            var index = -1;
-            for (var i = 0, length = chapterPcts.length; i < length; i++) {
-
-                if (pct >= chapterPcts[i]) {
-                    index = i;
-                }
-            }
-
-            if (index === -1) {
-                index = 0;
-            }
-
-            var selected = elem.querySelector('.selectedChapterThumb');
-            var newSelected = elem.querySelector('.chapterThumb[data-index="' + index + '"]');
-
-            if (selected !== newSelected) {
-                if (selected) {
-                    selected.classList.remove('selectedChapterThumb');
-                }
-
-                newSelected.classList.add('selectedChapterThumb');
-                scrollHelper.toCenter(elem, newSelected, true);
-            }
-        }
-
-        function fadeOut(elem) {
-
-            if (elem.classList.contains('hide')) {
-                return;
-            }
-
-            var keyframes = [
-                { opacity: '1', offset: 0 },
-                { opacity: '0', offset: 1 }
-            ];
-            var timing = { duration: 300, iterations: 1 };
-            elem.animate(keyframes, timing).onfinish = function () {
-                elem.classList.add('hide');
-            };
         }
 
         function enableStopOnBack(enabled) {

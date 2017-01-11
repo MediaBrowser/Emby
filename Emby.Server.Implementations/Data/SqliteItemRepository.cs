@@ -3208,6 +3208,11 @@ namespace Emby.Server.Implementations.Data
 
         private List<string> GetWhereClauses(InternalItemsQuery query, IStatement statement, string paramSuffix = "")
         {
+            if (query.IsResumable ?? false)
+            {
+                query.IsVirtualItem = false;
+            }
+
             var whereClauses = new List<string>();
 
             if (EnableJoinUserData(query))
@@ -3368,9 +3373,9 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
-            if (query.SimilarTo != null)
+            if (query.SimilarTo != null && query.MinSimilarityScore > 0)
             {
-                whereClauses.Add("SimilarityScore > 0");
+                whereClauses.Add("SimilarityScore > " + (query.MinSimilarityScore - 1).ToString(CultureInfo.InvariantCulture));
             }
 
             if (query.IsFolder.HasValue)
@@ -4080,27 +4085,6 @@ namespace Emby.Server.Implementations.Data
                 var val = string.Join(",", query.LocationTypes.Select(i => "'" + i + "'").ToArray());
 
                 whereClauses.Add("LocationType in (" + val + ")");
-            }
-            if (query.ExcludeLocationTypes.Length == 1)
-            {
-                if (query.ExcludeLocationTypes[0] == LocationType.Virtual && _config.Configuration.SchemaVersion >= 90)
-                {
-                    query.IsVirtualItem = false;
-                }
-                else
-                {
-                    whereClauses.Add("LocationType<>@ExcludeLocationTypes");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@ExcludeLocationTypes", query.ExcludeLocationTypes[0].ToString());
-                    }
-                }
-            }
-            else if (query.ExcludeLocationTypes.Length > 1)
-            {
-                var val = string.Join(",", query.ExcludeLocationTypes.Select(i => "'" + i + "'").ToArray());
-
-                whereClauses.Add("LocationType not in (" + val + ")");
             }
             if (query.IsVirtualItem.HasValue)
             {

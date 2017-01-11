@@ -1,4 +1,4 @@
-define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackManager', 'embyRouter', 'appSettings'], function (browser, pluginManager, events, appHost, loading, playbackManager, embyRouter, appSettings) {
+define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackManager', 'embyRouter', 'appSettings', 'connectionManager'], function (browser, pluginManager, events, appHost, loading, playbackManager, embyRouter, appSettings, connectionManager) {
     "use strict";
 
     return function () {
@@ -17,7 +17,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
         var currentSrc;
         var started = false;
         var hlsPlayer;
-        var enableCustomControls;
 
         var winJsPlaybackItem;
         var currentPlayOptions;
@@ -63,7 +62,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
             var enableMkvProgressive = (item.RunTimeTicks && browser.edgeUwp) ? true : false;
 
             return {
-                supportsCustomSeeking: appHost.supports('htmlvideoautoplay'),
                 enableMkvProgressive: enableMkvProgressive,
                 disableHlsVideoAudioCodecs: disableHlsVideoAudioCodecs
             };
@@ -76,7 +74,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                 require(['browserdeviceprofile', 'environments/windows-uwp/mediacaps'], function (profileBuilder, uwpMediaCaps) {
 
                     var profileOptions = getBaseProfileOptions(item);
-                    profileOptions.supportsCustomSeeking = true;
                     profileOptions.supportsDts = uwpMediaCaps.supportsDTS();
                     profileOptions.supportsTrueHd = uwpMediaCaps.supportsDolby();
                     profileOptions.audioChannels = uwpMediaCaps.getAudioChannels();
@@ -119,6 +116,51 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
             return currentSrc;
         };
 
+        function updateVideoUrl(streamInfo) {
+
+            var isHls = streamInfo.url.toLowerCase().indexOf('.m3u8') !== -1;
+
+            var mediaSource = streamInfo.mediaSource;
+            var item = streamInfo.item;
+
+            // Huge hack alert. Safari doesn't seem to like if the segments aren't available right away when playback starts
+            // This will start the transcoding process before actually feeding the video url into the player
+            // Edit: Also seeing stalls from hls.js
+            if (mediaSource && item && !mediaSource.RunTimeTicks && isHls && (browser.iOS || browser.osx)) {
+
+                var hlsPlaylistUrl = streamInfo.url.replace('master.m3u8', 'live.m3u8');
+
+                loading.show();
+
+                console.log('prefetching hls playlist: ' + hlsPlaylistUrl);
+
+                return connectionManager.getApiClient(item.ServerId).ajax({
+
+                    type: 'GET',
+                    url: hlsPlaylistUrl
+
+                }).then(function () {
+
+                    console.log('completed prefetching hls playlist: ' + hlsPlaylistUrl);
+
+                    loading.hide();
+                    streamInfo.url = hlsPlaylistUrl;
+
+                    return Promise.resolve();
+
+                }, function () {
+
+                    console.log('error prefetching hls playlist: ' + hlsPlaylistUrl);
+
+                    loading.hide();
+                    return Promise.resolve();
+                });
+
+            } else {
+                return Promise.resolve();
+            }
+        }
+
         self.play = function (options) {
 
             started = false;
@@ -126,8 +168,56 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
             return createMediaElement(options).then(function (elem) {
 
-                return setCurrentSrc(elem, options);
+                return updateVideoUrl(options, options.mediaSource).then(function () {
+                    return setCurrentSrc(elem, options);
+                });
             });
+        };
+
+        var supportedFeatures;
+        function getSupportedFeatures() {
+
+            var list = [];
+
+            var video = document.createElement('video');
+            if (video.webkitSupportsPresentationMode && video.webkitSupportsPresentationMode('picture-in-picture') && typeof video.webkitSetPresentationMode === "function") {
+                list.push('pictureinpicture');
+            }
+
+            return list;
+        }
+
+        self.supports = function (feature) {
+
+            if (!supportedFeatures) {
+                supportedFeatures = getSupportedFeatures();
+            }
+
+            return supportedFeatures.indexOf(feature) !== -1;
+        };
+
+        self.togglePictureInPicture = function () {
+            return self.setPictureInPictureEnabled(!self.isPictureInPictureEnabled());
+        };
+
+        self.setPictureInPictureEnabled = function (isEnabled) {
+
+            var video = mediaElement;
+            if (video) {
+                if (video.webkitSupportsPresentationMode && typeof video.webkitSetPresentationMode === "function") {
+                    video.webkitSetPresentationMode(isEnabled ? "picture-in-picture" : "inline");
+                }
+            }
+        };
+
+        self.isPictureInPictureEnabled = function (isEnabled) {
+
+            var video = mediaElement;
+            if (video) {
+                return video.webkitPresentationMode === "picture-in-picture";
+            }
+
+            return false;
         };
 
         function getCrossOriginValue(mediaSource) {
@@ -227,7 +317,7 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                                         break;
                                     case Hls.ErrorTypes.MEDIA_ERROR:
                                         console.log("fatal media error encountered, try to recover");
-                                        hls.recoverMediaError();
+                                        handleMediaError();
                                         break;
                                     default:
                                         // cannot recover
@@ -280,6 +370,36 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
             }
         }
 
+        var recoverDecodingErrorDate, recoverSwapAudioCodecDate;
+
+        function handleMediaError() {
+
+            if (!hlsPlayer) {
+                return;
+            }
+
+            var now = Date.now();
+
+            if (window.performance && window.performance.now) {
+                now = performance.now();
+            }
+
+            if (!recoverDecodingErrorDate || (now - recoverDecodingErrorDate) > 3000) {
+                recoverDecodingErrorDate = now;
+                console.log('try to recover media Error ...');
+                hlsPlayer.recoverMediaError();
+            } else {
+                if (!recoverSwapAudioCodecDate || (now - recoverSwapAudioCodecDate) > 3000) {
+                    recoverSwapAudioCodecDate = now;
+                    console.log('try to swap Audio Codec and recover media Error ...');
+                    hlsPlayer.swapAudioCodec();
+                    hlsPlayer.recoverMediaError();
+                } else {
+                    console.error('cannot recover, last media error recovery failed ...');
+                }
+            }
+        }
+
         function applySrc(elem, src) {
 
             if (window.Windows) {
@@ -306,7 +426,10 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                     // Chrome now returns a promise
                     return promise.catch(function (e) {
 
-                        if ((e.name || '').toLowerCase() === 'notallowederror') {
+                        var errorName = (e.name || '').toLowerCase();
+                        // safari uses aborterror
+                        if (errorName === 'notallowederror' ||
+                            errorName === 'aborterror') {
                             // swallow this error because the user can still click the play button on the video element
                             return Promise.resolve();
                         }
@@ -576,6 +699,7 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
             if (!started) {
                 started = true;
+                this.removeAttribute('controls');
 
                 if (currentPlayOptions.title) {
                     self.originalDocumentTitle = document.title;
@@ -585,12 +709,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                 }
 
                 setCurrentTrackElement(subtitleTrackIndexToSetOnPlaying);
-
-                if (enableCustomControls) {
-                    this.removeAttribute('controls');
-                } else {
-                    this.setAttribute('controls', 'controls');
-                }
 
                 seekOnPlaybackStart(e.target);
 
@@ -646,10 +764,8 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
         function onError() {
 
-            destroyCustomTrack(this);
-            var errorCode = this.error ? this.error.code : '';
-            errorCode = (errorCode || '').toString();
-            console.log('Media element error code: ' + errorCode);
+            var errorCode = this.error ? (this.error.code || 0) : 0;
+            console.log('Media element error code: ' + errorCode.toString());
 
             var type;
 
@@ -664,11 +780,14 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                     break;
                 case 3:
                     // MEDIA_ERR_DECODE
-                    break;
+                    handleMediaError();
+                    return;
                 case 4:
                     // MEDIA_ERR_SRC_NOT_SUPPORTED
                     break;
             }
+
+            destroyCustomTrack(this);
 
             //events.trigger(self, 'error', [
             //{
@@ -708,7 +827,7 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                 // simple playback should use the native support
                 if (mediaSource.RunTimeTicks) {
                     //if (!browser.edge) {
-                        return false;
+                    return false;
                     //}
                 }
 
@@ -732,21 +851,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
             }
 
             return false;
-        }
-
-        function enableCustomVideoControls() {
-
-            //if (AppInfo.isNativeApp && browser.safari) {
-
-            //    if (browser.ipad) {
-            //        // Need to disable it in order to support picture in picture
-            //        return false;
-            //    }
-
-            //    return true;
-            //}
-
-            return true;
         }
 
         function setTracks(elem, tracks, mediaSource, serverId) {
@@ -1145,8 +1249,9 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
 
         function createMediaElement(options) {
 
-            if (browser.tv || browser.noAnimation) {
+            if (browser.tv || browser.noAnimation || browser.iOS) {
                 // too slow
+                // also on iOS, the backdrop image doesn't look right
                 options.backdropUrl = null;
             }
             return new Promise(function (resolve, reject) {
@@ -1158,8 +1263,6 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                     require(['css!' + pluginManager.mapPath(self, 'style.css')], function () {
 
                         loading.show();
-
-                        enableCustomControls = enableCustomVideoControls();
 
                         var dlg = document.createElement('div');
 
@@ -1179,13 +1282,13 @@ define(['browser', 'pluginManager', 'events', 'apphost', 'loading', 'playbackMan
                         // https://developer.apple.com/library/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html
 
                         var html = '';
-                        // Can't autoplay in these browsers so we need to use the full controls
-                        if (!enableCustomControls || !appHost.supports('htmlvideoautoplay')) {
+                        // Can't autoplay in these browsers so we need to use the full controls, at least until playback starts
+                        if (!appHost.supports('htmlvideoautoplay')) {
                             html += '<video class="htmlvideoplayer" preload="metadata" autoplay="autoplay" controls="controls" webkit-playsinline playsinline>';
                         } else {
 
                             // Chrome 35 won't play with preload none
-                            html += '<video class="htmlvideoplayer htmlvideoplayer-nocontrols" preload="metadata" autoplay="autoplay" webkit-playsinline playsinline>';
+                            html += '<video class="htmlvideoplayer" preload="metadata" autoplay="autoplay" webkit-playsinline playsinline>';
                         }
 
                         html += '</video>';
