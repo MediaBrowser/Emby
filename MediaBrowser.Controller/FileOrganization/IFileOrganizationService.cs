@@ -47,6 +47,13 @@ namespace MediaBrowser.Controller.FileOrganization
         Task PerformEpisodeOrganization(EpisodeFileOrganizationRequest request);
         
         /// <summary>
+        /// Performs movie organization.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>Task.</returns>
+        Task PerformMovieOrganization(MovieFileOrganizationRequest request);
+        
+        /// <summary>
         /// Gets the results.
         /// </summary>
         /// <param name="query">The query.</param>

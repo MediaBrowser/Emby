@@ -167,6 +167,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             if (FileSystem.FileExists(segmentPath))
             {
+                segmentPath = CheckModifySegmentPath(state, playlistPath, requestedIndex);
                 job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                 return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
             }
@@ -181,6 +182,7 @@ namespace MediaBrowser.Api.Playback.Hls
                     job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(playlistPath, TranscodingJobType);
                     transcodingLock.Release();
                     released = true;
+                    segmentPath = CheckModifySegmentPath(state, playlistPath, requestedIndex);
                     return await GetSegmentResult(state, playlistPath, segmentPath, requestedIndex, job, cancellationToken).ConfigureAwait(false);
                 }
                 else
@@ -424,6 +426,27 @@ namespace MediaBrowser.Api.Playback.Hls
             var filename = Path.GetFileNameWithoutExtension(playlist);
 
             return Path.Combine(folder, filename + index.ToString(UsCulture) + GetSegmentFileExtension(state));
+        }
+
+        private string CheckModifySegmentPath(StreamState state, string playlist, int index)
+        {
+            var path = GetSegmentPath(state, playlist, index);
+
+            for (int i = 0; i < 3; i++)
+            {
+                var info = FileSystem.GetFileInfo(path);
+                if (info.Length == 0)
+                {
+                    index--;
+                    path = GetSegmentPath(state, playlist, index);
+                }
+                else
+                {
+                    return path;
+                }
+            }
+
+            return GetSegmentPath(state, playlist, index);
         }
 
         private async Task<object> GetSegmentResult(StreamState state, string playlistPath,
@@ -907,7 +930,7 @@ namespace MediaBrowser.Api.Playback.Hls
                     timeDeltaParam = string.Format("-segment_time_delta -{0}", startTime);
                 }
 
-                return string.Format("{0} {1} -map_metadata -1 -map_chapters -1 -threads {2} {3} {4} {5} -f segment -max_delay 5000000 -avoid_negative_ts disabled -start_at_zero -segment_time {6} {10} -individual_header_trailer 0 -segment_format mpegts -segment_list_type m3u8 -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
+                return string.Format("{0} {1} -map_metadata -1 -map_chapters -1 -threads {2} {3} {4} {5} -f segment -max_delay 5000000 -avoid_negative_ts disabled -start_at_zero -segment_time {6} {10} -write_empty_segments 1 -individual_header_trailer 0 -segment_format mpegts -segment_list_type m3u8 -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
                     inputModifier,
                     GetInputArgument(state),
                     threads,

@@ -146,6 +146,7 @@
     <Compile Include="System\IPowerManagement.cs" />
     <Compile Include="Text\ITextEncoding.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />
+    <Compile Include="FileOrganization\MovieFileOrganizationRequest.cs" />
     <Compile Include="FileOrganization\SmartMatchInfo.cs" />
     <Compile Include="Health\IHealthMonitor.cs" />
     <Compile Include="IO\FileSystemMetadata.cs" />

@@ -89,6 +89,23 @@ namespace MediaBrowser.Api.Library
         public string TargetFolder { get; set; }
     }
 
+    [Route("/Library/FileOrganizations/{Id}/Movie/Organize", "POST", Summary = "Performs organization of a movie file")]
+    public class OrganizeMovie
+    {
+        [ApiMember(Name = "Id", Description = "Result Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string Id { get; set; }
+
+        [ApiMember(Name = "MovieName", Description = "Movie Name", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MovieName { get; set; }
+
+        [ApiMember(Name = "MovieYear", Description = "Movie Year", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string MovieYear { get; set; }
+
+        [ApiMember(Name = "TargetFolder", Description = "Target Folder", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string TargetFolder { get; set; }
+    }
+
+
     [Route("/Library/FileOrganizations/SmartMatches", "GET", Summary = "Gets smart match entries")]
     public class GetSmartMatchInfos : IReturn<QueryResult<SmartMatchInfo>>
     {
@@ -188,6 +205,20 @@ namespace MediaBrowser.Api.Library
 
             // Async processing (close dialog early instead of waiting until the file has been copied)
             // Wait 2s for exceptions that may occur to have them forwarded to the client for immediate error display
+            task.Wait(2000);
+        }
+
+        public void Post(OrganizeMovie request)
+        {
+            var task = _iFileOrganizationService.PerformMovieOrganization(new MovieFileOrganizationRequest
+            {
+                ResultId = request.Id,
+                Name = request.MovieName,
+                Year = request.MovieYear,
+                TargetFolder = request.TargetFolder
+            });
+
+            // Wait 2s for exceptions that may occur and would be automatically forwarded to the client for immediate error display
             task.Wait(2000);
         }
 

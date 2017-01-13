@@ -16,7 +16,7 @@ _:-ms-input-placeholder, :root .mdl-slider {
     -ms-user-select: none;
     user-select: none;
     outline: 0;
-    padding: 1.5em 0;
+    padding: 0;
     color: #52B54B;
     -webkit-align-self: center;
     -ms-flex-item-align: center;
@@ -74,13 +74,12 @@ _:-ms-input-placeholder, :root .mdl-slider {
 
     .mdl-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 1em;
+        width: 0;
         height: 1em;
         box-sizing: border-box;
-        border-radius: 50%;
         background: #52B54B;
         border: none;
-        transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 0 3px rgba(82, 181, 75, 1);
     }
 
 .slider-no-webkit-thumb::-webkit-slider-thumb {
@@ -89,41 +88,20 @@ _:-ms-input-placeholder, :root .mdl-slider {
 
 .mdl-slider::-moz-range-thumb {
     -moz-appearance: none;
-    width: 1em;
+    width: 0;
     height: 1em;
     box-sizing: border-box;
-    border-radius: 50%;
     background-image: none;
     background: #52B54B;
     border: none;
+    box-shadow: 0 0 0 3px rgba(82, 181, 75, 1);
 }
 
-.mdl-slider:active::-webkit-slider-thumb {
-    background-image: none;
-    background: #52B54B;
-    -webkit-transform: scale(1.5);
-    transform: scale(1.5);
-}
-
-.mdl-slider:active::-moz-range-thumb {
-    background-image: none;
-    background: #52B54B;
-    transform: scale(1.5);
-}
-
-.mdl-slider:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 10px rgba(82, 181, 75, 0.26);
-}
-
-.mdl-slider:focus::-moz-range-thumb {
-    box-shadow: 0 0 0 10px rgba(82, 181, 75, 0.26);
-}
 
 .mdl-slider::-ms-thumb {
-    width: 16px;
+    width: 0px;
     height: 16px;
     border: none;
-    border-radius: 50%;
     background: #52B54B;
 }
 

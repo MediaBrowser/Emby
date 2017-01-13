@@ -1,11 +1,11 @@
-﻿define(['dialogHelper', 'emby-checkbox', 'emby-input', 'emby-button', 'emby-select', 'paper-icon-button-light', 'formDialogStyle'], function (dialogHelper) {
-    'use strict';
+﻿define(['dialogHelper', 'require', 'emby-checkbox', 'emby-input', 'emby-button', 'emby-select', 'paper-icon-button-light', 'formDialogStyle'], function (dialogHelper, require) {
 
     var extractedName;
     var extractedYear;
     var currentNewItem;
     var existingSeriesHtml;
     var seriesLocationsCount = 0;
+    var movieLocationsCount = 0;
 
     function onApiFailure(e) {
 
@@ -19,7 +19,7 @@
         });
     }
 
-    function initEpisodeForm(context, item) {
+    function initForms(context, item) {
 
         if (!item.ExtractedName || item.ExtractedName.length < 3) {
             context.querySelector('.fldRemember').classList.add('hide');
@@ -29,11 +29,27 @@
         }
 
         context.querySelector('.inputFile').innerHTML = item.OriginalFileName;
+        context.querySelector('.inputSeriesName').innerHTML = item.ExtractedName;
+        context.querySelector('.inputYear').innerHTML = item.ExtractedYear;
+
+        context.querySelector('.inputFile2').innerHTML = item.OriginalFileName;
+        context.querySelector('.inputSeriesName2').innerHTML = item.ExtractedName;
+        context.querySelector('.inputYear2').innerHTML = item.ExtractedYear;
+
+        if (!item.ExtractedName) {
+            context.querySelector('.paraInputSeriesName').classList.add('hide');
+            context.querySelector('.paraInputSeriesName2').classList.add('hide');
+        }
+
+        if (!item.ExtractedYear) {
+            context.querySelector('.paraInputYear').classList.add('hide');
+            context.querySelector('.paraInputYear2').classList.add('hide');
+        }
 
         context.querySelector('#txtSeason').value = item.ExtractedSeasonNumber;
         context.querySelector('#txtEpisode').value = item.ExtractedEpisodeNumber;
         context.querySelector('#txtEndingEpisode').value = item.ExtractedEndingEpisodeNumber;
-        //context.querySelector('.extractedName').innerHTML = item.ExtractedName;
+        context.querySelector('.extractedName').innerHTML = item.ExtractedName;
 
         extractedName = item.ExtractedName;
         extractedYear = item.ExtractedYear;
@@ -41,6 +57,7 @@
         context.querySelector('#chkRememberCorrection').checked = false;
 
         context.querySelector('#hfResultId').value = item.Id;
+        context.querySelector('#hfResultIdMovie').value = item.Id;
 
         ApiClient.getItems(null, {
             recursive: true,
@@ -61,7 +78,7 @@
 
             ApiClient.getVirtualFolders().then(function (result) {
 
-                //var movieLocations = [];
+                var movieLocations = [];
                 var seriesLocations = [];
 
                 for (var n = 0; n < result.length; n++) {
@@ -74,9 +91,10 @@
                             display: virtualFolder.Name + ': ' + virtualFolder.Locations[i]
                         };
 
-                        //if (virtualFolder.CollectionType == 'movies') {
-                        //    movieLocations.push(location);
-                        //}
+                        if (virtualFolder.CollectionType == 'movies') {
+                            movieLocations.push(location);
+                        }
+
                         if (virtualFolder.CollectionType == 'tvshows') {
                             seriesLocations.push(location);
                         }
@@ -84,8 +102,13 @@
                 }
 
                 seriesLocationsCount = seriesLocations.length;
+                movieLocationsCount = movieLocations.length;
 
                 var seriesFolderHtml = seriesLocations.map(function (s) {
+                    return '<option value="' + s.value + '">' + s.display + '</option>';
+                }).join('');
+
+                var movieFolderHtml = movieLocations.map(function (s) {
                     return '<option value="' + s.value + '">' + s.display + '</option>';
                 }).join('');
 
@@ -94,7 +117,13 @@
                     seriesFolderHtml = '<option value=""></option>' + seriesFolderHtml;
                 }
 
+                if (movieLocations.length > 1) {
+                    // If the user has multiple folders, add an empty item to enforce a manual selection
+                    movieFolderHtml = '<option value=""></option>' + movieFolderHtml;
+                }
+
                 context.querySelector('#selectSeriesFolder').innerHTML = seriesFolderHtml;
+                context.querySelector('#selectMovieFolder').innerHTML = movieFolderHtml;
 
             }, onApiFailure);
 
@@ -144,6 +173,55 @@
         }, onApiFailure);
     }
 
+    function submitMovieForm(dlg) {
+
+        var targetFolder = dlg.querySelector('#selectMovieFolder').value;
+
+        if (!targetFolder) {
+            require(['alert'], function (alert) {
+                alert({
+                    title: "Target folder",
+                    text: "Please select target folder!"
+                });
+            });
+
+            return;
+        }
+
+        Dashboard.showLoadingMsg();
+
+        var resultId = dlg.querySelector('#hfResultIdMovie').value;
+
+
+        var options = {
+
+            MovieName: currentNewItem.Name,
+            MovieYear: currentNewItem.ProductionYear,
+            TargetFolder: targetFolder
+        };
+
+        performMovieOrganization(resultId, options).then(function () {
+
+            Dashboard.hideLoadingMsg();
+
+            dlg.submitted = true;
+            dialogHelper.close(dlg);
+
+        }, onApiFailure);
+    }
+
+    function performMovieOrganization(id, options) {
+
+        var url = ApiClient.getUrl("Library/FileOrganizations/" + id + "/Movie/Organize");
+
+        return ApiClient.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(options),
+            contentType: 'application/json'
+        });
+    }
+
     function showNewSeriesDialog(dlg) {
 
         if (seriesLocationsCount == 0) {
@@ -159,7 +237,7 @@
 
         require(['itemIdentifier'], function (itemIdentifier) {
 
-            itemIdentifier.showFindNew(extractedName, extractedYear, 'Series', ApiClient.serverId()).then(function (newItem) {
+            itemIdentifier.showFindNew(extractedName || '', extractedYear, 'Series', ApiClient.serverId()).then(function (newItem) {
 
                 if (newItem != null) {
                     currentNewItem = newItem;
@@ -167,6 +245,39 @@
                     seriesHtml = seriesHtml + '<option selected value="##NEW##">' + currentNewItem.Name + '</option>';
                     dlg.querySelector('#selectSeries').innerHTML = seriesHtml;
                     selectedSeriesChanged(dlg);
+                }
+            });
+        });
+    }
+
+    function showFindMovieDialog(dlg) {
+
+        if (movieLocationsCount == 0) {
+
+            require(['alert'], function (alert) {
+                alert({
+                    title: Globalize.translate('AutoOrganizeError'),
+                    text: Globalize.translate('NoTvFoldersConfigured')
+                });
+            });
+            return;
+        }
+
+        require(['itemIdentifier'], function (itemIdentifier) {
+
+            itemIdentifier.showFindNew(extractedName || '', extractedYear, 'Movie', ApiClient.serverId()).then(function (newItem) {
+
+                if (newItem != null) {
+                    currentNewItem = newItem;
+                    var movieName = currentNewItem.Name;
+
+                    if (currentNewItem.ProductionYear) {
+                        movieName = movieName + ' (' + currentNewItem.ProductionYear + ')';
+                    }
+
+                    dlg.querySelector('#txtSelectedMovie').value = movieName;
+                    dlg.querySelector('#identifiedMovie').classList.remove('hide');
+
                 }
             });
         });
@@ -184,6 +295,21 @@
             dlg.querySelector('#selectSeriesFolder').removeAttribute('required');
         }
     }
+
+    function selectType(dlg) {
+
+        var type = dlg.querySelector('#selectContentType').value;
+
+        if (type == 'episode') {
+            dlg.querySelector('#organizeSeries').classList.remove('hide');
+            dlg.querySelector('#organizeMovies').classList.add('hide');
+        }
+        else {
+            dlg.querySelector('#organizeSeries').classList.add('hide');
+            dlg.querySelector('#organizeMovies').classList.remove('hide');
+        }
+    }
+
 
     return {
         show: function (item) {
@@ -234,9 +360,17 @@
                         dialogHelper.close(dlg);
                     });
 
-                    dlg.querySelector('form').addEventListener('submit', function (e) {
+                    dlg.querySelector('.episodeCorrectionForm').addEventListener('submit', function (e) {
 
                         submitEpisodeForm(dlg);
+
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    dlg.querySelector('.organizeMovieForm').addEventListener('submit', function (e) {
+
+                        submitMovieForm(dlg);
 
                         e.preventDefault();
                         return false;
@@ -247,13 +381,25 @@
                         showNewSeriesDialog(dlg);
                     });
 
+                    dlg.querySelector('#btnIdentifyMovie').addEventListener('click', function (e) {
+
+                        showFindMovieDialog(dlg);
+                    });
+
                     dlg.querySelector('#selectSeries').addEventListener('change', function (e) {
 
                         selectedSeriesChanged(dlg);
                     });
 
-                    initEpisodeForm(dlg, item);
-                }
+                    dlg.querySelector('#selectContentType').addEventListener('change', function (e) {
+
+                        selectType(dlg);
+                    });
+
+                    dlg.querySelector('#selectContentType').value = 'episode';
+
+                    initForms(dlg, item);
+                };
 
                 xhr.send();
             });
