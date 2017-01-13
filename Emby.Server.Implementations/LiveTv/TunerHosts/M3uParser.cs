@@ -125,16 +125,18 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var numberString = nameParts[0];
 
             //Check for channel number with the format from SatIp
-            int number;
             if (!string.IsNullOrWhiteSpace(nameInExtInf))
             {
-                var numberIndex = nameInExtInf.IndexOf('.');
+                // M3U format is 
+                // #EXTINF:DURATION, Sample artist - Sample title
+                // Where DURATION is ignored if < 0
+                //       Sample artist is the channel name
+                //       Sample Title is the channel name
+                var numberIndex = nameInExtInf.IndexOf('-');
                 if (numberIndex > 0)
                 {
-                    if (int.TryParse(nameInExtInf.Substring(0, numberIndex), out number))
-                    {
-                        numberString = number.ToString();
-                    }
+                    // found a separator, so get the numberString
+                    numberString = nameInExtInf.Substring(0, numberIndex);
                 }
             }
 
@@ -212,14 +214,15 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             int number;
             if (!string.IsNullOrWhiteSpace(nameInExtInf))
             {
-                var numberIndex = nameInExtInf.IndexOf('.');
-                if (numberIndex > 0)
+                // M3U format is 
+                // #EXTINF:DURATION, Sample artist - Sample title
+                // Where DURATION is ignored if < 0
+                //       Sample artist is the channel name
+                //       Sample Title is the channel name
+                var sepIndex = nameInExtInf.IndexOf('-');
+                if (sepIndex > 0)
                 {
-                    if (int.TryParse(nameInExtInf.Substring(0, numberIndex), out number))
-                    {
-                        //channel.Number = number.ToString();
-                        nameInExtInf = nameInExtInf.Substring(numberIndex + 1);
-                    }
+                    nameInExtInf = nameInExtInf.Substring(sepIndex + 1);
                 }
             }
 
