@@ -1374,7 +1374,14 @@ namespace Emby.Server.Implementations.Dto
                     if (episodeSeries != null)
                     {
                         dto.SeriesPrimaryImageTag = GetImageCacheTag(episodeSeries, ImageType.Primary);
+                        dto.SeriesThumbImageTag = GetImageCacheTag(episodeSeries, ImageType.Thumb);
                     }
+
+                }
+
+                if (episode.Season != null)
+                {
+                    dto.SeasonPrimaryImageTag = GetImageCacheTag(episode.Season, ImageType.Primary);
                 }
 
                 if (fields.Contains(ItemFields.SeriesStudio))
@@ -1448,6 +1455,7 @@ namespace Emby.Server.Implementations.Dto
                     if (series != null)
                     {
                         dto.SeriesPrimaryImageTag = GetImageCacheTag(series, ImageType.Primary);
+                        dto.SeriesThumbImageTag = GetImageCacheTag(series, ImageType.Thumb);
                     }
                 }
             }
