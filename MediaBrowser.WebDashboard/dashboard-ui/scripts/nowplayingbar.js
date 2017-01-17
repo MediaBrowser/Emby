@@ -552,25 +552,23 @@
             height: imgHeight
         })) : null;
 
-        if (url === currentImgUrl) {
-            return;
+        if (url !== currentImgUrl) {
+            currentImgUrl = url;
+
+            imageLoader.lazyImage(nowPlayingImageElement, url);
         }
 
-        currentImgUrl = url;
-
-        imageLoader.lazyImage(nowPlayingImageElement, url);
-
-        userdataButtons.destroy({
-            element: nowPlayingUserData
-        });
-
         if (nowPlayingItem.Id) {
-            ApiClient.getItem(Dashboard.getCurrentUserId(), nowPlayingItem.Id).then(function (item) {
+            ApiClient.getItem(Dashboard.getCurrentUserId(), nowPlayingItem.Id).then(function(item) {
                 userdataButtons.fill({
                     item: item,
                     includePlayed: false,
                     element: nowPlayingUserData
                 });
+            });
+        } else {
+            userdataButtons.destroy({
+                element: nowPlayingUserData
             });
         }
     }
@@ -616,12 +614,14 @@
         }
     }
 
-    function onPlaybackStopped(e, state) {
+    function onPlaybackStopped(e, stopInfo) {
 
         console.log('nowplaying event: ' + e.type);
         var player = this;
 
-        hideNowPlayingBar();
+        if (stopInfo.nextMediaType !== 'Audio') {
+            hideNowPlayingBar();
+        }
     }
 
     function onPlayPauseStateChanged(e) {

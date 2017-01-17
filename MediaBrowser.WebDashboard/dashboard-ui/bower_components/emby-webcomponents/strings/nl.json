@@ -115,7 +115,7 @@
     "RefreshDialogHelp": "Metadata wordt vernieuwd op basis van de instellingen en internet diensten die zijn ingeschakeld in het dashboard van de Emby Server.",
     "Open": "Openen",
     "Play": "Afspelen",
-    "Queue": "Wachtrij",
+    "AddToPlayQueue": "Add to play queue",
     "Shuffle": "Willekeurig",
     "Identify": "Identificeer",
     "EditImages": "Bewerk afbeeldingen",
@@ -377,5 +377,7 @@
     "SyncJobItemStatusRemovedFromDevice": "Removed from device",
     "SyncJobItemStatusCancelled": "Cancelled",
     "Retry": "Retry",
-    "HeaderMyDevice": "My Device"
+    "HeaderMyDevice": "My Device",
+    "Continue": "Continue",
+    "ContinueInSecondsValue": "Continue in {0} seconds."
 }

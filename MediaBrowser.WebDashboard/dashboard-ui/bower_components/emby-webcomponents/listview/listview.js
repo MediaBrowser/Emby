@@ -398,6 +398,10 @@ define(['itemHelper', 'mediaInfo', 'indicators', 'connectionManager', 'layoutMan
 
             if (!clickEntireItem) {
 
+                if (options.addToListButton) {
+                    html += '<button is="paper-icon-button-light" class="listItemButton itemAction autoSize" data-action="addtoplaylist"><i class="md-icon">&#xE03B;</i></button>';
+                }
+
                 if (options.moreButton !== false) {
                     html += '<button is="paper-icon-button-light" class="listItemButton itemAction autoSize" data-action="menu"><i class="md-icon">' + moreIcon + '</i></button>';
                 }
