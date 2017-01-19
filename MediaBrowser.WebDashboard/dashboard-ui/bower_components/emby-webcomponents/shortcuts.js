@@ -252,7 +252,7 @@ define(['playbackManager', 'inputManager', 'connectionManager', 'embyRouter', 'g
             });
         }
 
-        else if (action === 'play') {
+        else if (action === 'play' || action === 'resume') {
 
             var startPositionTicks = parseInt(card.getAttribute('data-positionticks') || '0');
 
@@ -288,7 +288,7 @@ define(['playbackManager', 'inputManager', 'connectionManager', 'embyRouter', 'g
         }
 
         else if (action === 'setplaylistindex') {
-            playbackManager.currentPlaylistIndex(parseInt(card.getAttribute('data-index')));
+            playbackManager.setCurrentPlaylistItem(card.getAttribute('data-playlistitemid'));
         }
 
         else if (action === 'record') {
@@ -329,6 +329,19 @@ define(['playbackManager', 'inputManager', 'connectionManager', 'embyRouter', 'g
 
         else if (action === 'addtoplaylist') {
             getItem(target).then(addToPlaylist);
+        }
+
+        else if (action === 'custom') {
+
+            var customAction = target.getAttribute('data-customaction');
+
+            card.dispatchEvent(new CustomEvent('action-' + customAction, {
+                detail: {
+                    playlistItemId: card.getAttribute('data-playlistitemid')
+                },
+                cancelable: false,
+                bubbles: true
+            }));
         }
     }
 
@@ -418,7 +431,7 @@ define(['playbackManager', 'inputManager', 'connectionManager', 'embyRouter', 'g
 
         var cmd = e.detail.command;
 
-        if (cmd === 'play' || cmd === 'record' || cmd === 'menu' || cmd === 'info') {
+        if (cmd === 'play' || cmd === 'resume' || cmd === 'record' || cmd === 'menu' || cmd === 'info') {
             var card = dom.parentWithClass(e.target, 'itemAction');
 
             if (card) {

@@ -1029,7 +1029,7 @@ var AppInfo = {};
         define("directorybrowser", ["components/directorybrowser/directorybrowser"], returnFirstDependency);
         define("metadataEditor", [embyWebComponentsBowerPath + "/metadataeditor/metadataeditor"], returnFirstDependency);
         define("personEditor", [embyWebComponentsBowerPath + "/metadataeditor/personeditor"], returnFirstDependency);
-        define("playerSelectionMenu", ["components/playerselection"], returnFirstDependency);
+        define("playerSelectionMenu", [embyWebComponentsBowerPath + "/playback/playerselection"], returnFirstDependency);
 
         define("libraryMenu", ["scripts/librarymenu"], returnFirstDependency);
 
@@ -2095,7 +2095,8 @@ var AppInfo = {};
             dependencies: ['paper-icon-button-light', 'emby-slider', 'emby-button', 'emby-input', 'emby-itemscontainer'],
             controller: 'scripts/nowplayingpage',
             autoFocus: false,
-            transition: 'fade'
+            transition: 'fade',
+            fullscreen: true
         });
 
         defineRoute({
@@ -2346,7 +2347,8 @@ var AppInfo = {};
             controller: 'scripts/videoosd',
             autoFocus: false,
             type: 'video-osd',
-            supportsThemeMedia: true
+            supportsThemeMedia: true,
+            fullscreen: true
         });
 
         defineRoute({

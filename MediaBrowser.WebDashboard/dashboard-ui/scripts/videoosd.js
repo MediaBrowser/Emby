@@ -470,7 +470,7 @@
             isEnabled = true;
 
             updatePlayerStateInternal(event, state);
-            updatePlaylist();
+            updatePlaylist(player);
 
             enableStopOnBack(true);
         }
@@ -732,31 +732,16 @@
             }
         }
 
-        function updatePlaylist() {
-
-            var items = playbackManager.playlist();
-
-            var index = playbackManager.currentPlaylistIndex();
-
-            var previousEnabled = index > 0;
-            var nextEnabled = (index < items.length - 1);
+        function updatePlaylist(player) {
 
             var btnPreviousTrack = view.querySelector('.btnPreviousTrack');
             var btnNextTrack = view.querySelector('.btnNextTrack');
 
-            if (!nextEnabled && !previousEnabled) {
+            btnPreviousTrack.classList.remove('hide');
+            btnNextTrack.classList.remove('hide');
 
-                btnPreviousTrack.classList.add('hide');
-                btnNextTrack.classList.add('hide');
-
-            } else {
-
-                btnPreviousTrack.classList.remove('hide');
-                btnNextTrack.classList.remove('hide');
-
-                btnNextTrack.disabled = !nextEnabled;
-                btnPreviousTrack.disabled = !previousEnabled;
-            }
+            btnNextTrack.disabled = false;
+            btnPreviousTrack.disabled = false;
         }
 
         function updateTimeText(elem, ticks, divider) {
