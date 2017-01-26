@@ -1118,9 +1118,8 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
             var apiClient = connectionManager.getApiClient(item.ServerId);
 
             if (item.LocalTrailerCount) {
-                apiClient.getLocalTrailers(apiClient.getCurrentUserId(), item.Id).then(function (result) {
-
-                    self.play({
+                return apiClient.getLocalTrailers(apiClient.getCurrentUserId(), item.Id).then(function (result) {
+                    return self.play({
                         items: result
                     });
                 });
@@ -1128,10 +1127,10 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                 var remoteTrailers = item.RemoteTrailers || [];
 
                 if (!remoteTrailers.length) {
-                    return;
+                    return Promise.reject();
                 }
 
-                self.play({
+                return self.play({
                     items: remoteTrailers.map(function (t) {
                         return {
                             Name: t.Name || (item.Name + ' Trailer'),
@@ -1520,7 +1519,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
             var apiClient = connectionManager.getApiClient(firstItem.ServerId);
 
-            return apiClient.getJSON(apiClient.getUrl('Users/' + apiClient.getCurrentUserId() + '/Items/' + firstItem.Id + '/Intros')).then(function (intros) {
+            return apiClient.getIntros(firstItem.Id).then(function (intros) {
 
                 items = intros.Items.concat(items);
                 currentPlayOptions = options;
@@ -1554,7 +1553,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
             }
         }
 
-        function playInternal(item, playOptions, callback) {
+        function playInternal(item, playOptions, onPlaybackStartedFn) {
 
             if (item.IsPlaceHolder) {
                 loading.hide();
@@ -1578,16 +1577,16 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                         appSettings.maxStreamingBitrate(bitrate);
 
-                        return playAfterBitrateDetect(connectionManager, bitrate, item, playOptions).then(callback);
+                        return playAfterBitrateDetect(connectionManager, bitrate, item, playOptions, onPlaybackStartedFn);
 
                     }, function () {
 
-                        return playAfterBitrateDetect(connectionManager, appSettings.maxStreamingBitrate(), item, playOptions).then(callback);
+                        return playAfterBitrateDetect(connectionManager, appSettings.maxStreamingBitrate(), item, playOptions, onPlaybackStartedFn);
                     });
 
                 } else {
 
-                    return playAfterBitrateDetect(connectionManager, appSettings.maxStreamingBitrate(), item, playOptions).then(callback);
+                    return playAfterBitrateDetect(connectionManager, appSettings.maxStreamingBitrate(), item, playOptions, onPlaybackStartedFn);
                 }
 
             }, function () {
@@ -1595,7 +1594,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                 var player = currentPlayer;
 
                 if (player) {
-                    player.destroy();
+                    destroyPlayer(player);
                 }
                 setCurrentPlayerInternal(null);
 
@@ -1603,6 +1602,11 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                 return Promise.reject();
             });
+        }
+
+        function destroyPlayer(player) {
+            player.destroy();
+            releaseResourceLocks(player);
         }
 
         function runInterceptors(item, playOptions) {
@@ -1647,7 +1651,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
             }, reject);
         }
 
-        function playAfterBitrateDetect(connectionManager, maxBitrate, item, playOptions) {
+        function playAfterBitrateDetect(connectionManager, maxBitrate, item, playOptions, onPlaybackStartedFn) {
 
             var startPosition = playOptions.startPositionTicks;
 
@@ -1671,8 +1675,9 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                     streamInfo.fullscreen = playOptions.fullscreen;
                     getPlayerData(player).isChangingStream = false;
                     return player.play(streamInfo).then(function () {
-                        onPlaybackStarted(player, streamInfo);
                         loading.hide();
+                        onPlaybackStartedFn();
+                        onPlaybackStarted(player, streamInfo);
                         return Promise.resolve();
                     });
                 });
@@ -1693,8 +1698,9 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                         getPlayerData(player).maxStreamingBitrate = maxBitrate;
 
                         return player.play(streamInfo).then(function () {
-                            onPlaybackStarted(player, streamInfo, mediaSource);
                             loading.hide();
+                            onPlaybackStartedFn();
+                            onPlaybackStarted(player, streamInfo, mediaSource);
                             return Promise.resolve();
                         });
                     });
@@ -1780,7 +1786,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
             var contentType;
             var transcodingOffsetTicks = 0;
             var playerStartPositionTicks = startPosition;
-            var liveStreamId;
+            var liveStreamId = mediaSource.LiveStreamId;
 
             var playMethod = 'Transcode';
 
@@ -1813,7 +1819,6 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                         if (mediaSource.LiveStreamId) {
                             directOptions.LiveStreamId = mediaSource.LiveStreamId;
-                            liveStreamId = mediaSource.LiveStreamId;
                         }
 
                         mediaUrl = apiClient.getUrl('Videos/' + item.Id + '/stream.' + mediaSourceContainer, directOptions);
@@ -1868,7 +1873,6 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                         if (mediaSource.LiveStreamId) {
                             directOptions.LiveStreamId = mediaSource.LiveStreamId;
-                            liveStreamId = mediaSource.LiveStreamId;
                         }
 
                         mediaUrl = apiClient.getUrl('Audio/' + item.Id + '/stream.' + mediaSourceContainer, directOptions);
@@ -1894,6 +1898,11 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                 mediaUrl = mediaSource.Path;
                 playMethod = 'DirectPlay';
+            }
+
+            // Fallback (used for offline items)
+            if (!mediaUrl && mediaSource.SupportsDirectPlay) {
+                mediaUrl = mediaSource.Path;
             }
 
             var resultInfo = {
@@ -2014,10 +2023,6 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
         function getPlaybackInfo(apiClient, itemId, deviceProfile, maxBitrate, startPosition, mediaSource, audioStreamIndex, subtitleStreamIndex, liveStreamId) {
 
-            var postData = {
-                DeviceProfile: deviceProfile
-            };
-
             var query = {
                 UserId: apiClient.getCurrentUserId(),
                 StartTimeTicks: startPosition || 0
@@ -2039,14 +2044,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                 query.MaxStreamingBitrate = maxBitrate;
             }
 
-            return apiClient.ajax({
-                url: apiClient.getUrl('Items/' + itemId + '/PlaybackInfo', query),
-                type: 'POST',
-                data: JSON.stringify(postData),
-                contentType: "application/json",
-                dataType: "json"
-
-            });
+            return apiClient.getPlaybackInfo(itemId, query, deviceProfile);
         }
 
         function getOptimalMediaSource(apiClient, item, versions) {
@@ -2082,7 +2080,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                     return s.SupportsTranscoding;
                 })[0];
 
-                return optimalVersion;
+                return optimalVersion || versions[0];
             });
         }
 
@@ -2117,6 +2115,23 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
             });
         }
 
+        function isHostReachable(mediaSource, apiClient) {
+
+            var url = mediaSource.Path;
+
+            var isServerAddress = url.toLowerCase().replace('https:', 'http').indexOf(apiClient.serverAddress().toLowerCase().replace('https:', 'http').substring(0, 14)) === 0;
+
+            if (isServerAddress) {
+                return Promise.resolve();
+            }
+
+            if (mediaSource.IsRemote) {
+                return Promise.resolve();
+            }
+
+            return Promise.reject();
+        }
+
         function supportsDirectPlay(apiClient, mediaSource) {
 
             return new Promise(function (resolve, reject) {
@@ -2130,12 +2145,15 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                             resolve(true);
                         }
                         else {
-                            var val = mediaSource.Path.toLowerCase().replace('https:', 'http').indexOf(apiClient.serverAddress().toLowerCase().replace('https:', 'http').substring(0, 14)) === 0;
-                            resolve(val);
+                            isHostReachable(mediaSource, apiClient).then(function () {
+                                resolve(true);
+                            }, function () {
+                                resolve(false);
+                            });
                         }
                     }
 
-                    if (mediaSource.Protocol === 'File') {
+                    else if (mediaSource.Protocol === 'File') {
 
                         // Determine if the file can be accessed directly
                         require(['filesystem'], function (filesystem) {
@@ -2241,7 +2259,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
         }
 
         function findPlaylistIndex(playlistItemId, list) {
-            
+
             for (var i = 0, length = playlist.length; i < length; i++) {
                 if (list[i].PlaylistItemId === playlistItemId) {
                     return i;
@@ -2554,7 +2572,66 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
 
                 events.trigger(player, 'playbackstart', [state]);
                 events.trigger(self, 'playbackstart', [player, state]);
+
+                acquireResourceLocks(player, streamInfo.mediaType);
             });
+        }
+
+        function acquireResourceLocks(player, mediaType) {
+
+            if (!player.isLocalPlayer || player.hasResourceLocks) {
+                return;
+            }
+
+            var playerData = getPlayerData(player);
+            playerData.resourceLocks = playerData.resourceLocks || {};
+            var locks = playerData.resourceLocks;
+
+            ensureLock(locks, 'network');
+            ensureLock(locks, 'wake');
+
+            if (mediaType === 'Video') {
+                ensureLock(locks, 'screen');
+            }
+        }
+
+        function ensureLock(locks, resourceType) {
+
+            var prop = resourceType + 'Lock';
+            var existingLock = locks[prop];
+            if (existingLock) {
+                existingLock.acquire();
+                return;
+            }
+
+            require(['resourceLockManager'], function (resourceLockManager) {
+                resourceLockManager.request(resourceType).then(function (resourceLock) {
+                    locks[prop] = resourceLock;
+                    resourceLock.acquire();
+                }, function () {
+                    // not supported or not allowed
+                });
+            });
+        }
+
+        function releaseResourceLocks(player) {
+
+            if (!player.isLocalPlayer || player.hasResourceLocks) {
+                return;
+            }
+
+            var playerData = getPlayerData(player);
+            var locks = playerData.resourceLocks || {};
+
+            if (locks.wakeLock) {
+                locks.wakeLock.release();
+            }
+            if (locks.networkLock) {
+                locks.networkLock.release();
+            }
+            if (locks.screenLock) {
+                locks.screenLock.release();
+            }
         }
 
         function onPlaybackError(e, error) {
@@ -2653,7 +2730,7 @@ define(['events', 'datetime', 'appSettings', 'pluginManager', 'userSettings', 'g
                 var newPlayer = nextItem ? getPlayer(nextItem.item, currentPlayOptions) : null;
 
                 if (newPlayer !== player) {
-                    player.destroy();
+                    destroyPlayer(player);
                     setCurrentPlayerInternal(null);
                 }
 

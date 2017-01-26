@@ -50,7 +50,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            return await new M3uParser(Logger, _fileSystem, _httpClient, _appHost).Parse(info.Url, ChannelIdPrefix, info.Id, cancellationToken).ConfigureAwait(false);
+            return await new M3uParser(Logger, _fileSystem, _httpClient, _appHost).Parse(info.Url, ChannelIdPrefix, info.Id, !info.EnableTvgId, cancellationToken).ConfigureAwait(false);
         }
 
         public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
@@ -160,8 +160,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                     Id = channel.Path.GetMD5().ToString("N"),
                     IsInfiniteStream = true,
-                    SupportsDirectStream = false
+                    SupportsDirectStream = false,
+                    IsRemote = true
                 };
+
+                mediaSource.InferTotalBitrate();
 
                 return new List<MediaSourceInfo> { mediaSource };
             }

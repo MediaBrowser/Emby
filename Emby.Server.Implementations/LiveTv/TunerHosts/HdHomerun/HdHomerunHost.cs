@@ -61,10 +61,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             var id = ChannelIdPrefix + i.GuideNumber;
 
-            if (info.DataVersion >= 1)
-            {
-                id += '_' + (i.GuideName ?? string.Empty).GetMD5().ToString("N");
-            }
+            id += '_' + (i.GuideName ?? string.Empty).GetMD5().ToString("N");
 
             return id;
         }
@@ -430,6 +427,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 SupportsTranscoding = true,
                 IsInfiniteStream = true
             };
+
+            mediaSource.InferTotalBitrate();
 
             return mediaSource;
         }

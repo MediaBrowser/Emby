@@ -1,4 +1,4 @@
-﻿define(['browser', 'datetime', 'backdrop', 'libraryBrowser', 'listView', 'userdataButtons', 'imageLoader', 'playbackManager', 'nowPlayingHelper', 'events', 'connectionManager', 'apphost', 'globalize', 'cardStyle'], function (browser, datetime, backdrop, libraryBrowser, listView, userdataButtons, imageLoader, playbackManager, nowPlayingHelper, events, connectionManager, appHost, globalize) {
+﻿define(['browser', 'datetime', 'backdrop', 'libraryBrowser', 'listView', 'userdataButtons', 'imageLoader', 'playbackManager', 'nowPlayingHelper', 'events', 'connectionManager', 'apphost', 'globalize', 'cardStyle', 'emby-itemscontainer', 'css!css/nowplaying.css'], function (browser, datetime, backdrop, libraryBrowser, listView, userdataButtons, imageLoader, playbackManager, nowPlayingHelper, events, connectionManager, appHost, globalize) {
     'use strict';
 
     function showSlideshowMenu(context) {
@@ -7,7 +7,9 @@
         });
     }
 
-    function showAudioMenu(context, player, button, item, currentIndex) {
+    function showAudioMenu(context, player, button, item) {
+
+        var currentIndex = playbackManager.getAudioStreamIndex(player);
 
         var streams = (item.MediaStreams || []).filter(function (i) {
 
@@ -42,7 +44,9 @@
         });
     }
 
-    function showSubtitleMenu(context, player, button, item, currentIndex) {
+    function showSubtitleMenu(context, player, button, item) {
+
+        var currentIndex = playbackManager.getSubtitleStreamIndex(player);
 
         var streams = (item.MediaStreams || []).filter(function (i) {
 
@@ -261,7 +265,6 @@
         var currentRuntimeTicks = 0;
 
         var self = this;
-        var playlistNeedsRefresh = true;
 
         function toggleRepeat(player) {
 
@@ -491,7 +494,11 @@
                     dragHandle: true
                 });
 
-                playlistNeedsRefresh = false;
+                if (items.length) {
+                    context.querySelector('.playlistSection').classList.remove('hide');
+                } else {
+                    context.querySelector('.playlistSection').classList.add('hide');
+                }
 
                 var itemsContainer = context.querySelector('.playlist');
 
@@ -519,8 +526,6 @@
 
             var player = this;
             onStateChanged.call(player, e, state);
-
-            loadPlaylist(dlg, player);
         }
 
         function onRepeatModeChange(e) {
@@ -534,10 +539,7 @@
 
             var player = this;
 
-            playbackManager.getPlayerState(player).then(function (state) {
-
-                onStateChanged.call(player, { type: 'init' }, state);
-            });
+            loadPlaylist(dlg, player);
         }
 
         function onPlaylistItemRemoved(e, info) {
@@ -611,7 +613,7 @@
             if (player) {
 
                 events.off(player, 'playbackstart', onPlaybackStart);
-                events.off(player, 'statechange', onPlaybackStart);
+                events.off(player, 'statechange', onStateChanged);
                 events.off(player, 'repeatmodechange', onRepeatModeChange);
                 events.off(player, 'playlistitemremove', onPlaylistUpdate);
                 events.off(player, 'playlistitemmove', onPlaylistUpdate);
@@ -641,7 +643,7 @@
             });
 
             events.on(player, 'playbackstart', onPlaybackStart);
-            events.on(player, 'statechange', onPlaybackStart);
+            events.on(player, 'statechange', onStateChanged);
             events.on(player, 'repeatmodechange', onRepeatModeChange);
             events.on(player, 'playlistitemremove', onPlaylistItemRemoved);
             events.on(player, 'playlistitemmove', onPlaylistUpdate);
@@ -688,6 +690,36 @@
             }
         }
 
+        function getSaveablePlaylistItems() {
+            
+            return getPlaylistItems(currentPlayer).then(function (items) {
+
+                return items.filter(function (i) {
+                    return i.Id && i.ServerId;
+                });
+            });
+        }
+
+        function savePlaylist() {
+            
+            require(['playlistEditor'], function (playlistEditor) {
+
+                getSaveablePlaylistItems().then(function (items) {
+
+                    var serverId = items.length ? items[0].ServerId : ApiClient.serverId();
+
+                    new playlistEditor().show({
+                        items: items.map(function(i) {
+                            return i.Id;
+                        }),
+                        serverId: serverId,
+                        enableAddToPlayQueue: false,
+                        defaultValue: 'new'
+                    });
+                });
+            });
+        }
+
         function bindEvents(context) {
 
             var btnCommand = context.querySelectorAll('.btnCommand');
@@ -707,19 +739,17 @@
 
             context.querySelector('.btnAudioTracks').addEventListener('click', function (e) {
 
-                if (currentPlayer && lastPlayerState && lastPlayerState.PlayState) {
+                if (currentPlayer && lastPlayerState && lastPlayerState.NowPlayingItem) {
 
-                    var currentIndex = lastPlayerState.PlayState.AudioStreamIndex;
-                    showAudioMenu(context, currentPlayer, e.target, lastPlayerState.NowPlayingItem, currentIndex);
+                    showAudioMenu(context, currentPlayer, e.target, lastPlayerState.NowPlayingItem);
                 }
             });
 
             context.querySelector('.btnSubtitles').addEventListener('click', function (e) {
 
-                if (currentPlayer && lastPlayerState && lastPlayerState.PlayState) {
+                if (currentPlayer && lastPlayerState && lastPlayerState.NowPlayingItem) {
 
-                    var currentIndex = lastPlayerState.PlayState.SubtitleStreamIndex;
-                    showSubtitleMenu(context, currentPlayer, e.target, lastPlayerState.NowPlayingItem, currentIndex);
+                    showSubtitleMenu(context, currentPlayer, e.target, lastPlayerState.NowPlayingItem);
                 }
             });
 
@@ -801,7 +831,7 @@
                 playbackManager.movePlaylistItem(playlistItemId, newIndex, currentPlayer);
             });
 
-            playlistContainer.enableDragReordering(true);
+            context.querySelector('.btnSavePlaylist').addEventListener('click', savePlaylist);
         }
 
         function onPlayerChange() {
@@ -860,7 +890,6 @@
 
         function init(ownerView, context) {
 
-            require(['css!css/nowplaying.css']);
             bindEvents(context);
 
             context.querySelector('.sendMessageForm').addEventListener('submit', onMessageSubmit);

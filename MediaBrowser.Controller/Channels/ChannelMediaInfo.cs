@@ -68,15 +68,11 @@ namespace MediaBrowser.Controller.Channels
                 Id = id,
                 ReadAtNativeFramerate = ReadAtNativeFramerate,
                 SupportsDirectStream = false,
-                SupportsDirectPlay = SupportsDirectPlay
+                SupportsDirectPlay = SupportsDirectPlay,
+                IsRemote = true
             };
 
-            var bitrate = (AudioBitrate ?? 0) + (VideoBitrate ?? 0);
-
-            if (bitrate > 0)
-            {
-                source.Bitrate = bitrate;
-            }
+            source.InferTotalBitrate();
 
             return source;
         }

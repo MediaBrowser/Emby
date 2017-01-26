@@ -1,4 +1,4 @@
-﻿define(['playbackManager', 'dom', 'inputmanager', 'datetime', 'itemHelper', 'mediaInfo', 'focusManager', 'imageLoader', 'scrollHelper', 'events', 'connectionManager', 'browser', 'globalize', 'apphost', 'scrollStyles', 'emby-slider'], function (playbackManager, dom, inputManager, datetime, itemHelper, mediaInfo, focusManager, imageLoader, scrollHelper, events, connectionManager, browser, globalize, appHost) {
+﻿define(['playbackManager', 'dom', 'inputmanager', 'datetime', 'itemHelper', 'mediaInfo', 'focusManager', 'imageLoader', 'scrollHelper', 'events', 'connectionManager', 'browser', 'globalize', 'apphost', 'layoutManager', 'scrollStyles', 'emby-slider'], function (playbackManager, dom, inputManager, datetime, itemHelper, mediaInfo, focusManager, imageLoader, scrollHelper, events, connectionManager, browser, globalize, appHost, layoutManager) {
     'use strict';
 
     function seriesImageUrl(item, options) {
@@ -425,7 +425,7 @@
             releaseCurrentPlayer();
         });
 
-        if (appHost.supports('remotecontrol')) {
+        if (appHost.supports('remotecontrol') && !layoutManager.tv) {
             view.querySelector('.btnCast').classList.remove('hide');
         }
 
@@ -763,52 +763,13 @@
         function onSettingsButtonClick(e) {
 
             var btn = this;
-            require(['qualityoptions', 'actionsheet'], function (qualityoptions, actionsheet) {
 
-                //var currentSrc = self.getCurrentSrc(self.currentMediaRenderer).toLowerCase();
-                //var isStatic = currentSrc.indexOf('static=true') != -1;
-
-                var videoStream = playbackManager.currentMediaSource(currentPlayer).MediaStreams.filter(function (stream) {
-                    return stream.Type === "Video";
-                })[0];
-                var videoWidth = videoStream ? videoStream.Width : null;
-
-                var options = qualityoptions.getVideoQualityOptions(playbackManager.getMaxStreamingBitrate(currentPlayer), videoWidth);
-
-                //if (isStatic) {
-                //    options[0].name = "Direct";
-                //}
-
-                var menuItems = options.map(function (o) {
-
-                    var opt = {
-                        name: o.name,
-                        id: o.bitrate
-                    };
-
-                    if (o.selected) {
-                        opt.selected = true;
-                    }
-
-                    return opt;
+            require(['playerSettingsMenu'], function (playerSettingsMenu) {
+                playerSettingsMenu.show({
+                    mediaType: 'Video',
+                    player: currentPlayer,
+                    positionTo: btn
                 });
-
-                var selectedId = options.filter(function (o) {
-                    return o.selected;
-                });
-                selectedId = selectedId.length ? selectedId[0].bitrate : null;
-                actionsheet.show({
-                    items: menuItems,
-                    positionTo: btn,
-                    callback: function (id) {
-
-                        var bitrate = parseInt(id);
-                        if (bitrate !== selectedId) {
-                            playbackManager.setMaxStreamingBitrate(bitrate, currentPlayer);
-                        }
-                    }
-                });
-
             });
         }
 
@@ -1011,7 +972,7 @@
             ticks *= value;
 
             var item = currentItem;
-            if (item && item.Chapters && item.Chapters[0].ImageTag) {
+            if (item && item.Chapters && item.Chapters.length && item.Chapters[0].ImageTag) {
                 var html = getChapterBubbleHtml(connectionManager.getApiClient(item.ServerId), item, item.Chapters, ticks);
 
                 if (html) {

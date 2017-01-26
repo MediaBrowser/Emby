@@ -466,15 +466,9 @@ var Dashboard = {
             divider: true,
             name: Globalize.translate('TabLibrary'),
             href: "library.html",
-            pageIds: ['mediaLibraryPage', 'librarySettingsPage', 'libraryDisplayPage'],
+            pageIds: ['mediaLibraryPage', 'librarySettingsPage', 'libraryDisplayPage', 'metadataImagesConfigurationPage', 'metadataNfoPage'],
             icon: 'folder',
             color: '#38c'
-        }, {
-            name: Globalize.translate('TabMetadata'),
-            href: "metadata.html",
-            pageIds: ['metadataConfigurationPage', 'metadataImagesConfigurationPage', 'metadataNfoPage'],
-            icon: 'insert_drive_file',
-            color: '#FF9800'
         }, {
             name: Globalize.translate('TabSubtitles'),
             href: "metadatasubtitles.html",
@@ -648,43 +642,6 @@ var Dashboard = {
             }
             options.quality = quality;
         }
-    },
-
-    getDeviceProfile: function (maxHeight, profileOptions) {
-
-        return new Promise(function (resolve, reject) {
-
-            require(['browserdeviceprofile', 'qualityoptions', 'appSettings'], function (profileBuilder, qualityoptions, appSettings) {
-
-                var profile = profileBuilder(Object.assign(profileOptions || {}, {
-                }));
-
-                if (!(AppInfo.isNativeApp && browserInfo.android) && !browserInfo.edge && !browserInfo.msie) {
-                    // libjass not working here
-                    profile.SubtitleProfiles.push({
-                        Format: 'ass',
-                        Method: 'External'
-                    });
-                    profile.SubtitleProfiles.push({
-                        Format: 'ssa',
-                        Method: 'External'
-                    });
-                }
-
-                var bitrateSetting = appSettings.maxStreamingBitrate();
-
-                if (!maxHeight) {
-                    maxHeight = qualityoptions.getVideoQualityOptions(bitrateSetting).filter(function (q) {
-                        return q.selected;
-                    })[0].maxHeight;
-                }
-
-                profile.MaxStreamingBitrate = bitrateSetting;
-                profile.MaxStaticMusicBitrate = appSettings.maxStaticMusicBitrate();
-
-                resolve(profile);
-            });
-        });
     }
 };
 
@@ -753,11 +710,6 @@ var AppInfo = {};
         Events.on(apiClient, 'requestfail', Dashboard.onRequestFail);
     }
 
-    function getSyncProfile() {
-
-        return Dashboard.getDeviceProfile(Math.max(screen.height, screen.width));
-    }
-
     function onApiClientCreated(e, newApiClient) {
         initializeApiClient(newApiClient);
 
@@ -814,49 +766,51 @@ var AppInfo = {};
     //localStorage.clear();
     function createConnectionManager() {
 
-        return getSyncProfile().then(function (deviceProfile) {
+        return new Promise(function (resolve, reject) {
 
-            return new Promise(function (resolve, reject) {
+            require(['connectionManagerFactory', 'apphost', 'credentialprovider', 'events', 'userSettings'], function (connectionManagerExports, apphost, credentialProvider, events, userSettings) {
 
-                require(['connectionManagerFactory', 'apphost', 'credentialprovider', 'events', 'userSettings'], function (connectionManagerExports, apphost, credentialProvider, events, userSettings) {
+                window.MediaBrowser = Object.assign(window.MediaBrowser || {}, connectionManagerExports);
 
-                    window.MediaBrowser = Object.assign(window.MediaBrowser || {}, connectionManagerExports);
+                var credentialProviderInstance = new credentialProvider();
 
-                    var credentialProviderInstance = new credentialProvider();
+                var promises = [apphost.getSyncProfile(), apphost.appInfo()];
 
-                    apphost.appInfo().then(function (appInfo) {
+                Promise.all(promises).then(function (responses) {
 
-                        var capabilities = Dashboard.capabilities();
-                        capabilities.DeviceProfile = deviceProfile;
+                    var deviceProfile = responses[0];
+                    var appInfo = responses[1];
 
-                        var connectionManager = new MediaBrowser.ConnectionManager(credentialProviderInstance, appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, capabilities, window.devicePixelRatio);
+                    var capabilities = Dashboard.capabilities();
+                    capabilities.DeviceProfile = deviceProfile;
 
-                        defineConnectionManager(connectionManager);
-                        bindConnectionManagerEvents(connectionManager, events, userSettings);
+                    var connectionManager = new MediaBrowser.ConnectionManager(credentialProviderInstance, appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, capabilities, window.devicePixelRatio);
 
-                        if (Dashboard.isConnectMode()) {
+                    defineConnectionManager(connectionManager);
+                    bindConnectionManagerEvents(connectionManager, events, userSettings);
 
+                    if (Dashboard.isConnectMode()) {
+
+                        resolve();
+
+                    } else {
+
+                        console.log('loading ApiClient singleton');
+
+                        return getRequirePromise(['apiclient']).then(function (apiClientFactory) {
+
+                            console.log('creating ApiClient singleton');
+
+                            var apiClient = new apiClientFactory(Dashboard.serverAddress(), appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, window.devicePixelRatio);
+                            apiClient.enableAutomaticNetworking = false;
+                            connectionManager.addApiClient(apiClient);
+                            require(['css!' + apiClient.getUrl('Branding/Css')]);
+                            window.ApiClient = apiClient;
+                            localApiClient = apiClient;
+                            console.log('loaded ApiClient singleton');
                             resolve();
-
-                        } else {
-
-                            console.log('loading ApiClient singleton');
-
-                            return getRequirePromise(['apiclient']).then(function (apiClientFactory) {
-
-                                console.log('creating ApiClient singleton');
-
-                                var apiClient = new apiClientFactory(Dashboard.serverAddress(), appInfo.appName, appInfo.appVersion, appInfo.deviceName, appInfo.deviceId, window.devicePixelRatio);
-                                apiClient.enableAutomaticNetworking = false;
-                                connectionManager.addApiClient(apiClient);
-                                require(['css!' + apiClient.getUrl('Branding/Css')]);
-                                window.ApiClient = apiClient;
-                                localApiClient = apiClient;
-                                console.log('loaded ApiClient singleton');
-                                resolve();
-                            });
-                        }
-                    });
+                        });
+                    }
                 });
             });
         });
@@ -1030,6 +984,7 @@ var AppInfo = {};
         define("metadataEditor", [embyWebComponentsBowerPath + "/metadataeditor/metadataeditor"], returnFirstDependency);
         define("personEditor", [embyWebComponentsBowerPath + "/metadataeditor/personeditor"], returnFirstDependency);
         define("playerSelectionMenu", [embyWebComponentsBowerPath + "/playback/playerselection"], returnFirstDependency);
+        define("playerSettingsMenu", [embyWebComponentsBowerPath + "/playback/playersettingsmenu"], returnFirstDependency);
 
         define("libraryMenu", ["scripts/librarymenu"], returnFirstDependency);
 
@@ -1216,8 +1171,6 @@ var AppInfo = {};
 
         define("material-icons", ['css!' + embyWebComponentsBowerPath + '/fonts/material-icons/style']);
         define("robotoFont", ['css!' + embyWebComponentsBowerPath + '/fonts/roboto/style']);
-        define("opensansFont", ['css!' + embyWebComponentsBowerPath + '/fonts/opensans/style']);
-        define("montserratFont", ['css!' + embyWebComponentsBowerPath + '/fonts/montserrat/style']);
         define("scrollStyles", ['css!' + embyWebComponentsBowerPath + '/scrollstyles']);
 
         define("navdrawer", ['components/navdrawer/navdrawer'], returnFirstDependency);
@@ -1454,6 +1407,26 @@ var AppInfo = {};
             define("fileDownloader", [embyWebComponentsBowerPath + '/filedownloader'], returnFirstDependency);
             define("localassetmanager", [apiClientBowerPath + "/localassetmanager"], returnFirstDependency);
         }
+
+        define("screenLock", [embyWebComponentsBowerPath + "/resourcelocks/nullresourcelock"], returnFirstDependency);
+
+        if (Dashboard.isRunningInCordova() && browser.android) {
+            define("resourceLockManager", [embyWebComponentsBowerPath + "/resourcelocks/resourcelockmanager"], returnFirstDependency);
+            define("wakeLock", ["cordova/wakelock"], returnFirstDependency);
+            define("networkLock", ["cordova/networklock"], returnFirstDependency);
+        } else {
+            define("resourceLockManager", [embyWebComponentsBowerPath + "/resourcelocks/resourcelockmanager"], returnFirstDependency);
+            define("wakeLock", [embyWebComponentsBowerPath + "/resourcelocks/nullresourcelock"], returnFirstDependency);
+            define("networkLock", [embyWebComponentsBowerPath + "/resourcelocks/nullresourcelock"], returnFirstDependency);
+        }
+    }
+
+    function getDummyResourceLockManager() {
+        return {
+            request: function (resourceType) {
+                return Promise.reject();
+            }
+        };
     }
 
     function init() {
@@ -1530,7 +1503,7 @@ var AppInfo = {};
 
         var baseUrl = 'bower_components/emby-webcomponents/strings/';
 
-        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-AR', 'es-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
+        var languages = ['ar', 'bg-bg', 'ca', 'cs', 'da', 'de', 'el', 'en-gb', 'en-us', 'es-ar', 'es-mx', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-br', 'pt-pt', 'ro', 'ru', 'sk', 'sl-si', 'sv', 'tr', 'uk', 'vi', 'zh-cn', 'zh-hk', 'zh-tw'];
 
         var translations = languages.map(function (i) {
             return {
@@ -1549,7 +1522,7 @@ var AppInfo = {};
 
         var baseUrl = 'strings/';
 
-        var languages = ['ar', 'bg-BG', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-AR', 'es-MX', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sl-SI', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW'];
+        var languages = ['ar', 'bg-bg', 'ca', 'cs', 'da', 'de', 'el', 'en-gb', 'en-us', 'es-ar', 'es-mx', 'es', 'fi', 'fr', 'gsw', 'he', 'hr', 'hu', 'id', 'it', 'kk', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt-br', 'pt-pt', 'ro', 'ru', 'sl-si', 'sv', 'tr', 'uk', 'vi', 'zh-cn', 'zh-hk', 'zh-tw'];
 
         var translations = languages.map(function (i) {
             return {
@@ -1570,7 +1543,10 @@ var AppInfo = {};
 
         document.title = Globalize.translateDocument(document.title, 'core');
 
-        loadPlugins([], browserInfo).then(onAppReady);
+        require(['apphost'], function (appHost) {
+
+            loadPlugins([], appHost, browserInfo).then(onAppReady);
+        });
     }
 
     function defineRoute(newRoute, dictionary) {
@@ -1741,6 +1717,7 @@ var AppInfo = {};
         defineRoute({
             path: '/edititemmetadata.html',
             dependencies: [],
+            controller: 'scripts/edititemmetadata',
             autoFocus: false
         });
 
@@ -1944,13 +1921,6 @@ var AppInfo = {};
             anonymous: true,
             startup: true,
             controller: 'scripts/loginpage'
-        });
-
-        defineRoute({
-            path: '/metadata.html',
-            dependencies: [],
-            autoFocus: false,
-            roles: 'admin'
         });
 
         defineRoute({
@@ -2368,7 +2338,7 @@ var AppInfo = {};
         });
     }
 
-    function loadPlugins(externalPlugins, browser, shell) {
+    function loadPlugins(externalPlugins, appHost, browser, shell) {
 
         console.log('Loading installed plugins');
 
@@ -2388,8 +2358,6 @@ var AppInfo = {};
             if (document.createElement('audio').canPlayType('audio/flac').replace(/no/, '') &&
                 document.createElement('audio').canPlayType('audio/ogg; codecs="opus"').replace(/no/, '')) {
 
-                list.push('bower_components/emby-webcomponents/htmlaudioplayer/plugin');
-
             } else {
                 window.VlcAudio = true;
             }
@@ -2399,9 +2367,9 @@ var AppInfo = {};
 
         } else if (Dashboard.isRunningInCordova() && browser.safari) {
             list.push('cordova/audioplayer');
-        } else {
-            list.push('bower_components/emby-webcomponents/htmlaudioplayer/plugin');
         }
+
+        list.push('bower_components/emby-webcomponents/htmlaudioplayer/plugin');
 
         if (Dashboard.isRunningInCordova() && browser.safari) {
             list.push('cordova/chromecast');
@@ -2413,10 +2381,13 @@ var AppInfo = {};
         }
 
         list.push('bower_components/emby-webcomponents/htmlvideoplayer/plugin');
-        list.push('bower_components/emby-webcomponents/sessionplayer');
 
-        if (browser.chrome) {
-            list.push('bower_components/emby-webcomponents/chromecastplayer');
+        if (appHost.supports('remotecontrol')) {
+            list.push('bower_components/emby-webcomponents/sessionplayer');
+
+            if (browser.chrome) {
+                list.push('bower_components/emby-webcomponents/chromecastplayer');
+            }
         }
 
         list.push('bower_components/emby-webcomponents/youtubeplayer/plugin');
@@ -2489,6 +2460,7 @@ var AppInfo = {};
 
         var deps = [];
 
+        deps.push('apphost');
         deps.push('embyRouter');
 
         if (!(AppInfo.isNativeApp && browserInfo.android)) {
@@ -2516,7 +2488,7 @@ var AppInfo = {};
 
         console.log('onAppReady - loading dependencies');
 
-        require(deps, function (pageObjects) {
+        require(deps, function (appHost, pageObjects) {
 
             console.log('Loaded dependencies in onAppReady');
 
@@ -2578,9 +2550,9 @@ var AppInfo = {};
 
             postInitDependencies.push('playerSelectionMenu');
 
-            //if (appHost.supports('fullscreenchange')) {
-            require(['fullscreen-doubleclick']);
-            //}
+            if (appHost.supports('fullscreenchange')) {
+                require(['fullscreen-doubleclick']);
+            }
 
             require(postInitDependencies);
             upgradeLayouts();
@@ -2596,7 +2568,7 @@ var AppInfo = {};
                     return navigator.serviceWorker.ready;
                 }).then(function (reg) {
 
-                    if (reg.sync) {
+                    if (reg && reg.sync) {
                         // https://github.com/WICG/BackgroundSync/blob/master/explainer.md
                         return reg.sync.register('emby-sync').then(function () {
                             window.SyncRegistered = Dashboard.isConnectMode();
@@ -2735,4 +2707,3 @@ pageClassOn('viewshow', "page", function () {
 
     Dashboard.ensureHeader(page);
 });
-

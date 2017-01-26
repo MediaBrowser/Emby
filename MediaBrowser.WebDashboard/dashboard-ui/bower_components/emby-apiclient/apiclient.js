@@ -1408,6 +1408,26 @@
             return self.getJSON(url);
         };
 
+        self.getPlaybackInfo = function(itemId, options, deviceProfile) {
+
+            var postData = {
+                DeviceProfile: deviceProfile
+            };
+
+            return self.ajax({
+                url: self.getUrl('Items/' + itemId + '/PlaybackInfo', options),
+                type: 'POST',
+                data: JSON.stringify(postData),
+                contentType: "application/json",
+                dataType: "json"
+            });
+        };
+
+        self.getIntros = function(itemId) {
+
+            return self.getJSON(self.getUrl('Users/' + self.getCurrentUserId() + '/Items/' + itemId + '/Intros'));
+        };
+
         /**
          * Gets the directory contents of a path on the server
          */
@@ -2121,6 +2141,19 @@
             var url = self.getUrl("Items/" + itemId + "/CriticReviews", options);
 
             return self.getJSON(url);
+        };
+
+        self.getItemDownloadUrl = function (itemId) {
+
+            if (!itemId) {
+                throw new Error("itemId cannot be empty");
+            }
+
+            var url = "Items/" + itemId + "/Download";
+
+            return self.getUrl(url, {
+                api_key: self.accessToken()
+            });
         };
 
         self.getSessions = function (options) {

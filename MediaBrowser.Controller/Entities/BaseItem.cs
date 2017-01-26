@@ -1339,6 +1339,11 @@ namespace MediaBrowser.Controller.Entities
 
             if (string.IsNullOrWhiteSpace(lang))
             {
+                lang = LibraryManager.GetLibraryOptions(this).PreferredMetadataLanguage;
+            }
+
+            if (string.IsNullOrWhiteSpace(lang))
+            {
                 lang = ConfigurationManager.Configuration.PreferredMetadataLanguage;
             }
 
@@ -1365,6 +1370,11 @@ namespace MediaBrowser.Controller.Entities
                 lang = LibraryManager.GetCollectionFolders(this)
                     .Select(i => i.PreferredMetadataCountryCode)
                     .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+            }
+
+            if (string.IsNullOrWhiteSpace(lang))
+            {
+                lang = LibraryManager.GetLibraryOptions(this).MetadataCountryCode;
             }
 
             if (string.IsNullOrWhiteSpace(lang))
@@ -1590,12 +1600,15 @@ namespace MediaBrowser.Controller.Entities
                     return true;
                 }
 
-                var userCollectionFolders = user.RootFolder.GetChildren(user, true).Select(i => i.Id).ToList();
-                var itemCollectionFolders = LibraryManager.GetCollectionFolders(this).Select(i => i.Id);
+                var itemCollectionFolders = LibraryManager.GetCollectionFolders(this).Select(i => i.Id).ToList();
 
-                if (!itemCollectionFolders.Any(userCollectionFolders.Contains))
+                if (itemCollectionFolders.Count > 0)
                 {
-                    return false;
+                    var userCollectionFolders = user.RootFolder.GetChildren(user, true).Select(i => i.Id).ToList();
+                    if (!itemCollectionFolders.Any(userCollectionFolders.Contains))
+                    {
+                        return false;
+                    }
                 }
             }
 

@@ -2384,8 +2384,17 @@ namespace Emby.Server.Implementations.Data
 
                 var excludeIds = query.ExcludeItemIds.ToList();
                 excludeIds.Add(item.Id.ToString("N"));
-                query.ExcludeItemIds = excludeIds.ToArray();
 
+                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
+                {
+                    var hasTrailers = item as IHasTrailers;
+                    if (hasTrailers != null)
+                    {
+                        excludeIds.AddRange(hasTrailers.GetTrailerIds().Select(i => i.ToString("N")));
+                    }
+                }
+
+                query.ExcludeItemIds = excludeIds.ToArray();
                 query.ExcludeProviderIds = item.ProviderIds;
             }
 
@@ -2648,7 +2657,7 @@ namespace Emby.Server.Implementations.Data
             {
                 //Logger.Debug("{2} query time: {0}ms. Query: {1}",
                 //    Convert.ToInt32(elapsed),
-                //    cmd.CommandText,
+                //    commandText,
                 //    methodName);
             }
         }
@@ -2821,8 +2830,9 @@ namespace Emby.Server.Implementations.Data
             {
                 if (orderBy.Count == 0)
                 {
-                    orderBy.Add(new Tuple<string, SortOrder>("SimilarityScore", SortOrder.Descending));
                     orderBy.Add(new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending));
+                    orderBy.Add(new Tuple<string, SortOrder>("SimilarityScore", SortOrder.Descending));
+                    //orderBy.Add(new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending));
                     query.SortOrder = SortOrder.Descending;
                     enableOrderInversion = false;
                 }
@@ -3617,10 +3627,12 @@ namespace Emby.Server.Implementations.Data
                 var index = 0;
                 foreach (var type in query.TrailerTypes)
                 {
-                    clauses.Add("TrailerTypes like @TrailerTypes" + index);
+                    var paramName = "@TrailerTypes" + index;
+
+                    clauses.Add("TrailerTypes like " + paramName);
                     if (statement != null)
                     {
-                        statement.TryBind("@TrailerTypes" + index, "%" + type + "%");
+                        statement.TryBind(paramName, "%" + type + "%");
                     }
                     index++;
                 }
@@ -4201,7 +4213,7 @@ namespace Emby.Server.Implementations.Data
 
                     var paramName = "@ExcludeProviderId" + index;
                     //excludeIds.Add("(COALESCE((select value from ProviderIds where ItemId=Guid and Name = '" + pair.Key + "'), '') <> " + paramName + ")");
-                    excludeIds.Add("ProviderIds not like " + paramName);
+                    excludeIds.Add("(ProviderIds is null or ProviderIds not like " + paramName + ")");
                     if (statement != null)
                     {
                         statement.TryBind(paramName, "%" + pair.Key + "=" + pair.Value + "%");
