@@ -663,7 +663,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.ProductionYear = updatedTimer.ProductionYear;
             existingTimer.ProgramId = updatedTimer.ProgramId;
             existingTimer.SeasonNumber = updatedTimer.SeasonNumber;
-            existingTimer.ShortOverview = updatedTimer.ShortOverview;
             existingTimer.StartDate = updatedTimer.StartDate;
             existingTimer.ShowId = updatedTimer.ShowId;
         }
@@ -1064,8 +1063,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 var isAudio = false;
                 await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
 
-                stream.InferTotalBitrate();
-
                 return new List<MediaSourceInfo>
                 {
                     stream
@@ -1372,13 +1369,14 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             ActiveRecordingInfo removed;
             _activeRecordings.TryRemove(timer.Id, out removed);
 
-            if (recordingStatus != RecordingStatus.Completed && DateTime.UtcNow < timer.EndDate)
+            if (recordingStatus != RecordingStatus.Completed && DateTime.UtcNow < timer.EndDate && timer.RetryCount < 10)
             {
                 const int retryIntervalSeconds = 60;
                 _logger.Info("Retrying recording in {0} seconds.", retryIntervalSeconds);
 
                 timer.Status = RecordingStatus.New;
                 timer.StartDate = DateTime.UtcNow.AddSeconds(retryIntervalSeconds);
+                timer.RetryCount++;
                 _timerProvider.AddOrUpdate(timer);
             }
             else if (_fileSystem.FileExists(recordPath))
@@ -1756,7 +1754,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     {
                         Name = timer.Name,
                         HomePageUrl = timer.HomePageUrl,
-                        ShortOverview = timer.ShortOverview,
                         Overview = timer.Overview,
                         Genres = timer.Genres,
                         CommunityRating = timer.CommunityRating,
@@ -1958,11 +1955,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     foreach (var genre in item.Genres)
                     {
                         writer.WriteElementString("genre", genre);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(item.ShortOverview))
-                    {
-                        writer.WriteElementString("outline", item.ShortOverview);
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.HomePageUrl))

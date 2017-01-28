@@ -90,13 +90,11 @@ namespace MediaBrowser.MediaEncoding.Probing
             }
 
             FetchGenres(info, tags);
-            var shortOverview = FFProbeHelpers.GetDictionaryValue(tags, "description");
             var overview = FFProbeHelpers.GetDictionaryValue(tags, "synopsis");
 
             if (string.IsNullOrWhiteSpace(overview))
             {
-                overview = shortOverview;
-                shortOverview = null;
+                overview = FFProbeHelpers.GetDictionaryValue(tags, "description");
             }
             if (string.IsNullOrWhiteSpace(overview))
             {
@@ -106,11 +104,6 @@ namespace MediaBrowser.MediaEncoding.Probing
             if (!string.IsNullOrWhiteSpace(overview))
             {
                 info.Overview = overview;
-            }
-
-            if (!string.IsNullOrWhiteSpace(shortOverview))
-            {
-                info.ShortOverview = shortOverview;
             }
 
             var title = FFProbeHelpers.GetDictionaryValue(tags, "title");
@@ -187,11 +180,7 @@ namespace MediaBrowser.MediaEncoding.Probing
                 // If ffprobe reported the container bitrate as being the same as the video stream bitrate, then it's wrong
                 if (videoStreamsBitrate == (info.Bitrate ?? 0))
                 {
-                    var streamBitrates = info.MediaStreams.Where(i => !i.IsExternal).Select(i => i.BitRate ?? 0).Sum();
-                    if (streamBitrates > (info.Bitrate ?? 0))
-                    {
-                        info.Bitrate = streamBitrates;
-                    }
+                    info.InferTotalBitrate(true);
                 }
             }
 

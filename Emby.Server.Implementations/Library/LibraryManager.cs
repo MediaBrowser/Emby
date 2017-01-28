@@ -501,7 +501,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("type");
             }
 
-            if (ConfigurationManager.Configuration.EnableLocalizedGuids && key.StartsWith(ConfigurationManager.ApplicationPaths.ProgramDataPath))
+            if (key.StartsWith(ConfigurationManager.ApplicationPaths.ProgramDataPath))
             {
                 // Try to normalize paths located underneath program-data in an attempt to make them more portable
                 key = key.Substring(ConfigurationManager.ApplicationPaths.ProgramDataPath.Length)
@@ -2593,7 +2593,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     foreach (var pathInfo in libraryOptions.PathInfos)
                     {
-                        if (string.IsNullOrWhiteSpace(pathInfo.NetworkPath))
+                        if (string.IsNullOrWhiteSpace(pathInfo.Path) || string.IsNullOrWhiteSpace(pathInfo.NetworkPath))
                         {
                             continue;
                         }
@@ -2616,15 +2616,6 @@ namespace Emby.Server.Implementations.Library
                 if (metadataSubstitutionResult.Item2)
                 {
                     return metadataSubstitutionResult.Item1;
-                }
-            }
-
-            foreach (var map in ConfigurationManager.Configuration.PathSubstitutions)
-            {
-                var substitutionResult = SubstitutePathInternal(path, map.From, map.To);
-                if (substitutionResult.Item2)
-                {
-                    return substitutionResult.Item1;
                 }
             }
 

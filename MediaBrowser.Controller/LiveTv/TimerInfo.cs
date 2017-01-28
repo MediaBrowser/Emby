@@ -94,6 +94,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value>The priority.</value>
         public int Priority { get; set; }
 
+        public int RetryCount { get; set; }
 
         // Program properties
         public int? SeasonNumber { get; set; }
@@ -113,7 +114,6 @@ namespace MediaBrowser.Controller.LiveTv
         public bool IsRepeat { get; set; }
         public string HomePageUrl { get; set; }
         public float? CommunityRating { get; set; }
-        public string ShortOverview { get; set; }
         public string OfficialRating { get; set; }
         public List<string> Genres { get; set; }
         public string RecordingPath { get; set; }
