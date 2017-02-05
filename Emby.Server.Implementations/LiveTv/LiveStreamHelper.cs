@@ -43,7 +43,7 @@ namespace Emby.Server.Implementations.LiveTv
             mediaSource.Container = info.Container;
             mediaSource.Formats = info.Formats;
             mediaSource.MediaStreams = info.MediaStreams;
-            mediaSource.RunTimeTicks = info.RunTimeTicks;
+            mediaSource.RunTimeTicks = (mediaSource.RunTimeTicks.HasValue) ? mediaSource.RunTimeTicks : info.RunTimeTicks;
             mediaSource.Size = info.Size;
             mediaSource.Timestamp = info.Timestamp;
             mediaSource.Video3DFormat = info.Video3DFormat;
