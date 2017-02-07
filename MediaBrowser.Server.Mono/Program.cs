@@ -338,5 +338,18 @@ namespace MediaBrowser.Server.Mono
         {
             return Syscall.getuid().ToString(CultureInfo.InvariantCulture);
         }
+
+        public override Model.System.OperatingSystem OperatingSystem
+        {
+            get
+            {
+                if (IsBsd)
+                {
+                    return Model.System.OperatingSystem.BSD;
+                }
+
+                return base.OperatingSystem;
+            }
+        }
     }
 }
