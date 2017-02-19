@@ -986,6 +986,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 foreach (var program in programs)
                 {
                     program.ChannelId = channelId;
+
+                    if (provider.Item2.EnableNewProgramIds)
+                    {
+                        program.Id += "_" + channelId;
+                    }
                 }
 
                 if (programs.Count > 0)
@@ -1172,7 +1177,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 };
 
                 var isAudio = false;
-                await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, false, cancellationToken).ConfigureAwait(false);
+                await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
 
                 return new List<MediaSourceInfo>
                 {

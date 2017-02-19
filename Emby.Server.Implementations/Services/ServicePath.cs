@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using ServiceStack.Serialization;
+using MediaBrowser.Model.Logging;
 
-namespace ServiceStack.Host
+namespace Emby.Server.Implementations.Services
 {
     public class RestPath
     {
@@ -46,11 +47,11 @@ namespace ServiceStack.Host
 
         public string[] Verbs
         {
-            get 
-            { 
-                return allowsAllVerbs 
-                    ? new[] { ActionContext.AnyAction } 
-                    : AllowedVerbs.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries); 
+            get
+            {
+                return allowsAllVerbs
+                    ? new[] { "ANY" }
+                    : AllowedVerbs.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             }
         }
 
@@ -71,45 +72,50 @@ namespace ServiceStack.Host
         public static string[] GetPathPartsForMatching(string pathInfo)
         {
             var parts = pathInfo.ToLower().Split(PathSeperatorChar)
-                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                .Where(x => !String.IsNullOrEmpty(x)).ToArray();
             return parts;
         }
 
-        public static IEnumerable<string> GetFirstMatchHashKeys(string[] pathPartsForMatching)
+        public static List<string> GetFirstMatchHashKeys(string[] pathPartsForMatching)
         {
             var hashPrefix = pathPartsForMatching.Length + PathSeperator;
             return GetPotentialMatchesWithPrefix(hashPrefix, pathPartsForMatching);
         }
 
-        public static IEnumerable<string> GetFirstMatchWildCardHashKeys(string[] pathPartsForMatching)
+        public static List<string> GetFirstMatchWildCardHashKeys(string[] pathPartsForMatching)
         {
             const string hashPrefix = WildCard + PathSeperator;
             return GetPotentialMatchesWithPrefix(hashPrefix, pathPartsForMatching);
         }
 
-        private static IEnumerable<string> GetPotentialMatchesWithPrefix(string hashPrefix, string[] pathPartsForMatching)
+        private static List<string> GetPotentialMatchesWithPrefix(string hashPrefix, string[] pathPartsForMatching)
         {
+            var list = new List<string>();
+
             foreach (var part in pathPartsForMatching)
             {
-                yield return hashPrefix + part;
+                list.Add(hashPrefix + part);
+
                 var subParts = part.Split(ComponentSeperator);
                 if (subParts.Length == 1) continue;
 
                 foreach (var subPart in subParts)
                 {
-                    yield return hashPrefix + subPart;
+                    list.Add(hashPrefix + subPart);
                 }
             }
+
+            return list;
         }
 
-        public RestPath(Type requestType, string path, string verbs, string summary = null, string notes = null)
+        public RestPath(Func<Type, object> createInstanceFn, Func<Type, Func<string, object>> getParseFn, Type requestType, string path, string verbs, string summary = null, string notes = null)
         {
             this.RequestType = requestType;
             this.Summary = summary;
             this.Notes = notes;
             this.restPath = path;
 
-            this.allowsAllVerbs = verbs == null || string.Equals(verbs, WildCard, StringComparison.OrdinalIgnoreCase);
+            this.allowsAllVerbs = verbs == null || String.Equals(verbs, WildCard, StringComparison.OrdinalIgnoreCase);
             if (!this.allowsAllVerbs)
             {
                 this.allowedVerbs = verbs.ToUpper();
@@ -121,7 +127,7 @@ namespace ServiceStack.Host
             var hasSeparators = new List<bool>();
             foreach (var component in this.restPath.Split(PathSeperatorChar))
             {
-                if (string.IsNullOrEmpty(component)) continue;
+                if (String.IsNullOrEmpty(component)) continue;
 
                 if (StringContains(component, VariablePrefix)
                     && component.IndexOf(ComponentSeperator) != -1)
@@ -194,18 +200,94 @@ namespace ServiceStack.Host
             this.IsValid = sbHashKey.Length > 0;
             this.UniqueMatchHashKey = sbHashKey.ToString();
 
-            this.typeDeserializer = new StringMapTypeDeserializer(this.RequestType);
+            this.typeDeserializer = new StringMapTypeDeserializer(createInstanceFn, getParseFn, this.RequestType);
             RegisterCaseInsenstivePropertyNameMappings();
         }
 
         private void RegisterCaseInsenstivePropertyNameMappings()
         {
-            foreach (var propertyInfo in RequestType.GetSerializableProperties())
+            foreach (var propertyInfo in GetSerializableProperties(RequestType))
             {
                 var propertyName = propertyInfo.Name;
                 propertyNamesMap.Add(propertyName.ToLower(), propertyName);
             }
         }
+
+        internal static string[] IgnoreAttributesNamed = new[] {
+            "IgnoreDataMemberAttribute",
+            "JsonIgnoreAttribute"
+        };
+
+
+        private static List<Type> _excludeTypes = new List<Type> { typeof(Stream) };
+
+        internal static PropertyInfo[] GetSerializableProperties(Type type)
+        {
+            var properties = GetPublicProperties(type);
+            var readableProperties = properties.Where(x => x.GetMethod != null);
+
+            // else return those properties that are not decorated with IgnoreDataMember
+            return readableProperties
+                .Where(prop => prop.GetCustomAttributes(true)
+                    .All(attr =>
+                    {
+                        var name = attr.GetType().Name;
+                        return !IgnoreAttributesNamed.Contains(name);
+                    }))
+                .Where(prop => !_excludeTypes.Contains(prop.PropertyType))
+                .ToArray();
+        }
+
+        private static PropertyInfo[] GetPublicProperties(Type type)
+        {
+            if (type.GetTypeInfo().IsInterface)
+            {
+                var propertyInfos = new List<PropertyInfo>();
+
+                var considered = new List<Type>();
+                var queue = new Queue<Type>();
+                considered.Add(type);
+                queue.Enqueue(type);
+
+                while (queue.Count > 0)
+                {
+                    var subType = queue.Dequeue();
+                    foreach (var subInterface in subType.GetTypeInfo().ImplementedInterfaces)
+                    {
+                        if (considered.Contains(subInterface)) continue;
+
+                        considered.Add(subInterface);
+                        queue.Enqueue(subInterface);
+                    }
+
+                    var typeProperties = GetTypesPublicProperties(subType);
+
+                    var newPropertyInfos = typeProperties
+                        .Where(x => !propertyInfos.Contains(x));
+
+                    propertyInfos.InsertRange(0, newPropertyInfos);
+                }
+
+                return propertyInfos.ToArray();
+            }
+
+            return GetTypesPublicProperties(type)
+                .Where(t => t.GetIndexParameters().Length == 0) // ignore indexed properties
+                .ToArray();
+        }
+
+        private static PropertyInfo[] GetTypesPublicProperties(Type subType)
+        {
+            var pis = new List<PropertyInfo>();
+            foreach (var pi in subType.GetRuntimeProperties())
+            {
+                var mi = pi.GetMethod ?? pi.SetMethod;
+                if (mi != null && mi.IsStatic) continue;
+                pis.Add(pi);
+            }
+            return pis.ToArray();
+        }
+
 
         public bool IsValid { get; set; }
 
@@ -220,16 +302,14 @@ namespace ServiceStack.Host
 
         private readonly Dictionary<string, string> propertyNamesMap = new Dictionary<string, string>();
 
-        public static Func<RestPath, string, string[], int> CalculateMatchScore { get; set; }
-
-        public int MatchScore(string httpMethod, string[] withPathInfoParts)
+        public int MatchScore(string httpMethod, string[] withPathInfoParts, ILogger logger)
         {
-            if (CalculateMatchScore != null)
-                return CalculateMatchScore(this, httpMethod, withPathInfoParts);
-
             int wildcardMatchCount;
-            var isMatch = IsMatch(httpMethod, withPathInfoParts, out wildcardMatchCount);
-            if (!isMatch) return -1;
+            var isMatch = IsMatch(httpMethod, withPathInfoParts, logger, out wildcardMatchCount);
+            if (!isMatch)
+            {
+                return -1;
+            }
 
             var score = 0;
 
@@ -240,7 +320,7 @@ namespace ServiceStack.Host
             score += Math.Max((10 - VariableArgsCount), 1) * 100;
 
             //Exact verb match is better than ANY
-            var exactVerb = string.Equals(httpMethod, AllowedVerbs, StringComparison.OrdinalIgnoreCase);
+            var exactVerb = String.Equals(httpMethod, AllowedVerbs, StringComparison.OrdinalIgnoreCase);
             score += exactVerb ? 10 : 1;
 
             return score;
@@ -255,19 +335,33 @@ namespace ServiceStack.Host
         /// For performance withPathInfoParts should already be a lower case string
         /// to minimize redundant matching operations.
         /// </summary>
-        /// <param name="httpMethod"></param>
-        /// <param name="withPathInfoParts"></param>
-        /// <param name="wildcardMatchCount"></param>
-        /// <returns></returns>
-        public bool IsMatch(string httpMethod, string[] withPathInfoParts, out int wildcardMatchCount)
+        public bool IsMatch(string httpMethod, string[] withPathInfoParts, ILogger logger, out int wildcardMatchCount)
         {
             wildcardMatchCount = 0;
 
-            if (withPathInfoParts.Length != this.PathComponentsCount && !this.IsWildCardPath) return false;
-            if (!this.allowsAllVerbs && !StringContains(this.allowedVerbs, httpMethod)) return false;
+            if (withPathInfoParts.Length != this.PathComponentsCount && !this.IsWildCardPath)
+            {
+                //logger.Info("withPathInfoParts mismatch for {0} for {1}", httpMethod, string.Join("/", withPathInfoParts));
+                return false;
+            }
 
-            if (!ExplodeComponents(ref withPathInfoParts)) return false;
-            if (this.TotalComponentsCount != withPathInfoParts.Length && !this.IsWildCardPath) return false;
+            if (!this.allowsAllVerbs && !StringContains(this.allowedVerbs, httpMethod))
+            {
+                //logger.Info("allowsAllVerbs mismatch for {0} for {1} allowedverbs {2}", httpMethod, string.Join("/", withPathInfoParts), this.allowedVerbs);
+                return false;
+            }
+
+            if (!ExplodeComponents(ref withPathInfoParts))
+            {
+                //logger.Info("ExplodeComponents mismatch for {0} for {1}", httpMethod, string.Join("/", withPathInfoParts));
+                return false;
+            }
+
+            if (this.TotalComponentsCount != withPathInfoParts.Length && !this.IsWildCardPath)
+            {
+                //logger.Info("TotalComponentsCount mismatch for {0} for {1}", httpMethod, string.Join("/", withPathInfoParts));
+                return false;
+            }
 
             int pathIx = 0;
             for (var i = 0; i < this.TotalComponentsCount; i++)
@@ -277,7 +371,7 @@ namespace ServiceStack.Host
                     if (i < this.TotalComponentsCount - 1)
                     {
                         // Continue to consume up until a match with the next literal
-                        while (pathIx < withPathInfoParts.Length && withPathInfoParts[pathIx] != this.literalsToMatch[i + 1])
+                        while (pathIx < withPathInfoParts.Length && !LiteralsEqual(withPathInfoParts[pathIx], this.literalsToMatch[i + 1]))
                         {
                             pathIx++;
                             wildcardMatchCount++;
@@ -286,6 +380,7 @@ namespace ServiceStack.Host
                         // Ensure there are still enough parts left to match the remainder
                         if ((withPathInfoParts.Length - pathIx) < (this.TotalComponentsCount - i - 1))
                         {
+                            //logger.Info("withPathInfoParts length mismatch for {0} for {1}", httpMethod, string.Join("/", withPathInfoParts));
                             return false;
                         }
                     }
@@ -306,12 +401,32 @@ namespace ServiceStack.Host
                         continue;
                     }
 
-                    if (withPathInfoParts.Length <= pathIx || withPathInfoParts[pathIx] != literalToMatch) return false;
+                    if (withPathInfoParts.Length <= pathIx || !LiteralsEqual(withPathInfoParts[pathIx], literalToMatch))
+                    {
+                        //logger.Info("withPathInfoParts2 length mismatch for {0} for {1}. not equals: {2} != {3}.", httpMethod, string.Join("/", withPathInfoParts), withPathInfoParts[pathIx], literalToMatch);
+                        return false;
+                    }
                     pathIx++;
                 }
             }
 
             return pathIx == withPathInfoParts.Length;
+        }
+
+        private bool LiteralsEqual(string str1, string str2)
+        {
+            // Most cases
+            if (String.Equals(str1, str2, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // Handle turkish i
+            str1 = str1.ToUpperInvariant();
+            str2 = str2.ToUpperInvariant();
+
+            // Invariant IgnoreCase would probably be better but it's not available in PCL
+            return String.Equals(str1, str2, StringComparison.CurrentCultureIgnoreCase);
         }
 
         private bool ExplodeComponents(ref string[] withPathInfoParts)
@@ -320,7 +435,7 @@ namespace ServiceStack.Host
             for (var i = 0; i < withPathInfoParts.Length; i++)
             {
                 var component = withPathInfoParts[i];
-                if (string.IsNullOrEmpty(component)) continue;
+                if (String.IsNullOrEmpty(component)) continue;
 
                 if (this.PathComponentsCount != this.TotalComponentsCount
                     && this.componentsWithSeparators[i])
@@ -342,7 +457,7 @@ namespace ServiceStack.Host
         public object CreateRequest(string pathInfo, Dictionary<string, string> queryStringAndFormData, object fromInstance)
         {
             var requestComponents = pathInfo.Split(PathSeperatorChar)
-                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                .Where(x => !String.IsNullOrEmpty(x)).ToArray();
 
             ExplodeComponents(ref requestComponents);
 
@@ -352,7 +467,7 @@ namespace ServiceStack.Host
                     && requestComponents.Length >= this.TotalComponentsCount - this.wildcardCount;
 
                 if (!isValidWildCardPath)
-                    throw new ArgumentException(string.Format(
+                    throw new ArgumentException(String.Format(
                         "Path Mismatch: Request Path '{0}' has invalid number of components compared to: '{1}'",
                         pathInfo, this.restPath));
             }
@@ -371,14 +486,14 @@ namespace ServiceStack.Host
                 string propertyNameOnRequest;
                 if (!this.propertyNamesMap.TryGetValue(variableName.ToLower(), out propertyNameOnRequest))
                 {
-                    if (string.Equals("ignore", variableName, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals("ignore", variableName, StringComparison.OrdinalIgnoreCase))
                     {
                         pathIx++;
-                        continue;                       
+                        continue;
                     }
- 
+
                     throw new ArgumentException("Could not find property "
-                        + variableName + " on " + RequestType.GetOperationName());
+                        + variableName + " on " + RequestType.GetMethodName());
                 }
 
                 var value = requestComponents.Length > pathIx ? requestComponents[pathIx] : null; //wildcard has arg mismatch
@@ -401,12 +516,12 @@ namespace ServiceStack.Host
                         // hits a match for the next element in the definition (which must be a literal)
                         // It may consume 0 or more path parts
                         var stopLiteral = i == this.TotalComponentsCount - 1 ? null : this.literalsToMatch[i + 1];
-                        if (!string.Equals(requestComponents[pathIx], stopLiteral, StringComparison.OrdinalIgnoreCase))
+                        if (!String.Equals(requestComponents[pathIx], stopLiteral, StringComparison.OrdinalIgnoreCase))
                         {
                             var sb = new StringBuilder();
                             sb.Append(value);
                             pathIx++;
-                            while (!string.Equals(requestComponents[pathIx], stopLiteral, StringComparison.OrdinalIgnoreCase))
+                            while (!String.Equals(requestComponents[pathIx], stopLiteral, StringComparison.OrdinalIgnoreCase))
                             {
                                 sb.Append(PathSeperatorChar + requestComponents[pathIx++]);
                             }

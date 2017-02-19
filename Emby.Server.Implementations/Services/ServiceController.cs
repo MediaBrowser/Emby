@@ -1,13 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using Emby.Server.Implementations.HttpServer;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Services;
 
-namespace ServiceStack.Host
+namespace Emby.Server.Implementations.Services
 {
     public delegate Task<object> InstanceExecFn(IRequest requestContext, object intance, object request);
     public delegate object ActionInvokerFn(object intance, object request);
@@ -15,21 +14,20 @@ namespace ServiceStack.Host
 
     public class ServiceController
     {
+        public static ServiceController Instance;
         private readonly Func<IEnumerable<Type>> _resolveServicesFn;
 
         public ServiceController(Func<IEnumerable<Type>> resolveServicesFn)
         {
+            Instance = this;
             _resolveServicesFn = resolveServicesFn;
-            this.RequestTypeFactoryMap = new Dictionary<Type, Func<IRequest, object>>();
         }
 
-        public Dictionary<Type, Func<IRequest, object>> RequestTypeFactoryMap { get; set; }
-
-        public void Init()
+        public void Init(HttpListenerHost appHost)
         {
             foreach (var serviceType in _resolveServicesFn())
             {
-                RegisterService(serviceType);
+                RegisterService(appHost, serviceType);
             }
         }
 
@@ -40,15 +38,12 @@ namespace ServiceStack.Host
                 : type.GetTypeInfo().GenericTypeArguments;
         }
 
-        public void RegisterService(Type serviceType)
+        public void RegisterService(HttpListenerHost appHost, Type serviceType)
         {
             var processedReqs = new HashSet<Type>();
 
             var actions = ServiceExecGeneral.Reset(serviceType);
 
-            var requiresRequestStreamTypeInfo = typeof(IRequiresRequestStream).GetTypeInfo();
-
-            var appHost = ServiceStackHost.Instance;
             foreach (var mi in serviceType.GetActions())
             {
                 var requestType = mi.GetParameters()[0].ParameterType;
@@ -57,45 +52,62 @@ namespace ServiceStack.Host
 
                 ServiceExecGeneral.CreateServiceRunnersFor(requestType, actions);
 
-                var returnMarker = requestType.GetTypeWithGenericTypeDefinitionOf(typeof(IReturn<>));
+                var returnMarker = GetTypeWithGenericTypeDefinitionOf(requestType, typeof(IReturn<>));
                 var responseType = returnMarker != null ?
                       GetGenericArguments(returnMarker)[0]
                     : mi.ReturnType != typeof(object) && mi.ReturnType != typeof(void) ?
                       mi.ReturnType
                     : Type.GetType(requestType.FullName + "Response");
 
-                RegisterRestPaths(requestType);
+                RegisterRestPaths(appHost, requestType);
 
-                appHost.Metadata.Add(serviceType, requestType, responseType);
+                appHost.AddServiceInfo(serviceType, requestType, responseType);
+            }
+        }
 
-                if (requiresRequestStreamTypeInfo.IsAssignableFrom(requestType.GetTypeInfo()))
+        private static Type GetTypeWithGenericTypeDefinitionOf(Type type, Type genericTypeDefinition)
+        {
+            foreach (var t in type.GetTypeInfo().ImplementedInterfaces)
+            {
+                if (t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == genericTypeDefinition)
                 {
-                    this.RequestTypeFactoryMap[requestType] = req =>
-                    {
-                        var restPath = req.GetRoute();
-                        var request = RestHandler.CreateRequest(req, restPath, req.GetRequestParams(), ServiceStackHost.Instance.CreateInstance(requestType));
-
-                        var rawReq = (IRequiresRequestStream)request;
-                        rawReq.RequestStream = req.InputStream;
-                        return rawReq;
-                    };
+                    return t;
                 }
             }
+
+            var genericType = FirstGenericType(type);
+            if (genericType != null && genericType.GetGenericTypeDefinition() == genericTypeDefinition)
+            {
+                return genericType;
+            }
+
+            return null;
+        }
+
+        public static Type FirstGenericType(Type type)
+        {
+            while (type != null)
+            {
+                if (type.GetTypeInfo().IsGenericType)
+                    return type;
+
+                type = type.GetTypeInfo().BaseType;
+            }
+            return null;
         }
 
         public readonly Dictionary<string, List<RestPath>> RestPathMap = new Dictionary<string, List<RestPath>>(StringComparer.OrdinalIgnoreCase);
 
-        public void RegisterRestPaths(Type requestType)
+        public void RegisterRestPaths(HttpListenerHost appHost, Type requestType)
         {
-            var appHost = ServiceStackHost.Instance;
             var attrs = appHost.GetRouteAttributes(requestType);
-            foreach (MediaBrowser.Model.Services.RouteAttribute attr in attrs)
+            foreach (RouteAttribute attr in attrs)
             {
-                var restPath = new RestPath(requestType, attr.Path, attr.Verbs, attr.Summary, attr.Notes);
+                var restPath = new RestPath(appHost.CreateInstance, appHost.GetParseFn, requestType, attr.Path, attr.Verbs, attr.Summary, attr.Notes);
 
                 if (!restPath.IsValid)
                     throw new NotSupportedException(string.Format(
-                        "RestPath '{0}' on Type '{1}' is not Valid", attr.Path, requestType.GetOperationName()));
+                        "RestPath '{0}' on Type '{1}' is not Valid", attr.Path, requestType.GetMethodName()));
 
                 RegisterRestPath(restPath);
             }
@@ -106,10 +118,10 @@ namespace ServiceStack.Host
         public void RegisterRestPath(RestPath restPath)
         {
             if (!restPath.Path.StartsWith("/"))
-                throw new ArgumentException(string.Format("Route '{0}' on '{1}' must start with a '/'", restPath.Path, restPath.RequestType.GetOperationName()));
+                throw new ArgumentException(string.Format("Route '{0}' on '{1}' must start with a '/'", restPath.Path, restPath.RequestType.GetMethodName()));
             if (restPath.Path.IndexOfAny(InvalidRouteChars) != -1)
                 throw new ArgumentException(string.Format("Route '{0}' on '{1}' contains invalid chars. " +
-                                            "See https://github.com/ServiceStack/ServiceStack/wiki/Routing for info on valid routes.", restPath.Path, restPath.RequestType.GetOperationName()));
+                                            "See https://github.com/ServiceStack/ServiceStack/wiki/Routing for info on valid routes.", restPath.Path, restPath.RequestType.GetMethodName()));
 
             List<RestPath> pathsAtFirstMatch;
             if (!RestPathMap.TryGetValue(restPath.FirstMatchHashKey, out pathsAtFirstMatch))
@@ -120,22 +132,7 @@ namespace ServiceStack.Host
             pathsAtFirstMatch.Add(restPath);
         }
 
-        public void AfterInit()
-        {
-            var appHost = ServiceStackHost.Instance;
-
-            //Register any routes configured on Metadata.Routes
-            foreach (var restPath in appHost.RestPaths)
-            {
-                RegisterRestPath(restPath);
-            }
-
-            //Sync the RestPaths collections
-            appHost.RestPaths.Clear();
-            appHost.RestPaths.AddRange(RestPathMap.Values.SelectMany(x => x));
-        }
-
-        public RestPath GetRestPathForRequest(string httpMethod, string pathInfo)
+        public RestPath GetRestPathForRequest(string httpMethod, string pathInfo, ILogger logger)
         {
             var matchUsingPathParts = RestPath.GetPathPartsForMatching(pathInfo);
 
@@ -144,19 +141,23 @@ namespace ServiceStack.Host
             var yieldedHashMatches = RestPath.GetFirstMatchHashKeys(matchUsingPathParts);
             foreach (var potentialHashMatch in yieldedHashMatches)
             {
-                if (!this.RestPathMap.TryGetValue(potentialHashMatch, out firstMatches)) continue;
+                if (!this.RestPathMap.TryGetValue(potentialHashMatch, out firstMatches))
+                {
+                    continue;
+                }
 
                 var bestScore = -1;
                 foreach (var restPath in firstMatches)
                 {
-                    var score = restPath.MatchScore(httpMethod, matchUsingPathParts);
+                    var score = restPath.MatchScore(httpMethod, matchUsingPathParts, logger);
                     if (score > bestScore) bestScore = score;
                 }
+
                 if (bestScore > 0)
                 {
                     foreach (var restPath in firstMatches)
                     {
-                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts))
+                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts, logger))
                             return restPath;
                     }
                 }
@@ -170,14 +171,14 @@ namespace ServiceStack.Host
                 var bestScore = -1;
                 foreach (var restPath in firstMatches)
                 {
-                    var score = restPath.MatchScore(httpMethod, matchUsingPathParts);
+                    var score = restPath.MatchScore(httpMethod, matchUsingPathParts, logger);
                     if (score > bestScore) bestScore = score;
                 }
                 if (bestScore > 0)
                 {
                     foreach (var restPath in firstMatches)
                     {
-                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts))
+                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts, logger))
                             return restPath;
                     }
                 }
@@ -186,15 +187,15 @@ namespace ServiceStack.Host
             return null;
         }
 
-        public async Task<object> Execute(object requestDto, IRequest req)
+        public async Task<object> Execute(HttpListenerHost appHost, object requestDto, IRequest req)
         {
             req.Dto = requestDto;
             var requestType = requestDto.GetType();
             req.OperationName = requestType.Name;
 
-            var serviceType = ServiceStackHost.Instance.Metadata.GetServiceTypeByRequest(requestType);
+            var serviceType = appHost.GetServiceTypeByRequest(requestType);
 
-            var service = ServiceStackHost.Instance.CreateInstance(serviceType);
+            var service = appHost.CreateInstance(serviceType);
 
             //var service = typeFactory.CreateInstance(serviceType);
 
@@ -208,7 +209,7 @@ namespace ServiceStack.Host
                 req.Dto = requestDto;
 
             //Executes the service and returns the result
-            var response = await ServiceExecGeneral.Execute(serviceType, req, service, requestDto, requestType.GetOperationName()).ConfigureAwait(false);
+            var response = await ServiceExecGeneral.Execute(serviceType, req, service, requestDto, requestType.GetMethodName()).ConfigureAwait(false);
 
             return response;
         }
