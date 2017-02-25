@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSubtitlesHandler", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSDP", "..\RSSDP\RSSDP.csproj", "{21002819-C39A-4D3E-BE83-2A276A77FB1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceStack", "..\ServiceStack\ServiceStack.csproj", "{680A1709-25EB-4D52-A87F-EE03FFD94BAA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketHttpListener.Portable", "..\SocketHttpListener.Portable\SocketHttpListener.Portable.csproj", "{4F26D5D8-A7B0-42B3-BA42-7CB7D245934E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaBrowser.Providers", "..\MediaBrowser.Providers\MediaBrowser.Providers.csproj", "{442B5058-DCAF-4263-BB6A-F21E31120A1B}"
@@ -311,18 +309,6 @@ Global
 		{21002819-C39A-4D3E-BE83-2A276A77FB1F}.Release Mono|x86.Build.0 = Release|Any CPU
 		{21002819-C39A-4D3E-BE83-2A276A77FB1F}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
 		{21002819-C39A-4D3E-BE83-2A276A77FB1F}.Signed|Any CPU.Build.0 = Debug|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Debug|x86.Build.0 = Debug|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release|x86.ActiveCfg = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release|x86.Build.0 = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release Mono|Any CPU.ActiveCfg = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release Mono|Any CPU.Build.0 = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release Mono|x86.ActiveCfg = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Release Mono|x86.Build.0 = Release|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Signed|Any CPU.ActiveCfg = Signed|Any CPU
-		{680A1709-25EB-4D52-A87F-EE03FFD94BAA}.Signed|Any CPU.Build.0 = Signed|Any CPU
 		{4F26D5D8-A7B0-42B3-BA42-7CB7D245934E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{4F26D5D8-A7B0-42B3-BA42-7CB7D245934E}.Debug|x86.Build.0 = Debug|Any CPU
 		{4F26D5D8-A7B0-42B3-BA42-7CB7D245934E}.Release|x86.ActiveCfg = Release|Any CPU
