@@ -83,7 +83,6 @@ using Emby.Dlna.MediaReceiverRegistrar;
 using Emby.Dlna.Ssdp;
 using Emby.Server.Core;
 using Emby.Server.Implementations.Activity;
-using Emby.Server.Core.Configuration;
 using Emby.Server.Implementations.Devices;
 using Emby.Server.Implementations.FFMpeg;
 using Emby.Server.Core.IO;
@@ -91,10 +90,8 @@ using Emby.Server.Core.Localization;
 using Emby.Server.Implementations.Migrations;
 using Emby.Server.Implementations.Security;
 using Emby.Server.Implementations.Social;
-using Emby.Server.Implementations.Sync;
 using Emby.Server.Implementations.Channels;
 using Emby.Server.Implementations.Collections;
-using Emby.Server.Implementations.Connect;
 using Emby.Server.Implementations.Dto;
 using Emby.Server.Implementations.EntryPoints;
 using Emby.Server.Implementations.FileOrganization;
@@ -111,7 +108,6 @@ using Emby.Server.Implementations;
 using Emby.Server.Implementations.ServerManager;
 using Emby.Server.Implementations.Session;
 using Emby.Server.Implementations.Social;
-using Emby.Server.Implementations.Sync;
 using Emby.Server.Implementations.TV;
 using Emby.Server.Implementations.Updates;
 using MediaBrowser.Model.Activity;
@@ -134,6 +130,7 @@ using Emby.Drawing;
 using Emby.Server.Implementations.Migrations;
 using MediaBrowser.Model.Diagnostics;
 using Emby.Common.Implementations.Diagnostics;
+using Emby.Server.Implementations.Configuration;
 
 namespace Emby.Server.Core
 {
@@ -526,6 +523,9 @@ namespace Emby.Server.Core
             }
         }
 
+        protected abstract IConnectManager CreateConnectManager();
+        protected abstract ISyncManager CreateSyncManager();
+
         /// <summary>
         /// Registers resources that classes will depend on
         /// </summary>
@@ -586,9 +586,6 @@ namespace Emby.Server.Core
             AuthenticationRepository = await GetAuthenticationRepository().ConfigureAwait(false);
             RegisterSingleInstance(AuthenticationRepository);
 
-            SyncRepository = GetSyncRepository();
-            RegisterSingleInstance(SyncRepository);
-
             UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager, CryptographyProvider, _defaultUserNameFactory());
             RegisterSingleInstance(UserManager);
 
@@ -626,7 +623,7 @@ namespace Emby.Server.Core
             TVSeriesManager = new TVSeriesManager(UserManager, UserDataManager, LibraryManager, ServerConfigurationManager);
             RegisterSingleInstance(TVSeriesManager);
 
-            SyncManager = new SyncManager(LibraryManager, SyncRepository, ImageProcessor, LogManager.GetLogger("SyncManager"), UserManager, () => DtoService, this, TVSeriesManager, () => MediaEncoder, FileSystemManager, () => SubtitleEncoder, ServerConfigurationManager, UserDataManager, () => MediaSourceManager, JsonSerializer, TaskManager, MemoryStreamFactory);
+            SyncManager = CreateSyncManager();
             RegisterSingleInstance(SyncManager);
 
             DtoService = new DtoService(LogManager.GetLogger("DtoService"), LibraryManager, UserDataManager, ItemRepository, ImageProcessor, ServerConfigurationManager, FileSystemManager, ProviderManager, () => ChannelManager, SyncManager, this, () => DeviceManager, () => MediaSourceManager, () => LiveTvManager);
@@ -635,7 +632,7 @@ namespace Emby.Server.Core
             var encryptionManager = new EncryptionManager();
             RegisterSingleInstance<IEncryptionManager>(encryptionManager);
 
-            ConnectManager = new ConnectManager(LogManager.GetLogger("ConnectManager"), ApplicationPaths, JsonSerializer, encryptionManager, HttpClient, this, ServerConfigurationManager, UserManager, ProviderManager, SecurityManager, FileSystemManager);
+            ConnectManager = CreateConnectManager();
             RegisterSingleInstance(ConnectManager);
 
             DeviceManager = new DeviceManager(new DeviceRepository(ApplicationPaths, JsonSerializer, LogManager.GetLogger("DeviceManager"), FileSystemManager), UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
@@ -810,9 +807,11 @@ namespace Emby.Server.Core
                 info.ArchiveType = "7z";
                 info.DownloadUrls = GetWindowsDownloadUrls();
             }
-
-            // No version available - user requirement
-            info.DownloadUrls = new string[] { };
+            else
+            {
+                // No version available - user requirement
+                info.DownloadUrls = new string[] { };
+            }
 
             return info;
         }
@@ -935,15 +934,6 @@ namespace Emby.Server.Core
         private IActivityRepository GetActivityLogRepository()
         {
             var repo = new ActivityRepository(LogManager.GetLogger("ActivityRepository"), ServerConfigurationManager.ApplicationPaths);
-
-            repo.Initialize();
-
-            return repo;
-        }
-
-        private ISyncRepository GetSyncRepository()
-        {
-            var repo = new SyncRepository(LogManager.GetLogger("SyncRepository"), JsonSerializer, ServerConfigurationManager.ApplicationPaths);
 
             repo.Initialize();
 
@@ -1250,7 +1240,7 @@ namespace Emby.Server.Core
             list.Add(GetAssembly(typeof(InstallationManager)));
 
             // Emby.Server.Core
-            list.Add(GetAssembly(typeof(ServerApplicationPaths)));
+            list.Add(GetAssembly(typeof(ApplicationHost)));
 
             // MediaEncoding
             list.Add(GetAssembly(typeof(MediaEncoder)));

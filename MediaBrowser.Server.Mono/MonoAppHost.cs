@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Emby.Server.Connect;
 using Emby.Server.Core;
 using Emby.Server.Implementations;
-using Emby.Server.Implementations.FFMpeg;
+using Emby.Server.Sync;
+using MediaBrowser.Controller.Connect;
+using MediaBrowser.Controller.Sync;
 using MediaBrowser.IsoMounter;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
@@ -26,6 +29,16 @@ namespace MediaBrowser.Server.Mono
             }
         }
 
+        protected override IConnectManager CreateConnectManager()
+        {
+            return new ConnectManager();
+        }
+
+        protected override ISyncManager CreateSyncManager()
+        {
+            return new SyncManager();
+        }
+
         protected override void RestartInternal()
         {
             MainClass.Restart(StartupOptions);
@@ -46,6 +59,8 @@ namespace MediaBrowser.Server.Mono
             var list = new List<Assembly>();
 
             list.Add(typeof(LinuxIsoManager).Assembly);
+            list.Add(typeof(ConnectManager).Assembly);
+            list.Add(typeof(SyncManager).Assembly);
 
             return list;
         }

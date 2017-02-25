@@ -4,10 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
+using Emby.Server.Connect;
 using Emby.Server.Core;
 using Emby.Server.Implementations;
 using Emby.Server.Implementations.EntryPoints;
 using Emby.Server.Implementations.FFMpeg;
+using Emby.Server.Sync;
+using MediaBrowser.Controller.Connect;
+using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
@@ -27,6 +31,16 @@ namespace MediaBrowser.ServerApplication
             get { return MainStartup.IsRunningAsService; }
         }
 
+        protected override IConnectManager CreateConnectManager()
+        {
+            return new ConnectManager();
+        }
+
+        protected override ISyncManager CreateSyncManager()
+        {
+            return new SyncManager();
+        }
+
         protected override void RestartInternal()
         {
             MainStartup.Restart();
@@ -41,6 +55,8 @@ namespace MediaBrowser.ServerApplication
                 //list.Add(typeof(PismoIsoManager).Assembly);
             }
 
+            list.Add(typeof(ConnectManager).Assembly);
+            list.Add(typeof(SyncManager).Assembly);
             list.Add(GetType().Assembly);
 
             return list;

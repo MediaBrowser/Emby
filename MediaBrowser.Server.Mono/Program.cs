@@ -16,8 +16,11 @@ using Emby.Common.Implementations.Logging;
 using Emby.Common.Implementations.Networking;
 using Emby.Common.Implementations.Security;
 using Emby.Server.Core;
+using Emby.Server.Core.Logging;
 using Emby.Server.Implementations;
 using Emby.Server.Implementations.IO;
+using Emby.Server.Implementations.Logging;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Model.System;
 using MediaBrowser.Server.Startup.Common.IO;
 using Mono.Unix.Native;
@@ -32,6 +35,7 @@ namespace MediaBrowser.Server.Mono
         private static ApplicationHost _appHost;
 
         private static ILogger _logger;
+        private static IFileSystem FileSystem;
 
         public static void Main(string[] args)
         {
@@ -109,7 +113,9 @@ namespace MediaBrowser.Server.Mono
 
             var appFolderPath = Path.GetDirectoryName(applicationPath);
 
-            return new ServerApplicationPaths(programDataPath, appFolderPath, Path.GetDirectoryName(applicationPath));
+            Action<string> createDirectoryFn = s => Directory.CreateDirectory(s);
+
+            return new ServerApplicationPaths(programDataPath, appFolderPath, Path.GetDirectoryName(applicationPath), createDirectoryFn);
         }
 
         private static readonly TaskCompletionSource<bool> ApplicationTaskCompletionSource = new TaskCompletionSource<bool>();
@@ -121,6 +127,8 @@ namespace MediaBrowser.Server.Mono
 
             var fileSystem = new MonoFileSystem(logManager.GetLogger("FileSystem"), false, false, appPaths.TempDirectory);
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
+
+            FileSystem = fileSystem;
 
             var environmentInfo = GetEnvironmentInfo();
 
@@ -258,7 +266,7 @@ namespace MediaBrowser.Server.Mono
         {
             var exception = (Exception)e.ExceptionObject;
 
-            new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager).Log(exception);
+            new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager, FileSystem, new ConsoleLogger()).Log(exception);
 
             if (!Debugger.IsAttached)
             {
