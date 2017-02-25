@@ -46,10 +46,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseApplicationHost.cs" />
-    <Compile Include="BaseApplicationPaths.cs" />
     <Compile Include="Archiving\ZipClient.cs" />
-    <Compile Include="Configuration\BaseConfigurationManager.cs" />
-    <Compile Include="Configuration\ConfigurationHelper.cs" />
     <Compile Include="Cryptography\CryptographyProvider.cs" />
     <Compile Include="Devices\DeviceId.cs" />
     <Compile Include="Diagnostics\CommonProcess.cs" />
