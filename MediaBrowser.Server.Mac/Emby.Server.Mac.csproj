@@ -390,6 +390,9 @@
     <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\livetvtunerprovider-hdhomerun.html">
       <Link>Resources\dashboard-ui\livetvtunerprovider-hdhomerun.html</Link>
     </BundleResource>
+    <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\livetvtunerprovider-legacyhdhomerun.html">
+      <Link>Resources\dashboard-ui\livetvtunerprovider-legacyhdhomerun.html</Link>
+    </BundleResource>
     <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\livetvtunerprovider-m3u.html">
       <Link>Resources\dashboard-ui\livetvtunerprovider-m3u.html</Link>
     </BundleResource>
@@ -2315,6 +2318,9 @@
     </BundleResource>
     <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\scripts\livetvtunerprovider-hdhomerun.js">
       <Link>Resources\dashboard-ui\scripts\livetvtunerprovider-hdhomerun.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\scripts\livetvtunerprovider-legacyhdhomerun.js">
+      <Link>Resources\dashboard-ui\scripts\livetvtunerprovider-legacyhdhomerun.js</Link>
     </BundleResource>
     <BundleResource Include="..\MediaBrowser.WebDashboard\dashboard-ui\scripts\livetvtunerprovider-m3u.js">
       <Link>Resources\dashboard-ui\scripts\livetvtunerprovider-m3u.js</Link>
