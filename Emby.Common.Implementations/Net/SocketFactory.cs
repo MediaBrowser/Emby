@@ -155,6 +155,32 @@ namespace Emby.Common.Implementations.Net
             }
         }
 
+        /// <summary>
+        /// !!! HACK.  This takes advantage that UdpSocket really is just a wrapper around a socket.
+        ///            A TcpSocket should probably not return a IUdpSocket type.
+        /// Creates a new TCP socket and connects it to the specified remote address and port.
+        /// </summary>
+        /// <param name="remoteAddress">The IP Address to connect the socket to.</param>
+        /// <param name="remotePort">An integer specifying the remote port to connect the socket to.</param>
+        public IUdpSocket CreateTcpSocket(IpAddressInfo remoteAddress, int remotePort)
+        {
+            if (remotePort < 0) throw new ArgumentException("remotePort cannot be less than zero.", "remotePort");
+
+            var retVal = new Socket(AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            try
+            {
+                retVal.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                return new UdpSocket(retVal, new IpEndPointInfo(remoteAddress, remotePort));
+            }
+            catch
+            {
+                if (retVal != null)
+                    retVal.Dispose();
+
+                throw;
+            }
+        }
+
         #endregion
     }
 }

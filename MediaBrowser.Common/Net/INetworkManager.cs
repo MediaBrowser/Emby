@@ -9,10 +9,16 @@ namespace MediaBrowser.Common.Net
     public interface INetworkManager
     {
         /// <summary>
-        /// Gets a random port number that is currently available
+        /// Gets a random TCP port number that is currently available
         /// </summary>
         /// <returns>System.Int32.</returns>
-        int GetRandomUnusedPort();
+        int GetRandomUnusedTcpPort();
+
+        /// <summary>
+        /// Gets a random UDP port number that is currently available
+        /// </summary>
+        /// <returns>System.Int32.</returns>
+        int GetRandomUnusedUdpPort();
 
         /// <summary>
         /// Returns MAC Address from first Network Card in Computer

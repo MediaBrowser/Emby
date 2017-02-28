@@ -36,6 +36,15 @@ namespace Emby.Common.Implementations.Net
             _Socket.Bind(new IPEndPoint(ip, _LocalPort));
         }
 
+        public UdpSocket(Socket socket, IpEndPointInfo endPoint)
+        {
+            if (socket == null) throw new ArgumentNullException("socket");
+
+            _Socket = socket;
+
+            _Socket.Connect(NetworkManager.ToIPEndPoint(endPoint));
+        }
+
         #endregion
 
         public IpAddressInfo LocalIPAddress

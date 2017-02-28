@@ -49,6 +49,7 @@ namespace MediaBrowser.Model.LiveTv
         public bool AllowHWTranscoding { get; set; }
         public bool IsEnabled { get; set; }
         public bool EnableTvgId { get; set; }
+        public int Tuners { get; set; }
 
         public TunerHostInfo()
         {

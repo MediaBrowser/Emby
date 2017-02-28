@@ -69,6 +69,13 @@ namespace Emby.Common.Implementations.Net
             }
         }
 
+        public void Connect(IpEndPointInfo endPoint)
+        {
+            var nativeEndpoint = NetworkManager.ToIPEndPoint(endPoint);
+
+            Socket.Connect(nativeEndpoint);
+        }
+
         public void Listen(int backlog)
         {
             Socket.Listen(backlog);

@@ -272,15 +272,28 @@ namespace Emby.Common.Implementations.Networking
         }
 
         /// <summary>
-        /// Gets a random port number that is currently available
+        /// Gets a random TCP port number that is currently available
         /// </summary>
         /// <returns>System.Int32.</returns>
-        public int GetRandomUnusedPort()
+        public int GetRandomUnusedTcpPort()
         {
             var listener = new TcpListener(IPAddress.Any, 0);
             listener.Start();
             var port = ((IPEndPoint)listener.LocalEndpoint).Port;
             listener.Stop();
+            return port;
+        }
+
+        /// <summary>
+        /// Gets a random UDP port number that is currently available
+        /// </summary>
+        /// <returns>System.Int32.</returns>
+        public int GetRandomUnusedUdpPort()
+        {
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            var udpClient = new UdpClient(localEndPoint);
+            var port = ((IPEndPoint)(udpClient.Client.LocalEndPoint)).Port;
+            udpClient.Dispose();
             return port;
         }
 

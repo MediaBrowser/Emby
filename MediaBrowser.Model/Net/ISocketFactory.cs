@@ -14,6 +14,14 @@ namespace MediaBrowser.Model.Net
 		/// <returns>A <see cref="IUdpSocket"/> implementation.</returns>
 		IUdpSocket CreateUdpSocket(int localPort);
 
+        // <summary>
+        /// Creates a new TCP socket and connects it to the specified remote address and port.
+        /// </summary>
+        /// <param name="remoteAddress">The IP Address to connect the socket to.</param>
+        /// <param name="remotePort">An integer specifying the remote port to connect the socket to.</param>
+        /// <returns>A <see cref="IUdpSocket"/> implementation.</returns>
+        IUdpSocket CreateTcpSocket(IpAddressInfo remoteAddress, int remotePort);
+
         /// <summary>
         /// Createa a new unicast socket using the specified local port number.
         /// </summary>
