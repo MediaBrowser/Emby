@@ -59,7 +59,6 @@
     <Compile Include="Logging\NLogger.cs" />
     <Compile Include="Logging\NlogManager.cs" />
     <Compile Include="Net\DisposableManagedObjectBase.cs" />
-    <Compile Include="Net\NetSocket.cs" />
     <Compile Include="Net\SocketAcceptor.cs" />
     <Compile Include="Net\SocketFactory.cs" />
     <Compile Include="Net\UdpSocket.cs" />
@@ -81,6 +80,7 @@
     <Compile Include="Threading\CommonTimer.cs" />
     <Compile Include="Threading\TimerFactory.cs" />
     <Compile Include="Xml\XmlReaderSettingsFactory.cs" />
+    <Compile Include="Net\NetAcceptSocket.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
