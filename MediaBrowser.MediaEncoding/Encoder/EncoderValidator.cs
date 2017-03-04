@@ -90,6 +90,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
             var required = new[]
             {
                 "h264_qsv",
+                "hevc_qsv",
                 "mpeg2_qsv",
                 "vc1_qsv"
             };
@@ -135,6 +136,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 "srt",
                 "h264_nvenc",
                 "h264_qsv",
+                "hevc_qsv",
                 "h264_omx",
                 "h264_vaapi",
                 "ac3"
