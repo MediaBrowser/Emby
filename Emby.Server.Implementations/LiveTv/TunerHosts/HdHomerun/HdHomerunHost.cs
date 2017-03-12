@@ -69,9 +69,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         private async Task<List<Channels>> GetLineup(TunerHostInfo info, CancellationToken cancellationToken)
         {
+            var model = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
+
             var options = new HttpRequestOptions
             {
-                Url = string.Format("{0}/lineup.json", GetApiUrl(info, false)),
+                Url = model.LineupURL,
                 CancellationToken = cancellationToken,
                 BufferContent = false
             };
@@ -188,7 +190,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             using (var manager = new HdHomerunManager(_socketFactory))
             {
                 // Legacy HdHomeruns are IPv4 only
-                var ipInfo = new IpAddressInfo(uri.Host, IpAddressFamily.InterNetwork);
+                var ipInfo = _networkManager.ParseIpAddress(uri.Host);
 
                 for (int i = 0; i < model.TunerCount; ++i)
                 {
@@ -451,7 +453,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             string nal = null;
 
-            var url = info.Url;
+            var url = GetApiUrl(info, false);
             var id = channelId;
             id += "_" + url.GetMD5().ToString("N");
 
@@ -585,19 +587,19 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             var hdhomerunChannel = channelInfo as HdHomerunChannelInfo;
 
             if (hdhomerunChannel != null && hdhomerunChannel.IsLegacyTuner)
-            {
-                var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
+            {              
                 var mediaSource = GetLegacyMediaSource(info, hdhrId, channelInfo);
+                var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
 
-                var liveStream = new HdHomerunUdpStream(mediaSource, streamId, hdhomerunChannel.Url, modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
-                return liveStream;
+                return new HdHomerunUdpStream(mediaSource, streamId, new LegacyHdHomerunChannelCommands(hdhomerunChannel.Url), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
             }
             else
             {
                 var mediaSource = GetMediaSource(info, hdhrId, channelInfo, profile);
+                //var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
 
-                var liveStream = new HdHomerunHttpStream(mediaSource, streamId, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost);
-                return liveStream;
+                return new HdHomerunHttpStream(mediaSource, streamId, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost);
+                //return new HdHomerunUdpStream(mediaSource, streamId, new HdHomerunChannelCommands(hdhomerunChannel.Number), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
             }
         }
 
