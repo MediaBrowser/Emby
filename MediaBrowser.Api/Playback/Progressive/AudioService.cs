@@ -31,6 +31,8 @@ namespace MediaBrowser.Api.Playback.Progressive
     /// <summary>
     /// Class AudioService
     /// </summary>
+    // TODO: In order to autheneticate this in the future, Dlna playback will require updating
+    //[Authenticated]
     public class AudioService : BaseProgressiveStreamingService
     {
         /// <summary>

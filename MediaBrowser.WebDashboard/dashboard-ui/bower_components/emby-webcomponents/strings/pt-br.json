@@ -1,4 +1,8 @@
 {
+    "Connect": "Conectar",
+    "MessageNoServersAvailableToConnect": "No servers are available to connect to. If you've been invited to share a server, make sure to accept it below or by clicking the link in the email.",
+    "Accept": "Accept",
+    "Reject": "Reject",
     "MessageUnlockAppWithPurchaseOrSupporter": "Desbloqueie esta funcionalidade com uma pequena compra \u00fanica, ou com uma assinatura ativa do Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Desbloqueie esta funcionalidade com uma assinatura ativa do Emby Premiere.",
     "MessageToValidateSupporter": "Se tiver uma assinatura ativa do Emby Premiere, assegure-se que configurou o Emby Premiere no Painel do Servidor Emby, que pode ser acessado clicando Emby Premiere no menu principal.",
@@ -44,6 +48,8 @@
     "RecordSeries": "Gravar s\u00e9rie",
     "HeaderCinemaMode": "Modo Cinema",
     "HeaderCloudSync": "Sincroniza\u00e7\u00e3o na Nuvem",
+    "HeaderDownloadedMedia": "Downloaded Media",
+    "Downloads": "Downloads",
     "HeaderOfflineDownloads": "M\u00eddia Offline",
     "HeaderOfflineDownloadsDescription": "Download sua m\u00eddia para seus dispositivos para uso offline f\u00e1cil.",
     "CloudSyncFeatureDescription": "Sincronize sua m\u00eddia para a nuvem para backup, arquivamento e convers\u00e3o f\u00e1ceis.",
@@ -171,8 +177,6 @@
     "LabelRuntimeMinutes": "Dura\u00e7\u00e3o (minutos):",
     "LabelParentalRating": "Classifica\u00e7\u00e3o et\u00e1ria:",
     "LabelCustomRating": "Classifica\u00e7\u00e3o personalizada:",
-    "LabelBudget": "Or\u00e7amento",
-    "LabelRevenue": "Faturamento ($):",
     "LabelOriginalAspectRatio": "Propor\u00e7\u00e3o da imagem original:",
     "LabelPlayers": "Jogadores:",
     "Label3DFormat": "Formato 3D:",
@@ -386,5 +390,10 @@
     "HeaderSelectPlayer": "Selecionar Reprodutor",
     "Quality": "Qualidade",
     "Auto": "Auto",
-    "AndroidUnlockRestoreHelp": "Para restaurar sua compra anterior, por favor certifique-se que est\u00e1 com a sess\u00e3o aberta com a mesma conta Google (ou Amazon) que fez a compra originalmente. Certifique-se que a app store est\u00e1 ativada e que n\u00e3o est\u00e1 restringida por nenhum controle parental e tamb\u00e9m verifique que possui uma conex\u00e3o de internet ativa. Voc\u00ea s\u00f3 ter\u00e1 que fazer isto uma vez para restaurar sua compra anterior."
+    "AndroidUnlockRestoreHelp": "Para restaurar sua compra anterior, por favor certifique-se que est\u00e1 com a sess\u00e3o aberta com a mesma conta Google (ou Amazon) que fez a compra originalmente. Certifique-se que a app store est\u00e1 ativada e que n\u00e3o est\u00e1 restringida por nenhum controle parental e tamb\u00e9m verifique que possui uma conex\u00e3o de internet ativa. Voc\u00ea s\u00f3 ter\u00e1 que fazer isto uma vez para restaurar sua compra anterior.",
+    "AspectRatio": "Propor\u00e7\u00e3o da imagem",
+    "Original": "Original",
+    "Fill": "Preencher",
+    "BestFit": "Mais prov\u00e1vel",
+    "MessagePlayAccessRestricted": "Playback of this content is currently restricted. Please contact your Emby Server administrator for more information."
 }

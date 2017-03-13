@@ -48,9 +48,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         private const string ChannelIdPrefix = "m3u_";
 
-        protected override async Task<IEnumerable<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
+        protected override async Task<List<ChannelInfo>> GetChannelsInternal(TunerHostInfo info, CancellationToken cancellationToken)
         {
-            return await new M3uParser(Logger, _fileSystem, _httpClient, _appHost).Parse(info.Url, ChannelIdPrefix, info.Id, !info.EnableTvgId, cancellationToken).ConfigureAwait(false);
+            var result = await new M3uParser(Logger, _fileSystem, _httpClient, _appHost).Parse(info.Url, ChannelIdPrefix, info.Id, !info.EnableTvgId, cancellationToken).ConfigureAwait(false);
+
+            return result.Cast<ChannelInfo>().ToList();
         }
 
         public Task<List<LiveTvTunerInfo>> GetTunerInfos(CancellationToken cancellationToken)
@@ -160,7 +162,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                     Id = channel.Path.GetMD5().ToString("N"),
                     IsInfiniteStream = true,
-                    SupportsDirectStream = false,
                     IsRemote = true
                 };
 
@@ -174,6 +175,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         protected override Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
         {
             return Task.FromResult(true);
+        }
+
+        public Task<List<TunerHostInfo>> DiscoverDevices(int discoveryDurationMs, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new List<TunerHostInfo>());
         }
     }
 }

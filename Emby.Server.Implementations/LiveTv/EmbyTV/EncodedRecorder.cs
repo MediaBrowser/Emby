@@ -65,6 +65,15 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
+        private bool CopySubtitles
+        {
+            get
+            {
+                return false;
+                //return string.Equals(OutputFormat, "mkv", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         public string GetOutputPath(MediaSourceInfo mediaSource, string targetFile)
         {
             return Path.ChangeExtension(targetFile, "." + OutputFormat);
@@ -154,8 +163,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             var durationParam = " -t " + _mediaEncoder.GetTimeParameter(duration.Ticks);
             var inputModifiers = "-fflags +genpts -async 1 -vsync -1";
-            var mapArgs = string.Equals(OutputFormat, "mkv", StringComparison.OrdinalIgnoreCase) ? "-map 0" : "-sn";
-            var commandLineArgs = "-i \"{0}\"{4} " + mapArgs + " {2} -map_metadata -1 -threads 0 {3} -y \"{1}\"";
+            var commandLineArgs = "-i \"{0}\"{5} {2} -map_metadata -1 -threads 0 {3}{4} -y \"{1}\"";
 
             long startTimeTicks = 0;
             //if (mediaSource.DateLiveStreamOpened.HasValue)
@@ -183,7 +191,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                   (analyzeDurationSeconds * 1000000).ToString(CultureInfo.InvariantCulture);
             inputModifiers += analyzeDuration;
 
-            commandLineArgs = string.Format(commandLineArgs, inputTempFile, targetFile, videoArgs, GetAudioArgs(mediaSource), durationParam);
+            var subtitleArgs = CopySubtitles ? " -codec:s copy" : " -sn";
+
+            commandLineArgs = string.Format(commandLineArgs, inputTempFile, targetFile, videoArgs, GetAudioArgs(mediaSource), subtitleArgs, durationParam);
 
             return inputModifiers + " " + commandLineArgs;
         }

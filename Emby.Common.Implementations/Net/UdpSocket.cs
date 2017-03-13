@@ -14,7 +14,7 @@ namespace Emby.Common.Implementations.Net
     // THIS IS A LINKED FILE - SHARED AMONGST MULTIPLE PLATFORMS	
     // Be careful to check any changes compile and work for all platform projects it is shared in.
 
-    internal sealed class UdpSocket : DisposableManagedObjectBase, IUdpSocket
+    internal sealed class UdpSocket : DisposableManagedObjectBase, ISocket
     {
 
         #region Fields
@@ -22,8 +22,6 @@ namespace Emby.Common.Implementations.Net
         private Socket _Socket;
         private int _LocalPort;
         #endregion
-
-        #region Constructors
 
         public UdpSocket(Socket socket, int localPort, IPAddress ip)
         {
@@ -36,7 +34,13 @@ namespace Emby.Common.Implementations.Net
             _Socket.Bind(new IPEndPoint(ip, _LocalPort));
         }
 
-        #endregion
+        public UdpSocket(Socket socket, IpEndPointInfo endPoint)
+        {
+            if (socket == null) throw new ArgumentNullException("socket");
+
+            _Socket = socket;
+            _Socket.Connect(NetworkManager.ToIPEndPoint(endPoint));
+        }
 
         public IpAddressInfo LocalIPAddress
         {
@@ -44,9 +48,9 @@ namespace Emby.Common.Implementations.Net
             private set;
         }
 
-        #region IUdpSocket Members
+        #region ISocket Members
 
-        public Task<SocketReceiveResult> ReceiveAsync()
+        public Task<SocketReceiveResult> ReceiveAsync(CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
 
@@ -55,6 +59,8 @@ namespace Emby.Common.Implementations.Net
             EndPoint receivedFromEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var state = new AsyncReceiveState(_Socket, receivedFromEndPoint);
             state.TaskCompletionSource = tcs;
+
+            cancellationToken.Register(() => tcs.TrySetCanceled());
 
 #if NETSTANDARD1_6
             _Socket.ReceiveFromAsync(new ArraySegment<Byte>(state.Buffer), SocketFlags.None, state.RemoteEndPoint)
@@ -156,7 +162,7 @@ namespace Emby.Common.Implementations.Net
                 var bytesRead = receiveData();
 
                 var ipEndPoint = state.RemoteEndPoint as IPEndPoint;
-                state.TaskCompletionSource.SetResult(
+                state.TaskCompletionSource.TrySetResult(
                     new SocketReceiveResult
                     {
                         Buffer = state.Buffer,
@@ -168,18 +174,18 @@ namespace Emby.Common.Implementations.Net
             }
             catch (ObjectDisposedException)
             {
-                state.TaskCompletionSource.SetCanceled();
+                state.TaskCompletionSource.TrySetCanceled();
             }
             catch (SocketException se)
             {
                 if (se.SocketErrorCode != SocketError.Interrupted && se.SocketErrorCode != SocketError.OperationAborted && se.SocketErrorCode != SocketError.Shutdown)
-                    state.TaskCompletionSource.SetException(se);
+                    state.TaskCompletionSource.TrySetException(se);
                 else
-                    state.TaskCompletionSource.SetCanceled();
+                    state.TaskCompletionSource.TrySetCanceled();
             }
             catch (Exception ex)
             {
-                state.TaskCompletionSource.SetException(ex);
+                state.TaskCompletionSource.TrySetException(ex);
             }
         }
 
@@ -202,7 +208,7 @@ namespace Emby.Common.Implementations.Net
                 var bytesRead = state.Socket.EndReceiveFrom(asyncResult, ref state.RemoteEndPoint);
 
                 var ipEndPoint = state.RemoteEndPoint as IPEndPoint;
-                state.TaskCompletionSource.SetResult(
+                state.TaskCompletionSource.TrySetResult(
                     new SocketReceiveResult
                     {
                         Buffer = state.Buffer,
@@ -214,11 +220,11 @@ namespace Emby.Common.Implementations.Net
             }
             catch (ObjectDisposedException)
             {
-                state.TaskCompletionSource.SetCanceled();
+                state.TaskCompletionSource.TrySetCanceled();
             }
             catch (Exception ex)
             {
-                state.TaskCompletionSource.SetException(ex);
+                state.TaskCompletionSource.TrySetException(ex);
             }
 #endif
         }

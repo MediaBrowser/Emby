@@ -1,4 +1,8 @@
 {
+    "Connect": "Connect",
+    "MessageNoServersAvailableToConnect": "No servers are available to connect to. If you've been invited to share a server, make sure to accept it below or by clicking the link in the email.",
+    "Accept": "Accept",
+    "Reject": "Reject",
     "MessageUnlockAppWithPurchaseOrSupporter": "Otklju\u010daj ovu mogu\u0107nost s malom jednokratnom kupnjom ili s aktivnom pretplatom Emby Premijere.",
     "MessageUnlockAppWithSupporter": "Otklju\u010daj ovu mogu\u0107nost sa pretplatom Emby Premijere.",
     "MessageToValidateSupporter": "Ako imate aktivnu pretplatu Emby Premijere provjerite dali ste postavili Emby Premijeru u svojoj nadzornoj plo\u010di Emby Server-a kojoj mo\u017eete pristupiti klikom Emby Premijera u glavnom izborniku.",
@@ -44,6 +48,8 @@
     "RecordSeries": "Snimi serije",
     "HeaderCinemaMode": "Kino na\u010din",
     "HeaderCloudSync": "Sink. preko oblaka",
+    "HeaderDownloadedMedia": "Downloaded Media",
+    "Downloads": "Downloads",
     "HeaderOfflineDownloads": "Izvanmre\u017eni mediji",
     "HeaderOfflineDownloadsDescription": "Preuzimanje medija na svojim ure\u0111ajima za jednostavnu upotrebu izvan mre\u017ee.",
     "CloudSyncFeatureDescription": "Sinkronizirajte svoje medije na oblaku za jednostavni backup, arhiviranje i konvertiranje.",
@@ -171,8 +177,6 @@
     "LabelRuntimeMinutes": "Vrijeme izvo\u0111enja (minuta):",
     "LabelParentalRating": "Roditeljska ocjena:",
     "LabelCustomRating": "Prilago\u0111ena ocjena:",
-    "LabelBudget": "Bud\u017eet",
-    "LabelRevenue": "Prihod ($):",
     "LabelOriginalAspectRatio": "Originalni omjer gledanja:",
     "LabelPlayers": "Players:",
     "Label3DFormat": "3D format:",
@@ -386,5 +390,10 @@
     "HeaderSelectPlayer": "Select Player",
     "Quality": "Quality",
     "Auto": "Auto",
-    "AndroidUnlockRestoreHelp": "To restore your previous purchase, please ensure you're signed into the device with the same Google (or Amazon) account that originally made the purchase. Make sure the app store is enabled and not restricted by any parental controls, and ensure you have an active internet connection. You'll only have to do this once to restore your previous purchase."
+    "AndroidUnlockRestoreHelp": "To restore your previous purchase, please ensure you're signed into the device with the same Google (or Amazon) account that originally made the purchase. Make sure the app store is enabled and not restricted by any parental controls, and ensure you have an active internet connection. You'll only have to do this once to restore your previous purchase.",
+    "AspectRatio": "Aspect ratio",
+    "Original": "Original",
+    "Fill": "Fill",
+    "BestFit": "Best fit",
+    "MessagePlayAccessRestricted": "Playback of this content is currently restricted. Please contact your Emby Server administrator for more information."
 }

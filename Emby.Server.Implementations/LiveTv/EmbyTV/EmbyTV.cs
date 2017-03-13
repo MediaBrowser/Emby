@@ -474,17 +474,30 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public ChannelInfo GetEpgChannelFromTunerChannel(List<NameValuePair> mappings, ChannelInfo tunerChannel, List<ChannelInfo> epgChannels)
         {
-            var tunerChannelId = string.IsNullOrWhiteSpace(tunerChannel.TunerChannelId)
-                ? tunerChannel.Id
-                : tunerChannel.TunerChannelId;
-
-            if (!string.IsNullOrWhiteSpace(tunerChannelId))
+            if (!string.IsNullOrWhiteSpace(tunerChannel.Id))
             {
-                var mappedTunerChannelId = GetMappedChannel(tunerChannelId, mappings);
+                var mappedTunerChannelId = GetMappedChannel(tunerChannel.Id, mappings);
 
                 if (string.IsNullOrWhiteSpace(mappedTunerChannelId))
                 {
-                    mappedTunerChannelId = tunerChannelId;
+                    mappedTunerChannelId = tunerChannel.Id;
+                }
+
+                var channel = epgChannels.FirstOrDefault(i => string.Equals(mappedTunerChannelId, i.Id, StringComparison.OrdinalIgnoreCase));
+
+                if (channel != null)
+                {
+                    return channel;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(tunerChannel.TunerChannelId))
+            {
+                var mappedTunerChannelId = GetMappedChannel(tunerChannel.TunerChannelId, mappings);
+
+                if (string.IsNullOrWhiteSpace(mappedTunerChannelId))
+                {
+                    mappedTunerChannelId = tunerChannel.TunerChannelId;
                 }
 
                 var channel = epgChannels.FirstOrDefault(i => string.Equals(mappedTunerChannelId, i.Id, StringComparison.OrdinalIgnoreCase));
@@ -635,6 +648,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     existingTimer.Status == RecordingStatus.Completed)
                 {
                     existingTimer.Status = RecordingStatus.New;
+                    existingTimer.IsManual = true;
                     _timerProvider.Update(existingTimer);
                     return Task.FromResult(existingTimer.Id);
                 }
@@ -663,6 +677,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 RecordingHelper.CopyProgramInfoToTimerInfo(programInfo, timer);
             }
 
+            timer.IsManual = true;
             _timerProvider.Add(timer);
             return Task.FromResult(timer.Id);
         }
@@ -758,6 +773,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 existingTimer.PostPaddingSeconds = updatedTimer.PostPaddingSeconds;
                 existingTimer.IsPostPaddingRequired = updatedTimer.IsPostPaddingRequired;
                 existingTimer.IsPrePaddingRequired = updatedTimer.IsPrePaddingRequired;
+
+                _timerProvider.Update(existingTimer);
             }
 
             return Task.FromResult(true);
@@ -1255,6 +1272,14 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 if (recordingEndDate <= DateTime.UtcNow)
                 {
                     _logger.Warn("Recording timer fired for updatedTimer {0}, Id: {1}, but the program has already ended.", timer.Name, timer.Id);
+                    OnTimerOutOfDate(timer);
+                    return;
+                }
+
+                var registration = await _liveTvManager.GetRegistrationInfo("dvr").ConfigureAwait(false);
+                if (!registration.IsValid)
+                {
+                    _logger.Warn("Emby Premiere required to use Emby DVR.");
                     OnTimerOutOfDate(timer);
                     return;
                 }
@@ -2203,6 +2228,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private bool ShouldCancelTimerForSeriesTimer(SeriesTimerInfo seriesTimer, TimerInfo timer)
         {
+            if (timer.IsManual)
+            {
+                return false;
+            }
+
             if (!seriesTimer.RecordAnyTime)
             {
                 if (Math.Abs(seriesTimer.StartDate.TimeOfDay.Ticks - timer.StartDate.TimeOfDay.Ticks) >= TimeSpan.FromMinutes(5).Ticks)
@@ -2296,6 +2326,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         if (!_activeRecordings.TryGetValue(timer.Id, out activeRecordingInfo))
                         {
                             UpdateExistingTimerWithNewMetadata(existingTimer, timer);
+
+                            // Needed by ShouldCancelTimerForSeriesTimer
+                            timer.IsManual = existingTimer.IsManual;
 
                             if (ShouldCancelTimerForSeriesTimer(seriesTimer, timer))
                             {
@@ -2508,6 +2541,60 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             public TimerInfo Timer { get; set; }
             public ProgramInfo Program { get; set; }
             public CancellationTokenSource CancellationTokenSource { get; set; }
+        }
+
+        public async Task ScanForTunerDeviceChanges(CancellationToken cancellationToken)
+        {
+            foreach (var host in _liveTvManager.TunerHosts)
+            {
+                await ScanForTunerDeviceChanges(host, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task ScanForTunerDeviceChanges(ITunerHost host, CancellationToken cancellationToken)
+        {
+            var discoveredDevices = await DiscoverDevices(host, 3000, cancellationToken).ConfigureAwait(false);
+
+            var configuredDevices = GetConfiguration().TunerHosts
+                .Where(i => string.Equals(i.Type, host.Type, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var device in discoveredDevices)
+            {
+                var configuredDevice = configuredDevices.FirstOrDefault(i => string.Equals(i.DeviceId, device.DeviceId, StringComparison.OrdinalIgnoreCase));
+
+                if (configuredDevice != null)
+                {
+                    if (!string.Equals(device.Url, configuredDevice.Url, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _logger.Info("Tuner url has changed from {0} to {1}", configuredDevice.Url, device.Url);
+
+                        configuredDevice.Url = device.Url;
+                        await _liveTvManager.SaveTunerHost(configuredDevice).ConfigureAwait(false);
+                    }
+                }
+            }
+        }
+
+        private async Task<List<TunerHostInfo>> DiscoverDevices(ITunerHost host, int discoveryDuationMs, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var discoveredDevices = await host.DiscoverDevices(discoveryDuationMs, cancellationToken).ConfigureAwait(false);
+
+                foreach (var device in discoveredDevices)
+                {
+                    _logger.Info("Discovered tuner device {0} at {1}", host.Name, device.Url);
+                }
+
+                return discoveredDevices;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error discovering tuner devices", ex);
+
+                return new List<TunerHostInfo>();
+            }
         }
     }
     public static class ConfigurationExtension

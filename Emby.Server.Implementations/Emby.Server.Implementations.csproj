@@ -35,6 +35,9 @@
     <Compile Include="Activity\ActivityLogEntryPoint.cs" />
     <Compile Include="Activity\ActivityManager.cs" />
     <Compile Include="Activity\ActivityRepository.cs" />
+    <Compile Include="AppBase\BaseApplicationPaths.cs" />
+    <Compile Include="AppBase\BaseConfigurationManager.cs" />
+    <Compile Include="AppBase\ConfigurationHelper.cs" />
     <Compile Include="Branding\BrandingConfigurationFactory.cs" />
     <Compile Include="Browser\BrowserLauncher.cs" />
     <Compile Include="Channels\ChannelConfigurations.cs" />
@@ -46,11 +49,7 @@
     <Compile Include="Collections\CollectionImageProvider.cs" />
     <Compile Include="Collections\CollectionManager.cs" />
     <Compile Include="Collections\CollectionsDynamicFolder.cs" />
-    <Compile Include="Connect\ConnectData.cs" />
-    <Compile Include="Connect\ConnectEntryPoint.cs" />
-    <Compile Include="Connect\ConnectManager.cs" />
-    <Compile Include="Connect\Responses.cs" />
-    <Compile Include="Connect\Validator.cs" />
+    <Compile Include="Configuration\ServerConfigurationManager.cs" />
     <Compile Include="Data\ManagedConnection.cs" />
     <Compile Include="Data\SqliteDisplayPreferencesRepository.cs" />
     <Compile Include="Data\SqliteFileOrganizationRepository.cs" />
@@ -85,6 +84,7 @@
     <Compile Include="FileOrganization\NameUtils.cs" />
     <Compile Include="FileOrganization\OrganizerScheduledTask.cs" />
     <Compile Include="FileOrganization\TvFolderOrganizer.cs" />
+    <Compile Include="HttpServer\FileWriter.cs" />
     <Compile Include="HttpServer\GetSwaggerResource.cs" />
     <Compile Include="HttpServer\HttpListenerHost.cs" />
     <Compile Include="HttpServer\HttpResultFactory.cs" />
@@ -105,7 +105,6 @@
     <Compile Include="HttpServer\StreamWriter.cs" />
     <Compile Include="HttpServer\SwaggerService.cs" />
     <Compile Include="Images\BaseDynamicImageProvider.cs" />
-    <Compile Include="Intros\DefaultIntroProvider.cs" />
     <Compile Include="IO\FileRefresher.cs" />
     <Compile Include="IO\MbLinkShortcutHandler.cs" />
     <Compile Include="IO\ThrottledStream.cs" />
@@ -171,14 +170,16 @@
     <Compile Include="LiveTv\RecordingImageProvider.cs" />
     <Compile Include="LiveTv\RefreshChannelsScheduledTask.cs" />
     <Compile Include="LiveTv\TunerHosts\BaseTunerHost.cs" />
-    <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunDiscovery.cs" />
+    <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunManager.cs" />
     <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunHost.cs" />
-    <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunLiveStream.cs" />
+    <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunHttpStream.cs" />
+    <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunUdpStream.cs" />
     <Compile Include="LiveTv\TunerHosts\M3uParser.cs" />
     <Compile Include="LiveTv\TunerHosts\M3UTunerHost.cs" />
     <Compile Include="LiveTv\TunerHosts\MulticastStream.cs" />
     <Compile Include="LiveTv\TunerHosts\QueueStream.cs" />
     <Compile Include="Localization\LocalizationManager.cs" />
+    <Compile Include="Logging\UnhandledExceptionWriter.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
     <Compile Include="Migrations\IVersionMigration.cs" />
     <Compile Include="Migrations\LibraryScanMigration.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Security\MBLicenseFile.cs" />
     <Compile Include="Security\PluginSecurityManager.cs" />
     <Compile Include="Security\RegRecord.cs" />
+    <Compile Include="ServerApplicationPaths.cs" />
     <Compile Include="ServerManager\ServerManager.cs" />
     <Compile Include="ServerManager\WebSocketConnection.cs" />
     <Compile Include="Services\ServicePath.cs" />
@@ -237,7 +239,6 @@
     <Compile Include="Sorting\AlbumComparer.cs" />
     <Compile Include="Sorting\AlphanumComparator.cs" />
     <Compile Include="Sorting\ArtistComparer.cs" />
-    <Compile Include="Sorting\BudgetComparer.cs" />
     <Compile Include="Sorting\CommunityRatingComparer.cs" />
     <Compile Include="Sorting\CriticRatingComparer.cs" />
     <Compile Include="Sorting\DateCreatedComparer.cs" />
@@ -256,36 +257,19 @@
     <Compile Include="Sorting\PremiereDateComparer.cs" />
     <Compile Include="Sorting\ProductionYearComparer.cs" />
     <Compile Include="Sorting\RandomComparer.cs" />
-    <Compile Include="Sorting\RevenueComparer.cs" />
     <Compile Include="Sorting\RuntimeComparer.cs" />
     <Compile Include="Sorting\SeriesSortNameComparer.cs" />
     <Compile Include="Sorting\SortNameComparer.cs" />
     <Compile Include="Sorting\StartDateComparer.cs" />
     <Compile Include="Sorting\StudioComparer.cs" />
     <Compile Include="StartupOptions.cs" />
-    <Compile Include="Sync\AppSyncProvider.cs" />
-    <Compile Include="Sync\CloudSyncProfile.cs" />
-    <Compile Include="Sync\IHasSyncQuality.cs" />
-    <Compile Include="Sync\MediaSync.cs" />
-    <Compile Include="Sync\MultiProviderSync.cs" />
-    <Compile Include="Sync\ServerSyncScheduledTask.cs" />
-    <Compile Include="Sync\SyncConfig.cs" />
-    <Compile Include="Sync\SyncConvertScheduledTask.cs" />
-    <Compile Include="Sync\SyncedMediaSourceProvider.cs" />
-    <Compile Include="Sync\SyncHelper.cs" />
-    <Compile Include="Sync\SyncJobOptions.cs" />
-    <Compile Include="Sync\SyncJobProcessor.cs" />
-    <Compile Include="Sync\SyncManager.cs" />
-    <Compile Include="Sync\SyncNotificationEntryPoint.cs" />
-    <Compile Include="Sync\SyncRegistrationInfo.cs" />
-    <Compile Include="Sync\SyncRepository.cs" />
-    <Compile Include="Sync\TargetDataProvider.cs" />
     <Compile Include="TV\SeriesPostScanTask.cs" />
     <Compile Include="TV\TVSeriesManager.cs" />
     <Compile Include="Udp\UdpServer.cs" />
     <Compile Include="Updates\InstallationManager.cs" />
     <Compile Include="UserViews\CollectionFolderImageProvider.cs" />
     <Compile Include="UserViews\DynamicImageProvider.cs" />
+    <Compile Include="Windows\LoopUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\iso6392.txt" />
@@ -319,8 +303,8 @@
       <HintPath>..\packages\Emby.XmlTv.1.0.7\lib\portable-net45+win8\Emby.XmlTv.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MediaBrowser.Naming, Version=1.0.6201.24431, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Naming.1.0.4\lib\portable-net45+win8\MediaBrowser.Naming.dll</HintPath>
+    <Reference Include="MediaBrowser.Naming, Version=1.0.6279.25941, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Naming.1.0.5\lib\portable-net45+win8\MediaBrowser.Naming.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -328,7 +312,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.core.1.1.1\lib\portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.core.dll</HintPath>
+      <HintPath>..\packages\SQLitePCLRaw.core.1.1.2\lib\portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="UniversalDetector, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

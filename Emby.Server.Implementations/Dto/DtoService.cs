@@ -491,7 +491,7 @@ namespace Emby.Server.Implementations.Dto
                 }
             }
 
-            //if (!(item is LiveTvProgram))
+            //if (!(item is LiveTvProgram) || fields.Contains(ItemFields.PlayAccess))
             {
                 dto.PlayAccess = item.GetPlayAccess(user);
             }
@@ -1031,7 +1031,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (fields.Contains(ItemFields.Path))
             {
-                dto.Path = GetMappedPath(item);
+                dto.Path = GetMappedPath(item, owner);
             }
 
             dto.PremiereDate = item.PremiereDate;
@@ -1566,7 +1566,7 @@ namespace Emby.Server.Implementations.Dto
             }
         }
 
-        private string GetMappedPath(BaseItem item)
+        private string GetMappedPath(BaseItem item, BaseItem ownerItem)
         {
             var path = item.Path;
 
@@ -1574,7 +1574,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (locationType == LocationType.FileSystem || locationType == LocationType.Offline)
             {
-                path = _libraryManager.GetPathAfterNetworkSubstitution(path, item);
+                path = _libraryManager.GetPathAfterNetworkSubstitution(path, ownerItem ?? item);
             }
 
             return path;
