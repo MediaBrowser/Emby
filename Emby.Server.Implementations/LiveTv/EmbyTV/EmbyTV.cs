@@ -2543,6 +2543,32 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             public CancellationTokenSource CancellationTokenSource { get; set; }
         }
 
+        private const int TunerDiscoveryDurationMs = 3000;
+
+        public async Task<List<TunerHostInfo>> DiscoverTuners(bool newDevicesOnly, CancellationToken cancellationToken)
+        {
+            var list = new List<TunerHostInfo>();
+
+            var configuredDeviceIds = GetConfiguration().TunerHosts
+               .Where(i => !string.IsNullOrWhiteSpace(i.DeviceId))
+               .Select(i => i.DeviceId)
+               .ToList();
+
+            foreach (var host in _liveTvManager.TunerHosts)
+            {
+                var discoveredDevices = await DiscoverDevices(host, TunerDiscoveryDurationMs, cancellationToken).ConfigureAwait(false);
+
+                if (newDevicesOnly)
+                {
+                    discoveredDevices = discoveredDevices.Where(d => !configuredDeviceIds.Contains(d.DeviceId, StringComparer.OrdinalIgnoreCase))
+                            .ToList();
+                }
+                list.AddRange(discoveredDevices);
+            }
+
+            return list;
+        }
+
         public async Task ScanForTunerDeviceChanges(CancellationToken cancellationToken)
         {
             foreach (var host in _liveTvManager.TunerHosts)
@@ -2553,7 +2579,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private async Task ScanForTunerDeviceChanges(ITunerHost host, CancellationToken cancellationToken)
         {
-            var discoveredDevices = await DiscoverDevices(host, 3000, cancellationToken).ConfigureAwait(false);
+            var discoveredDevices = await DiscoverDevices(host, TunerDiscoveryDurationMs, cancellationToken).ConfigureAwait(false);
 
             var configuredDevices = GetConfiguration().TunerHosts
                 .Where(i => string.Equals(i.Type, host.Type, StringComparison.OrdinalIgnoreCase))
