@@ -231,6 +231,7 @@ namespace MediaBrowser.Model.Dlna
                 {
                     playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
                 }
+
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
 
                 List<CodecProfile> audioCodecProfiles = new List<CodecProfile>();
@@ -479,9 +480,18 @@ namespace MediaBrowser.Model.Dlna
 
                 playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
 
-                playlistItem.VideoCodec = transcodingProfile.VideoCodec;
+                playlistItem.VideoCodecs = transcodingProfile.VideoCodec.Split(',');
                 playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
                 playlistItem.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
+
+                if (transcodingProfile.MinSegments > 0)
+                {
+                    playlistItem.MinSegments = transcodingProfile.MinSegments;
+                }
+                if (transcodingProfile.SegmentLength > 0)
+                {
+                    playlistItem.SegmentLength = transcodingProfile.SegmentLength;
+                }
 
                 if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
                 {
@@ -1137,6 +1147,37 @@ namespace MediaBrowser.Model.Dlna
                             break;
                         }
                     case ProfileConditionValue.IsAnamorphic:
+                        {
+                            bool isAnamorphic;
+                            if (bool.TryParse(value, out isAnamorphic))
+                            {
+                                if (isAnamorphic && condition.Condition == ProfileConditionType.Equals)
+                                {
+                                    item.RequireNonAnamorphic = true;
+                                }
+                                else if (!isAnamorphic && condition.Condition == ProfileConditionType.NotEquals)
+                                {
+                                    item.RequireNonAnamorphic = true;
+                                }
+                            }
+                            break;
+                        }
+                    case ProfileConditionValue.IsInterlaced:
+                        {
+                            bool isInterlaced;
+                            if (bool.TryParse(value, out isInterlaced))
+                            {
+                                if (isInterlaced && condition.Condition == ProfileConditionType.Equals)
+                                {
+                                    item.DeInterlace = true;
+                                }
+                                else if (!isInterlaced && condition.Condition == ProfileConditionType.NotEquals)
+                                {
+                                    item.DeInterlace = true;
+                                }
+                            }
+                            break;
+                        }
                     case ProfileConditionValue.AudioProfile:
                     case ProfileConditionValue.Has64BitOffsets:
                     case ProfileConditionValue.PacketLength:

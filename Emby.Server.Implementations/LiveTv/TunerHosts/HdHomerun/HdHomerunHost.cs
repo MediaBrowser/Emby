@@ -56,7 +56,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             get { return "hdhomerun"; }
         }
 
-        private const string ChannelIdPrefix = "hdhr_";
+        protected override string ChannelIdPrefix
+        {
+            get
+            {
+                return "hdhr_";
+            }
+        }
 
         private string GetChannelId(TunerHostInfo info, Channels i)
         {
@@ -125,7 +131,10 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 DiscoverResponse response;
                 if (_modelCache.TryGetValue(info.Url, out response))
                 {
-                    return response;
+                    if ((DateTime.UtcNow - response.DateQueried).TotalHours <= 12)
+                    {
+                        return response;
+                    }
                 }
             }
 
@@ -135,8 +144,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 {
                     Url = string.Format("{0}/discover.json", GetApiUrl(info, false)),
                     CancellationToken = cancellationToken,
-                    CacheLength = TimeSpan.FromDays(1),
-                    CacheMode = CacheMode.Unconditional,
                     TimeoutMs = Convert.ToInt32(TimeSpan.FromSeconds(5).TotalMilliseconds),
                     BufferContent = false
 
@@ -215,7 +222,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             var list = new List<LiveTvTunerInfo>();
 
             foreach (var host in GetConfiguration().TunerHosts
-                .Where(i => i.IsEnabled && string.Equals(i.Type, Type, StringComparison.OrdinalIgnoreCase)))
+                .Where(i => string.Equals(i.Type, Type, StringComparison.OrdinalIgnoreCase)))
             {
                 try
                 {
@@ -559,26 +566,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override bool IsValidChannelId(string channelId)
-        {
-            if (string.IsNullOrWhiteSpace(channelId))
-            {
-                throw new ArgumentNullException("channelId");
-            }
-
-            return channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase);
-        }
-
         protected override async Task<LiveStream> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
         {
             var profile = streamId.Split('_')[0];
 
             Logger.Info("GetChannelStream: channel id: {0}. stream id: {1} profile: {2}", channelId, streamId, profile);
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException("Channel not found");
-            }
             var hdhrId = GetHdHrIdFromChannelId(channelId);
 
             var channels = await GetChannels(info, true, CancellationToken.None).ConfigureAwait(false);
@@ -587,7 +580,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             var hdhomerunChannel = channelInfo as HdHomerunChannelInfo;
 
             if (hdhomerunChannel != null && hdhomerunChannel.IsLegacyTuner)
-            {              
+            {
                 var mediaSource = GetLegacyMediaSource(info, hdhrId, channelInfo);
                 var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
 
@@ -605,11 +598,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         public async Task Validate(TunerHostInfo info)
         {
-            if (!info.IsEnabled)
-            {
-                return;
-            }
-
             lock (_modelCache)
             {
                 _modelCache.Clear();
@@ -651,6 +639,83 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             public string BaseURL { get; set; }
             public string LineupURL { get; set; }
             public int TunerCount { get; set; }
+
+            public DateTime DateQueried { get; set; }
+
+            public DiscoverResponse()
+            {
+                DateQueried = DateTime.UtcNow;
+            }
+        }
+
+        public async Task<List<TunerHostInfo>> DiscoverDevices(int discoveryDurationMs, CancellationToken cancellationToken)
+        {
+            cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(new CancellationTokenSource(discoveryDurationMs).Token, cancellationToken).Token;
+            var list = new List<TunerHostInfo>();
+
+            // Create udp broadcast discovery message
+            byte[] discBytes = { 0, 2, 0, 12, 1, 4, 255, 255, 255, 255, 2, 4, 255, 255, 255, 255, 115, 204, 125, 143 };
+            using (var udpClient = _socketFactory.CreateUdpBroadcastSocket(0))
+            {
+                // Need a way to set the Receive timeout on the socket otherwise this might never timeout?
+                try
+                {
+                    await udpClient.SendAsync(discBytes, discBytes.Length, new IpEndPointInfo(new IpAddressInfo("255.255.255.255", IpAddressFamily.InterNetwork), 65001), cancellationToken);
+                    while (!cancellationToken.IsCancellationRequested)
+                    {
+                        var response = await udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+                        var deviceIp = response.RemoteEndPoint.IpAddress.Address;
+
+                        // check to make sure we have enough bytes received to be a valid message and make sure the 2nd byte is the discover reply byte
+                        if (response.ReceivedBytes > 13 && response.Buffer[1] == 3)
+                        {
+                            var deviceAddress = "http://" + deviceIp;
+
+                            var info = await TryGetTunerHostInfo(deviceAddress, cancellationToken).ConfigureAwait(false);
+
+                            if (info != null)
+                            {
+                                list.Add(info);
+                            }
+                        }
+                    }
+
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch
+                {
+                    // Socket timeout indicates all messages have been received.
+                }
+            }
+
+            return list;
+        }
+
+        private async Task<TunerHostInfo> TryGetTunerHostInfo(string url, CancellationToken cancellationToken)
+        {
+            var hostInfo = new TunerHostInfo
+            {
+                Type = Type,
+                Url = url
+            };
+
+            try
+            {
+                var modelInfo = await GetModelInfo(hostInfo, false, cancellationToken).ConfigureAwait(false);
+
+                hostInfo.DeviceId = modelInfo.DeviceID;
+                hostInfo.FriendlyName = modelInfo.FriendlyName;
+
+                return hostInfo;
+            }
+            catch
+            {
+                // logged at lower levels
+            }
+
+            return null;
         }
     }
 }
