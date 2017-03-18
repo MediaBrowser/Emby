@@ -81,6 +81,7 @@
     <Compile Include="Threading\TimerFactory.cs" />
     <Compile Include="Xml\XmlReaderSettingsFactory.cs" />
     <Compile Include="Net\NetAcceptSocket.cs" />
+    <Compile Include="IO\LnkShortcutHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
