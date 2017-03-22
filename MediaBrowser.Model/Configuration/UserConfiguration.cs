@@ -44,6 +44,8 @@ namespace MediaBrowser.Model.Configuration
         public bool RememberSubtitleSelections { get; set; }
         public bool EnableNextEpisodeAutoPlay { get; set; }
 
+        public bool NextUpFavoritesOnly { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UserConfiguration" /> class.
         /// </summary>
@@ -61,6 +63,8 @@ namespace MediaBrowser.Model.Configuration
             OrderedViews = new string[] { };
 
             GroupedFolders = new string[] { };
+
+            NextUpFavoritesOnly = false;
         }
     }
 }

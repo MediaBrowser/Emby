@@ -55,12 +55,18 @@ namespace Emby.Server.Implementations.TV
                 limit = limit.Value + 10;
             }
 
+            bool? needsFavorite = null;
+            if (user.Configuration.NextUpFavoritesOnly) {
+                needsFavorite = true;
+            }
+
             var items = _libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
                 SortBy = new[] { ItemSortBy.SeriesDatePlayed },
                 SortOrder = SortOrder.Descending,
                 PresentationUniqueKey = presentationUniqueKey,
+                IsFavorite = needsFavorite,
                 Limit = limit,
                 ParentId = parentIdGuid,
                 Recursive = true,
@@ -107,12 +113,18 @@ namespace Emby.Server.Implementations.TV
                 limit = limit.Value + 10;
             }
 
+            bool? needsFavorite = null;
+            if (user.Configuration.NextUpFavoritesOnly) {
+                needsFavorite = true;
+            }
+
             var items = _libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
                 SortBy = new[] { ItemSortBy.SeriesDatePlayed },
                 SortOrder = SortOrder.Descending,
                 PresentationUniqueKey = presentationUniqueKey,
+                IsFavorite = needsFavorite,
                 Limit = limit,
                 DtoOptions = new MediaBrowser.Controller.Dto.DtoOptions
                 {
