@@ -184,6 +184,10 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                 return null;
             }
+            if (string.Equals(container, "mts", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
 
             return container;
         }
