@@ -85,7 +85,6 @@
     <Compile Include="FileOrganization\OrganizerScheduledTask.cs" />
     <Compile Include="FileOrganization\TvFolderOrganizer.cs" />
     <Compile Include="HttpServer\FileWriter.cs" />
-    <Compile Include="HttpServer\GetSwaggerResource.cs" />
     <Compile Include="HttpServer\HttpListenerHost.cs" />
     <Compile Include="HttpServer\HttpResultFactory.cs" />
     <Compile Include="HttpServer\LoggerUtils.cs" />
@@ -103,7 +102,6 @@
     <Compile Include="HttpServer\SocketSharp\WebSocketSharpRequest.cs" />
     <Compile Include="HttpServer\SocketSharp\WebSocketSharpResponse.cs" />
     <Compile Include="HttpServer\StreamWriter.cs" />
-    <Compile Include="HttpServer\SwaggerService.cs" />
     <Compile Include="Images\BaseDynamicImageProvider.cs" />
     <Compile Include="IO\FileRefresher.cs" />
     <Compile Include="IO\MbLinkShortcutHandler.cs" />
@@ -269,7 +267,6 @@
     <Compile Include="Updates\InstallationManager.cs" />
     <Compile Include="UserViews\CollectionFolderImageProvider.cs" />
     <Compile Include="UserViews\DynamicImageProvider.cs" />
-    <Compile Include="Windows\LoopUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\iso6392.txt" />
