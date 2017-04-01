@@ -657,14 +657,41 @@ namespace Emby.Common.Implementations.IO
         {
             var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
-            return ToMetadata(path, new DirectoryInfo(path).EnumerateDirectories("*", searchOption));
+            return ToMetadata(new DirectoryInfo(path).EnumerateDirectories("*", searchOption));
         }
 
         public IEnumerable<FileSystemMetadata> GetFiles(string path, bool recursive = false)
         {
+            return GetFiles(path, null, false, recursive);
+        }
+
+        public IEnumerable<FileSystemMetadata> GetFiles(string path, string[] extensions, bool enableCaseSensitiveExtensions, bool recursive = false)
+        {
             var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
-            return ToMetadata(path, new DirectoryInfo(path).EnumerateFiles("*", searchOption));
+            // On linux and osx the search pattern is case sensitive
+            // If we're OK with case-sensitivity, and we're only filtering for one extension, then use the native method
+            if (enableCaseSensitiveExtensions && extensions != null && extensions.Length == 1)
+            {
+                return ToMetadata(new DirectoryInfo(path).EnumerateFiles("*" + extensions[0], searchOption));
+            }
+
+            var files = new DirectoryInfo(path).EnumerateFiles("*", searchOption);
+
+            if (extensions != null && extensions.Length > 0)
+            {
+                files = files.Where(i =>
+                {
+                    var ext = i.Extension;
+                    if (ext == null)
+                    {
+                        return false;
+                    }
+                    return extensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                });
+            }
+
+            return ToMetadata(files);
         }
 
         public IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, bool recursive = false)
@@ -674,14 +701,14 @@ namespace Emby.Common.Implementations.IO
 
             if (EnableFileSystemRequestConcat)
             {
-                return ToMetadata(path, directoryInfo.EnumerateDirectories("*", searchOption))
-                                .Concat(ToMetadata(path, directoryInfo.EnumerateFiles("*", searchOption)));
+                return ToMetadata(directoryInfo.EnumerateDirectories("*", searchOption))
+                                .Concat(ToMetadata(directoryInfo.EnumerateFiles("*", searchOption)));
             }
 
-            return ToMetadata(path, directoryInfo.EnumerateFileSystemInfos("*", searchOption));
+            return ToMetadata(directoryInfo.EnumerateFileSystemInfos("*", searchOption));
         }
 
-        private IEnumerable<FileSystemMetadata> ToMetadata(string parentPath, IEnumerable<FileSystemInfo> infos)
+        private IEnumerable<FileSystemMetadata> ToMetadata(IEnumerable<FileSystemInfo> infos)
         {
             return infos.Select(GetFileSystemMetadata);
         }
@@ -764,8 +791,36 @@ namespace Emby.Common.Implementations.IO
 
         public IEnumerable<string> GetFilePaths(string path, bool recursive = false)
         {
+            return GetFilePaths(path, null, false, recursive);
+        }
+
+        public IEnumerable<string> GetFilePaths(string path, string[] extensions, bool enableCaseSensitiveExtensions, bool recursive = false)
+        {
             var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            return Directory.EnumerateFiles(path, "*", searchOption);
+
+            // On linux and osx the search pattern is case sensitive
+            // If we're OK with case-sensitivity, and we're only filtering for one extension, then use the native method
+            if (enableCaseSensitiveExtensions && extensions != null && extensions.Length == 1)
+            {
+                return Directory.EnumerateFiles(path, "*" + extensions[0], searchOption);
+            }
+
+            var files = Directory.EnumerateFiles(path, "*", searchOption);
+
+            if (extensions != null && extensions.Length > 0)
+            {
+                files = files.Where(i =>
+                {
+                    var ext = Path.GetExtension(i);
+                    if (ext == null)
+                    {
+                        return false;
+                    }
+                    return extensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                });
+            }
+
+            return files;
         }
 
         public IEnumerable<string> GetFileSystemEntryPaths(string path, bool recursive = false)
@@ -776,7 +831,7 @@ namespace Emby.Common.Implementations.IO
 
         public virtual void SetExecutable(string path)
         {
-            
+
         }
     }
 }

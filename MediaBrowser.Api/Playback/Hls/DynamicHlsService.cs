@@ -345,34 +345,34 @@ namespace MediaBrowser.Api.Playback.Hls
 
             if (file != null)
             {
-                DeleteFile(file, retryCount);
+                DeleteFile(file.FullName, retryCount);
             }
         }
 
-        private void DeleteFile(FileSystemMetadata file, int retryCount)
+        private void DeleteFile(string path, int retryCount)
         {
             if (retryCount >= 5)
             {
                 return;
             }
 
-            Logger.Debug("Deleting partial HLS file {0}", file.FullName);
+            Logger.Debug("Deleting partial HLS file {0}", path);
 
             try
             {
-                FileSystem.DeleteFile(file.FullName);
+                FileSystem.DeleteFile(path);
             }
             catch (IOException ex)
             {
-                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
+                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
 
                 var task = Task.Delay(100);
                 Task.WaitAll(task);
-                DeleteFile(file, retryCount + 1);
+                DeleteFile(path, retryCount + 1);
             }
             catch (Exception ex)
             {
-                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, file.FullName);
+                Logger.ErrorException("Error deleting partial stream file(s) {0}", ex, path);
             }
         }
 
@@ -384,8 +384,8 @@ namespace MediaBrowser.Api.Playback.Hls
 
             try
             {
-                return fileSystem.GetFiles(folder)
-                    .Where(i => string.Equals(i.Extension, segmentExtension, StringComparison.OrdinalIgnoreCase) && Path.GetFileNameWithoutExtension(i.Name).StartsWith(filePrefix, StringComparison.OrdinalIgnoreCase))
+                return fileSystem.GetFiles(folder, new[] { segmentExtension }, true, false)
+                    .Where(i => Path.GetFileNameWithoutExtension(i.Name).StartsWith(filePrefix, StringComparison.OrdinalIgnoreCase))
                     .OrderByDescending(fileSystem.GetLastWriteTimeUtc)
                     .FirstOrDefault();
             }
@@ -912,7 +912,12 @@ namespace MediaBrowser.Api.Playback.Hls
                     segmentFormat = "mpegts";
                 }
 
-                return string.Format("{0} {1} -map_metadata -1 -map_chapters -1 -threads {2} {3} {4} {5} -f segment -max_delay 5000000 -avoid_negative_ts disabled -start_at_zero -segment_time {6} {10} -individual_header_trailer 0 -segment_format {11} -segment_list_type m3u8 -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
+                var videoCodec = EncodingHelper.GetVideoEncoder(state, ApiEntryPoint.Instance.GetEncodingOptions());
+                var breakOnNonKeyFrames = state.Request.BreakOnNonKeyFrames && string.Equals(videoCodec, "copy", StringComparison.OrdinalIgnoreCase);
+
+                var breakOnNonKeyFramesArg = breakOnNonKeyFrames ? " -break_non_keyframes 1" : "";
+
+                return string.Format("{0} {1} -map_metadata -1 -map_chapters -1 -threads {2} {3} {4} {5} -f segment -max_delay 5000000 -avoid_negative_ts disabled -start_at_zero -segment_time {6} {10} -individual_header_trailer 0{12} -segment_format {11} -segment_list_type m3u8 -segment_start_number {7} -segment_list \"{8}\" -y \"{9}\"",
                     inputModifier,
                     EncodingHelper.GetInputArgument(state, encodingOptions),
                     threads,
@@ -924,7 +929,8 @@ namespace MediaBrowser.Api.Playback.Hls
                     outputPath,
                     outputTsArg,
                     timeDeltaParam,
-                    segmentFormat
+                    segmentFormat,
+                    breakOnNonKeyFramesArg
                 ).Trim();
             }
 

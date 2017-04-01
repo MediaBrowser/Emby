@@ -164,6 +164,10 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                 return null;
             }
+            if (string.Equals(container, "mts", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
             if (string.Equals(container, "vob", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
@@ -181,6 +185,14 @@ namespace MediaBrowser.Controller.MediaEncoding
                 return null;
             }
             if (string.Equals(container, "dvr-ms", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+            if (string.Equals(container, "ogm", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+            if (string.Equals(container, "divx", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
@@ -739,7 +751,17 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public bool CanStreamCopyVideo(EncodingJobInfo state, MediaStream videoStream)
         {
+            if (!videoStream.AllowStreamCopy)
+            {
+                return false;
+            }
+
             var request = state.BaseRequest;
+
+            if (!request.AllowVideoStreamCopy)
+            {
+                return false;
+            }
 
             if (videoStream.IsInterlaced)
             {
@@ -879,7 +901,17 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public bool CanStreamCopyAudio(EncodingJobInfo state, MediaStream audioStream, List<string> supportedAudioCodecs)
         {
+            if (!audioStream.AllowStreamCopy)
+            {
+                return false;
+            }
+
             var request = state.BaseRequest;
+
+            if (!request.AllowAudioStreamCopy)
+            {
+                return false;
+            }
 
             // Source and target codecs must match
             if (string.IsNullOrEmpty(audioStream.Codec) || !supportedAudioCodecs.Contains(audioStream.Codec, StringComparer.OrdinalIgnoreCase))
@@ -1583,6 +1615,15 @@ namespace MediaBrowser.Controller.MediaEncoding
           MediaSourceInfo mediaSource,
           string requestedUrl)
         {
+            if (state == null)
+            {
+                throw new ArgumentNullException("state");
+            }
+            if (mediaSource == null)
+            {
+                throw new ArgumentNullException("mediaSource");
+            }
+
             state.MediaPath = mediaSource.Path;
             state.InputProtocol = mediaSource.Protocol;
             state.InputContainer = mediaSource.Container;
@@ -1698,6 +1739,13 @@ namespace MediaBrowser.Controller.MediaEncoding
                                     return null;
                                 }
                                 return "-c:v h264_qsv ";
+                            }
+                            break;
+                        case "hevc":
+                        case "h265":
+                            if (_mediaEncoder.SupportsDecoder("hevc_qsv"))
+                            {
+                                return "-c:v hevc_qsv ";
                             }
                             break;
                         case "mpeg2video":

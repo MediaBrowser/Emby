@@ -442,6 +442,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             {
                 result = await provider.GetChannels(info, cancellationToken).ConfigureAwait(false);
 
+                foreach (var channel in result)
+                {
+                    _logger.Info("Found epg channel in {0} {1} {2} {3}", provider.Name, info.ListingsId, channel.Name, channel.Id);
+                }
+
                 _epgChannels.AddOrUpdate(info.Id, result, (k, v) => result);
             }
 
@@ -493,11 +498,17 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (!string.IsNullOrWhiteSpace(tunerChannel.TunerChannelId))
             {
-                var mappedTunerChannelId = GetMappedChannel(tunerChannel.TunerChannelId, mappings);
+                var tunerChannelId = tunerChannel.TunerChannelId;
+                if (tunerChannelId.IndexOf(".json.schedulesdirect.org", StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    tunerChannelId = tunerChannelId.Replace(".json.schedulesdirect.org", string.Empty, StringComparison.OrdinalIgnoreCase).TrimStart('I');
+                }
+
+                var mappedTunerChannelId = GetMappedChannel(tunerChannelId, mappings);
 
                 if (string.IsNullOrWhiteSpace(mappedTunerChannelId))
                 {
-                    mappedTunerChannelId = tunerChannel.TunerChannelId;
+                    mappedTunerChannelId = tunerChannelId;
                 }
 
                 var channel = epgChannels.FirstOrDefault(i => string.Equals(mappedTunerChannelId, i.Id, StringComparison.OrdinalIgnoreCase));
@@ -639,8 +650,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public Task<string> CreateTimer(TimerInfo timer, CancellationToken cancellationToken)
         {
-            var existingTimer = _timerProvider.GetAll()
-                .FirstOrDefault(i => string.Equals(timer.ProgramId, i.ProgramId, StringComparison.OrdinalIgnoreCase));
+            var existingTimer = string.IsNullOrWhiteSpace(timer.ProgramId) ?
+                null :
+                _timerProvider.GetTimerByProgramId(timer.ProgramId);
 
             if (existingTimer != null)
             {
@@ -719,10 +731,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         return true;
                     }
 
-                    //if (string.Equals(i.SeriesId, info.SeriesId, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(info.SeriesId))
-                    //{
-                    //    return true;
-                    //}
+                    if (string.Equals(i.SeriesId, info.SeriesId, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(info.SeriesId))
+                    {
+                        return true;
+                    }
 
                     return false;
                 })
@@ -735,7 +747,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 timer.SeriesTimerId = info.Id;
                 timer.IsManual = true;
 
-                _timerProvider.AddOrUpdate(timer);
+                _timerProvider.AddOrUpdate(timer, false);
             }
 
             await UpdateTimersForSeriesTimer(epgData, info, true, false).ConfigureAwait(false);
@@ -1018,6 +1030,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 if (epgChannel == null)
                 {
+                    _logger.Debug("EPG channel not found for tuner channel {0}-{1} from {2}-{3}", channel.Number, channel.Name, provider.Item1.Name, provider.Item2.ListingsId ?? string.Empty);
                     programs = new List<ProgramInfo>();
                 }
                 else
@@ -2336,6 +2349,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                     if (existingTimer == null)
                     {
+                        existingTimer = string.IsNullOrWhiteSpace(timer.ProgramId)
+                            ? null
+                            : _timerProvider.GetTimerByProgramId(timer.ProgramId);
+                    }
+
+                    if (existingTimer == null)
+                    {
                         if (ShouldCancelTimerForSeriesTimer(seriesTimer, timer))
                         {
                             timer.Status = RecordingStatus.Cancelled;
@@ -2348,9 +2368,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     }
                     else
                     {
-                        // Only update if not currently active
+                        // Only update if not currently active - test both new timer and existing in case Id's are different
+                        // Id's could be different if the timer was created manually prior to series timer creation
                         ActiveRecordingInfo activeRecordingInfo;
-                        if (!_activeRecordings.TryGetValue(timer.Id, out activeRecordingInfo))
+                        if (!_activeRecordings.TryGetValue(timer.Id, out activeRecordingInfo) && !_activeRecordings.TryGetValue(existingTimer.Id, out activeRecordingInfo))
                         {
                             UpdateExistingTimerWithNewMetadata(existingTimer, timer);
 
@@ -2554,7 +2575,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 list.Add(new VirtualFolderInfo
                 {
                     Locations = new List<string> { customPath },
-                    Name = "Recorded Series",
+                    Name = "Recorded Shows",
                     CollectionType = CollectionType.TvShows
                 });
             }

@@ -20,6 +20,7 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Model.System;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
@@ -30,8 +31,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         private readonly IServerApplicationHost _appHost;
         private readonly ISocketFactory _socketFactory;
         private readonly INetworkManager _networkManager;
+        private readonly IEnvironmentInfo _environment;
 
-        public HdHomerunHost(IServerConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IHttpClient httpClient, IFileSystem fileSystem, IServerApplicationHost appHost, ISocketFactory socketFactory, INetworkManager networkManager)
+        public HdHomerunHost(IServerConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IHttpClient httpClient, IFileSystem fileSystem, IServerApplicationHost appHost, ISocketFactory socketFactory, INetworkManager networkManager, IEnvironmentInfo environment)
             : base(config, logger, jsonSerializer, mediaEncoder)
         {
             _httpClient = httpClient;
@@ -39,6 +41,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             _appHost = appHost;
             _socketFactory = socketFactory;
             _networkManager = networkManager;
+            _environment = environment;
         }
 
         public string Name
@@ -275,6 +278,16 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             public int HD { get; set; }
         }
 
+        protected EncodingOptions GetEncodingOptions()
+        {
+            return Config.GetConfiguration<EncodingOptions>("encoding");
+        }
+
+        private string GetHdHrIdFromChannelId(string channelId)
+        {
+            return channelId.Split('_')[1];
+        }
+
         private MediaSourceInfo GetMediaSource(TunerHostInfo info, string channelId, ChannelInfo channelInfo, string profile)
         {
             int? width = null;
@@ -362,107 +375,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 nal = "0";
             }
 
-            var url = GetApiUrl(info, true) + "/auto/v" + channelId;
-
-            // If raw was used, the tuner doesn't support params
-            if (!string.IsNullOrWhiteSpace(profile)
-                && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
-            {
-                url += "?transcode=" + profile;
-            }
+            var url = GetApiUrl(info, false);
 
             var id = profile;
             if (string.IsNullOrWhiteSpace(id))
             {
                 id = "native";
             }
-            id += "_" + url.GetMD5().ToString("N");
-
-            var mediaSource = new MediaSourceInfo
-            {
-                Path = url,
-                Protocol = MediaProtocol.Http,
-                MediaStreams = new List<MediaStream>
-                        {
-                            new MediaStream
-                            {
-                                Type = MediaStreamType.Video,
-                                // Set the index to -1 because we don't know the exact index of the video stream within the container
-                                Index = -1,
-                                IsInterlaced = isInterlaced,
-                                Codec = videoCodec,
-                                Width = width,
-                                Height = height,
-                                BitRate = videoBitrate,
-                                NalLengthSize = nal
-
-                            },
-                            new MediaStream
-                            {
-                                Type = MediaStreamType.Audio,
-                                // Set the index to -1 because we don't know the exact index of the audio stream within the container
-                                Index = -1,
-                                Codec = audioCodec,
-                                BitRate = audioBitrate
-                            }
-                        },
-                RequiresOpening = true,
-                RequiresClosing = false,
-                BufferMs = 0,
-                Container = "ts",
-                Id = id,
-                SupportsDirectPlay = false,
-                SupportsDirectStream = true,
-                SupportsTranscoding = true,
-                IsInfiniteStream = true
-            };
-
-            mediaSource.InferTotalBitrate();
-
-            return mediaSource;
-        }
-
-        protected EncodingOptions GetEncodingOptions()
-        {
-            return Config.GetConfiguration<EncodingOptions>("encoding");
-        }
-
-        private string GetHdHrIdFromChannelId(string channelId)
-        {
-            return channelId.Split('_')[1];
-        }
-
-        private MediaSourceInfo GetLegacyMediaSource(TunerHostInfo info, string channelId, ChannelInfo channel)
-        {
-            int? width = null;
-            int? height = null;
-            bool isInterlaced = true;
-            string videoCodec = null;
-            string audioCodec = null;
-
-            int? videoBitrate = null;
-            int? audioBitrate = null;
-
-            if (channel != null)
-            {
-                if (string.IsNullOrWhiteSpace(videoCodec))
-                {
-                    videoCodec = channel.VideoCodec;
-                }
-                audioCodec = channel.AudioCodec;
-            }
-
-            // normalize
-            if (string.Equals(videoCodec, "mpeg2", StringComparison.OrdinalIgnoreCase))
-            {
-                videoCodec = "mpeg2video";
-            }
-
-            string nal = null;
-
-            var url = GetApiUrl(info, false);
-            var id = channelId;
-            id += "_" + url.GetMD5().ToString("N");
+            id += "_" + channelId.GetMD5().ToString("N") + "_" + url.GetMD5().ToString("N");
 
             var mediaSource = new MediaSourceInfo
             {
@@ -527,7 +447,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             if (isLegacyTuner)
             {
-                list.Add(GetLegacyMediaSource(info, hdhrId, channelInfo));
+                list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
             }
             else
             {
@@ -579,21 +499,36 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             var hdhomerunChannel = channelInfo as HdHomerunChannelInfo;
 
+            var mediaSource = GetMediaSource(info, hdhrId, channelInfo, profile);
+            var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
+
             if (hdhomerunChannel != null && hdhomerunChannel.IsLegacyTuner)
             {
-                var mediaSource = GetLegacyMediaSource(info, hdhrId, channelInfo);
-                var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
-
                 return new HdHomerunUdpStream(mediaSource, streamId, new LegacyHdHomerunChannelCommands(hdhomerunChannel.Url), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
             }
-            else
+
+            // The UDP method is not working reliably on OSX, and on BSD it hasn't been tested yet
+            var enableHttpStream = _environment.OperatingSystem == OperatingSystem.OSX ||
+                _environment.OperatingSystem == OperatingSystem.BSD;
+            enableHttpStream = true;
+            if (enableHttpStream)
             {
-                var mediaSource = GetMediaSource(info, hdhrId, channelInfo, profile);
-                //var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
+                mediaSource.Protocol = MediaProtocol.Http;
+
+                var httpUrl = GetApiUrl(info, true) + "/auto/v" + hdhrId;
+
+                // If raw was used, the tuner doesn't support params
+                if (!string.IsNullOrWhiteSpace(profile)
+                    && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
+                {
+                    httpUrl += "?transcode=" + profile;
+                }
+                mediaSource.Path = httpUrl;
 
                 return new HdHomerunHttpStream(mediaSource, streamId, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost);
-                //return new HdHomerunUdpStream(mediaSource, streamId, new HdHomerunChannelCommands(hdhomerunChannel.Number), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
             }
+
+            return new HdHomerunUdpStream(mediaSource, streamId, new HdHomerunChannelCommands(hdhomerunChannel.Number), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
         }
 
         public async Task Validate(TunerHostInfo info)

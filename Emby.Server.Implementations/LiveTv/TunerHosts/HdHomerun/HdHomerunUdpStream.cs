@@ -120,8 +120,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                                 // send url to start streaming
                                 await hdHomerunManager.StartStreaming(remoteAddress, localAddress, localPort, _channelCommands, _numTuners, cancellationToken).ConfigureAwait(false);
 
-                                var timeoutToken = CancellationTokenSource.CreateLinkedTokenSource(new CancellationTokenSource(5000).Token, cancellationToken).Token;
-                                var response = await udpClient.ReceiveAsync(timeoutToken).ConfigureAwait(false);
                                 _logger.Info("Opened HDHR UDP stream from {0}", remoteAddress);
 
                                 if (!cancellationToken.IsCancellationRequested)
@@ -132,8 +130,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                                         onStarted = () => openTaskCompletionSource.TrySetResult(true);
                                     }
 
-                                    var stream = new UdpClientStream(udpClient);
-                                    await _multicastStream.CopyUntilCancelled(stream, onStarted, cancellationToken).ConfigureAwait(false);
+                                    await _multicastStream.CopyUntilCancelled(new UdpClientStream(udpClient), onStarted, cancellationToken).ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException ex)
@@ -158,7 +155,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         }
 
                         await hdHomerunManager.StopStreaming().ConfigureAwait(false);
-                        udpClient.Dispose();
                         _liveStreamTaskCompletionSource.TrySetResult(true);
                     }
                 }
@@ -210,7 +206,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 var data = await _udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
                 var bytesRead = data.ReceivedBytes - RtpHeaderBytes;
-
+                
                 // remove rtp header
                 Buffer.BlockCopy(data.Buffer, RtpHeaderBytes, buffer, offset, bytesRead);
                 offset += bytesRead;

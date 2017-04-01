@@ -177,9 +177,13 @@ namespace Rssdp.Infrastructure
         {
             try
             {
-                await socket.SendAsync(messageData, messageData.Length, destination, cancellationToken).ConfigureAwait(false);
+                await socket.SendWithLockAsync(messageData, messageData.Length, destination, cancellationToken).ConfigureAwait(false);
             }
             catch (ObjectDisposedException)
+            {
+
+            }
+            catch (OperationCanceledException)
             {
 
             }
@@ -243,10 +247,7 @@ namespace Rssdp.Infrastructure
             {
                 await SendMessageIfSocketNotDisposed(messageData, new IpEndPointInfo
                 {
-                    IpAddress = new IpAddressInfo
-                    {
-                        Address = SsdpConstants.MulticastLocalAdminAddress
-                    },
+                    IpAddress = new IpAddressInfo(SsdpConstants.MulticastLocalAdminAddress, IpAddressFamily.InterNetwork),
                     Port = SsdpConstants.MulticastPort
 
                 }, cancellationToken).ConfigureAwait(false);
@@ -341,11 +342,9 @@ namespace Rssdp.Infrastructure
 
                 foreach (var socket in sockets)
                 {
-                    await socket.SendAsync(messageData, messageData.Length, destination, cancellationToken).ConfigureAwait(false);
+                    await SendFromSocket(socket, messageData, destination, cancellationToken).ConfigureAwait(false);
                 }
             }
-
-            ThrowIfDisposed();
         }
 
         private ISocket ListenForBroadcastsAsync()
