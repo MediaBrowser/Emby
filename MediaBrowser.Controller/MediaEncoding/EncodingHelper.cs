@@ -188,6 +188,14 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                 return null;
             }
+            if (string.Equals(container, "ogm", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+            if (string.Equals(container, "divx", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
 
             // Seeing reported failures here, not sure yet if this is related to specfying input format
             if (string.Equals(container, "m4v", StringComparison.OrdinalIgnoreCase))
@@ -750,6 +758,11 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             var request = state.BaseRequest;
 
+            if (!request.AllowVideoStreamCopy)
+            {
+                return false;
+            }
+
             if (videoStream.IsInterlaced)
             {
                 if (request.DeInterlace)
@@ -894,6 +907,11 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
 
             var request = state.BaseRequest;
+
+            if (!request.AllowAudioStreamCopy)
+            {
+                return false;
+            }
 
             // Source and target codecs must match
             if (string.IsNullOrEmpty(audioStream.Codec) || !supportedAudioCodecs.Contains(audioStream.Codec, StringComparer.OrdinalIgnoreCase))
@@ -1723,13 +1741,13 @@ namespace MediaBrowser.Controller.MediaEncoding
                                 return "-c:v h264_qsv ";
                             }
                             break;
-                        case "hevc":
-                        case "h265":
-                            if (_mediaEncoder.SupportsDecoder("hevc_qsv"))
-                            {
-                                return "-c:v hevc_qsv ";
-                            }
-                            break;
+                        //case "hevc":
+                        //case "h265":
+                        //    if (_mediaEncoder.SupportsDecoder("hevc_qsv"))
+                        //    {
+                        //        return "-c:v hevc_qsv ";
+                        //    }
+                        //    break;
                         case "mpeg2video":
                             if (_mediaEncoder.SupportsDecoder("mpeg2_qsv"))
                             {
