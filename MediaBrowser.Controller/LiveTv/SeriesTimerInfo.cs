@@ -30,6 +30,11 @@ namespace MediaBrowser.Controller.LiveTv
         public string ServiceName { get; set; }
 
         /// <summary>
+        /// Episode name of the recording
+        /// </summary>
+        public string EpisodeName { get; set; }
+
+        /// <summary>
         /// Description of the recording.
         /// </summary>
         public string Overview { get; set; }
