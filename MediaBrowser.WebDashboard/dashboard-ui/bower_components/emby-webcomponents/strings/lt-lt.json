@@ -267,7 +267,6 @@
     "ConfirmDeleteItems": "Tai atlikus \u0161ie elementai bus i\u0161trinti ir i\u0161 bibliotekos, ir i\u0161 fail\u0173 sistemos. Ar tikrai norite t\u0119sti?",
     "PleaseRestartServerName": "Pra\u0161au paleisti Emby Server\u012f i\u0161 naujo - {0}.",
     "SyncJobCreated": "Sinchronizavimo darbas u\u017esakytas.",
-    "LabelSyncTo": "Sinchronizuoti \u012f:",
     "LabelSyncJobName": "Sinchronizavimo darbo pavadinimas:",
     "LabelQuality": "Kokyb\u0117:",
     "LabelSyncNoTargetsHelp": "Atrodo, kad neturite joki\u0173 program\u0117li\u0173, kurios palaikyt\u0173 sinchronizavim\u0105.",
@@ -418,5 +417,18 @@
     "HeaderLibraryOrder": "Library Order",
     "HideWatchedContentFromLatestMedia": "Hide watched content from latest media",
     "HeaderOnNow": "On Now",
-    "Guide": "Guide"
+    "HeaderPlaybackError": "Playback Error",
+    "PlaybackErrorNotAllowed": "You're currently not authorized to play this content. Please contact your system administrator for details.",
+    "PlaybackErrorNoCompatibleStream": "No compatible streams are currently available. Please try again later or contact your system administrator for details.",
+    "PlaybackErrorPlaceHolder": "Please insert the disc in order to play this video.",
+    "Guide": "Guide",
+    "Suggestions": "Suggestions",
+    "Favorites": "Favorites",
+    "Collections": "Collections",
+    "LabelSelectFolderGroups": "Automatically group content from the following folders into views such as Movies, Music and TV:",
+    "LabelSelectFolderGroupsHelp": "Folders that are unchecked will be displayed by themselves in their own view.",
+    "Shows": "Shows",
+    "HeaderLibraryFolders": "Library Folders",
+    "HeaderLandingScreens": "Landing Screens",
+    "LandingScreensHelp": "Select the default landing screen when clicking on a library."
 }
