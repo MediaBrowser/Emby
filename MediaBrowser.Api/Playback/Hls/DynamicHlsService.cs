@@ -89,6 +89,7 @@ namespace MediaBrowser.Api.Playback.Hls
         public string SegmentId { get; set; }
     }
 
+    [Authenticated]
     public class DynamicHlsService : BaseHlsService
     {
 
@@ -807,7 +808,7 @@ namespace MediaBrowser.Api.Playback.Hls
 
             if (string.Equals(codec, "copy", StringComparison.OrdinalIgnoreCase))
             {
-                return "-codec:a:0 copy";
+                return "-codec:a:0 copy -copypriorss:a:0 0";
             }
 
             var args = "-codec:a:0 " + codec;
