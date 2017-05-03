@@ -422,7 +422,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     if (!string.IsNullOrWhiteSpace(epgChannel.Name))
                     {
-                        tunerChannel.Name = epgChannel.Name;
+                        //tunerChannel.Name = epgChannel.Name;
                     }
                     if (!string.IsNullOrWhiteSpace(epgChannel.ImageUrl))
                     {
@@ -1231,7 +1231,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     RequiresOpening = false,
                     RequiresClosing = false,
                     Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
-                    BufferMs = 0
+                    BufferMs = 0,
+                    IgnoreDts = true
                 };
 
                 var isAudio = false;
@@ -1516,8 +1517,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     EnforceKeepUpTo(timer, seriesPath);
                 };
 
-                await recorder.Record(mediaStreamInfo, recordPath, duration, onStarted, cancellationToken)
-                        .ConfigureAwait(false);
+                await recorder.Record(mediaStreamInfo, recordPath, duration, onStarted, cancellationToken).ConfigureAwait(false);
 
                 recordingStatus = RecordingStatus.Completed;
                 _logger.Info("Recording completed: {0}", recordPath);
@@ -1765,7 +1765,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 if (regInfo.IsValid)
                 {
-                    return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory);
+                    return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config);
                 }
             }
 
@@ -2249,11 +2249,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     if (item.CriticRating.HasValue)
                     {
                         writer.WriteElementString("criticrating", item.CriticRating.Value.ToString(CultureInfo.InvariantCulture));
-                    }
-
-                    if (!string.IsNullOrEmpty(item.CriticRatingSummary))
-                    {
-                        writer.WriteElementString("criticratingsummary", item.CriticRatingSummary);
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.Tagline))

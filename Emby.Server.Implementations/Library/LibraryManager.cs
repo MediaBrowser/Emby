@@ -2126,7 +2126,8 @@ namespace Emby.Server.Implementations.Library
                     // Not sure why this is necessary but need to figure it out
                     // View images are not getting utilized without this
                     ForceSave = true
-                });
+
+                }, RefreshPriority.Normal);
             }
 
             return item;
@@ -2188,7 +2189,8 @@ namespace Emby.Server.Implementations.Library
                 {
                     // Need to force save to increment DateLastSaved
                     ForceSave = true
-                });
+
+                }, RefreshPriority.Normal);
             }
 
             return item;
@@ -2252,7 +2254,8 @@ namespace Emby.Server.Implementations.Library
                 {
                     // Need to force save to increment DateLastSaved
                     ForceSave = true
-                });
+
+                }, RefreshPriority.Normal);
             }
 
             return item;
@@ -2328,7 +2331,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     // Need to force save to increment DateLastSaved
                     ForceSave = true
-                });
+                }, RefreshPriority.Normal);
             }
 
             return item;
@@ -2577,7 +2580,7 @@ namespace Emby.Server.Implementations.Library
                 }).OrderBy(i => i.Path).ToList();
         }
 
-        private static readonly string[] ExtrasSubfolderNames = new[] { "extras", "specials", "shorts", "scenes", "featurettes", "behind the scenes", "deleted scenes" };
+        private static readonly string[] ExtrasSubfolderNames = new[] { "extras", "specials", "shorts", "scenes", "featurettes", "behind the scenes", "deleted scenes", "interviews" };
 
         public IEnumerable<Video> FindExtras(BaseItem owner, List<FileSystemMetadata> fileSystemChildren, IDirectoryService directoryService)
         {
