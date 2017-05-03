@@ -506,6 +506,12 @@ namespace MediaBrowser.Model.Dto
         public string SeriesPrimaryImageTag { get; set; }
 
         /// <summary>
+        /// Gets or sets the season primary image tag.
+        /// </summary>
+        /// <value>The season primary image tag.</value>
+        public string SeasonPrimaryImageTag { get; set; }
+
+        /// <summary>
         /// Gets or sets the album artist.
         /// </summary>
         /// <value>The album artist.</value>
