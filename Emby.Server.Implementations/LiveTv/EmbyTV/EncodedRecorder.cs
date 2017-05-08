@@ -108,7 +108,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private Task RecordFromFile(MediaSourceInfo mediaSource, string inputFile, string targetFile, TimeSpan duration, Action onStarted, CancellationToken cancellationToken)
         {
             _targetPath = targetFile;
-            _fileSystem.CreateDirectory(Path.GetDirectoryName(targetFile));
+            _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(targetFile));
 
             var process = _processFactory.Create(new ProcessOptions
             {
@@ -134,7 +134,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             _logger.Info(commandLineLogMessage);
 
             var logFilePath = Path.Combine(_appPaths.LogDirectoryPath, "record-transcode-" + Guid.NewGuid() + ".txt");
-            _fileSystem.CreateDirectory(Path.GetDirectoryName(logFilePath));
+            _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(logFilePath));
 
             // FFMpeg writes debug/error info to stderr. This is useful when debugging so let's put it in the log directory.
             _logFileStream = _fileSystem.GetFileStream(logFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true);
@@ -213,9 +213,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             var subtitleArgs = CopySubtitles ? " -codec:s copy" : " -sn";
 
-            var outputParam = string.Equals(Path.GetExtension(targetFile), ".mp4", StringComparison.OrdinalIgnoreCase) ?
-                " -f mp4 -movflags frag_keyframe+empty_moov" :
-                string.Empty;
+            //var outputParam = string.Equals(Path.GetExtension(targetFile), ".mp4", StringComparison.OrdinalIgnoreCase) ?
+            //    " -f mp4 -movflags frag_keyframe+empty_moov" :
+            //    string.Empty;
+
+            var outputParam = string.Empty;
 
             var commandLineArgs = string.Format("-i \"{0}\"{5} {2} -map_metadata -1 -threads 0 {3}{4}{6} -y \"{1}\"", 
                 inputTempFile, 

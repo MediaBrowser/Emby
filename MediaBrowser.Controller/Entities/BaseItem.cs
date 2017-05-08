@@ -84,6 +84,7 @@ namespace MediaBrowser.Controller.Entities
 
         public long? Size { get; set; }
         public string Container { get; set; }
+
         [IgnoreDataMember]
         public string Tagline { get; set; }
 
@@ -288,7 +289,7 @@ namespace MediaBrowser.Controller.Entities
                     return Path;
                 }
 
-                return System.IO.Path.GetDirectoryName(Path);
+                return FileSystem.GetDirectoryName(Path);
             }
         }
 
@@ -833,13 +834,6 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The critic rating.</value>
         [IgnoreDataMember]
         public float? CriticRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the official rating description.
-        /// </summary>
-        /// <value>The official rating description.</value>
-        [IgnoreDataMember]
-        public string OfficialRatingDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the custom rating.
@@ -1917,7 +1911,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var allFiles = ImageInfos
                 .Where(i => i.IsLocalFile)
-                .Select(i => System.IO.Path.GetDirectoryName(i.Path))
+                .Select(i => FileSystem.GetDirectoryName(i.Path))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .SelectMany(directoryService.GetFilePaths)
                 .ToList();
@@ -2092,7 +2086,7 @@ namespace MediaBrowser.Controller.Entities
             var extensions = new[] { ".nfo", ".xml", ".srt" }.ToList();
             extensions.AddRange(SupportedImageExtensionsList);
 
-            return FileSystem.GetFiles(System.IO.Path.GetDirectoryName(Path), extensions.ToArray(), false, false)
+            return FileSystem.GetFiles(FileSystem.GetDirectoryName(Path), extensions.ToArray(), false, false)
                 .Where(i => System.IO.Path.GetFileNameWithoutExtension(i.FullName).StartsWith(filename, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
@@ -2289,11 +2283,6 @@ namespace MediaBrowser.Controller.Entities
                 if (!string.Equals(item.CustomRating, ownedItem.CustomRating, StringComparison.Ordinal))
                 {
                     ownedItem.CustomRating = item.CustomRating;
-                    newOptions.ForceSave = true;
-                }
-                if (!string.Equals(item.OfficialRatingDescription, ownedItem.OfficialRatingDescription, StringComparison.Ordinal))
-                {
-                    ownedItem.OfficialRatingDescription = item.OfficialRatingDescription;
                     newOptions.ForceSave = true;
                 }
             }
