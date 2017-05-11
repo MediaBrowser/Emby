@@ -91,11 +91,6 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            if (replaceData || string.IsNullOrEmpty(target.OfficialRatingDescription))
-            {
-                target.OfficialRatingDescription = source.OfficialRatingDescription;
-            }
-
             if (replaceData || string.IsNullOrEmpty(target.CustomRating))
             {
                 target.CustomRating = source.CustomRating;
@@ -205,6 +200,7 @@ namespace MediaBrowser.Providers.Manager
             MergeCriticRating(source, target, lockedFields, replaceData);
             MergeAwards(source, target, lockedFields, replaceData);
             MergeTrailers(source, target, lockedFields, replaceData);
+            MergeVideoInfo(source, target, lockedFields, replaceData);
 
             if (mergeMetadataSettings)
             {
@@ -309,6 +305,20 @@ namespace MediaBrowser.Providers.Manager
                 if (replaceData || targetCast.RemoteTrailers.Count == 0)
                 {
                     targetCast.RemoteTrailers = sourceCast.RemoteTrailers;
+                }
+            }
+        }
+
+        private static void MergeVideoInfo(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
+        {
+            var sourceCast = source as Video;
+            var targetCast = target as Video;
+
+            if (sourceCast != null && targetCast != null)
+            {
+                if (replaceData || targetCast.Video3DFormat == null)
+                {
+                    targetCast.Video3DFormat = sourceCast.Video3DFormat;
                 }
             }
         }

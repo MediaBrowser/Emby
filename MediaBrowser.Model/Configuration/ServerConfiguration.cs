@@ -55,6 +55,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         /// <value>The value pointing to the file system where the ssl certiifcate is located..</value>
         public string CertificatePath { get; set; }
+        public string CertificatePassword { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is port authorized.
@@ -164,7 +165,6 @@ namespace MediaBrowser.Model.Configuration
 
         public bool EnableAutomaticRestart { get; set; }
         public bool SkipDeserializationForBasicTypes { get; set; }
-        public bool SkipDeserializationForPrograms { get; set; }
         public bool SkipDeserializationForAudio { get; set; }
 
         public string ServerName { get; set; }
