@@ -56,7 +56,7 @@ namespace Emby.Drawing
         private readonly IFileSystem _fileSystem;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IServerApplicationPaths _appPaths;
-        private readonly IImageEncoder _imageEncoder;
+        private IImageEncoder _imageEncoder;
         private readonly Func<ILibraryManager> _libraryManager;
 
         public ImageProcessor(ILogger logger,
@@ -64,7 +64,7 @@ namespace Emby.Drawing
             IFileSystem fileSystem,
             IJsonSerializer jsonSerializer,
             IImageEncoder imageEncoder,
-            int maxConcurrentImageProcesses, Func<ILibraryManager> libraryManager, ITimerFactory timerFactory)
+            Func<ILibraryManager> libraryManager, ITimerFactory timerFactory)
         {
             _logger = logger;
             _fileSystem = fileSystem;
@@ -101,6 +101,20 @@ namespace Emby.Drawing
             }
 
             _cachedImagedSizes = new ConcurrentDictionary<Guid, ImageSize>(sizeDictionary);
+        }
+
+        public IImageEncoder ImageEncoder
+        {
+            get { return _imageEncoder; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _imageEncoder = value;
+            }
         }
 
         public string[] SupportedInputFormats
@@ -198,7 +212,7 @@ namespace Emby.Drawing
                 return new Tuple<string, string, DateTime>(originalImagePath, MimeTypes.GetMimeType(originalImagePath), dateModified);
             }
 
-            ImageSize? originalImageSize;
+            ImageSize? originalImageSize = null;
             try
             {
                 originalImageSize = GetImageSize(originalImagePath, dateModified, true);
@@ -213,7 +227,7 @@ namespace Emby.Drawing
                 originalImageSize = null;
             }
 
-            var newSize = GetNewImageSize(options, originalImageSize);
+            var newSize = ImageHelper.GetNewImageSize(options, originalImageSize);
             var quality = options.Quality;
 
             var outputFormat = GetOutputFormat(options.SupportedOutputFormats[0]);
@@ -225,14 +239,11 @@ namespace Emby.Drawing
 
                 if (!_fileSystem.FileExists(cacheFilePath))
                 {
-                    var newWidth = Convert.ToInt32(Math.Round(newSize.Width));
-                    var newHeight = Convert.ToInt32(Math.Round(newSize.Height));
-
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(cacheFilePath));
                     var tmpPath = Path.ChangeExtension(Path.Combine(_appPaths.TempDirectory, Guid.NewGuid().ToString("N")), Path.GetExtension(cacheFilePath));
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(tmpPath));
 
-                    _imageEncoder.EncodeImage(originalImagePath, tmpPath, AutoOrient(options.Item), newWidth, newHeight, quality, options, outputFormat);
+                    _imageEncoder.EncodeImage(originalImagePath, originalImageSize, tmpPath, AutoOrient(options.Item), quality, options, outputFormat);
                     CopyFile(tmpPath, cacheFilePath);
 
                     return new Tuple<string, string, DateTime>(tmpPath, GetMimeType(outputFormat, cacheFilePath), _fileSystem.GetLastWriteTimeUtc(tmpPath));
@@ -312,66 +323,6 @@ namespace Emby.Drawing
             }
 
             return MimeTypes.GetMimeType(path);
-        }
-
-        private ImageSize GetNewImageSize(ImageProcessingOptions options, ImageSize? originalImageSize)
-        {
-            if (originalImageSize.HasValue)
-            {
-                // Determine the output size based on incoming parameters
-                var newSize = DrawingUtils.Resize(originalImageSize.Value, options.Width, options.Height, options.MaxWidth, options.MaxHeight);
-
-                return newSize;
-            }
-            return GetSizeEstimate(options);
-        }
-
-        private ImageSize GetSizeEstimate(ImageProcessingOptions options)
-        {
-            if (options.Width.HasValue && options.Height.HasValue)
-            {
-                return new ImageSize(options.Width.Value, options.Height.Value);
-            }
-
-            var aspect = GetEstimatedAspectRatio(options.Image.Type);
-
-            var width = options.Width ?? options.MaxWidth;
-
-            if (width.HasValue)
-            {
-                var heightValue = width.Value / aspect;
-                return new ImageSize(width.Value, heightValue);
-            }
-
-            var height = options.Height ?? options.MaxHeight ?? 200;
-            var widthValue = aspect * height;
-            return new ImageSize(widthValue, height);
-        }
-
-        private double GetEstimatedAspectRatio(ImageType type)
-        {
-            switch (type)
-            {
-                case ImageType.Art:
-                case ImageType.Backdrop:
-                case ImageType.Chapter:
-                case ImageType.Screenshot:
-                case ImageType.Thumb:
-                    return 1.78;
-                case ImageType.Banner:
-                    return 5.4;
-                case ImageType.Box:
-                case ImageType.BoxRear:
-                case ImageType.Disc:
-                case ImageType.Menu:
-                    return 1;
-                case ImageType.Logo:
-                    return 2.58;
-                case ImageType.Primary:
-                    return .667;
-                default:
-                    return 1;
-            }
         }
 
         private ImageFormat GetOutputFormat(ImageFormat requestedFormat)
@@ -499,26 +450,44 @@ namespace Emby.Drawing
         /// <returns>ImageSize.</returns>
         private ImageSize GetImageSizeInternal(string path, bool allowSlowMethod)
         {
+            //try
+            //{
+            //    using (var fileStream = _fileSystem.OpenRead(path))
+            //    {
+            //        using (var file = TagLib.File.Create(new StreamFileAbstraction(Path.GetFileName(path), fileStream, null)))
+            //        {
+            //            var image = file as TagLib.Image.File;
+
+            //            if (image != null)
+            //            {
+            //                var properties = image.Properties;
+
+            //                return new ImageSize
+            //                {
+            //                    Height = properties.PhotoHeight,
+            //                    Width = properties.PhotoWidth
+            //                };
+            //            }
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //}
+
             try
             {
-                using (var file = TagLib.File.Create(new StreamFileAbstraction(Path.GetFileName(path), _fileSystem.OpenRead(path), null)))
-                {
-                    var image = file as TagLib.Image.File;
-
-                    var properties = image.Properties;
-
-                    return new ImageSize
-                    {
-                        Height = properties.PhotoHeight,
-                        Width = properties.PhotoWidth
-                    };
-                }
+                return ImageHeader.GetDimensions(path, _logger, _fileSystem);
             }
             catch
             {
-            }
+                if (allowSlowMethod)
+                {
+                    return _imageEncoder.GetImageSize(path);
+                }
 
-            return ImageHeader.GetDimensions(path, _logger, _fileSystem);
+                throw;
+            }
         }
 
         private readonly ITimer _saveImageSizeTimer;

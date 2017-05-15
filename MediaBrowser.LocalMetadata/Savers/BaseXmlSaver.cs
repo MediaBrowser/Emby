@@ -35,7 +35,6 @@ namespace MediaBrowser.LocalMetadata.Savers
                     "AspectRatio",
                     "AudioDbAlbumId",
                     "AudioDbArtistId",
-                    "AwardSummary",
                     "BirthDate",
                     
                     // Deprecated. No longer saving in this field.
@@ -218,13 +217,9 @@ namespace MediaBrowser.LocalMetadata.Savers
             {
                 if (file.IsHidden)
                 {
-                    FileSystem.SetHidden(path, false);
                     wasHidden = true;
                 }
-                if (file.IsReadOnly)
-                {
-                    FileSystem.SetReadOnly(path, false);
-                }
+                FileSystem.SetAttributes(path, false, false);
             }
 
             using (var filestream = FileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
@@ -405,12 +400,6 @@ namespace MediaBrowser.LocalMetadata.Savers
             if (hasDisplayOrder != null && !string.IsNullOrEmpty(hasDisplayOrder.DisplayOrder))
             {
                 writer.WriteElementString("DisplayOrder", hasDisplayOrder.DisplayOrder);
-            }
-
-            var hasAwards = item as IHasAwards;
-            if (hasAwards != null && !string.IsNullOrEmpty(hasAwards.AwardSummary))
-            {
-                writer.WriteElementString("AwardSummary", hasAwards.AwardSummary);
             }
 
             if (item.CommunityRating.HasValue)

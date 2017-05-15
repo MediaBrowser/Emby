@@ -81,7 +81,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     "country",
                     "audiodbalbumid",
                     "audiodbartistid",
-                    "awardsummary",
                     "enddate",
                     "lockedfields",
                     "zap2itid",
@@ -220,14 +219,9 @@ namespace MediaBrowser.XbmcMetadata.Savers
             {
                 if (file.IsHidden)
                 {
-                    FileSystem.SetHidden(path, false);
-
                     wasHidden = true;
                 }
-                if (file.IsReadOnly)
-                {
-                    FileSystem.SetReadOnly(path, false);
-                }
+                FileSystem.SetAttributes(path, false, false);
             }
 
             using (var filestream = FileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
@@ -714,12 +708,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
             foreach (var tag in item.Keywords)
             {
                 writer.WriteElementString("plotkeyword", tag);
-            }
-
-            var hasAwards = item as IHasAwards;
-            if (hasAwards != null && !string.IsNullOrEmpty(hasAwards.AwardSummary))
-            {
-                writer.WriteElementString("awardsummary", hasAwards.AwardSummary);
             }
 
             var externalId = item.GetProviderId(MetadataProviders.AudioDbArtist);
