@@ -202,6 +202,10 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                 return null;
             }
+            if (string.Equals(container, "mts", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
 
             // obviously don't do this for strm files
             if (string.Equals(container, "strm", StringComparison.OrdinalIgnoreCase))
