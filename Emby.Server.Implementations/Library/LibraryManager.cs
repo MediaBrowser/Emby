@@ -41,6 +41,7 @@ using SortOrder = MediaBrowser.Model.Entities.SortOrder;
 using VideoResolver = MediaBrowser.Naming.Video.VideoResolver;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Tasks;
 
@@ -313,7 +314,8 @@ namespace Emby.Server.Implementations.Library
             {
                 IncludeItemTypes = new[] { typeof(Season).Name },
                 Recursive = true,
-                IndexNumber = 0
+                IndexNumber = 0,
+                DtoOptions = new DtoOptions(true)
 
             }).Cast<Season>()
                 .Where(i => !string.Equals(i.Name, newName, StringComparison.Ordinal))
@@ -342,7 +344,7 @@ namespace Emby.Server.Implementations.Library
             }
             if (item is IItemByName)
             {
-                if (!(item is MusicArtist) && !(item is Studio))
+                if (!(item is MusicArtist))
                 {
                     return;
                 }
@@ -868,7 +870,8 @@ namespace Emby.Server.Implementations.Library
                 IsFolder = isFolder,
                 SortBy = new[] { ItemSortBy.DateCreated },
                 SortOrder = SortOrder.Descending,
-                Limit = 1
+                Limit = 1,
+                DtoOptions = new DtoOptions(true)
             };
 
             return GetItemList(query)
@@ -893,6 +896,26 @@ namespace Emby.Server.Implementations.Library
         public Studio GetStudio(string name)
         {
             return CreateItemByName<Studio>(Studio.GetPath, name);
+        }
+
+        public Guid GetStudioId(string name)
+        {
+            return GetItemByNameId<Studio>(Studio.GetPath, name);
+        }
+
+        public Guid GetGenreId(string name)
+        {
+            return GetItemByNameId<Genre>(Genre.GetPath, name);
+        }
+
+        public Guid GetMusicGenreId(string name)
+        {
+            return GetItemByNameId<MusicGenre>(MusicGenre.GetPath, name);
+        }
+
+        public Guid GetGameGenreId(string name)
+        {
+            return GetItemByNameId<GameGenre>(GameGenre.GetPath, name);
         }
 
         /// <summary>
@@ -961,7 +984,8 @@ namespace Emby.Server.Implementations.Library
                 var existing = GetItemList(new InternalItemsQuery
                 {
                     IncludeItemTypes = new[] { typeof(T).Name },
-                    Name = name
+                    Name = name,
+                    DtoOptions = new DtoOptions(true)
 
                 }).Cast<MusicArtist>()
                 .OrderBy(i => i.IsAccessedByName ? 1 : 0)
@@ -974,14 +998,13 @@ namespace Emby.Server.Implementations.Library
                 }
             }
 
-            var path = getPathFn(name);
-            var forceCaseInsensitiveId = ConfigurationManager.Configuration.EnableNormalizedItemByNameIds;
-            var id = GetNewItemIdInternal(path, typeof(T), forceCaseInsensitiveId);
+            var id = GetItemByNameId<T>(getPathFn, name);
 
             var item = GetItemById(id) as T;
 
             if (item == null)
             {
+                var path = getPathFn(name);
                 item = new T
                 {
                     Name = name,
@@ -996,6 +1019,14 @@ namespace Emby.Server.Implementations.Library
             }
 
             return item;
+        }
+
+        private Guid GetItemByNameId<T>(Func<string, string> getPathFn, string name)
+              where T : BaseItem, new()
+        {
+            var path = getPathFn(name);
+            var forceCaseInsensitiveId = ConfigurationManager.Configuration.EnableNormalizedItemByNameIds;
+            return GetNewItemIdInternal(path, typeof(T), forceCaseInsensitiveId);
         }
 
         public IEnumerable<MusicArtist> GetAlbumArtists(IEnumerable<IHasAlbumArtist> items)

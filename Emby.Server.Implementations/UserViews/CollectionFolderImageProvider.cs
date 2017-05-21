@@ -14,6 +14,7 @@ using Emby.Server.Implementations.Images;
 using MediaBrowser.Common.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Collections;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.Library;
@@ -46,7 +47,8 @@ namespace Emby.Server.Implementations.UserViews
             {
                 CollapseBoxSetItems = false,
                 Recursive = recursive,
-                ExcludeItemTypes = new[] { "UserView", "CollectionFolder", "Playlist" }
+                ExcludeItemTypes = new[] { "UserView", "CollectionFolder", "Playlist" },
+                DtoOptions = new DtoOptions(false)
 
             }).ConfigureAwait(false);
 
@@ -98,7 +100,7 @@ namespace Emby.Server.Implementations.UserViews
             return item is CollectionFolder;
         }
 
-        protected override async Task<string> CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ".png");
 
@@ -109,10 +111,10 @@ namespace Emby.Server.Implementations.UserViews
                     return null;
                 }
 
-                return await CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540).ConfigureAwait(false);
+                return CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540);
             }
 
-            return await base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex).ConfigureAwait(false);
+            return base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex);
         }
     }
 
@@ -144,7 +146,8 @@ namespace Emby.Server.Implementations.UserViews
                 Recursive = recursive,
                 IncludeItemTypes = new[] { typeof(BoxSet).Name },
                 Limit = 20,
-                SortBy = new[] { ItemSortBy.Random }
+                SortBy = new[] { ItemSortBy.Random },
+                DtoOptions = new DtoOptions(false)
             });
 
             return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary) || i.HasImage(ImageType.Thumb)).ToList(), 8);
@@ -155,7 +158,7 @@ namespace Emby.Server.Implementations.UserViews
             return item is ManualCollectionsFolder;
         }
 
-        protected override async Task<string> CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ".png");
 
@@ -166,10 +169,10 @@ namespace Emby.Server.Implementations.UserViews
                     return null;
                 }
 
-                return await CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540).ConfigureAwait(false);
+                return CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540);
             }
 
-            return await base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex).ConfigureAwait(false);
+            return base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex);
         }
     }
 
