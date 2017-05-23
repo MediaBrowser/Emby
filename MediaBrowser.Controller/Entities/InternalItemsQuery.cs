@@ -160,37 +160,6 @@ namespace MediaBrowser.Controller.Entities
         public DtoOptions DtoOptions { get; set; }
         public int MinSimilarityScore { get; set; }
 
-        public bool HasField(ItemFields name)
-        {
-            var fields = DtoOptions.Fields;
-
-            switch (name)
-            {
-                case ItemFields.ThemeSongIds:
-                case ItemFields.ThemeVideoIds:
-                case ItemFields.ProductionLocations:
-                case ItemFields.Keywords:
-                case ItemFields.Taglines:
-                case ItemFields.CustomRating:
-                case ItemFields.DateCreated:
-                case ItemFields.SortName:
-                case ItemFields.Overview:
-                case ItemFields.HomePageUrl:
-                case ItemFields.VoteCount:
-                case ItemFields.DisplayMediaType:
-                //case ItemFields.ServiceName:
-                case ItemFields.Genres:
-                case ItemFields.Studios:
-                case ItemFields.Settings:
-                case ItemFields.OriginalTitle:
-                case ItemFields.Tags:
-                case ItemFields.DateLastMediaAdded:
-                    return fields.Count == 0 || fields.Contains(name);
-                default:
-                    return true;
-            }
-        }
-
         public InternalItemsQuery()
         {
             MinSimilarityScore = 20;
@@ -251,7 +220,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (policy.MaxParentalRating.HasValue)
                 {
-                    BlockUnratedItems = policy.BlockUnratedItems;
+                    BlockUnratedItems = policy.BlockUnratedItems.Where(i => i != UnratedItem.Other).ToArray();
                 }
 
                 ExcludeInheritedTags = policy.BlockedTags;

@@ -36,14 +36,6 @@
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release Mono\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <ItemGroup>
     <None Include="project.json" />
     <!-- A reference to the entire .NET Framework is automatically included -->
@@ -91,6 +83,7 @@
     <Compile Include="Drawing\IImageEncoder.cs" />
     <Compile Include="Drawing\IImageProcessor.cs" />
     <Compile Include="Drawing\ImageCollageOptions.cs" />
+    <Compile Include="Drawing\ImageHelper.cs" />
     <Compile Include="Drawing\ImageProcessingOptions.cs" />
     <Compile Include="Drawing\ImageProcessorExtensions.cs" />
     <Compile Include="Drawing\ImageStream.cs" />

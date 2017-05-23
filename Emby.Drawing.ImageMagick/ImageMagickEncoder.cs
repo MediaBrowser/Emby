@@ -130,7 +130,7 @@ namespace Emby.Drawing.ImageMagick
                 string.Equals(ext, ".webp", StringComparison.OrdinalIgnoreCase);
         }
 
-        public void EncodeImage(string inputPath, string outputPath, bool autoOrient, int width, int height, int quality, ImageProcessingOptions options, ImageFormat selectedOutputFormat)
+        public string EncodeImage(string inputPath, DateTime dateModified, string outputPath, bool autoOrient, int quality, ImageProcessingOptions options, ImageFormat selectedOutputFormat)
         {
             // Even if the caller specified 100, don't use it because it takes forever
             quality = Math.Min(quality, 99);
@@ -143,6 +143,20 @@ namespace Emby.Drawing.ImageMagick
                     {
                         originalImage.CurrentImage.TrimImage(10);
                     }
+
+                    var originalImageSize = new ImageSize(originalImage.CurrentImage.Width, originalImage.CurrentImage.Height);
+                    ImageHelper.SaveImageSize(inputPath, dateModified, originalImageSize);
+
+                    if (!options.CropWhiteSpace && options.HasDefaultOptions(inputPath, originalImageSize))
+                    {
+                        // Just spit out the original file if all the options are default
+                        return inputPath;
+                    }
+
+                    var newImageSize = ImageHelper.GetNewImageSize(options, originalImageSize);
+
+                    var width = Convert.ToInt32(Math.Round(newImageSize.Width));
+                    var height = Convert.ToInt32(Math.Round(newImageSize.Height));
 
                     ScaleImage(originalImage, width, height, options.Blur ?? 0);
 
@@ -162,9 +176,17 @@ namespace Emby.Drawing.ImageMagick
             }
             else
             {
-                using (var wand = new MagickWand(width, height, options.BackgroundColor))
+                using (var originalImage = new MagickWand(inputPath))
                 {
-                    using (var originalImage = new MagickWand(inputPath))
+                    var originalImageSize = new ImageSize(originalImage.CurrentImage.Width, originalImage.CurrentImage.Height);
+                    ImageHelper.SaveImageSize(inputPath, dateModified, originalImageSize);
+
+                    var newImageSize = ImageHelper.GetNewImageSize(options, originalImageSize);
+
+                    var width = Convert.ToInt32(Math.Round(newImageSize.Width));
+                    var height = Convert.ToInt32(Math.Round(newImageSize.Height));
+
+                    using (var wand = new MagickWand(width, height, options.BackgroundColor))
                     {
                         ScaleImage(originalImage, width, height, options.Blur ?? 0);
 
@@ -185,6 +207,8 @@ namespace Emby.Drawing.ImageMagick
                     }
                 }
             }
+
+            return outputPath;
         }
 
         private void AddForegroundLayer(MagickWand wand, ImageProcessingOptions options)

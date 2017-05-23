@@ -421,7 +421,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 SupportsDirectStream = true,
                 SupportsTranscoding = true,
                 IsInfiniteStream = true,
-                IgnoreDts = true
+                IgnoreDts = true,
+                IgnoreIndex = true
             };
 
             mediaSource.InferTotalBitrate();
@@ -505,12 +506,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             if (hdhomerunChannel != null && hdhomerunChannel.IsLegacyTuner)
             {
-                return new HdHomerunUdpStream(mediaSource, streamId, new LegacyHdHomerunChannelCommands(hdhomerunChannel.Url), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
+                return new HdHomerunUdpStream(mediaSource, streamId, new LegacyHdHomerunChannelCommands(hdhomerunChannel.Url), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager, _environment);
             }
 
             // The UDP method is not working reliably on OSX, and on BSD it hasn't been tested yet
-            var enableHttpStream = _environment.OperatingSystem == OperatingSystem.OSX ||
-                _environment.OperatingSystem == OperatingSystem.BSD;
+            var enableHttpStream = _environment.OperatingSystem == OperatingSystem.OSX 
+                || _environment.OperatingSystem == OperatingSystem.BSD;
             enableHttpStream = true;
             if (enableHttpStream)
             {
@@ -519,17 +520,16 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 var httpUrl = GetApiUrl(info, true) + "/auto/v" + hdhrId;
 
                 // If raw was used, the tuner doesn't support params
-                if (!string.IsNullOrWhiteSpace(profile)
-                    && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(profile) && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
                 {
                     httpUrl += "?transcode=" + profile;
                 }
                 mediaSource.Path = httpUrl;
 
-                return new HdHomerunHttpStream(mediaSource, streamId, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost);
+                return new HdHomerunHttpStream(mediaSource, streamId, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _environment);
             }
 
-            return new HdHomerunUdpStream(mediaSource, streamId, new HdHomerunChannelCommands(hdhomerunChannel.Number), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager);
+            return new HdHomerunUdpStream(mediaSource, streamId, new HdHomerunChannelCommands(hdhomerunChannel.Number, profile), modelInfo.TunerCount, _fileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager, _environment);
         }
 
         public async Task Validate(TunerHostInfo info)

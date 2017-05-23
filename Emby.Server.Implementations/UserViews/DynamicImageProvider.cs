@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Emby.Server.Implementations.Images;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Extensions;
@@ -58,7 +59,9 @@ namespace Emby.Server.Implementations.UserViews
                     IncludeItemTypes = new[] { typeof(LiveTvProgram).Name },
                     ImageTypes = new[] { ImageType.Primary },
                     Limit = 30,
-                    IsMovie = true
+                    IsMovie = true,
+                    DtoOptions = new DtoOptions(false)
+
                 }).ToList();
 
                 return GetFinalItems(programs).ToList();
@@ -69,7 +72,8 @@ namespace Emby.Server.Implementations.UserViews
             {
                 var userItemsResult = await view.GetItems(new InternalItemsQuery
                 {
-                    CollapseBoxSetItems = false
+                    CollapseBoxSetItems = false,
+                    DtoOptions = new DtoOptions(false)
                 });
 
                 return userItemsResult.Items.ToList();
@@ -84,6 +88,7 @@ namespace Emby.Server.Implementations.UserViews
                 CollapseBoxSetItems = false,
                 Recursive = recursive,
                 ExcludeItemTypes = new[] { "UserView", "CollectionFolder", "Person" },
+                DtoOptions = new DtoOptions(false)
 
             }).ConfigureAwait(false);
 
@@ -159,7 +164,7 @@ namespace Emby.Server.Implementations.UserViews
             return collectionStripViewTypes.Contains(view.ViewType ?? string.Empty);
         }
 
-        protected override async Task<string> CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(IHasImages item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             if (itemsWithImages.Count == 0)
             {
@@ -168,7 +173,7 @@ namespace Emby.Server.Implementations.UserViews
 
             var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ".png");
 
-            return await CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540).ConfigureAwait(false);
+            return CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540);
         }
     }
 }

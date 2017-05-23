@@ -127,7 +127,11 @@ namespace Emby.Server.Implementations.Dto
                     {
                         var libraryItems = byName.GetTaggedItems(new InternalItemsQuery(user)
                         {
-                            Recursive = true
+                            Recursive = true,
+                            DtoOptions = new DtoOptions(false)
+                            {
+                                EnableImages = false
+                            }
                         });
 
                         SetItemByNameInfo(item, dto, libraryItems.ToList(), user);
@@ -177,7 +181,11 @@ namespace Emby.Server.Implementations.Dto
             {
                 if (options.Fields.Contains(ItemFields.ItemCounts))
                 {
-                    SetItemByNameInfo(item, dto, GetTaggedItems(byName, user), user);
+                    SetItemByNameInfo(item, dto, GetTaggedItems(byName, user, new DtoOptions(false)
+                    {
+                        EnableImages = false
+
+                    }), user);
                 }
 
                 FillSyncInfo(dto, item, options, user, syncDictionary);
@@ -189,11 +197,12 @@ namespace Emby.Server.Implementations.Dto
             return dto;
         }
 
-        private List<BaseItem> GetTaggedItems(IItemByName byName, User user)
+        private List<BaseItem> GetTaggedItems(IItemByName byName, User user, DtoOptions options)
         {
             var items = byName.GetTaggedItems(new InternalItemsQuery(user)
             {
-                Recursive = true
+                Recursive = true,
+                DtoOptions = options
 
             }).ToList();
 
@@ -595,16 +604,17 @@ namespace Emby.Server.Implementations.Dto
         {
             if (!string.IsNullOrEmpty(item.Album))
             {
-                var parentAlbum = _libraryManager.GetItemList(new InternalItemsQuery
+                var parentAlbumIds = _libraryManager.GetItemIds(new InternalItemsQuery
                 {
                     IncludeItemTypes = new[] { typeof(MusicAlbum).Name },
-                    Name = item.Album
+                    Name = item.Album,
+                    Limit = 1
 
-                }).FirstOrDefault();
+                });
 
-                if (parentAlbum != null)
+                if (parentAlbumIds.Count > 0)
                 {
-                    dto.AlbumId = GetDtoId(parentAlbum);
+                    dto.AlbumId = parentAlbumIds[0].ToString("N");
                 }
             }
 
@@ -751,45 +761,41 @@ namespace Emby.Server.Implementations.Dto
         /// <returns>Task.</returns>
         private void AttachStudios(BaseItemDto dto, BaseItem item)
         {
-            var studios = item.Studios.ToList();
+            dto.Studios = item.Studios
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Select(i => new NameIdPair
+                {
+                    Name = i,
+                    Id = _libraryManager.GetStudioId(i).ToString("N")
+                })
+                .ToArray();
+        }
 
-            dto.Studios = new StudioDto[studios.Count];
+        private void AttachGenreItems(BaseItemDto dto, BaseItem item)
+        {
+            dto.GenreItems = item.Genres
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Select(i => new NameIdPair
+                {
+                    Name = i,
+                    Id = GetStudioId(i, item)
+                })
+                .ToArray();
+        }
 
-            var dictionary = studios.Distinct(StringComparer.OrdinalIgnoreCase).Select(name =>
+        private string GetStudioId(string name, BaseItem owner)
+        {
+            if (owner is IHasMusicGenres)
             {
-                try
-                {
-                    return _libraryManager.GetStudio(name);
-                }
-                catch (IOException ex)
-                {
-                    _logger.ErrorException("Error getting studio {0}", ex, name);
-                    return null;
-                }
-            })
-            .Where(i => i != null)
-            .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(i => i.Name, StringComparer.OrdinalIgnoreCase);
-
-            for (var i = 0; i < studios.Count; i++)
-            {
-                var studio = studios[i];
-
-                var studioDto = new StudioDto
-                {
-                    Name = studio
-                };
-
-                Studio entity;
-
-                if (dictionary.TryGetValue(studio, out entity))
-                {
-                    studioDto.Id = entity.Id.ToString("N");
-                    studioDto.PrimaryImageTag = GetImageCacheTag(entity, ImageType.Primary);
-                }
-
-                dto.Studios[i] = studioDto;
+                return _libraryManager.GetGameGenreId(name).ToString("N");
             }
+
+            if (owner is Game || owner is GameSystem)
+            {
+                return _libraryManager.GetGameGenreId(name).ToString("N");
+            }
+
+            return _libraryManager.GetGenreId(name).ToString("N");
         }
 
         /// <summary>
@@ -901,6 +907,7 @@ namespace Emby.Server.Implementations.Dto
             if (fields.Contains(ItemFields.Genres))
             {
                 dto.Genres = item.Genres;
+                AttachGenreItems(dto, item);
             }
 
             if (options.EnableImages)
@@ -1130,7 +1137,10 @@ namespace Emby.Server.Implementations.Dto
                             return null;
                         }
 
-                        var artist = _libraryManager.GetArtist(i);
+                        var artist = _libraryManager.GetArtist(i, new DtoOptions(false)
+                        {
+                            EnableImages = false
+                        });
                         if (artist != null)
                         {
                             return new NameIdPair
@@ -1179,7 +1189,10 @@ namespace Emby.Server.Implementations.Dto
                             return null;
                         }
 
-                        var artist = _libraryManager.GetArtist(i);
+                        var artist = _libraryManager.GetArtist(i, new DtoOptions(false)
+                        {
+                            EnableImages = false
+                        });
                         if (artist != null)
                         {
                             return new NameIdPair
@@ -1449,7 +1462,7 @@ namespace Emby.Server.Implementations.Dto
             var musicAlbum = item as MusicAlbum;
             if (musicAlbum != null)
             {
-                var artist = musicAlbum.MusicArtist;
+                var artist = musicAlbum.GetMusicArtist(new DtoOptions(false));
                 if (artist != null)
                 {
                     return artist;
@@ -1582,24 +1595,30 @@ namespace Emby.Server.Implementations.Dto
 
             ImageSize size;
 
-            if (supportedEnhancers.Count == 0)
-            {
-                var defaultAspectRatio = item.GetDefaultPrimaryImageAspectRatio();
+            var defaultAspectRatio = item.GetDefaultPrimaryImageAspectRatio();
 
-                if (defaultAspectRatio.HasValue)
+            if (defaultAspectRatio.HasValue)
+            {
+                if (supportedEnhancers.Count == 0)
                 {
                     return defaultAspectRatio.Value;
                 }
-            }
 
-            try
-            {
-                size = _imageProcessor.GetImageSize(imageInfo);
+                double dummyWidth = 200;
+                double dummyHeight = dummyWidth / defaultAspectRatio.Value;
+                size = new ImageSize(dummyWidth, dummyHeight);
             }
-            catch
+            else
             {
-                //_logger.ErrorException("Failed to determine primary image aspect ratio for {0}", ex, path);
-                return null;
+                try
+                {
+                    size = _imageProcessor.GetImageSize(imageInfo);
+                }
+                catch
+                {
+                    //_logger.ErrorException("Failed to determine primary image aspect ratio for {0}", ex, path);
+                    return null;
+                }
             }
 
             foreach (var enhancer in supportedEnhancers)
