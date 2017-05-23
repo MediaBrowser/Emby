@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{703DB4D4-2B42-4415-A35E-94BFAE424F86}</ProjectGuid>
+    <ProjectGuid>5a27010a-09c6-4e86-93ea-437484c10917</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Emby.Common.Implementations</RootNamespace>
