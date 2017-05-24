@@ -14,39 +14,35 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Model.System;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
     public class HdHomerunUdpStream : LiveStream, IDirectStreamProvider
     {
         private readonly ILogger _logger;
-        private readonly IHttpClient _httpClient;
-        private readonly IFileSystem _fileSystem;
-        private readonly IServerApplicationPaths _appPaths;
         private readonly IServerApplicationHost _appHost;
         private readonly ISocketFactory _socketFactory;
 
         private readonly CancellationTokenSource _liveStreamCancellationTokenSource = new CancellationTokenSource();
         private readonly TaskCompletionSource<bool> _liveStreamTaskCompletionSource = new TaskCompletionSource<bool>();
-        private readonly MulticastStream _multicastStream;
         private readonly IHdHomerunChannelCommands _channelCommands;
         private readonly int _numTuners;
         private readonly INetworkManager _networkManager;
 
-        public HdHomerunUdpStream(MediaSourceInfo mediaSource, string originalStreamId, IHdHomerunChannelCommands channelCommands, int numTuners, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost, ISocketFactory socketFactory, INetworkManager networkManager)
-            : base(mediaSource)
+        private readonly string _tempFilePath;
+
+        public HdHomerunUdpStream(MediaSourceInfo mediaSource, string originalStreamId, IHdHomerunChannelCommands channelCommands, int numTuners, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost, ISocketFactory socketFactory, INetworkManager networkManager, IEnvironmentInfo environment)
+            : base(mediaSource, environment, fileSystem)
         {
-            _fileSystem = fileSystem;
-            _httpClient = httpClient;
             _logger = logger;
-            _appPaths = appPaths;
             _appHost = appHost;
             _socketFactory = socketFactory;
             _networkManager = networkManager;
             OriginalStreamId = originalStreamId;
-            _multicastStream = new MulticastStream(_logger);
             _channelCommands = channelCommands;
             _numTuners = numTuners;
+            _tempFilePath = Path.Combine(appPaths.TranscodingTempPath, UniqueId + ".ts");
         }
 
         protected override async Task OpenInternal(CancellationToken openCancellationToken)
@@ -87,9 +83,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return _liveStreamTaskCompletionSource.Task;
         }
 
-        private async Task StartStreaming(string remoteIp, int localPort, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
+        private Task StartStreaming(string remoteIp, int localPort, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
-            await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 var isFirstAttempt = true;
                 using (var udpClient = _socketFactory.CreateUdpSocket(localPort))
@@ -124,13 +120,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
                                 if (!cancellationToken.IsCancellationRequested)
                                 {
-                                    Action onStarted = null;
-                                    if (isFirstAttempt)
+                                    FileSystem.CreateDirectory(FileSystem.GetDirectoryName(_tempFilePath));
+                                    using (var fileStream = FileSystem.GetFileStream(_tempFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, FileOpenOptions.Asynchronous))
                                     {
-                                        onStarted = () => openTaskCompletionSource.TrySetResult(true);
+                                        await CopyTo(udpClient, fileStream, openTaskCompletionSource, cancellationToken).ConfigureAwait(false);
                                     }
-
-                                    await _multicastStream.CopyUntilCancelled(new UdpClientStream(udpClient), onStarted, cancellationToken).ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException ex)
@@ -159,12 +153,39 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     }
                 }
 
-            }).ConfigureAwait(false);
+                await DeleteTempFile(_tempFilePath).ConfigureAwait(false);
+            });
+        }
+
+        private void Resolve(TaskCompletionSource<bool> openTaskCompletionSource)
+        {
+            Task.Run(() =>
+           {
+               openTaskCompletionSource.TrySetResult(true);
+           });
         }
 
         public Task CopyToAsync(Stream stream, CancellationToken cancellationToken)
         {
-            return _multicastStream.CopyToAsync(stream, cancellationToken);
+            return CopyFileTo(_tempFilePath, false, stream, cancellationToken);
+        }
+
+        private static int RtpHeaderBytes = 12;
+        private async Task CopyTo(ISocket udpClient, Stream outputStream, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                var data = await udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+                var bytesRead = data.ReceivedBytes - RtpHeaderBytes;
+
+                await outputStream.WriteAsync(data.Buffer, RtpHeaderBytes, bytesRead, cancellationToken).ConfigureAwait(false);
+
+                if (openTaskCompletionSource != null)
+                {
+                    Resolve(openTaskCompletionSource);
+                    openTaskCompletionSource = null;
+                }
+            }
         }
     }
 
@@ -198,7 +219,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             // This will always receive a 1328 packet size (PacketSize + RtpHeaderSize)
             // The RTP header will be stripped so see how many reads we need to make to fill the buffer.
-            int numReads = count / PacketSize;
+            var numReads = count / PacketSize;
+
             int totalBytesRead = 0;
 
             for (int i = 0; i < numReads; ++i)
@@ -206,7 +228,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 var data = await _udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
                 var bytesRead = data.ReceivedBytes - RtpHeaderBytes;
-                
+
                 // remove rtp header
                 Buffer.BlockCopy(data.Buffer, RtpHeaderBytes, buffer, offset, bytesRead);
                 offset += bytesRead;
@@ -224,7 +246,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             get
             {
-                throw new NotImplementedException();
+                return true;
             }
         }
 
@@ -232,7 +254,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             get
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
@@ -240,7 +262,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         {
             get
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 

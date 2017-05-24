@@ -1348,6 +1348,11 @@ namespace Emby.Server.Implementations.Data
 
         private BaseItem GetItem(IReadOnlyList<IResultSetValue> reader, InternalItemsQuery query)
         {
+            return GetItem(reader, query, HasProgramAttributes(query), HasEpisodeAttributes(query), HasStartDate(query), HasTrailerTypes(query), HasArtistFields(query), HasSeriesFields(query));
+        }
+
+        private BaseItem GetItem(IReadOnlyList<IResultSetValue> reader, InternalItemsQuery query, bool enableProgramAttributes, bool hasEpisodeAttributes, bool queryHasStartDate, bool hasTrailerTypes, bool hasArtistFields, bool hasSeriesFields)
+        {
             var typeString = reader.GetString(0);
 
             var type = _typeMapper.GetType(typeString);
@@ -1394,87 +1399,96 @@ namespace Emby.Server.Implementations.Data
                 return null;
             }
 
-            if (!reader.IsDBNull(2))
-            {
-                var hasStartDate = item as IHasStartDate;
-                if (hasStartDate != null)
-                {
-                    hasStartDate.StartDate = reader[2].ReadDateTime();
-                }
-            }
+            var index = 2;
 
-            if (!reader.IsDBNull(3))
-            {
-                item.EndDate = reader[3].ReadDateTime();
-            }
-
-            if (!reader.IsDBNull(4))
-            {
-                item.ChannelId = reader.GetString(4);
-            }
-
-            var index = 5;
-
-            var hasProgramAttributes = item as IHasProgramAttributes;
-            if (hasProgramAttributes != null)
+            if (queryHasStartDate)
             {
                 if (!reader.IsDBNull(index))
                 {
-                    hasProgramAttributes.IsMovie = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsSports = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsKids = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsSeries = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsLive = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsNews = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsPremiere = reader.GetBoolean(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.EpisodeTitle = reader.GetString(index);
-                }
-                index++;
-
-                if (!reader.IsDBNull(index))
-                {
-                    hasProgramAttributes.IsRepeat = reader.GetBoolean(index);
+                    var hasStartDate = item as IHasStartDate;
+                    if (hasStartDate != null)
+                    {
+                        hasStartDate.StartDate = reader[index].ReadDateTime();
+                    }
                 }
                 index++;
             }
-            else
+
+            if (!reader.IsDBNull(index))
             {
-                index += 9;
+                item.EndDate = reader[index].ReadDateTime();
+            }
+            index++;
+
+            if (!reader.IsDBNull(index))
+            {
+                item.ChannelId = reader.GetString(index);
+            }
+            index++;
+
+            if (enableProgramAttributes)
+            {
+                var hasProgramAttributes = item as IHasProgramAttributes;
+                if (hasProgramAttributes != null)
+                {
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsMovie = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsSports = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsKids = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsSeries = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsLive = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsNews = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsPremiere = reader.GetBoolean(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.EpisodeTitle = reader.GetString(index);
+                    }
+                    index++;
+
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasProgramAttributes.IsRepeat = reader.GetBoolean(index);
+                    }
+                    index++;
+                }
+                else
+                {
+                    index += 9;
+                }
             }
 
             if (!reader.IsDBNull(index))
@@ -1483,7 +1497,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.CustomRating))
+            if (HasField(query, ItemFields.CustomRating))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1498,7 +1512,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.Settings))
+            if (HasField(query, ItemFields.Settings))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1525,7 +1539,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.ExternalEtag))
+            if (HasField(query, ItemFields.ExternalEtag))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1534,11 +1548,14 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (!reader.IsDBNull(index))
+            if (HasField(query, ItemFields.DateLastRefreshed))
             {
-                item.DateLastRefreshed = reader[index].ReadDateTime();
+                if (!reader.IsDBNull(index))
+                {
+                    item.DateLastRefreshed = reader[index].ReadDateTime();
+                }
+                index++;
             }
-            index++;
 
             if (!reader.IsDBNull(index))
             {
@@ -1558,7 +1575,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.Overview))
+            if (HasField(query, ItemFields.Overview))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1585,7 +1602,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.HomePageUrl))
+            if (HasField(query, ItemFields.HomePageUrl))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1594,7 +1611,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.DisplayMediaType))
+            if (HasField(query, ItemFields.DisplayMediaType))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1603,7 +1620,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.SortName))
+            if (HasField(query, ItemFields.SortName))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1618,7 +1635,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.VoteCount))
+            if (HasField(query, ItemFields.VoteCount))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1627,7 +1644,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.DateCreated))
+            if (HasField(query, ItemFields.DateCreated))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1645,7 +1662,7 @@ namespace Emby.Server.Implementations.Data
             item.Id = reader.GetGuid(index);
             index++;
 
-            if (query.HasField(ItemFields.Genres))
+            if (HasField(query, ItemFields.Genres))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1680,13 +1697,16 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (!reader.IsDBNull(index))
+            if (HasField(query, ItemFields.DateLastSaved))
             {
-                item.DateLastSaved = reader[index].ReadDateTime();
+                if (!reader.IsDBNull(index))
+                {
+                    item.DateLastSaved = reader[index].ReadDateTime();
+                }
+                index++;
             }
-            index++;
 
-            if (query.HasField(ItemFields.Settings))
+            if (HasField(query, ItemFields.Settings))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1695,7 +1715,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.Studios))
+            if (HasField(query, ItemFields.Studios))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1704,7 +1724,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.Tags))
+            if (HasField(query, ItemFields.Tags))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1719,17 +1739,20 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            var trailer = item as Trailer;
-            if (trailer != null)
+            if (hasTrailerTypes)
             {
-                if (!reader.IsDBNull(index))
+                var trailer = item as Trailer;
+                if (trailer != null)
                 {
-                    trailer.TrailerTypes = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => (TrailerType)Enum.Parse(typeof(TrailerType), i, true)).ToList();
+                    if (!reader.IsDBNull(index))
+                    {
+                        trailer.TrailerTypes = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => (TrailerType)Enum.Parse(typeof(TrailerType), i, true)).ToList();
+                    }
                 }
+                index++;
             }
-            index++;
 
-            if (query.HasField(ItemFields.OriginalTitle))
+            if (HasField(query, ItemFields.OriginalTitle))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1748,7 +1771,7 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (query.HasField(ItemFields.DateLastMediaAdded))
+            if (HasField(query, ItemFields.DateLastMediaAdded))
             {
                 var folder = item as Folder;
                 if (folder != null && !reader.IsDBNull(index))
@@ -1777,44 +1800,53 @@ namespace Emby.Server.Implementations.Data
             index++;
 
             var hasSeries = item as IHasSeries;
-            if (hasSeries != null)
+            if (hasSeriesFields)
             {
-                if (!reader.IsDBNull(index))
+                if (hasSeries != null)
                 {
-                    hasSeries.SeriesName = reader.GetString(index);
-                }
-            }
-            index++;
-
-            var episode = item as Episode;
-            if (episode != null)
-            {
-                if (!reader.IsDBNull(index))
-                {
-                    episode.SeasonName = reader.GetString(index);
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasSeries.SeriesName = reader.GetString(index);
+                    }
                 }
                 index++;
-                if (!reader.IsDBNull(index))
-                {
-                    episode.SeasonId = reader.GetGuid(index);
-                }
             }
-            else
+
+            if (hasEpisodeAttributes)
             {
+                var episode = item as Episode;
+                if (episode != null)
+                {
+                    if (!reader.IsDBNull(index))
+                    {
+                        episode.SeasonName = reader.GetString(index);
+                    }
+                    index++;
+                    if (!reader.IsDBNull(index))
+                    {
+                        episode.SeasonId = reader.GetGuid(index);
+                    }
+                }
+                else
+                {
+                    index++;
+                }
                 index++;
             }
-            index++;
 
-            if (hasSeries != null)
+            if (hasSeriesFields)
             {
-                if (!reader.IsDBNull(index))
+                if (hasSeries != null)
                 {
-                    hasSeries.SeriesId = reader.GetGuid(index);
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasSeries.SeriesId = reader.GetGuid(index);
+                    }
                 }
+                index++;
             }
-            index++;
 
-            if (query.HasField(ItemFields.PresentationUniqueKey))
+            if (HasField(query, ItemFields.PresentationUniqueKey))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1823,7 +1855,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.InheritedParentalRatingValue))
+            if (HasField(query, ItemFields.InheritedParentalRatingValue))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1832,7 +1864,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.Tags))
+            if (HasField(query, ItemFields.Tags))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1841,7 +1873,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.ExternalSeriesId))
+            if (HasField(query, ItemFields.ExternalSeriesId))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1850,7 +1882,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.Taglines))
+            if (HasField(query, ItemFields.Taglines))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1859,7 +1891,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.Keywords))
+            if (HasField(query, ItemFields.Keywords))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1883,7 +1915,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.ProductionLocations))
+            if (HasField(query, ItemFields.ProductionLocations))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1892,7 +1924,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.ThemeSongIds))
+            if (HasField(query, ItemFields.ThemeSongIds))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1901,7 +1933,7 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (query.HasField(ItemFields.ThemeVideoIds))
+            if (HasField(query, ItemFields.ThemeVideoIds))
             {
                 if (!reader.IsDBNull(index))
                 {
@@ -1922,19 +1954,22 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            var hasArtists = item as IHasArtist;
-            if (hasArtists != null && !reader.IsDBNull(index))
+            if (hasArtistFields)
             {
-                hasArtists.Artists = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
-            }
-            index++;
+                var hasArtists = item as IHasArtist;
+                if (hasArtists != null && !reader.IsDBNull(index))
+                {
+                    hasArtists.Artists = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+                }
+                index++;
 
-            var hasAlbumArtists = item as IHasAlbumArtist;
-            if (hasAlbumArtists != null && !reader.IsDBNull(index))
-            {
-                hasAlbumArtists.AlbumArtists = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+                var hasAlbumArtists = item as IHasAlbumArtist;
+                if (hasAlbumArtists != null && !reader.IsDBNull(index))
+                {
+                    hasAlbumArtists.AlbumArtists = reader.GetString(index).Split('|').Where(i => !string.IsNullOrWhiteSpace(i)).ToList();
+                }
+                index++;
             }
-            index++;
 
             if (!reader.IsDBNull(index))
             {
@@ -1942,14 +1977,17 @@ namespace Emby.Server.Implementations.Data
             }
             index++;
 
-            if (hasSeries != null)
+            if (HasField(query, ItemFields.SeriesPresentationUniqueKey))
             {
-                if (!reader.IsDBNull(index))
+                if (hasSeries != null)
                 {
-                    hasSeries.SeriesPresentationUniqueKey = reader.GetString(index);
+                    if (!reader.IsDBNull(index))
+                    {
+                        hasSeries.SeriesPresentationUniqueKey = reader.GetString(index);
+                    }
                 }
+                index++;
             }
-            index++;
 
             return item;
         }
@@ -2259,19 +2297,264 @@ namespace Emby.Server.Implementations.Data
             return new[] { field.ToString() };
         }
 
+        private bool HasField(InternalItemsQuery query, ItemFields name)
+        {
+            var fields = query.DtoOptions.Fields;
+
+            switch (name)
+            {
+                case ItemFields.HomePageUrl:
+                case ItemFields.Keywords:
+                case ItemFields.DisplayMediaType:
+                case ItemFields.VoteCount:
+                case ItemFields.CustomRating:
+                case ItemFields.ProductionLocations:
+                case ItemFields.Settings:
+                case ItemFields.OriginalTitle:
+                case ItemFields.Taglines:
+                case ItemFields.SortName:
+                case ItemFields.Studios:
+                case ItemFields.Tags:
+                case ItemFields.ThemeSongIds:
+                case ItemFields.ThemeVideoIds:
+                case ItemFields.DateCreated:
+                case ItemFields.Overview:
+                case ItemFields.Genres:
+                case ItemFields.DateLastMediaAdded:
+                case ItemFields.ExternalEtag:
+                case ItemFields.PresentationUniqueKey:
+                case ItemFields.InheritedParentalRatingValue:
+                case ItemFields.ExternalSeriesId:
+                case ItemFields.SeriesPresentationUniqueKey:
+                case ItemFields.DateLastRefreshed:
+                case ItemFields.DateLastSaved:
+                    return fields.Contains(name);
+                case ItemFields.ServiceName:
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        private bool HasProgramAttributes(InternalItemsQuery query)
+        {
+            var excludeParentTypes = new string[]
+            {
+                "Series",
+                "Season",
+                "MusicAlbum",
+                "MusicArtist",
+                "PhotoAlbum"
+            };
+
+            if (excludeParentTypes.Contains(query.ParentType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Program",
+                "Recording",
+                "TvChannel",
+                "LiveTvAudioRecording",
+                "LiveTvVideoRecording",
+                "LiveTvProgram",
+                "LiveTvTvChannel"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool HasStartDate(InternalItemsQuery query)
+        {
+            var excludeParentTypes = new string[]
+             {
+                "Series",
+                "Season",
+                "MusicAlbum",
+                "MusicArtist",
+                "PhotoAlbum"
+             };
+
+            if (excludeParentTypes.Contains(query.ParentType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Program",
+                "Recording",
+                "LiveTvAudioRecording",
+                "LiveTvVideoRecording",
+                "LiveTvProgram"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool HasEpisodeAttributes(InternalItemsQuery query)
+        {
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Episode"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool HasTrailerTypes(InternalItemsQuery query)
+        {
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Trailer"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool HasArtistFields(InternalItemsQuery query)
+        {
+            var excludeParentTypes = new string[]
+             {
+                "Series",
+                "Season",
+                "PhotoAlbum"
+             };
+
+            if (excludeParentTypes.Contains(query.ParentType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Audio",
+                "MusicAlbum",
+                "MusicVideo",
+                "AudioBook",
+                "AudioPodcast",
+                "LiveTvAudioRecording",
+                "Recording"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool HasSeriesFields(InternalItemsQuery query)
+        {
+            var excludeParentTypes = new string[]
+             {
+                "PhotoAlbum"
+             };
+
+            if (excludeParentTypes.Contains(query.ParentType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                return true;
+            }
+
+            var types = new string[]
+            {
+                "Book",
+                "AudioBook",
+                "Episode",
+                "Season"
+            };
+
+            return types.Any(i => query.IncludeItemTypes.Contains(i, StringComparer.OrdinalIgnoreCase));
+        }
+
         private string[] GetFinalColumnsToSelect(InternalItemsQuery query, string[] startColumns)
         {
             var list = startColumns.ToList();
 
             foreach (var field in allFields)
             {
-                if (!query.HasField(field))
+                if (!HasField(query, field))
                 {
                     foreach (var fieldToRemove in GetColumnNamesFromField(field).ToList())
                     {
                         list.Remove(fieldToRemove);
                     }
                 }
+            }
+
+            if (!HasProgramAttributes(query))
+            {
+                list.Remove("IsKids");
+                list.Remove("IsMovie");
+                list.Remove("IsSports");
+                list.Remove("IsSeries");
+                list.Remove("IsLive");
+                list.Remove("IsNews");
+                list.Remove("IsPremiere");
+                list.Remove("EpisodeTitle");
+                list.Remove("IsRepeat");
+            }
+
+            if (!HasEpisodeAttributes(query))
+            {
+                list.Remove("SeasonName");
+                list.Remove("SeasonId");
+            }
+
+            if (!HasStartDate(query))
+            {
+                list.Remove("StartDate");
+            }
+
+            if (!HasTrailerTypes(query))
+            {
+                list.Remove("TrailerTypes");
+            }
+
+            if (!HasArtistFields(query))
+            {
+                list.Remove("AlbumArtists");
+                list.Remove("Artists");
+            }
+
+            if (!HasSeriesFields(query))
+            {
+                list.Remove("SeriesId");
+                list.Remove("SeriesName");
+            }
+
+            if (!HasEpisodeAttributes(query))
+            {
+                list.Remove("SeasonName");
+                list.Remove("SeasonId");
             }
 
             if (!query.DtoOptions.EnableImages)
@@ -2400,7 +2683,7 @@ namespace Emby.Server.Implementations.Data
                 query.Limit = query.Limit.Value + 4;
             }
 
-            var commandText = "select " + string.Join(",", GetFinalColumnsToSelect(query, new [] { "count(distinct PresentationUniqueKey)" })) + GetFromText();
+            var commandText = "select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count(distinct PresentationUniqueKey)" })) + GetFromText();
             commandText += GetJoinUserDataText(query);
 
             var whereClauses = GetWhereClauses(query, null);
@@ -2505,9 +2788,16 @@ namespace Emby.Server.Implementations.Data
                         // Running this again will bind the params
                         GetWhereClauses(query, statement);
 
+                        var hasEpisodeAttributes = HasEpisodeAttributes(query);
+                        var hasProgramAttributes = HasProgramAttributes(query);
+                        var hasStartDate = HasStartDate(query);
+                        var hasTrailerTypes = HasTrailerTypes(query);
+                        var hasArtistFields = HasArtistFields(query);
+                        var hasSeriesFields = HasSeriesFields(query);
+
                         foreach (var row in statement.ExecuteQuery())
                         {
-                            var item = GetItem(row, query);
+                            var item = GetItem(row, query, hasProgramAttributes, hasEpisodeAttributes, hasStartDate, hasTrailerTypes, hasArtistFields, hasSeriesFields);
                             if (item != null)
                             {
                                 list.Add(item);
@@ -2707,9 +2997,16 @@ namespace Emby.Server.Implementations.Data
                                 // Running this again will bind the params
                                 GetWhereClauses(query, statement);
 
+                                var hasEpisodeAttributes = HasEpisodeAttributes(query);
+                                var hasProgramAttributes = HasProgramAttributes(query);
+                                var hasStartDate = HasStartDate(query);
+                                var hasTrailerTypes = HasTrailerTypes(query);
+                                var hasArtistFields = HasArtistFields(query);
+                                var hasSeriesFields = HasSeriesFields(query);
+
                                 foreach (var row in statement.ExecuteQuery())
                                 {
-                                    var item = GetItem(row, query);
+                                    var item = GetItem(row, query, hasProgramAttributes, hasEpisodeAttributes, hasStartDate, hasTrailerTypes, hasArtistFields, hasSeriesFields);
                                     if (item != null)
                                     {
                                         list.Add(item);
@@ -3474,6 +3771,15 @@ namespace Emby.Server.Implementations.Data
                 if (statement != null)
                 {
                     statement.TryBind("@MinDateLastSaved", query.MinDateLastSaved.Value);
+                }
+            }
+
+            if (query.MinDateLastSavedForUser.HasValue)
+            {
+                whereClauses.Add("DateLastSaved>=@MinDateLastSaved");
+                if (statement != null)
+                {
+                    statement.TryBind("@MinDateLastSaved", query.MinDateLastSavedForUser.Value);
                 }
             }
 
@@ -5051,9 +5357,16 @@ namespace Emby.Server.Implementations.Data
                                 GetWhereClauses(innerQuery, statement);
                                 GetWhereClauses(outerQuery, statement);
 
+                                var hasEpisodeAttributes = HasEpisodeAttributes(query);
+                                var hasProgramAttributes = HasProgramAttributes(query);
+                                var hasStartDate = HasStartDate(query);
+                                var hasTrailerTypes = HasTrailerTypes(query);
+                                var hasArtistFields = HasArtistFields(query);
+                                var hasSeriesFields = HasSeriesFields(query);
+
                                 foreach (var row in statement.ExecuteQuery())
                                 {
-                                    var item = GetItem(row, query);
+                                    var item = GetItem(row, query, hasProgramAttributes, hasEpisodeAttributes, hasStartDate, hasTrailerTypes, hasArtistFields, hasSeriesFields);
                                     if (item != null)
                                     {
                                         var countStartColumn = columns.Count - 1;
