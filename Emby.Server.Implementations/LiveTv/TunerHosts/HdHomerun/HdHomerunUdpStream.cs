@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.Server.Implementations.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Library;
@@ -170,146 +171,92 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return CopyFileTo(_tempFilePath, false, stream, cancellationToken);
         }
 
-        private static int RtpHeaderBytes = 12;
-        private async Task CopyTo(ISocket udpClient, Stream outputStream, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
+        protected async Task CopyFileTo(string path, bool allowEndOfFile, Stream outputStream, CancellationToken cancellationToken)
         {
-            while (true)
+            var eofCount = 0;
+
+            long startPosition = -25000;
+            if (startPosition < 0)
             {
-                var data = await udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
-                var bytesRead = data.ReceivedBytes - RtpHeaderBytes;
+                var length = FileSystem.GetFileInfo(path).Length;
+                startPosition = Math.Max(length - startPosition, 0);
+            }
 
-                await outputStream.WriteAsync(data.Buffer, RtpHeaderBytes, bytesRead, cancellationToken).ConfigureAwait(false);
-
-                if (openTaskCompletionSource != null)
+            using (var inputStream = GetInputStream(path, startPosition, true))
+            {
+                if (startPosition > 0)
                 {
-                    Resolve(openTaskCompletionSource);
-                    openTaskCompletionSource = null;
+                    inputStream.Position = startPosition;
+                }
+
+                while (eofCount < 20 || !allowEndOfFile)
+                {
+                    var bytesRead = await AsyncStreamCopier.CopyStream(inputStream, outputStream, 81920, 4, cancellationToken).ConfigureAwait(false);
+
+                    //var position = fs.Position;
+                    //_logger.Debug("Streamed {0} bytes to position {1} from file {2}", bytesRead, position, path);
+
+                    if (bytesRead == 0)
+                    {
+                        eofCount++;
+                        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        eofCount = 0;
+                    }
                 }
             }
         }
-    }
 
-    // This handles the ReadAsync function only of a Stream object
-    // This is used to wrap a UDP socket into a stream for MulticastStream which only uses ReadAsync
-    public class UdpClientStream : Stream
-    {
         private static int RtpHeaderBytes = 12;
-        private static int PacketSize = 1316;
-        private readonly ISocket _udpClient;
-        bool disposed;
-
-        public UdpClientStream(ISocket udpClient) : base()
+        private Task CopyTo(ISocket udpClient, Stream outputStream, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
-            _udpClient = udpClient;
+            return CopyStream(_socketFactory.CreateNetworkStream(udpClient, false), outputStream, 81920, 4, openTaskCompletionSource, cancellationToken);
         }
 
-        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        private Task CopyStream(Stream source, Stream target, int bufferSize, int bufferCount, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
-            if (buffer == null)
-                throw new ArgumentNullException("buffer");
+            var copier = new AsyncStreamCopier(source, target, 0, cancellationToken, false, bufferSize, bufferCount);
+            copier.IndividualReadOffset = RtpHeaderBytes;
 
-            if (offset + count < 0)
-                throw new ArgumentOutOfRangeException("offset + count must not be negative", "offset+count");
+            var taskCompletion = new TaskCompletionSource<long>();
 
-            if (offset + count > buffer.Length)
-                throw new ArgumentException("offset + count must not be greater than the length of buffer", "offset+count");
+            copier.TaskCompletionSource = taskCompletion;
 
-            if (disposed)
-                throw new ObjectDisposedException(typeof(UdpClientStream).ToString());
+            var result = copier.BeginCopy(StreamCopyCallback, copier);
 
-            // This will always receive a 1328 packet size (PacketSize + RtpHeaderSize)
-            // The RTP header will be stripped so see how many reads we need to make to fill the buffer.
-            var numReads = count / PacketSize;
-
-            int totalBytesRead = 0;
-
-            for (int i = 0; i < numReads; ++i)
+            if (openTaskCompletionSource != null)
             {
-                var data = await _udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
-
-                var bytesRead = data.ReceivedBytes - RtpHeaderBytes;
-
-                // remove rtp header
-                Buffer.BlockCopy(data.Buffer, RtpHeaderBytes, buffer, offset, bytesRead);
-                offset += bytesRead;
-                totalBytesRead += bytesRead;
+                Resolve(openTaskCompletionSource);
+                openTaskCompletionSource = null;
             }
-            return totalBytesRead;
-        }
 
-        protected override void Dispose(bool disposing)
-        {
-            disposed = true;
-        }
-
-        public override bool CanRead
-        {
-            get
+            if (result.CompletedSynchronously)
             {
-                return true;
+                StreamCopyCallback(result);
+            }
+
+            cancellationToken.Register(() => taskCompletion.TrySetCanceled());
+
+            return taskCompletion.Task;
+        }
+
+        private void StreamCopyCallback(IAsyncResult result)
+        {
+            var copier = (AsyncStreamCopier)result.AsyncState;
+            var taskCompletion = copier.TaskCompletionSource;
+
+            try
+            {
+                copier.EndCopy(result);
+                taskCompletion.TrySetResult(0);
+            }
+            catch (Exception ex)
+            {
+                taskCompletion.TrySetException(ex);
             }
         }
 
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public override long Length
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override long Position
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override void Flush()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

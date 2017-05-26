@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.Server.Implementations.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
@@ -105,7 +106,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                                 {
                                     ResolveAfterDelay(3000, openTaskCompletionSource);
 
-                                    await response.Content.CopyToAsync(fileStream, 81920, cancellationToken).ConfigureAwait(false);
+                                    //await response.Content.CopyToAsync(fileStream, 81920, cancellationToken).ConfigureAwait(false);
+                                    await AsyncStreamCopier.CopyStream(response.Content, fileStream, 81920, 4, cancellationToken).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -146,6 +148,44 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         public Task CopyToAsync(Stream stream, CancellationToken cancellationToken)
         {
             return CopyFileTo(_tempFilePath, false, stream, cancellationToken);
+        }
+
+        protected async Task CopyFileTo(string path, bool allowEndOfFile, Stream outputStream, CancellationToken cancellationToken)
+        {
+            var eofCount = 0;
+
+            long startPosition = -25000;
+            if (startPosition < 0)
+            {
+                var length = FileSystem.GetFileInfo(path).Length;
+                startPosition = Math.Max(length - startPosition, 0);
+            }
+
+            using (var inputStream = GetInputStream(path, startPosition, true))
+            {
+                if (startPosition > 0)
+                {
+                    inputStream.Position = startPosition;
+                }
+
+                while (eofCount < 20 || !allowEndOfFile)
+                {
+                    var bytesRead = await AsyncStreamCopier.CopyStream(inputStream, outputStream, 81920, 4, cancellationToken).ConfigureAwait(false);
+
+                    //var position = fs.Position;
+                    //_logger.Debug("Streamed {0} bytes to position {1} from file {2}", bytesRead, position, path);
+
+                    if (bytesRead == 0)
+                    {
+                        eofCount++;
+                        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        eofCount = 0;
+                    }
+                }
+            }
         }
     }
 }
