@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Events;
-using MediaBrowser.Common.IO;
+
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.IO;
@@ -180,7 +180,7 @@ namespace Emby.Server.Implementations.IO
 
                 try
                 {
-                    await item.ChangedExternally().ConfigureAwait(false);
+                    item.ChangedExternally();
                 }
                 catch (IOException ex)
                 {
@@ -282,11 +282,11 @@ namespace Emby.Server.Implementations.IO
                     return false;
                 }
             }
-            //catch (DirectoryNotFoundException)
-            //{
-            //    // File may have been deleted
-            //    return false;
-            //}
+            catch (DirectoryNotFoundException)
+            {
+                // File may have been deleted
+                return false;
+            }
             catch (FileNotFoundException)
             {
                 // File may have been deleted
