@@ -1,7 +1,10 @@
-﻿using System.Runtime.Serialization;
-using MediaBrowser.Model.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using MediaBrowser.Model.Serialization;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Extensions;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
@@ -10,28 +13,48 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// </summary>
     public class MusicGenre : BaseItem, IItemByName
     {
-        public MusicGenre()
+        public override List<string> GetUserDataKeys()
         {
-            UserItemCountList = new List<ItemByNameCounts>();
-        }
+            var list = base.GetUserDataKeys();
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+            list.Insert(0, GetType().Name + "-" + (Name ?? string.Empty).RemoveDiacritics());
+            return list;
+        }
+        public override string CreatePresentationUniqueKey()
         {
-            return "MusicGenre-" + Name;
+            return GetUserDataKeys()[0];
         }
 
         [IgnoreDataMember]
-        public List<ItemByNameCounts> UserItemCountList { get; set; }
+        public override bool SupportsAddingToPlaylist
+        {
+            get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsAncestors
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool IsDisplayedAsFolder
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Returns the folder containing the item.
         /// If the item is a folder, it returns the folder itself
         /// </summary>
         /// <value>The containing folder path.</value>
+        [IgnoreDataMember]
         public override string ContainingFolderPath
         {
             get
@@ -40,16 +63,107 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
         }
 
+        public override double? GetDefaultPrimaryImageAspectRatio()
+        {
+            return 1;
+        }
+
+        public override bool CanDelete()
+        {
+            return false;
+        }
+
+        public override bool IsSaveLocalMetadataEnabled()
+        {
+            return true;
+        }
+
         /// <summary>
         /// Gets a value indicating whether this instance is owned item.
         /// </summary>
         /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
         public override bool IsOwnedItem
         {
             get
             {
                 return false;
             }
+        }
+
+        public IEnumerable<BaseItem> GetTaggedItems(IEnumerable<BaseItem> inputItems)
+        {
+            return inputItems.Where(GetItemFilter());
+        }
+
+        public Func<BaseItem, bool> GetItemFilter()
+        {
+            return i => i is IHasMusicGenres && i.Genres.Contains(Name, StringComparer.OrdinalIgnoreCase);
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPeople
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        {
+            query.GenreIds = new[] { Id.ToString("N") };
+            query.IncludeItemTypes = new[] { typeof(MusicVideo).Name, typeof(Audio).Name, typeof(MusicAlbum).Name, typeof(MusicArtist).Name };
+
+            return LibraryManager.GetItemList(query);
+        }
+
+        public static string GetPath(string name)
+        {
+            return GetPath(name, true);
+        }
+
+        public static string GetPath(string name, bool normalizeName)
+        {
+            // Trim the period at the end because windows will have a hard time with that
+            var validName = normalizeName ?
+                FileSystem.GetValidFilename(name).Trim().TrimEnd('.') :
+                name;
+
+            return System.IO.Path.Combine(ConfigurationManager.ApplicationPaths.MusicGenrePath, validName);
+        }
+
+        private string GetRebasedPath()
+        {
+            return GetPath(System.IO.Path.GetFileName(Path), false);
+        }
+
+        public override bool RequiresRefresh()
+        {
+            var newPath = GetRebasedPath();
+            if (!string.Equals(Path, newPath, StringComparison.Ordinal))
+            {
+                Logger.Debug("{0} path has changed from {1} to {2}", GetType().Name, Path, newPath);
+                return true;
+            }
+            return base.RequiresRefresh();
+        }
+
+        /// <summary>
+        /// This is called before any metadata refresh and returns true or false indicating if changes were made
+        /// </summary>
+        public override bool BeforeMetadataRefresh()
+        {
+            var hasChanges = base.BeforeMetadataRefresh();
+
+            var newPath = GetRebasedPath();
+            if (!string.Equals(Path, newPath, StringComparison.Ordinal))
+            {
+                Path = newPath;
+                hasChanges = true;
+            }
+
+            return hasChanges;
         }
     }
 }

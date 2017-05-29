@@ -1,5 +1,10 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Providers;
+using System.Collections.Generic;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Controller.Resolvers
 {
@@ -19,5 +24,25 @@ namespace MediaBrowser.Controller.Resolvers
         /// </summary>
         /// <value>The priority.</value>
         ResolverPriority Priority { get; }
+    }
+
+    public interface IMultiItemResolver
+    {
+        MultiItemResolverResult ResolveMultiple(Folder parent,
+            List<FileSystemMetadata> files, 
+            string collectionType,
+            IDirectoryService directoryService);
+    }
+
+    public class MultiItemResolverResult
+    {
+        public List<BaseItem> Items { get; set; }
+        public List<FileSystemMetadata> ExtraFiles { get; set; }
+
+        public MultiItemResolverResult()
+        {
+            Items = new List<BaseItem>();
+            ExtraFiles = new List<FileSystemMetadata>();
+        }
     }
 }

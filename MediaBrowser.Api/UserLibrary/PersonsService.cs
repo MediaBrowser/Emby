@@ -1,36 +1,27 @@
 ﻿using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Querying;
-using ServiceStack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.UserLibrary
 {
     /// <summary>
     /// Class GetPersons
     /// </summary>
-    [Route("/Persons", "GET")]
-    [Api(Description = "Gets all persons from a given item, folder, or the entire library")]
+    [Route("/Persons", "GET", Summary = "Gets all persons from a given item, folder, or the entire library")]
     public class GetPersons : GetItemsByName
     {
-        /// <summary>
-        /// Gets or sets the person types.
-        /// </summary>
-        /// <value>The person types.</value>
-        [ApiMember(Name = "PersonTypes", Description = "Optional filter by person type. Accepts multiple, comma-delimited.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string PersonTypes { get; set; }
     }
 
     /// <summary>
     /// Class GetPerson
     /// </summary>
-    [Route("/Persons/{Name}", "GET")]
-    [Api(Description = "Gets a person, by name")]
+    [Route("/Persons/{Name}", "GET", Summary = "Gets a person, by name")]
     public class GetPerson : IReturn<BaseItemDto>
     {
         /// <summary>
@@ -45,26 +36,15 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid? UserId { get; set; }
+        public string UserId { get; set; }
     }
 
     /// <summary>
     /// Class PersonsService
     /// </summary>
+    [Authenticated]
     public class PersonsService : BaseItemsByNameService<Person>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PersonsService" /> class.
-        /// </summary>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="userDataRepository">The user data repository.</param>
-        /// <param name="itemRepo">The item repo.</param>
-        public PersonsService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IDtoService dtoService)
-            : base(userManager, libraryManager, userDataRepository, itemRepo, dtoService)
-        {
-        }
-
         /// <summary>
         /// Gets the specified request.
         /// </summary>
@@ -85,18 +65,17 @@ namespace MediaBrowser.Api.UserLibrary
         private BaseItemDto GetItem(GetPerson request)
         {
             var item = GetPerson(request.Name, LibraryManager);
+            
+            var dtoOptions = GetDtoOptions(AuthorizationContext, request);
 
-            // Get everything
-            var fields = Enum.GetNames(typeof(ItemFields)).Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true));
-
-            if (request.UserId.HasValue)
+            if (!string.IsNullOrWhiteSpace(request.UserId))
             {
-                var user = UserManager.GetUserById(request.UserId.Value);
+                var user = UserManager.GetUserById(request.UserId);
 
-                return DtoService.GetBaseItemDto(item, fields.ToList(), user);
+                return DtoService.GetBaseItemDto(item, dtoOptions, user);
             }
 
-            return DtoService.GetBaseItemDto(item, fields.ToList());
+            return DtoService.GetBaseItemDto(item, dtoOptions);
         }
 
         /// <summary>
@@ -117,7 +96,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         /// <param name="items">The items.</param>
         /// <returns>IEnumerable{Tuple{System.StringFunc{System.Int32}}}.</returns>
-        protected override IEnumerable<Person> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
+        protected override IEnumerable<BaseItem> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
         {
             var inputPersonTypes = ((GetPersons)request).PersonTypes;
             var personTypes = string.IsNullOrEmpty(inputPersonTypes) ? new string[] { } : inputPersonTypes.Split(',');
@@ -129,7 +108,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             return allPeople
                 .Select(i => i.Name)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .DistinctNames()
 
                 .Select(name =>
                 {
@@ -153,20 +132,20 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="itemsList">The items list.</param>
         /// <param name="personTypes">The person types.</param>
         /// <returns>IEnumerable{PersonInfo}.</returns>
-        private IEnumerable<PersonInfo> GetAllPeople(IEnumerable<BaseItem> itemsList, string[] personTypes)
+        private IEnumerable<PersonInfo> GetAllPeople(IEnumerable<BaseItem> itemsList, IEnumerable<string> personTypes)
         {
-            var people = itemsList.SelectMany(i => i.People.OrderBy(p => p.SortOrder ?? int.MaxValue).ThenBy(p => p.Type));
+            var allIds = itemsList.Select(i => i.Id).ToList();
 
-            return personTypes.Length == 0 ?
+            var allPeople = LibraryManager.GetPeople(new InternalPeopleQuery
+            {
+                PersonTypes = personTypes.ToList()
+            });
 
-                people :
-
-                people.Where(p => personTypes.Contains(p.Type ?? string.Empty, StringComparer.OrdinalIgnoreCase) || personTypes.Contains(p.Role ?? string.Empty, StringComparer.OrdinalIgnoreCase));
+            return allPeople.Where(i => allIds.Contains(i.ItemId)).OrderBy(p => p.SortOrder ?? int.MaxValue).ThenBy(p => p.Type);
         }
 
-        protected override IEnumerable<BaseItem> GetLibraryItems(Person item, IEnumerable<BaseItem> libraryItems)
+        public PersonsService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepository, IDtoService dtoService, IAuthorizationContext authorizationContext) : base(userManager, libraryManager, userDataRepository, itemRepository, dtoService, authorizationContext)
         {
-            return libraryItems.Where(i => i.People.Any(p => string.Equals(p.Name, item.Name, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

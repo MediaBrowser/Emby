@@ -1,63 +1,67 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Sign In</title>
-</head>
-<body>
-    <div id="loginPage" data-role="page" class="page standalonePage">
+﻿<div id="loginPage" data-role="page" class="page standalonePage" data-theme="b">
 
-        <div data-role="content">
+    <div class="padded-left padded-right padded-bottom-page">
 
-            <form class="manualLoginForm" id="manualLoginForm" style="display: none; text-align: center; margin: 0 auto;">
-                <h2 style="text-align: left;">Please sign in</h2>
+        <form class="manualLoginForm hide" style="margin: 0 auto;">
 
-                <label for="txtManualName" style="text-align: left;">User:</label>
-                <input type="text" name="txtManualName" id="txtManualName" required="required" />
+            <h1 style="text-align: left;">${HeaderPleaseSignIn}</h1>
 
-                <label for="txtManualPassword" style="text-align: left;">Password:</label>
-                <input type="password" name="txtManualPassword" id="txtManualPassword" placeholder="password" />
+            <div style="height:0; overflow: hidden;"><input type="text" name="fakeusernameremembered" tabindex="-1" /><input type="password" name="fakepasswordremembered" tabindex="-1" /></div>
 
-                <p>
-                    <button type="submit" data-theme="b" data-icon="check">
-                        Sign in
-                    </button>
-                </p>
-            </form>
+            <div class="inputContainer">
+                <input is="emby-input" type="text" id="txtManualName" required="required" label="${LabelUser}" />
+            </div>
 
-            <div class="visualLoginForm" style="display: none; text-align: center;">
-                <div id="divUsers"></div>
+            <div class="inputContainer">
+                <input is="emby-input" id="txtManualPassword" type="password" label="${LabelPassword}" />
+            </div>
 
-                <p style="text-align: center;"><a onclick="$('.manualLoginForm').show();$('.visualLoginForm').hide();" href="#">Manual Login</a></p>
+            <label class="checkboxContainer">
+                <input is="emby-checkbox" type="checkbox" class="chkRememberLogin" checked />
+                <span>${RememberMe}</span>
+            </label>
 
-                <p style="text-align: center;">Note: Passwords are not required when logging in from localhost.</p>
+            <button is="emby-button" type="submit" class="raised button-submit block">
+                <span>${ButtonSignIn}</span>
+            </button>
+            <div style="margin-top:.5em;">
+                <button is="emby-button" type="button" class="raised cancel block btnCancel">
+                    <span>${ButtonCancel}</span>
+                </button>
+            </div>
+            <br />
+            <br />
+        </form>
+
+        <div class="visualLoginForm" style="text-align: center;">
+            <h1>${HeaderPleaseSignIn}</h1>
+            <br />
+            <div id="divUsers" class="itemsContainer vertical-wrap centered"></div>
+
+            <br />
+
+            <div class="readOnlyContent" style="margin: 2em auto 0;">
+                <button is="emby-button" type="button" class="raised cancel block btnManual">
+                    <span>${ButtonManualLogin}</span>
+                </button>
             </div>
         </div>
 
-        <div data-role="popup" id="popupLogin" class="popup" data-dismissible="false">
-            <form class="loginForm">
-                <div class="ui-bar-a" style="text-align: center;">
-                    <h3>Please sign in</h3>
-                </div>
-                <div data-role="content">
-                    <label for="pw" class="ui-hidden-accessible">Password:</label>
-                    <input type="password" name="pw" id="pw" value="" placeholder="password" />
+        <div class="readOnlyContent" style="margin: .5em auto 1em;">
+            <button is="emby-button" type="button" class="raised cancel block btnForgotPassword">
+                <span>${ButtonForgotPassword}</span>
+            </button>
 
-                    <p>
-                        <button type="submit" data-theme="b" data-icon="check">
-                            Sign in
-                        </button>
-                        <button type="button" data-icon="delete" onclick="$(this).parents('.popup').popup('close');">
-                            Cancel
-                        </button>
-                    </p>
-                </div>
-            </form>
+            <div class="connectButtons hide">
+                <a href="selectserver.html" class="clearLink">
+                    <button is="emby-button" type="button" class="raised cancel block">
+                        <span>${ButtonChangeServer}</span>
+                    </button>
+                </a>
+            </div>
+
+            <p class="disclaimer" style="text-align: center; margin-top: 2em;"></p>
         </div>
 
-        <script type="text/javascript">
-            $('.loginForm').on('submit', LoginPage.onSubmit);
-            $('#manualLoginForm').on('submit', LoginPage.onManualSubmit);
-        </script>
     </div>
-</body>
-</html>
+</div>

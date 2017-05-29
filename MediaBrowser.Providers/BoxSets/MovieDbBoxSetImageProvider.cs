@@ -47,14 +47,7 @@ namespace MediaBrowser.Providers.BoxSets
             };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, ImageType imageType, CancellationToken cancellationToken)
-        {
-            var images = await GetAllImages(item, cancellationToken).ConfigureAwait(false);
-
-            return images.Where(i => i.Type == imageType);
-        }
-
-        public async Task<IEnumerable<RemoteImageInfo>> GetAllImages(IHasImages item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             var tmdbId = item.GetProviderId(MetadataProviders.Tmdb);
 
@@ -62,13 +55,13 @@ namespace MediaBrowser.Providers.BoxSets
             {
                 var language = item.GetPreferredMetadataLanguage();
 
-                var mainResult = await MovieDbBoxSetProvider.Current.GetMovieDbResult(tmdbId, language, cancellationToken).ConfigureAwait(false);
+                var mainResult = await MovieDbBoxSetProvider.Current.GetMovieDbResult(tmdbId, null, cancellationToken).ConfigureAwait(false);
 
                 if (mainResult != null)
                 {
                     var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-                    var tmdbImageUrl = tmdbSettings.images.base_url + "original";
+                    var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
 
                     return GetImages(mainResult, language, tmdbImageUrl);
                 }
@@ -90,7 +83,7 @@ namespace MediaBrowser.Providers.BoxSets
                 VoteCount = i.vote_count,
                 Width = i.width,
                 Height = i.height,
-                Language = i.iso_639_1,
+                Language = MovieDbProvider.AdjustImageLanguage(i.iso_639_1, language),
                 ProviderName = Name,
                 Type = ImageType.Primary,
                 RatingType = RatingType.Score
@@ -169,8 +162,7 @@ namespace MediaBrowser.Providers.BoxSets
             return _httpClient.GetResponse(new HttpRequestOptions
             {
                 CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = MovieDbProvider.Current.MovieDbResourcePool
+                Url = url
             });
         }
     }

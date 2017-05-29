@@ -1,22 +1,21 @@
-﻿using MediaBrowser.Controller.Dto;
+﻿using System;
+using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Querying;
-using ServiceStack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using MediaBrowser.Model.Querying;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.UserLibrary
 {
     /// <summary>
     /// Class GetStudios
     /// </summary>
-    [Route("/Studios", "GET")]
-    [Api(Description = "Gets all studios from a given item, folder, or the entire library")]
+    [Route("/Studios", "GET", Summary = "Gets all studios from a given item, folder, or the entire library")]
     public class GetStudios : GetItemsByName
     {
     }
@@ -24,8 +23,7 @@ namespace MediaBrowser.Api.UserLibrary
     /// <summary>
     /// Class GetStudio
     /// </summary>
-    [Route("/Studios/{Name}", "GET")]
-    [Api(Description = "Gets a studio, by name")]
+    [Route("/Studios/{Name}", "GET", Summary = "Gets a studio, by name")]
     public class GetStudio : IReturn<BaseItemDto>
     {
         /// <summary>
@@ -40,19 +38,15 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid? UserId { get; set; }
+        public string UserId { get; set; }
     }
 
     /// <summary>
     /// Class StudiosService
     /// </summary>
+    [Authenticated]
     public class StudiosService : BaseItemsByNameService<Studio>
     {
-        public StudiosService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IDtoService dtoService)
-            : base(userManager, libraryManager, userDataRepository, itemRepo, dtoService)
-        {
-        }
-
         /// <summary>
         /// Gets the specified request.
         /// </summary>
@@ -74,17 +68,16 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var item = GetStudio(request.Name, LibraryManager);
 
-            // Get everything
-            var fields = Enum.GetNames(typeof(ItemFields)).Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true));
-
-            if (request.UserId.HasValue)
+            var dtoOptions = GetDtoOptions(AuthorizationContext, request);
+            
+            if (!string.IsNullOrWhiteSpace(request.UserId))
             {
-                var user = UserManager.GetUserById(request.UserId.Value);
+                var user = UserManager.GetUserById(request.UserId);
 
-                return DtoService.GetBaseItemDto(item, fields.ToList(), user);
+                return DtoService.GetBaseItemDto(item, dtoOptions, user);
             }
 
-            return DtoService.GetBaseItemDto(item, fields.ToList());
+            return DtoService.GetBaseItemDto(item, dtoOptions);
         }
 
         /// <summary>
@@ -94,9 +87,14 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetStudios request)
         {
-            var result = GetResult(request);
+            var result = GetResultSlim(request);
 
             return ToOptimizedSerializedResultUsingCache(result);
+        }
+
+        protected override QueryResult<Tuple<BaseItem, ItemCounts>> GetItems(GetItemsByName request, InternalItemsQuery query)
+        {
+            return LibraryManager.GetStudios(query);
         }
 
         /// <summary>
@@ -105,19 +103,18 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         /// <param name="items">The items.</param>
         /// <returns>IEnumerable{Tuple{System.StringFunc{System.Int32}}}.</returns>
-        protected override IEnumerable<Studio> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
+        protected override IEnumerable<BaseItem> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
         {
             var itemsList = items.Where(i => i.Studios != null).ToList();
 
             return itemsList
                 .SelectMany(i => i.Studios)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .DistinctNames()
                 .Select(name => LibraryManager.GetStudio(name));
         }
 
-        protected override IEnumerable<BaseItem> GetLibraryItems(Studio item, IEnumerable<BaseItem> libraryItems)
+        public StudiosService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepository, IDtoService dtoService, IAuthorizationContext authorizationContext) : base(userManager, libraryManager, userDataRepository, itemRepository, dtoService, authorizationContext)
         {
-            return libraryItems.Where(i => i.Studios.Contains(item.Name, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

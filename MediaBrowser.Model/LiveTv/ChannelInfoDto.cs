@@ -1,10 +1,9 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.Serialization;
-using MediaBrowser.Model.Dto;
+﻿using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
-using System;
+using MediaBrowser.Model.Library;
 using System.Collections.Generic;
+using System.Diagnostics;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -12,13 +11,19 @@ namespace MediaBrowser.Model.LiveTv
     /// Class ChannelInfoDto
     /// </summary>
     [DebuggerDisplay("Name = {Name}, Number = {Number}")]
-    public class ChannelInfoDto : INotifyPropertyChanged, IItemDto
+    public class ChannelInfoDto : IItemDto, IHasServerId
     {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the server identifier.
+        /// </summary>
+        /// <value>The server identifier.</value>
+        public string ServerId { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier.
@@ -33,10 +38,16 @@ namespace MediaBrowser.Model.LiveTv
         public string ExternalId { get; set; }
 
         /// <summary>
+        /// Gets or sets the media sources.
+        /// </summary>
+        /// <value>The media sources.</value>
+        public List<MediaSourceInfo> MediaSources { get; set; }
+        
+        /// <summary>
         /// Gets or sets the image tags.
         /// </summary>
         /// <value>The image tags.</value>
-        public Dictionary<ImageType, Guid> ImageTags { get; set; }
+        public Dictionary<ImageType, string> ImageTags { get; set; }
 
         /// <summary>
         /// Gets or sets the number.
@@ -44,6 +55,12 @@ namespace MediaBrowser.Model.LiveTv
         /// <value>The number.</value>
         public string Number { get; set; }
 
+        /// <summary>
+        /// Gets or sets the play access.
+        /// </summary>
+        /// <value>The play access.</value>
+        public PlayAccess PlayAccess { get; set; }
+        
         /// <summary>
         /// Gets or sets the name of the service.
         /// </summary>
@@ -78,19 +95,13 @@ namespace MediaBrowser.Model.LiveTv
         /// Gets or sets the now playing program.
         /// </summary>
         /// <value>The now playing program.</value>
-        public ProgramInfoDto CurrentProgram { get; set; }
+        public BaseItemDto CurrentProgram { get; set; }
 
         /// <summary>
         /// Gets or sets the primary image aspect ratio, after image enhancements.
         /// </summary>
         /// <value>The primary image aspect ratio.</value>
         public double? PrimaryImageAspectRatio { get; set; }
-
-        /// <summary>
-        /// Gets or sets the primary image aspect ratio, before image enhancements.
-        /// </summary>
-        /// <value>The original primary image aspect ratio.</value>
-        public double? OriginalPrimaryImageAspectRatio { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has primary image.
@@ -104,9 +115,8 @@ namespace MediaBrowser.Model.LiveTv
 
         public ChannelInfoDto()
         {
-            ImageTags = new Dictionary<ImageType, Guid>();
+            ImageTags = new Dictionary<ImageType, string>();
+            MediaSources = new List<MediaSourceInfo>();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

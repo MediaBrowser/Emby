@@ -1,19 +1,53 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using MediaBrowser.Controller.Extensions;
 
 namespace MediaBrowser.Providers.Manager
 {
     public static class ProviderUtils
     {
-        public static void MergeBaseItemData(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+        public static void MergeBaseItemData<T>(MetadataResult<T> sourceResult,
+            MetadataResult<T> targetResult,
+            List<MetadataFields> lockedFields,
+            bool replaceData,
+            bool mergeMetadataSettings)
+            where T : BaseItem
         {
+            var source = sourceResult.Item;
+            var target = targetResult.Item;
+
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            if (target == null)
+            {
+                throw new ArgumentNullException("target");
+            }
+
             if (!lockedFields.Contains(MetadataFields.Name))
             {
                 if (replaceData || string.IsNullOrEmpty(target.Name))
                 {
-                    target.Name = source.Name;
+                    // Safeguard against incoming data having an emtpy name
+                    if (!string.IsNullOrWhiteSpace(source.Name))
+                    {
+                        target.Name = source.Name;
+                    }
+                }
+            }
+
+            if (replaceData || string.IsNullOrEmpty(target.OriginalTitle))
+            {
+                // Safeguard against incoming data having an emtpy name
+                if (!string.IsNullOrWhiteSpace(source.OriginalTitle))
+                {
+                    target.OriginalTitle = source.OriginalTitle;
                 }
             }
 
@@ -38,6 +72,10 @@ namespace MediaBrowser.Providers.Manager
             if (replaceData || string.IsNullOrEmpty(target.HomePageUrl))
             {
                 target.HomePageUrl = source.HomePageUrl;
+                if (!string.IsNullOrWhiteSpace(target.HomePageUrl) && target.HomePageUrl.IndexOf("http", StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    target.HomePageUrl = "http://" + target.HomePageUrl;
+                }
             }
 
             if (replaceData || !target.IndexNumber.HasValue)
@@ -53,9 +91,14 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            if (replaceData || string.IsNullOrEmpty(target.OfficialRatingDescription))
+            if (replaceData || string.IsNullOrEmpty(target.CustomRating))
             {
-                target.OfficialRatingDescription = source.OfficialRatingDescription;
+                target.CustomRating = source.CustomRating;
+            }
+
+            if (replaceData || string.IsNullOrEmpty(target.Tagline))
+            {
+                target.Tagline = source.Tagline;
             }
 
             if (!lockedFields.Contains(MetadataFields.Overview))
@@ -73,9 +116,14 @@ namespace MediaBrowser.Providers.Manager
 
             if (!lockedFields.Contains(MetadataFields.Cast))
             {
-                if (replaceData || target.People.Count == 0)
+                if (replaceData || targetResult.People == null || targetResult.People.Count == 0)
                 {
-                    target.People = source.People;
+                    targetResult.People = sourceResult.People;
+
+                }
+                else if (targetResult.People != null && sourceResult.People != null)
+                {
+                    MergePeople(sourceResult.People, targetResult.People);
                 }
             }
 
@@ -110,43 +158,25 @@ namespace MediaBrowser.Providers.Manager
 
             if (!lockedFields.Contains(MetadataFields.Tags))
             {
-                var sourceHasTags = source as IHasTags;
-                var targetHasTags = target as IHasTags;
-
-                if (sourceHasTags != null && targetHasTags != null)
+                if (replaceData || target.Tags.Count == 0)
                 {
-                    if (replaceData || targetHasTags.Tags.Count == 0)
-                    {
-                        targetHasTags.Tags = sourceHasTags.Tags;
-                    }
+                    target.Tags = source.Tags;
                 }
             }
 
             if (!lockedFields.Contains(MetadataFields.Keywords))
             {
-                var sourceHasKeywords = source as IHasKeywords;
-                var targetHasKeywords = target as IHasKeywords;
-
-                if (sourceHasKeywords != null && targetHasKeywords != null)
+                if (replaceData || target.Keywords.Count == 0)
                 {
-                    if (replaceData || targetHasKeywords.Keywords.Count == 0)
-                    {
-                        targetHasKeywords.Keywords = sourceHasKeywords.Keywords;
-                    }
+                    target.Keywords = source.Keywords;
                 }
             }
 
             if (!lockedFields.Contains(MetadataFields.ProductionLocations))
             {
-                var sourceHasProductionLocations = source as IHasProductionLocations;
-                var targetHasProductionLocations = target as IHasProductionLocations;
-
-                if (sourceHasProductionLocations != null && targetHasProductionLocations != null)
+                if (replaceData || target.ProductionLocations.Count == 0)
                 {
-                    if (replaceData || targetHasProductionLocations.ProductionLocations.Count == 0)
-                    {
-                        targetHasProductionLocations.ProductionLocations = sourceHasProductionLocations.ProductionLocations;
-                    }
+                    target.ProductionLocations = source.ProductionLocations;
                 }
             }
 
@@ -157,40 +187,74 @@ namespace MediaBrowser.Providers.Manager
 
             foreach (var id in source.ProviderIds)
             {
-                target.ProviderIds[id.Key] = id.Value;
+                var key = id.Key;
+
+                // Don't replace existing Id's.
+                if (replaceData || !target.ProviderIds.ContainsKey(key))
+                {
+                    target.ProviderIds[key] = id.Value;
+                }
             }
 
             MergeAlbumArtist(source, target, lockedFields, replaceData);
-            MergeBudget(source, target, lockedFields, replaceData);
-            MergeMetascore(source, target, lockedFields, replaceData);
             MergeCriticRating(source, target, lockedFields, replaceData);
-            MergeAwards(source, target, lockedFields, replaceData);
-            MergeTaglines(source, target, lockedFields, replaceData);
             MergeTrailers(source, target, lockedFields, replaceData);
+            MergeVideoInfo(source, target, lockedFields, replaceData);
 
             if (mergeMetadataSettings)
             {
-                target.ForcedSortName = source.ForcedSortName;
-                target.LockedFields = source.LockedFields;
-                target.DontFetchMeta = source.DontFetchMeta;
-                target.DisplayMediaType = source.DisplayMediaType;
+                MergeMetadataSettings(source, target);
+            }
+        }
 
-                var sourceHasLanguageSettings = source as IHasPreferredMetadataLanguage;
-                var targetHasLanguageSettings = target as IHasPreferredMetadataLanguage;
+        private static void MergePeople(List<PersonInfo> source, List<PersonInfo> target)
+        {
+            foreach (var person in target)
+            {
+                var normalizedName = person.Name.RemoveDiacritics();
+                var personInSource = source.FirstOrDefault(i => string.Equals(i.Name.RemoveDiacritics(), normalizedName, StringComparison.OrdinalIgnoreCase));
 
-                if (sourceHasLanguageSettings != null && targetHasLanguageSettings != null)
+                if (personInSource != null)
                 {
-                    targetHasLanguageSettings.PreferredMetadataCountryCode = sourceHasLanguageSettings.PreferredMetadataCountryCode;
-                    targetHasLanguageSettings.PreferredMetadataLanguage = sourceHasLanguageSettings.PreferredMetadataLanguage;
-                }
+                    foreach (var providerId in personInSource.ProviderIds)
+                    {
+                        if (!person.ProviderIds.ContainsKey(providerId.Key))
+                        {
+                            person.ProviderIds[providerId.Key] = providerId.Value;
+                        }
+                    }
 
-                var sourceHasDisplayOrder = source as IHasDisplayOrder;
-                var targetHasDisplayOrder = target as IHasDisplayOrder;
-
-                if (sourceHasDisplayOrder != null && targetHasDisplayOrder != null)
-                {
-                    targetHasDisplayOrder.DisplayOrder = sourceHasDisplayOrder.DisplayOrder;
+                    if (string.IsNullOrWhiteSpace(person.ImageUrl))
+                    {
+                        person.ImageUrl = personInSource.ImageUrl;
+                    }
                 }
+            }
+        }
+
+        public static void MergeMetadataSettings(BaseItem source,
+           BaseItem target)
+        {
+            target.ForcedSortName = source.ForcedSortName;
+            target.LockedFields = source.LockedFields;
+            target.IsLocked = source.IsLocked;
+            target.DisplayMediaType = source.DisplayMediaType;
+
+            // Grab the value if it's there, but if not then don't overwrite the default
+            if (source.DateCreated != default(DateTime))
+            {
+                target.DateCreated = source.DateCreated;
+            }
+
+            target.PreferredMetadataCountryCode = source.PreferredMetadataCountryCode;
+            target.PreferredMetadataLanguage = source.PreferredMetadataLanguage;
+
+            var sourceHasDisplayOrder = source as IHasDisplayOrder;
+            var targetHasDisplayOrder = target as IHasDisplayOrder;
+
+            if (sourceHasDisplayOrder != null && targetHasDisplayOrder != null)
+            {
+                targetHasDisplayOrder.DisplayOrder = sourceHasDisplayOrder.DisplayOrder;
             }
         }
 
@@ -201,90 +265,18 @@ namespace MediaBrowser.Providers.Manager
 
             if (sourceHasAlbumArtist != null && targetHasAlbumArtist != null)
             {
-                if (replaceData || string.IsNullOrEmpty(targetHasAlbumArtist.AlbumArtist))
+                if (replaceData || targetHasAlbumArtist.AlbumArtists.Count == 0)
                 {
-                    targetHasAlbumArtist.AlbumArtist = sourceHasAlbumArtist.AlbumArtist;
-                }
-            }
-        }
-
-        private static void MergeBudget(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
-        {
-            var sourceHasBudget = source as IHasBudget;
-            var targetHasBudget = target as IHasBudget;
-
-            if (sourceHasBudget != null && targetHasBudget != null)
-            {
-                if (replaceData || !targetHasBudget.Budget.HasValue)
-                {
-                    targetHasBudget.Budget = sourceHasBudget.Budget;
-                }
-
-                if (replaceData || !targetHasBudget.Revenue.HasValue)
-                {
-                    targetHasBudget.Revenue = sourceHasBudget.Revenue;
-                }
-            }
-        }
-
-        private static void MergeMetascore(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
-        {
-            var sourceCast = source as IHasMetascore;
-            var targetCast = target as IHasMetascore;
-
-            if (sourceCast != null && targetCast != null)
-            {
-                if (replaceData || !targetCast.Metascore.HasValue)
-                {
-                    targetCast.Metascore = sourceCast.Metascore;
-                }
-            }
-        }
-
-        private static void MergeAwards(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
-        {
-            var sourceCast = source as IHasAwards;
-            var targetCast = target as IHasAwards;
-
-            if (sourceCast != null && targetCast != null)
-            {
-                if (replaceData || string.IsNullOrEmpty(targetCast.AwardSummary))
-                {
-                    targetCast.AwardSummary = sourceCast.AwardSummary;
+                    targetHasAlbumArtist.AlbumArtists = sourceHasAlbumArtist.AlbumArtists;
                 }
             }
         }
 
         private static void MergeCriticRating(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
         {
-            var sourceCast = source as IHasCriticRating;
-            var targetCast = target as IHasCriticRating;
-
-            if (sourceCast != null && targetCast != null)
+            if (replaceData || !target.CriticRating.HasValue)
             {
-                if (replaceData || !targetCast.CriticRating.HasValue)
-                {
-                    targetCast.CriticRating = sourceCast.CriticRating;
-                }
-
-                if (replaceData || string.IsNullOrEmpty(targetCast.CriticRatingSummary))
-                {
-                    targetCast.CriticRatingSummary = sourceCast.CriticRatingSummary;
-                }
-            }
-        }
-
-        private static void MergeTaglines(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
-        {
-            var sourceCast = source as IHasTaglines;
-            var targetCast = target as IHasTaglines;
-
-            if (sourceCast != null && targetCast != null)
-            {
-                if (replaceData || targetCast.Taglines.Count == 0)
-                {
-                    targetCast.Taglines = sourceCast.Taglines;
-                }
+                target.CriticRating = source.CriticRating;
             }
         }
 
@@ -298,6 +290,20 @@ namespace MediaBrowser.Providers.Manager
                 if (replaceData || targetCast.RemoteTrailers.Count == 0)
                 {
                     targetCast.RemoteTrailers = sourceCast.RemoteTrailers;
+                }
+            }
+        }
+
+        private static void MergeVideoInfo(BaseItem source, BaseItem target, List<MetadataFields> lockedFields, bool replaceData)
+        {
+            var sourceCast = source as Video;
+            var targetCast = target as Video;
+
+            if (sourceCast != null && targetCast != null)
+            {
+                if (replaceData || targetCast.Video3DFormat == null)
+                {
+                    targetCast.Video3DFormat = sourceCast.Video3DFormat;
                 }
             }
         }

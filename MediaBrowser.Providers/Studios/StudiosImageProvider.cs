@@ -1,17 +1,16 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Providers.Genres;
 using MediaBrowser.Providers.ImagesByName;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.Studios
 {
@@ -20,8 +19,6 @@ namespace MediaBrowser.Providers.Studios
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
         private readonly IFileSystem _fileSystem;
-
-        private readonly SemaphoreSlim _listResourcePool = new SemaphoreSlim(1, 1);
 
         public StudiosImageProvider(IServerConfigurationManager config, IHttpClient httpClient, IFileSystem fileSystem)
         {
@@ -37,7 +34,7 @@ namespace MediaBrowser.Providers.Studios
 
         public static string ProviderName
         {
-            get { return "Media Browser Images"; }
+            get { return "Emby Designs"; }
         }
 
         public bool Supports(IHasImages item)
@@ -54,12 +51,7 @@ namespace MediaBrowser.Providers.Studios
             };
         }
 
-        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, ImageType imageType, CancellationToken cancellationToken)
-        {
-            return GetImages(item, imageType == ImageType.Primary, imageType == ImageType.Thumb, cancellationToken);
-        }
-
-        public Task<IEnumerable<RemoteImageInfo>> GetAllImages(IHasImages item, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             return GetImages(item, true, true, cancellationToken);
         }
@@ -72,7 +64,7 @@ namespace MediaBrowser.Providers.Studios
             {
                 var posterPath = Path.Combine(_config.ApplicationPaths.CachePath, "imagesbyname", "remotestudioposters.txt");
 
-                await EnsurePosterList(posterPath, cancellationToken).ConfigureAwait(false);
+                posterPath = await EnsurePosterList(posterPath, cancellationToken).ConfigureAwait(false);
 
                 list.Add(GetImage(item, posterPath, ImageType.Primary, "folder"));
             }
@@ -83,7 +75,7 @@ namespace MediaBrowser.Providers.Studios
             {
                 var thumbsPath = Path.Combine(_config.ApplicationPaths.CachePath, "imagesbyname", "remotestudiothumbs.txt");
 
-                await EnsureThumbsList(thumbsPath, cancellationToken).ConfigureAwait(false);
+                thumbsPath = await EnsureThumbsList(thumbsPath, cancellationToken).ConfigureAwait(false);
 
                 list.Add(GetImage(item, thumbsPath, ImageType.Thumb, "thumb"));
             }
@@ -93,7 +85,7 @@ namespace MediaBrowser.Providers.Studios
 
         private RemoteImageInfo GetImage(IHasImages item, string filename, ImageType type, string remoteFilename)
         {
-            var list = ImageUtils.GetAvailableImages(filename);
+            var list = ImageUtils.GetAvailableImages(filename, _fileSystem);
 
             var match = ImageUtils.FindMatch(item, list);
 
@@ -117,18 +109,18 @@ namespace MediaBrowser.Providers.Studios
             return string.Format("https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studios/{0}/{1}.jpg", image, filename);
         }
 
-        private Task EnsureThumbsList(string file, CancellationToken cancellationToken)
+        private Task<string> EnsureThumbsList(string file, CancellationToken cancellationToken)
         {
             const string url = "https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studiothumbs.txt";
 
-            return ImageUtils.EnsureList(url, file, _httpClient, _fileSystem, _listResourcePool, cancellationToken);
+            return ImageUtils.EnsureList(url, file, _httpClient, _fileSystem, cancellationToken);
         }
 
-        private Task EnsurePosterList(string file, CancellationToken cancellationToken)
+        private Task<string> EnsurePosterList(string file, CancellationToken cancellationToken)
         {
             const string url = "https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studioposters.txt";
 
-            return ImageUtils.EnsureList(url, file, _httpClient, _fileSystem, _listResourcePool, cancellationToken);
+            return ImageUtils.EnsureList(url, file, _httpClient, _fileSystem, cancellationToken);
         }
 
         public int Order
@@ -142,7 +134,7 @@ namespace MediaBrowser.Providers.Studios
             {
                 CancellationToken = cancellationToken,
                 Url = url,
-                ResourcePool = GenreImageProvider.ImageDownloadResourcePool
+                BufferContent = false
             });
         }
     }

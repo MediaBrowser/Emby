@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MediaBrowser.Tests</RootNamespace>
     <AssemblyName>MediaBrowser.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,9 +26,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MediaBrowser.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -35,7 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Emby.Common.Implementations">
+      <HintPath>..\ThirdParty\emby\Emby.Common.Implementations.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,16 +56,33 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Providers\MovieDbProviderTests.cs" />
-    <Compile Include="Resolvers\MovieResolverTests.cs" />
-    <Compile Include="Resolvers\TvUtilTests.cs" />
+    <Compile Include="ConsistencyTests\StringUsageReporter.cs" />
+    <Compile Include="ConsistencyTests\TextIndexing\IndexBuilder.cs" />
+    <Compile Include="ConsistencyTests\TextIndexing\WordIndex.cs" />
+    <Compile Include="ConsistencyTests\TextIndexing\WordOccurrence.cs" />
+    <Compile Include="ConsistencyTests\TextIndexing\WordOccurrences.cs" />
+    <Compile Include="M3uParserTest.cs" />
+    <Compile Include="MediaEncoding\Subtitles\AssParserTests.cs" />
+    <Compile Include="MediaEncoding\Subtitles\SrtParserTests.cs" />
+    <Compile Include="MediaEncoding\Subtitles\VttWriterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.Implementations\Library\ResolverHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Emby.Server.Implementations\Emby.Server.Implementations.csproj">
+      <Project>{e383961b-9356-4d5d-8233-9a1079d03055}</Project>
+      <Name>Emby.Server.Implementations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
+      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
+      <Name>MediaBrowser.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
       <Project>{17e1f4e6-8abd-4fe5-9ecf-43d4b6087ba2}</Project>
       <Name>MediaBrowser.Controller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.MediaEncoding\MediaBrowser.MediaEncoding.csproj">
+      <Project>{0BD82FA6-EB8A-4452-8AF5-74F9C3849451}</Project>
+      <Name>MediaBrowser.MediaEncoding</Name>
     </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
       <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
@@ -73,9 +96,35 @@
       <Project>{2E781478-814D-4A48-9D80-BFF206441A65}</Project>
       <Name>MediaBrowser.Server.Implementations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MediaBrowser.XbmcMetadata\MediaBrowser.XbmcMetadata.csproj">
+      <Project>{23499896-b135-4527-8574-c26e926ea99e}</Project>
+      <Name>MediaBrowser.XbmcMetadata</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MediaEncoding\Subtitles\TestSubtitles\expected.vtt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MediaEncoding\Subtitles\TestSubtitles\data.ass">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MediaEncoding\Subtitles\TestSubtitles\data2.ass">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MediaEncoding\Subtitles\TestSubtitles\unit.srt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="ConsistencyTests\Resources\StringCheck.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>StringCheck.xslt</TargetPath>
+    </ContentWithTargetPath>
+    <None Include="ConsistencyTests\Resources\SampleTransformed.htm" />
+    <None Include="ConsistencyTests\Resources\StringCheckSample.xml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

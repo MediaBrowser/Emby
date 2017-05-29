@@ -1,91 +1,102 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Advanced</title>
-</head>
-<body>
-    <div id="encodingSettingsPage" data-role="page" class="page type-interior advancedConfigurationPage">
+﻿<div id="encodingSettingsPage" data-role="page" class="page type-interior playbackConfigurationPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Transcoding" data-require="scripts/encodingsettings,emby-input,emby-checkbox,emby-button,emby-select">
 
-        <div data-role="content">
-            <div class="content-primary">
+    <div>
+        <div class="content-primary">
 
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="advanced.html" data-role="button">General</a>
-                    <a href="advancedserversettings.html" data-role="button">Http Server</a>
-                    <a href="#" data-role="button" class="ui-btn-active">Transcoding</a>
+            <form class="encodingSettingsForm">
+
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectVideoDecoder" label="${LabelHardwareAccelerationType}">
+                        <option value="">${OptionNone}</option>
+                        <option value="qsv">Intel Quick Sync (experimental)</option>
+                        <option value="h264_omx">OpenMAX OMX (experimental)</option>
+                        <option value="nvenc">Nvidia NVENC (experimental)</option>
+                        <option value="vaapi">Video Acceleration API (VA API) (experimental)</option>
+                    </select>
+                    <div class="fieldDescription">${LabelHardwareAccelerationTypeHelp}</div>
+                </div>
+                <div class="inputContainer hide fldVaapiDevice">
+                    <input is="emby-input" type="text" id="txtVaapiDevice" label="${LabelVaapiDevice}" />
+                    <div class="fieldDescription">${LabelVaapiDeviceHelp}</div>
+                </div>
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectThreadCount" label="${LabelTranscodingThreadCount}">
+                        <option value="-1">${OptionAuto}</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="0">${OptionMax}</option>
+                    </select>
+                    <div class="fieldDescription">${LabelTranscodingThreadCountHelp}</div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="chkEnableThrottle" />
+                        <span>${OptionEnableTranscodingThrottle}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${OptionEnableTranscodingThrottleHelp}</div>
                 </div>
 
-                <form class="encodingSettingsForm">
+                <div class="selectContainer fldSelectEncoderPathType hide">
+                    <select is="emby-select" id="selectEncoderPath" label="${LabelffmpegVersion}">
+                        <option value="System">${OptionUseSystemInstalledVersion}</option>
+                        <option value="Custom">${OptionUseMyCustomVersion}</option>
+                    </select>
+                </div>
+                <div class="inputContainer fldEncoderPath hide">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" class="txtEncoderPath" label="${LabelffmpegPath}" autocomplete="off" required />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectEncoderPath" class="autoSize"><i class="md-icon">search</i></button>
+                    </div>
+                    <div class="fieldDescription">
+                        <div>${LabelffmpegPathHelp}</div>
+                    </div>
+                </div>
+                <div class="inputContainer">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" id="txtTranscodingTempPath" label="${LabelTranscodingTempPath}" autocomplete="off" />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectTranscodingTempPath" class="autoSize"><i class="md-icon">search</i></button>
+                    </div>
+                    <div class="fieldDescription">${LabelTranscodingTempPathHelp}</div>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="number" id="txtDownMixAudioBoost" pattern="[0-9]*" required="required" min=".5" max="3" step=".1" label="${LabelDownMixAudioScale}" />
+                    <div class="fieldDescription">${LabelDownMixAudioScaleHelp}</div>
+                </div>
 
-                    <fieldset data-role="controlgroup">
-                        <legend>Transcoding Quality Preference:</legend>
-                        <input type="radio" name="radioEncodingQuality" class="radioEncodingQuality" id="radioAuto" value="Auto">
-                        <label for="radioAuto">
-                            Auto<br />
-                            <span style="font-weight: normal;">The server will decide quality and speed</span></label>
-                        <input type="radio" name="radioEncodingQuality" class="radioEncodingQuality" id="radioHighSpeed" value="HighSpeed">
-                        <label for="radioHighSpeed">
-                            Higher speed<br />
-                            <span style="font-weight: normal;">Lower quality, but faster encoding</span></label>
-                        <input type="radio" name="radioEncodingQuality" class="radioEncodingQuality" id="radioHighQuality" value="HighQuality">
-                        <label for="radioHighQuality">
-                            Higher quality<br />
-                            <span style="font-weight: normal;">Higher quality, but slower encoding</span></label>
-                        <input type="radio" name="radioEncodingQuality" class="radioEncodingQuality" id="radioMaxQuality" value="MaxQuality">
-                        <label for="radioMaxQuality">
-                            Max quality<br />
-                            <span style="font-weight: normal;">Best quality with slower encoding and high CPU usage</span></label>
-                    </fieldset>
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectH264Preset" label="${LabelH264EncodingPreset}">
+                        <option value="">${OptionAuto}</option>
+                        <option value="veryslow">veryslow</option>
+                        <option value="slower">slower</option>
+                        <option value="slow">slow</option>
+                        <option value="medium">medium</option>
+                        <option value="fast">fast</option>
+                        <option value="faster">faster</option>
+                        <option value="veryfast">veryfast</option>
+                        <option value="superfast">superfast</option>
+                        <option value="ultrafast">ultrafast</option>
+                    </select>
+                    <div class="fieldDescription">${H264EncodingPresetHelp}</div>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="number" id="txtH264Crf" pattern="[0-9]*" min="0" max="51" step="1" label="${LabelH264Crf}" />
+                    <div class="fieldDescription">${H264CrfHelp}</div>
+                </div>
 
-                    <br />
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <input type="checkbox" id="chkAllowUpscaling" name="chkAllowUpscaling" data-mini="true" />
-                            <label for="chkAllowUpscaling">Allow video upscaling when requested by clients</label>
-                            <div class="fieldDescription">In some cases this will result in improved video quality but will increase CPU usage.</div>
-                        </li>
-                        <li>
-                            <input type="checkbox" id="chkEnableDebugEncodingLogging" name="chkEnableDebugEncodingLogging" data-mini="true" />
-                            <label for="chkEnableDebugEncodingLogging">Enable debug transcoding logging</label>
-                            <div class="fieldDescription">This will create very large log files and is only recommended as needed for troubleshooting purposes.</div>
-                        </li>
-                    </ul>
-
-                    <h2>Transcoding Temporary Path</h2>
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <input type="checkbox" id="chkEnableCustomTranscodingTempPath" name="chkEnableCustomTranscodingTempPath" data-mini="true" />
-                            <label for="chkEnableCustomTranscodingTempPath">Use custom transcoding temporary path</label>
-                            <div class="fieldDescription">
-                                This folder contains working files used by the transcoder.
-                            </div>
-                        </li>
-                        <li id="fldEnterTranscodingTempPath" style="display: none;">
-                            <label for="txtTranscodingTempPath">Transcoding temporary path: </label>
-                            <div style="display: inline-block; width: 92%;">
-                                <input type="text" id="txtTranscodingTempPath" name="txtTranscodingTempPath" data-mini="true" />
-                            </div>
-                            <button id="btnSelectTranscodingTempPath" type="button" data-icon="search" data-iconpos="notext" data-inline="true">Select Directory</button>
-                            <div class="fieldDescription">
-                                Supply a custom transcoding temporary path. Media Browser Server must have write access to this folder.
-                            </div>
-                        </li>
-                        <li>
-                            <button type="submit" data-theme="b" data-icon="check" data-mini="true">
-                                Save
-                            </button>
-                            <button type="button" onclick="Dashboard.navigate('dashboard.html');" data-icon="delete" data-mini="true">
-                                Cancel
-                            </button>
-                        </li>
-                    </ul>
-                </form>
-            </div>
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>${ButtonSave}</span></button>
+                </div>
+            </form>
         </div>
-
-        <script type="text/javascript">
-            $('.encodingSettingsForm').off('submit', EncodingSettingsPage.onSubmit).on('submit', EncodingSettingsPage.onSubmit);
-        </script>
     </div>
-</body>
-</html>
+</div>

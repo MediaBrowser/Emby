@@ -24,10 +24,6 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         Tvcom = 5,
         /// <summary>
-        /// The rotten tomatoes
-        /// </summary>
-        RottenTomatoes = 6,
-        /// <summary>
         /// Tmdb Collection Id
         /// </summary>
         TmdbCollection = 7,
@@ -36,10 +32,10 @@ namespace MediaBrowser.Model.Entities
         MusicBrainzArtist = 10,
         MusicBrainzReleaseGroup = 11,
         Zap2It = 12,
-        NesBox = 13,
-        NesBoxRom = 14,
         TvRage = 15,
         AudioDbArtist = 16,
-        AudioDbAlbum = 17
+        AudioDbAlbum = 17,
+        MusicBrainzTrack = 18,
+        TvMaze = 19
     }
 }

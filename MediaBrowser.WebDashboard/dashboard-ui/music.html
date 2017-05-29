@@ -1,0 +1,98 @@
+﻿<div id="musicRecommendedPage" data-dom-cache="true" data-role="page" class="page libraryPage backdropPage pageWithAbsoluteTabs withTabs" data-backdroptype="musicartist">
+
+    <div class="pageTabContent pageTabContent" id="suggestionsTab" data-index="0">
+        <div class="verticalSection">
+            <h2 class="sectionTitle sectionTitle-cards padded-left">${HeaderLatestMusic}</h2>
+
+            <div is="emby-itemscontainer" id="recentlyAddedSongs" class="itemsContainer padded-left padded-right" style="text-align:left;">
+            </div>
+        </div>
+
+        <div id="recentlyPlayed" class="verticalSection hide">
+            <h2 class="sectionTitle sectionTitle-cards padded-left">${HeaderRecentlyPlayed}</h2>
+
+            <div is="emby-itemscontainer" id="recentlyPlayedSongs" class="itemsContainer padded-left padded-right" style="text-align:left;">
+            </div>
+        </div>
+
+        <div id="topPlayed" class="verticalSection hide">
+            <h2 class="sectionTitle sectionTitle-cards padded-left">${HeaderFrequentlyPlayed}</h2>
+
+            <div is="emby-itemscontainer" id="topPlayedSongs" class="itemsContainer padded-left padded-right" style="text-align: left;">
+            </div>
+        </div>
+
+        <div class="favoriteSections verticalSection"></div>
+    </div>
+    <div class="pageTabContent pageTabContent" id="albumsTab" data-index="1">
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em 1em;">
+            <div class="paging"></div>
+            <button is="paper-icon-button-light" class="btnSelectView autoSize" title="${ButtonSelectView}"><i class="md-icon">view_comfy</i></button>
+            <button is="paper-icon-button-light" class="btnSort autoSize" title="${ButtonSort}"><i class="md-icon">sort_by_alpha</i></button>
+            <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
+        </div>
+
+        <div class="alphaPicker alphabetPicker alphaPicker-vertical">
+        </div>
+
+        <div is="emby-itemscontainer" class="itemsContainer padded-left padded-left-withalphapicker padded-right">
+        </div>
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:.7em .5em;">
+            <div class="paging"></div>
+        </div>
+    </div>
+    <div class="pageTabContent" id="albumArtistsTab" data-index="2">
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em 1em;">
+            <div class="paging"></div>
+            <button is="paper-icon-button-light" class="btnSelectView autoSize" title="${ButtonSelectView}"><i class="md-icon">view_comfy</i></button>
+            <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
+        </div>
+
+        <div class="alphaPicker alphabetPicker alphaPicker-vertical">
+        </div>
+
+        <div is="emby-itemscontainer" class="itemsContainer padded-left padded-left-withalphapicker padded-right">
+        </div>
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:.7em .5em;">
+            <div class="paging"></div>
+        </div>
+    </div>
+    <div class="pageTabContent" id="artistsTab" data-index="3">
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em 1em;">
+            <div class="paging"></div>
+            <button is="paper-icon-button-light" class="btnSelectView autoSize" title="${ButtonSelectView}"><i class="md-icon">view_comfy</i></button>
+            <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
+        </div>
+
+        <div class="alphaPicker alphabetPicker alphaPicker-vertical">
+        </div>
+
+        <div is="emby-itemscontainer" class="itemsContainer padded-left padded-left-withalphapicker padded-right">
+        </div>
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:.7em .5em;">
+            <div class="paging"></div>
+        </div>
+    </div>
+    <div class="pageTabContent" data-index="4">
+
+        <div is="emby-itemscontainer" id="items" class="itemsContainer padded-left padded-right vertical-wrap centered"></div>
+    </div>
+    <div class="pageTabContent" id="songsTab" data-index="5">
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em 1em;">
+            <div class="paging"></div>
+            <button is="paper-icon-button-light" class="btnSort autoSize" title="${ButtonSort}"><i class="md-icon">sort_by_alpha</i></button>
+            <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
+        </div>
+
+        <div is="emby-itemscontainer" id="items" class="itemsContainer vertical-list" style="max-width:1000px;margin: 0 auto;"></div>
+
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:.7em .5em;">
+            <div class="paging"></div>
+        </div>
+    </div>
+    <div class="pageTabContent" id="genresTab" data-index="6">
+        <div is="emby-itemscontainer" id="items" class="itemsContainer padded-left padded-right vertical-wrap"></div>
+    </div>
+    <div class="pageTabContent" data-index="7" style="padding-top:1em;">
+    </div>
+</div>

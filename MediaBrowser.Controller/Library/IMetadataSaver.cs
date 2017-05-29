@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Providers;
 using System.Threading;
 
 namespace MediaBrowser.Controller.Library
@@ -30,15 +29,5 @@ namespace MediaBrowser.Controller.Library
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         void Save(IHasMetadata item, CancellationToken cancellationToken);
-    }
-
-    public interface IMetadataFileSaver : IMetadataSaver
-    {
-        /// <summary>
-        /// Gets the save path.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>System.String.</returns>
-        string GetSavePath(IHasMetadata item);
     }
 }

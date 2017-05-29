@@ -1,20 +1,21 @@
-﻿using System;
-using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Devices;
+using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.MediaInfo;
-using MediaBrowser.Controller.Persistence;
-using MediaBrowser.Model.Dto;
+using MediaBrowser.Controller.MediaEncoding;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.MediaInfo;
+using MediaBrowser.Model.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
@@ -25,8 +26,7 @@ namespace MediaBrowser.Api.Playback.Progressive
     {
         protected readonly IImageProcessor ImageProcessor;
 
-        protected BaseProgressiveStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IImageProcessor imageProcessor)
-            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem, itemRepository, liveTvManager)
+        public BaseProgressiveStreamingService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IZipClient zipClient, IJsonSerializer jsonSerializer, IAuthorizationContext authorizationContext, IImageProcessor imageProcessor) : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, dlnaManager, subtitleEncoder, deviceManager, mediaSourceManager, zipClient, jsonSerializer, authorizationContext)
         {
             ImageProcessor = imageProcessor;
         }
@@ -45,129 +45,55 @@ namespace MediaBrowser.Api.Playback.Progressive
                 return ext;
             }
 
-            var videoRequest = state.Request as VideoStreamRequest;
+            var isVideoRequest = state.VideoRequest != null;
 
             // Try to infer based on the desired video codec
-            if (videoRequest != null && videoRequest.VideoCodec.HasValue)
+            if (isVideoRequest)
             {
-                if (state.IsInputVideo)
+                var videoCodec = state.VideoRequest.VideoCodec;
+
+                if (string.Equals(videoCodec, "h264", StringComparison.OrdinalIgnoreCase))
                 {
-                    switch (videoRequest.VideoCodec.Value)
-                    {
-                        case VideoCodecs.H264:
-                            return ".ts";
-                        case VideoCodecs.Theora:
-                            return ".ogv";
-                        case VideoCodecs.Vpx:
-                            return ".webm";
-                        case VideoCodecs.Wmv:
-                            return ".asf";
-                    }
+                    return ".ts";
+                }
+                if (string.Equals(videoCodec, "theora", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".ogv";
+                }
+                if (string.Equals(videoCodec, "vpx", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".webm";
+                }
+                if (string.Equals(videoCodec, "wmv", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".asf";
                 }
             }
 
             // Try to infer based on the desired audio codec
-            if (state.Request.AudioCodec.HasValue)
+            if (!isVideoRequest)
             {
-                if (!state.IsInputVideo)
+                var audioCodec = state.Request.AudioCodec;
+
+                if (string.Equals("aac", audioCodec, StringComparison.OrdinalIgnoreCase))
                 {
-                    switch (state.Request.AudioCodec.Value)
-                    {
-                        case AudioCodecs.Aac:
-                            return ".aac";
-                        case AudioCodecs.Mp3:
-                            return ".mp3";
-                        case AudioCodecs.Vorbis:
-                            return ".ogg";
-                        case AudioCodecs.Wma:
-                            return ".wma";
-                    }
+                    return ".aac";
+                }
+                if (string.Equals("mp3", audioCodec, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".mp3";
+                }
+                if (string.Equals("vorbis", audioCodec, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".ogg";
+                }
+                if (string.Equals("wma", audioCodec, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ".wma";
                 }
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Adds the dlna headers.
-        /// </summary>
-        /// <param name="state">The state.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <param name="isStaticallyStreamed">if set to <c>true</c> [is statically streamed].</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private void AddDlnaHeaders(StreamState state, IDictionary<string, string> responseHeaders, bool isStaticallyStreamed)
-        {
-            var timeSeek = GetHeader("TimeSeekRange.dlna.org");
-
-            if (!string.IsNullOrEmpty(timeSeek))
-            {
-                ResultFactory.ThrowError(406, "Time seek not supported during encoding.", responseHeaders);
-                return;
-            }
-
-            var transferMode = GetHeader("transferMode.dlna.org");
-            responseHeaders["transferMode.dlna.org"] = string.IsNullOrEmpty(transferMode) ? "Streaming" : transferMode;
-            responseHeaders["realTimeInfo.dlna.org"] = "DLNA.ORG_TLAG=*";
-
-            var contentFeatures = string.Empty;
-            var extension = GetOutputFileExtension(state);
-
-            // first bit means Time based seek supported, second byte range seek supported (not sure about the order now), so 01 = only byte seek, 10 = time based, 11 = both, 00 = none
-            var orgOp = isStaticallyStreamed ? ";DLNA.ORG_OP=01" : ";DLNA.ORG_OP=00";
-
-            // 0 = native, 1 = transcoded
-            var orgCi = isStaticallyStreamed ? ";DLNA.ORG_CI=0" : ";DLNA.ORG_CI=1";
-
-            const string dlnaflags = ";DLNA.ORG_FLAGS=01500000000000000000000000000000";
-
-            if (string.Equals(extension, ".mp3", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=MP3";
-            }
-            else if (string.Equals(extension, ".aac", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=AAC_ISO";
-            }
-            else if (string.Equals(extension, ".wma", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=WMABASE";
-            }
-            else if (string.Equals(extension, ".avi", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=AVI";
-            }
-            else if (string.Equals(extension, ".mkv", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=MATROSKA";
-            }
-            else if (string.Equals(extension, ".mp4", StringComparison.OrdinalIgnoreCase))
-            {
-                contentFeatures = "DLNA.ORG_PN=AVC_MP4_MP_HD_720p_AAC";
-            }
-            //else if (string.Equals(extension, ".mpeg", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    contentFeatures = "DLNA.ORG_PN=MPEG_PS_PAL";
-            //}
-            //else if (string.Equals(extension, ".wmv", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    contentFeatures = "DLNA.ORG_PN=WMVHIGH_BASE";
-            //}
-            //else if (string.Equals(extension, ".asf", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    // ??
-            //    contentFeatures = "DLNA.ORG_PN=WMVHIGH_BASE";
-            //}
-          
-
-            if (!string.IsNullOrEmpty(contentFeatures))
-            {
-                responseHeaders["contentFeatures.dlna.org"] = (contentFeatures + orgOp + orgCi + dlnaflags).Trim(';');
-            }
-
-            foreach (var item in responseHeaders)
-            {
-                Request.Response.AddHeader(item.Key, item.Value);
-            }
         }
 
         /// <summary>
@@ -185,89 +111,215 @@ namespace MediaBrowser.Api.Playback.Progressive
         /// <param name="request">The request.</param>
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>Task.</returns>
-        protected object ProcessRequest(StreamRequest request, bool isHeadRequest)
+        protected async Task<object> ProcessRequest(StreamRequest request, bool isHeadRequest)
         {
-            var state = GetState(request, CancellationToken.None).Result;
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            var state = await GetState(request, cancellationTokenSource.Token).ConfigureAwait(false);
 
             var responseHeaders = new Dictionary<string, string>();
 
-            if (request.Static && state.IsRemote)
+            if (request.Static && state.DirectStreamProvider != null)
             {
                 AddDlnaHeaders(state, responseHeaders, true);
-                
-                return GetStaticRemoteStreamResult(state.MediaPath, responseHeaders, isHeadRequest).Result;
+
+                using (state)
+                {
+                    var outputHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                    // TODO: Don't hardcode this
+                    outputHeaders["Content-Type"] = MediaBrowser.Model.Net.MimeTypes.GetMimeType("file.ts");
+
+                    return new ProgressiveFileCopier(state.DirectStreamProvider, outputHeaders, null, Logger, CancellationToken.None)
+                    {
+                        AllowEndOfFile = false
+                    };
+                }
             }
 
-            var outputPath = GetOutputFilePath(state);
-            var outputPathExists = File.Exists(outputPath);
+            // Static remote stream
+            if (request.Static && state.InputProtocol == MediaProtocol.Http)
+            {
+                AddDlnaHeaders(state, responseHeaders, true);
 
-            var isStatic = request.Static ||
-                           (outputPathExists && !ApiEntryPoint.Instance.HasActiveTranscodingJob(outputPath, TranscodingJobType.Progressive));
+                using (state)
+                {
+                    return await GetStaticRemoteStreamResult(state, responseHeaders, isHeadRequest, cancellationTokenSource).ConfigureAwait(false);
+                }
+            }
 
-            AddDlnaHeaders(state, responseHeaders, isStatic);
+            if (request.Static && state.InputProtocol != MediaProtocol.File)
+            {
+                throw new ArgumentException(string.Format("Input protocol {0} cannot be streamed statically.", state.InputProtocol));
+            }
 
+            var outputPath = state.OutputFilePath;
+            var outputPathExists = FileSystem.FileExists(outputPath);
+
+            var transcodingJob = ApiEntryPoint.Instance.GetTranscodingJob(outputPath, TranscodingJobType.Progressive);
+            var isTranscodeCached = outputPathExists && transcodingJob != null;
+
+            AddDlnaHeaders(state, responseHeaders, request.Static || isTranscodeCached);
+
+            // Static stream
             if (request.Static)
             {
-                return ResultFactory.GetStaticFileResult(Request, state.MediaPath, FileShare.Read, responseHeaders, isHeadRequest);
+                var contentType = state.GetMimeType(state.MediaPath);
+
+                using (state)
+                {
+                    if (state.MediaSource.IsInfiniteStream)
+                    {
+                        var outputHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                        outputHeaders["Content-Type"] = contentType;
+
+                        return new ProgressiveFileCopier(FileSystem, state.MediaPath, outputHeaders, null, Logger, CancellationToken.None)
+                        {
+                            AllowEndOfFile = false
+                        };
+                    }
+
+                    TimeSpan? cacheDuration = null;
+
+                    if (!string.IsNullOrEmpty(request.Tag))
+                    {
+                        cacheDuration = TimeSpan.FromDays(365);
+                    }
+
+                    return await ResultFactory.GetStaticFileResult(Request, new StaticFileResultOptions
+                    {
+                        ResponseHeaders = responseHeaders,
+                        ContentType = contentType,
+                        IsHeadRequest = isHeadRequest,
+                        Path = state.MediaPath,
+                        CacheDuration = cacheDuration
+
+                    }).ConfigureAwait(false);
+                }
             }
 
-            if (outputPathExists && !ApiEntryPoint.Instance.HasActiveTranscodingJob(outputPath, TranscodingJobType.Progressive))
+            //// Not static but transcode cache file exists
+            //if (isTranscodeCached && state.VideoRequest == null)
+            //{
+            //    var contentType = state.GetMimeType(outputPath);
+
+            //    try
+            //    {
+            //        if (transcodingJob != null)
+            //        {
+            //            ApiEntryPoint.Instance.OnTranscodeBeginRequest(transcodingJob);
+            //        }
+
+            //        return await ResultFactory.GetStaticFileResult(Request, new StaticFileResultOptions
+            //        {
+            //            ResponseHeaders = responseHeaders,
+            //            ContentType = contentType,
+            //            IsHeadRequest = isHeadRequest,
+            //            Path = outputPath,
+            //            FileShare = FileShareMode.ReadWrite,
+            //            OnComplete = () =>
+            //            {
+            //                if (transcodingJob != null)
+            //                {
+            //                    ApiEntryPoint.Instance.OnTranscodeEndRequest(transcodingJob);
+            //                }
+            //            }
+
+            //        }).ConfigureAwait(false);
+            //    }
+            //    finally
+            //    {
+            //        state.Dispose();
+            //    }
+            //}
+
+            // Need to start ffmpeg
+            try
             {
-                return ResultFactory.GetStaticFileResult(Request, outputPath, FileShare.Read, responseHeaders, isHeadRequest);
+                return await GetStreamResult(state, responseHeaders, isHeadRequest, cancellationTokenSource).ConfigureAwait(false);
             }
+            catch
+            {
+                state.Dispose();
 
-            return GetStreamResult(state, responseHeaders, isHeadRequest).Result;
+                throw;
+            }
         }
 
         /// <summary>
         /// Gets the static remote stream result.
         /// </summary>
-        /// <param name="mediaPath">The media path.</param>
+        /// <param name="state">The state.</param>
         /// <param name="responseHeaders">The response headers.</param>
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
+        /// <param name="cancellationTokenSource">The cancellation token source.</param>
         /// <returns>Task{System.Object}.</returns>
-        private async Task<object> GetStaticRemoteStreamResult(string mediaPath, Dictionary<string, string> responseHeaders, bool isHeadRequest)
+        private async Task<object> GetStaticRemoteStreamResult(StreamState state, Dictionary<string, string> responseHeaders, bool isHeadRequest, CancellationTokenSource cancellationTokenSource)
         {
-            responseHeaders["Accept-Ranges"] = "none";
+            string useragent = null;
+            state.RemoteHttpHeaders.TryGetValue("User-Agent", out useragent);
 
-            var httpClient = new HttpClient();
+            var trySupportSeek = false;
 
-            using (var message = new HttpRequestMessage(HttpMethod.Get, mediaPath))
+            var options = new HttpRequestOptions
             {
-                var useragent = GetUserAgent(mediaPath);
+                Url = state.MediaPath,
+                UserAgent = useragent,
+                BufferContent = false,
+                CancellationToken = cancellationTokenSource.Token
+            };
 
-                if (!string.IsNullOrEmpty(useragent))
+            if (trySupportSeek)
+            {
+                if (!string.IsNullOrWhiteSpace(Request.QueryString["Range"]))
                 {
-                    message.Headers.Add("User-Agent", useragent);
+                    options.RequestHeaders["Range"] = Request.QueryString["Range"];
                 }
-
-                var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-                response.EnsureSuccessStatusCode();
-
-                var contentType = response.Content.Headers.ContentType.MediaType;
-
-                // Headers only
-                if (isHeadRequest)
-                {
-                    response.Dispose();
-                    httpClient.Dispose();
-
-                    return ResultFactory.GetResult(null, contentType, responseHeaders);
-                }
-
-                var result = new StaticRemoteStreamWriter(response, httpClient);
-
-                result.Options["Content-Type"] = contentType;
-
-                // Add the response headers to the result object
-                foreach (var header in responseHeaders)
-                {
-                    result.Options[header.Key] = header.Value;
-                }
-
-                return result;
             }
+            var response = await HttpClient.GetResponse(options).ConfigureAwait(false);
+
+            if (trySupportSeek)
+            {
+                foreach (var name in new[] { "Content-Range", "Accept-Ranges" })
+                {
+                    var val = response.Headers[name];
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        responseHeaders[name] = val;
+                    }
+                }
+            }
+            else
+            {
+                responseHeaders["Accept-Ranges"] = "none";
+            }
+
+            // Seeing cases of -1 here
+            if (response.ContentLength.HasValue && response.ContentLength.Value >= 0)
+            {
+                responseHeaders["Content-Length"] = response.ContentLength.Value.ToString(UsCulture);
+            }
+
+            if (isHeadRequest)
+            {
+                using (response)
+                {
+                    return ResultFactory.GetResult(new byte[] { }, response.ContentType, responseHeaders);
+                }
+            }
+
+            var result = new StaticRemoteStreamWriter(response);
+
+            result.Headers["Content-Type"] = response.ContentType;
+
+            // Add the response headers to the result object
+            foreach (var header in responseHeaders)
+            {
+                result.Headers[header.Key] = header.Value;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -276,43 +328,99 @@ namespace MediaBrowser.Api.Playback.Progressive
         /// <param name="state">The state.</param>
         /// <param name="responseHeaders">The response headers.</param>
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
+        /// <param name="cancellationTokenSource">The cancellation token source.</param>
         /// <returns>Task{System.Object}.</returns>
-        private async Task<object> GetStreamResult(StreamState state, IDictionary<string, string> responseHeaders, bool isHeadRequest)
+        private async Task<object> GetStreamResult(StreamState state, IDictionary<string, string> responseHeaders, bool isHeadRequest, CancellationTokenSource cancellationTokenSource)
         {
             // Use the command line args with a dummy playlist path
-            var outputPath = GetOutputFilePath(state);
+            var outputPath = state.OutputFilePath;
 
-            var contentType = MimeTypes.GetMimeType(outputPath);
+            responseHeaders["Accept-Ranges"] = "none";
+
+            var contentType = state.GetMimeType(outputPath);
+
+            // TODO: The isHeadRequest is only here because ServiceStack will add Content-Length=0 to the response
+            // What we really want to do is hunt that down and remove that
+            var contentLength = state.EstimateContentLength || isHeadRequest ? GetEstimatedContentLength(state) : null;
+
+            if (contentLength.HasValue)
+            {
+                responseHeaders["Content-Length"] = contentLength.Value.ToString(UsCulture);
+            }
 
             // Headers only
             if (isHeadRequest)
             {
-                responseHeaders["Accept-Ranges"] = "none";
+                var streamResult = ResultFactory.GetResult(new byte[] { }, contentType, responseHeaders);
 
-                return ResultFactory.GetResult(null, contentType, responseHeaders);
+                var hasHeaders = streamResult as IHasHeaders;
+                if (hasHeaders != null)
+                {
+                    if (contentLength.HasValue)
+                    {
+                        hasHeaders.Headers["Content-Length"] = contentLength.Value.ToString(CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        if (hasHeaders.Headers.ContainsKey("Content-Length"))
+                        {
+                            hasHeaders.Headers.Remove("Content-Length");
+                        }
+                    }
+                }
+
+                return streamResult;
             }
 
-            if (!File.Exists(outputPath))
+            var transcodingLock = ApiEntryPoint.Instance.GetTranscodingLock(outputPath);
+            await transcodingLock.WaitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            try
             {
-                await StartFfMpeg(state, outputPath).ConfigureAwait(false);
+                TranscodingJob job;
+
+                if (!FileSystem.FileExists(outputPath))
+                {
+                    job = await StartFfMpeg(state, outputPath, cancellationTokenSource).ConfigureAwait(false);
+                }
+                else
+                {
+                    job = ApiEntryPoint.Instance.OnTranscodeBeginRequest(outputPath, TranscodingJobType.Progressive);
+                    state.Dispose();
+                }
+
+                var outputHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                outputHeaders["Content-Type"] = contentType;
+
+                // Add the response headers to the result object
+                foreach (var item in responseHeaders)
+                {
+                    outputHeaders[item.Key] = item.Value;
+                }
+
+                return new ProgressiveFileCopier(FileSystem, outputPath, outputHeaders, job, Logger, CancellationToken.None);
             }
-            else
+            finally
             {
-                ApiEntryPoint.Instance.OnTranscodeBeginRequest(outputPath, TranscodingJobType.Progressive);
+                transcodingLock.Release();
             }
+        }
 
-            var result = new ProgressiveStreamWriter(outputPath, Logger, FileSystem);
+        /// <summary>
+        /// Gets the length of the estimated content.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <returns>System.Nullable{System.Int64}.</returns>
+        private long? GetEstimatedContentLength(StreamState state)
+        {
+            var totalBitrate = state.TotalOutputBitrate ?? 0;
 
-            result.Options["Accept-Ranges"] = "none";
-            result.Options["Content-Type"] = contentType;
-
-            // Add the response headers to the result object
-            foreach (var item in responseHeaders)
+            if (totalBitrate > 0 && state.RunTimeTicks.HasValue)
             {
-                result.Options[item.Key] = item.Value;
+                return Convert.ToInt64(totalBitrate * TimeSpan.FromTicks(state.RunTimeTicks.Value).TotalSeconds / 8);
             }
 
-            return result;
+            return null;
         }
     }
 }

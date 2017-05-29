@@ -1,7 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿using MediaBrowser.Model.Serialization;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using System;
+using System.Collections.Generic;
+using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -24,29 +26,41 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the game system.
         /// </summary>
         /// <value>The game system.</value>
         public string GameSystemName { get; set; }
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+        public override List<string> GetUserDataKeys()
         {
+            var list = base.GetUserDataKeys();
+
             if (!string.IsNullOrEmpty(GameSystemName))
             {
-                return "GameSystem-" + GameSystemName;
+                list.Insert(0, "GameSystem-" + GameSystemName);
             }
-            return base.GetUserDataKey();
+            return list;
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        protected override bool GetBlockUnratedValue(UserPolicy config)
         {
             // Don't block. Determine by game
             return false;
+        }
+
+        public override UnratedItem GetBlockUnratedType()
+        {
+            return UnratedItem.Game;
         }
 
         public GameSystemInfo GetLookupInfo()
@@ -56,6 +70,15 @@ namespace MediaBrowser.Controller.Entities
             id.Path = Path;
 
             return id;
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPeople
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 }

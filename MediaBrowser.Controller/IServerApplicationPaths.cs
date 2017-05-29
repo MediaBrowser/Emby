@@ -1,5 +1,4 @@
-﻿using System;
-using MediaBrowser.Common.Configuration;
+﻿using MediaBrowser.Common.Configuration;
 
 namespace MediaBrowser.Controller
 {
@@ -11,6 +10,13 @@ namespace MediaBrowser.Controller
         /// <value>The root folder path.</value>
         string RootFolderPath { get; }
 
+        /// <summary>
+        /// Gets the application resources path. This is the path to the folder containing resources that are deployed as part of the application
+        /// For example, this folder contains dashboard-ui and swagger-ui
+        /// </summary>
+        /// <value>The application resources path.</value>
+        string ApplicationResourcesPath { get; }
+        
         /// <summary>
         /// Gets the path to the default user view directory.  Used if no specific user view is defined.
         /// </summary>
@@ -52,12 +58,6 @@ namespace MediaBrowser.Controller
         /// </summary>
         /// <value>The game genre path.</value>
         string GameGenrePath { get; }
-
-        /// <summary>
-        /// Gets the artists path.
-        /// </summary>
-        /// <value>The artists path.</value>
-        string ArtistsPath { get; }
 
         /// <summary>
         /// Gets the path to the Studio directory
@@ -107,11 +107,6 @@ namespace MediaBrowser.Controller
         /// <value>The internal metadata path.</value>
         string InternalMetadataPath { get; }
 
-        /// <summary>
-        /// Gets the internal metadata path.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>System.String.</returns>
-        string GetInternalMetadataPath(Guid id);
+        string ArtistsPath { get; }
     }
 }

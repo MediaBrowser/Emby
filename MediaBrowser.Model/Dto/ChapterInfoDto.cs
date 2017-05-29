@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.Serialization;
+﻿using System.Diagnostics;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Dto
 {
@@ -9,7 +7,7 @@ namespace MediaBrowser.Model.Dto
     /// Class ChapterInfo
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    public class ChapterInfoDto : INotifyPropertyChanged
+    public class ChapterInfoDto
     {
         /// <summary>
         /// Gets or sets the start position ticks.
@@ -27,7 +25,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the image tag.
         /// </summary>
         /// <value>The image tag.</value>
-        public Guid? ImageTag { get; set; }
+        public string ImageTag { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has image.
@@ -36,9 +34,7 @@ namespace MediaBrowser.Model.Dto
         [IgnoreDataMember]
         public bool HasImage
         {
-            get { return ImageTag.HasValue; }
+            get { return ImageTag != null; }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

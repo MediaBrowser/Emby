@@ -1,77 +1,127 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Live TV</title>
-</head>
-<body>
-    <div id="liveTvSettingsPage" data-role="page" class="page type-interior liveTvSettingsPage">
-
-        <div data-role="content">
-            <div class="content-primary">
-
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="livetvstatus.html" data-role="button">Status</a>
-                    <a href="#" data-role="button" class="ui-btn-active">Settings</a>
+﻿<div id="liveTvSettingsPage" data-role="page" class="page type-interior liveTvPage withTabs" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Live%20TV" data-require="scripts/livetvsettings,emby-checkbox,emby-input,emby-select,emby-collapse,emby-button">
+    <div>
+        <div class="content-primary">
+            <form class="liveTvSettingsForm">
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectGuideDays" label="${LabelNumberOfGuideDays}">
+                        <option value="">${OptionAutomatic}</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                    </select>
+                    <div class="fieldDescription">${LabelNumberOfGuideDaysHelp}</div>
                 </div>
-
-                <form class="liveTvSettingsForm" style="display: none;">
-
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <label for="selectActiveService">Active service: </label>
-                            <select id="selectActiveService" data-mini="true">
-                            </select>
-                            <div class="fieldDescription">Multiple tv plugins can be installed but only one can be active at a time.</div>
-                        </li>
-
-                        <li>
-                            <label for="selectGuideDays">Number of days of guide data to download: </label>
-                            <select id="selectGuideDays" data-mini="true">
-                                <option value="">Auto</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                            </select>
-                            <div class="fieldDescription">Downloading more days worth of guide data provides the ability to schedule out further in advance and view more listings, but it will also take longer to download. Auto will choose based on the number of channels.</div>
-                        </li>
-                    </ul>
-                    <br />
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <button type="submit" data-theme="b" data-icon="check">
-                                Save
-                            </button>
-                            <button type="button" onclick="Dashboard.navigate('dashboard.html');" data-icon="delete">
-                                Cancel
-                            </button>
-                        </li>
-                    </ul>
-
-                </form>
-                <div class="noLiveTvServices" style="display: none;">
-                    <div class="readOnlyContent" style="margin-top: 2em;">
-                        <p>A Live TV service provider plugin is required in order to continue.</p>
-
-                        <p>Please <a href="plugincatalog.html">install</a> one of our available plugins, such as ServerWmc.</p>
+                <label class="checkboxContainer">
+                    <input type="checkbox" is="emby-checkbox" id="chkMovies" />
+                    <span>${OptionDownloadInternetMetadataTvPrograms}</span>
+                </label>
+                <div class="inputContainer">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" id="txtRecordingPath" label="${LabelRecordingPath}" autocomplete="off" />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectRecordingPath" title="${ButtonSelectDirectory}"><i class="md-icon">search</i></button>
+                    </div>
+                    <div class="fieldDescription">${LabelRecordingPathHelp}</div>
+                </div>
+                <div class="inputContainer">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" id="txtMovieRecordingPath" label="${LabelMovieRecordingPath}" autocomplete="off" />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectMovieRecordingPath" title="${ButtonSelectDirectory}"><i class="md-icon">search</i></button>
                     </div>
                 </div>
-            </div>
+                <div class="inputContainer">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" id="txtSeriesRecordingPath" label="${LabelSeriesRecordingPath}" autocomplete="off" />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectSeriesRecordingPath" title="${ButtonSelectDirectory}"><i class="md-icon">search</i></button>
+                    </div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkConvertRecordings" />
+                        <span>${OptionConvertRecordingsToStreamingFormat}</span>
+                    </label>
+                    <div class="fieldDescription paperCheckboxFieldDescription">${OptionConvertRecordingsToStreamingFormatHelp}</div>
+                    <div class="fieldDescription paperCheckboxFieldDescription btnSupporterForConverting"><a href="https://emby.media/premiere" target="_blank" class="accent">${FeatureRequiresEmbyPremiere}</a></div>
+                </div>
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectConversionFormat" label="${LabelConvertRecordingsTo}">
+                        <option value="mp4">MP4</option>
+                        <option value="mkv">MKV</option>
+                    </select>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkPreserveVideo" />
+                        <span>${OptionConvertRecordingPreserveVideo}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${OptionConvertRecordingPreserveVideoHelp}</div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkPreserveAudio" />
+                        <span>${OptionConvertRecordingPreserveAudio}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${OptionConvertRecordingPreserveAudioHelp}</div>
+                </div>
+                <div>
+                    <h1>${HeaderRecordingPostProcessing}</h1>
+                    <div class="inputContainer">
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex-grow:1;">
+                                <input is="emby-input" type="text" id="txtPostProcessor" label="${LabelPostProcessor}" />
+                            </div>
+                            <button type="button" is="paper-icon-button-light" id="btnSelectPostProcessorPath" class="autoSize"><i class="md-icon">search</i></button>
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="text" id="txtPostProcessorArguments" label="${LabelPostProcessorArguments}" />
+                        <div class="fieldDescription">${LabelPostProcessorArgumentsHelp}</div>
+                    </div>
+                </div>
+                <div>
+                    <h1>${HeaderDefaultRecordingSettings}</h1>
+                    <div class="inputContainer">
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex-grow: 1;">
+                                <input is="emby-input" type="number" id="txtPrePaddingMinutes" pattern="[0-9]*" required="required" min="0" step="1" label="${LabelStartWhenPossible}" />
+                            </div>
+                            <div class="fieldDescription" style="margin-left:.5em;font-size:90%;margin-top:1.3em;">
+                                ${MinutesBefore}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex-grow: 1;">
+                                <input is="emby-input" type="number" id="txtPostPaddingMinutes" pattern="[0-9]*" required="required" min="0" step="1" label="${LabelStopWhenPossible}" />
+                            </div>
+                            <div class="fieldDescription" style="margin-left:.5em;font-size:90%;margin-top:1.3em;">
+                                ${MinutesAfter}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>${ButtonSave}</span></button>
+                </div>
+            </form>
         </div>
-
-        <script type="text/javascript">
-            $('.liveTvSettingsForm').off('submit', LiveTvSettingsPage.onSubmit).on('submit', LiveTvSettingsPage.onSubmit);
-        </script>
     </div>
-</body>
-</html>
+</div>

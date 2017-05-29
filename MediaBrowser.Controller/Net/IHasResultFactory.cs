@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.Net;
-using ServiceStack.Web;
+﻿using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Controller.Net
 {

@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Querying;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -60,44 +61,27 @@ namespace MediaBrowser.Model.LiveTv
         /// </summary>
         /// <value>The series timer identifier.</value>
         public string SeriesTimerId { get; set; }
-    }
-
-    public class RecordingGroupQuery
-    {
-        /// <summary>
-        /// Gets or sets the user identifier.
-        /// </summary>
-        /// <value>The user identifier.</value>
-        public string UserId { get; set; }
-    }
-
-    public class TimerQuery
-    {
-        /// <summary>
-        /// Gets or sets the channel identifier.
-        /// </summary>
-        /// <value>The channel identifier.</value>
-        public string ChannelId { get; set; }
 
         /// <summary>
-        /// Gets or sets the series timer identifier.
+        /// Fields to return within the items, in addition to basic information
         /// </summary>
-        /// <value>The series timer identifier.</value>
-        public string SeriesTimerId { get; set; }
-    }
+        /// <value>The fields.</value>
+        public ItemFields[] Fields { get; set; }
+        public bool? EnableImages { get; set; }
+        public bool? IsLibraryItem { get; set; }
+        public bool? IsNews { get; set; }
+        public bool? IsMovie { get; set; }
+        public bool? IsSeries { get; set; }
+        public bool? IsKids { get; set; }
+        public bool? IsSports { get; set; }
+        public int? ImageTypeLimit { get; set; }
+        public ImageType[] EnableImageTypes { get; set; }
 
-    public class SeriesTimerQuery
-    {
-        /// <summary>
-        /// Gets or sets the sort by - SortName, Priority
-        /// </summary>
-        /// <value>The sort by.</value>
-        public string SortBy { get; set; }
+        public bool EnableTotalRecordCount { get; set; }
 
-        /// <summary>
-        /// Gets or sets the sort order.
-        /// </summary>
-        /// <value>The sort order.</value>
-        public SortOrder SortOrder { get; set; }
+        public RecordingQuery()
+        {
+            EnableTotalRecordCount = true;
+        }
     }
 }

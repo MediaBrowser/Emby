@@ -50,14 +50,7 @@ namespace MediaBrowser.Providers.People
             };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, ImageType imageType, CancellationToken cancellationToken)
-        {
-            var images = await GetAllImages(item, cancellationToken).ConfigureAwait(false);
-
-            return images.Where(i => i.Type == imageType);
-        }
-
-        public async Task<IEnumerable<RemoteImageInfo>> GetAllImages(IHasImages item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             var person = (Person)item;
             var id = person.GetProviderId(MetadataProviders.Tmdb);
@@ -74,7 +67,7 @@ namespace MediaBrowser.Providers.People
 
                 var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-                var tmdbImageUrl = tmdbSettings.images.base_url + "original";
+                var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
 
                 return GetImages(images, item.GetPreferredMetadataLanguage(), tmdbImageUrl);
             }
@@ -142,8 +135,7 @@ namespace MediaBrowser.Providers.People
             return _httpClient.GetResponse(new HttpRequestOptions
             {
                 CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = MovieDbProvider.Current.MovieDbResourcePool
+                Url = url
             });
         }
     }

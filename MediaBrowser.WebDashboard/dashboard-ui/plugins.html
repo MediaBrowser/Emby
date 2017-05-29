@@ -1,24 +1,8 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Plugins</title>
-</head>
-<body>
-    <div id="pluginsPage" data-role="page" class="page type-interior pluginConfigurationPage">
+﻿<div id="pluginsPage" data-role="page" class="page type-interior pluginConfigurationPage withTabs fullWidthContent" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Plugins" data-require="scripts/pluginspage">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="plugins.html" data-role="button" class="ui-btn-active">Installed Plugins</a>
-                    <a href="plugincatalog.html" data-role="button">Catalog</a>
-                    <a href="pluginupdates.html" data-role="button">Updates</a>
-                </div>
-
-                <div class="readOnlyContent">
-                    <ul id="ulInstalledPlugins" data-role="listview" data-inset="true" data-auto-enhanced="false" data-split-icon="minus"></ul>
-                </div>
-            </div>
+    <div>
+        <div class="content-primary">
+            <div class="installedPlugins"></div>
         </div>
     </div>
-</body>
-</html>
+</div>

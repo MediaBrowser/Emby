@@ -1,5 +1,5 @@
-﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Plugins;
+﻿using MediaBrowser.Common.Plugins;
+using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Updates;
 using System;
 using System.Collections.Generic;
@@ -14,21 +14,27 @@ namespace MediaBrowser.Common
     public interface IApplicationHost
     {
         /// <summary>
+        /// Gets the display name of the operating system.
+        /// </summary>
+        /// <value>The display name of the operating system.</value>
+        string OperatingSystemDisplayName { get; }
+
+        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
         string Name { get; }
 
         /// <summary>
-        /// Occurs when [application updated].
+        /// Gets the device identifier.
         /// </summary>
-        event EventHandler<GenericEventArgs<Version>> ApplicationUpdated;
+        /// <value>The device identifier.</value>
+        string SystemId { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is running as service.
+        /// Occurs when [application updated].
         /// </summary>
-        /// <value><c>true</c> if this instance is running as service; otherwise, <c>false</c>.</value>
-        bool IsRunningAsService { get; }
+        event EventHandler<GenericEventArgs<PackageVersionInfo>> ApplicationUpdated;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has pending kernel reload.
@@ -130,7 +136,7 @@ namespace MediaBrowser.Common
         /// Gets the plugins.
         /// </summary>
         /// <value>The plugins.</value>
-        IEnumerable<IPlugin> Plugins { get; }
+        IPlugin[] Plugins { get; }
 
         /// <summary>
         /// Removes the plugin.
@@ -151,5 +157,7 @@ namespace MediaBrowser.Common
         /// <param name="type">The type.</param>
         /// <returns>System.Object.</returns>
         object CreateInstance(Type type);
+
+        PackageVersionClass SystemUpdateLevel { get; }
     }
 }

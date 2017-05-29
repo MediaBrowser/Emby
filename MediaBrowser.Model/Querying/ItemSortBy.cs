@@ -20,14 +20,6 @@ namespace MediaBrowser.Model.Querying
         /// </summary>
         public const string Artist = "Artist";
         /// <summary>
-        /// The budget
-        /// </summary>
-        public const string Budget = "Budget";
-        /// <summary>
-        /// The revenue
-        /// </summary>
-        public const string Revenue = "Revenue";
-        /// <summary>
         /// The date created
         /// </summary>
         public const string DateCreated = "DateCreated";
@@ -43,6 +35,7 @@ namespace MediaBrowser.Model.Querying
         /// The premiere date
         /// </summary>
         public const string PremiereDate = "PremiereDate";
+        public const string StartDate = "StartDate";
         /// <summary>
         /// The sort name
         /// </summary>
@@ -75,16 +68,14 @@ namespace MediaBrowser.Model.Querying
         public const string IsFolder = "IsFolder";
         public const string IsUnplayed = "IsUnplayed";
         public const string IsPlayed = "IsPlayed";
-        public const string TrailerCount = "TrailerCount";
-        public const string MovieCount = "MovieCount";
-        public const string SeriesCount = "SeriesCount";
-        public const string EpisodeCount = "EpisodeCount";
-        public const string SongCount = "SongCount";
-        public const string AlbumCount = "AlbumCount";
-        public const string MusicVideoCount = "MusicVideoCount";
         public const string SeriesSortName = "SeriesSortName";
         public const string VideoBitRate = "VideoBitRate";
         public const string AirTime = "AirTime";
-        public const string Metascore = "Metascore";
+        public const string Studio = "Studio";
+        public const string Players = "Players";
+        public const string GameSystem = "GameSystem";
+        public const string IsFavoriteOrLiked = "IsFavoriteOrLiked";
+        public const string DateLastContentAdded = "DateLastContentAdded";
+        public const string SeriesDatePlayed = "SeriesDatePlayed";
     }
 }

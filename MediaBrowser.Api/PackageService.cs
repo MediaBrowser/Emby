@@ -1,21 +1,22 @@
 ﻿using MediaBrowser.Common;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Updates;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Updates;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
     /// <summary>
     /// Class GetPackage
     /// </summary>
-    [Route("/Packages/{Name}", "GET")]
-    [Api(("Gets a package, by name or assembly guid"))]
+    [Route("/Packages/{Name}", "GET", Summary = "Gets a package, by name or assembly guid")]
+    [Authenticated]
     public class GetPackage : IReturn<PackageInfo>
     {
         /// <summary>
@@ -36,8 +37,8 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class GetPackages
     /// </summary>
-    [Route("/Packages", "GET")]
-    [Api(("Gets available packages"))]
+    [Route("/Packages", "GET", Summary = "Gets available packages")]
+    [Authenticated]
     public class GetPackages : IReturn<List<PackageInfo>>
     {
         /// <summary>
@@ -45,20 +46,25 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The name.</value>
         [ApiMember(Name = "PackageType", Description = "Optional package type filter (System/UserInstalled)", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public PackageType? PackageType { get; set; }
+        public string PackageType { get; set; }
 
         [ApiMember(Name = "TargetSystems", Description = "Optional. Filter by target system type. Allows multiple, comma delimited.", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET", AllowMultiple = true)]
         public string TargetSystems { get; set; }
 
         [ApiMember(Name = "IsPremium", Description = "Optional. Filter by premium status", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
         public bool? IsPremium { get; set; }
+
+        [ApiMember(Name = "IsAdult", Description = "Optional. Filter by package that contain adult content.", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
+        public bool? IsAdult { get; set; }
+
+        public bool? IsAppStoreEnabled { get; set; }
     }
 
     /// <summary>
     /// Class GetPackageVersionUpdates
     /// </summary>
-    [Route("/Packages/Updates", "GET")]
-    [Api(("Gets available package updates for currently installed packages"))]
+    [Route("/Packages/Updates", "GET", Summary = "Gets available package updates for currently installed packages")]
+    [Authenticated(Roles = "Admin")]
     public class GetPackageVersionUpdates : IReturn<List<PackageVersionInfo>>
     {
         /// <summary>
@@ -66,14 +72,14 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The name.</value>
         [ApiMember(Name = "PackageType", Description = "Package type filter (System/UserInstalled)", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public PackageType PackageType { get; set; }
+        public string PackageType { get; set; }
     }
 
     /// <summary>
     /// Class InstallPackage
     /// </summary>
-    [Route("/Packages/Installed/{Name}", "POST")]
-    [Api(("Installs a package"))]
+    [Route("/Packages/Installed/{Name}", "POST", Summary = "Installs a package")]
+    [Authenticated(Roles = "Admin")]
     public class InstallPackage : IReturnVoid
     {
         /// <summary>
@@ -108,8 +114,8 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class CancelPackageInstallation
     /// </summary>
-    [Route("/Packages/Installing/{Id}", "DELETE")]
-    [Api(("Cancels a package installation"))]
+    [Route("/Packages/Installing/{Id}", "DELETE", Summary = "Cancels a package installation")]
+    [Authenticated(Roles = "Admin")]
     public class CancelPackageInstallation : IReturnVoid
     {
         /// <summary>
@@ -117,7 +123,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "Installation Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>
@@ -139,17 +145,16 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentException">Unsupported PackageType</exception>
         public object Get(GetPackageVersionUpdates request)
         {
             var result = new List<PackageVersionInfo>();
 
-            if (request.PackageType == PackageType.UserInstalled || request.PackageType == PackageType.All)
+            if (string.Equals(request.PackageType, "UserInstalled", StringComparison.OrdinalIgnoreCase) || string.Equals(request.PackageType, "All", StringComparison.OrdinalIgnoreCase))
             {
                 result.AddRange(_installationManager.GetAvailablePluginUpdates(_appHost.ApplicationVersion, false, CancellationToken.None).Result.ToList());
             }
 
-            else if (request.PackageType == PackageType.System || request.PackageType == PackageType.All)
+            else if (string.Equals(request.PackageType, "System", StringComparison.OrdinalIgnoreCase) || string.Equals(request.PackageType, "All", StringComparison.OrdinalIgnoreCase))
             {
                 var updateCheckResult = _appHost.CheckForApplicationUpdate(CancellationToken.None, new Progress<double>()).Result;
 
@@ -170,9 +175,10 @@ namespace MediaBrowser.Api
         public object Get(GetPackage request)
         {
             var packages = _installationManager.GetAvailablePackages(CancellationToken.None, applicationVersion: _appHost.ApplicationVersion).Result;
+            var list = packages.ToList();
 
-            var result = packages.FirstOrDefault(p => string.Equals(p.guid, request.AssemblyGuid ?? "none", StringComparison.OrdinalIgnoreCase))
-                         ?? packages.FirstOrDefault(p => p.name.Equals(request.Name, StringComparison.OrdinalIgnoreCase));
+            var result = list.FirstOrDefault(p => string.Equals(p.guid, request.AssemblyGuid ?? "none", StringComparison.OrdinalIgnoreCase))
+                         ?? list.FirstOrDefault(p => p.name.Equals(request.Name, StringComparison.OrdinalIgnoreCase));
 
             return ToOptimizedResult(result);
         }
@@ -182,9 +188,9 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Get(GetPackages request)
+        public async Task<object> Get(GetPackages request)
         {
-            var packages = _installationManager.GetAvailablePackages(CancellationToken.None, request.PackageType, _appHost.ApplicationVersion).Result;
+            var packages = await _installationManager.GetAvailablePackages(CancellationToken.None, false, request.PackageType, _appHost.ApplicationVersion).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(request.TargetSystems))
             {
@@ -196,6 +202,16 @@ namespace MediaBrowser.Api
             if (request.IsPremium.HasValue)
             {
                 packages = packages.Where(p => p.isPremium == request.IsPremium.Value);
+            }
+
+            if (request.IsAdult.HasValue)
+            {
+                packages = packages.Where(p => p.adult == request.IsAdult.Value);
+            }
+
+            if (request.IsAppStoreEnabled.HasValue)
+            {
+                packages = packages.Where(p => p.enableInAppStore == request.IsAppStoreEnabled.Value);
             }
 
             return ToOptimizedResult(packages.ToList());
@@ -217,7 +233,7 @@ namespace MediaBrowser.Api
                 throw new ResourceNotFoundException(string.Format("Package not found: {0}", request.Name));
             }
 
-            Task.Run(() => _installationManager.InstallPackage(package, new Progress<double>(), CancellationToken.None));
+            Task.Run(() => _installationManager.InstallPackage(package, true, new Progress<double>(), CancellationToken.None));
         }
 
         /// <summary>
@@ -226,7 +242,7 @@ namespace MediaBrowser.Api
         /// <param name="request">The request.</param>
         public void Delete(CancelPackageInstallation request)
         {
-            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => i.Item1.Id == request.Id);
+            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => string.Equals(i.Item1.Id, request.Id));
 
             if (info != null)
             {

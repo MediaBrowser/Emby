@@ -47,13 +47,13 @@ namespace MediaBrowser.Model.Search
         /// Gets or sets the image tag.
         /// </summary>
         /// <value>The image tag.</value>
-        public Guid? PrimaryImageTag { get; set; }
+        public string PrimaryImageTag { get; set; }
 
         /// <summary>
         /// Gets or sets the thumb image tag.
         /// </summary>
         /// <value>The thumb image tag.</value>
-        public Guid? ThumbImageTag { get; set; }
+        public string ThumbImageTag { get; set; }
 
         /// <summary>
         /// Gets or sets the thumb image item identifier.
@@ -65,7 +65,7 @@ namespace MediaBrowser.Model.Search
         /// Gets or sets the backdrop image tag.
         /// </summary>
         /// <value>The backdrop image tag.</value>
-        public Guid? BackdropImageTag { get; set; }
+        public string BackdropImageTag { get; set; }
 
         /// <summary>
         /// Gets or sets the backdrop image item identifier.
@@ -96,12 +96,17 @@ namespace MediaBrowser.Model.Search
         /// </summary>
         /// <value>The display type of the media.</value>
         public string DisplayMediaType { get; set; }
-        
+
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
         /// <summary>
         /// Gets or sets the series.
         /// </summary>
         /// <value>The series.</value>
         public string Series { get; set; }
+
+        public string Status { get; set; }
 
         /// <summary>
         /// Gets or sets the album.
@@ -132,5 +137,23 @@ namespace MediaBrowser.Model.Search
         /// </summary>
         /// <value>The episode count.</value>
         public int? EpisodeCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the channel identifier.
+        /// </summary>
+        /// <value>The channel identifier.</value>
+        public string ChannelId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the channel.
+        /// </summary>
+        /// <value>The name of the channel.</value>
+        public string ChannelName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the primary image aspect ratio.
+        /// </summary>
+        /// <value>The primary image aspect ratio.</value>
+        public double? PrimaryImageAspectRatio { get; set; }
     }
 }

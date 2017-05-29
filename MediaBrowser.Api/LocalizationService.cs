@@ -1,17 +1,16 @@
-﻿using MediaBrowser.Controller.Localization;
+﻿using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Globalization;
-using ServiceStack;
 using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
     /// <summary>
     /// Class GetCultures
     /// </summary>
-    [Route("/Localization/Cultures", "GET")]
-    [Api(Description = "Gets known cultures")]
+    [Route("/Localization/Cultures", "GET", Summary = "Gets known cultures")]
     public class GetCultures : IReturn<List<CultureDto>>
     {
     }
@@ -19,8 +18,7 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class GetCountries
     /// </summary>
-    [Route("/Localization/Countries", "GET")]
-    [Api(Description = "Gets known countries")]
+    [Route("/Localization/Countries", "GET", Summary = "Gets known countries")]
     public class GetCountries : IReturn<List<CountryInfo>>
     {
     }
@@ -28,15 +26,23 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class ParentalRatings
     /// </summary>
-    [Route("/Localization/ParentalRatings", "GET")]
-    [Api(Description = "Gets known parental ratings")]
+    [Route("/Localization/ParentalRatings", "GET", Summary = "Gets known parental ratings")]
     public class GetParentalRatings : IReturn<List<ParentalRating>>
+    {
+    }
+
+    /// <summary>
+    /// Class ParentalRatings
+    /// </summary>
+    [Route("/Localization/Options", "GET", Summary = "Gets localization options")]
+    public class GetLocalizationOptions : IReturn<List<LocalizatonOption>>
     {
     }
 
     /// <summary>
     /// Class CulturesService
     /// </summary>
+    [Authenticated(AllowBeforeStartupWizard = true)]
     public class LocalizationService : BaseApiService
     {
         /// <summary>
@@ -62,7 +68,14 @@ namespace MediaBrowser.Api
         {
             var result = _localization.GetParentalRatings().ToList();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
+        }
+
+        public object Get(GetLocalizationOptions request)
+        {
+            var result = _localization.GetLocalizationOptions().ToList();
+
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -74,7 +87,7 @@ namespace MediaBrowser.Api
         {
             var result = _localization.GetCountries().ToList();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -86,7 +99,7 @@ namespace MediaBrowser.Api
         {
             var result = _localization.GetCultures().ToList();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
     }
 

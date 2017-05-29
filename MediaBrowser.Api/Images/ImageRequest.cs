@@ -1,6 +1,5 @@
-﻿using MediaBrowser.Model.Drawing;
-using MediaBrowser.Model.Entities;
-using ServiceStack;
+﻿using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Images
 {
@@ -54,7 +53,7 @@ namespace MediaBrowser.Api.Images
         public bool EnableImageEnhancers { get; set; }
 
         [ApiMember(Name = "Format", Description = "Determines the output foramt of the image - original,gif,jpg,png", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
-        public ImageOutputFormat Format { get; set; }
+        public string Format { get; set; }
 
         [ApiMember(Name = "AddPlayedIndicator", Description = "Optional. Add a played indicator", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool AddPlayedIndicator { get; set; }
@@ -65,14 +64,17 @@ namespace MediaBrowser.Api.Images
         [ApiMember(Name = "UnplayedCount", Description = "Optional unplayed count overlay to render", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? UnplayedCount { get; set; }
 
+        public int? Blur { get; set; }
+
         [ApiMember(Name = "BackgroundColor", Description = "Optional. Apply a background color for transparent images.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string BackgroundColor { get; set; }
-        
+
+        [ApiMember(Name = "ForegroundLayer", Description = "Optional. Apply a foreground layer on top of the image.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string ForegroundLayer { get; set; }
+
         public ImageRequest()
         {
             EnableImageEnhancers = true;
-
-            Format = ImageOutputFormat.Original;
         }
     }
 

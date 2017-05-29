@@ -1,25 +1,42 @@
-﻿using MediaBrowser.Controller.Providers;
+﻿using System;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
-using System;
+using MediaBrowser.Model.Users;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Dto;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
     /// <summary>
     /// Class MusicAlbum
     /// </summary>
-    public class MusicAlbum : Folder, IHasAlbumArtist, IHasArtist, IHasMusicGenres, IHasTags, IHasLookupInfo<AlbumInfo>, IHasSeries
+    public class MusicAlbum : Folder, IHasAlbumArtist, IHasArtist, IHasMusicGenres, IHasLookupInfo<AlbumInfo>, IMetadataContainer
     {
-        public List<Guid> SoundtrackIds { get; set; }
+        public List<string> AlbumArtists { get; set; }
+        public List<string> Artists { get; set; }
 
         public MusicAlbum()
         {
             Artists = new List<string>();
-            SoundtrackIds = new List<Guid>();
-            Tags = new List<string>();
+            AlbumArtists = new List<string>();
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsAddingToPlaylist
+        {
+            get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsInheritedParentImages
+        {
+            get { return true; }
         }
 
         [IgnoreDataMember]
@@ -27,22 +44,22 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             get
             {
-                return Parents.OfType<MusicArtist>().FirstOrDefault();
+                var artist = GetParents().OfType<MusicArtist>().FirstOrDefault();
+
+                if (artist == null)
+                {
+                    var name = AlbumArtist;
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        artist = LibraryManager.GetArtist(name);
+                    }
+                }
+                return artist;
             }
         }
 
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        public List<string> Tags { get; set; }
-
-        /// <summary>
-        /// Songs will group into us so don't also include us in the index
-        /// </summary>
-        /// <value><c>true</c> if [include in index]; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public override bool IncludeInIndex
+        public override bool SupportsPlayedStatus
         {
             get
             {
@@ -51,21 +68,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         }
 
         [IgnoreDataMember]
-        public string SeriesName
-        {
-            get
-            {
-                return AlbumArtist;
-            }
-        }
-
-        /// <summary>
-        /// Override this to true if class should be grouped under a container in indicies
-        /// The container class should be defined via IndexContainer
-        /// </summary>
-        /// <value><c>true</c> if [group in index]; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool GroupInIndex
+        public override bool SupportsCumulativeRunTimeTicks
         {
             get
             {
@@ -73,88 +76,191 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
         }
 
-        /// <summary>
-        /// The unknwon artist
-        /// </summary>
-        private static readonly MusicArtist UnknwonArtist = new MusicArtist { Name = "<Unknown>" };
-
-        /// <summary>
-        /// Override this to return the folder that should be used to construct a container
-        /// for this item in an index.  GroupInIndex should be true as well.
-        /// </summary>
-        /// <value>The index container.</value>
         [IgnoreDataMember]
-        public override Folder IndexContainer
+        public List<string> AllArtists
         {
-            get { return Parent as MusicArtist ?? UnknwonArtist; }
+            get
+            {
+                var list = AlbumArtists.ToList();
+
+                list.AddRange(Artists);
+
+                return list;
+
+            }
+        }
+
+        [IgnoreDataMember]
+        public string AlbumArtist
+        {
+            get { return AlbumArtists.FirstOrDefault(); }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPeople
+        {
+            get { return false; }
         }
 
         /// <summary>
-        /// Determines whether the specified artist has artist.
+        /// Gets the tracks.
         /// </summary>
-        /// <param name="artist">The artist.</param>
-        /// <returns><c>true</c> if the specified artist has artist; otherwise, <c>false</c>.</returns>
-        public bool HasArtist(string artist)
+        /// <value>The tracks.</value>
+        [IgnoreDataMember]
+        public IEnumerable<Audio> Tracks
         {
-            return string.Equals(AlbumArtist, artist, StringComparison.OrdinalIgnoreCase)
-                   || Artists.Contains(artist, StringComparer.OrdinalIgnoreCase);
+            get
+            {
+                return GetRecursiveChildren(i => i is Audio).Cast<Audio>();
+            }
         }
 
-        public string AlbumArtist { get; set; }
-
-        public List<string> Artists { get; set; }
-
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+        protected override IEnumerable<BaseItem> GetEligibleChildrenForRecursiveChildren(User user)
         {
-            var id = this.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup);
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                return "MusicAlbum-MusicBrainzReleaseGroup-" + id;
-            }
-
-            id = this.GetProviderId(MetadataProviders.MusicBrainzAlbum);
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                return "MusicAlbum-Musicbrainz-" + id;
-            }
-
-            return base.GetUserDataKey();
+            return Tracks;
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        public override double? GetDefaultPrimaryImageAspectRatio()
         {
-            return config.BlockUnratedMusic;
+            return 1;
+        }
+
+        public override List<string> GetUserDataKeys()
+        {
+            var list = base.GetUserDataKeys();
+
+            if (ConfigurationManager.Configuration.EnableStandaloneMusicKeys)
+            {
+                var albumArtist = AlbumArtist;
+                if (!string.IsNullOrWhiteSpace(albumArtist))
+                {
+                    list.Insert(0, albumArtist + "-" + Name);
+                }
+            }
+
+            var id = this.GetProviderId(MetadataProviders.MusicBrainzAlbum);
+
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                list.Insert(0, "MusicAlbum-Musicbrainz-" + id);
+            }
+
+            id = this.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup);
+
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                list.Insert(0, "MusicAlbum-MusicBrainzReleaseGroup-" + id);
+            }
+
+            return list;
+        }
+
+        protected override bool GetBlockUnratedValue(UserPolicy config)
+        {
+            return config.BlockUnratedItems.Contains(UnratedItem.Music);
+        }
+
+        public override UnratedItem GetBlockUnratedType()
+        {
+            return UnratedItem.Music;
         }
 
         public AlbumInfo GetLookupInfo()
         {
             var id = GetItemLookupInfo<AlbumInfo>();
 
-            id.AlbumArtist = AlbumArtist;
+            id.AlbumArtists = AlbumArtists;
 
-            var artist = Parents.OfType<MusicArtist>().FirstOrDefault();
+            var artist = MusicArtist;
 
             if (artist != null)
             {
                 id.ArtistProviderIds = artist.ProviderIds;
             }
 
-            id.SongInfos = RecursiveChildren.OfType<Audio>()
+            id.SongInfos = GetRecursiveChildren(i => i is Audio)
+                .Cast<Audio>()
                 .Select(i => i.GetLookupInfo())
                 .ToList();
 
+            var album = id.SongInfos
+                .Select(i => i.Album)
+                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+
+            if (!string.IsNullOrWhiteSpace(album))
+            {
+                id.Name = album;
+            }
+
             return id;
         }
-    }
 
-    public class MusicAlbumDisc : Folder
-    {
+        public async Task RefreshAllMetadata(MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
+        {
+            var items = GetRecursiveChildren().ToList();
 
+            var totalItems = items.Count;
+            var numComplete = 0;
+
+            var childUpdateType = ItemUpdateType.None;
+
+            // Refresh songs
+            foreach (var item in items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var updateType = await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
+                childUpdateType = childUpdateType | updateType;
+
+                numComplete++;
+                double percent = numComplete;
+                percent /= totalItems;
+                progress.Report(percent * 95);
+            }
+
+            var parentRefreshOptions = refreshOptions;
+            if (childUpdateType > ItemUpdateType.None)
+            {
+                parentRefreshOptions = new MetadataRefreshOptions(refreshOptions);
+                parentRefreshOptions.MetadataRefreshMode = MetadataRefreshMode.FullRefresh;
+            }
+
+            // Refresh current item
+            await RefreshMetadata(parentRefreshOptions, cancellationToken).ConfigureAwait(false);
+
+            if (!refreshOptions.IsAutomated)
+            {
+                await RefreshArtists(refreshOptions, cancellationToken).ConfigureAwait(false);
+            }
+
+            progress.Report(100);
+        }
+
+        private async Task RefreshArtists(MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
+        {
+            var artists = AllArtists.Select(i =>
+            {
+                // This should not be necessary but we're seeing some cases of it
+                if (string.IsNullOrWhiteSpace(i))
+                {
+                    return null;
+                }
+
+                var artist = LibraryManager.GetArtist(i);
+
+                if (!artist.IsAccessedByName)
+                {
+                    return null;
+                }
+
+                return artist;
+
+            }).Where(i => i != null).ToList();
+
+            foreach (var artist in artists)
+            {
+                await artist.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 }

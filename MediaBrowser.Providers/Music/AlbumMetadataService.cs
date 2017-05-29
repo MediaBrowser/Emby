@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
@@ -9,90 +8,74 @@ using MediaBrowser.Providers.Manager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.Music
 {
     public class AlbumMetadataService : MetadataService<MusicAlbum, AlbumInfo>
     {
-        private readonly ILibraryManager _libraryManager;
-
-        public AlbumMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, ILibraryManager libraryManager)
-            : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem)
+        protected override async Task<ItemUpdateType> BeforeSave(MusicAlbum item, bool isFullRefresh, ItemUpdateType currentUpdateType)
         {
-            _libraryManager = libraryManager;
-        }
+            var updateType = await base.BeforeSave(item, isFullRefresh, currentUpdateType).ConfigureAwait(false);
 
-        /// <summary>
-        /// Merges the specified source.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="lockedFields">The locked fields.</param>
-        /// <param name="replaceData">if set to <c>true</c> [replace data].</param>
-        /// <param name="mergeMetadataSettings">if set to <c>true</c> [merge metadata settings].</param>
-        protected override void MergeData(MusicAlbum source, MusicAlbum target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
-        {
-            ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
-
-            if (replaceData || target.Artists.Count == 0)
+            if (isFullRefresh || currentUpdateType > ItemUpdateType.None)
             {
-                target.Artists = source.Artists;
-            }
-        }
-
-        protected override ItemUpdateType BeforeSave(MusicAlbum item)
-        {
-            var updateType = base.BeforeSave(item);
-
-            var songs = item.RecursiveChildren.OfType<Audio>().ToList(); 
-            
-            if (!item.LockedFields.Contains(MetadataFields.Genres))
-            {
-                var currentList = item.Genres.ToList();
-
-                item.Genres = songs.SelectMany(i => i.Genres)
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-
-                if (currentList.Count != item.Genres.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Genres.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                if (!item.IsLocked)
                 {
-                    updateType = updateType | ItemUpdateType.MetadataDownload;
-                }
-            }
+                    var songs = item.GetRecursiveChildren(i => i is Audio)
+                        .Cast<Audio>()
+                        .ToList();
 
-            if (!item.LockedFields.Contains(MetadataFields.Studios))
-            {
-                var currentList = item.Studios.ToList();
-
-                item.Studios = songs.SelectMany(i => i.Studios)
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-
-                if (currentList.Count != item.Studios.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Studios.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
-                {
-                    updateType = updateType | ItemUpdateType.MetadataDownload;
-                }
-            }
-
-            if (!item.LockedFields.Contains(MetadataFields.Name))
-            {
-                var name = songs.Select(i => i.Album).FirstOrDefault(i => !string.IsNullOrEmpty(i));
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    if (!string.Equals(item.Name, name, StringComparison.Ordinal))
+                    if (!item.LockedFields.Contains(MetadataFields.Genres))
                     {
-                        item.Name = name;
-                        updateType = updateType | ItemUpdateType.MetadataDownload;
+                        var currentList = item.Genres.ToList();
+
+                        item.Genres = songs.SelectMany(i => i.Genres)
+                            .Distinct(StringComparer.OrdinalIgnoreCase)
+                            .ToList();
+
+                        if (currentList.Count != item.Genres.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Genres.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                        {
+                            updateType = updateType | ItemUpdateType.MetadataEdit;
+                        }
                     }
+
+                    if (!item.LockedFields.Contains(MetadataFields.Studios))
+                    {
+                        var currentList = item.Studios.ToList();
+
+                        item.Studios = songs.SelectMany(i => i.Studios)
+                            .Distinct(StringComparer.OrdinalIgnoreCase)
+                            .ToList();
+
+                        if (currentList.Count != item.Studios.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Studios.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                        {
+                            updateType = updateType | ItemUpdateType.MetadataEdit;
+                        }
+                    }
+
+                    if (!item.LockedFields.Contains(MetadataFields.Name))
+                    {
+                        var name = songs.Select(i => i.Album).FirstOrDefault(i => !string.IsNullOrEmpty(i));
+
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            if (!string.Equals(item.Name, name, StringComparison.Ordinal))
+                            {
+                                item.Name = name;
+                                updateType = updateType | ItemUpdateType.MetadataEdit;
+                            }
+                        }
+                    }
+
+                    updateType = updateType | SetAlbumArtistFromSongs(item, songs);
+                    updateType = updateType | SetArtistsFromSongs(item, songs);
+                    updateType = updateType | SetDateFromSongs(item, songs);
                 }
             }
-
-            updateType = updateType | SetAlbumArtistFromSongs(item, songs);
-            updateType = updateType | SetArtistsFromSongs(item, songs);
-            updateType = updateType | SetDateFromSongs(item, songs);
 
             return updateType;
         }
@@ -101,17 +84,16 @@ namespace MediaBrowser.Providers.Music
         {
             var updateType = ItemUpdateType.None;
             
-            var albumArtist = songs
-                .Select(i => i.AlbumArtist)
-                .FirstOrDefault(i => !string.IsNullOrEmpty(i));
+            var artists = songs
+                .SelectMany(i => i.AlbumArtists)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(i => i)
+                .ToList();
 
-            if (!string.IsNullOrEmpty(albumArtist))
+            if (!item.AlbumArtists.SequenceEqual(artists, StringComparer.OrdinalIgnoreCase))
             {
-                if (!string.Equals(item.AlbumArtist, albumArtist, StringComparison.Ordinal))
-                {
-                    item.AlbumArtist = albumArtist;
-                    updateType = updateType | ItemUpdateType.MetadataDownload;
-                }
+                item.AlbumArtists = artists;
+                updateType = updateType | ItemUpdateType.MetadataEdit;
             }
 
             return updateType;
@@ -121,15 +103,16 @@ namespace MediaBrowser.Providers.Music
         {
             var updateType = ItemUpdateType.None;
 
-            var currentList = item.Artists.ToList();
-
-            item.Artists = songs.SelectMany(i => i.Artists)
+            var artists = songs
+                .SelectMany(i => i.Artists)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(i => i)
                 .ToList();
 
-            if (currentList.Count != item.Artists.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Artists.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+            if (!item.Artists.SequenceEqual(artists, StringComparer.OrdinalIgnoreCase))
             {
-                updateType = updateType | ItemUpdateType.MetadataDownload;
+                item.Artists = artists;
+                updateType = updateType | ItemUpdateType.MetadataEdit;
             }
 
             return updateType;
@@ -163,10 +146,27 @@ namespace MediaBrowser.Providers.Music
             if ((originalPremiereDate ?? DateTime.MinValue) != (item.PremiereDate ?? DateTime.MinValue) ||
                 (originalProductionYear ?? -1) != (item.ProductionYear ?? -1))
             {
-                updateType = updateType | ItemUpdateType.MetadataDownload;
+                updateType = updateType | ItemUpdateType.MetadataEdit;
             }
 
             return updateType;
+        }
+
+        protected override void MergeData(MetadataResult<MusicAlbum> source, MetadataResult<MusicAlbum> target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+        {
+            ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
+
+            var sourceItem = source.Item;
+            var targetItem = target.Item;
+
+            if (replaceData || targetItem.Artists.Count == 0)
+            {
+                targetItem.Artists = sourceItem.Artists;
+            }
+        }
+
+        public AlbumMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        {
         }
     }
 }

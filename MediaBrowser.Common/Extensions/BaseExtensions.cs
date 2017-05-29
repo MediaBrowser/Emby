@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Text;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using MediaBrowser.Model.Cryptography;
 
 namespace MediaBrowser.Common.Extensions
 {
@@ -10,6 +10,7 @@ namespace MediaBrowser.Common.Extensions
     /// </summary>
     public static class BaseExtensions
     {
+        public static ICryptoProvider CryptographyProvider { get; set; }
 
         /// <summary>
         /// Strips the HTML.
@@ -25,46 +26,13 @@ namespace MediaBrowser.Common.Extensions
         }
 
         /// <summary>
-        /// Replaces the specified STR.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        /// <param name="comparison">The comparison.</param>
-        /// <returns>System.String.</returns>
-        public static string Replace(this string str, string oldValue, string newValue, StringComparison comparison)
-        {
-            var sb = new StringBuilder();
-
-            var previousIndex = 0;
-            var index = str.IndexOf(oldValue, comparison);
-
-            while (index != -1)
-            {
-                sb.Append(str.Substring(previousIndex, index - previousIndex));
-                sb.Append(newValue);
-                index += oldValue.Length;
-
-                previousIndex = index;
-                index = str.IndexOf(oldValue, index, comparison);
-            }
-
-            sb.Append(str.Substring(previousIndex));
-
-            return sb.ToString();
-        }
-
-        /// <summary>
         /// Gets the M d5.
         /// </summary>
         /// <param name="str">The STR.</param>
         /// <returns>Guid.</returns>
         public static Guid GetMD5(this string str)
         {
-            using (var provider = MD5.Create())
-            {
-                return new Guid(provider.ComputeHash(Encoding.Unicode.GetBytes(str)));
-            }
+            return CryptographyProvider.GetMD5(str);
         }
 
         /// <summary>
@@ -73,6 +41,8 @@ namespace MediaBrowser.Common.Extensions
         /// <param name="str">The STR.</param>
         /// <param name="type">The type.</param>
         /// <returns>Guid.</returns>
+        /// <exception cref="System.ArgumentNullException">type</exception>
+        [Obsolete("Use LibraryManager.GetNewItemId")]
         public static Guid GetMBId(this string str, Type type)
         {
             if (type == null)
@@ -83,36 +53,6 @@ namespace MediaBrowser.Common.Extensions
             var key = type.FullName + str.ToLower();
 
             return key.GetMD5();
-        }
-
-        /// <summary>
-        /// Gets the attribute value.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <param name="attrib">The attrib.</param>
-        /// <returns>System.String.</returns>
-        /// <exception cref="System.ArgumentNullException">attrib</exception>
-        public static string GetAttributeValue(this string str, string attrib)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                throw new ArgumentNullException("str");
-            }
-
-            if (string.IsNullOrEmpty(attrib))
-            {
-                throw new ArgumentNullException("attrib");
-            }
-            
-            string srch = "[" + attrib + "=";
-            int start = str.IndexOf(srch, StringComparison.OrdinalIgnoreCase);
-            if (start > -1)
-            {
-                start += srch.Length;
-                int end = str.IndexOf(']', start);
-                return str.Substring(start, end - start);
-            }
-            return null;
         }
     }
 }

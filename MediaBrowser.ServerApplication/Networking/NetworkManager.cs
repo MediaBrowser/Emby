@@ -1,11 +1,10 @@
-﻿using System.Globalization;
-using System.IO;
-using MediaBrowser.Common.Implementations.Networking;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Model.IO;
+﻿using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -14,15 +13,21 @@ namespace MediaBrowser.ServerApplication.Networking
     /// <summary>
     /// Class NetUtils
     /// </summary>
-    public class NetworkManager : BaseNetworkManager, INetworkManager
+    public class NetworkManager : Emby.Common.Implementations.Networking.NetworkManager
     {
+        public NetworkManager(ILogger logger)
+            : base(logger)
+        {
+        }
+
         /// <summary>
         /// Gets the network shares.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>IEnumerable{NetworkShare}.</returns>
-        public IEnumerable<NetworkShare> GetNetworkShares(string path)
+        public override IEnumerable<NetworkShare> GetNetworkShares(string path)
         {
+            Logger.Info("Getting network shares from {0}", path);
             return new ShareCollection(path).OfType<Share>().Select(ToNetworkShare);
         }
 
@@ -82,18 +87,20 @@ namespace MediaBrowser.ServerApplication.Networking
         /// </summary>
         /// <returns>Arraylist that represents all the SV_TYPE_WORKSTATION and SV_TYPE_SERVER
         /// PC's in the Domain</returns>
-        private IEnumerable<string> GetNetworkDevicesInternal()
+        private List<string> GetNetworkDevicesInternal()
         {
             //local fields
             const int MAX_PREFERRED_LENGTH = -1;
             var SV_TYPE_WORKSTATION = 1;
             var SV_TYPE_SERVER = 2;
-            var buffer = IntPtr.Zero;
-            var tmpBuffer = IntPtr.Zero;
+            IntPtr buffer = IntPtr.Zero;
+            IntPtr tmpBuffer = IntPtr.Zero;
             var entriesRead = 0;
             var totalEntries = 0;
             var resHandle = 0;
             var sizeofINFO = Marshal.SizeOf(typeof(_SERVER_INFO_100));
+
+            var returnList = new List<string>();
 
             try
             {
@@ -111,7 +118,7 @@ namespace MediaBrowser.ServerApplication.Networking
                         //get pointer to, Pointer to the buffer that received the data from
                         //the call to NetServerEnum. Must ensure to use correct size of 
                         //STRUCTURE to ensure correct location in memory is pointed to
-                        tmpBuffer = new IntPtr((int)buffer + (i * sizeofINFO));
+                        tmpBuffer = new IntPtr((Int64)buffer + (i * sizeofINFO));
                         //Have now got a pointer to the list of SV_TYPE_WORKSTATION and 
                         //SV_TYPE_SERVER PC's, which is unmanaged memory
                         //Needs to Marshal data from an unmanaged block of memory to a 
@@ -122,7 +129,7 @@ namespace MediaBrowser.ServerApplication.Networking
                         //add the PC names to the ArrayList
                         if (!string.IsNullOrEmpty(svrInfo.sv100_name))
                         {
-                            yield return svrInfo.sv100_name;
+                            returnList.Add(svrInfo.sv100_name);
                         }
                     }
                 }
@@ -133,13 +140,15 @@ namespace MediaBrowser.ServerApplication.Networking
                 //the memory that the NetApiBufferAllocate function allocates
                 NativeMethods.NetApiBufferFree(buffer);
             }
+
+            return returnList;
         }
 
         /// <summary>
         /// Gets available devices within the domain
         /// </summary>
         /// <returns>PC's in the Domain</returns>
-        public IEnumerable<FileSystemEntryInfo> GetNetworkDevices()
+        public override IEnumerable<FileSystemEntryInfo> GetNetworkDevices()
         {
             return GetNetworkDevicesInternal().Select(c => new FileSystemEntryInfo
             {

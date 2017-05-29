@@ -1,16 +1,20 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
+using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.Music
 {
@@ -23,7 +27,6 @@ namespace MediaBrowser.Providers.Music
 
         public static AudioDbArtistProvider Current;
 
-        public SemaphoreSlim AudioDbResourcePool = new SemaphoreSlim(2, 2);
         private const string ApiKey = "49jhsf8248yfahka89724011";
         public const string BaseUrl = "http://www.theaudiodb.com/api/v1/json/" + ApiKey;
 
@@ -34,6 +37,11 @@ namespace MediaBrowser.Providers.Music
             _httpClient = httpClient;
             _json = json;
             Current = this;
+        }
+
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ArtistInfo searchInfo, CancellationToken cancellationToken)
+        {
+            return new List<RemoteSearchResult>();
         }
 
         public async Task<MetadataResult<MusicArtist>> GetMetadata(ArtistInfo info, CancellationToken cancellationToken)
@@ -54,17 +62,16 @@ namespace MediaBrowser.Providers.Music
                 {
                     result.Item = new MusicArtist();
                     result.HasMetadata = true;
-                    ProcessResult(result.Item, obj.artists[0]);
+                    ProcessResult(result.Item, obj.artists[0], info.MetadataLanguage);
                 }
             }
 
             return result;
         }
 
-        private void ProcessResult(MusicArtist item, Artist result)
+        private void ProcessResult(MusicArtist item, Artist result, string preferredLanguage)
         {
             item.HomePageUrl = result.strWebsite;
-            item.Overview = result.strBiographyEN;
 
             if (!string.IsNullOrEmpty(result.strGenre))
             {
@@ -73,6 +80,40 @@ namespace MediaBrowser.Providers.Music
 
             item.SetProviderId(MetadataProviders.AudioDbArtist, result.idArtist);
             item.SetProviderId(MetadataProviders.MusicBrainzArtist, result.strMusicBrainzID);
+
+            string overview = null;
+
+            if (string.Equals(preferredLanguage, "de", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyDE;
+            }
+            else if (string.Equals(preferredLanguage, "fr", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyFR;
+            }
+            else if (string.Equals(preferredLanguage, "nl", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyNL;
+            }
+            else if (string.Equals(preferredLanguage, "ru", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyRU;
+            }
+            else if (string.Equals(preferredLanguage, "it", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyIT;
+            }
+            else if ((preferredLanguage ?? string.Empty).StartsWith("pt", StringComparison.OrdinalIgnoreCase))
+            {
+                overview = result.strBiographyPT;
+            }
+
+            if (string.IsNullOrWhiteSpace(overview))
+            {
+                overview = result.strBiographyEN;
+            }
+
+            item.Overview = (overview ?? string.Empty).StripHtml();
         }
 
         public string Name
@@ -106,17 +147,17 @@ namespace MediaBrowser.Providers.Music
 
             var path = GetArtistInfoPath(_config.ApplicationPaths, musicBrainzId);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
             using (var response = await _httpClient.Get(new HttpRequestOptions
             {
                 Url = url,
-                ResourcePool = AudioDbResourcePool,
-                CancellationToken = cancellationToken
+                CancellationToken = cancellationToken,
+                BufferContent = true
 
             }).ConfigureAwait(false))
             {
-                using (var xmlFileStream = _fileSystem.GetFileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, true))
+				_fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+
+                using (var xmlFileStream = _fileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true))
                 {
                     await response.CopyToAsync(xmlFileStream).ConfigureAwait(false);
                 }
@@ -173,18 +214,18 @@ namespace MediaBrowser.Providers.Music
             public string strBiographyEN { get; set; }
             public string strBiographyDE { get; set; }
             public string strBiographyFR { get; set; }
-            public object strBiographyCN { get; set; }
+            public string strBiographyCN { get; set; }
             public string strBiographyIT { get; set; }
-            public object strBiographyJP { get; set; }
-            public object strBiographyRU { get; set; }
-            public object strBiographyES { get; set; }
-            public object strBiographyPT { get; set; }
-            public object strBiographySE { get; set; }
-            public object strBiographyNL { get; set; }
-            public object strBiographyHU { get; set; }
-            public object strBiographyNO { get; set; }
-            public object strBiographyIL { get; set; }
-            public object strBiographyPL { get; set; }
+            public string strBiographyJP { get; set; }
+            public string strBiographyRU { get; set; }
+            public string strBiographyES { get; set; }
+            public string strBiographyPT { get; set; }
+            public string strBiographySE { get; set; }
+            public string strBiographyNL { get; set; }
+            public string strBiographyHU { get; set; }
+            public string strBiographyNO { get; set; }
+            public string strBiographyIL { get; set; }
+            public string strBiographyPL { get; set; }
             public string strGender { get; set; }
             public string intMembers { get; set; }
             public string strCountry { get; set; }
@@ -212,6 +253,11 @@ namespace MediaBrowser.Providers.Music
                 // After musicbrainz
                 return 1;
             }
+        }
+
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

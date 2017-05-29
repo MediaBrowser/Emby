@@ -4,9 +4,9 @@ namespace MediaBrowser.Model.Notifications
 {
     public class Notification
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         public DateTime Date { get; set; }
 
@@ -18,16 +18,6 @@ namespace MediaBrowser.Model.Notifications
 
         public string Url { get; set; }
 
-        public string Category { get; set; }
-
-        public string RelatedId { get; set; }
-        
         public NotificationLevel Level { get; set; }
-
-        public Notification()
-        {
-            Id = Guid.NewGuid();
-            Date = DateTime.UtcNow;
-        }
     }
 }

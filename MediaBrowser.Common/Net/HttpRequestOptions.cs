@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace MediaBrowser.Common.Net
@@ -14,6 +16,8 @@ namespace MediaBrowser.Common.Net
         /// </summary>
         /// <value>The URL.</value>
         public string Url { get; set; }
+
+        public CompressionMethod? DecompressionMethod { get; set; }
 
         /// <summary>
         /// Gets or sets the accept header.
@@ -53,6 +57,18 @@ namespace MediaBrowser.Common.Net
         }
 
         /// <summary>
+        /// Gets or sets the referrer.
+        /// </summary>
+        /// <value>The referrer.</value>
+        public string Referer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the host.
+        /// </summary>
+        /// <value>The host.</value>
+        public string Host { get; set; }
+
+        /// <summary>
         /// Gets or sets the progress.
         /// </summary>
         /// <value>The progress.</value>
@@ -69,6 +85,22 @@ namespace MediaBrowser.Common.Net
         public string RequestContentType { get; set; }
 
         public string RequestContent { get; set; }
+        public byte[] RequestContentBytes { get; set; }
+
+        public bool BufferContent { get; set; }
+
+        public bool LogRequest { get; set; }
+        public bool LogErrors { get; set; }
+
+        public bool LogErrorResponseBody { get; set; }
+        public bool EnableKeepAlive { get; set; }
+
+        public CacheMode CacheMode { get; set; }
+        public TimeSpan CacheLength { get; set; }
+
+        public int TimeoutMs { get; set; }
+        public bool PreferIpv4 { get; set; }
+        public bool EnableDefaultUserAgent { get; set; }
 
         private string GetHeaderValue(string name)
         {
@@ -87,6 +119,33 @@ namespace MediaBrowser.Common.Net
             EnableHttpCompression = true;
 
             RequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            LogRequest = true;
+            LogErrors = true;
+            CacheMode = CacheMode.None;
+
+            TimeoutMs = 20000;
         }
+
+        public void SetPostData(IDictionary<string,string> values)
+        {
+            var strings = values.Keys.Select(key => string.Format("{0}={1}", key, values[key]));
+            var postContent = string.Join("&", strings.ToArray());
+
+            RequestContent = postContent;
+            RequestContentType = "application/x-www-form-urlencoded";
+        }
+    }
+
+    public enum CacheMode
+    {
+        None = 0,
+        Unconditional = 1
+    }
+
+    public enum CompressionMethod
+    {
+        Deflate,
+        Gzip
     }
 }

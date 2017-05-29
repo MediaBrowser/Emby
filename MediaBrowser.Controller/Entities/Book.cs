@@ -1,12 +1,15 @@
-﻿using System.Linq;
+﻿using System;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
-using System.Collections.Generic;
+using System.Linq;
+using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Controller.Entities
 {
-    public class Book : BaseItem, IHasTags, IHasPreferredMetadataLanguage, IHasLookupInfo<BookInfo>, IHasSeries
+    public class Book : BaseItem, IHasLookupInfo<BookInfo>, IHasSeries
     {
+        [IgnoreDataMember]
         public override string MediaType
         {
             get
@@ -15,30 +18,47 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        public List<string> Tags { get; set; }
-
+        [IgnoreDataMember]
+        public string SeriesPresentationUniqueKey { get; set; }
+        [IgnoreDataMember]
         public string SeriesName { get; set; }
+        [IgnoreDataMember]
+        public Guid? SeriesId { get; set; }
 
-        public string PreferredMetadataLanguage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the preferred metadata country code.
-        /// </summary>
-        /// <value>The preferred metadata country code.</value>
-        public string PreferredMetadataCountryCode { get; set; }
-
-        public Book()
+        public string FindSeriesSortName()
         {
-            Tags = new List<string>();
+            return SeriesName;
+        }
+        public string FindSeriesName()
+        {
+            return SeriesName;
+        }
+        public string FindSeriesPresentationUniqueKey()
+        {
+            return SeriesPresentationUniqueKey;
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        [IgnoreDataMember]
+        public override bool EnableRefreshOnDateModifiedChange
         {
-            return config.BlockUnratedBooks;
+            get { return true; }
+        }
+
+        public Guid? FindSeriesId()
+        {
+            return SeriesId;
+        }
+
+        public override bool CanDownload()
+        {
+            var locationType = LocationType;
+            return locationType != LocationType.Remote &&
+                   locationType != LocationType.Virtual;
+        }
+
+        public override UnratedItem GetBlockUnratedType()
+        {
+            return UnratedItem.Book;
         }
 
         public BookInfo GetLookupInfo()
@@ -47,7 +67,7 @@ namespace MediaBrowser.Controller.Entities
 
             if (string.IsNullOrEmpty(SeriesName))
             {
-                info.SeriesName = Parents.Select(i => i.Name).FirstOrDefault();
+                info.SeriesName = GetParents().Select(i => i.Name).FirstOrDefault();
             }
             else
             {

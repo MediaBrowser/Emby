@@ -1,3 +1,5 @@
+!*
+
 #################
 ## Eclipse
 #################
@@ -11,6 +13,8 @@ tmp/
 *.bak
 *.swp
 *~.nib
+project.fragment.lock.json
+project.lock.json
 local.properties
 .classpath
 .settings/
@@ -145,8 +149,9 @@ publish/
 
 # NuGet Packages Directory
 ## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-packages/
+# packages/
 dlls/
+dllssigned/
 
 # Windows Azure Build Output
 csx
@@ -207,7 +212,6 @@ $RECYCLE.BIN/
 # Packages
 *.egg
 *.egg-info
-dist/
 build/
 eggs/
 parts/

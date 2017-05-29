@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MediaBrowser.Model.Updates
+﻿namespace MediaBrowser.Model.Updates
 {
     /// <summary>
     /// Class InstallationInfo
@@ -11,7 +9,7 @@ namespace MediaBrowser.Model.Updates
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name.

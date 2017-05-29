@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MediaBrowser.Model.LiveTv;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -25,6 +26,8 @@ namespace MediaBrowser.Controller.LiveTv
         /// Name of the recording.
         /// </summary>
         public string Name { get; set; }
+
+        public string ServiceName { get; set; }
 
         /// <summary>
         /// Description of the recording.
@@ -52,6 +55,11 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if [record any channel]; otherwise, <c>false</c>.</value>
         public bool RecordAnyChannel { get; set; }
+
+        public int KeepUpTo { get; set; }
+        public KeepUntil KeepUntil { get; set; }
+
+        public bool SkipEpisodesInLibrary { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [record new only].
@@ -94,10 +102,18 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is post padding required; otherwise, <c>false</c>.</value>
         public bool IsPostPaddingRequired { get; set; }
+
+        /// <summary>
+        /// Gets or sets the series identifier.
+        /// </summary>
+        /// <value>The series identifier.</value>
+        public string SeriesId { get; set; }
         
         public SeriesTimerInfo()
         {
             Days = new List<DayOfWeek>();
+            SkipEpisodesInLibrary = true;
+            KeepUntil = KeepUntil.UntilDeleted;
         }
     }
 }

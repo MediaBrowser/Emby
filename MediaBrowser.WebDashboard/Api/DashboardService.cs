@@ -1,31 +1,30 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Common.ScheduledTasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Plugins;
-using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Tasks;
-using ServiceStack;
+using MediaBrowser.Model.Net;
+using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using ServiceStack.Web;
+using MediaBrowser.Common.Plugins;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Plugins;
+using MediaBrowser.Model.Reflection;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.WebDashboard.Api
 {
     /// <summary>
     /// Class GetDashboardConfigurationPages
     /// </summary>
-    [Route("/dashboard/ConfigurationPages", "GET")]
+    [Route("/web/ConfigurationPages", "GET")]
     public class GetDashboardConfigurationPages : IReturn<List<ConfigurationPageInfo>>
     {
         /// <summary>
@@ -38,7 +37,7 @@ namespace MediaBrowser.WebDashboard.Api
     /// <summary>
     /// Class GetDashboardConfigurationPage
     /// </summary>
-    [Route("/dashboard/ConfigurationPage", "GET")]
+    [Route("/web/ConfigurationPage", "GET")]
     public class GetDashboardConfigurationPage
     {
         /// <summary>
@@ -48,10 +47,21 @@ namespace MediaBrowser.WebDashboard.Api
         public string Name { get; set; }
     }
 
+    [Route("/web/Package", "GET")]
+    public class GetDashboardPackage
+    {
+        public string Mode { get; set; }
+    }
+
+    [Route("/robots.txt", "GET")]
+    public class GetRobotsTxt
+    {
+    }
+
     /// <summary>
     /// Class GetDashboardResource
     /// </summary>
-    [Route("/dashboard/{ResourceName*}", "GET")]
+    [Route("/web/{ResourceName*}", "GET")]
     public class GetDashboardResource
     {
         /// <summary>
@@ -66,42 +76,33 @@ namespace MediaBrowser.WebDashboard.Api
         public string V { get; set; }
     }
 
-    /// <summary>
-    /// Class GetDashboardInfo
-    /// </summary>
-    [Route("/dashboard/dashboardInfo", "GET")]
-    public class GetDashboardInfo : IReturn<DashboardInfo>
+    [Route("/favicon.ico", "GET")]
+    public class GetFavIcon
     {
     }
 
     /// <summary>
     /// Class DashboardService
     /// </summary>
-    public class DashboardService : IRestfulService, IHasResultFactory
+    public class DashboardService : IService, IRequiresRequest
     {
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
         /// <value>The logger.</value>
-        public ILogger Logger { get; set; }
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Gets or sets the HTTP result factory.
         /// </summary>
         /// <value>The HTTP result factory.</value>
-        public IHttpResultFactory ResultFactory { get; set; }
+        private readonly IHttpResultFactory _resultFactory;
 
         /// <summary>
         /// Gets or sets the request context.
         /// </summary>
         /// <value>The request context.</value>
         public IRequest Request { get; set; }
-
-        /// <summary>
-        /// Gets or sets the task manager.
-        /// </summary>
-        /// <value>The task manager.</value>
-        private readonly ITaskManager _taskManager;
 
         /// <summary>
         /// The _app host
@@ -113,25 +114,29 @@ namespace MediaBrowser.WebDashboard.Api
         /// </summary>
         private readonly IServerConfigurationManager _serverConfigurationManager;
 
-        private readonly ISessionManager _sessionManager;
-        private readonly IDtoService _dtoService;
         private readonly IFileSystem _fileSystem;
+        private readonly ILocalizationManager _localization;
+        private readonly IJsonSerializer _jsonSerializer;
+        private readonly IAssemblyInfo _assemblyInfo;
+        private readonly IMemoryStreamFactory _memoryStreamFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
         /// </summary>
-        /// <param name="taskManager">The task manager.</param>
         /// <param name="appHost">The app host.</param>
         /// <param name="serverConfigurationManager">The server configuration manager.</param>
-        /// <param name="sessionManager">The session manager.</param>
-        public DashboardService(ITaskManager taskManager, IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, ISessionManager sessionManager, IDtoService dtoService, IFileSystem fileSystem)
+        /// <param name="fileSystem">The file system.</param>
+        public DashboardService(IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory, IMemoryStreamFactory memoryStreamFactory)
         {
-            _taskManager = taskManager;
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
-            _sessionManager = sessionManager;
-            _dtoService = dtoService;
             _fileSystem = fileSystem;
+            _localization = localization;
+            _jsonSerializer = jsonSerializer;
+            _assemblyInfo = assemblyInfo;
+            _logger = logger;
+            _resultFactory = resultFactory;
+            _memoryStreamFactory = memoryStreamFactory;
         }
 
         /// <summary>
@@ -147,59 +152,16 @@ namespace MediaBrowser.WebDashboard.Api
                     return _serverConfigurationManager.Configuration.DashboardSourcePath;
                 }
 
-                var runningDirectory = Path.GetDirectoryName(_serverConfigurationManager.ApplicationPaths.ApplicationPath);
-
-                return Path.Combine(runningDirectory, "dashboard-ui");
+                return Path.Combine(_serverConfigurationManager.ApplicationPaths.ApplicationResourcesPath, "dashboard-ui");
             }
         }
 
-        /// <summary>
-        /// Gets the dashboard resource path.
-        /// </summary>
-        /// <param name="virtualPath">The virtual path.</param>
-        /// <returns>System.String.</returns>
-        private string GetDashboardResourcePath(string virtualPath)
+        public object Get(GetFavIcon request)
         {
-            return Path.Combine(DashboardUIPath, virtualPath.Replace('/', Path.DirectorySeparatorChar));
-        }
-
-        /// <summary>
-        /// Gets the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>System.Object.</returns>
-        public object Get(GetDashboardInfo request)
-        {
-            var result = GetDashboardInfo(_appHost, _taskManager, _sessionManager, _dtoService);
-
-            return ResultFactory.GetOptimizedResult(Request, result);
-        }
-
-        /// <summary>
-        /// Gets the dashboard info.
-        /// </summary>
-        /// <param name="appHost">The app host.</param>
-        /// <param name="taskManager">The task manager.</param>
-        /// <param name="connectionManager">The connection manager.</param>
-        /// <returns>DashboardInfo.</returns>
-        public static DashboardInfo GetDashboardInfo(IServerApplicationHost appHost,
-            ITaskManager taskManager,
-            ISessionManager connectionManager, IDtoService dtoService)
-        {
-            var connections = connectionManager.Sessions.Where(i => i.IsActive).ToList();
-
-            return new DashboardInfo
+            return Get(new GetDashboardResource
             {
-                SystemInfo = appHost.GetSystemInfo(),
-
-                RunningTasks = taskManager.ScheduledTasks.Where(i => i.State == TaskState.Running || i.State == TaskState.Cancelling)
-                                     .Select(ScheduledTaskHelpers.GetTaskInfo)
-                                     .ToList(),
-
-                ApplicationUpdateTaskId = taskManager.ScheduledTasks.First(t => t.ScheduledTask.GetType().Name.Equals("SystemUpdateTask", StringComparison.OrdinalIgnoreCase)).Id,
-
-                ActiveConnections = connections.Select(dtoService.GetSessionInfoDto).ToList()
-            };
+                ResourceName = "favicon.ico"
+            });
         }
 
         /// <summary>
@@ -207,11 +169,34 @@ namespace MediaBrowser.WebDashboard.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Get(GetDashboardConfigurationPage request)
+        public Task<object> Get(GetDashboardConfigurationPage request)
         {
-            var page = ServerEntryPoint.Instance.PluginConfigurationPages.First(p => p.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase));
+            IPlugin plugin = null;
+            Stream stream = null;
 
-            return ResultFactory.GetStaticResult(Request, page.Plugin.Version.ToString().GetMD5(), page.Plugin.AssemblyDateLastModified, null, MimeTypes.GetMimeType("page.html"), () => ModifyHtml(page.GetHtmlStream()));
+            var page = ServerEntryPoint.Instance.PluginConfigurationPages.FirstOrDefault(p => string.Equals(p.Name, request.Name, StringComparison.OrdinalIgnoreCase));
+            if (page != null)
+            {
+                plugin = page.Plugin;
+                stream = page.GetHtmlStream();
+            }
+
+            if (plugin == null)
+            {
+                var altPage = GetPluginPages().FirstOrDefault(p => string.Equals(p.Item1.Name, request.Name, StringComparison.OrdinalIgnoreCase));
+                if (altPage != null)
+                {
+                    plugin = altPage.Item2;
+                    stream = _assemblyInfo.GetManifestResourceStream(plugin.GetType(), altPage.Item1.EmbeddedResourcePath);
+                }
+            }
+
+            if (plugin != null && stream != null)
+            {
+                return _resultFactory.GetStaticResult(Request, plugin.Version.ToString().GetMD5(), null, null, MimeTypes.GetMimeType("page.html"), () => GetPackageCreator(DashboardUIPath).ModifyHtml("dummy.html", stream, null, _appHost.ApplicationVersion.ToString(), null));
+            }
+
+            throw new ResourceNotFoundException();
         }
 
         /// <summary>
@@ -239,7 +224,7 @@ namespace MediaBrowser.WebDashboard.Api
 
             if (request.PageType.HasValue)
             {
-                pages = pages.Where(p => p.ConfigurationPageType == request.PageType.Value);
+                pages = pages.Where(p => p.ConfigurationPageType == request.PageType.Value).ToList();
             }
 
             // Don't allow a failing plugin to fail them all
@@ -252,14 +237,46 @@ namespace MediaBrowser.WebDashboard.Api
                 }
                 catch (Exception ex)
                 {
-                    Logger.ErrorException("Error getting plugin information from {0}", ex, p.GetType().Name);
+                    _logger.ErrorException("Error getting plugin information from {0}", ex, p.GetType().Name);
                     return null;
                 }
             })
                 .Where(i => i != null)
                 .ToList();
 
-            return ResultFactory.GetOptimizedResult(Request, configPages);
+            configPages.AddRange(_appHost.Plugins.SelectMany(GetConfigPages));
+
+            return _resultFactory.GetOptimizedResult(Request, configPages);
+        }
+
+        private IEnumerable<Tuple<PluginPageInfo, IPlugin>> GetPluginPages()
+        {
+            return _appHost.Plugins.SelectMany(GetPluginPages);
+        }
+
+        private IEnumerable<Tuple<PluginPageInfo, IPlugin>> GetPluginPages(IPlugin plugin)
+        {
+            var hasConfig = plugin as IHasWebPages;
+
+            if (hasConfig == null)
+            {
+                return new List<Tuple<PluginPageInfo, IPlugin>>();
+            }
+
+            return hasConfig.GetPages().Select(i => new Tuple<PluginPageInfo, IPlugin>(i, plugin));
+        }
+
+        private IEnumerable<ConfigurationPageInfo> GetConfigPages(IPlugin plugin)
+        {
+            return GetPluginPages(plugin).Select(i => new ConfigurationPageInfo(plugin, i.Item1));
+        }
+
+        public object Get(GetRobotsTxt request)
+        {
+            return Get(new GetDashboardResource
+            {
+                ResourceName = "robots.txt"
+            });
         }
 
         /// <summary>
@@ -267,19 +284,39 @@ namespace MediaBrowser.WebDashboard.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Get(GetDashboardResource request)
+        public async Task<object> Get(GetDashboardResource request)
         {
             var path = request.ResourceName;
 
+            path = path.Replace("bower_components" + _appHost.ApplicationVersion, "bower_components", StringComparison.OrdinalIgnoreCase);
+
             var contentType = MimeTypes.GetMimeType(path);
+            var basePath = DashboardUIPath;
+
+            // Bounce them to the startup wizard if it hasn't been completed yet
+            if (!_serverConfigurationManager.Configuration.IsStartupWizardCompleted &&
+                path.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1 && GetPackageCreator(basePath).IsCoreHtml(path))
+            {
+                // But don't redirect if an html import is being requested.
+                if (path.IndexOf("bower_components", StringComparison.OrdinalIgnoreCase) == -1)
+                {
+                    Request.Response.Redirect("wizardstart.html");
+                    return null;
+                }
+            }
+
+            path = path.Replace("scripts/jquery.mobile-1.4.5.min.map", "thirdparty/jquerymobile-1.4.5/jquery.mobile-1.4.5.min.map", StringComparison.OrdinalIgnoreCase);
+
+            var localizationCulture = GetLocalizationCulture();
 
             // Don't cache if not configured to do so
             // But always cache images to simulate production
-            if (!_serverConfigurationManager.Configuration.EnableDashboardResponseCaching && 
-                !contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase) && 
+            if (!_serverConfigurationManager.Configuration.EnableDashboardResponseCaching &&
+                !contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase) &&
                 !contentType.StartsWith("font/", StringComparison.OrdinalIgnoreCase))
             {
-                return ResultFactory.GetResult(GetResourceStream(path).Result, contentType);
+                var stream = await GetResourceStream(basePath, path, localizationCulture).ConfigureAwait(false);
+                return _resultFactory.GetResult(stream, contentType);
             }
 
             TimeSpan? cacheDuration = null;
@@ -291,384 +328,104 @@ namespace MediaBrowser.WebDashboard.Api
                 cacheDuration = TimeSpan.FromDays(365);
             }
 
-            var assembly = GetType().Assembly.GetName();
+            var cacheKey = (_appHost.ApplicationVersion + (localizationCulture ?? string.Empty) + path).GetMD5();
 
-            var cacheKey = (assembly.Version + path).GetMD5();
+            return await _resultFactory.GetStaticResult(Request, cacheKey, null, cacheDuration, contentType, () => GetResourceStream(basePath, path, localizationCulture)).ConfigureAwait(false);
+        }
 
-            return ResultFactory.GetStaticResult(Request, cacheKey, null, cacheDuration, contentType, () => GetResourceStream(path));
+        private string GetLocalizationCulture()
+        {
+            return _serverConfigurationManager.Configuration.UICulture;
         }
 
         /// <summary>
         /// Gets the resource stream.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>Task{Stream}.</returns>
-        private async Task<Stream> GetResourceStream(string path)
+        private Task<Stream> GetResourceStream(string basePath, string virtualPath, string localizationCulture)
         {
-            Stream resourceStream;
+            return GetPackageCreator(basePath)
+                .GetResource(virtualPath, null, localizationCulture, _appHost.ApplicationVersion.ToString());
+        }
 
-            if (path.Equals("scripts/all.js", StringComparison.OrdinalIgnoreCase))
-            {
-                resourceStream = await GetAllJavascript().ConfigureAwait(false);
-            }
-            else if (path.Equals("css/all.css", StringComparison.OrdinalIgnoreCase))
-            {
-                resourceStream = await GetAllCss().ConfigureAwait(false);
-            }
-            else
-            {
-                resourceStream = GetRawResourceStream(path);
-            }
+        private PackageCreator GetPackageCreator(string basePath)
+        {
+            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _memoryStreamFactory);
+        }
 
-            if (resourceStream != null)
-            {
-                var isHtml = IsHtml(path);
+        public async Task<object> Get(GetDashboardPackage request)
+        {
+            var mode = request.Mode;
 
-                // Don't apply any caching for html pages
-                // jQuery ajax doesn't seem to handle if-modified-since correctly
-                if (isHtml)
+            var inputPath = string.IsNullOrWhiteSpace(mode) ?
+                DashboardUIPath
+                : "C:\\dev\\emby-web-mobile-master\\dist";
+
+            var targetPath = !string.IsNullOrWhiteSpace(mode) ?
+                inputPath
+                : "C:\\dev\\emby-web-mobile\\src";
+
+            var packageCreator = GetPackageCreator(inputPath);
+
+            if (!string.Equals(inputPath, targetPath, StringComparison.OrdinalIgnoreCase))
+            {
+                try
                 {
-                    resourceStream = await ModifyHtml(resourceStream).ConfigureAwait(false);
+                    _fileSystem.DeleteDirectory(targetPath, true);
+                }
+                catch (IOException)
+                {
+
+                }
+
+                CopyDirectory(inputPath, targetPath);
+            }
+
+            string culture = null;
+
+            var appVersion = _appHost.ApplicationVersion.ToString();
+
+            await DumpHtml(packageCreator, inputPath, targetPath, mode, culture, appVersion);
+
+            return "";
+        }
+
+        private async Task DumpHtml(PackageCreator packageCreator, string source, string destination, string mode, string culture, string appVersion)
+        {
+            foreach (var file in _fileSystem.GetFiles(source))
+            {
+                var filename = file.Name;
+
+                if (!string.Equals(file.Extension, ".html", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await DumpFile(packageCreator, filename, Path.Combine(destination, filename), mode, culture, appVersion).ConfigureAwait(false);
+            }
+        }
+
+        private async Task DumpFile(PackageCreator packageCreator, string resourceVirtualPath, string destinationFilePath, string mode, string culture, string appVersion)
+        {
+            using (var stream = await packageCreator.GetResource(resourceVirtualPath, mode, culture, appVersion).ConfigureAwait(false))
+            {
+                using (var fs = _fileSystem.GetFileStream(destinationFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
+                {
+                    stream.CopyTo(fs);
                 }
             }
-
-            return resourceStream;
         }
 
-        /// <summary>
-        /// Gets the raw resource stream.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>Task{Stream}.</returns>
-        private Stream GetRawResourceStream(string path)
+        private void CopyDirectory(string source, string destination)
         {
-            return _fileSystem.GetFileStream(GetDashboardResourcePath(path), FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true);
-        }
+            _fileSystem.CreateDirectory(destination);
 
-        /// <summary>
-        /// Determines whether the specified path is HTML.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns><c>true</c> if the specified path is HTML; otherwise, <c>false</c>.</returns>
-        private bool IsHtml(string path)
-        {
-            return Path.GetExtension(path).EndsWith("html", StringComparison.OrdinalIgnoreCase);
-        }
+            //Now Create all of the directories
+            foreach (var dirPath in _fileSystem.GetDirectories(source, true))
+                _fileSystem.CreateDirectory(dirPath.FullName.Replace(source, destination));
 
-        /// <summary>
-        /// Modifies the HTML by adding common meta tags, css and js.
-        /// </summary>
-        /// <param name="sourceStream">The source stream.</param>
-        /// <returns>Task{Stream}.</returns>
-        internal async Task<Stream> ModifyHtml(Stream sourceStream)
-        {
-            string html;
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await sourceStream.CopyToAsync(memoryStream).ConfigureAwait(false);
-
-                html = Encoding.UTF8.GetString(memoryStream.ToArray());
-            }
-
-            var version = GetType().Assembly.GetName().Version;
-
-            html = html.Replace("<head>", "<head>" + GetMetaTags() + GetCommonCss(version) + GetCommonJavascript(version));
-
-            var bytes = Encoding.UTF8.GetBytes(html);
-
-            sourceStream.Dispose();
-
-            return new MemoryStream(bytes);
-        }
-
-        /// <summary>
-        /// Gets the meta tags.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        private static string GetMetaTags()
-        {
-            var sb = new StringBuilder();
-
-            sb.Append("<meta http-equiv=\"X-UA-Compatibility\" content=\"IE=Edge\">");
-            sb.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");
-            sb.Append("<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">");
-            //sb.Append("<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">");
-
-            // http://developer.apple.com/library/ios/#DOCUMENTATION/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html
-            sb.Append("<link rel=\"apple-touch-icon\" href=\"css/images/touchicon.png\" />");
-            sb.Append("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"css/images/touchicon72.png\" />");
-            sb.Append("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"css/images/touchicon114.png\" />");
-            sb.Append("<link rel=\"apple-touch-startup-image\" href=\"css/images/iossplash.png\" />");
-            sb.Append("<link rel=\"shortcut icon\" href=\"favicon.ico\" />");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Gets the common CSS.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <returns>System.String.</returns>
-        private static string GetCommonCss(Version version)
-        {
-            var versionString = "?v=" + version;
-
-            var files = new[]
-                            {
-                                "thirdparty/jquerymobile-1.4.0/jquery.mobile-1.4.0.min.css",
-                                "css/all.css" + versionString
-                            };
-
-            var tags = files.Select(s => string.Format("<link rel=\"stylesheet\" href=\"{0}\" />", s)).ToArray();
-
-            return string.Join(string.Empty, tags);
-        }
-
-        /// <summary>
-        /// Gets the common javascript.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <returns>System.String.</returns>
-        private static string GetCommonJavascript(Version version)
-        {
-            var builder = new StringBuilder();
-
-            builder.Append("<script type=\"text/javascript\">if (navigator.userAgent.toLowerCase().indexOf('compatible; msie 7')!=-1){alert(\"Please ensure you're running at least IE10 and that compatibility mode is disabled.\");}");
-            builder.Append("</script>");
-
-            var versionString = "?v=" + version;
-
-            var files = new[]
-                            {
-                                "scripts/all.js" + versionString,
-                                "thirdparty/jstree1.0/jquery.jstree.min.js"
-            };
-
-            var tags = files.Select(s => string.Format("<script src=\"{0}\"></script>", s)).ToArray();
-
-            builder.Append(string.Join(string.Empty, tags));
-
-            return builder.ToString();
-        }
-
-        /// <summary>
-        /// Gets a stream containing all concatenated javascript
-        /// </summary>
-        /// <returns>Task{Stream}.</returns>
-        private async Task<Stream> GetAllJavascript()
-        {
-            var assembly = GetType().Assembly;
-
-            var scriptFiles = new[]
-                                  {
-                                      "extensions.js",
-                                      "site.js",
-                                      "librarybrowser.js",
-                                      "librarymenu.js",
-                                      "ratingdialog.js",
-                                      "aboutpage.js",
-                                      "allusersettings.js",
-                                      "alphapicker.js",
-                                      "addpluginpage.js",
-                                      "advancedconfigurationpage.js",
-                                      "advancedserversettings.js",
-                                      "metadataadvanced.js",
-                                      "appsplayback.js",
-                                      "appsweather.js",
-                                      "autoorganizetv.js",
-                                      "autoorganizelog.js",
-                                      "dashboardinfo.js",
-                                      "dashboardpage.js",
-                                      "directorybrowser.js",
-                                      "edititemmetadata.js",
-                                      "edititempeople.js",
-                                      "edititemimages.js",
-                                      "encodingsettings.js",
-                                      "gamesrecommendedpage.js",
-                                      "gamesystemspage.js",
-                                      "gamespage.js",
-                                      "gamegenrepage.js",
-                                      "gamestudiospage.js",
-                                      "indexpage.js",
-                                      "itembynamedetailpage.js",
-                                      "itemdetailpage.js",
-                                      "itemgallery.js",
-                                      "itemlistpage.js",
-                                      "librarypathmapping.js",
-                                      "librarysettings.js",
-                                      "livetvchannel.js",
-                                      "livetvchannels.js",
-                                      "livetvguide.js",
-                                      "livetvnewrecording.js",
-                                      "livetvprogram.js",
-                                      "livetvrecording.js",
-                                      "livetvrecordinglist.js",
-                                      "livetvrecordings.js",
-                                      "livetvtimer.js",
-                                      "livetvseriestimer.js",
-                                      "livetvseriestimers.js",
-                                      "livetvsettings.js",
-                                      "livetvsuggested.js",
-                                      "livetvstatus.js",
-                                      "livetvtimers.js",
-                                      "loginpage.js",
-                                      "logpage.js",
-                                      "medialibrarypage.js",
-                                      "mediaplayer.js",
-                                      "metadataconfigurationpage.js",
-                                      "metadataimagespage.js",
-                                      "moviegenres.js",
-                                      "moviecollections.js",
-                                      "movies.js",
-                                      "moviepeople.js",
-                                      "moviesrecommended.js",
-                                      "moviestudios.js",
-                                      "movietrailers.js",
-                                      "musicalbums.js",
-                                      "musicalbumartists.js",
-                                      "musicartists.js",
-                                      "musicgenres.js",
-                                      "musicrecommended.js",
-                                      "musicvideos.js",
-                                      "notifications.js",
-                                      "playlist.js",
-                                      "plugincatalogpage.js",
-                                      "pluginspage.js",
-                                      "pluginupdatespage.js",
-                                      "remotecontrol.js",
-                                      "scheduledtaskpage.js",
-                                      "scheduledtaskspage.js",
-                                      "search.js",
-                                      "songs.js",
-                                      "supporterkeypage.js",
-                                      "supporterpage.js",
-                                      "episodes.js",
-                                      "tvgenres.js",
-                                      "tvnextup.js",
-                                      "tvpeople.js",
-                                      "tvrecommended.js",
-                                      "tvshows.js",
-                                      "tvstudios.js",
-                                      "tvupcoming.js",
-                                      "useredit.js",
-                                      "userpassword.js",
-                                      "userimagepage.js",
-                                      "userprofilespage.js",
-                                      "usersettings.js",
-                                      "userparentalcontrol.js",
-                                      "wizardfinishpage.js",
-                                      "wizardimagesettings.js",
-                                      "wizardservice.js",
-                                      "wizardstartpage.js",
-                                      "wizardsettings.js",
-                                      "wizarduserpage.js"
-                                  };
-
-            var memoryStream = new MemoryStream();
-            var newLineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
-
-            await AppendResource(memoryStream, "thirdparty/jquery-2.0.3.min.js", newLineBytes).ConfigureAwait(false);
-            await AppendResource(memoryStream, "thirdparty/jquerymobile-1.4.0/jquery.mobile-1.4.0.min.js", newLineBytes).ConfigureAwait(false);
-
-            //await AppendResource(memoryStream, "thirdparty/jquery.infinite-scroll-helper.min.js", newLineBytes).ConfigureAwait(false);
-
-            var versionString = string.Format("window.dashboardVersion='{0}';", _appHost.ApplicationVersion);
-            var versionBytes = Encoding.UTF8.GetBytes(versionString);
-
-            await memoryStream.WriteAsync(versionBytes, 0, versionBytes.Length).ConfigureAwait(false);
-            await memoryStream.WriteAsync(newLineBytes, 0, newLineBytes.Length).ConfigureAwait(false);
-
-            await AppendResource(memoryStream, "thirdparty/autonumeric/autoNumeric.min.js", newLineBytes).ConfigureAwait(false);
-
-            await AppendResource(assembly, memoryStream, "MediaBrowser.WebDashboard.ApiClient.js", newLineBytes).ConfigureAwait(false);
-
-            foreach (var file in scriptFiles)
-            {
-                await AppendResource(memoryStream, "scripts/" + file, newLineBytes).ConfigureAwait(false);
-            }
-
-            memoryStream.Position = 0;
-            return memoryStream;
-        }
-
-        /// <summary>
-        /// Gets all CSS.
-        /// </summary>
-        /// <returns>Task{Stream}.</returns>
-        private async Task<Stream> GetAllCss()
-        {
-            var files = new[]
-                                  {
-                                      "site.css",
-                                      "mediaplayer.css",
-                                      "librarybrowser.css",
-                                      "detailtable.css",
-                                      "posteritem.css",
-                                      "tileitem.css",
-                                      "metadataeditor.css",
-                                      "notifications.css",
-                                      "search.css",
-                                      "pluginupdates.css",
-                                      "remotecontrol.css",
-                                      "userimage.css",
-                                      "livetv.css",
-                                      "icons.css"
-                                  };
-
-            var memoryStream = new MemoryStream();
-
-            var newLineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
-
-            foreach (var file in files)
-            {
-                await AppendResource(memoryStream, "css/" + file, newLineBytes).ConfigureAwait(false);
-            }
-
-            memoryStream.Position = 0;
-            return memoryStream;
-        }
-
-        /// <summary>
-        /// Appends the resource.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="outputStream">The output stream.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="newLineBytes">The new line bytes.</param>
-        /// <returns>Task.</returns>
-        private async Task AppendResource(Assembly assembly, Stream outputStream, string path, byte[] newLineBytes)
-        {
-            using (var stream = assembly.GetManifestResourceStream(path))
-            {
-                await stream.CopyToAsync(outputStream).ConfigureAwait(false);
-
-                await outputStream.WriteAsync(newLineBytes, 0, newLineBytes.Length).ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Appends the resource.
-        /// </summary>
-        /// <param name="outputStream">The output stream.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="newLineBytes">The new line bytes.</param>
-        /// <returns>Task.</returns>
-        private async Task AppendResource(Stream outputStream, string path, byte[] newLineBytes)
-        {
-            path = GetDashboardResourcePath(path);
-
-            using (var fs = _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
-            {
-                using (var streamReader = new StreamReader(fs))
-                {
-                    var text = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                    var bytes = Encoding.UTF8.GetBytes(text);
-                    await outputStream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-                }
-            }
-
-            await outputStream.WriteAsync(newLineBytes, 0, newLineBytes.Length).ConfigureAwait(false);
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in _fileSystem.GetFiles(source, true))
+                _fileSystem.CopyFile(newPath.FullName, newPath.FullName.Replace(source, destination), true);
         }
     }
 

@@ -1,0 +1,86 @@
+﻿<div id="videoOsdPage" data-role="page" class="page libraryPage" data-backbutton="true">
+    <div class="pageContainer flex">
+
+    </div>
+    <div class="videoOsdBottom">
+
+        <div class="osdPoster">
+
+        </div>
+        <div class="osdControls">
+
+            <div class="osdTextContainer osdParentTitleContainer hide">
+                <h2 class="osdParentTitle"></h2>
+            </div>
+
+            <div class="osdTextContainer">
+                <h2 class="osdTitle"></h2>
+                <div class="osdTitleSmall"></div>
+                <div class="osdMediaInfo"></div>
+            </div>
+
+            <div class="osdTextContainer osdSecondaryMediaInfo">
+            </div>
+
+            <div class="sliderContainer" style="margin: .5em .5em .25em;">
+                <input type="range" step=".01" min="0" max="100" value="0" is="emby-slider" class="osdPositionSlider"/>
+            </div>
+
+            <div class="buttons">
+                <button is="paper-icon-button-light" class="btnRecord autoSize hide">
+                    <i class="xlargePaperIconButton md-icon">&#xE061;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnPreviousTrack autoSize hide">
+                    <i class="xlargePaperIconButton md-icon">&#xE045;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnRewind" title="${Rewind}">
+                    <i class="xlargePaperIconButton md-icon">&#xE020;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnPause autoSize" autofocus>
+                    <i class="xlargePaperIconButton md-icon">&#xE034;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnFastForward" title="${FastForward}">
+                    <i class="xlargePaperIconButton md-icon">&#xE01F;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnNextTrack autoSize hide">
+                    <i class="xlargePaperIconButton md-icon">&#xE044;</i>
+                </button>
+
+                <button is="paper-icon-button-light" class="btnAudio hide autoSize" title="${Audio}">
+                    <i class="xlargePaperIconButton md-icon">&#xE3A1;</i>
+                </button>
+                <button is="paper-icon-button-light" class="btnSubtitles hide autoSize" title="${Subtitles}">
+                    <i class="xlargePaperIconButton md-icon">&#xE01C;</i>
+                </button>
+                <button is="paper-icon-button-light" class="btnVideoOsdSettings hide autoSize" title="${Settings}">
+                    <i class="largePaperIconButton md-icon">&#xE8B8;</i>
+                </button>
+                <button is="paper-icon-button-light" class="btnCast hide autoSize" title="${PlayOnAnotherDevice}">
+                    <i class="xlargePaperIconButton md-icon">&#xE307;</i>
+                </button>
+                <button is="paper-icon-button-light" class="btnFullscreen hide autoSize" title="${Fullscreen}">
+                    <i class="xlargePaperIconButton md-icon">&#xE5D0;</i>
+                </button>
+                <button is="paper-icon-button-light" class="btnPip hide autoSize" title="${PictureInPicture}">
+                    <i class="xlargePaperIconButton md-icon">&#xE911;</i>
+                </button>
+
+                <div class="osdTimeText"><span class="osdPositionText"></span><span class="osdDurationText"></span><span class="endsAtText"></span></div>
+
+                <div class="volumeButtons">
+                    <button is="paper-icon-button-light" class="buttonMute autoSize" title="${Mute}">
+                        <i class="xlargePaperIconButton md-icon">&#xE050;</i>
+                    </button>
+                    <div class="sliderContainer osdVolumeSliderContainer">
+                        <input is="emby-slider" type="range" step="1" min="0" max="100" value="0" class="osdVolumeSlider"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

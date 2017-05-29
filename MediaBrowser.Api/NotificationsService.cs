@@ -1,15 +1,17 @@
-﻿using MediaBrowser.Controller.Notifications;
+﻿using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Notifications;
 using MediaBrowser.Model.Notifications;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ServiceStack;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
-    [Route("/Notifications/{UserId}", "GET")]
-    [Api(Description = "Gets notifications")]
+    [Route("/Notifications/{UserId}", "GET", Summary = "Gets notifications")]
     public class GetNotifications : IReturn<NotificationResult>
     {
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
@@ -25,106 +27,118 @@ namespace MediaBrowser.Api
         public int? Limit { get; set; }
     }
 
-    [Route("/Notifications/{UserId}/Summary", "GET")]
-    [Api(Description = "Gets a notification summary for a user")]
+    [Route("/Notifications/{UserId}/Summary", "GET", Summary = "Gets a notification summary for a user")]
     public class GetNotificationsSummary : IReturn<NotificationsSummary>
     {
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
     }
 
-    [Route("/Notifications/{UserId}", "POST")]
-    [Api(Description = "Adds a notifications")]
-    public class AddNotification : IReturn<Notification>
+    [Route("/Notifications/Types", "GET", Summary = "Gets notification types")]
+    public class GetNotificationTypes : IReturn<List<NotificationTypeInfo>>
     {
-        [ApiMember(Name = "Id", Description = "The Id of the new notification. If unspecified one will be provided.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public Guid? Id { get; set; }
+    }
 
-        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public Guid UserId { get; set; }
+    [Route("/Notifications/Services", "GET", Summary = "Gets notification types")]
+    public class GetNotificationServices : IReturn<List<NotificationServiceInfo>>
+    {
+    }
 
+    [Route("/Notifications/Admin", "POST", Summary = "Sends a notification to all admin users")]
+    public class AddAdminNotification : IReturnVoid
+    {
         [ApiMember(Name = "Name", Description = "The notification's name", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string Name { get; set; }
 
         [ApiMember(Name = "Description", Description = "The notification's description", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string Description { get; set; }
 
+        [ApiMember(Name = "ImageUrl", Description = "The notification's image url", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string ImageUrl { get; set; }
+
         [ApiMember(Name = "Url", Description = "The notification's info url", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string Url { get; set; }
-
-        [ApiMember(Name = "Category", Description = "The notification's category", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string Category { get; set; }
-
-        [ApiMember(Name = "RelatedId", Description = "The notification's related id (item)", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string RelatedId { get; set; }
 
         [ApiMember(Name = "Level", Description = "The notification level", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
         public NotificationLevel Level { get; set; }
     }
 
-    [Route("/Notifications/{UserId}/Read", "POST")]
-    [Api(Description = "Marks notifications as read")]
+    [Route("/Notifications/{UserId}/Read", "POST", Summary = "Marks notifications as read")]
     public class MarkRead : IReturnVoid
     {
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [ApiMember(Name = "Ids", Description = "A list of notification ids, comma delimited", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST", AllowMultiple = true)]
         public string Ids { get; set; }
     }
 
-    [Route("/Notifications/{UserId}/Unread", "POST")]
-    [Api(Description = "Marks notifications as unread")]
+    [Route("/Notifications/{UserId}/Unread", "POST", Summary = "Marks notifications as unread")]
     public class MarkUnread : IReturnVoid
     {
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [ApiMember(Name = "Ids", Description = "A list of notification ids, comma delimited", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST", AllowMultiple = true)]
         public string Ids { get; set; }
     }
 
+    [Authenticated]
     public class NotificationsService : BaseApiService
     {
         private readonly INotificationsRepository _notificationsRepo;
+        private readonly INotificationManager _notificationManager;
+        private readonly IUserManager _userManager;
 
-        public NotificationsService(INotificationsRepository notificationsRepo)
+        public NotificationsService(INotificationsRepository notificationsRepo, INotificationManager notificationManager, IUserManager userManager)
         {
             _notificationsRepo = notificationsRepo;
+            _notificationManager = notificationManager;
+            _userManager = userManager;
         }
 
-        public object Post(AddNotification request)
+        public object Get(GetNotificationTypes request)
         {
-            var task = AddNotification(request);
+            var result = _notificationManager.GetNotificationTypes().ToList();
 
-            return ToOptimizedResult(task.Result);
+            return ToOptimizedResult(result);
+        }
+
+        public object Get(GetNotificationServices request)
+        {
+            var result = _notificationManager.GetNotificationServices().ToList();
+
+            return ToOptimizedResult(result);
         }
 
         public object Get(GetNotificationsSummary request)
         {
             var result = _notificationsRepo.GetNotificationsSummary(request.UserId);
 
-            return result;
+            return ToOptimizedResult(result);
         }
 
-        private async Task<Notification> AddNotification(AddNotification request)
+        public void Post(AddAdminNotification request)
         {
-            var notification = new Notification
+            // This endpoint really just exists as post of a real with sickbeard
+            var task = AddNotification(request);
+
+            Task.WaitAll(task);
+        }
+
+        private async Task AddNotification(AddAdminNotification request)
+        {
+            var notification = new NotificationRequest
             {
-                Id = request.Id ?? Guid.NewGuid(),
                 Date = DateTime.UtcNow,
                 Description = request.Description,
                 Level = request.Level,
                 Name = request.Name,
                 Url = request.Url,
-                UserId = request.UserId,
-                Category = request.Category,
-                RelatedId = request.RelatedId
+                UserIds = _userManager.Users.Where(i => i.Policy.IsAdministrator).Select(i => i.Id.ToString("N")).ToList()
             };
 
-            await _notificationsRepo.AddNotification(notification, CancellationToken.None).ConfigureAwait(false);
-
-            return notification;
+            await _notificationManager.SendNotification(notification, CancellationToken.None).ConfigureAwait(false);
         }
 
         public void Post(MarkRead request)
@@ -141,9 +155,14 @@ namespace MediaBrowser.Api
             Task.WaitAll(task);
         }
 
-        private Task MarkRead(string idList, Guid userId, bool read)
+        private Task MarkRead(string idList, string userId, bool read)
         {
-            var ids = idList.Split(',').Select(i => new Guid(i));
+            var ids = (idList ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (ids.Length == 0)
+            {
+                return _notificationsRepo.MarkAllRead(userId, read, CancellationToken.None);
+            }
 
             return _notificationsRepo.MarkRead(ids, userId, read, CancellationToken.None);
         }

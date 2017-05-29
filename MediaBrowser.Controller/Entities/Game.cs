@@ -3,42 +3,43 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
-    public class Game : BaseItem, IHasSoundtracks, IHasTrailers, IHasThemeMedia, IHasTags, IHasScreenshots, IHasPreferredMetadataLanguage, IHasLookupInfo<GameInfo>
+    public class Game : BaseItem, IHasTrailers, IHasScreenshots, ISupportsPlaceHolders, IHasLookupInfo<GameInfo>
     {
-        public List<Guid> SoundtrackIds { get; set; }
-
-        public List<Guid> ThemeSongIds { get; set; }
-        public List<Guid> ThemeVideoIds { get; set; }
-
-        public string PreferredMetadataLanguage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the preferred metadata country code.
-        /// </summary>
-        /// <value>The preferred metadata country code.</value>
-        public string PreferredMetadataCountryCode { get; set; }
-
         public Game()
         {
             MultiPartGameFiles = new List<string>();
-            SoundtrackIds = new List<Guid>();
             RemoteTrailers = new List<MediaUrl>();
             LocalTrailerIds = new List<Guid>();
-            ThemeSongIds = new List<Guid>();
-            ThemeVideoIds = new List<Guid>();
-            Tags = new List<string>();
+            RemoteTrailerIds = new List<Guid>();
         }
 
         public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
 
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        public List<string> Tags { get; set; }
+        public override bool CanDownload()
+        {
+            var locationType = LocationType;
+            return locationType != LocationType.Remote &&
+                   locationType != LocationType.Virtual;
+        }
+
+        [IgnoreDataMember]
+        public override bool EnableRefreshOnDateModifiedChange
+        {
+            get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsThemeMedia
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// Gets or sets the remote trailers.
@@ -50,6 +51,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets the type of the media.
         /// </summary>
         /// <value>The type of the media.</value>
+        [IgnoreDataMember]
         public override string MediaType
         {
             get { return Model.Entities.MediaType.Game; }
@@ -62,10 +64,10 @@ namespace MediaBrowser.Controller.Entities
         public int? PlayersSupported { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is installed on client.
+        /// Gets a value indicating whether this instance is place holder.
         /// </summary>
-        /// <value><c>true</c> if this instance is installed on client; otherwise, <c>false</c>.</value>
-        public bool IsInstalledOnClient { get; set; }
+        /// <value><c>true</c> if this instance is place holder; otherwise, <c>false</c>.</value>
+        public bool IsPlaceHolder { get; set; }
 
         /// <summary>
         /// Gets or sets the game system.
@@ -84,30 +86,37 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         public List<string> MultiPartGameFiles { get; set; }
 
-        public override string GetUserDataKey()
+        public override List<string> GetUserDataKeys()
         {
+            var list = base.GetUserDataKeys();
             var id = this.GetProviderId(MetadataProviders.Gamesdb);
 
             if (!string.IsNullOrEmpty(id))
             {
-                return "Game-Gamesdb-" + id;
+                list.Insert(0, "Game-Gamesdb-" + id);
             }
-            return base.GetUserDataKey();
+            return list;
         }
 
-        public override IEnumerable<string> GetDeletePaths()
+        public override IEnumerable<FileSystemMetadata> GetDeletePaths()
         {
-            if (!IsInMixedFolder)
+            if (!DetectIsInMixedFolder())
             {
-                return new[] { System.IO.Path.GetDirectoryName(Path) };
+                return new[] {
+                    new FileSystemMetadata
+                    {
+                        FullName = FileSystem.GetDirectoryName(Path),
+                        IsDirectory = true
+                    }
+                };
             }
 
             return base.GetDeletePaths();
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedGames;
+            return UnratedItem.Game;
         }
 
         public GameInfo GetLookupInfo()
@@ -117,6 +126,17 @@ namespace MediaBrowser.Controller.Entities
             id.GameSystem = GameSystem;
 
             return id;
+        }
+
+        /// <summary>
+        /// Gets the trailer ids.
+        /// </summary>
+        /// <returns>List&lt;Guid&gt;.</returns>
+        public List<Guid> GetTrailerIds()
+        {
+            var list = LocalTrailerIds.ToList();
+            list.AddRange(RemoteTrailerIds);
+            return list;
         }
     }
 }

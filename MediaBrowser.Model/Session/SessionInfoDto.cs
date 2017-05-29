@@ -1,31 +1,18 @@
-﻿using System.Diagnostics;
-using MediaBrowser.Model.Entities;
+﻿using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 
 namespace MediaBrowser.Model.Session
 {
     [DebuggerDisplay("Client = {Client}, Username = {UserName}")]
-    public class SessionInfoDto : INotifyPropertyChanged
+    public class SessionInfoDto
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this instance can seek.
+        /// Gets or sets the supported commands.
         /// </summary>
-        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c>.</value>
-        public bool CanSeek { get; set; }
-
-        /// <summary>
-        /// Gets or sets the remote end point.
-        /// </summary>
-        /// <value>The remote end point.</value>
-        public string RemoteEndPoint { get; set; }
-
-        /// <summary>
-        /// Gets or sets the queueable media types.
-        /// </summary>
-        /// <value>The queueable media types.</value>
-        public List<string> QueueableMediaTypes { get; set; }
+        /// <value>The supported commands.</value>
+        public List<string> SupportedCommands { get; set; }
 
         /// <summary>
         /// Gets or sets the playable media types.
@@ -45,6 +32,12 @@ namespace MediaBrowser.Model.Session
         /// <value>The user id.</value>
         public string UserId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the user primary image tag.
+        /// </summary>
+        /// <value>The user primary image tag.</value>
+        public string UserPrimaryImageTag { get; set; }
+        
         /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>
@@ -76,46 +69,16 @@ namespace MediaBrowser.Model.Session
         public DateTime LastActivityDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the now viewing context.
+        /// Gets or sets the now viewing item.
         /// </summary>
-        /// <value>The now viewing context.</value>
-        public string NowViewingContext { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of the now viewing item.
-        /// </summary>
-        /// <value>The type of the now viewing item.</value>
-        public string NowViewingItemType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the now viewing item identifier.
-        /// </summary>
-        /// <value>The now viewing item identifier.</value>
-        public string NowViewingItemId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the now viewing item.
-        /// </summary>
-        /// <value>The name of the now viewing item.</value>
-        public string NowViewingItemName { get; set; }
+        /// <value>The now viewing item.</value>
+        public BaseItemInfo NowViewingItem { get; set; }
         
         /// <summary>
         /// Gets or sets the name of the device.
         /// </summary>
         /// <value>The name of the device.</value>
         public string DeviceName { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is paused.
-        /// </summary>
-        /// <value><c>true</c> if this instance is paused; otherwise, <c>false</c>.</value>
-        public bool IsPaused { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is muted.
-        /// </summary>
-        /// <value><c>true</c> if this instance is muted; otherwise, <c>false</c>.</value>
-        public bool IsMuted { get; set; }
         
         /// <summary>
         /// Gets or sets the now playing item.
@@ -124,58 +87,33 @@ namespace MediaBrowser.Model.Session
         public BaseItemInfo NowPlayingItem { get; set; }
 
         /// <summary>
-        /// Gets or sets the now playing position ticks.
-        /// </summary>
-        /// <value>The now playing position ticks.</value>
-        public long? NowPlayingPositionTicks { get; set; }
-
-        /// <summary>
         /// Gets or sets the device id.
         /// </summary>
         /// <value>The device id.</value>
         public string DeviceId { get; set; }
 
         /// <summary>
+        /// Gets or sets the application icon URL.
+        /// </summary>
+        /// <value>The application icon URL.</value>
+        public string AppIconUrl { get; set; }
+        
+        /// <summary>
         /// Gets or sets a value indicating whether [supports remote control].
         /// </summary>
         /// <value><c>true</c> if [supports remote control]; otherwise, <c>false</c>.</value>
         public bool SupportsRemoteControl { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public PlayerStateInfo PlayState { get; set; }
 
+        public TranscodingInfo TranscodingInfo { get; set; }
+        
         public SessionInfoDto()
         {
             AdditionalUsers = new List<SessionUserInfo>();
 
             PlayableMediaTypes = new List<string>();
-            QueueableMediaTypes = new List<string>();
-        }
-    }
-
-    /// <summary>
-    /// Class SessionUserInfo.
-    /// </summary>
-    public class SessionUserInfo
-    {
-        /// <summary>
-        /// Gets or sets the user identifier.
-        /// </summary>
-        /// <value>The user identifier.</value>
-        public string UserId { get; set; }
-        /// <summary>
-        /// Gets or sets the name of the user.
-        /// </summary>
-        /// <value>The name of the user.</value>
-        public string UserName { get; set; }
-    }
-
-    public class ClientCapabilities
-    {
-        public List<string> PlayableMediaTypes { get; set; }
-
-        public ClientCapabilities()
-        {
-            PlayableMediaTypes = new List<string>();
+            SupportedCommands = new List<string>();
         }
     }
 }

@@ -7,7 +7,6 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,14 +34,7 @@ namespace MediaBrowser.Providers.Music
             };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, ImageType imageType, CancellationToken cancellationToken)
-        {
-            var images = await GetAllImages(item, cancellationToken).ConfigureAwait(false);
-
-            return images.Where(i => i.Type == imageType);
-        }
-
-        public async Task<IEnumerable<RemoteImageInfo>> GetAllImages(IHasImages item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             var id = item.GetProviderId(MetadataProviders.MusicBrainzReleaseGroup);
 
@@ -95,8 +87,7 @@ namespace MediaBrowser.Providers.Music
             return _httpClient.GetResponse(new HttpRequestOptions
             {
                 CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = AudioDbArtistProvider.Current.AudioDbResourcePool
+                Url = url
             });
         }
 

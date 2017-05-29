@@ -1,75 +1,28 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Plugins</title>
-</head>
-<body>
-    <div id="pluginCatalogPage" data-role="page" class="page type-interior pluginConfigurationPage">
-        <div data-role="content">
-            <div class="content-primary">
-                <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-                    <a href="plugins.html" data-role="button">Installed Plugins</a>
-                    <a href="plugincatalog.html" data-role="button" class="ui-btn-active">Catalog</a>
-                    <a href="pluginupdates.html" data-role="button">Updates</a>
+﻿<div id="pluginCatalogPage" data-role="page" class="page type-interior pluginConfigurationPage withTabs fullWidthContent" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Plugins" data-require="scripts/plugincatalogpage,emby-checkbox,emby-select">
+    <div>
+        <div class="content-primary">
+            <div style="display: flex;align-items:center; justify-content: flex-end;">
+                <div class="selectContainer" style="margin:0;">
+                    <select is="emby-select" id="selectSystem" label="${LabelDisplayPluginsFor}">
+                        <option value="Server">${TabServer}</option>
+                        <option value="MBClassic">${PluginTabAppClassic}</option>
+                    </select>
                 </div>
-                <p style="margin: 2em 0;">
-                    Types: <a data-rel="popup" data-position-to="origin" href="#freePlugins">Free</a>, 
-                        <a data-rel="popup" data-position-to="origin" href="#supporterPlugins">Supporter-Only</a>, and <a data-rel="popup" data-position-to="origin" href="#premiumPlugins">Premium</a>.
-                </p>
-                
-                <fieldset data-role="controlgroup" data-type="horizontal">
-                    <legend>Display plugins for:</legend>
-                    <input type="radio" name="radioPackageTypes" class="radioPackageTypes" id="radioServer" value="Server" data-mini="true">
-                    <label for="radioServer">Server</label>
-                    <input type="radio" name="radioPackageTypes" class="radioPackageTypes" id="radioClassic" value="MBClassic" data-mini="true">
-                    <label for="radioClassic">MB Classic</label>
-                    <input type="radio" name="radioPackageTypes" class="radioPackageTypes" id="radopTheater" value="MBTheater" data-mini="true">
-                    <label for="radopTheater">MB Theater</label>
-                    <input type="radio" name="radioPackageTypes" class="radioPackageTypes" id="radioOthers" value="Apps" data-mini="true">
-                    <label for="radioOthers">Others</label>
-                </fieldset>
-
-                <p style="display: none;">
-                    <input class="chkPremiumFilter" type="checkbox" data-mini="true" data-inline="true" name="chkPremium" id="chkPremium" data-filter="IsPremium" />
-                    <label for="chkPremium">Free Only</label>
-                </p>
-                <br />
-                <div id="noPlugins" class="hide">
-                    <div style="text-align: center; margin: 10px;">No available plugins</div>
+                <div style="margin-left:2em;" class="optionAdultContainer">
+                    <label style="width:auto;">
+                        <input type="checkbox" is="emby-checkbox" id="chkAdult" />
+                        <span>${OptionDisplayAdultContent}</span>
+                    </label>
                 </div>
-
-                <div id="pluginTiles"></div>
-
             </div>
-        </div>
 
-        <div data-role="popup" class="ui-content" id="freePlugins" style="max-width: 250px;">
-            <a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-            <p>
-                Free plug-ins can be installed and used by anyone for free. They will appear in the catalog without any banners.<p>
-        </div>
+            <br />
+            <br />
+            <div id="noPlugins" class="hide">
+                <div style="text-align: center; margin: 10px;">${MessageNoAvailablePlugins}</div>
+            </div>
+            <div id="pluginTiles" style="text-align:left;"></div>
 
-        <div data-role="popup" class="ui-content" id="supporterPlugins" style="max-width: 250px;">
-            <a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-            <p>Supporter-Only plug-ins are free for anyone who is an <strong>MB3 Supporter</strong> (with a valid MB3 key who has donated the minimum amount to the overall project).</p>
-            <p>
-                Anyone can install them and enjoy a free trial period of 14 days in most instances.  The trial period may commence as soon as you install the plug-in.<p>
-            <p>These plug-ins will appear in the catalog with a "Supporter" banner.</p>
-        </div>
-
-        <div data-role="popup" class="ui-content" id="premiumPlugins" style="max-width: 250px;">
-            <a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-            <p>
-                Premium plug-ins are developed by third-parties and require that you be an <strong>MB3 Supporter <em>and</em> also register the plug-in with its creator.</strong>
-                The cost of registering these plug-ins is set for each one by its creator and all revenues go to that person.
-            </p>
-            <p>Anyone can install them and enjoy a free trial period of 14 days in most instances.  The trial period may commence as soon as you install the plug-in.</p>
-            <p>
-                You should install premium plug-ins without registering them first to take advantage of this trial period.  Then, if you find the functionality useful,
-                                                                                                                                                                         you can register it via its detail page here in the catalog.
-            </p>
-            <p>These plug-ins will appear in the catalog with a "Premium" banner.</p>
         </div>
     </div>
-</body>
-</html>
+</div>

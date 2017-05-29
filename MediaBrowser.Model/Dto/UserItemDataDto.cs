@@ -1,18 +1,29 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace MediaBrowser.Model.Dto
 {
     /// <summary>
     /// Class UserItemDataDto
     /// </summary>
-    public class UserItemDataDto : INotifyPropertyChanged
+    public class UserItemDataDto
     {
         /// <summary>
         /// Gets or sets the rating.
         /// </summary>
         /// <value>The rating.</value>
         public double? Rating { get; set; }
+
+        /// <summary>
+        /// Gets or sets the played percentage.
+        /// </summary>
+        /// <value>The played percentage.</value>
+        public double? PlayedPercentage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the unplayed item count.
+        /// </summary>
+        /// <value>The unplayed item count.</value>
+        public int? UnplayedItemCount { get; set; }
 
         /// <summary>
         /// Gets or sets the playback position ticks.
@@ -56,6 +67,10 @@ namespace MediaBrowser.Model.Dto
         /// <value>The key.</value>
         public string Key { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Gets or sets the item identifier.
+        /// </summary>
+        /// <value>The item identifier.</value>
+        public string ItemId { get; set; }
     }
 }

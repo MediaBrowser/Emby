@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.Serialization;
+﻿using System.Diagnostics;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Dto
 {
@@ -9,13 +7,19 @@ namespace MediaBrowser.Model.Dto
     /// This is used by the api to get information about a Person within a BaseItem
     /// </summary>
     [DebuggerDisplay("Name = {Name}, Role = {Role}, Type = {Type}")]
-    public class BaseItemPerson : INotifyPropertyChanged
+    public class BaseItemPerson
     {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the role.
@@ -33,7 +37,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the primary image tag.
         /// </summary>
         /// <value>The primary image tag.</value>
-        public Guid? PrimaryImageTag { get; set; }
+        public string PrimaryImageTag { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has primary image.
@@ -44,13 +48,8 @@ namespace MediaBrowser.Model.Dto
         {
             get
             {
-                return PrimaryImageTag.HasValue;
+                return PrimaryImageTag != null;
             }
         }
-
-        /// <summary>
-        /// Occurs when [property changed].
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

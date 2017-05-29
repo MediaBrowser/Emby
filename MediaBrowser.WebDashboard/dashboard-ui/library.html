@@ -1,71 +1,17 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <div id="mediaLibraryPage" data-role="page" class="page type-interior mediaLibraryPage">
+﻿<div id="mediaLibraryPage" data-role="page" class="page type-interior mediaLibraryPage librarySectionPage withTabs fullWidthContent" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Library%20setup" data-require="scripts/medialibrarypage">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="#" data-role="button" class="ui-btn-active">Media Folders</a>
-                    <a href="librarypathmapping.html" data-role="button">Path Substitution</a>
-                    <a href="librarysettings.html" data-role="button">Advanced</a>
-                </div>
-                <div class="readOnlyContent">
-                    <p>
-                        <label for="selectUser">Manage user library: </label>
-                        <select id="selectUser" class="selectUser" data-mini="true"></select>
-                    </p>
-                    <p id="fldUseDefaultLibrary" style="display: none;">
-                        <input type="checkbox" id="chkUseDefaultLibrary" name="chkUseDefaultLibrary" onchange="MediaLibraryPage.setUseDefaultMediaLibrary(this.checked);" />
-                        <label for="chkUseDefaultLibrary">Use default media library</label>
-                    </p>
-                    <p style="margin: 2em 0;">Refer to the <a href="https://github.com/MediaBrowser/MediaBrowser/wiki/Library-Structure" target="_blank">media library wiki.</a> for suggested folder structures.</p>
-                    <div id="divMediaLibrary">
-                        <p>
-                            <button type="button" data-mini="true" data-icon="plus" onclick="MediaLibraryPage.addVirtualFolder();">Add media folder</button>
-                        </p>
-                        <div id="divVirtualFolders"></div>
-                    </div>
-                </div>
+    <div>
+        <div class="content-primary">
+            <div id="divVirtualFolders"></div>
+            <br />
+            <div>
+
+                <button is="emby-button" type="button" class="raised btnRefresh subdued">
+                    <i class="md-icon">refresh</i>
+                    <span>${ButtonScanLibrary}</span>
+                </button>
+                <progress max="100" min="0" style="display: inline-block; vertical-align: middle;" class="refreshProgress"></progress>
             </div>
-        </div>
-        <div data-role="popup" data-transition="slidefade" id="popupEnterText" class="popup">
-
-            <div class="ui-bar-a" style="text-align: center; padding: 0 20px;">
-                <h3>Rename</h3>
-            </div>
-
-            <div data-role="content">
-                <form id="textEntryForm">
-                    <p>
-                        <label id="lblValue" for="txtValue">New name:</label>
-                        <input type="text" name="txtValue" id="txtValue" required="required" />
-                    </p>
-
-                    <p id="fldCollectionType">
-                        <label for="selectCollectionType">Folder type:</label>
-                        <select id="selectCollectionType" name="selectCollectionType"></select>
-                    </p>
-
-                    <p class="collectionTypeFieldDescription">
-                        * Requires the use of a plugin, e.g. GameBrowser or MB Photos.
-                    </p>
-
-                    <p>
-                        <button type="submit" data-theme="b" data-icon="check">
-                            Ok
-                        </button>
-                        <button type="button" data-icon="delete" onclick="$(this).parents('.popup').popup('close');">
-                            Cancel
-                        </button>
-                    </p>
-                </form>
-            </div>
-
         </div>
     </div>
-</body>
-</html>
+</div>

@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using MediaBrowser.Common.Net;
+using MediaBrowser.Controller;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Serialization;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Constants;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Serialization;
-using ServiceStack;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
     /// <summary>
     /// Class InstallPackage
     /// </summary>
-    [Route("/PackageReviews/{Id}", "POST")]
-    [Api(("Creates or updates a package review"))]
+    [Route("/Packages/Reviews/{Id}", "POST", Summary = "Creates or updates a package review")]
     public class CreateReviewRequest : IReturnVoid
     {
         /// <summary>
@@ -57,8 +57,7 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class InstallPackage
     /// </summary>
-    [Route("/PackageReviews/{Id}", "GET")]
-    [Api(("Retrieve reviews for a package"))]
+    [Route("/Packages/{Id}/Reviews", "GET", Summary = "Gets reviews for a package")]
     public class ReviewRequest : IReturn<List<PackageReviewInfo>>
     {
         /// <summary>
@@ -98,23 +97,25 @@ namespace MediaBrowser.Api
 
     }
 
+    [Authenticated]
     public class PackageReviewService : BaseApiService
     {
         private readonly IHttpClient _httpClient;
-        private readonly INetworkManager _netManager;
         private readonly IJsonSerializer _serializer;
+        private const string MbAdminUrl = "https://www.mb3admin.com/admin/";
+        private readonly IServerApplicationHost _appHost;
 
-        public PackageReviewService(IHttpClient client, INetworkManager net, IJsonSerializer serializer)
+        public PackageReviewService(IHttpClient httpClient, IJsonSerializer serializer, IServerApplicationHost appHost)
         {
-            _httpClient = client;
-            _netManager = net;
+            _httpClient = httpClient;
             _serializer = serializer;
+            _appHost = appHost;
         }
 
-        public object Get(ReviewRequest request)
+        public async Task<object> Get(ReviewRequest request)
         {
             var parms = "?id=" + request.Id;
-            
+
             if (request.MaxRating > 0)
             {
                 parms += "&max=" + request.MaxRating;
@@ -132,11 +133,13 @@ namespace MediaBrowser.Api
                 parms += "&title=true";
             }
 
-            var result = _httpClient.Get(Constants.MbAdminUrl + "/service/packageReview/retrieve"+parms, CancellationToken.None).Result;
+            using (var result = await _httpClient.Get(MbAdminUrl + "/service/packageReview/retrieve" + parms, CancellationToken.None)
+                            .ConfigureAwait(false))
+            {
+                var reviews = _serializer.DeserializeFromStream<List<PackageReviewInfo>>(result);
 
-            var reviews = _serializer.DeserializeFromStream<List<PackageReviewInfo>>(result);
-
-            return ToOptimizedResult(reviews);
+                return ToOptimizedResult(reviews);
+            }
         }
 
         public void Post(CreateReviewRequest request)
@@ -146,14 +149,14 @@ namespace MediaBrowser.Api
 
             var review = new Dictionary<string, string>
                              { { "id", request.Id.ToString(CultureInfo.InvariantCulture) },
-                               { "mac", _netManager.GetMacAddress() },
+                               { "mac", _appHost.SystemId },
                                { "rating", request.Rating.ToString(CultureInfo.InvariantCulture) },
                                { "recommend", request.Recommend.ToString() },
                                { "title", title },
                                { "review", reviewText },
                              };
 
-            Task.WaitAll(_httpClient.Post(Constants.MbAdminUrl + "/service/packageReview/update", review, CancellationToken.None));
+            Task.WaitAll(_httpClient.Post(MbAdminUrl + "/service/packageReview/update", review, CancellationToken.None));
         }
     }
 }

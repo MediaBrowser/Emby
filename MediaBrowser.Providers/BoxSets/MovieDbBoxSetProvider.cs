@@ -1,26 +1,31 @@
 ﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.IO;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Providers.Movies;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Globalization;
 
 namespace MediaBrowser.Providers.BoxSets
 {
     public class MovieDbBoxSetProvider : IRemoteMetadataProvider<BoxSet, BoxSetInfo>
     {
-        private  readonly CultureInfo _enUs = new CultureInfo("en-US");
-        private const string GetCollectionInfo3 = @"http://api.themoviedb.org/3/collection/{0}?api_key={1}&append_to_response=images";
+        private const string GetCollectionInfo3 = @"https://api.themoviedb.org/3/collection/{0}?api_key={1}&append_to_response=images";
 
         internal static MovieDbBoxSetProvider Current;
 
@@ -28,14 +33,56 @@ namespace MediaBrowser.Providers.BoxSets
         private readonly IJsonSerializer _json;
         private readonly IServerConfigurationManager _config;
         private readonly IFileSystem _fileSystem;
+        private readonly ILocalizationManager _localization;
+        private readonly IHttpClient _httpClient;
+        private readonly ILibraryManager _libraryManager;
 
-        public MovieDbBoxSetProvider(ILogger logger, IJsonSerializer json, IServerConfigurationManager config, IFileSystem fileSystem)
+        public MovieDbBoxSetProvider(ILogger logger, IJsonSerializer json, IServerConfigurationManager config, IFileSystem fileSystem, ILocalizationManager localization, IHttpClient httpClient, ILibraryManager libraryManager)
         {
             _logger = logger;
             _json = json;
             _config = config;
             _fileSystem = fileSystem;
+            _localization = localization;
+            _httpClient = httpClient;
+            _libraryManager = libraryManager;
             Current = this;
+        }
+
+        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
+        
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(BoxSetInfo searchInfo, CancellationToken cancellationToken)
+        {
+            var tmdbId = searchInfo.GetProviderId(MetadataProviders.Tmdb);
+
+            if (!string.IsNullOrEmpty(tmdbId))
+            {
+                await EnsureInfo(tmdbId, searchInfo.MetadataLanguage, cancellationToken).ConfigureAwait(false);
+
+                var dataFilePath = GetDataFilePath(_config.ApplicationPaths, tmdbId, searchInfo.MetadataLanguage);
+                var info = _json.DeserializeFromFile<RootObject>(dataFilePath);
+
+                var images = (info.images ?? new Images()).posters ?? new List<Poster>();
+
+                var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
+
+                var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+
+                var result = new RemoteSearchResult
+                {
+                    Name = info.name,
+
+                    SearchProviderName = Name,
+                    
+                    ImageUrl = images.Count == 0 ? null : (tmdbImageUrl + images[0].file_path)
+                };
+
+                result.SetProviderId(MetadataProviders.Tmdb, info.id.ToString(_usCulture));
+
+                return new[] { result };
+            }
+
+            return await new MovieDbSearch(_logger, _json, _libraryManager).GetSearchResults(searchInfo, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<MetadataResult<BoxSet>> GetMetadata(BoxSetInfo id, CancellationToken cancellationToken)
@@ -45,7 +92,14 @@ namespace MediaBrowser.Providers.BoxSets
             // We don't already have an Id, need to fetch it
             if (string.IsNullOrEmpty(tmdbId))
             {
-                tmdbId = await GetTmdbId(id, cancellationToken).ConfigureAwait(false);
+                var searchResults = await new MovieDbSearch(_logger, _json, _libraryManager).GetSearchResults(id, cancellationToken).ConfigureAwait(false);
+
+                var searchResult = searchResults.FirstOrDefault();
+
+                if (searchResult != null)
+                {
+                    tmdbId = searchResult.GetProviderId(MetadataProviders.Tmdb);
+                }
             }
 
             var result = new MetadataResult<BoxSet>();
@@ -87,11 +141,11 @@ namespace MediaBrowser.Providers.BoxSets
         {
             var item = new BoxSet
             {
-                Name = obj.name, 
+                Name = obj.name,
                 Overview = obj.overview
             };
 
-            item.SetProviderId(MetadataProviders.Tmdb, obj.id.ToString(_enUs));
+            item.SetProviderId(MetadataProviders.Tmdb, obj.id.ToString(_usCulture));
 
             return item;
         }
@@ -104,27 +158,21 @@ namespace MediaBrowser.Providers.BoxSets
 
             var dataFilePath = GetDataFilePath(_config.ApplicationPaths, tmdbId, preferredMetadataLanguage);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(dataFilePath));
+			_fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(dataFilePath));
 
             _json.SerializeToFile(mainResult, dataFilePath);
         }
 
         private async Task<RootObject> FetchMainResult(string id, string language, CancellationToken cancellationToken)
         {
-            var url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey);
-
-            // Get images in english and with no language
-            url += "&include_image_language=en,null";
+            var url = string.Format(GetCollectionInfo3, id, MovieDbProvider.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
             {
-                // If preferred language isn't english, get those images too
-                if (!string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
-                {
-                    url += string.Format(",{0}", language);
-                }
+                url += string.Format("&language={0}", MovieDbProvider.NormalizeLanguage(language));
 
-                url += string.Format("&language={0}", language);
+                // Get images in english and with no language
+                url += "&include_image_language=" + MovieDbProvider.GetImageLanguagesParam(language);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -144,11 +192,17 @@ namespace MediaBrowser.Providers.BoxSets
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (mainResult != null && string.IsNullOrEmpty(mainResult.overview))
+            if (mainResult != null && string.IsNullOrEmpty(mainResult.name))
             {
                 if (!string.IsNullOrEmpty(language) && !string.Equals(language, "en", StringComparison.OrdinalIgnoreCase))
                 {
-                    url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey) + "&include_image_language=en,null&language=en";
+                    url = string.Format(GetCollectionInfo3, id, MovieDbSearch.ApiKey) + "&language=en";
+
+                    if (!string.IsNullOrEmpty(language))
+                    {
+                        // Get images in english and with no language
+                        url += "&include_image_language=" + MovieDbProvider.GetImageLanguagesParam(language);
+                    }
 
                     using (var json = await MovieDbProvider.Current.GetMovieDbResponse(new HttpRequestOptions
                     {
@@ -159,12 +213,6 @@ namespace MediaBrowser.Providers.BoxSets
                     }).ConfigureAwait(false))
                     {
                         mainResult = _json.DeserializeFromStream<RootObject>(json);
-                    }
-
-                    if (String.IsNullOrEmpty(mainResult.overview))
-                    {
-                        _logger.Error("Unable to find information for (id:" + id + ")");
-                        return null;
                     }
                 }
             }
@@ -181,7 +229,7 @@ namespace MediaBrowser.Providers.BoxSets
             if (fileInfo.Exists)
             {
                 // If it's recent or automatic updates are enabled, don't re-download
-                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 7)
+                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
                 {
                     return _cachedTask;
                 }
@@ -189,12 +237,7 @@ namespace MediaBrowser.Providers.BoxSets
 
             return DownloadInfo(tmdbId, preferredMetadataLanguage, cancellationToken);
         }
-        
-        private Task<string> GetTmdbId(ItemLookupInfo id, CancellationToken cancellationToken)
-        {
-            return new MovieDbSearch(_logger, _json).FindCollectionId(id, cancellationToken);
-        }
-        
+
         public string Name
         {
             get { return "TheMovieDb"; }
@@ -204,12 +247,11 @@ namespace MediaBrowser.Providers.BoxSets
         {
             var path = GetDataPath(appPaths, tmdbId);
 
-            var filename = string.Format("all-{0}.json",
-                preferredLanguage ?? string.Empty);
+            var filename = string.Format("all-{0}.json", preferredLanguage ?? string.Empty);
 
             return Path.Combine(path, filename);
         }
-        
+
         private static string GetDataPath(IApplicationPaths appPaths, string tmdbId)
         {
             var dataPath = GetCollectionsDataPath(appPaths);
@@ -219,7 +261,7 @@ namespace MediaBrowser.Providers.BoxSets
 
         private static string GetCollectionsDataPath(IApplicationPaths appPaths)
         {
-            var dataPath = Path.Combine(appPaths.DataPath, "tmdb-collections");
+            var dataPath = Path.Combine(appPaths.CachePath, "tmdb-collections");
 
             return dataPath;
         }
@@ -270,6 +312,15 @@ namespace MediaBrowser.Providers.BoxSets
             public string backdrop_path { get; set; }
             public List<Part> parts { get; set; }
             public Images images { get; set; }
+        }
+
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            return _httpClient.GetResponse(new HttpRequestOptions
+            {
+                CancellationToken = cancellationToken,
+                Url = url
+            });
         }
     }
 }

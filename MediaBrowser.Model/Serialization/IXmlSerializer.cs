@@ -34,7 +34,7 @@ namespace MediaBrowser.Model.Serialization
         /// <param name="file">The file.</param>
         /// <returns>System.Object.</returns>
         object DeserializeFromFile(Type type, string file);
-
+        
         /// <summary>
         /// Deserializes from bytes.
         /// </summary>
@@ -42,12 +42,5 @@ namespace MediaBrowser.Model.Serialization
         /// <param name="buffer">The buffer.</param>
         /// <returns>System.Object.</returns>
         object DeserializeFromBytes(Type type, byte[] buffer);
-
-        /// <summary>
-        /// Serializes to bytes.
-        /// </summary>
-        /// <param name="obj">The obj.</param>
-        /// <returns>System.Byte[][].</returns>
-        byte[] SerializeToBytes(object obj);
     }
 }

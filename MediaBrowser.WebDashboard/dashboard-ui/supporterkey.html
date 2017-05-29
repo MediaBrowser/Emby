@@ -1,107 +1,70 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Support</title>
-</head>
-<body>
-    <div id="supporterKeyPage" data-role="page" class="page type-interior">
+﻿<div id="supporterKeyPage" data-role="page" class="page type-interior" data-require="emby-collapse,scripts/supporterkeypage,emby-input,emby-button">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div class="readOnlyContent">
-                    <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                        <a href="support.html" data-role="button">General</a>
-                        <a href="log.html" data-role="button">View Log</a>
-                        <a href="supporter.html" data-role="button">Become a Supporter</a>
-                        <a href="supporterkey.html" data-role="button" class="ui-btn-active">Supporter Key</a>
-                        <a href="about.html" data-role="button">About</a>
+    <div>
+        <div class="content-primary">
+            <div class="readOnlyContent">
+
+                <div>
+                    <h1>${HeaderSupportTheTeam}</h1>
+                    <p>${HeaderSupportTheTeamHelp}</p>
+
+                    <p class="benefits"></p>
+
+                    <div class="supporterContainer hide">
+                        <br />
+                        <a class="clearLink" href="http://emby.media/premiere" target="_blank">
+                            <button is="emby-button" type="button" class="raised block button-accent">
+                                <span>${HeaderBecomeProjectSupporter}</span>
+                            </button>
+                        </a>
                     </div>
+                </div>
 
-                    <form id="supporterKeyForm">
-                        <div style="margin: 1em 0;">
-                            <label for="txtSupporterKey">MB3 Supporter Key (paste from email)</label>
-                            <input type="password" id="txtSupporterKey" name="txtSupporterKey" data-inline="true" />
+                <form id="supporterKeyForm">
+
+                    <div style="margin: 3em 0 1em;">
+
+                        <h1>${TabSupporterKey}</h1>
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="txtSupporterKey" label="${LabelSupporterKey}" autocomplete="off" />
                             <div class="fieldDescription">
-                                Enter your supporter key to start enjoying additional benefits the community has developed for Media Browser. <strong>MB3 keys only.</strong>
+                                ${LabelSupporterKeyHelp}
                             </div>
+                        </div>
 
-                            <p style="display: none; padding: 1em; border-radius: 5px; font-weight: normal;" class="ui-bar-a notSupporter">
-                                <strong>MB3 Key Missing or Invalid</strong> - in order for any premium content to be registered, you must also be an MB3 Supporter.
-                            Please <a href="supporter.html">donate</a> and support the continued development of the core product.  Thank you.  
-                        
+                        <div style="display: none; padding: 1em; margin-top: 1em; font-weight: normal;" class="ui-bar-a notSupporter">
+                            <p>
+                                <strong>${MessageInvalidKey}</strong>
                             </p>
-
+                            <p>
+                                ${ErrorMessageInvalidKey}
+                            </p>
                         </div>
-                        <div style="margin: 2em 0;">
-                            <label for="txtLegacyKey">MB2 Supporter Key</label>
-                            <input type="password" id="txtLegacyKey" name="txtLegacyKey" data-inline="true" />
-                            <div class="fieldDescription">
-                                Some premium plugins may give credit for registrations with previous versions in MB2.
-                            </div>
 
-                        </div>
-                        <p>
-                            <button type="submit" id="mbLegacyKeyBtn" data-theme="b" data-icon="check">Save</button>
-
-                        </p>
-                    </form>
-                    <br />
-                    <div data-role="collapsible">
-                        <h3>Lost Key</h3>
-                        <div>
-                            <form id="lostKeyForm">
-                                <div style="margin: 1em 0;">
-                                    <label for="txtEmail">Email Address</label>
-                                    <input type="email" required id="txtEmail" name="txtEmail" data-inline="true" />
-                                    <div class="fieldDescription">The email address that was used to purchase the key.</div>
-                                </div>
-                                <p>
-                                    <button type="submit" id="mbRetrieveKeyBtn" data-icon="action" data-theme="b">Retrieve Key</button>
-
-                                </p>
-                            </form>
-                        </div>
                     </div>
-
-                    <div data-role="collapsible">
-                        <h3>Multiple Key Linking</h3>
-                        <div>
-
-                            <form id="linkKeysForm">
-                                <p>
-                                    If you have more than one supporter key, use this form to link the old key's registrations with your new one.
-                                </p>
-                                <div style="margin: 1em 0;">
-                                    <label for="txtEmail">Current Email Address</label>
-                                    <input type="email" required id="txtNewEmail" name="txtNewEmail" data-inline="true" />
-                                    <div class="fieldDescription">
-                                        The current email address to which your new key was sent.
-                                    </div>
-                                </div>
-                                <p>
-                                    <label for="txtNewKey">New Supporter Key</label>
-                                    <input type="password" required="required" id="txtNewKey" name="txtNewKey" data-inline="true" />
-                                </p>
-                                <p>
-
-                                    <label for="txtOldKey">Old Supporter Key</label>
-                                    <input type="password" required="required" id="txtOldKey" name="txtOldKey" data-inline="true" />
-                                </p>
-                                <p>
-                                    <button type="submit" id="mbLinkKeysBtn" data-icon="check" data-theme="b">Link Keys</button>
-                                </p>
-                            </form>
-                        </div>
+                    <p>
+                        <button is="emby-button" type="submit" id="mbLegacyKeyBtn" class="raised block button-submit">
+                            <span>${ButtonSave}</span>
+                        </button>
+                    </p>
+                </form>
+                <br />
+                <div is="emby-collapse" title="${HeaderForgotKey}">
+                    <div class="collapseContent">
+                        <form id="lostKeyForm">
+                            <div style="margin: 1em 0;" class="inputContainer">
+                                <input is="emby-input" type="email" required id="txtEmail" label="${LabelEmailAddress}" />
+                                <div class="fieldDescription">${LabelSupporterEmailAddress}</div>
+                            </div>
+                            <p>
+                                <button is="emby-button" type="submit" id="mbRetrieveKeyBtn" class="raised block button-submit">
+                                    <span>${ButtonRetrieveKey}</span>
+                                </button>
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script type="text/javascript">
-            $('#supporterKeyForm').on('submit', SupporterKeyPage.updateSupporterKey);
-            $('#lostKeyForm').on('submit', SupporterKeyPage.retrieveSupporterKey);
-            $('#linkKeysForm').on('submit', SupporterKeyPage.linkSupporterKeys);
-        </script>
     </div>
-</body>
-</html>
+</div>

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Extensions;
 using System.Diagnostics;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Model.Entities
 {
@@ -16,10 +20,130 @@ namespace MediaBrowser.Model.Entities
         public string Codec { get; set; }
 
         /// <summary>
+        /// Gets or sets the codec tag.
+        /// </summary>
+        /// <value>The codec tag.</value>
+        public string CodecTag { get; set; }
+        
+        /// <summary>
         /// Gets or sets the language.
         /// </summary>
         /// <value>The language.</value>
         public string Language { get; set; }
+
+        /// <summary>
+        /// Gets or sets the comment.
+        /// </summary>
+        /// <value>The comment.</value>
+        public string Comment { get; set; }
+
+        public string TimeBase { get; set; }
+        public string CodecTimeBase { get; set; }
+
+        public string Title { get; set; }
+
+        public string DisplayTitle
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Title))
+                {
+                    return AddLanguageIfNeeded(Title);
+                }
+
+                if (Type == MediaStreamType.Audio)
+                {
+                    List<string> attributes = new List<string>();
+
+                    if (!string.IsNullOrEmpty(Language))
+                    {
+                        attributes.Add(StringHelper.FirstToUpper(Language));
+                    }
+                    if (!string.IsNullOrEmpty(Codec) && !StringHelper.EqualsIgnoreCase(Codec, "dca"))
+                    {
+                        attributes.Add(AudioCodec.GetFriendlyName(Codec));
+                    } 
+                    else if (!string.IsNullOrEmpty(Profile) && !StringHelper.EqualsIgnoreCase(Profile, "lc"))
+                    {
+                        attributes.Add(Profile);
+                    }
+
+                    if (!string.IsNullOrEmpty(ChannelLayout))
+                    {
+                        attributes.Add(ChannelLayout);
+                    }
+                    else if (Channels.HasValue)
+                    {
+                        attributes.Add(StringHelper.ToStringCultureInvariant(Channels.Value) + " ch");
+                    }
+                    if (IsDefault)
+                    {
+                        attributes.Add("Default");
+                    }
+
+                    return string.Join(" ", attributes.ToArray());
+                }
+
+                if (Type == MediaStreamType.Subtitle)
+                {
+                    List<string> attributes = new List<string>();
+
+                    if (!string.IsNullOrEmpty(Language))
+                    {
+                        attributes.Add(StringHelper.FirstToUpper(Language));
+                    }
+                    else
+                    {
+                        attributes.Add("Und");
+                    }
+
+                    if (IsDefault)
+                    {
+                        attributes.Add("Default");
+                    }
+
+                    if (IsForced)
+                    {
+                        attributes.Add("Forced");
+                    }
+
+                    string name = string.Join(" ", attributes.ToArray());
+
+                    return name;
+                }
+
+                if (Type == MediaStreamType.Video)
+                {
+
+                }
+
+                return null;
+            }
+        }
+
+        private string AddLanguageIfNeeded(string title)
+        {
+            if (!string.IsNullOrEmpty(Language) && 
+                !string.Equals(Language, "und", StringComparison.OrdinalIgnoreCase) &&
+                !IsLanguageInTitle(title, Language))
+            {
+                title = StringHelper.FirstToUpper(Language) + " " + title;
+            }
+
+            return title;
+        }
+
+        private bool IsLanguageInTitle(string title, string language)
+        {
+            if (title.IndexOf(Language, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public string NalLengthSize { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is interlaced.
@@ -27,18 +151,38 @@ namespace MediaBrowser.Model.Entities
         /// <value><c>true</c> if this instance is interlaced; otherwise, <c>false</c>.</value>
         public bool IsInterlaced { get; set; }
 
+        public bool? IsAVC { get; set; }
+
         /// <summary>
         /// Gets or sets the channel layout.
         /// </summary>
         /// <value>The channel layout.</value>
         public string ChannelLayout { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the bit rate.
         /// </summary>
         /// <value>The bit rate.</value>
         public int? BitRate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the bit depth.
+        /// </summary>
+        /// <value>The bit depth.</value>
+        public int? BitDepth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reference frames.
+        /// </summary>
+        /// <value>The reference frames.</value>
+        public int? RefFrames { get; set; }
+
+        /// <summary>
+        /// Gets or sets the length of the packet.
+        /// </summary>
+        /// <value>The length of the packet.</value>
+        public int? PacketLength { get; set; }
+        
         /// <summary>
         /// Gets or sets the channels.
         /// </summary>
@@ -112,10 +256,98 @@ namespace MediaBrowser.Model.Entities
         public int Index { get; set; }
 
         /// <summary>
+        /// Gets or sets the score.
+        /// </summary>
+        /// <value>The score.</value>
+        public int? Score { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance is external.
         /// </summary>
         /// <value><c>true</c> if this instance is external; otherwise, <c>false</c>.</value>
         public bool IsExternal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
+        /// <value>The method.</value>
+        public SubtitleDeliveryMethod? DeliveryMethod { get; set; }
+        /// <summary>
+        /// Gets or sets the delivery URL.
+        /// </summary>
+        /// <value>The delivery URL.</value>
+        public string DeliveryUrl { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is external URL.
+        /// </summary>
+        /// <value><c>null</c> if [is external URL] contains no value, <c>true</c> if [is external URL]; otherwise, <c>false</c>.</value>
+        public bool? IsExternalUrl { get; set; }
+
+        public bool IsTextSubtitleStream
+        {
+            get
+            {
+                if (Type != MediaStreamType.Subtitle) return false;
+
+                if (string.IsNullOrEmpty(Codec) && !IsExternal)
+                {
+                    return false;
+                }
+
+                return IsTextFormat(Codec);
+            }
+        }
+
+        public static bool IsTextFormat(string format)
+        {
+            string codec = format ?? string.Empty;
+
+            // sub = external .sub file
+
+            return StringHelper.IndexOfIgnoreCase(codec, "pgs") == -1 &&
+                   StringHelper.IndexOfIgnoreCase(codec, "dvd") == -1 &&
+                   StringHelper.IndexOfIgnoreCase(codec, "dvbsub") == -1 &&
+                   !StringHelper.EqualsIgnoreCase(codec, "sub") &&
+                   !StringHelper.EqualsIgnoreCase(codec, "dvb_subtitle");
+        }
+
+        public bool SupportsSubtitleConversionTo(string toCodec)
+        {
+            if (!IsTextSubtitleStream)
+            {
+                return false;
+            }
+
+            var fromCodec = Codec;
+
+            // Can't convert from this 
+            if (StringHelper.EqualsIgnoreCase(fromCodec, "ass"))
+            {
+                return false;
+            }
+            if (StringHelper.EqualsIgnoreCase(fromCodec, "ssa"))
+            {
+                return false;
+            }
+
+            // Can't convert to this 
+            if (StringHelper.EqualsIgnoreCase(toCodec, "ass"))
+            {
+                return false;
+            }
+            if (StringHelper.EqualsIgnoreCase(toCodec, "ssa"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [supports external stream].
+        /// </summary>
+        /// <value><c>true</c> if [supports external stream]; otherwise, <c>false</c>.</value>
+        public bool SupportsExternalStream { get; set; }
 
         /// <summary>
         /// Gets or sets the filename.
@@ -124,48 +356,27 @@ namespace MediaBrowser.Model.Entities
         public string Path { get; set; }
 
         /// <summary>
+        /// Gets or sets the external identifier.
+        /// </summary>
+        /// <value>The external identifier.</value>
+        public string ExternalId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pixel format.
+        /// </summary>
+        /// <value>The pixel format.</value>
+        public string PixelFormat { get; set; }
+
+        /// <summary>
         /// Gets or sets the level.
         /// </summary>
         /// <value>The level.</value>
         public double? Level { get; set; }
-    }
-
-    /// <summary>
-    /// Enum MediaStreamType
-    /// </summary>
-    public enum MediaStreamType
-    {
-        /// <summary>
-        /// The audio
-        /// </summary>
-        Audio,
-        /// <summary>
-        /// The video
-        /// </summary>
-        Video,
-        /// <summary>
-        /// The subtitle
-        /// </summary>
-        Subtitle
-    }
-
-    public class MediaInfo
-    {
-        /// <summary>
-        /// Gets or sets the media streams.
-        /// </summary>
-        /// <value>The media streams.</value>
-        public List<MediaStream> MediaStreams { get; set; }
 
         /// <summary>
-        /// Gets or sets the format.
+        /// Gets a value indicating whether this instance is anamorphic.
         /// </summary>
-        /// <value>The format.</value>
-        public string Format { get; set; }
-
-        public MediaInfo()
-        {
-            MediaStreams = new List<MediaStream>();
-        }
+        /// <value><c>true</c> if this instance is anamorphic; otherwise, <c>false</c>.</value>
+        public bool? IsAnamorphic { get; set; }
     }
 }

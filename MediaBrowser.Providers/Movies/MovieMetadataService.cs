@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Controller.Configuration;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
@@ -7,32 +6,74 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Providers.Manager;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.IO;
 
 namespace MediaBrowser.Providers.Movies
 {
     public class MovieMetadataService : MetadataService<Movie, MovieInfo>
     {
-        private readonly ILibraryManager _libraryManager;
-
-        public MovieMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IProviderRepository providerRepo, IFileSystem fileSystem, ILibraryManager libraryManager)
-            : base(serverConfigurationManager, logger, providerManager, providerRepo, fileSystem)
+        protected override bool IsFullLocalMetadata(Movie item)
         {
-            _libraryManager = libraryManager;
+            if (string.IsNullOrWhiteSpace(item.Overview))
+            {
+                return false;
+            }
+            if (!item.ProductionYear.HasValue)
+            {
+                return false;
+            }
+            return base.IsFullLocalMetadata(item);
         }
 
-        /// <summary>
-        /// Merges the specified source.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="lockedFields">The locked fields.</param>
-        /// <param name="replaceData">if set to <c>true</c> [replace data].</param>
-        /// <param name="mergeMetadataSettings">if set to <c>true</c> [merge metadata settings].</param>
-        protected override void MergeData(Movie source, Movie target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+        protected override void MergeData(MetadataResult<Movie> source, MetadataResult<Movie> target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
         {
             ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
+
+            var sourceItem = source.Item;
+            var targetItem = target.Item;
+
+            if (replaceData || string.IsNullOrEmpty(targetItem.CollectionName))
+            {
+                targetItem.CollectionName = sourceItem.CollectionName;
+            }
+        }
+
+        public MovieMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        {
         }
     }
+
+    public class TrailerMetadataService : MetadataService<Trailer, TrailerInfo>
+    {
+        protected override bool IsFullLocalMetadata(Trailer item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Overview))
+            {
+                return false;
+            }
+            if (!item.ProductionYear.HasValue)
+            {
+                return false;
+            }
+            return base.IsFullLocalMetadata(item);
+        }
+
+        protected override void MergeData(MetadataResult<Trailer> source, MetadataResult<Trailer> target, List<MetadataFields> lockedFields, bool replaceData, bool mergeMetadataSettings)
+        {
+            ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
+
+            if (replaceData || target.Item.TrailerTypes.Count == 0)
+            {
+                target.Item.TrailerTypes = source.Item.TrailerTypes;
+            }
+        }
+
+        public TrailerMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        {
+        }
+    }
+
 }

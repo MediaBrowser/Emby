@@ -6,25 +6,21 @@ namespace MediaBrowser.Model.System
     /// <summary>
     /// Class SystemInfo
     /// </summary>
-    public class SystemInfo
+    public class SystemInfo : PublicSystemInfo
     {
-        /// <summary>
-        /// Gets or sets the version.
-        /// </summary>
-        /// <value>The version.</value>
-        public string Version { get; set; }
+        public PackageVersionClass SystemUpdateLevel { get; set; }
 
         /// <summary>
-        /// Gets or sets the operating sytem.
+        /// Gets or sets the display name of the operating system.
         /// </summary>
-        /// <value>The operating sytem.</value>
-        public string OperatingSystem { get; set; }
+        /// <value>The display name of the operating system.</value>
+        public string OperatingSystemDisplayName { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is running as service.
+        /// Gets or sets a value indicating whether [supports running as service].
         /// </summary>
-        /// <value><c>true</c> if this instance is running as service; otherwise, <c>false</c>.</value>
-        public bool IsRunningAsService { get; set; }
+        /// <value><c>true</c> if [supports running as service]; otherwise, <c>false</c>.</value>
+        public bool SupportsRunningAsService { get; set; }
 
         /// <summary>
         /// Gets or sets the mac address.
@@ -32,6 +28,8 @@ namespace MediaBrowser.Model.System
         /// <value>The mac address.</value>
         public string MacAddress { get; set; }
 
+        public string PackageName { get; set; }
+        
         /// <summary>
         /// Gets or sets a value indicating whether this instance has pending restart.
         /// </summary>
@@ -39,10 +37,10 @@ namespace MediaBrowser.Model.System
         public bool HasPendingRestart { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is network deployed.
+        /// Gets or sets a value indicating whether [supports library monitor].
         /// </summary>
-        /// <value><c>true</c> if this instance is network deployed; otherwise, <c>false</c>.</value>
-        public bool IsNetworkDeployed { get; set; }
+        /// <value><c>true</c> if [supports library monitor]; otherwise, <c>false</c>.</value>
+        public bool SupportsLibraryMonitor { get; set; }
 
         /// <summary>
         /// Gets or sets the in progress installations.
@@ -63,12 +61,6 @@ namespace MediaBrowser.Model.System
         public List<InstallationInfo> CompletedInstallations { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [supports native web socket].
-        /// </summary>
-        /// <value><c>true</c> if [supports native web socket]; otherwise, <c>false</c>.</value>
-        public bool SupportsNativeWebSocket { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether this instance can self restart.
         /// </summary>
         /// <value><c>true</c> if this instance can self restart; otherwise, <c>false</c>.</value>
@@ -87,12 +79,6 @@ namespace MediaBrowser.Model.System
         public List<string> FailedPluginAssemblies { get; set; }
 
         /// <summary>
-        /// Gets or sets the id.
-        /// </summary>
-        /// <value>The id.</value>
-        public string Id { get; set; }
-
-        /// <summary>
         /// Gets or sets the program data path.
         /// </summary>
         /// <value>The program data path.</value>
@@ -109,12 +95,18 @@ namespace MediaBrowser.Model.System
         /// </summary>
         /// <value>The cache path.</value>
         public string CachePath { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the log path.
         /// </summary>
         /// <value>The log path.</value>
         public string LogPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the internal metadata path.
+        /// </summary>
+        /// <value>The internal metadata path.</value>
+        public string InternalMetadataPath { get; set; }
 
         /// <summary>
         /// Gets or sets the transcoding temporary path.
@@ -129,10 +121,16 @@ namespace MediaBrowser.Model.System
         public int HttpServerPortNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the wan address.
+        /// Gets or sets a value indicating whether [enable HTTPS].
         /// </summary>
-        /// <value>The wan address.</value>
-        public string WanAddress { get; set; }
+        /// <value><c>true</c> if [enable HTTPS]; otherwise, <c>false</c>.</value>
+        public bool SupportsHttps { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HTTPS server port number.
+        /// </summary>
+        /// <value>The HTTPS server port number.</value>
+        public int HttpsPortNumber { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has update available.
@@ -145,6 +143,10 @@ namespace MediaBrowser.Model.System
         /// </summary>
         /// <value><c>true</c> if [supports automatic run at startup]; otherwise, <c>false</c>.</value>
         public bool SupportsAutoRunAtStartup { get; set; }
+
+        public string EncoderLocationType { get; set; }
+
+        public Architecture SystemArchitecture { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemInfo" /> class.

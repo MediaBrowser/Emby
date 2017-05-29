@@ -32,15 +32,27 @@ namespace MediaBrowser.Model.Tasks
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        /// <value>The key.</value>
+        public string Key { get; set; }
+        
+        /// <summary>
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the error message.
         /// </summary>
         /// <value>The error message.</value>
         public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the long error message.
+        /// </summary>
+        /// <value>The long error message.</value>
+        public string LongErrorMessage { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace MediaBrowser.Model.Updates
         /// The internal id of this package.
         /// </summary>
         /// <value>The id.</value>
-        public int id { get; set; }
+        public string id { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -39,6 +39,12 @@ namespace MediaBrowser.Model.Updates
         public bool isPremium { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is adult only content.
+        /// </summary>
+        /// <value><c>true</c> if this instance is adult; otherwise, <c>false</c>.</value>
+        public bool adult { get; set; }
+
+        /// <summary>
         /// Gets or sets the rich desc URL.
         /// </summary>
         /// <value>The rich desc URL.</value>
@@ -60,7 +66,7 @@ namespace MediaBrowser.Model.Updates
         /// Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
-        public PackageType type { get; set; }
+        public string type { get; set; }
 
         /// <summary>
         /// Gets or sets the target filename.
@@ -121,7 +127,7 @@ namespace MediaBrowser.Model.Updates
         /// Gets or sets the total number of ratings for this package.
         /// </summary>
         /// <value>The total ratings.</value>
-        public int totalRatings { get; set; }
+        public int? totalRatings { get; set; }
 
         /// <summary>
         /// Gets or sets the average rating for this package .
@@ -147,6 +153,18 @@ namespace MediaBrowser.Model.Updates
         /// <value>The versions.</value>
         public List<PackageVersionInfo> versions { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable in application store].
+        /// </summary>
+        /// <value><c>true</c> if [enable in application store]; otherwise, <c>false</c>.</value>
+        public bool enableInAppStore { get; set; }
+
+        /// <summary>
+        /// Gets or sets the installs.
+        /// </summary>
+        /// <value>The installs.</value>
+        public int installs { get; set; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageInfo"/> class.
         /// </summary>

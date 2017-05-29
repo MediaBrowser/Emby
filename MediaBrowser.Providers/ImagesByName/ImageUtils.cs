@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Common.Net;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.ImagesByName
 {
@@ -19,36 +19,37 @@ namespace MediaBrowser.Providers.ImagesByName
         /// <param name="file">The file.</param>
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="fileSystem">The file system.</param>
-        /// <param name="semaphore">The semaphore.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public static async Task EnsureList(string url, string file, IHttpClient httpClient, IFileSystem fileSystem, SemaphoreSlim semaphore, CancellationToken cancellationToken)
+        public static async Task<string> EnsureList(string url, string file, IHttpClient httpClient, IFileSystem fileSystem, CancellationToken cancellationToken)
         {
-            var fileInfo = new FileInfo(file);
+            var fileInfo = fileSystem.GetFileInfo(file);
 
             if (!fileInfo.Exists || (DateTime.UtcNow - fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays > 1)
             {
-                await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                var temp = await httpClient.GetTempFile(new HttpRequestOptions
+                {
+                    CancellationToken = cancellationToken,
+                    Progress = new Progress<double>(),
+                    Url = url
+
+                }).ConfigureAwait(false);
+
+                fileSystem.CreateDirectory(fileSystem.GetDirectoryName(file));
 
                 try
                 {
-                    var temp = await httpClient.GetTempFile(new HttpRequestOptions
-                    {
-                        CancellationToken = cancellationToken,
-                        Progress = new Progress<double>(),
-                        Url = url
-
-                    }).ConfigureAwait(false);
-
-                    Directory.CreateDirectory(Path.GetDirectoryName(file));
-
-                    File.Copy(temp, file, true);
+                    fileSystem.CopyFile(temp, file, true);
                 }
-                finally
+                catch
                 {
-                    semaphore.Release();
+                    
                 }
+
+                return temp;
             }
+
+            return file;
         }
 
         public static string FindMatch(IHasImages item, IEnumerable<string> images)
@@ -68,23 +69,26 @@ namespace MediaBrowser.Providers.ImagesByName
                 .Replace("/", string.Empty);
         }
 
-        public static IEnumerable<string> GetAvailableImages(string file)
+        public static IEnumerable<string> GetAvailableImages(string file, IFileSystem fileSystem)
         {
-            using (var reader = new StreamReader(file))
+            using (var fileStream = fileSystem.GetFileStream(file, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read))
             {
-                var lines = new List<string>();
-
-                while (!reader.EndOfStream)
+                using (var reader = new StreamReader(fileStream))
                 {
-                    var text = reader.ReadLine();
+                    var lines = new List<string>();
 
-                    if (!string.IsNullOrWhiteSpace(text))
+                    while (!reader.EndOfStream)
                     {
-                        lines.Add(text);
-                    }
-                }
+                        var text = reader.ReadLine();
 
-                return lines;
+                        if (!string.IsNullOrWhiteSpace(text))
+                        {
+                            lines.Add(text);
+                        }
+                    }
+
+                    return lines;
+                }
             }
         }
     }

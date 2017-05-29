@@ -3,8 +3,8 @@ namespace MediaBrowser.Model.Notifications
 {
     public enum NotificationLevel
     {
-        Normal,
-        Warning,
-        Error
+        Normal = 0,
+        Warning = 1,
+        Error = 2
     }
 }

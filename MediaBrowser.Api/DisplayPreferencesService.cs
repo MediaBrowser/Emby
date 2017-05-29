@@ -1,19 +1,17 @@
-﻿using MediaBrowser.Common.Extensions;
+﻿using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Serialization;
-using ServiceStack;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
     /// <summary>
     /// Class UpdateDisplayPreferences
     /// </summary>
-    [Route("/DisplayPreferences/{DisplayPreferencesId}", "POST")]
-    [Api(("Updates a user's display preferences for an item"))]
+    [Route("/DisplayPreferences/{DisplayPreferencesId}", "POST", Summary = "Updates a user's display preferences for an item")]
     public class UpdateDisplayPreferences : DisplayPreferences, IReturnVoid
     {
         /// <summary>
@@ -24,14 +22,10 @@ namespace MediaBrowser.Api
         public string DisplayPreferencesId { get; set; }
 
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public Guid UserId { get; set; }
-
-        [ApiMember(Name = "Client", Description = "Client", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string Client { get; set; }
+        public string UserId { get; set; }
     }
 
-    [Route("/DisplayPreferences/{Id}", "GET")]
-    [Api(("Gets a user's display preferences for an item"))]
+    [Route("/DisplayPreferences/{Id}", "GET", Summary = "Gets a user's display preferences for an item")]
     public class GetDisplayPreferences : IReturn<DisplayPreferences>
     {
         /// <summary>
@@ -42,7 +36,7 @@ namespace MediaBrowser.Api
         public string Id { get; set; }
 
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [ApiMember(Name = "Client", Description = "Client", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string Client { get; set; }
@@ -51,6 +45,7 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class DisplayPreferencesService
     /// </summary>
+    [Authenticated]
     public class DisplayPreferencesService : BaseApiService
     {
         /// <summary>
@@ -79,14 +74,7 @@ namespace MediaBrowser.Api
         /// <param name="request">The request.</param>
         public object Get(GetDisplayPreferences request)
         {
-            Guid displayPreferencesId;
-
-            if (!Guid.TryParse(request.Id, out displayPreferencesId))
-            {
-                displayPreferencesId = request.Id.GetMD5();
-            }
-
-            var result = _displayPreferencesManager.GetDisplayPreferences(displayPreferencesId, request.UserId, request.Client);
+            var result = _displayPreferencesManager.GetDisplayPreferences(request.Id, request.UserId, request.Client);
 
             return ToOptimizedSerializedResultUsingCache(result);
         }

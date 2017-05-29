@@ -1,0 +1,54 @@
+﻿<div id="newUserPage" data-role="page" class="page type-interior userProfilesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Users" data-require="scripts/usernew,emby-input,emby-button">
+
+    <div>
+        <div class="content-primary">
+
+            <form class="newUserProfileForm">
+                <div class="inputContainer">
+                    <input is="emby-input" id="txtUserName" required type="text" label="${LabelName}" />
+                    <div class="fieldDescription labelNewUserNameHelp">${LabelNewUserNameHelp}</div>
+                </div>
+
+                <div class="folderAccessContainer">
+                    <h1>${HeaderLibraryAccess}</h1>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input type="checkbox" is="emby-checkbox" id="chkEnableAllFolders" />
+                            <span>${OptionEnableAccessToAllLibraries}</span>
+                        </label>
+                        <div class="fieldDescription paperCheckboxFieldDescription">${LibraryAccessHelp}</div>
+                    </div>
+                    <div class="folderAccessListContainer">
+                        <div class="folderAccess">
+                        </div>
+                    </div>
+                </div>
+                <div class="channelAccessContainer" style="display:none;">
+                    <h1>${HeaderChannelAccess}</h1>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input type="checkbox" is="emby-checkbox" id="chkEnableAllChannels" />
+                            <span>${OptionEnableAccessToAllChannels}</span>
+                        </label>
+                        <div class="fieldDescription paperCheckboxFieldDescription">${ChannelAccessHelp}</div>
+                    </div>
+                    <div class="channelAccessListContainer">
+                        <div class="channelAccess">
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>${ButtonSave}</span>
+                    </button>
+
+                    <button is="emby-button" type="button" class="raised button-cancel block btnCancel" onclick="history.back();">
+                        <span>${ButtonCancel}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

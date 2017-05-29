@@ -1,6 +1,6 @@
-using MediaBrowser.Common.Net;
 using System;
 using System.Collections.Generic;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Controller.Net
 {
@@ -22,27 +22,9 @@ namespace MediaBrowser.Controller.Net
         void StartServer(IEnumerable<string> urlPrefixes);
 
         /// <summary>
-        /// Gets a value indicating whether [supports web sockets].
-        /// </summary>
-        /// <value><c>true</c> if [supports web sockets]; otherwise, <c>false</c>.</value>
-        bool SupportsWebSockets { get; }
-
-        /// <summary>
-        /// Gets the local end points.
-        /// </summary>
-        /// <value>The local end points.</value>
-        IEnumerable<string> LocalEndPoints { get; }
-
-        /// <summary>
         /// Stops this instance.
         /// </summary>
         void Stop();
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [enable HTTP request logging].
-        /// </summary>
-        /// <value><c>true</c> if [enable HTTP request logging]; otherwise, <c>false</c>.</value>
-        bool EnableHttpRequestLogging { get; set; }
 
         /// <summary>
         /// Occurs when [web socket connected].
@@ -50,8 +32,18 @@ namespace MediaBrowser.Controller.Net
         event EventHandler<WebSocketConnectEventArgs> WebSocketConnected;
 
         /// <summary>
+        /// Occurs when [web socket connecting].
+        /// </summary>
+        event EventHandler<WebSocketConnectingEventArgs> WebSocketConnecting;
+
+        /// <summary>
         /// Inits this instance.
         /// </summary>
-        void Init(IEnumerable<IRestfulService> services);
+        void Init(IEnumerable<IService> services);
+
+        /// <summary>
+        /// If set, all requests will respond with this message
+        /// </summary>
+        string GlobalResponse { get; set; }
     }
 }

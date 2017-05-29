@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Entities;
-using System.Drawing;
 using System.Threading.Tasks;
 
 namespace MediaBrowser.Controller.Providers
@@ -44,11 +43,12 @@ namespace MediaBrowser.Controller.Providers
         /// Enhances the image async.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <param name="originalImage">The original image.</param>
+        /// <param name="inputFile">The input file.</param>
+        /// <param name="outputFile">The output file.</param>
         /// <param name="imageType">Type of the image.</param>
         /// <param name="imageIndex">Index of the image.</param>
         /// <returns>Task{Image}.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        Task<Image> EnhanceImageAsync(IHasImages item, Image originalImage, ImageType imageType, int imageIndex);
+        Task EnhanceImageAsync(IHasImages item, string inputFile, string outputFile, ImageType imageType, int imageIndex);
     }
 }

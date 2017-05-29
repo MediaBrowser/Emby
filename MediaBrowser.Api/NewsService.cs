@@ -1,12 +1,10 @@
-﻿using MediaBrowser.Controller.News;
-using MediaBrowser.Model.News;
+﻿using MediaBrowser.Model.News;
 using MediaBrowser.Model.Querying;
-using ServiceStack;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
-    [Route("/News/Product", "GET")]
-    [Api(Description = "Gets the latest product news.")]
+    [Route("/News/Product", "GET", Summary = "Gets the latest product news.")]
     public class GetProductNews : IReturn<QueryResult<NewsItem>>
     {
         /// <summary>
@@ -23,7 +21,7 @@ namespace MediaBrowser.Api
         [ApiMember(Name = "Limit", Description = "Optional. The maximum number of records to return", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? Limit { get; set; }
     }
-    
+
     public class NewsService : BaseApiService
     {
         private readonly INewsService _newsService;
@@ -37,8 +35,8 @@ namespace MediaBrowser.Api
         {
             var result = _newsService.GetProductNews(new NewsQuery
             {
-                 StartIndex = request.StartIndex,
-                 Limit = request.Limit
+                StartIndex = request.StartIndex,
+                Limit = request.Limit
 
             });
 

@@ -1,6 +1,5 @@
 ﻿using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Entities;
-using System;
 
 namespace MediaBrowser.Model.Dto
 {
@@ -56,7 +55,7 @@ namespace MediaBrowser.Model.Dto
         /// If set this will result in strong, unconditional response caching
         /// </summary>
         /// <value>The hash.</value>
-        public Guid? Tag { get; set; }
+        public string Tag { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [crop whitespace].
@@ -74,7 +73,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the format.
         /// </summary>
         /// <value>The format.</value>
-        public ImageOutputFormat Format { get; set; }
+        public ImageFormat? Format { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [add played indicator].
@@ -89,6 +88,12 @@ namespace MediaBrowser.Model.Dto
         public int? PercentPlayed { get; set; }
 
         /// <summary>
+        /// Gets or sets the un played count.
+        /// </summary>
+        /// <value>The un played count.</value>
+        public int? UnPlayedCount { get; set; }
+        
+        /// <summary>
         /// Gets or sets the color of the background.
         /// </summary>
         /// <value>The color of the background.</value>
@@ -100,8 +105,6 @@ namespace MediaBrowser.Model.Dto
         public ImageOptions()
         {
             EnableImageEnhancers = true;
-
-            Format = ImageOutputFormat.Original;
         }
     }
 }

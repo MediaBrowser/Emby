@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.Entities;
+﻿
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -6,23 +7,30 @@ namespace MediaBrowser.Controller.Entities
     /// Plugins derive from and export this class to create a folder that will appear in the root along
     /// with all the other actual physical folders in the system.
     /// </summary>
-    public abstract class BasePluginFolder : Folder, ICollectionFolder, IByReferenceItem
+    public abstract class BasePluginFolder : Folder, ICollectionFolder
     {
-        /// <summary>
-        /// Gets or sets the type of the location.
-        /// </summary>
-        /// <value>The type of the location.</value>
-        public override LocationType LocationType
+        public virtual string CollectionType
+        {
+            get { return null; }
+        }
+
+        public override bool CanDelete()
+        {
+            return false;
+        }
+
+        public override bool IsSaveLocalMetadataEnabled()
+        {
+            return true;
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPeople
         {
             get
             {
-                return LocationType.Virtual;
+                return false;
             }
-        }
-
-        protected BasePluginFolder()
-        {
-            DisplayMediaType = "CollectionFolder";
         }
     }
 }

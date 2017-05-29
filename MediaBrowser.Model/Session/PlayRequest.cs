@@ -23,24 +23,11 @@ namespace MediaBrowser.Model.Session
         /// </summary>
         /// <value>The play command.</value>
         public PlayCommand PlayCommand { get; set; }
-    }
 
-    /// <summary>
-    /// Enum PlayCommand
-    /// </summary>
-    public enum PlayCommand
-    {
         /// <summary>
-        /// The play now
+        /// Gets or sets the controlling user identifier.
         /// </summary>
-        PlayNow,
-        /// <summary>
-        /// The play next
-        /// </summary>
-        PlayNext,
-        /// <summary>
-        /// The play last
-        /// </summary>
-        PlayLast
+        /// <value>The controlling user identifier.</value>
+        public string ControllingUserId { get; set; }
     }
 }

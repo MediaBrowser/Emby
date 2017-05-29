@@ -1,58 +1,46 @@
-﻿using MediaBrowser.Common.IO;
+﻿using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Devices;
+using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
-using MediaBrowser.Controller.MediaInfo;
-using MediaBrowser.Controller.Persistence;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.IO;
-using ServiceStack;
+using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
     /// <summary>
     /// Class GetAudioStream
     /// </summary>
-    [Route("/Audio/{Id}/stream.mp3", "GET")]
-    [Route("/Audio/{Id}/stream.wma", "GET")]
-    [Route("/Audio/{Id}/stream.aac", "GET")]
-    [Route("/Audio/{Id}/stream.flac", "GET")]
-    [Route("/Audio/{Id}/stream.ogg", "GET")]
-    [Route("/Audio/{Id}/stream.oga", "GET")]
-    [Route("/Audio/{Id}/stream.webm", "GET")]
-    [Route("/Audio/{Id}/stream", "GET")]
-    [Route("/Audio/{Id}/stream.mp3", "HEAD")]
-    [Route("/Audio/{Id}/stream.wma", "HEAD")]
-    [Route("/Audio/{Id}/stream.aac", "HEAD")]
-    [Route("/Audio/{Id}/stream.flac", "HEAD")]
-    [Route("/Audio/{Id}/stream.ogg", "HEAD")]
-    [Route("/Audio/{Id}/stream.oga", "HEAD")]
-    [Route("/Audio/{Id}/stream.webm", "HEAD")]
-    [Route("/Audio/{Id}/stream", "HEAD")]
-    [Api(Description = "Gets an audio stream")]
+    [Route("/Audio/{Id}/stream.{Container}", "GET", Summary = "Gets an audio stream")]
+    [Route("/Audio/{Id}/stream", "GET", Summary = "Gets an audio stream")]
+    [Route("/Audio/{Id}/stream.{Container}", "HEAD", Summary = "Gets an audio stream")]
+    [Route("/Audio/{Id}/stream", "HEAD", Summary = "Gets an audio stream")]
     public class GetAudioStream : StreamRequest
     {
-
     }
 
     /// <summary>
     /// Class AudioService
     /// </summary>
+    // TODO: In order to autheneticate this in the future, Dlna playback will require updating
+    //[Authenticated]
     public class AudioService : BaseProgressiveStreamingService
     {
-        public AudioService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IDtoService dtoService, IFileSystem fileSystem, IItemRepository itemRepository, ILiveTvManager liveTvManager, IImageProcessor imageProcessor)
-            : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, dtoService, fileSystem, itemRepository, liveTvManager, imageProcessor)
-        {
-        }
-
         /// <summary>
         /// Gets the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Get(GetAudioStream request)
+        public Task<object> Get(GetAudioStream request)
         {
             return ProcessRequest(request, false);
         }
@@ -62,58 +50,20 @@ namespace MediaBrowser.Api.Playback.Progressive
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Head(GetAudioStream request)
+        public Task<object> Head(GetAudioStream request)
         {
             return ProcessRequest(request, true);
         }
 
-        /// <summary>
-        /// Gets the command line arguments.
-        /// </summary>
-        /// <param name="outputPath">The output path.</param>
-        /// <param name="state">The state.</param>
-        /// <param name="performSubtitleConversions">if set to <c>true</c> [perform subtitle conversions].</param>
-        /// <returns>System.String.</returns>
-        /// <exception cref="System.InvalidOperationException">Only aac and mp3 audio codecs are supported.</exception>
-        protected override string GetCommandLineArguments(string outputPath, StreamState state, bool performSubtitleConversions)
+        protected override string GetCommandLineArguments(string outputPath, StreamState state, bool isEncoding)
         {
-            var request = state.Request;
+            var encodingOptions = ApiEntryPoint.Instance.GetEncodingOptions();
 
-            var audioTranscodeParams = new List<string>();
+            return EncodingHelper.GetProgressiveAudioFullCommandLine(state, encodingOptions, outputPath);
+        }
 
-            var bitrate = GetAudioBitrateParam(state);
-
-            if (bitrate.HasValue)
-            {
-                audioTranscodeParams.Add("-ab " + bitrate.Value.ToString(UsCulture));
-            }
-
-            var channels = GetNumAudioChannelsParam(request, state.AudioStream);
-
-            if (channels.HasValue)
-            {
-                audioTranscodeParams.Add("-ac " + channels.Value);
-            }
-            
-            if (request.AudioSampleRate.HasValue)
-            {
-                audioTranscodeParams.Add("-ar " + request.AudioSampleRate.Value);
-            }
-
-            const string vn = " -vn";
-
-            var threads = GetNumberOfThreads(false);
-
-            var inputModifier = GetInputModifier(state);
-
-            return string.Format("{0} -i {1}{2} -threads {3}{4} {5} -id3v2_version 3 -write_id3v1 1 \"{6}\"",
-                inputModifier,
-                GetInputArgument(state),
-                GetSlowSeekCommandLineParameter(request),
-                threads,
-                vn,
-                string.Join(" ", audioTranscodeParams.ToArray()),
-                outputPath).Trim();
+        public AudioService(IServerConfigurationManager serverConfig, IUserManager userManager, ILibraryManager libraryManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IDlnaManager dlnaManager, ISubtitleEncoder subtitleEncoder, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, IZipClient zipClient, IJsonSerializer jsonSerializer, IAuthorizationContext authorizationContext, IImageProcessor imageProcessor) : base(serverConfig, userManager, libraryManager, isoManager, mediaEncoder, fileSystem, dlnaManager, subtitleEncoder, deviceManager, mediaSourceManager, zipClient, jsonSerializer, authorizationContext, imageProcessor)
+        {
         }
     }
 }

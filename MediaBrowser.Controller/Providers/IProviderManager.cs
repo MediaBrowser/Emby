@@ -1,8 +1,10 @@
-﻿using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -16,25 +18,38 @@ namespace MediaBrowser.Controller.Providers
     public interface IProviderManager
     {
         /// <summary>
+        /// Queues the refresh.
+        /// </summary>
+        void QueueRefresh(Guid itemId, MetadataRefreshOptions options, RefreshPriority priority);
+
+        /// <summary>
+        /// Refreshes the full item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task RefreshFullItem(IHasMetadata item, MetadataRefreshOptions options, CancellationToken cancellationToken);
+        
+        /// <summary>
         /// Refreshes the metadata.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <param name="options">The options.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task RefreshMetadata(IHasMetadata item, MetadataRefreshOptions options, CancellationToken cancellationToken);
+        Task<ItemUpdateType> RefreshSingleItem(IHasMetadata item, MetadataRefreshOptions options, CancellationToken cancellationToken);
 
         /// <summary>
         /// Saves the image.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <param name="url">The URL.</param>
-        /// <param name="resourcePool">The resource pool.</param>
         /// <param name="type">The type.</param>
         /// <param name="imageIndex">Index of the image.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveImage(BaseItem item, string url, SemaphoreSlim resourcePool, ImageType type, int? imageIndex, CancellationToken cancellationToken);
+        Task SaveImage(IHasImages item, string url, ImageType type, int? imageIndex, CancellationToken cancellationToken);
 
         /// <summary>
         /// Saves the image.
@@ -46,27 +61,29 @@ namespace MediaBrowser.Controller.Providers
         /// <param name="imageIndex">Index of the image.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken);
+        Task SaveImage(IHasImages item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Saves the image.
+        /// </summary>
+        /// <returns>Task.</returns>
+        Task SaveImage(IHasImages item, string source, string mimeType, ImageType type, int? imageIndex, bool? saveLocallyWithMedia, CancellationToken cancellationToken);
+        
         /// <summary>
         /// Adds the metadata providers.
         /// </summary>
-        /// <param name="imageProviders">The image providers.</param>
-        /// <param name="metadataServices">The metadata services.</param>
-        /// <param name="metadataProviders">The metadata providers.</param>
-        /// <param name="savers">The savers.</param>
         void AddParts(IEnumerable<IImageProvider> imageProviders, IEnumerable<IMetadataService> metadataServices, IEnumerable<IMetadataProvider> metadataProviders,
-            IEnumerable<IMetadataSaver> savers);
+            IEnumerable<IMetadataSaver> savers,
+            IEnumerable<IExternalId> externalIds);
 
         /// <summary>
         /// Gets the available remote images.
         /// </summary>
         /// <param name="item">The item.</param>
+        /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="providerName">Name of the provider.</param>
-        /// <param name="type">The type.</param>
         /// <returns>Task{IEnumerable{RemoteImageInfo}}.</returns>
-        Task<IEnumerable<RemoteImageInfo>> GetAvailableRemoteImages(IHasImages item, CancellationToken cancellationToken, string providerName = null, ImageType? type = null);
+        Task<IEnumerable<RemoteImageInfo>> GetAvailableRemoteImages(IHasImages item, RemoteImageQuery query, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the image providers.
@@ -82,6 +99,20 @@ namespace MediaBrowser.Controller.Providers
         IEnumerable<MetadataPluginSummary> GetAllMetadataPlugins();
 
         /// <summary>
+        /// Gets the external urls.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{ExternalUrl}.</returns>
+        IEnumerable<ExternalUrl> GetExternalUrls(BaseItem item);
+
+        /// <summary>
+        /// Gets the external identifier infos.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>IEnumerable{ExternalIdInfo}.</returns>
+        IEnumerable<ExternalIdInfo> GetExternalIdInfos(IHasProviderIds item);
+
+        /// <summary>
         /// Saves the metadata.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -90,10 +121,49 @@ namespace MediaBrowser.Controller.Providers
         Task SaveMetadata(IHasMetadata item, ItemUpdateType updateType);
 
         /// <summary>
+        /// Saves the metadata.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="updateType">Type of the update.</param>
+        /// <param name="savers">The savers.</param>
+        /// <returns>Task.</returns>
+        Task SaveMetadata(IHasMetadata item, ItemUpdateType updateType, IEnumerable<string> savers);
+        
+        /// <summary>
         /// Gets the metadata options.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>MetadataOptions.</returns>
         MetadataOptions GetMetadataOptions(IHasImages item);
+
+        /// <summary>
+        /// Gets the remote search results.
+        /// </summary>
+        /// <typeparam name="TItemType">The type of the t item type.</typeparam>
+        /// <typeparam name="TLookupType">The type of the t lookup type.</typeparam>
+        /// <param name="searchInfo">The search information.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{IEnumerable{SearchResult{``1}}}.</returns>
+        Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(
+            RemoteSearchQuery<TLookupType> searchInfo,
+            CancellationToken cancellationToken)
+            where TItemType : BaseItem, new()
+            where TLookupType : ItemLookupInfo;
+
+        /// <summary>
+        /// Gets the search image.
+        /// </summary>
+        /// <param name="providerName">Name of the provider.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task{HttpResponseInfo}.</returns>
+        Task<HttpResponseInfo> GetSearchImage(string providerName, string url, CancellationToken cancellationToken);
+    }
+
+    public enum RefreshPriority
+    {
+        High = 0,
+        Normal = 1,
+        Low = 2
     }
 }

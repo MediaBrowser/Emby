@@ -1,5 +1,6 @@
-﻿using System;
+﻿using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Model.Plugins;
 
 namespace MediaBrowser.WebDashboard.Api
 {
@@ -27,7 +28,17 @@ namespace MediaBrowser.WebDashboard.Api
         {
             Name = page.Name;
             ConfigurationPageType = page.ConfigurationPageType;
-            PluginId = page.Plugin.Id.ToString("N");
+
+            // Don't use "N" because it needs to match Plugin.Id
+            PluginId = page.Plugin.Id.ToString();
+        }
+
+        public ConfigurationPageInfo(IPlugin plugin, PluginPageInfo page)
+        {
+            Name = page.Name;
+
+            // Don't use "N" because it needs to match Plugin.Id
+            PluginId = plugin.Id.ToString();
         }
     }
 }

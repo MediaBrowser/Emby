@@ -29,13 +29,14 @@ namespace MediaBrowser.Model.Session
         /// <summary>
         /// The seek
         /// </summary>
-        Seek
-    }
-
-    public class PlaystateRequest
-    {
-        public PlaystateCommand Command { get; set; }
-
-        public long? SeekPositionTicks { get; set; }
+        Seek,
+        /// <summary>
+        /// The rewind
+        /// </summary>
+        Rewind,
+        /// <summary>
+        /// The fast forward
+        /// </summary>
+        FastForward
     }
 }

@@ -1,114 +1,138 @@
-﻿using MediaBrowser.Common.IO;
-using MediaBrowser.Model.Logging;
-using ServiceStack.Web;
+﻿using MediaBrowser.Model.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Controller.Net;
+using System.Collections.Generic;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.Playback.Progressive
 {
-    public class ProgressiveStreamWriter : IStreamWriter, IHasOptions
+    public class ProgressiveFileCopier : IAsyncStreamWriter, IHasHeaders
     {
-        private string Path { get; set; }
-        private ILogger Logger { get; set; }
         private readonly IFileSystem _fileSystem;
+        private readonly TranscodingJob _job;
+        private readonly ILogger _logger;
+        private readonly string _path;
+        private readonly CancellationToken _cancellationToken;
+        private readonly Dictionary<string, string> _outputHeaders;
 
-        /// <summary>
-        /// The _options
-        /// </summary>
-        private readonly IDictionary<string, string> _options = new Dictionary<string, string>();
-        /// <summary>
-        /// Gets the options.
-        /// </summary>
-        /// <value>The options.</value>
-        public IDictionary<string, string> Options
-        {
-            get { return _options; }
-        }
+        // 256k
+        private const int BufferSize = 81920;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProgressiveStreamWriter" /> class.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="logger">The logger.</param>
-        public ProgressiveStreamWriter(string path, ILogger logger, IFileSystem fileSystem)
+        private long _bytesWritten = 0;
+        public long StartPosition { get; set; }
+        public bool AllowEndOfFile = true;
+
+        private readonly IDirectStreamProvider _directStreamProvider;
+
+        public ProgressiveFileCopier(IFileSystem fileSystem, string path, Dictionary<string, string> outputHeaders, TranscodingJob job, ILogger logger, CancellationToken cancellationToken)
         {
-            Path = path;
-            Logger = logger;
             _fileSystem = fileSystem;
+            _path = path;
+            _outputHeaders = outputHeaders;
+            _job = job;
+            _logger = logger;
+            _cancellationToken = cancellationToken;
         }
 
-        /// <summary>
-        /// Writes to.
-        /// </summary>
-        /// <param name="responseStream">The response stream.</param>
-        public void WriteTo(Stream responseStream)
+        public ProgressiveFileCopier(IDirectStreamProvider directStreamProvider, Dictionary<string, string> outputHeaders, TranscodingJob job, ILogger logger, CancellationToken cancellationToken)
         {
-            var task = WriteToAsync(responseStream);
-
-            Task.WaitAll(task);
+            _directStreamProvider = directStreamProvider;
+            _outputHeaders = outputHeaders;
+            _job = job;
+            _logger = logger;
+            _cancellationToken = cancellationToken;
         }
 
-        /// <summary>
-        /// Writes to async.
-        /// </summary>
-        /// <param name="responseStream">The response stream.</param>
-        /// <returns>Task.</returns>
-        public async Task WriteToAsync(Stream responseStream)
+        public IDictionary<string, string> Headers
+        {
+            get
+            {
+                return _outputHeaders;
+            }
+        }
+
+        private Stream GetInputStream()
+        {
+            return _fileSystem.GetFileStream(_path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, true);
+        }
+
+        public async Task WriteToAsync(Stream outputStream, CancellationToken cancellationToken)
         {
             try
             {
-                await StreamFile(Path, responseStream).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error streaming media", ex);
+                if (_directStreamProvider != null)
+                {
+                    await _directStreamProvider.CopyToAsync(outputStream, _cancellationToken).ConfigureAwait(false);
+                    return;
+                }
 
-                throw;
+                var eofCount = 0;
+
+                using (var inputStream = GetInputStream())
+                {
+                    if (StartPosition > 0)
+                    {
+                        inputStream.Position = StartPosition;
+                    }
+
+                    while (eofCount < 15 || !AllowEndOfFile)
+                    {
+                        var bytesRead = await CopyToAsyncInternal(inputStream, outputStream, BufferSize, _cancellationToken).ConfigureAwait(false);
+
+                        //var position = fs.Position;
+                        //_logger.Debug("Streamed {0} bytes to position {1} from file {2}", bytesRead, position, path);
+
+                        if (bytesRead == 0)
+                        {
+                            if (_job == null || _job.HasExited)
+                            {
+                                eofCount++;
+                            }
+                            await Task.Delay(100, _cancellationToken).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            eofCount = 0;
+                        }
+                    }
+                }
             }
             finally
             {
-                ApiEntryPoint.Instance.OnTranscodeEndRequest(Path, TranscodingJobType.Progressive);
+                if (_job != null)
+                {
+                    ApiEntryPoint.Instance.OnTranscodeEndRequest(_job);
+                }
             }
         }
 
-        /// <summary>
-        /// Streams the file.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="outputStream">The output stream.</param>
-        /// <returns>Task{System.Boolean}.</returns>
-        private async Task StreamFile(string path, Stream outputStream)
+        private async Task<int> CopyToAsyncInternal(Stream source, Stream destination, Int32 bufferSize, CancellationToken cancellationToken)
         {
-            var eofCount = 0;
-            long position = 0;
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead;
+            int totalBytesRead = 0;
 
-            using (var fs = _fileSystem.GetFileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, true))
+            while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0)
             {
-                while (eofCount < 15)
+                await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
+
+                _bytesWritten += bytesRead;
+                totalBytesRead += bytesRead;
+
+                if (_job != null)
                 {
-                    await fs.CopyToAsync(outputStream).ConfigureAwait(false);
-
-                    var fsPosition = fs.Position;
-
-                    var bytesRead = fsPosition - position;
-
-                    //Logger.Debug("Streamed {0} bytes from file {1}", bytesRead, path);
-
-                    if (bytesRead == 0)
-                    {
-                        eofCount++;
-                        await Task.Delay(100).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        eofCount = 0;
-                    }
-
-                    position = fsPosition;
+                    _job.BytesDownloaded = Math.Max(_job.BytesDownloaded ?? _bytesWritten, _bytesWritten);
                 }
             }
+
+            return totalBytesRead;
         }
     }
 }

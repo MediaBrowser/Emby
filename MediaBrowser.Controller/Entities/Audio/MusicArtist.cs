@@ -1,35 +1,32 @@
-﻿using MediaBrowser.Common.Progress;
+﻿using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Extensions;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Controller.Entities.Audio
 {
     /// <summary>
     /// Class MusicArtist
     /// </summary>
-    public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasTags, IHasProductionLocations, IHasLookupInfo<ArtistInfo>
+    public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasLookupInfo<ArtistInfo>
     {
         [IgnoreDataMember]
-        public List<ItemByNameCounts> UserItemCountList { get; set; }
+        public bool IsAccessedByName
+        {
+            get { return ParentId == Guid.Empty; }
+        }
 
-        public bool IsAccessedByName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        public List<string> Tags { get; set; }
-
-        public List<string> ProductionLocations { get; set; }
-        
+        [IgnoreDataMember]
         public override bool IsFolder
         {
             get
@@ -38,6 +35,61 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
         }
 
+        [IgnoreDataMember]
+        public override bool SupportsCumulativeRunTimeTicks
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool IsDisplayedAsFolder
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsAddingToPlaylist
+        {
+            get { return true; }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPlayedStatus
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override double? GetDefaultPrimaryImageAspectRatio()
+        {
+            return 1;
+        }
+
+        public override bool CanDelete()
+        {
+            return !IsAccessedByName;
+        }
+
+        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        {
+            if (query.IncludeItemTypes.Length == 0)
+            {
+                query.IncludeItemTypes = new[] { typeof(Audio).Name, typeof(MusicVideo).Name, typeof(MusicAlbum).Name };
+                query.ArtistIds = new[] { Id.ToString("N") };
+            }
+
+            return LibraryManager.GetItemList(query);
+        }
+
+        [IgnoreDataMember]
         protected override IEnumerable<BaseItem> ActualChildren
         {
             get
@@ -49,6 +101,25 @@ namespace MediaBrowser.Controller.Entities.Audio
 
                 return base.ActualChildren;
             }
+        }
+
+        public override int GetChildCount(User user)
+        {
+            if (IsAccessedByName)
+            {
+                return 0;
+            }
+            return base.GetChildCount(user);
+        }
+
+        public override bool IsSaveLocalMetadataEnabled()
+        {
+            if (IsAccessedByName)
+            {
+                return true;
+            }
+
+            return base.IsSaveLocalMetadataEnabled();
         }
 
         private readonly Task _cachedTask = Task.FromResult(true);
@@ -63,20 +134,12 @@ namespace MediaBrowser.Controller.Entities.Audio
             return base.ValidateChildrenInternal(progress, cancellationToken, recursive, refreshChildMetadata, refreshOptions, directoryService);
         }
 
-        public MusicArtist()
+        public override List<string> GetUserDataKeys()
         {
-            UserItemCountList = new List<ItemByNameCounts>();
-            Tags = new List<string>();
-            ProductionLocations = new List<string>();
-        }
+            var list = base.GetUserDataKeys();
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
-        {
-            return GetUserDataKey(this);
+            list.InsertRange(0, GetUserDataKeys(this));
+            return list;
         }
 
         /// <summary>
@@ -84,6 +147,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// If the item is a folder, it returns the folder itself
         /// </summary>
         /// <value>The containing folder path.</value>
+        [IgnoreDataMember]
         public override string ContainingFolderPath
         {
             get
@@ -96,6 +160,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// Gets a value indicating whether this instance is owned item.
         /// </summary>
         /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
         public override bool IsOwnedItem
         {
             get
@@ -109,110 +174,82 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        private static string GetUserDataKey(MusicArtist item)
+        private static List<string> GetUserDataKeys(MusicArtist item)
         {
+            var list = new List<string>();
             var id = item.GetProviderId(MetadataProviders.MusicBrainzArtist);
 
             if (!string.IsNullOrEmpty(id))
             {
-                return "Artist-Musicbrainz-" + id;
+                list.Add("Artist-Musicbrainz-" + id);
             }
 
-            return "Artist-" + item.Name;
+            list.Add("Artist-" + (item.Name ?? string.Empty).RemoveDiacritics());
+            return list;
+        }
+        public override string CreatePresentationUniqueKey()
+        {
+            return "Artist-" + (Name ?? string.Empty).RemoveDiacritics();
+        }
+        protected override bool GetBlockUnratedValue(UserPolicy config)
+        {
+            return config.BlockUnratedItems.Contains(UnratedItem.Music);
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedMusic;
+            return UnratedItem.Music;
         }
 
         public async Task RefreshAllMetadata(MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var items = RecursiveChildren.ToList();
+            var items = GetRecursiveChildren().ToList();
 
             var songs = items.OfType<Audio>().ToList();
 
             var others = items.Except(songs).ToList();
 
             var totalItems = songs.Count + others.Count;
-            var percentages = new Dictionary<Guid, double>(totalItems);
+            var numComplete = 0;
 
-            var tasks = new List<Task>();
+            var childUpdateType = ItemUpdateType.None;
 
             // Refresh songs
             foreach (var item in songs)
             {
-                if (tasks.Count >= 2)
-                {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-                    tasks.Clear();
-                }
-
                 cancellationToken.ThrowIfCancellationRequested();
-                var innerProgress = new ActionableProgress<double>();
 
-                // Avoid implicitly captured closure
-                var currentChild = item;
-                innerProgress.RegisterAction(p =>
-                {
-                    lock (percentages)
-                    {
-                        percentages[currentChild.Id] = p / 100;
+                var updateType = await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
+                childUpdateType = childUpdateType | updateType;
 
-                        var percent = percentages.Values.Sum();
-                        percent /= totalItems;
-                        percent *= 100;
-                        progress.Report(percent);
-                    }
-                });
-
-                tasks.Add(RefreshItem(item, refreshOptions, innerProgress, cancellationToken));
+                numComplete++;
+                double percent = numComplete;
+                percent /= totalItems;
+                progress.Report(percent * 100);
             }
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            tasks.Clear();
+            var parentRefreshOptions = refreshOptions;
+            if (childUpdateType > ItemUpdateType.None)
+            {
+                parentRefreshOptions = new MetadataRefreshOptions(refreshOptions);
+                parentRefreshOptions.MetadataRefreshMode = MetadataRefreshMode.FullRefresh;
+            }
 
             // Refresh current item
-            await RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
-            
+            await RefreshMetadata(parentRefreshOptions, cancellationToken).ConfigureAwait(false);
+
             // Refresh all non-songs
             foreach (var item in others)
             {
-                if (tasks.Count > 3)
-                {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-                    tasks.Clear();
-                }
-
                 cancellationToken.ThrowIfCancellationRequested();
-                var innerProgress = new ActionableProgress<double>();
 
-                // Avoid implicitly captured closure
-                var currentChild = item;
-                innerProgress.RegisterAction(p =>
-                {
-                    lock (percentages)
-                    {
-                        percentages[currentChild.Id] = p / 100;
+                var updateType = await item.RefreshMetadata(parentRefreshOptions, cancellationToken).ConfigureAwait(false);
 
-                        var percent = percentages.Values.Sum();
-                        percent /= totalItems;
-                        percent *= 100;
-                        progress.Report(percent);
-                    }
-                });
-
-                tasks.Add(RefreshItem(item, refreshOptions, innerProgress, cancellationToken));
+                numComplete++;
+                double percent = numComplete;
+                percent /= totalItems;
+                progress.Report(percent * 100);
             }
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            
-            progress.Report(100);
-        }
-
-        private async Task RefreshItem(BaseItem item, MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
-        {
-            await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
 
             progress.Report(100);
         }
@@ -221,11 +258,89 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             var info = GetItemLookupInfo<ArtistInfo>();
 
-            info.SongInfos = RecursiveChildren.OfType<Audio>()
+            info.SongInfos = GetRecursiveChildren(i => i is Audio)
+                .Cast<Audio>()
                 .Select(i => i.GetLookupInfo())
                 .ToList();
 
             return info;
+        }
+
+        public IEnumerable<BaseItem> GetTaggedItems(IEnumerable<BaseItem> inputItems)
+        {
+            return inputItems.Where(GetItemFilter());
+        }
+
+        public Func<BaseItem, bool> GetItemFilter()
+        {
+            return i =>
+            {
+                var hasArtist = i as IHasArtist;
+                return hasArtist != null && hasArtist.HasAnyArtist(Name);
+            };
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsPeople
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public static string GetPath(string name)
+        {
+            return GetPath(name, true);
+        }
+
+        public static string GetPath(string name, bool normalizeName)
+        {
+            // Trim the period at the end because windows will have a hard time with that
+            var validName = normalizeName ?
+                FileSystem.GetValidFilename(name).Trim().TrimEnd('.') :
+                name;
+
+            return System.IO.Path.Combine(ConfigurationManager.ApplicationPaths.ArtistsPath, validName);
+        }
+
+        private string GetRebasedPath()
+        {
+            return GetPath(System.IO.Path.GetFileName(Path), false);
+        }
+
+        public override bool RequiresRefresh()
+        {
+            if (IsAccessedByName)
+            {
+                var newPath = GetRebasedPath();
+                if (!string.Equals(Path, newPath, StringComparison.Ordinal))
+                {
+                    Logger.Debug("{0} path has changed from {1} to {2}", GetType().Name, Path, newPath);
+                    return true;
+                }
+            }
+            return base.RequiresRefresh();
+        }
+
+        /// <summary>
+        /// This is called before any metadata refresh and returns true or false indicating if changes were made
+        /// </summary>
+        public override bool BeforeMetadataRefresh()
+        {
+            var hasChanges = base.BeforeMetadataRefresh();
+
+            if (IsAccessedByName)
+            {
+                var newPath = GetRebasedPath();
+                if (!string.Equals(Path, newPath, StringComparison.Ordinal))
+                {
+                    Path = newPath;
+                    hasChanges = true;
+                }
+            }
+
+            return hasChanges;
         }
     }
 }

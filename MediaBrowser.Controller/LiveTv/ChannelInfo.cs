@@ -25,6 +25,16 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value>The id of the channel.</value>
         public string Id { get; set; }
 
+        public string TunerChannelId { get; set; }
+
+        public string CallSign { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tuner host identifier.
+        /// </summary>
+        /// <value>The tuner host identifier.</value>
+        public string TunerHostId { get; set; }
+        
         /// <summary>
         /// Gets or sets the type of the channel.
         /// </summary>
@@ -48,6 +58,14 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>null</c> if [has image] contains no value, <c>true</c> if [has image]; otherwise, <c>false</c>.</value>
         public bool? HasImage { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is favorite.
+        /// </summary>
+        /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
+        public bool? IsFavorite { get; set; }
 
+        public bool? IsHD { get; set; }
+        public string AudioCodec { get; set; }
+        public string VideoCodec { get; set; }
     }
 }

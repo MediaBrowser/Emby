@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.Entities;
+﻿using System.Collections.Generic;
+using MediaBrowser.Model.Entities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,12 +12,6 @@ namespace MediaBrowser.Controller.Persistence
     public interface IDisplayPreferencesRepository : IRepository
     {
         /// <summary>
-        /// Opens the connection to the repository
-        /// </summary>
-        /// <returns>Task.</returns>
-        Task Initialize();
-
-        /// <summary>
         /// Saves display preferences for an item
         /// </summary>
         /// <param name="displayPreferences">The display preferences.</param>
@@ -24,9 +19,18 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="client">The client.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SaveDisplayPreferences(DisplayPreferences displayPreferences, Guid userId, string client,
+        Task SaveDisplayPreferences(DisplayPreferences displayPreferences, string userId, string client,
                                     CancellationToken cancellationToken);
-
+        
+        /// <summary>
+        /// Saves all display preferences for a user
+        /// </summary>
+        /// <param name="displayPreferences">The display preferences.</param>
+        /// <param name="userId">The user id.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task SaveAllDisplayPreferences(IEnumerable<DisplayPreferences> displayPreferences, Guid userId,
+                                    CancellationToken cancellationToken);
         /// <summary>
         /// Gets the display preferences.
         /// </summary>
@@ -34,6 +38,13 @@ namespace MediaBrowser.Controller.Persistence
         /// <param name="userId">The user id.</param>
         /// <param name="client">The client.</param>
         /// <returns>Task{DisplayPreferences}.</returns>
-        DisplayPreferences GetDisplayPreferences(Guid displayPreferencesId, Guid userId, string client);
+        DisplayPreferences GetDisplayPreferences(string displayPreferencesId, string userId, string client);
+
+        /// <summary>
+        /// Gets all display preferences for the given user.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <returns>Task{DisplayPreferences}.</returns>
+        IEnumerable<DisplayPreferences> GetAllDisplayPreferences(Guid userId);
     }
 }

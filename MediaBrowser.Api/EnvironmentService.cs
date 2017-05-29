@@ -1,20 +1,19 @@
 ﻿using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Net;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
     /// <summary>
     /// Class GetDirectoryContents
     /// </summary>
-    [Route("/Environment/DirectoryContents", "GET")]
-    [Api(Description = "Gets the contents of a given directory in the file system")]
+    [Route("/Environment/DirectoryContents", "GET", Summary = "Gets the contents of a given directory in the file system")]
     public class GetDirectoryContents : IReturn<List<FileSystemEntryInfo>>
     {
         /// <summary>
@@ -44,10 +43,14 @@ namespace MediaBrowser.Api
         /// <value><c>true</c> if [include hidden]; otherwise, <c>false</c>.</value>
         [ApiMember(Name = "IncludeHidden", Description = "An optional filter to include or exclude hidden files and folders. true/false", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
         public bool IncludeHidden { get; set; }
+
+        public GetDirectoryContents()
+        {
+            IncludeHidden = true;
+        }
     }
 
-    [Route("/Environment/NetworkShares", "GET")]
-    [Api(Description = "Gets shares from a network device")]
+    [Route("/Environment/NetworkShares", "GET", Summary = "Gets shares from a network device")]
     public class GetNetworkShares : IReturn<List<FileSystemEntryInfo>>
     {
         /// <summary>
@@ -61,8 +64,7 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class GetDrives
     /// </summary>
-    [Route("/Environment/Drives", "GET")]
-    [Api(Description = "Gets available drives from the server's file system")]
+    [Route("/Environment/Drives", "GET", Summary = "Gets available drives from the server's file system")]
     public class GetDrives : IReturn<List<FileSystemEntryInfo>>
     {
     }
@@ -70,14 +72,12 @@ namespace MediaBrowser.Api
     /// <summary>
     /// Class GetNetworkComputers
     /// </summary>
-    [Route("/Environment/NetworkDevices", "GET")]
-    [Api(Description = "Gets a list of devices on the network")]
+    [Route("/Environment/NetworkDevices", "GET", Summary = "Gets a list of devices on the network")]
     public class GetNetworkDevices : IReturn<List<FileSystemEntryInfo>>
     {
     }
 
-    [Route("/Environment/ParentPath", "GET")]
-    [Api(Description = "Gets the parent path of a given path")]
+    [Route("/Environment/ParentPath", "GET", Summary = "Gets the parent path of a given path")]
     public class GetParentPath : IReturn<string>
     {
         /// <summary>
@@ -88,24 +88,37 @@ namespace MediaBrowser.Api
         public string Path { get; set; }
     }
 
+    public class DefaultDirectoryBrowserInfo
+    {
+        public string Path { get; set; }
+    }
+
+    [Route("/Environment/DefaultDirectoryBrowser", "GET", Summary = "Gets the parent path of a given path")]
+    public class GetDefaultDirectoryBrowser : IReturn<DefaultDirectoryBrowserInfo>
+    {
+        
+    }
+
     /// <summary>
     /// Class EnvironmentService
     /// </summary>
+    [Authenticated(Roles = "Admin", AllowBeforeStartupWizard = true)]
     public class EnvironmentService : BaseApiService
     {
         const char UncSeparator = '\\';
+        const string UncSeparatorString = "\\";
 
         /// <summary>
         /// The _network manager
         /// </summary>
         private readonly INetworkManager _networkManager;
+        private IFileSystem _fileSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EnvironmentService" /> class.
         /// </summary>
         /// <param name="networkManager">The network manager.</param>
-        /// <exception cref="System.ArgumentNullException">networkManager</exception>
-        public EnvironmentService(INetworkManager networkManager)
+        public EnvironmentService(INetworkManager networkManager, IFileSystem fileSystem)
         {
             if (networkManager == null)
             {
@@ -113,6 +126,27 @@ namespace MediaBrowser.Api
             }
 
             _networkManager = networkManager;
+            _fileSystem = fileSystem;
+        }
+
+        public object Get(GetDefaultDirectoryBrowser request)
+        {
+            var result = new DefaultDirectoryBrowserInfo();
+
+            try
+            {
+                var qnap = "/share/CACHEDEV1_DATA";
+                if (_fileSystem.DirectoryExists(qnap))
+                {
+                    result.Path = qnap;
+                }
+            }
+            catch
+            {
+
+            }
+
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -120,8 +154,6 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">Path</exception>
-        /// <exception cref="System.ArgumentException"></exception>
         public object Get(GetDirectoryContents request)
         {
             var path = request.Path;
@@ -131,7 +163,7 @@ namespace MediaBrowser.Api
                 throw new ArgumentNullException("Path");
             }
 
-            var networkPrefix = UncSeparator.ToString(CultureInfo.InvariantCulture) + UncSeparator.ToString(CultureInfo.InvariantCulture);
+            var networkPrefix = UncSeparatorString + UncSeparatorString;
 
             if (path.StartsWith(networkPrefix, StringComparison.OrdinalIgnoreCase) && path.LastIndexOf(UncSeparator) == 1)
             {
@@ -168,13 +200,11 @@ namespace MediaBrowser.Api
         /// <returns>IEnumerable{FileSystemEntryInfo}.</returns>
         private IEnumerable<FileSystemEntryInfo> GetDrives()
         {
-            // Only include drives in the ready state or this method could end up being very slow, waiting for drives to timeout
-            return DriveInfo.GetDrives().Where(d => d.IsReady).Select(d => new FileSystemEntryInfo
+            return _fileSystem.GetDrives().Select(d => new FileSystemEntryInfo
             {
-                Name = GetName(d),
-                Path = d.RootDirectory.FullName,
+                Name = d.Name,
+                Path = d.FullName,
                 Type = FileSystemEntryType.Directory
-
             });
         }
 
@@ -190,16 +220,6 @@ namespace MediaBrowser.Api
                 .ToList();
 
             return ToOptimizedSerializedResultUsingCache(result);
-        }
-
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <param name="drive">The drive.</param>
-        /// <returns>System.String.</returns>
-        private string GetName(DriveInfo drive)
-        {
-            return drive.Name;
         }
 
         /// <summary>
@@ -224,14 +244,15 @@ namespace MediaBrowser.Api
         /// <returns>IEnumerable{FileSystemEntryInfo}.</returns>
         private IEnumerable<FileSystemEntryInfo> GetFileSystemEntries(GetDirectoryContents request)
         {
-            var entries = new DirectoryInfo(request.Path).EnumerateFileSystemInfos().Where(i =>
+            // using EnumerateFileSystemInfos doesn't handle reparse points (symlinks)
+            var entries = _fileSystem.GetFileSystemEntries(request.Path).Where(i =>
             {
-                if (!request.IncludeHidden && i.Attributes.HasFlag(FileAttributes.Hidden))
+                if (!request.IncludeHidden && i.IsHidden)
                 {
                     return false;
                 }
 
-                var isDirectory = i.Attributes.HasFlag(FileAttributes.Directory);
+                var isDirectory = i.IsDirectory;
 
                 if (!request.IncludeFiles && !isDirectory)
                 {
@@ -250,14 +271,14 @@ namespace MediaBrowser.Api
             {
                 Name = f.Name,
                 Path = f.FullName,
-                Type = f.Attributes.HasFlag(FileAttributes.Directory) ? FileSystemEntryType.Directory : FileSystemEntryType.File
+                Type = f.IsDirectory ? FileSystemEntryType.Directory : FileSystemEntryType.File
 
             }).ToList();
         }
 
         public object Get(GetParentPath request)
         {
-            var parent = Path.GetDirectoryName(request.Path);
+            var parent = _fileSystem.GetDirectoryName(request.Path);
 
             if (string.IsNullOrEmpty(parent))
             {

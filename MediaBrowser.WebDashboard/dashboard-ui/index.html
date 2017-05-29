@@ -1,29 +1,25 @@
 ﻿<!DOCTYPE html>
-<html>
+<html class="preload">
 <head>
-    <title>Media Browser</title>
+    <title>Emby</title>
+
+    <style>
+        .transparentDocument, .backgroundContainer-transparent:not(.withBackdrop) {
+            background: none !important;
+            background-color: transparent !important;
+        }
+
+        .mouseIdle, .mouseIdle * {
+            cursor: none !important;
+        }
+    </style>
+
 </head>
 <body>
-    <div id="indexPage" data-role="page" class="page type-home libraryPage" data-theme="b">
-        <div data-role="content">
-
-            <table class="ehsContent">
-                <tr>
-                    <td>
-
-                        <br />
-                        <div id="views">
-                        </div>
-                        <br />
-                        <h1 class="listHeader"><a href="itemlist.html">Media Folders<img src="css/images/rightarrow.png" class="headerArrowImage" /></a></h1>
-
-                        <div id="divCollections"></div>
-
-                        <div id="tip" class="ui-bar-a" style="padding: .75em; font-weight: normal; margin: 2em 0; display: none;"></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+    <div class="backdropContainer"></div>
+    <div class="backgroundContainer"></div>
+    <div class="mainDrawer hide"><div class="mainDrawer-scrollContainer scrollContainer"></div></div>
+    <div class="skinHeader"></div>
+    <div class="mainAnimatedPages skinBody"></div>
 </body>
 </html>

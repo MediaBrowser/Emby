@@ -1,8 +1,7 @@
-﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Common.Plugins;
+﻿using MediaBrowser.Common.Plugins;
+using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Updates;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ namespace MediaBrowser.Common.Updates
         /// <summary>
         /// The completed installations
         /// </summary>
-        ConcurrentBag<InstallationInfo> CompletedInstallations { get; set; }
+        IEnumerable<InstallationInfo> CompletedInstallations { get; }
 
         /// <summary>
         /// Occurs when [plugin uninstalled].
@@ -45,11 +44,13 @@ namespace MediaBrowser.Common.Updates
         /// Gets all available packages.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="withRegistration">if set to <c>true</c> [with registration].</param>
         /// <param name="packageType">Type of the package.</param>
         /// <param name="applicationVersion">The application version.</param>
         /// <returns>Task{List{PackageInfo}}.</returns>
         Task<IEnumerable<PackageInfo>> GetAvailablePackages(CancellationToken cancellationToken,
-                                                                                  PackageType? packageType = null,
+            bool withRegistration = true,
+                                                                                  string packageType = null,
                                                                                   Version applicationVersion = null);
 
         /// <summary>
@@ -103,11 +104,12 @@ namespace MediaBrowser.Common.Updates
         /// Installs the package.
         /// </summary>
         /// <param name="package">The package.</param>
+        /// <param name="isPlugin">if set to <c>true</c> [is plugin].</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">package</exception>
-        Task InstallPackage(PackageVersionInfo package, IProgress<double> progress, CancellationToken cancellationToken);
+        Task InstallPackage(PackageVersionInfo package, bool isPlugin, IProgress<double> progress, CancellationToken cancellationToken);
 
         /// <summary>
         /// Uninstalls a plugin

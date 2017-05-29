@@ -1,10 +1,17 @@
 ﻿using MediaBrowser.Model.LiveTv;
 using System;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Controller.LiveTv
 {
     public class TimerInfo
     {
+        public TimerInfo()
+        {
+            Genres = new List<string>();
+            KeepUntil = KeepUntil.UntilDeleted;
+        }
+
         /// <summary>
         /// Id of the recording.
         /// </summary>
@@ -15,7 +22,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The series timer identifier.</value>
         public string SeriesTimerId { get; set; }
-        
+
         /// <summary>
         /// ChannelId of the recording.
         /// </summary>
@@ -26,7 +33,9 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The program identifier.</value>
         public string ProgramId { get; set; }
-        
+
+        public string ShowId { get; set; }
+
         /// <summary>
         /// Name of the recording.
         /// </summary>
@@ -36,6 +45,8 @@ namespace MediaBrowser.Controller.LiveTv
         /// Description of the recording.
         /// </summary>
         public string Overview { get; set; }
+
+        public string SeriesId { get; set; }
 
         /// <summary>
         /// The start date of the recording, in UTC.
@@ -76,11 +87,38 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is post padding required; otherwise, <c>false</c>.</value>
         public bool IsPostPaddingRequired { get; set; }
-        
+
+        public bool IsManual { get; set; }
+
         /// <summary>
         /// Gets or sets the priority.
         /// </summary>
         /// <value>The priority.</value>
         public int Priority { get; set; }
+
+        public int RetryCount { get; set; }
+
+        // Program properties
+        public int? SeasonNumber { get; set; }
+        /// <summary>
+        /// Gets or sets the episode number.
+        /// </summary>
+        /// <value>The episode number.</value>
+        public int? EpisodeNumber { get; set; }
+        public bool IsMovie { get; set; }
+        public bool IsKids { get; set; }
+        public bool IsSports { get; set; }
+        public bool IsNews { get; set; }
+        public int? ProductionYear { get; set; }
+        public string EpisodeTitle { get; set; }
+        public DateTime? OriginalAirDate { get; set; }
+        public bool IsProgramSeries { get; set; }
+        public bool IsRepeat { get; set; }
+        public string HomePageUrl { get; set; }
+        public float? CommunityRating { get; set; }
+        public string OfficialRating { get; set; }
+        public List<string> Genres { get; set; }
+        public string RecordingPath { get; set; }
+        public KeepUntil KeepUntil { get; set; }
     }
 }

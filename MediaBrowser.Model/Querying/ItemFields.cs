@@ -1,5 +1,4 @@
-﻿
-namespace MediaBrowser.Model.Querying
+﻿namespace MediaBrowser.Model.Querying
 {
     /// <summary>
     /// Used to control the data that gets attached to DtoBaseItems
@@ -7,24 +6,36 @@ namespace MediaBrowser.Model.Querying
     public enum ItemFields
     {
         /// <summary>
-        /// The awards summary
+        /// The air time
         /// </summary>
-        AwardSummary,
+        AirTime,
 
         /// <summary>
-        /// The budget
+        /// The alternate episode numbers
         /// </summary>
-        Budget,
+        AlternateEpisodeNumbers,
+
+        /// <summary>
+        /// The can delete
+        /// </summary>
+        CanDelete,
+
+        /// <summary>
+        /// The can download
+        /// </summary>
+        CanDownload,
+
+        /// <summary>
+        /// The channel information
+        /// </summary>
+        ChannelInfo,
 
         /// <summary>
         /// The chapters
         /// </summary>
         Chapters,
 
-        /// <summary>
-        /// The critic rating summary
-        /// </summary>
-        CriticRatingSummary,
+        ChildCount,
 
         /// <summary>
         /// The cumulative run time ticks
@@ -52,6 +63,21 @@ namespace MediaBrowser.Model.Querying
         DisplayPreferencesId,
 
         /// <summary>
+        /// The display media type
+        /// </summary>
+        DisplayMediaType,
+
+        /// <summary>
+        /// The etag
+        /// </summary>
+        Etag,
+
+        /// <summary>
+        /// The external urls
+        /// </summary>
+        ExternalUrls,
+
+        /// <summary>
         /// Genres
         /// </summary>
         Genres,
@@ -67,25 +93,32 @@ namespace MediaBrowser.Model.Querying
         IndexOptions,
 
         /// <summary>
+        /// The item counts
+        /// </summary>
+        ItemCounts,
+
+        /// <summary>
         /// The keywords
         /// </summary>
         Keywords,
 
         /// <summary>
-        /// The metadata settings
+        /// The media source count
         /// </summary>
-        Settings,
+        MediaSourceCount,
+
+        /// <summary>
+        /// The media versions
+        /// </summary>
+        MediaSources,
+
+        OriginalTitle,
 
         /// <summary>
         /// The item overview
         /// </summary>
         Overview,
 
-        /// <summary>
-        /// The overview HTML
-        /// </summary>
-        OverviewHtml,
-        
         /// <summary>
         /// The id of the item's parent
         /// </summary>
@@ -100,6 +133,8 @@ namespace MediaBrowser.Model.Querying
         /// The list of people for the item
         /// </summary>
         People,
+
+        PlayAccess,
 
         /// <summary>
         /// The production locations
@@ -116,10 +151,17 @@ namespace MediaBrowser.Model.Querying
         /// </summary>
         PrimaryImageAspectRatio,
 
+        RecursiveItemCount,
+
         /// <summary>
-        /// The revenue
+        /// The season name
         /// </summary>
-        Revenue,
+        SeasonName,
+
+        /// <summary>
+        /// The settings
+        /// </summary>
+        Settings,
 
         /// <summary>
         /// The screenshot image tags
@@ -127,9 +169,16 @@ namespace MediaBrowser.Model.Querying
         ScreenshotImageTags,
 
         /// <summary>
-        /// The soundtrack ids
+        /// The series genres
         /// </summary>
-        SoundtrackIds,
+        SeriesGenres,
+
+        SeriesPrimaryImage,
+
+        /// <summary>
+        /// The series studio
+        /// </summary>
+        SeriesStudio,
 
         /// <summary>
         /// The sort name of the item
@@ -137,9 +186,20 @@ namespace MediaBrowser.Model.Querying
         SortName,
 
         /// <summary>
+        /// The special episode numbers
+        /// </summary>
+        SpecialEpisodeNumbers,
+
+        /// <summary>
         /// The studios of the item
         /// </summary>
         Studios,
+
+        BasicSyncInfo,
+        /// <summary>
+        /// The synchronize information
+        /// </summary>
+        SyncInfo,
 
         /// <summary>
         /// The taglines of the item
@@ -152,10 +212,10 @@ namespace MediaBrowser.Model.Querying
         Tags,
 
         /// <summary>
-        /// The TMDB collection name
+        /// The vote count
         /// </summary>
-        TmdbCollectionName,
-        
+        VoteCount,
+
         /// <summary>
         /// The trailer url of the item
         /// </summary>
@@ -164,6 +224,18 @@ namespace MediaBrowser.Model.Querying
         /// <summary>
         /// The media streams
         /// </summary>
-        MediaStreams
+        MediaStreams,
+
+        /// <summary>
+        /// The season user data
+        /// </summary>
+        SeasonUserData,
+
+        /// <summary>
+        /// The service name
+        /// </summary>
+        ServiceName,
+        ThemeSongIds,
+        ThemeVideoIds
     }
 }

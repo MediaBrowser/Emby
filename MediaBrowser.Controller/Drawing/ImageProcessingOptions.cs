@@ -1,9 +1,10 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Drawing;
-using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace MediaBrowser.Controller.Drawing
 {
@@ -11,13 +12,9 @@ namespace MediaBrowser.Controller.Drawing
     {
         public IHasImages Item { get; set; }
 
-        public ImageType ImageType { get; set; }
+        public ItemImageInfo Image { get; set; }
 
         public int ImageIndex { get; set; }
-
-        public string OriginalImagePath { get; set; }
-
-        public DateTime OriginalImageDateModified { get; set; }
 
         public bool CropWhiteSpace { get; set; }
 
@@ -29,50 +26,75 @@ namespace MediaBrowser.Controller.Drawing
 
         public int? MaxHeight { get; set; }
 
-        public int? Quality { get; set; }
+        public int Quality { get; set; }
 
         public List<IImageEnhancer> Enhancers { get; set; }
 
-        public ImageOutputFormat OutputFormat { get; set; }
+        public List<ImageFormat> SupportedOutputFormats { get; set; }
 
         public bool AddPlayedIndicator { get; set; }
 
         public int? UnplayedCount { get; set; }
+        public int? Blur { get; set; }
 
-        public double? PercentPlayed { get; set; }
-        
+        public double PercentPlayed { get; set; }
+
         public string BackgroundColor { get; set; }
+        public string ForegroundLayer { get; set; }
 
-        public bool HasDefaultOptions()
+        public bool HasDefaultOptions(string originalImagePath)
         {
-            return HasDefaultOptionsWithoutSize() && 
-                !Width.HasValue && 
-                !Height.HasValue && 
-                !MaxWidth.HasValue && 
+            return HasDefaultOptionsWithoutSize(originalImagePath) &&
+                !Width.HasValue &&
+                !Height.HasValue &&
+                !MaxWidth.HasValue &&
                 !MaxHeight.HasValue;
         }
 
-        public bool HasDefaultOptionsWithoutSize()
+        public bool HasDefaultOptions(string originalImagePath, ImageSize size)
         {
-            return (!Quality.HasValue || Quality.Value == 100) &&
-                IsOutputFormatDefault &&
-                !AddPlayedIndicator &&
-                !PercentPlayed.HasValue &&
-                !UnplayedCount.HasValue &&
-                string.IsNullOrEmpty(BackgroundColor);
-        }
-
-        private bool IsOutputFormatDefault
-        {
-            get
+            if (!HasDefaultOptionsWithoutSize(originalImagePath))
             {
-                if (OutputFormat == ImageOutputFormat.Original)
-                {
-                    return true;
-                }
-
                 return false;
             }
+
+            if (Width.HasValue && !size.Width.Equals(Width.Value))
+            {
+                return false;
+            }
+            if (Height.HasValue && !size.Height.Equals(Height.Value))
+            {
+                return false;
+            }
+            if (MaxWidth.HasValue && size.Width > MaxWidth.Value)
+            {
+                return false;
+            }
+            if (MaxHeight.HasValue && size.Height > MaxHeight.Value)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool HasDefaultOptionsWithoutSize(string originalImagePath)
+        {
+            return (Quality >= 90) &&
+                IsFormatSupported(originalImagePath) &&
+                !AddPlayedIndicator &&
+                PercentPlayed.Equals(0) &&
+                !UnplayedCount.HasValue &&
+                !Blur.HasValue &&
+                !CropWhiteSpace &&
+                string.IsNullOrEmpty(BackgroundColor) &&
+                string.IsNullOrEmpty(ForegroundLayer);
+        }
+
+        private bool IsFormatSupported(string originalImagePath)
+        {
+            var ext = Path.GetExtension(originalImagePath);
+            return SupportedOutputFormats.Any(outputFormat => string.Equals(ext, "." + outputFormat, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

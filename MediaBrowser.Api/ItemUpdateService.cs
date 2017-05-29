@@ -1,86 +1,195 @@
-﻿using MediaBrowser.Controller.Dto;
+﻿using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.LiveTv;
+using MediaBrowser.Controller.Net;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
-using ServiceStack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
-    [Route("/Items/{ItemId}", "POST")]
-    [Api(("Updates an item"))]
+    [Route("/Items/{ItemId}", "POST", Summary = "Updates an item")]
     public class UpdateItem : BaseItemDto, IReturnVoid
     {
         [ApiMember(Name = "ItemId", Description = "The id of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string ItemId { get; set; }
     }
 
-    [Route("/Artists/{ArtistName}", "POST")]
-    [Api(("Updates an artist"))]
-    public class UpdateArtist : BaseItemDto, IReturnVoid
+    [Route("/Items/{ItemId}/MetadataEditor", "GET", Summary = "Gets metadata editor info for an item")]
+    public class GetMetadataEditorInfo : IReturn<MetadataEditorInfo>
     {
-        [ApiMember(Name = "ArtistName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string ArtistName { get; set; }
+        [ApiMember(Name = "ItemId", Description = "The id of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        public string ItemId { get; set; }
     }
 
-    [Route("/Studios/{StudioName}", "POST")]
-    [Api(("Updates a studio"))]
-    public class UpdateStudio : BaseItemDto, IReturnVoid
+    [Route("/Items/{ItemId}/ContentType", "POST", Summary = "Updates an item's content type")]
+    public class UpdateItemContentType : IReturnVoid
     {
-        [ApiMember(Name = "StudioName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string StudioName { get; set; }
+        [ApiMember(Name = "ItemId", Description = "The id of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        public string ItemId { get; set; }
+
+        [ApiMember(Name = "ContentType", Description = "The content type of the item", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        public string ContentType { get; set; }
     }
 
-    [Route("/Persons/{PersonName}", "POST")]
-    [Api(("Updates a person"))]
-    public class UpdatePerson : BaseItemDto, IReturnVoid
-    {
-        [ApiMember(Name = "PersonName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string PersonName { get; set; }
-    }
-
-    [Route("/MusicGenres/{GenreName}", "POST")]
-    [Api(("Updates a music genre"))]
-    public class UpdateMusicGenre : BaseItemDto, IReturnVoid
-    {
-        [ApiMember(Name = "GenreName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string GenreName { get; set; }
-    }
-
-    [Route("/GameGenres/{GenreName}", "POST")]
-    [Api(("Updates a game genre"))]
-    public class UpdateGameGenre : BaseItemDto, IReturnVoid
-    {
-        [ApiMember(Name = "GenreName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string GenreName { get; set; }
-    }
-
-    [Route("/Genres/{GenreName}", "POST")]
-    [Api(("Updates a genre"))]
-    public class UpdateGenre : BaseItemDto, IReturnVoid
-    {
-        [ApiMember(Name = "GenreName", Description = "The name of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string GenreName { get; set; }
-    }
-
+    [Authenticated(Roles = "admin")]
     public class ItemUpdateService : BaseApiService
     {
         private readonly ILibraryManager _libraryManager;
-        private readonly IDtoService _dtoService;
-        private readonly ILiveTvManager _liveTv;
+        private readonly IProviderManager _providerManager;
+        private readonly ILocalizationManager _localizationManager;
+        private readonly IServerConfigurationManager _config;
 
-        public ItemUpdateService(ILibraryManager libraryManager, IDtoService dtoService, ILiveTvManager liveTv)
+        public ItemUpdateService(ILibraryManager libraryManager, IProviderManager providerManager, ILocalizationManager localizationManager, IServerConfigurationManager config)
         {
             _libraryManager = libraryManager;
-            _dtoService = dtoService;
-            _liveTv = liveTv;
+            _providerManager = providerManager;
+            _localizationManager = localizationManager;
+            _config = config;
+        }
+
+        public object Get(GetMetadataEditorInfo request)
+        {
+            var item = _libraryManager.GetItemById(request.ItemId);
+
+            var info = new MetadataEditorInfo
+            {
+                ParentalRatingOptions = _localizationManager.GetParentalRatings().ToList(),
+                ExternalIdInfos = _providerManager.GetExternalIdInfos(item).ToList(),
+                Countries = _localizationManager.GetCountries().ToList(),
+                Cultures = _localizationManager.GetCultures().ToList()
+            };
+
+            if (!item.IsVirtualItem && !(item is ICollectionFolder) && !(item is UserView) && !(item is AggregateFolder) && !(item is LiveTvChannel) && !(item is IItemByName) &&
+                item.SourceType == SourceType.Library)
+            {
+                var inheritedContentType = _libraryManager.GetInheritedContentType(item);
+                var configuredContentType = _libraryManager.GetConfiguredContentType(item);
+
+                if (string.IsNullOrWhiteSpace(inheritedContentType) || !string.IsNullOrWhiteSpace(configuredContentType))
+                {
+                    info.ContentTypeOptions = GetContentTypeOptions(true);
+                    info.ContentType = configuredContentType;
+
+                    if (string.IsNullOrWhiteSpace(inheritedContentType) || string.Equals(inheritedContentType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase))
+                    {
+                        info.ContentTypeOptions = info.ContentTypeOptions
+                            .Where(i => string.IsNullOrWhiteSpace(i.Value) || string.Equals(i.Value, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
+                }
+            }
+
+            return ToOptimizedResult(info);
+        }
+
+        public void Post(UpdateItemContentType request)
+        {
+            var item = _libraryManager.GetItemById(request.ItemId);
+            var path = item.ContainingFolderPath;
+
+            var types = _config.Configuration.ContentTypes
+                .Where(i => !string.IsNullOrWhiteSpace(i.Name))
+                .Where(i => !string.Equals(i.Name, path, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!string.IsNullOrWhiteSpace(request.ContentType))
+            {
+                types.Add(new NameValuePair
+                {
+                    Name = path,
+                    Value = request.ContentType
+                });
+            }
+
+            _config.Configuration.ContentTypes = types.ToArray();
+            _config.SaveConfiguration();
+        }
+
+        private List<NameValuePair> GetContentTypeOptions(bool isForItem)
+        {
+            var list = new List<NameValuePair>();
+
+            if (isForItem)
+            {
+                list.Add(new NameValuePair
+                {
+                    Name = "FolderTypeInherit",
+                    Value = ""
+                });
+            }
+
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypeMovies",
+                Value = "movies"
+            });
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypeMusic",
+                Value = "music"
+            });
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypeTvShows",
+                Value = "tvshows"
+            });
+
+            if (!isForItem)
+            {
+                list.Add(new NameValuePair
+                {
+                    Name = "FolderTypeBooks",
+                    Value = "books"
+                });
+                list.Add(new NameValuePair
+                {
+                    Name = "FolderTypeGames",
+                    Value = "games"
+                });
+            }
+
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypeHomeVideos",
+                Value = "homevideos"
+            });
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypeMusicVideos",
+                Value = "musicvideos"
+            });
+            list.Add(new NameValuePair
+            {
+                Name = "FolderTypePhotos",
+                Value = "photos"
+            });
+
+            if (!isForItem)
+            {
+                list.Add(new NameValuePair
+                {
+                    Name = "FolderTypeMixed",
+                    Value = ""
+                });
+            }
+
+            foreach (var val in list)
+            {
+                val.Name = _localizationManager.GetLocalizedString(val.Name);
+            }
+
+            return list;
         }
 
         public void Post(UpdateItem request)
@@ -92,151 +201,45 @@ namespace MediaBrowser.Api
 
         private async Task UpdateItem(UpdateItem request)
         {
-            var item = _dtoService.GetItemByDtoId(request.ItemId);
+            var item = _libraryManager.GetItemById(request.ItemId);
 
-            var newEnableInternetProviders = request.EnableInternetProviders ?? true;
-            var dontFetchMetaChanged = item.DontFetchMeta != !newEnableInternetProviders;
+            var newLockData = request.LockData ?? false;
+            var isLockedChanged = item.IsLocked != newLockData;
 
             UpdateItem(request, item);
 
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+            await item.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
 
-            if (dontFetchMetaChanged && item.IsFolder)
+            if (request.People != null)
+            {
+                await _libraryManager.UpdatePeople(item, request.People.Select(x => new PersonInfo { Name = x.Name, Role = x.Role, Type = x.Type }).ToList());
+            }
+
+            if (isLockedChanged && item.IsFolder)
             {
                 var folder = (Folder)item;
 
-                foreach (var child in folder.RecursiveChildren.ToList())
+                foreach (var child in folder.GetRecursiveChildren())
                 {
-                    child.DontFetchMeta = !newEnableInternetProviders;
-                    await _libraryManager.UpdateItem(child, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+                    child.IsLocked = newLockData;
+                    await child.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
                 }
             }
         }
 
-        public void Post(UpdatePerson request)
+        private DateTime NormalizeDateTime(DateTime val)
         {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdatePerson request)
-        {
-            var item = GetPerson(request.PersonName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        public void Post(UpdateArtist request)
-        {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdateArtist request)
-        {
-            var item = GetArtist(request.ArtistName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        public void Post(UpdateStudio request)
-        {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdateStudio request)
-        {
-            var item = GetStudio(request.StudioName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        public void Post(UpdateMusicGenre request)
-        {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdateMusicGenre request)
-        {
-            var item = GetMusicGenre(request.GenreName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        public void Post(UpdateGameGenre request)
-        {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdateGameGenre request)
-        {
-            var item = GetGameGenre(request.GenreName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        public void Post(UpdateGenre request)
-        {
-            var task = UpdateItem(request);
-
-            Task.WaitAll(task);
-        }
-
-        private async Task UpdateItem(UpdateGenre request)
-        {
-            var item = GetGenre(request.GenreName, _libraryManager);
-
-            UpdateItem(request, item);
-
-            await _libraryManager.UpdateItem(item, ItemUpdateType.MetadataEdit, CancellationToken.None).ConfigureAwait(false);
+            return DateTime.SpecifyKind(val, DateTimeKind.Utc);
         }
 
         private void UpdateItem(BaseItemDto request, BaseItem item)
         {
-            if (item.LocationType == LocationType.Offline)
-            {
-                throw new InvalidOperationException(string.Format("{0} is currently offline.", item.Name));
-            }
-
             item.Name = request.Name;
+            item.ForcedSortName = request.ForcedSortName;
 
-            // Only set the forced value if they changed it, or there's already one
-            if (!string.Equals(item.SortName, request.SortName) || !string.IsNullOrEmpty(item.ForcedSortName))
-            {
-                item.ForcedSortName = request.SortName;
-            }
+            item.OriginalTitle = string.IsNullOrWhiteSpace(request.OriginalTitle) ? null : request.OriginalTitle;
 
-            var hasBudget = item as IHasBudget;
-            if (hasBudget != null)
-            {
-                hasBudget.Budget = request.Budget;
-                hasBudget.Revenue = request.Revenue;
-            }
-
-            var hasCriticRating = item as IHasCriticRating;
-            if (hasCriticRating != null)
-            {
-                hasCriticRating.CriticRating = request.CriticRating;
-                hasCriticRating.CriticRatingSummary = request.CriticRatingSummary;
-            }
+            item.CriticRating = request.CriticRating;
 
             item.DisplayMediaType = request.DisplayMediaType;
             item.CommunityRating = request.CommunityRating;
@@ -257,70 +260,57 @@ namespace MediaBrowser.Api
                 episode.AirsBeforeSeasonNumber = request.AirsBeforeSeasonNumber;
                 episode.AbsoluteEpisodeNumber = request.AbsoluteEpisodeNumber;
             }
-            
-            var hasTags = item as IHasTags;
-            if (hasTags != null)
+
+            item.Tags = request.Tags;
+
+            if (request.Taglines != null)
             {
-                hasTags.Tags = request.Tags;
+                item.Tagline = request.Taglines.FirstOrDefault();
             }
 
-            var hasKeywords = item as IHasKeywords;
-            if (hasKeywords != null)
-            {
-                hasKeywords.Keywords = request.Keywords;
-            }
+            item.Keywords = request.Keywords;
 
             if (request.Studios != null)
             {
                 item.Studios = request.Studios.Select(x => x.Name).ToList();
             }
 
-            if (request.People != null)
-            {
-                item.People = request.People.Select(x => new PersonInfo { Name = x.Name, Role = x.Role, Type = x.Type }).ToList();
-            }
-
             if (request.DateCreated.HasValue)
             {
-                item.DateCreated = request.DateCreated.Value.ToUniversalTime();
+                item.DateCreated = NormalizeDateTime(request.DateCreated.Value);
             }
 
-            item.EndDate = request.EndDate.HasValue ? request.EndDate.Value.ToUniversalTime() : (DateTime?)null;
-            item.PremiereDate = request.PremiereDate.HasValue ? request.PremiereDate.Value.ToUniversalTime() : (DateTime?)null;
+            item.EndDate = request.EndDate.HasValue ? NormalizeDateTime(request.EndDate.Value) : (DateTime?)null;
+            item.PremiereDate = request.PremiereDate.HasValue ? NormalizeDateTime(request.PremiereDate.Value) : (DateTime?)null;
             item.ProductionYear = request.ProductionYear;
-            item.OfficialRating = request.OfficialRating;
+            item.OfficialRating = string.IsNullOrWhiteSpace(request.OfficialRating) ? null : request.OfficialRating;
             item.CustomRating = request.CustomRating;
 
-            SetProductionLocations(item, request);
-
-            var hasLang = item as IHasPreferredMetadataLanguage;
-
-            if (hasLang != null)
+            if (request.ProductionLocations != null)
             {
-                hasLang.PreferredMetadataCountryCode = request.PreferredMetadataCountryCode;
-                hasLang.PreferredMetadataLanguage = request.PreferredMetadataLanguage;
+                item.ProductionLocations = request.ProductionLocations.ToList();
             }
+
+            item.PreferredMetadataCountryCode = request.PreferredMetadataCountryCode;
+            item.PreferredMetadataLanguage = request.PreferredMetadataLanguage;
 
             var hasDisplayOrder = item as IHasDisplayOrder;
             if (hasDisplayOrder != null)
             {
                 hasDisplayOrder.DisplayOrder = request.DisplayOrder;
             }
-            
+
             var hasAspectRatio = item as IHasAspectRatio;
             if (hasAspectRatio != null)
             {
                 hasAspectRatio.AspectRatio = request.AspectRatio;
             }
-            
-            item.DontFetchMeta = !(request.EnableInternetProviders ?? true);
-            if (request.EnableInternetProviders ?? true)
+
+            item.IsLocked = request.LockData ?? false;
+
+            if (request.LockedFields != null)
             {
                 item.LockedFields = request.LockedFields;
-            }
-            else
-            {
-                item.LockedFields.Clear();
             }
 
             // Only allow this for series. Runtimes for media comes from ffprobe.
@@ -345,18 +335,6 @@ namespace MediaBrowser.Api
                 video.Video3DFormat = request.Video3DFormat;
             }
 
-            var hasMetascore = item as IHasMetascore;
-            if (hasMetascore != null)
-            {
-                hasMetascore.Metascore = request.Metascore;
-            }
-
-            var hasAwards = item as IHasAwards;
-            if (hasAwards != null)
-            {
-                hasAwards.AwardSummary = request.AwardSummary;
-            }
-
             var game = item as Game;
 
             if (game != null)
@@ -364,53 +342,60 @@ namespace MediaBrowser.Api
                 game.PlayersSupported = request.Players;
             }
 
-            var song = item as Audio;
+            if (request.AlbumArtists != null)
+            {
+                var hasAlbumArtists = item as IHasAlbumArtist;
+                if (hasAlbumArtists != null)
+                {
+                    hasAlbumArtists.AlbumArtists = request
+                        .AlbumArtists
+                        .Select(i => i.Name)
+                        .ToList();
+                }
+            }
 
+            if (request.ArtistItems != null)
+            {
+                var hasArtists = item as IHasArtist;
+                if (hasArtists != null)
+                {
+                    hasArtists.Artists = request
+                        .ArtistItems
+                        .Select(i => i.Name)
+                        .ToList();
+                }
+            }
+
+            var song = item as Audio;
             if (song != null)
             {
                 song.Album = request.Album;
-                song.AlbumArtist = request.AlbumArtist;
-                song.Artists = request.Artists.ToList();
             }
 
             var musicVideo = item as MusicVideo;
-
             if (musicVideo != null)
             {
-                musicVideo.Artist = request.Artists[0];
                 musicVideo.Album = request.Album;
             }
 
             var series = item as Series;
             if (series != null)
             {
-                series.Status = request.Status;
+                series.Status = GetSeriesStatus(request);
                 series.AirDays = request.AirDays;
                 series.AirTime = request.AirTime;
-
-                if (request.DisplaySpecialsWithSeasons.HasValue)
-                {
-                    series.DisplaySpecialsWithSeasons = request.DisplaySpecialsWithSeasons.Value;
-                }
             }
         }
 
-        private void SetProductionLocations(BaseItem item, BaseItemDto request)
+        private SeriesStatus? GetSeriesStatus(BaseItemDto item)
         {
-            var hasProductionLocations = item as IHasProductionLocations;
-
-            if (hasProductionLocations != null)
+            if (string.IsNullOrEmpty(item.Status))
             {
-                hasProductionLocations.ProductionLocations = request.ProductionLocations;
+                return null;
             }
 
-            var person = item as Person;
-            if (person != null)
-            {
-                person.PlaceOfBirth = request.ProductionLocations == null
-                    ? null
-                    : request.ProductionLocations.FirstOrDefault();
-            }
+            return (SeriesStatus)Enum.Parse(typeof(SeriesStatus), item.Status, true);
+
         }
     }
 }

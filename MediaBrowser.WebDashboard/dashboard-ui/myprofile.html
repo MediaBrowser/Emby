@@ -1,0 +1,102 @@
+﻿<div id="userImagePage" data-role="page" class="page libraryPage userPreferencesPage userPasswordPage noSecondaryNavPage" data-title="${HeaderProfile}" data-menubutton="false">
+
+    <div class="padded-left padded-right padded-bottom-page">
+        <br />
+        <div class="readOnlyContent" style="margin: 0 auto; padding: 0 1em;">
+            <div id="fldImage" style="display:inline-block;"></div>
+
+            <div style="vertical-align:top;margin: .5em 0 0 1em;display:inline-block;">
+                <h2 class="username" style="margin: 0;"></h2>
+                <br />
+                <button is="emby-button" type="button" class="raised hide" id="btnDeleteImage">
+                    <i class="md-icon">delete</i>
+                    <span>${ButtonDeleteImage}</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="connectMessage readOnlyContent hide" style="margin: 0 auto; padding: 0 1em; text-align:center;">
+            <p>${MessageProfileInfoSynced}</p>
+            <div style="margin-top: .75em;"><a is="emby-linkbutton" class="button-link" href="http://emby.media/connect" target="_blank">${ButtonLearnMoreAboutEmbyConnect}</a></div>
+        </div>
+
+        <form class="newImageForm userProfileSettingsForm hide" style="margin: 1em auto 0;">
+
+            <div is="emby-collapse" title="${HeaderUploadNewImage}">
+                <div class="collapseContent">
+                    <div id="fldNewImage">
+                        <p>${ImageUploadAspectRatioHelp}</p>
+                        <input type="file" accept="image/*" id="uploadUserImage" name="uploadUserImage" />
+
+                        <div id="userImageDropZone" class="imageDropZone">
+                            <h3>${LabelDropImageHere}</h3>
+                            <output id="userImageOutput"></output>
+                        </div>
+                    </div>
+                    <div id="fldNewImagePreview"></div>
+                    <div id="fldUpload" class="hide">
+                        <button type="submit" data-icon="check" data-theme="a">${ButtonUpload}</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <br />
+
+        <form class="updatePasswordForm passwordSection userProfileSettingsForm hide" style="margin: 0 auto 2em;">
+
+            <div class="detailSection">
+                <h1>
+                    ${HeaderPassword}
+                </h1>
+                <br />
+                <div id="fldCurrentPassword" class="inputContainer hide">
+                    <input is="emby-input" type="password" id="txtCurrentPassword" label="${LabelCurrentPassword}" autocomplete="off" />
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="password" id="txtNewPassword" label="${LabelNewPassword}" autocomplete="off" />
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="password" id="txtNewPasswordConfirm" label="${LabelNewPasswordConfirm}" autocomplete="off" />
+                </div>
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>${ButtonSave}</span></button>
+                    <button is="emby-button" type="button" id="btnResetPassword" class="raised cancel block hide">
+                        <i class="md-icon">lock</i>
+                        <span>${ButtonResetPassword}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <form class="localAccessForm localAccessSection userProfileSettingsForm hide" style="margin: 0 auto;">
+            <div class="detailSection">
+                <h1>
+                    ${HeaderEasyPinCode}
+                </h1>
+                <br />
+                <div>${EasyPasswordHelp}</div>
+                <br />
+                <div class="inputContainer">
+                    <input is="emby-input" type="number" id="txtEasyPassword" label="${LabelEasyPinCode}" autocomplete="off" pattern="[0-9]*" step="1" maxlength="5" />
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" class="chkEnableLocalEasyPassword" />
+                        <span>${LabelInNetworkSignInWithEasyPassword}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${LabelInNetworkSignInWithEasyPasswordHelp}</div>
+                </div>
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>${ButtonSave}</span>
+                    </button>
+                    <button is="emby-button" type="button" id="btnResetEasyPassword" class="raised cancel block hide">
+                        <i class="md-icon">lock</i>
+                        <span>${ButtonResetEasyPassword}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

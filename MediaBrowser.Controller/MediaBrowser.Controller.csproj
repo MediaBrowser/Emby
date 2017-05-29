@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,10 +11,10 @@
     <AssemblyName>MediaBrowser.Controller</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,144 +24,265 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
+    <None Include="project.json" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="Channels\ChannelItemInfo.cs" />
+    <Compile Include="Channels\ChannelItemResult.cs" />
+    <Compile Include="Channels\ChannelItemType.cs" />
+    <Compile Include="Channels\ChannelMediaInfo.cs" />
+    <Compile Include="Channels\ChannelParentalRating.cs" />
+    <Compile Include="Channels\ChannelSearchInfo.cs" />
+    <Compile Include="Channels\IChannel.cs" />
+    <Compile Include="Channels\IChannelManager.cs" />
+    <Compile Include="Channels\Channel.cs" />
+    <Compile Include="Channels\IHasCacheKey.cs" />
+    <Compile Include="Channels\IIndexableChannel.cs" />
+    <Compile Include="Channels\InternalAllChannelMediaQuery.cs" />
+    <Compile Include="Channels\InternalChannelFeatures.cs" />
+    <Compile Include="Channels\InternalChannelItemQuery.cs" />
+    <Compile Include="Channels\IRequiresMediaInfoCallback.cs" />
+    <Compile Include="Channels\ISearchableChannel.cs" />
+    <Compile Include="Chapters\IChapterManager.cs" />
+    <Compile Include="Collections\CollectionCreationOptions.cs" />
+    <Compile Include="Collections\CollectionEvents.cs" />
+    <Compile Include="Collections\ICollectionManager.cs" />
+    <Compile Include="Collections\ManualCollectionsFolder.cs" />
+    <Compile Include="Connect\ConnectSupporterSummary.cs" />
+    <Compile Include="Connect\IConnectManager.cs" />
+    <Compile Include="Connect\UserLinkResult.cs" />
+    <Compile Include="Devices\CameraImageUploadInfo.cs" />
+    <Compile Include="Devices\IDeviceManager.cs" />
+    <Compile Include="Devices\IDeviceRepository.cs" />
+    <Compile Include="Dlna\ControlRequest.cs" />
+    <Compile Include="Dlna\ControlResponse.cs" />
+    <Compile Include="Dlna\EventSubscriptionResponse.cs" />
+    <Compile Include="Dlna\IConnectionManager.cs" />
+    <Compile Include="Dlna\IContentDirectory.cs" />
+    <Compile Include="Dlna\IDlnaManager.cs" />
+    <Compile Include="Dlna\IEventManager.cs" />
+    <Compile Include="Dlna\IMediaReceiverRegistrar.cs" />
+    <Compile Include="Dlna\IUpnpService.cs" />
+    <Compile Include="Drawing\IImageEncoder.cs" />
     <Compile Include="Drawing\IImageProcessor.cs" />
-    <Compile Include="Drawing\ImageFormat.cs" />
+    <Compile Include="Drawing\ImageCollageOptions.cs" />
+    <Compile Include="Drawing\ImageHelper.cs" />
     <Compile Include="Drawing\ImageProcessingOptions.cs" />
+    <Compile Include="Drawing\ImageProcessorExtensions.cs" />
+    <Compile Include="Drawing\ImageStream.cs" />
+    <Compile Include="Dto\DtoOptions.cs" />
     <Compile Include="Dto\IDtoService.cs" />
-    <Compile Include="Entities\AdultVideo.cs" />
+    <Compile Include="Entities\AudioBook.cs" />
+    <Compile Include="Entities\Audio\AudioPodcast.cs" />
     <Compile Include="Entities\Audio\IHasAlbumArtist.cs" />
     <Compile Include="Entities\Audio\IHasMusicGenres.cs" />
     <Compile Include="Entities\Book.cs" />
     <Compile Include="Configuration\IServerConfigurationManager.cs" />
     <Compile Include="Entities\Audio\MusicGenre.cs" />
+    <Compile Include="Entities\DayOfWeekHelper.cs" />
     <Compile Include="Entities\Extensions.cs" />
     <Compile Include="Entities\Game.cs" />
     <Compile Include="Entities\GameGenre.cs" />
     <Compile Include="Entities\GameSystem.cs" />
-    <Compile Include="Entities\IByReferenceItem.cs" />
     <Compile Include="Entities\IHasAspectRatio.cs" />
-    <Compile Include="Entities\IHasBudget.cs" />
-    <Compile Include="Entities\IHasCriticRating.cs" />
     <Compile Include="Entities\IHasDisplayOrder.cs" />
+    <Compile Include="Entities\IHasId.cs" />
     <Compile Include="Entities\IHasImages.cs" />
-    <Compile Include="Entities\IHasKeywords.cs" />
-    <Compile Include="Entities\IHasMediaStreams.cs" />
-    <Compile Include="Entities\IHasMetascore.cs" />
-    <Compile Include="Entities\IHasPreferredMetadataLanguage.cs" />
-    <Compile Include="Entities\IHasProductionLocations.cs" />
+    <Compile Include="Entities\KeywordExtensions.cs" />
+    <Compile Include="Entities\IHasMediaSources.cs" />
+    <Compile Include="Entities\IHasProgramAttributes.cs" />
     <Compile Include="Entities\IHasScreenshots.cs" />
     <Compile Include="Entities\IHasSeries.cs" />
-    <Compile Include="Entities\IHasSoundtracks.cs" />
-    <Compile Include="Entities\IHasTaglines.cs" />
-    <Compile Include="Entities\IHasTags.cs" />
-    <Compile Include="Entities\IHasThemeMedia.cs" />
+    <Compile Include="Entities\IHasSpecialFeatures.cs" />
+    <Compile Include="Entities\IHasStartDate.cs" />
     <Compile Include="Entities\IHasTrailers.cs" />
     <Compile Include="Entities\IHasUserData.cs" />
+    <Compile Include="Entities\IHiddenFromDisplay.cs" />
     <Compile Include="Entities\IItemByName.cs" />
-    <Compile Include="Entities\ILibraryItem.cs" />
-    <Compile Include="Entities\ImageSourceInfo.cs" />
     <Compile Include="Entities\IMetadataContainer.cs" />
+    <Compile Include="Entities\InternalItemsQuery.cs" />
+    <Compile Include="Entities\InternalPeopleQuery.cs" />
+    <Compile Include="Entities\ISupportsBoxSetGrouping.cs" />
+    <Compile Include="Entities\ISupportsPlaceHolders.cs" />
     <Compile Include="Entities\ItemImageInfo.cs" />
     <Compile Include="Entities\LinkedChild.cs" />
     <Compile Include="Entities\MusicVideo.cs" />
-    <Compile Include="Entities\IHasAwards.cs" />
+    <Compile Include="Entities\PeopleHelper.cs" />
+    <Compile Include="Entities\Photo.cs" />
+    <Compile Include="Entities\PhotoAlbum.cs" />
+    <Compile Include="Entities\Share.cs" />
+    <Compile Include="Entities\SourceType.cs" />
+    <Compile Include="Entities\TagExtensions.cs" />
+    <Compile Include="Entities\UserView.cs" />
+    <Compile Include="Entities\UserViewBuilder.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FileOrganization\IFileOrganizationService.cs" />
+    <Compile Include="Library\DeleteOptions.cs" />
     <Compile Include="Library\ILibraryPostScanTask.cs" />
+    <Compile Include="Library\IMediaSourceManager.cs" />
+    <Compile Include="Library\IMediaSourceProvider.cs" />
+    <Compile Include="Library\IMetadataFileSaver.cs" />
     <Compile Include="Library\IMetadataSaver.cs" />
+    <Compile Include="Library\IMusicManager.cs" />
+    <Compile Include="Library\IntroInfo.cs" />
     <Compile Include="Library\ItemUpdateType.cs" />
     <Compile Include="Library\IUserDataManager.cs" />
+    <Compile Include="Library\IUserViewManager.cs" />
+    <Compile Include="Library\LibraryManagerExtensions.cs" />
+    <Compile Include="Library\MetadataConfigurationStore.cs" />
+    <Compile Include="Library\NameExtensions.cs" />
+    <Compile Include="Library\PlaybackStopEventArgs.cs" />
     <Compile Include="Library\UserDataSaveEventArgs.cs" />
-    <Compile Include="LiveTv\EventArgs.cs" />
+    <Compile Include="LiveTv\IListingsProvider.cs" />
+    <Compile Include="LiveTv\ITunerHost.cs" />
+    <Compile Include="LiveTv\LiveStream.cs" />
+    <Compile Include="LiveTv\RecordingGroup.cs" />
+    <Compile Include="LiveTv\RecordingStatusChangedEventArgs.cs" />
     <Compile Include="LiveTv\ILiveTvRecording.cs" />
-    <Compile Include="LiveTv\LiveStreamInfo.cs" />
     <Compile Include="LiveTv\LiveTvAudioRecording.cs" />
     <Compile Include="LiveTv\LiveTvChannel.cs" />
     <Compile Include="LiveTv\ChannelInfo.cs" />
     <Compile Include="LiveTv\ILiveTvManager.cs" />
     <Compile Include="LiveTv\ILiveTvService.cs" />
+    <Compile Include="LiveTv\LiveTvConflictException.cs" />
     <Compile Include="LiveTv\LiveTvException.cs" />
     <Compile Include="LiveTv\LiveTvServiceStatusInfo.cs" />
-    <Compile Include="LiveTv\StreamResponseInfo.cs" />
+    <Compile Include="LiveTv\LiveTvTunerInfo.cs" />
     <Compile Include="LiveTv\LiveTvProgram.cs" />
     <Compile Include="LiveTv\LiveTvVideoRecording.cs" />
     <Compile Include="LiveTv\ProgramInfo.cs" />
     <Compile Include="LiveTv\RecordingInfo.cs" />
     <Compile Include="LiveTv\SeriesTimerInfo.cs" />
+    <Compile Include="LiveTv\TimerEventInfo.cs" />
     <Compile Include="LiveTv\TimerInfo.cs" />
-    <Compile Include="Localization\ILocalizationManager.cs" />
-    <Compile Include="MediaInfo\IMediaEncoder.cs" />
-    <Compile Include="MediaInfo\InternalMediaInfoResult.cs" />
+    <Compile Include="LiveTv\TunerChannelMapping.cs" />
+    <Compile Include="MediaEncoding\ChapterImageRefreshOptions.cs" />
+    <Compile Include="MediaEncoding\EncodingHelper.cs" />
+    <Compile Include="MediaEncoding\EncodingJobInfo.cs" />
+    <Compile Include="MediaEncoding\EncodingJobOptions.cs" />
+    <Compile Include="MediaEncoding\IEncodingManager.cs" />
+    <Compile Include="MediaEncoding\ImageEncodingOptions.cs" />
+    <Compile Include="MediaEncoding\IMediaEncoder.cs" />
+    <Compile Include="MediaEncoding\ISubtitleEncoder.cs" />
+    <Compile Include="MediaEncoding\JobLogger.cs" />
+    <Compile Include="MediaEncoding\MediaInfoRequest.cs" />
+    <Compile Include="MediaEncoding\MediaStreamSelector.cs" />
+    <Compile Include="Net\AuthenticatedAttribute.cs" />
+    <Compile Include="Net\AuthorizationInfo.cs" />
+    <Compile Include="Net\IAuthorizationContext.cs" />
+    <Compile Include="Net\IAuthService.cs" />
     <Compile Include="Net\IHasResultFactory.cs" />
     <Compile Include="Net\IHttpResultFactory.cs" />
     <Compile Include="Net\IHttpServer.cs" />
-    <Compile Include="Net\IRestfulService.cs" />
-    <Compile Include="News\INewsService.cs" />
+    <Compile Include="Net\IServerManager.cs" />
+    <Compile Include="Net\IServiceRequest.cs" />
+    <Compile Include="Net\ISessionContext.cs" />
+    <Compile Include="Net\IWebSocket.cs" />
+    <Compile Include="Net\IWebSocketConnection.cs" />
+    <Compile Include="Net\IWebSocketListener.cs" />
+    <Compile Include="Net\LoggedAttribute.cs" />
+    <Compile Include="Net\SecurityException.cs" />
+    <Compile Include="Net\ServiceRequest.cs" />
+    <Compile Include="Net\StaticResultOptions.cs" />
+    <Compile Include="Net\WebSocketConnectEventArgs.cs" />
+    <Compile Include="Net\WebSocketMessageInfo.cs" />
+    <Compile Include="Notifications\INotificationManager.cs" />
+    <Compile Include="Notifications\INotificationService.cs" />
     <Compile Include="Notifications\INotificationsRepository.cs" />
+    <Compile Include="Notifications\INotificationTypeFactory.cs" />
     <Compile Include="Notifications\NotificationUpdateEventArgs.cs" />
+    <Compile Include="Notifications\UserNotification.cs" />
     <Compile Include="Persistence\IFileOrganizationRepository.cs" />
     <Compile Include="Persistence\MediaStreamQuery.cs" />
+    <Compile Include="Playlists\IPlaylistManager.cs" />
+    <Compile Include="Playlists\Playlist.cs" />
+    <Compile Include="Plugins\ILocalizablePlugin.cs" />
+    <Compile Include="Providers\AlbumInfo.cs" />
+    <Compile Include="Providers\ArtistInfo.cs" />
+    <Compile Include="Providers\BookInfo.cs" />
+    <Compile Include="Providers\BoxSetInfo.cs" />
     <Compile Include="Providers\DirectoryService.cs" />
+    <Compile Include="Providers\DynamicImageInfo.cs" />
+    <Compile Include="Providers\DynamicImageResponse.cs" />
+    <Compile Include="Providers\EpisodeInfo.cs" />
+    <Compile Include="Providers\ExtraInfo.cs" />
+    <Compile Include="Providers\ExtraSource.cs" />
+    <Compile Include="Providers\GameInfo.cs" />
+    <Compile Include="Providers\GameSystemInfo.cs" />
     <Compile Include="Providers\ICustomMetadataProvider.cs" />
+    <Compile Include="Providers\IDirectoryService.cs" />
+    <Compile Include="Providers\IDynamicImageProvider.cs" />
+    <Compile Include="Providers\IExternalId.cs" />
+    <Compile Include="Providers\IExtrasProvider.cs" />
+    <Compile Include="Providers\IForcedProvider.cs" />
     <Compile Include="Providers\IHasChangeMonitor.cs" />
     <Compile Include="Entities\IHasMetadata.cs" />
+    <Compile Include="Providers\IHasItemChangeMonitor.cs" />
+    <Compile Include="Providers\IHasLookupInfo.cs" />
+    <Compile Include="Providers\IHasOrder.cs" />
     <Compile Include="Providers\IImageProvider.cs" />
+    <Compile Include="Providers\ILocalImageFileProvider.cs" />
     <Compile Include="Providers\ILocalMetadataProvider.cs" />
-    <Compile Include="Providers\IProviderRepository.cs" />
+    <Compile Include="Providers\ImageRefreshMode.cs" />
+    <Compile Include="Providers\ImageRefreshOptions.cs" />
+    <Compile Include="Providers\IPreRefreshProvider.cs" />
     <Compile Include="Providers\IRemoteImageProvider.cs" />
     <Compile Include="Providers\ILocalImageProvider.cs" />
     <Compile Include="Providers\IMetadataProvider.cs" />
     <Compile Include="Providers\IMetadataService.cs" />
     <Compile Include="Providers\IRemoteMetadataProvider.cs" />
+    <Compile Include="Providers\IRemoteSearchProvider.cs" />
+    <Compile Include="Providers\ItemInfo.cs" />
+    <Compile Include="Providers\LiveTvProgramLookupInfo.cs" />
+    <Compile Include="Providers\LocalImageInfo.cs" />
+    <Compile Include="Providers\MetadataRefreshMode.cs" />
+    <Compile Include="Providers\MetadataResult.cs" />
+    <Compile Include="Providers\MovieInfo.cs" />
+    <Compile Include="Providers\MusicVideoInfo.cs" />
+    <Compile Include="Providers\PersonLookupInfo.cs" />
+    <Compile Include="Providers\RemoteSearchQuery.cs" />
+    <Compile Include="Providers\SeasonInfo.cs" />
+    <Compile Include="Providers\SeriesInfo.cs" />
+    <Compile Include="Providers\SeriesOrderTypes.cs" />
+    <Compile Include="Providers\SongInfo.cs" />
+    <Compile Include="Providers\TrailerInfo.cs" />
+    <Compile Include="Providers\VideoContentType.cs" />
+    <Compile Include="Security\AuthenticationInfo.cs" />
+    <Compile Include="Security\AuthenticationInfoQuery.cs" />
+    <Compile Include="Security\IAuthenticationRepository.cs" />
+    <Compile Include="Security\IEncryptionManager.cs" />
+    <Compile Include="Session\AuthenticationRequest.cs" />
+    <Compile Include="Sorting\SortHelper.cs" />
+    <Compile Include="Subtitles\ISubtitleManager.cs" />
+    <Compile Include="Subtitles\ISubtitleProvider.cs" />
     <Compile Include="Providers\ItemLookupInfo.cs" />
     <Compile Include="Providers\MetadataRefreshOptions.cs" />
-    <Compile Include="Providers\NameParser.cs" />
-    <Compile Include="Providers\MetadataStatus.cs" />
     <Compile Include="Session\ISessionManager.cs" />
-    <Compile Include="Drawing\ImageExtensions.cs" />
     <Compile Include="Entities\AggregateFolder.cs" />
     <Compile Include="Entities\Audio\Audio.cs" />
     <Compile Include="Entities\Audio\MusicAlbum.cs" />
@@ -194,18 +315,13 @@
     <Compile Include="IServerApplicationPaths.cs" />
     <Compile Include="Library\SearchHintInfo.cs" />
     <Compile Include="Providers\IProviderManager.cs" />
-    <Compile Include="MediaInfo\MediaEncoderHelpers.cs" />
+    <Compile Include="MediaEncoding\MediaEncoderHelpers.cs" />
     <Compile Include="Providers\MetadataProviderPriority.cs" />
     <Compile Include="Resolvers\BaseItemResolver.cs" />
-    <Compile Include="Resolvers\BaseVideoResolver.cs" />
     <Compile Include="Resolvers\IItemResolver.cs" />
     <Compile Include="Library\ILibraryManager.cs" />
     <Compile Include="Library\IUserManager.cs" />
     <Compile Include="Library\Profiler.cs" />
-    <Compile Include="Localization\BaseStrings.cs" />
-    <Compile Include="Localization\LocalizedStringData.cs" />
-    <Compile Include="Localization\LocalizedStrings.cs" />
-    <Compile Include="MediaInfo\FFMpegManager.cs" />
     <Compile Include="Persistence\IDisplayPreferencesRepository.cs" />
     <Compile Include="Persistence\IItemRepository.cs" />
     <Compile Include="Persistence\IRepository.cs" />
@@ -215,25 +331,33 @@
     <Compile Include="Plugins\IPluginConfigurationPage.cs" />
     <Compile Include="Plugins\IServerEntryPoint.cs" />
     <Compile Include="Providers\IImageEnhancer.cs" />
-    <Compile Include="Providers\BaseProviderInfo.cs" />
+    <Compile Include="Providers\ProviderRefreshStatus.cs" />
     <Compile Include="Resolvers\IResolverIgnoreRule.cs" />
-    <Compile Include="Resolvers\EntityResolutionHelper.cs" />
     <Compile Include="Resolvers\ResolverPriority.cs" />
     <Compile Include="Library\TVUtils.cs" />
     <Compile Include="Library\ItemResolveArgs.cs" />
     <Compile Include="IO\FileData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\BaseMetadataProvider.cs" />
     <Compile Include="Session\ISessionController.cs" />
     <Compile Include="Session\ISessionControllerFactory.cs" />
-    <Compile Include="Session\PlaybackInfo.cs" />
-    <Compile Include="Session\PlaybackProgressInfo.cs" />
-    <Compile Include="Session\PlaybackStopInfo.cs" />
+    <Compile Include="Session\SessionEventArgs.cs" />
     <Compile Include="Session\SessionInfo.cs" />
     <Compile Include="Sorting\IBaseItemComparer.cs" />
     <Compile Include="Sorting\IUserBaseItemComparer.cs" />
-    <Compile Include="Providers\BaseItemXmlParser.cs" />
     <Compile Include="Sorting\SortExtensions.cs" />
+    <Compile Include="Subtitles\SubtitleDownloadEventArgs.cs" />
+    <Compile Include="Subtitles\SubtitleResponse.cs" />
+    <Compile Include="Subtitles\SubtitleSearchRequest.cs" />
+    <Compile Include="Sync\IHasDynamicAccess.cs" />
+    <Compile Include="Sync\IRemoteSyncProvider.cs" />
+    <Compile Include="Sync\IServerSyncProvider.cs" />
+    <Compile Include="Sync\ISyncDataProvider.cs" />
+    <Compile Include="Sync\ISyncManager.cs" />
+    <Compile Include="Sync\ISyncProvider.cs" />
+    <Compile Include="Sync\ISyncRepository.cs" />
+    <Compile Include="Sync\SyncedFileInfo.cs" />
+    <Compile Include="Sync\SyncedItemProgress.cs" />
+    <Compile Include="TV\ITVSeriesManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
@@ -245,20 +369,17 @@
       <Name>MediaBrowser.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(ConfigurationName)' != 'Release Mono' ">if '$(ConfigurationName)' == 'Release' (
-xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\dlls\" /y /d /r /i
-)</PostBuildEvent>
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" Condition=" '$(ConfigurationName)' != 'Release Mono' " />
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

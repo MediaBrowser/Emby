@@ -1,68 +1,57 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Media Library</title>
-</head>
-<body>
-    <div id="librarySettingsPage" data-role="page" class="page type-interior mediaLibraryPage">
+﻿<div id="librarySettingsPage" data-role="page" class="page type-interior librarySectionPage withTabs">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="library.html" data-role="button">Media Folders</a>
-                    <a href="librarypathmapping.html" data-role="button">Path Substitution</a>
-                    <a href="#" data-role="button" class="ui-btn-active">Advanced</a>
+    <div>
+        <div class="content-primary">
+            <form class="librarySettingsForm">
+
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectDateAdded" data-mini="true" label="${LabelDateAddedBehavior}">
+                        <option value="0">${OptionDateAddedImportTime}</option>
+                        <option value="1">${OptionDateAddedFileTime}</option>
+                    </select>
+                    <div class="fieldDescription">${LabelDateAddedBehaviorHelp}</div>
+                </div>
+                <div class="inputContainer">
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex-grow:1;">
+                            <input is="emby-input" id="txtMetadataPath" label="${LabelMetadataPath}" autocomplete="off" />
+                        </div>
+                        <button type="button" is="paper-icon-button-light" id="btnSelectMetadataPath" title="${ButtonSelectDirectory}"><i class="md-icon">search</i></button>
+                    </div>
+                    <div class="fieldDescription">${LabelMetadataPathHelp}</div>
+                    <input type="hidden" id="txtMetadataNetworkPath" />
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" class="chkAirDays" id="chkSaveMetadataHidden" data-filter="Sunday" />
+                        <span>${OptionSaveMetadataAsHidden}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${OptionSaveMetadataAsHiddenHelp}</div>
                 </div>
 
-                <form id="librarySettingsForm">
+                <div is="emby-collapse" title="${HeaderTV}">
+                    <div class="collapseContent">
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="txtSeasonZeroName" label="${LabelSeasonZeroDisplayName}" required />
+                        </div>
+                    </div>
+                </div>
 
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <input type="checkbox" id="chkEnableRealtimeMonitor" name="chkEnableRealtimeMonitor" />
-                            <label for="chkEnableRealtimeMonitor">Enable real time monitoring</label>
-                            <div class="fieldDescription">
-                                Changes will be processed immediately, on supported file systems.
-                            </div>
-                        </li>
-                        <li>
-                            <input type="checkbox" id="chkEnableCustomIBNPath" name="chkEnableCustomIBNPath" />
-                            <label for="chkEnableCustomIBNPath">Use custom images by name path</label>
-                            <div class="fieldDescription">
-                                This folder contains actor, artist, genre and studio images.
-                            </div>
-                        </li>
-                        <li id="fieldEnterIBNPath" style="display: none;">
-                            <label for="txtItemsByNamePath">Images by name path: </label>
-                            <div style="display: inline-block; width: 92%;">
-                                <input type="text" id="txtItemsByNamePath" name="txtItemsByNamePath" />
-                            </div>
-                            <button id="btnSelectIBNPath" type="button" data-icon="search" data-iconpos="notext" data-inline="true">Select Directory</button>
-                            <div class="fieldDescription">
-                                Supply a custom path for images by name. MB server must have write access to this folder.
-                            </div>
-                        </li>
-                        <li>
-                            <label for="txtSeasonZeroName">Season 0 display name: </label>
-                            <input type="text" id="txtSeasonZeroName" name="txtSeasonZeroName" required="required" />
-                        </li>
-                        <li>
-                            <button type="submit" data-theme="b" data-icon="check">
-                                Save
-                            </button>
-                            <button type="button" onclick="Dashboard.navigate('dashboard.html');" data-icon="delete">
-                                Cancel
-                            </button>
-                        </li>
-                    </ul>
+                <div is="emby-collapse" title="Fanart.tv">
+                    <div class="collapseContent">
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="txtFanartApiKey" label="${LabelFanartApiKey}" />
+                            <div class="fieldDescription">${LabelFanartApiKeyHelp}</div>
+                            <div class="fieldDescription"><a is="emby-linkbutton" class="button-link" href="https://fanart.tv/2015/01/personal-api-keys" target="_blank">${ButtonLearnMore}</a></div>
+                        </div>
+                    </div>
+                </div>
 
-                </form>
+                <br />
+                <button is="emby-button" type="submit" class="raised button-submit block"><span>${ButtonSave}</span></button>
 
-            </div>
+            </form>
+
         </div>
-
-        <script type="text/javascript">
-            $('#librarySettingsForm').on('submit', LibrarySettingsPage.onSubmit);
-        </script>
     </div>
-</body>
-</html>
+</div>

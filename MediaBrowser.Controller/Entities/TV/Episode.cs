@@ -1,19 +1,31 @@
-﻿using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Providers;
+﻿using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.Entities.TV
 {
     /// <summary>
     /// Class Episode
     /// </summary>
-    public class Episode : Video, IHasLookupInfo<EpisodeInfo>, IHasSeries
+    public class Episode : Video, IHasTrailers, IHasLookupInfo<EpisodeInfo>, IHasSeries
     {
+        public Episode()
+        {
+            RemoteTrailers = new List<MediaUrl>();
+            LocalTrailerIds = new List<Guid>();
+            RemoteTrailerIds = new List<Guid>();
+        }
+
+        public List<Guid> LocalTrailerIds { get; set; }
+        public List<Guid> RemoteTrailerIds { get; set; }
+        public List<MediaUrl> RemoteTrailers { get; set; }
+
         /// <summary>
         /// Gets the season in which it aired.
         /// </summary>
@@ -45,12 +57,23 @@ namespace MediaBrowser.Controller.Entities.TV
         /// <value>The index number.</value>
         public int? IndexNumberEnd { get; set; }
 
-        /// <summary>
-        /// We want to group into series not show individually in an index
-        /// </summary>
-        /// <value><c>true</c> if [group in index]; otherwise, <c>false</c>.</value>
+        public string FindSeriesSortName()
+        {
+            var series = Series;
+            return series == null ? SeriesName : series.SortName;
+        }
+
         [IgnoreDataMember]
-        public override bool GroupInIndex
+        protected override bool SupportsOwnedItems
+        {
+            get
+            {
+                return IsStacked || MediaSourceCount > 1;
+            }
+        }
+
+        [IgnoreDataMember]
+        public override bool SupportsInheritedParentImages
         {
             get { return true; }
         }
@@ -60,68 +83,62 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             get
             {
-                return AirsAfterSeasonNumber ?? AirsBeforeSeasonNumber ?? PhysicalSeasonNumber;
+                return AirsAfterSeasonNumber ?? AirsBeforeSeasonNumber ?? ParentIndexNumber;
             }
         }
 
         [IgnoreDataMember]
-        public int? PhysicalSeasonNumber
+        public override Folder LatestItemsIndexContainer
         {
             get
             {
-                var value = ParentIndexNumber;
-
-                if (value.HasValue)
-                {
-                    return value;
-                }
-
-                var season = Season;
-
-                return season != null ? season.IndexNumber : null;
+                return Series;
             }
         }
 
-        /// <summary>
-        /// We roll up into series
-        /// </summary>
-        /// <value>The index container.</value>
         [IgnoreDataMember]
-        public override Folder IndexContainer
+        public override Guid? DisplayParentId
         {
             get
             {
-                return FindParent<Season>();
+                return SeasonId;
             }
         }
 
-        /// <summary>
-        /// Gets the user data key.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string GetUserDataKey()
+        [IgnoreDataMember]
+        protected override bool EnableDefaultVideoUserDataKeys
         {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override double? GetDefaultPrimaryImageAspectRatio()
+        {
+            double value = 16;
+            value /= 9;
+
+            return value;
+        }
+
+        public override List<string> GetUserDataKeys()
+        {
+            var list = base.GetUserDataKeys();
+
             var series = Series;
-
             if (series != null && ParentIndexNumber.HasValue && IndexNumber.HasValue)
             {
-                return series.GetUserDataKey() + ParentIndexNumber.Value.ToString("000") + IndexNumber.Value.ToString("000");
+                var seriesUserDataKeys = series.GetUserDataKeys();
+                var take = seriesUserDataKeys.Count;
+                if (seriesUserDataKeys.Count > 1)
+                {
+                    take--;
+                }
+                list.InsertRange(0, seriesUserDataKeys.Take(take).Select(i => i + ParentIndexNumber.Value.ToString("000") + IndexNumber.Value.ToString("000")));
             }
 
-            return base.GetUserDataKey();
-        }
-
-        /// <summary>
-        /// Our rating comes from our series
-        /// </summary>
-        [IgnoreDataMember]
-        public override string OfficialRatingForComparison
-        {
-            get
-            {
-                var series = Series;
-                return series != null ? series.OfficialRatingForComparison : base.OfficialRatingForComparison;
-            }
+            return list;
         }
 
         /// <summary>
@@ -131,23 +148,89 @@ namespace MediaBrowser.Controller.Entities.TV
         [IgnoreDataMember]
         public Series Series
         {
-            get { return FindParent<Series>(); }
+            get
+            {
+                var seriesId = SeriesId ?? FindSeriesId();
+                return seriesId.HasValue ? (LibraryManager.GetItemById(seriesId.Value) as Series) : null;
+            }
         }
 
         [IgnoreDataMember]
         public Season Season
         {
-            get { return FindParent<Season>(); }
+            get
+            {
+                var seasonId = SeasonId ?? FindSeasonId();
+                return seasonId.HasValue ? (LibraryManager.GetItemById(seasonId.Value) as Season) : null;
+            }
         }
 
         [IgnoreDataMember]
-        public string SeriesName
+        public bool IsInSeasonFolder
         {
             get
             {
-                var series = Series;
-                return series == null ? null : series.Name;
+                return FindParent<Season>() != null;
             }
+        }
+
+        [IgnoreDataMember]
+        public string SeriesPresentationUniqueKey { get; set; }
+
+        [IgnoreDataMember]
+        public string SeriesName { get; set; }
+
+        [IgnoreDataMember]
+        public string SeasonName { get; set; }
+
+        public string FindSeriesPresentationUniqueKey()
+        {
+            var series = Series;
+            return series == null ? null : series.PresentationUniqueKey;
+        }
+
+        public string FindSeasonName()
+        {
+            var season = Season;
+
+            if (season == null)
+            {
+                if (ParentIndexNumber.HasValue)
+                {
+                    return "Season " + ParentIndexNumber.Value.ToString(CultureInfo.InvariantCulture);
+                }
+                return "Season Unknown";
+            }
+
+            return season.Name;
+        }
+
+        public string FindSeriesName()
+        {
+            var series = Series;
+            return series == null ? SeriesName : series.Name;
+        }
+
+        public Guid? FindSeasonId()
+        {
+            var season = FindParent<Season>();
+
+            // Episodes directly in series folder
+            if (season == null)
+            {
+                var series = Series;
+
+                if (series != null && ParentIndexNumber.HasValue)
+                {
+                    var findNumber = ParentIndexNumber.Value;
+
+                    season = series.Children
+                        .OfType<Season>()
+                        .FirstOrDefault(i => i.IndexNumber.HasValue && i.IndexNumber.Value == findNumber);
+                }
+            }
+
+            return season == null ? (Guid?)null : season.Id;
         }
 
         /// <summary>
@@ -156,7 +239,7 @@ namespace MediaBrowser.Controller.Entities.TV
         /// <returns>System.String.</returns>
         protected override string CreateSortName()
         {
-            return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("000-") : "")
+            return (ParentIndexNumber != null ? ParentIndexNumber.Value.ToString("000 - ") : "")
                     + (IndexNumber != null ? IndexNumber.Value.ToString("0000 - ") : "") + Name;
         }
 
@@ -181,18 +264,26 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         [IgnoreDataMember]
-        public bool IsMissingEpisode
+        public override bool SupportsRemoteImageDownloading
         {
             get
             {
-                return LocationType == LocationType.Virtual && PremiereDate.HasValue && PremiereDate.Value < DateTime.UtcNow;
+                if (IsMissingEpisode)
+                {
+                    return false;
+                }
+
+                return true;
             }
         }
 
         [IgnoreDataMember]
-        public bool IsUnaired
+        public bool IsMissingEpisode
         {
-            get { return PremiereDate.HasValue && PremiereDate.Value.ToLocalTime().Date >= DateTime.Now.Date; }
+            get
+            {
+                return LocationType == LocationType.Virtual && !IsUnaired;
+            }
         }
 
         [IgnoreDataMember]
@@ -202,49 +293,44 @@ namespace MediaBrowser.Controller.Entities.TV
         }
 
         [IgnoreDataMember]
-        public Guid? SeasonId
+        public Guid? SeasonId { get; set; }
+        [IgnoreDataMember]
+        public Guid? SeriesId { get; set; }
+
+        public Guid? FindSeriesId()
         {
-            get
+            var series = FindParent<Series>();
+            return series == null ? (Guid?)null : series.Id;
+        }
+
+        public override IEnumerable<Guid> GetAncestorIds()
+        {
+            var list = base.GetAncestorIds().ToList();
+
+            var seasonId = SeasonId;
+
+            if (seasonId.HasValue && !list.Contains(seasonId.Value))
             {
-                // First see if the parent is a Season
-                var season = Season;
-
-                if (season != null)
-                {
-                    return season.Id;
-                }
-
-                var seasonNumber = ParentIndexNumber;
-
-                // Parent is a Series
-                if (seasonNumber.HasValue)
-                {
-                    var series = Series;
-
-                    if (series != null)
-                    {
-                        season = series.Children.OfType<Season>()
-                            .FirstOrDefault(i => i.IndexNumber.HasValue && i.IndexNumber.Value == seasonNumber.Value);
-
-                        if (season != null)
-                        {
-                            return season.Id;
-                        }
-                    }
-                }
-
-                return null;
+                list.Add(seasonId.Value);
             }
+
+            return list;
         }
 
-        public override IEnumerable<string> GetDeletePaths()
+        public override IEnumerable<FileSystemMetadata> GetDeletePaths()
         {
-            return new[] { Path };
+            return new[] {
+                new FileSystemMetadata
+                {
+                    FullName = Path,
+                    IsDirectory = IsFolder
+                }
+            }.Concat(GetLocalMetadataFilesToDelete());
         }
 
-        protected override bool GetBlockUnratedValue(UserConfiguration config)
+        public override UnratedItem GetBlockUnratedType()
         {
-            return config.BlockUnratedSeries;
+            return UnratedItem.Series;
         }
 
         public EpisodeInfo GetLookupInfo()
@@ -258,58 +344,43 @@ namespace MediaBrowser.Controller.Entities.TV
                 id.SeriesProviderIds = series.ProviderIds;
             }
 
+            id.IsMissingEpisode = IsMissingEpisode;
             id.IndexNumberEnd = IndexNumberEnd;
+            id.IsVirtualUnaired = IsVirtualUnaired;
 
             return id;
         }
 
-        public override ItemUpdateType BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh()
         {
-            var updateType = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh();
 
-            var locationType = LocationType;
-            if (locationType == LocationType.FileSystem || locationType == LocationType.Offline)
+            try
             {
-                if (!IndexNumber.HasValue && !string.IsNullOrEmpty(Path))
+                if (LibraryManager.FillMissingEpisodeNumbersFromPath(this))
                 {
-                    IndexNumber = IndexNumber ?? TVUtils.GetEpisodeNumberFromFile(Path, Parent is Season);
-
-                    // If a change was made record it
-                    if (IndexNumber.HasValue)
-                    {
-                        updateType = updateType | ItemUpdateType.MetadataImport;
-                    }
+                    hasChanges = true;
                 }
-
-                if (!IndexNumberEnd.HasValue && !string.IsNullOrEmpty(Path))
-                {
-                    IndexNumberEnd = IndexNumberEnd ?? TVUtils.GetEndingEpisodeNumberFromFile(Path);
-
-                    // If a change was made record it
-                    if (IndexNumberEnd.HasValue)
-                    {
-                        updateType = updateType | ItemUpdateType.MetadataImport;
-                    }
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
             }
 
             if (!ParentIndexNumber.HasValue)
             {
                 var season = Season;
-
                 if (season != null)
                 {
-                    ParentIndexNumber = season.IndexNumber;
-                }
-
-                // If a change was made record it
-                if (ParentIndexNumber.HasValue)
-                {
-                    updateType = updateType | ItemUpdateType.MetadataImport;
+                    if (season.ParentIndexNumber.HasValue)
+                    {
+                        ParentIndexNumber = season.ParentIndexNumber;
+                        hasChanges = true;
+                    }
                 }
             }
 
-            return updateType;
+            return hasChanges;
         }
     }
 }

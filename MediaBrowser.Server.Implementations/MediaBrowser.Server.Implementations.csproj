@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,9 +11,8 @@
     <AssemblyName>MediaBrowser.Server.Implementations</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -24,231 +23,32 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Alchemy">
-      <HintPath>..\packages\Alchemy.2.2.1\lib\net40\Alchemy.dll</HintPath>
-    </Reference>
-    <Reference Include="BDInfo, Version=1.0.5124.611, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.7\lib\net35\BDInfo.dll</HintPath>
-    </Reference>
-    <Reference Include="DvdLib">
-      <HintPath>..\packages\MediaBrowser.BdInfo.1.0.0.7\lib\net35\DvdLib.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Api.Swagger">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Api.Swagger.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.90.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" Condition=" '$(ConfigurationName)' != 'Release Mono' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq" Condition=" '$(ConfigurationName)' != 'Release Mono' ">
-      <HintPath>..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite" Condition=" '$(ConfigurationName)' == 'Release Mono' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq" Condition=" '$(ConfigurationName)' == 'Release Mono' ">
-      <HintPath>..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Client">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Common">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\ThirdParty\ServiceStack\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\ThirdParty\ServiceStack.Text\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Posix" Condition=" '$(ConfigurationName)' == 'Release Mono' " />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
-    <Compile Include="BdInfo\BdInfoExaminer.cs" />
-    <Compile Include="Configuration\ServerConfigurationManager.cs" />
-    <Compile Include="Drawing\ImageHeader.cs" />
-    <Compile Include="Drawing\PercentPlayedDrawer.cs" />
-    <Compile Include="Drawing\PlayedIndicatorDrawer.cs" />
-    <Compile Include="Drawing\UnplayedCountIndicator.cs" />
-    <Compile Include="Dto\DtoService.cs" />
-    <Compile Include="EntryPoints\AutomaticRestartEntryPoint.cs" />
-    <Compile Include="EntryPoints\LibraryChangedNotifier.cs" />
-    <Compile Include="EntryPoints\LoadRegistrations.cs" />
-    <Compile Include="EntryPoints\Notifications\Notifier.cs" />
-    <Compile Include="EntryPoints\Notifications\RemoteNotifications.cs" />
-    <Compile Include="EntryPoints\Notifications\WebSocketNotifier.cs" />
-    <Compile Include="EntryPoints\RefreshUsersMetadata.cs" />
-    <Compile Include="FileOrganization\EpisodeFileOrganizer.cs" />
-    <Compile Include="FileOrganization\FileOrganizationService.cs" />
-    <Compile Include="FileOrganization\NameUtils.cs" />
-    <Compile Include="FileOrganization\TvFolderOrganizer.cs" />
-    <Compile Include="EntryPoints\UdpServerEntryPoint.cs" />
-    <Compile Include="EntryPoints\ServerEventNotifier.cs" />
-    <Compile Include="EntryPoints\UserDataChangeNotifier.cs" />
-    <Compile Include="FileOrganization\OrganizerScheduledTask.cs" />
-    <Compile Include="HttpServer\ContainerAdapter.cs" />
-    <Compile Include="HttpServer\HttpListenerHost.cs" />
-    <Compile Include="HttpServer\HttpResultFactory.cs" />
-    <Compile Include="HttpServer\LoggerUtils.cs" />
-    <Compile Include="HttpServer\NativeWebSocket.cs" />
-    <Compile Include="HttpServer\RangeRequestWriter.cs" />
-    <Compile Include="HttpServer\ResponseFilter.cs" />
-    <Compile Include="HttpServer\ServerFactory.cs" />
-    <Compile Include="HttpServer\ServerLogger.cs" />
-    <Compile Include="HttpServer\StreamWriter.cs" />
-    <Compile Include="HttpServer\SwaggerService.cs" />
-    <Compile Include="Drawing\ImageProcessor.cs" />
-    <Compile Include="IO\LibraryMonitor.cs" />
-    <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
-    <Compile Include="Library\LibraryManager.cs" />
-    <Compile Include="Library\SearchEngine.cs" />
-    <Compile Include="Library\ResolverHelper.cs" />
-    <Compile Include="Library\Resolvers\Audio\AudioResolver.cs" />
-    <Compile Include="Library\Resolvers\Audio\MusicAlbumResolver.cs" />
-    <Compile Include="Library\Resolvers\Audio\MusicArtistResolver.cs" />
-    <Compile Include="Library\Resolvers\BaseItemResolver.cs" />
-    <Compile Include="Library\Resolvers\FolderResolver.cs" />
-    <Compile Include="Library\Resolvers\LocalTrailerResolver.cs" />
-    <Compile Include="Library\Resolvers\Movies\BoxSetResolver.cs" />
-    <Compile Include="Library\Resolvers\Movies\MovieResolver.cs" />
-    <Compile Include="Library\Resolvers\TV\EpisodeResolver.cs" />
-    <Compile Include="Library\Resolvers\TV\SeasonResolver.cs" />
-    <Compile Include="Library\Resolvers\TV\SeriesResolver.cs" />
-    <Compile Include="Library\Resolvers\VideoResolver.cs" />
-    <Compile Include="Library\UserDataManager.cs" />
-    <Compile Include="Library\UserManager.cs" />
-    <Compile Include="Library\Validators\ArtistsPostScanTask.cs" />
-    <Compile Include="Library\Validators\ArtistsValidator.cs" />
-    <Compile Include="Library\Validators\CountHelpers.cs" />
-    <Compile Include="Library\Validators\GameGenresPostScanTask.cs" />
-    <Compile Include="Library\Validators\GameGenresValidator.cs" />
-    <Compile Include="Library\Validators\GenresPostScanTask.cs" />
-    <Compile Include="Library\Validators\GenresValidator.cs" />
-    <Compile Include="Library\Validators\MusicGenresPostScanTask.cs" />
-    <Compile Include="Library\Validators\MusicGenresValidator.cs" />
-    <Compile Include="Library\Validators\PeoplePostScanTask.cs" />
-    <Compile Include="Library\Validators\PeopleValidator.cs" />
-    <Compile Include="Library\Validators\StudiosPostScanTask.cs" />
-    <Compile Include="Library\Validators\StudiosValidator.cs" />
-    <Compile Include="Library\Validators\YearsPostScanTask.cs" />
-    <Compile Include="LiveTv\ChannelImageProvider.cs" />
-    <Compile Include="LiveTv\LiveTvDtoService.cs" />
-    <Compile Include="LiveTv\LiveTvManager.cs" />
-    <Compile Include="LiveTv\ProgramImageProvider.cs" />
-    <Compile Include="LiveTv\RecordingImageProvider.cs" />
-    <Compile Include="LiveTv\RefreshChannelsScheduledTask.cs" />
-    <Compile Include="Localization\LocalizationManager.cs" />
-    <Compile Include="MediaEncoder\MediaEncoder.cs" />
-    <Compile Include="News\NewsEntryPoint.cs" />
-    <Compile Include="News\NewsService.cs" />
-    <Compile Include="Persistence\SqliteChapterRepository.cs" />
-    <Compile Include="Persistence\SqliteExtensions.cs" />
-    <Compile Include="Persistence\SqliteFileOrganizationRepository.cs" />
-    <Compile Include="Persistence\SqliteMediaStreamsRepository.cs" />
-    <Compile Include="Persistence\SqliteNotificationsRepository.cs" />
-    <Compile Include="Persistence\SqliteProviderInfoRepository.cs" />
-    <Compile Include="Persistence\SqliteShrinkMemoryTimer.cs" />
-    <Compile Include="Persistence\TypeMapper.cs" />
+    <Compile Include="Devices\CameraUploadsFolder.cs" />
+    <Compile Include="Playlists\ManualPlaylistsFolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Roku\RokuControllerFactory.cs" />
-    <Compile Include="ScheduledTasks\PeopleValidationTask.cs" />
-    <Compile Include="ScheduledTasks\ChapterImagesTask.cs" />
-    <Compile Include="ScheduledTasks\RefreshIntrosTask.cs" />
-    <Compile Include="ScheduledTasks\RefreshMediaLibraryTask.cs" />
-    <Compile Include="ServerApplicationPaths.cs" />
-    <Compile Include="ServerManager\ServerManager.cs" />
-    <Compile Include="ServerManager\WebSocketConnection.cs" />
-    <Compile Include="Roku\RokuSessionController.cs" />
-    <Compile Include="Session\SessionManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Session\SessionWebSocketListener.cs" />
-    <Compile Include="Session\WebSocketController.cs" />
-    <Compile Include="Sorting\AiredEpisodeOrderComparer.cs" />
-    <Compile Include="Sorting\AirTimeComparer.cs" />
-    <Compile Include="Sorting\AlbumArtistComparer.cs" />
-    <Compile Include="Sorting\AlbumComparer.cs" />
-    <Compile Include="Sorting\AlbumCountComparer.cs" />
-    <Compile Include="Sorting\AlphanumComparator.cs" />
-    <Compile Include="Sorting\ArtistComparer.cs" />
-    <Compile Include="Sorting\BudgetComparer.cs" />
-    <Compile Include="Sorting\CommunityRatingComparer.cs" />
-    <Compile Include="Sorting\CriticRatingComparer.cs" />
-    <Compile Include="Sorting\DateCreatedComparer.cs" />
-    <Compile Include="Sorting\DatePlayedComparer.cs" />
-    <Compile Include="Sorting\EpisodeCountComparer.cs" />
-    <Compile Include="Sorting\IsFolderComparer.cs" />
-    <Compile Include="Sorting\IsUnplayedComparer.cs" />
-    <Compile Include="Sorting\MetascoreComparer.cs" />
-    <Compile Include="Sorting\MovieCountComparer.cs" />
-    <Compile Include="Sorting\MusicVideoCountComparer.cs" />
-    <Compile Include="Sorting\NameComparer.cs" />
-    <Compile Include="Sorting\OfficialRatingComparer.cs" />
-    <Compile Include="Sorting\PlayCountComparer.cs" />
-    <Compile Include="Sorting\PremiereDateComparer.cs" />
-    <Compile Include="Sorting\ProductionYearComparer.cs" />
-    <Compile Include="Sorting\RandomComparer.cs" />
-    <Compile Include="Sorting\RevenueComparer.cs" />
-    <Compile Include="Sorting\RuntimeComparer.cs" />
-    <Compile Include="Sorting\SeriesCountComparer.cs" />
-    <Compile Include="Sorting\SeriesSortNameComparer.cs" />
-    <Compile Include="Sorting\SongCountComparer.cs" />
-    <Compile Include="Sorting\SortNameComparer.cs" />
-    <Compile Include="Persistence\SqliteDisplayPreferencesRepository.cs" />
-    <Compile Include="Persistence\SqliteItemRepository.cs" />
-    <Compile Include="Persistence\SqliteUserDataRepository.cs" />
-    <Compile Include="Persistence\SqliteUserRepository.cs" />
-    <Compile Include="Sorting\TrailerCountComparer.cs" />
-    <Compile Include="Sorting\VideoBitRateComparer.cs" />
-    <Compile Include="Udp\UdpMessageReceivedEventArgs.cs" />
-    <Compile Include="Udp\UdpServer.cs" />
-    <Compile Include="WebSocket\AlchemyServer.cs" />
-    <Compile Include="WebSocket\AlchemyWebSocket.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Common.Implementations\MediaBrowser.Common.Implementations.csproj">
-      <Project>{C4D2573A-3FD3-441F-81AF-174AC4CD4E1D}</Project>
-      <Name>MediaBrowser.Common.Implementations</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
       <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
       <Name>MediaBrowser.Common</Name>
@@ -263,123 +63,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\us.txt" />
-    <EmbeddedResource Include="Localization\Ratings\au.txt" />
-    <EmbeddedResource Include="Localization\Ratings\gb.txt" />
-    <EmbeddedResource Include="Localization\Ratings\nl.txt" />
-    <EmbeddedResource Include="Localization\Ratings\br.txt" />
-    <EmbeddedResource Include="Localization\Ratings\dk.txt" />
-    <EmbeddedResource Include="Localization\Ratings\de.txt" />
-    <EmbeddedResource Include="Localization\Ratings\mx.txt" />
-    <EmbeddedResource Include="Localization\Ratings\co.txt" />
-    <EmbeddedResource Include="Localization\Ratings\fr.txt" />
-    <EmbeddedResource Include="Localization\Ratings\ie.txt" />
-    <EmbeddedResource Include="Localization\Ratings\jp.txt" />
-    <EmbeddedResource Include="Localization\Ratings\kz.txt" />
-    <EmbeddedResource Include="Localization\Ratings\nz.txt" />
-    <EmbeddedResource Include="Localization\Ratings\ru.txt" />
+    <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\ca.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\css\highlight.default.css">
-      <Link>swagger-ui\css\highlight.default.css</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\css\screen.css">
-      <Link>swagger-ui\css\screen.css</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\images\logo_small.png">
-      <Link>swagger-ui\images\logo_small.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\images\pet_store_api.png">
-      <Link>swagger-ui\images\pet_store_api.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\images\throbber.gif">
-      <Link>swagger-ui\images\throbber.gif</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\images\wordnik_api.png">
-      <Link>swagger-ui\images\wordnik_api.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\index.html">
-      <Link>swagger-ui\index.html</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\backbone-min.js">
-      <Link>swagger-ui\lib\backbone-min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\handlebars-1.0.0.js">
-      <Link>swagger-ui\lib\handlebars-1.0.0.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\highlight.7.3.pack.js">
-      <Link>swagger-ui\lib\highlight.7.3.pack.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\jquery-1.8.0.min.js">
-      <Link>swagger-ui\lib\jquery-1.8.0.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\jquery.ba-bbq.min.js">
-      <Link>swagger-ui\lib\jquery.ba-bbq.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\jquery.slideto.min.js">
-      <Link>swagger-ui\lib\jquery.slideto.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\jquery.wiggle.min.js">
-      <Link>swagger-ui\lib\jquery.wiggle.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\shred.bundle.js">
-      <Link>swagger-ui\lib\shred.bundle.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\shred\content.js">
-      <Link>swagger-ui\lib\shred\content.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\swagger.js">
-      <Link>swagger-ui\lib\swagger.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\lib\underscore-min.js">
-      <Link>swagger-ui\lib\underscore-min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\swagger-ui.js">
-      <Link>swagger-ui\swagger-ui.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\ServiceStack\swagger-ui\swagger-ui.min.js">
-      <Link>swagger-ui\swagger-ui.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="Localization\Ratings\be.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.dll" Condition=" '$(ConfigurationName)' == 'Release Mono'">
-      <Link>System.Data.SQLite.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ThirdParty\System.Data.SQLite.ManagedOnly\x86\1.0.90.0\net40\System.Data.SQLite.Linq.dll" Condition=" '$(ConfigurationName)' == 'Release Mono'">
-      <Link>System.Data.SQLite.Linq.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" Condition=" '$(ConfigurationName)' != 'Release Mono' " />
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

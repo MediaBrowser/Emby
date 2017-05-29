@@ -1,237 +1,348 @@
-using MediaBrowser.Common.Constants;
-using MediaBrowser.Common.Implementations.Logging;
-using MediaBrowser.Common.Implementations.Updates;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Server.Implementations;
-using MediaBrowser.ServerApplication;
-using MediaBrowser.ServerApplication.Native;
-using Microsoft.Win32;
+using MediaBrowser.Server.Mono.Native;
+using MediaBrowser.Server.Startup.Common;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Windows;
+using System.Linq;
 using System.Net;
 using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using System.Reflection;
-// MONOMKBUNDLE: For the embedded version, mkbundle tool
-#if MONOMKBUNDLE
-using Mono.Unix;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Emby.Common.Implementations.EnvironmentInfo;
+using Emby.Common.Implementations.Logging;
+using Emby.Common.Implementations.Networking;
+using Emby.Common.Implementations.Security;
+using Emby.Server.Core;
+using Emby.Server.Core.Logging;
+using Emby.Server.Implementations;
+using Emby.Server.Implementations.IO;
+using Emby.Server.Implementations.Logging;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.System;
+using MediaBrowser.Server.Startup.Common.IO;
 using Mono.Unix.Native;
-using System.Text;
-#endif
+using NLog;
+using ILogger = MediaBrowser.Model.Logging.ILogger;
+using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 
 namespace MediaBrowser.Server.Mono
 {
-	public class MainClass
-	{
-		private static ApplicationHost _appHost;
+    public class MainClass
+    {
+        private static ApplicationHost _appHost;
 
-		private static ILogger _logger;
+        private static ILogger _logger;
+        private static IFileSystem FileSystem;
 
-		public static void Main (string[] args)
-		{
-			//GetEntryAssembly is empty when running from a mkbundle package
-			#if MONOMKBUNDLE
-			var applicationPath = GetExecutablePath();
-			#else
-			var applicationPath = Assembly.GetEntryAssembly ().Location;
-			#endif
+        public static void Main(string[] args)
+        {
+            var applicationPath = Assembly.GetEntryAssembly().Location;
+            var appFolderPath = Path.GetDirectoryName(applicationPath);
 
-			var appPaths = CreateApplicationPaths(applicationPath);
+            TryCopySqliteConfigFile(appFolderPath);
+            SetSqliteProvider();
 
-			var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
-			logManager.ReloadLogger(LogSeverity.Info);
-			logManager.AddConsoleOutput();
+            var options = new StartupOptions(Environment.GetCommandLineArgs());
 
-			var logger = _logger = logManager.GetLogger("Main");
+            // Allow this to be specified on the command line.
+            var customProgramDataPath = options.GetOption("-programdata");
 
-			BeginLog(logger);
+            var appPaths = CreateApplicationPaths(applicationPath, customProgramDataPath);
 
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
+            logManager.ReloadLogger(LogSeverity.Info);
+            logManager.AddConsoleOutput();
 
-			if (PerformUpdateIfNeeded(appPaths, logger))
-			{
-				logger.Info("Exiting to perform application update.");
-				return;
-			}
+            var logger = _logger = logManager.GetLogger("Main");
 
-			try
-			{
-				RunApplication(appPaths, logManager);
-			}
-			finally
-			{
-				logger.Info("Shutting down");
+            ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
+            
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-				_appHost.Dispose();
-			}
-		}
+            try
+            {
+                RunApplication(appPaths, logManager, options);
+            }
+            finally
+            {
+                logger.Info("Shutting down");
 
-		private static ServerApplicationPaths CreateApplicationPaths(string applicationPath)
-		{
-			return new ServerApplicationPaths(applicationPath);
-		}
+                _appHost.Dispose();
+            }
+        }
 
-		/// <summary>
-		/// Determines whether this instance [can self restart].
-		/// </summary>
-		/// <returns><c>true</c> if this instance [can self restart]; otherwise, <c>false</c>.</returns>
-		public static bool CanSelfRestart
-		{
-			get
-			{
-				return false;
-			}
-		}
+        private static void TryCopySqliteConfigFile(string appFolderPath)
+        {
+            try
+            {
+                File.Copy(Path.Combine(appFolderPath, "System.Data.SQLite.dll.config"),
+                    Path.Combine(appFolderPath, "SQLitePCLRaw.provider.sqlite3.dll.config"),
+                    true);
+            }
+            catch
+            {
+                
+            }
+        }
 
-		/// <summary>
-		/// Gets a value indicating whether this instance can self update.
-		/// </summary>
-		/// <value><c>true</c> if this instance can self update; otherwise, <c>false</c>.</value>
-		public static bool CanSelfUpdate
-		{
-			get
-			{
-				return false;
-			}
-		}
+        private static void SetSqliteProvider()
+        {
+            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
+        }
 
-		private static RemoteCertificateValidationCallback _ignoreCertificates = new RemoteCertificateValidationCallback(delegate { return true; });
+        private static ServerApplicationPaths CreateApplicationPaths(string applicationPath, string programDataPath)
+        {
+            if (string.IsNullOrEmpty(programDataPath))
+            {
+                programDataPath = ApplicationPathHelper.GetProgramDataPath(applicationPath);
+            }
 
-		private static TaskCompletionSource<bool> _applicationTaskCompletionSource = new TaskCompletionSource<bool>();
+            var appFolderPath = Path.GetDirectoryName(applicationPath);
 
-		private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager)
-		{
-			SystemEvents.SessionEnding += SystemEvents_SessionEnding;
+            Action<string> createDirectoryFn = s => Directory.CreateDirectory(s);
 
-			// Allow all https requests
-			ServicePointManager.ServerCertificateValidationCallback = _ignoreCertificates;
+            return new ServerApplicationPaths(programDataPath, appFolderPath, Path.GetDirectoryName(applicationPath), createDirectoryFn);
+        }
 
-			_appHost = new ApplicationHost(appPaths, logManager, false);
+        private static readonly TaskCompletionSource<bool> ApplicationTaskCompletionSource = new TaskCompletionSource<bool>();
 
-			Console.WriteLine ("appHost.Init");
+        private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager, StartupOptions options)
+        {
+            // Allow all https requests
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
 
-			var initProgress = new Progress<double>();
+            var environmentInfo = GetEnvironmentInfo();
 
-			var task = _appHost.Init(initProgress);
-			Task.WaitAll (task);
+            var fileSystem = new MonoFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
 
-			Console.WriteLine ("Running startup tasks");
+            FileSystem = fileSystem;
 
-			task = _appHost.RunStartupTasks();
-			Task.WaitAll (task);
+            var imageEncoder = ImageEncoderHelper.GetImageEncoder(_logger, logManager, fileSystem, options, () => _appHost.HttpClient, appPaths);
 
-			task = _applicationTaskCompletionSource.Task;
+            _appHost = new MonoAppHost(appPaths,
+                logManager,
+                options,
+                fileSystem,
+                new PowerManagement(),
+                "emby.mono.zip",
+                environmentInfo,
+                imageEncoder,
+                new Startup.Common.SystemEvents(logManager.GetLogger("SystemEvents")),
+                new MemoryStreamProvider(),
+                new NetworkManager(logManager.GetLogger("NetworkManager")),
+                GenerateCertificate,
+                () => Environment.UserName);
 
-			Task.WaitAll (task);
-		}
+            if (options.ContainsOption("-v"))
+            {
+                Console.WriteLine(_appHost.ApplicationVersion.ToString());
+                return;
+            }
 
-		/// <summary>
-		/// Handles the SessionEnding event of the SystemEvents control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="SessionEndingEventArgs"/> instance containing the event data.</param>
-		static void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
-		{
-			if (e.Reason == SessionEndReasons.SystemShutdown)
-			{
-				Shutdown();
-			}
-		}
+            Console.WriteLine("appHost.Init");
 
-		/// <summary>
-		/// Begins the log.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		private static void BeginLog(ILogger logger)
-		{
-			logger.Info("Media Browser Server started");
-			logger.Info("Command line: {0}", string.Join(" ", Environment.GetCommandLineArgs()));
+            var initProgress = new Progress<double>();
 
-			logger.Info("Server: {0}", Environment.MachineName);
-			logger.Info("Operating system: {0}", Environment.OSVersion.ToString());
-		}
+            var task = _appHost.Init(initProgress);
+            Task.WaitAll(task);
 
-		/// <summary>
-		/// Handles the UnhandledException event of the CurrentDomain control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
-		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			var exception = (Exception)e.ExceptionObject;
+            Console.WriteLine("Running startup tasks");
 
-			LogUnhandledException(exception);
+            task = _appHost.RunStartupTasks();
+            Task.WaitAll(task);
 
-			if (!Debugger.IsAttached)
-			{
-				Environment.Exit(System.Runtime.InteropServices.Marshal.GetHRForException(exception));
-			}
-		}
+            task = ApplicationTaskCompletionSource.Task;
 
-		private static void LogUnhandledException(Exception ex)
-		{
-			_logger.ErrorException("UnhandledException", ex);
+            Task.WaitAll(task);
+        }
 
-			_appHost.LogManager.Flush ();
+        private static void GenerateCertificate(string certPath, string certHost, string certPassword)
+        {
+            CertificateGenerator.CreateSelfSignCertificatePfx(certPath, certHost, certPassword, _logger);
+        }
 
-			var path = Path.Combine(_appHost.ServerConfigurationManager.ApplicationPaths.LogDirectoryPath, "crash_" + Guid.NewGuid() + ".txt");
+        private static MonoEnvironmentInfo GetEnvironmentInfo()
+        {
+            var info = new MonoEnvironmentInfo();
 
-			var builder = LogHelper.GetLogMessage(ex);
+            var uname = GetUnixName();
 
-			Console.WriteLine ("UnhandledException");
-			Console.WriteLine (builder.ToString());
+            var sysName = uname.sysname ?? string.Empty;
 
-			File.WriteAllText(path, builder.ToString());
-		}
+            if (string.Equals(sysName, "Darwin", StringComparison.OrdinalIgnoreCase))
+            {
+                //info.OperatingSystem = Startup.Common.OperatingSystem.Osx;
+            }
+            else if (string.Equals(sysName, "Linux", StringComparison.OrdinalIgnoreCase))
+            {
+                //info.OperatingSystem = Startup.Common.OperatingSystem.Linux;
+            }
+            else if (string.Equals(sysName, "BSD", StringComparison.OrdinalIgnoreCase))
+            {
+                //info.OperatingSystem = Startup.Common.OperatingSystem.Bsd;
+                info.IsBsd = true;
+            }
 
-		/// <summary>
-		/// Performs the update if needed.
-		/// </summary>
-		/// <param name="appPaths">The app paths.</param>
-		/// <param name="logger">The logger.</param>
-		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-		private static bool PerformUpdateIfNeeded(ServerApplicationPaths appPaths, ILogger logger)
-		{
-			return false;
-		}
+            var archX86 = new Regex("(i|I)[3-6]86");
 
-		public static void Shutdown()
-		{
-			_applicationTaskCompletionSource.SetResult (true);
-		}
+            if (archX86.IsMatch(uname.machine))
+            {
+                info.CustomArchitecture = Architecture.X86;
+            }
+            else if (string.Equals(uname.machine, "x86_64", StringComparison.OrdinalIgnoreCase))
+            {
+                info.CustomArchitecture = Architecture.X64;
+            }
+            else if (uname.machine.StartsWith("arm", StringComparison.OrdinalIgnoreCase))
+            {
+                info.CustomArchitecture = Architecture.Arm;
+            }
+            else if (System.Environment.Is64BitOperatingSystem)
+            {
+                info.CustomArchitecture = Architecture.X64;
+            }
+            else
+            {
+                info.CustomArchitecture = Architecture.X86;
+            }
 
-		public static void Restart()
-		{
-			// Second instance will start first, so dispose so that the http ports will be available to the new instance
-			_appHost.Dispose();
+            return info;
+        }
 
-			// Right now this method will just shutdown, but not restart
-			Shutdown ();
-		}
+        private static Uname _unixName;
 
-		// Return the running process path
-		#if MONOMKBUNDLE
-		public static string GetExecutablePath() 
-		{ 
-			var builder = new StringBuilder (8192); 
-			if (Syscall.readlink("/proc/self/exe", builder) >= 0)
-				return builder.ToString (); 
-			else 
-				return null; 
-		}
-		#endif
+        private static Uname GetUnixName()
+        {
+            if (_unixName == null)
+            {
+                var uname = new Uname();
+                try
+                {
+                    Utsname utsname;
+                    var callResult = Syscall.uname(out utsname);
+                    if (callResult == 0)
+                    {
+                        uname.sysname = utsname.sysname ?? string.Empty;
+                        uname.machine = utsname.machine ?? string.Empty;
+                    }
 
-	}
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Error getting unix name", ex);
+                }
+                _unixName = uname;
+            }
+            return _unixName;
+        }
 
-	class NoCheckCertificatePolicy : ICertificatePolicy
-	{
-		public bool CheckValidationResult (ServicePoint srvPoint, X509Certificate certificate, WebRequest request, int certificateProblem)
-		{
-			return true;
-		}
-	}
+        public class Uname
+        {
+            public string sysname = string.Empty;
+            public string machine = string.Empty;
+        }
+
+        /// <summary>
+        /// Handles the UnhandledException event of the CurrentDomain control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = (Exception)e.ExceptionObject;
+
+            new UnhandledExceptionWriter(_appHost.ServerConfigurationManager.ApplicationPaths, _logger, _appHost.LogManager, FileSystem, new ConsoleLogger()).Log(exception);
+
+            if (!Debugger.IsAttached)
+            {
+                var message = LogHelper.GetLogMessage(exception).ToString();
+
+                if (message.IndexOf("InotifyWatcher", StringComparison.OrdinalIgnoreCase) == -1)
+                {
+                    Environment.Exit(System.Runtime.InteropServices.Marshal.GetHRForException(exception));
+                }
+            }
+        }
+
+        public static void Shutdown()
+        {
+            ApplicationTaskCompletionSource.SetResult(true);
+        }
+
+        public static void Restart(StartupOptions startupOptions)
+        {
+            _logger.Info("Disposing app host");
+            _appHost.Dispose();
+
+            _logger.Info("Starting new instance");
+
+            string module = startupOptions.GetOption("-restartpath");
+            string commandLineArgsString = startupOptions.GetOption("-restartargs") ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(module))
+            {
+                module = Environment.GetCommandLineArgs().First();
+            }
+            if (!startupOptions.ContainsOption("-restartargs"))
+            {
+                var args = Environment.GetCommandLineArgs()
+                                .Skip(1)
+                                .Select(NormalizeCommandLineArgument);
+
+                commandLineArgsString = string.Join(" ", args.ToArray());
+            }
+
+            _logger.Info("Executable: {0}", module);
+            _logger.Info("Arguments: {0}", commandLineArgsString);
+
+            Process.Start(module, commandLineArgsString);
+
+            _logger.Info("Calling Environment.Exit");
+            Environment.Exit(0);
+        }
+
+        private static string NormalizeCommandLineArgument(string arg)
+        {
+            if (arg.IndexOf(" ", StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                return arg;
+            }
+
+            return "\"" + arg + "\"";
+        }
+    }
+
+    class NoCheckCertificatePolicy : ICertificatePolicy
+    {
+        public bool CheckValidationResult(ServicePoint srvPoint, X509Certificate certificate, WebRequest request, int certificateProblem)
+        {
+            return true;
+        }
+    }
+
+    public class MonoEnvironmentInfo : EnvironmentInfo
+    {
+        public bool IsBsd { get; set; }
+
+        public override string GetUserId()
+        {
+            return Syscall.getuid().ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override Model.System.OperatingSystem OperatingSystem
+        {
+            get
+            {
+                if (IsBsd)
+                {
+                    return Model.System.OperatingSystem.BSD;
+                }
+
+                return base.OperatingSystem;
+            }
+        }
+    }
 }

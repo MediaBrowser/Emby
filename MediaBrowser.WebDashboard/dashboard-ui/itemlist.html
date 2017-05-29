@@ -1,108 +1,17 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <div id="itemListPage" data-role="page" class="page libraryPage folderListPage" data-theme="b">
-        <div class="alphabetPicker">
-        </div>
-        <div data-role="content" class="itemListContent">
-
-            <h1 class="listHeader" style="margin: 0; text-align: center;"><span id="itemName"></span>
-                <span id="editButtonContainer" style="display: none; margin-left: .5em;">
-                    <button id="btnEdit" type="button" data-icon="edit" data-inline="true" data-mini="true">Edit</button>
-                </span>
-            </h1>
-            <div class="viewSettings">
-                <div class="viewControls">
-                    <div style="display: inline-block;">
-                        <select data-mini="true" data-inline="true" id="selectView" name="selectView">
-                            <option value="Backdrop">Backdrop</option>
-                            <option value="Poster">Poster</option>
-                        </select>
-                    </div>
-                    <button data-mini="true" data-icon="sort" data-inline="true" onclick="$('#sortPanel', $(this).parents('.page')).panel( 'toggle' );">Sort</button>
-                    <button data-mini="true" data-icon="filter" data-inline="true" onclick="$('#filterPanel', $(this).parents('.page')).panel( 'toggle' );">Filter</button>
-                </div>
-                <div class="listTopPaging">
-                </div>
-                <div class="viewSummary"></div>
-            </div>
-            <div id="items" class="itemsContainer"></div>
-        </div>
-        <div data-role="panel" id="sortPanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
-
-            <form>
-                <fieldset data-role="controlgroup">
-                    <legend>
-                        <strong>Sort By:</strong>
-                    </legend>
-
-                    <input class="radioSortBy defaultSort" type="radio" name="radioSortBy" id="radioSortName" value="on" checked="checked" data-sortby="SortName" data-mini="true">
-                    <label for="radioSortName">Name</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioCommunityRating" value="off" data-sortby="CommunityRating" data-mini="true">
-                    <label for="radioCommunityRating">Community Rating</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioDateCreated" value="off" data-sortby="DateCreated" data-mini="true">
-                    <label for="radioDateCreated">Date Added</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioDatePlayed" value="off" data-sortby="DatePlayed" data-mini="true">
-                    <label for="radioDatePlayed">Date Played</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioContentRating" value="off" data-sortby="OfficialRating" data-mini="true">
-                    <label for="radioContentRating">Parental Rating</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioPremiereDate" value="off" data-sortby="PremiereDate" data-mini="true">
-                    <label for="radioPremiereDate">Release Date</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioRuntime" value="off" data-sortby="Runtime" data-mini="true">
-                    <label for="radioRuntime">Runtime</label>
-
-                    <input class="radioSortBy" type="radio" name="radioSortBy" id="radioIsFolder" value="off" data-sortby="IsFolder,SortName" data-mini="true">
-                    <label for="radioIsFolder">Folders</label>
-                </fieldset>
-
-                <fieldset data-role="controlgroup">
-                    <legend>
-                        <strong>Sort Order:</strong>
-                    </legend>
-
-                    <input class="radioSortOrder" type="radio" name="radioSortOrder" id="radioAscending" value="on" checked="checked" data-sortorder="Ascending" data-mini="true">
-                    <label for="radioAscending">Ascending</label>
-
-                    <input class="radioSortOrder" type="radio" name="radioSortOrder" id="radioDescending" value="off" data-sortorder="Descending" data-mini="true">
-                    <label for="radioDescending">Descending</label>
-                </fieldset>
-            </form>
-        </div>
-        <div data-role="panel" id="filterPanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
-            <form>
-                <fieldset data-role="controlgroup">
-                    <legend>
-                        <strong>Filters:</strong>
-                    </legend>
-                    <input class="chkStandardFilter" type="checkbox" name="chkPlayed" id="chkPlayed" data-filter="IsPlayed" data-mini="true">
-                    <label for="chkPlayed">Played</label>
-
-                    <input class="chkStandardFilter" type="checkbox" name="chkUnplayed" id="chkUnplayed" data-filter="IsUnPlayed" data-mini="true">
-                    <label for="chkUnplayed">Unplayed</label>
-
-                    <input class="chkStandardFilter" type="checkbox" name="chkResumable" id="chkResumable" data-filter="IsResumable" data-mini="true">
-                    <label for="chkResumable">Resumable</label>
-
-                    <input class="chkStandardFilter" type="checkbox" name="chkIsFavorite" id="chkIsFavorite" data-filter="IsFavorite" data-mini="true">
-                    <label for="chkIsFavorite">Favorite</label>
-
-                    <input class="chkStandardFilter" type="checkbox" name="chkLikes" id="chkLikes" data-filter="Likes" data-mini="true">
-                    <label for="chkLikes">Likes</label>
-
-                    <input class="chkStandardFilter" type="checkbox" name="chkDislikes" id="chkDislikes" data-filter="Dislikes" data-mini="true">
-                    <label for="chkDislikes">Dislikes</label>
-                </fieldset>
-            </form>
-        </div>
+﻿<div id="itemListPage" data-role="page" class="page libraryPage folderListPage noSecondaryNavPage" data-backbutton="true">
+    <div class="alphaPicker alphaPicker-vertical alphabetPicker">
     </div>
-</body>
-</html>
+
+    <div class="itemListContent padded-top padded-bottom-page">
+
+        <div style="text-align: center; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;padding:0 .5em .7em;">
+            <div class="paging"></div>
+            <button is="paper-icon-button-light" class="btnSelectView autoSize" title="${ButtonSelectView}"><i class="md-icon">view_comfy</i></button>
+            <button is="paper-icon-button-light" class="btnSort autoSize" title="${ButtonSort}"><i class="md-icon">sort_by_alpha</i></button>
+            <button is="paper-icon-button-light" class="btnFilter autoSize" title="${ButtonFilter}"><i class="md-icon">filter_list</i></button>
+            <button type="button" is="paper-icon-button-light" class="btnNewCollection autoSize hide"><i class="md-icon">add</i></button>
+        </div>
+        <div is="emby-itemscontainer" id="items" class="itemsContainer padded-left-withalphapicker padded-left padded-right"></div>
+        <div class="paging"></div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.LiveTv;
 using System;
 using System.Collections.Generic;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -33,6 +34,11 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The overview.</value>
         public string Overview { get; set; }
+        /// <summary>
+        /// Gets or sets the short overview.
+        /// </summary>
+        /// <value>The short overview.</value>
+        public string ShortOverview { get; set; }
 
         /// <summary>
         /// The start date of the program, in UTC.
@@ -61,6 +67,8 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value><c>true</c> if this instance is hd; otherwise, <c>false</c>.</value>
         public bool? IsHD { get; set; }
 
+        public bool? Is3D { get; set; }
+
         /// <summary>
         /// Gets or sets the audio.
         /// </summary>
@@ -79,6 +87,8 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value><c>true</c> if this instance is repeat; otherwise, <c>false</c>.</value>
         public bool IsRepeat { get; set; }
 
+        public bool IsSubjectToBlackout { get; set; }
+
         /// <summary>
         /// Gets or sets the episode title.
         /// </summary>
@@ -96,6 +106,8 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value>The image URL.</value>
         public string ImageUrl { get; set; }
+
+        public string LogoImageUrl { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has image.
@@ -139,12 +151,50 @@ namespace MediaBrowser.Controller.LiveTv
         /// <value><c>true</c> if this instance is kids; otherwise, <c>false</c>.</value>
         public bool IsKids { get; set; }
 
+        public bool IsEducational { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether this instance is premiere.
         /// </summary>
         /// <value><c>true</c> if this instance is premiere; otherwise, <c>false</c>.</value>
         public bool IsPremiere { get; set;  }
 
+        /// <summary>
+        /// Gets or sets the production year.
+        /// </summary>
+        /// <value>The production year.</value>
+        public int? ProductionYear { get; set; }
+        /// <summary>
+        /// Gets or sets the home page URL.
+        /// </summary>
+        /// <value>The home page URL.</value>
+        public string HomePageUrl { get; set; }
+        /// <summary>
+        /// Gets or sets the series identifier.
+        /// </summary>
+        /// <value>The series identifier.</value>
+        public string SeriesId { get; set; }
+        /// <summary>
+        /// Gets or sets the show identifier.
+        /// </summary>
+        /// <value>The show identifier.</value>
+        public string ShowId { get; set; }
+        /// <summary>
+        /// Gets or sets the season number.
+        /// </summary>
+        /// <value>The season number.</value>
+        public int? SeasonNumber { get; set; }
+        /// <summary>
+        /// Gets or sets the episode number.
+        /// </summary>
+        /// <value>The episode number.</value>
+        public int? EpisodeNumber { get; set; }
+        /// <summary>
+        /// Gets or sets the etag.
+        /// </summary>
+        /// <value>The etag.</value>
+        public string Etag { get; set; }
+        
         public ProgramInfo()
         {
             Genres = new List<string>();

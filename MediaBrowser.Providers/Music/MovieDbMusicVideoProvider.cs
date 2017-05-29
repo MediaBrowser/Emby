@@ -1,8 +1,10 @@
-﻿using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Entities.Audio;
+﻿using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Providers;
 using MediaBrowser.Providers.Movies;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,14 +17,19 @@ namespace MediaBrowser.Providers.Music
             return MovieDbProvider.Current.GetItemMetadata<MusicVideo>(info, cancellationToken);
         }
 
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(MusicVideoInfo searchInfo, CancellationToken cancellationToken)
+        {
+            return new List<RemoteSearchResult>();
+        }
+
         public string Name
         {
             get { return MovieDbProvider.Current.Name; }
         }
 
-        public bool HasChanged(IHasMetadata item, DateTime date)
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return MovieDbProvider.Current.HasChanged(item, date);
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using MediaBrowser.Controller.Library;
-using MediaBrowser.Model.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -22,13 +18,7 @@ namespace MediaBrowser.Controller.Entities
         /// Gets the date modified.
         /// </summary>
         /// <value>The date modified.</value>
-        DateTime DateModified { get; }
-
-        /// <summary>
-        /// Gets the locked fields.
-        /// </summary>
-        /// <value>The locked fields.</value>
-        List<MetadataFields> LockedFields { get; }
+        DateTime DateModified { get; set; }
 
         /// <summary>
         /// Gets or sets the date last saved.
@@ -36,24 +26,44 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The date last saved.</value>
         DateTime DateLastSaved { get; set; }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is in mixed folder.
-        /// </summary>
-        /// <value><c>true</c> if this instance is in mixed folder; otherwise, <c>false</c>.</value>
-        bool IsInMixedFolder { get; }
+        SourceType SourceType { get; set; }
 
         /// <summary>
-        /// Updates to repository.
+        /// Gets or sets the date last refreshed.
         /// </summary>
-        /// <param name="updateReason">The update reason.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task UpdateToRepository(ItemUpdateType updateReason, CancellationToken cancellationToken);
+        /// <value>The date last refreshed.</value>
+        DateTime DateLastRefreshed { get; set; }
 
         /// <summary>
-        /// This is called before any metadata refresh and returns ItemUpdateType indictating if changes were made, and what.
+        /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
-        /// <returns>ItemUpdateType.</returns>
-        ItemUpdateType BeforeMetadataRefresh();
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        bool BeforeMetadataRefresh();
+
+        /// <summary>
+        /// Afters the metadata refresh.
+        /// </summary>
+        void AfterMetadataRefresh();
+
+        /// <summary>
+        /// Gets a value indicating whether [supports people].
+        /// </summary>
+        /// <value><c>true</c> if [supports people]; otherwise, <c>false</c>.</value>
+        bool SupportsPeople { get; }
+
+        bool RequiresRefresh();
+
+        bool EnableRefreshOnDateModifiedChange { get; }
+
+        string PresentationUniqueKey { get; set; }
+
+        string GetPresentationUniqueKey();
+        string CreatePresentationUniqueKey();
+        bool StopRefreshIfLocalMetadataFound { get; }
+
+        int? GetInheritedParentalRatingValue();
+        int InheritedParentalRatingValue { get; set; }
+        List<string> GetInheritedTags();
+        List<string> InheritedTags { get; set; }
     }
 }

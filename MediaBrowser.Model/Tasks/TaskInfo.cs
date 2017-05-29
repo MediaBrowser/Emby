@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MediaBrowser.Model.Tasks
 {
@@ -30,7 +29,7 @@ namespace MediaBrowser.Model.Tasks
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the last execution result.
@@ -61,6 +60,12 @@ namespace MediaBrowser.Model.Tasks
         /// </summary>
         /// <value><c>true</c> if this instance is hidden; otherwise, <c>false</c>.</value>
         public bool IsHidden { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        /// <value>The key.</value>
+        public string Key { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskInfo"/> class.

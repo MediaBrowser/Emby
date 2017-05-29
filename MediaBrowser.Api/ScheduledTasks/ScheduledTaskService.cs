@@ -1,19 +1,18 @@
 ﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.ScheduledTasks;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Tasks;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ServiceStack.Text.Controller;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.ScheduledTasks
 {
     /// <summary>
     /// Class GetScheduledTask
     /// </summary>
-    [Route("/ScheduledTasks/{Id}", "GET")]
-    [Api(Description = "Gets a scheduled task, by Id")]
+    [Route("/ScheduledTasks/{Id}", "GET", Summary = "Gets a scheduled task, by Id")]
     public class GetScheduledTask : IReturn<TaskInfo>
     {
         /// <summary>
@@ -21,25 +20,26 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>
     /// Class GetScheduledTasks
     /// </summary>
-    [Route("/ScheduledTasks", "GET")]
-    [Api(Description = "Gets scheduled tasks")]
+    [Route("/ScheduledTasks", "GET", Summary = "Gets scheduled tasks")]
     public class GetScheduledTasks : IReturn<List<TaskInfo>>
     {
         [ApiMember(Name = "IsHidden", Description = "Optional filter tasks that are hidden, or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? IsHidden { get; set; }
+
+        [ApiMember(Name = "IsEnabled", Description = "Optional filter tasks that are enabled, or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
+        public bool? IsEnabled { get; set; }
     }
 
     /// <summary>
     /// Class StartScheduledTask
     /// </summary>
-    [Route("/ScheduledTasks/Running/{Id}", "POST")]
-    [Api(Description = "Starts a scheduled task")]
+    [Route("/ScheduledTasks/Running/{Id}", "POST", Summary = "Starts a scheduled task")]
     public class StartScheduledTask : IReturnVoid
     {
         /// <summary>
@@ -47,14 +47,13 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>
     /// Class StopScheduledTask
     /// </summary>
-    [Route("/ScheduledTasks/Running/{Id}", "DELETE")]
-    [Api(Description = "Stops a scheduled task")]
+    [Route("/ScheduledTasks/Running/{Id}", "DELETE", Summary = "Stops a scheduled task")]
     public class StopScheduledTask : IReturnVoid
     {
         /// <summary>
@@ -62,14 +61,13 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>
     /// Class UpdateScheduledTaskTriggers
     /// </summary>
-    [Route("/ScheduledTasks/{Id}/Triggers", "POST")]
-    [Api(Description = "Updates the triggers for a scheduled task")]
+    [Route("/ScheduledTasks/{Id}/Triggers", "POST", Summary = "Updates the triggers for a scheduled task")]
     public class UpdateScheduledTaskTriggers : List<TaskTriggerInfo>, IReturnVoid
     {
         /// <summary>
@@ -77,12 +75,13 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// </summary>
         /// <value>The task id.</value>
         [ApiMember(Name = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>
     /// Class ScheduledTasksService
     /// </summary>
+    [Authenticated(Roles = "Admin")]
     public class ScheduledTaskService : BaseApiService
     {
         /// <summary>
@@ -91,12 +90,14 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// <value>The task manager.</value>
         private ITaskManager TaskManager { get; set; }
 
+        private readonly IServerConfigurationManager _config;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduledTaskService" /> class.
         /// </summary>
         /// <param name="taskManager">The task manager.</param>
-        /// <exception cref="System.ArgumentNullException">taskManager</exception>
-        public ScheduledTaskService(ITaskManager taskManager)
+        /// <exception cref="ArgumentNullException">taskManager</exception>
+        public ScheduledTaskService(ITaskManager taskManager, IServerConfigurationManager config)
         {
             if (taskManager == null)
             {
@@ -104,6 +105,7 @@ namespace MediaBrowser.Api.ScheduledTasks
             }
 
             TaskManager = taskManager;
+            _config = config;
         }
 
         /// <summary>
@@ -135,6 +137,25 @@ namespace MediaBrowser.Api.ScheduledTasks
                 });
             }
 
+            if (request.IsEnabled.HasValue)
+            {
+                var val = request.IsEnabled.Value;
+
+                result = result.Where(i =>
+                {
+                    var isEnabled = true;
+
+                    var configurableTask = i.ScheduledTask as IConfigurableScheduledTask;
+
+                    if (configurableTask != null)
+                    {
+                        isEnabled = configurableTask.IsEnabled;
+                    }
+
+                    return isEnabled == val;
+                });
+            }
+            
             var infos = result
                 .Select(ScheduledTaskHelpers.GetTaskInfo)
                 .ToList();
@@ -150,7 +171,7 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// <exception cref="MediaBrowser.Common.Extensions.ResourceNotFoundException">Task not found</exception>
         public object Get(GetScheduledTask request)
         {
-            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => i.Id == request.Id);
+            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => string.Equals(i.Id, request.Id));
 
             if (task == null)
             {
@@ -169,11 +190,21 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// <exception cref="MediaBrowser.Common.Extensions.ResourceNotFoundException">Task not found</exception>
         public void Post(StartScheduledTask request)
         {
-            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => i.Id == request.Id);
+            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => string.Equals(i.Id, request.Id));
 
             if (task == null)
             {
                 throw new ResourceNotFoundException("Task not found");
+            }
+
+            if (string.Equals(task.ScheduledTask.Key, "SystemUpdateTask", StringComparison.OrdinalIgnoreCase))
+            {
+                // This is a hack for now just to get the update application function to work when auto-update is disabled
+                if (!_config.Configuration.EnableAutoUpdate)
+                {
+                    _config.Configuration.EnableAutoUpdate = true;
+                    _config.SaveConfiguration();
+                }
             }
 
             TaskManager.Execute(task);
@@ -186,7 +217,7 @@ namespace MediaBrowser.Api.ScheduledTasks
         /// <exception cref="MediaBrowser.Common.Extensions.ResourceNotFoundException">Task not found</exception>
         public void Delete(StopScheduledTask request)
         {
-            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => i.Id == request.Id);
+            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => string.Equals(i.Id, request.Id));
 
             if (task == null)
             {
@@ -205,10 +236,9 @@ namespace MediaBrowser.Api.ScheduledTasks
         {
             // We need to parse this manually because we told service stack not to with IRequiresRequestStream
             // https://code.google.com/p/servicestack/source/browse/trunk/Common/ServiceStack.Text/ServiceStack.Text/Controller/PathInfo.cs
-            var pathInfo = PathInfo.Parse(Request.PathInfo);
-            var id = new Guid(pathInfo.GetArgumentValue<string>(1));
+            var id = GetPathValue(1);
 
-            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => i.Id == id);
+            var task = TaskManager.ScheduledTasks.FirstOrDefault(i => string.Equals(i.Id, id));
 
             if (task == null)
             {
@@ -217,7 +247,7 @@ namespace MediaBrowser.Api.ScheduledTasks
 
             var triggerInfos = request;
 
-            task.Triggers = triggerInfos.Select(ScheduledTaskHelpers.GetTrigger);
+            task.Triggers = triggerInfos.ToArray();
         }
     }
 }

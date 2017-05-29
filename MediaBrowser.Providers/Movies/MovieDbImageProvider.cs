@@ -1,6 +1,8 @@
-﻿using MediaBrowser.Common.Net;
+﻿using System.Globalization;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -12,18 +14,21 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.Movies
 {
-    class MovieDbImageProvider : IRemoteImageProvider, IHasOrder, IHasChangeMonitor
+    class MovieDbImageProvider : IRemoteImageProvider, IHasOrder
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IHttpClient _httpClient;
+        private readonly IFileSystem _fileSystem;
 
-        public MovieDbImageProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient)
+        public MovieDbImageProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem)
         {
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
+            _fileSystem = fileSystem;
         }
 
         public string Name
@@ -38,15 +43,14 @@ namespace MediaBrowser.Providers.Movies
 
         public bool Supports(IHasImages item)
         {
-            var trailer = item as Trailer;
-
-            if (trailer != null)
+            // Supports images for tv movies
+            var tvProgram = item as LiveTvProgram;
+            if (tvProgram != null && tvProgram.IsMovie)
             {
-                return !trailer.IsLocalTrailer;
+                return true;
             }
 
-            // Don't support local trailers
-            return item is Movie || item is MusicVideo;
+            return item is Movie || item is MusicVideo || item is Trailer;
         }
 
         public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
@@ -58,18 +62,13 @@ namespace MediaBrowser.Providers.Movies
             };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, ImageType imageType, CancellationToken cancellationToken)
-        {
-            var images = await GetAllImages(item, cancellationToken).ConfigureAwait(false);
-
-            return images.Where(i => i.Type == imageType);
-        }
-
-        public async Task<IEnumerable<RemoteImageInfo>> GetAllImages(IHasImages item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             var list = new List<RemoteImageInfo>();
 
-            var results = await FetchImages((BaseItem)item, _jsonSerializer, cancellationToken).ConfigureAwait(false);
+            var language = item.GetPreferredMetadataLanguage();
+
+            var results = await FetchImages((BaseItem)item, null, _jsonSerializer, cancellationToken).ConfigureAwait(false);
 
             if (results == null)
             {
@@ -78,34 +77,40 @@ namespace MediaBrowser.Providers.Movies
 
             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-            var tmdbImageUrl = tmdbSettings.images.base_url + "original";
+            var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
 
-            list.AddRange(GetPosters(results).Select(i => new RemoteImageInfo
+            var supportedImages = GetSupportedImages(item).ToList();
+
+            if (supportedImages.Contains(ImageType.Primary))
             {
-                Url = tmdbImageUrl + i.file_path,
-                CommunityRating = i.vote_average,
-                VoteCount = i.vote_count,
-                Width = i.width,
-                Height = i.height,
-                Language = i.iso_639_1,
-                ProviderName = Name,
-                Type = ImageType.Primary,
-                RatingType = RatingType.Score
-            }));
+                list.AddRange(GetPosters(results).Select(i => new RemoteImageInfo
+                {
+                    Url = tmdbImageUrl + i.file_path,
+                    CommunityRating = i.vote_average,
+                    VoteCount = i.vote_count,
+                    Width = i.width,
+                    Height = i.height,
+                    Language = MovieDbProvider.AdjustImageLanguage(i.iso_639_1, language),
+                    ProviderName = Name,
+                    Type = ImageType.Primary,
+                    RatingType = RatingType.Score
+                }));
+            }
 
-            list.AddRange(GetBackdrops(results).Select(i => new RemoteImageInfo
+            if (supportedImages.Contains(ImageType.Backdrop))
             {
-                Url = tmdbImageUrl + i.file_path,
-                CommunityRating = i.vote_average,
-                VoteCount = i.vote_count,
-                Width = i.width,
-                Height = i.height,
-                ProviderName = Name,
-                Type = ImageType.Backdrop,
-                RatingType = RatingType.Score
-            }));
-
-            var language = item.GetPreferredMetadataLanguage();
+                list.AddRange(GetBackdrops(results).Select(i => new RemoteImageInfo
+                {
+                    Url = tmdbImageUrl + i.file_path,
+                    CommunityRating = i.vote_average,
+                    VoteCount = i.vote_count,
+                    Width = i.width,
+                    Height = i.height,
+                    ProviderName = Name,
+                    Type = ImageType.Backdrop,
+                    RatingType = RatingType.Score
+                }));
+            }
 
             var isLanguageEn = string.Equals(language, "en", StringComparison.OrdinalIgnoreCase);
 
@@ -162,16 +167,28 @@ namespace MediaBrowser.Providers.Movies
         /// Fetches the images.
         /// </summary>
         /// <param name="item">The item.</param>
+        /// <param name="language">The language.</param>
         /// <param name="jsonSerializer">The json serializer.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{MovieImages}.</returns>
-        private async Task<MovieDbProvider.Images> FetchImages(BaseItem item, IJsonSerializer jsonSerializer,
-            CancellationToken cancellationToken)
+        private async Task<MovieDbProvider.Images> FetchImages(BaseItem item, string language, IJsonSerializer jsonSerializer, CancellationToken cancellationToken)
         {
             var tmdbId = item.GetProviderId(MetadataProviders.Tmdb);
-            var language = item.GetPreferredMetadataLanguage();
 
-            if (string.IsNullOrEmpty(tmdbId))
+            if (string.IsNullOrWhiteSpace(tmdbId))
+            {
+                var imdbId = item.GetProviderId(MetadataProviders.Imdb);
+                if (!string.IsNullOrWhiteSpace(imdbId))
+                {
+                    var movieInfo = await MovieDbProvider.Current.FetchMainResult(imdbId, false, language, cancellationToken).ConfigureAwait(false);
+                    if (movieInfo != null)
+                    {
+                        tmdbId = movieInfo.id.ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(tmdbId))
             {
                 return null;
             }
@@ -182,7 +199,7 @@ namespace MediaBrowser.Providers.Movies
 
             if (!string.IsNullOrEmpty(path))
             {
-                var fileInfo = new FileInfo(path);
+                var fileInfo = _fileSystem.GetFileInfo(path);
 
                 if (fileInfo.Exists)
                 {
@@ -203,14 +220,8 @@ namespace MediaBrowser.Providers.Movies
             return _httpClient.GetResponse(new HttpRequestOptions
             {
                 CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = MovieDbProvider.Current.MovieDbResourcePool
+                Url = url
             });
-        }
-
-        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService, DateTime date)
-        {
-            return MovieDbProvider.Current.HasChanged(item, date);
         }
     }
 }

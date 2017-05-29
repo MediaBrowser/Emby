@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Model.Entities
 {
@@ -25,6 +26,8 @@ namespace MediaBrowser.Model.Entities
         /// <value>The type of the collection.</value>
         public string CollectionType { get; set; }
 
+        public LibraryOptions LibraryOptions { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualFolderInfo"/> class.
         /// </summary>
@@ -32,5 +35,17 @@ namespace MediaBrowser.Model.Entities
         {
             Locations = new List<string>();
         }
+
+        /// <summary>
+        /// Gets or sets the item identifier.
+        /// </summary>
+        /// <value>The item identifier.</value>
+        public string ItemId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the primary image item identifier.
+        /// </summary>
+        /// <value>The primary image item identifier.</value>
+        public string PrimaryImageItemId { get; set; }
     }
 }

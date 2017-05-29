@@ -1,6 +1,5 @@
-﻿using MediaBrowser.Model.Extensions;
-using System;
-using System.Runtime.Serialization;
+﻿using System;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Updates
 {
@@ -39,7 +38,18 @@ namespace MediaBrowser.Model.Updates
         [IgnoreDataMember]
         public Version version
         {
-            get { return _version ?? (_version = new Version(versionStr.ValueOrDefault("0.0.0.1"))); }
+            get { return _version ?? (_version = new Version(ValueOrDefault(versionStr, "0.0.0.1"))); }
+        }
+
+        /// <summary>
+        /// Values the or default.
+        /// </summary>
+        /// <param name="str">The STR.</param>
+        /// <param name="def">The def.</param>
+        /// <returns>System.String.</returns>
+        private static string ValueOrDefault(string str, string def)
+        {
+            return string.IsNullOrEmpty(str) ? def : str;
         }
 
         /// <summary>
@@ -70,12 +80,14 @@ namespace MediaBrowser.Model.Updates
         /// Gets or sets the source URL.
         /// </summary>
         /// <value>The source URL.</value>
-        public Guid checksum { get; set; }
+        public string checksum { get; set; }
 
         /// <summary>
         /// Gets or sets the target filename.
         /// </summary>
         /// <value>The target filename.</value>
         public string targetFilename { get; set; }
+
+        public string infoUrl { get; set; }
     }
 }

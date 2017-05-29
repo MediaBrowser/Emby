@@ -1,76 +1,60 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <div id="userParentalControlPage" data-role="page" class="page type-interior userProfilesConfigurationPage">
+﻿<div id="userParentalControlPage" data-role="page" class="page type-interior userProfilesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Users" data-require="scripts/userparentalcontrol,emby-checkbox,emby-button,emby-select">
 
-        <div data-role="content">
-            <div class="content-primary">
-                <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('useredit.html', true);">Profile</a>
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('userimage.html', true);">Image</a>
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('userparentalcontrol.html', true);" class="ui-btn-active">Parental Control</a>
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('userpassword.html', true);">Password</a>
-                    <a href="#" data-role="button" onclick="Dashboard.navigate('usersettings.html', true);">Preferences</a>
+    <div>
+        <div class="content-primary">
+            <div data-role="controlgroup" data-type="horizontal" class="localnav" data-mini="true">
+                <a href="#" data-role="button" onclick="Dashboard.navigate('useredit.html', true);">${TabProfile}</a>
+                <a href="#" data-role="button" onclick="Dashboard.navigate('userlibraryaccess.html', true);">${TabAccess}</a>
+                <a href="#" data-role="button" onclick="Dashboard.navigate('userparentalcontrol.html', true);" class="ui-btn-active">${TabParentalControl}</a>
+                <a href="#" data-role="button" onclick="Dashboard.navigate('userpassword.html', true);">${TabPassword}</a>
+            </div>
+            <form class="userParentalControlForm">
+
+                <div class="selectContainer">
+                    <select is="emby-select" id="selectMaxParentalRating" label="${LabelMaxParentalRating}"></select>
+                    <div class="fieldDescription">${MaxParentalRatingHelp}</div>
                 </div>
-                <form class="userParentalControlForm">
 
+                <div>
+                    <div class="blockUnratedItems">
+                    </div>
+                </div>
+                <br />
 
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <label for="selectMaxParentalRating">Maximum allowed parental rating:</label>
-                            <select name="selectMaxParentalRating" id="selectMaxParentalRating"></select>
-                            <div class="fieldDescription">Content with a higher rating will be hidden from this user.</div>
-                        </li>
-                    </ul>
-
-                    <div>
-                        <fieldset data-role="controlgroup">
-                            <legend>Hide content with no rating information</legend>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedBooks" name="chkHideUnratedBooks" />
-                            <label for="chkHideUnratedBooks">Books</label>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedGames" name="chkHideUnratedGames" />
-                            <label for="chkHideUnratedGames">Games</label>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedMovies" name="chkHideUnratedMovies" />
-                            <label for="chkHideUnratedMovies">Movies</label>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedMusic" name="chkHideUnratedMusic" />
-                            <label for="chkHideUnratedMusic">Music</label>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedTrailers" name="chkHideUnratedTrailers" />
-                            <label for="chkHideUnratedTrailers">Trailers</label>
-
-                            <input type="checkbox" data-mini="true" id="chkHideUnratedSeries" name="chkHideUnratedSeries" />
-                            <label for="chkHideUnratedSeries">TV Shows</label>
-
-                            <input type="checkbox" data-mini="true" id="chkBlockNotRated" name="chkBlockNotRated" />
-                            <label for="chkBlockNotRated">Other Items</label>
-                        </fieldset>
+                <div class="verticalSection">
+                    <div class="detailSectionHeader sectionTitleContainer">
+                        <h1 class="sectionTitle">${LabelBlockContentWithTags}</h1>
+                        <button is="emby-button" type="button" class="raised btnAddBlockedTag submit raised-mini sectionTitleButton" style="margin-left:1em;" title="${ButtonAdd}">
+                            <i class="md-icon">add</i>
+                            <span>${ButtonAdd}</span>
+                        </button>
+                    </div>
+                    <div class="blockedTags" style="margin-top:.5em;">
 
                     </div>
-                    <br />
-                    <br />
-                    <ul data-role="listview" class="ulForm">
-                        <li>
-                            <button type="submit" data-theme="b" data-icon="check">
-                                Save
-                            </button>
-                            <button type="button" onclick="history.back();" data-icon="delete">
-                                Cancel
-                            </button>
-                        </li>
-                    </ul>
-                </form>
-            </div>
+                </div>
+
+                <div class="accessScheduleSection verticalSection">
+                    <div class="sectionTitleContainer">
+                        <h1 class="sectionTitle">${HeaderAccessSchedule}</h1>
+                        <button is="emby-button" type="button" class="raised btnAddSchedule submit raised-mini sectionTitleButton" style="margin-left:1em;" title="${ButtonAdd}">
+                            <i class="md-icon">add</i>
+                            <span>${ButtonAdd}</span>
+                        </button>
+                    </div>
+                    <p>${HeaderAccessScheduleHelp}</p>
+                    <div class="accessScheduleList paperList">
+
+                    </div>
+                </div>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>${ButtonSave}</span>
+                    </button>
+                </div>
+
+            </form>
         </div>
-        <script type="text/javascript">
-            $('.userParentalControlForm').off('submit', UserParentalControlPage.onSubmit).on('submit', UserParentalControlPage.onSubmit);
-        </script>
     </div>
-</body>
-</html>
+</div>

@@ -1,4 +1,13 @@
-﻿using System;
+﻿using MediaBrowser.Model.Dto;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Events;
+using MediaBrowser.Model.Plugins;
+using MediaBrowser.Model.Session;
+using MediaBrowser.Model.Sync;
+using MediaBrowser.Model.Tasks;
+using MediaBrowser.Model.Updates;
+using System;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Model.ApiClient
 {
@@ -10,63 +19,59 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Occurs when [user deleted].
         /// </summary>
-        event EventHandler<UserDeletedEventArgs> UserDeleted;
-        /// <summary>
-        /// Occurs when [scheduled task started].
-        /// </summary>
-        event EventHandler<ScheduledTaskStartedEventArgs> ScheduledTaskStarted;
+        event EventHandler<GenericEventArgs<string>> UserDeleted;
         /// <summary>
         /// Occurs when [scheduled task ended].
         /// </summary>
-        event EventHandler<ScheduledTaskEndedEventArgs> ScheduledTaskEnded;
+        event EventHandler<GenericEventArgs<TaskResult>> ScheduledTaskEnded;
         /// <summary>
         /// Occurs when [package installing].
         /// </summary>
-        event EventHandler<PackageInstallationEventArgs> PackageInstalling;
+        event EventHandler<GenericEventArgs<InstallationInfo>> PackageInstalling;
         /// <summary>
         /// Occurs when [package installation failed].
         /// </summary>
-        event EventHandler<PackageInstallationEventArgs> PackageInstallationFailed;
+        event EventHandler<GenericEventArgs<InstallationInfo>> PackageInstallationFailed;
         /// <summary>
         /// Occurs when [package installation completed].
         /// </summary>
-        event EventHandler<PackageInstallationEventArgs> PackageInstallationCompleted;
+        event EventHandler<GenericEventArgs<InstallationInfo>> PackageInstallationCompleted;
         /// <summary>
         /// Occurs when [package installation cancelled].
         /// </summary>
-        event EventHandler<PackageInstallationEventArgs> PackageInstallationCancelled;
+        event EventHandler<GenericEventArgs<InstallationInfo>> PackageInstallationCancelled;
         /// <summary>
         /// Occurs when [user updated].
         /// </summary>
-        event EventHandler<UserUpdatedEventArgs> UserUpdated;
+        event EventHandler<GenericEventArgs<UserDto>> UserUpdated;
         /// <summary>
         /// Occurs when [plugin uninstalled].
         /// </summary>
-        event EventHandler<PluginUninstallEventArgs> PluginUninstalled;
+        event EventHandler<GenericEventArgs<PluginInfo>> PluginUninstalled;
         /// <summary>
         /// Occurs when [library changed].
         /// </summary>
-        event EventHandler<LibraryChangedEventArgs> LibraryChanged;
+        event EventHandler<GenericEventArgs<LibraryUpdateInfo>> LibraryChanged;
         /// <summary>
         /// Occurs when [browse command].
         /// </summary>
-        event EventHandler<BrowseRequestEventArgs> BrowseCommand;
+        event EventHandler<GenericEventArgs<BrowseRequest>> BrowseCommand;
         /// <summary>
         /// Occurs when [play command].
         /// </summary>
-        event EventHandler<PlayRequestEventArgs> PlayCommand;
+        event EventHandler<GenericEventArgs<PlayRequest>> PlayCommand;
         /// <summary>
         /// Occurs when [playstate command].
         /// </summary>
-        event EventHandler<PlaystateRequestEventArgs> PlaystateCommand;
+        event EventHandler<GenericEventArgs<PlaystateRequest>> PlaystateCommand;
         /// <summary>
         /// Occurs when [message command].
         /// </summary>
-        event EventHandler<MessageCommandEventArgs> MessageCommand;
+        event EventHandler<GenericEventArgs<MessageCommand>> MessageCommand;
         /// <summary>
         /// Occurs when [system command].
         /// </summary>
-        event EventHandler<SystemCommandEventArgs> SystemCommand;
+        event EventHandler<GenericEventArgs<GeneralCommandEventArgs>> GeneralCommand;
         /// <summary>
         /// Occurs when [notification added].
         /// </summary>
@@ -88,9 +93,25 @@ namespace MediaBrowser.Model.ApiClient
         /// </summary>
         event EventHandler<EventArgs> ServerShuttingDown;
         /// <summary>
+        /// Occurs when [send text command].
+        /// </summary>
+        event EventHandler<GenericEventArgs<string>> SendStringCommand;
+        /// <summary>
+        /// Occurs when [set volume command].
+        /// </summary>
+        event EventHandler<GenericEventArgs<int>> SetVolumeCommand;
+        /// <summary>
+        /// Occurs when [set audio stream index command].
+        /// </summary>
+        event EventHandler<GenericEventArgs<int>> SetAudioStreamIndexCommand;
+        /// <summary>
+        /// Occurs when [set video stream index command].
+        /// </summary>
+        event EventHandler<GenericEventArgs<int>> SetSubtitleStreamIndexCommand;
+        /// <summary>
         /// Occurs when [sessions updated].
         /// </summary>
-        event EventHandler<SessionUpdatesEventArgs> SessionsUpdated;
+        event EventHandler<GenericEventArgs<SessionUpdatesEventArgs>> SessionsUpdated;
         /// <summary>
         /// Occurs when [restart required].
         /// </summary>
@@ -98,15 +119,34 @@ namespace MediaBrowser.Model.ApiClient
         /// <summary>
         /// Occurs when [user data changed].
         /// </summary>
-        event EventHandler<UserDataChangedEventArgs> UserDataChanged;
+        event EventHandler<GenericEventArgs<UserDataChangeInfo>> UserDataChanged;
         /// <summary>
-        /// Occurs when [connected].
+        /// Occurs when [playback start].
         /// </summary>
-        event EventHandler<EventArgs> Connected;
+        event EventHandler<GenericEventArgs<SessionInfoDto>> PlaybackStart;
         /// <summary>
-        /// Gets a value indicating whether this instance is connected.
+        /// Occurs when [playback stopped].
         /// </summary>
-        /// <value><c>true</c> if this instance is connected; otherwise, <c>false</c>.</value>
-        bool IsConnected { get; }
+        event EventHandler<GenericEventArgs<SessionInfoDto>> PlaybackStopped;
+        /// <summary>
+        /// Occurs when [session ended].
+        /// </summary>
+        event EventHandler<GenericEventArgs<SessionInfoDto>> SessionEnded;
+        /// <summary>
+        /// Occurs when [synchronize job created].
+        /// </summary>
+        event EventHandler<GenericEventArgs<SyncJobCreationResult>> SyncJobCreated;
+        /// <summary>
+        /// Occurs when [synchronize job cancelled].
+        /// </summary>
+        event EventHandler<GenericEventArgs<SyncJob>> SyncJobCancelled;
+        /// <summary>
+        /// Occurs when [synchronize jobs updated].
+        /// </summary>
+        event EventHandler<GenericEventArgs<List<SyncJob>>> SyncJobsUpdated;
+        /// <summary>
+        /// Occurs when [synchronize job updated].
+        /// </summary>
+        event EventHandler<GenericEventArgs<CompleteSyncJobInfo>> SyncJobUpdated;
     }
 }

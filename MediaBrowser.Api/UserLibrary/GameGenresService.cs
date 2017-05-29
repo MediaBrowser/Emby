@@ -1,29 +1,22 @@
 ﻿using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Querying;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using MediaBrowser.Model.Querying;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api.UserLibrary
 {
-    [Route("/GameGenres", "GET")]
-    [Api(Description = "Gets all Game genres from a given item, folder, or the entire library")]
+    [Route("/GameGenres", "GET", Summary = "Gets all Game genres from a given item, folder, or the entire library")]
     public class GetGameGenres : GetItemsByName
     {
-        public GetGameGenres()
-        {
-            MediaTypes = MediaType.Game;
-        }
     }
 
-    [Route("/GameGenres/{Name}", "GET")]
-    [Api(Description = "Gets a Game genre, by name")]
+    [Route("/GameGenres/{Name}", "GET", Summary = "Gets a Game genre, by name")]
     public class GetGameGenre : IReturn<BaseItemDto>
     {
         /// <summary>
@@ -38,16 +31,12 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid? UserId { get; set; }
+        public string UserId { get; set; }
     }
 
+    [Authenticated]
     public class GameGenresService : BaseItemsByNameService<GameGenre>
     {
-        public GameGenresService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IDtoService dtoService)
-            : base(userManager, libraryManager, userDataRepository, itemRepo, dtoService)
-        {
-        }
-
         /// <summary>
         /// Gets the specified request.
         /// </summary>
@@ -69,17 +58,16 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var item = GetGameGenre(request.Name, LibraryManager);
 
-            // Get everything
-            var fields = Enum.GetNames(typeof(ItemFields)).Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true));
-
-            if (request.UserId.HasValue)
+            var dtoOptions = GetDtoOptions(AuthorizationContext, request);
+            
+            if (!string.IsNullOrWhiteSpace(request.UserId))
             {
-                var user = UserManager.GetUserById(request.UserId.Value);
+                var user = UserManager.GetUserById(request.UserId);
 
-                return DtoService.GetBaseItemDto(item, fields.ToList(), user);
+                return DtoService.GetBaseItemDto(item, dtoOptions, user);
             }
 
-            return DtoService.GetBaseItemDto(item, fields.ToList());
+            return DtoService.GetBaseItemDto(item, dtoOptions);
         }
 
         /// <summary>
@@ -89,9 +77,14 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetGameGenres request)
         {
-            var result = GetResult(request);
+            var result = GetResultSlim(request);
 
             return ToOptimizedSerializedResultUsingCache(result);
+        }
+
+        protected override QueryResult<Tuple<BaseItem, ItemCounts>> GetItems(GetItemsByName request, InternalItemsQuery query)
+        {
+            return LibraryManager.GetGameGenres(query);
         }
 
         /// <summary>
@@ -100,19 +93,13 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         /// <param name="items">The items.</param>
         /// <returns>IEnumerable{Tuple{System.StringFunc{System.Int32}}}.</returns>
-        protected override IEnumerable<GameGenre> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
+        protected override IEnumerable<BaseItem> GetAllItems(GetItemsByName request, IEnumerable<BaseItem> items)
         {
-            var itemsList = items.Where(i => i.Genres != null).ToList();
-
-            return itemsList
-                .SelectMany(i => i.Genres)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Select(name => LibraryManager.GetGameGenre(name));
+            throw new NotImplementedException();
         }
 
-        protected override IEnumerable<BaseItem> GetLibraryItems(GameGenre item, IEnumerable<BaseItem> libraryItems)
+        public GameGenresService(IUserManager userManager, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepository, IDtoService dtoService, IAuthorizationContext authorizationContext) : base(userManager, libraryManager, userDataRepository, itemRepository, dtoService, authorizationContext)
         {
-            return libraryItems.Where(i => (i is Game) && i.Genres.Contains(item.Name, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

@@ -5,10 +5,12 @@ using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MediaBrowser.Model.Dto;
+using MediaBrowser.Model.Services;
 
 namespace MediaBrowser.Api
 {
@@ -23,16 +25,30 @@ namespace MediaBrowser.Api
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Id { get; set; }
+
+        public string ExcludeArtistIds { get; set; }
     }
 
-    public class BaseGetSimilarItems : IReturn<ItemsResult>, IHasItemFields
+    public class BaseGetSimilarItems : IReturn<ItemsResult>, IHasDtoOptions
     {
+        [ApiMember(Name = "EnableImages", Description = "Optional, include image information in output", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
+        public bool? EnableImages { get; set; }
+
+        [ApiMember(Name = "EnableUserData", Description = "Optional, include user data", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
+        public bool? EnableUserData { get; set; }
+
+        [ApiMember(Name = "ImageTypeLimit", Description = "Optional, the max number of images to return, per image type", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
+        public int? ImageTypeLimit { get; set; }
+
+        [ApiMember(Name = "EnableImageTypes", Description = "Optional. The image types to include in the output.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string EnableImageTypes { get; set; }
+
         /// <summary>
         /// Gets or sets the user id.
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid? UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// The maximum number of items to return
@@ -45,7 +61,7 @@ namespace MediaBrowser.Api
         /// Fields to return within the items, in addition to basic information
         /// </summary>
         /// <value>The fields.</value>
-        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, CriticRatingSummary, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, OverviewHtml, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
+        [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Fields { get; set; }
     }
 
@@ -54,34 +70,30 @@ namespace MediaBrowser.Api
     /// </summary>
     public static class SimilarItemsHelper
     {
-        /// <summary>
-        /// Gets the similar items.
-        /// </summary>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="itemRepository">The item repository.</param>
-        /// <param name="libraryManager">The library manager.</param>
-        /// <param name="userDataRepository">The user data repository.</param>
-        /// <param name="dtoService">The dto service.</param>
-        /// <param name="logger">The logger.</param>
-        /// <param name="request">The request.</param>
-        /// <param name="includeInSearch">The include in search.</param>
-        /// <param name="getSimilarityScore">The get similarity score.</param>
-        /// <returns>ItemsResult.</returns>
-        internal static ItemsResult GetSimilarItemsResult(IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, IUserDataManager userDataRepository, IDtoService dtoService, ILogger logger, BaseGetSimilarItemsFromItem request, Func<BaseItem, bool> includeInSearch, Func<BaseItem, BaseItem, int> getSimilarityScore)
+        internal static async Task<QueryResult<BaseItemDto>> GetSimilarItemsResult(DtoOptions dtoOptions, IUserManager userManager, IItemRepository itemRepository, ILibraryManager libraryManager, IUserDataManager userDataRepository, IDtoService dtoService, ILogger logger, BaseGetSimilarItemsFromItem request, Type[] includeTypes, Func<BaseItem, List<PersonInfo>, List<PersonInfo>, BaseItem, int> getSimilarityScore)
         {
-            var user = request.UserId.HasValue ? userManager.GetUserById(request.UserId.Value) : null;
+            var user = !string.IsNullOrWhiteSpace(request.UserId) ? userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (request.UserId.HasValue ? user.RootFolder :
-                (Folder)libraryManager.RootFolder) : dtoService.GetItemByDtoId(request.Id, request.UserId);
+                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                libraryManager.RootFolder) : libraryManager.GetItemById(request.Id);
 
-            var fields = request.GetItemFields().ToList();
+            var query = new InternalItemsQuery(user)
+            {
+                IncludeItemTypes = includeTypes.Select(i => i.Name).ToArray(),
+                Recursive = true,
+                DtoOptions = dtoOptions
+            };
 
-            var inputItems = user == null
-                                 ? libraryManager.RootFolder.GetRecursiveChildren(i => i.Id != item.Id)
-                                 : user.RootFolder.GetRecursiveChildren(user, i => i.Id != item.Id);
+            // ExcludeArtistIds
+            if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
+            {
+                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+            }
 
-            var items = GetSimilaritems(item, inputItems, includeInSearch, getSimilarityScore)
+            var inputItems = libraryManager.GetItemList(query);
+
+            var items = GetSimilaritems(item, libraryManager, inputItems, getSimilarityScore)
                 .ToList();
 
             IEnumerable<BaseItem> returnItems = items;
@@ -91,29 +103,35 @@ namespace MediaBrowser.Api
                 returnItems = returnItems.Take(request.Limit.Value);
             }
 
-            var result = new ItemsResult
+            var dtos = await dtoService.GetBaseItemDtos(returnItems, dtoOptions, user).ConfigureAwait(false);
+
+            return new QueryResult<BaseItemDto>
             {
-                Items = returnItems.Select(i => dtoService.GetBaseItemDto(i, fields, user)).ToArray(),
+                Items = dtos.ToArray(),
 
                 TotalRecordCount = items.Count
             };
-
-            return result;
         }
 
         /// <summary>
         /// Gets the similaritems.
         /// </summary>
         /// <param name="item">The item.</param>
+        /// <param name="libraryManager">The library manager.</param>
         /// <param name="inputItems">The input items.</param>
-        /// <param name="includeInSearch">The include in search.</param>
         /// <param name="getSimilarityScore">The get similarity score.</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
-        internal static IEnumerable<BaseItem> GetSimilaritems(BaseItem item, IEnumerable<BaseItem> inputItems, Func<BaseItem, bool> includeInSearch, Func<BaseItem, BaseItem, int> getSimilarityScore)
+        internal static IEnumerable<BaseItem> GetSimilaritems(BaseItem item, ILibraryManager libraryManager, IEnumerable<BaseItem> inputItems, Func<BaseItem, List<PersonInfo>, List<PersonInfo>, BaseItem, int> getSimilarityScore)
         {
-            inputItems = inputItems.Where(includeInSearch);
+            var itemId = item.Id;
+            inputItems = inputItems.Where(i => i.Id != itemId);
+            var itemPeople = libraryManager.GetPeople(item);
+            var allPeople = libraryManager.GetPeople(new InternalPeopleQuery
+            {
+                AppearsInItemId = item.Id
+            });
 
-            return inputItems.Select(i => new Tuple<BaseItem, int>(i, getSimilarityScore(item, i)))
+            return inputItems.Select(i => new Tuple<BaseItem, int>(i, getSimilarityScore(item, itemPeople, allPeople, i)))
                 .Where(i => i.Item2 > 2)
                 .OrderByDescending(i => i.Item2)
                 .Select(i => i.Item1);
@@ -121,39 +139,29 @@ namespace MediaBrowser.Api
 
         private static IEnumerable<string> GetTags(BaseItem item)
         {
-            var hasTags = item as IHasTags;
-            if (hasTags != null)
-            {
-                return hasTags.Tags;
-            }
-
-            return new List<string>();
+            return item.Tags;
         }
 
         private static IEnumerable<string> GetKeywords(BaseItem item)
         {
-            var hasTags = item as IHasKeywords;
-            if (hasTags != null)
-            {
-                return hasTags.Keywords;
-            }
-
-            return new List<string>();
+            return item.Keywords;
         }
 
         /// <summary>
         /// Gets the similiarity score.
         /// </summary>
         /// <param name="item1">The item1.</param>
+        /// <param name="item1People">The item1 people.</param>
+        /// <param name="allPeople">All people.</param>
         /// <param name="item2">The item2.</param>
         /// <returns>System.Int32.</returns>
-        internal static int GetSimiliarityScore(BaseItem item1, BaseItem item2)
+        internal static int GetSimiliarityScore(BaseItem item1, List<PersonInfo> item1People, List<PersonInfo> allPeople, BaseItem item2)
         {
             var points = 0;
 
             if (!string.IsNullOrEmpty(item1.OfficialRating) && string.Equals(item1.OfficialRating, item2.OfficialRating, StringComparison.OrdinalIgnoreCase))
             {
-                points += 1;
+                points += 10;
             }
 
             // Find common genres
@@ -164,15 +172,17 @@ namespace MediaBrowser.Api
 
             // Find common keywords
             points += GetKeywords(item1).Where(i => GetKeywords(item2).Contains(i, StringComparer.OrdinalIgnoreCase)).Sum(i => 10);
-            
+
             // Find common studios
             points += item1.Studios.Where(i => item2.Studios.Contains(i, StringComparer.OrdinalIgnoreCase)).Sum(i => 3);
 
-            var item2PeopleNames = item2.People.Select(i => i.Name)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
+            var item2PeopleNames = allPeople.Where(i => i.ItemId == item2.Id)
+                .Select(i => i.Name)
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .DistinctNames()
                 .ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-            points += item1.People.Where(i => item2PeopleNames.ContainsKey(i.Name)).Sum(i =>
+            points += item1People.Where(i => item2PeopleNames.ContainsKey(i.Name)).Sum(i =>
             {
                 if (string.Equals(i.Type, PersonType.Director, StringComparison.OrdinalIgnoreCase) || string.Equals(i.Role, PersonType.Director, StringComparison.OrdinalIgnoreCase))
                 {

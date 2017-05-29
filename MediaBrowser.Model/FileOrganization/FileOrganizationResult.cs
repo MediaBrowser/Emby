@@ -89,23 +89,21 @@ namespace MediaBrowser.Model.FileOrganization
         /// <value>The duplicate paths.</value>
         public List<string> DuplicatePaths { get; set; }
 
+        /// <summary>
+        /// Gets or sets the size of the file.
+        /// </summary>
+        /// <value>The size of the file.</value>
+        public long FileSize { get; set; }
+
+        /// <summary>
+        /// Indicates if the item is currently being processed.
+        /// </summary>
+        /// <remarks>Runtime property not persisted to the store.</remarks>
+        public bool IsInProgress { get; set; }
+
         public FileOrganizationResult()
         {
             DuplicatePaths = new List<string>();
         }
-    }
-
-    public enum FileSortingStatus
-    {
-        Success,
-        Failure,
-        SkippedExisting
-    }
-
-    public enum FileOrganizerType
-    {
-        Movie,
-        Episode,
-        Song
     }
 }

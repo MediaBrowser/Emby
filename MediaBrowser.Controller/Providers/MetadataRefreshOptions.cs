@@ -1,4 +1,9 @@
-﻿using System;
+﻿using System.Linq;
+using MediaBrowser.Common.IO;
+using MediaBrowser.Controller.IO;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Controller.Providers
 {
@@ -9,59 +14,35 @@ namespace MediaBrowser.Controller.Providers
         /// </summary>
         public bool ReplaceAllMetadata { get; set; }
 
+        public bool IsPostRecursiveRefresh { get; set; }
+
         public MetadataRefreshMode MetadataRefreshMode { get; set; }
+        public RemoteSearchResult SearchResult { get; set; }
 
-        /// <summary>
-        /// TODO: deprecate. Keeping this for now, for api compatibility
-        /// </summary>
-        [Obsolete]
         public bool ForceSave { get; set; }
-    }
 
-    public class ImageRefreshOptions
-    {
-        public ImageRefreshMode ImageRefreshMode { get; set; }
-        public IDirectoryService DirectoryService { get; set; }
-
-        public ImageRefreshOptions()
+        public MetadataRefreshOptions(IFileSystem fileSystem)
+			: this(new DirectoryService(new NullLogger(), fileSystem))
         {
-            ImageRefreshMode = ImageRefreshMode.Default;
         }
-    }
 
-    public enum MetadataRefreshMode
-    {
-        /// <summary>
-        /// Providers will be executed based on default rules
-        /// </summary>
-        EnsureMetadata,
+        public MetadataRefreshOptions(IDirectoryService directoryService)
+            : base(directoryService)
+        {
+            MetadataRefreshMode = MetadataRefreshMode.Default;
+        }
 
-        /// <summary>
-        /// No providers will be executed
-        /// </summary>
-        None,
+        public MetadataRefreshOptions(MetadataRefreshOptions copy)
+            : base(copy.DirectoryService)
+        {
+            MetadataRefreshMode = copy.MetadataRefreshMode;
+            ForceSave = copy.ForceSave;
+            ReplaceAllMetadata = copy.ReplaceAllMetadata;
 
-        /// <summary>
-        /// All providers will be executed to search for new metadata
-        /// </summary>
-        FullRefresh
-    }
-
-    public enum ImageRefreshMode
-    {
-        /// <summary>
-        /// The default
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Existing images will be validated
-        /// </summary>
-        ValidationOnly,
-
-        /// <summary>
-        /// All providers will be executed to search for new metadata
-        /// </summary>
-        FullRefresh
+            ImageRefreshMode = copy.ImageRefreshMode;
+            ReplaceAllImages = copy.ReplaceAllImages;
+            ReplaceImages = copy.ReplaceImages.ToList();
+            SearchResult = copy.SearchResult;
+        }
     }
 }

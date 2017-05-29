@@ -39,11 +39,11 @@ namespace MediaBrowser.Model.Querying
         public string[] SortBy { get; set; }
 
         /// <summary>
-        /// Filter by artists
+        /// Gets or sets the artist ids.
         /// </summary>
-        /// <value>The artists.</value>
-        public string[] Artists { get; set; }
-
+        /// <value>The artist ids.</value>
+        public string[] ArtistIds { get; set; }
+        
         /// <summary>
         /// The sort order to return results with
         /// </summary>
@@ -93,16 +93,10 @@ namespace MediaBrowser.Model.Querying
         public string[] Genres { get; set; }
 
         /// <summary>
-        /// Limit results to items containing specific genres
+        /// Gets or sets the studio ids.
         /// </summary>
-        /// <value>The genres.</value>
-        public string[] AllGenres { get; set; }
-        
-        /// <summary>
-        /// Limit results to items containing specific studios
-        /// </summary>
-        /// <value>The studios.</value>
-        public string[] Studios { get; set; }
+        /// <value>The studio ids.</value>
+        public string[] StudioIds { get; set; }
 
         /// <summary>
         /// Gets or sets the exclude item types.
@@ -126,7 +120,7 @@ namespace MediaBrowser.Model.Querying
         /// Limit results to items containing a specific person
         /// </summary>
         /// <value>The person.</value>
-        public string Person { get; set; }
+        public string[] PersonIds { get; set; }
 
         /// <summary>
         /// If the Person filter is used, this can also be used to restrict to a specific person type
@@ -211,12 +205,24 @@ namespace MediaBrowser.Model.Querying
         /// </summary>
         /// <value>The max players.</value>
         public int? MaxPlayers { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the name starts with or greater.
         /// </summary>
         /// <value>The name starts with or greater.</value>
         public string NameStartsWithOrGreater { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name starts with.
+        /// </summary>
+        /// <value>The name starts with or greater.</value>
+        public string NameStartsWith { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name starts with.
+        /// </summary>
+        /// <value>The name lessthan.</value>
+        public string NameLessThan { get; set; }
 
         /// <summary>
         /// Gets or sets the album artist starts with or greater.
@@ -252,8 +258,10 @@ namespace MediaBrowser.Model.Querying
 
         public bool? IsInBoxSet { get; set; }
 
+        public bool? CollapseBoxSetItems { get; set; }
+
         public bool? IsPlayed { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the exclude location types.
         /// </summary>
@@ -268,7 +276,20 @@ namespace MediaBrowser.Model.Querying
         public DateTime? MinPremiereDate { get; set; }
 
         public DateTime? MaxPremiereDate { get; set; }
-        
+
+        public bool? EnableImages { get; set; }
+        public int? ImageTypeLimit { get; set; }
+        public ImageType[] EnableImageTypes { get; set; }
+
+        [Obsolete]
+        public string[] Artists { get; set; }
+        [Obsolete]
+        public string[] Studios { get; set; }
+        [Obsolete]
+        public string Person { get; set; }
+
+        public bool EnableTotalRecordCount { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemQuery" /> class.
         /// </summary>
@@ -276,29 +297,36 @@ namespace MediaBrowser.Model.Querying
         {
             LocationTypes = new LocationType[] { };
             ExcludeLocationTypes = new LocationType[] { };
-            
+
             SortBy = new string[] { };
 
-            Filters = new ItemFilter[] {};
+            Filters = new ItemFilter[] { };
 
-            Fields = new ItemFields[] {};
+            Fields = new ItemFields[] { };
 
-            MediaTypes = new string[] {};
+            MediaTypes = new string[] { };
 
-            VideoTypes = new VideoType[] {};
+            VideoTypes = new VideoType[] { };
 
-            Genres = new string[] { };
+            EnableTotalRecordCount = true;
+
+            Artists = new string[] { };
             Studios = new string[] { };
+            
+            Genres = new string[] { };
+            StudioIds = new string[] { };
             IncludeItemTypes = new string[] { };
             ExcludeItemTypes = new string[] { };
             Years = new int[] { };
             PersonTypes = new string[] { };
             Ids = new string[] { };
-            Artists = new string[] { };
+            ArtistIds = new string[] { };
+            PersonIds = new string[] { };
 
             ImageTypes = new ImageType[] { };
             AirDays = new DayOfWeek[] { };
             SeriesStatuses = new SeriesStatus[] { };
+            EnableImageTypes = new ImageType[] { };
         }
     }
 }
