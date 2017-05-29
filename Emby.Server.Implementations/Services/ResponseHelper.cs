@@ -86,6 +86,12 @@ namespace Emby.Server.Implementations.Services
                         continue;
                     }
 
+                    if (string.Equals(responseHeaders.Key, "Content-Type", StringComparison.OrdinalIgnoreCase))
+                    {
+                        response.ContentType = responseHeaders.Value;
+                        continue;
+                    }
+
                     response.AddHeader(responseHeaders.Key, responseHeaders.Value);
                 }
             }
