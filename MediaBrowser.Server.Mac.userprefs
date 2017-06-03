@@ -1,13 +1,79 @@
-﻿<Properties>
+﻿<Properties StartupConfiguration="Multi-Startup">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Emby.Server.Implementations/Activity/ActivityLogEntryPoint.cs">
+    <Files>
+      <File FileName="MediaBrowser.Server.Mac/Main.cs" Line="327" Column="1" />
+      <File FileName="MediaBrowser.Server.Mac/MenuBarIcon.cs" Line="143" Column="1" />
+      <File FileName="SharedVersion.cs" Line="4" Column="1" />
+      <File FileName="MediaBrowser.Server.Mac/Native/MonoFileSystem.cs" Line="24" Column="1" />
+      <File FileName="MediaBrowser.Server.Mac/Native/PowerManagement.cs" Line="16" Column="1" />
+      <File FileName="Emby.Server.Core/SystemEvents.cs" Line="51" Column="1" />
+      <File FileName="Emby.Server.Core/HttpServerFactory.cs" Line="111" Column="1" />
+      <File FileName="Emby.Server.Core/ApplicationPathHelper.cs" Line="21" Column="47" />
+      <File FileName="Emby.Server.Core/ApplicationHost.cs" Line="1789" Column="1" />
+      <File FileName="Emby.Server.Core/Logging/ConsoleLogger.cs" Line="1" Column="14" />
+      <File FileName="Emby.Server.Core/Localization/TextLocalizer.cs" Line="19" Column="20" />
+      <File FileName="Emby.Server.Core/IO/LibraryMonitor.cs" Line="648" Column="1" />
+      <File FileName="Emby.Server.Core/IO/MemoryStreamProvider.cs" Line="3" Column="20" />
+      <File FileName="Emby.Server.Core/EntryPoints/ExternalPortForwarding.cs" Line="335" Column="1" />
+      <File FileName="Emby.Server.Core/Cryptography/ASN1.cs" Line="35" Column="19" />
+      <File FileName="Emby.Common.Implementations/Archiving/ZipClient.cs" Line="8" Column="33" />
+      <File FileName="MediaBrowser.Common/project.json" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/IDependencyContainer.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/IApplicationHost.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Updates/GithubUpdater.cs" Line="269" Column="1" />
+      <File FileName="MediaBrowser.Common/Updates/IInstallationManager.cs" Line="121" Column="2" />
+      <File FileName="MediaBrowser.Common/Updates/InstallationEventArgs.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Updates/InstallationFailedEventArgs.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Security/IRequiresRegistration.cs" Line="16" Column="1" />
+      <File FileName="MediaBrowser.Common/Security/ISecurityManager.cs" Line="49" Column="2" />
+      <File FileName="MediaBrowser.Common/Security/PaymentRequiredException.cs" Line="9" Column="1" />
+      <File FileName="MediaBrowser.Common/Properties/AssemblyInfo.cs" Line="27" Column="3" />
+      <File FileName="MediaBrowser.Common/Progress/ActionableProgress.cs" Line="64" Column="1" />
+      <File FileName="MediaBrowser.Common/Plugins/BasePlugin.cs" Line="290" Column="1" />
+      <File FileName="MediaBrowser.Common/Plugins/IDependencyModule.cs" Line="7" Column="2" />
+      <File FileName="MediaBrowser.Common/Plugins/IPlugin.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Net/HttpRequestOptions.cs" Line="27" Column="10" />
+      <File FileName="MediaBrowser.Common/Net/HttpResponseInfo.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Net/IHttpClient.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Net/INetworkManager.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Extensions/BaseExtensions.cs" Line="59" Column="1" />
+      <File FileName="MediaBrowser.Common/Extensions/ResourceNotFoundException.cs" Line="29" Column="1" />
+      <File FileName="MediaBrowser.Common/Events/EventHelper.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Configuration/ConfigurationUpdateEventArgs.cs" Line="19" Column="1" />
+      <File FileName="MediaBrowser.Common/Configuration/IApplicationPaths.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Configuration/IConfigurationFactory.cs" Line="1" Column="1" />
+      <File FileName="MediaBrowser.Common/Configuration/IConfigurationManager.cs" Line="19" Column="22" />
+      <File FileName="Emby.Server.Implementations/ServerApplicationPaths.cs" Line="1" Column="1" />
+      <File FileName="Emby.Server.Implementations/StartupOptions.cs" Line="1" Column="1" />
+      <File FileName="Emby.Server.Implementations/Activity/ActivityLogEntryPoint.cs" Line="20" Column="40" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MediaBrowser.Server.Mac" expanded="True">
+            <Node name="Emby.Server.Implementations" expanded="True">
+              <Node name="Activity" expanded="True">
+                <Node name="ActivityLogEntryPoint.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/luke/MediaBrowser/MediaBrowser.Common.Implementations/BaseApplicationPaths.cs" line="233" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.Emby.Server.Mac PreferredExecutionTarget="Test1" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <StartupItems>
-    <String>MediaBrowser.Server.Mac/Emby.Server.Mac.csproj</String>
-  </StartupItems>
+  <MultiItemStartupConfigurations>
+    <MultiItemSolutionRunConfiguration Id="Multi-Startup" Name="Multi-Startup">
+      <Items>
+        <StartupItem ItemId="{C97B98FA-00D4-4880-88B8-C76017A418AB}" ItemName="Emby.Server.Mac" ConfigurationId="Default" />
+      </Items>
+    </MultiItemSolutionRunConfiguration>
+  </MultiItemStartupConfigurations>
 </Properties>

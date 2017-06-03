@@ -1,6 +1,4 @@
-﻿using MediaBrowser.Controller;
-using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Model.Logging;
+﻿using MediaBrowser.Model.Logging;
 using System;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
@@ -8,138 +6,143 @@ using Emby.Server.Implementations.Browser;
 
 namespace MediaBrowser.Server.Mac
 {
-	public class MenuBarIcon
-	{
-		private NSMenuItem browseMenuItem;
-		private NSMenuItem configureMenuItem;
-		private NSMenuItem quitMenuItem;
-		private NSMenuItem communityMenuItem;
+    public class MenuBarIcon
+    {
+        private NSMenuItem browseMenuItem;
+        private NSMenuItem configureMenuItem;
+        private NSMenuItem quitMenuItem;
+        private NSMenuItem communityMenuItem;
 
-		public static MenuBarIcon Instance;
+        public static MenuBarIcon Instance;
 
-		public MenuBarIcon (ILogger logger)
-		{
-			Instance = this;
-			Logger = logger;
-		}
+        public MenuBarIcon(ILogger logger)
+        {
+            Instance = this;
+            Logger = logger;
+        }
 
-		public void ShowIcon() {
+        public void ShowIcon()
+        {
+            NSApplication.SharedApplication.BeginInvokeOnMainThread(CreateMenus);
+        }
 
-			NSApplication.SharedApplication.BeginInvokeOnMainThread (CreateMenus);
-		}
+        private void CreateMenus()
+        {
+            CreateNsMenu();
+        }
 
-		private void CreateMenus() {
+        public void Localize()
+        {
+            NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
+            {
 
-			CreateNsMenu ();
-		}
+                var configManager = MainClass.AppHost.ServerConfigurationManager;
 
-		public void Localize() 
-		{
-			NSApplication.SharedApplication.BeginInvokeOnMainThread (() => {
+                configManager.ConfigurationUpdated -= Instance_ConfigurationUpdated;
+                LocalizeText();
+                configManager.ConfigurationUpdated += Instance_ConfigurationUpdated;
+            });
+        }
 
-				var configManager = MainClass.AppHost.ServerConfigurationManager;
+        private NSStatusItem statusItem;
+        private void CreateNsMenu()
+        {
+            var menu = new NSMenu();
 
-				configManager.ConfigurationUpdated -= Instance_ConfigurationUpdated;
-				LocalizeText ();
-				configManager.ConfigurationUpdated += Instance_ConfigurationUpdated;
-			});
-		}
+            statusItem = NSStatusBar.SystemStatusBar.CreateStatusItem(30);
+            statusItem.Menu = menu;
+            statusItem.Image = NSImage.ImageNamed("statusicon");
+            statusItem.HighlightMode = true;
 
-		private NSStatusItem statusItem;
-		private void CreateNsMenu() {
+            menu.RemoveAllItems();
 
-			var menu = new NSMenu ();
+            browseMenuItem = new NSMenuItem("Browse Media Library", "b", delegate
+            {
+                Browse(NSApplication.SharedApplication);
+            });
+            menu.AddItem(browseMenuItem);
 
-			statusItem = NSStatusBar.SystemStatusBar.CreateStatusItem(30);
-			statusItem.Menu = menu;
-			statusItem.Image = NSImage.ImageNamed("statusicon");
-			statusItem.HighlightMode = true;
+            configureMenuItem = new NSMenuItem("Configure Media Browser", "c", delegate
+            {
+                Configure(NSApplication.SharedApplication);
+            });
+            menu.AddItem(configureMenuItem);
 
-			menu.RemoveAllItems ();
+            communityMenuItem = new NSMenuItem("Visit Community", "v", delegate
+            {
+                Community(NSApplication.SharedApplication);
+            });
+            menu.AddItem(communityMenuItem);
 
-			browseMenuItem = new NSMenuItem ("Browse Media Library", "b", delegate {
-				Browse (NSApplication.SharedApplication);
-			});
-			menu.AddItem (browseMenuItem);
+            quitMenuItem = new NSMenuItem("Quit", "q", delegate
+            {
+                Quit(NSApplication.SharedApplication);
+            });
+            menu.AddItem(quitMenuItem);
+        }
 
-			configureMenuItem = new NSMenuItem ("Configure Media Browser", "c", delegate {
-				Configure (NSApplication.SharedApplication);
-			});
-			menu.AddItem (configureMenuItem);
+        private ILogger Logger { get; set; }
 
-			communityMenuItem = new NSMenuItem ("Visit Community", "v", delegate {
-				Community (NSApplication.SharedApplication);
-			});
-			menu.AddItem (communityMenuItem);
+        private void Quit(NSObject sender)
+        {
+            MainClass.AppHost.Shutdown();
+        }
 
-			quitMenuItem = new NSMenuItem ("Quit", "q", delegate {
-				Quit (NSApplication.SharedApplication);
-			});
-			menu.AddItem (quitMenuItem);
-		}
+        private void Community(NSObject sender)
+        {
+            BrowserLauncher.OpenCommunity(MainClass.AppHost);
+        }
 
-		private ILogger Logger{ get; set;}
+        private void Configure(NSObject sender)
+        {
+            BrowserLauncher.OpenDashboard(MainClass.AppHost);
+        }
 
-		private void Quit(NSObject sender)
-		{
-			MainClass.AppHost.Shutdown();
-		}
+        private void Browse(NSObject sender)
+        {
+            BrowserLauncher.OpenWebClient(MainClass.AppHost);
+        }
 
-		private void Community(NSObject sender)
-		{
-			BrowserLauncher.OpenCommunity(MainClass.AppHost);
-		}
+        public void Terminate()
+        {
+            NSApplication.SharedApplication.InvokeOnMainThread(() => NSApplication.SharedApplication.Terminate(NSApplication.SharedApplication));
+        }
 
-		private void Configure(NSObject sender)
-		{
-			BrowserLauncher.OpenDashboard(MainClass.AppHost);
-		}
+        private string _uiCulture;
+        /// <summary>
+        /// Handles the ConfigurationUpdated event of the Instance control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        void Instance_ConfigurationUpdated(object sender, EventArgs e)
+        {
+            var configManager = MainClass.AppHost.ServerConfigurationManager;
 
-		private void Browse(NSObject sender)
-		{
-			BrowserLauncher.OpenWebClient(MainClass.AppHost);
-		}
+            if (!string.Equals(configManager.Configuration.UICulture, _uiCulture,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                LocalizeText();
+            }
+        }
 
-		public void Terminate() 
-		{
-			NSApplication.SharedApplication.InvokeOnMainThread (() => NSApplication.SharedApplication.Terminate(NSApplication.SharedApplication));
-		}
+        private void LocalizeText()
+        {
+            var configManager = MainClass.AppHost.ServerConfigurationManager;
 
-		private string _uiCulture;
-		/// <summary>
-		/// Handles the ConfigurationUpdated event of the Instance control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-		void Instance_ConfigurationUpdated(object sender, EventArgs e)
-		{
-			var configManager = MainClass.AppHost.ServerConfigurationManager;
+            _uiCulture = configManager.Configuration.UICulture;
 
-			if (!string.Equals(configManager.Configuration.UICulture, _uiCulture,
-				StringComparison.OrdinalIgnoreCase))
-			{
-				LocalizeText();
-			}
-		}
+            NSApplication.SharedApplication.BeginInvokeOnMainThread(LocalizeInternal);
+        }
 
-		private void LocalizeText()
-		{
-			var configManager = MainClass.AppHost.ServerConfigurationManager;
+        private void LocalizeInternal()
+        {
 
-			_uiCulture = configManager.Configuration.UICulture;
+            var localization = MainClass.AppHost.LocalizationManager;
 
-			NSApplication.SharedApplication.BeginInvokeOnMainThread (LocalizeInternal);
-		}
-
-		private void LocalizeInternal() {
-
-			var localization = MainClass.AppHost.LocalizationManager;
-
-			quitMenuItem.Title = localization.GetLocalizedString("LabelExit");
-			communityMenuItem.Title = localization.GetLocalizedString("LabelVisitCommunity");
-			browseMenuItem.Title = localization.GetLocalizedString("LabelBrowseLibrary");
-			configureMenuItem.Title = localization.GetLocalizedString("LabelConfigureServer");
-		}
-	}
+            quitMenuItem.Title = localization.GetLocalizedString("LabelExit");
+            communityMenuItem.Title = localization.GetLocalizedString("LabelVisitCommunity");
+            browseMenuItem.Title = localization.GetLocalizedString("LabelBrowseLibrary");
+            configureMenuItem.Title = localization.GetLocalizedString("LabelConfigureServer");
+        }
+    }
 }
-
