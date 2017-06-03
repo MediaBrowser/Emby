@@ -305,7 +305,7 @@ namespace SharpCifs.Smb
 				{
 					transport.Send(request, response);
 				}
-				catch (SmbException se)
+				catch (SmbException)
 				{
 					if (request is SmbComTreeConnectAndX)
 					{
@@ -389,7 +389,7 @@ namespace SharpCifs.Smb
 								{
 									transport.Send(request, response);
 								}
-								catch (SmbAuthException sae)
+								catch (SmbAuthException)
 								{
 									throw;
 								}
@@ -440,7 +440,7 @@ namespace SharpCifs.Smb
 								{
 									token = nctx.InitSecContext(token, 0, token.Length);
 								}
-								catch (SmbException se)
+								catch (SmbException)
 								{
 									try
 									{
@@ -470,7 +470,7 @@ namespace SharpCifs.Smb
 									{
 										transport.Send(request, response);
 									}
-									catch (SmbAuthException sae)
+									catch (SmbAuthException)
 									{
 										throw;
 									}
@@ -481,7 +481,7 @@ namespace SharpCifs.Smb
 										{
 											transport.Disconnect(true);
 										}
-										catch (Exception)
+										catch
 										{
 										}
 									}
@@ -512,7 +512,7 @@ namespace SharpCifs.Smb
 					}
 					while (state != 0);
 				}
-				catch (SmbException se)
+				catch (SmbException)
 				{
 					Logoff(true);
 					ConnectionState = 0;

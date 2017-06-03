@@ -94,13 +94,13 @@ namespace Emby.Server.Implementations.Activity
 
                     var whereTextWithoutPaging = whereClauses.Count == 0 ?
                       string.Empty :
-                      " where " + string.Join(" AND ", whereClauses.ToArray());
+                      " where " + string.Join(" AND ", whereClauses);
 
                     if (startIndex.HasValue && startIndex.Value > 0)
                     {
                         var pagingWhereText = whereClauses.Count == 0 ?
                             string.Empty :
-                            " where " + string.Join(" AND ", whereClauses.ToArray());
+                            " where " + string.Join(" AND ", whereClauses);
 
                         whereClauses.Add(string.Format("Id NOT IN (SELECT Id FROM ActivityLogEntries {0} ORDER BY DateCreated DESC LIMIT {1})",
                             pagingWhereText,
@@ -109,7 +109,7 @@ namespace Emby.Server.Implementations.Activity
 
                     var whereText = whereClauses.Count == 0 ?
                         string.Empty :
-                        " where " + string.Join(" AND ", whereClauses.ToArray());
+                        " where " + string.Join(" AND ", whereClauses);
 
                     commandText += whereText;
 
@@ -129,7 +129,7 @@ namespace Emby.Server.Implementations.Activity
                         var list = new List<ActivityLogEntry>();
                         var result = new QueryResult<ActivityLogEntry>();
 
-                        var statements = PrepareAllSafe(db, statementTexts).ToList();
+                        var statements = PrepareAllSafe(db, statementTexts);
 
                         using (var statement = statements[0])
                         {

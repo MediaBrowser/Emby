@@ -89,7 +89,7 @@ namespace SharpCifs
             {
                 Runtime.GetBytesForString(string.Empty, DefaultOemEncoding);
             }
-            catch (Exception ex)
+            catch
             {
                 if (_log.Level >= 2)
                 {

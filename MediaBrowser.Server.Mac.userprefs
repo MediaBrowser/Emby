@@ -1,26 +1,26 @@
 ﻿<Properties StartupConfiguration="Multi-Startup">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Emby.Server.Implementations/Activity/ActivityLogEntryPoint.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MediaBrowser.Model/MediaBrowser.Model.nuget.targets">
     <Files>
       <File FileName="MediaBrowser.Server.Mac/Main.cs" Line="327" Column="1" />
-      <File FileName="MediaBrowser.Server.Mac/MenuBarIcon.cs" Line="143" Column="1" />
+      <File FileName="MediaBrowser.Server.Mac/MenuBarIcon.cs" Line="69" Column="36" />
       <File FileName="SharedVersion.cs" Line="4" Column="1" />
       <File FileName="MediaBrowser.Server.Mac/Native/MonoFileSystem.cs" Line="24" Column="1" />
       <File FileName="MediaBrowser.Server.Mac/Native/PowerManagement.cs" Line="16" Column="1" />
       <File FileName="Emby.Server.Core/SystemEvents.cs" Line="51" Column="1" />
-      <File FileName="Emby.Server.Core/HttpServerFactory.cs" Line="111" Column="1" />
+      <File FileName="Emby.Server.Core/HttpServerFactory.cs" Line="23" Column="2" />
       <File FileName="Emby.Server.Core/ApplicationPathHelper.cs" Line="21" Column="47" />
-      <File FileName="Emby.Server.Core/ApplicationHost.cs" Line="1789" Column="1" />
+      <File FileName="Emby.Server.Core/ApplicationHost.cs" Line="752" Column="14" />
       <File FileName="Emby.Server.Core/Logging/ConsoleLogger.cs" Line="1" Column="14" />
       <File FileName="Emby.Server.Core/Localization/TextLocalizer.cs" Line="19" Column="20" />
-      <File FileName="Emby.Server.Core/IO/LibraryMonitor.cs" Line="648" Column="1" />
+      <File FileName="Emby.Server.Core/IO/LibraryMonitor.cs" Line="57" Column="9" />
       <File FileName="Emby.Server.Core/IO/MemoryStreamProvider.cs" Line="3" Column="20" />
-      <File FileName="Emby.Server.Core/EntryPoints/ExternalPortForwarding.cs" Line="335" Column="1" />
+      <File FileName="Emby.Server.Core/EntryPoints/ExternalPortForwarding.cs" Line="175" Column="33" />
       <File FileName="Emby.Server.Core/Cryptography/ASN1.cs" Line="35" Column="19" />
-      <File FileName="Emby.Common.Implementations/Archiving/ZipClient.cs" Line="8" Column="33" />
+      <File FileName="Emby.Common.Implementations/Archiving/ZipClient.cs" Line="189" Column="1" />
       <File FileName="MediaBrowser.Common/project.json" Line="1" Column="1" />
       <File FileName="MediaBrowser.Common/IDependencyContainer.cs" Line="1" Column="1" />
       <File FileName="MediaBrowser.Common/IApplicationHost.cs" Line="1" Column="1" />
-      <File FileName="MediaBrowser.Common/Updates/GithubUpdater.cs" Line="269" Column="1" />
+      <File FileName="MediaBrowser.Common/Updates/GithubUpdater.cs" Line="92" Column="30" />
       <File FileName="MediaBrowser.Common/Updates/IInstallationManager.cs" Line="121" Column="2" />
       <File FileName="MediaBrowser.Common/Updates/InstallationEventArgs.cs" Line="1" Column="1" />
       <File FileName="MediaBrowser.Common/Updates/InstallationFailedEventArgs.cs" Line="1" Column="1" />
@@ -44,22 +44,178 @@
       <File FileName="MediaBrowser.Common/Configuration/IConfigurationFactory.cs" Line="1" Column="1" />
       <File FileName="MediaBrowser.Common/Configuration/IConfigurationManager.cs" Line="19" Column="22" />
       <File FileName="Emby.Server.Implementations/ServerApplicationPaths.cs" Line="1" Column="1" />
-      <File FileName="Emby.Server.Implementations/StartupOptions.cs" Line="1" Column="1" />
-      <File FileName="Emby.Server.Implementations/Activity/ActivityLogEntryPoint.cs" Line="20" Column="40" />
+      <File FileName="Emby.Server.Implementations/StartupOptions.cs" Line="34" Column="1" />
+      <File FileName="Emby.Server.Implementations/Activity/ActivityLogEntryPoint.cs" Line="439" Column="71" />
+      <File FileName="Emby.Common.Implementations/BaseApplicationHost.cs" Line="759" Column="18" />
+      <File FileName="Emby.Common.Implementations/Xml/XmlReaderSettingsFactory.cs" Line="21" Column="1" />
+      <File FileName="Emby.Common.Implementations/Threading/CommonTimer.cs" Line="4" Column="19" />
+      <File FileName="Emby.Common.Implementations/Threading/TimerFactory.cs" Line="22" Column="1" />
+      <File FileName="Emby.Common.Implementations/TextEncoding/TextEncoding.cs" Line="4" Column="31" />
+      <File FileName="Emby.Common.Implementations/TextEncoding/TextEncodingDetect.cs" Line="220" Column="42" />
+      <File FileName="Emby.Common.Implementations/TextEncoding/UniversalDetector/CharsetDetector.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/TextEncoding/UniversalDetector/DetectionConfidence.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/TextEncoding/UniversalDetector/ICharsetDetector.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/Serialization/JsonSerializer.cs" Line="96" Column="39" />
+      <File FileName="Emby.Common.Implementations/Serialization/XmlSerializer.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/DailyTrigger.cs" Line="44" Column="19" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/IntervalTrigger.cs" Line="102" Column="35" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/ScheduledTaskWorker.cs" Line="792" Column="1" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/StartupTrigger.cs" Line="61" Column="13" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/SystemEventTrigger.cs" Line="78" Column="30" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/TaskManager.cs" Line="334" Column="1" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/WeeklyTrigger.cs" Line="109" Column="6" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/Tasks/DeleteCacheFileTask.cs" Line="124" Column="62" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/Tasks/DeleteLogFileTask.cs" Line="59" Column="13" />
+      <File FileName="Emby.Common.Implementations/ScheduledTasks/Tasks/ReloadLoggerFileTask.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/Reflection/AssemblyInfo.cs" Line="26" Column="1" />
+      <File FileName="Emby.Common.Implementations/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/Networking/NetworkManager.cs" Line="531" Column="1" />
+      <File FileName="Emby.Common.Implementations/Net/DisposableManagedObjectBase.cs" Line="28" Column="10" />
+      <File FileName="Emby.Common.Implementations/Net/NetAcceptSocket.cs" Line="126" Column="127" />
+      <File FileName="Emby.Common.Implementations/Net/SocketAcceptor.cs" Line="124" Column="22" />
+      <File FileName="Emby.Common.Implementations/Net/SocketFactory.cs" Line="64" Column="18" />
+      <File FileName="Emby.Common.Implementations/Net/UdpSocket.cs" Line="15" Column="99" />
+      <File FileName="Emby.Common.Implementations/Logging/NLogger.cs" Line="190" Column="10" />
+      <File FileName="Emby.Common.Implementations/Logging/NlogManager.cs" Line="434" Column="45" />
+      <File FileName="Emby.Common.Implementations/IO/IsoManager.cs" Line="32" Column="60" />
+      <File FileName="Emby.Common.Implementations/IO/LnkShortcutHandler.cs" Line="38" Column="32" />
+      <File FileName="Emby.Common.Implementations/IO/ManagedFileSystem.cs" Line="1053" Column="1" />
+      <File FileName="Emby.Common.Implementations/IO/ProgressStream.cs" Line="1" Column="1" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifsFileSystem.cs" Line="331" Column="43" />
+      <File FileName="Emby.Common.Implementations/HttpClientManager/HttpClientInfo.cs" Line="17" Column="1" />
+      <File FileName="Emby.Common.Implementations/HttpClientManager/HttpClientManager.cs" Line="933" Column="9" />
+      <File FileName="Emby.Common.Implementations/EnvironmentInfo/EnvironmentInfo.cs" Line="93" Column="1" />
+      <File FileName="Emby.Common.Implementations/Diagnostics/CommonProcess.cs" Line="107" Column="1" />
+      <File FileName="Emby.Common.Implementations/Diagnostics/ProcessFactory.cs" Line="13" Column="1" />
+      <File FileName="Emby.Common.Implementations/Devices/DeviceId.cs" Line="95" Column="28" />
+      <File FileName="Emby.Common.Implementations/Cryptography/CryptographyProvider.cs" Line="41" Column="1" />
+      <File FileName="Emby.Dlna/ConfigurationExtension.cs" Line="30" Column="1" />
+      <File FileName="Emby.Dlna/DlnaManager.cs" Line="68" Column="18" />
+      <File FileName="Emby.Dlna/Ssdp/DeviceDiscovery.cs" Line="108" Column="35" />
+      <File FileName="Emby.Dlna/Service/BaseControlHandler.cs" Line="184" Column="35" />
+      <File FileName="Emby.Dlna/Service/BaseService.cs" Line="38" Column="1" />
+      <File FileName="Emby.Dlna/Service/ControlErrorHandler.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Service/ServiceXmlBuilder.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Server/DescriptionXmlBuilder.cs" Line="117" Column="12" />
+      <File FileName="Emby.Dlna/Server/UpnpDevice.cs" Line="12" Column="47" />
+      <File FileName="Emby.Dlna/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Profiles/DefaultProfile.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/PlayTo/CurrentIdEventArgs.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/PlayTo/Device.cs" Line="493" Column="33" />
+      <File FileName="Emby.Dlna/MediaReceiverRegistrar/ControlHandler.cs" Line="45" Column="1" />
+      <File FileName="Emby.Dlna/MediaReceiverRegistrar/MediaReceiverRegistrar.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/MediaReceiverRegistrar/MediaReceiverRegistrarXmlBuilder.cs" Line="67" Column="1" />
+      <File FileName="Emby.Dlna/MediaReceiverRegistrar/ServiceActionListBuilder.cs" Line="43" Column="27" />
+      <File FileName="MediaBrowser.Controller/Entities/AggregateFolder.cs" Line="180" Column="63" />
+      <File FileName="MediaBrowser.XbmcMetadata/Savers/AlbumNfoSaver.cs" Line="90" Column="19" />
+      <File FileName="Emby.Dlna/Main/DlnaEntryPoint.cs" Line="387" Column="33" />
+      <File FileName="Emby.Dlna/Eventing/EventManager.cs" Line="11" Column="34" />
+      <File FileName="Emby.Dlna/Eventing/EventSubscription.cs" Line="35" Column="1" />
+      <File FileName="Emby.Dlna/Didl/DidlBuilder.cs" Line="1207" Column="1" />
+      <File FileName="Emby.Dlna/Didl/Filter.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Didl/StringWriterWithEncoding.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/ContentDirectory/ContentDirectory.cs" Line="119" Column="14" />
+      <File FileName="Emby.Dlna/ContentDirectory/ContentDirectoryBrowser.cs" Line="44" Column="62" />
+      <File FileName="Emby.Dlna/ContentDirectory/ContentDirectoryXmlBuilder.cs" Line="133" Column="1" />
+      <File FileName="Emby.Dlna/ContentDirectory/ControlHandler.cs" Line="639" Column="26" />
+      <File FileName="Emby.Dlna/ContentDirectory/ServiceActionListBuilder.cs" Line="379" Column="1" />
+      <File FileName="Emby.Dlna/ConnectionManager/ConnectionManager.cs" Line="41" Column="1" />
+      <File FileName="Emby.Dlna/ConnectionManager/ConnectionManagerXmlBuilder.cs" Line="29" Column="10" />
+      <File FileName="Emby.Dlna/ConnectionManager/ControlHandler.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/ConnectionManager/ServiceActionListBuilder.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Common/Argument.cs" Line="13" Column="1" />
+      <File FileName="Emby.Dlna/Common/DeviceIcon.cs" Line="22" Column="1" />
+      <File FileName="Emby.Dlna/Common/DeviceService.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Common/ServiceAction.cs" Line="1" Column="1" />
+      <File FileName="Emby.Dlna/Common/StateVariable.cs" Line="1" Column="1" />
+      <File FileName="Emby.Drawing/NullImageEncoder.cs" Line="18" Column="19" />
+      <File FileName="Emby.Drawing/ImageProcessor.cs" Line="652" Column="76" />
+      <File FileName="Emby.Drawing/Common/ImageHeader.cs" Line="1" Column="1" />
+      <File FileName="Emby.Drawing.Skia/UnplayedCountIndicator.cs" Line="1" Column="1" />
+      <File FileName="Emby.Drawing.Skia/StripCollageBuilder.cs" Line="179" Column="1" />
+      <File FileName="Emby.Drawing.Skia/SkiaEncoder.cs" Line="213" Column="43" />
+      <File FileName="Emby.Drawing.Skia/PlayedIndicatorDrawer.cs" Line="37" Column="58" />
+      <File FileName="Emby.Drawing.Skia/PercentPlayedDrawer.cs" Line="32" Column="1" />
+      <File FileName="Emby.Photos/PhotoProvider.cs" Line="131" Column="26" />
+      <File FileName="Emby.Server.Core/packages.config" Line="1" Column="1" />
+      <File FileName="Emby.Server.Implementations/UserViews/CollectionFolderImageProvider.cs" Line="131" Column="35" />
+      <File FileName="Emby.Server.Implementations/UserViews/DynamicImageProvider.cs" Line="169" Column="14" />
+      <File FileName="Emby.Server.Implementations/Updates/InstallationManager.cs" Line="209" Column="25" />
+      <File FileName="MediaBrowser.Common/MediaBrowser.Common.nuget.targets" Line="6" Column="11" />
+      <File FileName="Emby.Server.Implementations/Udp/UdpServer.cs" Line="59" Column="42" />
+      <File FileName="Emby.Server.Implementations/Activity/ActivityRepository.cs" Line="223" Column="1" />
+      <File FileName="MediaBrowser.Providers/Music/AlbumMetadataService.cs" Line="108" Column="17" />
+      <File FileName="MediaBrowser.Providers/Music/ArtistMetadataService.cs" Line="40" Column="29" />
+      <File FileName="MediaBrowser.Api/Music/AlbumsService.cs" Line="120" Column="1" />
+      <File FileName="MediaBrowser.Api/ApiEntryPoint.cs" Line="648" Column="50" />
+      <File FileName="MediaBrowser.XbmcMetadata/Savers/ArtistNfoSaver.cs" Line="55" Column="13" />
+      <File FileName="MediaBrowser.MediaEncoding/Subtitles/AssParser.cs" Line="68" Column="74" />
+      <File FileName="MediaBrowser.Controller/Entities/Audio/Audio.cs" Line="249" Column="72" />
+      <File FileName="MediaBrowser.Providers/Books/AudioBookMetadataService.cs" Line="28" Column="56" />
+      <File FileName="MediaBrowser.Providers/MediaInfo/AudioImageProvider.cs" Line="43" Column="22" />
+      <File FileName="MediaBrowser.Providers/Music/AudioMetadataService.cs" Line="25" Column="56" />
+      <File FileName="MediaBrowser.Providers/Books/AudioPodcastMetadataService.cs" Line="28" Column="56" />
+      <File FileName="Emby.Server.Implementations/HttpServer/Security/AuthService.cs" Line="81" Column="25" />
+      <File FileName="Emby.Server.Implementations/Security/AuthenticationRepository.cs" Line="217" Column="34" />
+      <File FileName="MediaBrowser.Api/BaseApiService.cs" Line="170" Column="206" />
+      <File FileName="Emby.Server.Implementations/Images/BaseDynamicImageProvider.cs" Line="310" Column="17" />
+      <File FileName="MediaBrowser.Controller/Entities/BaseItem.cs" Line="2302" Column="33" />
+      <File FileName="SocketHttpListener/WebSocket.cs" Line="307" Column="25" />
+      <File FileName="MediaBrowser.MediaEncoding/Encoder/BaseEncoder.cs" Line="305" Column="27" />
+      <File FileName="Emby.Server.Implementations/Collections/CollectionImageProvider.cs" Line="39" Column="43" />
+      <File FileName="MediaBrowser.Controller/Entities/TV/Episode.cs" Line="328" Column="15" />
+      <File FileName="MediaBrowser.Api/UserLibrary/BaseItemsByNameService.cs" Line="365" Column="47" />
+      <File FileName="MediaBrowser.XbmcMetadata/Savers/BaseNfoSaver.cs" Line="932" Column="107" />
+      <File FileName="MediaBrowser.Api/BasePeriodicWebSocketListener.cs" Line="304" Column="55" />
+      <File FileName="Emby.Server.Implementations/Data/BaseSqliteRepository.cs" Line="196" Column="20" />
+      <File FileName="MediaBrowser.Api/Playback/BaseStreamingService.cs" Line="754" Column="60" />
+      <File FileName="Emby.Server.Implementations/LiveTv/TunerHosts/BaseTunerHost.cs" Line="87" Column="138" />
+      <File FileName="MediaBrowser.LocalMetadata/Savers/BaseXmlSaver.cs" Line="624" Column="24" />
+      <File FileName="MediaBrowser.MediaEncoding/BdInfo/BdInfoExaminer.cs" Line="102" Column="89" />
+      <File FileName="Emby.Server.Implementations/Library/Resolvers/Books/BookResolver.cs" Line="57" Column="22" />
+      <File FileName="MediaBrowser.Controller/Entities/Movies/BoxSet.cs" Line="141" Column="20" />
+      <File FileName="MediaBrowser.Providers/BoxSets/BoxSetMetadataService.cs" Line="48" Column="30" />
+      <File FileName="Emby.Server.Implementations/Channels/ChannelManager.cs" Line="1197" Column="29" />
+      <File FileName="MediaBrowser.Controller/Channels/ChannelMediaInfo.cs" Line="60" Column="43" />
+      <File FileName="Emby.Server.Implementations/Channels/ChannelPostScanTask.cs" Line="133" Column="45" />
+      <File FileName="MediaBrowser.Api/ChannelService.cs" Line="250" Column="49" />
+      <File FileName="Emby.Server.Implementations/ScheduledTasks/ChapterImagesTask.cs" Line="144" Column="25" />
+      <File FileName="MediaBrowser.MediaEncoding/Encoder/FontConfigLoader.cs" Line="11" Column="29" />
+      <File FileName="MediaBrowser.MediaEncoding/Encoder/MediaEncoder.cs" Line="536" Column="22" />
+      <File FileName="MediaBrowser.Providers/Manager/ProviderManager.cs" Line="763" Column="17" />
+      <File FileName="MediaBrowser.Providers/MediaInfo/FFProbeVideoInfo.cs" Line="30" Column="7" />
+      <File FileName="MediaBrowser.XbmcMetadata/Providers/BaseNfoProvider.cs" Line="16" Column="46" />
+      <File FileName="MediaBrowser.XbmcMetadata/MediaBrowser.XbmcMetadata.nuget.targets" Line="4" Column="5" />
+      <File FileName="MediaBrowser.Api/Playback/Progressive/AudioService.cs" Line="13" Column="7" />
+      <File FileName="Emby.Server.Implementations/Data/SqliteItemRepository.cs" Line="2150" Column="10" />
+      <File FileName="Emby.Server.Implementations/Dto/DtoService.cs" Line="1357" Column="34" />
+      <File FileName="Emby.Server.Implementations/LiveTv/LiveTvDtoService.cs" Line="343" Column="34" />
+      <File FileName="Emby.Server.Implementations/LiveTv/EmbyTV/EmbyTV.cs" Line="71" Column="35" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SID.cs" Line="472" Column="22" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Util/Sharpen/MD5Managed.cs" Line="24" Column="34" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Util/Sharpen/PrintWriter.cs" Line="28" Column="21" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Config.cs" Line="92" Column="18" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Dcerpc/DcerpcHandle.cs" Line="171" Column="9" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Netbios/NameServiceClient.cs" Line="120" Column="18" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Netbios/Name.cs" Line="133" Column="18" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Util/Sharpen/Extensions.cs" Line="624" Column="18" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbTree.cs" Line="201" Column="25" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbTransport.cs" Line="85" Column="27" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbSession.cs" Line="515" Column="25" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/ACE.cs" Line="274" Column="4" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbFileOutputStream.cs" Line="173" Column="28" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbFile.cs" Line="3599" Column="51" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbComTransactionResponse.cs" Line="150" Column="30" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbRandomAccessFile.cs" Line="41" Column="15" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/Trans2FindFirst2Response.cs" Line="64" Column="20" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/Trans2GetDfsReferralResponse.cs" Line="42" Column="19" />
+      <File FileName="Emby.Common.Implementations/IO/SharpCifs/Smb/SmbComTransaction.cs" Line="39" Column="21" />
+      <File FileName="Mono.Nat/NatUtility.cs" Line="124" Column="33" />
+      <File FileName="Mono.Nat/Upnp/Searchers/UpnpSearcher.cs" Line="48" Column="52" />
+      <File FileName="Mono.Nat/Upnp/UpnpNatDevice.cs" Line="47" Column="24" />
+      <File FileName="Mono.Nat/Pmp/Searchers/PmpSearcher.cs" Line="57" Column="52" />
+      <File FileName="MediaBrowser.Model/MediaBrowser.Model.nuget.targets" Line="4" Column="103" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="MediaBrowser.Server.Mac" expanded="True">
-            <Node name="Emby.Server.Implementations" expanded="True">
-              <Node name="Activity" expanded="True">
-                <Node name="ActivityLogEntryPoint.cs" selected="True" />
-              </Node>
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

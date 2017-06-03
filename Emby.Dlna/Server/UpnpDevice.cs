@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using MediaBrowser.Model.Net;
 
 namespace Emby.Dlna.Server
@@ -29,10 +28,7 @@ namespace Emby.Dlna.Server
             {
                 return aType;
             }
-            else
-            {
-                return String.Format("uuid:{0}::{1}", aUuid, aType);
-            }
+            return String.Format("uuid:{0}::{1}", aUuid, aType);
         }
     }
 }

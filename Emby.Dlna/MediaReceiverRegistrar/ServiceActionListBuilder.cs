@@ -7,7 +7,7 @@ namespace Emby.Dlna.MediaReceiverRegistrar
     {
         public IEnumerable<ServiceAction> GetActions()
         {
-            var list = new List<ServiceAction>
+            var list = new ServiceAction[]
             {
                 GetIsValidated(),
                 GetIsAuthorized(),

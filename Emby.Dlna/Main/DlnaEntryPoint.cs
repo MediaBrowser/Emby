@@ -1,4 +1,10 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Emby.Dlna.PlayTo;
+using Emby.Dlna.Ssdp;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller;
@@ -6,19 +12,12 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Session;
-using Emby.Dlna.PlayTo;
-using Emby.Dlna.Ssdp;
-using MediaBrowser.Model.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Threading;
@@ -252,7 +251,7 @@ namespace Emby.Dlna.Main
             var cacheLength = _config.GetDlnaConfiguration().BlastAliveMessageIntervalSeconds;
             _Publisher.SupportPnpRootDevice = false;
 
-            var addresses = (await _appHost.GetLocalIpAddresses().ConfigureAwait(false)).ToList();
+            var addresses = await _appHost.GetLocalIpAddresses().ConfigureAwait(false);
 
             var udn = CreateUuid(_appHost.SystemId);
 
@@ -285,7 +284,7 @@ namespace Emby.Dlna.Main
                 SetProperies(device, fullService);
                 _Publisher.AddDevice(device);
 
-                var embeddedDevices = new List<string>
+                var embeddedDevices = new string[]
                 {
                     "urn:schemas-upnp-org:service:ContentDirectory:1",
                     "urn:schemas-upnp-org:service:ConnectionManager:1",

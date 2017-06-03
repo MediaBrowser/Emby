@@ -1,16 +1,16 @@
-﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Events;
-using MediaBrowser.Model.Events;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
-using MediaBrowser.Model.Tasks;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Events;
+using MediaBrowser.Model.Events;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.System;
+using MediaBrowser.Model.Tasks;
 
 namespace Emby.Common.Implementations.ScheduledTasks
 {
@@ -229,8 +229,7 @@ namespace Emby.Common.Implementations.ScheduledTasks
         {
             var myTasks = ScheduledTasks.ToList();
 
-            var list = tasks.ToList();
-            myTasks.AddRange(list.Select(t => new ScheduledTaskWorker(t, ApplicationPaths, this, JsonSerializer, Logger, _fileSystem, _systemEvents)));
+            myTasks.AddRange(tasks.Select(t => new ScheduledTaskWorker(t, ApplicationPaths, this, JsonSerializer, Logger, _fileSystem, _systemEvents)));
 
             ScheduledTasks = myTasks.ToArray();
 

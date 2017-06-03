@@ -25,8 +25,7 @@ namespace MediaBrowser.Providers.Music
                 if (!item.IsLocked)
                 {
                     var songs = item.GetRecursiveChildren(i => i is Audio)
-                        .Cast<Audio>()
-                        .ToList();
+                        .Cast<Audio>();
 
                     if (!item.LockedFields.Contains(MetadataFields.Genres))
                     {
@@ -117,7 +116,7 @@ namespace MediaBrowser.Providers.Music
             return updateType;
         }
 
-        private ItemUpdateType SetDateFromSongs(MusicAlbum item, List<Audio> songs)
+        private ItemUpdateType SetDateFromSongs(MusicAlbum item, IEnumerable<Audio> songs)
         {
             var updateType = ItemUpdateType.None;
 

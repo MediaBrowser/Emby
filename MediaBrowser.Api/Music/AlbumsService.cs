@@ -106,8 +106,7 @@ namespace MediaBrowser.Api.Music
 
             var artists1 = album1
                 .AllArtists
-                .DistinctNames()
-                .ToList();
+                .DistinctNames();
 
             var artists2 = album2
                 .AllArtists

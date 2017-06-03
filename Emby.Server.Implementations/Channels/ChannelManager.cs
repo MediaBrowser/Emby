@@ -278,8 +278,7 @@ namespace Emby.Server.Implementations.Channels
             IEnumerable<ChannelMediaInfo> results = GetSavedMediaSources(item);
 
             return SortMediaInfoResults(results)
-                .Select(i => GetMediaSource(item, i))
-                .ToList();
+                .Select(i => GetMediaSource(item, i));
         }
 
         public async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(BaseItem item, CancellationToken cancellationToken)
@@ -298,12 +297,11 @@ namespace Emby.Server.Implementations.Channels
             }
             else
             {
-                results = new List<ChannelMediaInfo>();
+                results = Enumerable.Empty<ChannelMediaInfo>();
             }
 
             return SortMediaInfoResults(results)
-                .Select(i => GetMediaSource(item, i))
-                .ToList();
+                .Select(i => GetMediaSource(item, i));
         }
 
         private readonly ConcurrentDictionary<string, Tuple<DateTime, List<ChannelMediaInfo>>> _channelItemMediaInfo =
@@ -356,9 +354,7 @@ namespace Emby.Server.Implementations.Channels
                     .OrderBy(i => i.Width.HasValue && i.Width.Value <= val ? 0 : 1)
                     .ThenBy(i => Math.Abs((i.Width ?? 0) - val))
                     .ThenByDescending(i => i.Width ?? 0)
-                    .ThenBy(list.IndexOf)
-                    .ToList();
-
+                    .ThenBy(list.IndexOf);
 
                 return res;
             }
@@ -725,7 +721,7 @@ namespace Emby.Server.Implementations.Channels
 
                 }, cancellationToken).ConfigureAwait(false);
 
-                var resultItems = result.ToList();
+                var resultItems = result;
 
                 CacheResponse(resultItems, cachePath);
 
@@ -1163,18 +1159,18 @@ namespace Emby.Server.Implementations.Channels
 
             items = _libraryManager.Sort(items, user, query.SortBy, query.SortOrder ?? SortOrder.Ascending);
 
-            var all = items.ToList();
-            var totalCount = totalCountFromProvider ?? all.Count;
+            var all = items;
+            var totalCount = totalCountFromProvider ?? all.Count();
 
             if (!totalCountFromProvider.HasValue)
             {
                 if (query.StartIndex.HasValue)
                 {
-                    all = all.Skip(query.StartIndex.Value).ToList();
+                    all = all.Skip(query.StartIndex.Value);
                 }
                 if (query.Limit.HasValue)
                 {
-                    all = all.Take(query.Limit.Value).ToList();
+                    all = all.Take(query.Limit.Value);
                 }
             }
 

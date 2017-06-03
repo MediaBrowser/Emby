@@ -30,7 +30,7 @@ namespace Emby.Server.Implementations.UserViews
 
         public override IEnumerable<ImageType> GetSupportedImages(IHasImages item)
         {
-            return new List<ImageType>
+            return new ImageType[]
                 {
                     ImageType.Primary
                 };
@@ -128,7 +128,7 @@ namespace Emby.Server.Implementations.UserViews
 
         public override IEnumerable<ImageType> GetSupportedImages(IHasImages item)
         {
-            return new List<ImageType>
+            return new ImageType[]
                 {
                     ImageType.Primary
                 };

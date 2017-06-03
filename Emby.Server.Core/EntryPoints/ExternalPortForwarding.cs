@@ -40,17 +40,19 @@ namespace Emby.Server.Core.EntryPoints
         private string _lastConfigIdentifier;
         private string GetConfigIdentifier()
         {
-            var values = new List<string>();
+            
             var config = _config.Configuration;
+            var values = new string[]
+            {
+                config.EnableUPnP.ToString(),
+                config.PublicPort.ToString(CultureInfo.InvariantCulture),
+                _appHost.HttpPort.ToString(CultureInfo.InvariantCulture),
+                _appHost.HttpsPort.ToString(CultureInfo.InvariantCulture),
+                config.EnableHttps.ToString(),
+                _appHost.EnableHttps.ToString()
+            };
 
-            values.Add(config.EnableUPnP.ToString());
-            values.Add(config.PublicPort.ToString(CultureInfo.InvariantCulture));
-            values.Add(_appHost.HttpPort.ToString(CultureInfo.InvariantCulture));
-            values.Add(_appHost.HttpsPort.ToString(CultureInfo.InvariantCulture));
-            values.Add(config.EnableHttps.ToString());
-            values.Add(_appHost.EnableHttps.ToString());
-
-            return string.Join("|", values.ToArray());
+            return string.Join("|", values);
         }
 
         void _config_ConfigurationUpdated(object sender, EventArgs e)
@@ -170,7 +172,7 @@ namespace Emby.Server.Core.EntryPoints
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return;
                 }

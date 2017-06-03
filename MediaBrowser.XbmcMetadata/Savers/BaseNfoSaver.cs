@@ -495,8 +495,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
             var directors = people
                 .Where(i => IsPersonType(i, PersonType.Director))
-                .Select(i => i.Name)
-                .ToList();
+                .Select(i => i.Name);
 
             foreach (var person in directors)
             {
@@ -506,8 +505,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             var writers = people
                 .Where(i => IsPersonType(i, PersonType.Writer))
                 .Select(i => i.Name)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                .Distinct(StringComparer.OrdinalIgnoreCase);
 
             foreach (var person in writers)
             {
@@ -830,8 +828,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
         private static void AddCollectionItems(Folder item, XmlWriter writer)
         {
             var items = item.LinkedChildren
-                .Where(i => i.Type == LinkedChildType.Manual)
-                .ToList();
+                .Where(i => i.Type == LinkedChildType.Manual);
 
             foreach (var link in items)
             {
@@ -932,8 +929,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
         private static void AddActors(List<PersonInfo> people, XmlWriter writer, ILibraryManager libraryManager, IFileSystem fileSystem, IServerConfigurationManager config, bool saveImagePath)
         {
             var actors = people
-                .Where(i => !IsPersonType(i, PersonType.Director) && !IsPersonType(i, PersonType.Writer))
-                .ToList();
+                .Where(i => !IsPersonType(i, PersonType.Director) && !IsPersonType(i, PersonType.Writer));
 
             foreach (var person in actors)
             {

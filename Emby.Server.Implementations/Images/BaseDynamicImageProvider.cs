@@ -67,7 +67,7 @@ namespace Emby.Server.Implementations.Images
             }
 
             var updateType = ItemUpdateType.None;
-            var supportedImages = GetEnabledImages(item).ToList();
+            var supportedImages = GetEnabledImages(item);
 
             if (supportedImages.Contains(ImageType.Primary))
             {
@@ -253,7 +253,7 @@ namespace Emby.Server.Implementations.Images
                 return false;
             }
 
-            var supportedImages = GetEnabledImages(item).ToList();
+            var supportedImages = GetEnabledImages(item);
 
             if (supportedImages.Contains(ImageType.Primary) && HasChanged(item, ImageType.Primary))
             {

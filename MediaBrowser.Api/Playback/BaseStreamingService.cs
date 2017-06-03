@@ -746,7 +746,7 @@ namespace MediaBrowser.Api.Playback
                     var mediaSources = (await MediaSourceManager.GetPlayackMediaSources(request.Id, null, false, new[] { MediaType.Audio, MediaType.Video }, cancellationToken).ConfigureAwait(false)).ToList();
 
                     mediaSource = string.IsNullOrEmpty(request.MediaSourceId)
-                       ? mediaSources.First()
+                       ? mediaSources.FirstOrDefault()
                        : mediaSources.FirstOrDefault(i => string.Equals(i.Id, request.MediaSourceId));
 
                     if (mediaSource == null && string.Equals(request.Id, request.MediaSourceId, StringComparison.OrdinalIgnoreCase))

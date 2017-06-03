@@ -2,10 +2,6 @@
 using System.Text;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Text;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Logging;
 using UniversalDetector;
 
@@ -43,19 +39,14 @@ namespace Emby.Common.Implementations.TextEncoding
             switch (result)
             {
                 case TextEncodingDetect.CharacterEncoding.Ansi:
-                    return Encoding.ASCII;
                 case TextEncodingDetect.CharacterEncoding.Ascii:
                     return Encoding.ASCII;
                 case TextEncodingDetect.CharacterEncoding.Utf16BeBom:
-                    return Encoding.UTF32;
                 case TextEncodingDetect.CharacterEncoding.Utf16BeNoBom:
-                    return Encoding.UTF32;
                 case TextEncodingDetect.CharacterEncoding.Utf16LeBom:
-                    return Encoding.UTF32;
                 case TextEncodingDetect.CharacterEncoding.Utf16LeNoBom:
                     return Encoding.UTF32;
                 case TextEncodingDetect.CharacterEncoding.Utf8Bom:
-                    return Encoding.UTF8;
                 case TextEncodingDetect.CharacterEncoding.Utf8Nobom:
                     return Encoding.UTF8;
                 default:

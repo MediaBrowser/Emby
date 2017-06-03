@@ -1354,7 +1354,7 @@ namespace Emby.Server.Implementations.Dto
                                     };
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
 
                             }

@@ -121,7 +121,7 @@ namespace Mono.Nat
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     
                 }

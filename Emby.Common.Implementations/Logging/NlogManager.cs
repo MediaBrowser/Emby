@@ -212,7 +212,7 @@ namespace Emby.Common.Implementations.Logging
                 {
                     rule.EnableLoggingForLevel(level);
                 }
-                foreach (var lev in rule.Levels.ToArray())
+                foreach (var lev in rule.Levels)
                 {
                     if (lev < level)
                     {
@@ -383,7 +383,7 @@ namespace Emby.Common.Implementations.Logging
 
             if (target != null)
             {
-                foreach (var rule in config.LoggingRules.ToList())
+                foreach (var rule in config.LoggingRules)
                 {
                     var contains = rule.Targets.Contains(target);
 
@@ -431,7 +431,7 @@ namespace Emby.Common.Implementations.Logging
         {
 
             DebugFileWriter(
-                LogDirectory, String.Format(
+                LogDirectory, string.Format(
                 "RemoveConsoleOutput called."
             ));
 
@@ -455,7 +455,7 @@ namespace Emby.Common.Implementations.Logging
         {
 
             DebugFileWriter(
-                LogDirectory, String.Format(
+                LogDirectory, string.Format(
                 "ReloadLogger called, level = [{0}], LogFilePath (existing) = [{1}].",
                 level.ToString(),
                 LogFilePath

@@ -29,7 +29,7 @@ namespace MediaBrowser.Providers.Music
                             Recursive = true,
                             IsFolder = false
                         }) :
-                        item.GetRecursiveChildren(i => i is IHasArtist && !i.IsFolder).ToList();
+                        item.GetRecursiveChildren(i => i is IHasArtist && !i.IsFolder);
 
                     if (!item.LockedFields.Contains(MetadataFields.Genres))
                     {

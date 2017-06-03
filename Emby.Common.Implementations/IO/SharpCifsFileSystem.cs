@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using SharpCifs.Smb;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.System;
+using SharpCifs.Smb;
 
 namespace Emby.Common.Implementations.IO
 {
@@ -237,13 +234,11 @@ namespace Emby.Common.Implementations.IO
             var lines = new List<string>();
 
             using (var stream = OpenRead(path))
+            using (var reader = new StreamReader(stream))
             {
-                using (var reader = new StreamReader(stream))
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
-                    {
-                        lines.Add(reader.ReadLine());
-                    }
+                    lines.Add(reader.ReadLine());
                 }
             }
 
@@ -253,13 +248,11 @@ namespace Emby.Common.Implementations.IO
         public void WriteAllLines(string path, IEnumerable<string> lines)
         {
             using (var stream = GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
+            using (var writer = new StreamWriter(stream))
             {
-                using (var writer = new StreamWriter(stream))
+                foreach (var line in lines)
                 {
-                    foreach (var line in lines)
-                    {
-                        writer.WriteLine(line);
-                    }
+                    writer.WriteLine(line);
                 }
             }
         }
@@ -306,11 +299,9 @@ namespace Emby.Common.Implementations.IO
             }
 
             using (var input = OpenRead(source))
+            using (var output = GetFileStream(target, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
             {
-                using (var output = GetFileStream(target, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
-                {
-                    input.CopyTo(output);
-                }
+                input.CopyTo(output);
             }
         }
 
@@ -322,11 +313,9 @@ namespace Emby.Common.Implementations.IO
             }
 
             using (var input = OpenRead(source))
+            using (var output = GetFileStream(target, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
             {
-                using (var output = GetFileStream(target, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
-                {
-                    input.CopyTo(output);
-                }
+                input.CopyTo(output);
             }
 
             DeleteFile(source);
@@ -353,11 +342,9 @@ namespace Emby.Common.Implementations.IO
         public string ReadAllText(string path, Encoding encoding)
         {
             using (var stream = OpenRead(path))
+            using (var reader = new StreamReader(stream, encoding))
             {
-                using (var reader = new StreamReader(stream, encoding))
-                {
-                    return reader.ReadToEnd();
-                }
+                return reader.ReadToEnd();
             }
         }
 
@@ -373,8 +360,7 @@ namespace Emby.Common.Implementations.IO
 
                 mode = FileOpenMode.Open;
             }
-
-            if (mode == FileOpenMode.CreateNew)
+            else if (mode == FileOpenMode.CreateNew)
             {
                 var file = CreateSmbFile(path);
                 if (file.Exists())
@@ -386,8 +372,7 @@ namespace Emby.Common.Implementations.IO
 
                 mode = FileOpenMode.Open;
             }
-
-            if (mode == FileOpenMode.Create)
+            else if (mode == FileOpenMode.Create)
             {
                 var file = CreateSmbFile(path);
                 if (file.Exists())
@@ -414,11 +399,10 @@ namespace Emby.Common.Implementations.IO
                 {
                     return OpenRead(path);
                 }
-                if (access == FileAccessMode.Write)
+                else if (access == FileAccessMode.Write)
                 {
                     return OpenWrite(path);
                 }
-                throw new NotImplementedException();
             }
             throw new NotImplementedException();
         }
@@ -434,46 +418,38 @@ namespace Emby.Common.Implementations.IO
         public void WriteAllText(string path, string text)
         {
             using (var stream = GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
+            using (var writer = new StreamWriter(stream))
             {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(text);
-                }
+                writer.Write(text);
             }
         }
 
         public void WriteAllText(string path, string text, Encoding encoding)
         {
             using (var stream = GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None))
+            using (var writer = new StreamWriter(stream, encoding))
             {
-                using (var writer = new StreamWriter(stream, encoding))
-                {
-                    writer.Write(text);
-                }
+                writer.Write(text);
             }
         }
 
         public string ReadAllText(string path)
         {
             using (var stream = OpenRead(path))
+            using (var reader = new StreamReader(stream))
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
+                return reader.ReadToEnd();
             }
         }
 
         public byte[] ReadAllBytes(string path)
         {
             using (var stream = OpenRead(path))
+            using (var ms = new MemoryStream())
             {
-                using (var ms = new MemoryStream())
-                {
-                    stream.CopyTo(ms);
-                    ms.Position = 0;
-                    return ms.ToArray();
-                }
+                stream.CopyTo(ms);
+                ms.Position = 0;
+                return ms.ToArray();
             }
         }
 
@@ -514,7 +490,9 @@ namespace Emby.Common.Implementations.IO
                     var filePath = GetReturnPath(file);
                     var extension = Path.GetExtension(filePath);
 
-                    if (extensions == null || extensions.Length == 0 || extensions.Contains(extension ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                    if (extensions == null
+                        || extensions.Length == 0
+                        || extensions.Contains(extension ?? string.Empty, StringComparer.OrdinalIgnoreCase))
                     {
                         yield return ToMetadata(file);
                     }
@@ -562,7 +540,9 @@ namespace Emby.Common.Implementations.IO
                     var filePath = GetReturnPath(file);
                     var extension = Path.GetExtension(filePath);
 
-                    if (extensions == null || extensions.Length == 0 || extensions.Contains(extension ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                    if (extensions == null
+                        || extensions.Length == 0
+                        || extensions.Contains(extension ?? string.Empty, StringComparer.OrdinalIgnoreCase))
                     {
                         yield return filePath;
                     }
@@ -593,7 +573,7 @@ namespace Emby.Common.Implementations.IO
             foreach (var file in list)
             {
                 yield return file;
-
+                
                 if (recursive && file.IsDirectory())
                 {
                     foreach (var subFile in ListFiles(file, recursive))

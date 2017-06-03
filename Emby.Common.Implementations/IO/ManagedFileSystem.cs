@@ -107,12 +107,7 @@ namespace Emby.Common.Implementations.IO
             var extension = Path.GetExtension(filename);
             var handler = _shortcutHandlers.FirstOrDefault(i => string.Equals(extension, i.Extension, StringComparison.OrdinalIgnoreCase));
 
-            if (handler != null)
-            {
-                return handler.Resolve(filename);
-            }
-
-            return null;
+            return handler?.Resolve(filename);
         }
 
         /// <summary>

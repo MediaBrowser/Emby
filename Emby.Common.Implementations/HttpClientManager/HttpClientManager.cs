@@ -1,24 +1,21 @@
-﻿using System.Net.Sockets;
-using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Net;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Emby.Common.Implementations.HttpClientManager;
 using Emby.Common.Implementations.IO;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Common;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Net;
 
 namespace Emby.Common.Implementations.HttpClientManager
 {
@@ -234,7 +231,7 @@ namespace Emby.Common.Implementations.HttpClientManager
         {
             var hasUserAgent = false;
 
-            foreach (var header in options.RequestHeaders.ToList())
+            foreach (var header in options.RequestHeaders)
             {
                 if (string.Equals(header.Key, "Accept", StringComparison.OrdinalIgnoreCase))
                 {
@@ -511,10 +508,7 @@ namespace Emby.Common.Implementations.HttpClientManager
             }
             finally
             {
-                if (options.ResourcePool != null)
-                {
-                    options.ResourcePool.Release();
-                }
+                options.ResourcePool?.Release();
             }
         }
 
@@ -671,21 +665,17 @@ namespace Emby.Common.Implementations.HttpClientManager
                     {
                         // We're not able to track progress
                         using (var stream = httpResponse.GetResponseStream())
+                        using (var fs = _fileSystem.GetFileStream(tempFile, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true))
                         {
-                            using (var fs = _fileSystem.GetFileStream(tempFile, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true))
-                            {
-                                await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
-                            }
+                            await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         using (var stream = ProgressStream.CreateReadProgressStream(httpResponse.GetResponseStream(), options.Progress.Report, contentLength.Value))
+                        using (var fs = _fileSystem.GetFileStream(tempFile, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true))
                         {
-                            using (var fs = _fileSystem.GetFileStream(tempFile, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read, true))
-                            {
-                                await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
-                            }
+                            await stream.CopyToAsync(fs, StreamDefaults.DefaultCopyToBufferSize, options.CancellationToken).ConfigureAwait(false);
                         }
                     }
 
@@ -701,10 +691,7 @@ namespace Emby.Common.Implementations.HttpClientManager
             }
             finally
             {
-                if (options.ResourcePool != null)
-                {
-                    options.ResourcePool.Release();
-                }
+                options.ResourcePool?.Release();
             }
         }
 
@@ -961,7 +948,7 @@ namespace Emby.Common.Implementations.HttpClientManager
                 }
                 else
                 {
-                    taskCompletion.TrySetException(new List<Exception>());
+                    taskCompletion.TrySetException(Enumerable.Empty<Exception>());
                 }
             }
         }

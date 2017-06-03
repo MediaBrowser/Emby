@@ -93,12 +93,12 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (_childrenIds == null || _childrenIds.Count == 0)
                 {
-                    var list = base.LoadChildren().ToList();
+                    var list = base.LoadChildren();
                     _childrenIds = list.Select(i => i.Id).ToList();
                     return list;
                 }
 
-                return _childrenIds.Select(LibraryManager.GetItemById).Where(i => i != null).ToList();
+                return _childrenIds.Select(LibraryManager.GetItemById).Where(i => i != null);
             }
         }
 
@@ -117,9 +117,9 @@ namespace MediaBrowser.Controller.Entities
 
             if (!changed)
             {
-                var locations = PhysicalLocations.ToList();
+                var locations = PhysicalLocations;
 
-                var newLocations = CreateResolveArgs(new DirectoryService(Logger, FileSystem), false).PhysicalLocations.ToList();
+                var newLocations = CreateResolveArgs(new DirectoryService(Logger, FileSystem), false).PhysicalLocations;
 
                 if (!locations.SequenceEqual(newLocations))
                 {

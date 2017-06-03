@@ -395,7 +395,7 @@ namespace Emby.Server.Core
             PerformPostInitMigrations();
             Logger.Info("Post-init migrations complete");
 
-            foreach (var entryPoint in GetExports<IServerEntryPoint>().ToList())
+            foreach (var entryPoint in GetExports<IServerEntryPoint>())
             {
                 var name = entryPoint.GetType().FullName;
                 Logger.Info("Starting entry point {0}", name);
@@ -1239,57 +1239,55 @@ namespace Emby.Server.Core
         /// <returns>IEnumerable{Assembly}.</returns>
         protected override IEnumerable<Assembly> GetComposablePartAssemblies()
         {
-            var list = GetPluginAssemblies()
-                .ToList();
+            return GetPluginAssemblies().Concat(new Assembly[]
+            {
+                // Gets all plugin assemblies by first reading all bytes of the .dll and calling Assembly.Load against that
+                // This will prevent the .dll file from getting locked, and allow us to replace it when needed
 
-            // Gets all plugin assemblies by first reading all bytes of the .dll and calling Assembly.Load against that
-            // This will prevent the .dll file from getting locked, and allow us to replace it when needed
+                // Include composable parts in the Api assembly 
+                GetAssembly(typeof(ApiEntryPoint)),
 
-            // Include composable parts in the Api assembly 
-            list.Add(GetAssembly(typeof(ApiEntryPoint)));
+                // Include composable parts in the Dashboard assembly 
+                GetAssembly(typeof(DashboardService)),
 
-            // Include composable parts in the Dashboard assembly 
-            list.Add(GetAssembly(typeof(DashboardService)));
+                // Include composable parts in the Model assembly 
+                GetAssembly(typeof(SystemInfo)),
 
-            // Include composable parts in the Model assembly 
-            list.Add(GetAssembly(typeof(SystemInfo)));
+                // Include composable parts in the Common assembly 
+                GetAssembly(typeof(IApplicationHost)),
 
-            // Include composable parts in the Common assembly 
-            list.Add(GetAssembly(typeof(IApplicationHost)));
+                // Include composable parts in the Controller assembly 
+                GetAssembly(typeof(IServerApplicationHost)),
 
-            // Include composable parts in the Controller assembly 
-            list.Add(GetAssembly(typeof(IServerApplicationHost)));
+                // Include composable parts in the Providers assembly 
+                GetAssembly(typeof(ProviderUtils)),
 
-            // Include composable parts in the Providers assembly 
-            list.Add(GetAssembly(typeof(ProviderUtils)));
+                // Include composable parts in the Photos assembly 
+                GetAssembly(typeof(PhotoProvider)),
 
-            // Include composable parts in the Photos assembly 
-            list.Add(GetAssembly(typeof(PhotoProvider)));
+                // Common implementations
+                GetAssembly(typeof(TaskManager)),
 
-            // Common implementations
-            list.Add(GetAssembly(typeof(TaskManager)));
+                // Emby.Server implementations
+                GetAssembly(typeof(InstallationManager)),
 
-            // Emby.Server implementations
-            list.Add(GetAssembly(typeof(InstallationManager)));
+                // MediaEncoding
+                GetAssembly(typeof(MediaEncoder)),
 
-            // MediaEncoding
-            list.Add(GetAssembly(typeof(MediaEncoder)));
+                // Dlna 
+                GetAssembly(typeof(DlnaEntryPoint)),
 
-            // Dlna 
-            list.Add(GetAssembly(typeof(DlnaEntryPoint)));
+                // Local metadata 
+                GetAssembly(typeof(BoxSetXmlSaver)),
 
-            // Local metadata 
-            list.Add(GetAssembly(typeof(BoxSetXmlSaver)));
+                // Xbmc 
+                GetAssembly(typeof(ArtistNfoProvider)),
 
-            // Xbmc 
-            list.Add(GetAssembly(typeof(ArtistNfoProvider)));
+                // Include composable parts in the running assembly
+                GetAssembly(typeof(ApplicationHost)),
 
-            list.AddRange(GetAssembliesWithPartsInternal());
-
-            // Include composable parts in the running assembly
-            list.Add(GetAssembly(typeof(ApplicationHost)));
-
-            return list;
+		    })
+            .Concat(GetAssembliesWithPartsInternal());
         }
 
         protected abstract List<Assembly> GetAssembliesWithPartsInternal();
@@ -1305,12 +1303,11 @@ namespace Emby.Server.Core
                 return Directory.EnumerateFiles(ApplicationPaths.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly)
                     .Where(EnablePlugin)
                     .Select(LoadAssembly)
-                    .Where(a => a != null)
-                    .ToList();
+                    .Where(a => a != null);
             }
             catch (DirectoryNotFoundException)
             {
-                return new List<Assembly>();
+                return Enumerable.Empty<Assembly>();
             }
         }
 
@@ -1434,7 +1431,7 @@ namespace Emby.Server.Core
                 .Where(i => i != null)
                 .ToList();
 
-            if (addresses.Count == 0)
+            if (!addresses.Any())
             {
                 addresses.AddRange(NetworkManager.GetLocalIpAddresses());
 

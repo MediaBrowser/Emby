@@ -847,7 +847,7 @@ namespace SharpCifs.Smb
                     Sendrecv(request, response, SmbConstants.ResponseTimeout);
                 }
             }
-            catch (SmbException se)
+            catch (SmbException)
             {
                 throw;
             }

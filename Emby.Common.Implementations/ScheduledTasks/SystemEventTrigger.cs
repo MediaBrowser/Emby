@@ -40,11 +40,9 @@ namespace Emby.Common.Implementations.ScheduledTasks
         /// <param name="isApplicationStartup">if set to <c>true</c> [is application startup].</param>
         public void Start(TaskResult lastResult, ILogger logger, string taskName, bool isApplicationStartup)
         {
-            switch (SystemEvent)
+            if (SystemEvent == SystemEvent.WakeFromSleep)
             {
-                case SystemEvent.WakeFromSleep:
-                    _systemEvents.Resume += _systemEvents_Resume;
-                    break;
+                _systemEvents.Resume += _systemEvents_Resume;
             }
         }
 
@@ -77,10 +75,7 @@ namespace Emby.Common.Implementations.ScheduledTasks
         /// </summary>
         private void OnTriggered()
         {
-            if (Triggered != null)
-            {
-                Triggered(this, new GenericEventArgs<TaskExecutionOptions>(TaskOptions));
-            }
+            Triggered?.Invoke(this, new GenericEventArgs<TaskExecutionOptions>(TaskOptions));
         }
     }
 }
