@@ -99,7 +99,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             get
             {
-                var list = AlbumArtists;
+                var list = AlbumArtists.ToList();
 
                 list.AddRange(Artists);
 
