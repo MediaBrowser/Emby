@@ -192,7 +192,8 @@ namespace MediaBrowser.Api
                         }
 
                         return false;
-                    });
+                    })
+                    .ToList();
             }
 
             foreach (var tuple in tuples)

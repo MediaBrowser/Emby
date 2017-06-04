@@ -77,7 +77,8 @@ namespace Emby.Dlna
                 return list
                     .OrderBy(i => i.Item1.Info.Type == DeviceProfileType.User ? 0 : 1)
                     .ThenBy(i => i.Item1.Info.Name)
-                    .Select(i => i.Item2);
+                    .Select(i => i.Item2)
+                    .ToList();
             }
         }
 
@@ -349,7 +350,8 @@ namespace Emby.Dlna
                 return list
                     .Select(i => i.Item1)
                     .OrderBy(i => i.Info.Type == DeviceProfileType.User ? 0 : 1)
-                    .ThenBy(i => i.Info.Name);
+                    .ThenBy(i => i.Info.Name)
+                    .ToList();
             }
         }
 
@@ -549,7 +551,7 @@ namespace Emby.Dlna
 
         private void DumpProfiles()
         {
-            var list = new List<DeviceProfile>
+            var list = new DeviceProfile[]
             {
                 new SamsungSmartTvProfile(),
                 new Xbox360Profile(),
