@@ -864,6 +864,11 @@ namespace Emby.Server.Implementations.Library
             // If this returns multiple items it could be tricky figuring out which one is correct. 
             // In most cases, the newest one will be and the others obsolete but not yet cleaned up
 
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException("path");
+            }
+
             var query = new InternalItemsQuery
             {
                 Path = path,
@@ -1287,7 +1292,7 @@ namespace Emby.Server.Implementations.Library
             return item;
         }
 
-        public IEnumerable<BaseItem> GetItemList(InternalItemsQuery query)
+        public IEnumerable<BaseItem> GetItemList(InternalItemsQuery query, bool allowExternalContent)
         {
             if (query.Recursive && query.ParentId.HasValue)
             {
@@ -1300,10 +1305,15 @@ namespace Emby.Server.Implementations.Library
 
             if (query.User != null)
             {
-                AddUserToQuery(query, query.User);
+                AddUserToQuery(query, query.User, allowExternalContent);
             }
 
             return ItemRepository.GetItemList(query);
+        }
+
+        public IEnumerable<BaseItem> GetItemList(InternalItemsQuery query)
+        {
+            return GetItemList(query, true);
         }
 
         public int GetCount(InternalItemsQuery query)
@@ -1543,7 +1553,7 @@ namespace Emby.Server.Implementations.Library
             query.Parent = null;
         }
 
-        private void AddUserToQuery(InternalItemsQuery query, User user)
+        private void AddUserToQuery(InternalItemsQuery query, User user, bool allowExternalContent = true)
         {
             if (query.AncestorIds.Length == 0 &&
                 !query.ParentId.HasValue &&
@@ -1556,7 +1566,8 @@ namespace Emby.Server.Implementations.Library
                 var userViews = _userviewManager().GetUserViews(new UserViewQuery
                 {
                     UserId = user.Id.ToString("N"),
-                    IncludeHidden = true
+                    IncludeHidden = true,
+                    IncludeExternalContent = allowExternalContent
 
                 }, CancellationToken.None).Result.ToList();
 
