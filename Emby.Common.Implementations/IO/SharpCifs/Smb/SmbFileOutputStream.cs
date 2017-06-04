@@ -170,7 +170,7 @@ namespace SharpCifs.Smb
 				{
 					_fp = file.Length();
 				}
-				catch (SmbAuthException sae)
+				catch (SmbAuthException)
 				{
 					throw;
 				}

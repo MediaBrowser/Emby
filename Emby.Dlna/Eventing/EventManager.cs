@@ -1,14 +1,14 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Dlna;
-using MediaBrowser.Model.Logging;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Dlna;
+using MediaBrowser.Model.Logging;
 
 namespace Emby.Dlna.Eventing
 {
@@ -113,8 +113,7 @@ namespace Emby.Dlna.Eventing
         public Task TriggerEvent(string notificationType, IDictionary<string, string> stateVariables)
         {
             var subs = _subscriptions.Values
-                .Where(i => !i.IsExpired && string.Equals(notificationType, i.NotificationType, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                .Where(i => !i.IsExpired && string.Equals(notificationType, i.NotificationType, StringComparison.OrdinalIgnoreCase));
 
             var tasks = subs.Select(i => TriggerEvent(i, stateVariables));
 

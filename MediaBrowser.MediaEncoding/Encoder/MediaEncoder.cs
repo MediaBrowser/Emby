@@ -137,7 +137,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 {
                     _environmentInfo.SetProcessEnvironmentVariable("FFREPORT", null);
                 }
-                catch (Exception ex)
+                catch
                 {
                     //_logger.ErrorException("Error setting FFREPORT environment variable", ex);
                 }

@@ -62,10 +62,9 @@ namespace Emby.Server.Implementations.Channels
         public static string GetUserDistinctValue(User user)
         {
             var channels = user.Policy.EnabledChannels
-                .OrderBy(i => i)
-                .ToList();
+                .OrderBy(i => i).ToArray();
 
-            return string.Join("|", channels.ToArray());
+            return string.Join("|", channels);
         }
 
         private async Task DownloadContent(string user, CancellationToken cancellationToken, IProgress<double> progress)
@@ -131,8 +130,7 @@ namespace Emby.Server.Implementations.Channels
             });
 
             var invalidIds = databaseIds
-                .Except(installedChannelIds)
-                .ToList();
+                .Except(installedChannelIds);
 
             foreach (var id in invalidIds)
             {

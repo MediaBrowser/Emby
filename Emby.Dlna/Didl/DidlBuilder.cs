@@ -237,8 +237,7 @@ namespace Emby.Dlna.Didl
             }
 
             var subtitleProfiles = streamInfo.GetSubtitleProfiles(false, _serverAddress, _accessToken)
-                .Where(subtitle => subtitle.DeliveryMethod == SubtitleDeliveryMethod.External)
-                .ToList();
+                .Where(subtitle => subtitle.DeliveryMethod == SubtitleDeliveryMethod.External);
 
             foreach (var subtitle in subtitleProfiles)
             {

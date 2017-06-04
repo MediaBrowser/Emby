@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using MediaBrowser.Model.System;
 
 namespace Emby.Common.Implementations.EnvironmentInfo
@@ -30,9 +26,9 @@ namespace Emby.Common.Implementations.EnvironmentInfo
                         return MediaBrowser.Model.System.OperatingSystem.Windows;
                     case PlatformID.Unix:
                         return MediaBrowser.Model.System.OperatingSystem.Linux;
+                    default:
+                        return MediaBrowser.Model.System.OperatingSystem.Windows;
                 }
-
-                return MediaBrowser.Model.System.OperatingSystem.Windows;
             }
         }
 
@@ -48,7 +44,7 @@ namespace Emby.Common.Implementations.EnvironmentInfo
         {
             get
             {
-                return Environment.OSVersion.Version.ToString() + " " + Environment.OSVersion.ServicePack.ToString();
+                return Environment.OSVersion.Version + " " + Environment.OSVersion.ServicePack;
             }
         }
 
@@ -69,7 +65,7 @@ namespace Emby.Common.Implementations.EnvironmentInfo
                     return CustomArchitecture.Value;
                 }
 
-                return Environment.Is64BitOperatingSystem ? MediaBrowser.Model.System.Architecture.X64 : MediaBrowser.Model.System.Architecture.X86;
+                return Environment.Is64BitOperatingSystem ? Architecture.X64 : Architecture.X86;
             }
         }
 

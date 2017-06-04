@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Diagnostics;
 
@@ -52,10 +50,7 @@ namespace Emby.Common.Implementations.Diagnostics
 
         private void _process_Exited(object sender, EventArgs e)
         {
-            if (Exited != null)
-            {
-                Exited(this, e);
-            }
+            Exited?.Invoke(this, e);
         }
 
         public ProcessOptions StartInfo

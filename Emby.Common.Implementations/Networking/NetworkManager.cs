@@ -1,5 +1,4 @@
-﻿using MediaBrowser.Model.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,10 +6,11 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Extensions;
-using MediaBrowser.Model.Net;
-using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Net;
 
 namespace Emby.Common.Implementations.Networking
 {
@@ -300,10 +300,9 @@ namespace Emby.Common.Implementations.Networking
         /// <returns>[string] MAC Address</returns>
         public string GetMacAddress()
         {
-            return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(i => i.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(i => BitConverter.ToString(i.GetPhysicalAddress().GetAddressBytes()))
-                .FirstOrDefault();
+            return BitConverter.ToString(NetworkInterface.GetAllNetworkInterfaces()
+                                         .FirstOrDefault(i => i.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                                         .GetPhysicalAddress().GetAddressBytes());
         }
 
         /// <summary>
@@ -326,7 +325,7 @@ namespace Emby.Common.Implementations.Networking
         /// <exception cref="System.FormatException"></exception>
         private static async Task<IPEndPoint> Parse(string endpointstring, int defaultport)
         {
-            if (String.IsNullOrEmpty(endpointstring)
+            if (string.IsNullOrEmpty(endpointstring)
                 || endpointstring.Trim().Length == 0)
             {
                 throw new ArgumentException("Endpoint descriptor may not be empty.");
@@ -357,7 +356,7 @@ namespace Emby.Common.Implementations.Networking
                 //could [a:b:c]:d
                 if (values[0].StartsWith("[") && values[values.Length - 2].EndsWith("]"))
                 {
-                    string ipaddressstring = String.Join(":", values.Take(values.Length - 1).ToArray());
+                    string ipaddressstring = string.Join(":", values.Take(values.Length - 1));
                     ipaddy = IPAddress.Parse(ipaddressstring);
                     port = GetPort(values[values.Length - 1]);
                 }

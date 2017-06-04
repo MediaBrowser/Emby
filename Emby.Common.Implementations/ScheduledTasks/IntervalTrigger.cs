@@ -84,10 +84,7 @@ namespace Emby.Common.Implementations.ScheduledTasks
         /// </summary>
         private void DisposeTimer()
         {
-            if (Timer != null)
-            {
-                Timer.Dispose();
-            }
+            Timer?.Dispose();
         }
 
         /// <summary>

@@ -198,7 +198,7 @@ namespace SharpCifs.Smb
 					TreeNum = _treeConnCounter++;
 					ConnectionState = 2;
 				}
-				catch (SmbException se)
+				catch (SmbException)
 				{
 					// connected
 					TreeDisconnect(true);

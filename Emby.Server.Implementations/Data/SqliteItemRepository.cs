@@ -2165,37 +2165,35 @@ namespace Emby.Server.Implementations.Data
             var index = 0;
 
             using (WriteLock.Write())
+            using (var connection = CreateConnection())
             {
-                using (var connection = CreateConnection())
+                connection.RunInTransaction(db =>
                 {
-                    connection.RunInTransaction(db =>
-                    {
                         // First delete chapters
                         db.Execute("delete from " + ChaptersTableName + " where ItemId=@ItemId", id.ToGuidBlob());
 
-                        using (var saveChapterStatement = PrepareStatement(db, "replace into " + ChaptersTableName + " (ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath, ImageDateModified) values (@ItemId, @ChapterIndex, @StartPositionTicks, @Name, @ImagePath, @ImageDateModified)"))
+                    using (var saveChapterStatement = PrepareStatement(db, "replace into " + ChaptersTableName + " (ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath, ImageDateModified) values (@ItemId, @ChapterIndex, @StartPositionTicks, @Name, @ImagePath, @ImageDateModified)"))
+                    {
+                        foreach (var chapter in chapters)
                         {
-                            foreach (var chapter in chapters)
+                            if (index > 0)
                             {
-                                if (index > 0)
-                                {
-                                    saveChapterStatement.Reset();
-                                }
-
-                                saveChapterStatement.TryBind("@ItemId", id.ToGuidBlob());
-                                saveChapterStatement.TryBind("@ChapterIndex", index);
-                                saveChapterStatement.TryBind("@StartPositionTicks", chapter.StartPositionTicks);
-                                saveChapterStatement.TryBind("@Name", chapter.Name);
-                                saveChapterStatement.TryBind("@ImagePath", chapter.ImagePath);
-                                saveChapterStatement.TryBind("@ImageDateModified", chapter.ImageDateModified);
-
-                                saveChapterStatement.MoveNext();
-
-                                index++;
+                                saveChapterStatement.Reset();
                             }
+
+                            saveChapterStatement.TryBind("@ItemId", id.ToGuidBlob());
+                            saveChapterStatement.TryBind("@ChapterIndex", index);
+                            saveChapterStatement.TryBind("@StartPositionTicks", chapter.StartPositionTicks);
+                            saveChapterStatement.TryBind("@Name", chapter.Name);
+                            saveChapterStatement.TryBind("@ImagePath", chapter.ImagePath);
+                            saveChapterStatement.TryBind("@ImageDateModified", chapter.ImageDateModified);
+
+                            saveChapterStatement.MoveNext();
+
+                            index++;
                         }
-                    }, TransactionMode);
-                }
+                    }
+                }, TransactionMode);
             }
         }
 

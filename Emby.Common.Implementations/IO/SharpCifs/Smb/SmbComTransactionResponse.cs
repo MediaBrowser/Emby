@@ -148,7 +148,6 @@ namespace SharpCifs.Smb
         internal override int ReadBytesWireFormat(byte[] buffer, int bufferIndex)
         {
             _pad = _pad1 = 0;
-            int n;
             if (ParameterCount > 0)
             {
                 bufferIndex += _pad = ParameterOffset - (bufferIndex - HeaderStart);

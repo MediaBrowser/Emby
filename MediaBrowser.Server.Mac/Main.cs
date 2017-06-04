@@ -1,8 +1,6 @@
 ﻿using MediaBrowser.Model.Logging;
-using MediaBrowser.Server.Implementations;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,13 +8,8 @@ using System.Net.Security;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
 using Emby.Server.Core;
 using Emby.Server.Core.Cryptography;
 using Emby.Server.Core.IO;
@@ -25,9 +18,7 @@ using Emby.Common.Implementations.Logging;
 using Emby.Server.Implementations.Logging;
 using Emby.Common.Implementations.EnvironmentInfo;
 using Emby.Server.Mac.Native;
-using Emby.Server.Implementations.IO;
 using Emby.Common.Implementations.Networking;
-using Emby.Common.Implementations.Cryptography;
 using Mono.Unix.Native;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.IO;
@@ -35,127 +26,128 @@ using Emby.Server.Core.Logging;
 using Emby.Drawing;
 using Emby.Drawing.Skia;
 using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Model.Drawing;
 
 namespace MediaBrowser.Server.Mac
 {
-	class MainClass
-	{
-		internal static MacAppHost AppHost;
+    class MainClass
+    {
+        internal static MacAppHost AppHost;
 
-		private static ILogger _logger;
-		private static IFileSystem _fileSystem;
+        private static ILogger _logger;
+        private static IFileSystem _fileSystem;
 
-		static void Main (string[] args)
-		{
+        static void Main(string[] args)
+        {
             SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 
             var applicationPath = Assembly.GetEntryAssembly().Location;
 
-			var options = new StartupOptions(Environment.GetCommandLineArgs());
+            var options = new StartupOptions(Environment.GetCommandLineArgs());
 
-			// Allow this to be specified on the command line.
-			var customProgramDataPath = options.GetOption("-programdata");
+            // Allow this to be specified on the command line.
+            var customProgramDataPath = options.GetOption("-programdata");
 
-			var appFolderPath = Path.GetDirectoryName(applicationPath);
+            var appFolderPath = Path.GetDirectoryName(applicationPath);
 
-			var appPaths = CreateApplicationPaths(appFolderPath, customProgramDataPath);
+            var appPaths = CreateApplicationPaths(appFolderPath, customProgramDataPath);
 
-			var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
-			logManager.ReloadLogger(LogSeverity.Info);
-			logManager.AddConsoleOutput();
+            var logManager = new NlogManager(appPaths.LogDirectoryPath, "server");
+            logManager.ReloadLogger(LogSeverity.Info);
+            logManager.AddConsoleOutput();
 
-			var logger = _logger = logManager.GetLogger("Main");
+            var logger = _logger = logManager.GetLogger("Main");
 
-			ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
+            ApplicationHost.LogEnvironmentInfo(logger, appPaths, true);
 
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-			StartApplication(appPaths, logManager, options);
-			NSApplication.Init ();
-			NSApplication.Main (args);
-		}
-
-		private static ServerApplicationPaths CreateApplicationPaths(string appFolderPath, string programDataPath)
-		{
-			if (string.IsNullOrEmpty(programDataPath))
-			{
-				// TODO: Use CommonApplicationData? Will we always have write access?
-				programDataPath = Path.Combine(Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "mediabrowser-server");
-
-				if (!Directory.Exists (programDataPath)) {
-					programDataPath = Path.Combine(Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "emby-server");
-				}
-			}
-
-			// Within the mac bundle, go uo two levels then down into Resources folder
-			var resourcesPath = Path.Combine(Path.GetDirectoryName(appFolderPath), "Resources");
-
-			Action<string> createDirectoryFn = (string obj) => Directory.CreateDirectory(obj);
-
-			return new ServerApplicationPaths(programDataPath, appFolderPath, resourcesPath, createDirectoryFn);
-		}
-
-		/// <summary>
-		/// Runs the application.
-		/// </summary>
-		/// <param name="appPaths">The app paths.</param>
-		/// <param name="logManager">The log manager.</param>
-		/// <param name="options">The options.</param>
-		private static void StartApplication(ServerApplicationPaths appPaths, 
-			ILogManager logManager, 
-			StartupOptions options)
-		{
-			// Allow all https requests
-			ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
-
-			var environmentInfo = GetEnvironmentInfo();
-
-			var fileSystem = new MonoFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
-
-			_fileSystem = fileSystem;
-
-			var imageEncoder = GetImageEncoder(appPaths, fileSystem, logManager);
-
-			AppHost = new MacAppHost(appPaths,
-									 logManager,
-									 options,
-									 fileSystem,
-									 new PowerManagement(),
-									 "Emby.Server.Mac.pkg",
-									 environmentInfo,
-									 imageEncoder,
-									 new Startup.Common.SystemEvents(logManager.GetLogger("SystemEvents")),
-									 new MemoryStreamProvider(),
-			                         new NetworkManager(logManager.GetLogger("NetworkManager")),
-									 GenerateCertificate,
-									 () => Environment.UserName);
-
-			if (options.ContainsOption("-v")) {
-				Console.WriteLine (AppHost.ApplicationVersion.ToString());
-				return;
-			}
-
-			Console.WriteLine ("appHost.Init");
-
-			Task.Run (() => StartServer(CancellationToken.None));
+            StartApplication(appPaths, logManager, options);
+            NSApplication.Init();
+            NSApplication.Main(args);
         }
 
-	    private static IImageEncoder GetImageEncoder(ServerApplicationPaths appPaths, IFileSystem fileSystem, ILogManager logManager)
-	    {
-	        try
-	        {
+        private static ServerApplicationPaths CreateApplicationPaths(string appFolderPath, string programDataPath)
+        {
+            if (string.IsNullOrEmpty(programDataPath))
+            {
+                // TODO: Use CommonApplicationData? Will we always have write access?
+                programDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "mediabrowser-server");
+
+                if (!Directory.Exists(programDataPath))
+                {
+                    programDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "emby-server");
+                }
+            }
+
+            // Within the mac bundle, go uo two levels then down into Resources folder
+            var resourcesPath = Path.Combine(Path.GetDirectoryName(appFolderPath), "Resources");
+
+            Action<string> createDirectoryFn = (string obj) => Directory.CreateDirectory(obj);
+
+            return new ServerApplicationPaths(programDataPath, appFolderPath, resourcesPath, createDirectoryFn);
+        }
+
+        /// <summary>
+        /// Runs the application.
+        /// </summary>
+        /// <param name="appPaths">The app paths.</param>
+        /// <param name="logManager">The log manager.</param>
+        /// <param name="options">The options.</param>
+        private static void StartApplication(ServerApplicationPaths appPaths,
+            ILogManager logManager,
+            StartupOptions options)
+        {
+            // Allow all https requests
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
+
+            var environmentInfo = GetEnvironmentInfo();
+
+            var fileSystem = new MonoFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
+
+            _fileSystem = fileSystem;
+
+            var imageEncoder = GetImageEncoder(appPaths, fileSystem, logManager);
+
+            AppHost = new MacAppHost(appPaths,
+                                     logManager,
+                                     options,
+                                     fileSystem,
+                                     new PowerManagement(),
+                                     "Emby.Server.Mac.pkg",
+                                     environmentInfo,
+                                     imageEncoder,
+                                     new Startup.Common.SystemEvents(logManager.GetLogger("SystemEvents")),
+                                     new MemoryStreamProvider(),
+                                     new NetworkManager(logManager.GetLogger("NetworkManager")),
+                                     GenerateCertificate,
+                                     () => Environment.UserName);
+
+            if (options.ContainsOption("-v"))
+            {
+                Console.WriteLine(AppHost.ApplicationVersion.ToString());
+                return;
+            }
+
+            Console.WriteLine("appHost.Init");
+
+            Task.Run(() => StartServer(CancellationToken.None));
+        }
+
+        private static IImageEncoder GetImageEncoder(ServerApplicationPaths appPaths, IFileSystem fileSystem, ILogManager logManager)
+        {
+            try
+            {
                 return new SkiaEncoder(logManager.GetLogger("Skia"), appPaths, () => AppHost.HttpClient, fileSystem);
             }
-            catch (Exception ex)
-	        {
-	            return new NullImageEncoder();
-	        }
-	    }
+            catch
+            {
+                return new NullImageEncoder();
+            }
+        }
 
         private static void GenerateCertificate(string certPath, string certHost, string certPassword)
         {
-			CertificateGenerator.CreateSelfSignCertificatePfx(certPath, certHost, certPassword, _logger);
+            CertificateGenerator.CreateSelfSignCertificatePfx(certPath, certHost, certPassword, _logger);
         }
 
         private static EnvironmentInfo GetEnvironmentInfo()
@@ -167,21 +159,23 @@ namespace MediaBrowser.Server.Mac
 
             var uname = GetUnixName();
 
+            /*
             var sysName = uname.sysname ?? string.Empty;
 
             if (string.Equals(sysName, "Darwin", StringComparison.OrdinalIgnoreCase))
             {
-                //info.OperatingSystem = Startup.Common.OperatingSystem.Osx;
+                /info.OperatingSystem = Startup.Common.OperatingSystem.Osx;
             }
             else if (string.Equals(sysName, "Linux", StringComparison.OrdinalIgnoreCase))
             {
-                //info.OperatingSystem = Startup.Common.OperatingSystem.Linux;
+                info.OperatingSystem = Startup.Common.OperatingSystem.Linux;
             }
             else if (string.Equals(sysName, "BSD", StringComparison.OrdinalIgnoreCase))
             {
-                //info.OperatingSystem = Startup.Common.OperatingSystem.Bsd;
-                //info.IsBsd = true;
+                info.OperatingSystem = Startup.Common.OperatingSystem.Bsd;
+                info.IsBsd = true;
             }
+            */
 
             var archX86 = new Regex("(i|I)[3-6]86");
 
@@ -225,7 +219,6 @@ namespace MediaBrowser.Server.Mac
                         uname.sysname = utsname.sysname ?? string.Empty;
                         uname.machine = utsname.machine ?? string.Empty;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -242,33 +235,30 @@ namespace MediaBrowser.Server.Mac
             public string machine = string.Empty;
         }
 
-        private static async void StartServer(CancellationToken cancellationToken) 
-		{
-			var initProgress = new Progress<double>();
+        private static async void StartServer(CancellationToken cancellationToken)
+        {
+            var initProgress = new Progress<double>();
 
-			await AppHost.Init (initProgress).ConfigureAwait (false);
+            await AppHost.Init(initProgress).ConfigureAwait(false);
 
-			await AppHost.RunStartupTasks ().ConfigureAwait (false);
+            await AppHost.RunStartupTasks().ConfigureAwait(false);
 
-			if (MenuBarIcon.Instance != null) 
-			{
-				MenuBarIcon.Instance.Localize ();
-			}
-		}
+            MenuBarIcon.Instance?.Localize();
+        }
 
-		public static void Shutdown()
-		{
-			ShutdownApp();
-		}
+        public static void Shutdown()
+        {
+            ShutdownApp();
+        }
 
-		private static void ShutdownApp()
-		{
-			_logger.Info ("Calling ApplicationHost.Dispose");
-			AppHost.Dispose ();
+        private static void ShutdownApp()
+        {
+            _logger.Info("Calling ApplicationHost.Dispose");
+            AppHost.Dispose();
 
-			_logger.Info("AppController.Terminate");
-			MenuBarIcon.Instance.Terminate ();
-		}
+            _logger.Info("AppController.Terminate");
+            MenuBarIcon.Instance.Terminate();
+        }
 
         public static void Restart()
         {
@@ -278,14 +268,14 @@ namespace MediaBrowser.Server.Mac
             _logger.Info("Starting new instance");
 
             var args = Environment.GetCommandLineArgs()
-				.Skip(1)
+                .Skip(1)
                 .Select(NormalizeCommandLineArgument);
 
             var commandLineArgsString = string.Join(" ", args.ToArray());
-			var module = Environment.GetCommandLineArgs().First();
+            var module = Environment.GetCommandLineArgs().First();
 
-			_logger.Info ("Executable: {0}", module);
-			_logger.Info ("Arguments: {0}", commandLineArgsString);
+            _logger.Info("Executable: {0}", module);
+            _logger.Info("Arguments: {0}", commandLineArgsString);
 
             Process.Start(module, commandLineArgsString);
 
@@ -303,35 +293,34 @@ namespace MediaBrowser.Server.Mac
             return "\"" + arg + "\"";
         }
 
-		/// <summary>
-		/// Handles the UnhandledException event of the CurrentDomain control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
-		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			var exception = (Exception)e.ExceptionObject;
+        /// <summary>
+        /// Handles the UnhandledException event of the CurrentDomain control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = (Exception)e.ExceptionObject;
 
-			var consoleLogger = new ConsoleLogger();
+            var consoleLogger = new ConsoleLogger();
 
-			new UnhandledExceptionWriter(AppHost.ServerConfigurationManager.ApplicationPaths, _logger, AppHost.LogManager, _fileSystem, consoleLogger).Log(exception);
+            new UnhandledExceptionWriter(AppHost.ServerConfigurationManager.ApplicationPaths, _logger, AppHost.LogManager, _fileSystem, consoleLogger).Log(exception);
 
-			if (!Debugger.IsAttached)
-			{
-				Environment.Exit(System.Runtime.InteropServices.Marshal.GetHRForException(exception));
-			}
-		}
-	}
+            if (!Debugger.IsAttached)
+            {
+                Environment.Exit(System.Runtime.InteropServices.Marshal.GetHRForException(exception));
+            }
+        }
+    }
 
-	class NoCheckCertificatePolicy : ICertificatePolicy
-	{
-		public bool CheckValidationResult (ServicePoint srvPoint, 
-		                                   System.Security.Cryptography.X509Certificates.X509Certificate certificate, 
-		                                   WebRequest request, 
-		                                   int certificateProblem)
-		{
-			return true;
-		}
+    class NoCheckCertificatePolicy : ICertificatePolicy
+    {
+        public bool CheckValidationResult(ServicePoint srvPoint,
+                                           System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                                           WebRequest request,
+                                           int certificateProblem)
+        {
+            return true;
+        }
     }
 }
-

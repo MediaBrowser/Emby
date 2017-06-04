@@ -79,20 +79,19 @@ namespace MediaBrowser.Common.Updates
 
         private bool MatchesUpdateLevel(RootObject i, PackageVersionClass updateLevel)
         {
-            if (updateLevel == PackageVersionClass.Beta)
+            switch (updateLevel)
             {
-                return !i.prerelease || i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase);
-            }
-            if (updateLevel == PackageVersionClass.Dev)
-            {
-                return !i.prerelease || i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase) ||
+                case PackageVersionClass.Beta:
+                    return !i.prerelease || i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase);
+                case PackageVersionClass.Dev:
+                    return !i.prerelease || i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase) ||
                        i.name.EndsWith("-dev", StringComparison.OrdinalIgnoreCase);
+                default:
+                    // Technically all we need to do is check that it's not pre-release
+                    // But let's addititional checks for -beta and -dev to handle builds that might be temporarily tagged incorrectly.
+                    return !i.prerelease && !i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase) &&
+                           !i.name.EndsWith("-dev", StringComparison.OrdinalIgnoreCase);
             }
-
-            // Technically all we need to do is check that it's not pre-release
-            // But let's addititional checks for -beta and -dev to handle builds that might be temporarily tagged incorrectly.
-            return !i.prerelease && !i.name.EndsWith("-beta", StringComparison.OrdinalIgnoreCase) &&
-                   !i.name.EndsWith("-dev", StringComparison.OrdinalIgnoreCase);
         }
 
         public async Task<List<RootObject>> GetLatestReleases(string organzation, string repository, string assetFilename, CancellationToken cancellationToken)

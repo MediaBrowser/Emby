@@ -1,20 +1,4 @@
-﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Events;
-using Emby.Common.Implementations.Devices;
-using Emby.Common.Implementations.IO;
-using Emby.Common.Implementations.ScheduledTasks;
-using Emby.Common.Implementations.Serialization;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Common.Plugins;
-using MediaBrowser.Common.Progress;
-using MediaBrowser.Common.Security;
-using MediaBrowser.Common.Updates;
-using MediaBrowser.Model.Events;
-using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
-using MediaBrowser.Model.Updates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,19 +8,32 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Extensions;
 using Emby.Common.Implementations.Cryptography;
+using Emby.Common.Implementations.Devices;
 using Emby.Common.Implementations.Diagnostics;
+using Emby.Common.Implementations.IO;
 using Emby.Common.Implementations.Net;
-using Emby.Common.Implementations.EnvironmentInfo;
+using Emby.Common.Implementations.ScheduledTasks;
+using Emby.Common.Implementations.Serialization;
 using Emby.Common.Implementations.Threading;
 using MediaBrowser.Common;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Events;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Common.Net;
+using MediaBrowser.Common.Plugins;
+using MediaBrowser.Common.Progress;
 using MediaBrowser.Model.Cryptography;
 using MediaBrowser.Model.Diagnostics;
+using MediaBrowser.Model.Events;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Tasks;
 using MediaBrowser.Model.Threading;
+using MediaBrowser.Model.Updates;
 
 namespace Emby.Common.Implementations
 {
@@ -374,12 +371,12 @@ namespace Emby.Common.Implementations
             IsoManager.AddParts(list);
         }
 
-        /// <summary>
-        /// Runs the startup tasks.
-        /// </summary>
-        /// <returns>Task.</returns>
-        public virtual Task RunStartupTasks()
-        {
+		/// <summary>
+		/// Runs the startup tasks.
+		/// </summary>
+		/// <returns>Task.</returns>
+		public virtual Task RunStartupTasks()
+		{
             Resolve<ITaskManager>().AddTasks(GetExports<IScheduledTask>(false));
 
             ConfigureAutorun();
@@ -464,7 +461,7 @@ namespace Emby.Common.Implementations
         {
             FailedAssemblies.Clear();
 
-            var assemblies = GetComposablePartAssemblies().ToList();
+            var assemblies = GetComposablePartAssemblies();
 
             foreach (var assembly in assemblies)
             {
@@ -529,14 +526,14 @@ namespace Emby.Common.Implementations
         {
             var name = FormatAttribute(Name);
 
-            return name + "/" + ApplicationVersion.ToString();
+            return name + "/" + ApplicationVersion;
         }
 
         private string FormatAttribute(string str)
         {
             var arr = str.ToCharArray();
 
-            arr = Array.FindAll<char>(arr, (c => (char.IsLetterOrDigit(c)
+            arr = Array.FindAll(arr, (c => (char.IsLetterOrDigit(c)
                                               || char.IsWhiteSpace(c))));
 
             var result = new string(arr);
@@ -721,8 +718,7 @@ namespace Emby.Common.Implementations
             var parts = GetExportTypes<T>()
                 .Select(CreateInstanceSafe)
                 .Where(i => i != null)
-                .Cast<T>()
-                .ToList();
+                .Cast<T>();
 
             if (manageLiftime)
             {
@@ -808,7 +804,7 @@ namespace Emby.Common.Implementations
 
                 Logger.Info("Disposing " + type.Name);
 
-                var parts = DisposableParts.Distinct().Where(i => i.GetType() != type).ToList();
+                var parts = DisposableParts.Distinct().Where(i => i.GetType() != type);
                 DisposableParts.Clear();
 
                 foreach (var part in parts)

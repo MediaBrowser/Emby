@@ -66,10 +66,7 @@ namespace Emby.Common.Implementations.ScheduledTasks
         /// </summary>
         private void DisposeTimer()
         {
-            if (Timer != null)
-            {
-                Timer.Dispose();
-            }
+            Timer?.Dispose();
         }
 
         /// <summary>
@@ -82,10 +79,7 @@ namespace Emby.Common.Implementations.ScheduledTasks
         /// </summary>
         private void OnTriggered()
         {
-            if (Triggered != null)
-            {
-                Triggered(this, new GenericEventArgs<TaskExecutionOptions>(TaskOptions));
-            }
+            Triggered?.Invoke(this, new GenericEventArgs<TaskExecutionOptions>(TaskOptions));
         }
     }
 }

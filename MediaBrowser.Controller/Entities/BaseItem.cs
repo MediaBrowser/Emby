@@ -1056,12 +1056,10 @@ namespace MediaBrowser.Controller.Entities
             var files = fileSystemChildren.Where(i => i.IsDirectory)
                 .Where(i => string.Equals(i.Name, ThemeSongsFolderName, StringComparison.OrdinalIgnoreCase))
                 .SelectMany(i => directoryService.GetFiles(i.FullName))
-                .ToList();
-
-            // Support plex/xbmc convention
-            files.AddRange(fileSystemChildren
-                .Where(i => !i.IsDirectory && string.Equals(FileSystem.GetFileNameWithoutExtension(i), ThemeSongFilename, StringComparison.OrdinalIgnoreCase))
-                );
+                // Support plex/xbmc convention
+                .Concat(fileSystemChildren
+                    .Where(i => !i.IsDirectory && string.Equals(FileSystem.GetFileNameWithoutExtension(i), ThemeSongFilename, StringComparison.OrdinalIgnoreCase))
+                    );
 
             return LibraryManager.ResolvePaths(files, directoryService, null, new LibraryOptions())
                 .OfType<Audio.Audio>()
@@ -1226,7 +1224,7 @@ namespace MediaBrowser.Controller.Entities
 
         private async Task<bool> RefreshLocalTrailers(IHasTrailers item, MetadataRefreshOptions options, List<FileSystemMetadata> fileSystemChildren, CancellationToken cancellationToken)
         {
-            var newItems = LibraryManager.FindTrailers(this, fileSystemChildren, options.DirectoryService).ToList();
+            var newItems = LibraryManager.FindTrailers(this, fileSystemChildren, options.DirectoryService);
 
             var newItemIds = newItems.Select(i => i.Id).ToList();
 
@@ -1243,7 +1241,7 @@ namespace MediaBrowser.Controller.Entities
 
         private async Task<bool> RefreshThemeVideos(BaseItem item, MetadataRefreshOptions options, IEnumerable<FileSystemMetadata> fileSystemChildren, CancellationToken cancellationToken)
         {
-            var newThemeVideos = LoadThemeVideos(fileSystemChildren, options.DirectoryService).ToList();
+            var newThemeVideos = LoadThemeVideos(fileSystemChildren, options.DirectoryService);
 
             var newThemeVideoIds = newThemeVideos.Select(i => i.Id).ToList();
 
@@ -1274,7 +1272,7 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         private async Task<bool> RefreshThemeSongs(BaseItem item, MetadataRefreshOptions options, List<FileSystemMetadata> fileSystemChildren, CancellationToken cancellationToken)
         {
-            var newThemeSongs = LoadThemeSongs(fileSystemChildren, options.DirectoryService).ToList();
+            var newThemeSongs = LoadThemeSongs(fileSystemChildren, options.DirectoryService);
             var newThemeSongIds = newThemeSongs.Select(i => i.Id).ToList();
 
             var themeSongsChanged = !item.ThemeSongIds.SequenceEqual(newThemeSongIds);
@@ -1654,11 +1652,11 @@ namespace MediaBrowser.Controller.Entities
                     return true;
                 }
 
-                var itemCollectionFolders = LibraryManager.GetCollectionFolders(this).Select(i => i.Id).ToList();
+                var itemCollectionFolders = LibraryManager.GetCollectionFolders(this).Select(i => i.Id);
 
-                if (itemCollectionFolders.Count > 0)
+                if (itemCollectionFolders.Any())
                 {
-                    var userCollectionFolders = user.RootFolder.GetChildren(user, true).Select(i => i.Id).ToList();
+                    var userCollectionFolders = user.RootFolder.GetChildren(user, true).Select(i => i.Id);
                     if (!itemCollectionFolders.Any(userCollectionFolders.Contains))
                     {
                         return false;
@@ -1979,19 +1977,17 @@ namespace MediaBrowser.Controller.Entities
                 .Where(i => i.IsLocalFile)
                 .Select(i => FileSystem.GetDirectoryName(i.Path))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .SelectMany(directoryService.GetFilePaths)
-                .ToList();
+                .SelectMany(directoryService.GetFilePaths);
 
             var deletedImages = ImageInfos
-                .Where(image => image.IsLocalFile && !allFiles.Contains(image.Path, StringComparer.OrdinalIgnoreCase))
-                .ToList();
+                .Where(image => image.IsLocalFile && !allFiles.Contains(image.Path, StringComparer.OrdinalIgnoreCase));
 
-            if (deletedImages.Count > 0)
+            if (deletedImages.Any())
             {
                 ImageInfos = ImageInfos.Except(deletedImages).ToList();
             }
 
-            return deletedImages.Count > 0;
+            return deletedImages.Any();
         }
 
         /// <summary>
@@ -2105,8 +2101,7 @@ namespace MediaBrowser.Controller.Entities
                 var newImagePaths = images.Select(i => i.FullName).ToList();
 
                 var deleted = existingImages
-                    .Where(i => i.IsLocalFile && !newImagePaths.Contains(i.Path, StringComparer.OrdinalIgnoreCase) && !FileSystem.FileExists(i.Path))
-                    .ToList();
+                    .Where(i => i.IsLocalFile && !newImagePaths.Contains(i.Path, StringComparer.OrdinalIgnoreCase) && !FileSystem.FileExists(i.Path));
 
                 ImageInfos = ImageInfos.Except(deleted).ToList();
             }
@@ -2149,10 +2144,9 @@ namespace MediaBrowser.Controller.Entities
             }
 
             var filename = System.IO.Path.GetFileNameWithoutExtension(Path);
-            var extensions = new[] { ".nfo", ".xml", ".srt" }.ToList();
-            extensions.AddRange(SupportedImageExtensionsList);
+            var extensions = new[] { ".nfo", ".xml", ".srt" }.Concat(SupportedImageExtensionsList).ToArray();
 
-            return FileSystem.GetFiles(FileSystem.GetDirectoryName(Path), extensions.ToArray(), false, false)
+            return FileSystem.GetFiles(FileSystem.GetDirectoryName(Path), extensions, false, false)
                 .Where(i => System.IO.Path.GetFileNameWithoutExtension(i.FullName).StartsWith(filename, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }

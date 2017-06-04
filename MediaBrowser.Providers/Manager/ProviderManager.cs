@@ -759,7 +759,7 @@ namespace MediaBrowser.Providers.Manager
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Logged at lower levels
                 }

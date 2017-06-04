@@ -174,7 +174,7 @@ namespace MediaBrowser.Api
 
         protected void SendData(bool force)
         {
-            List<Tuple<IWebSocketConnection, CancellationTokenSource, ITimer, TStateType>> tuples;
+            IEnumerable<Tuple<IWebSocketConnection, CancellationTokenSource, ITimer, TStateType>> tuples;
 
             lock (ActiveConnections)
             {
@@ -300,7 +300,7 @@ namespace MediaBrowser.Api
             {
                 lock (ActiveConnections)
                 {
-                    foreach (var connection in ActiveConnections.ToList())
+                    foreach (var connection in ActiveConnections)
                     {
                         DisposeConnection(connection);
                     }

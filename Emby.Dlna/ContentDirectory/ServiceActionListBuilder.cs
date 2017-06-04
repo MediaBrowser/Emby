@@ -7,7 +7,7 @@ namespace Emby.Dlna.ContentDirectory
     {
         public IEnumerable<ServiceAction> GetActions()
         {
-            var list = new List<ServiceAction>
+            var list = new ServiceAction[]
             {
                 GetSearchCapabilitiesAction(),
                 GetSortCapabilitiesAction(),

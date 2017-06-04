@@ -1092,7 +1092,7 @@ namespace SharpCifs.Smb
                     Addresses = new UniAddress[1];
                     Addresses[0] = UniAddress.GetByName(addr.GetHostAddress());
                 }
-                catch (UnknownHostException uhe)
+                catch (UnknownHostException)
                 {
                     NtlmPasswordAuthentication.InitDefaults();
                     if (NtlmPasswordAuthentication.DefaultDomain.Equals("?"))
@@ -1143,7 +1143,7 @@ namespace SharpCifs.Smb
             {
                 throw new SmbException("Failed to connect to server", uhe);
             }
-            catch (SmbException se)
+            catch (SmbException)
             {
                 throw;
             }
@@ -1234,9 +1234,6 @@ namespace SharpCifs.Smb
         /// <exception cref="System.IO.IOException"></exception>
         public void Connect()
         {
-            SmbTransport trans;
-            SmbSession ssn;
-            UniAddress addr;
             if (IsConnected())
             {
                 return;
@@ -1250,7 +1247,7 @@ namespace SharpCifs.Smb
                     DoConnect();
                     return;
                 }
-                catch (SmbAuthException sae)
+                catch (SmbAuthException)
                 {
                     throw;
                 }
@@ -2420,7 +2417,6 @@ namespace SharpCifs.Smb
         {
             MsrpcDfsRootEnum rpc;
             DcerpcHandle handle = null;
-            IFileEntry[] entries;
             handle = DcerpcHandle.GetHandle("ncacn_np:" + GetAddress().GetHostAddress() + "[\\PIPE\\netdfs]"
                 , Auth);
             try
@@ -2864,7 +2860,7 @@ namespace SharpCifs.Smb
                         dest.Open(OCreat | OWronly | OTrunc, SmbConstants.FileWriteData |
                              SmbConstants.FileWriteAttributes, _attributes, 0);
                     }
-                    catch (SmbAuthException sae)
+                    catch (SmbAuthException)
                     {
                         if ((dest._attributes & AttrReadonly) != 0)
                         {
@@ -3601,7 +3597,6 @@ namespace SharpCifs.Smb
             if (resolveSids)
             {
                 Sid[] sids = new Sid[aces.Length];
-                string[] names = null;
                 for (ai = 0; ai < aces.Length; ai++)
                 {
                     sids[ai] = aces[ai].Sid;

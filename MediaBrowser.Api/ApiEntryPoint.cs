@@ -151,8 +151,7 @@ namespace MediaBrowser.Api
         {
             var path = _config.ApplicationPaths.TranscodingTempPath;
 
-            foreach (var file in _fileSystem.GetFilePaths(path, true)
-                .ToList())
+            foreach (var file in _fileSystem.GetFilePaths(path, true))
             {
                 _fileSystem.DeleteFile(file);
             }
@@ -173,7 +172,7 @@ namespace MediaBrowser.Api
         /// <param name="dispose"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool dispose)
         {
-            var list = _activeTranscodingJobs.ToList();
+            var list = _activeTranscodingJobs;
             var jobCount = list.Count;
 
             Parallel.ForEach(list, j => KillTranscodingJob(j, false, path => true));
@@ -379,7 +378,7 @@ namespace MediaBrowser.Api
 
             //Logger.Debug("PingTranscodingJob PlaySessionId={0} isUsedPaused: {1}", playSessionId, isUserPaused);
 
-            List<TranscodingJob> jobs;
+            IEnumerable<TranscodingJob> jobs;
 
             lock (_activeTranscodingJobs)
             {
@@ -637,8 +636,7 @@ namespace MediaBrowser.Api
             var name = Path.GetFileNameWithoutExtension(outputFilePath);
 
             var filesToDelete = _fileSystem.GetFilePaths(directory)
-                .Where(f => f.IndexOf(name, StringComparison.OrdinalIgnoreCase) != -1)
-                .ToList();
+                .Where(f => f.IndexOf(name, StringComparison.OrdinalIgnoreCase) != -1);
 
             Exception e = null;
 

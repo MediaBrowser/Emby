@@ -1,19 +1,16 @@
-﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Configuration;
-using Emby.Dlna.Common;
-using Emby.Dlna.Ssdp;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Security;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Emby.Dlna.Common;
 using Emby.Dlna.Server;
+using Emby.Dlna.Ssdp;
+using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Threading;
 
 namespace Emby.Dlna.PlayTo
@@ -493,7 +490,7 @@ namespace Emby.Dlna.PlayTo
                     }
                 }
             }
-            catch (HttpException ex)
+            catch (HttpException)
             {
                 if (_disposed)
                     return;

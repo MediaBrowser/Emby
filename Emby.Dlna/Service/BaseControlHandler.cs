@@ -1,15 +1,14 @@
-﻿using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Dlna;
-using Emby.Dlna.Server;
-using MediaBrowser.Model.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using Emby.Dlna.Didl;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Dlna;
 using MediaBrowser.Controller.Extensions;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Xml;
 
 namespace Emby.Dlna.Service
@@ -134,28 +133,20 @@ namespace Emby.Dlna.Service
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    switch (reader.LocalName)
+                    if (reader.LocalName == "Body")
                     {
-                        case "Body":
+                        if (!reader.IsEmptyElement)
+                        {
+                            using (var subReader = reader.ReadSubtree())
                             {
-                                if (!reader.IsEmptyElement)
-                                {
-                                    using (var subReader = reader.ReadSubtree())
-                                    {
-                                        return ParseBodyTag(subReader);
-                                    }
-                                }
-                                else
-                                {
-                                    reader.Read();
-                                }
-                                break;
+                                return ParseBodyTag(subReader);
                             }
-                        default:
-                            {
-                                reader.Skip();
-                                break;
-                            }
+                        }
+                        reader.Read();
+                    }
+                    else
+                    {
+                        reader.Skip();
                     }
                 }
                 else
@@ -190,10 +181,7 @@ namespace Emby.Dlna.Service
                             return result;
                         }
                     }
-                    else
-                    {
-                        reader.Read();
-                    }
+                    reader.Read();
                 }
                 else
                 {
@@ -204,7 +192,7 @@ namespace Emby.Dlna.Service
             return result;
         }
 
-        private void ParseFirstBodyChild(XmlReader reader, IDictionary<string,string> headers)
+        private void ParseFirstBodyChild(XmlReader reader, IDictionary<string, string> headers)
         {
             reader.MoveToContent();
             reader.Read();
@@ -228,7 +216,7 @@ namespace Emby.Dlna.Service
         {
             public string LocalName;
             public string NamespaceURI;
-            public IDictionary<string, string> Headers = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            public IDictionary<string, string> Headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         protected abstract IEnumerable<KeyValuePair<string, string>> GetResult(string methodName, IDictionary<string, string> methodParams);

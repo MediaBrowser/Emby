@@ -617,10 +617,9 @@ namespace MediaBrowser.LocalMetadata.Savers
         public static void AddLinkedChildren(Folder item, XmlWriter writer, string pluralNodeName, string singularNodeName)
         {
             var items = item.LinkedChildren
-                .Where(i => i.Type == LinkedChildType.Manual)
-                .ToList();
+                .Where(i => i.Type == LinkedChildType.Manual);
 
-            if (items.Count == 0)
+            if (!items.Any())
             {
                 return;
             }

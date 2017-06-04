@@ -272,9 +272,6 @@ namespace SharpCifs.Smb
 		/// </remarks>
 		public override string ToString()
 		{
-			int count;
-			int i;
-			string str;
 			StringBuilder sb = new StringBuilder();
 			sb.Append(IsAllow() ? "Allow " : "Deny  ");
 			AppendCol(sb, Sid.ToDisplayString(), 25);

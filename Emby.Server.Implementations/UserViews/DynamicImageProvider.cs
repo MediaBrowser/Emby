@@ -36,13 +36,13 @@ namespace Emby.Server.Implementations.UserViews
             var view = (UserView)item;
             if (IsUsingCollectionStrip(view))
             {
-                return new List<ImageType>
+                return new ImageType[]
                 {
                     ImageType.Primary
                 };
             }
 
-            return new List<ImageType>
+            return new ImageType[]
             {
                 ImageType.Primary
             };

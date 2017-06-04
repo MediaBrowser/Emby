@@ -153,7 +153,7 @@ namespace SharpCifs.Dcerpc
 					DcerpcMessage bind = new DcerpcBind(Binding, this);
 					Sendrecv(bind);
 				}
-				catch (IOException ioe)
+				catch (IOException)
 				{
 					State = 0;
 					throw;
@@ -169,7 +169,6 @@ namespace SharpCifs.Dcerpc
 			byte[] frag;
 			NdrBuffer buf;
 			NdrBuffer fbuf;
-			bool isLast;
 			bool isDirect;
 			DcerpcException de;
 			if (State == 0)

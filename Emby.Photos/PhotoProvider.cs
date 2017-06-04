@@ -36,7 +36,6 @@ namespace Emby.Photos
             try
             {
                 using (var fileStream = _fileSystem.OpenRead(item.Path))
-                {
                     using (var file = TagLib.File.Create(new StreamFileAbstraction(Path.GetFileName(item.Path), fileStream, null)))
                     {
                         var image = file as TagLib.Image.File;
@@ -85,15 +84,7 @@ namespace Emby.Photos
                         item.Width = image.Properties.PhotoWidth;
                         item.Height = image.Properties.PhotoHeight;
 
-                        var rating = image.ImageTag.Rating;
-                        if (rating.HasValue)
-                        {
-                            item.CommunityRating = rating;
-                        }
-                        else
-                        {
-                            item.CommunityRating = null;
-                        }
+                        item.CommunityRating = image.ImageTag.Rating;
 
                         item.Overview = image.ImageTag.Comment;
 
@@ -143,7 +134,6 @@ namespace Emby.Photos
                             item.IsoSpeedRating = null;
                         }
                     }
-                }
             }
             catch (Exception e)
             {

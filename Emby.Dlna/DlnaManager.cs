@@ -1,23 +1,23 @@
-﻿using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Extensions;
-using MediaBrowser.Controller;
-using MediaBrowser.Controller.Dlna;
-using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Controller.Plugins;
-using Emby.Dlna.Profiles;
-using Emby.Dlna.Server;
-using MediaBrowser.Model.Dlna;
-using MediaBrowser.Model.Drawing;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Emby.Dlna.Profiles;
+using Emby.Dlna.Server;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller;
+using MediaBrowser.Controller.Dlna;
+using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Reflection;
+using MediaBrowser.Model.Serialization;
 
 namespace Emby.Dlna
 {
@@ -64,25 +64,22 @@ namespace Emby.Dlna
         private void LoadProfiles()
         {
             var list = GetProfiles(UserProfilesPath, DeviceProfileType.User)
-                .OrderBy(i => i.Name)
-                .ToList();
-
-            list.AddRange(GetProfiles(SystemProfilesPath, DeviceProfileType.System)
-                .OrderBy(i => i.Name));
+				.OrderBy(i => i.Name)
+                .Concat(GetProfiles(SystemProfilesPath, DeviceProfileType.System)
+				    .OrderBy(i => i.Name));
         }
 
         public IEnumerable<DeviceProfile> GetProfiles()
         {
             lock (_profiles)
             {
-                var list = _profiles.Values.ToList();
+                var list = _profiles.Values;
                 return list
                     .OrderBy(i => i.Item1.Info.Type == DeviceProfileType.User ? 0 : 1)
                     .ThenBy(i => i.Item1.Info.Name)
                     .Select(i => i.Item2)
                     .ToList();
             }
-
         }
 
         public DeviceProfile GetDefaultProfile()
@@ -287,17 +284,15 @@ namespace Emby.Dlna
             try
             {
                 var xmlFies = _fileSystem.GetFilePaths(path)
-                    .Where(i => string.Equals(Path.GetExtension(i), ".xml", StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                    .Where(i => string.Equals(Path.GetExtension(i), ".xml", StringComparison.OrdinalIgnoreCase));
 
                 return xmlFies
                     .Select(i => ParseProfileFile(i, type))
-                    .Where(i => i != null)
-                    .ToList();
+                    .Where(i => i != null);
             }
             catch (IOException)
             {
-                return new List<DeviceProfile>();
+                return Enumerable.Empty<DeviceProfile>();
             }
         }
 
@@ -351,11 +346,12 @@ namespace Emby.Dlna
         {
             lock (_profiles)
             {
-                var list = _profiles.Values.ToList();
+                var list = _profiles.Values;
                 return list
                     .Select(i => i.Item1)
                     .OrderBy(i => i.Info.Type == DeviceProfileType.User ? 0 : 1)
-                    .ThenBy(i => i.Info.Name);
+                    .ThenBy(i => i.Info.Name)
+                    .ToList();
             }
         }
 
@@ -386,8 +382,7 @@ namespace Emby.Dlna
             var systemProfilesPath = SystemProfilesPath;
 
             foreach (var name in _assemblyInfo.GetManifestResourceNames(GetType())
-                .Where(i => i.StartsWith(namespaceName))
-                .ToList())
+                .Where(i => i.StartsWith(namespaceName)))
             {
                 var filename = Path.GetFileName(name).Substring(namespaceName.Length);
 
@@ -556,7 +551,7 @@ namespace Emby.Dlna
 
         private void DumpProfiles()
         {
-            var list = new List<DeviceProfile>
+            var list = new DeviceProfile[]
             {
                 new SamsungSmartTvProfile(),
                 new Xbox360Profile(),

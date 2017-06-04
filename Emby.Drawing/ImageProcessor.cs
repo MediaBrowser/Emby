@@ -1,13 +1,4 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Controller;
-using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Drawing;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,14 +6,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 using Emby.Drawing.Common;
-
-using MediaBrowser.Controller.IO;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller;
+using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Drawing;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Threading;
-using TagLib;
 
 namespace Emby.Drawing
 {
@@ -316,28 +313,21 @@ namespace Emby.Drawing
 
         private string GetMimeType(ImageFormat format, string path)
         {
-            if (format == ImageFormat.Bmp)
+            switch (format)
             {
-                return MimeTypes.GetMimeType("i.bmp");
+                case ImageFormat.Bmp:
+                    return MimeTypes.GetMimeType("i.bmp");
+                case ImageFormat.Gif:
+                    return MimeTypes.GetMimeType("i.gif");
+                case ImageFormat.Jpg:
+                    return MimeTypes.GetMimeType("i.jpg");
+                case ImageFormat.Png:
+                    return MimeTypes.GetMimeType("i.png");
+                case ImageFormat.Webp:
+                    return MimeTypes.GetMimeType("i.webp");
+                default:
+                    return MimeTypes.GetMimeType(path);
             }
-            if (format == ImageFormat.Gif)
-            {
-                return MimeTypes.GetMimeType("i.gif");
-            }
-            if (format == ImageFormat.Jpg)
-            {
-                return MimeTypes.GetMimeType("i.jpg");
-            }
-            if (format == ImageFormat.Png)
-            {
-                return MimeTypes.GetMimeType("i.png");
-            }
-            if (format == ImageFormat.Webp)
-            {
-                return MimeTypes.GetMimeType("i.webp");
-            }
-
-            return MimeTypes.GetMimeType(path);
         }
 
         private ImageFormat GetOutputFormat(ImageFormat requestedFormat)

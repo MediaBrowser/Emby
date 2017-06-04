@@ -1,32 +1,29 @@
-﻿using MediaBrowser.Common.Extensions;
-using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Drawing;
-using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Entities.Movies;
-using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.Library;
-using Emby.Dlna.Didl;
-using Emby.Dlna.Server;
-using Emby.Dlna.Service;
-using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Dlna;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Querying;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
+using Emby.Dlna.Didl;
+using Emby.Dlna.Service;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Channels;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller.Drawing;
 using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
+using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Xml;
 
 namespace Emby.Dlna.ContentDirectory
@@ -152,9 +149,10 @@ namespace Emby.Dlna.ContentDirectory
 
         private IEnumerable<KeyValuePair<string, string>> HandleGetSystemUpdateID()
         {
-            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            headers.Add("Id", _systemUpdateId.ToString(_usCulture));
-            return headers;
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"Id", _systemUpdateId.ToString(_usCulture)}
+            };
         }
 
         private IEnumerable<KeyValuePair<string, string>> HandleGetFeatureList()
@@ -305,7 +303,7 @@ namespace Emby.Dlna.ContentDirectory
 
             var resXML = builder.ToString();
 
-            return new List<KeyValuePair<string, string>>
+            return new KeyValuePair<string, string>[]
                 {
                     new KeyValuePair<string,string>("Result", resXML),
                     new KeyValuePair<string,string>("NumberReturned", provided.ToString(_usCulture)),
@@ -401,7 +399,7 @@ namespace Emby.Dlna.ContentDirectory
 
             var resXML = builder.ToString();
 
-            return new List<KeyValuePair<string, string>>
+            return new KeyValuePair<string, string>[]
                 {
                     new KeyValuePair<string,string>("Result", resXML),
                     new KeyValuePair<string,string>("NumberReturned", provided.ToString(_usCulture)),
@@ -423,30 +421,31 @@ namespace Emby.Dlna.ContentDirectory
             var mediaTypes = new List<string>();
             bool? isFolder = null;
 
-            if (search.SearchType == SearchType.Audio)
+            switch (search.SearchType)
             {
-                mediaTypes.Add(MediaType.Audio);
-                isFolder = false;
-            }
-            else if (search.SearchType == SearchType.Video)
-            {
-                mediaTypes.Add(MediaType.Video);
-                isFolder = false;
-            }
-            else if (search.SearchType == SearchType.Image)
-            {
-                mediaTypes.Add(MediaType.Photo);
-                isFolder = false;
-            }
-            else if (search.SearchType == SearchType.Playlist)
-            {
-                //items = items.OfType<Playlist>();
-                isFolder = true;
-            }
-            else if (search.SearchType == SearchType.MusicAlbum)
-            {
-                //items = items.OfType<MusicAlbum>();
-                isFolder = true;
+                case SearchType.Audio:
+					mediaTypes.Add(MediaType.Audio);
+					isFolder = false;
+                    break;
+                case SearchType.Video:
+					mediaTypes.Add(MediaType.Video);
+					isFolder = false;
+                    break;
+                case SearchType.Image:
+					mediaTypes.Add(MediaType.Photo);
+					isFolder = false;
+                    break;
+                case SearchType.Playlist:
+					//items = items.OfType<Playlist>();
+					isFolder = true;
+                    break;
+                case SearchType.MusicAlbum:
+					//items = items.OfType<MusicAlbum>();
+					isFolder = true;
+                    break;
+                default:
+                    break;
+                    
             }
 
             return folder.GetItems(new InternalItemsQuery

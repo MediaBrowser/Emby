@@ -356,13 +356,13 @@ namespace MediaBrowser.Api.UserLibrary
                 items = items.Where(i => string.Compare(request.NameLessThan, i.SortName, StringComparison.CurrentCultureIgnoreCase) == 1);
             }
 
-            var imageTypes = request.GetImageTypes().ToList();
-            if (imageTypes.Count > 0)
+            var imageTypes = request.GetImageTypes();
+            if (imageTypes.Any())
             {
                 items = items.Where(item => imageTypes.Any(item.HasImage));
             }
 
-            var filters = request.GetFilters().ToList();
+            var filters = request.GetFilters();
 
             if (filters.Contains(ItemFilter.Dislikes))
             {

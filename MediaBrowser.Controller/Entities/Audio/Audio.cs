@@ -104,7 +104,6 @@ namespace MediaBrowser.Controller.Entities.Audio
                 list.AddRange(Artists);
 
                 return list;
-
             }
         }
 
@@ -208,15 +207,14 @@ namespace MediaBrowser.Controller.Entities.Audio
         {
             if (SourceType == SourceType.Channel)
             {
-                var sources = ChannelManager.GetStaticMediaSources(this, CancellationToken.None)
-                           .ToList();
+                var sources = ChannelManager.GetStaticMediaSources(this, CancellationToken.None);
 
-                if (sources.Count > 0)
+                if (sources.Any())
                 {
                     return sources;
                 }
 
-                var list = new List<MediaSourceInfo>
+                var list = new MediaSourceInfo[]
                 {
                     GetVersionInfo(this, enablePathSubstitution)
                 };

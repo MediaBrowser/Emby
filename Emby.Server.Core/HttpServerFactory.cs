@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Security;
-using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using System.Threading.Tasks;
 using Emby.Common.Implementations.Net;
 using Emby.Server.Implementations.HttpServer;

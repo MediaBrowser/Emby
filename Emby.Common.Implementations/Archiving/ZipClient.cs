@@ -14,14 +14,14 @@ namespace Emby.Common.Implementations.Archiving
     /// </summary>
     public class ZipClient : IZipClient
     {
-		private readonly IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
 
-		public ZipClient(IFileSystem fileSystem) 
-		{
-			_fileSystem = fileSystem;
-		}
+        public ZipClient(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
 
-		/// <summary>
+        /// <summary>
         /// Extracts all.
         /// </summary>
         /// <param name="sourceFile">The source file.</param>
@@ -29,7 +29,7 @@ namespace Emby.Common.Implementations.Archiving
         /// <param name="overwriteExistingFiles">if set to <c>true</c> [overwrite existing files].</param>
         public void ExtractAll(string sourceFile, string targetPath, bool overwriteExistingFiles)
         {
-			using (var fileStream = _fileSystem.OpenRead(sourceFile))
+            using (var fileStream = _fileSystem.OpenRead(sourceFile))
             {
                 ExtractAll(fileStream, targetPath, overwriteExistingFiles);
             }
@@ -81,7 +81,7 @@ namespace Emby.Common.Implementations.Archiving
         /// <param name="overwriteExistingFiles">if set to <c>true</c> [overwrite existing files].</param>
         public void ExtractAllFrom7z(string sourceFile, string targetPath, bool overwriteExistingFiles)
         {
-			using (var fileStream = _fileSystem.OpenRead(sourceFile))
+            using (var fileStream = _fileSystem.OpenRead(sourceFile))
             {
                 ExtractAllFrom7z(fileStream, targetPath, overwriteExistingFiles);
             }
@@ -96,19 +96,17 @@ namespace Emby.Common.Implementations.Archiving
         public void ExtractAllFrom7z(Stream source, string targetPath, bool overwriteExistingFiles)
         {
             using (var archive = SevenZipArchive.Open(source))
+            using (var reader = archive.ExtractAllEntries())
             {
-                using (var reader = archive.ExtractAllEntries())
+                var options = new ExtractionOptions();
+                options.ExtractFullPath = true;
+
+                if (overwriteExistingFiles)
                 {
-                    var options = new ExtractionOptions();
-                    options.ExtractFullPath = true;
-
-                    if (overwriteExistingFiles)
-                    {
-                        options.Overwrite = true;
-                    }
-
-                    reader.WriteAllToDirectory(targetPath, options);
+                    options.Overwrite = true;
                 }
+
+                reader.WriteAllToDirectory(targetPath, options);
             }
         }
 
@@ -121,7 +119,7 @@ namespace Emby.Common.Implementations.Archiving
         /// <param name="overwriteExistingFiles">if set to <c>true</c> [overwrite existing files].</param>
         public void ExtractAllFromTar(string sourceFile, string targetPath, bool overwriteExistingFiles)
         {
-			using (var fileStream = _fileSystem.OpenRead(sourceFile))
+            using (var fileStream = _fileSystem.OpenRead(sourceFile))
             {
                 ExtractAllFromTar(fileStream, targetPath, overwriteExistingFiles);
             }
@@ -136,19 +134,17 @@ namespace Emby.Common.Implementations.Archiving
         public void ExtractAllFromTar(Stream source, string targetPath, bool overwriteExistingFiles)
         {
             using (var archive = TarArchive.Open(source))
+            using (var reader = archive.ExtractAllEntries())
             {
-                using (var reader = archive.ExtractAllEntries())
+                var options = new ExtractionOptions();
+                options.ExtractFullPath = true;
+
+                if (overwriteExistingFiles)
                 {
-                    var options = new ExtractionOptions();
-                    options.ExtractFullPath = true;
-
-                    if (overwriteExistingFiles)
-                    {
-                        options.Overwrite = true;
-                    }
-
-                    reader.WriteAllToDirectory(targetPath, options);
+                    options.Overwrite = true;
                 }
+
+                reader.WriteAllToDirectory(targetPath, options);
             }
         }
 
@@ -160,7 +156,7 @@ namespace Emby.Common.Implementations.Archiving
         /// <param name="overwriteExistingFiles">if set to <c>true</c> [overwrite existing files].</param>
         public void ExtractAllFromRar(string sourceFile, string targetPath, bool overwriteExistingFiles)
         {
-			using (var fileStream = _fileSystem.OpenRead(sourceFile))
+            using (var fileStream = _fileSystem.OpenRead(sourceFile))
             {
                 ExtractAllFromRar(fileStream, targetPath, overwriteExistingFiles);
             }
@@ -175,19 +171,17 @@ namespace Emby.Common.Implementations.Archiving
         public void ExtractAllFromRar(Stream source, string targetPath, bool overwriteExistingFiles)
         {
             using (var archive = RarArchive.Open(source))
+            using (var reader = archive.ExtractAllEntries())
             {
-                using (var reader = archive.ExtractAllEntries())
+                var options = new ExtractionOptions();
+                options.ExtractFullPath = true;
+
+                if (overwriteExistingFiles)
                 {
-                    var options = new ExtractionOptions();
-                    options.ExtractFullPath = true;
-
-                    if (overwriteExistingFiles)
-                    {
-                        options.Overwrite = true;
-                    }
-
-                    reader.WriteAllToDirectory(targetPath, options);
+                    options.Overwrite = true;
                 }
+
+                reader.WriteAllToDirectory(targetPath, options);
             }
         }
     }

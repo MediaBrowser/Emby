@@ -158,35 +158,31 @@ namespace Emby.Drawing.Skia
             var newRect = SKRectI.Create(leftmost, topmost, rightmost - leftmost, bottommost - topmost);
 
             using (var image = SKImage.FromBitmap(bitmap))
+            using (var subset = image.Subset(newRect))
             {
-                using (var subset = image.Subset(newRect))
-                {
-                    return SKBitmap.FromImage(subset);
-                    //using (var data = subset.Encode(StripCollageBuilder.GetEncodedFormat(outputPath), 90))
-                    //{
-                    //    using (var fileStream = _fileSystem.GetFileStream(outputPath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
-                    //    {
-                    //        data.AsStream().CopyTo(fileStream);
-                    //    }
-                    //}
-                }
+                return SKBitmap.FromImage(subset);
+                //using (var data = subset.Encode(StripCollageBuilder.GetEncodedFormat(outputPath), 90))
+                //{
+                //    using (var fileStream = _fileSystem.GetFileStream(outputPath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
+                //    {
+                //        data.AsStream().CopyTo(fileStream);
+                //    }
+                //}
             }
         }
 
         public ImageSize GetImageSize(string path)
         {
             using (var s = new SKFileStream(path))
+            using (var codec = SKCodec.Create(s))
             {
-                using (var codec = SKCodec.Create(s))
-                {
-                    var info = codec.Info;
+                var info = codec.Info;
 
-                    return new ImageSize
-                    {
-                        Width = info.Width,
-                        Height = info.Height
-                    };
-                }
+                return new ImageSize
+                {
+                    Width = info.Width,
+                    Height = info.Height
+                };
             }
         }
 
@@ -302,53 +298,51 @@ namespace Emby.Drawing.Skia
 
                     // create bitmap to use for canvas drawing
                     using (var saveBitmap = new SKBitmap(width, height))//, bitmap.ColorType, bitmap.AlphaType))
+                    // create canvas used to draw into bitmap
+                    using (var canvas = new SKCanvas(saveBitmap))
                     {
-                        // create canvas used to draw into bitmap
-                        using (var canvas = new SKCanvas(saveBitmap))
+                        // set background color if present
+                        if (hasBackgroundColor)
                         {
-                            // set background color if present
-                            if (hasBackgroundColor)
-                            {
-                                canvas.Clear(SKColor.Parse(options.BackgroundColor));
-                            }
+                            canvas.Clear(SKColor.Parse(options.BackgroundColor));
+                        }
 
-                            // Add blur if option is present
-                            if (blur > 0)
+                        // Add blur if option is present
+                        if (blur > 0)
+                        {
+                            using (var paint = new SKPaint())
                             {
-                                using (var paint = new SKPaint())
+                                // create image from resized bitmap to apply blur
+                                using (var filter = SKImageFilter.CreateBlur(blur, blur))
                                 {
-                                    // create image from resized bitmap to apply blur
-                                    using (var filter = SKImageFilter.CreateBlur(blur, blur))
-                                    {
-                                        paint.ImageFilter = filter;
-                                        canvas.DrawBitmap(resizedBitmap, SKRect.Create(width, height), paint);
-                                    }
+                                    paint.ImageFilter = filter;
+                                    canvas.DrawBitmap(resizedBitmap, SKRect.Create(width, height), paint);
                                 }
                             }
-                            else
-                            {
-                                // draw resized bitmap onto canvas
-                                canvas.DrawBitmap(resizedBitmap, SKRect.Create(width, height));
-                            }
+                        }
+                        else
+                        {
+                            // draw resized bitmap onto canvas
+                            canvas.DrawBitmap(resizedBitmap, SKRect.Create(width, height));
+                        }
 
-                            // If foreground layer present then draw
-                            if (hasForegroundColor)
-                            {
-                                Double opacity;
-                                if (!Double.TryParse(options.ForegroundLayer, out opacity)) opacity = .4;
+                        // If foreground layer present then draw
+                        if (hasForegroundColor)
+                        {
+                            Double opacity;
+                            if (!Double.TryParse(options.ForegroundLayer, out opacity)) opacity = .4;
 
-                                canvas.DrawColor(new SKColor(0, 0, 0, (Byte)((1 - opacity) * 0xFF)), SKBlendMode.SrcOver);
-                            }
+                            canvas.DrawColor(new SKColor(0, 0, 0, (Byte)((1 - opacity) * 0xFF)), SKBlendMode.SrcOver);
+                        }
 
-                            if (hasIndicator)
-                            {
-                                DrawIndicator(canvas, width, height, options);
-                            }
+                        if (hasIndicator)
+                        {
+                            DrawIndicator(canvas, width, height, options);
+                        }
 
-                            using (var outputStream = new SKFileWStream(outputPath))
-                            {
-                                saveBitmap.Encode(outputStream, skiaOutputFormat, quality);
-                            }
+                        using (var outputStream = new SKFileWStream(outputPath))
+                        {
+                            saveBitmap.Encode(outputStream, skiaOutputFormat, quality);
                         }
                     }
                 }

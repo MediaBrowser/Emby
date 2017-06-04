@@ -67,7 +67,7 @@ namespace Emby.Common.Implementations.Net
                     ProcessAccept(acceptEventArg);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 if (accepted != null)
                 {

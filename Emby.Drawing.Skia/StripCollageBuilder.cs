@@ -1,8 +1,8 @@
-﻿using SkiaSharp;
-using MediaBrowser.Common.Configuration;
-using System;
+﻿using System;
 using System.IO;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.IO;
+using SkiaSharp;
 
 namespace Emby.Drawing.Skia
 {
@@ -19,22 +19,21 @@ namespace Emby.Drawing.Skia
 
         public static SKEncodedImageFormat GetEncodedFormat(string outputPath)
         {
-            var ext = Path.GetExtension(outputPath).ToLower();
-
-            if (ext == ".jpg" || ext == ".jpeg")
-                return SKEncodedImageFormat.Jpeg;
-
-            if (ext == ".webp")
-                return SKEncodedImageFormat.Webp;
-
-            if (ext == ".gif")
-                return SKEncodedImageFormat.Gif;
-
-            if (ext == ".bmp")
-                return SKEncodedImageFormat.Bmp;
-
-            // default to png
-            return SKEncodedImageFormat.Png;
+            switch (Path.GetExtension(outputPath).ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return SKEncodedImageFormat.Jpeg;
+                case ".webp":
+                    return SKEncodedImageFormat.Webp;
+                case ".gif":
+                    return SKEncodedImageFormat.Gif;
+                case ".bmp":
+                    return SKEncodedImageFormat.Bmp;
+                default:
+                    // default to png
+                    return SKEncodedImageFormat.Png;
+            }
         }
 
         public void BuildPosterCollage(string[] paths, string outputPath, int width, int height)
@@ -45,22 +44,18 @@ namespace Emby.Drawing.Skia
         public void BuildSquareCollage(string[] paths, string outputPath, int width, int height)
         {
             using (var bitmap = BuildSquareCollageBitmap(paths, width, height))
+            using (var outputStream = new SKFileWStream(outputPath))
             {
-                using (var outputStream = new SKFileWStream(outputPath))
-                {
-                    bitmap.Encode(outputStream, GetEncodedFormat(outputPath), 90);
-                }
+                bitmap.Encode(outputStream, GetEncodedFormat(outputPath), 90);
             }
         }
 
         public void BuildThumbCollage(string[] paths, string outputPath, int width, int height)
         {
             using (var bitmap = BuildThumbCollageBitmap(paths, width, height))
+            using (var outputStream = new SKFileWStream(outputPath))
             {
-                using (var outputStream = new SKFileWStream(outputPath))
-                {
-                    bitmap.Encode(outputStream, GetEncodedFormat(outputPath), 90);
-                }
+                bitmap.Encode(outputStream, GetEncodedFormat(outputPath), 90);
             }
         }
 
@@ -91,49 +86,44 @@ namespace Emby.Drawing.Skia
                             currentBitmap.Resize(resizeBitmap, SKBitmapResizeMethod.Lanczos3);
                             // determine how much to crop
                             int ix = (int)Math.Abs((iWidth - iSlice) / 2);
+
+                            // crop image
                             using (var image = SKImage.FromBitmap(resizeBitmap))
+                            using (var subset = image.Subset(SKRectI.Create(ix, 0, iSlice, iHeight)))
                             {
-                                // crop image
-                                using (var subset = image.Subset(SKRectI.Create(ix, 0, iSlice, iHeight)))
+                                // draw image onto canvas
+                                canvas.DrawImage(subset, (horizontalImagePadding * (i + 1)) + (iSlice * i), verticalSpacing);
+
+                                // create reflection of image below the drawn image
+                                using (var croppedBitmap = SKBitmap.FromImage(subset))
+                                using (var reflectionBitmap = new SKBitmap(croppedBitmap.Width, croppedBitmap.Height / 2, croppedBitmap.ColorType, croppedBitmap.AlphaType))
                                 {
-                                    // draw image onto canvas
-                                    canvas.DrawImage(subset, (horizontalImagePadding * (i + 1)) + (iSlice * i), verticalSpacing);
+                                    // resize to half height
+                                    croppedBitmap.Resize(reflectionBitmap, SKBitmapResizeMethod.Lanczos3);
 
-                                    using (var croppedBitmap = SKBitmap.FromImage(subset))
+                                    using (var flippedBitmap = new SKBitmap(reflectionBitmap.Width, reflectionBitmap.Height, reflectionBitmap.ColorType, reflectionBitmap.AlphaType))
+                                    using (var flippedCanvas = new SKCanvas(flippedBitmap))
                                     {
-                                        // create reflection of image below the drawn image
-                                        using (var reflectionBitmap = new SKBitmap(croppedBitmap.Width, croppedBitmap.Height / 2, croppedBitmap.ColorType, croppedBitmap.AlphaType))
+                                        // flip image vertically
+                                        var matrix = SKMatrix.MakeScale(1, -1);
+                                        matrix.SetScaleTranslate(1, -1, 0, flippedBitmap.Height);
+                                        flippedCanvas.SetMatrix(matrix);
+                                        flippedCanvas.DrawBitmap(reflectionBitmap, 0, 0);
+                                        flippedCanvas.ResetMatrix();
+
+                                        // create gradient to make image appear as a reflection
+                                        var remainingHeight = height - (iHeight + (2 * verticalSpacing));
+                                        flippedCanvas.ClipRect(SKRect.Create(reflectionBitmap.Width, remainingHeight));
+                                        using (var gradient = new SKPaint())
                                         {
-                                            // resize to half height
-                                            croppedBitmap.Resize(reflectionBitmap, SKBitmapResizeMethod.Lanczos3);
-
-                                            using (var flippedBitmap = new SKBitmap(reflectionBitmap.Width, reflectionBitmap.Height, reflectionBitmap.ColorType, reflectionBitmap.AlphaType))
-                                            {
-                                                using (var flippedCanvas = new SKCanvas(flippedBitmap))
-                                                {
-                                                    // flip image vertically
-                                                    var matrix = SKMatrix.MakeScale(1, -1);
-                                                    matrix.SetScaleTranslate(1, -1, 0, flippedBitmap.Height);
-                                                    flippedCanvas.SetMatrix(matrix);
-                                                    flippedCanvas.DrawBitmap(reflectionBitmap, 0, 0);
-                                                    flippedCanvas.ResetMatrix();
-
-                                                    // create gradient to make image appear as a reflection
-                                                    var remainingHeight = height - (iHeight + (2 * verticalSpacing));
-                                                    flippedCanvas.ClipRect(SKRect.Create(reflectionBitmap.Width, remainingHeight));
-                                                    using (var gradient = new SKPaint())
-                                                    {
-                                                        gradient.IsAntialias = true;
-                                                        gradient.BlendMode = SKBlendMode.SrcOver;
-                                                        gradient.Shader = SKShader.CreateLinearGradient(new SKPoint(0, 0), new SKPoint(0, remainingHeight), new[] { new SKColor(0, 0, 0, 128), new SKColor(0, 0, 0, 208), new SKColor(0, 0, 0, 240), new SKColor(0, 0, 0, 255) }, null, SKShaderTileMode.Clamp);
-                                                        flippedCanvas.DrawPaint(gradient);
-                                                    }
-
-                                                    // finally draw reflection onto canvas
-                                                    canvas.DrawBitmap(flippedBitmap, (horizontalImagePadding * (i + 1)) + (iSlice * i), iHeight + (2 * verticalSpacing));
-                                                }
-                                            }
+                                            gradient.IsAntialias = true;
+                                            gradient.BlendMode = SKBlendMode.SrcOver;
+                                            gradient.Shader = SKShader.CreateLinearGradient(new SKPoint(0, 0), new SKPoint(0, remainingHeight), new[] { new SKColor(0, 0, 0, 128), new SKColor(0, 0, 0, 208), new SKColor(0, 0, 0, 240), new SKColor(0, 0, 0, 255) }, null, SKShaderTileMode.Clamp);
+                                            flippedCanvas.DrawPaint(gradient);
                                         }
+
+                                        // finally draw reflection onto canvas
+                                        canvas.DrawBitmap(flippedBitmap, (horizontalImagePadding * (i + 1)) + (iSlice * i), iHeight + (2 * verticalSpacing));
                                     }
                                 }
                             }
@@ -164,17 +154,15 @@ namespace Emby.Drawing.Skia
                     for (var y = 0; y < 2; y++)
                     {
                         using (var currentBitmap = SKBitmap.Decode(paths[imageIndex]))
+                        using (var resizedBitmap = new SKBitmap(cellWidth, cellHeight, currentBitmap.ColorType, currentBitmap.AlphaType))
                         {
-                            using (var resizedBitmap = new SKBitmap(cellWidth, cellHeight, currentBitmap.ColorType, currentBitmap.AlphaType))
-                            {
-                                // scale image
-                                currentBitmap.Resize(resizedBitmap, SKBitmapResizeMethod.Lanczos3);
+                            // scale image
+                            currentBitmap.Resize(resizedBitmap, SKBitmapResizeMethod.Lanczos3);
 
-                                // draw this image into the strip at the next position
-                                var xPos = x * cellWidth;
-                                var yPos = y * cellHeight;
-                                canvas.DrawBitmap(resizedBitmap, xPos, yPos);
-                            }
+                            // draw this image into the strip at the next position
+                            var xPos = x * cellWidth;
+                            var yPos = y * cellHeight;
+                            canvas.DrawBitmap(resizedBitmap, xPos, yPos);
                         }
                         imageIndex++;
 
