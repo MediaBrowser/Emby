@@ -8,6 +8,8 @@ using MediaBrowser.Model.Services;
 
 namespace Emby.Server.Implementations.Services
 {
+    using MediaBrowser.Controller.Net;
+
     public delegate Task<object> InstanceExecFn(IRequest requestContext, object intance, object request);
     public delegate object ActionInvokerFn(object intance, object request);
     public delegate void VoidActionInvokerFn(object intance, object request);
@@ -203,6 +205,12 @@ namespace Emby.Server.Implementations.Services
             if (serviceRequiresContext != null)
             {
                 serviceRequiresContext.Request = req;
+            }
+
+            var hashResultFactory = service as IHasResultFactory;
+            if (hashResultFactory != null)
+            {
+                hashResultFactory.ResultFactory = appHost.CreateInstance(typeof(IHttpResultFactory)) as IHttpResultFactory;
             }
 
             if (req.Dto == null) // Don't override existing batched DTO[]
