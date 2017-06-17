@@ -679,8 +679,7 @@ namespace Emby.Server.Implementations.LiveTv
                     item.SetImage(new ItemImageInfo
                     {
                         Path = info.ImagePath,
-                        Type = ImageType.Primary,
-                        IsPlaceholder = true
+                        Type = ImageType.Primary
                     }, 0);
                 }
                 else if (!string.IsNullOrWhiteSpace(info.ImageUrl))
@@ -688,8 +687,46 @@ namespace Emby.Server.Implementations.LiveTv
                     item.SetImage(new ItemImageInfo
                     {
                         Path = info.ImageUrl,
-                        Type = ImageType.Primary,
-                        IsPlaceholder = true
+                        Type = ImageType.Primary
+                    }, 0);
+                }
+            }
+
+            if (!item.HasImage(ImageType.Thumb))
+            {
+                if (!string.IsNullOrWhiteSpace(info.ThumbImageUrl))
+                {
+                    item.SetImage(new ItemImageInfo
+                    {
+                        Path = info.ThumbImageUrl,
+                        Type = ImageType.Thumb
+
+                    }, 0);
+                }
+            }
+
+            if (!item.HasImage(ImageType.Logo))
+            {
+                if (!string.IsNullOrWhiteSpace(info.LogoImageUrl))
+                {
+                    item.SetImage(new ItemImageInfo
+                    {
+                        Path = info.LogoImageUrl,
+                        Type = ImageType.Logo
+
+                    }, 0);
+                }
+            }
+
+            if (!item.HasImage(ImageType.Backdrop))
+            {
+                if (!string.IsNullOrWhiteSpace(info.BackdropImageUrl))
+                {
+                    item.SetImage(new ItemImageInfo
+                    {
+                        Path = info.BackdropImageUrl,
+                        Type = ImageType.Backdrop
+
                     }, 0);
                 }
             }
@@ -705,7 +742,7 @@ namespace Emby.Server.Implementations.LiveTv
             else
             {
                 // Increment this whenver some internal change deems it necessary
-                var etag = info.Etag + "4";
+                var etag = info.Etag + "5";
 
                 if (!string.Equals(etag, item.ExternalEtag, StringComparison.OrdinalIgnoreCase))
                 {
@@ -1385,13 +1422,16 @@ namespace Emby.Server.Implementations.LiveTv
                         await _libraryManager.UpdateItem(program, ItemUpdateType.MetadataImport, cancellationToken).ConfigureAwait(false);
                     }
 
-                    foreach (var program in newPrograms)
+                    if (!(service is EmbyTV.EmbyTV))
                     {
-                        _providerManager.QueueRefresh(program.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Low);
-                    }
-                    foreach (var program in updatedPrograms)
-                    {
-                        _providerManager.QueueRefresh(program.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Low);
+                        foreach (var program in newPrograms)
+                        {
+                            _providerManager.QueueRefresh(program.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Low);
+                        }
+                        foreach (var program in updatedPrograms)
+                        {
+                            _providerManager.QueueRefresh(program.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Low);
+                        }
                     }
 
                     currentChannel.IsMovie = isMovie;
