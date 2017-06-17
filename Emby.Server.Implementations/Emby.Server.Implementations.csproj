@@ -167,7 +167,6 @@
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
     <Compile Include="LiveTv\LiveTvManager.cs" />
     <Compile Include="LiveTv\LiveTvMediaSourceProvider.cs" />
-    <Compile Include="LiveTv\ProgramImageProvider.cs" />
     <Compile Include="LiveTv\RecordingImageProvider.cs" />
     <Compile Include="LiveTv\RefreshChannelsScheduledTask.cs" />
     <Compile Include="LiveTv\TunerHosts\BaseTunerHost.cs" />
@@ -183,8 +182,6 @@
     <Compile Include="Logging\UnhandledExceptionWriter.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
     <Compile Include="Migrations\IVersionMigration.cs" />
-    <Compile Include="Migrations\LibraryScanMigration.cs" />
-    <Compile Include="Migrations\GuideMigration.cs" />
     <Compile Include="News\NewsEntryPoint.cs" />
     <Compile Include="News\NewsService.cs" />
     <Compile Include="Notifications\CoreNotificationTypes.cs" />
