@@ -1139,6 +1139,20 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             try
             {
+                // Remove all tuner connection which are no longer connected
+                // Iterate backward so we can modify the list as we iterate
+                for (int i = _liveStreams.Count - 1; i >= 0; i--)
+                {
+                    if (_liveStreams[i].isDisconnected())
+                    {
+                        _logger.Info("Closing live stream {0}, because it is disconnected", _liveStreams[i].OriginalStreamId);
+                        await _liveStreams[i].Close().ConfigureAwait(false);
+                        _logger.Info("Live dead stream {0} closed successfully", _liveStreams[i].OriginalStreamId);
+
+                        _liveStreams.RemoveAt(i);
+                    }
+                }
+
                 var result = _liveStreams.FirstOrDefault(i => string.Equals(i.OriginalStreamId, streamId, StringComparison.OrdinalIgnoreCase));
 
                 if (result != null && result.EnableStreamSharing)
