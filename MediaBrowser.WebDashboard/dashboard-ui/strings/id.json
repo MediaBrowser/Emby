@@ -1,6 +1,4 @@
 {
-    "EnableHardwareDecoding": "Enable hardware decoding",
-    "EnableHardwareEncoding": "Enable hardware encoding",
     "LabelPrevious": "Sebelumnya",
     "LabelFinish": "Selesai",
     "LabelNext": "Berikutnya",
@@ -1929,5 +1927,12 @@
     "LabelCertificatePasswordHelp": "If your certificate requires a password, please enter it here.",
     "Programs": "Programs",
     "News": "News",
-    "HeaderDownloadSync": "Download & Sync"
+    "HeaderDownloadSync": "Download & Sync",
+    "EnableHardwareDecoding": "Enable hardware decoding",
+    "EnableHardwareEncoding": "Enable hardware encoding",
+    "Rate": "Rate",
+    "ButtonScanAllLibraries": "Scan All Libraries",
+    "ScanLibrary": "Scan library",
+    "EnableStreamLooping": "Auto-loop live streams",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested."
 }
