@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Datum w\u00e4hlen",
     "ButtonOk": "Ok",
     "ButtonCancel": "Abbrechen",
+    "AccessRestrictedTryAgainLater": "Der Zugriff ist derzeit eingeschr\u00e4nkt. Bitte versuche es sp\u00e4ter erneut.",
     "ButtonGotIt": "Verstanden",
     "ButtonRestart": "Neustart",
     "RecordingCancelled": "Aufzeichnung abgebrochen.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "L\u00f6sche Objekte",
     "ConfirmDeleteItems": "Das L\u00f6schen dieser Objekte l\u00f6scht die Dateien vom Laufwerk und in deiner Medienbibliothek. Bist du wirklich sicher?",
     "PleaseRestartServerName": "Bitte starte Emby Server - {0} neu.",
-    "SyncJobCreated": "Synchronisations-Aufgabe erstellt.",
     "LabelSyncJobName": "Synchronisations-Aufgabe:",
     "LabelQuality": "Qualit\u00e4t:",
     "LabelSyncNoTargetsHelp": "Es sieht so aus als w\u00fcrdest du aktuell keine Apps verwenden, die Offline-Downloads unterst\u00fctzen.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Nur Bildformate (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Legt fest, ob der Server die Untertitel basierend auf deren Format einbrennen soll w\u00e4hrend der Videokonvertierung. Die Vermeidung des Einbrennen von Untertiteln verbessert die Serverperformance. W\u00e4hle Auto, um Bildfomate (z.B. VOBSUB, PGS, SUB\/IDX, etc.) sowie bestimmte ASS\/SSA-Untertitel einbrennen zu lassen.",
-    "AllComplexFormats": "Alle komplexen Formate (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "Alle komplexen Formate (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "Diese Einstellungen werden auch auf jede Chromecast-Wiedergabe angewendet, die von diesem Ger\u00e4t gestartet wird."
 }

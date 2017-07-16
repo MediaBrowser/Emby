@@ -18,6 +18,7 @@
   "HeaderSelectDate": "Select Date",
   "ButtonOk": "Ok",
   "ButtonCancel": "Cancel",
+  "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
   "ButtonGotIt": "Got It",
   "ButtonRestart": "Restart",
   "RecordingCancelled": "Recording cancelled.",
@@ -43,8 +44,6 @@
   "HeaderOfflineDownloadsDescription": "Download media to your devices for easy offline use.",
   "CloudSyncFeatureDescription": "Sync your media to the cloud for easy backup, archiving, and converting.",
   "DvrFeatureDescription": "Schedule individual Live TV recordings, series recordings, and more with Emby DVR.",
-  "ButtonCancelSyncJob": "Cancel download",
-  "CancelSyncJobConfirmation": "Cancelling the download job will remove downloaded media from the device during the next background sync process. Are you sure you wish to proceed?",
   "CinemaModeFeatureDescription": "Cinema Mode gives you the true cinema experience with trailers and custom intros before the feature.",
   "HeaderFreeApps": "Free Emby Apps",
   "FreeAppsFeatureDescription": "Enjoy free access to Emby apps for your devices.",
@@ -92,7 +91,7 @@
   "MessageDownloadQueued": "Download queued.",
   "EditSubtitles": "Edit subtitles",
   "UnlockGuide": "Unlock Guide",
-  "RefreshMetadata": "Refresh Metadata",
+  "RefreshMetadata": "Refresh metadata",
   "ReplaceExistingImages": "Replace existing images",
   "ReplaceAllMetadata": "Replace all metadata",
   "SearchForMissingMetadata": "Search for missing metadata",
@@ -265,7 +264,6 @@
   "HeaderDeleteItems": "Delete Items",
   "ConfirmDeleteItems": "Deleting these items will delete them from both the file system and your media library. Are you sure you wish to continue?",
   "PleaseRestartServerName": "Please restart Emby Server - {0}.",
-  "SyncJobCreated": "Sync job created.",
   "LabelSyncJobName": "Sync job name:",
   "LabelQuality": "Quality:",
   "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
@@ -518,5 +516,6 @@
   "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB/IDX, etc.)",
   "Normal": "Normal",
   "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB/IDX, etc.) as well as certain ASS/SSA subtitles",
-  "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB/IDX, etc.)"
+  "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB/IDX, etc.)",
+  "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }

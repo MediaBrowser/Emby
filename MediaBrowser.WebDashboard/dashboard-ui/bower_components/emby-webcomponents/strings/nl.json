@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Selecteer Datum",
     "ButtonOk": "Ok",
     "ButtonCancel": "Annuleren",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "Begrepen",
     "ButtonRestart": "Herstart",
     "RecordingCancelled": "Opname geannuleerd.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "Verwijder items",
     "ConfirmDeleteItems": "Het verwijderen van deze items verwijdert ze van het bestandssysteem en uit uw bibliotheek. Weet u zeker dat u verder wilt gaan?",
     "PleaseRestartServerName": "Herstart Emby Server - {0} aub.",
-    "SyncJobCreated": "Synchronisatie taak gemaakt.",
     "LabelSyncJobName": "Naam synchroniseer taak:",
     "LabelQuality": "Kwaliteit",
     "LabelSyncNoTargetsHelp": "Het lijkt erop dat u momenteel geen apps heeft die synchroniseren ondersteunen.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB\/IDX, etc.) as well as certain ASS\/SSA subtitles",
-    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }

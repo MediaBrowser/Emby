@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Wybierz dat\u0119",
     "ButtonOk": "Ok",
     "ButtonCancel": "Anuluj",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "Rozumiem",
     "ButtonRestart": "Uruchom ponownie",
     "RecordingCancelled": "Anulowano nagranie.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "Usu\u0144 pliki",
     "ConfirmDeleteItems": "Usuni\u0119cie tej pozycji usunie j\u0105 zar\u00f3wno z systemu plik\u00f3w jak i z biblioteki medi\u00f3w. Czy chcesz kontynuowa\u0107?",
     "PleaseRestartServerName": "Prosz\u0119 ponownie uruchomi\u0107 serwer Emby - {0}",
-    "SyncJobCreated": "Utworzono zadanie synchronizacji.",
     "LabelSyncJobName": "Nazwa zadania synchronizacji",
     "LabelQuality": "Jako\u015b\u0107:",
     "LabelSyncNoTargetsHelp": "Wygl\u0105da na to, \u017ce nie posiadasz \u017cadnych aplikacji obs\u0142uguj\u0105cych pobieranie w trybie offline.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB\/IDX, etc.) as well as certain ASS\/SSA subtitles",
-    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }

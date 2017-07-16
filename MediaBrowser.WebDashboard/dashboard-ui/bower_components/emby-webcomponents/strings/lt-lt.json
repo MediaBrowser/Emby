@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Pasirinkite dat\u0105",
     "ButtonOk": "OK",
     "ButtonCancel": "At\u0161aukti",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "Supratau",
     "ButtonRestart": "I\u0161 naujo",
     "RecordingCancelled": "\u012era\u0161as at\u0161auktas.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "I\u0161trinti elementus",
     "ConfirmDeleteItems": "Tai atlikus \u0161ie elementai bus i\u0161trinti ir i\u0161 bibliotekos, ir i\u0161 fail\u0173 sistemos. Ar tikrai norite t\u0119sti?",
     "PleaseRestartServerName": "Pra\u0161au paleisti Emby Server\u012f i\u0161 naujo - {0}.",
-    "SyncJobCreated": "Sinchronizavimo darbas u\u017esakytas.",
     "LabelSyncJobName": "Sinchronizavimo darbo pavadinimas:",
     "LabelQuality": "Kokyb\u0117:",
     "LabelSyncNoTargetsHelp": "Atrodo, kad neturite joki\u0173 program\u0117li\u0173, kurios palaikyt\u0173 sinchronizavim\u0105.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB\/IDX, etc.) as well as certain ASS\/SSA subtitles",
-    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }

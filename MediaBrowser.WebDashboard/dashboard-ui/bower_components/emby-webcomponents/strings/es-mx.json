@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Seleccionar fecha",
     "ButtonOk": "Ok",
     "ButtonCancel": "Cancelar",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "Hecho",
     "ButtonRestart": "Reiniciar",
     "RecordingCancelled": "Grabaci\u00f3n cancelada.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "Borrar items",
     "ConfirmDeleteItems": "Al borrar estos items ser\u00e1n eliminados tanto del sistema de archivos como de la librer\u00eda de medios. \u00bfEsta seguro que desea continuar?",
     "PleaseRestartServerName": "Por favor reinicie el Servidor Emby - {0}.",
-    "SyncJobCreated": "Trabajo de sincronizaci\u00f3n creado.",
     "LabelSyncJobName": "Nombre del trabajo de sinc:",
     "LabelQuality": "Calidad:",
     "LabelSyncNoTargetsHelp": "Parece que actualmente no cuentas con ninguna app que soporte descargas sin conexi\u00f3n.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Solo formato de imagen (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determina si el servidor deber\u00eda quemar los subtitulos al convertir el video dependiendo en el formato de los subtitulos. Evitar los subtitulos quemados mejorara el rendimiento del servidor. Elija \"Auto\" para quemar los formatos basados en im\u00e1genes (por ejemplo VOBSUB, PGS, SUB\/IDX, etc.) as\u00ed como ciertos subtitulos ASS\/SSA",
-    "AllComplexFormats": "Todos los subtitulos complejos (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "Todos los subtitulos complejos (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "Estos ajustes tambi\u00e9n aplican a cualquier reproducci\u00f3n de Chromecast iniciada por este dispositivo."
 }

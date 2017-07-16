@@ -18,6 +18,7 @@
     "HeaderSelectDate": "\u9078\u64c7\u65e5\u671f",
     "ButtonOk": "\u78ba\u5b9a",
     "ButtonCancel": "\u53d6\u6d88",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "\u6211\u77e5\u9053\u4e86",
     "ButtonRestart": "Restart",
     "RecordingCancelled": "\u5df2\u53d6\u6d88\u6392\u7a0b\u9304\u88fd",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "Delete Items",
     "ConfirmDeleteItems": "Deleting these items will delete them from both the file system and your media library. Are you sure you wish to continue?",
     "PleaseRestartServerName": "Please restart Emby Server - {0}.",
-    "SyncJobCreated": "Sync job created.",
     "LabelSyncJobName": "Sync job name:",
     "LabelQuality": "Quality:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB\/IDX, etc.) as well as certain ASS\/SSA subtitles",
-    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }

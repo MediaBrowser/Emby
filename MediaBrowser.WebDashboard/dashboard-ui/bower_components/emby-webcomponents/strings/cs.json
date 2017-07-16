@@ -18,6 +18,7 @@
     "HeaderSelectDate": "Vyber datum",
     "ButtonOk": "Ok",
     "ButtonCancel": "Zru\u0161it",
+    "AccessRestrictedTryAgainLater": "Access is currently restricted. Please try again later.",
     "ButtonGotIt": "M\u00e1m to",
     "ButtonRestart": "Restart",
     "RecordingCancelled": "Nahr\u00e1v\u00e1n\u00ed zru\u0161eno.",
@@ -265,7 +266,6 @@
     "HeaderDeleteItems": "Odstranit polo\u017eky",
     "ConfirmDeleteItems": "Odstran\u011bn\u00edm t\u011bchto polo\u017eek odstran\u00edte va\u0161e m\u00e9dia jak z knihovny m\u00e9di\u00ed, tak i ze souborov\u00e9ho syst\u00e9mu. Jste si jisti, \u017ee chcete pokra\u010dovat?",
     "PleaseRestartServerName": "Pros\u00edm, restartujte Emby Server - {0}.",
-    "SyncJobCreated": "\u00daloha Sync vytvo\u0159ena",
     "LabelSyncJobName": "N\u00e1zev Sync \u00falohy:",
     "LabelQuality": "Kvalita:",
     "LabelSyncNoTargetsHelp": "Vypad\u00e1 to, \u017ee v sou\u010dasn\u00e9 dob\u011b nem\u00e1te \u017e\u00e1dn\u00e9 aplikace, kter\u00e9 podporuj\u00ed synchronizaci.",
@@ -518,5 +518,6 @@
     "OnlyImageFormats": "Only image formats (VOBSUB, PGS, SUB\/IDX, etc.)",
     "Normal": "Normal",
     "BurnSubtitlesHelp": "Determines if the server should burn in subtitles when converting video depending on the subtitles format. Avoiding burning in subtitles will improve server performance. Select Auto to burn image based formats (e.g. VOBSUB, PGS, SUB\/IDX, etc.) as well as certain ASS\/SSA subtitles",
-    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)"
+    "AllComplexFormats": "All complex formats (ASS, SSA, VOBSUB, PGS, SUB\/IDX, etc.)",
+    "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "These settings also apply to any Chromecast playback started by this device."
 }
