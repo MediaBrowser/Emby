@@ -801,7 +801,7 @@ namespace MediaBrowser.Api.LiveTv
                     Name = i.Name,
                     Id = i.Id
 
-                }).ToList(),
+                }).OrderBy(i => i.Name).ToList(),
 
                 Mappings = mappings,
 
