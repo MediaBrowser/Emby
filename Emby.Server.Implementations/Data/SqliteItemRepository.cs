@@ -190,7 +190,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "IsLocked", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "Name", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "OfficialRating", "Text", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "MediaType", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "Overview", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ParentIndexNumber", "INT", existingColumnNames);
@@ -200,28 +199,22 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "Genres", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "SortName", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ForcedSortName", "Text", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "RunTimeTicks", "BIGINT", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "HomePageUrl", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DisplayMediaType", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateCreated", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateModified", "DATETIME", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "IsSeries", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsLive", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsNews", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsPremiere", "BIT", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "EpisodeTitle", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsRepeat", "BIT", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "PreferredMetadataLanguage", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "PreferredMetadataCountryCode", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsHD", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ExternalEtag", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateLastRefreshed", "DATETIME", existingColumnNames);
-
                     AddColumn(db, "TypedBaseItems", "DateLastSaved", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsInMixedFolder", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "LockedFields", "Text", existingColumnNames);
@@ -2629,6 +2622,11 @@ namespace Emby.Server.Implementations.Data
                 groups.Add("PresentationUniqueKey");
             }
 
+            if (query.GroupBySeriesPresentationUniqueKey)
+            {
+                groups.Add("SeriesPresentationUniqueKey");
+            }
+
             if (groups.Count > 0)
             {
                 return " Group by " + string.Join(",", groups.ToArray());
@@ -2941,6 +2939,10 @@ namespace Emby.Server.Implementations.Data
                 {
                     commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
                 }
+                else if (query.GroupBySeriesPresentationUniqueKey)
+                {
+                    commandText += " select count (distinct SeriesPresentationUniqueKey)" + GetFromText();
+                }
                 else
                 {
                     commandText += " select count (guid)" + GetFromText();
@@ -3086,6 +3088,11 @@ namespace Emby.Server.Implementations.Data
             }
             if (string.Equals(name, ItemSortBy.DatePlayed, StringComparison.OrdinalIgnoreCase))
             {
+                if (query.GroupBySeriesPresentationUniqueKey)
+                {
+                    return new Tuple<string, bool>("MAX(LastPlayedDate)", false);
+                }
+
                 return new Tuple<string, bool>("LastPlayedDate", false);
             }
             if (string.Equals(name, ItemSortBy.PlayCount, StringComparison.OrdinalIgnoreCase))
@@ -3359,6 +3366,10 @@ namespace Emby.Server.Implementations.Data
                 if (EnableGroupByPresentationUniqueKey(query))
                 {
                     commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
+                }
+                else if (query.GroupBySeriesPresentationUniqueKey)
+                {
+                    commandText += " select count (distinct SeriesPresentationUniqueKey)" + GetFromText();
                 }
                 else
                 {
@@ -4643,6 +4654,11 @@ namespace Emby.Server.Implementations.Data
         private bool EnableGroupByPresentationUniqueKey(InternalItemsQuery query)
         {
             if (!query.GroupByPresentationUniqueKey)
+            {
+                return false;
+            }
+
+            if (query.GroupBySeriesPresentationUniqueKey)
             {
                 return false;
             }

@@ -1845,6 +1845,9 @@ namespace Emby.Server.Implementations.LiveTv
         public async Task AddInfoToProgramDto(List<Tuple<BaseItem, BaseItemDto>> tuples, List<ItemFields> fields, User user = null)
         {
             var programTuples = new List<Tuple<BaseItemDto, string, string, string>>();
+            var hasChannelImage = fields.Contains(ItemFields.ChannelImage);
+            var hasChannelInfo = fields.Contains(ItemFields.ChannelInfo);
+            var hasServiceName = fields.Contains(ItemFields.ServiceName);
 
             foreach (var tuple in tuples)
             {
@@ -1887,7 +1890,7 @@ namespace Emby.Server.Implementations.LiveTv
                     dto.IsPremiere = program.IsPremiere;
                 }
 
-                if (fields.Contains(ItemFields.ChannelInfo))
+                if (hasChannelInfo || hasChannelImage)
                 {
                     var channel = GetInternalChannel(program.ChannelId);
 
@@ -1897,7 +1900,7 @@ namespace Emby.Server.Implementations.LiveTv
                         dto.MediaType = channel.MediaType;
                         dto.ChannelNumber = channel.Number;
 
-                        if (channel.HasImage(ImageType.Primary))
+                        if (hasChannelImage && channel.HasImage(ImageType.Primary))
                         {
                             dto.ChannelPrimaryImageTag = _tvDtoService.GetImageTag(channel);
                         }
@@ -1906,7 +1909,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                 var serviceName = program.ServiceName;
 
-                if (fields.Contains(ItemFields.ServiceName))
+                if (hasServiceName)
                 {
                     dto.ServiceName = serviceName;
                 }
@@ -2154,7 +2157,7 @@ namespace Emby.Server.Implementations.LiveTv
             await service.CancelTimerAsync(timer.ExternalId, CancellationToken.None).ConfigureAwait(false);
             _lastRecordingRefreshTime = DateTime.MinValue;
 
-            EventHelper.QueueEventIfNotNull(TimerCancelled, this, new GenericEventArgs<TimerEventInfo>
+            EventHelper.FireEventIfNotNull(TimerCancelled, this, new GenericEventArgs<TimerEventInfo>
             {
                 Argument = new TimerEventInfo
                 {
@@ -2177,7 +2180,7 @@ namespace Emby.Server.Implementations.LiveTv
             await service.CancelSeriesTimerAsync(timer.ExternalId, CancellationToken.None).ConfigureAwait(false);
             _lastRecordingRefreshTime = DateTime.MinValue;
 
-            EventHelper.QueueEventIfNotNull(SeriesTimerCancelled, this, new GenericEventArgs<TimerEventInfo>
+            EventHelper.FireEventIfNotNull(SeriesTimerCancelled, this, new GenericEventArgs<TimerEventInfo>
             {
                 Argument = new TimerEventInfo
                 {
@@ -2516,7 +2519,7 @@ namespace Emby.Server.Implementations.LiveTv
             _lastRecordingRefreshTime = DateTime.MinValue;
             _logger.Info("New recording scheduled");
 
-            EventHelper.QueueEventIfNotNull(TimerCreated, this, new GenericEventArgs<TimerEventInfo>
+            EventHelper.FireEventIfNotNull(TimerCreated, this, new GenericEventArgs<TimerEventInfo>
             {
                 Argument = new TimerEventInfo
                 {
@@ -2558,7 +2561,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             _lastRecordingRefreshTime = DateTime.MinValue;
 
-            EventHelper.QueueEventIfNotNull(SeriesTimerCreated, this, new GenericEventArgs<TimerEventInfo>
+            EventHelper.FireEventIfNotNull(SeriesTimerCreated, this, new GenericEventArgs<TimerEventInfo>
             {
                 Argument = new TimerEventInfo
                 {
