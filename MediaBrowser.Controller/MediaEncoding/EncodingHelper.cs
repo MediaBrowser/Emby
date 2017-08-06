@@ -4,12 +4,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.MediaInfo;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Controller.MediaEncoding
 {
@@ -148,10 +150,13 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public string GetInputFormat(string container)
         {
-            if (string.Equals(container, "mkv", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(container))
             {
-                return "matroska";
+                return null;
             }
+
+            container = container.Replace("mkv", "matroska", StringComparison.OrdinalIgnoreCase);
+
             if (string.Equals(container, "ts", StringComparison.OrdinalIgnoreCase))
             {
                 return "mpegts";
@@ -1667,14 +1672,33 @@ namespace MediaBrowser.Controller.MediaEncoding
             state.RunTimeTicks = mediaSource.RunTimeTicks;
             state.RemoteHttpHeaders = mediaSource.RequiredHttpHeaders;
 
+            state.IsoType = mediaSource.IsoType;
+
             if (mediaSource.VideoType.HasValue)
             {
                 state.VideoType = mediaSource.VideoType.Value;
+
+                if (mediaSource.VideoType.Value == VideoType.BluRay || mediaSource.VideoType.Value == VideoType.Dvd)
+                {
+                    state.PlayableStreamFileNames = Video.QueryPlayableStreamFiles(state.MediaPath, mediaSource.VideoType.Value);
+                }
+                else if (mediaSource.VideoType.Value == VideoType.Iso && state.IsoType == IsoType.BluRay)
+                {
+                    state.PlayableStreamFileNames = Video.QueryPlayableStreamFiles(state.MediaPath, VideoType.BluRay);
+                }
+                else if (mediaSource.VideoType.Value == VideoType.Iso && state.IsoType == IsoType.Dvd)
+                {
+                    state.PlayableStreamFileNames = Video.QueryPlayableStreamFiles(state.MediaPath, VideoType.Dvd);
+                }
+                else
+                {
+                    state.PlayableStreamFileNames = new List<string>();
+                }
             }
-
-            state.IsoType = mediaSource.IsoType;
-
-            state.PlayableStreamFileNames = mediaSource.PlayableStreamFileNames.ToList();
+            else
+            {
+                state.PlayableStreamFileNames = new List<string>();
+            }
 
             if (mediaSource.Timestamp.HasValue)
             {
@@ -1694,7 +1718,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 state.InputAudioSync = "1";
             }
 
-            if (string.Equals(mediaSource.Container, "wma", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(mediaSource.Container, "wma", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(mediaSource.Container, "asf", StringComparison.OrdinalIgnoreCase))
             {
                 // Seeing some stuttering when transcoding wma to audio-only HLS
                 state.InputAudioSync = "1";
