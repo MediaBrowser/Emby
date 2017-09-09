@@ -21,6 +21,7 @@ namespace MediaBrowser.Controller.LiveTv
         public string OriginalStreamId { get; set; }
         public bool EnableStreamSharing { get; set; }
         public string UniqueId = Guid.NewGuid().ToString("N");
+        protected bool _tunerConnectionLost = false;
 
         public List<string> SharedStreamIds = new List<string>();
         protected readonly IEnvironmentInfo Environment;
@@ -49,6 +50,11 @@ namespace MediaBrowser.Controller.LiveTv
         public virtual Task Close()
         {
             return Task.FromResult(true);
+        }
+
+        public bool isDisconnected()
+        {
+            return _tunerConnectionLost;
         }
 
         protected Stream GetInputStream(string path, long startPosition, bool allowAsyncFileRead)

@@ -148,6 +148,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                             }
                             catch (Exception ex)
                             {
+                                // Flag this tunner connection as disconnected: So we don't assign more client to it
+                                _tunerConnectionLost = true;
+
                                 if (isFirstAttempt)
                                 {
                                     _logger.ErrorException("Error opening live stream:", ex);
