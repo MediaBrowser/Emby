@@ -103,7 +103,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         {
             var ext = Path.GetExtension(originalUrl.Split('?')[0]);
 
-            if (string.Equals(ext, ".gz", StringComparison.OrdinalIgnoreCase))
+            //if (string.Equals(ext, ".gz", StringComparison.OrdinalIgnoreCase))
             {
                 try
                 {

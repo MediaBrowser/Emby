@@ -897,9 +897,28 @@ namespace Emby.Server.Implementations.IO
             return File.OpenRead(path);
         }
 
+        private void CopyFileUsingStreams(string source, string target, bool overwrite)
+        {
+            using (var sourceStream = OpenRead(source))
+            {
+                using (var targetStream = GetFileStream(target, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
+                {
+                    sourceStream.CopyTo(targetStream);
+                }
+            }
+        }
+
         public void CopyFile(string source, string target, bool overwrite)
         {
-            if (_sharpCifsFileSystem.IsEnabledForPath(source))
+            var enableSharpCifsForSource = _sharpCifsFileSystem.IsEnabledForPath(source);
+
+            if (enableSharpCifsForSource != _sharpCifsFileSystem.IsEnabledForPath(target))
+            {
+                CopyFileUsingStreams(source, target, overwrite);
+                return;
+            }
+
+            if (enableSharpCifsForSource)
             {
                 _sharpCifsFileSystem.CopyFile(source, target, overwrite);
                 return;
