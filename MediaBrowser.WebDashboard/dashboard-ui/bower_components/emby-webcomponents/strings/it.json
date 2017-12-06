@@ -441,6 +441,8 @@
     "More": "Dettagli",
     "Up": "Su",
     "Down": "Gi\u00f9",
+    "Home": "Home",
+    "Favorites": "Preferiti",
     "HeaderHomeScreen": "Pagina iniziale",
     "HeaderHomeScreenContent": "Contenuto Schermata Iniziale",
     "HeaderLatestChannelItems": "Ultimi elementi aggiunti",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Per favore inserisci i dischi nell'ordine per riprodurre questo video.",
     "Guide": "Guida",
     "Suggestions": "Suggerimenti",
-    "Favorites": "Preferiti",
     "Collections": "Collezioni",
     "LabelSelectFolderGroups": "Raggruppa i contenuti delle seguenti cartelle in viste come Film, Musica e Serie TV",
     "LabelSelectFolderGroupsHelp": "Le cartelle non selezionate verranno mostrate come se stesse nelle proprie viste",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

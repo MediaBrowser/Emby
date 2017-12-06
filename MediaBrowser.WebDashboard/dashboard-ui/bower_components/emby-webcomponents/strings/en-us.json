@@ -441,6 +441,8 @@
   "More": "More",
   "Up": "Up",
   "Down": "Down",
+  "Home": "Home",
+  "Favorites": "Favorites",
   "HeaderHomeScreen": "Home Screen",
   "HeaderHomeScreenContent": "Home Screen Content",
   "HeaderLatestChannelItems": "Latest Channel Items",
@@ -633,5 +635,13 @@
   "Trailers": "Trailers",
   "Extras": "Extras",
   "ThemeSongs": "Theme songs",
-  "ThemeVideos": "Theme videos"
+  "ThemeVideos": "Theme videos",
+  "HeaderFavoriteMovies": "Favorite Movies",
+  "HeaderFavoriteShows": "Favorite Shows",
+  "HeaderFavoriteEpisodes": "Favorite Episodes",
+  "HeaderFavoriteVideos": "Favorite Videos",
+  "HeaderFavoriteGames": "Favorite Games",
+  "HeaderFavoriteArtists": "Favorite Artists",
+  "HeaderFavoriteAlbums": "Favorite Albums",
+  "HeaderFavoriteSongs": "Favorite Songs"
 }

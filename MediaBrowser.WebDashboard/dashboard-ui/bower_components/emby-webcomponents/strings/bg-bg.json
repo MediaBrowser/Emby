@@ -441,6 +441,8 @@
     "More": "More",
     "Up": "Up",
     "Down": "Down",
+    "Home": "Home",
+    "Favorites": "\u041b\u044e\u0431\u0438\u043c\u0438",
     "HeaderHomeScreen": "\u041d\u0430\u0447\u0430\u043b\u0435\u043d \u0435\u043a\u0440\u0430\u043d",
     "HeaderHomeScreenContent": "\u0421\u044a\u0434\u044a\u0440\u0436\u0430\u043d\u0438\u0435 \u043d\u0430 \u043d\u0430\u0447\u0430\u043b\u043d\u0438\u044f \u0435\u043a\u0440\u0430\u043d",
     "HeaderLatestChannelItems": "Latest Channel Items",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Please insert the disc in order to play this video.",
     "Guide": "\u0420\u044a\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e",
     "Suggestions": "\u041f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f",
-    "Favorites": "\u041b\u044e\u0431\u0438\u043c\u0438",
     "Collections": "\u041a\u043e\u043b\u0435\u043a\u0446\u0438\u0438",
     "LabelSelectFolderGroups": "Automatically group content from the following folders into views such as Movies, Music and TV:",
     "LabelSelectFolderGroupsHelp": "Folders that are unchecked will be displayed by themselves in their own view.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

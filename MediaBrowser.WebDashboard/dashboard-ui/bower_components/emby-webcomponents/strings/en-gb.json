@@ -441,6 +441,8 @@
     "More": "More",
     "Up": "Up",
     "Down": "Down",
+    "Home": "Home",
+    "Favorites": "Favourites",
     "HeaderHomeScreen": "Home Screen",
     "HeaderHomeScreenContent": "Home Screen Content",
     "HeaderLatestChannelItems": "Latest Channel Items",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Please insert the disc in order to play this video.",
     "Guide": "Guide",
     "Suggestions": "Suggestions",
-    "Favorites": "Favourites",
     "Collections": "Collections",
     "LabelSelectFolderGroups": "Automatically group content from the following folders into views such as Movies, Music and TV:",
     "LabelSelectFolderGroupsHelp": "Folders that are unticked will be displayed by themselves in their own view.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }
