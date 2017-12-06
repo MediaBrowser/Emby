@@ -1369,6 +1369,11 @@ namespace MediaBrowser.Controller.MediaEncoding
                 filters.Add("hwupload");
             }
 
+            if (state.DeInterlace("h264", true) && string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
+            { 
+                filters.Add(string.Format("deinterlace_vaapi"));
+            }
+
             if (state.DeInterlace("h264", true) && !string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
             {
                 // If it is already 60fps then it will create an output framerate that is much too high for roku and others to handle
