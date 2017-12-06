@@ -441,6 +441,8 @@
     "More": "Wi\u0119cej",
     "Up": "W g\u00f3r\u0119",
     "Down": "W d\u00f3\u0142",
+    "Home": "Start",
+    "Favorites": "Ulubione",
     "HeaderHomeScreen": "Ekran startowy",
     "HeaderHomeScreenContent": "Zawarto\u015b\u0107 ekranu startowego",
     "HeaderLatestChannelItems": "Kana\u0142y ostatnio odtwarzane",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Prosz\u0119 w\u0142o\u017cy\u0107 dysk, aby odtwarza\u0107 to wideo.",
     "Guide": "Przewodnik",
     "Suggestions": "Polecane",
-    "Favorites": "Ulubione",
     "Collections": "Kolekcje",
     "LabelSelectFolderGroups": "Grupuj zawarto\u015b\u0107 z nast\u0119puj\u0105cych folder\u00f3w w widokach taki, jak Filmy, Muzyka i Seriale:",
     "LabelSelectFolderGroupsHelp": "Foldery, kt\u00f3re nie zosta\u0142y zaznaczone, b\u0119d\u0105 wy\u015bwietlane w swoich w\u0142asnych, osobnych widokach.",
@@ -633,5 +634,13 @@
     "Trailers": "Zwiastuny",
     "Extras": "Materia\u0142y dodatkowe",
     "ThemeSongs": "Motywy muzyczne",
-    "ThemeVideos": "Motywy wideo"
+    "ThemeVideos": "Motywy wideo",
+    "HeaderFavoriteMovies": "Filmy ulubione",
+    "HeaderFavoriteShows": "Seriale ulubione",
+    "HeaderFavoriteEpisodes": "Odcinki ulubione",
+    "HeaderFavoriteVideos": "Wideo ulubione",
+    "HeaderFavoriteGames": "Gry ulubione",
+    "HeaderFavoriteArtists": "Wykonawcy ulubieni",
+    "HeaderFavoriteAlbums": "Albumy ulubione",
+    "HeaderFavoriteSongs": "Utwory ulubione"
 }
