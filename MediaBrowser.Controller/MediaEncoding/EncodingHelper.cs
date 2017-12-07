@@ -1370,7 +1370,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
 
             if (state.DeInterlace("h264", true) && string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
-            { 
+            {
                 filters.Add(string.Format("deinterlace_vaapi"));
             }
 

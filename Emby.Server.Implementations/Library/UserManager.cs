@@ -417,7 +417,12 @@ namespace Emby.Server.Implementations.Library
             // There always has to be at least one user.
             if (users.Count == 0)
             {
-                var name = MakeValidUsername(Environment.UserName);
+                var defaultName = Environment.UserName;
+                if (string.IsNullOrWhiteSpace(defaultName))
+                {
+                    defaultName = "MyEmbyUser";
+                }
+                var name = MakeValidUsername(defaultName);
 
                 var user = InstantiateNewUser(name);
 
