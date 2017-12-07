@@ -216,7 +216,9 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 HasImage = p.Icon != null && !String.IsNullOrEmpty(p.Icon.Source),
                 OfficialRating = p.Rating != null && !String.IsNullOrEmpty(p.Rating.Value) ? p.Rating.Value : null,
                 CommunityRating = p.StarRating.HasValue ? p.StarRating.Value : (float?)null,
-                SeriesId = p.Episode != null ? p.Title.GetMD5().ToString("N") : null
+                SeriesId = p.Episode != null ? p.Title.GetMD5().ToString("N") : null,
+                ProviderIds = p.ProviderIds,
+                SeriesProviderIds = p.ProviderIds
             };
 
             if (!string.IsNullOrWhiteSpace(p.ProgramId))
@@ -225,7 +227,10 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             }
             else
             {
-                var uniqueString = (p.Title ?? string.Empty) + (episodeTitle ?? string.Empty) + (p.IceTvEpisodeNumber ?? string.Empty);
+                string iceTvEpisodeNumber;
+                p.ProviderIds.TryGetValue("icetv", out iceTvEpisodeNumber);
+
+                var uniqueString = (p.Title ?? string.Empty) + (episodeTitle ?? string.Empty) + (iceTvEpisodeNumber ?? string.Empty);
 
                 if (programInfo.SeasonNumber.HasValue)
                 {

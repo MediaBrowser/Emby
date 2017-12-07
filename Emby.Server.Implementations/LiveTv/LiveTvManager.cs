@@ -643,6 +643,9 @@ namespace Emby.Server.Implementations.LiveTv
             item.OfficialRating = item.OfficialRating ?? info.OfficialRating;
             item.Overview = item.Overview ?? info.Overview;
             item.RunTimeTicks = (info.EndDate - info.StartDate).Ticks;
+            item.ProviderIds = info.ProviderIds;
+
+            // TODO SeriesProviderIds
 
             if (item.StartDate != info.StartDate)
             {
