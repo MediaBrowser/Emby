@@ -10,7 +10,12 @@ namespace MediaBrowser.Controller.LiveTv
         {
             Genres = new List<string>();
             KeepUntil = KeepUntil.UntilDeleted;
+            ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            SeriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
+
+        public Dictionary<string, string> ProviderIds { get; set; }
+        public Dictionary<string, string> SeriesProviderIds { get; set; }
 
         /// <summary>
         /// Id of the recording.

@@ -309,8 +309,6 @@ namespace MediaBrowser.WebDashboard.Api
         {
             var path = request.ResourceName;
 
-            path = path.Replace("bower_components" + _appHost.ApplicationVersion, "bower_components", StringComparison.OrdinalIgnoreCase);
-
             var contentType = MimeTypes.GetMimeType(path);
             var basePath = DashboardUIPath;
 
