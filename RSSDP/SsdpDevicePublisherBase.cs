@@ -140,8 +140,6 @@ namespace Rssdp.Infrastructure
         {
             if (device == null) throw new ArgumentNullException("device");
 
-            ThrowIfDisposed();
-
             bool wasRemoved = false;
             TimeSpan minCacheTime = TimeSpan.Zero;
             lock (_Devices)
@@ -211,21 +209,22 @@ namespace Rssdp.Infrastructure
         {
             if (disposing)
             {
-                var commsServer = _CommsServer;
-                _CommsServer = null;
+                DisposeRebroadcastTimer();
 
+                var commsServer = _CommsServer;
                 if (commsServer != null)
                 {
                     commsServer.RequestReceived -= this.CommsServer_RequestReceived;
-                    if (!commsServer.IsShared)
-                        commsServer.Dispose();
                 }
 
-                DisposeRebroadcastTimer();
+                var tasks = Devices.ToList().Select(RemoveDevice).ToArray();
+                Task.WaitAll(tasks);
 
-                foreach (var device in this.Devices)
+                _CommsServer = null;
+                if (commsServer != null)
                 {
-                    DisconnectFromDeviceEvents(device);
+                    if (!commsServer.IsShared)
+                        commsServer.Dispose();
                 }
 
                 _RecentSearchRequests = null;
@@ -551,6 +550,11 @@ namespace Rssdp.Infrastructure
 
             DisposeRebroadcastTimer();
 
+            if (IsDisposed)
+            {
+                return;
+            }
+
             if (minCacheTime == TimeSpan.Zero) return;
 
             // According to UPnP/SSDP spec, we should randomise the interval at 
@@ -654,6 +658,11 @@ namespace Rssdp.Infrastructure
 
         private void device_DeviceAdded(object sender, DeviceEventArgs e)
         {
+            if (IsDisposed)
+            {
+                return;
+            }
+
             SendAliveNotifications(e.Device, false, CancellationToken.None);
             ConnectToDeviceEvents(e.Device);
         }

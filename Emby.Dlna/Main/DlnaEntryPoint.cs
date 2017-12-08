@@ -402,21 +402,6 @@ namespace Emby.Dlna.Main
         {
             if (_Publisher != null)
             {
-                var devices = _Publisher.Devices.ToList();
-                var tasks = devices.Select(i => _Publisher.RemoveDevice(i)).ToArray();
-
-                Task.WaitAll(tasks);
-                //foreach (var device in devices)
-                //{
-                //    try
-                //    {
-                //        _Publisher.RemoveDevice(device);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _logger.ErrorException("Error sending bye bye", ex);
-                //    }
-                //}
                 _Publisher.Dispose();
             }
 

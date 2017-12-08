@@ -28,7 +28,7 @@ namespace Emby.Server.Implementations.Library
             _libraryManager = libraryManager;
             _userManager = userManager;
 
-            _logger = logManager.GetLogger("Lucene");
+            _logger = logManager.GetLogger("SearchEngine");
         }
 
         public async Task<QueryResult<SearchHintInfo>> GetSearchHints(SearchQuery query)

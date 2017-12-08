@@ -152,14 +152,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             try
             {
-                if (!allowLiveStreamProbe || !stream.SupportsProbing || stream.MediaStreams.Any(i => i.Index != -1))
-                {
-                    AddMediaInfo(stream, isAudio, cancellationToken);
-                }
-                else
-                {
-                    await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
-                }
+                AddMediaInfo(stream, isAudio, cancellationToken);
             }
             catch (Exception ex)
             {
