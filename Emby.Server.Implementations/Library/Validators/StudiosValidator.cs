@@ -68,6 +68,23 @@ namespace Emby.Server.Implementations.Library.Validators
                 progress.Report(percent);
             }
 
+            var deadEntities = _libraryManager.GetItemList(new InternalItemsQuery
+            {
+                IncludeItemTypes = new[] { typeof(Studio).Name },
+                IsDeadStudio = true
+            });
+
+            foreach (var item in deadEntities)
+            {
+                _logger.Info("Deleting dead {2} {0} {1}.", item.Id.ToString("N"), item.Name, item.GetType().Name);
+
+                await _libraryManager.DeleteItem(item, new DeleteOptions
+                {
+                    DeleteFileLocation = false
+
+                }).ConfigureAwait(false);
+            }
+
             progress.Report(100);
         }
     }

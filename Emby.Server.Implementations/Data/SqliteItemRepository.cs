@@ -4378,6 +4378,21 @@ namespace Emby.Server.Implementations.Data
             {
                 whereClauses.Add("ParentId NOT NULL AND ParentId NOT IN (select guid from TypedBaseItems)");
             }
+            
+            if (query.IsDeadArtist.HasValue && query.IsDeadArtist.Value)
+            {
+                whereClauses.Add("CleanName not in (Select CleanValue From ItemValues where Type in (0,1))");
+            }
+
+            if (query.IsDeadStudio.HasValue && query.IsDeadStudio.Value)
+            {
+                whereClauses.Add("CleanName not in (Select CleanValue From ItemValues where Type = 3)");
+            }
+
+            if (query.IsDeadPerson.HasValue && query.IsDeadPerson.Value)
+            {
+                whereClauses.Add("Name not in (Select Name From People)");
+            }
 
             if (query.Years.Length == 1)
             {

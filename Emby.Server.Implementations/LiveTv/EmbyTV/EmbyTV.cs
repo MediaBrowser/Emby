@@ -1155,7 +1155,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             throw new NotImplementedException();
         }
 
-        public async Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
+        public Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
         {
             ActiveRecordingInfo info;
 
@@ -1163,29 +1163,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (_activeRecordings.TryGetValue(recordingId, out info))
             {
-                var stream = new MediaSourceInfo
-                {
-                    Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + recordingId + "/stream",
-                    Id = recordingId,
-                    SupportsDirectPlay = false,
-                    SupportsDirectStream = true,
-                    SupportsTranscoding = true,
-                    IsInfiniteStream = true,
-                    RequiresOpening = false,
-                    RequiresClosing = false,
-                    Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
-                    BufferMs = 0,
-                    IgnoreDts = true,
-                    IgnoreIndex = true
-                };
-
-                var isAudio = false;
-                await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
-
-                return new List<MediaSourceInfo>
-                {
-                    stream
-                };
+                return GetRecordingStreamMediaSources(info, cancellationToken);
             }
 
             throw new FileNotFoundException();
@@ -2224,11 +2202,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                     writer.WriteElementString("plot", overview);
 
-                    if (lockData)
-                    {
-                        writer.WriteElementString("lockdata", true.ToString().ToLower());
-                    }
-
                     if (item.CommunityRating.HasValue)
                     {
                         writer.WriteElementString("rating", item.CommunityRating.Value.ToString(CultureInfo.InvariantCulture));
@@ -2288,18 +2261,32 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         }
 
                         writer.WriteElementString("imdbid", imdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
                     }
 
                     var tvdb = item.GetProviderId(MetadataProviders.Tvdb);
                     if (!string.IsNullOrEmpty(tvdb))
                     {
                         writer.WriteElementString("tvdbid", tvdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
                     }
 
                     var tmdb = item.GetProviderId(MetadataProviders.Tmdb);
                     if (!string.IsNullOrEmpty(tmdb))
                     {
                         writer.WriteElementString("tmdbid", tmdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
+                    }
+
+                    if (lockData)
+                    {
+                        writer.WriteElementString("lockdata", true.ToString().ToLower());
                     }
 
                     if (item.CriticRating.HasValue)

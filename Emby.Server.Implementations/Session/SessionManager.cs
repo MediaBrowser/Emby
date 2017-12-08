@@ -36,7 +36,7 @@ namespace Emby.Server.Implementations.Session
     /// <summary>
     /// Class SessionManager
     /// </summary>
-    public class SessionManager : ISessionManager
+    public class SessionManager : ISessionManager, IDisposable
     {
         /// <summary>
         /// The _user data repository
@@ -113,6 +113,20 @@ namespace Emby.Server.Implementations.Session
             _timerFactory = timerFactory;
 
             _deviceManager.DeviceOptionsUpdated += _deviceManager_DeviceOptionsUpdated;
+        }
+
+        private bool _disposed;
+        public void Dispose()
+        {
+            _disposed = true;
+        }
+
+        public void CheckDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
 
         void _deviceManager_DeviceOptionsUpdated(object sender, GenericEventArgs<DeviceInfo> e)
@@ -219,6 +233,8 @@ namespace Emby.Server.Implementations.Session
             string remoteEndPoint,
             User user)
         {
+            CheckDisposed();
+
             if (string.IsNullOrEmpty(appName))
             {
                 throw new ArgumentNullException("appName");
@@ -279,6 +295,7 @@ namespace Emby.Server.Implementations.Session
 
         public async void ReportSessionEnded(string sessionId)
         {
+            CheckDisposed();
             await _sessionLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
 
             try
@@ -399,6 +416,8 @@ namespace Emby.Server.Implementations.Session
         /// <returns>SessionInfo.</returns>
         private async Task<SessionInfo> GetSessionInfo(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user)
         {
+            CheckDisposed();
+
             if (string.IsNullOrWhiteSpace(deviceId))
             {
                 throw new ArgumentNullException("deviceId");
@@ -412,6 +431,8 @@ namespace Emby.Server.Implementations.Session
 
             try
             {
+                CheckDisposed();
+
                 SessionInfo sessionInfo;
                 DeviceInfo device = null;
 
@@ -593,6 +614,8 @@ namespace Emby.Server.Implementations.Session
         /// <exception cref="System.ArgumentNullException">info</exception>
         public async Task OnPlaybackStart(PlaybackStartInfo info)
         {
+            CheckDisposed();
+
             if (info == null)
             {
                 throw new ArgumentNullException("info");
@@ -679,6 +702,8 @@ namespace Emby.Server.Implementations.Session
         /// </summary>
         public async Task OnPlaybackProgress(PlaybackProgressInfo info, bool isAutomated)
         {
+            CheckDisposed();
+
             if (info == null)
             {
                 throw new ArgumentNullException("info");
@@ -772,6 +797,8 @@ namespace Emby.Server.Implementations.Session
         /// <exception cref="System.ArgumentOutOfRangeException">positionTicks</exception>
         public async Task OnPlaybackStopped(PlaybackStopInfo info)
         {
+            CheckDisposed();
+
             if (info == null)
             {
                 throw new ArgumentNullException("info");
@@ -932,6 +959,8 @@ namespace Emby.Server.Implementations.Session
 
         public Task SendMessageCommand(string controllingSessionId, string sessionId, MessageCommand command, CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var generalCommand = new GeneralCommand
             {
                 Name = GeneralCommandType.DisplayMessage.ToString()
@@ -950,6 +979,8 @@ namespace Emby.Server.Implementations.Session
 
         public Task SendGeneralCommand(string controllingSessionId, string sessionId, GeneralCommand command, CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var session = GetSessionToRemoteControl(sessionId);
 
             if (!string.IsNullOrWhiteSpace(controllingSessionId))
@@ -963,6 +994,8 @@ namespace Emby.Server.Implementations.Session
 
         public async Task SendPlayCommand(string controllingSessionId, string sessionId, PlayRequest command, CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var session = GetSessionToRemoteControl(sessionId);
 
             var user = session.UserId.HasValue ? _userManager.GetUserById(session.UserId.Value) : null;
@@ -1146,6 +1179,8 @@ namespace Emby.Server.Implementations.Session
 
         public Task SendPlaystateCommand(string controllingSessionId, string sessionId, PlaystateRequest command, CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var session = GetSessionToRemoteControl(sessionId);
 
             if (!string.IsNullOrWhiteSpace(controllingSessionId))
@@ -1180,6 +1215,8 @@ namespace Emby.Server.Implementations.Session
         /// <returns>Task.</returns>
         public async Task SendRestartRequiredNotification(CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
@@ -1205,6 +1242,8 @@ namespace Emby.Server.Implementations.Session
         /// <returns>Task.</returns>
         public Task SendServerShutdownNotification(CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
@@ -1230,6 +1269,8 @@ namespace Emby.Server.Implementations.Session
         /// <returns>Task.</returns>
         public Task SendServerRestartNotification(CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             _logger.Debug("Beginning SendServerRestartNotification");
 
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
@@ -1250,7 +1291,7 @@ namespace Emby.Server.Implementations.Session
             return Task.WhenAll(tasks);
         }
 
-        public Task SendSessionEndedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
+        private Task SendSessionEndedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
         {
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
             var dto = GetSessionInfoDto(sessionInfo);
@@ -1271,7 +1312,7 @@ namespace Emby.Server.Implementations.Session
             return Task.WhenAll(tasks);
         }
 
-        public Task SendPlaybackStartNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
+        private Task SendPlaybackStartNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
         {
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
             var dto = GetSessionInfoDto(sessionInfo);
@@ -1292,7 +1333,7 @@ namespace Emby.Server.Implementations.Session
             return Task.WhenAll(tasks);
         }
 
-        public Task SendPlaybackStoppedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
+        private Task SendPlaybackStoppedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
         {
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
             var dto = GetSessionInfoDto(sessionInfo);
@@ -1322,6 +1363,8 @@ namespace Emby.Server.Implementations.Session
         /// <exception cref="System.ArgumentException">The requested user is already the primary user of the session.</exception>
         public void AddAdditionalUser(string sessionId, string userId)
         {
+            CheckDisposed();
+
             var session = GetSession(sessionId);
 
             if (session.UserId.HasValue && session.UserId.Value == new Guid(userId))
@@ -1354,6 +1397,8 @@ namespace Emby.Server.Implementations.Session
         /// <exception cref="System.ArgumentException">The requested user is already the primary user of the session.</exception>
         public void RemoveAdditionalUser(string sessionId, string userId)
         {
+            CheckDisposed();
+
             var session = GetSession(sessionId);
 
             if (session.UserId.HasValue && session.UserId.Value == new Guid(userId))
@@ -1389,6 +1434,8 @@ namespace Emby.Server.Implementations.Session
 
         private async Task<AuthenticationResult> AuthenticateNewSessionInternal(AuthenticationRequest request, bool enforcePassword)
         {
+            CheckDisposed();
+
             User user = null;
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
@@ -1492,6 +1539,8 @@ namespace Emby.Server.Implementations.Session
 
         public void Logout(string accessToken)
         {
+            CheckDisposed();
+
             if (string.IsNullOrWhiteSpace(accessToken))
             {
                 throw new ArgumentNullException("accessToken");
@@ -1532,6 +1581,8 @@ namespace Emby.Server.Implementations.Session
 
         public void RevokeUserTokens(string userId, string currentAccessToken)
         {
+            CheckDisposed();
+
             var existing = _authRepo.Get(new AuthenticationInfoQuery
             {
                 IsActive = true,
@@ -1559,6 +1610,8 @@ namespace Emby.Server.Implementations.Session
         /// <param name="capabilities">The capabilities.</param>
         public void ReportCapabilities(string sessionId, ClientCapabilities capabilities)
         {
+            CheckDisposed();
+
             var session = GetSession(sessionId);
 
             ReportCapabilities(session, capabilities, true);
@@ -1842,6 +1895,8 @@ namespace Emby.Server.Implementations.Session
 
         public Task SendMessageToAdminSessions<T>(string name, T data, CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var adminUserIds = _userManager.Users.Where(i => i.Policy.IsAdministrator).Select(i => i.Id.ToString("N")).ToList();
 
             return SendMessageToUserSessions(adminUserIds, name, data, cancellationToken);
@@ -1850,6 +1905,8 @@ namespace Emby.Server.Implementations.Session
         public Task SendMessageToUserSessions<T>(List<string> userIds, string name, T data,
             CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && userIds.Any(i.ContainsUser)).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
@@ -1871,6 +1928,8 @@ namespace Emby.Server.Implementations.Session
         public Task SendMessageToUserDeviceSessions<T>(string deviceId, string name, T data,
             CancellationToken cancellationToken)
         {
+            CheckDisposed();
+
             var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && string.Equals(i.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
