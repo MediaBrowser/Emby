@@ -92,27 +92,20 @@ namespace MediaBrowser.Providers.MediaInfo
 
         private string GetAudioImagePath(Audio item)
         {
-            string filename;
+            string filename = null;
 
             if (item.GetType() == typeof(Audio))
             {
-                filename = item.Album ?? string.Empty;
-                filename += string.Join(",", item.Artists);
-
                 if (!string.IsNullOrWhiteSpace(item.Album))
                 {
-                    filename += "_" + item.Album;
-                }
-                else if (!string.IsNullOrWhiteSpace(item.Name))
-                {
-                    filename += "_" + item.Name;
+                    filename = item.Album.GetMD5().ToString("N");
                 }
                 else
                 {
-                    filename += "_" + item.Id.ToString("N");
+                    filename = item.Id.ToString("N");
                 }
 
-                filename = filename.GetMD5() + ".jpg";
+                filename += ".jpg";
             }
             else
             {
