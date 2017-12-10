@@ -247,7 +247,6 @@
     <Compile Include="Providers\RemoteSearchQuery.cs" />
     <Compile Include="Providers\SeasonInfo.cs" />
     <Compile Include="Providers\SeriesInfo.cs" />
-    <Compile Include="Providers\SeriesOrderTypes.cs" />
     <Compile Include="Providers\SongInfo.cs" />
     <Compile Include="Providers\TrailerInfo.cs" />
     <Compile Include="Providers\VideoContentType.cs" />
