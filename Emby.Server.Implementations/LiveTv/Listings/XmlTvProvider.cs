@@ -22,7 +22,7 @@ using MediaBrowser.Model.Logging;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
-    public class XmlTvListingsProvider : IListingsProvider
+    public class XmlTvProvider : IListingsProvider
     {
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
@@ -30,7 +30,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         private readonly IFileSystem _fileSystem;
         private readonly IZipClient _zipClient;
 
-        public XmlTvListingsProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient)
+        public XmlTvProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient)
         {
             _config = config;
             _httpClient = httpClient;
@@ -182,11 +182,12 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             _logger.Debug("Getting xmltv programs for channel {0}", channelId);
 
             var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
-            _logger.Debug("Opening XmlTvReader for {0}", path);
-            var reader = new XmlTvReader(path, GetLanguage(info));
 
-            var results = reader.GetProgrammes(channelId, startDateUtc, endDateUtc, cancellationToken);
-            return results.Select(p => GetProgramInfo(p, info));
+            _logger.Debug("Opening XmlTvReader for {0}", path);
+
+            return new XmlTvReader(path, GetLanguage(info))
+                .GetProgrammes(channelId, startDateUtc, endDateUtc, cancellationToken)
+                .Select(p => GetProgramInfo(p, info));
         }
 
         private ProgramInfo GetProgramInfo(XmlTvProgram p, ListingsProviderInfo info)
@@ -289,32 +290,40 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         public async Task<List<NameIdPair>> GetLineups(ListingsProviderInfo info, string country, string location)
         {
             // In theory this should never be called because there is always only one lineup
-            var path = await GetXml(info.Path, CancellationToken.None).ConfigureAwait(false);
-            _logger.Debug("Opening XmlTvReader for {0}", path);
-            var reader = new XmlTvReader(path, GetLanguage(info));
-            var results = reader.GetChannels();
+            var channels = await GetChannels(info, CancellationToken.None);
 
-            // Should this method be async?
-            return results.Select(c => new NameIdPair() { Id = c.Id, Name = c.DisplayName }).ToList();
+            return channels.Select(i => new NameIdPair
+            {
+                Name = i.Name,
+                Id = i.Id
+
+            }).ToList();
         }
 
         public async Task<List<ChannelInfo>> GetChannels(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
-            // In theory this should never be called because there is always only one lineup
             var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
+
             _logger.Debug("Opening XmlTvReader for {0}", path);
-            var reader = new XmlTvReader(path, GetLanguage(info));
-            var results = reader.GetChannels();
 
-            // Should this method be async?
-            return results.Select(c => new ChannelInfo
+            var xmlChannels = new XmlTvReader(path, GetLanguage(info)).GetChannels();
+
+            var list = new List<ChannelInfo>();
+
+            foreach (var xmlChannel in xmlChannels)
             {
-                Id = c.Id,
-                Name = c.DisplayName,
-                ImageUrl = c.Icon != null && !String.IsNullOrEmpty(c.Icon.Source) ? c.Icon.Source : null,
-                Number = string.IsNullOrWhiteSpace(c.Number) ? c.Id : c.Number
+                var channel = new ChannelInfo
+                {
+                    Id = xmlChannel.Id,
+                    Name = xmlChannel.DisplayName,
+                    ImageUrl = xmlChannel.Icon != null && !string.IsNullOrWhiteSpace(xmlChannel.Icon.Source) ? xmlChannel.Icon.Source : null,
+                    Number = string.IsNullOrWhiteSpace(xmlChannel.Number) ? xmlChannel.Id : xmlChannel.Number
+                };
 
-            }).ToList();
+                list.Add(channel);
+            }
+
+            return list;
         }
     }
 }

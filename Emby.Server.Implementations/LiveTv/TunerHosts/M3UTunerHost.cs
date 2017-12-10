@@ -199,8 +199,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 IsRemote = isRemote,
 
                 IgnoreDts = true,
-                SupportsDirectPlay = supportsDirectPlay,
-                SupportsProbing = false
+                SupportsDirectPlay = supportsDirectPlay
             };
 
             mediaSource.InferTotalBitrate();

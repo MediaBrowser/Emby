@@ -227,10 +227,15 @@ namespace Rssdp.Infrastructure
             }
         }
 
+        public Task SendMulticastMessage(string message, CancellationToken cancellationToken)
+        {
+            return SendMulticastMessage(message, SsdpConstants.UdpResendCount, cancellationToken);
+        }
+
         /// <summary>
         /// Sends a message to the SSDP multicast address and port.
         /// </summary>
-        public async Task SendMulticastMessage(string message, CancellationToken cancellationToken)
+        public async Task SendMulticastMessage(string message, int sendCount, CancellationToken cancellationToken)
         {
             if (message == null) throw new ArgumentNullException("messageData");
 
@@ -243,7 +248,7 @@ namespace Rssdp.Infrastructure
             EnsureSendSocketCreated();
 
             // SSDP spec recommends sending messages multiple times (not more than 3) to account for possible packet loss over UDP.
-            for (var i = 0; i < SsdpConstants.UdpResendCount; i++)
+            for (var i = 0; i < sendCount; i++)
             {
                 await SendMessageIfSocketNotDisposed(messageData, new IpEndPointInfo
                 {
@@ -333,18 +338,18 @@ namespace Rssdp.Infrastructure
 
         #region Private Methods
 
-        private async Task SendMessageIfSocketNotDisposed(byte[] messageData, IpEndPointInfo destination, CancellationToken cancellationToken)
+        private Task SendMessageIfSocketNotDisposed(byte[] messageData, IpEndPointInfo destination, CancellationToken cancellationToken)
         {
             var sockets = _sendSockets;
             if (sockets != null)
             {
                 sockets = sockets.ToList();
 
-                foreach (var socket in sockets)
-                {
-                    await SendFromSocket(socket, messageData, destination, cancellationToken).ConfigureAwait(false);
-                }
+                var tasks = sockets.Select(s => SendFromSocket(s, messageData, destination, cancellationToken));
+                return Task.WhenAll(tasks);
             }
+
+            return Task.CompletedTask;
         }
 
         private ISocket ListenForBroadcastsAsync()
