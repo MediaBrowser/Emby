@@ -1,6 +1,6 @@
 {
-    "AllLibraries": "All libraries",
-    "HeaderAllowMediaDeletionFrom": "Allow Media Deletion From",
+    "AllLibraries": "Todas as bibliotecas",
+    "HeaderAllowMediaDeletionFrom": "Permitir a Exclus\u00e3o de M\u00eddia de",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Finalizar",
     "LabelNext": "Pr\u00f3ximo",
@@ -864,9 +864,9 @@
     "OptionSaveMetadataAsHidden": "Salvar metadados e imagens como arquivos ocultos",
     "LabelExtractChaptersDuringLibraryScan": "Extrair imagens dos cap\u00edtulos durante o rastreamento da biblioteca",
     "LabelExtractChaptersDuringLibraryScanHelp": "Se ativado, as imagens dos cap\u00edtulos ser\u00e3o extra\u00eddas quando os v\u00eddeos forem importados durante o rastreamento da biblioteca. Se desativado, elas ser\u00e3o extra\u00eddas durante a tarefa agendada de imagens dos cap\u00edtulos, permitindo que a tarefa de rastreamento da biblioteca seja mais r\u00e1pida.",
-    "LabelConnectGuestUserName": "Seu nome de usu\u00e1rio ou endere\u00e7o de email no Emby:",
-    "LabelConnectUserName": "Nome de usu\u00e1rio do Emby ou endere\u00e7o de email:",
-    "LabelConnectUserNameHelp": "Conecte este usu\u00e1rio local a uma conta Emby online para ativar o acesso f\u00e1cil de qualquer app do Emby sem ter que saber o endere\u00e7o ip do servidor.",
+    "LabelConnectGuestUserName": "Seu nome de usu\u00e1rio ou endere\u00e7o de email no Emby Connect:",
+    "LabelConnectUserName": "Nome de usu\u00e1rio ou endere\u00e7o de email do Emby Connect:",
+    "LabelConnectUserNameHelp": "Conecte este usu\u00e1rio local a uma conta Emby Connect para ativar o acesso f\u00e1cil de qualquer app do Emby sem ter que saber o endere\u00e7o ip do servidor.",
     "ButtonLearnMoreAboutEmbyConnect": "Saiba mais sobre o Emby Connect",
     "LabelExternalPlayers": "Reprodutores externos:",
     "LabelNativeExternalPlayersHelp": "Reproduzir v\u00eddeos usando reprodutores externos.",
@@ -1758,6 +1758,6 @@
     "EnableDebugLoggingHelp": "O log de depura\u00e7\u00e3o s\u00f3 deveria estar ativo se necess\u00e1rio para prop\u00f3sitos de identifica\u00e7\u00e3o de problemas. O aumento de acesso ao sistema de arquivos pode evitar que a m\u00e1quina do servidor possa entrar em modo suspens\u00e3o em alguns ambientes.",
     "LabelSimultaneousConnectionLimit": "Limite de stream simult\u00e2neo:",
     "SimultaneousConnectionLimitHelp": "O n\u00famero m\u00e1ximo permitido de streams simult\u00e2neos. Digitar 0 para n\u00e3o haver limite.",
-    "LaunchWebAppOnStartup": "Launch the Emby web app in my web browser when Emby Server starts",
-    "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function."
+    "LaunchWebAppOnStartup": "Executar a app web do Emby no meu navegador quando o Servidor Emby iniciar",
+    "LaunchWebAppOnStartupHelp": "Isto abrir\u00e1 a app web no seu browser quando o Servidor Emby iniciar. Isto n\u00e3o ocorrer\u00e1 quando reiniciar o servidor."
 }

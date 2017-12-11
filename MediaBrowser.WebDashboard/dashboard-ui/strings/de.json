@@ -1,6 +1,6 @@
 {
-    "AllLibraries": "All libraries",
-    "HeaderAllowMediaDeletionFrom": "Allow Media Deletion From",
+    "AllLibraries": "Alle Bibliotheken",
+    "HeaderAllowMediaDeletionFrom": "Erlaube Medienl\u00f6schung von",
     "LabelPrevious": "Vorheriges",
     "LabelFinish": "Fertig",
     "LabelNext": "N\u00e4chstes",
@@ -1756,8 +1756,8 @@
     "StopRecording": "Aufnahme stoppen",
     "CancelSeries": "Serienaufnahme beenden",
     "EnableDebugLoggingHelp": "Debug-Logging sollte nur zur Fehlersuche aktiviert werden. Der Zugriff auf das Dateisystem kann das System unter Umst\u00e4nden daran hindern, in den Energiesparmodus zu gehen.",
-    "LabelSimultaneousConnectionLimit": "Simultaneous stream limit:",
-    "SimultaneousConnectionLimitHelp": "The maximum number of allowed simultaneous streams. Enter 0 for no limit.",
-    "LaunchWebAppOnStartup": "Launch the Emby web app in my web browser when Emby Server starts",
-    "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function."
+    "LabelSimultaneousConnectionLimit": "Paralleler Streamlimit:",
+    "SimultaneousConnectionLimitHelp": "Die maximale Anzahl der parallel erlaubten Streams. 0 f\u00fcr kein Limit.",
+    "LaunchWebAppOnStartup": "Starte die Emby WebApp im Browser wenn der Emby Server startet",
+    "LaunchWebAppOnStartupHelp": "Diese Funktion \u00f6ffnet die Emby WebApp im Standard Browser wenn der Emby Server gestartet wird. Dies wird nicht geschehen wenn der Server nur neu gestartet wird."
 }
