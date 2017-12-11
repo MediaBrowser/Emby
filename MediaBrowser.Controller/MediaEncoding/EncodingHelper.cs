@@ -1349,11 +1349,11 @@ namespace MediaBrowser.Controller.MediaEncoding
                 videoSizeParam);
         }
 
-        public List<string> GetScalingFilters(MediaStream videoStream, 
-            string videoEncoder, 
-            int? requestedWidth, 
-            int? requestedHeight, 
-            int? requestedMaxWidth, 
+        public List<string> GetScalingFilters(MediaStream videoStream,
+            string videoEncoder,
+            int? requestedWidth,
+            int? requestedHeight,
+            int? requestedMaxWidth,
             int? requestedMaxHeight)
         {
             var filters = new List<string>();
@@ -1748,8 +1748,17 @@ namespace MediaBrowser.Controller.MediaEncoding
                 throw new ArgumentNullException("mediaSource");
             }
 
-            state.MediaPath = mediaSource.Path;
-            state.InputProtocol = mediaSource.Protocol;
+            var path = mediaSource.Path;
+            var protocol = mediaSource.Protocol;
+
+            if (!string.IsNullOrWhiteSpace(mediaSource.EncoderPath) && mediaSource.EncoderProtocol.HasValue)
+            {
+                path = mediaSource.EncoderPath;
+                protocol = mediaSource.EncoderProtocol.Value;
+            }
+
+            state.MediaPath = path;
+            state.InputProtocol = protocol;
             state.InputContainer = mediaSource.Container;
             state.RunTimeTicks = mediaSource.RunTimeTicks;
             state.RemoteHttpHeaders = mediaSource.RequiredHttpHeaders;
@@ -1787,8 +1796,6 @@ namespace MediaBrowser.Controller.MediaEncoding
                 state.InputTimestamp = mediaSource.Timestamp.Value;
             }
 
-            state.InputProtocol = mediaSource.Protocol;
-            state.MediaPath = mediaSource.Path;
             state.RunTimeTicks = mediaSource.RunTimeTicks;
             state.RemoteHttpHeaders = mediaSource.RequiredHttpHeaders;
             state.ReadInputAtNativeFramerate = mediaSource.ReadAtNativeFramerate;
