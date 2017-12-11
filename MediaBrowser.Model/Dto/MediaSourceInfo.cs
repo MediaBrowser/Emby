@@ -14,6 +14,9 @@ namespace MediaBrowser.Model.Dto
 
         public string Path { get; set; }
 
+        public string EncoderPath { get; set; }
+        public MediaProtocol? EncoderProtocol { get; set; }
+
         public MediaSourceType Type { get; set; }
 
         public string Container { get; set; }

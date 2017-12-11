@@ -54,7 +54,7 @@ namespace MediaBrowser.Model.Dlna
 
                 return 0;
 
-            }).ToArray();
+            }).ThenBy(streams.IndexOf).ToArray();
         }
     }
 }
