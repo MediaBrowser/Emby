@@ -75,26 +75,8 @@ namespace MediaBrowser.Server.Mono
         {
             get
             {
-                return GetMonoVersion() >= new Version(4, 6);
+                return true;
             }
-        }
-
-        private static Version GetMonoVersion()
-        {
-            Type type = Type.GetType("Mono.Runtime");
-            if (type != null)
-            {
-                MethodInfo displayName = type.GetTypeInfo().GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                var displayNameValue = displayName.Invoke(null, null).ToString().Trim().Split(' ')[0];
-
-                Version version;
-                if (Version.TryParse(displayNameValue, out version))
-                {
-                    return version;
-                }
-            }
-
-            return new Version(1, 0);
         }
     }
 }
