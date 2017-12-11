@@ -1173,7 +1173,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var stream = new MediaSourceInfo
             {
-                Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + info.Id + "/stream",
+                EncoderPath = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + info.Id + "/stream",
+                EncoderProtocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
+                Path = info.Path,
+                Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.File,
                 Id = info.Id,
                 SupportsDirectPlay = false,
                 SupportsDirectStream = true,
@@ -1181,7 +1184,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 IsInfiniteStream = true,
                 RequiresOpening = false,
                 RequiresClosing = false,
-                Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
                 BufferMs = 0,
                 IgnoreDts = true,
                 IgnoreIndex = true

@@ -59,10 +59,19 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (mediaInfo == null)
             {
+                var path = mediaSource.Path;
+                var protocol = mediaSource.Protocol;
+
+                if (!string.IsNullOrWhiteSpace(mediaSource.EncoderPath) && mediaSource.EncoderProtocol.HasValue)
+                {
+                    path = mediaSource.EncoderPath;
+                    protocol = mediaSource.EncoderProtocol.Value;
+                }
+
                 mediaInfo = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
                 {
-                    InputPath = mediaSource.Path,
-                    Protocol = mediaSource.Protocol,
+                    InputPath = path,
+                    Protocol = protocol,
                     MediaType = isAudio ? DlnaProfileType.Audio : DlnaProfileType.Video,
                     ExtractChapters = false,
                     AnalyzeDurationMs = ProbeAnalyzeDurationMs

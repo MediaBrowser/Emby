@@ -144,8 +144,7 @@ namespace Emby.Server.Implementations.Library
                 }
                 else if (source.Protocol == MediaProtocol.Http)
                 {
-                    // TODO: Allow this when the source is plain http, e.g. not HLS or Mpeg Dash
-                    source.SupportsDirectStream = false;
+                    // trust whatever was set by the media source provider
                 }
                 else
                 {
