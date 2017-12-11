@@ -39,38 +39,6 @@ namespace MediaBrowser.Providers.MediaInfo
         public async Task<ItemUpdateType> Probe<T>(T item, CancellationToken cancellationToken)
             where T : Audio
         {
-            var result = await GetMediaInfo(item, cancellationToken).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            Fetch(item, cancellationToken, result);
-
-            return ItemUpdateType.MetadataImport;
-        }
-
-        private const string SchemaVersion = "3";
-
-        private async Task<Model.MediaInfo.MediaInfo> GetMediaInfo(BaseItem item, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            //var idString = item.Id.ToString("N");
-            //var cachePath = Path.Combine(_appPaths.CachePath,
-            //    "ffprobe-audio",
-            //    idString.Substring(0, 2), idString, "v" + SchemaVersion + _mediaEncoder.Version + item.DateModified.Ticks.ToString(_usCulture) + ".json");
-
-            //try
-            //{
-            //    return _json.DeserializeFromFile<Model.MediaInfo.MediaInfo>(cachePath);
-            //}
-            //catch (FileNotFoundException)
-            //{
-
-            //}
-            //catch (DirectoryNotFoundException)
-            //{
-            //}
-
             var result = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
             {
                 InputPath = item.Path,
@@ -79,10 +47,11 @@ namespace MediaBrowser.Providers.MediaInfo
 
             }, cancellationToken).ConfigureAwait(false);
 
-            //Directory.CreateDirectory(_fileSystem.GetDirectoryName(cachePath));
-            //_json.SerializeToFile(result, cachePath);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            return result;
+            Fetch(item, cancellationToken, result);
+
+            return ItemUpdateType.MetadataImport;
         }
 
         /// <summary>
