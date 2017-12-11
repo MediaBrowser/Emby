@@ -87,7 +87,6 @@
     <Compile Include="ApplicationPathHelper.cs" />
     <Compile Include="ImageEncoderHelper.cs" />
     <Compile Include="MonoAppHost.cs" />
-    <Compile Include="Native\MonoFileSystem.cs" />
     <Compile Include="Native\PowerManagement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
