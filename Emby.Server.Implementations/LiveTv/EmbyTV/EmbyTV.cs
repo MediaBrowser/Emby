@@ -2146,11 +2146,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                             writer.WriteElementString("title", timer.EpisodeTitle);
                         }
 
-                        if (item.PremiereDate.HasValue)
+                        var premiereDate = item.PremiereDate ?? (!timer.IsRepeat ? DateTime.UtcNow : (DateTime?)null);
+
+                        if (premiereDate.HasValue)
                         {
                             var formatString = options.ReleaseDateFormat;
 
-                            writer.WriteElementString("aired", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
+                            writer.WriteElementString("aired", premiereDate.Value.ToLocalTime().ToString(formatString));
                         }
 
                         if (item.IndexNumber.HasValue)

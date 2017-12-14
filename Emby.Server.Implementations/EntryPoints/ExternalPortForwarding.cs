@@ -91,8 +91,6 @@ namespace Emby.Server.Implementations.EntryPoints
             };
             NatUtility.DeviceFound += NatUtility_DeviceFound;
 
-            // Mono.Nat does never rise this event. The event is there however it is useless. 
-            // You could remove it with no risk. 
             NatUtility.DeviceLost += NatUtility_DeviceLost;
 
 
@@ -215,13 +213,6 @@ namespace Emby.Server.Implementations.EntryPoints
             }
             catch
             {
-                // I think it could be a good idea to log the exception because 
-                //   you are using permanent portmapping here (never expire) and that means that next time
-                //   CreatePortMap is invoked it can fails with a 718-ConflictInMappingEntry or not. That depends
-                //   on the router's upnp implementation (specs says it should fail however some routers don't do it)
-                //   It also can fail with others like 727-ExternalPortOnlySupportsWildcard, 728-NoPortMapsAvailable
-                // and those errors (upnp errors) could be useful for diagnosting.  
-
                 // Commenting out because users are reporting problems out of our control
                 //_logger.ErrorException("Error creating port forwarding rules", ex);
             }
@@ -238,7 +229,6 @@ namespace Emby.Server.Implementations.EntryPoints
 
             // On some systems the device discovered event seems to fire repeatedly
             // This check will help ensure we're not trying to port map the same device over and over
-
             var address = device.LocalAddress.ToString();
 
             lock (_createdRules)
@@ -283,7 +273,6 @@ namespace Emby.Server.Implementations.EntryPoints
             }
         }
 
-        // As I said before, this method will be never invoked. You can remove it.
         void NatUtility_DeviceLost(object sender, DeviceEventArgs e)
         {
             var device = e.Device;
@@ -312,18 +301,10 @@ namespace Emby.Server.Implementations.EntryPoints
 
             try
             {
-                // This is not a significant improvement
                 NatUtility.StopDiscovery();
                 NatUtility.DeviceFound -= NatUtility_DeviceFound;
                 NatUtility.DeviceLost -= NatUtility_DeviceLost;
             }
-            // Statements in try-block will no fail because StopDiscovery is a one-line 
-            // method that was no chances to fail.
-            //		public static void StopDiscovery ()
-            //      {
-            //          searching.Reset();
-            //      }
-            // IMO you could remove the catch-block
             catch (Exception ex)
             {
                 _logger.ErrorException("Error stopping NAT Discovery", ex);

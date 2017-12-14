@@ -8,9 +8,9 @@ namespace MediaBrowser.Controller.MediaEncoding
 {
     public static class MediaStreamSelector
     {
-        public static int? GetDefaultAudioStreamIndex(List<MediaStream> streams, IEnumerable<string> preferredLanguages, bool preferDefaultTrack)
+        public static int? GetDefaultAudioStreamIndex(List<MediaStream> streams, string[] preferredLanguages, bool preferDefaultTrack)
         {
-            streams = GetSortedStreams(streams, MediaStreamType.Audio, preferredLanguages.ToList())
+            streams = GetSortedStreams(streams, MediaStreamType.Audio, preferredLanguages)
                .ToList();
 
             if (preferDefaultTrack)
@@ -34,7 +34,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         }
 
         public static int? GetDefaultSubtitleStreamIndex(List<MediaStream> streams,
-            List<string> preferredLanguages,
+            string[] preferredLanguages,
             SubtitlePlaybackMode mode,
             string audioTrackLanguage)
         {
@@ -57,9 +57,9 @@ namespace MediaBrowser.Controller.MediaEncoding
                     streams.FirstOrDefault(s => s.IsDefault);
 
                 // if the audio language is not understood by the user, load their preferred subs, if there are any
-                if (stream == null && !ContainsOrdinal(preferredLanguages, audioTrackLanguage))
+                if (stream == null && !preferredLanguages.Contains(audioTrackLanguage, StringComparer.OrdinalIgnoreCase))
                 {
-                    stream = streams.Where(s => !s.IsForced).FirstOrDefault(s => ContainsOrdinal(preferredLanguages, s.Language));
+                    stream = streams.Where(s => !s.IsForced).FirstOrDefault(s => preferredLanguages.Contains(s.Language, StringComparer.OrdinalIgnoreCase));
                 }
             }
             else if (mode == SubtitlePlaybackMode.Smart)
@@ -67,10 +67,10 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // Prefer smart logic over embedded metadata
 
                 // if the audio language is not understood by the user, load their preferred subs, if there are any
-                if (!ContainsOrdinal(preferredLanguages, audioTrackLanguage))
+                if (!preferredLanguages.Contains(audioTrackLanguage, StringComparer.OrdinalIgnoreCase))
                 {
-                    stream = streams.Where(s => !s.IsForced).FirstOrDefault(s => ContainsOrdinal(preferredLanguages, s.Language)) ??
-                        streams.FirstOrDefault(s => ContainsOrdinal(preferredLanguages, s.Language));
+                    stream = streams.Where(s => !s.IsForced).FirstOrDefault(s => preferredLanguages.Contains(s.Language, StringComparer.OrdinalIgnoreCase)) ??
+                        streams.FirstOrDefault(s => preferredLanguages.Contains(s.Language, StringComparer.OrdinalIgnoreCase));
                 }
             }
             else if (mode == SubtitlePlaybackMode.Always)
@@ -96,18 +96,13 @@ namespace MediaBrowser.Controller.MediaEncoding
             return null;
         }
 
-        private static bool ContainsOrdinal(IEnumerable<string> list, string item)
-        {
-            return list.Any(i => string.Equals(i, item, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static IEnumerable<MediaStream> GetSortedStreams(IEnumerable<MediaStream> streams, MediaStreamType type, List<string> languagePreferences)
+        private static IEnumerable<MediaStream> GetSortedStreams(IEnumerable<MediaStream> streams, MediaStreamType type, string[] languagePreferences)
         {
             // Give some preferance to external text subs for better performance
             return streams.Where(i => i.Type == type)
                 .OrderBy(i =>
             {
-                var index = languagePreferences.FindIndex(l => string.Equals(i.Language, l, StringComparison.OrdinalIgnoreCase));
+                var index = FindIndex(languagePreferences, i.Language);
 
                 return index == -1 ? 100 : index;
             })
@@ -119,7 +114,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         }
 
         public static void SetSubtitleStreamScores(List<MediaStream> streams,
-            List<string> preferredLanguages,
+            string[] preferredLanguages,
             SubtitlePlaybackMode mode,
             string audioTrackLanguage)
         {
@@ -136,18 +131,15 @@ namespace MediaBrowser.Controller.MediaEncoding
             if (mode == SubtitlePlaybackMode.Default)
             {
                 // Prefer embedded metadata over smart logic
-
                 filteredStreams = streams.Where(s => s.IsForced || s.IsDefault)
                     .ToList();
             }
             else if (mode == SubtitlePlaybackMode.Smart)
             {
                 // Prefer smart logic over embedded metadata
-
-                // if the audio language is not understood by the user, load their preferred subs, if there are any
-                if (!ContainsOrdinal(preferredLanguages, audioTrackLanguage))
+                if (!preferredLanguages.Contains(audioTrackLanguage, StringComparer.OrdinalIgnoreCase))
                 {
-                    filteredStreams = streams.Where(s => !s.IsForced && ContainsOrdinal(preferredLanguages, s.Language))
+                    filteredStreams = streams.Where(s => !s.IsForced && preferredLanguages.Contains(s.Language, StringComparer.OrdinalIgnoreCase))
                         .ToList();
                 }
             }
@@ -177,11 +169,24 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
         }
 
-        private static int GetSubtitleScore(MediaStream stream, List<string> languagePreferences)
+        private static int FindIndex(string[] list, string value)
+        {
+            for (var i=0; i< list.Length; i++)
+            {
+                if (string.Equals(list[i], value, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static int GetSubtitleScore(MediaStream stream, string[] languagePreferences)
         {
             var values = new List<int>();
 
-            var index = languagePreferences.FindIndex(l => string.Equals(stream.Language, l, StringComparison.OrdinalIgnoreCase));
+            var index = FindIndex(languagePreferences, stream.Language);
 
             values.Add(index == -1 ? 0 : 100 - index);
 

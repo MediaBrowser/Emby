@@ -153,12 +153,6 @@ namespace Emby.Dlna.Profiles
                        new ProfileCondition
                        {
                            Condition = ProfileConditionType.LessThanEqual,
-                           Property = ProfileConditionValue.VideoFramerate,
-                           Value = "30"
-                       },
-                       new ProfileCondition
-                       {
-                           Condition = ProfileConditionType.LessThanEqual,
                            Property = ProfileConditionValue.VideoLevel,
                            Value = "41"
                        }
@@ -203,6 +197,12 @@ namespace Emby.Dlna.Profiles
                     Container = "m4v",
                     Type = DlnaProfileType.Video,
                     MimeType = "video/mp4"
+                },
+                new ResponseProfile
+                {
+                    Container = "ts,mpegts",
+                    Type = DlnaProfileType.Video,
+                    MimeType = "video/mpeg"
                 }
             };
         }

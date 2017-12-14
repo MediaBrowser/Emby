@@ -1,11 +1,9 @@
 ﻿using MediaBrowser.Model.Dto;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace MediaBrowser.Model.Session
 {
-    [DebuggerDisplay("Client = {Client}, Username = {UserName}")]
     public class SessionInfoDto
     {
         /// <summary>

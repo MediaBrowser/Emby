@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
-using System.Diagnostics;
 using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Model.Entities
@@ -10,7 +9,6 @@ namespace MediaBrowser.Model.Entities
     /// <summary>
     /// Class MediaStream
     /// </summary>
-    [DebuggerDisplay("StreamType = {Type}")]
     public class MediaStream
     {
         /// <summary>

@@ -7,7 +7,6 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Sync;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Dto
@@ -16,7 +15,6 @@ namespace MediaBrowser.Model.Dto
     /// This is strictly used as a data transfer object from the api layer.
     /// This holds information about a BaseItem in a format that is convenient for the client.
     /// </summary>
-    [DebuggerDisplay("Name = {Name}, ID = {Id}, Type = {Type}")]
     public class BaseItemDto : IHasProviderIds, IItemDto, IHasServerId, IHasSyncInfo
     {
         /// <summary>

@@ -2,7 +2,6 @@
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Library;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.LiveTv
@@ -10,7 +9,6 @@ namespace MediaBrowser.Model.LiveTv
     /// <summary>
     /// Class ChannelInfoDto
     /// </summary>
-    [DebuggerDisplay("Name = {Name}, Number = {Number}")]
     public class ChannelInfoDto : IItemDto, IHasServerId
     {
         /// <summary>

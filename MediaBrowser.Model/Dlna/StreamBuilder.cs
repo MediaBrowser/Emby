@@ -653,10 +653,9 @@ namespace MediaBrowser.Model.Dlna
             MediaStream subtitleStream = playlistItem.SubtitleStreamIndex.HasValue ? item.GetMediaStream(MediaStreamType.Subtitle, playlistItem.SubtitleStreamIndex.Value) : null;
 
             MediaStream audioStream = item.GetDefaultAudioStream(options.AudioStreamIndex ?? item.DefaultAudioStreamIndex);
-            int? audioStreamIndex = null;
             if (audioStream != null)
             {
-                audioStreamIndex = audioStream.Index;
+                playlistItem.AudioStreamIndex = audioStream.Index;
             }
 
             MediaStream videoStream = item.VideoStream;
@@ -766,7 +765,6 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
                 playlistItem.SubProtocol = transcodingProfile.Protocol;
-                playlistItem.AudioStreamIndex = audioStreamIndex;
                 ConditionProcessor conditionProcessor = new ConditionProcessor();
 
                 var isFirstAppliedCodecProfile = true;
@@ -1593,7 +1591,10 @@ namespace MediaBrowser.Model.Dlna
                                 var values = value
                                     .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-                                item.SetOption(qualifier, "profile", string.Join(",", values));
+                                if (condition.Condition == ProfileConditionType.Equals || condition.Condition == ProfileConditionType.EqualsAny)
+                                {
+                                    item.SetOption(qualifier, "profile", string.Join(",", values));
+                                }
                             }
                             break;
                         }

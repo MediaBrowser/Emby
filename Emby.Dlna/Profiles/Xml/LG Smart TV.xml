@@ -66,7 +66,6 @@
       <Conditions>
         <ProfileCondition condition="LessThanEqual" property="Width" value="1920" isRequired="true" />
         <ProfileCondition condition="LessThanEqual" property="Height" value="1080" isRequired="true" />
-        <ProfileCondition condition="LessThanEqual" property="VideoFramerate" value="30" isRequired="true" />
         <ProfileCondition condition="LessThanEqual" property="VideoLevel" value="41" isRequired="true" />
       </Conditions>
       <ApplyConditions />
@@ -80,6 +79,9 @@
   </CodecProfiles>
   <ResponseProfiles>
     <ResponseProfile container="m4v" type="Video" mimeType="video/mp4">
+      <Conditions />
+    </ResponseProfile>
+    <ResponseProfile container="ts,mpegts" type="Video" mimeType="video/mpeg">
       <Conditions />
     </ResponseProfile>
   </ResponseProfiles>

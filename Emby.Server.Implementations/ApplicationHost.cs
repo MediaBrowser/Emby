@@ -296,6 +296,11 @@ namespace Emby.Server.Implementations
             return new ServerConfigurationManager(ApplicationPaths, LogManager, XmlSerializer, FileSystemManager);
         }
 
+        protected virtual IResourceFileManager CreateResourceFileManager()
+        {
+            return new ResourceFileManager(HttpResultFactory, LogManager.GetLogger("ResourceManager"), FileSystemManager);
+        }
+
         /// <summary>
         /// Gets or sets the server manager.
         /// </summary>
@@ -386,7 +391,7 @@ namespace Emby.Server.Implementations
         /// </summary>
         /// <value>The zip client.</value>
         protected IZipClient ZipClient { get; private set; }
-
+        protected IHttpResultFactory HttpResultFactory { get; private set; }
         protected IAuthService AuthService { get; private set; }
 
         public StartupOptions StartupOptions { get; private set; }
@@ -897,7 +902,8 @@ namespace Emby.Server.Implementations
             ZipClient = new ZipClient(FileSystemManager);
             RegisterSingleInstance(ZipClient);
 
-            RegisterSingleInstance<IHttpResultFactory>(new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer, MemoryStreamFactory));
+            HttpResultFactory = new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer, MemoryStreamFactory);
+            RegisterSingleInstance(HttpResultFactory);
 
             RegisterSingleInstance<IServerApplicationHost>(this);
             RegisterSingleInstance<IServerApplicationPaths>(ApplicationPaths);
@@ -1066,6 +1072,8 @@ namespace Emby.Server.Implementations
 
             SubtitleEncoder = new SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, MemoryStreamFactory, ProcessFactory, textEncoding);
             RegisterSingleInstance(SubtitleEncoder);
+
+            RegisterSingleInstance(CreateResourceFileManager());
 
             displayPreferencesRepo.Initialize();
 
@@ -1284,18 +1292,22 @@ namespace Emby.Server.Implementations
 
         private string[] GetLinuxDownloadUrls()
         {
-            switch (EnvironmentInfo.SystemArchitecture)
+            Type t = Type.GetType("Mono.Runtime");
+            if (t != null)
             {
-                case MediaBrowser.Model.System.Architecture.X64:
-                    return new[]
-                    {
+                switch (EnvironmentInfo.SystemArchitecture)
+                {
+                    case MediaBrowser.Model.System.Architecture.X64:
+                        return new[]
+                        {
                         "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-64bit-static.7z"
                     };
-                case MediaBrowser.Model.System.Architecture.X86:
-                    return new[]
-                    {
+                    case MediaBrowser.Model.System.Architecture.X86:
+                        return new[]
+                        {
                         "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-32bit-static.7z"
                     };
+                }
             }
 
             return new string[] { };
