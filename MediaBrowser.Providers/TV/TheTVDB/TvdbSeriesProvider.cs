@@ -602,7 +602,7 @@ namespace MediaBrowser.Providers.TV
                 SearchProviderName = Name
             };
 
-            var titles = new List<string>();
+            var tvdbTitles = new List<string>();
             string seriesId = null;
 
             reader.MoveToContent();
@@ -621,7 +621,7 @@ namespace MediaBrowser.Providers.TV
 
                                 if (!string.IsNullOrWhiteSpace(val))
                                 {
-                                    titles.Add(GetComparableName(val));
+                                    tvdbTitles.Add(GetComparableName(val));
                                 }
                                 break;
                             }
@@ -631,7 +631,7 @@ namespace MediaBrowser.Providers.TV
                                 var val = reader.ReadElementContentAsString();
 
                                 var alias = (val ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(GetComparableName);
-                                titles.AddRange(alias);
+                                tvdbTitles.AddRange(alias);
                                 break;
                             }
 
@@ -695,7 +695,7 @@ namespace MediaBrowser.Providers.TV
                 }
             }
 
-            foreach (var title in titles)
+            foreach (var title in tvdbTitles)
             {
                 if (string.Equals(title, comparableName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -707,7 +707,6 @@ namespace MediaBrowser.Providers.TV
                     }
                     break;
                 }
-                _logger.Info("TVDb Provider - " + title + " did not match " + comparableName);
             }
 
             return null;
