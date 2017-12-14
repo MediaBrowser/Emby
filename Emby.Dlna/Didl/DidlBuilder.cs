@@ -181,6 +181,7 @@ namespace Emby.Dlna.Didl
         {
             var mime = MimeTypes.GetMimeType(input);
 
+            // TODO: Instead of being hard-coded here, this should probably be moved into all of the existing profiles
             if (string.Equals(mime, "video/mp2t", StringComparison.OrdinalIgnoreCase))
             {
                 mime = "video/mpeg";
