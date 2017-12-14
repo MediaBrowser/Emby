@@ -347,7 +347,7 @@ namespace MediaBrowser.ServerApplication
 
                 if (!runService)
                 {
-                    if (!options.ContainsOption("-nosplash")) ShowSplashScreen(appHost.ApplicationVersion, initProgress, logManager.GetLogger("Splash"));
+                    ShowSplashScreen(appHost.ApplicationVersion, initProgress, logManager.GetLogger("Splash"));
 
                     // Not crazy about this but it's the only way to suppress ffmpeg crash dialog boxes
                     SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT |
