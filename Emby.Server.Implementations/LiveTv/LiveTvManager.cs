@@ -475,7 +475,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 // We can't trust that we'll be able to direct stream it through emby server, no matter what the provider says
                 //mediaSource.SupportsDirectPlay = false;
-                mediaSource.SupportsDirectStream = false;
+                //mediaSource.SupportsDirectStream = false;
                 mediaSource.SupportsTranscoding = true;
                 foreach (var stream in mediaSource.MediaStreams)
                 {
