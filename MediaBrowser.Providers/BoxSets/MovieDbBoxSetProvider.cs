@@ -25,7 +25,7 @@ namespace MediaBrowser.Providers.BoxSets
 {
     public class MovieDbBoxSetProvider : IRemoteMetadataProvider<BoxSet, BoxSetInfo>
     {
-        private const string GetCollectionInfo3 = @"https://api.themoviedb.org/3/collection/{0}?api_key={1}&append_to_response=images";
+        private const string GetCollectionInfo3 = MovieDbProvider.BaseMovieDbUrl + @"3/collection/{0}?api_key={1}&append_to_response=images";
 
         internal static MovieDbBoxSetProvider Current;
 
@@ -66,7 +66,7 @@ namespace MediaBrowser.Providers.BoxSets
 
                 var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-                var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+                var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
                 var result = new RemoteSearchResult
                 {

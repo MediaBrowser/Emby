@@ -66,7 +66,7 @@ namespace MediaBrowser.Providers.TV
 
             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-            var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+            var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
             list.AddRange(GetPosters(response.images).Select(i => new RemoteImageInfo
             {

@@ -18,6 +18,7 @@ using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Xml;
+using MediaBrowser.Controller.Entities;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -33,7 +34,7 @@ namespace MediaBrowser.Providers.TV
         private static readonly SemaphoreSlim ResourceLock = new SemaphoreSlim(1, 1);
         public static bool IsRunning = false;
         private readonly IXmlReaderSettingsFactory _xmlSettings;
-
+        
         public MissingEpisodeProvider(ILogger logger, IServerConfigurationManager config, ILibraryManager libraryManager, ILocalizationManager localization, IFileSystem fileSystem, IXmlReaderSettingsFactory xmlSettings)
         {
             _logger = logger;
@@ -44,16 +45,16 @@ namespace MediaBrowser.Providers.TV
             _xmlSettings = xmlSettings;
         }
 
-        public async Task Run(List<IGrouping<string, Series>> series, bool addNewItems, CancellationToken cancellationToken)
+        public async Task Run(List<Series> seriesList, bool addNewItems, CancellationToken cancellationToken)
         {
             await ResourceLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             IsRunning = true;
 
-            foreach (var seriesGroup in series)
+            foreach (var series in seriesList)
             {
                 try
                 {
-                    await Run(seriesGroup, addNewItems, cancellationToken).ConfigureAwait(false);
+                    await Run(series, addNewItems, cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -62,11 +63,11 @@ namespace MediaBrowser.Providers.TV
                 catch (IOException ex)
                 {
                     //_logger.Warn("Series files missing for series id {0}", seriesGroup.Key);
-                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, seriesGroup.Key);
+                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, series.Id);
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, seriesGroup.Key);
+                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, series.Id);
                 }
             }
 
@@ -74,12 +75,9 @@ namespace MediaBrowser.Providers.TV
             ResourceLock.Release();
         }
 
-        private async Task Run(IGrouping<string, Series> group, bool addNewItems, CancellationToken cancellationToken)
+        private async Task Run(Series series, bool addNewItems, CancellationToken cancellationToken)
         {
-            var seriesList = group.ToList();
-            var tvdbId = seriesList
-                .Select(i => i.GetProviderId(MetadataProviders.Tvdb))
-                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+            var tvdbId = series.GetProviderId(MetadataProviders.Tvdb);
 
             // Todo: Support series by imdb id
             var seriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -130,41 +128,52 @@ namespace MediaBrowser.Providers.TV
                 .Where(i => i.Item1 != -1 && i.Item2 != -1)
                 .ToList();
 
-            var hasBadData = HasInvalidContent(seriesList);
+            var allRecursiveChildren = series.GetRecursiveChildren();
+
+            var hasBadData = HasInvalidContent(series, allRecursiveChildren);
 
             // Be conservative here to avoid creating missing episodes for ones they already have
-            var addMissingEpisodes = !hasBadData && seriesList.All(i => _libraryManager.GetLibraryOptions(i).ImportMissingEpisodes);
+            var addMissingEpisodes = !hasBadData && _libraryManager.GetLibraryOptions(series).ImportMissingEpisodes;
 
-            var anySeasonsRemoved = await RemoveObsoleteOrMissingSeasons(seriesList, episodeLookup)
+            var anySeasonsRemoved = await RemoveObsoleteOrMissingSeasons(series, allRecursiveChildren, episodeLookup)
                 .ConfigureAwait(false);
 
-            var anyEpisodesRemoved = await RemoveObsoleteOrMissingEpisodes(seriesList, episodeLookup, addMissingEpisodes)
+            if (anySeasonsRemoved)
+            {
+                // refresh this
+                allRecursiveChildren = series.GetRecursiveChildren();
+            }
+
+            var anyEpisodesRemoved = await RemoveObsoleteOrMissingEpisodes(series, allRecursiveChildren, episodeLookup, addMissingEpisodes)
                 .ConfigureAwait(false);
+
+            if (anyEpisodesRemoved)
+            {
+                // refresh this
+                allRecursiveChildren = series.GetRecursiveChildren();
+            }
 
             var hasNewEpisodes = false;
 
-            if (addNewItems && seriesList.All(i => i.IsInternetMetadataEnabled()))
+            if (addNewItems && series.IsInternetMetadataEnabled())
             {
                 var seriesConfig = _config.Configuration.MetadataOptions.FirstOrDefault(i => string.Equals(i.ItemType, typeof(Series).Name, StringComparison.OrdinalIgnoreCase));
 
                 if (seriesConfig == null || !seriesConfig.DisabledMetadataFetchers.Contains(TvdbSeriesProvider.Current.Name, StringComparer.OrdinalIgnoreCase))
                 {
-                    hasNewEpisodes = await AddMissingEpisodes(seriesList, addMissingEpisodes, seriesDataPath, episodeLookup, cancellationToken)
+                    hasNewEpisodes = await AddMissingEpisodes(series, allRecursiveChildren, addMissingEpisodes, seriesDataPath, episodeLookup, cancellationToken)
                         .ConfigureAwait(false);
                 }
             }
 
             if (hasNewEpisodes || anySeasonsRemoved || anyEpisodesRemoved)
             {
-                foreach (var series in seriesList)
-                {
-                    var directoryService = new DirectoryService(_logger, _fileSystem);
+                var directoryService = new DirectoryService(_logger, _fileSystem);
 
-                    await series.RefreshMetadata(new MetadataRefreshOptions(directoryService), cancellationToken).ConfigureAwait(false);
+                await series.RefreshMetadata(new MetadataRefreshOptions(directoryService), cancellationToken).ConfigureAwait(false);
 
-                    await series.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService), true)
-                        .ConfigureAwait(false);
-                }
+                await series.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService), true)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -172,12 +181,8 @@ namespace MediaBrowser.Providers.TV
         /// Returns true if a series has any seasons or episodes without season or episode numbers
         /// If this data is missing no virtual items will be added in order to prevent possible duplicates
         /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        private bool HasInvalidContent(IEnumerable<Series> group)
+        private bool HasInvalidContent(Series series, IList<BaseItem> allItems)
         {
-            var allItems = group.ToList().SelectMany(i => i.GetRecursiveChildren()).ToList();
-
             return allItems.OfType<Season>().Any(i => !i.IndexNumber.HasValue) ||
                    allItems.OfType<Episode>().Any(i =>
                    {
@@ -198,15 +203,14 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         /// <param name="series">The series.</param>
         /// <returns>Task.</returns>
-        private async Task<bool> AddMissingEpisodes(List<Series> series,
+        private async Task<bool> AddMissingEpisodes(Series series,
+            IList<BaseItem> allItems,
             bool addMissingEpisodes,
             string seriesDataPath,
             IEnumerable<Tuple<int, int>> episodeLookup,
             CancellationToken cancellationToken)
         {
-            var existingEpisodes = (from s in series
-                                    from c in s.GetRecursiveChildren(i => i is Episode).Cast<Episode>()
-                                    select new Tuple<int, Episode>((c.ParentIndexNumber ?? 0), c))
+            var existingEpisodes = allItems.OfType<Episode>()
                                    .ToList();
 
             var lookup = episodeLookup as IList<Tuple<int, int>> ?? episodeLookup.ToList();
@@ -248,8 +252,6 @@ namespace MediaBrowser.Providers.TV
 
                 var now = DateTime.UtcNow;
 
-                var targetSeries = DetermineAppropriateSeries(series, tuple.Item1);
-
                 now = now.AddDays(0 - UnairedEpisodeThresholdDays);
 
                 if (airDate.Value < now)
@@ -257,8 +259,8 @@ namespace MediaBrowser.Providers.TV
                     if (addMissingEpisodes)
                     {
                         // tvdb has a lot of nearly blank episodes
-                        _logger.Info("Creating virtual missing episode {0} {1}x{2}", targetSeries.Name, tuple.Item1, tuple.Item2);
-                        await AddEpisode(targetSeries, tuple.Item1, tuple.Item2, cancellationToken).ConfigureAwait(false);
+                        _logger.Info("Creating virtual missing episode {0} {1}x{2}", series.Name, tuple.Item1, tuple.Item2);
+                        await AddEpisode(series, tuple.Item1, tuple.Item2, cancellationToken).ConfigureAwait(false);
 
                         hasChanges = true;
                     }
@@ -266,8 +268,8 @@ namespace MediaBrowser.Providers.TV
                 else if (airDate.Value > now)
                 {
                     // tvdb has a lot of nearly blank episodes
-                    _logger.Info("Creating virtual unaired episode {0} {1}x{2}", targetSeries.Name, tuple.Item1, tuple.Item2);
-                    await AddEpisode(targetSeries, tuple.Item1, tuple.Item2, cancellationToken).ConfigureAwait(false);
+                    _logger.Info("Creating virtual unaired episode {0} {1}x{2}", series.Name, tuple.Item1, tuple.Item2);
+                    await AddEpisode(series, tuple.Item1, tuple.Item2, cancellationToken).ConfigureAwait(false);
 
                     hasChanges = true;
                 }
@@ -276,50 +278,37 @@ namespace MediaBrowser.Providers.TV
             return hasChanges;
         }
 
-        private Series DetermineAppropriateSeries(List<Series> series, int seasonNumber)
-        {
-            if (series.Count == 1)
-            {
-                return series[0];
-            }
-
-            return series.FirstOrDefault(s => s.GetRecursiveChildren(i => i is Season).Any(season => (season.IndexNumber) == seasonNumber)) ??
-                            series.FirstOrDefault(s => s.GetRecursiveChildren(i => i is Season).Any(season => (season.IndexNumber) == 1)) ??
-                            series.OrderBy(s => s.GetRecursiveChildren(i => i is Season).Select(season => season.IndexNumber).Min()).First();
-        }
-
         /// <summary>
         /// Removes the virtual entry after a corresponding physical version has been added
         /// </summary>
-        private async Task<bool> RemoveObsoleteOrMissingEpisodes(IEnumerable<Series> series,
+        private async Task<bool> RemoveObsoleteOrMissingEpisodes(Series series,
+            IList<BaseItem> allRecursiveChildren,
             IEnumerable<Tuple<int, int>> episodeLookup,
             bool allowMissingEpisodes)
         {
-            var existingEpisodes = (from s in series
-                                    from c in s.GetRecursiveChildren(i => i is Episode).Cast<Episode>()
-                                    select new { Episode = c })
+            var existingEpisodes = allRecursiveChildren.OfType<Episode>()
                                    .ToList();
 
             var physicalEpisodes = existingEpisodes
-                .Where(i => i.Episode.LocationType != LocationType.Virtual)
+                .Where(i => i.LocationType != LocationType.Virtual)
                 .ToList();
 
             var virtualEpisodes = existingEpisodes
-                .Where(i => i.Episode.LocationType == LocationType.Virtual)
+                .Where(i => i.LocationType == LocationType.Virtual)
                 .ToList();
 
             var episodesToRemove = virtualEpisodes
                 .Where(i =>
                 {
-                    if (i.Episode.IndexNumber.HasValue && i.Episode.ParentIndexNumber.HasValue)
+                    if (i.IndexNumber.HasValue && i.ParentIndexNumber.HasValue)
                     {
-                        var seasonNumber = i.Episode.ParentIndexNumber.Value;
-                        var episodeNumber = i.Episode.IndexNumber.Value;
+                        var seasonNumber = i.ParentIndexNumber.Value;
+                        var episodeNumber = i.IndexNumber.Value;
 
                         // If there's a physical episode with the same season and episode number, delete it
                         if (physicalEpisodes.Any(p =>
-                                p.Episode.ParentIndexNumber.HasValue && (p.Episode.ParentIndexNumber.Value) == seasonNumber &&
-                                p.Episode.ContainsEpisodeNumber(episodeNumber)))
+                                p.ParentIndexNumber.HasValue && (p.ParentIndexNumber.Value) == seasonNumber &&
+                                p.ContainsEpisodeNumber(episodeNumber)))
                         {
                             return true;
                         }
@@ -330,10 +319,10 @@ namespace MediaBrowser.Providers.TV
                             return true;
                         }
 
-                        if (!allowMissingEpisodes && i.Episode.IsMissingEpisode)
+                        if (!allowMissingEpisodes && i.IsMissingEpisode)
                         {
                             // If it's missing, but not unaired, remove it
-                            if (!i.Episode.PremiereDate.HasValue || i.Episode.PremiereDate.Value.ToLocalTime().Date.AddDays(UnairedEpisodeThresholdDays) < DateTime.Now.Date)
+                            if (!i.PremiereDate.HasValue || i.PremiereDate.Value.ToLocalTime().Date.AddDays(UnairedEpisodeThresholdDays) < DateTime.Now.Date)
                             {
                                 return true;
                             }
@@ -348,7 +337,7 @@ namespace MediaBrowser.Providers.TV
 
             var hasChanges = false;
 
-            foreach (var episodeToRemove in episodesToRemove.Select(e => e.Episode))
+            foreach (var episodeToRemove in episodesToRemove)
             {
                 await episodeToRemove.Delete(new DeleteOptions
                 {
@@ -368,13 +357,11 @@ namespace MediaBrowser.Providers.TV
         /// <param name="series">The series.</param>
         /// <param name="episodeLookup">The episode lookup.</param>
         /// <returns>Task{System.Boolean}.</returns>
-        private async Task<bool> RemoveObsoleteOrMissingSeasons(IEnumerable<Series> series,
+        private async Task<bool> RemoveObsoleteOrMissingSeasons(Series series,
+            IList<BaseItem> allRecursiveChildren,
             IEnumerable<Tuple<int, int>> episodeLookup)
         {
-            var existingSeasons = (from s in series
-                                   from c in s.Children.OfType<Season>()
-                                   select c)
-                                   .ToList();
+            var existingSeasons = allRecursiveChildren.OfType<Season>().ToList();
 
             var physicalSeasons = existingSeasons
                 .Where(i => i.LocationType != LocationType.Virtual)
@@ -383,6 +370,8 @@ namespace MediaBrowser.Providers.TV
             var virtualSeasons = existingSeasons
                 .Where(i => i.LocationType == LocationType.Virtual)
                 .ToList();
+
+            var allEpisodes = allRecursiveChildren.OfType<Episode>().ToList();
 
             var seasonsToRemove = virtualSeasons
                 .Where(i =>
@@ -408,7 +397,7 @@ namespace MediaBrowser.Providers.TV
 
                     // Season does not have a number
                     // Remove if there are no episodes directly in series without a season number
-                    return i.Series.GetRecursiveChildren(e => e is Episode).Cast<Episode>().All(s => s.ParentIndexNumber.HasValue || s.IsInSeasonFolder);
+                    return allEpisodes.All(s => s.ParentIndexNumber.HasValue || s.IsInSeasonFolder);
                 })
                 .ToList();
 
@@ -474,7 +463,7 @@ namespace MediaBrowser.Providers.TV
         /// <param name="seasonCounts"></param>
         /// <param name="tuple">The tuple.</param>
         /// <returns>Episode.</returns>
-        private Episode GetExistingEpisode(IList<Tuple<int, Episode>> existingEpisodes, Dictionary<int, int> seasonCounts, Tuple<int, int> tuple)
+        private Episode GetExistingEpisode(IList<Episode> existingEpisodes, Dictionary<int, int> seasonCounts, Tuple<int, int> tuple)
         {
             var s = tuple.Item1;
             var e = tuple.Item2;
@@ -496,12 +485,10 @@ namespace MediaBrowser.Providers.TV
             return null;
         }
 
-        private static Episode GetExistingEpisode(IEnumerable<Tuple<int, Episode>> existingEpisodes, int season, int episode)
+        private static Episode GetExistingEpisode(IEnumerable<Episode> existingEpisodes, int season, int episode)
         {
             return existingEpisodes
-                .Where(i => i.Item1 == season && i.Item2.ContainsEpisodeNumber(episode))
-                .Select(i => i.Item2)
-                .FirstOrDefault();
+                .FirstOrDefault(i => i.ParentIndexNumber == season && i.ContainsEpisodeNumber(episode));
         }
 
         /// <summary>

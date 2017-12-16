@@ -323,9 +323,6 @@ namespace MediaBrowser.Controller.Entities.TV
             var totalItems = items.Count;
             var numComplete = 0;
 
-            // Refresh current item
-            await RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
-
             // Refresh seasons
             foreach (var item in items)
             {

@@ -395,10 +395,18 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 videoCodec = "h264";
                 videoBitrate = 15000000;
             }
+            else if (string.Equals(profile, "internet720", StringComparison.OrdinalIgnoreCase))
+            {
+                width = 1280;
+                height = 720;
+                isInterlaced = false;
+                videoCodec = "h264";
+                videoBitrate = 8000000;
+            }
             else if (string.Equals(profile, "internet540", StringComparison.OrdinalIgnoreCase))
             {
                 width = 960;
-                height = 546;
+                height = 540;
                 isInterlaced = false;
                 videoCodec = "h264";
                 videoBitrate = 2500000;
@@ -601,7 +609,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
 
             // The UDP method is not working reliably on OSX, and on BSD it hasn't been tested yet
-            var enableHttpStream = _environment.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX 
+            var enableHttpStream = _environment.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX
                 || _environment.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.BSD;
             enableHttpStream = true;
             if (enableHttpStream)

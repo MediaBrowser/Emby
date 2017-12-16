@@ -53,9 +53,11 @@ namespace MediaBrowser.Providers.TV
             Current = this;
         }
 
-        private const string SeriesSearchUrl = "https://www.thetvdb.com/api/GetSeries.php?seriesname={0}&language={1}";
-        private const string SeriesGetZip = "https://www.thetvdb.com/api/{0}/series/{1}/all/{2}.zip";
-        private const string GetSeriesByImdbId = "https://www.thetvdb.com/api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
+        public const string TvdbBaseUrl = "https://www.thetvdb.com/";
+
+        private const string SeriesSearchUrl = TvdbBaseUrl + "api/GetSeries.php?seriesname={0}&language={1}";
+        private const string SeriesGetZip = TvdbBaseUrl + "api/{0}/series/{1}/all/{2}.zip";
+        private const string GetSeriesByImdbId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
 
         private string NormalizeLanguage(string language)
         {

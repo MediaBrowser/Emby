@@ -70,7 +70,7 @@ namespace MediaBrowser.Providers.Movies
 
             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-            var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+            var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
             var supportedImages = GetSupportedImages(item).ToList();
 
