@@ -64,50 +64,7 @@ namespace Emby.Server.Implementations.TV
 
             }).Cast<Series>().ToList();
 
-            var seriesGroups = FindSeriesGroups(seriesList).Where(g => !string.IsNullOrEmpty(g.Key)).ToList();
-
-            return new MissingEpisodeProvider(_logger, _config, _libraryManager, _localization, _fileSystem, _xmlSettings).Run(seriesGroups, true, cancellationToken);
-        }
-
-        internal static IEnumerable<IGrouping<string, Series>> FindSeriesGroups(List<Series> seriesList)
-        {
-            var links = seriesList.ToDictionary(s => s, s => seriesList.Where(c => c != s && ShareProviderId(s, c)).ToList());
-
-            var visited = new HashSet<Series>();
-
-            foreach (var series in seriesList)
-            {
-                if (!visited.Contains(series))
-                {
-                    var group = new SeriesGroup();
-                    FindAllLinked(series, visited, links, group);
-
-                    group.Key = group.Select(s => s.PresentationUniqueKey).FirstOrDefault(id => !string.IsNullOrEmpty(id));
-
-                    yield return group;
-                }
-            }
-        }
-
-        private static void FindAllLinked(Series series, HashSet<Series> visited, IDictionary<Series, List<Series>> linksMap, List<Series> results)
-        {
-            results.Add(series);
-            visited.Add(series);
-
-            var links = linksMap[series];
-
-            foreach (var s in links)
-            {
-                if (!visited.Contains(s))
-                {
-                    FindAllLinked(s, visited, linksMap, results);
-                }
-            }
-        }
-
-        private static bool ShareProviderId(Series a, Series b)
-        {
-            return string.Equals(a.PresentationUniqueKey, b.PresentationUniqueKey, StringComparison.Ordinal);
+            return new MissingEpisodeProvider(_logger, _config, _libraryManager, _localization, _fileSystem, _xmlSettings).Run(seriesList, true, cancellationToken);
         }
 
         public int Order
@@ -195,10 +152,8 @@ namespace Emby.Server.Implementations.TV
 
                 }).Cast<Series>().ToList();
 
-                var seriesGroups = SeriesPostScanTask.FindSeriesGroups(seriesList).Where(g => !string.IsNullOrEmpty(g.Key)).ToList();
-
                 await new MissingEpisodeProvider(_logger, _config, _libraryManager, _localization, _fileSystem, _xmlSettings)
-                    .Run(seriesGroups, false, CancellationToken.None).ConfigureAwait(false);
+                    .Run(seriesList, false, CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

@@ -27,7 +27,7 @@ namespace MediaBrowser.Providers.TV
 {
     public class MovieDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private const string GetTvInfo3 = @"https://api.themoviedb.org/3/tv/{0}?api_key={1}&append_to_response=credits,images,keywords,external_ids,videos,content_ratings";
+        private const string GetTvInfo3 = MovieDbProvider.BaseMovieDbUrl + @"3/tv/{0}?api_key={1}&append_to_response=credits,images,keywords,external_ids,videos,content_ratings";
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
         internal static MovieDbSeriesProvider Current { get; private set; }
@@ -72,7 +72,7 @@ namespace MediaBrowser.Providers.TV
                 var obj = _jsonSerializer.DeserializeFromFile<RootObject>(dataFilePath);
 
                 var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
-                var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+                var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
                 var remoteResult = new RemoteSearchResult
                 {
@@ -450,7 +450,7 @@ namespace MediaBrowser.Providers.TV
 
         private async Task<RemoteSearchResult> FindByExternalId(string id, string externalSource, CancellationToken cancellationToken)
         {
-            var url = string.Format("https://api.themoviedb.org/3/find/{0}?api_key={1}&external_source={2}",
+            var url = string.Format(MovieDbProvider.BaseMovieDbUrl + @"3/find/{0}?api_key={1}&external_source={2}",
                 id,
                 MovieDbProvider.ApiKey,
                 externalSource);
@@ -474,7 +474,7 @@ namespace MediaBrowser.Providers.TV
                         if (tv != null)
                         {
                             var tmdbSettings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
-                            var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+                            var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
                             var remoteResult = new RemoteSearchResult
                             {

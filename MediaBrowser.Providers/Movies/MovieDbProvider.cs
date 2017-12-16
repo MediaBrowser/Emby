@@ -78,7 +78,7 @@ namespace MediaBrowser.Providers.Movies
 
                 var tmdbSettings = await GetTmdbSettings(cancellationToken).ConfigureAwait(false);
 
-                var tmdbImageUrl = tmdbSettings.images.secure_base_url + "original";
+                var tmdbImageUrl = tmdbSettings.images.GetImageUrl("original");
 
                 var remoteResult = new RemoteSearchResult
                 {
@@ -163,8 +163,10 @@ namespace MediaBrowser.Providers.Movies
             }
         }
 
-        private const string TmdbConfigUrl = "https://api.themoviedb.org/3/configuration?api_key={0}";
-        private const string GetMovieInfo3 = @"https://api.themoviedb.org/3/movie/{0}?api_key={1}&append_to_response=casts,releases,images,keywords,trailers";
+        public const string BaseMovieDbUrl = "https://api.themoviedb.org/";
+
+        private const string TmdbConfigUrl = BaseMovieDbUrl + "3/configuration?api_key={0}";
+        private const string GetMovieInfo3 = BaseMovieDbUrl + @"3/movie/{0}?api_key={1}&append_to_response=casts,releases,images,keywords,trailers";
 
         internal static string ApiKey = "f6bd687ffa63cd282b6ff2c6877f2669";
         internal static string AcceptHeader = "application/json,image/*";

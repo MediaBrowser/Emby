@@ -815,7 +815,7 @@ namespace MediaBrowser.Controller.Entities
             }
             if (!string.IsNullOrEmpty(request.NameStartsWith))
             {
-                items = items.Where(i => string.Compare(request.NameStartsWith, i.SortName.Substring(0, 1), StringComparison.CurrentCultureIgnoreCase) == 0);
+                items = items.Where(i => i.SortName.StartsWith(request.NameStartsWith, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(request.NameLessThan))

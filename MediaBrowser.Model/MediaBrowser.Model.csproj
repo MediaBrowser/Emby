@@ -286,10 +286,8 @@
     <Compile Include="Providers\RemoteSubtitleInfo.cs" />
     <Compile Include="Providers\SubtitleProviderInfo.cs" />
     <Compile Include="Querying\AllThemeMediaResult.cs" />
-    <Compile Include="Querying\ArtistsQuery.cs" />
     <Compile Include="Querying\EpisodeQuery.cs" />
     <Compile Include="Querying\ItemCountsQuery.cs" />
-    <Compile Include="Querying\ItemsByNameQuery.cs" />
     <Compile Include="Querying\LatestItemsQuery.cs" />
     <Compile Include="Querying\MovieRecommendationQuery.cs" />
     <Compile Include="Querying\NextUpQuery.cs" />
@@ -341,7 +339,6 @@
     <Compile Include="Net\HttpException.cs" />
     <Compile Include="Net\NetworkShare.cs" />
     <Compile Include="Net\NetworkShareType.cs" />
-    <Compile Include="Querying\PersonsQuery.cs" />
     <Compile Include="Querying\ThemeMediaResult.cs" />
     <Compile Include="Search\SearchHint.cs" />
     <Compile Include="Search\SearchHintResult.cs" />
