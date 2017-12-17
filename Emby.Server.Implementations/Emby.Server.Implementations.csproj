@@ -768,12 +768,6 @@
     <EmbeddedResource Include="TextEncoding\NLangDetect\Utils\messages.properties" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\au.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\be.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\br.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -781,9 +775,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\co.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\de.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\dk.txt" />
@@ -811,9 +802,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\nz.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\ru.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\us.txt" />
