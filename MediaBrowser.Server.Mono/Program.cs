@@ -109,7 +109,7 @@ namespace MediaBrowser.Server.Mono
                 environmentInfo,
                 new NullImageEncoder(),
                 new SystemEvents(logManager.GetLogger("SystemEvents")),
-                new NetworkManager(logManager.GetLogger("NetworkManager"))))
+                new NetworkManager(logManager.GetLogger("NetworkManager"), environmentInfo)))
             {
                 if (options.ContainsOption("-v"))
                 {
