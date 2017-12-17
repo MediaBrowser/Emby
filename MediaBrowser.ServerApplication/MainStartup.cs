@@ -341,7 +341,7 @@ namespace MediaBrowser.ServerApplication
                 environmentInfo,
                 new NullImageEncoder(),
                 new SystemEvents(logManager.GetLogger("SystemEvents")),
-                new Networking.NetworkManager(logManager.GetLogger("NetworkManager"))))
+                new Networking.NetworkManager(logManager.GetLogger("NetworkManager"), environmentInfo)))
             {
                 var initProgress = new Progress<double>();
 

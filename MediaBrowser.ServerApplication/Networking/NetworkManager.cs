@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using MediaBrowser.Model.System;
 
 namespace MediaBrowser.ServerApplication.Networking
 {
@@ -15,8 +16,8 @@ namespace MediaBrowser.ServerApplication.Networking
     /// </summary>
     public class NetworkManager : Emby.Server.Implementations.Networking.NetworkManager
     {
-        public NetworkManager(ILogger logger)
-            : base(logger)
+        public NetworkManager(ILogger logger, IEnvironmentInfo environment)
+            : base(logger, environment)
         {
         }
 

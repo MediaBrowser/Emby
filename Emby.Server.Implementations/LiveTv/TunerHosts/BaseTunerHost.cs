@@ -150,8 +150,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             {
                 var hosts = GetTunerHosts();
 
-                var hostsWithChannel = new List<TunerHostInfo>();
-
                 foreach (var host in hosts)
                 {
                     try
@@ -160,40 +158,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                         if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
                         {
-                            hostsWithChannel.Add(host);
+                            return await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
                     {
                         Logger.Error("Error getting channels", ex);
-                    }
-                }
-
-                foreach (var host in hostsWithChannel)
-                {
-                    try
-                    {
-                        // Check to make sure the tuner is available
-                        // If there's only one tuner, don't bother with the check and just let the tuner be the one to throw an error
-                        if (hostsWithChannel.Count > 1 && !await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
-                        {
-                            Logger.Error("Tuner is not currently available");
-                            continue;
-                        }
-
-                        var mediaSources = await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
-
-                        // Prefix the id with the host Id so that we can easily find it
-                        foreach (var mediaSource in mediaSources)
-                        {
-                            mediaSource.Id = host.Id + mediaSource.Id;
-                        }
-
-                        return mediaSources;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error("Error opening tuner", ex);
                     }
                 }
             }
@@ -221,27 +191,18 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             foreach (var host in hosts)
             {
-                if (string.IsNullOrWhiteSpace(streamId))
+                try
                 {
-                    try
-                    {
-                        var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
+                    var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
 
-                        if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            hostsWithChannel.Add(host);
-                        }
-                    }
-                    catch (Exception ex)
+                    if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
                     {
-                        Logger.Error("Error getting channels", ex);
+                        hostsWithChannel.Add(host);
                     }
                 }
-                else if (streamId.StartsWith(host.Id, StringComparison.OrdinalIgnoreCase))
+                catch (Exception ex)
                 {
-                    hostsWithChannel = new List<TunerHostInfo> { host };
-                    streamId = streamId.Substring(host.Id.Length);
-                    break;
+                    Logger.Error("Error getting channels", ex);
                 }
             }
 
@@ -249,6 +210,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             {
                 if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
                 {
+                    continue;
+                }
+
+                if (hostsWithChannel.Count > 1 && !await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
+                {
+                    Logger.Error("Tuner is not currently available");
                     continue;
                 }
 

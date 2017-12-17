@@ -555,9 +555,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 try
                 {
                     var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
-                    var model = modelInfo == null ? string.Empty : (modelInfo.ModelNumber ?? string.Empty);
 
-                    if ((model.IndexOf("hdtc", StringComparison.OrdinalIgnoreCase) != -1))
+                    if (modelInfo != null && modelInfo.SupportsTranscoding)
                     {
                         list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
 
@@ -600,8 +599,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             var hdhomerunChannel = channelInfo as HdHomerunChannelInfo;
 
-            var mediaSource = GetMediaSource(info, hdhrId, channelInfo, profile);
             var modelInfo = await GetModelInfo(info, false, cancellationToken).ConfigureAwait(false);
+
+            if (!modelInfo.SupportsTranscoding)
+            {
+                profile = "native";
+            }
+
+            var mediaSource = GetMediaSource(info, hdhrId, channelInfo, profile);
 
             if (hdhomerunChannel != null && hdhomerunChannel.IsLegacyTuner)
             {
@@ -680,6 +685,21 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             public DiscoverResponse()
             {
                 DateQueried = DateTime.UtcNow;
+            }
+
+            public bool SupportsTranscoding
+            {
+                get
+                {
+                    var model = ModelNumber ?? string.Empty;
+
+                    if ((model.IndexOf("hdtc", StringComparison.OrdinalIgnoreCase) != -1))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
             }
         }
 

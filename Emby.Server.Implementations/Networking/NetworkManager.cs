@@ -11,6 +11,7 @@ using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
+using MediaBrowser.Model.System;
 
 namespace Emby.Server.Implementations.Networking
 {
@@ -20,26 +21,30 @@ namespace Emby.Server.Implementations.Networking
 
         public event EventHandler NetworkChanged;
 
-        public NetworkManager(ILogger logger)
+        public NetworkManager(ILogger logger, IEnvironmentInfo environment)
         {
             Logger = logger;
 
-            try
+            // In FreeBSD these events cause a crash
+            if (environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.BSD)
             {
-                NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error binding to NetworkAddressChanged event", ex);
-            }
+                try
+                {
+                    NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException("Error binding to NetworkAddressChanged event", ex);
+                }
 
-            try
-            {
-                NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error binding to NetworkChange_NetworkAvailabilityChanged event", ex);
+                try
+                {
+                    NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException("Error binding to NetworkChange_NetworkAvailabilityChanged event", ex);
+                }
             }
         }
 

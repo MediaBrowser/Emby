@@ -701,7 +701,11 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             var request = state.BaseRequest;
             var profile = state.GetRequestedProfiles(targetVideoCodec).FirstOrDefault();
-            if (!string.IsNullOrEmpty(profile))
+            if (string.Equals(videoEncoder, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
+            {
+                param += " -profile:v 578";
+            }
+            else if (!string.IsNullOrEmpty(profile))
             {
                 if (!string.Equals(videoEncoder, "h264_omx", StringComparison.OrdinalIgnoreCase) &&
                     !string.Equals(videoEncoder, "h264_vaapi", StringComparison.OrdinalIgnoreCase) &&
