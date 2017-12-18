@@ -119,6 +119,7 @@
     <Compile Include="Social\ISharingRepository.cs" />
     <Compile Include="System\IEnvironmentInfo.cs" />
     <Compile Include="System\IPowerManagement.cs" />
+    <Compile Include="Tasks\TaskOptions.cs" />
     <Compile Include="Text\ITextEncoding.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="IO\FileSystemMetadata.cs" />
@@ -388,7 +389,6 @@
     <Compile Include="Tasks\ITaskTrigger.cs" />
     <Compile Include="Tasks\ScheduledTaskHelpers.cs" />
     <Compile Include="Tasks\TaskCompletionEventArgs.cs" />
-    <Compile Include="Tasks\TaskExecutionOptions.cs" />
     <Compile Include="Threading\ITimer.cs" />
     <Compile Include="Threading\ITimerFactory.cs" />
     <Compile Include="Updates\CheckForUpdateResult.cs" />

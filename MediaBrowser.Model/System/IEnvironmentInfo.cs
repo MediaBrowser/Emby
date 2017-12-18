@@ -9,7 +9,6 @@ namespace MediaBrowser.Model.System
         Architecture SystemArchitecture { get; }
         string GetEnvironmentVariable(string name);
         void SetProcessEnvironmentVariable(string name, string value);
-        string GetUserId();
         string StackTrace { get; }
         char PathSeparator { get; }
     }

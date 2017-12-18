@@ -350,7 +350,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        async void trigger_Triggered(object sender, GenericEventArgs<TaskExecutionOptions> e)
+        async void trigger_Triggered(object sender, EventArgs e)
         {
             var trigger = (ITaskTrigger)sender;
 
@@ -365,7 +365,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
 
             trigger.Stop();
 
-            TaskManager.QueueScheduledTask(ScheduledTask, e.Argument);
+            TaskManager.QueueScheduledTask(ScheduledTask, trigger.TaskOptions);
 
             await Task.Delay(1000).ConfigureAwait(false);
 
@@ -380,7 +380,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
         /// <param name="options">Task options.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.InvalidOperationException">Cannot execute a Task that is already running</exception>
-        public async Task Execute(TaskExecutionOptions options)
+        public async Task Execute(TaskOptions options)
         {
             var task = Task.Run(async () => await ExecuteInternal(options).ConfigureAwait(false));
 
@@ -397,7 +397,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
             }
         }
 
-        private async Task ExecuteInternal(TaskExecutionOptions options)
+        private async Task ExecuteInternal(TaskOptions options)
         {
             // Cancel the current execution, if any
             if (CurrentCancellationTokenSource != null)
@@ -422,14 +422,12 @@ namespace Emby.Server.Implementations.ScheduledTasks
 
             try
             {
-                if (options != null && options.MaxRuntimeMs.HasValue)
+                if (options != null && options.MaxRuntimeTicks.HasValue)
                 {
-                    CurrentCancellationTokenSource.CancelAfter(options.MaxRuntimeMs.Value);
+                    CurrentCancellationTokenSource.CancelAfter(TimeSpan.FromTicks(options.MaxRuntimeTicks.Value));
                 }
 
-                var localTask = ScheduledTask.Execute(CurrentCancellationTokenSource.Token, progress);
-
-                await localTask.ConfigureAwait(false);
+                await ScheduledTask.Execute(CurrentCancellationTokenSource.Token, progress).ConfigureAwait(false);
 
                 status = TaskCompletionStatus.Completed;
             }
@@ -705,9 +703,9 @@ namespace Emby.Server.Implementations.ScheduledTasks
         /// <exception cref="System.ArgumentException">Invalid trigger type:  + info.Type</exception>
         private ITaskTrigger GetTrigger(TaskTriggerInfo info)
         {
-            var options = new TaskExecutionOptions
+            var options = new TaskOptions
             {
-                MaxRuntimeMs = info.MaxRuntimeMs
+                MaxRuntimeTicks = info.MaxRuntimeTicks
             };
 
             if (info.Type.Equals(typeof(DailyTrigger).Name, StringComparison.OrdinalIgnoreCase))
