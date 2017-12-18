@@ -7,7 +7,6 @@ using Emby.Server.Implementations;
 using Emby.Server.Sync;
 using MediaBrowser.Controller.Connect;
 using MediaBrowser.Controller.Sync;
-using MediaBrowser.IsoMounter;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
@@ -49,19 +48,9 @@ namespace MediaBrowser.Server.Mono
             var list = new List<Assembly>();
 
             list.Add(GetType().Assembly);
-            list.AddRange(GetLinuxAssemblies());
-
-            return list;
-        }
-
-        private IEnumerable<Assembly> GetLinuxAssemblies()
-        {
-            var list = new List<Assembly>();
-
             list.Add(typeof(DefaultIntroProvider).Assembly);
             list.Add(typeof(ConnectManager).Assembly);
             list.Add(typeof(SyncManager).Assembly);
-            list.Add(typeof(LinuxIsoManager).Assembly);
 
             return list;
         }
