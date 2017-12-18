@@ -255,10 +255,6 @@
       <Project>{cb7f2326-6497-4a3d-ba03-48513b17a7be}</Project>
       <Name>Mono.Nat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenSubtitlesHandler\OpenSubtitlesHandler.csproj">
-      <Project>{4a4402d4-e910-443b-b8fc-2c18286a2ca0}</Project>
-      <Name>OpenSubtitlesHandler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RSSDP\RSSDP.csproj">
       <Project>{21002819-c39a-4d3e-be83-2a276a77fb1f}</Project>
       <Name>RSSDP</Name>

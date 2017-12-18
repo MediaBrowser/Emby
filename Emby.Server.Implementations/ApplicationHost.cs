@@ -105,7 +105,6 @@ using MediaBrowser.Providers.Manager;
 using MediaBrowser.Providers.Subtitles;
 using MediaBrowser.WebDashboard.Api;
 using MediaBrowser.XbmcMetadata.Providers;
-using OpenSubtitlesHandler;
 using ServiceStack;
 using System;
 using System.Collections.Concurrent;
@@ -919,7 +918,6 @@ namespace Emby.Server.Implementations
 
             ITextEncoding textEncoding = new TextEncoding.TextEncoding(FileSystemManager, LogManager.GetLogger("TextEncoding"), JsonSerializer);
             RegisterSingleInstance(textEncoding);
-            Utilities.EncodingHelper = textEncoding;
             BlurayExaminer = new BdInfoExaminer(FileSystemManager, textEncoding);
             RegisterSingleInstance(BlurayExaminer);
 
@@ -1426,7 +1424,6 @@ namespace Emby.Server.Implementations
             BaseItem.CollectionManager = CollectionManager;
             BaseItem.MediaSourceManager = MediaSourceManager;
             CollectionFolder.XmlSerializer = XmlSerializer;
-            Utilities.CryptographyProvider = CryptographyProvider;
             AuthenticatedAttribute.AuthService = AuthService;
         }
 
