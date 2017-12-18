@@ -441,6 +441,8 @@
     "More": "Plus",
     "Up": "Haut",
     "Down": "Bas",
+    "Home": "Accueil",
+    "Favorites": "Favoris",
     "HeaderHomeScreen": "\u00c9cran d'accueil",
     "HeaderHomeScreenContent": "Contenu de l'\u00e9cran d'accueil",
     "HeaderLatestChannelItems": "Derniers \u00e9l\u00e9ments de la cha\u00eene",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Veuillez ins\u00e9rer le disque pour lire cette vid\u00e9o.",
     "Guide": "Guide",
     "Suggestions": "Suggestions",
-    "Favorites": "Favoris",
     "Collections": "Collections",
     "LabelSelectFolderGroups": "Grouper automatiquement le contenu des dossiers suivants dans des cat\u00e9gories telles que Films, Musique et TV\u00a0:",
     "LabelSelectFolderGroupsHelp": "Les dossiers qui ne sont pas coch\u00e9s seront affich\u00e9s tels quels, avec leur propre vue.",
@@ -633,5 +634,13 @@
     "Trailers": "Bandes annonces",
     "Extras": "Extras",
     "ThemeSongs": "Chansons th\u00e9matiques",
-    "ThemeVideos": "Vid\u00e9os th\u00e9matiques"
+    "ThemeVideos": "Vid\u00e9os th\u00e9matiques",
+    "HeaderFavoriteMovies": "Films Favoris",
+    "HeaderFavoriteShows": "S\u00e9ries Favorites",
+    "HeaderFavoriteEpisodes": "Episodes Favoris",
+    "HeaderFavoriteVideos": "Vid\u00e9os favoris",
+    "HeaderFavoriteGames": "Jeux Favoris",
+    "HeaderFavoriteArtists": "Artistes Favoris",
+    "HeaderFavoriteAlbums": "Albums Favoris",
+    "HeaderFavoriteSongs": "Chansons Favorites"
 }

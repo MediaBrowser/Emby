@@ -140,8 +140,6 @@ namespace Rssdp.Infrastructure
         {
             if (device == null) throw new ArgumentNullException("device");
 
-            ThrowIfDisposed();
-
             bool wasRemoved = false;
             TimeSpan minCacheTime = TimeSpan.Zero;
             lock (_Devices)
@@ -211,21 +209,22 @@ namespace Rssdp.Infrastructure
         {
             if (disposing)
             {
-                var commsServer = _CommsServer;
-                _CommsServer = null;
+                DisposeRebroadcastTimer();
 
+                var commsServer = _CommsServer;
                 if (commsServer != null)
                 {
                     commsServer.RequestReceived -= this.CommsServer_RequestReceived;
-                    if (!commsServer.IsShared)
-                        commsServer.Dispose();
                 }
 
-                DisposeRebroadcastTimer();
+                var tasks = Devices.ToList().Select(RemoveDevice).ToArray();
+                Task.WaitAll(tasks);
 
-                foreach (var device in this.Devices)
+                _CommsServer = null;
+                if (commsServer != null)
                 {
-                    DisconnectFromDeviceEvents(device);
+                    if (!commsServer.IsShared)
+                        commsServer.Dispose();
                 }
 
                 _RecentSearchRequests = null;
@@ -493,22 +492,25 @@ namespace Rssdp.Infrastructure
 
         #region ByeBye
 
-        private async Task SendByeByeNotifications(SsdpDevice device, bool isRoot, CancellationToken cancellationToken)
+        private Task SendByeByeNotifications(SsdpDevice device, bool isRoot, CancellationToken cancellationToken)
         {
+            var tasks = new List<Task>();
             if (isRoot)
             {
-                await SendByeByeNotification(device, SsdpConstants.UpnpDeviceTypeRootDevice, GetUsn(device.Udn, SsdpConstants.UpnpDeviceTypeRootDevice), cancellationToken).ConfigureAwait(false);
+                tasks.Add(SendByeByeNotification(device, SsdpConstants.UpnpDeviceTypeRootDevice, GetUsn(device.Udn, SsdpConstants.UpnpDeviceTypeRootDevice), cancellationToken));
                 if (this.SupportPnpRootDevice)
-                    await SendByeByeNotification(device, "pnp:rootdevice", GetUsn(device.Udn, "pnp:rootdevice"), cancellationToken).ConfigureAwait(false); ;
+                    tasks.Add(SendByeByeNotification(device, "pnp:rootdevice", GetUsn(device.Udn, "pnp:rootdevice"), cancellationToken));
             }
 
-            await SendByeByeNotification(device, device.Udn, device.Udn, cancellationToken).ConfigureAwait(false); ;
-            await SendByeByeNotification(device, String.Format("urn:{0}", device.FullDeviceType), GetUsn(device.Udn, device.FullDeviceType), cancellationToken).ConfigureAwait(false); ;
+            tasks.Add(SendByeByeNotification(device, device.Udn, device.Udn, cancellationToken));
+            tasks.Add(SendByeByeNotification(device, String.Format("urn:{0}", device.FullDeviceType), GetUsn(device.Udn, device.FullDeviceType), cancellationToken));
 
             foreach (var childDevice in device.Devices)
             {
-                await SendByeByeNotifications(childDevice, false, cancellationToken).ConfigureAwait(false); ;
+                tasks.Add(SendByeByeNotifications(childDevice, false, cancellationToken));
             }
+
+            return Task.WhenAll(tasks);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "byebye", Justification = "Correct value for this type of notification in SSDP.")]
@@ -528,7 +530,8 @@ namespace Rssdp.Infrastructure
 
             var message = SsdpHelper.BuildMessage(header, values);
 
-            return _CommsServer.SendMulticastMessage(message, cancellationToken);
+            var sendCount = IsDisposed ? 1 : 3;
+            return _CommsServer.SendMulticastMessage(message, sendCount, cancellationToken);
 
             //WriteTrace(String.Format("Sent byebye notification"), device);
         }
@@ -550,6 +553,11 @@ namespace Rssdp.Infrastructure
             //if (minCacheTime == _RebroadcastAliveNotificationsTimeSpan) return;
 
             DisposeRebroadcastTimer();
+
+            if (IsDisposed)
+            {
+                return;
+            }
 
             if (minCacheTime == TimeSpan.Zero) return;
 
@@ -654,6 +662,11 @@ namespace Rssdp.Infrastructure
 
         private void device_DeviceAdded(object sender, DeviceEventArgs e)
         {
+            if (IsDisposed)
+            {
+                return;
+            }
+
             SendAliveNotifications(e.Device, false, CancellationToken.None);
             ConnectToDeviceEvents(e.Device);
         }

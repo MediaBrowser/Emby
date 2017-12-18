@@ -186,7 +186,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                         Type = MediaStreamType.Audio,
                         // Set the index to -1 because we don't know the exact index of the audio stream within the container
                         Index = -1
-
                     }
                 },
                 RequiresOpening = true,

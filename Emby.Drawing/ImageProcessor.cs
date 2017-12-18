@@ -230,10 +230,22 @@ namespace Emby.Drawing
             var photo = item as Photo;
             var autoOrient = false;
             ImageOrientation? orientation = null;
-            if (photo != null && photo.Orientation.HasValue && photo.Orientation.Value != ImageOrientation.TopLeft)
+            if (photo != null)
             {
-                autoOrient = true;
-                orientation = photo.Orientation;
+                if (photo.Orientation.HasValue)
+                {
+                    if (photo.Orientation.Value != ImageOrientation.TopLeft)
+                    {
+                        autoOrient = true;
+                        orientation = photo.Orientation;
+                    }
+                }
+                else
+                {
+                    // Orientation unknown, so do it
+                    autoOrient = true;
+                    orientation = photo.Orientation;
+                }
             }
 
             if (options.HasDefaultOptions(originalImagePath) && (!autoOrient || !options.RequiresAutoOrientation))

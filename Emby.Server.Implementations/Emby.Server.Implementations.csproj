@@ -393,7 +393,7 @@
     <Compile Include="LiveTv\EmbyTV\SeriesTimerManager.cs" />
     <Compile Include="LiveTv\EmbyTV\TimerManager.cs" />
     <Compile Include="LiveTv\Listings\SchedulesDirect.cs" />
-    <Compile Include="LiveTv\Listings\XmlTvListingsProvider.cs" />
+    <Compile Include="LiveTv\Listings\XmlTvProvider.cs" />
     <Compile Include="LiveTv\LiveStreamHelper.cs" />
     <Compile Include="LiveTv\LiveTvConfigurationFactory.cs" />
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
@@ -440,6 +440,7 @@
     <Compile Include="Playlists\PlaylistsDynamicFolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\AssemblyInfo.cs" />
+    <Compile Include="ResourceFileManager.cs" />
     <Compile Include="ScheduledTasks\ChapterImagesTask.cs" />
     <Compile Include="ScheduledTasks\DailyTrigger.cs" />
     <Compile Include="ScheduledTasks\IntervalTrigger.cs" />
@@ -626,10 +627,6 @@
       <Project>{cb7f2326-6497-4a3d-ba03-48513b17a7be}</Project>
       <Name>Mono.Nat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenSubtitlesHandler\OpenSubtitlesHandler.csproj">
-      <Project>{4a4402d4-e910-443b-b8fc-2c18286a2ca0}</Project>
-      <Name>OpenSubtitlesHandler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SocketHttpListener\SocketHttpListener.csproj">
       <Project>{1d74413b-e7cf-455b-b021-f52bdf881542}</Project>
       <Name>SocketHttpListener</Name>
@@ -640,8 +637,8 @@
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
     </Reference>
-    <Reference Include="Emby.XmlTv, Version=1.0.6387.29335, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emby.XmlTv.1.0.10\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
+    <Reference Include="Emby.XmlTv, Version=1.0.6550.21748, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emby.XmlTv.1.0.12\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
@@ -767,12 +764,6 @@
     <EmbeddedResource Include="TextEncoding\NLangDetect\Utils\messages.properties" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\au.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\be.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\br.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -780,9 +771,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\co.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\de.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\dk.txt" />
@@ -810,9 +798,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\nz.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Localization\Ratings\ru.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\us.txt" />

@@ -120,14 +120,12 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IAssemblyInfo _assemblyInfo;
         private readonly IMemoryStreamFactory _memoryStreamFactory;
+        private IResourceFileManager _resourceFileManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
         /// </summary>
-        /// <param name="appHost">The app host.</param>
-        /// <param name="serverConfigurationManager">The server configuration manager.</param>
-        /// <param name="fileSystem">The file system.</param>
-        public DashboardService(IServerApplicationHost appHost, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory, IMemoryStreamFactory memoryStreamFactory)
+        public DashboardService(IServerApplicationHost appHost, IResourceFileManager resourceFileManager, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory, IMemoryStreamFactory memoryStreamFactory)
         {
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
@@ -138,6 +136,7 @@ namespace MediaBrowser.WebDashboard.Api
             _logger = logger;
             _resultFactory = resultFactory;
             _memoryStreamFactory = memoryStreamFactory;
+            _resourceFileManager = resourceFileManager;
         }
 
         /// <summary>
@@ -309,8 +308,6 @@ namespace MediaBrowser.WebDashboard.Api
         {
             var path = request.ResourceName;
 
-            path = path.Replace("bower_components" + _appHost.ApplicationVersion, "bower_components", StringComparison.OrdinalIgnoreCase);
-
             var contentType = MimeTypes.GetMimeType(path);
             var basePath = DashboardUIPath;
 
@@ -355,7 +352,7 @@ namespace MediaBrowser.WebDashboard.Api
                 return await _resultFactory.GetStaticResult(Request, cacheKey, null, cacheDuration, contentType, () => GetResourceStream(basePath, path, localizationCulture)).ConfigureAwait(false);
             }
 
-            return await _resultFactory.GetStaticFileResult(Request, GetPackageCreator(basePath).GetResourcePath(path));
+            return await _resourceFileManager.GetStaticFileResult(Request, basePath, path, contentType, cacheDuration);
         }
 
         private string GetLocalizationCulture()
@@ -374,7 +371,7 @@ namespace MediaBrowser.WebDashboard.Api
 
         private PackageCreator GetPackageCreator(string basePath)
         {
-            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _memoryStreamFactory);
+            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _memoryStreamFactory, _resourceFileManager);
         }
 
         public async Task<object> Get(GetDashboardPackage request)

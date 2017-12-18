@@ -155,7 +155,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 if (bytesRead == 0)
                 {
                     eofCount++;
-                    await Task.Delay(10, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(25, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {

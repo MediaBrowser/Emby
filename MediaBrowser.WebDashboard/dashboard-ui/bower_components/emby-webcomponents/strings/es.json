@@ -441,6 +441,8 @@
     "More": "M\u00e1s",
     "Up": "Arriba",
     "Down": "Abajo",
+    "Home": "Home",
+    "Favorites": "Favoritos",
     "HeaderHomeScreen": "Pantalla de inicio",
     "HeaderHomeScreenContent": "Home Screen Content",
     "HeaderLatestChannelItems": "\u00daltimos elementos de canales",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "El contenido elegido no se puede reproducir desde este dispositivo.",
     "Guide": "Gu\u00eda",
     "Suggestions": "Sugerencias",
-    "Favorites": "Favoritos",
     "Collections": "Colecciones",
     "LabelSelectFolderGroups": "Agrupar contenido autom\u00e1ticamente desde las siguientes carpetas en vistas como Pel\u00edculas, M\u00fasica y Series:",
     "LabelSelectFolderGroupsHelp": "Las carpetas sin seleccionar se mostrar\u00e1n ellas mismas en su propia vista.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

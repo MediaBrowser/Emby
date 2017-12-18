@@ -22,6 +22,7 @@ using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Providers.Music
 {
@@ -151,7 +152,6 @@ namespace MediaBrowser.Providers.Music
             PopulateImages(list, obj.musicarts, ImageType.Art, 500, 281);
         }
 
-        private Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list,
             List<FanartArtistImage> images,
             ImageType type,
@@ -179,7 +179,7 @@ namespace MediaBrowser.Providers.Music
                         Width = width,
                         Height = height,
                         ProviderName = Name,
-                        Url = _regex_http.Replace(url, "https://", 1),
+                        Url = url.Replace("http://", "https://", StringComparison.OrdinalIgnoreCase),
                         Language = i.lang
                     };
 

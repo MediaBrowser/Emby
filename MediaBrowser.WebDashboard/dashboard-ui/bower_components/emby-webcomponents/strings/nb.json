@@ -441,6 +441,8 @@
     "More": "Mere",
     "Up": "Opp",
     "Down": "Ned",
+    "Home": "Home",
+    "Favorites": "Favoritter",
     "HeaderHomeScreen": "Hjemskjerm",
     "HeaderHomeScreenContent": "Home Screen Content",
     "HeaderLatestChannelItems": "Siste kanal elementer",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Sett inn disken for \u00e5 spille av denne filmen.",
     "Guide": "Guide",
     "Suggestions": "Forslag",
-    "Favorites": "Favoritter",
     "Collections": "Samlinger",
     "LabelSelectFolderGroups": "Grupper innhold automatisk etter f\u00f8lgende grupper til visninger som filmer, musikk og TV:",
     "LabelSelectFolderGroupsHelp": "Mapper som ikke er merket vil kun bli vist i sin egen visning.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

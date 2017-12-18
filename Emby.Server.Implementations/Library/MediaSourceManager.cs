@@ -144,8 +144,7 @@ namespace Emby.Server.Implementations.Library
                 }
                 else if (source.Protocol == MediaProtocol.Http)
                 {
-                    // TODO: Allow this when the source is plain http, e.g. not HLS or Mpeg Dash
-                    source.SupportsDirectStream = false;
+                    // trust whatever was set by the media source provider
                 }
                 else
                 {
@@ -295,7 +294,7 @@ namespace Emby.Server.Implementations.Library
             }
             
             var preferredSubs = string.IsNullOrEmpty(user.Configuration.SubtitleLanguagePreference)
-                ? new List<string>() : new List<string> { user.Configuration.SubtitleLanguagePreference };
+                ? new string[] { } : new string[] { user.Configuration.SubtitleLanguagePreference };
 
             var defaultAudioIndex = source.DefaultAudioStreamIndex;
             var audioLangage = defaultAudioIndex == null

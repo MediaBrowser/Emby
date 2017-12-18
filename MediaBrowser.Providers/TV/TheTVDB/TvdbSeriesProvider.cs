@@ -53,9 +53,11 @@ namespace MediaBrowser.Providers.TV
             Current = this;
         }
 
-        private const string SeriesSearchUrl = "https://www.thetvdb.com/api/GetSeries.php?seriesname={0}&language={1}";
-        private const string SeriesGetZip = "https://www.thetvdb.com/api/{0}/series/{1}/all/{2}.zip";
-        private const string GetSeriesByImdbId = "https://www.thetvdb.com/api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
+        public const string TvdbBaseUrl = "https://www.thetvdb.com/";
+
+        private const string SeriesSearchUrl = TvdbBaseUrl + "api/GetSeries.php?seriesname={0}&language={1}";
+        private const string SeriesGetZip = TvdbBaseUrl + "api/{0}/series/{1}/all/{2}.zip";
+        private const string GetSeriesByImdbId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
 
         private string NormalizeLanguage(string language)
         {
@@ -602,7 +604,7 @@ namespace MediaBrowser.Providers.TV
                 SearchProviderName = Name
             };
 
-            var titles = new List<string>();
+            var tvdbTitles = new List<string>();
             string seriesId = null;
 
             reader.MoveToContent();
@@ -621,7 +623,7 @@ namespace MediaBrowser.Providers.TV
 
                                 if (!string.IsNullOrWhiteSpace(val))
                                 {
-                                    titles.Add(GetComparableName(val));
+                                    tvdbTitles.Add(GetComparableName(val));
                                 }
                                 break;
                             }
@@ -631,7 +633,7 @@ namespace MediaBrowser.Providers.TV
                                 var val = reader.ReadElementContentAsString();
 
                                 var alias = (val ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(GetComparableName);
-                                titles.AddRange(alias);
+                                tvdbTitles.AddRange(alias);
                                 break;
                             }
 
@@ -695,7 +697,7 @@ namespace MediaBrowser.Providers.TV
                 }
             }
 
-            foreach (var title in titles)
+            foreach (var title in tvdbTitles)
             {
                 if (string.Equals(title, comparableName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -707,7 +709,6 @@ namespace MediaBrowser.Providers.TV
                     }
                     break;
                 }
-                _logger.Info("TVDb Provider - " + title + " did not match " + comparableName);
             }
 
             return null;
@@ -1081,6 +1082,12 @@ namespace MediaBrowser.Providers.TV
                 {
                     switch (reader.Name)
                     {
+                        case "id":
+                            {
+                                item.SetProviderId((reader.ReadElementContentAsString() ?? string.Empty).Trim(), MetadataProviders.Tvdb.ToString());
+                                break;
+                            }
+
                         case "SeriesName":
                             {
                                 item.Name = (reader.ReadElementContentAsString() ?? string.Empty).Trim();

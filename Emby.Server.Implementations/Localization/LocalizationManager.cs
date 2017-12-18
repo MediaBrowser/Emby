@@ -30,8 +30,8 @@ namespace Emby.Server.Implementations.Localization
         /// </summary>
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        private readonly ConcurrentDictionary<string, Dictionary<string, ParentalRating>> _allParentalRatings =
-            new ConcurrentDictionary<string, Dictionary<string, ParentalRating>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, Dictionary<string, ParentalRating>> _allParentalRatings =
+            new Dictionary<string, Dictionary<string, ParentalRating>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly IFileSystem _fileSystem;
         private readonly IJsonSerializer _jsonSerializer;
@@ -96,6 +96,61 @@ namespace Emby.Server.Implementations.Localization
             {
                 LoadRatings(file);
             }
+
+            LoadAdditionalRatings();
+        }
+
+        private void LoadAdditionalRatings()
+        {
+            LoadRatings("au", new List<ParentalRating> {
+
+                new ParentalRating("AU-G", 1),
+                new ParentalRating("AU-PG", 5),
+                new ParentalRating("AU-M", 6),
+                new ParentalRating("AU-MA15+", 7),
+                new ParentalRating("AU-M15+", 8),
+                new ParentalRating("AU-R18+", 9),
+                new ParentalRating("AU-X18+", 10),
+                new ParentalRating("AU-RC", 11)
+            });
+
+            LoadRatings("be", new List<ParentalRating> {
+
+                new ParentalRating("BE-AL", 1),
+                new ParentalRating("BE-MG6", 2),
+                new ParentalRating("BE-6", 3),
+                new ParentalRating("BE-9", 5),
+                new ParentalRating("BE-12", 6),
+                new ParentalRating("BE-16", 8)
+            });
+
+            LoadRatings("de", new List<ParentalRating> {
+
+                new ParentalRating("DE-0", 1),
+                new ParentalRating("FSK-0", 1),
+                new ParentalRating("DE-6", 5),
+                new ParentalRating("FSK-6", 5),
+                new ParentalRating("DE-12", 7),
+                new ParentalRating("FSK-12", 7),
+                new ParentalRating("DE-16", 8),
+                new ParentalRating("FSK-16", 8),
+                new ParentalRating("DE-18", 9),
+                new ParentalRating("FSK-18", 9)
+            });
+
+            LoadRatings("ru", new List<ParentalRating> {
+
+                new ParentalRating("RU-0+", 1),
+                new ParentalRating("RU-6+", 3),
+                new ParentalRating("RU-12+", 7),
+                new ParentalRating("RU-16+", 9),
+                new ParentalRating("RU-18+", 10)
+            });
+        }
+
+        private void LoadRatings(string country, List<ParentalRating> ratings)
+        {
+            _allParentalRatings[country] = ratings.ToDictionary(i => i.Name);
         }
 
         private List<string> GetRatingsFiles(string directory)
@@ -278,7 +333,7 @@ namespace Emby.Server.Implementations.Localization
                 .Split('-')
                 .Last();
 
-            _allParentalRatings.TryAdd(countryCode, dict);
+            _allParentalRatings[countryCode] = dict;
         }
 
         private readonly string[] _unratedValues = { "n/a", "unrated", "not rated" };

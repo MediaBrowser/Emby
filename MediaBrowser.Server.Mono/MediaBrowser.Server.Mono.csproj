@@ -47,10 +47,6 @@
     <Reference Include="Emby.Server.Sync">
       <HintPath>..\ThirdParty\emby\Emby.Server.Sync.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Mono.Posix.4.0.0.0\lib\net40\Mono.Posix.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
@@ -71,9 +67,6 @@
       <HintPath>..\packages\SQLitePCLRaw.provider.sqlite3.net45.1.1.8\lib\net45\SQLitePCLRaw.provider.sqlite3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="MediaBrowser.IsoMounting.Linux">
-      <HintPath>..\ThirdParty\MediaBrowser.IsoMounting.Linux\MediaBrowser.IsoMounting.Linux.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
@@ -87,7 +80,6 @@
     <Compile Include="ApplicationPathHelper.cs" />
     <Compile Include="ImageEncoderHelper.cs" />
     <Compile Include="MonoAppHost.cs" />
-    <Compile Include="Native\MonoFileSystem.cs" />
     <Compile Include="Native\PowerManagement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -162,24 +154,12 @@
       <Project>{cb7f2326-6497-4a3d-ba03-48513b17a7be}</Project>
       <Name>Mono.Nat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenSubtitlesHandler\OpenSubtitlesHandler.csproj">
-      <Project>{4a4402d4-e910-443b-b8fc-2c18286a2ca0}</Project>
-      <Name>OpenSubtitlesHandler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RSSDP\RSSDP.csproj">
       <Project>{21002819-c39a-4d3e-be83-2a276a77fb1f}</Project>
       <Name>RSSDP</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\ThirdParty\SQLite3\osx\libsqlite3.0.dylib">
-      <Link>libsqlite3.0.dylib</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\ThirdParty\SQLite3\osx\libsqlite3.dylib">
-      <Link>libsqlite3.dylib</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="ImageMagickSharp.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

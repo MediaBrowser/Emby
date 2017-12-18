@@ -174,6 +174,9 @@ namespace MediaBrowser.Controller.Entities
         public string HasNoInternalSubtitleTrackWithLanguage { get; set; }
         public string HasNoExternalSubtitleTrackWithLanguage { get; set; }
         public string HasNoSubtitleTrackWithLanguage { get; set; }
+        public bool? IsDeadArtist { get; set; }
+        public bool? IsDeadStudio { get; set; }
+        public bool? IsDeadPerson { get; set; }
 
         public InternalItemsQuery()
         {

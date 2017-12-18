@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Emby.Drawing;
 using Emby.Server.Implementations;
@@ -20,7 +19,6 @@ using Emby.Server.Implementations.Networking;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.System;
-using Mono.Unix.Native;
 using ILogger = MediaBrowser.Model.Logging.ILogger;
 using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 
@@ -96,9 +94,9 @@ namespace MediaBrowser.Server.Mono
             // Allow all https requests
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
 
-            var environmentInfo = GetEnvironmentInfo();
+            var environmentInfo = GetEnvironmentInfo(options);
 
-            var fileSystem = new MonoFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
+            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
 
             FileSystem = fileSystem;
 
@@ -111,7 +109,7 @@ namespace MediaBrowser.Server.Mono
                 environmentInfo,
                 new NullImageEncoder(),
                 new SystemEvents(logManager.GetLogger("SystemEvents")),
-                new NetworkManager(logManager.GetLogger("NetworkManager"))))
+                new NetworkManager(logManager.GetLogger("NetworkManager"), environmentInfo)))
             {
                 if (options.ContainsOption("-v"))
                 {
@@ -140,84 +138,20 @@ namespace MediaBrowser.Server.Mono
             }
         }
 
-        private static MonoEnvironmentInfo GetEnvironmentInfo()
+        private static EnvironmentInfo GetEnvironmentInfo(StartupOptions options)
         {
-            var info = new MonoEnvironmentInfo();
+            var operatingSystem = Model.System.OperatingSystem.Linux;
 
-            var uname = GetUnixName();
-
-            var sysName = uname.sysname ?? string.Empty;
-
-            if (string.Equals(sysName, "Darwin", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(options.GetOption("-os"), "freebsd", StringComparison.OrdinalIgnoreCase))
             {
-                info.OperatingSystem = Model.System.OperatingSystem.OSX;
-            }
-            else if (string.Equals(sysName, "Linux", StringComparison.OrdinalIgnoreCase))
-            {
-                info.OperatingSystem = Model.System.OperatingSystem.Linux;
-            }
-            else if (string.Equals(sysName, "BSD", StringComparison.OrdinalIgnoreCase))
-            {
-                info.OperatingSystem = Model.System.OperatingSystem.BSD;
+                operatingSystem = Model.System.OperatingSystem.BSD;
             }
 
-            var archX86 = new Regex("(i|I)[3-6]86");
-
-            if (archX86.IsMatch(uname.machine))
+            return new EnvironmentInfo()
             {
-                info.SystemArchitecture = Architecture.X86;
-            }
-            else if (string.Equals(uname.machine, "x86_64", StringComparison.OrdinalIgnoreCase))
-            {
-                info.SystemArchitecture = Architecture.X64;
-            }
-            else if (uname.machine.StartsWith("arm", StringComparison.OrdinalIgnoreCase))
-            {
-                info.SystemArchitecture = Architecture.Arm;
-            }
-            else if (System.Environment.Is64BitOperatingSystem)
-            {
-                info.SystemArchitecture = Architecture.X64;
-            }
-            else
-            {
-                info.SystemArchitecture = Architecture.X86;
-            }
-
-            return info;
-        }
-
-        private static Uname _unixName;
-
-        private static Uname GetUnixName()
-        {
-            if (_unixName == null)
-            {
-                var uname = new Uname();
-                try
-                {
-                    Utsname utsname;
-                    var callResult = Syscall.uname(out utsname);
-                    if (callResult == 0)
-                    {
-                        uname.sysname = utsname.sysname ?? string.Empty;
-                        uname.machine = utsname.machine ?? string.Empty;
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error getting unix name", ex);
-                }
-                _unixName = uname;
-            }
-            return _unixName;
-        }
-
-        public class Uname
-        {
-            public string sysname = string.Empty;
-            public string machine = string.Empty;
+                OperatingSystem = operatingSystem,
+                SystemArchitecture = Environment.Is64BitOperatingSystem ? Architecture.X64 : Architecture.Arm
+            };
         }
 
         /// <summary>
@@ -298,14 +232,6 @@ namespace MediaBrowser.Server.Mono
         public bool CheckValidationResult(ServicePoint srvPoint, X509Certificate certificate, WebRequest request, int certificateProblem)
         {
             return true;
-        }
-    }
-
-    public class MonoEnvironmentInfo : EnvironmentInfo
-    {
-        public override string GetUserId()
-        {
-            return Syscall.getuid().ToString(CultureInfo.InvariantCulture);
         }
     }
 }

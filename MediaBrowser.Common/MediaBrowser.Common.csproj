@@ -46,14 +46,12 @@
     <Compile Include="Events\EventHelper.cs" />
     <Compile Include="Extensions\BaseExtensions.cs" />
     <Compile Include="Extensions\ResourceNotFoundException.cs" />
-    <Compile Include="IDependencyContainer.cs" />
     <Compile Include="Configuration\IApplicationPaths.cs" />
     <Compile Include="Net\HttpRequestOptions.cs" />
     <Compile Include="Net\HttpResponseInfo.cs" />
     <Compile Include="IApplicationHost.cs" />
     <Compile Include="Net\IHttpClient.cs" />
     <Compile Include="Net\INetworkManager.cs" />
-    <Compile Include="Plugins\IDependencyModule.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Progress\ActionableProgress.cs" />
     <Compile Include="Plugins\BasePlugin.cs" />

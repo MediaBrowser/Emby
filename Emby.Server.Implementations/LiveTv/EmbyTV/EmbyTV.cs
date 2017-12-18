@@ -807,6 +807,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.SeasonNumber = updatedTimer.SeasonNumber;
             existingTimer.StartDate = updatedTimer.StartDate;
             existingTimer.ShowId = updatedTimer.ShowId;
+            existingTimer.ProviderIds = updatedTimer.ProviderIds;
+            existingTimer.SeriesProviderIds = updatedTimer.SeriesProviderIds;
         }
 
         public Task<ImageStream> GetChannelImageAsync(string channelId, CancellationToken cancellationToken)
@@ -1153,7 +1155,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             throw new NotImplementedException();
         }
 
-        public async Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
+        public Task<List<MediaSourceInfo>> GetRecordingStreamMediaSources(string recordingId, CancellationToken cancellationToken)
         {
             ActiveRecordingInfo info;
 
@@ -1161,29 +1163,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (_activeRecordings.TryGetValue(recordingId, out info))
             {
-                var stream = new MediaSourceInfo
-                {
-                    Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + recordingId + "/stream",
-                    Id = recordingId,
-                    SupportsDirectPlay = false,
-                    SupportsDirectStream = true,
-                    SupportsTranscoding = true,
-                    IsInfiniteStream = true,
-                    RequiresOpening = false,
-                    RequiresClosing = false,
-                    Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
-                    BufferMs = 0,
-                    IgnoreDts = true,
-                    IgnoreIndex = true
-                };
-
-                var isAudio = false;
-                await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
-
-                return new List<MediaSourceInfo>
-                {
-                    stream
-                };
+                return GetRecordingStreamMediaSources(info, cancellationToken);
             }
 
             throw new FileNotFoundException();
@@ -1193,7 +1173,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var stream = new MediaSourceInfo
             {
-                Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + info.Id + "/stream",
+                EncoderPath = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + info.Id + "/stream",
+                EncoderProtocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
+                Path = info.Path,
+                Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.File,
                 Id = info.Id,
                 SupportsDirectPlay = false,
                 SupportsDirectStream = true,
@@ -1201,14 +1184,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 IsInfiniteStream = true,
                 RequiresOpening = false,
                 RequiresClosing = false,
-                Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
                 BufferMs = 0,
                 IgnoreDts = true,
                 IgnoreIndex = true
             };
 
             var isAudio = false;
-            await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
+            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
 
             return new List<MediaSourceInfo>
             {
@@ -2097,12 +2079,22 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     writer.WriteStartDocument(true);
                     writer.WriteStartElement("tvshow");
 
+                    string id;
+                    if (timer.SeriesProviderIds.TryGetValue("tvdb", out id))
+                    {
+                        writer.WriteElementString("id", id);
+                    }
+                    if (timer.SeriesProviderIds.TryGetValue("imdb", out id))
+                    {
+                        writer.WriteElementString("imdb_id", id);
+                    }
+
                     if (!string.IsNullOrWhiteSpace(timer.Name))
                     {
                         writer.WriteElementString("title", timer.Name);
                     }
 
-                    if (!string.IsNullOrEmpty(timer.OfficialRating))
+                    if (!string.IsNullOrWhiteSpace(timer.OfficialRating))
                     {
                         writer.WriteElementString("mpaa", timer.OfficialRating);
                     }
@@ -2139,11 +2131,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 var options = _config.GetNfoConfiguration();
 
+                var isSeriesEpisode = timer.IsProgramSeries;
+
                 using (XmlWriter writer = XmlWriter.Create(stream, settings))
                 {
                     writer.WriteStartDocument(true);
 
-                    if (timer.IsProgramSeries)
+                    if (isSeriesEpisode)
                     {
                         writer.WriteStartElement("episodedetails");
 
@@ -2152,11 +2146,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                             writer.WriteElementString("title", timer.EpisodeTitle);
                         }
 
-                        if (item.PremiereDate.HasValue)
+                        var premiereDate = item.PremiereDate ?? (!timer.IsRepeat ? DateTime.UtcNow : (DateTime?)null);
+
+                        if (premiereDate.HasValue)
                         {
                             var formatString = options.ReleaseDateFormat;
 
-                            writer.WriteElementString("aired", item.PremiereDate.Value.ToLocalTime().ToString(formatString));
+                            writer.WriteElementString("aired", premiereDate.Value.ToLocalTime().ToString(formatString));
                         }
 
                         if (item.IndexNumber.HasValue)
@@ -2209,11 +2205,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         .Replace("&quot;", "'");
 
                     writer.WriteElementString("plot", overview);
-
-                    if (lockData)
-                    {
-                        writer.WriteElementString("lockdata", true.ToString().ToLower());
-                    }
 
                     if (item.CommunityRating.HasValue)
                     {
@@ -2268,26 +2259,38 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     var imdb = item.GetProviderId(MetadataProviders.Imdb);
                     if (!string.IsNullOrEmpty(imdb))
                     {
-                        if (item is Series)
+                        if (!isSeriesEpisode)
                         {
-                            writer.WriteElementString("imdb_id", imdb);
+                            writer.WriteElementString("id", imdb);
                         }
-                        else
-                        {
-                            writer.WriteElementString("imdbid", imdb);
-                        }
+
+                        writer.WriteElementString("imdbid", imdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
                     }
 
                     var tvdb = item.GetProviderId(MetadataProviders.Tvdb);
                     if (!string.IsNullOrEmpty(tvdb))
                     {
                         writer.WriteElementString("tvdbid", tvdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
                     }
 
                     var tmdb = item.GetProviderId(MetadataProviders.Tmdb);
                     if (!string.IsNullOrEmpty(tmdb))
                     {
                         writer.WriteElementString("tmdbid", tmdb);
+
+                        // No need to lock if we have identified the content already
+                        lockData = false;
+                    }
+
+                    if (lockData)
+                    {
+                        writer.WriteElementString("lockdata", true.ToString().ToLower());
                     }
 
                     if (item.CriticRating.HasValue)
@@ -2697,6 +2700,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             timerInfo.OfficialRating = programInfo.OfficialRating;
             timerInfo.IsRepeat = programInfo.IsRepeat;
             timerInfo.SeriesId = programInfo.ExternalSeriesId;
+            timerInfo.ProviderIds = programInfo.ProviderIds;
+            //timerInfo.SeriesProviderIds = programInfo.SeriesProviderIds;
         }
 
         private bool IsProgramAlreadyInLibrary(TimerInfo program)

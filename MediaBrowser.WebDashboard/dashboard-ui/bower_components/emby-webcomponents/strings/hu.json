@@ -441,6 +441,8 @@
     "More": "Tov\u00e1bb",
     "Up": "Fel",
     "Down": "Le",
+    "Home": "Home",
+    "Favorites": "Favorites",
     "HeaderHomeScreen": "Kezd\u0151k\u00e9perny\u0151",
     "HeaderHomeScreenContent": "Home Screen Content",
     "HeaderLatestChannelItems": "Latest Channel Items",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Please insert the disc in order to play this video.",
     "Guide": "Guide",
     "Suggestions": "Javaslatok",
-    "Favorites": "Favorites",
     "Collections": "Gy\u0171jtem\u00e9nyek",
     "LabelSelectFolderGroups": "Automatikusan csoportos\u00edtsa a k\u00f6vetkez\u0151 mapp\u00e1k tartalm\u00e1t olyan n\u00e9zetekre, mint a Filmek, a Zene \u00e9s a TV:",
     "LabelSelectFolderGroupsHelp": "A ki nem v\u00e1lasztott mapp\u00e1k \u00f6nmagukban, saj\u00e1t n\u00e9zetben jelennek meg.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

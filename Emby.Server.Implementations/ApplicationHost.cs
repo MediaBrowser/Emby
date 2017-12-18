@@ -105,7 +105,6 @@ using MediaBrowser.Providers.Manager;
 using MediaBrowser.Providers.Subtitles;
 using MediaBrowser.WebDashboard.Api;
 using MediaBrowser.XbmcMetadata.Providers;
-using OpenSubtitlesHandler;
 using ServiceStack;
 using System;
 using System.Collections.Concurrent;
@@ -128,7 +127,7 @@ namespace Emby.Server.Implementations
     /// <summary>
     /// Class CompositionRoot
     /// </summary>
-    public abstract class ApplicationHost : IServerApplicationHost, IDependencyContainer, IDisposable
+    public abstract class ApplicationHost : IServerApplicationHost, IDisposable
     {
         /// <summary>
         /// Gets a value indicating whether this instance can self restart.
@@ -296,6 +295,11 @@ namespace Emby.Server.Implementations
             return new ServerConfigurationManager(ApplicationPaths, LogManager, XmlSerializer, FileSystemManager);
         }
 
+        protected virtual IResourceFileManager CreateResourceFileManager()
+        {
+            return new ResourceFileManager(HttpResultFactory, LogManager.GetLogger("ResourceManager"), FileSystemManager);
+        }
+
         /// <summary>
         /// Gets or sets the server manager.
         /// </summary>
@@ -386,7 +390,7 @@ namespace Emby.Server.Implementations
         /// </summary>
         /// <value>The zip client.</value>
         protected IZipClient ZipClient { get; private set; }
-
+        protected IHttpResultFactory HttpResultFactory { get; private set; }
         protected IAuthService AuthService { get; private set; }
 
         public StartupOptions StartupOptions { get; private set; }
@@ -897,7 +901,8 @@ namespace Emby.Server.Implementations
             ZipClient = new ZipClient(FileSystemManager);
             RegisterSingleInstance(ZipClient);
 
-            RegisterSingleInstance<IHttpResultFactory>(new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer, MemoryStreamFactory));
+            HttpResultFactory = new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer, MemoryStreamFactory);
+            RegisterSingleInstance(HttpResultFactory);
 
             RegisterSingleInstance<IServerApplicationHost>(this);
             RegisterSingleInstance<IServerApplicationPaths>(ApplicationPaths);
@@ -913,7 +918,6 @@ namespace Emby.Server.Implementations
 
             ITextEncoding textEncoding = new TextEncoding.TextEncoding(FileSystemManager, LogManager.GetLogger("TextEncoding"), JsonSerializer);
             RegisterSingleInstance(textEncoding);
-            Utilities.EncodingHelper = textEncoding;
             BlurayExaminer = new BdInfoExaminer(FileSystemManager, textEncoding);
             RegisterSingleInstance(BlurayExaminer);
 
@@ -1066,6 +1070,8 @@ namespace Emby.Server.Implementations
 
             SubtitleEncoder = new SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, MemoryStreamFactory, ProcessFactory, textEncoding);
             RegisterSingleInstance(SubtitleEncoder);
+
+            RegisterSingleInstance(CreateResourceFileManager());
 
             displayPreferencesRepo.Initialize();
 
@@ -1263,7 +1269,7 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe.exe";
                 info.Version = "20170308";
                 info.ArchiveType = "7z";
-                info.DownloadUrls = GetWindowsDownloadUrls();
+                info.DownloadUrls = new string[] { };
             }
             else if (EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX)
             {
@@ -1271,7 +1277,7 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe";
                 info.ArchiveType = "7z";
                 info.Version = "20170308";
-                info.DownloadUrls = GetMacDownloadUrls();
+                info.DownloadUrls = new string[] { };
             }
             else
             {
@@ -1282,53 +1288,24 @@ namespace Emby.Server.Implementations
             return info;
         }
 
-        private string[] GetMacDownloadUrls()
-        {
-            switch (EnvironmentInfo.SystemArchitecture)
-            {
-                case MediaBrowser.Model.System.Architecture.X64:
-                    return new[]
-                    {
-                        "https://embydata.com/downloads/ffmpeg/osx/ffmpeg-x64-20170308.7z"
-                    };
-            }
-
-            return new string[] { };
-        }
-
-        private string[] GetWindowsDownloadUrls()
-        {
-            switch (EnvironmentInfo.SystemArchitecture)
-            {
-                case MediaBrowser.Model.System.Architecture.X64:
-                    return new[]
-                    {
-                        "https://embydata.com/downloads/ffmpeg/windows/ffmpeg-20170308-win64.7z"
-                    };
-                case MediaBrowser.Model.System.Architecture.X86:
-                    return new[]
-                    {
-                        "https://embydata.com/downloads/ffmpeg/windows/ffmpeg-20170308-win32.7z"
-                    };
-            }
-
-            return new string[] { };
-        }
-
         private string[] GetLinuxDownloadUrls()
         {
-            switch (EnvironmentInfo.SystemArchitecture)
+            Type t = Type.GetType("Mono.Runtime");
+            if (t != null)
             {
-                case MediaBrowser.Model.System.Architecture.X64:
-                    return new[]
-                    {
+                switch (EnvironmentInfo.SystemArchitecture)
+                {
+                    case MediaBrowser.Model.System.Architecture.X64:
+                        return new[]
+                        {
                         "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-64bit-static.7z"
                     };
-                case MediaBrowser.Model.System.Architecture.X86:
-                    return new[]
-                    {
+                    case MediaBrowser.Model.System.Architecture.X86:
+                        return new[]
+                        {
                         "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-32bit-static.7z"
                     };
+                }
             }
 
             return new string[] { };
@@ -1447,7 +1424,6 @@ namespace Emby.Server.Implementations
             BaseItem.CollectionManager = CollectionManager;
             BaseItem.MediaSourceManager = MediaSourceManager;
             CollectionFolder.XmlSerializer = XmlSerializer;
-            Utilities.CryptographyProvider = CryptographyProvider;
             AuthenticatedAttribute.AuthService = AuthService;
         }
 
@@ -1462,8 +1438,6 @@ namespace Emby.Server.Implementations
                 ServerConfigurationManager.Configuration.IsPortAuthorized = true;
                 ConfigurationManager.SaveConfiguration();
             }
-
-            RegisterModules();
 
             ConfigurationManager.AddParts(GetExports<IConfigurationFactory>());
             Plugins = GetExports<IPlugin>().Select(LoadPlugin).Where(i => i != null).ToArray();
@@ -1553,6 +1527,8 @@ namespace Emby.Server.Implementations
         /// </summary>
         protected void DiscoverTypes()
         {
+            Logger.Info("Loading assemblies");
+
             FailedAssemblies.Clear();
 
             var assemblies = GetComposablePartAssemblies().ToList();
@@ -2424,25 +2400,6 @@ namespace Emby.Server.Implementations
         {
         }
 
-        private void RegisterModules()
-        {
-            var moduleTypes = GetExportTypes<IDependencyModule>();
-
-            foreach (var type in moduleTypes)
-            {
-                try
-                {
-                    var instance = Activator.CreateInstance(type) as IDependencyModule;
-                    if (instance != null)
-                        instance.BindDependencies(this);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error setting up dependency bindings for " + type.Name, ex);
-                }
-            }
-        }
-
         /// <summary>
         /// Called when [application updated].
         /// </summary>
@@ -2505,21 +2462,6 @@ namespace Emby.Server.Implementations
                     }
                 }
             }
-        }
-
-        void IDependencyContainer.RegisterSingleInstance<T>(T obj, bool manageLifetime)
-        {
-            RegisterSingleInstance(obj, manageLifetime);
-        }
-
-        void IDependencyContainer.RegisterSingleInstance<T>(Func<T> func)
-        {
-            RegisterSingleInstance(func);
-        }
-
-        void IDependencyContainer.Register(Type typeInterface, Type typeImplementation)
-        {
-            Container.Register(typeInterface, typeImplementation);
         }
     }
 

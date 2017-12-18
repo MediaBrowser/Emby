@@ -441,6 +441,8 @@
     "More": "Mehr",
     "Up": "Hoch",
     "Down": "Runter",
+    "Home": "Home",
+    "Favorites": "Favoriten",
     "HeaderHomeScreen": "Startseite",
     "HeaderHomeScreenContent": "Startbildschirminhalte",
     "HeaderLatestChannelItems": "Neueste Channelinhalte",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "Bitte lege die Disc ein um das Video abzuspielen.",
     "Guide": "TV Guide",
     "Suggestions": "Empfehlungen",
-    "Favorites": "Favoriten",
     "Collections": "Sammlungen",
     "LabelSelectFolderGroups": "Gruppiere Inhalte von folgenden Verzeichnissen automatisch zu Ansichten wie beispielsweise Filme, Musik und TV:",
     "LabelSelectFolderGroupsHelp": "Verzeichnisse die nicht markiert sind werden alleine mit ihren eigenen Ansichten angezeigt.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

@@ -475,7 +475,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 // We can't trust that we'll be able to direct stream it through emby server, no matter what the provider says
                 //mediaSource.SupportsDirectPlay = false;
-                mediaSource.SupportsDirectStream = false;
+                //mediaSource.SupportsDirectStream = false;
                 mediaSource.SupportsTranscoding = true;
                 foreach (var stream in mediaSource.MediaStreams)
                 {
@@ -643,6 +643,9 @@ namespace Emby.Server.Implementations.LiveTv
             item.OfficialRating = item.OfficialRating ?? info.OfficialRating;
             item.Overview = item.Overview ?? info.Overview;
             item.RunTimeTicks = (info.EndDate - info.StartDate).Ticks;
+            item.ProviderIds = info.ProviderIds;
+
+            // TODO SeriesProviderIds
 
             if (item.StartDate != info.StartDate)
             {

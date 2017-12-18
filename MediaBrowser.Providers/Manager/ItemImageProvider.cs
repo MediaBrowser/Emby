@@ -302,20 +302,14 @@ namespace MediaBrowser.Providers.Manager
                     }
                 }
 
-                if (!item.LockedFields.Contains(MetadataFields.Backdrops))
-                {
-                    minWidth = savedOptions.GetMinWidth(ImageType.Backdrop);
-                    await DownloadBackdrops(item, libraryOptions, ImageType.Backdrop, backdropLimit, provider, result, list, minWidth, cancellationToken).ConfigureAwait(false);
-                }
+                minWidth = savedOptions.GetMinWidth(ImageType.Backdrop);
+                await DownloadBackdrops(item, libraryOptions, ImageType.Backdrop, backdropLimit, provider, result, list, minWidth, cancellationToken).ConfigureAwait(false);
 
-                if (!item.LockedFields.Contains(MetadataFields.Screenshots))
+                var hasScreenshots = item as IHasScreenshots;
+                if (hasScreenshots != null)
                 {
-                    var hasScreenshots = item as IHasScreenshots;
-                    if (hasScreenshots != null)
-                    {
-                        minWidth = savedOptions.GetMinWidth(ImageType.Screenshot);
-                        await DownloadBackdrops(item, libraryOptions, ImageType.Screenshot, screenshotLimit, provider, result, list, minWidth, cancellationToken).ConfigureAwait(false);
-                    }
+                    minWidth = savedOptions.GetMinWidth(ImageType.Screenshot);
+                    await DownloadBackdrops(item, libraryOptions, ImageType.Screenshot, screenshotLimit, provider, result, list, minWidth, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -331,28 +325,6 @@ namespace MediaBrowser.Providers.Manager
 
         private bool IsEnabled(MetadataOptions options, ImageType type, IHasMetadata item)
         {
-            if (type == ImageType.Backdrop)
-            {
-                if (item.LockedFields.Contains(MetadataFields.Backdrops))
-                {
-                    return false;
-                }
-            }
-            else if (type == ImageType.Screenshot)
-            {
-                if (item.LockedFields.Contains(MetadataFields.Screenshots))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (item.LockedFields.Contains(MetadataFields.Images))
-                {
-                    return false;
-                }
-            }
-
             return options.IsEnabled(type);
         }
 

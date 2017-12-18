@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Common.Configuration;
 
 namespace Emby.Server.Implementations.LiveTv
 {
@@ -26,8 +27,9 @@ namespace Emby.Server.Implementations.LiveTv
         private readonly IMediaSourceManager _mediaSourceManager;
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IServerApplicationHost _appHost;
+        private IApplicationPaths _appPaths;
 
-        public LiveTvMediaSourceProvider(ILiveTvManager liveTvManager, IJsonSerializer jsonSerializer, ILogManager logManager, IMediaSourceManager mediaSourceManager, IMediaEncoder mediaEncoder, IServerApplicationHost appHost)
+        public LiveTvMediaSourceProvider(ILiveTvManager liveTvManager, IApplicationPaths appPaths, IJsonSerializer jsonSerializer, ILogManager logManager, IMediaSourceManager mediaSourceManager, IMediaEncoder mediaEncoder, IServerApplicationHost appHost)
         {
             _liveTvManager = liveTvManager;
             _jsonSerializer = jsonSerializer;
@@ -35,6 +37,7 @@ namespace Emby.Server.Implementations.LiveTv
             _mediaEncoder = mediaEncoder;
             _appHost = appHost;
             _logger = logManager.GetLogger(GetType().Name);
+            _appPaths = appPaths;
         }
 
         public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
@@ -142,8 +145,6 @@ namespace Emby.Server.Implementations.LiveTv
                 var info = await _liveTvManager.GetChannelStream(keys[1], mediaSourceId, cancellationToken).ConfigureAwait(false);
                 stream = info.Item1;
                 directStreamProvider = info.Item2;
-
-                //allowLiveStreamProbe = false;
             }
             else
             {
@@ -158,7 +159,9 @@ namespace Emby.Server.Implementations.LiveTv
                 }
                 else
                 {
-                    await new LiveStreamHelper(_mediaEncoder, _logger).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
+                    var cacheKey = keys[1] + "-" + mediaSourceId;
+
+                    await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _appPaths).AddMediaInfoWithProbe(stream, isAudio, cacheKey, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

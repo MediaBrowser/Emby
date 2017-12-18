@@ -40,11 +40,7 @@
     <Compile Include="Activity\ActivityLogEntry.cs" />
     <Compile Include="Activity\IActivityManager.cs" />
     <Compile Include="Activity\IActivityRepository.cs" />
-    <Compile Include="ApiClient\ConnectSignupResponse.cs" />
-    <Compile Include="ApiClient\HttpResponseEventArgs.cs" />
-    <Compile Include="ApiClient\GeneralCommandEventArgs.cs" />
     <Compile Include="ApiClient\ServerDiscoveryInfo.cs" />
-    <Compile Include="ApiClient\SessionUpdatesEventArgs.cs" />
     <Compile Include="ApiClient\WakeOnLanInfo.cs" />
     <Compile Include="Branding\BrandingOptions.cs" />
     <Compile Include="Channels\AllChannelMediaQuery.cs" />
@@ -123,6 +119,7 @@
     <Compile Include="Social\ISharingRepository.cs" />
     <Compile Include="System\IEnvironmentInfo.cs" />
     <Compile Include="System\IPowerManagement.cs" />
+    <Compile Include="Tasks\TaskOptions.cs" />
     <Compile Include="Text\ITextEncoding.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="IO\FileSystemMetadata.cs" />
@@ -290,10 +287,8 @@
     <Compile Include="Providers\RemoteSubtitleInfo.cs" />
     <Compile Include="Providers\SubtitleProviderInfo.cs" />
     <Compile Include="Querying\AllThemeMediaResult.cs" />
-    <Compile Include="Querying\ArtistsQuery.cs" />
     <Compile Include="Querying\EpisodeQuery.cs" />
     <Compile Include="Querying\ItemCountsQuery.cs" />
-    <Compile Include="Querying\ItemsByNameQuery.cs" />
     <Compile Include="Querying\LatestItemsQuery.cs" />
     <Compile Include="Querying\MovieRecommendationQuery.cs" />
     <Compile Include="Querying\NextUpQuery.cs" />
@@ -345,7 +340,6 @@
     <Compile Include="Net\HttpException.cs" />
     <Compile Include="Net\NetworkShare.cs" />
     <Compile Include="Net\NetworkShareType.cs" />
-    <Compile Include="Querying\PersonsQuery.cs" />
     <Compile Include="Querying\ThemeMediaResult.cs" />
     <Compile Include="Search\SearchHint.cs" />
     <Compile Include="Search\SearchHintResult.cs" />
@@ -395,7 +389,6 @@
     <Compile Include="Tasks\ITaskTrigger.cs" />
     <Compile Include="Tasks\ScheduledTaskHelpers.cs" />
     <Compile Include="Tasks\TaskCompletionEventArgs.cs" />
-    <Compile Include="Tasks\TaskExecutionOptions.cs" />
     <Compile Include="Threading\ITimer.cs" />
     <Compile Include="Threading\ITimerFactory.cs" />
     <Compile Include="Updates\CheckForUpdateResult.cs" />

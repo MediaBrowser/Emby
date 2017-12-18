@@ -127,6 +127,7 @@
     <Compile Include="Entities\UserViewBuilder.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IO\StreamHelper.cs" />
+    <Compile Include="IResourceFileManager.cs" />
     <Compile Include="Library\DeleteOptions.cs" />
     <Compile Include="Library\ILibraryPostScanTask.cs" />
     <Compile Include="Library\IMediaSourceManager.cs" />
@@ -247,7 +248,6 @@
     <Compile Include="Providers\RemoteSearchQuery.cs" />
     <Compile Include="Providers\SeasonInfo.cs" />
     <Compile Include="Providers\SeriesInfo.cs" />
-    <Compile Include="Providers\SeriesOrderTypes.cs" />
     <Compile Include="Providers\SongInfo.cs" />
     <Compile Include="Providers\TrailerInfo.cs" />
     <Compile Include="Providers\VideoContentType.cs" />

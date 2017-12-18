@@ -14,7 +14,7 @@ namespace MediaBrowser.LocalMetadata
     {
         protected IFileSystem FileSystem;
 
-        public async Task<MetadataResult<T>> GetMetadata(ItemInfo info,
+        public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
             IDirectoryService directoryService,
             CancellationToken cancellationToken)
         {
@@ -24,7 +24,7 @@ namespace MediaBrowser.LocalMetadata
 
             if (file == null)
             {
-                return result;
+                return Task.FromResult(result);
             }
 
             var path = file.FullName;
@@ -45,7 +45,7 @@ namespace MediaBrowser.LocalMetadata
                 result.HasMetadata = false;
             }
 
-            return result;
+            return Task.FromResult(result);
         }
 
         protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);

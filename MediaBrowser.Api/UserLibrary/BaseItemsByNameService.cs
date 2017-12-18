@@ -347,10 +347,6 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 items = items.Where(i => string.Compare(request.NameStartsWithOrGreater, i.SortName, StringComparison.CurrentCultureIgnoreCase) < 1);
             }
-            if (!string.IsNullOrEmpty(request.NameStartsWith))
-            {
-                items = items.Where(i => string.Compare(request.NameStartsWith, i.SortName.Substring(0, 1), StringComparison.CurrentCultureIgnoreCase) == 0);
-            }
 
             if (!string.IsNullOrEmpty(request.NameLessThan))
             {

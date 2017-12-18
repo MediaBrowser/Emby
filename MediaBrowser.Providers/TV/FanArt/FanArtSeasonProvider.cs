@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -153,7 +154,6 @@ namespace MediaBrowser.Providers.TV
             PopulateImages(list, obj.showbackground, ImageType.Backdrop, 1920, 1080, seasonNumber);
         }
 
-        private Regex _regex_http = new Regex("^http://");
         private void PopulateImages(List<RemoteImageInfo> list,
             List<FanartSeriesProvider.Image> images,
             ImageType type,
@@ -188,7 +188,7 @@ namespace MediaBrowser.Providers.TV
                         Width = width,
                         Height = height,
                         ProviderName = Name,
-                        Url = _regex_http.Replace(url, "https://", 1),
+                        Url = url.Replace("http://", "https://", StringComparison.OrdinalIgnoreCase),
                         Language = i.lang
                     };
 

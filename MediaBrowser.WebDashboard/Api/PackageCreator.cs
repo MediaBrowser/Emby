@@ -11,6 +11,7 @@ using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller;
 
 namespace MediaBrowser.WebDashboard.Api
 {
@@ -21,14 +22,16 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly IServerConfigurationManager _config;
         private readonly IMemoryStreamFactory _memoryStreamFactory;
         private readonly string _basePath;
+        private IResourceFileManager _resourceFileManager;
 
-        public PackageCreator(string basePath, IFileSystem fileSystem, ILogger logger, IServerConfigurationManager config, IMemoryStreamFactory memoryStreamFactory)
+        public PackageCreator(string basePath, IFileSystem fileSystem, ILogger logger, IServerConfigurationManager config, IMemoryStreamFactory memoryStreamFactory, IResourceFileManager resourceFileManager)
         {
             _fileSystem = fileSystem;
             _logger = logger;
             _config = config;
             _memoryStreamFactory = memoryStreamFactory;
             _basePath = basePath;
+            _resourceFileManager = resourceFileManager;
         }
 
         public async Task<Stream> GetResource(string virtualPath,
@@ -63,32 +66,6 @@ namespace MediaBrowser.WebDashboard.Api
             return Path.GetExtension(path).EndsWith(format, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Gets the dashboard resource path.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public string GetResourcePath(string virtualPath)
-        {
-            var fullPath = Path.Combine(_basePath, virtualPath.Replace('/', _fileSystem.DirectorySeparatorChar));
-
-            try
-            {
-                fullPath = _fileSystem.GetFullPath(fullPath);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error in Path.GetFullPath", ex);
-            }
-
-            // Don't allow file system access outside of the source folder
-            if (!_fileSystem.ContainsSubPath(_basePath, fullPath))
-            {
-                throw new SecurityException("Access denied");
-            }
-
-            return fullPath;
-        }
-
         public bool IsCoreHtml(string path)
         {
             if (path.IndexOf(".template.html", StringComparison.OrdinalIgnoreCase) != -1)
@@ -96,11 +73,7 @@ namespace MediaBrowser.WebDashboard.Api
                 return false;
             }
 
-            path = GetResourcePath(path);
-            var parent = _fileSystem.GetDirectoryName(path);
-            
-            return string.Equals(_basePath, parent, StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(Path.Combine(_basePath, "offline"), parent, StringComparison.OrdinalIgnoreCase);
+            return IsFormat(path, "html");
         }
 
         /// <summary>
@@ -139,7 +112,7 @@ namespace MediaBrowser.WebDashboard.Api
                                 html = html.Substring(0, index);
                             }
                         }
-                        var mainFile = _fileSystem.ReadAllText(GetResourcePath("index.html"));
+                        var mainFile = _resourceFileManager.ReadAllText(_basePath, "index.html");
 
                         html = ReplaceFirst(mainFile, "<div class=\"mainAnimatedPages skinBody\"></div>", "<div class=\"mainAnimatedPages skinBody hide\">" + html + "</div>");
                     }
@@ -284,7 +257,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// </summary>
         private Stream GetRawResourceStream(string virtualPath)
         {
-            return _fileSystem.GetFileStream(GetResourcePath(virtualPath), FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, true);
+            return _resourceFileManager.GetResourceFileStream(_basePath, virtualPath);
         }
 
     }

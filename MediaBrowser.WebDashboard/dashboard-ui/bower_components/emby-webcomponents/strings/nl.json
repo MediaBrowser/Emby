@@ -441,6 +441,8 @@
     "More": "Meer",
     "Up": "Omhoog",
     "Down": "Omlaag",
+    "Home": "Home",
+    "Favorites": "Favorieten",
     "HeaderHomeScreen": "Begin Scherm",
     "HeaderHomeScreenContent": "Begin scherm Inhoud",
     "HeaderLatestChannelItems": "Nieuwste Kanaal Items",
@@ -454,7 +456,6 @@
     "PlaybackErrorPlaceHolder": "De gekozen content is niet af te spelen vanaf dit apparaat. Plaats de schijf.",
     "Guide": "Gids",
     "Suggestions": "Suggesties",
-    "Favorites": "Favorieten",
     "Collections": "Collecties",
     "LabelSelectFolderGroups": "De inhoud van de volgende mappen automatisch groeperen in secties zoals Films, Muziek en TV:",
     "LabelSelectFolderGroupsHelp": "Mappen die niet aangevinkt zijn worden getoond in hun eigen weergave.",
@@ -633,5 +634,13 @@
     "Trailers": "Trailers",
     "Extras": "Extras",
     "ThemeSongs": "Theme songs",
-    "ThemeVideos": "Theme videos"
+    "ThemeVideos": "Theme videos",
+    "HeaderFavoriteMovies": "Favorite Movies",
+    "HeaderFavoriteShows": "Favorite Shows",
+    "HeaderFavoriteEpisodes": "Favorite Episodes",
+    "HeaderFavoriteVideos": "Favorite Videos",
+    "HeaderFavoriteGames": "Favorite Games",
+    "HeaderFavoriteArtists": "Favorite Artists",
+    "HeaderFavoriteAlbums": "Favorite Albums",
+    "HeaderFavoriteSongs": "Favorite Songs"
 }

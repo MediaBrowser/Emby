@@ -65,7 +65,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
                 {
                     Type = TaskTriggerInfo.TriggerDaily,
                     TimeOfDayTicks = TimeSpan.FromHours(2).Ticks,
-                    MaxRuntimeMs = Convert.ToInt32(TimeSpan.FromHours(4).TotalMilliseconds)
+                    MaxRuntimeTicks = TimeSpan.FromHours(4).Ticks
                 }
             };
         }

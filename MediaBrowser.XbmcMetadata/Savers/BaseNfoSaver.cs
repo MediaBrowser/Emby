@@ -28,6 +28,8 @@ namespace MediaBrowser.XbmcMetadata.Savers
 {
     public abstract class BaseNfoSaver : IMetadataFileSaver
     {
+        public static readonly string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
+
         private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         private static readonly Dictionary<string, string> CommonTags = new[] {
@@ -857,10 +859,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
         private static string GetOutputTrailerUrl(string url)
         {
             // This is what xbmc expects
-
-            return url.Replace("https://www.youtube.com/watch?v=",
-                "plugin://plugin.video.youtube/?action=play_video&videoid=",
-                StringComparison.OrdinalIgnoreCase);
+            return url.Replace(YouTubeWatchUrl, "plugin://plugin.video.youtube/?action=play_video&videoid=", StringComparison.OrdinalIgnoreCase);
         }
 
         private static void AddImages(BaseItem item, XmlWriter writer, ILibraryManager libraryManager, IServerConfigurationManager config)

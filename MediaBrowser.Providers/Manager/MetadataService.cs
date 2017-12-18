@@ -266,18 +266,18 @@ namespace MediaBrowser.Providers.Manager
 
         private async Task AddPersonImage(Person personEntity, LibraryOptions libraryOptions, string imageUrl, CancellationToken cancellationToken)
         {
-            if (libraryOptions.DownloadImagesInAdvance)
-            {
-                try
-                {
-                    await ProviderManager.SaveImage(personEntity, imageUrl, ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error in AddPersonImage", ex);
-                }
-            }
+            //if (libraryOptions.DownloadImagesInAdvance)
+            //{
+            //    try
+            //    {
+            //        await ProviderManager.SaveImage(personEntity, imageUrl, ImageType.Primary, null, cancellationToken).ConfigureAwait(false);
+            //        return;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Logger.ErrorException("Error in AddPersonImage", ex);
+            //    }
+            //}
 
             personEntity.SetImage(new ItemImageInfo
             {

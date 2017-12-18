@@ -1,12 +1,10 @@
-﻿using System.Diagnostics;
-using MediaBrowser.Model.Serialization;
+﻿using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Model.Dto
 {
     /// <summary>
     /// Class ChapterInfo
     /// </summary>
-    [DebuggerDisplay("Name = {Name}")]
     public class ChapterInfoDto
     {
         /// <summary>
