@@ -55,7 +55,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             AddTracks(album.Tracks, writer);
         }        
         
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
+        private readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         private void AddTracks(IEnumerable<BaseItem> tracks, XmlWriter writer)
         {
