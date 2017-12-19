@@ -1056,7 +1056,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        public async Task<List<ILiveStream>> GetLiveStreams(TunerHostInfo host, CancellationToken cancellationToken)
+        public Task<List<ILiveStream>> GetLiveStreams(TunerHostInfo host, CancellationToken cancellationToken)
         {
             //await _liveStreamsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1064,9 +1064,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             //{
             var hostId = host.Id;
 
-            return _liveStreams
+            return Task.FromResult(_liveStreams
                 .Where(i => string.Equals(i.TunerHostId, hostId, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                .ToList());
             //}
             //finally
             //{

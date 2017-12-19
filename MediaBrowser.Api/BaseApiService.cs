@@ -331,7 +331,7 @@ namespace MediaBrowser.Api
             return pathInfo[index];
         }
 
-        private static List<string> Parse(string pathUri)
+        private List<string> Parse(string pathUri)
         {
             var actionParts = pathUri.Split(new[] { "://" }, StringSplitOptions.None);
 

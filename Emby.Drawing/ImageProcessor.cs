@@ -169,7 +169,7 @@ namespace Emby.Drawing
             return _imageEncoder.SupportedOutputFormats;
         }
 
-        private static readonly string[] TransparentImageTypes = new string[] { ".png", ".webp" };
+        private readonly string[] TransparentImageTypes = new string[] { ".png", ".webp" };
         public bool SupportsTransparency(string path)
         {
             return TransparentImageTypes.Contains(Path.GetExtension(path) ?? string.Empty);
@@ -357,21 +357,6 @@ namespace Emby.Drawing
 
             }
         }
-
-        //private static  int[][] OPERATIONS = new int[][] {
-        // TopLeft
-        //new int[] {  0, NONE},
-        // TopRight
-        //new int[] {  0, HORIZONTAL},
-        //new int[] {180, NONE},
-        // LeftTop
-        //new int[] {  0, VERTICAL},
-        //new int[] { 90, HORIZONTAL},
-        // RightTop
-        //new int[] { 90, NONE},
-        //new int[] {-90, HORIZONTAL},
-        //new int[] {-90, NONE},
-        //};
 
         private string GetMimeType(ImageFormat format, string path)
         {

@@ -112,8 +112,6 @@ namespace MediaBrowser.Api
             return ToOptimizedSerializedResultUsingCache(result);
         }
 
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
-
         /// <summary>
         /// Gets the summary.
         /// </summary>
