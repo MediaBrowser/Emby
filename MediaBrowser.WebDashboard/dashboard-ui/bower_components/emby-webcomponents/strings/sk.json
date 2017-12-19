@@ -1,4 +1,5 @@
 {
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "MessageUnlockAppWithPurchaseOrSupporter": "Unlock this feature with a small one-time purchase, or with an active Emby Premiere subscription.",
     "MessageUnlockAppWithSupporter": "Unlock this feature with an active Emby Premiere subscription.",
     "MessageToValidateSupporter": "If you have an active Emby Premiere subscription, ensure you've setup Emby Premiere in your Emby Server Dashboard, which you can access by clicking Emby Premiere within the main menu.",
@@ -456,6 +457,7 @@
     "PlaybackErrorPlaceHolder": "Please insert the disc in order to play this video.",
     "Guide": "Sprievodca",
     "Suggestions": "N\u00e1vrhy",
+    "HeaderFavoriteCollections": "Favorite Collections",
     "Collections": "Zbierky",
     "LabelSelectFolderGroups": "Automatically group content from the following folders into views such as Movies, Music and TV:",
     "LabelSelectFolderGroupsHelp": "Folders that are unchecked will be displayed by themselves in their own view.",
