@@ -64,7 +64,7 @@ namespace SocketHttpListener.Net
                     ProcessAccept(acceptEventArg);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 if (accepted != null)
                 {
