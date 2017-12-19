@@ -325,7 +325,7 @@ namespace Rssdp.Infrastructure
             SendSearchResponse(device.FullDeviceType, device, GetUsn(device.Udn, device.FullDeviceType), endPoint, receivedOnlocalIpAddress, cancellationToken);
         }
 
-        private static string GetUsn(string udn, string fullDeviceType)
+        private string GetUsn(string udn, string fullDeviceType)
         {
             return String.Format("{0}::{1}", udn, fullDeviceType);
         }
@@ -604,7 +604,7 @@ namespace Rssdp.Infrastructure
 
         #endregion
 
-        private static string GetFirstHeaderValue(System.Net.Http.Headers.HttpRequestHeaders httpRequestHeaders, string headerName)
+        private string GetFirstHeaderValue(System.Net.Http.Headers.HttpRequestHeaders httpRequestHeaders, string headerName)
         {
             string retVal = null;
             IEnumerable<String> values = null;
@@ -614,9 +614,9 @@ namespace Rssdp.Infrastructure
             return retVal;
         }
 
-        public static Action<string> LogFunction { get; set; }
+        public Action<string> LogFunction { get; set; }
 
-        private static void WriteTrace(string text)
+        private void WriteTrace(string text)
         {
             if (LogFunction != null)
             {
@@ -625,7 +625,7 @@ namespace Rssdp.Infrastructure
             //System.Diagnostics.Debug.WriteLine(text, "SSDP Publisher");
         }
 
-        private static void WriteTrace(string text, SsdpDevice device)
+        private void WriteTrace(string text, SsdpDevice device)
         {
             var rootDevice = device as SsdpRootDevice;
             if (rootDevice != null)

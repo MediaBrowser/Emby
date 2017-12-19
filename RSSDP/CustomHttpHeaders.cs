@@ -83,7 +83,7 @@ namespace Rssdp
 
 		#region Private Methods
 
-		private static void EnsureValidName(string name)
+		private void EnsureValidName(string name)
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name), "Name cannot be null.");
 			if (name.Length == 0) throw new ArgumentException("Name cannot be blank.", nameof(name));
@@ -95,7 +95,7 @@ namespace Rssdp
 			}
 		}
 
-		private static void EnsureValidValue(string value)
+		private void EnsureValidValue(string value)
 		{
 			if (String.IsNullOrEmpty(value)) return;
 

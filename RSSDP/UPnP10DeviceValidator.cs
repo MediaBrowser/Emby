@@ -134,7 +134,7 @@ namespace Rssdp.Infrastructure
 
 		#region Private Methods
 
-		private static void ValidateUpc(SsdpDevice device, List<string> retVal)
+		private void ValidateUpc(SsdpDevice device, List<string> retVal)
 		{
 			if (device.Upc.Length != 12)
 				retVal.Add("Upc, if provided, should be 12 digits.");
@@ -149,7 +149,7 @@ namespace Rssdp.Infrastructure
 			}
 		}
 
-		private static void ValidateUdn(SsdpDevice device, List<string> retVal)
+		private void ValidateUdn(SsdpDevice device, List<string> retVal)
 		{
 			if (!device.Udn.StartsWith("uuid:", StringComparison.OrdinalIgnoreCase))
 				retVal.Add("UDN must begin with uuid:. Correct format is uuid:<uuid>");
@@ -157,7 +157,7 @@ namespace Rssdp.Infrastructure
 				retVal.Add("UDN incorrect. Correct format is uuid:<uuid>");
 		}
 
-		private static void ValidateIcons(SsdpDevice device, List<string> retVal)
+		private void ValidateIcons(SsdpDevice device, List<string> retVal)
 		{
 			if (device.Icons.Any((di) => di.Url == null))
 				retVal.Add("Device icon is missing URL.");
@@ -183,7 +183,7 @@ namespace Rssdp.Infrastructure
 			}
 		}
 		
-		private static bool IsOverLength(string value, int maxLength)
+		private bool IsOverLength(string value, int maxLength)
 		{
 			return !String.IsNullOrEmpty(value) && value.Length > maxLength;
 		}

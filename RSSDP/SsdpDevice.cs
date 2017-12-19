@@ -441,7 +441,7 @@ namespace Rssdp
         /// </summary>
         /// <param name="value">The string value to convert.</param>
         /// <returns>A <see cref="Uri"/>.</returns>
-        protected static Uri StringToUri(string value)
+        protected Uri StringToUri(string value)
         {
             if (!String.IsNullOrEmpty(value))
                 return new Uri(value, UriKind.RelativeOrAbsolute);
@@ -455,7 +455,7 @@ namespace Rssdp
 
         #region Serialisation Methods
 
-        private static void WriteCustomProperties(XmlWriter writer, SsdpDevice device)
+        private void WriteCustomProperties(XmlWriter writer, SsdpDevice device)
         {
             foreach (var prop in device.CustomProperties)
             {
@@ -463,7 +463,7 @@ namespace Rssdp
             }
         }
 
-        private static void WriteIcons(XmlWriter writer, SsdpDevice device)
+        private void WriteIcons(XmlWriter writer, SsdpDevice device)
         {
             if (device.Icons.Count > 0)
             {
@@ -501,13 +501,13 @@ namespace Rssdp
             }
         }
 
-        private static void WriteNodeIfNotEmpty(XmlWriter writer, string nodeName, string value)
+        private void WriteNodeIfNotEmpty(XmlWriter writer, string nodeName, string value)
         {
             if (!String.IsNullOrEmpty(value))
                 writer.WriteElementString(nodeName, value);
         }
 
-        private static void WriteNodeIfNotEmpty(XmlWriter writer, string nodeName, Uri value)
+        private void WriteNodeIfNotEmpty(XmlWriter writer, string nodeName, Uri value)
         {
             if (value != null)
                 writer.WriteElementString(nodeName, value.ToString());
@@ -534,7 +534,7 @@ namespace Rssdp
             }
         }
 
-        private static void ReadUntilDeviceNode(XmlReader reader)
+        private void ReadUntilDeviceNode(XmlReader reader)
         {
             while (!reader.EOF && (reader.LocalName != "device" || reader.NodeType != XmlNodeType.Element))
             {
@@ -622,7 +622,7 @@ namespace Rssdp
             return true;
         }
 
-        private static void SetDeviceTypePropertiesFromFullDeviceType(SsdpDevice device, string value)
+        private void SetDeviceTypePropertiesFromFullDeviceType(SsdpDevice device, string value)
         {
             if (String.IsNullOrEmpty(value) || !value.Contains(":"))
                 device.DeviceType = value;
@@ -646,7 +646,7 @@ namespace Rssdp
             }
         }
 
-        private static void SetUuidFromUdn(SsdpDevice device)
+        private void SetUuidFromUdn(SsdpDevice device)
         {
             if (device.Udn != null && device.Udn.StartsWith("uuid:", StringComparison.OrdinalIgnoreCase))
                 device.Uuid = device.Udn.Substring(5).Trim();
@@ -654,7 +654,7 @@ namespace Rssdp
                 device.Uuid = device.Udn;
         }
 
-        private static void LoadIcons(XmlReader reader, SsdpDevice device)
+        private void LoadIcons(XmlReader reader, SsdpDevice device)
         {
             while (!reader.EOF)
             {
@@ -676,7 +676,7 @@ namespace Rssdp
             }
         }
 
-        private static void LoadIconProperties(XmlReader reader, SsdpDeviceIcon icon)
+        private void LoadIconProperties(XmlReader reader, SsdpDeviceIcon icon)
         {
             while (!reader.EOF)
             {
@@ -741,7 +741,7 @@ namespace Rssdp
             }
         }
 
-        private static void AddCustomProperty(XmlReader reader, SsdpDevice device)
+        private void AddCustomProperty(XmlReader reader, SsdpDevice device)
         {
             // If the property is an empty element, there is no value to read
             // Advance the reader and return
