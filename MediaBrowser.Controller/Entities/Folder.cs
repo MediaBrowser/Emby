@@ -669,7 +669,7 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        public static bool IsPathOffline(string path, List<string> allLibraryPaths)
+        public bool IsPathOffline(string path, List<string> allLibraryPaths)
         {
             //if (FileSystem.FileExists(path))
             //{
@@ -697,7 +697,7 @@ namespace MediaBrowser.Controller.Entities
             return allLibraryPaths.Any(i => ContainsPath(i, originalPath));
         }
 
-        private static bool ContainsPath(string parent, string path)
+        private bool ContainsPath(string parent, string path)
         {
             return FileSystem.AreEqual(parent, path) || FileSystem.ContainsSubPath(parent, path);
         }

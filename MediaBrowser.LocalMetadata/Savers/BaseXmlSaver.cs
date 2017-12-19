@@ -628,7 +628,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             writer.WriteEndElement();
         }
 
-        private static bool IsPersonType(PersonInfo person, string type)
+        private bool IsPersonType(PersonInfo person, string type)
         {
             return string.Equals(person.Type, type, StringComparison.OrdinalIgnoreCase) || string.Equals(person.Role, type, StringComparison.OrdinalIgnoreCase);
         }

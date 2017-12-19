@@ -20,22 +20,5 @@ namespace MediaBrowser.Model.Extensions
             }
             return false;
         }
-
-        public static bool ContainsAnyIgnoreCase(string[] list, string[] values)
-        {
-            if (values == null)
-            {
-                throw new ArgumentNullException("values");
-            }
-
-            foreach (string val in values)
-            {
-                if (ContainsIgnoreCase(list, val))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

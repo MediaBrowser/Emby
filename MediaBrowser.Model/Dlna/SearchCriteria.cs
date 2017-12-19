@@ -1,11 +1,35 @@
 ﻿using MediaBrowser.Model.Extensions;
 using System;
+using System.Text.RegularExpressions;
 
 namespace MediaBrowser.Model.Dlna
 {
     public class SearchCriteria
     {
         public SearchType SearchType { get; set; }
+
+        /// <summary>
+        /// Splits the specified string.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <param name="term">The term.</param>
+        /// <param name="limit">The limit.</param>
+        /// <returns>System.String[].</returns>
+        private string[] RegexSplit(string str, string term, int limit)
+        {
+            return new Regex(term).Split(str, limit);
+        }
+
+        /// <summary>
+        /// Splits the specified string.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <param name="term">The term.</param>
+        /// <returns>System.String[].</returns>
+        private string[] RegexSplit(string str, string term)
+        {
+            return Regex.Split(str, term, RegexOptions.IgnoreCase);
+        }
 
         public SearchCriteria(string search)
         {
@@ -16,10 +40,10 @@ namespace MediaBrowser.Model.Dlna
 
             SearchType = SearchType.Unknown;
 
-            String[] factors = StringHelper.RegexSplit(search, "(and|or)");
+            String[] factors = RegexSplit(search, "(and|or)");
             foreach (String factor in factors)
             {
-                String[] subFactors = StringHelper.RegexSplit(factor.Trim().Trim('(').Trim(')').Trim(), "\\s", 3);
+                String[] subFactors = RegexSplit(factor.Trim().Trim('(').Trim(')').Trim(), "\\s", 3);
 
                 if (subFactors.Length == 3)
                 {
