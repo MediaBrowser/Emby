@@ -1,4 +1,5 @@
 {
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "MessageUnlockAppWithPurchaseOrSupporter": "Odemknout tuto funkci pomoc\u00ed jednor\u00e1zov\u00e9 platby, nebo pomoc\u00ed aktivace p\u0159edplatn\u00e9ho Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Odemknout tuto funkci pomoc\u00ed aktivn\u00edho p\u0159edplatn\u00e9ho Emby Premiere.",
     "MessageToValidateSupporter": "Pokud m\u00e1te aktivn\u00ed p\u0159edplatn\u00e9 Emby Premiere, ujist\u011bte se, \u017ee m\u00e1te nastaven Emby Premiere v panelu Nastaven\u00ed pod N\u00e1pov\u011bda -> Emby Premiere.",
@@ -456,6 +457,7 @@
     "PlaybackErrorPlaceHolder": "Pro p\u0159ehr\u00e1n\u00ed videa nejd\u0159\u00edve vlo\u017ete disk",
     "Guide": "Pr\u016fvodce",
     "Suggestions": "N\u00e1vrhy",
+    "HeaderFavoriteCollections": "Favorite Collections",
     "Collections": "Kolekce",
     "LabelSelectFolderGroups": "Automaticky seskupit obsah z n\u00e1sleduj\u00edc\u00edch slo\u017eek do zobrazen\u00ed, jako jsou Filmy, Hudba a TV:",
     "LabelSelectFolderGroupsHelp": "Slo\u017eky, kter\u00e9 nejsou za\u0161krtnuty budou zobrazeny ve vlastn\u00edm pohledu.",

@@ -169,8 +169,8 @@ namespace Emby.Dlna.Main
 
         private void StartPublishing(ISsdpCommunicationsServer communicationsServer)
         {
-            SsdpDevicePublisherBase.LogFunction = LogMessage;
             _Publisher = new SsdpDevicePublisher(communicationsServer, _timerFactory, _environmentInfo.OperatingSystemName, _environmentInfo.OperatingSystemVersion);
+            _Publisher.LogFunction = LogMessage;
         }
 
         private void StartDeviceDiscovery(ISsdpCommunicationsServer communicationsServer)

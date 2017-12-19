@@ -28,8 +28,8 @@ namespace Rssdp.Infrastructure
         private ITimerFactory _timerFactory;
         private object _timerLock = new object();
 
-        private static readonly TimeSpan DefaultSearchWaitTime = TimeSpan.FromSeconds(4);
-        private static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
+        private readonly TimeSpan DefaultSearchWaitTime = TimeSpan.FromSeconds(4);
+        private readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
 
         #endregion
 
@@ -442,7 +442,7 @@ namespace Rssdp.Infrastructure
 
         #region Header/Message Processing Utilities
 
-        private static string GetFirstHeaderStringValue(string headerName, HttpResponseMessage message)
+        private string GetFirstHeaderStringValue(string headerName, HttpResponseMessage message)
         {
             string retVal = null;
             IEnumerable<string> values;
@@ -456,7 +456,7 @@ namespace Rssdp.Infrastructure
             return retVal;
         }
 
-        private static string GetFirstHeaderStringValue(string headerName, HttpRequestMessage message)
+        private string GetFirstHeaderStringValue(string headerName, HttpRequestMessage message)
         {
             string retVal = null;
             IEnumerable<string> values;
@@ -470,7 +470,7 @@ namespace Rssdp.Infrastructure
             return retVal;
         }
 
-        private static Uri GetFirstHeaderUriValue(string headerName, HttpRequestMessage request)
+        private Uri GetFirstHeaderUriValue(string headerName, HttpRequestMessage request)
         {
             string value = null;
             IEnumerable<string> values;
@@ -486,7 +486,7 @@ namespace Rssdp.Infrastructure
             return retVal;
         }
 
-        private static Uri GetFirstHeaderUriValue(string headerName, HttpResponseMessage response)
+        private Uri GetFirstHeaderUriValue(string headerName, HttpResponseMessage response)
         {
             string value = null;
             IEnumerable<string> values;
@@ -502,7 +502,7 @@ namespace Rssdp.Infrastructure
             return retVal;
         }
 
-        private static TimeSpan CacheAgeFromHeader(System.Net.Http.Headers.CacheControlHeaderValue headerValue)
+        private TimeSpan CacheAgeFromHeader(System.Net.Http.Headers.CacheControlHeaderValue headerValue)
         {
             if (headerValue == null) return TimeSpan.Zero;
 
@@ -573,7 +573,7 @@ namespace Rssdp.Infrastructure
 
         #endregion
 
-        private static TimeSpan SearchTimeToMXValue(TimeSpan searchWaitTime)
+        private TimeSpan SearchTimeToMXValue(TimeSpan searchWaitTime)
         {
             if (searchWaitTime.TotalSeconds < 2 || searchWaitTime == TimeSpan.Zero)
                 return OneSecond;
@@ -581,7 +581,7 @@ namespace Rssdp.Infrastructure
                 return searchWaitTime.Subtract(OneSecond);
         }
 
-        private static DiscoveredSsdpDevice FindExistingDeviceNotification(IEnumerable<DiscoveredSsdpDevice> devices, string notificationType, string usn)
+        private DiscoveredSsdpDevice FindExistingDeviceNotification(IEnumerable<DiscoveredSsdpDevice> devices, string notificationType, string usn)
         {
             foreach (var d in devices)
             {
@@ -593,7 +593,7 @@ namespace Rssdp.Infrastructure
             return null;
         }
 
-        private static List<DiscoveredSsdpDevice> FindExistingDeviceNotifications(IList<DiscoveredSsdpDevice> devices, string usn)
+        private List<DiscoveredSsdpDevice> FindExistingDeviceNotifications(IList<DiscoveredSsdpDevice> devices, string usn)
         {
             var list = new List<DiscoveredSsdpDevice>();
 

@@ -30,7 +30,6 @@ namespace SocketHttpListener
         private CompressionMethod _compression;
         private WebSocketContext _context;
         private CookieCollection _cookies;
-        private string _extensions;
         private AutoResetEvent _exitReceiving;
         private object _forConn;
         private object _forEvent;
@@ -331,9 +330,6 @@ namespace SocketHttpListener
 
             if (_protocol != null)
                 headers["Sec-WebSocket-Protocol"] = _protocol;
-
-            if (_extensions != null)
-                headers["Sec-WebSocket-Extensions"] = _extensions;
 
             if (_cookies.Count > 0)
                 res.SetCookies(_cookies);
@@ -715,7 +711,7 @@ namespace SocketHttpListener
                 _stream.Write(data, 0, data.Length);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

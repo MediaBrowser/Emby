@@ -258,7 +258,7 @@ namespace MediaBrowser.Controller.Entities.Audio
             return result;
         }
 
-        private static MediaSourceInfo GetVersionInfo(Audio i, bool enablePathSubstituion)
+        private MediaSourceInfo GetVersionInfo(Audio i, bool enablePathSubstituion)
         {
             var locationType = i.LocationType;
 

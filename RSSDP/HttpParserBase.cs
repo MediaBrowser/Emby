@@ -15,8 +15,8 @@ namespace Rssdp.Infrastructure
 
 		#region Fields
 
-		private static readonly string[] LineTerminators = new string[] { "\r\n", "\n" };
-		private static readonly char[] SeparatorCharacters = new char[] { ',', ';' };
+		private readonly string[] LineTerminators = new string[] { "\r\n", "\n" };
+		private readonly char[] SeparatorCharacters = new char[] { ',', ';' };
 
 		#endregion
 
@@ -107,7 +107,7 @@ namespace Rssdp.Infrastructure
 		/// </summary>
 		/// <param name="versionData">A string containing the HTTP version, from the message status line.</param>
 		/// <returns>A <see cref="Version"/> object containing the parsed version data.</returns>
-		protected static Version ParseHttpVersion(string versionData)
+		protected Version ParseHttpVersion(string versionData)
 		{
 			if (versionData == null) throw new ArgumentNullException("versionData");
 
@@ -174,7 +174,7 @@ namespace Rssdp.Infrastructure
 			return lineIndex;
 		}
 
-		private static IList<string> ParseValues(string headerValue)
+		private IList<string> ParseValues(string headerValue)
 		{
 			// This really should be better and match the HTTP 1.1 spec,
 			// but this should actually be good enough for SSDP implementations
@@ -211,7 +211,7 @@ namespace Rssdp.Infrastructure
 			return values;
 		}
 
-		private static string CombineQuotedSegments(string[] segments, ref int segmentIndex, string segment)
+		private string CombineQuotedSegments(string[] segments, ref int segmentIndex, string segment)
 		{
 			var trimmedSegment = segment.Trim();
 			for (int index = segmentIndex; index < segments.Length; index++)

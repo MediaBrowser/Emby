@@ -1532,7 +1532,7 @@
     "LabelQuality": "\u8d28\u91cf\uff1a",
     "MovieLibraryHelp": "Review the {0}Emby movie naming guide{1}.",
     "TvLibraryHelp": "Review the {0}Emby TV naming guide{1}.",
-    "BookLibraryHelp": "Audio and text books are supported",
+    "BookLibraryHelp": "Audio and text books are supported. Review the {0}Emby Book naming guide{1}.",
     "MessageGamePluginRequired": "\u9700\u8981\u5b89\u88c5 GameBrowser \u63d2\u4ef6",
     "MessageUnsetContentHelp": "Content will be displayed as plain folders. For best results use the metadata manager to set the content types of sub-folders.",
     "LabelProfile": "Profile:",

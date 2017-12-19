@@ -79,7 +79,6 @@
     <Compile Include="Movies\MovieDbSearch.cs" />
     <Compile Include="Movies\MovieMetadataService.cs" />
     <Compile Include="Movies\TmdbSettings.cs" />
-    <Compile Include="ImagesByName\ImageUtils.cs" />
     <Compile Include="MediaInfo\AudioImageProvider.cs" />
     <Compile Include="MediaInfo\VideoImageProvider.cs" />
     <Compile Include="Movies\MovieDbImageProvider.cs" />

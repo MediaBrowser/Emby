@@ -31,7 +31,6 @@ namespace SocketHttpListener.Net
         string[] user_languages;
         HttpListenerContext context;
         bool is_chunked;
-        bool ka_set;
         bool? _keepAlive;
 
         private readonly ITextEncoding _textEncoding;
@@ -414,7 +413,7 @@ namespace SocketHttpListener.Net
                         return true;
                     }
                 }
-                catch (ObjectDisposedException e)
+                catch (ObjectDisposedException)
                 {
                     input_stream = null;
                     return true;

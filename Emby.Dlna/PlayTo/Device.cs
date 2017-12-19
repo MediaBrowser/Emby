@@ -492,7 +492,7 @@ namespace Emby.Dlna.PlayTo
                     RestartTimerInactive();
                 }
             }
-            catch (HttpException ex)
+            catch (HttpException)
             {
                 if (_disposed)
                     return;

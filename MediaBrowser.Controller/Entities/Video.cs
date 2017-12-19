@@ -674,7 +674,7 @@ namespace MediaBrowser.Controller.Entities
             .ToList();
         }
 
-        private static MediaSourceInfo GetVersionInfo(bool enablePathSubstitution, Video media, MediaSourceType type)
+        private MediaSourceInfo GetVersionInfo(bool enablePathSubstitution, Video media, MediaSourceType type)
         {
             if (media == null)
             {
@@ -752,7 +752,7 @@ namespace MediaBrowser.Controller.Entities
             return info;
         }
 
-        private static string GetMediaSourceName(Video video)
+        private string GetMediaSourceName(Video video)
         {
             var terms = new List<string>();
 

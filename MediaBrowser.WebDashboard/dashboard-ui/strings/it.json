@@ -1,6 +1,6 @@
 {
-    "AllLibraries": "All libraries",
-    "HeaderAllowMediaDeletionFrom": "Allow Media Deletion From",
+    "AllLibraries": "Tutte le librerie",
+    "HeaderAllowMediaDeletionFrom": "Abilita Eliminazione Media Da",
     "LabelPrevious": "Precedente",
     "LabelFinish": "Finito",
     "LabelNext": "Prossimo",
@@ -864,9 +864,9 @@
     "OptionSaveMetadataAsHidden": "Salvare i metadati e le immagini come file nascosti",
     "LabelExtractChaptersDuringLibraryScan": "Estrarre immagini capitolo durante la scansione della libreria",
     "LabelExtractChaptersDuringLibraryScanHelp": "Se abilitata, le immagini capitolo verranno estratti quando i video vengono importati durante la scansione della libreria. Se disabilitata verranno estratti durante l'operazione pianificata di estrazione delle immagini capitolo, permettendo la scansione della libreria pi\u00f9 velocemente.",
-    "LabelConnectGuestUserName": "Username di Emby o indirizzo email:",
-    "LabelConnectUserName": "Utente Emby o indirizzo e-mail:",
-    "LabelConnectUserNameHelp": "Collegare questo utente locale a un account online ricamato per consentire un facile segno-in di accesso da qualsiasi applicazione ricamato senza dover conoscere l'indirizzo IP del server",
+    "LabelConnectGuestUserName": "Il loro nome utente di Emby Connect o indirizzo email:",
+    "LabelConnectUserName": "Utente Emby Connect o indirizzo e-mail:",
+    "LabelConnectUserNameHelp": "Collegare questo utente locale a un account Emby Connect per consentire un facile segno-in di accesso da qualsiasi applicazione ricamato senza dover conoscere l'indirizzo IP del server",
     "ButtonLearnMoreAboutEmbyConnect": "Scopri di pi\u00f9 su Emby Connect",
     "LabelExternalPlayers": "Player esterni:",
     "LabelNativeExternalPlayersHelp": "Riproduci i video con riproduttori esterni.",
@@ -915,7 +915,7 @@
     "TabDevices": "Dispositivi",
     "HeaderLibrarySettings": "Impostazioni della Libreria",
     "HeaderChapterSettings": "Impostazioni dei Capitoli",
-    "HeaderCameraUploadHelp": "Le app di Emby possono caricare automaticamente foto e video scattati dai tuoi dispositivi mobile nel server Emby. ",
+    "HeaderCameraUploadHelp": "Le app di Emby possono caricare automaticamente le foto scattate dai tuoi dispositivi mobile nel server Emby.",
     "LabelCameraUploadPath": "Fotocamera percorso di upload:",
     "LabelCameraUploadPathHelp": "Selezionare un percorso di caricamento personalizzato.Ci\u00f2 sovrascriver\u00e0 le impostazioni predefinite impostate nella sezione Caricamenti Fotocamera. Se lasciato vuoto, verr\u00e0 utilizzata una cartella predefinita. Se si utilizza un percorso personalizzato, sar\u00e0 anche necessario aggiungerlo nell'area di configurazione della libreria.",
     "LabelCreateCameraUploadSubfolder": "Creare una sottocartella per ogni dispositivo",
@@ -1756,8 +1756,8 @@
     "StopRecording": "Ferma registrazione",
     "CancelSeries": "Annulla Serie",
     "EnableDebugLoggingHelp": "La registrazione di debug deve essere attivata solo se necessario per scopi di risoluzione dei problemi.  Il costante accesso al file system pu\u00f2 impedire al server di spegnersi in alcuni ambienti.",
-    "LabelSimultaneousConnectionLimit": "Simultaneous stream limit:",
-    "SimultaneousConnectionLimitHelp": "The maximum number of allowed simultaneous streams. Enter 0 for no limit.",
-    "LaunchWebAppOnStartup": "Launch the Emby web app in my web browser when Emby Server starts",
-    "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function."
+    "LabelSimultaneousConnectionLimit": "Limite stream simultanei:",
+    "SimultaneousConnectionLimitHelp": "Numero massimo di streaming simultanei permessi. Inserisci 0 per nessun limite.",
+    "LaunchWebAppOnStartup": "Lancia l'app web Emby nel mio browser web quando Emby Server si avvia",
+    "LaunchWebAppOnStartupHelp": "Ci\u00f2 aprir\u00e0 l'app Web nel browser Web predefinito all'avvio iniziale di Emby Server. Ci\u00f2 non si verifica quando si utilizza la funzione del server di riavvio."
 }

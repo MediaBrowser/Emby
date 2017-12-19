@@ -121,7 +121,7 @@ namespace MediaBrowser.Model.Dlna
 
         public TranscodingProfile GetAudioTranscodingProfile(string container, string audioCodec)
         {
-            container = StringHelper.TrimStart(container ?? string.Empty, '.');
+            container = (container ?? string.Empty).TrimStart('.');
 
             foreach (var i in TranscodingProfiles)
             {
@@ -147,7 +147,7 @@ namespace MediaBrowser.Model.Dlna
 
         public TranscodingProfile GetVideoTranscodingProfile(string container, string audioCodec, string videoCodec)
         {
-            container = StringHelper.TrimStart(container ?? string.Empty, '.');
+            container = (container ?? string.Empty).TrimStart('.');
 
             foreach (var i in TranscodingProfiles)
             {

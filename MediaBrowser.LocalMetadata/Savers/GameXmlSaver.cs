@@ -16,7 +16,7 @@ namespace MediaBrowser.LocalMetadata.Savers
     /// </summary>
     public class GameXmlSaver : BaseXmlSaver
     {
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
+        private readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         public override bool IsEnabledFor(IHasMetadata item, ItemUpdateType updateType)
         {

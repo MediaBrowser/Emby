@@ -53,12 +53,6 @@ namespace Mono.Nat
         public static ILogger Logger { get; set; }
         public static IHttpClient HttpClient { get; set; }
 
-        public static bool Verbose
-        {
-            get { return verbose; }
-            set { verbose = value; }
-        }
-
         static NatUtility()
         {
             EnabledProtocols = new List<NatProtocol>
@@ -89,49 +83,6 @@ namespace Mono.Nat
             var logger = Logger;
             if (logger != null)
                 logger.Debug(format, args);
-        }
-
-        private static async Task SearchAndListen(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    if (EnabledProtocols.Contains(PmpSearcher.Instance.Protocol))
-                    {
-                        await Receive(PmpSearcher.Instance, PmpSearcher.sockets).ConfigureAwait(false);
-                    }
-
-                    foreach (ISearcher s in controllers)
-                    {
-                        if (s.NextSearch < DateTime.Now && EnabledProtocols.Contains(s.Protocol))
-                        {
-                            Log("Searching for: {0}", s.GetType().Name);
-                            s.Search();
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-
-                }
-                await Task.Delay(100).ConfigureAwait(false);
-            }
-        }
-
-        static async Task Receive(ISearcher searcher, List<UdpClient> clients)
-        {
-            foreach (UdpClient client in clients)
-            {
-                if (client.Available > 0)
-                {
-                    IPAddress localAddress = ((IPEndPoint)client.Client.LocalEndPoint).Address;
-                    var result = await client.ReceiveAsync().ConfigureAwait(false);
-                    var data = result.Buffer;
-                    var received = result.RemoteEndPoint;
-                    searcher.Handle(localAddress, data, received);
-                }
-            }
         }
 
         private static CancellationTokenSource _currentCancellationTokenSource;
@@ -172,39 +123,6 @@ namespace Mono.Nat
 
                     _currentCancellationTokenSource = null;
                 }
-            }
-        }
-
-        //checks if an IP address is a private address space as defined by RFC 1918
-        public static bool IsPrivateAddressSpace(IPAddress address)
-        {
-            byte[] ba = address.GetAddressBytes();
-
-            switch ((int)ba[0])
-            {
-                case 10:
-                    return true; //10.x.x.x
-                case 172:
-                    return ((int)ba[1] & 16) != 0; //172.16-31.x.x
-                case 192:
-                    return (int)ba[1] == 168; //192.168.x.x
-                default:
-                    return false;
-            }
-        }
-
-        public static void Handle(IPAddress localAddress, byte[] response, IPEndPoint endpoint, NatProtocol protocol)
-        {
-            switch (protocol)
-            {
-                case NatProtocol.Upnp:
-                    //UpnpSearcher.Instance.Handle(localAddress, response, endpoint);
-                    break;
-                case NatProtocol.Pmp:
-                    PmpSearcher.Instance.Handle(localAddress, response, endpoint);
-                    break;
-                default:
-                    throw new ArgumentException("Unexpected protocol: " + protocol);
             }
         }
 

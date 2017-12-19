@@ -450,7 +450,7 @@ namespace Rssdp.Infrastructure
             //Responses start with the HTTP version, prefixed with HTTP/ while
             //requests start with a method which can vary and might be one we haven't 
             //seen/don't know. We'll check if this message is a request or a response
-            //by checking for the static HTTP/ prefix on the start of the message.
+            //by checking for the HTTP/ prefix on the start of the message.
             if (data.StartsWith("HTTP/", StringComparison.OrdinalIgnoreCase))
             {
                 HttpResponseMessage responseMessage = null;
