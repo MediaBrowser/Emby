@@ -7,6 +7,7 @@ using HttpStatusCode = SocketHttpListener.Net.HttpStatusCode;
 using HttpVersion = SocketHttpListener.Net.HttpVersion;
 using System.Linq;
 using MediaBrowser.Model.Services;
+using SocketHttpListener.Net;
 
 namespace SocketHttpListener
 {
@@ -51,8 +52,16 @@ namespace SocketHttpListener
         {
             get
             {
-                return Headers.GetCookies(true);
+                return GetCookies(Headers, true);
             }
+        }
+
+        private CookieCollection GetCookies(QueryParamCollection headers, bool response)
+        {
+            var name = response ? "Set-Cookie" : "Cookie";
+            return headers == null || !headers.Contains(name)
+                   ? new CookieCollection()
+                   : CookieHelper.Parse(headers[name], response);
         }
 
         public bool IsProxyAuthenticationRequired
