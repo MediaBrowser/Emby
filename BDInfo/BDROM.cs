@@ -57,8 +57,6 @@ namespace BDInfo
         public Dictionary<string, TSInterleavedFile> InterleavedFiles =
             new Dictionary<string, TSInterleavedFile>();
 
-        private static List<string> ExcludeDirs = new List<string> { "ANY!", "AACS", "BDSVM", "ANYVM", "SLYVM" };
-
         public delegate bool OnStreamClipFileScanError(
             TSStreamClipFile streamClipFile, Exception ex);
 
@@ -421,7 +419,7 @@ namespace BDInfo
             return dir.Name;
         }
 
-        public static int CompareStreamFiles(
+        public int CompareStreamFiles(
             TSStreamFile x,
             TSStreamFile y)
         {

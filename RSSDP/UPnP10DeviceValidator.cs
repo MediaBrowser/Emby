@@ -110,9 +110,6 @@ namespace Rssdp.Infrastructure
 			if (String.IsNullOrEmpty(device.ModelName))
 				retVal.Add("ModelName is required.");
 
-			if (device.Icons.Count > 0)
-				ValidateIcons(device, retVal);
-
 			ValidateChildDevices(device, retVal);
 
 			return retVal;
@@ -134,7 +131,7 @@ namespace Rssdp.Infrastructure
 
 		#region Private Methods
 
-		private static void ValidateUpc(SsdpDevice device, List<string> retVal)
+		private void ValidateUpc(SsdpDevice device, List<string> retVal)
 		{
 			if (device.Upc.Length != 12)
 				retVal.Add("Upc, if provided, should be 12 digits.");
@@ -149,27 +146,12 @@ namespace Rssdp.Infrastructure
 			}
 		}
 
-		private static void ValidateUdn(SsdpDevice device, List<string> retVal)
+		private void ValidateUdn(SsdpDevice device, List<string> retVal)
 		{
 			if (!device.Udn.StartsWith("uuid:", StringComparison.OrdinalIgnoreCase))
 				retVal.Add("UDN must begin with uuid:. Correct format is uuid:<uuid>");
 			else if (device.Udn.Substring(5).Trim() != device.Uuid)
 				retVal.Add("UDN incorrect. Correct format is uuid:<uuid>");
-		}
-
-		private static void ValidateIcons(SsdpDevice device, List<string> retVal)
-		{
-			if (device.Icons.Any((di) => di.Url == null))
-				retVal.Add("Device icon is missing URL.");
-
-			if (device.Icons.Any((di) => String.IsNullOrEmpty(di.MimeType)))
-				retVal.Add("Device icon is missing mime type.");
-
-			if (device.Icons.Any((di) => di.Width <= 0 || di.Height <= 0))
-				retVal.Add("Device icon has zero (or negative) height, width or both.");
-
-			if (device.Icons.Any((di) => di.ColorDepth <= 0))
-				retVal.Add("Device icon has zero (or negative) colordepth.");
 		}
 
 		private void ValidateChildDevices(SsdpDevice device, List<string> retVal)
@@ -183,7 +165,7 @@ namespace Rssdp.Infrastructure
 			}
 		}
 		
-		private static bool IsOverLength(string value, int maxLength)
+		private bool IsOverLength(string value, int maxLength)
 		{
 			return !String.IsNullOrEmpty(value) && value.Length > maxLength;
 		}

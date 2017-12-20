@@ -95,7 +95,7 @@ namespace MediaBrowser.Model.Dlna
 
         private StreamInfo GetOptimalStream(List<StreamInfo> streams, long? maxBitrate)
         {
-            var sorted = StreamInfoSorter.SortMediaSources(streams, maxBitrate);
+            var sorted = SortMediaSources(streams, maxBitrate);
 
             foreach (StreamInfo stream in sorted)
             {
@@ -103,6 +103,55 @@ namespace MediaBrowser.Model.Dlna
             }
 
             return null;
+        }
+
+        private StreamInfo[] SortMediaSources(List<StreamInfo> streams, long? maxBitrate)
+        {
+            return streams.OrderBy(i =>
+            {
+                // Nothing beats direct playing a file
+                if (i.PlayMethod == PlayMethod.DirectPlay && i.MediaSource.Protocol == MediaProtocol.File)
+                {
+                    return 0;
+                }
+
+                return 1;
+
+            }).ThenBy(i =>
+            {
+                switch (i.PlayMethod)
+                {
+                    // Let's assume direct streaming a file is just as desirable as direct playing a remote url
+                    case PlayMethod.DirectStream:
+                    case PlayMethod.DirectPlay:
+                        return 0;
+                    default:
+                        return 1;
+                }
+
+            }).ThenBy(i =>
+            {
+                switch (i.MediaSource.Protocol)
+                {
+                    case MediaProtocol.File:
+                        return 0;
+                    default:
+                        return 1;
+                }
+
+            }).ThenBy(i =>
+            {
+                if (maxBitrate.HasValue)
+                {
+                    if (i.MediaSource.Bitrate.HasValue)
+                    {
+                        return Math.Abs(i.MediaSource.Bitrate.Value - maxBitrate.Value);
+                    }
+                }
+
+                return 0;
+
+            }).ThenBy(streams.IndexOf).ToArray();
         }
 
         private TranscodeReason? GetTranscodeReasonForFailedCondition(ProfileCondition condition)
@@ -1538,15 +1587,15 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.SetOption(qualifier, "maxrefframes", StringHelper.ToStringCultureInvariant(num));
+                                    item.SetOption(qualifier, "maxrefframes", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.SetOption(qualifier, "maxrefframes", StringHelper.ToStringCultureInvariant(Math.Min(num, item.GetTargetRefFrames(qualifier) ?? num)));
+                                    item.SetOption(qualifier, "maxrefframes", Math.Min(num, item.GetTargetRefFrames(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.SetOption(qualifier, "maxrefframes", StringHelper.ToStringCultureInvariant(Math.Max(num, item.GetTargetRefFrames(qualifier) ?? num)));
+                                    item.SetOption(qualifier, "maxrefframes", Math.Max(num, item.GetTargetRefFrames(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;
@@ -1685,15 +1734,15 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.SetOption(qualifier, "level", StringHelper.ToStringCultureInvariant(num));
+                                    item.SetOption(qualifier, "level", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.SetOption(qualifier, "level", StringHelper.ToStringCultureInvariant(Math.Min(num, item.GetTargetVideoLevel(qualifier) ?? num)));
+                                    item.SetOption(qualifier, "level", Math.Min(num, item.GetTargetVideoLevel(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.SetOption(qualifier, "level", StringHelper.ToStringCultureInvariant(Math.Max(num, item.GetTargetVideoLevel(qualifier) ?? num)));
+                                    item.SetOption(qualifier, "level", Math.Max(num, item.GetTargetVideoLevel(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;

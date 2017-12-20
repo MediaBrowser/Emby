@@ -485,7 +485,7 @@ namespace MediaBrowser.Providers.TV
             return null;
         }
 
-        private static Episode GetExistingEpisode(IEnumerable<Episode> existingEpisodes, int season, int episode)
+        private Episode GetExistingEpisode(IEnumerable<Episode> existingEpisodes, int season, int episode)
         {
             return existingEpisodes
                 .FirstOrDefault(i => i.ParentIndexNumber == season && i.ContainsEpisodeNumber(episode));

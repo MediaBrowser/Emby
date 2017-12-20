@@ -1287,7 +1287,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
         /// <param name="separators">The separators.</param>
         /// <param name="options">The options.</param>
         /// <returns>System.String[][].</returns>
-        private static string[] Split(string val, char[] separators, StringSplitOptions options)
+        private string[] Split(string val, char[] separators, StringSplitOptions options)
         {
             return val.Split(separators, options);
         }

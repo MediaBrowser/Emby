@@ -156,7 +156,7 @@ namespace MediaBrowser.WebDashboard.Api
         /// Gets the meta tags.
         /// </summary>
         /// <returns>System.String.</returns>
-        private static string GetMetaTags(string mode)
+        private string GetMetaTags(string mode)
         {
             var sb = new StringBuilder();
 

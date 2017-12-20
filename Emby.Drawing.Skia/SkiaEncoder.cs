@@ -621,8 +621,7 @@ namespace Emby.Drawing.Skia
 
                 if (options.AddPlayedIndicator)
                 {
-                    var task = new PlayedIndicatorDrawer(_appPaths, _httpClientFactory(), _fileSystem).DrawPlayedIndicator(canvas, currentImageSize);
-                    Task.WaitAll(task);
+                    new PlayedIndicatorDrawer(_appPaths, _httpClientFactory(), _fileSystem).DrawPlayedIndicator(canvas, currentImageSize);
                 }
                 else if (options.UnplayedCount.HasValue)
                 {

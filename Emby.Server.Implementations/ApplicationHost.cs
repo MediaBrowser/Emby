@@ -693,14 +693,14 @@ namespace Emby.Server.Implementations
 
             await MediaEncoder.Init().ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(MediaEncoder.EncoderPath))
-            {
-                if (ServerConfigurationManager.Configuration.IsStartupWizardCompleted)
-                {
-                    ServerConfigurationManager.Configuration.IsStartupWizardCompleted = false;
-                    ServerConfigurationManager.SaveConfiguration();
-                }
-            }
+            //if (string.IsNullOrWhiteSpace(MediaEncoder.EncoderPath))
+            //{
+            //    if (ServerConfigurationManager.Configuration.IsStartupWizardCompleted)
+            //    {
+            //        ServerConfigurationManager.Configuration.IsStartupWizardCompleted = false;
+            //        ServerConfigurationManager.SaveConfiguration();
+            //    }
+            //}
 
             Logger.Info("ServerId: {0}", SystemId);
             Logger.Info("Core startup complete");

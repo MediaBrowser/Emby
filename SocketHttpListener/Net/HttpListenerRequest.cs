@@ -31,7 +31,6 @@ namespace SocketHttpListener.Net
         string[] user_languages;
         HttpListenerContext context;
         bool is_chunked;
-        bool ka_set;
         bool? _keepAlive;
 
         private readonly ITextEncoding _textEncoding;
@@ -248,6 +247,14 @@ namespace SocketHttpListener.Net
             return str.Trim();
         }
 
+        private string GetValue(string nameAndValue, string separator)
+        {
+            return (nameAndValue != null && nameAndValue.Length > 0) &&
+                   (separator != null && separator.Length > 0)
+                   ? nameAndValue.GetValueInternal(separator)
+                   : null;
+        }
+
         internal void AddHeader(string header)
         {
             int colon = header.IndexOf(':');
@@ -293,7 +300,7 @@ namespace SocketHttpListener.Net
                             var tmp = content.Trim();
                             if (tmp.StartsWith("charset"))
                             {
-                                var charset = tmp.GetValue("=");
+                                var charset = GetValue(tmp, "=");
                                 if (charset != null && charset.Length > 0)
                                 {
                                     try
@@ -404,7 +411,7 @@ namespace SocketHttpListener.Net
                 try
                 {
                     var task = InputStream.ReadAsync(bytes, 0, length);
-                    var result = Task.WaitAll(new [] { task }, 1000);
+                    var result = Task.WaitAll(new[] { task }, 1000);
                     if (!result)
                     {
                         return false;
@@ -414,7 +421,7 @@ namespace SocketHttpListener.Net
                         return true;
                     }
                 }
-                catch (ObjectDisposedException e)
+                catch (ObjectDisposedException)
                 {
                     input_stream = null;
                     return true;
@@ -519,7 +526,7 @@ namespace SocketHttpListener.Net
                 var remoteEndPoint = RemoteEndPoint;
 
                 return remoteEndPoint.Address.Equals(IPAddress.Loopback) ||
-                       remoteEndPoint.Address.Equals(IPAddress.IPv6Loopback) || 
+                       remoteEndPoint.Address.Equals(IPAddress.IPv6Loopback) ||
                         LocalEndPoint.Address.Equals(remoteEndPoint.Address);
             }
         }

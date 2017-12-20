@@ -46,7 +46,6 @@
     </Compile>
     <Compile Include="AbstractNatDevice.cs" />
     <Compile Include="AsyncResults\AsyncResult.cs" />
-    <Compile Include="Enums\MapState.cs" />
     <Compile Include="Enums\ProtocolType.cs" />
     <Compile Include="EventArgs\DeviceEventArgs.cs" />
     <Compile Include="Exceptions\MappingException.cs" />

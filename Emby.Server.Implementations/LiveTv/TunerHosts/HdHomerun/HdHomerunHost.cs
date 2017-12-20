@@ -131,12 +131,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         private readonly Dictionary<string, DiscoverResponse> _modelCache = new Dictionary<string, DiscoverResponse>();
         private async Task<DiscoverResponse> GetModelInfo(TunerHostInfo info, bool throwAllExceptions, CancellationToken cancellationToken)
         {
+            var cacheKey = info.Id;
+
             lock (_modelCache)
             {
-                DiscoverResponse response;
-                if (_modelCache.TryGetValue(info.Url, out response))
+                if (!string.IsNullOrWhiteSpace(cacheKey))
                 {
-                    if ((DateTime.UtcNow - response.DateQueried).TotalHours <= 12)
+                    DiscoverResponse response;
+                    if (_modelCache.TryGetValue(cacheKey, out response))
                     {
                         return response;
                     }
@@ -149,7 +151,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 {
                     Url = string.Format("{0}/discover.json", GetApiUrl(info)),
                     CancellationToken = cancellationToken,
-                    TimeoutMs = Convert.ToInt32(TimeSpan.FromSeconds(5).TotalMilliseconds),
+                    TimeoutMs = Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds),
                     BufferContent = false
 
                 }, "GET").ConfigureAwait(false))
@@ -158,11 +160,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         var discoverResponse = JsonSerializer.DeserializeFromStream<DiscoverResponse>(stream);
 
-                        if (!string.IsNullOrWhiteSpace(info.Id))
+                        if (!string.IsNullOrWhiteSpace(cacheKey))
                         {
                             lock (_modelCache)
                             {
-                                _modelCache[info.Id] = discoverResponse;
+                                _modelCache[cacheKey] = discoverResponse;
                             }
                         }
 
@@ -179,12 +181,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         ModelNumber = defaultValue
                     };
-                    if (!string.IsNullOrWhiteSpace(info.Id))
+                    if (!string.IsNullOrWhiteSpace(cacheKey))
                     {
                         // HDHR4 doesn't have this api
                         lock (_modelCache)
                         {
-                            _modelCache[info.Id] = response;
+                            _modelCache[cacheKey] = response;
                         }
                     }
                     return response;
@@ -680,13 +682,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             public string LineupURL { get; set; }
             public int TunerCount { get; set; }
 
-            public DateTime DateQueried { get; set; }
-
-            public DiscoverResponse()
-            {
-                DateQueried = DateTime.UtcNow;
-            }
-
             public bool SupportsTranscoding
             {
                 get
@@ -705,6 +700,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
         public async Task<List<TunerHostInfo>> DiscoverDevices(int discoveryDurationMs, CancellationToken cancellationToken)
         {
+            lock (_modelCache)
+            {
+                _modelCache.Clear();
+            }
+
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(new CancellationTokenSource(discoveryDurationMs).Token, cancellationToken).Token;
             var list = new List<TunerHostInfo>();
 

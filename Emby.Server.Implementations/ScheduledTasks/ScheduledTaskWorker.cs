@@ -160,7 +160,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
                 _lastExecutionResult = value;
 
                 var path = GetHistoryFilePath();
-				_fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+                _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
 
                 lock (_lastExecutionResultSyncLock)
                 {
@@ -236,7 +236,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
         /// <summary>
         /// The _triggers
         /// </summary>
-        private Tuple<TaskTriggerInfo,ITaskTrigger>[] _triggers;
+        private Tuple<TaskTriggerInfo, ITaskTrigger>[] _triggers;
         /// <summary>
         /// Gets the triggers that define when the task will run
         /// </summary>
@@ -561,13 +561,35 @@ namespace Emby.Server.Implementations.ScheduledTasks
             catch (FileNotFoundException)
             {
                 // File doesn't exist. No biggie. Return defaults.
-                return ScheduledTask.GetDefaultTriggers().ToArray();
             }
             catch (DirectoryNotFoundException)
             {
                 // File doesn't exist. No biggie. Return defaults.
             }
-            return ScheduledTask.GetDefaultTriggers().ToArray();
+            catch
+            {
+
+            }
+            return GetDefaultTriggers();
+        }
+
+        private TaskTriggerInfo[] GetDefaultTriggers()
+        {
+            try
+            {
+                return ScheduledTask.GetDefaultTriggers().ToArray();
+            }
+            catch
+            {
+                return new TaskTriggerInfo[]
+                {
+                    new TaskTriggerInfo
+                    {
+                        IntervalTicks = TimeSpan.FromDays(1).Ticks,
+                        Type = TaskTriggerInfo.TriggerInterval
+                    }
+                };
+            }
         }
 
         /// <summary>
@@ -578,7 +600,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
         {
             var path = GetConfigurationFilePath();
 
-			_fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+            _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
 
             JsonSerializer.SerializeToFile(triggers, path);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.MediaInfo;
+using System.Globalization;
 
 namespace MediaBrowser.Model.Entities
 {
@@ -72,7 +73,7 @@ namespace MediaBrowser.Model.Entities
                     }
                     else if (Channels.HasValue)
                     {
-                        attributes.Add(StringHelper.ToStringCultureInvariant(Channels.Value) + " ch");
+                        attributes.Add(Channels.Value.ToString(CultureInfo.InvariantCulture) + " ch");
                     }
                     if (IsDefault)
                     {
@@ -374,9 +375,9 @@ namespace MediaBrowser.Model.Entities
 
             // sub = external .sub file
 
-            return StringHelper.IndexOfIgnoreCase(codec, "pgs") == -1 &&
-                   StringHelper.IndexOfIgnoreCase(codec, "dvd") == -1 &&
-                   StringHelper.IndexOfIgnoreCase(codec, "dvbsub") == -1 &&
+            return codec.IndexOf("pgs", StringComparison.OrdinalIgnoreCase) == -1 &&
+                   codec.IndexOf("dvd", StringComparison.OrdinalIgnoreCase) == -1 &&
+                   codec.IndexOf("dvbsub", StringComparison.OrdinalIgnoreCase) == -1 &&
                    !StringHelper.EqualsIgnoreCase(codec, "sub") &&
                    !StringHelper.EqualsIgnoreCase(codec, "dvb_subtitle");
         }

@@ -24,7 +24,7 @@ namespace MediaBrowser.XbmcMetadata.Parsers
             Fetch(item, metadataFile, cancellationToken);
         }
 
-        private static readonly CultureInfo UsCulture = new CultureInfo("en-US");
+        private readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
         protected override void Fetch(MetadataResult<Episode> item, string metadataFile, XmlReaderSettings settings, CancellationToken cancellationToken)
         {

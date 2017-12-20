@@ -1532,7 +1532,7 @@
     "LabelQuality": "Kvaliteta:",
     "MovieLibraryHelp": "Review the {0}Emby movie naming guide{1}.",
     "TvLibraryHelp": "Review the {0}Emby TV naming guide{1}.",
-    "BookLibraryHelp": "Audio and text books are supported",
+    "BookLibraryHelp": "Audio and text books are supported. Review the {0}Emby Book naming guide{1}.",
     "MessageGamePluginRequired": "Zahtijeva instalaciju GameBrowser dodatka",
     "MessageUnsetContentHelp": "Sadr\u017eaj \u0107e biti prikazan kao obi\u010dne mape. Za najbolje rezultate upotrijebite upravitelj meta-podataka za postavljanje vrste sadr\u017eaja pod-mapa.",
     "LabelProfile": "Profil:",

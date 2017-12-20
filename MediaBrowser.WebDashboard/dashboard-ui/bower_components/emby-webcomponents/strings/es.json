@@ -1,4 +1,5 @@
 {
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "MessageUnlockAppWithPurchaseOrSupporter": "Desbloquea esta caracter\u00edstica con una peque\u00f1a compra una vez o con una suscripci\u00f3n a Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Desbloquea esta caracter\u00edstica con una suscripci\u00f3n a Emby Premiere.",
     "MessageToValidateSupporter": "Si tienes una suscripci\u00f3n a Emby Premiere aseg\u00farate de que la has configurado en el Panel de Control de tu servidor Emby en Ayuda -> Emby Premiere.",
@@ -456,6 +457,7 @@
     "PlaybackErrorPlaceHolder": "El contenido elegido no se puede reproducir desde este dispositivo.",
     "Guide": "Gu\u00eda",
     "Suggestions": "Sugerencias",
+    "HeaderFavoriteCollections": "Favorite Collections",
     "Collections": "Colecciones",
     "LabelSelectFolderGroups": "Agrupar contenido autom\u00e1ticamente desde las siguientes carpetas en vistas como Pel\u00edculas, M\u00fasica y Series:",
     "LabelSelectFolderGroupsHelp": "Las carpetas sin seleccionar se mostrar\u00e1n ellas mismas en su propia vista.",

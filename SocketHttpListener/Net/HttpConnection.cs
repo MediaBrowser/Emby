@@ -37,7 +37,6 @@ namespace SocketHttpListener.Net
         int _timeout = 300000; // 90k ms for first request, 15k ms from then on
         IPEndPoint local_ep;
         HttpListener _lastListener;
-        int[] client_cert_errors;
         X509Certificate cert;
         SslStream ssl_stream;
 
@@ -105,11 +104,6 @@ namespace SocketHttpListener.Net
             {
                 return _stream;
             }
-        }
-
-        internal int[] ClientCertificateErrors
-        {
-            get { return client_cert_errors; }
         }
 
         void Init()

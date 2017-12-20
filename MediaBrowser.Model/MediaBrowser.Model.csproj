@@ -66,13 +66,8 @@
     <Compile Include="Connect\ConnectAuthenticationResult.cs" />
     <Compile Include="Connect\ConnectAuthorization.cs" />
     <Compile Include="Connect\ConnectAuthorizationRequest.cs" />
-    <Compile Include="Connect\ConnectPassword.cs" />
     <Compile Include="Connect\ConnectUser.cs" />
     <Compile Include="Connect\ConnectUserQuery.cs" />
-    <Compile Include="Connect\ConnectUserServer.cs" />
-    <Compile Include="Connect\PinCreationResult.cs" />
-    <Compile Include="Connect\PinExchangeResult.cs" />
-    <Compile Include="Connect\PinStatusResult.cs" />
     <Compile Include="Connect\UserLinkType.cs" />
     <Compile Include="Cryptography\ICryptoProvider.cs" />
     <Compile Include="Devices\DeviceOptions.cs" />
@@ -92,7 +87,6 @@
     <Compile Include="Dlna\ITranscoderSupport.cs" />
     <Compile Include="Dlna\ProfileCondition.cs" />
     <Compile Include="Dlna\ResponseProfile.cs" />
-    <Compile Include="Dlna\StreamInfoSorter.cs" />
     <Compile Include="Dlna\PlaybackErrorCode.cs" />
     <Compile Include="Dlna\ResolutionConfiguration.cs" />
     <Compile Include="Dlna\ResolutionNormalizer.cs" />

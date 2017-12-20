@@ -1,4 +1,5 @@
 {
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "MessageUnlockAppWithPurchaseOrSupporter": "Ontgrendel deze functie met een kleine eenmalige aankoop, of met een actief Emby Premiere abonnement.",
     "MessageUnlockAppWithSupporter": "Ontgrendel deze functie met een actief Emby Premiere abonnement.",
     "MessageToValidateSupporter": "Als u een actieve Emby Premiere abonnement heeft, zorg er dan voor dat u deze activeert in uw Emby Server Dashboard door te klikken op Emby Premiere in het hoofdmenu.",
@@ -456,6 +457,7 @@
     "PlaybackErrorPlaceHolder": "De gekozen content is niet af te spelen vanaf dit apparaat. Plaats de schijf.",
     "Guide": "Gids",
     "Suggestions": "Suggesties",
+    "HeaderFavoriteCollections": "Favorite Collections",
     "Collections": "Collecties",
     "LabelSelectFolderGroups": "De inhoud van de volgende mappen automatisch groeperen in secties zoals Films, Muziek en TV:",
     "LabelSelectFolderGroupsHelp": "Mappen die niet aangevinkt zijn worden getoond in hun eigen weergave.",

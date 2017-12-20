@@ -1,4 +1,5 @@
 {
+    "HeaderFavoritePlaylists": "Listas de Reproducci\u00f3n Favoritas",
     "MessageUnlockAppWithPurchaseOrSupporter": "Desbloquee esta caracter\u00edstica con una peque\u00f1a compra \u00fanica, o con una suscripci\u00f3n activa de Emby Premier.",
     "MessageUnlockAppWithSupporter": "Desbloquee esta caracter\u00edstica con una suscripci\u00f3n activa de Emby Premier.",
     "MessageToValidateSupporter": "Si tiene una subscripci\u00f3n de Emby Premiere activa, aseg\u00farese de que ha configurado Emby Premiere en el Panel de Control del Servidor Emby, al cual puede acceder dando click en Emby Premiere dentro del men\u00fa principal.",
@@ -456,6 +457,7 @@
     "PlaybackErrorPlaceHolder": "Por favor introduzca el disco para poder reproducir este video.",
     "Guide": "Gu\u00eda",
     "Suggestions": "Sugerencias",
+    "HeaderFavoriteCollections": "Colecciones Favoritas",
     "Collections": "Colecciones",
     "LabelSelectFolderGroups": "Agrupar autom\u00e1ticamente el contenido de las siguientes carpetas en vistas tales como Pel\u00edculas, M\u00fasica y TV:",
     "LabelSelectFolderGroupsHelp": "Las carpetas sin marcar ser\u00e1n mostradas individualmente en su propia vista.",

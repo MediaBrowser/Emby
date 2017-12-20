@@ -7,8 +7,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
-using SocketHttpListener.Net;
-using HttpListenerResponse = SocketHttpListener.Net.HttpListenerResponse;
 using HttpStatusCode = SocketHttpListener.Net.HttpStatusCode;
 
 namespace SocketHttpListener
@@ -632,24 +630,6 @@ namespace SocketHttpListener
         }
 
         /// <summary>
-        /// Emits the specified <see cref="EventHandler"/> delegate if it isn't <see langword="null"/>.
-        /// </summary>
-        /// <param name="eventHandler">
-        /// A <see cref="EventHandler"/> to emit.
-        /// </param>
-        /// <param name="sender">
-        /// An <see cref="object"/> from which emits this <paramref name="eventHandler"/>.
-        /// </param>
-        /// <param name="e">
-        /// A <see cref="EventArgs"/> that contains no event data.
-        /// </param>
-        public static void Emit(this EventHandler eventHandler, object sender, EventArgs e)
-        {
-            if (eventHandler != null)
-                eventHandler(sender, e);
-        }
-
-        /// <summary>
         /// Emits the specified <c>EventHandler&lt;TEventArgs&gt;</c> delegate
         /// if it isn't <see langword="null"/>.
         /// </summary>
@@ -674,27 +654,6 @@ namespace SocketHttpListener
         }
 
         /// <summary>
-        /// Gets the collection of the HTTP cookies from the specified HTTP <paramref name="headers"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="CookieCollection"/> that receives a collection of the HTTP cookies.
-        /// </returns>
-        /// <param name="headers">
-        /// A <see cref="QueryParamCollection"/> that contains a collection of the HTTP headers.
-        /// </param>
-        /// <param name="response">
-        /// <c>true</c> if <paramref name="headers"/> is a collection of the response headers;
-        /// otherwise, <c>false</c>.
-        /// </param>
-        public static CookieCollection GetCookies(this QueryParamCollection headers, bool response)
-        {
-            var name = response ? "Set-Cookie" : "Cookie";
-            return headers == null || !headers.Contains(name)
-                   ? new CookieCollection()
-                   : CookieHelper.Parse(headers[name], response);
-        }
-
-        /// <summary>
         /// Gets the description of the specified HTTP status <paramref name="code"/>.
         /// </summary>
         /// <returns>
@@ -706,52 +665,6 @@ namespace SocketHttpListener
         public static string GetDescription(this HttpStatusCode code)
         {
             return ((int)code).GetStatusDescription();
-        }
-
-        /// <summary>
-        /// Gets the name from the specified <see cref="string"/> that contains a pair of name and
-        /// value separated by a separator string.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> that represents the name if any; otherwise, <c>null</c>.
-        /// </returns>
-        /// <param name="nameAndValue">
-        /// A <see cref="string"/> that contains a pair of name and value separated by a separator
-        /// string.
-        /// </param>
-        /// <param name="separator">
-        /// A <see cref="string"/> that represents a separator string.
-        /// </param>
-        public static string GetName(this string nameAndValue, string separator)
-        {
-            return (nameAndValue != null && nameAndValue.Length > 0) &&
-                   (separator != null && separator.Length > 0)
-                   ? nameAndValue.GetNameInternal(separator)
-                   : null;
-        }
-
-        /// <summary>
-        /// Gets the name and value from the specified <see cref="string"/> that contains a pair of
-        /// name and value separated by a separator string.
-        /// </summary>
-        /// <returns>
-        /// A <c>KeyValuePair&lt;string, string&gt;</c> that represents the name and value if any.
-        /// </returns>
-        /// <param name="nameAndValue">
-        /// A <see cref="string"/> that contains a pair of name and value separated by a separator
-        /// string.
-        /// </param>
-        /// <param name="separator">
-        /// A <see cref="string"/> that represents a separator string.
-        /// </param>
-        public static KeyValuePair<string, string> GetNameAndValue(
-          this string nameAndValue, string separator)
-        {
-            var name = nameAndValue.GetName(separator);
-            var value = nameAndValue.GetValue(separator);
-            return name != null
-                   ? new KeyValuePair<string, string>(name, value)
-                   : new KeyValuePair<string, string>(null, null);
         }
 
         /// <summary>
@@ -816,28 +729,6 @@ namespace SocketHttpListener
             }
 
             return String.Empty;
-        }
-
-        /// <summary>
-        /// Gets the value from the specified <see cref="string"/> that contains a pair of name and
-        /// value separated by a separator string.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> that represents the value if any; otherwise, <c>null</c>.
-        /// </returns>
-        /// <param name="nameAndValue">
-        /// A <see cref="string"/> that contains a pair of name and value separated by a separator
-        /// string.
-        /// </param>
-        /// <param name="separator">
-        /// A <see cref="string"/> that represents a separator string.
-        /// </param>
-        public static string GetValue(this string nameAndValue, string separator)
-        {
-            return (nameAndValue != null && nameAndValue.Length > 0) &&
-                   (separator != null && separator.Length > 0)
-                   ? nameAndValue.GetValueInternal(separator)
-                   : null;
         }
 
         /// <summary>
