@@ -399,7 +399,10 @@ namespace SocketHttpListener
                 {
                     try
                     {
-                        OnOpen.Emit(this, EventArgs.Empty);
+                        if (OnOpen != null)
+                        {
+                            OnOpen(this, EventArgs.Empty);
+                        }
                     }
                     catch (Exception ex)
                     {
