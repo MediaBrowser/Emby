@@ -33,13 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CustomHttpHeaders.cs" />
     <Compile Include="DeviceAvailableEventArgs.cs" />
     <Compile Include="DeviceEventArgs.cs" />
     <Compile Include="DeviceUnavailableEventArgs.cs" />
     <Compile Include="DiscoveredSsdpDevice.cs" />
     <Compile Include="DisposableManagedObjectBase.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HttpParserBase.cs" />
     <Compile Include="HttpRequestParser.cs" />
     <Compile Include="HttpResponseParser.cs" />
@@ -55,11 +53,8 @@
     <Compile Include="SsdpConstants.cs" />
     <Compile Include="SsdpDevice.cs" />
     <Compile Include="SsdpDeviceExtensions.cs" />
-    <Compile Include="SsdpDeviceIcon.cs" />
     <Compile Include="SsdpDeviceLocator.cs" />
     <Compile Include="SsdpDeviceLocatorBase.cs" />
-    <Compile Include="SsdpDeviceProperties.cs" />
-    <Compile Include="SsdpDeviceProperty.cs" />
     <Compile Include="SsdpDevicePublisher.cs" />
     <Compile Include="SsdpDevicePublisherBase.cs" />
     <Compile Include="SsdpEmbeddedDevice.cs" />
