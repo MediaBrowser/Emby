@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Threading;
-using RSSDP;
+using Rssdp;
 
 namespace Rssdp.Infrastructure
 {
@@ -359,7 +359,7 @@ namespace Rssdp.Infrastructure
 
             var header = "M-SEARCH * HTTP/1.1";
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             return _CommunicationsServer.SendMulticastMessage(message, cancellationToken);
         }

@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Threading;
-using RSSDP;
+using Rssdp;
 
 namespace Rssdp.Infrastructure
 {
@@ -348,7 +348,7 @@ namespace Rssdp.Infrastructure
             values["USN"] = uniqueServiceName;
             values["LOCATION"] = rootDevice.Location.ToString();
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             try
             {
@@ -481,7 +481,7 @@ namespace Rssdp.Infrastructure
             values["NT"] = notificationType;
             values["USN"] = uniqueServiceName;
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             _CommsServer.SendMulticastMessage(message, cancellationToken);
 
@@ -528,7 +528,7 @@ namespace Rssdp.Infrastructure
             values["NT"] = notificationType;
             values["USN"] = uniqueServiceName;
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             var sendCount = IsDisposed ? 1 : 3;
             return _CommsServer.SendMulticastMessage(message, sendCount, cancellationToken);
