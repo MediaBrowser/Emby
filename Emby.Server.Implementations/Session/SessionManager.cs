@@ -719,7 +719,8 @@ namespace Emby.Server.Implementations.Session
 
             var users = GetUsers(session);
 
-            if (libraryItem != null)
+            // only update saved user data on actual check-ins, not automated ones
+            if (libraryItem != null && !isAutomated)
             {
                 foreach (var user in users)
                 {

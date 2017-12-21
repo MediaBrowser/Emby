@@ -162,8 +162,6 @@ namespace Emby.Server.Implementations.Data
 
                     createMediaStreamsTableCommand,
 
-                    "create index if not exists idx_mediastreams1 on mediastreams(ItemId)",
-
                     "pragma shrink_memory"
 
                 };
@@ -282,6 +280,7 @@ namespace Emby.Server.Implementations.Data
                     // obsolete
                     "drop index if exists idx_TypedBaseItems",
                     "drop index if exists idx_mediastreams",
+                    "drop index if exists idx_mediastreams1",
                     "drop index if exists idx_"+ChaptersTableName,
                     "drop index if exists idx_UserDataKeys1",
                     "drop index if exists idx_UserDataKeys2",
@@ -316,7 +315,6 @@ namespace Emby.Server.Implementations.Data
 
                     "create index if not exists idx_PresentationUniqueKey on TypedBaseItems(PresentationUniqueKey)",
                     "create index if not exists idx_GuidTypeIsFolderIsVirtualItem on TypedBaseItems(Guid,Type,IsFolder,IsVirtualItem)",
-                    //"create index if not exists idx_GuidMediaTypeIsFolderIsVirtualItem on TypedBaseItems(Guid,MediaType,IsFolder,IsVirtualItem)",
                     "create index if not exists idx_CleanNameType on TypedBaseItems(CleanName,Type)",
 
                     // covering index

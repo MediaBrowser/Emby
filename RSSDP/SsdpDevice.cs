@@ -65,6 +65,17 @@ namespace Rssdp
 
         #endregion
 
+        public SsdpRootDevice ToRootDevice()
+        {
+            var device = this;
+
+            var rootDevice = device as SsdpRootDevice;
+            if (rootDevice == null)
+                rootDevice = ((SsdpEmbeddedDevice)device).RootDevice;
+
+            return rootDevice;
+        }
+        
         #region Public Properties
 
         #region UPnP Device Description Properties

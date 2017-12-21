@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Threading;
-using RSSDP;
+using Rssdp;
 
 namespace Rssdp.Infrastructure
 {
@@ -35,7 +35,6 @@ namespace Rssdp.Infrastructure
         private DateTime _LastNotificationTime;
 
         private IDictionary<string, SearchRequest> _RecentSearchRequests;
-        private IUpnpDeviceValidator _DeviceValidator;
 
         private Random _Random;
         //private TimeSpan _MinCacheTime;
@@ -67,7 +66,6 @@ namespace Rssdp.Infrastructure
             _ReadOnlyDevices = new ReadOnlyCollection<SsdpRootDevice>(_Devices);
             _RecentSearchRequests = new Dictionary<string, SearchRequest>(StringComparer.OrdinalIgnoreCase);
             _Random = new Random();
-            _DeviceValidator = new Upnp10DeviceValidator(); //Should probably inject this later, but for now we only support 1.0.
 
             _CommsServer = communicationsServer;
             _CommsServer.RequestReceived += CommsServer_RequestReceived;
@@ -98,8 +96,6 @@ namespace Rssdp.Infrastructure
             if (device == null) throw new ArgumentNullException("device");
 
             ThrowIfDisposed();
-
-            _DeviceValidator.ThrowIfDeviceInvalid(device);
 
             TimeSpan minCacheTime = TimeSpan.Zero;
             bool wasAdded = false;
@@ -348,7 +344,7 @@ namespace Rssdp.Infrastructure
             values["USN"] = uniqueServiceName;
             values["LOCATION"] = rootDevice.Location.ToString();
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             try
             {
@@ -481,7 +477,7 @@ namespace Rssdp.Infrastructure
             values["NT"] = notificationType;
             values["USN"] = uniqueServiceName;
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             _CommsServer.SendMulticastMessage(message, cancellationToken);
 
@@ -528,7 +524,7 @@ namespace Rssdp.Infrastructure
             values["NT"] = notificationType;
             values["USN"] = uniqueServiceName;
 
-            var message = SsdpHelper.BuildMessage(header, values);
+            var message = BuildMessage(header, values);
 
             var sendCount = IsDisposed ? 1 : 3;
             return _CommsServer.SendMulticastMessage(message, sendCount, cancellationToken);

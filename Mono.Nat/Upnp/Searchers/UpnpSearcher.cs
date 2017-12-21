@@ -82,7 +82,7 @@ namespace Mono.Nat
                 // We have an internet gateway device now
                 UpnpNatDevice d = new UpnpNatDevice(localAddress, deviceInfo, endpoint, string.Empty, _logger, _httpClient);
 
-                NatUtility.Log("Fetching service list: {0}", d.HostEndPoint);
+                _logger.Debug("Fetching service list: {0}", d.HostEndPoint);
                 await d.GetServicesList().ConfigureAwait(false);
 
                 OnDeviceFound(new DeviceEventArgs(d));

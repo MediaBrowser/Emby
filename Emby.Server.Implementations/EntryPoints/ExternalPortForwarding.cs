@@ -26,8 +26,9 @@ namespace Emby.Server.Implementations.EntryPoints
         private readonly IDeviceDiscovery _deviceDiscovery;
 
         private ITimer _timer;
-        private bool _isStarted;
         private readonly ITimerFactory _timerFactory;
+
+        private NatManager _natManager;
 
         public ExternalPortForwarding(ILogManager logmanager, IServerApplicationHost appHost, IServerConfigurationManager config, IDeviceDiscovery deviceDiscovery, IHttpClient httpClient, ITimerFactory timerFactory)
         {
@@ -59,10 +60,7 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             if (!string.Equals(_lastConfigIdentifier, GetConfigIdentifier(), StringComparison.OrdinalIgnoreCase))
             {
-                if (_isStarted)
-                {
-                    DisposeNat();
-                }
+                DisposeNat();
 
                 Run();
             }
@@ -70,9 +68,6 @@ namespace Emby.Server.Implementations.EntryPoints
 
         public void Run()
         {
-            NatUtility.Logger = _logger;
-            NatUtility.HttpClient = _httpClient;
-
             if (_config.Configuration.EnableUPnP)
             {
                 Start();
@@ -85,24 +80,19 @@ namespace Emby.Server.Implementations.EntryPoints
         private void Start()
         {
             _logger.Debug("Starting NAT discovery");
-            NatUtility.EnabledProtocols = new List<NatProtocol>
+            if (_natManager == null)
             {
-                NatProtocol.Pmp
-            };
-            NatUtility.DeviceFound += NatUtility_DeviceFound;
-
-            NatUtility.DeviceLost += NatUtility_DeviceLost;
-
-
-            NatUtility.StartDiscovery();
+                _natManager = new NatManager(_logger, _httpClient);
+                _natManager.DeviceFound += NatUtility_DeviceFound;
+                _natManager.DeviceLost += NatUtility_DeviceLost;
+                _natManager.StartDiscovery();
+            }
 
             _timer = _timerFactory.Create(ClearCreatedRules, null, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10));
 
             _deviceDiscovery.DeviceDiscovered += _deviceDiscovery_DeviceDiscovered;
 
             _lastConfigIdentifier = GetConfigIdentifier();
-
-            _isStarted = true;
         }
 
         private async void _deviceDiscovery_DeviceDiscovered(object sender, GenericEventArgs<UpnpDeviceInfo> e)
@@ -181,7 +171,11 @@ namespace Emby.Server.Implementations.EntryPoints
                 }
 
                 _logger.Debug("Calling Nat.Handle on " + identifier);
-                NatUtility.Handle(localAddress, info, endpoint, NatProtocol.Upnp);
+                var natManager = _natManager;
+                if (natManager != null)
+                {
+                    natManager.Handle(localAddress, info, endpoint, NatProtocol.Upnp);
+                }
             }
         }
 
@@ -299,19 +293,25 @@ namespace Emby.Server.Implementations.EntryPoints
 
             _deviceDiscovery.DeviceDiscovered -= _deviceDiscovery_DeviceDiscovered;
 
-            try
+            var natManager = _natManager;
+
+            if (natManager != null)
             {
-                NatUtility.StopDiscovery();
-                NatUtility.DeviceFound -= NatUtility_DeviceFound;
-                NatUtility.DeviceLost -= NatUtility_DeviceLost;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error stopping NAT Discovery", ex);
-            }
-            finally
-            {
-                _isStarted = false;
+                _natManager = null;
+
+                using (natManager)
+                {
+                    try
+                    {
+                        natManager.StopDiscovery();
+                        natManager.DeviceFound -= NatUtility_DeviceFound;
+                        natManager.DeviceLost -= NatUtility_DeviceLost;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error stopping NAT Discovery", ex);
+                    }
+                }
             }
         }
     }
