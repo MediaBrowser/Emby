@@ -814,16 +814,6 @@ namespace Emby.Server.Implementations
                 LogEnvironmentInfo(Logger, ApplicationPaths, false);
             }
 
-            // Put the app config in the log for troubleshooting purposes
-            var configJson = new StringBuilder(JsonSerializer.SerializeToString(ConfigurationManager.CommonConfiguration));
-
-            if (!string.IsNullOrWhiteSpace(ServerConfigurationManager.Configuration.CertificatePassword))
-            {
-                configJson = configJson.Replace(ServerConfigurationManager.Configuration.CertificatePassword, "####");
-            }
-
-            Logger.LogMultiline("Application configuration:", LogSeverity.Info, configJson);
-
             if (Plugins != null)
             {
                 var pluginBuilder = new StringBuilder();
