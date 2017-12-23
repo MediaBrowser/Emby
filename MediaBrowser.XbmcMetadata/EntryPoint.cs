@@ -8,7 +8,6 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.XbmcMetadata.Configuration;
 using MediaBrowser.XbmcMetadata.Savers;
 using System;
-using MediaBrowser.Controller.Dto;
 
 namespace MediaBrowser.XbmcMetadata
 {
@@ -32,37 +31,6 @@ namespace MediaBrowser.XbmcMetadata
         public void Run()
         {
             _userDataManager.UserDataSaved += _userDataManager_UserDataSaved;
-            _libraryManager.ItemUpdated += _libraryManager_ItemUpdated;
-        }
-
-        void _libraryManager_ItemUpdated(object sender, ItemChangeEventArgs e)
-        {
-            if (e.UpdateReason >= ItemUpdateType.ImageUpdate)
-            {
-                var person = e.Item as Person;
-
-                if (person != null)
-                {
-                    var config = _config.GetNfoConfiguration();
-
-                    if (!config.SaveImagePathsInNfo)
-                    {
-                        return;
-                    }
-
-                    var items = _libraryManager.GetItemList(new InternalItemsQuery
-                    {
-                        PersonIds = new[] { person.Id.ToString("N") },
-                        DtoOptions = new DtoOptions(true)
-
-                    });
-
-                    foreach (var item in items)
-                    {
-                        SaveMetadataForItem(item, e.UpdateReason);
-                    }
-                }
-            }
         }
 
         void _userDataManager_UserDataSaved(object sender, UserDataSaveEventArgs e)

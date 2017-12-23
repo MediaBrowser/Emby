@@ -92,6 +92,9 @@ namespace MediaBrowser.Model.Net
             dict.Add(".pdf", "application/pdf");
             dict.Add(".mobi", "application/x-mobipocket-ebook");
 
+            dict.Add(".ass", "text/x-ssa");
+            dict.Add(".ssa", "text/x-ssa");
+
             return dict;
         }
 
