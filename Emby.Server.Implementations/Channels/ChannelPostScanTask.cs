@@ -54,7 +54,7 @@ namespace Emby.Server.Implementations.Channels
                 progress.Report(percent * 100);
             }
 
-            await CleanDatabase(cancellationToken).ConfigureAwait(false);
+            CleanDatabase(cancellationToken);
 
             progress.Report(100);
         }
@@ -121,7 +121,7 @@ namespace Emby.Server.Implementations.Channels
             progress.Report(100);
         }
 
-        private async Task CleanDatabase(CancellationToken cancellationToken)
+        private void CleanDatabase(CancellationToken cancellationToken)
         {
             var installedChannelIds = ((ChannelManager)_channelManager).GetInstalledChannelIds();
 
@@ -138,11 +138,11 @@ namespace Emby.Server.Implementations.Channels
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await CleanChannel(id, cancellationToken).ConfigureAwait(false);
+                CleanChannel(id, cancellationToken);
             }
         }
 
-        private async Task CleanChannel(Guid id, CancellationToken cancellationToken)
+        private void CleanChannel(Guid id, CancellationToken cancellationToken)
         {
             _logger.Info("Cleaning channel {0} from database", id);
 
@@ -156,26 +156,27 @@ namespace Emby.Server.Implementations.Channels
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await DeleteItem(deleteId).ConfigureAwait(false);
+                DeleteItem(deleteId);
             }
 
             // Finally, delete the channel itself
-            await DeleteItem(id).ConfigureAwait(false);
+            DeleteItem(id);
         }
 
-        private Task DeleteItem(Guid id)
+        private void DeleteItem(Guid id)
         {
             var item = _libraryManager.GetItemById(id);
 
             if (item == null)
             {
-                return Task.FromResult(true);
+                return;
             }
 
-            return _libraryManager.DeleteItem(item, new DeleteOptions
+            _libraryManager.DeleteItem(item, new DeleteOptions
             {
                 DeleteFileLocation = false
-            });
+
+            }, false);
         }
 
         private async Task GetAllItems(string user, string channelId, string folderId, int currentRefreshLevel, int maxRefreshLevel, IProgress<double> progress, CancellationToken cancellationToken)

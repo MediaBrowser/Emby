@@ -213,15 +213,6 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
-        /// Removes the child.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        public void RemoveChild(BaseItem item)
-        {
-            item.SetParent(null);
-        }
-
-        /// <summary>
         /// Gets the actual children.
         /// </summary>
         /// <value>The actual children.</value>
@@ -439,7 +430,6 @@ namespace MediaBrowser.Controller.Entities
                 {
                     // That's all the new and changed ones - now see if there are any that are missing
                     var itemsRemoved = currentChildren.Values.Except(validChildren).ToList();
-                    var actualRemovals = new List<BaseItem>();
 
                     foreach (var item in itemsRemoved)
                     {
@@ -454,19 +444,10 @@ namespace MediaBrowser.Controller.Entities
                         }
                         else
                         {
-                            actualRemovals.Add(item);
-                        }
-                    }
-
-                    if (actualRemovals.Count > 0)
-                    {
-                        foreach (var item in actualRemovals)
-                        {
                             Logger.Debug("Removed item: " + item.Path);
 
                             item.SetParent(null);
-                            await LibraryManager.DeleteItem(item, new DeleteOptions { DeleteFileLocation = false }).ConfigureAwait(false);
-                            LibraryManager.ReportItemRemoved(item, this);
+                            LibraryManager.DeleteItem(item, new DeleteOptions { DeleteFileLocation = false }, this, false);
                         }
                     }
 

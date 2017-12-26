@@ -27,27 +27,24 @@ namespace MediaBrowser.Controller.Collections
         /// Creates the collection.
         /// </summary>
         /// <param name="options">The options.</param>
-        /// <returns>Task.</returns>
-        Task<BoxSet> CreateCollection(CollectionCreationOptions options);
+        BoxSet CreateCollection(CollectionCreationOptions options);
 
         /// <summary>
         /// Adds to collection.
         /// </summary>
         /// <param name="collectionId">The collection identifier.</param>
         /// <param name="itemIds">The item ids.</param>
-        /// <returns>Task.</returns>
-        Task AddToCollection(Guid collectionId, IEnumerable<string> itemIds);
+        void AddToCollection(Guid collectionId, IEnumerable<string> itemIds);
 
         /// <summary>
         /// Removes from collection.
         /// </summary>
         /// <param name="collectionId">The collection identifier.</param>
         /// <param name="itemIds">The item ids.</param>
-        /// <returns>Task.</returns>
-        Task RemoveFromCollection(Guid collectionId, IEnumerable<string> itemIds);
+        void RemoveFromCollection(Guid collectionId, IEnumerable<string> itemIds);
 
-        Task AddToCollection(Guid collectionId, IEnumerable<Guid> itemIds);
-        Task RemoveFromCollection(Guid collectionId, IEnumerable<Guid> itemIds);
+        void AddToCollection(Guid collectionId, IEnumerable<Guid> itemIds);
+        void RemoveFromCollection(Guid collectionId, IEnumerable<Guid> itemIds);
 
         /// <summary>
         /// Collapses the items within box sets.

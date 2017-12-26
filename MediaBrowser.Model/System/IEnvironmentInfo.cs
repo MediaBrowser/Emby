@@ -18,6 +18,7 @@ namespace MediaBrowser.Model.System
         Windows,
         Linux,
         OSX,
-        BSD
+        BSD,
+        Android
     }
 }

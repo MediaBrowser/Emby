@@ -39,7 +39,7 @@ namespace MediaBrowser.Controller.Entities
             return value;
         }
 
-        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
             query.PersonIds = new[] { Id.ToString("N") };
 

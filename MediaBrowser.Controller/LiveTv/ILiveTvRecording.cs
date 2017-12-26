@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public interface ILiveTvRecording : IHasMetadata, IHasMediaSources, IHasUserData, IHasStartDate, IHasProgramAttributes
+    public interface ILiveTvRecording : IHasMediaSources, IHasStartDate, IHasProgramAttributes
     {
-        string ServiceName { get; set; }
+        string Name { get; }
+
         string ExternalId { get; set; }
         string ChannelId { get; }
         string MediaType { get; }
@@ -35,6 +36,8 @@ namespace MediaBrowser.Controller.LiveTv
         RecordingStatus Status { get; set; }
         DateTime? EndDate { get; set; }
         DateTime DateCreated { get; set; }
+        DateTime DateLastSaved { get; set; }
+        DateTime DateModified { get; set; }
     }
 
     public class ActiveRecordingInfo

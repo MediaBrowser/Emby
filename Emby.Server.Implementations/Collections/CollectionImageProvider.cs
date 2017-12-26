@@ -21,7 +21,7 @@ namespace Emby.Server.Implementations.Collections
         {
         }
 
-        protected override bool Supports(IHasMetadata item)
+        protected override bool Supports(BaseItem item)
         {
             // Right now this is the only way to prevent this image from getting created ahead of internet image providers
             if (!item.IsLocked)
@@ -32,7 +32,7 @@ namespace Emby.Server.Implementations.Collections
             return base.Supports(item);
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var playlist = (BoxSet)item;
 
@@ -76,7 +76,7 @@ namespace Emby.Server.Implementations.Collections
             return GetFinalItems(items, 2);
         }
 
-        protected override string CreateImage(IHasMetadata item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             return CreateSingleImage(itemsWithImages, outputPathWithoutExtension, ImageType.Primary);
         }

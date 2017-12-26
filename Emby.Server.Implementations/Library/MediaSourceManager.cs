@@ -132,7 +132,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (user != null)
                 {
-                    SetUserProperties(hasMediaSources, source, user);
+                    SetUserProperties(hasMediaSources as BaseItem, source, user);
                 }
                 if (source.Protocol == MediaProtocol.File)
                 {
@@ -263,14 +263,14 @@ namespace Emby.Server.Implementations.Library
             {
                 foreach (var source in sources)
                 {
-                    SetUserProperties(item, source, user);
+                    SetUserProperties(item as BaseItem, source, user);
                 }
             }
 
             return sources;
         }
 
-        private void SetUserProperties(IHasUserData item, MediaSourceInfo source, User user)
+        private void SetUserProperties(BaseItem item, MediaSourceInfo source, User user)
         {
             var userData = item == null ? new UserItemData() : _userDataManager.GetUserData(user, item);
 

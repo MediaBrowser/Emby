@@ -20,7 +20,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<IEnumerable<MediaSourceInfo>> GetMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
         {
-            var baseItem = (BaseItem) item;
+            var baseItem = (BaseItem)item;
 
             if (baseItem.SourceType == SourceType.Channel)
             {

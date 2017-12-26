@@ -147,7 +147,7 @@ namespace Emby.Server.Implementations.Dto
                             }
                         });
 
-                        SetItemByNameInfo(item, dto, libraryItems.ToList(), user);
+                        SetItemByNameInfo(item, dto, libraryItems, user);
                     }
                 }
 
@@ -212,16 +212,14 @@ namespace Emby.Server.Implementations.Dto
             return dto;
         }
 
-        private List<BaseItem> GetTaggedItems(IItemByName byName, User user, DtoOptions options)
+        private IList<BaseItem> GetTaggedItems(IItemByName byName, User user, DtoOptions options)
         {
-            var items = byName.GetTaggedItems(new InternalItemsQuery(user)
+            return byName.GetTaggedItems(new InternalItemsQuery(user)
             {
                 Recursive = true,
                 DtoOptions = options
 
-            }).ToList();
-
-            return items;
+            });
         }
 
         public Dictionary<string, SyncedItemProgress> GetSyncedItemProgress(DtoOptions options)
@@ -488,7 +486,7 @@ namespace Emby.Server.Implementations.Dto
             return dto;
         }
 
-        private void SetItemByNameInfo(BaseItem item, BaseItemDto dto, List<BaseItem> taggedItems, User user = null)
+        private void SetItemByNameInfo(BaseItem item, BaseItemDto dto, IList<BaseItem> taggedItems, User user = null)
         {
             if (item is MusicArtist)
             {
@@ -575,7 +573,7 @@ namespace Emby.Server.Implementations.Dto
                 }
             }
 
-            if (/*!(item is LiveTvProgram) ||*/ fields.Contains(ItemFields.PlayAccess))
+            if (fields.Contains(ItemFields.PlayAccess))
             {
                 dto.PlayAccess = item.GetPlayAccess(user);
             }

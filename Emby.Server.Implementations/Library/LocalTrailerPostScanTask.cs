@@ -24,7 +24,7 @@ namespace Emby.Server.Implementations.Library
             _channelManager = channelManager;
         }
 
-        public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
+        public Task Run(IProgress<double> progress, CancellationToken cancellationToken)
         {
             var items = _libraryManager.GetItemList(new InternalItemsQuery
             {
@@ -45,7 +45,6 @@ namespace Emby.Server.Implementations.Library
                 TrailerTypes = trailerTypes,
                 Recursive = true,
                 DtoOptions = new DtoOptions(false)
-
             });
 
             var numComplete = 0;
@@ -63,6 +62,8 @@ namespace Emby.Server.Implementations.Library
             }
 
             progress.Report(100);
+
+            return Task.CompletedTask;
         }
 
         private void AssignTrailers(IHasTrailers item, IEnumerable<BaseItem> channelTrailers)

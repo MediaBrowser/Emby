@@ -19,12 +19,12 @@ namespace Emby.Server.Implementations.LiveTv
             _liveTvManager = liveTvManager;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new[] { ImageType.Primary };
         }
 
-        public async Task<DynamicImageResponse> GetImage(IHasMetadata item, ImageType type, CancellationToken cancellationToken)
+        public async Task<DynamicImageResponse> GetImage(BaseItem item, ImageType type, CancellationToken cancellationToken)
         {
             var liveTvItem = (ILiveTvRecording)item;
 
@@ -58,7 +58,7 @@ namespace Emby.Server.Implementations.LiveTv
             get { return "Live TV Service Provider"; }
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             return item is ILiveTvRecording;
         }
@@ -68,15 +68,9 @@ namespace Emby.Server.Implementations.LiveTv
             get { return 0; }
         }
 
-        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService)
+        public bool HasChanged(BaseItem item, IDirectoryService directoryService)
         {
-            var liveTvItem = item as ILiveTvRecording;
-
-            if (liveTvItem != null)
-            {
-                return !liveTvItem.HasImage(ImageType.Primary);
-            }
-            return false;
+            return !item.HasImage(ImageType.Primary);
         }
     }
 }

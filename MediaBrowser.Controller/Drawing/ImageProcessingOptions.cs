@@ -17,7 +17,7 @@ namespace MediaBrowser.Controller.Drawing
 
         public string ItemId { get; set; }
         public string ItemType { get; set; }
-        public IHasMetadata Item { get; set; }
+        public BaseItem Item { get; set; }
 
         public ItemImageInfo Image { get; set; }
 

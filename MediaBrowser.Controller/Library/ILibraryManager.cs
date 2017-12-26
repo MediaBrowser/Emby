@@ -231,11 +231,6 @@ namespace MediaBrowser.Controller.Library
         event EventHandler<ItemChangeEventArgs> ItemRemoved;
 
         /// <summary>
-        /// Reports the item removed.
-        /// </summary>
-        void ReportItemRemoved(BaseItem item, BaseItem parent);
-
-        /// <summary>
         /// Finds the type of the collection.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -279,10 +274,12 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Deletes the item.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>Task.</returns>
-        Task DeleteItem(BaseItem item, DeleteOptions options);
+        void DeleteItem(BaseItem item, DeleteOptions options, bool notifyParentItem);
+
+        /// <summary>
+        /// Deletes the item.
+        /// </summary>
+        void DeleteItem(BaseItem item, DeleteOptions options, BaseItem parent, bool notifyParentItem);
 
         /// <summary>
         /// Gets the named view.
@@ -501,7 +498,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="image">The image.</param>
         /// <param name="imageIndex">Index of the image.</param>
         /// <returns>Task.</returns>
-        Task<ItemImageInfo> ConvertImageToLocal(IHasMetadata item, ItemImageInfo image, int imageIndex);
+        Task<ItemImageInfo> ConvertImageToLocal(BaseItem item, ItemImageInfo image, int imageIndex);
 
         /// <summary>
         /// Gets the items.
