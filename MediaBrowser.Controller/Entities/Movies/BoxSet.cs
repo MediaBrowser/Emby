@@ -142,29 +142,6 @@ namespace MediaBrowser.Controller.Entities.Movies
             return true;
         }
 
-        /// <summary>
-        /// Updates the official rating based on content and returns true or false indicating if it changed.
-        /// </summary>
-        /// <returns></returns>
-        public bool UpdateRatingToContent()
-        {
-            var currentOfficialRating = OfficialRating;
-
-            // Gather all possible ratings
-            var ratings = GetLinkedChildren()
-                .Select(i => i.OfficialRating)
-                .Where(i => !string.IsNullOrEmpty(i))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Select(i => new Tuple<string, int?>(i, LocalizationManager.GetRatingLevel(i)))
-                .OrderBy(i => i.Item2 ?? 1000)
-                .Select(i => i.Item1);
-
-            OfficialRating = ratings.FirstOrDefault() ?? currentOfficialRating;
-
-            return !string.Equals(currentOfficialRating ?? string.Empty, OfficialRating ?? string.Empty,
-                StringComparison.OrdinalIgnoreCase);
-        }
-
         public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
         {
             var children = base.GetChildren(user, includeLinkedChildren);

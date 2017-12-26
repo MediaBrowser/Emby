@@ -510,7 +510,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="currentIndex">Index of the current.</param>
         /// <param name="newIndex">The new index.</param>
         /// <returns>Task.</returns>
-        private void UpdateItemIndex(IHasMetadata item, ImageType type, int currentIndex, int newIndex)
+        private void UpdateItemIndex(BaseItem item, ImageType type, int currentIndex, int newIndex)
         {
             item.SwapImages(type, currentIndex, newIndex);
         }
@@ -523,7 +523,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public Task<object> GetImage(ImageRequest request, IHasMetadata item, bool isHeadRequest)
+        public Task<object> GetImage(ImageRequest request, BaseItem item, bool isHeadRequest)
         {
             if (request.PercentPlayed.HasValue)
             {
@@ -559,8 +559,7 @@ namespace MediaBrowser.Api.Images
             var supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : new List<IImageEnhancer>();
 
             var cropwhitespace = request.Type == ImageType.Logo ||
-                request.Type == ImageType.Art
-                || (request.Type == ImageType.Primary && item is LiveTvChannel);
+                request.Type == ImageType.Art;
 
             if (request.CropWhitespace.HasValue)
             {
@@ -593,7 +592,7 @@ namespace MediaBrowser.Api.Images
                 isHeadRequest);
         }
 
-        private async Task<object> GetImageResult(IHasMetadata item,
+        private async Task<object> GetImageResult(BaseItem item,
             ImageRequest request,
             ItemImageInfo image,
             bool cropwhitespace,
@@ -700,7 +699,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="request">The request.</param>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        private ItemImageInfo GetImageInfo(ImageRequest request, IHasMetadata item)
+        private ItemImageInfo GetImageInfo(ImageRequest request, BaseItem item)
         {
             var index = request.Index ?? 0;
 

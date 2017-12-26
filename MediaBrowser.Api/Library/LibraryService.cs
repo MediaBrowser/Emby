@@ -253,6 +253,22 @@ namespace MediaBrowser.Api.Library
         public string ImdbId { get; set; }
     }
 
+    public class MediaUpdateInfo
+    {
+        public string Path { get; set; }
+
+        // Created, Modified, Deleted
+        public string UpdateType { get; set; }
+    }
+
+    [Route("/Library/Media/Updated", "POST", Summary = "Reports that new movies have been added by an external source")]
+    [Authenticated]
+    public class PostUpdatedMedia : IReturnVoid
+    {
+        [ApiMember(Name = "Updates", Description = "A list of updated media paths", IsRequired = false, DataType = "string", ParameterType = "body", Verb = "POST")]
+        public List<MediaUpdateInfo> Updates { get; set; }
+    }
+
     [Route("/Items/{Id}/Download", "GET", Summary = "Downloads item media")]
     [Authenticated(Roles = "download")]
     public class GetDownload
@@ -443,16 +459,20 @@ namespace MediaBrowser.Api.Library
 
             }).Where(i => string.Equals(request.TvdbId, i.GetProviderId(MetadataProviders.Tvdb), StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            if (series.Length > 0)
+            foreach (var item in series)
             {
-                foreach (var item in series)
+                _libraryMonitor.ReportFileSystemChanged(item.Path);
+            }
+        }
+
+        public void Post(PostUpdatedMedia request)
+        {
+            if (request.Updates != null)
+            {
+                foreach (var item in request.Updates)
                 {
                     _libraryMonitor.ReportFileSystemChanged(item.Path);
                 }
-            }
-            else
-            {
-                Task.Run(() => _libraryManager.ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None));
             }
         }
 
@@ -481,16 +501,9 @@ namespace MediaBrowser.Api.Library
                 movies = new List<BaseItem>();
             }
 
-            if (movies.Count > 0)
+            foreach (var item in movies)
             {
-                foreach (var item in movies)
-                {
-                    _libraryMonitor.ReportFileSystemChanged(item.Path);
-                }
-            }
-            else
-            {
-                Task.Run(() => _libraryManager.ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None));
+                _libraryMonitor.ReportFileSystemChanged(item.Path);
             }
         }
 
@@ -727,7 +740,7 @@ namespace MediaBrowser.Api.Library
              ? new string[] { }
              : request.Ids.Split(',');
 
-            var tasks = ids.Select(i =>
+            foreach (var i in ids)
             {
                 var item = _libraryManager.GetItemById(i);
                 var auth = _authContext.GetAuthorizationInfo(Request);
@@ -740,17 +753,14 @@ namespace MediaBrowser.Api.Library
                         throw new SecurityException("Unauthorized access");
                     }
 
-                    return Task.FromResult(true);
+                    continue;
                 }
 
-                return item.Delete(new DeleteOptions
+                item.Delete(new DeleteOptions
                 {
                     DeleteFileLocation = true
-                });
-
-            }).ToArray(ids.Length);
-
-            Task.WaitAll(tasks);
+                }, true);
+            }
         }
 
         /// <summary>

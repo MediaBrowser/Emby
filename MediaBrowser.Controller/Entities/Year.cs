@@ -72,7 +72,7 @@ namespace MediaBrowser.Controller.Entities
             return true;
         }
 
-        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
             int year;
 

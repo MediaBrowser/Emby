@@ -37,11 +37,9 @@ namespace MediaBrowser.XbmcMetadata
         {
             if (e.SaveReason == UserDataSaveReason.PlaybackFinished || e.SaveReason == UserDataSaveReason.TogglePlayed || e.SaveReason == UserDataSaveReason.UpdateUserRating)
             {
-                var item = e.Item as BaseItem;
-
                 if (!string.IsNullOrWhiteSpace(_config.GetNfoConfiguration().UserId))
                 {
-                    SaveMetadataForItem(item, ItemUpdateType.MetadataDownload);
+                    SaveMetadataForItem(e.Item, ItemUpdateType.MetadataDownload);
                 }
             }
         }

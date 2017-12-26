@@ -27,19 +27,19 @@ namespace MediaBrowser.Controller.Library
         /// <param name="reason">The reason.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        void SaveUserData(Guid userId, IHasUserData item, UserItemData userData, UserDataSaveReason reason, CancellationToken cancellationToken);
+        void SaveUserData(Guid userId, BaseItem item, UserItemData userData, UserDataSaveReason reason, CancellationToken cancellationToken);
 
-        UserItemData GetUserData(IHasUserData user, IHasUserData item);
+        UserItemData GetUserData(User user, BaseItem item);
 
-        UserItemData GetUserData(string userId, IHasUserData item);
-        UserItemData GetUserData(Guid userId, IHasUserData item);
+        UserItemData GetUserData(string userId, BaseItem item);
+        UserItemData GetUserData(Guid userId, BaseItem item);
 
         /// <summary>
         /// Gets the user data dto.
         /// </summary>
-        UserItemDataDto GetUserDataDto(IHasUserData item, User user);
+        UserItemDataDto GetUserDataDto(BaseItem item, User user);
 
-        UserItemDataDto GetUserDataDto(IHasUserData item, BaseItemDto itemDto, User user, ItemFields[] fields);
+        UserItemDataDto GetUserDataDto(BaseItem item, BaseItemDto itemDto, User user, ItemFields[] fields);
 
         /// <summary>
         /// Get all user data for the given user

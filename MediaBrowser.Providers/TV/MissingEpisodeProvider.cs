@@ -31,10 +31,8 @@ namespace MediaBrowser.Providers.TV
         private readonly IFileSystem _fileSystem;
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
-        private static readonly SemaphoreSlim ResourceLock = new SemaphoreSlim(1, 1);
-        public static bool IsRunning = false;
         private readonly IXmlReaderSettingsFactory _xmlSettings;
-        
+
         public MissingEpisodeProvider(ILogger logger, IServerConfigurationManager config, ILibraryManager libraryManager, ILocalizationManager localization, IFileSystem fileSystem, IXmlReaderSettingsFactory xmlSettings)
         {
             _logger = logger;
@@ -45,37 +43,7 @@ namespace MediaBrowser.Providers.TV
             _xmlSettings = xmlSettings;
         }
 
-        public async Task Run(List<Series> seriesList, bool addNewItems, CancellationToken cancellationToken)
-        {
-            await ResourceLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            IsRunning = true;
-
-            foreach (var series in seriesList)
-            {
-                try
-                {
-                    await Run(series, addNewItems, cancellationToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-                catch (IOException ex)
-                {
-                    //_logger.Warn("Series files missing for series id {0}", seriesGroup.Key);
-                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, series.Id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error in missing episode provider for series id {0}", ex, series.Id);
-                }
-            }
-
-            IsRunning = false;
-            ResourceLock.Release();
-        }
-
-        private async Task Run(Series series, bool addNewItems, CancellationToken cancellationToken)
+        public async Task<bool> Run(Series series, bool addNewItems, CancellationToken cancellationToken)
         {
             var tvdbId = series.GetProviderId(MetadataProviders.Tvdb);
 
@@ -88,13 +56,13 @@ namespace MediaBrowser.Providers.TV
             // Doesn't have required provider id's
             if (string.IsNullOrWhiteSpace(seriesDataPath))
             {
-                return;
+                return false;
             }
 
             // Check this in order to avoid logging an exception due to directory not existing
             if (!_fileSystem.DirectoryExists(seriesDataPath))
             {
-                return;
+                return false;
             }
 
             var episodeFiles = _fileSystem.GetFilePaths(seriesDataPath)
@@ -135,8 +103,7 @@ namespace MediaBrowser.Providers.TV
             // Be conservative here to avoid creating missing episodes for ones they already have
             var addMissingEpisodes = !hasBadData && _libraryManager.GetLibraryOptions(series).ImportMissingEpisodes;
 
-            var anySeasonsRemoved = await RemoveObsoleteOrMissingSeasons(series, allRecursiveChildren, episodeLookup)
-                .ConfigureAwait(false);
+            var anySeasonsRemoved = RemoveObsoleteOrMissingSeasons(series, allRecursiveChildren, episodeLookup);
 
             if (anySeasonsRemoved)
             {
@@ -144,8 +111,7 @@ namespace MediaBrowser.Providers.TV
                 allRecursiveChildren = series.GetRecursiveChildren();
             }
 
-            var anyEpisodesRemoved = await RemoveObsoleteOrMissingEpisodes(series, allRecursiveChildren, episodeLookup, addMissingEpisodes)
-                .ConfigureAwait(false);
+            var anyEpisodesRemoved = RemoveObsoleteOrMissingEpisodes(series, allRecursiveChildren, episodeLookup, addMissingEpisodes);
 
             if (anyEpisodesRemoved)
             {
@@ -168,13 +134,10 @@ namespace MediaBrowser.Providers.TV
 
             if (hasNewEpisodes || anySeasonsRemoved || anyEpisodesRemoved)
             {
-                var directoryService = new DirectoryService(_logger, _fileSystem);
-
-                await series.RefreshMetadata(new MetadataRefreshOptions(directoryService), cancellationToken).ConfigureAwait(false);
-
-                await series.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService), true)
-                    .ConfigureAwait(false);
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -281,7 +244,7 @@ namespace MediaBrowser.Providers.TV
         /// <summary>
         /// Removes the virtual entry after a corresponding physical version has been added
         /// </summary>
-        private async Task<bool> RemoveObsoleteOrMissingEpisodes(Series series,
+        private bool RemoveObsoleteOrMissingEpisodes(Series series,
             IList<BaseItem> allRecursiveChildren,
             IEnumerable<Tuple<int, int>> episodeLookup,
             bool allowMissingEpisodes)
@@ -339,11 +302,11 @@ namespace MediaBrowser.Providers.TV
 
             foreach (var episodeToRemove in episodesToRemove)
             {
-                await episodeToRemove.Delete(new DeleteOptions
+                episodeToRemove.Delete(new DeleteOptions
                 {
                     DeleteFileLocation = true
 
-                }).ConfigureAwait(false);
+                }, false);
 
                 hasChanges = true;
             }
@@ -357,7 +320,7 @@ namespace MediaBrowser.Providers.TV
         /// <param name="series">The series.</param>
         /// <param name="episodeLookup">The episode lookup.</param>
         /// <returns>Task{System.Boolean}.</returns>
-        private async Task<bool> RemoveObsoleteOrMissingSeasons(Series series,
+        private bool RemoveObsoleteOrMissingSeasons(Series series,
             IList<BaseItem> allRecursiveChildren,
             IEnumerable<Tuple<int, int>> episodeLookup)
         {
@@ -405,11 +368,11 @@ namespace MediaBrowser.Providers.TV
 
             foreach (var seasonToRemove in seasonsToRemove)
             {
-                await seasonToRemove.Delete(new DeleteOptions
+                seasonToRemove.Delete(new DeleteOptions
                 {
                     DeleteFileLocation = true
 
-                }).ConfigureAwait(false);
+                }, false);
 
                 hasChanges = true;
             }

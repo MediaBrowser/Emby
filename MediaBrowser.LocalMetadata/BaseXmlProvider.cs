@@ -10,7 +10,7 @@ using MediaBrowser.Model.IO;
 namespace MediaBrowser.LocalMetadata
 {
     public abstract class BaseXmlProvider<T> : ILocalMetadataProvider<T>, IHasItemChangeMonitor, IHasOrder
-        where T : IHasMetadata, new()
+        where T : BaseItem, new()
     {
         protected IFileSystem FileSystem;
 
@@ -57,7 +57,7 @@ namespace MediaBrowser.LocalMetadata
 
         protected abstract FileSystemMetadata GetXmlFile(ItemInfo info, IDirectoryService directoryService);
 
-        public bool HasChanged(IHasMetadata item, IDirectoryService directoryService)
+        public bool HasChanged(BaseItem item, IDirectoryService directoryService)
         {
             var file = GetXmlFile(new ItemInfo(item), directoryService);
 

@@ -89,6 +89,7 @@
     <Compile Include="Entities\Audio\AudioPodcast.cs" />
     <Compile Include="Entities\Audio\IHasAlbumArtist.cs" />
     <Compile Include="Entities\Audio\IHasMusicGenres.cs" />
+    <Compile Include="Entities\BaseItemExtensions.cs" />
     <Compile Include="Entities\Book.cs" />
     <Compile Include="Configuration\IServerConfigurationManager.cs" />
     <Compile Include="Entities\Audio\MusicGenre.cs" />
@@ -106,7 +107,6 @@
     <Compile Include="Entities\IHasSpecialFeatures.cs" />
     <Compile Include="Entities\IHasStartDate.cs" />
     <Compile Include="Entities\IHasTrailers.cs" />
-    <Compile Include="Entities\IHasUserData.cs" />
     <Compile Include="Entities\IHiddenFromDisplay.cs" />
     <Compile Include="Entities\IItemByName.cs" />
     <Compile Include="Entities\IMetadataContainer.cs" />
@@ -221,7 +221,6 @@
     <Compile Include="Providers\IExternalId.cs" />
     <Compile Include="Providers\IExtrasProvider.cs" />
     <Compile Include="Providers\IForcedProvider.cs" />
-    <Compile Include="Entities\IHasMetadata.cs" />
     <Compile Include="Providers\IHasItemChangeMonitor.cs" />
     <Compile Include="Providers\IHasLookupInfo.cs" />
     <Compile Include="Providers\IHasOrder.cs" />

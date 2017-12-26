@@ -18,7 +18,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
 {
     public class MovieNfoSaver : BaseNfoSaver
     {
-        protected override string GetLocalSavePath(IHasMetadata item)
+        protected override string GetLocalSavePath(BaseItem item)
         {
             var paths = GetMovieSavePaths(new ItemInfo(item), FileSystem);
             return paths.Count == 0 ? null : paths[0];
@@ -61,12 +61,12 @@ namespace MediaBrowser.XbmcMetadata.Savers
             return list;
         }
 
-        protected override string GetRootElementName(IHasMetadata item)
+        protected override string GetRootElementName(BaseItem item)
         {
             return item is MusicVideo ? "musicvideo" : "movie";
         }
 
-        public override bool IsEnabledFor(IHasMetadata item, ItemUpdateType updateType)
+        public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
         {
             if (!item.SupportsLocalMetadata)
             {
@@ -84,7 +84,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             return false;
         }
 
-        protected override void WriteCustomElements(IHasMetadata item, XmlWriter writer)
+        protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
         {
             var imdb = item.GetProviderId(MetadataProviders.Imdb);
 
@@ -118,7 +118,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             }
         }
 
-        protected override List<string> GetTagsUsed(IHasMetadata item)
+        protected override List<string> GetTagsUsed(BaseItem item)
         {
             var list = base.GetTagsUsed(item);
             list.AddRange(new string[]

@@ -1636,7 +1636,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     .Skip(seriesTimer.KeepUpTo - 1)
                     .ToList();
 
-                await DeleteLibraryItemsForTimers(timersToDelete).ConfigureAwait(false);
+                DeleteLibraryItemsForTimers(timersToDelete);
 
                 var librarySeries = _libraryManager.FindByPath(seriesPath, true) as Folder;
 
@@ -1662,11 +1662,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     try
                     {
-                        await _libraryManager.DeleteItem(item, new DeleteOptions
+                        _libraryManager.DeleteItem(item, new DeleteOptions
                         {
                             DeleteFileLocation = true
 
-                        }).ConfigureAwait(false);
+                        }, true);
                     }
                     catch (Exception ex)
                     {
@@ -1681,7 +1681,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         }
 
         private readonly SemaphoreSlim _recordingDeleteSemaphore = new SemaphoreSlim(1, 1);
-        private async Task DeleteLibraryItemsForTimers(List<TimerInfo> timers)
+        private void DeleteLibraryItemsForTimers(List<TimerInfo> timers)
         {
             foreach (var timer in timers)
             {
@@ -1692,7 +1692,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 try
                 {
-                    await DeleteLibraryItemForTimer(timer).ConfigureAwait(false);
+                    DeleteLibraryItemForTimer(timer);
                 }
                 catch (Exception ex)
                 {
@@ -1701,17 +1701,17 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private async Task DeleteLibraryItemForTimer(TimerInfo timer)
+        private void DeleteLibraryItemForTimer(TimerInfo timer)
         {
             var libraryItem = _libraryManager.FindByPath(timer.RecordingPath, false);
 
             if (libraryItem != null)
             {
-                await _libraryManager.DeleteItem(libraryItem, new DeleteOptions
+                _libraryManager.DeleteItem(libraryItem, new DeleteOptions
                 {
                     DeleteFileLocation = true
 
-                }).ConfigureAwait(false);
+                }, true);
             }
             else
             {

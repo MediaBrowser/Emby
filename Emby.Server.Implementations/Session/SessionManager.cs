@@ -670,7 +670,7 @@ namespace Emby.Server.Implementations.Session
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="item">The item.</param>
-        private void OnPlaybackStart(Guid userId, IHasUserData item)
+        private void OnPlaybackStart(Guid userId, BaseItem item)
         {
             var data = _userDataManager.GetUserData(userId, item);
 

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MediaBrowser.Controller.Entities
 {
-    public interface IHasTrailers : IHasMetadata
+    public interface IHasTrailers : IHasProviderIds
     {
         /// <summary>
         /// Gets or sets the remote trailers.
@@ -19,6 +19,7 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The local trailer ids.</value>
         Guid[] LocalTrailerIds { get; set; }
         Guid[] RemoteTrailerIds { get; set; }
+        Guid Id { get; set; }
     }
 
     public static class HasTrailerExtensions

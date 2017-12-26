@@ -86,19 +86,6 @@ namespace MediaBrowser.Controller.Entities.TV
         /// <value>The status.</value>
         public SeriesStatus? Status { get; set; }
 
-        /// <summary>
-        /// Gets or sets the date last episode added.
-        /// </summary>
-        /// <value>The date last episode added.</value>
-        [IgnoreDataMember]
-        public DateTime DateLastEpisodeAdded
-        {
-            get
-            {
-                return DateLastMediaAdded ?? DateTime.MinValue;
-            }
-        }
-
         public override double? GetDefaultPrimaryImageAspectRatio()
         {
             double value = 2;
