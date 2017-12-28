@@ -1452,7 +1452,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.EndDate = reader[index].ReadDateTime();
+                item.EndDate = reader[index].TryReadDateTime();
             }
             index++;
 
@@ -1607,7 +1607,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.PremiereDate = reader[index].ReadDateTime();
+                item.PremiereDate = reader[index].TryReadDateTime();
             }
             index++;
 
@@ -1813,7 +1813,7 @@ namespace Emby.Server.Implementations.Data
                 var folder = item as Folder;
                 if (folder != null && !reader.IsDBNull(index))
                 {
-                    folder.DateLastMediaAdded = reader[index].ReadDateTime();
+                    folder.DateLastMediaAdded = reader[index].TryReadDateTime();
                 }
                 index++;
             }
