@@ -309,7 +309,7 @@ namespace Emby.Server.Implementations.Security
 
             if (reader[9].SQLiteType != SQLiteType.Null)
             {
-                info.DateRevoked = reader[9].ReadDateTime();
+                info.DateRevoked = reader[9].TryReadDateTime();
             }
 
             return info;

@@ -399,7 +399,7 @@ namespace Emby.Server.Implementations.Data
 
             if (reader[7].SQLiteType != SQLiteType.Null)
             {
-                userData.LastPlayedDate = reader[7].ReadDateTime();
+                userData.LastPlayedDate = reader[7].TryReadDateTime();
             }
 
             if (reader[8].SQLiteType != SQLiteType.Null)

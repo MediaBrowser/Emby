@@ -110,6 +110,20 @@ namespace Emby.Server.Implementations.Data
                 DateTimeStyles.None).ToUniversalTime();
         }
 
+        public static DateTime? TryReadDateTime(this IResultSetValue result)
+        {
+            var dateText = result.ToString();
+
+            DateTime dateTimeResult;
+
+            if (DateTime.TryParseExact(dateText, _datetimeFormats, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out dateTimeResult))
+            {
+                return dateTimeResult.ToUniversalTime();
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Serializes to bytes.
         /// </summary>
