@@ -191,6 +191,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         if (!resolved)
                         {
                             resolved = true;
+                            DateOpened = DateTime.UtcNow;
                             Resolve(openTaskCompletionSource);
                         }
                     }

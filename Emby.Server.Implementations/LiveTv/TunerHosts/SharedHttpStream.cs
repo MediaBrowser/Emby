@@ -110,20 +110,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             //OpenedMediaSource.SupportsDirectStream = true;
             //OpenedMediaSource.SupportsTranscoding = true;
             await taskCompletionSource.Task.ConfigureAwait(false);
-
-            if (OpenedMediaSource.SupportsProbing)
-            {
-                var elapsed = (DateTime.UtcNow - now).TotalMilliseconds;
-
-                var delay = Convert.ToInt32(3000 - elapsed);
-
-                if (delay > 0)
-                {
-                    Logger.Info("Delaying shared stream by {0}ms to allow the buffer to build.", delay);
-
-                    await Task.Delay(delay).ConfigureAwait(false);
-                }
-            }
         }
 
         protected override void CloseInternal()
@@ -164,6 +150,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         private void Resolve(TaskCompletionSource<bool> openTaskCompletionSource)
         {
+            DateOpened = DateTime.UtcNow;
             openTaskCompletionSource.TrySetResult(true);
         }
     }

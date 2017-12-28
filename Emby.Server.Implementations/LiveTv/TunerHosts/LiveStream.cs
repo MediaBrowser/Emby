@@ -32,11 +32,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         protected readonly IFileSystem FileSystem;
         protected readonly IServerApplicationPaths AppPaths;
 
-        protected  string TempFilePath;
+        protected string TempFilePath;
         protected readonly ILogger Logger;
         protected readonly CancellationTokenSource LiveStreamCancellationTokenSource = new CancellationTokenSource();
 
         public string TunerHostId { get; private set; }
+
+        public DateTime DateOpened { get; protected set; }
 
         public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IEnvironmentInfo environment, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
         {
@@ -62,6 +64,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public virtual Task Open(CancellationToken openCancellationToken)
         {
+            DateOpened = DateTime.UtcNow;
             return Task.FromResult(true);
         }
 
@@ -133,7 +136,10 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             using (var inputStream = (FileStream)GetInputStream(TempFilePath, allowAsync))
             {
-                TrySeek(inputStream, -20000);
+                if ((DateTime.UtcNow - DateOpened).TotalSeconds > 10)
+                {
+                    TrySeek(inputStream, -20000);
+                }
 
                 await CopyTo(inputStream, stream, 81920, null, cancellationToken).ConfigureAwait(false);
             }
@@ -175,6 +181,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         private void TrySeek(FileStream stream, long offset)
         {
+            //Logger.Info("TrySeek live stream");
             try
             {
                 stream.Seek(offset, SeekOrigin.End);
