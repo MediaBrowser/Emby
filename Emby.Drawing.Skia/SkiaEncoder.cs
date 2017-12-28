@@ -57,9 +57,13 @@ namespace Emby.Drawing.Skia
                     "pkm",
                     "wbmp",
 
+                    // TODO
+                    // Are all of these supported? https://github.com/google/skia/blob/master/infra/bots/recipes/test.py#L454
+
                     // working on windows at least
                     "cr2",
-                    "nef"
+                    "nef",
+                    "arw"
                 };
             }
         }
