@@ -811,21 +811,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.SeriesProviderIds = updatedTimer.SeriesProviderIds;
         }
 
-        public Task<ImageStream> GetChannelImageAsync(string channelId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImageStream> GetRecordingImageAsync(string recordingId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImageStream> GetProgramImageAsync(string programId, string channelId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<RecordingInfo>> GetRecordingsAsync(CancellationToken cancellationToken)
         {
             return new List<RecordingInfo>();
@@ -1190,7 +1175,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             };
 
             var isAudio = false;
-            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
+            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, 0, cancellationToken).ConfigureAwait(false);
 
             return new List<MediaSourceInfo>
             {

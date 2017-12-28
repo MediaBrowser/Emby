@@ -491,55 +491,19 @@ namespace Emby.Drawing
                 throw new ArgumentNullException("path");
             }
 
-            return GetImageSizeInternal(path, allowSlowMethod);
-        }
-
-        /// <summary>
-        /// Gets the image size internal.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="allowSlowMethod">if set to <c>true</c> [allow slow method].</param>
-        /// <returns>ImageSize.</returns>
-        private ImageSize GetImageSizeInternal(string path, bool allowSlowMethod)
-        {
-            //try
-            //{
-            //    using (var fileStream = _fileSystem.OpenRead(path))
-            //    {
-            //        using (var file = TagLib.File.Create(new StreamFileAbstraction(Path.GetFileName(path), fileStream, null)))
-            //        {
-            //            var image = file as TagLib.Image.File;
-
-            //            if (image != null)
-            //            {
-            //                var properties = image.Properties;
-
-            //                return new ImageSize
-            //                {
-            //                    Height = properties.PhotoHeight,
-            //                    Width = properties.PhotoWidth
-            //                };
-            //            }
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //}
-
             try
             {
                 return ImageHeader.GetDimensions(path, _logger, _fileSystem);
             }
             catch
             {
-                if (allowSlowMethod)
+                if (!allowSlowMethod)
                 {
-                    return _imageEncoder.GetImageSize(path);
+                    throw;
                 }
-
-                throw;
             }
+
+            return _imageEncoder.GetImageSize(path);
         }
 
         /// <summary>

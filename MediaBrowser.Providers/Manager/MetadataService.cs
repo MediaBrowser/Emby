@@ -481,6 +481,11 @@ namespace MediaBrowser.Providers.Manager
         {
             var updateType = ItemUpdateType.None;
 
+            if (children.Count == 0)
+            {
+                return updateType;
+            }
+
             var date = children.Select(i => i.PremiereDate ?? DateTime.MaxValue).Min();
 
             var originalPremiereDate = item.PremiereDate;

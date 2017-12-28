@@ -106,31 +106,6 @@ namespace MediaBrowser.Controller.LiveTv
         Task UpdateSeriesTimerAsync(SeriesTimerInfo info, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the channel image asynchronous. This only needs to be implemented if an image path or url cannot be supplied to ChannelInfo
-        /// </summary>
-        /// <param name="channelId">The channel identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{Stream}.</returns>
-        Task<ImageStream> GetChannelImageAsync(string channelId, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the recording image asynchronous. This only needs to be implemented if an image path or url cannot be supplied to RecordingInfo
-        /// </summary>
-        /// <param name="recordingId">The recording identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{ImageResponseInfo}.</returns>
-        Task<ImageStream> GetRecordingImageAsync(string recordingId, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the program image asynchronous. This only needs to be implemented if an image path or url cannot be supplied to ProgramInfo
-        /// </summary>
-        /// <param name="programId">The program identifier.</param>
-        /// <param name="channelId">The channel identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{ImageResponseInfo}.</returns>
-        Task<ImageStream> GetProgramImageAsync(string programId, string channelId, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Gets the recordings asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>

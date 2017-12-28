@@ -35,7 +35,7 @@ namespace Emby.Server.Implementations.LiveTv
             _appPaths = appPaths;
         }
 
-        public async Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, string cacheKey, CancellationToken cancellationToken)
+        public async Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, string cacheKey, int probeDelayMs, CancellationToken cancellationToken)
         {
             var originalRuntime = mediaSource.RunTimeTicks;
 
@@ -66,6 +66,11 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     path = mediaSource.EncoderPath;
                     protocol = mediaSource.EncoderProtocol.Value;
+                }
+
+                if (probeDelayMs > 0)
+                {
+                    await Task.Delay(probeDelayMs, cancellationToken).ConfigureAwait(false);
                 }
 
                 mediaInfo = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
@@ -173,9 +178,9 @@ namespace Emby.Server.Implementations.LiveTv
             mediaSource.AnalyzeDurationMs = PlaybackAnalyzeDurationMs;
         }
 
-        public Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, CancellationToken cancellationToken)
+        public Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, int probeDelayMs, CancellationToken cancellationToken)
         {
-            return AddMediaInfoWithProbe(mediaSource, isAudio, null, cancellationToken);
+            return AddMediaInfoWithProbe(mediaSource, isAudio, null, probeDelayMs, cancellationToken);
         }
     }
 }
