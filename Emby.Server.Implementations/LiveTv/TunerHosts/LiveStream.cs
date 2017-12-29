@@ -127,6 +127,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             await DeleteTempFile(path, retryCount + 1).ConfigureAwait(false);
         }
 
+        protected virtual string GetStreamFilePath()
+        {
+            return TempFilePath;
+        }
+
         public async Task CopyToAsync(Stream stream, CancellationToken cancellationToken)
         {
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, LiveStreamCancellationTokenSource.Token).Token;
