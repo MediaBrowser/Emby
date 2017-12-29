@@ -793,7 +793,15 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     var providerId = item.ProviderIds[providerKey];
                     if (!string.IsNullOrEmpty(providerId) && !writtenProviderIds.Contains(providerKey))
                     {
-                        writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
+                        try
+                        {
+                            writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
+                        }
+                        catch (ArgumentException)
+                        {
+                            // catch invalid names without failing the entire operation
+                        }
+
                         writtenProviderIds.Add(providerKey);
                     }
                 }
