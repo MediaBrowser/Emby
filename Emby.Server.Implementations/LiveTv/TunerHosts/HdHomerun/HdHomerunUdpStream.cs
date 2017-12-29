@@ -107,11 +107,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             await taskCompletionSource.Task.ConfigureAwait(false);
         }
 
-        protected override void CloseInternal()
-        {
-            LiveStreamCancellationTokenSource.Cancel();
-        }
-
         private Task StartStreaming(ISocket udpClient, HdHomerunManager hdHomerunManager, IpAddressInfo remoteAddress, IpAddressInfo localAddress, int localPort, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
             return Task.Run(async () =>

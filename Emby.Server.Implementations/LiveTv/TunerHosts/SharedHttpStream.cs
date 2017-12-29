@@ -112,11 +112,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             await taskCompletionSource.Task.ConfigureAwait(false);
         }
 
-        protected override void CloseInternal()
-        {
-            LiveStreamCancellationTokenSource.Cancel();
-        }
-
         private Task StartStreaming(HttpResponseInfo response, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
