@@ -1780,6 +1780,18 @@ namespace MediaBrowser.Controller.Entities
                 return itemByPath;
             }
 
+            if (!string.IsNullOrWhiteSpace(info.LibraryItemId))
+            {
+                var item = LibraryManager.GetItemById(info.LibraryItemId);
+
+                if (item == null)
+                {
+                    //Logger.Warn("Unable to find linked item at path {0}", info.Path);
+                }
+
+                return item;
+            }
+
             return null;
         }
 

@@ -855,6 +855,11 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     writer.WriteElementString("path", link.Path);
                 }
 
+                if (!string.IsNullOrWhiteSpace(link.LibraryItemId))
+                {
+                    writer.WriteElementString("ItemId", link.LibraryItemId);
+                }
+
                 writer.WriteEndElement();
             }
         }

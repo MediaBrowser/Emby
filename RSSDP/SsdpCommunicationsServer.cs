@@ -135,12 +135,11 @@ namespace Rssdp.Infrastructure
         /// <exception cref="System.ObjectDisposedException">Thrown if the <see cref="DisposableManagedObjectBase.IsDisposed"/> property is true (because <seealso cref="DisposableManagedObjectBase.Dispose()" /> has been called previously).</exception>
         public void StopListeningForBroadcasts()
         {
-            ThrowIfDisposed();
-
             lock (_BroadcastListenSocketSynchroniser)
             {
                 if (_BroadcastListenSocket != null)
                 {
+                    _logger.Info("{0} disposing _BroadcastListenSocket.", GetType().Name);
                     _BroadcastListenSocket.Dispose();
                     _BroadcastListenSocket = null;
                 }
@@ -267,8 +266,6 @@ namespace Rssdp.Infrastructure
         /// <exception cref="System.ObjectDisposedException">Thrown if the <see cref="DisposableManagedObjectBase.IsDisposed"/> property is true (because <seealso cref="DisposableManagedObjectBase.Dispose()" /> has been called previously).</exception>
         public void StopListeningForResponses()
         {
-            ThrowIfDisposed();
-
             lock (_SendSocketSynchroniser)
             {
                 if (_sendSockets != null)
@@ -278,6 +275,7 @@ namespace Rssdp.Infrastructure
 
                     foreach (var socket in sockets)
                     {
+                        _logger.Info("{0} disposing sendSocket", GetType().Name);
                         socket.Dispose();
                     }
                 }
@@ -312,25 +310,9 @@ namespace Rssdp.Infrastructure
         {
             if (disposing)
             {
-                lock (_BroadcastListenSocketSynchroniser)
-                {
-                    if (_BroadcastListenSocket != null)
-                        _BroadcastListenSocket.Dispose();
-                }
+                StopListeningForBroadcasts();
 
-                lock (_SendSocketSynchroniser)
-                {
-                    if (_sendSockets != null)
-                    {
-                        var sockets = _sendSockets.ToList();
-                        _sendSockets = null;
-
-                        foreach (var socket in sockets)
-                        {
-                            socket.Dispose();
-                        }
-                    }
-                }
+                StopListeningForResponses();
             }
         }
 

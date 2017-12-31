@@ -32,7 +32,9 @@ namespace Emby.Dlna.PlayTo
             bool logRequest = true,
             string header = null)
         {
-            using (var response = await PostSoapDataAsync(NormalizeServiceUrl(baseUrl, service.ControlUrl), "\"" + service.ServiceType + "#" + command + "\"", postData, header, logRequest)
+            var cancellationToken = CancellationToken.None;
+
+            using (var response = await PostSoapDataAsync(NormalizeServiceUrl(baseUrl, service.ControlUrl), "\"" + service.ServiceType + "#" + command + "\"", postData, header, logRequest, cancellationToken)
                 .ConfigureAwait(false))
             {
                 using (var stream = response.Content)
@@ -123,7 +125,8 @@ namespace Emby.Dlna.PlayTo
             string soapAction, 
             string postData, 
             string header,
-            bool logRequest)
+            bool logRequest,
+            CancellationToken cancellationToken)
         {
             if (!soapAction.StartsWith("\""))
                 soapAction = "\"" + soapAction + "\"";
@@ -137,7 +140,9 @@ namespace Emby.Dlna.PlayTo
                 BufferContent = false,
 
                 // The periodic requests may keep some devices awake
-                LogRequestAsDebug = true
+                LogRequestAsDebug = true,
+
+                CancellationToken = cancellationToken
             };
 
             options.RequestHeaders["SOAPAction"] = soapAction;

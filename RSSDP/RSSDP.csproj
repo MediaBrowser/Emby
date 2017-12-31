@@ -52,9 +52,7 @@
     <Compile Include="SsdpConstants.cs" />
     <Compile Include="SsdpDevice.cs" />
     <Compile Include="SsdpDeviceLocator.cs" />
-    <Compile Include="SsdpDeviceLocatorBase.cs" />
     <Compile Include="SsdpDevicePublisher.cs" />
-    <Compile Include="SsdpDevicePublisherBase.cs" />
     <Compile Include="SsdpEmbeddedDevice.cs" />
     <Compile Include="SsdpRootDevice.cs" />
   </ItemGroup>

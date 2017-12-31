@@ -1193,6 +1193,11 @@ namespace MediaBrowser.LocalMetadata.Parsers
                                 linkedItem.Path = reader.ReadElementContentAsString();
                                 break;
                             }
+                        case "ItemId":
+                            {
+                                linkedItem.LibraryItemId = reader.ReadElementContentAsString();
+                                break;
+                            }
 
                         default:
                             reader.Skip();
@@ -1206,7 +1211,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
             }
 
             // This is valid
-            if (!string.IsNullOrWhiteSpace(linkedItem.Path))
+            if (!string.IsNullOrWhiteSpace(linkedItem.Path) || !string.IsNullOrWhiteSpace(linkedItem.LibraryItemId))
             {
                 return linkedItem;
             }

@@ -48,7 +48,6 @@ namespace Emby.Dlna.Main
 
         private readonly IDeviceDiscovery _deviceDiscovery;
 
-        private bool _dlnaServerStarted;
         private SsdpDevicePublisher _Publisher;
 
         private readonly ITimerFactory _timerFactory;
@@ -115,24 +114,20 @@ namespace Emby.Dlna.Main
 
             StartSsdpHandler();
 
-            var isServerStarted = _dlnaServerStarted;
-
-            if (options.EnableServer && !isServerStarted)
+            if (options.EnableServer)
             {
-                await StartDlnaServer().ConfigureAwait(false);
+                await StartDevicePublisher().ConfigureAwait(false);
             }
-            else if (!options.EnableServer && isServerStarted)
+            else
             {
-                DisposeDlnaServer();
+                DisposeDevicePublisher();
             }
 
-            var isPlayToStarted = _manager != null;
-
-            if (options.EnablePlayTo && !isPlayToStarted)
+            if (options.EnablePlayTo)
             {
                 StartPlayToManager();
             }
-            else if (!options.EnablePlayTo && isPlayToStarted)
+            else
             {
                 DisposePlayToManager();
             }
@@ -151,8 +146,6 @@ namespace Emby.Dlna.Main
                         IsShared = true
                     };
 
-                    StartPublishing(_communicationsServer);
-
                     StartDeviceDiscovery(_communicationsServer);
                 }
             }
@@ -165,12 +158,6 @@ namespace Emby.Dlna.Main
         private void LogMessage(string msg)
         {
             _logger.Debug(msg);
-        }
-
-        private void StartPublishing(ISsdpCommunicationsServer communicationsServer)
-        {
-            _Publisher = new SsdpDevicePublisher(communicationsServer, _timerFactory, _environmentInfo.OperatingSystemName, _environmentInfo.OperatingSystemVersion);
-            _Publisher.LogFunction = LogMessage;
         }
 
         private void StartDeviceDiscovery(ISsdpCommunicationsServer communicationsServer)
@@ -189,6 +176,7 @@ namespace Emby.Dlna.Main
         {
             try
             {
+                _logger.Info("Disposing DeviceDiscovery");
                 ((DeviceDiscovery)_deviceDiscovery).Dispose();
             }
             catch (Exception ex)
@@ -197,27 +185,25 @@ namespace Emby.Dlna.Main
             }
         }
 
-        private void DisposeSsdpHandler()
+        public async Task StartDevicePublisher()
         {
-            DisposeDeviceDiscovery();
+            if (!_config.GetDlnaConfiguration().BlastAliveMessages)
+            {
+                return;
+            }
+
+            if (_Publisher != null)
+            {
+                return;
+            }
 
             try
             {
-                ((DeviceDiscovery)_deviceDiscovery).Dispose();
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error stopping ssdp handlers", ex);
-            }
-        }
+                _Publisher = new SsdpDevicePublisher(_communicationsServer, _timerFactory, _environmentInfo.OperatingSystemName, _environmentInfo.OperatingSystemVersion);
+                _Publisher.LogFunction = LogMessage;
+                _Publisher.SupportPnpRootDevice = false;
 
-        public async Task StartDlnaServer()
-        {
-            try
-            {
                 await RegisterServerEndpoints().ConfigureAwait(false);
-
-                _dlnaServerStarted = true;
             }
             catch (Exception ex)
             {
@@ -227,13 +213,7 @@ namespace Emby.Dlna.Main
 
         private async Task RegisterServerEndpoints()
         {
-            if (!_config.GetDlnaConfiguration().BlastAliveMessages)
-            {
-                return;
-            }
-
             var cacheLength = _config.GetDlnaConfiguration().BlastAliveMessageIntervalSeconds;
-            _Publisher.SupportPnpRootDevice = false;
 
             var addresses = (await _appHost.GetLocalIpAddresses(CancellationToken.None).ConfigureAwait(false)).ToList();
 
@@ -241,12 +221,6 @@ namespace Emby.Dlna.Main
 
             foreach (var address in addresses)
             {
-                //if (IPAddress.IsLoopback(address))
-                //{
-                //    // Should we allow this?
-                //    continue;
-                //}
-
                 var fullService = "urn:schemas-upnp-org:device:MediaServer:1";
 
                 _logger.Info("Registering publisher for {0} on {1}", fullService, address.ToString());
@@ -320,6 +294,11 @@ namespace Emby.Dlna.Main
         {
             lock (_syncLock)
             {
+                if (_manager != null)
+                {
+                    return;
+                }
+
                 try
                 {
                     _manager = new PlayToManager(_logger,
@@ -355,6 +334,7 @@ namespace Emby.Dlna.Main
                 {
                     try
                     {
+                        _logger.Info("Disposing PlayToManager");
                         _manager.Dispose();
                     }
                     catch (Exception ex)
@@ -368,26 +348,27 @@ namespace Emby.Dlna.Main
 
         public void Dispose()
         {
-            DisposeDlnaServer();
+            DisposeDevicePublisher();
             DisposePlayToManager();
-            DisposeSsdpHandler();
+            DisposeDeviceDiscovery();
 
             if (_communicationsServer != null)
             {
+                _logger.Info("Disposing SsdpCommunicationsServer");
                 _communicationsServer.Dispose();
                 _communicationsServer = null;
             }
             GC.SuppressFinalize(this);
         }
 
-        public void DisposeDlnaServer()
+        public void DisposeDevicePublisher()
         {
             if (_Publisher != null)
             {
+                _logger.Info("Disposing SsdpDevicePublisher");
                 _Publisher.Dispose();
+                _Publisher = null;
             }
-
-            _dlnaServerStarted = false;
         }
     }
 }

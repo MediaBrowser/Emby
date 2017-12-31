@@ -617,10 +617,19 @@ namespace MediaBrowser.LocalMetadata.Savers
 
             foreach (var link in items)
             {
-                if (!string.IsNullOrWhiteSpace(link.Path))
+                if (!string.IsNullOrWhiteSpace(link.Path) || !string.IsNullOrWhiteSpace(link.LibraryItemId))
                 {
                     writer.WriteStartElement(singularNodeName);
-                    writer.WriteElementString("Path", link.Path);
+                    if (!string.IsNullOrWhiteSpace(link.Path))
+                    {
+                        writer.WriteElementString("Path", link.Path);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(link.LibraryItemId))
+                    {
+                        writer.WriteElementString("ItemId", link.LibraryItemId);
+                    }
+
                     writer.WriteEndElement();
                 }
             }
