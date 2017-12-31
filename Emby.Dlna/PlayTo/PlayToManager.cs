@@ -233,6 +233,8 @@ namespace Emby.Dlna.PlayTo
 
         public void Dispose()
         {
+            _deviceDiscovery.DeviceDiscovered -= _deviceDiscovery_DeviceDiscovered;
+
             try
             {
                 _disposeCancellationTokenSource.Cancel();
@@ -243,7 +245,6 @@ namespace Emby.Dlna.PlayTo
             }
 
             _disposed = true;
-            _deviceDiscovery.DeviceDiscovered -= _deviceDiscovery_DeviceDiscovered;
             GC.SuppressFinalize(this);
         }
     }

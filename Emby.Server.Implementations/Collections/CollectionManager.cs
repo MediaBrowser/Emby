@@ -179,11 +179,6 @@ namespace Emby.Server.Implementations.Collections
                 var guidId = new Guid(id);
                 var item = _libraryManager.GetItemById(guidId);
 
-                if (string.IsNullOrWhiteSpace(item.Path))
-                {
-                    continue;
-                }
-
                 if (item == null)
                 {
                     throw new ArgumentException("No item exists with the supplied Id");

@@ -205,6 +205,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Updates the item.
         /// </summary>
+        void UpdateItems(List<BaseItem> items, ItemUpdateType updateReason, CancellationToken cancellationToken);
         void UpdateItem(BaseItem item, ItemUpdateType updateReason, CancellationToken cancellationToken);
 
         /// <summary>

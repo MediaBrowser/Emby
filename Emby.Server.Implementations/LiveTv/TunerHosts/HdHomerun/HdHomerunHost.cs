@@ -663,13 +663,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
         }
 
-        protected override async Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
-        {
-            var info = await GetTunerInfos(tuner, cancellationToken).ConfigureAwait(false);
-
-            return info.Any(i => i.Status == LiveTvTunerStatus.Available);
-        }
-
         public class DiscoverResponse
         {
             public string FriendlyName { get; set; }

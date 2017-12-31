@@ -40,6 +40,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public DateTime DateOpened { get; protected set; }
 
+        public Action<LiveStream> OnClose { get; set; }
+
         public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IEnvironmentInfo environment, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
         {
             OriginalMediaSource = mediaSource;
@@ -79,6 +81,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         protected virtual void CloseInternal()
         {
+            LiveStreamCancellationTokenSource.Cancel();
+
+            if (OnClose != null)
+            {
+                OnClose(this);
+            }
         }
 
         protected Stream GetInputStream(string path, bool allowAsyncFileRead)
@@ -125,6 +133,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             await Task.Delay(500).ConfigureAwait(false);
             await DeleteTempFile(path, retryCount + 1).ConfigureAwait(false);
+        }
+
+        protected virtual string GetStreamFilePath()
+        {
+            return TempFilePath;
         }
 
         public async Task CopyToAsync(Stream stream, CancellationToken cancellationToken)

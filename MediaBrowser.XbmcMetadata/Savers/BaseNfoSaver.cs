@@ -793,7 +793,15 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     var providerId = item.ProviderIds[providerKey];
                     if (!string.IsNullOrEmpty(providerId) && !writtenProviderIds.Contains(providerKey))
                     {
-                        writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
+                        try
+                        {
+                            writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
+                        }
+                        catch (ArgumentException)
+                        {
+                            // catch invalid names without failing the entire operation
+                        }
+
                         writtenProviderIds.Add(providerKey);
                     }
                 }
@@ -845,6 +853,11 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 if (!string.IsNullOrWhiteSpace(link.Path))
                 {
                     writer.WriteElementString("path", link.Path);
+                }
+
+                if (!string.IsNullOrWhiteSpace(link.LibraryItemId))
+                {
+                    writer.WriteElementString("ItemId", link.LibraryItemId);
                 }
 
                 writer.WriteEndElement();

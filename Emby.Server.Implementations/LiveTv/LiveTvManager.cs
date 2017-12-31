@@ -1372,7 +1372,7 @@ namespace Emby.Server.Implementations.LiveTv
                     }).Cast<LiveTvProgram>().ToDictionary(i => i.Id);
 
                     var newPrograms = new List<LiveTvProgram>();
-                    var updatedPrograms = new List<LiveTvProgram>();
+                    var updatedPrograms = new List<BaseItem>();
 
                     foreach (var program in channelPrograms)
                     {
@@ -1423,10 +1423,9 @@ namespace Emby.Server.Implementations.LiveTv
                         _libraryManager.CreateItems(newPrograms, null, cancellationToken);
                     }
 
-                    // TODO: Do this in bulk
-                    foreach (var program in updatedPrograms)
+                    if (updatedPrograms.Count > 0)
                     {
-                        _libraryManager.UpdateItem(program, ItemUpdateType.MetadataImport, cancellationToken);
+                        _libraryManager.UpdateItems(updatedPrograms, ItemUpdateType.MetadataImport, cancellationToken);
                     }
 
                     currentChannel.IsMovie = isMovie;

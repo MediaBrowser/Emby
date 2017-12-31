@@ -575,7 +575,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             foreach (var timer in timers)
             {
-                CancelTimerInternal(timer.Id, true);
+                CancelTimerInternal(timer.Id, true, true);
             }
 
             var remove = _seriesTimerProvider.GetAll().FirstOrDefault(r => string.Equals(r.Id, timerId, StringComparison.OrdinalIgnoreCase));
@@ -586,13 +586,18 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return Task.FromResult(true);
         }
 
-        private void CancelTimerInternal(string timerId, bool isSeriesCancelled)
+        private void CancelTimerInternal(string timerId, bool isSeriesCancelled, bool isManualCancellation)
         {
             var timer = _timerProvider.GetTimer(timerId);
             if (timer != null)
             {
                 timer.Status = RecordingStatus.Cancelled;
 
+                if (isManualCancellation)
+                {
+                    timer.IsManual = true;
+                }
+                
                 if (string.IsNullOrWhiteSpace(timer.SeriesTimerId) || isSeriesCancelled)
                 {
                     _timerProvider.Delete(timer);
@@ -613,7 +618,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public Task CancelTimerAsync(string timerId, CancellationToken cancellationToken)
         {
-            CancelTimerInternal(timerId, false);
+            CancelTimerInternal(timerId, false, true);
             return Task.FromResult(true);
         }
 
@@ -2526,7 +2531,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 foreach (var timer in deletes)
                 {
-                    CancelTimerInternal(timer.Id, false);
+                    CancelTimerInternal(timer.Id, false, false);
                 }
             }
         }

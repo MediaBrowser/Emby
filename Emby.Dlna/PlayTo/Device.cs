@@ -178,11 +178,11 @@ namespace Emby.Dlna.PlayTo
         /// </summary>
         private void RestartTimerInactive()
         {
-            if (_disposed)
-                return;
-
             lock (_timerLock)
             {
+                if (_disposed)
+                    return;
+
                 if (_timerActive)
                 {
                     _logger.Debug("RestartTimerInactive");
@@ -310,9 +310,11 @@ namespace Emby.Dlna.PlayTo
                 .ConfigureAwait(false);
         }
 
-        public async Task Seek(TimeSpan value)
+        public async Task Seek(TimeSpan value, CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "Seek");
+            var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Seek");
             if (command == null)
                 return;
 
@@ -323,15 +325,17 @@ namespace Emby.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, String.Format("{0:hh}:{0:mm}:{0:ss}", value), "REL_TIME"))
+            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, String.Format("{0:hh}:{0:mm}:{0:ss}", value), "REL_TIME"))
                 .ConfigureAwait(false);
         }
 
-        public async Task SetAvTransport(string url, string header, string metaData)
+        public async Task SetAvTransport(string url, string header, string metaData, CancellationToken cancellationToken)
         {
+            var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
             _logger.Debug("{0} - SetAvTransport Uri: {1} DlnaHeaders: {2}", Properties.Name, url, header);
 
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetAVTransportURI");
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetAVTransportURI");
             if (command == null)
                 return;
 
@@ -348,7 +352,7 @@ namespace Emby.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var post = AvCommands.BuildPost(command, service.ServiceType, url, dictionary);
+            var post = avCommands.BuildPost(command, service.ServiceType, url, dictionary);
             await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, post, header: header)
                 .ConfigureAwait(false);
 
@@ -356,7 +360,7 @@ namespace Emby.Dlna.PlayTo
 
             try
             {
-                await SetPlay().ConfigureAwait(false);
+                await SetPlay(avCommands, CancellationToken.None).ConfigureAwait(false);
             }
             catch
             {
@@ -375,11 +379,11 @@ namespace Emby.Dlna.PlayTo
             return DescriptionXmlBuilder.Escape(value);
         }
 
-        public async Task SetPlay()
+        private Task SetPlay(TransportCommands avCommands, CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "Play");
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Play");
             if (command == null)
-                return;
+                return Task.CompletedTask;
 
             var service = GetAvTransportService();
 
@@ -388,31 +392,41 @@ namespace Emby.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, 1))
-                .ConfigureAwait(false);
+            return new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, 1));
         }
 
-        public async Task SetStop()
+        public async Task SetPlay(CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "Stop");
+            var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            await SetPlay(avCommands, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task SetStop(CancellationToken cancellationToken)
+        {
+            var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Stop");
             if (command == null)
                 return;
 
             var service = GetAvTransportService();
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, 1))
+            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, 1))
                 .ConfigureAwait(false);
         }
 
-        public async Task SetPause()
+        public async Task SetPause(CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "Pause");
+            var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Pause");
             if (command == null)
                 return;
 
             var service = GetAvTransportService();
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType, 1))
+            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, 1))
                 .ConfigureAwait(false);
 
             TransportState = TRANSPORTSTATE.PAUSED;
@@ -433,7 +447,11 @@ namespace Emby.Dlna.PlayTo
 
             try
             {
-                var transportState = await GetTransportInfo().ConfigureAwait(false);
+                var cancellationToken = CancellationToken.None;
+
+                var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+                var transportState = await GetTransportInfo(avCommands, cancellationToken).ConfigureAwait(false);
 
                 if (_disposed)
                 {
@@ -451,13 +469,13 @@ namespace Emby.Dlna.PlayTo
                     }
                     else
                     {
-                        var tuple = await GetPositionInfo().ConfigureAwait(false);
+                        var tuple = await GetPositionInfo(avCommands, cancellationToken).ConfigureAwait(false);
 
                         var currentObject = tuple.Item2;
 
                         if (tuple.Item1 && currentObject == null)
                         {
-                            currentObject = await GetMediaInfo().ConfigureAwait(false);
+                            currentObject = await GetMediaInfo(avCommands, cancellationToken).ConfigureAwait(false);
                         }
 
                         if (currentObject != null)
@@ -504,10 +522,11 @@ namespace Emby.Dlna.PlayTo
 
                 if (_connectFailureCount >= 3)
                 {
-                    if (OnDeviceUnavailable != null)
+                    var action = OnDeviceUnavailable;
+                    if (action != null)
                     {
                         _logger.Debug("Disposing device due to loss of connection");
-                        OnDeviceUnavailable();
+                        action();
                         return;
                     }
                 }
@@ -600,9 +619,9 @@ namespace Emby.Dlna.PlayTo
             IsMuted = string.Equals(value, "1", StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<TRANSPORTSTATE?> GetTransportInfo()
+        private async Task<TRANSPORTSTATE?> GetTransportInfo(TransportCommands avCommands, CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetTransportInfo");
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetTransportInfo");
             if (command == null)
                 return null;
 
@@ -610,7 +629,7 @@ namespace Emby.Dlna.PlayTo
             if (service == null)
                 return null;
 
-            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, AvCommands.BuildPost(command, service.ServiceType), false)
+            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType), false)
                 .ConfigureAwait(false);
 
             if (result == null || result.Document == null)
@@ -634,9 +653,9 @@ namespace Emby.Dlna.PlayTo
             return null;
         }
 
-        private async Task<uBaseObject> GetMediaInfo()
+        private async Task<uBaseObject> GetMediaInfo(TransportCommands avCommands, CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetMediaInfo");
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetMediaInfo");
             if (command == null)
                 return null;
 
@@ -691,9 +710,9 @@ namespace Emby.Dlna.PlayTo
             return null;
         }
 
-        private async Task<Tuple<bool, uBaseObject>> GetPositionInfo()
+        private async Task<Tuple<bool, uBaseObject>> GetPositionInfo(TransportCommands avCommands, CancellationToken cancellationToken)
         {
-            var command = AvCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetPositionInfo");
+            var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetPositionInfo");
             if (command == null)
                 return new Tuple<bool, uBaseObject>(false, null);
 
@@ -831,23 +850,35 @@ namespace Emby.Dlna.PlayTo
 
         #region From XML
 
-        private async Task GetAVProtocolAsync(CancellationToken cancellationToken)
+        private async Task<TransportCommands> GetAVProtocolAsync(CancellationToken cancellationToken)
         {
+            var avCommands = AvCommands;
+
+            if (avCommands != null)
+            {
+                return avCommands;
+            }
+
             if (_disposed)
             {
-                return;
+                throw new ObjectDisposedException(GetType().Name);
             }
 
             var avService = GetAvTransportService();
             if (avService == null)
-                return;
+            {
+                return null;
+            }
 
             string url = NormalizeUrl(Properties.BaseUrl, avService.ScpdUrl);
 
             var httpClient = new SsdpHttpClient(_httpClient, _config);
             var document = await httpClient.GetDataAsync(url, cancellationToken).ConfigureAwait(false);
 
-            AvCommands = TransportCommands.Create(document);
+            avCommands = TransportCommands.Create(document);
+            AvCommands = avCommands;
+
+            return avCommands;
         }
 
         private async Task GetRenderingProtocolAsync(CancellationToken cancellationToken)
@@ -988,7 +1019,6 @@ namespace Emby.Dlna.PlayTo
             if (device.GetAvTransportService() != null)
             {
                 await device.GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
-                await device.GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
             }
 
             return device;

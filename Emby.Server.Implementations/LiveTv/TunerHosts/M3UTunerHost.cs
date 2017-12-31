@@ -207,11 +207,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             return mediaSource;
         }
 
-        protected override Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
         public Task<List<TunerHostInfo>> DiscoverDevices(int discoveryDurationMs, CancellationToken cancellationToken)
         {
             return Task.FromResult(new List<TunerHostInfo>());

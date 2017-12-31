@@ -213,12 +213,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     continue;
                 }
 
-                if (hostsWithChannel.Count > 1 && !await IsAvailable(host, channelId, cancellationToken).ConfigureAwait(false))
-                {
-                    Logger.Error("Tuner is not currently available");
-                    continue;
-                }
-
                 try
                 {
                     var liveStream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
@@ -236,21 +230,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             throw new LiveTvConflictException();
         }
-
-        protected async Task<bool> IsAvailable(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                return await IsAvailableInternal(tuner, channelId, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error checking tuner availability", ex);
-                return false;
-            }
-        }
-
-        protected abstract Task<bool> IsAvailableInternal(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);
 
         protected virtual string ChannelIdPrefix
         {
