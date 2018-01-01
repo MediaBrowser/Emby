@@ -526,15 +526,15 @@ namespace MediaBrowser.Api
             if (string.Equals(user.Name, dtoUser.Name, StringComparison.Ordinal))
             {
                 _userManager.UpdateUser(user);
+                _userManager.UpdateConfiguration(user, dtoUser.Configuration);
             }
             else
             {
                 var task = _userManager.RenameUser(user, dtoUser.Name);
 
                 Task.WaitAll(task);
+                _userManager.UpdateConfiguration(dtoUser.Id, dtoUser.Configuration);
             }
-
-            _userManager.UpdateConfiguration(dtoUser.Id, dtoUser.Configuration);
         }
 
         /// <summary>

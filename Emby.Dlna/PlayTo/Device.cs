@@ -134,19 +134,19 @@ namespace Emby.Dlna.PlayTo
             if (DateTime.UtcNow >= _lastVolumeRefresh.AddSeconds(5))
             {
                 _lastVolumeRefresh = DateTime.UtcNow;
-                RefreshVolume();
+                RefreshVolume(CancellationToken.None);
             }
         }
 
-        private async void RefreshVolume()
+        private async void RefreshVolume(CancellationToken cancellationToken)
         {
             if (_disposed)
                 return;
 
             try
             {
-                await GetVolume().ConfigureAwait(false);
-                await GetMute().ConfigureAwait(false);
+                await GetVolume(cancellationToken).ConfigureAwait(false);
+                await GetMute(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -200,49 +200,49 @@ namespace Emby.Dlna.PlayTo
 
         #region Commanding
 
-        public Task VolumeDown()
+        public Task VolumeDown(CancellationToken cancellationToken)
         {
             var sendVolume = Math.Max(Volume - 5, 0);
 
-            return SetVolume(sendVolume);
+            return SetVolume(sendVolume, cancellationToken);
         }
 
-        public Task VolumeUp()
+        public Task VolumeUp(CancellationToken cancellationToken)
         {
             var sendVolume = Math.Min(Volume + 5, 100);
 
-            return SetVolume(sendVolume);
+            return SetVolume(sendVolume, cancellationToken);
         }
 
-        public Task ToggleMute()
+        public Task ToggleMute(CancellationToken cancellationToken)
         {
             if (IsMuted)
             {
-                return Unmute();
+                return Unmute(cancellationToken);
             }
 
-            return Mute();
+            return Mute(cancellationToken);
         }
 
-        public async Task Mute()
+        public async Task Mute(CancellationToken cancellationToken)
         {
-            var success = await SetMute(true).ConfigureAwait(true);
+            var success = await SetMute(true, cancellationToken).ConfigureAwait(true);
 
             if (!success)
             {
-                await SetVolume(0).ConfigureAwait(false);
+                await SetVolume(0, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        public async Task Unmute()
+        public async Task Unmute(CancellationToken cancellationToken)
         {
-            var success = await SetMute(false).ConfigureAwait(true);
+            var success = await SetMute(false, cancellationToken).ConfigureAwait(true);
 
             if (!success)
             {
                 var sendVolume = _muteVol <= 0 ? 20 : _muteVol;
 
-                await SetVolume(sendVolume).ConfigureAwait(false);
+                await SetVolume(sendVolume, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -262,9 +262,11 @@ namespace Emby.Dlna.PlayTo
                 services.FirstOrDefault(s => (s.ServiceType ?? string.Empty).StartsWith("urn:schemas-upnp-org:service:AVTransport", StringComparison.OrdinalIgnoreCase));
         }
 
-        private async Task<bool> SetMute(bool mute)
+        private async Task<bool> SetMute(bool mute, CancellationToken cancellationToken)
         {
-            var command = RendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetMute");
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = rendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetMute");
             if (command == null)
                 return false;
 
@@ -278,7 +280,7 @@ namespace Emby.Dlna.PlayTo
             _logger.Debug("Setting mute");
             var value = mute ? 1 : 0;
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, value))
+            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType, value))
                 .ConfigureAwait(false);
 
             IsMuted = mute;
@@ -289,9 +291,11 @@ namespace Emby.Dlna.PlayTo
         /// <summary>
         /// Sets volume on a scale of 0-100
         /// </summary>
-        public async Task SetVolume(int value)
+        public async Task SetVolume(int value, CancellationToken cancellationToken)
         {
-            var command = RendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetVolume");
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = rendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "SetVolume");
             if (command == null)
                 return;
 
@@ -306,7 +310,7 @@ namespace Emby.Dlna.PlayTo
             // Remote control will perform better
             Volume = value;
 
-            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType, value))
+            await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType, value))
                 .ConfigureAwait(false);
         }
 
@@ -383,7 +387,7 @@ namespace Emby.Dlna.PlayTo
         {
             var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Play");
             if (command == null)
-                return Task.FromResult(true);
+                return Task.CompletedTask;
 
             var service = GetAvTransportService();
 
@@ -551,14 +555,16 @@ namespace Emby.Dlna.PlayTo
             }
         }
 
-        private async Task GetVolume()
+        private async Task GetVolume(CancellationToken cancellationToken)
         {
             if (_disposed)
             {
                 return;
             }
 
-            var command = RendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetVolume");
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = rendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetVolume");
             if (command == null)
                 return;
 
@@ -569,7 +575,7 @@ namespace Emby.Dlna.PlayTo
                 return;
             }
 
-            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType), true)
+            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType), true)
                 .ConfigureAwait(false);
 
             if (result == null || result.Document == null)
@@ -589,14 +595,16 @@ namespace Emby.Dlna.PlayTo
             }
         }
 
-        private async Task GetMute()
+        private async Task GetMute(CancellationToken cancellationToken)
         {
             if (_disposed)
             {
                 return;
             }
 
-            var command = RendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetMute");
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var command = rendererCommands.ServiceActions.FirstOrDefault(c => c.Name == "GetMute");
             if (command == null)
                 return;
 
@@ -607,7 +615,7 @@ namespace Emby.Dlna.PlayTo
                 return;
             }
 
-            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType), true)
+            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType), true)
                 .ConfigureAwait(false);
 
             if (result == null || result.Document == null)
@@ -666,7 +674,9 @@ namespace Emby.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType), false)
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType), false)
                 .ConfigureAwait(false);
 
             if (result == null || result.Document == null)
@@ -723,7 +733,9 @@ namespace Emby.Dlna.PlayTo
                 throw new InvalidOperationException("Unable to find service");
             }
 
-            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, RendererCommands.BuildPost(command, service.ServiceType), false)
+            var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            var result = await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, rendererCommands.BuildPost(command, service.ServiceType), false)
                 .ConfigureAwait(false);
 
             if (result == null || result.Document == null)
@@ -877,27 +889,38 @@ namespace Emby.Dlna.PlayTo
 
             avCommands = TransportCommands.Create(document);
             AvCommands = avCommands;
-
             return avCommands;
         }
 
-        private async Task GetRenderingProtocolAsync(CancellationToken cancellationToken)
+        private async Task<TransportCommands> GetRenderingProtocolAsync(CancellationToken cancellationToken)
         {
+            var rendererCommands = RendererCommands;
+
+            if (rendererCommands != null)
+            {
+                return rendererCommands;
+            }
+
             if (_disposed)
             {
-                return;
+                throw new ObjectDisposedException(GetType().Name);
             }
 
             var avService = GetServiceRenderingControl();
 
             if (avService == null)
-                return;
+            {
+                throw new ArgumentException("Device AvService is null");
+            }
+
             string url = NormalizeUrl(Properties.BaseUrl, avService.ScpdUrl);
 
             var httpClient = new SsdpHttpClient(_httpClient, _config);
             var document = await httpClient.GetDataAsync(url, cancellationToken).ConfigureAwait(false);
 
-            RendererCommands = TransportCommands.Create(document);
+            rendererCommands = TransportCommands.Create(document);
+            RendererCommands = rendererCommands;
+            return rendererCommands;
         }
 
         private string NormalizeUrl(string baseUrl, string url)
@@ -922,7 +945,7 @@ namespace Emby.Dlna.PlayTo
             set;
         }
 
-        internal TransportCommands RendererCommands
+        private TransportCommands RendererCommands
         {
             get;
             set;
@@ -1015,11 +1038,6 @@ namespace Emby.Dlna.PlayTo
             }
 
             var device = new Device(deviceProperties, httpClient, logger, config, timerFactory);
-
-            if (device.GetAvTransportService() != null)
-            {
-                await device.GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
-            }
 
             return device;
         }

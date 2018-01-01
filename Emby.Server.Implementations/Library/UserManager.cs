@@ -96,6 +96,7 @@ namespace Emby.Server.Implementations.Library
         /// Occurs when [user updated].
         /// </summary>
         public event EventHandler<GenericEventArgs<User>> UserUpdated;
+        public event EventHandler<GenericEventArgs<User>> UserPolicyUpdated;
         public event EventHandler<GenericEventArgs<User>> UserConfigurationUpdated;
         public event EventHandler<GenericEventArgs<User>> UserLockedOut;
 
@@ -1018,7 +1019,10 @@ namespace Emby.Server.Implementations.Library
                 user.Policy = userPolicy;
             }
 
-            UpdateConfiguration(user, user.Configuration, true);
+            if (fireEvent)
+            {
+                EventHelper.FireEventIfNotNull(UserPolicyUpdated, this, new GenericEventArgs<User> { Argument = user }, _logger);
+            }
         }
 
         private void DeleteUserPolicy(User user)
@@ -1083,6 +1087,11 @@ namespace Emby.Server.Implementations.Library
         public void UpdateConfiguration(string userId, UserConfiguration config)
         {
             var user = GetUserById(userId);
+            UpdateConfiguration(user, config);
+        }
+
+        public void UpdateConfiguration(User user, UserConfiguration config)
+        {
             UpdateConfiguration(user, config, true);
         }
 

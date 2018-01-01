@@ -694,15 +694,15 @@ namespace Emby.Dlna.PlayTo
                 switch (commandType)
                 {
                     case GeneralCommandType.VolumeDown:
-                        return _device.VolumeDown();
+                        return _device.VolumeDown(cancellationToken);
                     case GeneralCommandType.VolumeUp:
-                        return _device.VolumeUp();
+                        return _device.VolumeUp(cancellationToken);
                     case GeneralCommandType.Mute:
-                        return _device.Mute();
+                        return _device.Mute(cancellationToken);
                     case GeneralCommandType.Unmute:
-                        return _device.Unmute();
+                        return _device.Unmute(cancellationToken);
                     case GeneralCommandType.ToggleMute:
-                        return _device.ToggleMute();
+                        return _device.ToggleMute(cancellationToken);
                     case GeneralCommandType.SetAudioStreamIndex:
                         {
                             string arg;
@@ -749,7 +749,7 @@ namespace Emby.Dlna.PlayTo
 
                                 if (Int32.TryParse(arg, NumberStyles.Any, _usCulture, out volume))
                                 {
-                                    return _device.SetVolume(volume);
+                                    return _device.SetVolume(volume, cancellationToken);
                                 }
 
                                 throw new ArgumentException("Unsupported volume value supplied.");
