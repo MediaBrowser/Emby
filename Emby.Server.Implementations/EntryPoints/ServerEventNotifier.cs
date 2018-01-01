@@ -64,6 +64,7 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             _userManager.UserDeleted += userManager_UserDeleted;
             _userManager.UserUpdated += userManager_UserUpdated;
+            _userManager.UserPolicyUpdated += _userManager_UserPolicyUpdated;
             _userManager.UserConfigurationUpdated += _userManager_UserConfigurationUpdated;
 
             _appHost.HasPendingRestartChanged += kernel_HasPendingRestartChanged;
@@ -156,6 +157,13 @@ namespace Emby.Server.Implementations.EntryPoints
             SendMessageToUserSession(e.Argument, "UserDeleted", e.Argument.Id.ToString("N"));
         }
 
+        void _userManager_UserPolicyUpdated(object sender, GenericEventArgs<User> e)
+        {
+            var dto = _userManager.GetUserDto(e.Argument);
+
+            SendMessageToUserSession(e.Argument, "UserPolicyUpdated", dto);
+        }
+
         void _userManager_UserConfigurationUpdated(object sender, GenericEventArgs<User> e)
         {
             var dto = _userManager.GetUserDto(e.Argument);
@@ -187,6 +195,7 @@ namespace Emby.Server.Implementations.EntryPoints
             {
                 _userManager.UserDeleted -= userManager_UserDeleted;
                 _userManager.UserUpdated -= userManager_UserUpdated;
+                _userManager.UserPolicyUpdated -= _userManager_UserPolicyUpdated;
                 _userManager.UserConfigurationUpdated -= _userManager_UserConfigurationUpdated;
 
                 _installationManager.PluginUninstalled -= InstallationManager_PluginUninstalled;
