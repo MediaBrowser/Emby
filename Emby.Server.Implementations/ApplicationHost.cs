@@ -1218,7 +1218,7 @@ namespace Emby.Server.Implementations
                 //localCert.PrivateKey = PrivateKey.CreateFromFile(pvk_file).RSA;
                 if (!localCert.HasPrivateKey)
                 {
-                    //throw new FileNotFoundException("Secure requested, no private key included", certificateLocation);
+                    Logger.Error("No private key included in SSL cert {0}.", certificateLocation);
                     return null;
                 }
 

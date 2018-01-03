@@ -17,7 +17,7 @@ using MediaBrowser.Controller.Dto;
 namespace Emby.Server.Implementations.Photos
 {
     public abstract class BaseFolderImageProvider<T> : BaseDynamicImageProvider<T>
-        where T : Folder, new ()
+        where T : Folder, new()
     {
         protected ILibraryManager _libraryManager;
 
@@ -34,7 +34,8 @@ namespace Emby.Server.Implementations.Photos
                 Parent = item,
                 GroupByPresentationUniqueKey = false,
                 DtoOptions = new DtoOptions(true),
-                ImageTypes = new ImageType[] { ImageType.Primary }
+                ImageTypes = new ImageType[] { ImageType.Primary },
+                OrderBy = new System.Tuple<string, SortOrder>[] { new System.Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
             });
         }
 
