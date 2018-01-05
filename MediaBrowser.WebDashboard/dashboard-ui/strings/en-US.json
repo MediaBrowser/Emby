@@ -609,7 +609,7 @@
   "LabelMusicStreamingTranscodingBitrateHelp": "Specify a max bitrate when streaming music",
   "OptionIgnoreTranscodeByteRangeRequests": "Ignore transcode byte range requests",
   "OptionIgnoreTranscodeByteRangeRequestsHelp": "If enabled, these requests will be honored but will ignore the byte range header.",
-  "LabelFriendlyName": "Friendly name",
+  "LabelFriendlyName": "Friendly name:",
   "LabelManufacturer": "Manufacturer",
   "LabelManufacturerUrl": "Manufacturer url",
   "LabelModelName": "Model name",
