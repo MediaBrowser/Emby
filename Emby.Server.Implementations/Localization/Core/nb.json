@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Bruker {0} er opprettet",
     "UserPasswordChangedWithName": "Passordet for {0} er oppdatert",
     "UserDeletedWithName": "Bruker {0} har blitt slettet",
-    "UserConfigurationUpdatedWithName": "Brukerkonfigurasjon har blitt oppdatert for {0}",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Server konfigurasjon er oppdatert",
     "MessageNamedServerConfigurationUpdatedWithValue": "Server konfigurasjon seksjon {0} har blitt oppdatert",
     "MessageApplicationUpdated": "Emby server har blitt oppdatert",

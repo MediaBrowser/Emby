@@ -53,7 +53,7 @@
     "UserCreatedWithName": "S'ha creat l'usuari {0}",
     "UserPasswordChangedWithName": "La contrasenya ha estat canviada per a l'usuari {0}",
     "UserDeletedWithName": "L'usuari {0} ha estat eliminat",
-    "UserConfigurationUpdatedWithName": "La configuraci\u00f3 d'usuari ha estat actualitzada per a {0}",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "S'ha actualitzat la configuraci\u00f3 del servidor",
     "MessageNamedServerConfigurationUpdatedWithValue": "La secci\u00f3 de configuraci\u00f3 {0} ha estat actualitzada",
     "MessageApplicationUpdated": "El Servidor d'Emby ha estat actualitzat",

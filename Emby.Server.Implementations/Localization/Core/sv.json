@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Anv\u00e4ndaren {0} har skapats",
     "UserPasswordChangedWithName": "L\u00f6senordet f\u00f6r {0} har \u00e4ndrats",
     "UserDeletedWithName": "Anv\u00e4ndaren {0} har tagits bort",
-    "UserConfigurationUpdatedWithName": "Anv\u00e4ndarinst\u00e4llningarna f\u00f6r {0} har uppdaterats",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Server konfigurationen har uppdaterats",
     "MessageNamedServerConfigurationUpdatedWithValue": "Serverinst\u00e4llningarna {0} har uppdaterats",
     "MessageApplicationUpdated": "Emby Server har uppdaterats",

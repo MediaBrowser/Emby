@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Pou\u017e\u00edvate\u013e {0} bol vytvoren\u00fd",
     "UserPasswordChangedWithName": "Heslo pou\u017e\u00edvate\u013ea {0} zmenen\u00e9",
     "UserDeletedWithName": "Pou\u017e\u00edvate\u013e {0} bol vymazan\u00fd",
-    "UserConfigurationUpdatedWithName": "User configuration has been updated for {0}",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Konfigur\u00e1cia servera aktualizovan\u00e1",
     "MessageNamedServerConfigurationUpdatedWithValue": "Sekcia {0} konfigur\u00e1cie servera bola aktualizovan\u00e1",
     "MessageApplicationUpdated": "Emby Server bol aktualizovan\u00fd",
