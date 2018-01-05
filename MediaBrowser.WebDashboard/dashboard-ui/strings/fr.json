@@ -1532,7 +1532,7 @@
     "LabelQuality": "Qualit\u00e9:",
     "MovieLibraryHelp": "Consultez le {0}guide Emby pour nommer les films{1}.",
     "TvLibraryHelp": "Consultez le {0}guide Emby pour nommer les \u00e9missions{1}.",
-    "BookLibraryHelp": "Les livres audios et num\u00e9riques sont support\u00e9s",
+    "BookLibraryHelp": "Les livres audios et num\u00e9riques sont support\u00e9s. Consultez le {0}Guide de nommage pour livre d'Emby{1}.",
     "MessageGamePluginRequired": "N\u00e9cessite l'installation de l'extension GameBrowser",
     "MessageUnsetContentHelp": "Le contenu sera affich\u00e9 sous forme de dossiers. Pour un r\u00e9sultat optimal, utilisez le gestionnaire de m\u00e9tadonn\u00e9es pour d\u00e9finir le type de contenu des sous-dossiers.",
     "LabelProfile": "Profil :",
