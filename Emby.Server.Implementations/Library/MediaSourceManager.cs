@@ -134,15 +134,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     SetUserProperties(hasMediaSources as BaseItem, source, user);
                 }
-                if (source.Protocol == MediaProtocol.File)
-                {
-                    // TODO: Path substitution
-                    if (!_fileSystem.FileExists(source.Path))
-                    {
-                        source.SupportsDirectStream = false;
-                    }
-                }
-                else if (source.Protocol == MediaProtocol.Http)
+                if (source.Protocol == MediaProtocol.File || source.Protocol == MediaProtocol.Http)
                 {
                     // trust whatever was set by the media source provider
                 }

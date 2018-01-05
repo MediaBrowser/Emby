@@ -795,14 +795,21 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     {
                         try
                         {
+                            var tagName = GetTagForProviderKey(providerKey);
+                            //Logger.Debug("Verifying custom provider tagname {0}", tagName);
+                            XmlConvert.VerifyName(tagName);
+                            //Logger.Debug("Saving custom provider tagname {0}", tagName);
+                            
                             writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
                         }
                         catch (ArgumentException)
                         {
                             // catch invalid names without failing the entire operation
                         }
-
-                        writtenProviderIds.Add(providerKey);
+                        catch (XmlException)
+                        {
+                            // catch invalid names without failing the entire operation
+                        }
                     }
                 }
             }

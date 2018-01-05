@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Korisnik {0} je stvoren",
     "UserPasswordChangedWithName": "Lozinka je promijenjena za korisnika {0}",
     "UserDeletedWithName": "Korisnik {0} je obrisan",
-    "UserConfigurationUpdatedWithName": "Postavke korisnika su a\u017eurirane za {0}",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Postavke servera su a\u017eurirane",
     "MessageNamedServerConfigurationUpdatedWithValue": "Odjeljak postavka servera {0} je a\u017euriran",
     "MessageApplicationUpdated": "Emby Server je a\u017euriran",

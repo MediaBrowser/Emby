@@ -12,6 +12,10 @@
 
                 <button is="emby-button" type="button" class="raised button-cancel block btnDetect hide" style="margin-bottom:3em;">${HeaderDetectMyDevices}</button>
 
+                <div class="inputContainer fldFriendlyName hide">
+                    <input is="emby-input" type="text" class="txtFriendlyName" label="${LabelFriendlyName}" autocomplete="off" />
+                </div>
+
                 <div class="inputContainer fldPath hide">
                     <div style="display: flex; align-items: center;">
                         <div style="flex-grow: 1;">
@@ -50,6 +54,7 @@
                 <p class="drmMessage hide">${DrmChannelsNotImported}</p>
                 <p class="otherOptionsMessage hide" style="margin:2em 0;">${ForAdditionalLiveTvOptions}</p>
                 <br />
+                <input type="hidden" class="fldDeviceId" />
                 <div>
                     <button is="emby-button" type="submit" class="raised button-submit block">
                         <span>${ButtonSave}</span>

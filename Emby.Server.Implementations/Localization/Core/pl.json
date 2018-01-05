@@ -53,7 +53,7 @@
     "UserCreatedWithName": "U\u017cytkownik {0} zosta\u0142 utworzony",
     "UserPasswordChangedWithName": "Has\u0142o u\u017cytkownika {0} zosta\u0142o zmienione",
     "UserDeletedWithName": "U\u017cytkownik {0} zosta\u0142 usuni\u0119ty",
-    "UserConfigurationUpdatedWithName": "Konfiguracja u\u017cytkownika {0} zosta\u0142a zaktualizowana",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Konfiguracja serwera zosta\u0142a zaktualizowana",
     "MessageNamedServerConfigurationUpdatedWithValue": "Sekcja {0} konfiguracji serwera zosta\u0142a zaktualizowana",
     "MessageApplicationUpdated": "Serwer Emby zosta\u0142 zaktualizowany",
