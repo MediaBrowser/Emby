@@ -323,7 +323,7 @@ namespace Emby.Server.Implementations.IO
                     if (_environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows ||
                     _environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX)
                     {
-                        newWatcher.InternalBufferSize = 32767;
+                        newWatcher.InternalBufferSize = 65536;
                     }
 
                     newWatcher.NotifyFilter = NotifyFilters.CreationTime |
