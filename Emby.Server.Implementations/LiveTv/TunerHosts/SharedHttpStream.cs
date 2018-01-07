@@ -15,6 +15,7 @@ using MediaBrowser.Model.System;
 using System.Globalization;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts
 {
@@ -139,7 +140,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     Logger.ErrorException("Error copying live stream.", ex);
                 }
                 EnableStreamSharing = false;
-                await DeleteTempFile(TempFilePath).ConfigureAwait(false);
+                await DeleteTempFiles(new List<string> { TempFilePath }).ConfigureAwait(false);
             });
         }
 
