@@ -156,39 +156,48 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var allowAsync = false;//Environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.Windows;
             // use non-async filestream along with read due to https://github.com/dotnet/corefx/issues/6039
 
-            var nextFile = GetNextFile(null);
             bool seekFile = (DateTime.UtcNow - DateOpened).TotalSeconds > 10;
 
-            while (nextFile != null)
-            {
-                await CopyFile(nextFile, seekFile, allowAsync, stream, cancellationToken).ConfigureAwait(false);
+            var nextFileInfo = GetNextFile(null);
+            var nextFile = nextFileInfo.Item1;
+            var isLastFile = nextFileInfo.Item2;
 
-                nextFile = GetNextFile(nextFile);
+            while (!string.IsNullOrWhiteSpace(nextFile))
+            {
+                var emptyReadLimit = isLastFile ? EmptyReadLimit : 1;
+
+                await CopyFile(nextFile, seekFile, emptyReadLimit, allowAsync, stream, cancellationToken).ConfigureAwait(false);
+
                 seekFile = false;
+                nextFileInfo = GetNextFile(nextFile);
+                nextFile = nextFileInfo.Item1;
+                isLastFile = nextFileInfo.Item2;
             }
+
+            Logger.Info("Live Stream ended.");
         }
 
-        private string GetNextFile(string currentFile)
+        private Tuple<string, bool> GetNextFile(string currentFile)
         {
             var files = GetStreamFilePaths();
 
+            //Logger.Info("Live stream files: {0}", string.Join(", ", files.ToArray()));
+
             if (string.IsNullOrWhiteSpace(currentFile))
             {
-                return files.Last();
+                return new Tuple<string, bool>(files.Last(), true);
             }
 
-            var nextIndex = files.IndexOf(currentFile) + 1;
-            if (nextIndex <= (files.Count - 1))
-            {
-                return files[nextIndex];
-            }
+            var nextIndex = files.FindIndex(i => string.Equals(i, currentFile, StringComparison.OrdinalIgnoreCase)) + 1;
 
-            return null;
+            var isLastFile = nextIndex == files.Count - 1;
+
+            return new Tuple<string, bool>(files.ElementAtOrDefault(nextIndex), isLastFile);
         }
 
-        private async Task CopyFile(string path, bool seekFile, bool allowAsync, Stream stream, CancellationToken cancellationToken)
+        private async Task CopyFile(string path, bool seekFile, int emptyReadLimit, bool allowAsync, Stream stream, CancellationToken cancellationToken)
         {
-            Logger.Info("Opening live stream file {0}", path);
+            //Logger.Info("Opening live stream file {0}. Empty read limit: {1}", path, emptyReadLimit);
 
             using (var inputStream = (FileStream)GetInputStream(path, allowAsync))
             {
@@ -197,7 +206,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     TrySeek(inputStream, -20000);
                 }
 
-                await CopyTo(inputStream, stream, 81920, null, cancellationToken).ConfigureAwait(false);
+                await CopyTo(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -209,12 +218,24 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        private async Task CopyTo(Stream source, Stream destination, int bufferSize, Action onStarted, CancellationToken cancellationToken)
+        private async Task CopyTo(Stream source, Stream destination, int bufferSize, int emptyReadLimit, CancellationToken cancellationToken)
         {
             byte[] buffer = new byte[bufferSize];
 
+            if (emptyReadLimit <= 0)
+            {
+                int read;
+                while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    destination.Write(buffer, 0, read);
+                }
+
+                return;
+            }
+
             var eofCount = 0;
-            var emptyReadLimit = EmptyReadLimit;
 
             while (eofCount < emptyReadLimit)
             {
@@ -233,12 +254,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                     //await destination.WriteAsync(buffer, 0, read).ConfigureAwait(false);
                     destination.Write(buffer, 0, bytesRead);
-
-                    if (onStarted != null)
-                    {
-                        onStarted();
-                        onStarted = null;
-                    }
                 }
             }
         }
