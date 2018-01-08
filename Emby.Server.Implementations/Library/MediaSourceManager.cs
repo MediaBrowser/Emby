@@ -406,8 +406,6 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("id");
             }
 
-            _logger.Debug("Getting already opened live stream {0}", id);
-
             await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try

@@ -26,6 +26,7 @@ namespace Emby.Server.Implementations.IO
 
         private SharpCifsFileSystem _sharpCifsFileSystem;
         private IEnvironmentInfo _environmentInfo;
+        private bool _isEnvironmentCaseInsensitive;
 
         public ManagedFileSystem(ILogger logger, IEnvironmentInfo environmentInfo, string tempPath)
         {
@@ -42,6 +43,8 @@ namespace Emby.Server.Implementations.IO
             SetInvalidFileNameChars(environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows);
 
             _sharpCifsFileSystem = new SharpCifsFileSystem(environmentInfo.OperatingSystem);
+
+            _isEnvironmentCaseInsensitive = environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows;
         }
 
         public void AddShortcutHandler(IShortcutHandler handler)
@@ -821,7 +824,7 @@ namespace Emby.Server.Implementations.IO
 
             // On linux and osx the search pattern is case sensitive
             // If we're OK with case-sensitivity, and we're only filtering for one extension, then use the native method
-            if (enableCaseSensitiveExtensions && extensions != null && extensions.Length == 1)
+            if ((enableCaseSensitiveExtensions || _isEnvironmentCaseInsensitive) && extensions != null && extensions.Length == 1)
             {
                 return ToMetadata(new DirectoryInfo(path).EnumerateFiles("*" + extensions[0], searchOption));
             }
@@ -1051,7 +1054,7 @@ namespace Emby.Server.Implementations.IO
 
             // On linux and osx the search pattern is case sensitive
             // If we're OK with case-sensitivity, and we're only filtering for one extension, then use the native method
-            if (enableCaseSensitiveExtensions && extensions != null && extensions.Length == 1)
+            if ((enableCaseSensitiveExtensions || _isEnvironmentCaseInsensitive) && extensions != null && extensions.Length == 1)
             {
                 return Directory.EnumerateFiles(path, "*" + extensions[0], searchOption);
             }
