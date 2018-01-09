@@ -32,6 +32,9 @@ namespace MediaBrowser.Providers.TV
 
             if (refreshOptions.IsPostRecursiveRefresh)
             {
+                var seasonProvider = new DummySeasonProvider(ServerConfigurationManager, Logger, _localization, LibraryManager, FileSystem);
+                await seasonProvider.Run(item, cancellationToken).ConfigureAwait(false);
+
                 var provider = new MissingEpisodeProvider(Logger, 
                     ServerConfigurationManager, 
                     LibraryManager, 

@@ -32,12 +32,12 @@ namespace MediaBrowser.Providers.TV
         /// <summary>
         /// The server time URL
         /// </summary>
-        private const string ServerTimeUrl = TvdbBaseUrl + "Updates.php?type=none";
+        private const string ServerTimeUrl = TvdbBaseUrl + "api/Updates.php?type=none";
 
         /// <summary>
         /// The updates URL
         /// </summary>
-        private const string UpdatesUrl = TvdbBaseUrl + "Updates.php?type=all&time={0}";
+        private const string UpdatesUrl = TvdbBaseUrl + "api/Updates.php?type=all&time={0}";
 
         /// <summary>
         /// The _HTTP client

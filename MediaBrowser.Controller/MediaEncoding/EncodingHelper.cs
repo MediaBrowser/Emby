@@ -940,6 +940,14 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
+            if (string.Equals(state.InputContainer, "avi", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(videoStream.Codec, "h264", StringComparison.OrdinalIgnoreCase) &&
+                !(videoStream.IsAVC ?? false))
+            {
+                // see Coach S01E01 - Kelly and the Professor(0).avi
+                return false;
+            }
+
             return request.EnableAutoStreamCopy;
         }
 
