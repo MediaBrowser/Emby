@@ -49,7 +49,6 @@
     <Compile Include="IHasDtoOptions.cs" />
     <Compile Include="LiveTv\ProgressiveFileCopier.cs" />
     <Compile Include="PlaylistService.cs" />
-    <Compile Include="Social\SharingService.cs" />
     <Compile Include="StartupWizardService.cs" />
     <Compile Include="Subtitles\SubtitleService.cs" />
     <Compile Include="Movies\CollectionService.cs" />

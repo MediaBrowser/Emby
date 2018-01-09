@@ -110,7 +110,6 @@
     <Compile Include="Net\ISocket.cs" />
     <Compile Include="Net\SocketReceiveResult.cs" />
     <Compile Include="Services\IHttpResult.cs" />
-    <Compile Include="Social\ISharingRepository.cs" />
     <Compile Include="System\IEnvironmentInfo.cs" />
     <Compile Include="System\IPowerManagement.cs" />
     <Compile Include="Tasks\TaskOptions.cs" />
@@ -345,8 +344,6 @@
     <Compile Include="Session\TranscodingInfo.cs" />
     <Compile Include="Session\UserDataChangeInfo.cs" />
     <Compile Include="Devices\ContentUploadHistory.cs" />
-    <Compile Include="Social\ISharingManager.cs" />
-    <Compile Include="Social\SocialShareInfo.cs" />
     <Compile Include="Sync\CompleteSyncJobInfo.cs" />
     <Compile Include="Sync\DeviceFileInfo.cs" />
     <Compile Include="Sync\ItemFIleInfo.cs" />

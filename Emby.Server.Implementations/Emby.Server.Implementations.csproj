@@ -479,8 +479,6 @@
     <Compile Include="Session\SessionManager.cs" />
     <Compile Include="Session\SessionWebSocketListener.cs" />
     <Compile Include="Session\WebSocketController.cs" />
-    <Compile Include="Social\SharingManager.cs" />
-    <Compile Include="Social\SharingRepository.cs" />
     <Compile Include="Sorting\AiredEpisodeOrderComparer.cs" />
     <Compile Include="Sorting\AlbumArtistComparer.cs" />
     <Compile Include="Sorting\AlbumComparer.cs" />
