@@ -169,8 +169,6 @@ namespace MediaBrowser.Model.Configuration
 
         public int RemoteClientBitrateLimit { get; set; }
 
-        public int SharingExpirationDays { get; set; }
-
         public int SchemaVersion { get; set; }
 
         public bool EnableAnonymousUsageReporting { get; set; }
@@ -218,7 +216,6 @@ namespace MediaBrowser.Model.Configuration
             EnableAutomaticRestart = true;
 
             EnableUPnP = true;
-            SharingExpirationDays = 30;
             MinResumePct = 5;
             MaxResumePct = 90;
 

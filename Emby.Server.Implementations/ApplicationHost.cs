@@ -33,7 +33,6 @@ using Emby.Server.Implementations.ScheduledTasks;
 using Emby.Server.Implementations.Security;
 using Emby.Server.Implementations.Serialization;
 using Emby.Server.Implementations.Session;
-using Emby.Server.Implementations.Social;
 using Emby.Server.Implementations.Threading;
 using Emby.Server.Implementations.TV;
 using Emby.Server.Implementations.Updates;
@@ -93,7 +92,6 @@ using MediaBrowser.Model.News;
 using MediaBrowser.Model.Reflection;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
-using MediaBrowser.Model.Social;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Tasks;
 using MediaBrowser.Model.Text;
@@ -1040,12 +1038,6 @@ namespace Emby.Server.Implementations
 
             EncodingManager = new EncodingManager(FileSystemManager, Logger, MediaEncoder, ChapterManager, LibraryManager);
             RegisterSingleInstance(EncodingManager);
-
-            var sharingRepo = new SharingRepository(LogManager.GetLogger("SharingRepository"), ApplicationPaths, FileSystemManager);
-            sharingRepo.Initialize();
-            // This is only needed for disposal purposes. If removing this, make sure to have the manager handle disposing it
-            RegisterSingleInstance<ISharingRepository>(sharingRepo);
-            RegisterSingleInstance<ISharingManager>(new SharingManager(sharingRepo, ServerConfigurationManager, LibraryManager, this));
 
             var activityLogRepo = GetActivityLogRepository();
             RegisterSingleInstance(activityLogRepo);
