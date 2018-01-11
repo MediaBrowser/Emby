@@ -471,7 +471,7 @@
     "RepeatMode": "Tryb powtarzania",
     "RepeatOne": "Powtarzaj jedno",
     "RepeatAll": "Powtarzaj wszystko",
-    "ConfirmEndPlayerSession": "Czy chcesz zamkn\u0105\u0107 Emby na tym urz\u0105dzeniu?",
+    "ConfirmEndPlayerSession": "Czy chcesz zamkn\u0105\u0107 Emby na {0}?",
     "Yes": "Tak",
     "No": "Nie",
     "LiveTV": "Telewizja",

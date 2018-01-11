@@ -23,6 +23,8 @@
   "LabelAddConnectSupporterHelp": "To add a user who isn't listed, you'll need to first link their account to Emby Connect from their user profile page.",
   "LabelPinCode": "Pin code:",
   "DeleteMedia": "Delete media",
+  "AllowRemoteAccess": "Allow remote access",
+  "AllowRemoteAccessHelp": "If unchecked, all remote connections will be blocked.",
   "HeaderSync": "Sync",
   "HeaderPlayAll": "Play All",
   "HeaderUpcomingNews": "Upcoming News",
