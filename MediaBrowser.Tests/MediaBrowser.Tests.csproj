@@ -62,7 +62,6 @@
     <Compile Include="ConsistencyTests\TextIndexing\WordOccurrence.cs" />
     <Compile Include="ConsistencyTests\TextIndexing\WordOccurrences.cs" />
     <Compile Include="M3uParserTest.cs" />
-    <Compile Include="MediaEncoding\Subtitles\AssParserTests.cs" />
     <Compile Include="MediaEncoding\Subtitles\SrtParserTests.cs" />
     <Compile Include="MediaEncoding\Subtitles\VttWriterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

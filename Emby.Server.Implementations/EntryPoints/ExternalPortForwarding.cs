@@ -38,6 +38,12 @@ namespace Emby.Server.Implementations.EntryPoints
             _deviceDiscovery = deviceDiscovery;
             _httpClient = httpClient;
             _timerFactory = timerFactory;
+            _config.ConfigurationUpdated += _config_ConfigurationUpdated1;
+        }
+
+        private void _config_ConfigurationUpdated1(object sender, EventArgs e)
+        {
+            _config_ConfigurationUpdated(sender, e);
         }
 
         private string _lastConfigIdentifier;
@@ -52,6 +58,7 @@ namespace Emby.Server.Implementations.EntryPoints
             values.Add(_appHost.HttpsPort.ToString(CultureInfo.InvariantCulture));
             values.Add((config.EnableHttps || config.RequireHttps).ToString());
             values.Add(_appHost.EnableHttps.ToString());
+            values.Add((config.EnableRemoteAccess).ToString());
 
             return string.Join("|", values.ToArray(values.Count));
         }
@@ -68,7 +75,7 @@ namespace Emby.Server.Implementations.EntryPoints
 
         public void Run()
         {
-            if (_config.Configuration.EnableUPnP)
+            if (_config.Configuration.EnableUPnP && _config.Configuration.EnableRemoteAccess)
             {
                 Start();
             }

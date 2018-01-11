@@ -88,6 +88,8 @@ namespace MediaBrowser.Controller.Library
         /// <param name="id">The live stream identifier.</param>
         /// <returns>Task.</returns>
         Task CloseLiveStream(string id);
+
+        Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken);
     }
 
     public interface IDirectStreamProvider

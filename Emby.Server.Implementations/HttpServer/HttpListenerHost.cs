@@ -422,6 +422,21 @@ namespace Emby.Server.Implementations.HttpServer
             return true;
         }
 
+        private bool ValidateRequest(string remoteIp, bool isLocal)
+        {
+            if (isLocal)
+            {
+                return true;
+            }
+
+            if (_config.Configuration.EnableRemoteAccess)
+            {
+                return true;
+            }
+
+            return _networkManager.IsInLocalNetwork(remoteIp);
+        }
+
         private bool ValidateSsl(string remoteIp, string urlString)
         {
             if (_config.Configuration.RequireHttps && _appHost.EnableHttps)
@@ -448,7 +463,7 @@ namespace Emby.Server.Implementations.HttpServer
             bool enableLog = false;
             bool logHeaders = false;
             string urlToLog = null;
-            string remoteIp = null;
+            string remoteIp = httpReq.RemoteIp;
 
             try
             {
@@ -460,7 +475,7 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
-                if (!ValidateHost(host))
+                if (!ValidateHost(host) || !ValidateRequest(remoteIp, httpReq.IsLocal))
                 {
                     httpRes.StatusCode = 400;
                     httpRes.ContentType = "text/plain";
@@ -498,7 +513,6 @@ namespace Emby.Server.Implementations.HttpServer
                 if (enableLog)
                 {
                     urlToLog = GetUrlToLog(urlString);
-                    remoteIp = httpReq.RemoteIp;
 
                     LoggerUtils.LogRequest(_logger, urlToLog, httpReq.HttpMethod, httpReq.UserAgent, logHeaders ? httpReq.Headers : null);
                 }
