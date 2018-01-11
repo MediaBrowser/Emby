@@ -28,7 +28,7 @@ namespace MediaBrowser.Controller.Playlists
         /// <param name="itemIds">The item ids.</param>
         /// <param name="userId">The user identifier.</param>
         /// <returns>Task.</returns>
-        Task AddToPlaylist(string playlistId, IEnumerable<string> itemIds, string userId);
+        void AddToPlaylist(string playlistId, IEnumerable<string> itemIds, string userId);
 
         /// <summary>
         /// Removes from playlist.
@@ -36,7 +36,7 @@ namespace MediaBrowser.Controller.Playlists
         /// <param name="playlistId">The playlist identifier.</param>
         /// <param name="entryIds">The entry ids.</param>
         /// <returns>Task.</returns>
-        Task RemoveFromPlaylist(string playlistId, IEnumerable<string> entryIds);
+        void RemoveFromPlaylist(string playlistId, IEnumerable<string> entryIds);
 
         /// <summary>
         /// Gets the playlists folder.
@@ -52,6 +52,6 @@ namespace MediaBrowser.Controller.Playlists
         /// <param name="entryId">The entry identifier.</param>
         /// <param name="newIndex">The new index.</param>
         /// <returns>Task.</returns>
-        Task MoveItem(string playlistId, string entryId, int newIndex);
+        void MoveItem(string playlistId, string entryId, int newIndex);
     }
 }

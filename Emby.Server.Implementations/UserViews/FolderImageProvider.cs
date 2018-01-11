@@ -17,7 +17,7 @@ using MediaBrowser.Controller.Dto;
 namespace Emby.Server.Implementations.Photos
 {
     public abstract class BaseFolderImageProvider<T> : BaseDynamicImageProvider<T>
-        where T : Folder, new ()
+        where T : Folder, new()
     {
         protected ILibraryManager _libraryManager;
 
@@ -27,23 +27,24 @@ namespace Emby.Server.Implementations.Photos
             _libraryManager = libraryManager;
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             return _libraryManager.GetItemList(new InternalItemsQuery
             {
-                Parent = item as BaseItem,
+                Parent = item,
                 GroupByPresentationUniqueKey = false,
                 DtoOptions = new DtoOptions(true),
-                ImageTypes = new ImageType[] { ImageType.Primary }
+                ImageTypes = new ImageType[] { ImageType.Primary },
+                OrderBy = new System.Tuple<string, SortOrder>[] { new System.Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
             });
         }
 
-        protected override string CreateImage(IHasMetadata item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             return CreateSingleImage(itemsWithImages, outputPathWithoutExtension, ImageType.Primary);
         }
 
-        protected override bool Supports(IHasMetadata item)
+        protected override bool Supports(BaseItem item)
         {
             if (item is PhotoAlbum || item is MusicAlbum)
             {
@@ -63,7 +64,7 @@ namespace Emby.Server.Implementations.Photos
             return false;
         }
 
-        protected override bool HasChangedByDate(IHasMetadata item, ItemImageInfo image)
+        protected override bool HasChangedByDate(BaseItem item, ItemImageInfo image)
         {
             if (item is MusicAlbum)
             {

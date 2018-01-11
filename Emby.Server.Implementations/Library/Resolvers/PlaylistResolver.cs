@@ -2,6 +2,7 @@
 using MediaBrowser.Controller.Playlists;
 using System;
 using System.IO;
+using MediaBrowser.Model.Extensions;
 
 namespace Emby.Server.Implementations.Library.Resolvers
 {
@@ -31,7 +32,7 @@ namespace Emby.Server.Implementations.Library.Resolvers
                     return new Playlist
                     {
                         Path = args.Path,
-                        Name = ResolverHelper.StripBrackets(Path.GetFileName(args.Path))
+                        Name = Path.GetFileName(args.Path).Replace("[playlist]", string.Empty, StringComparison.OrdinalIgnoreCase).Trim()
                     };
                 }
             }

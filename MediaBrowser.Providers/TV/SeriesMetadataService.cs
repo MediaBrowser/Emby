@@ -9,20 +9,21 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Xml;
 
 namespace MediaBrowser.Providers.TV
 {
     public class SeriesMetadataService : MetadataService<Series, SeriesInfo>
     {
         private readonly ILocalizationManager _localization;
+        private readonly IXmlReaderSettingsFactory _xmlSettings;
 
-        public SeriesMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager, ILocalizationManager localization) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        public SeriesMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager, ILocalizationManager localization, IXmlReaderSettingsFactory xmlSettings) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
         {
             _localization = localization;
+            _xmlSettings = xmlSettings;
         }
 
         protected override async Task AfterMetadataRefresh(Series item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
@@ -31,11 +32,19 @@ namespace MediaBrowser.Providers.TV
 
             if (refreshOptions.IsPostRecursiveRefresh)
             {
-                var provider = new DummySeasonProvider(ServerConfigurationManager, Logger, _localization, LibraryManager, FileSystem);
+                var seasonProvider = new DummySeasonProvider(ServerConfigurationManager, Logger, _localization, LibraryManager, FileSystem);
+                await seasonProvider.Run(item, cancellationToken).ConfigureAwait(false);
+
+                var provider = new MissingEpisodeProvider(Logger, 
+                    ServerConfigurationManager, 
+                    LibraryManager, 
+                    _localization, 
+                    FileSystem,
+                    _xmlSettings);
 
                 try
                 {
-                    await provider.Run(item, CancellationToken.None).ConfigureAwait(false);
+                    await provider.Run(item, true, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

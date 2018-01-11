@@ -162,8 +162,6 @@ namespace Emby.Server.Implementations.Data
 
                     createMediaStreamsTableCommand,
 
-                    "create index if not exists idx_mediastreams1 on mediastreams(ItemId)",
-
                     "pragma shrink_memory"
 
                 };
@@ -282,6 +280,7 @@ namespace Emby.Server.Implementations.Data
                     // obsolete
                     "drop index if exists idx_TypedBaseItems",
                     "drop index if exists idx_mediastreams",
+                    "drop index if exists idx_mediastreams1",
                     "drop index if exists idx_"+ChaptersTableName,
                     "drop index if exists idx_UserDataKeys1",
                     "drop index if exists idx_UserDataKeys2",
@@ -316,7 +315,6 @@ namespace Emby.Server.Implementations.Data
 
                     "create index if not exists idx_PresentationUniqueKey on TypedBaseItems(PresentationUniqueKey)",
                     "create index if not exists idx_GuidTypeIsFolderIsVirtualItem on TypedBaseItems(Guid,Type,IsFolder,IsVirtualItem)",
-                    //"create index if not exists idx_GuidMediaTypeIsFolderIsVirtualItem on TypedBaseItems(Guid,MediaType,IsFolder,IsVirtualItem)",
                     "create index if not exists idx_CleanNameType on TypedBaseItems(CleanName,Type)",
 
                     // covering index
@@ -361,7 +359,7 @@ namespace Emby.Server.Implementations.Data
 
             userDataRepo.Initialize(WriteLock, _connection);
 
-            _shrinkMemoryTimer = _timerFactory.Create(OnShrinkMemoryTimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(30));
+            _shrinkMemoryTimer = _timerFactory.Create(OnShrinkMemoryTimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(6));
         }
 
         private void OnShrinkMemoryTimerCallback(object state)
@@ -1454,7 +1452,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.EndDate = reader[index].ReadDateTime();
+                item.EndDate = reader[index].TryReadDateTime();
             }
             index++;
 
@@ -1609,7 +1607,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.PremiereDate = reader[index].ReadDateTime();
+                item.PremiereDate = reader[index].TryReadDateTime();
             }
             index++;
 
@@ -1815,7 +1813,7 @@ namespace Emby.Server.Implementations.Data
                 var folder = item as Folder;
                 if (folder != null && !reader.IsDBNull(index))
                 {
-                    folder.DateLastMediaAdded = reader[index].ReadDateTime();
+                    folder.DateLastMediaAdded = reader[index].TryReadDateTime();
                 }
                 index++;
             }

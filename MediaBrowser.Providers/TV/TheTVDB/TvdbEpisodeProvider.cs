@@ -787,30 +787,32 @@ namespace MediaBrowser.Providers.TV
         private void AddGuestStars<T>(MetadataResult<T> result, string val)
             where T : BaseItem
         {
-            // Sometimes tvdb actors have leading spaces
-            //Regex Info:
-            //The first block are the posible delimitators (open-parentheses should be there cause if dont the next block will fail)
-            //The second block Allow the delimitators to be part of the text if they're inside parentheses
-            var persons = Regex.Matches(val, @"(?<delimitators>([^|,(])|(?<ignoreinParentheses>\([^)]*\)*))+")
-                .Cast<Match>()
-                .Select(m => m.Value)
-                .Where(i => !string.IsNullOrWhiteSpace(i) && !string.IsNullOrEmpty(i));
+            // example:
+            // <GuestStars>|Mark C. Thomas|  Dennis Kiefer|  David Nelson (David)|  Angela Nicholas|  Tzi Ma|  Kevin P. Kearns (Pasco)|</GuestStars>
+            var persons = val.Split('|')
+                .Select(i => i.Trim())
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .ToList();
 
-            foreach (var person in persons.Select(str =>
+            foreach (var person in persons)
             {
-                var nameGroup = str.Split(new[] { '(' }, 2, StringSplitOptions.RemoveEmptyEntries);
-                var name = nameGroup[0].Trim();
-                var roles = nameGroup.Count() > 1 ? nameGroup[1].Trim() : null;
-                if (roles != null)
-                    roles = roles.EndsWith(")") ? roles.Substring(0, roles.Length - 1) : roles;
+                var index = person.IndexOf('(');
+                string role = null;
+                var name = person;
 
-                return new PersonInfo { Type = PersonType.GuestStar, Name = name, Role = roles };
-            }))
-            {
-                if (!string.IsNullOrWhiteSpace(person.Name))
+                if (index != -1)
                 {
-                    result.AddPerson(person);
+                    role = person.Substring(index + 1).Trim().TrimEnd(')');
+
+                    name = person.Substring(0, index).Trim();
                 }
+
+                result.AddPerson(new PersonInfo
+                {
+                    Type = PersonType.GuestStar,
+                    Name = name,
+                    Role = role
+                });
             }
         }
 

@@ -471,7 +471,7 @@
     "RepeatMode": "Repeat mode",
     "RepeatOne": "Opakova\u0165 jedno",
     "RepeatAll": "Opakova\u0165 v\u0161etko",
-    "ConfirmEndPlayerSession": "Would you like to close Emby on the device?",
+    "ConfirmEndPlayerSession": "Would you like to shutdown Emby on {0}?",
     "Yes": "\u00c1no",
     "No": "Nie",
     "LiveTV": "\u017div\u00fd TV prenos",

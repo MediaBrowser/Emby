@@ -940,6 +940,14 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
+            if (string.Equals(state.InputContainer, "avi", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(videoStream.Codec, "h264", StringComparison.OrdinalIgnoreCase) &&
+                !(videoStream.IsAVC ?? false))
+            {
+                // see Coach S01E01 - Kelly and the Professor(0).avi
+                return false;
+            }
+
             return request.EnableAutoStreamCopy;
         }
 
@@ -1008,20 +1016,15 @@ namespace MediaBrowser.Controller.MediaEncoding
             if (videoStream != null)
             {
                 var isUpscaling = request.Height.HasValue && videoStream.Height.HasValue &&
-                                   request.Height.Value > videoStream.Height.Value;
-
-                if (request.Width.HasValue && videoStream.Width.HasValue &&
-                    request.Width.Value > videoStream.Width.Value)
-                {
-                    isUpscaling = true;
-                }
+                                   request.Height.Value > videoStream.Height.Value && request.Width.HasValue && videoStream.Width.HasValue &&
+                    request.Width.Value > videoStream.Width.Value;
 
                 // Don't allow bitrate increases unless upscaling
                 if (!isUpscaling)
                 {
                     if (bitrate.HasValue && videoStream.BitRate.HasValue)
                     {
-                        bitrate = GetMinBitrate(bitrate.Value, videoStream.BitRate.Value);
+                        bitrate = GetMinBitrate(videoStream.BitRate.Value, bitrate.Value);
                     }
                 }
             }
@@ -1034,7 +1037,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // If a max bitrate was requested, don't let the scaled bitrate exceed it
                 if (request.VideoBitRate.HasValue)
                 {
-                    bitrate = GetMinBitrate(bitrate.Value, request.VideoBitRate.Value);
+                    bitrate = Math.Min(bitrate.Value, request.VideoBitRate.Value);
                 }
             }
 

@@ -53,7 +53,7 @@
     "UserCreatedWithName": "U\u017eivatel {0} byl vytvo\u0159en",
     "UserPasswordChangedWithName": "Provedena zm\u011bna hesla pro u\u017eivatele {0}",
     "UserDeletedWithName": "U\u017eivatel {0} byl smaz\u00e1n",
-    "UserConfigurationUpdatedWithName": "Konfigurace u\u017eivatele byla aktualizov\u00e1na pro {0}",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Konfigurace serveru aktualizov\u00e1na",
     "MessageNamedServerConfigurationUpdatedWithValue": "Konfigurace sekce {0} na serveru byla aktualizov\u00e1na",
     "MessageApplicationUpdated": "Emby Server byl aktualizov\u00e1n",

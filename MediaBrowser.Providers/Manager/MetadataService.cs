@@ -18,7 +18,7 @@ using MediaBrowser.Providers.MediaInfo;
 namespace MediaBrowser.Providers.Manager
 {
     public abstract class MetadataService<TItemType, TIdType> : IMetadataService
-        where TItemType : IHasMetadata, IHasLookupInfo<TIdType>, new()
+        where TItemType : BaseItem, IHasLookupInfo<TIdType>, new()
         where TIdType : ItemLookupInfo, new()
     {
         protected readonly IServerConfigurationManager ServerConfigurationManager;
@@ -41,7 +41,7 @@ namespace MediaBrowser.Providers.Manager
             _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
 
-        public async Task<ItemUpdateType> RefreshMetadata(IHasMetadata item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
+        public async Task<ItemUpdateType> RefreshMetadata(BaseItem item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
         {
             var itemOfType = (TItemType)item;
             var config = ProviderManager.GetMetadataOptions(item);
@@ -49,7 +49,7 @@ namespace MediaBrowser.Providers.Manager
             var updateType = ItemUpdateType.None;
             var requiresRefresh = false;
 
-            var libraryOptions = LibraryManager.GetLibraryOptions((BaseItem)item);
+            var libraryOptions = LibraryManager.GetLibraryOptions(item);
 
             if (!requiresRefresh && libraryOptions.AutomaticRefreshIntervalDays > 0 && (DateTime.UtcNow - item.DateLastRefreshed).TotalDays >= libraryOptions.AutomaticRefreshIntervalDays)
             {
@@ -173,7 +173,7 @@ namespace MediaBrowser.Providers.Manager
                 }
             }
 
-            var beforeSaveResult = BeforeSave(itemOfType, isFirstRefresh || refreshOptions.ReplaceAllMetadata || refreshOptions.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || requiresRefresh, updateType);
+            var beforeSaveResult = BeforeSave(itemOfType, isFirstRefresh || refreshOptions.ReplaceAllMetadata || refreshOptions.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || requiresRefresh || refreshOptions.ForceSave, updateType);
             updateType = updateType | beforeSaveResult;
 
             if (newDateModified.HasValue)
@@ -219,7 +219,7 @@ namespace MediaBrowser.Providers.Manager
         {
             if (result.Item.SupportsPeople && result.People != null)
             {
-                var baseItem = result.Item as BaseItem;
+                var baseItem = result.Item;
 
                 LibraryManager.UpdatePeople(baseItem, result.People);
                 await SavePeopleMetadata(result.People, libraryOptions, cancellationToken).ConfigureAwait(false);
@@ -309,12 +309,14 @@ namespace MediaBrowser.Providers.Manager
             return updateType;
         }
 
-        protected virtual ItemUpdateType BeforeSaveInternal(TItemType item, bool isFullRefresh, ItemUpdateType currentUpdateType)
+        protected virtual ItemUpdateType BeforeSaveInternal(TItemType item, bool isFullRefresh, ItemUpdateType updateType)
         {
-            var updateType = ItemUpdateType.None;
+            if (EnableUpdateMetadataFromChildren(item, isFullRefresh, updateType))
+            {
+                var children = GetChildrenForMetadataUpdates(item);
 
-            updateType |= SaveCumulativeRunTimeTicks(item, isFullRefresh, currentUpdateType);
-            updateType |= SaveDateLastMediaAdded(item, isFullRefresh, currentUpdateType);
+                updateType = UpdateMetadataFromChildren(item, children, isFullRefresh, updateType);
+            }
 
             var presentationUniqueKey = item.CreatePresentationUniqueKey();
             if (!string.Equals(item.PresentationUniqueKey, presentationUniqueKey, StringComparison.Ordinal))
@@ -326,43 +328,244 @@ namespace MediaBrowser.Providers.Manager
             return updateType;
         }
 
-        private ItemUpdateType SaveCumulativeRunTimeTicks(TItemType item, bool isFullRefresh, ItemUpdateType currentUpdateType)
+        protected virtual bool EnableUpdateMetadataFromChildren(TItemType item, bool isFullRefresh, ItemUpdateType currentUpdateType)
+        {
+            if (isFullRefresh || currentUpdateType > ItemUpdateType.None)
+            {
+                if (EnableUpdatingPremiereDateFromChildren || EnableUpdatingGenresFromChildren || EnableUpdatingStudiosFromChildren || EnableUpdatingOfficialRatingFromChildren)
+                {
+                    return true;
+                }
+                var folder = item as Folder;
+                if (folder != null)
+                {
+                    return folder.SupportsDateLastMediaAdded || folder.SupportsCumulativeRunTimeTicks;
+                }
+            }
+
+            return false;
+        }
+
+        protected virtual IList<BaseItem> GetChildrenForMetadataUpdates(TItemType item)
+        {
+            var folder = item as Folder;
+            if (folder != null)
+            {
+                return folder.GetRecursiveChildren();
+            }
+
+            return new List<BaseItem>();
+        }
+
+        protected virtual ItemUpdateType UpdateMetadataFromChildren(TItemType item, IList<BaseItem> children, bool isFullRefresh, ItemUpdateType currentUpdateType)
         {
             var updateType = ItemUpdateType.None;
 
             if (isFullRefresh || currentUpdateType > ItemUpdateType.None)
             {
-                var folder = item as Folder;
-                if (folder != null && folder.SupportsCumulativeRunTimeTicks)
-                {
-                    var items = folder.GetRecursiveChildren(i => !i.IsFolder);
-                    var ticks = items.Select(i => i.RunTimeTicks ?? 0).Sum();
+                updateType |= UpdateCumulativeRunTimeTicks(item, children);
+                updateType |= UpdateDateLastMediaAdded(item, children);
 
-                    if (!folder.RunTimeTicks.HasValue || folder.RunTimeTicks.Value != ticks)
-                    {
-                        folder.RunTimeTicks = ticks;
-                        updateType = ItemUpdateType.MetadataEdit;
-                    }
+                if (EnableUpdatingPremiereDateFromChildren)
+                {
+                    updateType |= UpdatePremiereDate(item, children);
+                }
+
+                if (EnableUpdatingGenresFromChildren)
+                {
+                    updateType |= UpdateGenres(item, children);
+                }
+
+                if (EnableUpdatingStudiosFromChildren)
+                {
+                    updateType |= UpdateStudios(item, children);
+                }
+
+                if (EnableUpdatingOfficialRatingFromChildren)
+                {
+                    updateType |= UpdateOfficialRating(item, children);
                 }
             }
 
             return updateType;
         }
 
-        private ItemUpdateType SaveDateLastMediaAdded(TItemType item, bool isFullRefresh, ItemUpdateType currentUpdateType)
+        private ItemUpdateType UpdateCumulativeRunTimeTicks(TItemType item, IList<BaseItem> children)
+        {
+            var folder = item as Folder;
+            if (folder != null && folder.SupportsCumulativeRunTimeTicks)
+            {
+                long ticks = 0;
+
+                foreach (var child in children)
+                {
+                    if (!child.IsFolder)
+                    {
+                        ticks += (child.RunTimeTicks ?? 0);
+                    }
+                }
+
+                if (!folder.RunTimeTicks.HasValue || folder.RunTimeTicks.Value != ticks)
+                {
+                    folder.RunTimeTicks = ticks;
+                    return ItemUpdateType.MetadataEdit;
+                }
+            }
+
+            return ItemUpdateType.None;
+        }
+
+        private ItemUpdateType UpdateDateLastMediaAdded(TItemType item, IList<BaseItem> children)
         {
             var updateType = ItemUpdateType.None;
 
             var folder = item as Folder;
             if (folder != null && folder.SupportsDateLastMediaAdded)
             {
-                var items = folder.GetRecursiveChildren(i => !i.IsFolder).Select(i => i.DateCreated).ToList();
-                var date = items.Count == 0 ? (DateTime?)null : items.Max();
+                DateTime dateLastMediaAdded = DateTime.MinValue;
+                var any = false;
 
-                if ((!folder.DateLastMediaAdded.HasValue && date.HasValue) || folder.DateLastMediaAdded != date)
+                foreach (var child in children)
                 {
-                    folder.DateLastMediaAdded = date;
+                    if (!child.IsFolder)
+                    {
+                        var childDateCreated = child.DateCreated;
+                        if (childDateCreated > dateLastMediaAdded)
+                        {
+                            dateLastMediaAdded = childDateCreated;
+                        }
+                        any = true;
+                    }
+                }
+
+                if ((!folder.DateLastMediaAdded.HasValue && any) || folder.DateLastMediaAdded != dateLastMediaAdded)
+                {
+                    folder.DateLastMediaAdded = dateLastMediaAdded;
                     updateType = ItemUpdateType.MetadataImport;
+                }
+            }
+
+            return updateType;
+        }
+
+        protected virtual bool EnableUpdatingPremiereDateFromChildren
+        {
+            get
+            {
+                return false;
+            }
+        }
+        protected virtual bool EnableUpdatingGenresFromChildren
+        {
+            get
+            {
+                return false;
+            }
+        }
+        protected virtual bool EnableUpdatingStudiosFromChildren
+        {
+            get
+            {
+                return false;
+            }
+        }
+        protected virtual bool EnableUpdatingOfficialRatingFromChildren
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        private ItemUpdateType UpdatePremiereDate(TItemType item, IList<BaseItem> children)
+        {
+            var updateType = ItemUpdateType.None;
+
+            if (children.Count == 0)
+            {
+                return updateType;
+            }
+
+            var date = children.Select(i => i.PremiereDate ?? DateTime.MaxValue).Min();
+
+            var originalPremiereDate = item.PremiereDate;
+            var originalProductionYear = item.ProductionYear;
+
+            if (date > DateTime.MinValue)
+            {
+                item.PremiereDate = date;
+                item.ProductionYear = date.Year;
+            }
+            else
+            {
+                var year = children.Select(i => i.ProductionYear ?? 0).Min();
+
+                if (year > 0)
+                {
+                    item.ProductionYear = year;
+                }
+            }
+
+            if ((originalPremiereDate ?? DateTime.MinValue) != (item.PremiereDate ?? DateTime.MinValue) ||
+                (originalProductionYear ?? -1) != (item.ProductionYear ?? -1))
+            {
+                updateType = updateType | ItemUpdateType.MetadataEdit;
+            }
+
+            return updateType;
+        }
+
+        private ItemUpdateType UpdateGenres(TItemType item, IList<BaseItem> children)
+        {
+            var updateType = ItemUpdateType.None;
+
+            if (!item.LockedFields.Contains(MetadataFields.Genres))
+            {
+                var currentList = item.Genres.ToList();
+
+                item.Genres = children.SelectMany(i => i.Genres)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                if (currentList.Count != item.Genres.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Genres.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                {
+                    updateType = updateType | ItemUpdateType.MetadataEdit;
+                }
+            }
+
+            return updateType;
+        }
+
+        private ItemUpdateType UpdateStudios(TItemType item, IList<BaseItem> children)
+        {
+            var updateType = ItemUpdateType.None;
+
+            if (!item.LockedFields.Contains(MetadataFields.Studios))
+            {
+                var currentList = item.Studios;
+
+                item.Studios = children.SelectMany(i => i.Studios)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+
+                if (currentList.Length != item.Studios.Length || !currentList.OrderBy(i => i).SequenceEqual(item.Studios.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                {
+                    updateType = updateType | ItemUpdateType.MetadataEdit;
+                }
+            }
+
+            return updateType;
+        }
+
+        private ItemUpdateType UpdateOfficialRating(TItemType item, IList<BaseItem> children)
+        {
+            var updateType = ItemUpdateType.None;
+
+            if (!item.LockedFields.Contains(MetadataFields.OfficialRating))
+            {
+                if (item.UpdateRatingToItems(children))
+                {
+                    updateType = updateType | ItemUpdateType.MetadataEdit;
                 }
             }
 
@@ -373,7 +576,7 @@ namespace MediaBrowser.Providers.Manager
         /// Gets the providers.
         /// </summary>
         /// <returns>IEnumerable{`0}.</returns>
-        protected IEnumerable<IMetadataProvider> GetProviders(IHasMetadata item, MetadataRefreshOptions options, bool isFirstRefresh, bool requiresRefresh)
+        protected IEnumerable<IMetadataProvider> GetProviders(BaseItem item, MetadataRefreshOptions options, bool isFirstRefresh, bool requiresRefresh)
         {
             // Get providers to refresh
             var providers = ((ProviderManager)ProviderManager).GetMetadataProviders<TItemType>(item).ToList();
@@ -439,7 +642,7 @@ namespace MediaBrowser.Providers.Manager
             return providers;
         }
 
-        protected virtual IEnumerable<IImageProvider> GetNonLocalImageProviders(IHasMetadata item, IEnumerable<IImageProvider> allImageProviders, ImageRefreshOptions options)
+        protected virtual IEnumerable<IImageProvider> GetNonLocalImageProviders(BaseItem item, IEnumerable<IImageProvider> allImageProviders, ImageRefreshOptions options)
         {
             // Get providers to refresh
             var providers = allImageProviders.Where(i => !(i is ILocalImageProvider)).ToList();
@@ -468,7 +671,7 @@ namespace MediaBrowser.Providers.Manager
             return providers;
         }
 
-        public bool CanRefresh(IHasMetadata item)
+        public bool CanRefresh(BaseItem item)
         {
             return item is TItemType;
         }
@@ -623,14 +826,9 @@ namespace MediaBrowser.Providers.Manager
 
         private void ImportUserData(TItemType item, List<UserItemData> userDataList, CancellationToken cancellationToken)
         {
-            var hasUserData = item as IHasUserData;
-
-            if (hasUserData != null)
+            foreach (var userData in userDataList)
             {
-                foreach (var userData in userDataList)
-                {
-                    UserDataManager.SaveUserData(userData.UserId, hasUserData, userData, UserDataSaveReason.Import, cancellationToken);
-                }
+                UserDataManager.SaveUserData(userData.UserId, item, userData, UserDataSaveReason.Import, cancellationToken);
             }
         }
 
@@ -775,7 +973,7 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private bool HasChanged(IHasMetadata item, IHasItemChangeMonitor changeMonitor, IDirectoryService directoryService)
+        private bool HasChanged(BaseItem item, IHasItemChangeMonitor changeMonitor, IDirectoryService directoryService)
         {
             try
             {

@@ -108,17 +108,6 @@ namespace Emby.Server.Implementations.Library
         }
 
         /// <summary>
-        /// The MB name regex
-        /// </summary>
-        private static readonly Regex MbNameRegex = new Regex(@"(\[.*?\])");
-
-        internal static string StripBrackets(string inputString)
-        {
-            var output = MbNameRegex.Replace(inputString, string.Empty).Trim();
-            return Regex.Replace(output, @"\s+", " ");
-        }
-
-        /// <summary>
         /// Ensures DateCreated and DateModified have values
         /// </summary>
         /// <param name="fileSystem">The file system.</param>

@@ -35,6 +35,7 @@ namespace MediaBrowser.Api.System
     }
 
     [Route("/System/Ping", "POST")]
+    [Route("/System/Ping", "GET")]
     public class PingSystem : IReturnVoid
     {
 

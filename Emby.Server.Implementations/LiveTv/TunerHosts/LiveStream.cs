@@ -11,6 +11,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.LiveTv;
+using System.Linq;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts
 {
@@ -32,11 +33,16 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         protected readonly IFileSystem FileSystem;
         protected readonly IServerApplicationPaths AppPaths;
 
-        protected  string TempFilePath;
+        protected string TempFilePath;
         protected readonly ILogger Logger;
         protected readonly CancellationTokenSource LiveStreamCancellationTokenSource = new CancellationTokenSource();
 
         public string TunerHostId { get; private set; }
+        public string TunerHostDeviceId { get; private set; }
+
+        public DateTime DateOpened { get; protected set; }
+
+        public Action<LiveStream> OnClose { get; set; }
 
         public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IEnvironmentInfo environment, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
         {
@@ -49,6 +55,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             SharedStreamIds = new List<string>();
             UniqueId = Guid.NewGuid().ToString("N");
             TunerHostId = tuner.Id;
+            TunerHostDeviceId = tuner.DeviceId;
 
             AppPaths = appPaths;
 
@@ -62,6 +69,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public virtual Task Open(CancellationToken openCancellationToken)
         {
+            DateOpened = DateTime.UtcNow;
             return Task.FromResult(true);
         }
 
@@ -76,6 +84,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         protected virtual void CloseInternal()
         {
+            LiveStreamCancellationTokenSource.Cancel();
+
+            if (OnClose != null)
+            {
+                OnClose(this);
+            }
         }
 
         protected Stream GetInputStream(string path, bool allowAsyncFileRead)
@@ -90,38 +104,49 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             return FileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.ReadWrite, fileOpenOptions);
         }
 
-        protected async Task DeleteTempFile(string path, int retryCount = 0)
+        public Task DeleteTempFiles()
+        {
+            return DeleteTempFiles(GetStreamFilePaths());
+        }
+
+        protected async Task DeleteTempFiles(List<string> paths, int retryCount = 0)
         {
             if (retryCount == 0)
             {
-                Logger.Info("Deleting temp file {0}", path);
+                Logger.Info("Deleting temp files {0}", string.Join(", ", paths.ToArray()));
             }
 
-            try
-            {
-                FileSystem.DeleteFile(path);
-                return;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return;
-            }
-            catch (FileNotFoundException)
-            {
-                return;
-            }
-            catch
-            {
+            var failedFiles = new List<string>();
 
-            }
-
-            if (retryCount > 20)
+            foreach (var path in paths)
             {
-                return;
+                try
+                {
+                    FileSystem.DeleteFile(path);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                }
+                catch (FileNotFoundException)
+                {
+                }
+                catch (Exception ex)
+                {
+                    //Logger.ErrorException("Error deleting file {0}", ex, path);
+                    failedFiles.Add(path);
+                }
             }
 
-            await Task.Delay(500).ConfigureAwait(false);
-            await DeleteTempFile(path, retryCount + 1).ConfigureAwait(false);
+            if (failedFiles.Count > 0 && retryCount <= 40)
+            {
+                await Task.Delay(500).ConfigureAwait(false);
+                await DeleteTempFiles(failedFiles, retryCount + 1).ConfigureAwait(false);
+            }
+        }
+
+        protected virtual List<string> GetStreamFilePaths()
+        {
+            return new List<string> { TempFilePath };
         }
 
         public async Task CopyToAsync(Stream stream, CancellationToken cancellationToken)
@@ -131,20 +156,86 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var allowAsync = false;//Environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.Windows;
             // use non-async filestream along with read due to https://github.com/dotnet/corefx/issues/6039
 
-            using (var inputStream = (FileStream)GetInputStream(TempFilePath, allowAsync))
-            {
-                TrySeek(inputStream, -20000);
+            bool seekFile = (DateTime.UtcNow - DateOpened).TotalSeconds > 10;
 
-                await CopyTo(inputStream, stream, 81920, null, cancellationToken).ConfigureAwait(false);
+            var nextFileInfo = GetNextFile(null);
+            var nextFile = nextFileInfo.Item1;
+            var isLastFile = nextFileInfo.Item2;
+
+            while (!string.IsNullOrWhiteSpace(nextFile))
+            {
+                var emptyReadLimit = isLastFile ? EmptyReadLimit : 1;
+
+                await CopyFile(nextFile, seekFile, emptyReadLimit, allowAsync, stream, cancellationToken).ConfigureAwait(false);
+
+                seekFile = false;
+                nextFileInfo = GetNextFile(nextFile);
+                nextFile = nextFileInfo.Item1;
+                isLastFile = nextFileInfo.Item2;
+            }
+
+            Logger.Info("Live Stream ended.");
+        }
+
+        private Tuple<string, bool> GetNextFile(string currentFile)
+        {
+            var files = GetStreamFilePaths();
+
+            //Logger.Info("Live stream files: {0}", string.Join(", ", files.ToArray()));
+
+            if (string.IsNullOrWhiteSpace(currentFile))
+            {
+                return new Tuple<string, bool>(files.Last(), true);
+            }
+
+            var nextIndex = files.FindIndex(i => string.Equals(i, currentFile, StringComparison.OrdinalIgnoreCase)) + 1;
+
+            var isLastFile = nextIndex == files.Count - 1;
+
+            return new Tuple<string, bool>(files.ElementAtOrDefault(nextIndex), isLastFile);
+        }
+
+        private async Task CopyFile(string path, bool seekFile, int emptyReadLimit, bool allowAsync, Stream stream, CancellationToken cancellationToken)
+        {
+            //Logger.Info("Opening live stream file {0}. Empty read limit: {1}", path, emptyReadLimit);
+
+            using (var inputStream = (FileStream)GetInputStream(path, allowAsync))
+            {
+                if (seekFile)
+                {
+                    TrySeek(inputStream, -20000);
+                }
+
+                await CopyTo(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private static async Task CopyTo(Stream source, Stream destination, int bufferSize, Action onStarted, CancellationToken cancellationToken)
+        protected virtual int EmptyReadLimit
+        {
+            get
+            {
+                return 1000;
+            }
+        }
+
+        private async Task CopyTo(Stream source, Stream destination, int bufferSize, int emptyReadLimit, CancellationToken cancellationToken)
         {
             byte[] buffer = new byte[bufferSize];
 
+            if (emptyReadLimit <= 0)
+            {
+                int read;
+                while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    destination.Write(buffer, 0, read);
+                }
+
+                return;
+            }
+
             var eofCount = 0;
-            var emptyReadLimit = 1000;
 
             while (eofCount < emptyReadLimit)
             {
@@ -155,7 +246,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 if (bytesRead == 0)
                 {
                     eofCount++;
-                    await Task.Delay(25, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(50, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -163,18 +254,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                     //await destination.WriteAsync(buffer, 0, read).ConfigureAwait(false);
                     destination.Write(buffer, 0, bytesRead);
-
-                    if (onStarted != null)
-                    {
-                        onStarted();
-                        onStarted = null;
-                    }
                 }
             }
         }
 
         private void TrySeek(FileStream stream, long offset)
         {
+            //Logger.Info("TrySeek live stream");
             try
             {
                 stream.Seek(offset, SeekOrigin.End);

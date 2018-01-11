@@ -85,7 +85,7 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
             query.GenreIds = new[] { Id.ToString("N") };
             query.ExcludeItemTypes = new[] { typeof(Game).Name, typeof(MusicVideo).Name, typeof(Audio.Audio).Name, typeof(MusicAlbum).Name, typeof(MusicArtist).Name };

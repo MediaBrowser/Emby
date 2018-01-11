@@ -1084,7 +1084,7 @@ namespace MediaBrowser.Providers.TV
                     {
                         case "id":
                             {
-                                item.SetProviderId((reader.ReadElementContentAsString() ?? string.Empty).Trim(), MetadataProviders.Tvdb.ToString());
+                                item.SetProviderId(MetadataProviders.Tvdb.ToString(), (reader.ReadElementContentAsString() ?? string.Empty).Trim());
                                 break;
                             }
 

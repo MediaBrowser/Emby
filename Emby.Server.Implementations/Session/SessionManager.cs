@@ -670,7 +670,7 @@ namespace Emby.Server.Implementations.Session
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="item">The item.</param>
-        private void OnPlaybackStart(Guid userId, IHasUserData item)
+        private void OnPlaybackStart(Guid userId, BaseItem item)
         {
             var data = _userDataManager.GetUserData(userId, item);
 
@@ -719,7 +719,8 @@ namespace Emby.Server.Implementations.Session
 
             var users = GetUsers(session);
 
-            if (libraryItem != null)
+            // only update saved user data on actual check-ins, not automated ones
+            if (libraryItem != null && !isAutomated)
             {
                 foreach (var user in users)
                 {
@@ -1079,7 +1080,7 @@ namespace Emby.Server.Implementations.Session
             await session.SessionController.SendPlayCommand(command, cancellationToken).ConfigureAwait(false);
         }
 
-        private List<BaseItem> TranslateItemForPlayback(string id, User user)
+        private IList<BaseItem> TranslateItemForPlayback(string id, User user)
         {
             var item = _libraryManager.GetItemById(id);
 
@@ -1093,7 +1094,7 @@ namespace Emby.Server.Implementations.Session
 
             if (byName != null)
             {
-                var items = byName.GetTaggedItems(new InternalItemsQuery(user)
+                return byName.GetTaggedItems(new InternalItemsQuery(user)
                 {
                     IsFolder = false,
                     Recursive = true,
@@ -1105,19 +1106,16 @@ namespace Emby.Server.Implementations.Session
                             ItemFields.SortName
                         }
                     },
-                    IsVirtualItem = false
+                    IsVirtualItem = false,
+                    OrderBy = new Tuple<string, SortOrder>[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
                 });
-
-                return FilterToSingleMediaType(items)
-                    .OrderBy(i => i.SortName)
-                    .ToList();
             }
 
             if (item.IsFolder)
             {
                 var folder = (Folder)item;
 
-                var itemsResult = folder.GetItemList(new InternalItemsQuery(user)
+                return folder.GetItemList(new InternalItemsQuery(user)
                 {
                     Recursive = true,
                     IsFolder = false,
@@ -1129,25 +1127,13 @@ namespace Emby.Server.Implementations.Session
                             ItemFields.SortName
                         }
                     },
-                    IsVirtualItem = false
+                    IsVirtualItem = false,
+                    OrderBy = new Tuple<string, SortOrder>[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
 
                 });
-
-                return FilterToSingleMediaType(itemsResult)
-                    .OrderBy(i => i.SortName)
-                    .ToList();
             }
 
             return new List<BaseItem> { item };
-        }
-
-        private IEnumerable<BaseItem> FilterToSingleMediaType(IEnumerable<BaseItem> items)
-        {
-            return items
-                .Where(i => !string.IsNullOrWhiteSpace(i.MediaType))
-                .ToLookup(i => i.MediaType, StringComparer.OrdinalIgnoreCase)
-                .OrderByDescending(i => i.Count())
-                .FirstOrDefault();
         }
 
         private IEnumerable<BaseItem> TranslateItemForInstantMix(string id, User user)

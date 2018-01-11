@@ -575,7 +575,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             foreach (var timer in timers)
             {
-                CancelTimerInternal(timer.Id, true);
+                CancelTimerInternal(timer.Id, true, true);
             }
 
             var remove = _seriesTimerProvider.GetAll().FirstOrDefault(r => string.Equals(r.Id, timerId, StringComparison.OrdinalIgnoreCase));
@@ -586,13 +586,18 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return Task.FromResult(true);
         }
 
-        private void CancelTimerInternal(string timerId, bool isSeriesCancelled)
+        private void CancelTimerInternal(string timerId, bool isSeriesCancelled, bool isManualCancellation)
         {
             var timer = _timerProvider.GetTimer(timerId);
             if (timer != null)
             {
                 timer.Status = RecordingStatus.Cancelled;
 
+                if (isManualCancellation)
+                {
+                    timer.IsManual = true;
+                }
+                
                 if (string.IsNullOrWhiteSpace(timer.SeriesTimerId) || isSeriesCancelled)
                 {
                     _timerProvider.Delete(timer);
@@ -613,7 +618,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public Task CancelTimerAsync(string timerId, CancellationToken cancellationToken)
         {
-            CancelTimerInternal(timerId, false);
+            CancelTimerInternal(timerId, false, true);
             return Task.FromResult(true);
         }
 
@@ -809,21 +814,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.ShowId = updatedTimer.ShowId;
             existingTimer.ProviderIds = updatedTimer.ProviderIds;
             existingTimer.SeriesProviderIds = updatedTimer.SeriesProviderIds;
-        }
-
-        public Task<ImageStream> GetChannelImageAsync(string channelId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImageStream> GetRecordingImageAsync(string recordingId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImageStream> GetProgramImageAsync(string programId, string channelId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<RecordingInfo>> GetRecordingsAsync(CancellationToken cancellationToken)
@@ -1190,7 +1180,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             };
 
             var isAudio = false;
-            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, cancellationToken).ConfigureAwait(false);
+            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, 0, cancellationToken).ConfigureAwait(false);
 
             return new List<MediaSourceInfo>
             {
@@ -1636,7 +1626,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     .Skip(seriesTimer.KeepUpTo - 1)
                     .ToList();
 
-                await DeleteLibraryItemsForTimers(timersToDelete).ConfigureAwait(false);
+                DeleteLibraryItemsForTimers(timersToDelete);
 
                 var librarySeries = _libraryManager.FindByPath(seriesPath, true) as Folder;
 
@@ -1662,11 +1652,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     try
                     {
-                        await _libraryManager.DeleteItem(item, new DeleteOptions
+                        _libraryManager.DeleteItem(item, new DeleteOptions
                         {
                             DeleteFileLocation = true
 
-                        }).ConfigureAwait(false);
+                        }, true);
                     }
                     catch (Exception ex)
                     {
@@ -1681,7 +1671,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         }
 
         private readonly SemaphoreSlim _recordingDeleteSemaphore = new SemaphoreSlim(1, 1);
-        private async Task DeleteLibraryItemsForTimers(List<TimerInfo> timers)
+        private void DeleteLibraryItemsForTimers(List<TimerInfo> timers)
         {
             foreach (var timer in timers)
             {
@@ -1692,7 +1682,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 try
                 {
-                    await DeleteLibraryItemForTimer(timer).ConfigureAwait(false);
+                    DeleteLibraryItemForTimer(timer);
                 }
                 catch (Exception ex)
                 {
@@ -1701,17 +1691,17 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private async Task DeleteLibraryItemForTimer(TimerInfo timer)
+        private void DeleteLibraryItemForTimer(TimerInfo timer)
         {
             var libraryItem = _libraryManager.FindByPath(timer.RecordingPath, false);
 
             if (libraryItem != null)
             {
-                await _libraryManager.DeleteItem(libraryItem, new DeleteOptions
+                _libraryManager.DeleteItem(libraryItem, new DeleteOptions
                 {
                     DeleteFileLocation = true
 
-                }).ConfigureAwait(false);
+                }, true);
             }
             else
             {
@@ -2541,7 +2531,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 foreach (var timer in deletes)
                 {
-                    CancelTimerInternal(timer.Id, false);
+                    CancelTimerInternal(timer.Id, false, false);
                 }
             }
         }

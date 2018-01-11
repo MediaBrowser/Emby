@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.Collections
                 folder.GetChildren(user, true).OfType<BoxSet>();
         }
 
-        public async Task<BoxSet> CreateCollection(CollectionCreationOptions options)
+        public BoxSet CreateCollection(CollectionCreationOptions options)
         {
             var name = options.Name;
 
@@ -149,16 +149,14 @@ namespace Emby.Server.Implementations.Collections
             return GetCollectionsFolder(string.Empty);
         }
 
-        public Task AddToCollection(Guid collectionId, IEnumerable<string> ids)
+        public void AddToCollection(Guid collectionId, IEnumerable<string> ids)
         {
             AddToCollection(collectionId, ids, true, new MetadataRefreshOptions(_fileSystem));
-            return Task.CompletedTask;
         }
 
-        public Task AddToCollection(Guid collectionId, IEnumerable<Guid> ids)
+        public void AddToCollection(Guid collectionId, IEnumerable<Guid> ids)
         {
             AddToCollection(collectionId, ids.Select(i => i.ToString("N")), true, new MetadataRefreshOptions(_fileSystem));
-            return Task.CompletedTask;
         }
 
         private void AddToCollection(Guid collectionId, IEnumerable<string> ids, bool fireEvent, MetadataRefreshOptions refreshOptions)
@@ -172,17 +170,14 @@ namespace Emby.Server.Implementations.Collections
 
             var list = new List<LinkedChild>();
             var itemList = new List<BaseItem>();
-            var currentLinkedChildrenIds = collection.GetLinkedChildren().Select(i => i.Id).ToList();
+
+            var linkedChildrenList = collection.GetLinkedChildren();
+            var currentLinkedChildrenIds = linkedChildrenList.Select(i => i.Id).ToList();
 
             foreach (var id in ids)
             {
                 var guidId = new Guid(id);
                 var item = _libraryManager.GetItemById(guidId);
-
-                if (string.IsNullOrWhiteSpace(item.Path))
-                {
-                    continue;
-                }
 
                 if (item == null)
                 {
@@ -194,6 +189,7 @@ namespace Emby.Server.Implementations.Collections
                 if (!currentLinkedChildrenIds.Contains(guidId))
                 {
                     list.Add(LinkedChild.Create(item));
+                    linkedChildrenList.Add(item);
                 }
             }
 
@@ -203,10 +199,11 @@ namespace Emby.Server.Implementations.Collections
                 newList.AddRange(list);
                 collection.LinkedChildren = newList.ToArray(newList.Count);
 
-                collection.UpdateRatingToContent();
+                collection.UpdateRatingToItems(linkedChildrenList);
 
                 collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
 
+                refreshOptions.ForceSave = true;
                 _providerManager.QueueRefresh(collection.Id, refreshOptions, RefreshPriority.High);
 
                 if (fireEvent)
@@ -221,12 +218,12 @@ namespace Emby.Server.Implementations.Collections
             }
         }
 
-        public Task RemoveFromCollection(Guid collectionId, IEnumerable<string> itemIds)
+        public void RemoveFromCollection(Guid collectionId, IEnumerable<string> itemIds)
         {
-            return RemoveFromCollection(collectionId, itemIds.Select(i => new Guid(i)));
+            RemoveFromCollection(collectionId, itemIds.Select(i => new Guid(i)));
         }
 
-        public async Task RemoveFromCollection(Guid collectionId, IEnumerable<Guid> itemIds)
+        public void RemoveFromCollection(Guid collectionId, IEnumerable<Guid> itemIds)
         {
             var collection = _libraryManager.GetItemById(collectionId) as BoxSet;
 
@@ -262,10 +259,11 @@ namespace Emby.Server.Implementations.Collections
                 collection.LinkedChildren = collection.LinkedChildren.Except(list).ToArray();
             }
 
-            collection.UpdateRatingToContent();
-
             collection.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
-            _providerManager.QueueRefresh(collection.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.High);
+            _providerManager.QueueRefresh(collection.Id, new MetadataRefreshOptions(_fileSystem)
+            {
+                ForceSave = true
+            }, RefreshPriority.High);
 
             EventHelper.FireEventIfNotNull(ItemsRemovedFromCollection, this, new CollectionModifiedEventArgs
             {

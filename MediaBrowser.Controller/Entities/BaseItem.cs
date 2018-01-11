@@ -40,7 +40,7 @@ namespace MediaBrowser.Controller.Entities
     /// <summary>
     /// Class BaseItem
     /// </summary>
-    public abstract class BaseItem : IHasMetadata, IHasLookupInfo<ItemLookupInfo>
+    public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>
     {
         protected static Guid[] EmptyGuidArray = new Guid[] { };
         protected static MetadataFields[] EmptyMetadataFieldsArray = new MetadataFields[] { };
@@ -1780,6 +1780,18 @@ namespace MediaBrowser.Controller.Entities
                 return itemByPath;
             }
 
+            if (!string.IsNullOrWhiteSpace(info.LibraryItemId))
+            {
+                var item = LibraryManager.GetItemById(info.LibraryItemId);
+
+                if (item == null)
+                {
+                    //Logger.Warn("Unable to find linked item at path {0}", info.Path);
+                }
+
+                return item;
+            }
+
             return null;
         }
 
@@ -2566,9 +2578,14 @@ namespace MediaBrowser.Controller.Entities
             return new[] { Id };
         }
 
-        public virtual Task Delete(DeleteOptions options)
+        public virtual void Delete(DeleteOptions options)
         {
-            return LibraryManager.DeleteItem(this, options);
+            Delete(options, false);
+        }
+
+        public virtual void Delete(DeleteOptions options, bool notifyParentItem)
+        {
+            LibraryManager.DeleteItem(this, options, notifyParentItem);
         }
 
         public virtual List<ExternalUrl> GetRelatedUrls()
@@ -2595,6 +2612,29 @@ namespace MediaBrowser.Controller.Entities
             }
 
             return updateType;
+        }
+
+        /// <summary>
+        /// Updates the official rating based on content and returns true or false indicating if it changed.
+        /// </summary>
+        /// <returns></returns>
+        public bool UpdateRatingToItems(IList<BaseItem> children)
+        {
+            var currentOfficialRating = OfficialRating;
+
+            // Gather all possible ratings
+            var ratings = children
+                .Select(i => i.OfficialRating)
+                .Where(i => !string.IsNullOrEmpty(i))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Select(i => new Tuple<string, int?>(i, LocalizationManager.GetRatingLevel(i)))
+                .OrderBy(i => i.Item2 ?? 1000)
+                .Select(i => i.Item1);
+
+            OfficialRating = ratings.FirstOrDefault() ?? currentOfficialRating;
+
+            return !string.Equals(currentOfficialRating ?? string.Empty, OfficialRating ?? string.Empty,
+                StringComparison.OrdinalIgnoreCase);
         }
     }
 }

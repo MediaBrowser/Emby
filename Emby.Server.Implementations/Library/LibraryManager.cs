@@ -311,7 +311,19 @@ namespace Emby.Server.Implementations.Library
             LibraryItemsCache.AddOrUpdate(item.Id, item, delegate { return item; });
         }
 
-        public async Task DeleteItem(BaseItem item, DeleteOptions options)
+        public void DeleteItem(BaseItem item, DeleteOptions options, bool notifyParentItem)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
+
+            var parent = item.IsOwnedItem ? item.GetOwner() : item.GetParent();
+
+            DeleteItem(item, options, parent, notifyParentItem);
+        }
+
+        public void DeleteItem(BaseItem item, DeleteOptions options, BaseItem parent, bool notifyParentItem)
         {
             if (item == null)
             {
@@ -334,8 +346,6 @@ namespace Emby.Server.Implementations.Library
                     item.Path ?? string.Empty,
                     item.Id);
             }
-
-            var parent = item.IsOwnedItem ? item.GetOwner() : item.GetParent();
 
             var locationType = item.LocationType;
 
@@ -407,32 +417,9 @@ namespace Emby.Server.Implementations.Library
 
                     isRequiredForDelete = false;
                 }
+            }
 
-                if (parent != null)
-                {
-                    var parentFolder = parent as Folder;
-                    if (parentFolder != null)
-                    {
-                        await parentFolder.ValidateChildren(new SimpleProgress<double>(), CancellationToken.None, new MetadataRefreshOptions(_fileSystem), false).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await parent.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), CancellationToken.None).ConfigureAwait(false);
-                    }
-                }
-            }
-            else if (parent != null)
-            {
-                var parentFolder = parent as Folder;
-                if (parentFolder != null)
-                {
-                    parentFolder.RemoveChild(item);
-                }
-                else
-                {
-                    await parent.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), CancellationToken.None).ConfigureAwait(false);
-                }
-            }
+            item.SetParent(null);
 
             ItemRepository.DeleteItem(item.Id, CancellationToken.None);
             foreach (var child in children)
@@ -1828,6 +1815,12 @@ namespace Emby.Server.Implementations.Library
             {
                 foreach (var item in list)
                 {
+                    // With the live tv guide this just creates too much noise
+                    if (item.SourceType != SourceType.Library)
+                    {
+                        continue;
+                    }
+
                     try
                     {
                         ItemAdded(this, new ItemChangeEventArgs
@@ -1854,43 +1847,63 @@ namespace Emby.Server.Implementations.Library
         /// <summary>
         /// Updates the item.
         /// </summary>
+        public void UpdateItems(List<BaseItem> items, ItemUpdateType updateReason, CancellationToken cancellationToken)
+        {
+            foreach (var item in items)
+            {
+                var locationType = item.LocationType;
+                if (locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                {
+                    _providerManagerFactory().SaveMetadata(item, updateReason);
+                }
+
+                item.DateLastSaved = DateTime.UtcNow;
+
+                RegisterItem(item);
+            }
+
+            //var logName = item.LocationType == LocationType.Remote ? item.Name ?? item.Path : item.Path ?? item.Name;
+            //_logger.Debug("Saving {0} to database.", logName);
+
+            ItemRepository.SaveItems(items, cancellationToken);
+
+            if (ItemUpdated != null)
+            {
+                foreach (var item in items)
+                {
+                    // With the live tv guide this just creates too much noise
+                    if (item.SourceType != SourceType.Library)
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        ItemUpdated(this, new ItemChangeEventArgs
+                        {
+                            Item = item,
+                            Parent = item.GetParent(),
+                            UpdateReason = updateReason
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error in ItemUpdated event handler", ex);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the item.
+        /// </summary>
         /// <param name="item">The item.</param>
         /// <param name="updateReason">The update reason.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         public void UpdateItem(BaseItem item, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
-            var locationType = item.LocationType;
-            if (locationType != LocationType.Remote && locationType != LocationType.Virtual)
-            {
-                _providerManagerFactory().SaveMetadata(item, updateReason);
-            }
-
-            item.DateLastSaved = DateTime.UtcNow;
-
-            var logName = item.LocationType == LocationType.Remote ? item.Name ?? item.Path : item.Path ?? item.Name;
-            _logger.Debug("Saving {0} to database.", logName);
-
-            ItemRepository.SaveItem(item, cancellationToken);
-
-            RegisterItem(item);
-
-            if (ItemUpdated != null)
-            {
-                try
-                {
-                    ItemUpdated(this, new ItemChangeEventArgs
-                    {
-                        Item = item,
-                        Parent = item.GetParent(),
-                        UpdateReason = updateReason
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error in ItemUpdated event handler", ex);
-                }
-            }
+            UpdateItems(new List<BaseItem> { item }, updateReason, cancellationToken);
         }
 
         /// <summary>
@@ -2130,13 +2143,7 @@ namespace Emby.Server.Implementations.Library
             if (refresh)
             {
                 item.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
-                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
-                {
-                    // Not sure why this is necessary but need to figure it out
-                    // View images are not getting utilized without this
-                    ForceSave = true
-
-                }, RefreshPriority.Normal);
+                _providerManagerFactory().QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Normal);
             }
 
             return item;
@@ -2841,7 +2848,7 @@ namespace Emby.Server.Implementations.Library
             ItemRepository.UpdatePeople(item.Id, people);
         }
 
-        public async Task<ItemImageInfo> ConvertImageToLocal(IHasMetadata item, ItemImageInfo image, int imageIndex)
+        public async Task<ItemImageInfo> ConvertImageToLocal(BaseItem item, ItemImageInfo image, int imageIndex)
         {
             foreach (var url in image.Path.Split('|'))
             {

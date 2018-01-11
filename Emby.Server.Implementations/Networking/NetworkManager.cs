@@ -26,7 +26,8 @@ namespace Emby.Server.Implementations.Networking
             Logger = logger;
 
             // In FreeBSD these events cause a crash
-            if (environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.BSD)
+            if (environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.BSD &&
+                environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.Linux)
             {
                 try
                 {

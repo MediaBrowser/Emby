@@ -73,7 +73,7 @@ namespace MediaBrowser.Controller.Entities
             return false;
         }
 
-        public IEnumerable<BaseItem> GetTaggedItems(InternalItemsQuery query)
+        public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
             query.GenreIds = new[] { Id.ToString("N") };
             query.IncludeItemTypes = new[] { typeof(Game).Name };

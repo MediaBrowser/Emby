@@ -27,7 +27,7 @@ namespace Emby.Server.Implementations.EntryPoints
         private readonly ITimerFactory _timerFactory;
         private const int UpdateDuration = 500;
 
-        private readonly Dictionary<Guid, List<IHasUserData>> _changedItems = new Dictionary<Guid, List<IHasUserData>>();
+        private readonly Dictionary<Guid, List<BaseItem>> _changedItems = new Dictionary<Guid, List<BaseItem>>();
 
         public UserDataChangeNotifier(IUserDataManager userDataManager, ISessionManager sessionManager, ILogger logger, IUserManager userManager, ITimerFactory timerFactory)
         {
@@ -62,17 +62,17 @@ namespace Emby.Server.Implementations.EntryPoints
                     UpdateTimer.Change(UpdateDuration, Timeout.Infinite);
                 }
 
-                List<IHasUserData> keys;
+                List<BaseItem> keys;
 
                 if (!_changedItems.TryGetValue(e.UserId, out keys))
                 {
-                    keys = new List<IHasUserData>();
+                    keys = new List<BaseItem>();
                     _changedItems[e.UserId] = keys;
                 }
 
                 keys.Add(e.Item);
 
-                var baseItem = e.Item as BaseItem;
+                var baseItem = e.Item;
 
                 // Go up one level for indicators
                 if (baseItem != null)
@@ -105,7 +105,7 @@ namespace Emby.Server.Implementations.EntryPoints
             }
         }
 
-        private async Task SendNotifications(IEnumerable<KeyValuePair<Guid, List<IHasUserData>>> changes, CancellationToken cancellationToken)
+        private async Task SendNotifications(IEnumerable<KeyValuePair<Guid, List<BaseItem>>> changes, CancellationToken cancellationToken)
         {
             foreach (var pair in changes)
             {

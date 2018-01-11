@@ -31,36 +31,9 @@ namespace Emby.Server.Implementations.UserViews
             _libraryManager = libraryManager;
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var view = (UserView)item;
-
-            if (string.Equals(view.ViewType, CollectionType.LiveTv, StringComparison.OrdinalIgnoreCase))
-            {
-                var programs = _libraryManager.GetItemList(new InternalItemsQuery
-                {
-                    IncludeItemTypes = new[] { typeof(LiveTvProgram).Name },
-                    ImageTypes = new[] { ImageType.Primary },
-                    Limit = 30,
-                    IsMovie = true,
-                    DtoOptions = new DtoOptions(false)
-
-                });
-
-                return GetFinalItems(programs);
-            }
-
-            if (string.Equals(view.ViewType, SpecialFolder.MovieGenre, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(view.ViewType, SpecialFolder.TvGenre, StringComparison.OrdinalIgnoreCase))
-            {
-                var userItemsResult = view.GetItemList(new InternalItemsQuery
-                {
-                    CollapseBoxSetItems = false,
-                    DtoOptions = new DtoOptions(false)
-                });
-
-                return userItemsResult.ToList();
-            }
 
             var isUsingCollectionStrip = IsUsingCollectionStrip(view);
             var recursive = isUsingCollectionStrip && !new[] { CollectionType.Channels, CollectionType.BoxSets, CollectionType.Playlists }.Contains(view.ViewType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
@@ -122,7 +95,7 @@ namespace Emby.Server.Implementations.UserViews
             return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary)));
         }
 
-        protected override bool Supports(IHasMetadata item)
+        protected override bool Supports(BaseItem item)
         {
             var view = item as UserView;
             if (view != null)
@@ -140,13 +113,14 @@ namespace Emby.Server.Implementations.UserViews
                 CollectionType.Movies,
                 CollectionType.TvShows,
                 CollectionType.Playlists,
-                CollectionType.Photos
+                CollectionType.Photos,
+                CollectionType.HomeVideos
             };
 
             return collectionStripViewTypes.Contains(view.ViewType ?? string.Empty);
         }
 
-        protected override string CreateImage(IHasMetadata item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
+        protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
         {
             if (itemsWithImages.Count == 0)
             {

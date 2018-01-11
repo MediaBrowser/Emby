@@ -37,33 +37,45 @@ using Mono.Nat.Pmp;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Logging;
+using System.Linq;
 
 namespace Mono.Nat
 {
-    internal class PmpSearcher : ISearcher
+    internal class PmpSearcher : ISearcher, IDisposable
     {
-        static PmpSearcher instance = new PmpSearcher();
+        private ILogger _logger;
 
-
-        public static PmpSearcher Instance
-        {
-            get { return instance; }
-        }
-
-        private int timeout;
+        private int timeout = 250;
         private DateTime nextSearch;
         public event EventHandler<DeviceEventArgs> DeviceFound;
         public event EventHandler<DeviceEventArgs> DeviceLost;
 
-        static PmpSearcher()
+        public PmpSearcher(ILogger logger)
         {
+            _logger = logger;
+
             CreateSocketsAndAddGateways();
         }
 
-        public static List<UdpClient> sockets;
-        protected static Dictionary<UdpClient, List<IPEndPoint>> gatewayLists;
+        public void Dispose()
+        {
+            var list = sockets.ToList();
+            sockets.Clear();
 
-        internal static void CreateSocketsAndAddGateways()
+            foreach (var s in list)
+            {
+                using (s)
+                {
+                    s.Close();
+                }
+            }
+        }
+
+        private List<UdpClient> sockets;
+        protected Dictionary<UdpClient, List<IPEndPoint>> gatewayLists;
+
+        private void CreateSocketsAndAddGateways()
         {
             sockets = new List<UdpClient>();
             gatewayLists = new Dictionary<UdpClient, List<IPEndPoint>>();
@@ -137,11 +149,6 @@ namespace Mono.Nat
             }
         }
 
-        PmpSearcher()
-        {
-            timeout = 250;
-        }
-
         public async void Search()
         {
             foreach (UdpClient s in sockets)
@@ -202,12 +209,12 @@ namespace Mono.Nat
                 return;
             int errorcode = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(response, 2));
             if (errorcode != 0)
-                NatUtility.Log("Non zero error: {0}", errorcode);
+                _logger.Debug("Non zero error: {0}", errorcode);
 
             IPAddress publicIp = new IPAddress(new byte[] { response[8], response[9], response[10], response[11] });
             nextSearch = DateTime.Now.AddMinutes(5);
             timeout = 250;
-            OnDeviceFound(new DeviceEventArgs(new PmpNatDevice(endpoint.Address, publicIp)));
+            OnDeviceFound(new DeviceEventArgs(new PmpNatDevice(endpoint.Address, publicIp, _logger)));
         }
 
         public DateTime NextSearch

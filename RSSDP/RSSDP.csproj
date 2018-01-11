@@ -45,22 +45,16 @@
     <Compile Include="ISsdpCommunicationsServer.cs" />
     <Compile Include="ISsdpDeviceLocator.cs" />
     <Compile Include="ISsdpDevicePublisher.cs" />
-    <Compile Include="IUPnPDeviceValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestReceivedEventArgs.cs" />
     <Compile Include="ResponseReceivedEventArgs.cs" />
     <Compile Include="SsdpCommunicationsServer.cs" />
     <Compile Include="SsdpConstants.cs" />
     <Compile Include="SsdpDevice.cs" />
-    <Compile Include="SsdpDeviceExtensions.cs" />
     <Compile Include="SsdpDeviceLocator.cs" />
-    <Compile Include="SsdpDeviceLocatorBase.cs" />
     <Compile Include="SsdpDevicePublisher.cs" />
-    <Compile Include="SsdpDevicePublisherBase.cs" />
     <Compile Include="SsdpEmbeddedDevice.cs" />
-    <Compile Include="SsdpHelper.cs" />
     <Compile Include="SsdpRootDevice.cs" />
-    <Compile Include="UPnP10DeviceValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">

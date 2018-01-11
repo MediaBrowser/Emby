@@ -139,9 +139,7 @@ namespace MediaBrowser.Api
 
         public void Post(MoveItem request)
         {
-            var task = _playlistManager.MoveItem(request.Id, request.ItemId, request.NewIndex);
-
-            Task.WaitAll(task);
+            _playlistManager.MoveItem(request.Id, request.ItemId, request.NewIndex);
         }
 
         public async Task<object> Post(CreatePlaylist request)
@@ -160,16 +158,12 @@ namespace MediaBrowser.Api
 
         public void Post(AddToPlaylist request)
         {
-            var task = _playlistManager.AddToPlaylist(request.Id, request.Ids.Split(','), request.UserId);
-
-            Task.WaitAll(task);
+            _playlistManager.AddToPlaylist(request.Id, request.Ids.Split(','), request.UserId);
         }
 
         public void Delete(RemoveFromPlaylist request)
         {
-            var task = _playlistManager.RemoveFromPlaylist(request.Id, request.EntryIds.Split(','));
-
-            Task.WaitAll(task);
+            _playlistManager.RemoveFromPlaylist(request.Id, request.EntryIds.Split(','));
         }
 
         public object Get(GetPlaylistItems request)

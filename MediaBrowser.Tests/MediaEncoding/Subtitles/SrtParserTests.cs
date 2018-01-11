@@ -12,6 +12,7 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
     [TestClass]
     public class SrtParserTests
     {
+        public const string NewLine = "\r\n";
 
         [TestMethod]
         public void TestParse()
@@ -33,7 +34,7 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
                                                                                                                     StartPositionTicks = 157120000,
                                                                                                                     EndPositionTicks = 173990000,
                                                                                                                     Text =
-                                                                                                                        "Oh my god, Watch out!"+ParserValues.NewLine+"It's coming!!"
+                                                                                                                        "Oh my god, Watch out!"+NewLine+"It's coming!!"
                                                                                                                 },
                                                                                          new SubtitleTrackEvent {
                                                                                                                     Id = "3",
@@ -53,7 +54,7 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
                                                                                                                     StartPositionTicks = 320000000,
                                                                                                                     EndPositionTicks = 329990000,
                                                                                                                     Text =
-                                                                                                                        "This is a"+ParserValues.NewLine+"new line, as is"+ParserValues.NewLine+"this"
+                                                                                                                        "This is a"+NewLine+"new line, as is"+NewLine+"this"
                                                                                                                 },
                                                                                          new SubtitleTrackEvent {
                                                                                                                     Id = "6",
@@ -103,7 +104,6 @@ namespace MediaBrowser.Tests.MediaEncoding.Subtitles
             Assert.AreEqual(expectedSubs.TrackEvents.Length, result.TrackEvents.Length);
             for (int i = 0; i < expectedSubs.TrackEvents.Length; i++)
             {
-                Assert.AreEqual(expectedSubs.TrackEvents[i].Id, result.TrackEvents[i].Id);
                 Assert.AreEqual(expectedSubs.TrackEvents[i].StartPositionTicks, result.TrackEvents[i].StartPositionTicks);
                 Assert.AreEqual(expectedSubs.TrackEvents[i].EndPositionTicks, result.TrackEvents[i].EndPositionTicks);
                 Assert.AreEqual(expectedSubs.TrackEvents[i].Text, result.TrackEvents[i].Text);

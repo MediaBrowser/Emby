@@ -28,7 +28,7 @@ namespace Emby.Server.Implementations.Playlists
         {
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var playlist = (Playlist)item;
 
@@ -81,7 +81,7 @@ namespace Emby.Server.Implementations.Playlists
             _libraryManager = libraryManager;
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var items = _libraryManager.GetItemList(new InternalItemsQuery
             {
@@ -113,7 +113,7 @@ namespace Emby.Server.Implementations.Playlists
             _libraryManager = libraryManager;
         }
 
-        protected override List<BaseItem> GetItemsWithImages(IHasMetadata item)
+        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var items = _libraryManager.GetItemList(new InternalItemsQuery
             {

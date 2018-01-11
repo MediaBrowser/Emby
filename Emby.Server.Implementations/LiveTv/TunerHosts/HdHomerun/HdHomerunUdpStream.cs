@@ -12,6 +12,7 @@ using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
@@ -107,11 +108,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             await taskCompletionSource.Task.ConfigureAwait(false);
         }
 
-        protected override void CloseInternal()
-        {
-            LiveStreamCancellationTokenSource.Cancel();
-        }
-
         private Task StartStreaming(ISocket udpClient, HdHomerunManager hdHomerunManager, IpAddressInfo remoteAddress, IpAddressInfo localAddress, int localPort, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
@@ -148,7 +144,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     }
                 }
 
-                await DeleteTempFile(TempFilePath).ConfigureAwait(false);
+                await DeleteTempFiles(new List<string> { TempFilePath }).ConfigureAwait(false);
             });
         }
 
@@ -191,6 +187,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         if (!resolved)
                         {
                             resolved = true;
+                            DateOpened = DateTime.UtcNow;
                             Resolve(openTaskCompletionSource);
                         }
                     }

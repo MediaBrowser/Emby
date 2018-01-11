@@ -29,12 +29,12 @@ namespace MediaBrowser.Providers.MediaInfo
             _fileSystem = fileSystem;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new List<ImageType> { ImageType.Primary };
         }
 
-        public Task<DynamicImageResponse> GetImage(IHasMetadata item, ImageType type, CancellationToken cancellationToken)
+        public Task<DynamicImageResponse> GetImage(BaseItem item, ImageType type, CancellationToken cancellationToken)
         {
             var video = (Video)item;
 
@@ -129,7 +129,7 @@ namespace MediaBrowser.Providers.MediaInfo
             get { return "Screen Grabber"; }
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             var video = item as Video;
 

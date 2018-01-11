@@ -43,7 +43,7 @@ namespace MediaBrowser.Controller.Drawing
             return new ImageSize(widthValue, height);
         }
 
-        private static double GetEstimatedAspectRatio(ImageType type, IHasMetadata item)
+        private static double GetEstimatedAspectRatio(ImageType type, BaseItem item)
         {
             switch (type)
             {

@@ -62,6 +62,7 @@ namespace MediaBrowser.Model.Configuration
         public bool IsPortAuthorized { get; set; }
 
         public bool AutoRunWebApp { get; set; }
+        public bool EnableRemoteAccess { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable case sensitive item ids].
@@ -169,8 +170,6 @@ namespace MediaBrowser.Model.Configuration
 
         public int RemoteClientBitrateLimit { get; set; }
 
-        public int SharingExpirationDays { get; set; }
-
         public int SchemaVersion { get; set; }
 
         public bool EnableAnonymousUsageReporting { get; set; }
@@ -216,9 +215,10 @@ namespace MediaBrowser.Model.Configuration
             EnableCaseSensitiveItemIds = true;
 
             EnableAutomaticRestart = true;
+            AutoRunWebApp = true;
+            EnableRemoteAccess = true;
 
             EnableUPnP = true;
-            SharingExpirationDays = 30;
             MinResumePct = 5;
             MaxResumePct = 90;
 

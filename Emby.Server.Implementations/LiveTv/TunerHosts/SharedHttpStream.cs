@@ -15,6 +15,7 @@ using MediaBrowser.Model.System;
 using System.Globalization;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.LiveTv;
+using System.Collections.Generic;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts
 {
@@ -110,25 +111,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             //OpenedMediaSource.SupportsDirectStream = true;
             //OpenedMediaSource.SupportsTranscoding = true;
             await taskCompletionSource.Task.ConfigureAwait(false);
-
-            if (OpenedMediaSource.SupportsProbing)
-            {
-                var elapsed = (DateTime.UtcNow - now).TotalMilliseconds;
-
-                var delay = Convert.ToInt32(3000 - elapsed);
-
-                if (delay > 0)
-                {
-                    Logger.Info("Delaying shared stream by {0}ms to allow the buffer to build.", delay);
-
-                    await Task.Delay(delay).ConfigureAwait(false);
-                }
-            }
-        }
-
-        protected override void CloseInternal()
-        {
-            LiveStreamCancellationTokenSource.Cancel();
         }
 
         private Task StartStreaming(HttpResponseInfo response, TaskCompletionSource<bool> openTaskCompletionSource, CancellationToken cancellationToken)
@@ -158,12 +140,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     Logger.ErrorException("Error copying live stream.", ex);
                 }
                 EnableStreamSharing = false;
-                await DeleteTempFile(TempFilePath).ConfigureAwait(false);
+                await DeleteTempFiles(new List<string> { TempFilePath }).ConfigureAwait(false);
             });
         }
 
         private void Resolve(TaskCompletionSource<bool> openTaskCompletionSource)
         {
+            DateOpened = DateTime.UtcNow;
             openTaskCompletionSource.TrySetResult(true);
         }
     }

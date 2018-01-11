@@ -492,7 +492,7 @@ namespace Emby.Server.Implementations.LiveTv
             }
         }
 
-        private async Task<LiveTvChannel> GetChannel(ChannelInfo channelInfo, string serviceName, Guid parentFolderId, CancellationToken cancellationToken)
+        private LiveTvChannel GetChannel(ChannelInfo channelInfo, string serviceName, Guid parentFolderId, CancellationToken cancellationToken)
         {
             var isNew = false;
             var forceUpdate = false;
@@ -562,12 +562,6 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 _libraryManager.UpdateItem(item, ItemUpdateType.MetadataImport, cancellationToken);
             }
-
-            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
-            {
-                ForceSave = isNew || forceUpdate
-
-            }, cancellationToken);
 
             return item;
         }
@@ -1274,8 +1268,8 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (cleanDatabase)
             {
-                await CleanDatabaseInternal(newChannelIdList.ToArray(), new[] { typeof(LiveTvChannel).Name }, progress, cancellationToken).ConfigureAwait(false);
-                await CleanDatabaseInternal(newProgramIdList.ToArray(), new[] { typeof(LiveTvProgram).Name }, progress, cancellationToken).ConfigureAwait(false);
+                CleanDatabaseInternal(newChannelIdList.ToArray(), new[] { typeof(LiveTvChannel).Name }, progress, cancellationToken);
+                CleanDatabaseInternal(newProgramIdList.ToArray(), new[] { typeof(LiveTvProgram).Name }, progress, cancellationToken);
             }
 
             var coreService = _services.OfType<EmbyTV.EmbyTV>().FirstOrDefault();
@@ -1318,7 +1312,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                 try
                 {
-                    var item = await GetChannel(channelInfo.Item2, channelInfo.Item1, parentFolderId, cancellationToken).ConfigureAwait(false);
+                    var item = GetChannel(channelInfo.Item2, channelInfo.Item1, parentFolderId, cancellationToken);
 
                     list.Add(item);
                 }
@@ -1378,7 +1372,7 @@ namespace Emby.Server.Implementations.LiveTv
                     }).Cast<LiveTvProgram>().ToDictionary(i => i.Id);
 
                     var newPrograms = new List<LiveTvProgram>();
-                    var updatedPrograms = new List<LiveTvProgram>();
+                    var updatedPrograms = new List<BaseItem>();
 
                     foreach (var program in channelPrograms)
                     {
@@ -1429,10 +1423,9 @@ namespace Emby.Server.Implementations.LiveTv
                         _libraryManager.CreateItems(newPrograms, null, cancellationToken);
                     }
 
-                    // TODO: Do this in bulk
-                    foreach (var program in updatedPrograms)
+                    if (updatedPrograms.Count > 0)
                     {
-                        _libraryManager.UpdateItem(program, ItemUpdateType.MetadataImport, cancellationToken);
+                        _libraryManager.UpdateItems(updatedPrograms, ItemUpdateType.MetadataImport, cancellationToken);
                     }
 
                     currentChannel.IsMovie = isMovie;
@@ -1463,7 +1456,7 @@ namespace Emby.Server.Implementations.LiveTv
             return new Tuple<List<Guid>, List<Guid>>(channels, programs);
         }
 
-        private async Task CleanDatabaseInternal(Guid[] currentIdList, string[] validTypes, IProgress<double> progress, CancellationToken cancellationToken)
+        private void CleanDatabaseInternal(Guid[] currentIdList, string[] validTypes, IProgress<double> progress, CancellationToken cancellationToken)
         {
             var list = _itemRepo.GetItemIdsList(new InternalItemsQuery
             {
@@ -1490,11 +1483,11 @@ namespace Emby.Server.Implementations.LiveTv
 
                     if (item != null)
                     {
-                        await _libraryManager.DeleteItem(item, new DeleteOptions
+                        _libraryManager.DeleteItem(item, new DeleteOptions
                         {
                             DeleteFileLocation = false
 
-                        }).ConfigureAwait(false);
+                        }, false);
                     }
                 }
 
@@ -1552,7 +1545,7 @@ namespace Emby.Server.Implementations.LiveTv
                 var idList = results.SelectMany(i => i.ToList()).Select(i => CreateRecordingRecord(i.Item1, i.Item2.Name, internalLiveTvFolderId, cancellationToken))
                     .ToArray();
 
-                await CleanDatabaseInternal(idList, new[] { typeof(LiveTvVideoRecording).Name, typeof(LiveTvAudioRecording).Name }, new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
+                CleanDatabaseInternal(idList, new[] { typeof(LiveTvVideoRecording).Name, typeof(LiveTvAudioRecording).Name }, new SimpleProgress<double>(), cancellationToken);
 
                 _lastRecordingRefreshTime = DateTime.UtcNow;
             }
@@ -2151,7 +2144,7 @@ namespace Emby.Server.Implementations.LiveTv
                 throw new ResourceNotFoundException(string.Format("Recording with Id {0} not found", recordingId));
             }
 
-            await DeleteRecording((BaseItem)recording).ConfigureAwait(false);
+            await DeleteRecording(recording).ConfigureAwait(false);
         }
 
         public async Task DeleteRecording(BaseItem recording)
@@ -2174,11 +2167,11 @@ namespace Emby.Server.Implementations.LiveTv
             _lastRecordingRefreshTime = DateTime.MinValue;
 
             // This is the responsibility of the live tv service
-            await _libraryManager.DeleteItem((BaseItem)recording, new DeleteOptions
+            _libraryManager.DeleteItem(recording, new DeleteOptions
             {
                 DeleteFileLocation = false
 
-            }).ConfigureAwait(false);
+            }, false);
 
             _lastRecordingRefreshTime = DateTime.MinValue;
         }
@@ -2238,7 +2231,7 @@ namespace Emby.Server.Implementations.LiveTv
                 return null;
             }
 
-            return _dtoService.GetBaseItemDto((BaseItem)item, options, user);
+            return _dtoService.GetBaseItemDto(item, options, user);
         }
 
         public async Task<TimerInfoDto> GetTimer(string id, CancellationToken cancellationToken)

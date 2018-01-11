@@ -17,17 +17,17 @@ namespace MediaBrowser.XbmcMetadata.Savers
 {
     public class EpisodeNfoSaver : BaseNfoSaver
     {
-        protected override string GetLocalSavePath(IHasMetadata item)
+        protected override string GetLocalSavePath(BaseItem item)
         {
             return Path.ChangeExtension(item.Path, ".nfo");
         }
 
-        protected override string GetRootElementName(IHasMetadata item)
+        protected override string GetRootElementName(BaseItem item)
         {
             return "episodedetails";
         }
 
-        public override bool IsEnabledFor(IHasMetadata item, ItemUpdateType updateType)
+        public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
         {
             if (!item.SupportsLocalMetadata)
             {
@@ -37,7 +37,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             return item is Episode && updateType >= MinimumUpdateType;
         }
 
-        protected override void WriteCustomElements(IHasMetadata item, XmlWriter writer)
+        protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
         {
             var episode = (Episode)item;
 
@@ -108,7 +108,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
 
         private readonly CultureInfo UsCulture = new CultureInfo("en-US");
 
-        protected override List<string> GetTagsUsed(IHasMetadata item)
+        protected override List<string> GetTagsUsed(BaseItem item)
         {
             var list = base.GetTagsUsed(item);
             list.AddRange(new string[]

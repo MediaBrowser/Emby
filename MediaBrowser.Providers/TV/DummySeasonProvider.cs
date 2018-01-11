@@ -34,9 +34,9 @@ namespace MediaBrowser.Providers.TV
             _fileSystem = fileSystem;
         }
 
-        public async Task Run(Series series, CancellationToken cancellationToken)
+        public async Task<bool> Run(Series series, CancellationToken cancellationToken)
         {
-            await RemoveObsoleteSeasons(series).ConfigureAwait(false);
+            var seasonsRemoved = RemoveObsoleteSeasons(series);
 
             var hasNewSeasons = await AddDummySeasonFolders(series, cancellationToken).ConfigureAwait(false);
 
@@ -49,6 +49,8 @@ namespace MediaBrowser.Providers.TV
                 //await series.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(directoryService))
                 //    .ConfigureAwait(false);
             }
+
+            return seasonsRemoved || hasNewSeasons;
         }
 
         private async Task<bool> AddDummySeasonFolders(Series series, CancellationToken cancellationToken)
@@ -137,7 +139,7 @@ namespace MediaBrowser.Providers.TV
             return season;
         }
 
-        private async Task<bool> RemoveObsoleteSeasons(Series series)
+        private bool RemoveObsoleteSeasons(Series series)
         {
             var existingSeasons = series.Children.OfType<Season>().ToList();
 
@@ -179,11 +181,11 @@ namespace MediaBrowser.Providers.TV
             {
                 _logger.Info("Removing virtual season {0} {1}", seasonToRemove.Series.Name, seasonToRemove.IndexNumber);
 
-                await seasonToRemove.Delete(new DeleteOptions
+                seasonToRemove.Delete(new DeleteOptions
                 {
                     DeleteFileLocation = true
 
-                }).ConfigureAwait(false);
+                }, false);
 
                 hasChanges = true;
             }

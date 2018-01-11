@@ -61,12 +61,12 @@ namespace MediaBrowser.Providers.Movies
             get { return "FanArt"; }
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             return item is Movie || item is BoxSet || item is MusicVideo;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new List<ImageType>
             {
@@ -80,9 +80,9 @@ namespace MediaBrowser.Providers.Movies
             };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            var baseItem = (BaseItem)item;
+            var baseItem = item;
             var list = new List<RemoteImageInfo>();
 
             var movieId = baseItem.GetProviderId(MetadataProviders.Tmdb);

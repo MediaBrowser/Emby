@@ -53,7 +53,7 @@ namespace MediaBrowser.Providers.Movies
 
         public string UrlFormatString
         {
-            get { return MovieDbProvider.BaseMovieDbUrl + "tv/{0}"; }
+            get { return MovieDbMovieExternalId.BaseMovieDbUrl + "tv/{0}"; }
         }
 
         public bool Supports(IHasProviderIds item)
@@ -76,7 +76,7 @@ namespace MediaBrowser.Providers.Movies
 
         public string UrlFormatString
         {
-            get { return MovieDbProvider.BaseMovieDbUrl + "collection/{0}"; }
+            get { return MovieDbMovieExternalId.BaseMovieDbUrl + "collection/{0}"; }
         }
 
         public bool Supports(IHasProviderIds item)
@@ -99,7 +99,7 @@ namespace MediaBrowser.Providers.Movies
 
         public string UrlFormatString
         {
-            get { return MovieDbProvider.BaseMovieDbUrl + "person/{0}"; }
+            get { return MovieDbMovieExternalId.BaseMovieDbUrl + "person/{0}"; }
         }
 
         public bool Supports(IHasProviderIds item)
@@ -122,7 +122,7 @@ namespace MediaBrowser.Providers.Movies
 
         public string UrlFormatString
         {
-            get { return MovieDbProvider.BaseMovieDbUrl + "collection/{0}"; }
+            get { return MovieDbMovieExternalId.BaseMovieDbUrl + "collection/{0}"; }
         }
 
         public bool Supports(IHasProviderIds item)

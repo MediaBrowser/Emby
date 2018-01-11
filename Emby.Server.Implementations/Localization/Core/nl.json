@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Gebruiker {0} is aangemaakt",
     "UserPasswordChangedWithName": "Wachtwoord voor {0} is gewijzigd",
     "UserDeletedWithName": "Gebruiker {0} is verwijderd",
-    "UserConfigurationUpdatedWithName": "Gebruikersinstellingen voor {0} zijn bijgewerkt",
+    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
     "MessageServerConfigurationUpdated": "Server configuratie is bijgewerkt",
     "MessageNamedServerConfigurationUpdatedWithValue": "Sectie {0} van de server configuratie is bijgewerkt",
     "MessageApplicationUpdated": "Emby Server is bijgewerkt",

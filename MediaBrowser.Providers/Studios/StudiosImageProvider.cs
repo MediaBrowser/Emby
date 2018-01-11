@@ -33,12 +33,12 @@ namespace MediaBrowser.Providers.Studios
             get { return "Emby Designs"; }
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             return item is Studio;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new List<ImageType>
             {
@@ -47,12 +47,12 @@ namespace MediaBrowser.Providers.Studios
             };
         }
 
-        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
             return GetImages(item, true, true, cancellationToken);
         }
 
-        private async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item, bool posters, bool thumbs, CancellationToken cancellationToken)
+        private async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, bool posters, bool thumbs, CancellationToken cancellationToken)
         {
             var list = new List<RemoteImageInfo>();
 
@@ -79,7 +79,7 @@ namespace MediaBrowser.Providers.Studios
             return list.Where(i => i != null);
         }
 
-        private RemoteImageInfo GetImage(IHasMetadata item, string filename, ImageType type, string remoteFilename)
+        private RemoteImageInfo GetImage(BaseItem item, string filename, ImageType type, string remoteFilename)
         {
             var list = GetAvailableImages(filename, _fileSystem);
 
@@ -174,7 +174,7 @@ namespace MediaBrowser.Providers.Studios
             return file;
         }
 
-        public string FindMatch(IHasMetadata item, IEnumerable<string> images)
+        public string FindMatch(BaseItem item, IEnumerable<string> images)
         {
             var name = GetComparableName(item.Name);
 

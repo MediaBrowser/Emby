@@ -327,61 +327,58 @@ namespace MediaBrowser.Model.Dlna
                 string audioCodec = audioStream == null ? null : audioStream.Codec;
 
                 // Make sure audio codec profiles are satisfied
-                if (!string.IsNullOrEmpty(audioCodec))
+                var conditions = new List<ProfileCondition>();
+                foreach (CodecProfile i in options.Profile.CodecProfiles)
                 {
-                    var conditions = new List<ProfileCondition>();
-                    foreach (CodecProfile i in options.Profile.CodecProfiles)
+                    if (i.Type == CodecType.Audio && i.ContainsAnyCodec(audioCodec, item.Container))
                     {
-                        if (i.Type == CodecType.Audio && i.ContainsAnyCodec(audioCodec, item.Container))
+                        bool applyConditions = true;
+                        foreach (ProfileCondition applyCondition in i.ApplyConditions)
                         {
-                            bool applyConditions = true;
-                            foreach (ProfileCondition applyCondition in i.ApplyConditions)
+                            if (!conditionProcessor.IsAudioConditionSatisfied(applyCondition, inputAudioChannels, inputAudioBitrate, inputAudioSampleRate, inputAudioBitDepth))
                             {
-                                if (!conditionProcessor.IsAudioConditionSatisfied(applyCondition, inputAudioChannels, inputAudioBitrate, inputAudioSampleRate, inputAudioBitDepth))
-                                {
-                                    LogConditionFailure(options.Profile, "AudioCodecProfile", applyCondition, item);
-                                    applyConditions = false;
-                                    break;
-                                }
+                                LogConditionFailure(options.Profile, "AudioCodecProfile", applyCondition, item);
+                                applyConditions = false;
+                                break;
                             }
+                        }
 
-                            if (applyConditions)
+                        if (applyConditions)
+                        {
+                            foreach (ProfileCondition c in i.Conditions)
                             {
-                                foreach (ProfileCondition c in i.Conditions)
-                                {
-                                    conditions.Add(c);
-                                }
+                                conditions.Add(c);
                             }
                         }
                     }
+                }
 
-                    bool all = true;
-                    foreach (ProfileCondition c in conditions)
+                bool all = true;
+                foreach (ProfileCondition c in conditions)
+                {
+                    if (!conditionProcessor.IsAudioConditionSatisfied(c, inputAudioChannels, inputAudioBitrate, inputAudioSampleRate, inputAudioBitDepth))
                     {
-                        if (!conditionProcessor.IsAudioConditionSatisfied(c, inputAudioChannels, inputAudioBitrate, inputAudioSampleRate, inputAudioBitDepth))
+                        LogConditionFailure(options.Profile, "AudioCodecProfile", c, item);
+                        var transcodeReason = GetTranscodeReasonForFailedCondition(c);
+                        if (transcodeReason.HasValue)
                         {
-                            LogConditionFailure(options.Profile, "AudioCodecProfile", c, item);
-                            var transcodeReason = GetTranscodeReasonForFailedCondition(c);
-                            if (transcodeReason.HasValue)
-                            {
-                                transcodeReasons.Add(transcodeReason.Value);
-                            }
-                            all = false;
-                            break;
+                            transcodeReasons.Add(transcodeReason.Value);
                         }
+                        all = false;
+                        break;
+                    }
+                }
+
+                if (all)
+                {
+                    if (directPlayMethods.Contains(PlayMethod.DirectStream))
+                    {
+                        playlistItem.PlayMethod = PlayMethod.DirectStream;
                     }
 
-                    if (all)
-                    {
-                        if (directPlayMethods.Contains(PlayMethod.DirectStream))
-                        {
-                            playlistItem.PlayMethod = PlayMethod.DirectStream;
-                        }
+                    playlistItem.Container = NormalizeMediaSourceFormatIntoSingleContainer(item.Container, options.Profile, DlnaProfileType.Audio);
 
-                        playlistItem.Container = NormalizeMediaSourceFormatIntoSingleContainer(item.Container, options.Profile, DlnaProfileType.Audio);
-
-                        return playlistItem;
-                    }
+                    return playlistItem;
                 }
             }
 
@@ -1385,7 +1382,7 @@ namespace MediaBrowser.Model.Dlna
             var requestedMaxBitrate = maxBitrate ?? 1000000;
 
             // If we don't know the bitrate, then force a transcode if requested max bitrate is under 40 mbps
-            var itemBitrate = item.Bitrate ?? 
+            var itemBitrate = item.Bitrate ??
                 40000000;
 
             if (itemBitrate > requestedMaxBitrate)

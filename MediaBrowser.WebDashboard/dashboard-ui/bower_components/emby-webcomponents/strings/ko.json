@@ -471,7 +471,7 @@
     "RepeatMode": "Repeat mode",
     "RepeatOne": "Repeat one",
     "RepeatAll": "\ubaa8\ub450 \ubc18\ubcf5",
-    "ConfirmEndPlayerSession": "Would you like to close Emby on the device?",
+    "ConfirmEndPlayerSession": "Would you like to shutdown Emby on {0}?",
     "Yes": "Yes",
     "No": "No",
     "LiveTV": "Live TV",

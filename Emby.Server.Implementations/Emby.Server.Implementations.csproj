@@ -381,7 +381,6 @@
     <Compile Include="Library\Validators\PeopleValidator.cs" />
     <Compile Include="Library\Validators\StudiosPostScanTask.cs" />
     <Compile Include="Library\Validators\StudiosValidator.cs" />
-    <Compile Include="LiveTv\ChannelImageProvider.cs" />
     <Compile Include="LiveTv\EmbyTV\DirectRecorder.cs" />
     <Compile Include="LiveTv\EmbyTV\EmbyTV.cs" />
     <Compile Include="LiveTv\EmbyTV\EmbyTVRegistration.cs" />
@@ -399,7 +398,6 @@
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
     <Compile Include="LiveTv\LiveTvManager.cs" />
     <Compile Include="LiveTv\LiveTvMediaSourceProvider.cs" />
-    <Compile Include="LiveTv\RecordingImageProvider.cs" />
     <Compile Include="LiveTv\RefreshChannelsScheduledTask.cs" />
     <Compile Include="LiveTv\TunerHosts\BaseTunerHost.cs" />
     <Compile Include="LiveTv\TunerHosts\HdHomerun\HdHomerunManager.cs" />
@@ -481,8 +479,6 @@
     <Compile Include="Session\SessionManager.cs" />
     <Compile Include="Session\SessionWebSocketListener.cs" />
     <Compile Include="Session\WebSocketController.cs" />
-    <Compile Include="Social\SharingManager.cs" />
-    <Compile Include="Social\SharingRepository.cs" />
     <Compile Include="Sorting\AiredEpisodeOrderComparer.cs" />
     <Compile Include="Sorting\AlbumArtistComparer.cs" />
     <Compile Include="Sorting\AlbumComparer.cs" />
@@ -566,7 +562,6 @@
     <Compile Include="TextEncoding\UniversalDetector\ICharsetDetector.cs" />
     <Compile Include="Threading\CommonTimer.cs" />
     <Compile Include="Threading\TimerFactory.cs" />
-    <Compile Include="TV\SeriesPostScanTask.cs" />
     <Compile Include="TV\TVSeriesManager.cs" />
     <Compile Include="Udp\UdpServer.cs" />
     <Compile Include="Updates\InstallationManager.cs" />
@@ -637,8 +632,8 @@
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
     </Reference>
-    <Reference Include="Emby.XmlTv, Version=1.0.6550.21748, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emby.XmlTv.1.0.12\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
+    <Reference Include="Emby.XmlTv, Version=1.0.6568.22123, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emby.XmlTv.1.0.13\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>

@@ -183,7 +183,7 @@ namespace Emby.Drawing
             }
 
             var originalImage = options.Image;
-            IHasMetadata item = options.Item;
+            var item = options.Item;
 
             if (!originalImage.IsLocalFile)
             {
@@ -491,55 +491,19 @@ namespace Emby.Drawing
                 throw new ArgumentNullException("path");
             }
 
-            return GetImageSizeInternal(path, allowSlowMethod);
-        }
-
-        /// <summary>
-        /// Gets the image size internal.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="allowSlowMethod">if set to <c>true</c> [allow slow method].</param>
-        /// <returns>ImageSize.</returns>
-        private ImageSize GetImageSizeInternal(string path, bool allowSlowMethod)
-        {
-            //try
-            //{
-            //    using (var fileStream = _fileSystem.OpenRead(path))
-            //    {
-            //        using (var file = TagLib.File.Create(new StreamFileAbstraction(Path.GetFileName(path), fileStream, null)))
-            //        {
-            //            var image = file as TagLib.Image.File;
-
-            //            if (image != null)
-            //            {
-            //                var properties = image.Properties;
-
-            //                return new ImageSize
-            //                {
-            //                    Height = properties.PhotoHeight,
-            //                    Width = properties.PhotoWidth
-            //                };
-            //            }
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //}
-
             try
             {
                 return ImageHeader.GetDimensions(path, _logger, _fileSystem);
             }
             catch
             {
-                if (allowSlowMethod)
+                if (!allowSlowMethod)
                 {
-                    return _imageEncoder.GetImageSize(path);
+                    throw;
                 }
-
-                throw;
             }
+
+            return _imageEncoder.GetImageSize(path);
         }
 
         /// <summary>
@@ -549,7 +513,7 @@ namespace Emby.Drawing
         /// <param name="image">The image.</param>
         /// <returns>Guid.</returns>
         /// <exception cref="System.ArgumentNullException">item</exception>
-        public string GetImageCacheTag(IHasMetadata item, ItemImageInfo image)
+        public string GetImageCacheTag(BaseItem item, ItemImageInfo image)
         {
             if (item == null)
             {
@@ -574,7 +538,7 @@ namespace Emby.Drawing
         /// <param name="imageEnhancers">The image enhancers.</param>
         /// <returns>Guid.</returns>
         /// <exception cref="System.ArgumentNullException">item</exception>
-        public string GetImageCacheTag(IHasMetadata item, ItemImageInfo image, List<IImageEnhancer> imageEnhancers)
+        public string GetImageCacheTag(BaseItem item, ItemImageInfo image, List<IImageEnhancer> imageEnhancers)
         {
             if (item == null)
             {
@@ -658,7 +622,7 @@ namespace Emby.Drawing
         /// <param name="imageType">Type of the image.</param>
         /// <param name="imageIndex">Index of the image.</param>
         /// <returns>Task{System.String}.</returns>
-        public async Task<string> GetEnhancedImage(IHasMetadata item, ImageType imageType, int imageIndex)
+        public async Task<string> GetEnhancedImage(BaseItem item, ImageType imageType, int imageIndex)
         {
             var enhancers = GetSupportedEnhancers(item, imageType);
 
@@ -673,7 +637,7 @@ namespace Emby.Drawing
 
         private async Task<Tuple<string, DateTime, bool>> GetEnhancedImage(ItemImageInfo image,
             bool inputImageSupportsTransparency,
-            IHasMetadata item,
+            BaseItem item,
             int imageIndex,
             List<IImageEnhancer> enhancers,
             CancellationToken cancellationToken)
@@ -723,7 +687,7 @@ namespace Emby.Drawing
         /// item
         /// </exception>
         private async Task<Tuple<string, bool>> GetEnhancedImageInternal(string originalImagePath,
-            IHasMetadata item,
+            BaseItem item,
             ImageType imageType,
             int imageIndex,
             List<IImageEnhancer> supportedEnhancers,
@@ -790,7 +754,7 @@ namespace Emby.Drawing
         /// <param name="imageType">Type of the image.</param>
         /// <param name="imageIndex">Index of the image.</param>
         /// <returns>Task{EnhancedImage}.</returns>
-        private async Task ExecuteImageEnhancers(IEnumerable<IImageEnhancer> imageEnhancers, string inputPath, string outputPath, IHasMetadata item, ImageType imageType, int imageIndex)
+        private async Task ExecuteImageEnhancers(IEnumerable<IImageEnhancer> imageEnhancers, string inputPath, string outputPath, BaseItem item, ImageType imageType, int imageIndex)
         {
             // Run the enhancers sequentially in order of priority
             foreach (var enhancer in imageEnhancers)
@@ -875,7 +839,7 @@ namespace Emby.Drawing
             _logger.Info("Completed creation of image collage and saved to {0}", options.OutputPath);
         }
 
-        public List<IImageEnhancer> GetSupportedEnhancers(IHasMetadata item, ImageType imageType)
+        public List<IImageEnhancer> GetSupportedEnhancers(BaseItem item, ImageType imageType)
         {
             var list = new List<IImageEnhancer>();
 

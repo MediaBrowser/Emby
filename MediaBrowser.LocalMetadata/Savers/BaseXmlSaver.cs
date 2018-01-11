@@ -150,7 +150,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             }
         }
 
-        public string GetSavePath(IHasMetadata item)
+        public string GetSavePath(BaseItem item)
         {
             return GetLocalSavePath(item);
         }
@@ -160,14 +160,14 @@ namespace MediaBrowser.LocalMetadata.Savers
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        protected abstract string GetLocalSavePath(IHasMetadata item);
+        protected abstract string GetLocalSavePath(BaseItem item);
 
         /// <summary>
         /// Gets the name of the root element.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.String.</returns>
-        protected virtual string GetRootElementName(IHasMetadata item)
+        protected virtual string GetRootElementName(BaseItem item)
         {
             return "Item";
         }
@@ -178,14 +178,14 @@ namespace MediaBrowser.LocalMetadata.Savers
         /// <param name="item">The item.</param>
         /// <param name="updateType">Type of the update.</param>
         /// <returns><c>true</c> if [is enabled for] [the specified item]; otherwise, <c>false</c>.</returns>
-        public abstract bool IsEnabledFor(IHasMetadata item, ItemUpdateType updateType);
+        public abstract bool IsEnabledFor(BaseItem item, ItemUpdateType updateType);
 
         protected virtual List<string> GetTagsUsed()
         {
             return new List<string>();
         }
 
-        public void Save(IHasMetadata item, CancellationToken cancellationToken)
+        public void Save(BaseItem item, CancellationToken cancellationToken)
         {
             var path = GetSavePath(item);
 
@@ -242,7 +242,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             }
         }
 
-        private void Save(IHasMetadata item, Stream stream, string xmlPath)
+        private void Save(BaseItem item, Stream stream, string xmlPath)
         {
             var settings = new XmlWriterSettings
             {
@@ -259,7 +259,7 @@ namespace MediaBrowser.LocalMetadata.Savers
 
                 writer.WriteStartElement(root);
 
-                var baseItem = item as BaseItem;
+                var baseItem = item;
 
                 if (baseItem != null)
                 {
@@ -293,7 +293,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             }
         }
 
-        protected abstract void WriteCustomElements(IHasMetadata item, XmlWriter writer);
+        protected abstract void WriteCustomElements(BaseItem item, XmlWriter writer);
 
         public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
 
@@ -617,10 +617,19 @@ namespace MediaBrowser.LocalMetadata.Savers
 
             foreach (var link in items)
             {
-                if (!string.IsNullOrWhiteSpace(link.Path))
+                if (!string.IsNullOrWhiteSpace(link.Path) || !string.IsNullOrWhiteSpace(link.LibraryItemId))
                 {
                     writer.WriteStartElement(singularNodeName);
-                    writer.WriteElementString("Path", link.Path);
+                    if (!string.IsNullOrWhiteSpace(link.Path))
+                    {
+                        writer.WriteElementString("Path", link.Path);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(link.LibraryItemId))
+                    {
+                        writer.WriteElementString("ItemId", link.LibraryItemId);
+                    }
+
                     writer.WriteEndElement();
                 }
             }

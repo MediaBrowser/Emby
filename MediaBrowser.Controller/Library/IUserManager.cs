@@ -32,6 +32,7 @@ namespace MediaBrowser.Controller.Library
         event EventHandler<GenericEventArgs<User>> UserDeleted;
 
         event EventHandler<GenericEventArgs<User>> UserCreated;
+        event EventHandler<GenericEventArgs<User>> UserPolicyUpdated;
         event EventHandler<GenericEventArgs<User>> UserConfigurationUpdated;
         event EventHandler<GenericEventArgs<User>> UserPasswordChanged;
         event EventHandler<GenericEventArgs<User>> UserLockedOut;
@@ -181,6 +182,8 @@ namespace MediaBrowser.Controller.Library
         /// <param name="newConfiguration">The new configuration.</param>
         /// <returns>Task.</returns>
         void UpdateConfiguration(string userId, UserConfiguration newConfiguration);
+
+        void UpdateConfiguration(User user, UserConfiguration newConfiguration);
 
         /// <summary>
         /// Updates the user policy.

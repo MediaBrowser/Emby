@@ -53,7 +53,7 @@
     "UserCreatedWithName": "Se ha creado el usuario {0}",
     "UserPasswordChangedWithName": "Se ha cambiado la contrase\u00f1a para el usuario {0}",
     "UserDeletedWithName": "Se ha eliminado el usuario {0}",
-    "UserConfigurationUpdatedWithName": "Se ha actualizado la configuraci\u00f3n del usuario {0}",
+    "UserPolicyUpdatedWithName": "Las pol\u00edtica de usuario ha sido actualizada por {0}",
     "MessageServerConfigurationUpdated": "Se ha actualizado la configuraci\u00f3n del servidor",
     "MessageNamedServerConfigurationUpdatedWithValue": "Se ha actualizado la secci\u00f3n {0} de la configuraci\u00f3n del servidor",
     "MessageApplicationUpdated": "El servidor Emby ha sido actualizado",
