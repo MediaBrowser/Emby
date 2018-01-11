@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Threading;
+using MediaBrowser.Model.Dlna;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -31,8 +32,9 @@ namespace Emby.Server.Implementations.Library
         private readonly ILogger _logger;
         private readonly IUserDataManager _userDataManager;
         private readonly ITimerFactory _timerFactory;
+        private readonly Func<IMediaEncoder> _mediaEncoder;
 
-        public MediaSourceManager(IItemRepository itemRepo, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory)
+        public MediaSourceManager(IItemRepository itemRepo, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory, Func<IMediaEncoder> mediaEncoder)
         {
             _itemRepo = itemRepo;
             _userManager = userManager;
@@ -42,6 +44,7 @@ namespace Emby.Server.Implementations.Library
             _fileSystem = fileSystem;
             _userDataManager = userDataManager;
             _timerFactory = timerFactory;
+            _mediaEncoder = mediaEncoder;
         }
 
         public void AddParts(IEnumerable<IMediaSourceProvider> providers)
@@ -215,21 +218,6 @@ namespace Emby.Server.Implementations.Library
             {
                 return await GetLiveStream(liveStreamId, cancellationToken).ConfigureAwait(false);
             }
-            //await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            //try
-            //{
-            //    var stream = _openStreams.Values.FirstOrDefault(i => string.Equals(i.MediaSource.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase));
-
-            //    if (stream != null)
-            //    {
-            //        return stream.MediaSource;
-            //    }
-            //}
-            //finally
-            //{
-            //    _liveStreamSemaphore.Release();
-            //}
 
             var sources = await GetPlayackMediaSources(item.Id.ToString("N"), null, enablePathSubstitution, new[] { MediaType.Audio, MediaType.Video },
                         CancellationToken.None).ConfigureAwait(false);
@@ -397,6 +385,25 @@ namespace Emby.Server.Implementations.Library
             {
                 _liveStreamSemaphore.Release();
             }
+        }
+
+        public async Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken)
+        {
+            var mediaSource = await GetLiveStream(id, cancellationToken).ConfigureAwait(false);
+
+            var info = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
+            {
+                MediaSource = mediaSource,
+                ExtractChapters = false,
+                MediaType = DlnaProfileType.Video
+
+            }, cancellationToken).ConfigureAwait(false);
+
+            mediaSource.MediaStreams = info.MediaStreams;
+            mediaSource.Container = info.Container;
+            mediaSource.Bitrate = info.Bitrate;
+
+            return mediaSource;
         }
 
         public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> GetLiveStreamWithDirectStreamProvider(string id, CancellationToken cancellationToken)

@@ -22,8 +22,6 @@ namespace Emby.Server.Implementations.LiveTv
         private readonly IMediaEncoder _mediaEncoder;
         private readonly ILogger _logger;
 
-        const int ProbeAnalyzeDurationMs = 3000;
-        const int PlaybackAnalyzeDurationMs = 3000;
         private IJsonSerializer _json;
         private IApplicationPaths _appPaths;
 
@@ -59,27 +57,18 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (mediaInfo == null)
             {
-                var path = mediaSource.Path;
-                var protocol = mediaSource.Protocol;
-
-                if (!string.IsNullOrWhiteSpace(mediaSource.EncoderPath) && mediaSource.EncoderProtocol.HasValue)
-                {
-                    path = mediaSource.EncoderPath;
-                    protocol = mediaSource.EncoderProtocol.Value;
-                }
-
                 if (probeDelayMs > 0)
                 {
                     await Task.Delay(probeDelayMs, cancellationToken).ConfigureAwait(false);
                 }
 
+                mediaSource.AnalyzeDurationMs = 3000;
+
                 mediaInfo = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
                 {
-                    InputPath = path,
-                    Protocol = protocol,
+                    MediaSource = mediaSource,
                     MediaType = isAudio ? DlnaProfileType.Audio : DlnaProfileType.Video,
-                    ExtractChapters = false,
-                    AnalyzeDurationMs = ProbeAnalyzeDurationMs
+                    ExtractChapters = false
 
                 }, cancellationToken).ConfigureAwait(false);
 
@@ -172,10 +161,10 @@ namespace Emby.Server.Implementations.LiveTv
                 videoStream.IsAVC = null;
             }
 
+            mediaSource.AnalyzeDurationMs = 3000;
+
             // Try to estimate this
             mediaSource.InferTotalBitrate(true);
-
-            mediaSource.AnalyzeDurationMs = PlaybackAnalyzeDurationMs;
         }
 
         public Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, int probeDelayMs, CancellationToken cancellationToken)

@@ -14,6 +14,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using MediaBrowser.Model.Dto;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -41,9 +42,12 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var result = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
             {
-                InputPath = item.Path,
                 MediaType = DlnaProfileType.Audio,
-                Protocol = MediaProtocol.File
+                MediaSource = new MediaSourceInfo
+                {
+                    Path = item.Path,
+                    Protocol = MediaProtocol.File
+                }
 
             }, cancellationToken).ConfigureAwait(false);
 

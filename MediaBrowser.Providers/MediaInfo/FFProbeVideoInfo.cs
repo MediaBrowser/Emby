@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Dto;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -132,10 +133,13 @@ namespace MediaBrowser.Providers.MediaInfo
             {
                 PlayableStreamFileNames = streamFileNames,
                 ExtractChapters = true,
-                VideoType = item.VideoType,
                 MediaType = DlnaProfileType.Video,
-                InputPath = item.Path,
-                Protocol = protocol
+                MediaSource = new MediaSourceInfo
+                {
+                    Path = item.Path,
+                    Protocol = protocol,
+                    VideoType = item.VideoType
+                }
 
             }, cancellationToken);
         }

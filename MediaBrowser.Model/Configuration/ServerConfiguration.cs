@@ -62,6 +62,7 @@ namespace MediaBrowser.Model.Configuration
         public bool IsPortAuthorized { get; set; }
 
         public bool AutoRunWebApp { get; set; }
+        public bool EnableRemoteAccess { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable case sensitive item ids].
@@ -214,6 +215,8 @@ namespace MediaBrowser.Model.Configuration
             EnableCaseSensitiveItemIds = true;
 
             EnableAutomaticRestart = true;
+            AutoRunWebApp = true;
+            EnableRemoteAccess = true;
 
             EnableUPnP = true;
             MinResumePct = 5;
