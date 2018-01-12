@@ -34,6 +34,13 @@ namespace MediaBrowser.Api
     {
     }
 
+    [Route("/Startup/RemoteAccess", "POST", Summary = "Updates initial server configuration")]
+    public class UpdateRemoteAccessConfiguration : IReturnVoid
+    {
+        public bool EnableRemoteAccess { get; set; }
+        public bool EnableAutomaticPortMapping { get; set; }
+    }
+
     [Route("/Startup/User", "GET", Summary = "Gets initial user info")]
     public class GetStartupUser : IReturn<StartupUser>
     {
@@ -126,6 +133,13 @@ namespace MediaBrowser.Api
             _config.Configuration.UICulture = request.UICulture;
             _config.Configuration.MetadataCountryCode = request.MetadataCountryCode;
             _config.Configuration.PreferredMetadataLanguage = request.PreferredMetadataLanguage;
+            _config.SaveConfiguration();
+        }
+
+        public void Post(UpdateRemoteAccessConfiguration request)
+        {
+            _config.Configuration.EnableRemoteAccess = request.EnableRemoteAccess;
+            _config.Configuration.EnableUPnP = request.EnableAutomaticPortMapping;
             _config.SaveConfiguration();
         }
 

@@ -42,7 +42,6 @@ namespace MediaBrowser.Model.Dto
         public bool RequiresOpening { get; set; }
         public string OpenToken { get; set; }
         public bool RequiresClosing { get; set; }
-        public bool SupportsProbing { get; set; }
         public string LiveStreamId { get; set; }
         public int? BufferMs { get; set; }
 
@@ -77,7 +76,6 @@ namespace MediaBrowser.Model.Dto
             SupportsTranscoding = true;
             SupportsDirectStream = true;
             SupportsDirectPlay = true;
-            SupportsProbing = true;
         }
 
         public void InferTotalBitrate(bool force = false)

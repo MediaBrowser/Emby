@@ -17,13 +17,11 @@ namespace MediaBrowser.Model.MediaInfo
 
         public bool EnableDirectPlay { get; set; }
         public bool EnableDirectStream { get; set; }
-        public bool EnableMediaProbe { get; set; }
 
         public LiveStreamRequest()
         {
             EnableDirectPlay = true;
             EnableDirectStream = true;
-            EnableMediaProbe = true;
         }
 
         public LiveStreamRequest(AudioOptions options)

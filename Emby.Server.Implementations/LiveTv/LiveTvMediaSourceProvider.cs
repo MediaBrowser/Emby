@@ -131,7 +131,7 @@ namespace Emby.Server.Implementations.LiveTv
             return list;
         }
 
-        public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> OpenMediaSource(string openToken, bool allowLiveStreamProbe, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> OpenMediaSource(string openToken, CancellationToken cancellationToken)
         {
             MediaSourceInfo stream = null;
             const bool isAudio = false;
@@ -156,7 +156,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             try
             {
-                if (!allowLiveStreamProbe || !stream.SupportsProbing || stream.MediaStreams.Any(i => i.Index != -1))
+                if (stream.MediaStreams.Any(i => i.Index != -1))
                 {
                     AddMediaInfo(stream, isAudio, cancellationToken);
                 }

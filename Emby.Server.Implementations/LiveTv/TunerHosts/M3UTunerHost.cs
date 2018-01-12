@@ -76,7 +76,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             return Task.FromResult(list);
         }
 
-        private string[] _disallowedSharedStreamExtensions = new string[] 
+        private string[] _disallowedSharedStreamExtensions = new string[]
         {
             ".mkv",
             ".mp4",
@@ -168,6 +168,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             var supportsDirectPlay = !info.EnableStreamLooping && info.TunerCount == 0;
 
+            var httpHeaders = new Dictionary<string, string>();
+
+            // Use user-defined user-agent. If there isn't one, make it look like a browser.
+            httpHeaders["User-Agent"] = string.IsNullOrWhiteSpace(info.UserAgent) ?
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.85 Safari/537.36" :
+                info.UserAgent;
+
             var mediaSource = new MediaSourceInfo
             {
                 Path = path,
@@ -199,7 +206,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 IsRemote = isRemote,
 
                 IgnoreDts = true,
-                SupportsDirectPlay = supportsDirectPlay
+                SupportsDirectPlay = supportsDirectPlay,
+
+                RequiredHttpHeaders = httpHeaders
             };
 
             mediaSource.InferTotalBitrate();

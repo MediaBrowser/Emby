@@ -343,7 +343,7 @@ namespace Emby.Server.Implementations.Library
                 var tuple = GetProvider(request.OpenToken);
                 var provider = tuple.Item1;
 
-                var mediaSourceTuple = await provider.OpenMediaSource(tuple.Item2, request.EnableMediaProbe, cancellationToken).ConfigureAwait(false);
+                var mediaSourceTuple = await provider.OpenMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
 
                 var mediaSource = mediaSourceTuple.Item1;
 
@@ -389,19 +389,24 @@ namespace Emby.Server.Implementations.Library
 
         public async Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken)
         {
-            var mediaSource = await GetLiveStream(id, cancellationToken).ConfigureAwait(false);
+            var liveStreamInfo = await GetLiveStreamWithDirectStreamProvider(id, cancellationToken).ConfigureAwait(false);
 
-            var info = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
+            var mediaSource = liveStreamInfo.Item1;
+
+            if (liveStreamInfo.Item2 != null)
             {
-                MediaSource = mediaSource,
-                ExtractChapters = false,
-                MediaType = DlnaProfileType.Video
+                var info = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
+                {
+                    MediaSource = mediaSource,
+                    ExtractChapters = false,
+                    MediaType = DlnaProfileType.Video
 
-            }, cancellationToken).ConfigureAwait(false);
+                }, cancellationToken).ConfigureAwait(false);
 
-            mediaSource.MediaStreams = info.MediaStreams;
-            mediaSource.Container = info.Container;
-            mediaSource.Bitrate = info.Bitrate;
+                mediaSource.MediaStreams = info.MediaStreams;
+                mediaSource.Container = info.Container;
+                mediaSource.Bitrate = info.Bitrate;
+            }
 
             return mediaSource;
         }
