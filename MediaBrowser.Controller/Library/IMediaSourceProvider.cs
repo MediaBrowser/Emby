@@ -20,7 +20,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Opens the media source.
         /// </summary>
-        Task<Tuple<MediaSourceInfo,IDirectStreamProvider>> OpenMediaSource(string openToken, bool allowLiveStreamProbe, CancellationToken cancellationToken);
+        Task<Tuple<MediaSourceInfo,IDirectStreamProvider>> OpenMediaSource(string openToken, CancellationToken cancellationToken);
 
         /// <summary>
         /// Closes the media source.

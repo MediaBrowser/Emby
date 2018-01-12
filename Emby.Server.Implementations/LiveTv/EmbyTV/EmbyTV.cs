@@ -1599,7 +1599,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var seriesTimerId = timer.SeriesTimerId;
             var seriesTimer = _seriesTimerProvider.GetAll().FirstOrDefault(i => string.Equals(i.Id, seriesTimerId, StringComparison.OrdinalIgnoreCase));
 
-            if (seriesTimer == null || seriesTimer.KeepUpTo <= 1)
+            if (seriesTimer == null || seriesTimer.KeepUpTo <= 0)
             {
                 return;
             }

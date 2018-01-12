@@ -140,11 +140,6 @@ namespace MediaBrowser.Api
             var videosWithVersions = items.Where(i => i.MediaSourceCount > 1)
                 .ToList();
 
-            if (videosWithVersions.Count > 1)
-            {
-                throw new ArgumentException("Videos with sub-versions cannot be merged.");
-            }
-
             var primaryVersion = videosWithVersions.FirstOrDefault();
 
             if (primaryVersion == null)
@@ -185,10 +180,23 @@ namespace MediaBrowser.Api
                     Path = item.Path,
                     ItemId = item.Id
                 });
+
+                foreach (var linkedItem in item.LinkedAlternateVersions)
+                {
+                    if (!list.Any(i => string.Equals(i.Path, linkedItem.Path, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        list.Add(linkedItem);
+                    }
+                }
+
+                if (item.LinkedAlternateVersions.Length > 0)
+                {
+                    item.LinkedAlternateVersions = BaseItem.EmptyLinkedChildArray;
+                    item.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
+                }
             }
 
             primaryVersion.LinkedAlternateVersions = list.ToArray();
-
             primaryVersion.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
         }
     }
