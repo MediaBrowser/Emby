@@ -1243,7 +1243,7 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe";
                 info.ArchiveType = "7z";
                 info.Version = "20170308";
-                info.DownloadUrls = GetLinuxDownloadUrls();
+                info.DownloadUrls = new string[] { };
             }
             else if (EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows)
             {
@@ -1268,29 +1268,6 @@ namespace Emby.Server.Implementations
             }
 
             return info;
-        }
-
-        private string[] GetLinuxDownloadUrls()
-        {
-            Type t = Type.GetType("Mono.Runtime");
-            if (t != null)
-            {
-                switch (EnvironmentInfo.SystemArchitecture)
-                {
-                    case MediaBrowser.Model.System.Architecture.X64:
-                        return new[]
-                        {
-                        "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-64bit-static.7z"
-                    };
-                    case MediaBrowser.Model.System.Architecture.X86:
-                        return new[]
-                        {
-                        "https://embydata.com/downloads/ffmpeg/linux/ffmpeg-git-20170301-32bit-static.7z"
-                    };
-                }
-            }
-
-            return new string[] { };
         }
 
         /// <summary>

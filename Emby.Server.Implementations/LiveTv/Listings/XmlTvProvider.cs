@@ -59,7 +59,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             return _config.Configuration.PreferredMetadataLanguage;
         }
 
-        private async Task<string> GetXml(string path, CancellationToken cancellationToken)
+        private async Task<string> GetXml(ListingsProviderInfo info, string path, CancellationToken cancellationToken)
         {
             _logger.Info("xmltv path: {0}", path);
 
@@ -88,7 +88,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 // So we need to make sure the decompression method is set to gzip
                 EnableHttpCompression = true,
 
-                UserAgent = "Emby/3.0"
+                UserAgent = string.IsNullOrWhiteSpace(info.UserAgent) ? "Emby/3.0" : info.UserAgent
 
             }).ConfigureAwait(false);
 
@@ -181,7 +181,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
             _logger.Debug("Getting xmltv programs for channel {0}", channelId);
 
-            var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
+            var path = await GetXml(info, info.Path, cancellationToken).ConfigureAwait(false);
 
             _logger.Debug("Opening XmlTvReader for {0}", path);
 
@@ -302,7 +302,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         public async Task<List<ChannelInfo>> GetChannels(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
-            var path = await GetXml(info.Path, cancellationToken).ConfigureAwait(false);
+            var path = await GetXml(info, info.Path, cancellationToken).ConfigureAwait(false);
 
             _logger.Debug("Opening XmlTvReader for {0}", path);
 
