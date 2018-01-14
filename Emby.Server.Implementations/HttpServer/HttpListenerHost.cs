@@ -443,6 +443,13 @@ namespace Emby.Server.Implementations.HttpServer
             {
                 if (urlString.IndexOf("https://", StringComparison.OrdinalIgnoreCase) == -1)
                 {
+                    // These are hacks, but if these ever occur on ipv6 in the local network they could be incorrectly redirected
+                    if (urlString.IndexOf("system/ping", StringComparison.OrdinalIgnoreCase) != -1 ||
+                        urlString.IndexOf("dlna/", StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        return true;
+                    }
+
                     if (!_networkManager.IsInLocalNetwork(remoteIp))
                     {
                         return false;
