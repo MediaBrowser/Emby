@@ -23,7 +23,7 @@
   "LabelAddConnectSupporterHelp": "To add a user who isn't listed, you'll need to first link their account to Emby Connect from their user profile page.",
   "LabelPinCode": "Pin code:",
   "DeleteMedia": "Delete media",
-  "AllowRemoteAccess": "Allow remote access",
+  "AllowRemoteAccess": "Allow remote connections to this Emby Server.",
   "AllowRemoteAccessHelp": "If unchecked, all remote connections will be blocked.",
   "HeaderSync": "Sync",
   "HeaderPlayAll": "Play All",
@@ -1760,5 +1760,8 @@
   "LabelSimultaneousConnectionLimit": "Simultaneous stream limit:",
   "SimultaneousConnectionLimitHelp": "The maximum number of allowed simultaneous streams. Enter 0 for no limit.",
   "LaunchWebAppOnStartup": "Launch the Emby web app in my web browser when Emby Server starts",
-  "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function."
+  "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
+  "LabelUserAgent": "User agent:",
+  "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
+  "HeaderConfigureRemoteAccess": "Configure Remote Access"
 }

@@ -46,7 +46,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var typeName = GetType().Name;
             Logger.Info("Opening " + typeName + " Live stream from {0}", url);
 
-            var response = await _httpClient.SendAsync(new HttpRequestOptions
+            var httpRequestOptions = new HttpRequestOptions
             {
                 Url = url,
                 CancellationToken = CancellationToken.None,
@@ -59,8 +59,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                 LogResponse = true,
                 LogResponseHeaders = true
+            };
 
-            }, "GET").ConfigureAwait(false);
+            foreach (var header in mediaSource.RequiredHttpHeaders)
+            {
+                httpRequestOptions.RequestHeaders[header.Key] = header.Value;
+            }
+
+            var response = await _httpClient.SendAsync(httpRequestOptions, "GET").ConfigureAwait(false);
 
             var extension = "ts";
             var requiresRemux = false;

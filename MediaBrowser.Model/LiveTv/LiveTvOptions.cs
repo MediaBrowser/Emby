@@ -48,6 +48,7 @@ namespace MediaBrowser.Model.LiveTv
         public bool EnableNewHdhrChannelIds { get; set; }
         public string Source { get; set; }
         public int TunerCount { get; set; }
+        public string UserAgent { get; set; }
 
         public TunerHostInfo()
         {
@@ -76,6 +77,7 @@ namespace MediaBrowser.Model.LiveTv
         public string MoviePrefix { get; set; }
         public bool EnableNewProgramIds { get; set; }
         public string PreferredLanguage { get; set; }
+        public string UserAgent { get; set; }
 
         public ListingsProviderInfo()
         {
