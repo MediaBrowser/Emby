@@ -59,7 +59,16 @@ namespace MediaBrowser.Providers.Manager
             DateTime? newDateModified = null;
             if (item.LocationType == LocationType.FileSystem)
             {
-                var file = refreshOptions.DirectoryService.GetFile(item.Path);
+                var file = null as FileSystemMetadata;
+                try
+                {
+                    file = refreshOptions.DirectoryService.GetFile(item.Path);
+                }
+                catch(Exception e)
+                {
+                    Logger.Debug("Path for {0} threw an exception!", item.Path);
+                    throw e;
+                }
                 if (file != null)
                 {
                     newDateModified = file.LastWriteTimeUtc;
