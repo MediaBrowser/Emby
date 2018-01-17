@@ -41,6 +41,19 @@ namespace MediaBrowser.Providers.Manager
             _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
 
+        private FileSystemMetadata TryGetFile(string path, IDirectoryService directoryService)
+        {
+            try
+            {
+                return directoryService.GetFile(path);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error getting file {0}", ex, path);
+                return null;
+            }
+        }
+
         public async Task<ItemUpdateType> RefreshMetadata(BaseItem item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
         {
             var itemOfType = (TItemType)item;
@@ -59,7 +72,7 @@ namespace MediaBrowser.Providers.Manager
             DateTime? newDateModified = null;
             if (item.LocationType == LocationType.FileSystem)
             {
-                var file = refreshOptions.DirectoryService.GetFile(item.Path);
+                var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
                 if (file != null)
                 {
                     newDateModified = file.LastWriteTimeUtc;

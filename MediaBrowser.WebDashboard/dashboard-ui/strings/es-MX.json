@@ -23,8 +23,8 @@
     "LabelAddConnectSupporterHelp": "Para agregar un usuario que no esta listado, necesita primero enlazar su cuenta a Emby Connect desde su pagina de perfil de usuario.",
     "LabelPinCode": "C\u00f3digo pin:",
     "DeleteMedia": "Eliminar medios",
-    "AllowRemoteAccess": "Allow remote connections to this Emby Server.",
-    "AllowRemoteAccessHelp": "If unchecked, all remote connections will be blocked.",
+    "AllowRemoteAccess": "Permitir conexiones remotas a este Servidor Emby",
+    "AllowRemoteAccessHelp": "Si se deshabilita, todas las conexiones remotas ser\u00e1n bloqueadas.",
     "HeaderSync": "Sincronizar",
     "HeaderPlayAll": "Reproducir Todo",
     "HeaderUpcomingNews": "Noticias Recientes",
@@ -65,7 +65,7 @@
     "FolderTypeMusicVideos": "Videos musicales",
     "FolderTypeGames": "Juegos",
     "FolderTypeBooks": "Libros",
-    "FolderTypeTvShows": "TV",
+    "FolderTypeTvShows": "Series de TV",
     "FolderTypeInherit": "Heredar",
     "LabelContentType": "Tipo de Contenido:",
     "TitleScheduledTasks": "Tareas Programadas",
@@ -1761,7 +1761,7 @@
     "SimultaneousConnectionLimitHelp": "El numero m\u00e1ximo de transmisiones simultaneas permitidas. Ingrese 0 para ilimitados.",
     "LaunchWebAppOnStartup": "Iniciar la aplicaci\u00f3n web de Emby en mi navegador web cuando se inicie el Servidor Emby",
     "LaunchWebAppOnStartupHelp": "Esto abrir\u00e1 tu navegador web predeterminado cuando el Servidor Emby se inicie. Esto no ocurrir\u00e1 cuando se use la opci\u00f3n de reiniciar servidor.",
-    "LabelUserAgent": "User agent:",
-    "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "LabelUserAgent": "Agente de usuario:",
+    "UserAgentHelp": "Suministre un agente de encabezado http personalizado, si fuera necesario.",
+    "HeaderConfigureRemoteAccess": "Configurar Acceso Remoto"
 }

@@ -4,6 +4,7 @@ using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Session;
+using System;
 
 namespace MediaBrowser.Model.Dto
 {
@@ -47,6 +48,8 @@ namespace MediaBrowser.Model.Dto
 
         public bool RequiresLooping { get; set; }
 
+        public bool SupportsProbing { get; set; }
+
         public VideoType? VideoType { get; set; }
 
         public IsoType? IsoType { get; set; }
@@ -76,6 +79,7 @@ namespace MediaBrowser.Model.Dto
             SupportsTranscoding = true;
             SupportsDirectStream = true;
             SupportsDirectPlay = true;
+            SupportsProbing = true;
         }
 
         public void InferTotalBitrate(bool force = false)
