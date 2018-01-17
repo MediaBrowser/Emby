@@ -471,7 +471,7 @@
     "RepeatMode": "Mode de r\u00e9p\u00e9tition",
     "RepeatOne": "R\u00e9p\u00e9ter un m\u00e9dia",
     "RepeatAll": "Tout r\u00e9p\u00e9ter",
-    "ConfirmEndPlayerSession": "Voulez-vous fermer Emby sur l'appareil ?",
+    "ConfirmEndPlayerSession": "Voulez-vous arr\u00eater Emby sur {0} ?",
     "Yes": "Oui",
     "No": "Non",
     "LiveTV": "TV en direct",
