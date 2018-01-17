@@ -23,8 +23,8 @@
     "LabelAddConnectSupporterHelp": "Pour ajouter un utilisateur non list\u00e9, vous devrez d'abord lier son compte \u00e0 Emby Connect depuis sa page de profil utilisateur.",
     "LabelPinCode": "Code PIN\u00a0:",
     "DeleteMedia": "Supprimer le m\u00e9dia",
-    "AllowRemoteAccess": "Allow remote connections to this Emby Server.",
-    "AllowRemoteAccessHelp": "If unchecked, all remote connections will be blocked.",
+    "AllowRemoteAccess": "Autoriser les connexions distantes \u00e0 ce serveur Emby.",
+    "AllowRemoteAccessHelp": "Si l'option est d\u00e9sactiv\u00e9e, toutes les connexions distantes seront bloqu\u00e9es.",
     "HeaderSync": "Synchroniser",
     "HeaderPlayAll": "Tout lire",
     "HeaderUpcomingNews": "Actualit\u00e9s \u00e0 venir",
@@ -611,7 +611,7 @@
     "LabelMusicStreamingTranscodingBitrateHelp": "Sp\u00e9cifiez le d\u00e9bit maximum pendant la diffusion de musique",
     "OptionIgnoreTranscodeByteRangeRequests": "Ignore les requ\u00eates de transcodage de plage d'octets",
     "OptionIgnoreTranscodeByteRangeRequestsHelp": "Si l'option est activ\u00e9e, ces requ\u00eates seront honor\u00e9es mais l'en-t\u00eate de plage d'octets sera ignor\u00e9.",
-    "LabelFriendlyName": "Surnom d'affichage",
+    "LabelFriendlyName": "Nom d'affichage :",
     "LabelManufacturer": "Constructeur",
     "LabelManufacturerUrl": "URL du constructeur",
     "LabelModelName": "Nom de mod\u00e8le",
@@ -1761,7 +1761,7 @@
     "SimultaneousConnectionLimitHelp": "Le nombre maximal de flux simultan\u00e9s autoris\u00e9s. Entrez 0 pour aucune limite.",
     "LaunchWebAppOnStartup": "Lancez l'application Web Emby dans mon navigateur lorsque le serveur Emby d\u00e9marre",
     "LaunchWebAppOnStartupHelp": "Cela ouvrira l'application Web dans votre navigateur par d\u00e9faut au d\u00e9marrage initial du serveur Emby. Cela ne se produira pas lors de l'utilisation de la fonction de red\u00e9marrage du serveur.",
-    "LabelUserAgent": "User agent:",
-    "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "LabelUserAgent": "User agent\u00a0:",
+    "UserAgentHelp": "Fournissez un en-t\u00eate http user agent personnalis\u00e9, si n\u00e9cessaire.",
+    "HeaderConfigureRemoteAccess": "Configurer l'acc\u00e8s distant"
 }
