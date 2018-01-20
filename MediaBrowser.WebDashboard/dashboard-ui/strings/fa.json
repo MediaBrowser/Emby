@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "\u0645\u0633\u06cc\u0631 \u0641\u0627\u06cc\u0644 \u0647\u0627\u06cc \u0645\u0648\u0642\u062a:",
     "LabelSyncTempPathHelp": "Specify a custom sync working folder. Converted media created during the sync process will be stored here.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Notifications",
     "LabelEnterConnectUserName": "Username or email:",
     "LabelEnterConnectUserNameHelp": "This is your Emby online account username or email.",

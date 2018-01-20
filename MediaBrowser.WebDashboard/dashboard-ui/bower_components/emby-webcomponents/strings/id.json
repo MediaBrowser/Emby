@@ -1,5 +1,6 @@
 {
     "HeaderFavoritePlaylists": "Favorite Playlists",
+    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Unlock this feature with a small one-time purchase, or with an active Emby Premiere subscription.",
     "MessageUnlockAppWithSupporter": "Unlock this feature with an active Emby Premiere subscription.",
     "MessageToValidateSupporter": "If you have an active Emby Premiere subscription, ensure you've setup Emby Premiere in your Emby Server Dashboard, which you can access by clicking Emby Premiere within the main menu.",
@@ -158,7 +159,7 @@
     "TryMultiSelect": "Try Multi-Select",
     "TryMultiSelectMessage": "To edit multiple media items, just click and hold any poster and select the items you want to manage. Try it!",
     "HeaderConfirmRecordingCancellation": "Confirm Recording Cancellation",
-    "MessageConfirmRecordingCancellation": "Are you sure you wish to cancel this recording?",
+    "MessageConfirmRecordingCancellation": "Cancel recording?",
     "Error": "Error",
     "VoiceInput": "Voice Input",
     "LabelContentType": "Tipe konten:",

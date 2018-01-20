@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Pfad f\u00f6r tempor\u00e4ri Date:",
     "LabelSyncTempPathHelp": "Gib en eigene Arbetsordner f\u00f6r d'Synchronisierig a. Konvertierti Medie werded w\u00e4hrend em Sync-Prozess det gspeichered.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Mitteilige",
     "LabelEnterConnectUserName": "Username or email:",
     "LabelEnterConnectUserNameHelp": "This is your Emby online account username or email.",

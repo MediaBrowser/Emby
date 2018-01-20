@@ -1726,7 +1726,7 @@
     "LabelEnableHardwareDecodingFor": "Enable hardware decoding for:",
     "EnableHardwareEncoding": "Enable hardware encoding",
     "Rate": "Rate",
-    "ButtonScanAllLibraries": "Scan All Libraries",
+    "ButtonScanAllLibraries": "Preh\u013eada\u0165 v\u0161etky kni\u017enice",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
     "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",

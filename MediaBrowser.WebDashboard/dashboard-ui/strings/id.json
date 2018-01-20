@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Alamat file sementara:",
     "LabelSyncTempPathHelp": "Tentukan sendiri folder kerja sinkron. Media dikonversi diciptakan selama proses sinkronisasi akan disimpan di sini.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Notifications",
     "LabelEnterConnectUserName": "Username atau email:",
     "LabelEnterConnectUserNameHelp": "Ini adalah username atau email akun online Emby Anda.",

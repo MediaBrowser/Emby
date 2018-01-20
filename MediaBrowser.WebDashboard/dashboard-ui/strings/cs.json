@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Slo\u017eka pro do\u010dasn\u00e9 soubory:",
     "LabelSyncTempPathHelp": "Zadejte vlastn\u00ed synchroniza\u010dn\u00ed pracovn\u00ed slo\u017eku. P\u0159eveden\u00e9 m\u00e9dia vytvo\u0159en\u00e9 b\u011bhem synchroniza\u010dn\u00edho procesu zde budou ulo\u017eeny.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Ozn\u00e1men\u00ed",
     "LabelEnterConnectUserName": "U\u017eivatelsk\u00e9 jm\u00e9no nebo email:",
     "LabelEnterConnectUserNameHelp": "Toto je va\u0161e u\u017eivatelsk\u00e9 jm\u00e9no nebo email pro v\u00e1\u0161 online Emby \u00fa\u010det.",
