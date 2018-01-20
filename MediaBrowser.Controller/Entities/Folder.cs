@@ -907,13 +907,6 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            // Apply person filter
-            if (query.ItemIdsFromPersonFilters != null)
-            {
-                Logger.Debug("Query requires post-filtering due to ItemIdsFromPersonFilters");
-                return true;
-            }
-
             if (UserViewBuilder.CollapseBoxSetItems(query, this, query.User, ConfigurationManager))
             {
                 Logger.Debug("Query requires post-filtering due to CollapseBoxSetItems");

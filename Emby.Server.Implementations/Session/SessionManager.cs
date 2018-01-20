@@ -214,6 +214,30 @@ namespace Emby.Server.Implementations.Session
             info.Dispose();
         }
 
+        public void UpdateDeviceName(string sessionId, string deviceName)
+        {
+            var session = GetSession(sessionId);
+
+            var key = GetSessionKey(session.Client, session.DeviceId);
+
+            if (session != null)
+            {
+                var deviceId = session.DeviceId;
+
+                if (!string.IsNullOrEmpty(deviceId))
+                {
+                    var device = _deviceManager.GetDevice(deviceId);
+
+                    if (device != null)
+                    {
+                        device = _deviceManager.RegisterDevice(device.Id, deviceName, device.AppName, device.AppVersion, device.LastUserId, device.LastUserName);
+
+                        session.DeviceName = device.Name;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Logs the user activity.
         /// </summary>
@@ -246,10 +270,6 @@ namespace Emby.Server.Implementations.Session
             if (string.IsNullOrEmpty(deviceId))
             {
                 throw new ArgumentNullException("deviceId");
-            }
-            if (string.IsNullOrEmpty(deviceName))
-            {
-                throw new ArgumentNullException("deviceName");
             }
 
             var activityDate = DateTime.UtcNow;
@@ -434,10 +454,11 @@ namespace Emby.Server.Implementations.Session
                 CheckDisposed();
 
                 SessionInfo sessionInfo;
-                DeviceInfo device = null;
 
                 if (!_activeConnections.TryGetValue(key, out sessionInfo))
                 {
+                    DeviceInfo device = null;
+
                     sessionInfo = new SessionInfo(this, _logger)
                     {
                         Client = appName,
@@ -446,39 +467,36 @@ namespace Emby.Server.Implementations.Session
                         Id = key.GetMD5().ToString("N")
                     };
 
-                    sessionInfo.DeviceName = deviceName;
                     sessionInfo.UserId = userId;
                     sessionInfo.UserName = username;
                     sessionInfo.RemoteEndPoint = remoteEndPoint;
 
-                    OnSessionStarted(sessionInfo);
-
-                    _activeConnections.TryAdd(key, sessionInfo);
+                    if (string.IsNullOrWhiteSpace(deviceName))
+                    {
+                        deviceName = "Network Device";
+                    }
 
                     if (!string.IsNullOrEmpty(deviceId))
                     {
                         var userIdString = userId.HasValue ? userId.Value.ToString("N") : null;
-                        device = _deviceManager.RegisterDevice(deviceId, deviceName, appName, appVersion, userIdString);
+                        device = _deviceManager.RegisterDevice(deviceId, deviceName, appName, appVersion, userIdString, username);
                     }
-                }
 
-                device = device ?? _deviceManager.GetDevice(deviceId);
-
-                if (device == null)
-                {
-                    var userIdString = userId.HasValue ? userId.Value.ToString("N") : null;
-                    device = _deviceManager.RegisterDevice(deviceId, deviceName, appName, appVersion, userIdString);
-                }
-
-                if (device != null)
-                {
-                    if (!string.IsNullOrEmpty(device.CustomName))
+                    if (device != null)
                     {
-                        deviceName = device.CustomName;
+                        if (!string.IsNullOrEmpty(device.CustomName))
+                        {
+                            deviceName = device.CustomName;
+                        }
                     }
+
+                    sessionInfo.DeviceName = deviceName;
+
+                    _activeConnections.TryAdd(key, sessionInfo);
+
+                    OnSessionStarted(sessionInfo);
                 }
 
-                sessionInfo.DeviceName = deviceName;
                 sessionInfo.UserId = userId;
                 sessionInfo.UserName = username;
                 sessionInfo.RemoteEndPoint = remoteEndPoint;
@@ -1445,7 +1463,7 @@ namespace Emby.Server.Implementations.Session
 
                 if (!string.IsNullOrWhiteSpace(request.DeviceId))
                 {
-                    if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), request.DeviceId))
+                    if (!_deviceManager.CanAccessDevice(user, request.DeviceId))
                     {
                         throw new SecurityException("User is not allowed access from this device.");
                     }

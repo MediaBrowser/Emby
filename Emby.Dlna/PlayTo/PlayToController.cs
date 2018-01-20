@@ -262,7 +262,14 @@ namespace Emby.Dlna.PlayTo
 
             try
             {
-                var info = StreamParams.ParseFromUrl(e.MediaInfo.Url, _libraryManager, _mediaSourceManager);
+                var mediaUrl = e.MediaInfo.Url;
+
+                if (string.IsNullOrWhiteSpace(mediaUrl))
+                {
+                    return;
+                }
+
+                var info = StreamParams.ParseFromUrl(mediaUrl, _libraryManager, _mediaSourceManager);
 
                 if (info.Item != null)
                 {

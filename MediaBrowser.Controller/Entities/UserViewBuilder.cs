@@ -396,7 +396,7 @@ namespace MediaBrowser.Controller.Entities
 
             query.OrderBy = new Tuple<string, SortOrder>[] { };
 
-            return PostFilterAndSort(items, parent, null, query, false, true);
+            return PostFilterAndSort(items, parent, null, query, _libraryManager, _config, false, true);
         }
 
         private QueryResult<BaseItem> GetFavoriteSongs(Folder parent, User user, InternalItemsQuery query)
@@ -745,16 +745,6 @@ namespace MediaBrowser.Controller.Entities
             return Filter(item, query.User, query, BaseItem.UserDataManager, BaseItem.LibraryManager);
         }
 
-        private QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items,
-            BaseItem queryParent,
-            int? totalRecordLimit,
-            InternalItemsQuery query,
-            bool collapseBoxSetItems,
-            bool enableSorting)
-        {
-            return PostFilterAndSort(items, queryParent, totalRecordLimit, query, _libraryManager, _config, collapseBoxSetItems, enableSorting);
-        }
-
         public static QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items,
             BaseItem queryParent,
             int? totalRecordLimit,
@@ -765,10 +755,6 @@ namespace MediaBrowser.Controller.Entities
             bool enableSorting)
         {
             var user = query.User;
-
-            items = FilterVirtualEpisodes(items,
-                query.IsMissing,
-                query.IsUnaired);
 
             if (collapseBoxSetItems && user != null)
             {
@@ -1050,49 +1036,11 @@ namespace MediaBrowser.Controller.Entities
             return true;
         }
 
-        private static IEnumerable<BaseItem> FilterVirtualEpisodes(
-            IEnumerable<BaseItem> items,
-            bool? isMissing,
-            bool? isUnaired)
-        {
-            if (isMissing.HasValue)
-            {
-                var val = isMissing.Value;
-                items = items.Where(i =>
-                {
-                    var e = i as Episode;
-                    if (e != null)
-                    {
-                        return e.IsMissingEpisode == val;
-                    }
-                    return true;
-                });
-            }
-
-            if (isUnaired.HasValue)
-            {
-                var val = isUnaired.Value;
-                items = items.Where(i =>
-                {
-                    var e = i as Episode;
-                    if (e != null)
-                    {
-                        return e.IsUnaired == val;
-                    }
-                    return true;
-                });
-            }
-
-            return items;
-        }
-
         public static QueryResult<BaseItem> SortAndPage(IEnumerable<BaseItem> items,
             int? totalRecordLimit,
             InternalItemsQuery query,
             ILibraryManager libraryManager, bool enableSorting)
         {
-            items = items.DistinctBy(i => i.GetPresentationUniqueKey(), StringComparer.OrdinalIgnoreCase);
-
             if (query.OrderBy.Length > 0)
             {
                 items = libraryManager.Sort(items, query.User, query.OrderBy);
@@ -1119,41 +1067,6 @@ namespace MediaBrowser.Controller.Entities
 
         public static bool Filter(BaseItem item, User user, InternalItemsQuery query, IUserDataManager userDataManager, ILibraryManager libraryManager)
         {
-            if (query.ItemIdsFromPersonFilters == null)
-            {
-                if (query.PersonIds.Length > 0)
-                {
-                    var names = query.PersonIds
-                        .Select(libraryManager.GetItemById)
-                        .Select(i => i == null ? null : i.Name)
-                        .Where(i => !string.IsNullOrWhiteSpace(i))
-                        .ToList();
-
-                    var itemIdList = new List<Guid>();
-                    foreach (var name in names)
-                    {
-                        itemIdList.AddRange(libraryManager.GetItemIds(new InternalItemsQuery
-                        {
-                            Person = name
-                        }));
-                    }
-                    query.ItemIdsFromPersonFilters = itemIdList;
-                }
-
-                // Apply person filter
-                else if (!string.IsNullOrWhiteSpace(query.Person))
-                {
-                    var itemIdList = new List<Guid>();
-
-                    itemIdList.AddRange(libraryManager.GetItemIds(new InternalItemsQuery
-                    {
-                        Person = query.Person,
-                        PersonTypes = query.PersonTypes
-                    }));
-                    query.ItemIdsFromPersonFilters = itemIdList;
-                }
-            }
-
             if (query.MediaTypes.Length > 0 && !query.MediaTypes.Contains(item.MediaType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
             {
                 return false;
@@ -1517,15 +1430,6 @@ namespace MediaBrowser.Controller.Entities
             if (query.ItemIds.Length > 0)
             {
                 if (!query.ItemIds.Contains(item.Id.ToString("N"), StringComparer.OrdinalIgnoreCase))
-                {
-                    return false;
-                }
-            }
-
-            // Apply person filter
-            if (query.ItemIdsFromPersonFilters != null)
-            {
-                if (!query.ItemIdsFromPersonFilters.Contains(item.Id))
                 {
                     return false;
                 }

@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Temporary file path:",
     "LabelSyncTempPathHelp": "Specify a custom sync working folder. Converted media created during the sync process will be stored here.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "\u05d4\u05ea\u05e8\u05d0\u05d4",
     "LabelEnterConnectUserName": "\u05e9\u05dd \u05de\u05e9\u05ea\u05de\u05e9 \u05d0\u05d5 \u05d3\u05d5\u05d0\"\u05dc",
     "LabelEnterConnectUserNameHelp": "This is your Emby online account username or email.",

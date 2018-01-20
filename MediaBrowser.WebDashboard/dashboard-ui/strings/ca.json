@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Directori de fitxers temporals:",
     "LabelSyncTempPathHelp": "Especifica un directori de treball personalitzat per al sync. Els multim\u00e8dia convertits durant el proc\u00e9s de sincronitzaci\u00f3 es desaran aqu\u00ed.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Notificacions",
     "LabelEnterConnectUserName": "Nom d'usuari o e-mail:",
     "LabelEnterConnectUserNameHelp": "Aquest \u00e9s l'usuari o e-mail  del teu compte en l\u00ednia d'Emby.",

@@ -1,5 +1,6 @@
 {
     "HeaderFavoritePlaylists": "Favorite Playlists",
+    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un petit achat unique ou avec un abonnement Emby Premiere actif.",
     "MessageUnlockAppWithSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un abonnement Emby Premi\u00e8re actif.",
     "MessageToValidateSupporter": "Si vous avez un abonnement Emby Premi\u00e8re actif, assurez-vous d'avoir install\u00e9 Emby Premi\u00e8re sur le tableau de bord de votre serveur Emby, auquel vous pouvez acc\u00e9der en cliquant sur Emby Premi\u00e8re dans le menu principal.",
@@ -158,7 +159,7 @@
     "TryMultiSelect": "Try Multi-Select",
     "TryMultiSelectMessage": "To edit multiple media items, just click and hold any poster and select the items you want to manage. Try it!",
     "HeaderConfirmRecordingCancellation": "Confirm Recording Cancellation",
-    "MessageConfirmRecordingCancellation": "Are you sure you wish to cancel this recording?",
+    "MessageConfirmRecordingCancellation": "Cancel recording?",
     "Error": "Error",
     "VoiceInput": "Voice Input",
     "LabelContentType": "Content type:",

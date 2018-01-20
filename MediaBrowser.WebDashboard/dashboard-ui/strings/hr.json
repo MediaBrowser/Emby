@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Privremena putanja datoteka:",
     "LabelSyncTempPathHelp": "Odredite prilago\u0111eni sinkronizacijski radni direktorij. Pretvoren medij stvorene tijekom postupka sinkronizacije biti \u0107e pohranjen ovdje.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Obavijesti",
     "LabelEnterConnectUserName": "Korisni\u010dko ime ili email:",
     "LabelEnterConnectUserNameHelp": "Ovo je va\u0161e korisni\u010dko ime ili email Emby online ra\u010duna.",

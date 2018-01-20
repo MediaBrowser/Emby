@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "Sti for midlertidige filer:",
     "LabelSyncTempPathHelp": "Specificer en brugerdefineret synkroniserings arbejds-mappe. Konverterede filer vil under synkroniseringsprocessen blive gemt her.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Underretninger",
     "LabelEnterConnectUserName": "Brugernavn eller email:",
     "LabelEnterConnectUserNameHelp": "Dette er dit Emby onlinekonto brugernavn eller email.",

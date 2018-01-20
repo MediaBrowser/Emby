@@ -169,6 +169,7 @@ namespace Emby.Server.Implementations.Devices
                             statement.TryBind("@ReportedName", entry.ReportedName);
                             statement.TryBind("@CustomName", entry.CustomName);
                             statement.TryBind("@CameraUploadPath", entry.CameraUploadPath);
+                            statement.TryBind("@LastUserId", entry.LastUserId);
                             statement.TryBind("@LastUserName", entry.LastUserName);
                             statement.TryBind("@AppName", entry.AppName);
                             statement.TryBind("@AppVersion", entry.AppVersion);

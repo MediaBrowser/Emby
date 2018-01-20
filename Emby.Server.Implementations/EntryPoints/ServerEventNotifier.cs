@@ -173,7 +173,18 @@ namespace Emby.Server.Implementations.EntryPoints
 
         private async void SendMessageToUserSession<T>(User user, string name, T data)
         {
-            await _sessionManager.SendMessageToUserSessions(new List<string> { user.Id.ToString("N") }, name, data, CancellationToken.None);
+            try
+            {
+                await _sessionManager.SendMessageToUserSessions(new List<string> { user.Id.ToString("N") }, name, data, CancellationToken.None);
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                //Logger.ErrorException("Error sending message", ex);
+            }
         }
 
         /// <summary>

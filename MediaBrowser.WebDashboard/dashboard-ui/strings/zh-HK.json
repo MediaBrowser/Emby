@@ -53,7 +53,7 @@
     "LabelSyncTempPath": "\u81e8\u6642\u6587\u4ef6\u7684\u8def\u5f91\uff1a",
     "LabelSyncTempPathHelp": "\u9078\u64c7\u81ea\u5b9a\u540c\u6b65\u5de5\u4f5c\u7684\u6587\u4ef6\u593e\u3002\u5728\u540c\u6b65\u904e\u7a0b\u4e2d\u5efa\u7acb\u7684\u8f49\u63db\u5a92\u9ad4\u5c07\u88ab\u5b58\u653e\u5230\u9019\u88e1\u3002",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "\u901a\u77e5",
     "LabelEnterConnectUserName": "\u7528\u6236\u540d\u6216\u96fb\u5b50\u90f5\u4ef6\uff1a",
     "LabelEnterConnectUserNameHelp": "\u9019\u662f\u60a8 Emby \u5728\u7dda\u5e33\u6236\u7684\u7528\u6236\u540d\u6216\u96fb\u5b50\u90f5\u4ef6\u3002",
