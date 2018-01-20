@@ -1137,6 +1137,12 @@ namespace Emby.Dlna.PlayTo
 
         private void OnPlaybackProgress(uBaseObject mediaInfo)
         {
+            var mediaUrl = mediaInfo.Url;
+            if (string.IsNullOrWhiteSpace(mediaUrl))
+            {
+                return;
+            }
+
             if (PlaybackProgress != null)
             {
                 PlaybackProgress.Invoke(this, new PlaybackProgressEventArgs

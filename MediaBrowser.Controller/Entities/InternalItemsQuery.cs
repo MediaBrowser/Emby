@@ -108,7 +108,6 @@ namespace MediaBrowser.Controller.Entities
 
         public string[] ChannelIds { get; set; }
 
-        internal List<Guid> ItemIdsFromPersonFilters { get; set; }
         public int? ParentIndexNumber { get; set; }
         public int? ParentIndexNumberNotEquals { get; set; }
         public int? IndexNumber { get; set; }

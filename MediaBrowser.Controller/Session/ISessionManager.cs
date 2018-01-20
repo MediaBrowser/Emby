@@ -84,6 +84,8 @@ namespace MediaBrowser.Controller.Session
         /// <exception cref="System.ArgumentNullException">user</exception>
         Task<SessionInfo> LogSessionActivity(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user);
 
+        void UpdateDeviceName(string sessionId, string reportedDeviceName);
+
         /// <summary>
         /// Used to report that playback has started for an item
         /// </summary>

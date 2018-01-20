@@ -124,7 +124,16 @@ namespace Rssdp.Infrastructure
                 lock (_BroadcastListenSocketSynchroniser)
                 {
                     if (_BroadcastListenSocket == null)
-                        _BroadcastListenSocket = ListenForBroadcastsAsync();
+                    {
+                        try
+                        {
+                            _BroadcastListenSocket = ListenForBroadcastsAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error in BeginListeningForBroadcasts", ex);
+                        }
+                    }
                 }
             }
         }
@@ -272,6 +281,8 @@ namespace Rssdp.Infrastructure
                 {
                     var sockets = _sendSockets.ToList();
                     _sendSockets = null;
+
+                    _logger.Info("{0} Disposing {1} sendSockets", GetType().Name, sockets.Count);
 
                     foreach (var socket in sockets)
                     {

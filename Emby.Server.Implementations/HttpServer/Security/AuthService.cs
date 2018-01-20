@@ -122,7 +122,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
             if (!string.IsNullOrWhiteSpace(auth.DeviceId))
             {
-                if (!DeviceManager.CanAccessDevice(user.Id.ToString("N"), auth.DeviceId))
+                if (!DeviceManager.CanAccessDevice(user, auth.DeviceId))
                 {
                     throw new SecurityException("User is not allowed access from this device.")
                     {

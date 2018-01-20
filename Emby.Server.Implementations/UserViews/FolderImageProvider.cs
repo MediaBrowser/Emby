@@ -29,14 +29,20 @@ namespace Emby.Server.Implementations.Photos
 
         protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
-            return _libraryManager.GetItemList(new InternalItemsQuery
+            var items = _libraryManager.GetItemList(new InternalItemsQuery
             {
                 Parent = item,
-                GroupByPresentationUniqueKey = false,
                 DtoOptions = new DtoOptions(true),
                 ImageTypes = new ImageType[] { ImageType.Primary },
-                OrderBy = new System.Tuple<string, SortOrder>[] { new System.Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
+                OrderBy = new System.Tuple<string, SortOrder>[] 
+                {
+                    new System.Tuple<string, SortOrder>(ItemSortBy.IsFolder, SortOrder.Ascending),
+                    new System.Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
+                },
+                Limit = 1
             });
+
+            return items;
         }
 
         protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
@@ -46,22 +52,7 @@ namespace Emby.Server.Implementations.Photos
 
         protected override bool Supports(BaseItem item)
         {
-            if (item is PhotoAlbum || item is MusicAlbum)
-            {
-                return true;
-            }
-
-            if (item.GetType() == typeof(Folder))
-            {
-                var folder = item as Folder;
-                if (folder.IsTopParent)
-                {
-                    return false;
-                }
-                return true;
-            }
-
-            return false;
+            return item is T;
         }
 
         protected override bool HasChangedByDate(BaseItem item, ItemImageInfo image)
@@ -80,6 +71,24 @@ namespace Emby.Server.Implementations.Photos
         public FolderImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths, IImageProcessor imageProcessor, ILibraryManager libraryManager)
             : base(fileSystem, providerManager, applicationPaths, imageProcessor, libraryManager)
         {
+        }
+
+        protected override bool Supports(BaseItem item)
+        {
+            if (item is PhotoAlbum || item is MusicAlbum)
+            {
+                return false;
+            }
+
+            var folder = item as Folder;
+            if (folder != null)
+            {
+                if (folder.IsTopParent)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

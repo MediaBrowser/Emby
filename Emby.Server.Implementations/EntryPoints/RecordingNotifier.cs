@@ -60,6 +60,10 @@ namespace Emby.Server.Implementations.EntryPoints
             {
                 await _sessionManager.SendMessageToUserSessions<TimerEventInfo>(users, name, info, CancellationToken.None);
             }
+            catch (ObjectDisposedException)
+            {
+
+            }
             catch (Exception ex)
             {
                 _logger.ErrorException("Error sending message", ex);

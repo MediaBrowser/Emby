@@ -361,7 +361,7 @@ namespace MediaBrowser.Api.Session
 
                     if (!string.IsNullOrWhiteSpace(deviceId))
                     {
-                        if (!_deviceManager.CanAccessDevice(user.Id.ToString("N"), deviceId))
+                        if (!_deviceManager.CanAccessDevice(user, deviceId))
                         {
                             return false;
                         }

@@ -334,7 +334,7 @@ namespace MediaBrowser.Api
 
                 if (!string.IsNullOrWhiteSpace(deviceId))
                 {
-                    users = users.Where(i => _deviceManager.CanAccessDevice(i.Id.ToString("N"), deviceId));
+                    users = users.Where(i => _deviceManager.CanAccessDevice(i, deviceId));
                 }
             }
 

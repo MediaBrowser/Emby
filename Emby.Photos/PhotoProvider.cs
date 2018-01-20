@@ -31,7 +31,7 @@ namespace Emby.Photos
         }
 
         // These are causing taglib to hang
-        private string[] _includextensions = new string[] { ".jpg", ".jpeg", ".png", ".tiff" };
+        private string[] _includextensions = new string[] { ".jpg", ".jpeg", ".png", ".tiff", ".cr2" };
 
         public Task<ItemUpdateType> FetchAsync(Photo item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
