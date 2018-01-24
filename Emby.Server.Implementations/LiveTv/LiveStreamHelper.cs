@@ -33,7 +33,7 @@ namespace Emby.Server.Implementations.LiveTv
             _appPaths = appPaths;
         }
 
-        public async Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, string cacheKey, int probeDelayMs, CancellationToken cancellationToken)
+        public async Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, string cacheKey, bool addProbeDelay, CancellationToken cancellationToken)
         {
             var originalRuntime = mediaSource.RunTimeTicks;
 
@@ -57,12 +57,14 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (mediaInfo == null)
             {
-                if (probeDelayMs > 0)
+                if (addProbeDelay && (mediaSource.AnalyzeDurationMs ?? 0) > 0)
                 {
-                    await Task.Delay(probeDelayMs, cancellationToken).ConfigureAwait(false);
+                    var delayMs = mediaSource.AnalyzeDurationMs ?? 0;
+                    delayMs = Math.Max(4000, delayMs);
+                    await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
                 }
 
-                mediaSource.AnalyzeDurationMs = 3000;
+                mediaSource.AnalyzeDurationMs = 4000;
 
                 mediaInfo = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
                 {
@@ -161,15 +163,15 @@ namespace Emby.Server.Implementations.LiveTv
                 videoStream.IsAVC = null;
             }
 
-            mediaSource.AnalyzeDurationMs = 3000;
+            mediaSource.AnalyzeDurationMs = 4000;
 
             // Try to estimate this
             mediaSource.InferTotalBitrate(true);
         }
 
-        public Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, int probeDelayMs, CancellationToken cancellationToken)
+        public Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, bool addProbeDelay, CancellationToken cancellationToken)
         {
-            return AddMediaInfoWithProbe(mediaSource, isAudio, null, probeDelayMs, cancellationToken);
+            return AddMediaInfoWithProbe(mediaSource, isAudio, null, addProbeDelay, cancellationToken);
         }
     }
 }

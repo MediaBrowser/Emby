@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.IO;
+using System.Linq;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -160,6 +162,17 @@ namespace MediaBrowser.Controller.LiveTv
         {
             var task = LiveTvManager.DeleteRecording(this);
             Task.WaitAll(task);
+        }
+
+        public override IEnumerable<FileSystemMetadata> GetDeletePaths()
+        {
+            return new[] {
+                new FileSystemMetadata
+                {
+                    FullName = Path,
+                    IsDirectory = IsFolder
+                }
+            }.Concat(GetLocalMetadataFilesToDelete());
         }
     }
 }

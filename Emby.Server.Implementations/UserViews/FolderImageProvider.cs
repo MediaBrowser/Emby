@@ -29,7 +29,7 @@ namespace Emby.Server.Implementations.Photos
 
         protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
-            var items = _libraryManager.GetItemList(new InternalItemsQuery
+            return _libraryManager.GetItemList(new InternalItemsQuery
             {
                 Parent = item,
                 DtoOptions = new DtoOptions(true),
@@ -41,8 +41,6 @@ namespace Emby.Server.Implementations.Photos
                 },
                 Limit = 1
             });
-
-            return items;
         }
 
         protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)

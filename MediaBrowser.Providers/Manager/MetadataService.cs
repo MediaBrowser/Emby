@@ -504,7 +504,7 @@ namespace MediaBrowser.Providers.Manager
             var originalPremiereDate = item.PremiereDate;
             var originalProductionYear = item.ProductionYear;
 
-            if (date > DateTime.MinValue)
+            if (date > DateTime.MinValue && date < DateTime.MaxValue)
             {
                 item.PremiereDate = date;
                 item.ProductionYear = date.Year;

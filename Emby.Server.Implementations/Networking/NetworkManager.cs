@@ -20,6 +20,7 @@ namespace Emby.Server.Implementations.Networking
         protected ILogger Logger { get; private set; }
 
         public event EventHandler NetworkChanged;
+        public Func<string[]> LocalSubnetsFn { get; set; }
 
         public NetworkManager(ILogger logger, IEnvironmentInfo environment)
         {
@@ -126,6 +127,11 @@ namespace Emby.Server.Implementations.Networking
 
         public bool IsInPrivateAddressSpace(string endpoint)
         {
+            return IsInPrivateAddressSpace(endpoint, true);
+        }
+
+        private bool IsInPrivateAddressSpace(string endpoint, bool checkSubnets)
+        {
             if (string.Equals(endpoint, "::1", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
@@ -152,12 +158,20 @@ namespace Emby.Server.Implementations.Networking
                 return Is172AddressPrivate(endpoint);
             }
 
-            return endpoint.StartsWith("localhost", StringComparison.OrdinalIgnoreCase) ||
+            if (endpoint.StartsWith("localhost", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("127.", StringComparison.OrdinalIgnoreCase) ||
                 endpoint.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) ||
-                endpoint.StartsWith("169.", StringComparison.OrdinalIgnoreCase) ||
-                //endpoint.StartsWith("10.", StringComparison.OrdinalIgnoreCase) ||
-                IsInPrivateAddressSpaceAndLocalSubnet(endpoint);
+                endpoint.StartsWith("169.", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (checkSubnets && IsInPrivateAddressSpaceAndLocalSubnet(endpoint))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool IsInPrivateAddressSpaceAndLocalSubnet(string endpoint)
@@ -244,6 +258,23 @@ namespace Emby.Server.Implementations.Networking
             return IsInLocalNetworkInternal(endpoint, true);
         }
 
+        private bool IsInConfiguredLocalSubnets(IPAddress address, string[] subnets)
+        {
+            var addressString = address.ToString();
+
+            foreach (var subnet in subnets)
+            {
+                var normalizedSubnet = subnet.Trim();
+
+                if (string.Equals(normalizedSubnet, addressString, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return IsInPrivateAddressSpace(addressString, false);
+        }
+
         public bool IsInLocalNetworkInternal(string endpoint, bool resolveHost)
         {
             if (string.IsNullOrWhiteSpace(endpoint))
@@ -254,13 +285,23 @@ namespace Emby.Server.Implementations.Networking
             IPAddress address;
             if (IPAddress.TryParse(endpoint, out address))
             {
+                var localSubnetsFn = LocalSubnetsFn;
+                if (localSubnetsFn != null)
+                {
+                    var localSubnets = localSubnetsFn();
+                    if (localSubnets.Length > 0)
+                    {
+                        return IsInConfiguredLocalSubnets(address, localSubnets);
+                    }
+                }
+
                 var addressString = address.ToString();
 
                 int lengthMatch = 100;
                 if (address.AddressFamily == AddressFamily.InterNetwork)
                 {
                     lengthMatch = 4;
-                    if (IsInPrivateAddressSpace(addressString))
+                    if (IsInPrivateAddressSpace(addressString, true))
                     {
                         return true;
                     }
@@ -268,7 +309,7 @@ namespace Emby.Server.Implementations.Networking
                 else if (address.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     lengthMatch = 9;
-                    if (IsInPrivateAddressSpace(endpoint))
+                    if (IsInPrivateAddressSpace(endpoint, true))
                     {
                         return true;
                     }

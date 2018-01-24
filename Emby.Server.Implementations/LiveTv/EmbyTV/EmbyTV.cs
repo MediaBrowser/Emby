@@ -1180,7 +1180,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             };
 
             var isAudio = false;
-            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, 0, cancellationToken).ConfigureAwait(false);
+            await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _config.CommonApplicationPaths).AddMediaInfoWithProbe(stream, isAudio, false, cancellationToken).ConfigureAwait(false);
 
             return new List<MediaSourceInfo>
             {

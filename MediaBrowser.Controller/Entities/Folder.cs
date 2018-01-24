@@ -1021,15 +1021,11 @@ namespace MediaBrowser.Controller.Entities
 
             if (query.User == null)
             {
-                items = query.Recursive
-                   ? GetRecursiveChildren(filter)
-                   : Children.Where(filter);
+                items = Children.Where(filter);
             }
             else
             {
-                items = query.Recursive
-                   ? GetRecursiveChildren(user, query)
-                   : GetChildren(user, true).Where(filter);
+                items = GetChildren(user, true).Where(filter);
             }
 
             return PostFilterAndSort(items, query, true, true);
@@ -1037,7 +1033,20 @@ namespace MediaBrowser.Controller.Entities
 
         protected QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items, InternalItemsQuery query, bool collapseBoxSetItems, bool enableSorting)
         {
-            return UserViewBuilder.PostFilterAndSort(items, this, null, query, LibraryManager, ConfigurationManager, collapseBoxSetItems, enableSorting);
+            var user = query.User;
+
+            if (collapseBoxSetItems && user != null)
+            {
+                items = UserViewBuilder.CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager);
+            }
+
+            // This must be the last filter
+            if (!string.IsNullOrEmpty(query.AdjacentTo))
+            {
+                items = UserViewBuilder.FilterForAdjacency(items.ToList(), query.AdjacentTo);
+            }
+
+            return UserViewBuilder.SortAndPage(items, null, query, LibraryManager, enableSorting);
         }
 
         public virtual List<BaseItem> GetChildren(User user, bool includeLinkedChildren)

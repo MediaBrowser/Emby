@@ -140,14 +140,14 @@ namespace Emby.Server.Implementations.LiveTv
             var mediaSourceId = keys.Length >= 3 ? keys[2] : null;
             IDirectStreamProvider directStreamProvider = null;
 
-            int probeDelayMs = 0;
+            bool addProbeDelay = false;
 
             if (string.Equals(keys[0], typeof(LiveTvChannel).Name, StringComparison.OrdinalIgnoreCase))
             {
                 var info = await _liveTvManager.GetChannelStream(keys[1], mediaSourceId, cancellationToken).ConfigureAwait(false);
                 stream = info.Item1;
                 directStreamProvider = info.Item2;
-                probeDelayMs = 3000;
+                addProbeDelay = true;
             }
             else
             {
@@ -164,7 +164,7 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     var cacheKey = keys[1] + "-" + mediaSourceId;
 
-                    await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _appPaths).AddMediaInfoWithProbe(stream, isAudio, cacheKey, probeDelayMs, cancellationToken).ConfigureAwait(false);
+                    await new LiveStreamHelper(_mediaEncoder, _logger, _jsonSerializer, _appPaths).AddMediaInfoWithProbe(stream, isAudio, cacheKey, addProbeDelay, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

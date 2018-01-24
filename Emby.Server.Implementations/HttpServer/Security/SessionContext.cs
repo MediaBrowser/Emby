@@ -21,7 +21,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
             _sessionManager = sessionManager;
         }
 
-        public Task<SessionInfo> GetSession(IRequest requestContext)
+        public SessionInfo GetSession(IRequest requestContext)
         {
             var authorization = _authContext.GetAuthorizationInfo(requestContext);
 
@@ -36,19 +36,19 @@ namespace Emby.Server.Implementations.HttpServer.Security
             return info as AuthenticationInfo;
         }
 
-        public Task<SessionInfo> GetSession(object requestContext)
+        public SessionInfo GetSession(object requestContext)
         {
             return GetSession((IRequest)requestContext);
         }
 
-        public async Task<User> GetUser(IRequest requestContext)
+        public User GetUser(IRequest requestContext)
         {
-            var session = await GetSession(requestContext).ConfigureAwait(false);
+            var session = GetSession(requestContext);
 
             return session == null || !session.UserId.HasValue ? null : _userManager.GetUserById(session.UserId.Value);
         }
 
-        public Task<User> GetUser(object requestContext)
+        public User GetUser(object requestContext)
         {
             return GetUser((IRequest)requestContext);
         }

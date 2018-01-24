@@ -65,7 +65,7 @@ namespace MediaBrowser.Api
 
             return value.Split(new[] { delim }, StringSplitOptions.RemoveEmptyEntries);
         }
-        
+
         /// <summary>
         /// To the optimized result.
         /// </summary>
@@ -117,9 +117,9 @@ namespace MediaBrowser.Api
         /// Gets the session.
         /// </summary>
         /// <returns>SessionInfo.</returns>
-        protected async Task<SessionInfo> GetSession(ISessionContext sessionContext)
+        protected SessionInfo GetSession(ISessionContext sessionContext)
         {
-            var session = await sessionContext.GetSession(Request).ConfigureAwait(false);
+            var session = sessionContext.GetSession(Request);
 
             if (session == null)
             {
