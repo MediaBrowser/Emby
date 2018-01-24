@@ -143,8 +143,8 @@
     "OptionDirectors": "Regis\u00f8r",
     "OptionWriters": "Manus",
     "OptionProducers": "Produsent",
-    "HeaderResume": "Fortsette",
-    "HeaderContinueWatching": "Forsett",
+    "HeaderResume": "Fortsett",
+    "HeaderContinueWatching": "Forsett \u00e5 se p\u00e5",
     "HeaderNextUp": "Neste",
     "NoNextUpItemsMessage": "Ingen funnet. Begyn \u00e5 se det du har",
     "HeaderLatestEpisodes": "Siste episoder",
@@ -180,7 +180,7 @@
     "OptionBanner": "Banner",
     "OptionCriticRating": "Kritikervurdering",
     "OptionVideoBitrate": "Video bitrate",
-    "OptionResumable": "Kan fortsettes",
+    "OptionResumable": "Kan gjenopptas",
     "TabMyPlugins": "Mine programtillegg",
     "TabCatalog": "Katalog",
     "TitlePlugins": "Programtillegg",
@@ -444,7 +444,7 @@
     "LabelExternalDDNSHelp": "If you have a dynamic DNS enter it here. Emby apps will use it when connecting remotely. This field is required when used with a custom ssl certificate. Example: mydomain.com.",
     "LabelMinResumePercentage": "Minimum fortsettelsesprosent:",
     "LabelMaxResumePercentage": "Maksimum fortsettelsesprosent:",
-    "LabelMinResumeDuration": "Minmimum fortsettelses varighet (sekunder)",
+    "LabelMinResumeDuration": "Minmimum fortsettelsesvarighet (sekunder)",
     "LabelMinResumePercentageHelp": "Titler blir antatt som ikke avspilt hvis de stopper f\u00f8r denne tiden",
     "LabelMaxResumePercentageHelp": "Titler blir antatt som fullstendig avspilt hvis de stopper etter denne tiden",
     "LabelMinResumeDurationHelp": "Titler kortere enn dette kan ikke fortsettes.",
@@ -1763,5 +1763,7 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

@@ -1763,5 +1763,7 @@
     "LaunchWebAppOnStartupHelp": "\u8fd9\u5c06\u4f1a\u5728 Emby \u670d\u52a1\u5668\u6700\u521d\u542f\u52a8\u65f6\u81ea\u52a8\u4f7f\u7528\u4f60\u7684\u9ed8\u8ba4\u7f51\u9875\u6d4f\u89c8\u5668\u6253\u5f00 Emby \u7f51\u9875\u7aef\u5e94\u7528\u3002\u4f7f\u7528\u201c\u91cd\u542f\u670d\u52a1\u5668\u201d\u529f\u80fd\u5e76\u4e0d\u4f1a\u89e6\u53d1\u8fd9\u4e00\u52a8\u4f5c\u3002",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

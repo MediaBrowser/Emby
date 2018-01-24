@@ -1763,5 +1763,7 @@
     "LaunchWebAppOnStartupHelp": "Isto abrir\u00e1 a app web no seu browser quando o Servidor Emby iniciar. Isto n\u00e3o ocorrer\u00e1 quando reiniciar o servidor.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

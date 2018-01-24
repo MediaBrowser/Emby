@@ -1763,5 +1763,7 @@
     "LaunchWebAppOnStartupHelp": "Cela ouvrira l'application Web dans votre navigateur par d\u00e9faut au d\u00e9marrage initial du serveur Emby. Cela ne se produira pas lors de l'utilisation de la fonction de red\u00e9marrage du serveur.",
     "LabelUserAgent": "User agent\u00a0:",
     "UserAgentHelp": "Fournissez un en-t\u00eate http user agent personnalis\u00e9, si n\u00e9cessaire.",
-    "HeaderConfigureRemoteAccess": "Configurer l'acc\u00e8s distant"
+    "HeaderConfigureRemoteAccess": "Configurer l'acc\u00e8s distant",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }
