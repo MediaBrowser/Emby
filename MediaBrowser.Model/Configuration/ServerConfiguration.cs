@@ -177,6 +177,7 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableGroupingIntoCollections { get; set; }
         public bool DisplaySpecialsWithinSeasons { get; set; }
         public bool DisplayCollectionsView { get; set; }
+        public string[] LocalNetworkSubnets { get; set; }
         public string[] LocalNetworkAddresses { get; set; }
         public string[] CodecsUsed { get; set; }
         public bool EnableChannelView { get; set; }
@@ -195,6 +196,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         public ServerConfiguration()
         {
+            LocalNetworkSubnets = new string[] { };
             LocalNetworkAddresses = new string[] { };
             CodecsUsed = new string[] { };
             ImageExtractionTimeoutMs = 0;

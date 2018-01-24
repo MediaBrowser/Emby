@@ -146,7 +146,7 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             if (!string.IsNullOrWhiteSpace(useragent))
             {
-                return "-user-agent \"" + useragent + "\"";
+                return "-user_agent \"" + useragent + "\"";
             }
 
             return string.Empty;

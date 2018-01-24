@@ -833,7 +833,7 @@ namespace MediaBrowser.Api.LiveTv
 
         private void AssertUserCanManageLiveTv()
         {
-            var user = _sessionContext.GetUser(Request).Result;
+            var user = _sessionContext.GetUser(Request);
 
             if (user == null)
             {

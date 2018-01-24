@@ -221,6 +221,12 @@ namespace Emby.Dlna.Main
 
             foreach (var address in addresses)
             {
+                // TODO: Remove this condition on platforms that support it
+                //if (address.AddressFamily == IpAddressFamily.InterNetworkV6)
+                //{
+                //    continue;
+                //}
+
                 var fullService = "urn:schemas-upnp-org:device:MediaServer:1";
 
                 _logger.Info("Registering publisher for {0} on {1}", fullService, address.ToString());

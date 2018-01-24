@@ -93,8 +93,6 @@ namespace Emby.Server.Implementations.Session
 
         private IEnumerable<ISessionControllerFactory> _sessionFactories = new List<ISessionControllerFactory>();
 
-        private readonly SemaphoreSlim _sessionLock = new SemaphoreSlim(1, 1);
-
         public SessionManager(IUserDataManager userDataManager, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, ITimerFactory timerFactory)
         {
             _userDataManager = userDataManager;
@@ -160,12 +158,6 @@ namespace Emby.Server.Implementations.Session
 
         private void OnSessionStarted(SessionInfo info)
         {
-            EventHelper.QueueEventIfNotNull(SessionStarted, this, new SessionEventArgs
-            {
-                SessionInfo = info
-
-            }, _logger);
-
             if (!string.IsNullOrWhiteSpace(info.DeviceId))
             {
                 var capabilities = GetSavedCapabilities(info.DeviceId);
@@ -176,6 +168,12 @@ namespace Emby.Server.Implementations.Session
                     ReportCapabilities(info, capabilities, false);
                 }
             }
+
+            EventHelper.QueueEventIfNotNull(SessionStarted, this, new SessionEventArgs
+            {
+                SessionInfo = info
+
+            }, _logger);
         }
 
         private async void OnSessionEnded(SessionInfo info)
@@ -250,7 +248,7 @@ namespace Emby.Server.Implementations.Session
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
         /// <exception cref="System.UnauthorizedAccessException"></exception>
-        public async Task<SessionInfo> LogSessionActivity(string appName,
+        public SessionInfo LogSessionActivity(string appName,
             string appVersion,
             string deviceId,
             string deviceName,
@@ -273,7 +271,7 @@ namespace Emby.Server.Implementations.Session
             }
 
             var activityDate = DateTime.UtcNow;
-            var session = await GetSessionInfo(appName, appVersion, deviceId, deviceName, remoteEndPoint, user).ConfigureAwait(false);
+            var session = GetSessionInfo(appName, appVersion, deviceId, deviceName, remoteEndPoint, user);
             var lastActivityDate = session.LastActivityDate;
             session.LastActivityDate = activityDate;
 
@@ -313,28 +311,19 @@ namespace Emby.Server.Implementations.Session
             return session;
         }
 
-        public async void ReportSessionEnded(string sessionId)
+        public void ReportSessionEnded(string sessionId)
         {
             CheckDisposed();
-            await _sessionLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+            var session = GetSession(sessionId, false);
 
-            try
+            if (session != null)
             {
-                var session = GetSession(sessionId, false);
+                var key = GetSessionKey(session.Client, session.DeviceId);
 
-                if (session != null)
-                {
-                    var key = GetSessionKey(session.Client, session.DeviceId);
+                SessionInfo removed;
+                _activeConnections.TryRemove(key, out removed);
 
-                    SessionInfo removed;
-                    _activeConnections.TryRemove(key, out removed);
-
-                    OnSessionEnded(session);
-                }
-            }
-            finally
-            {
-                _sessionLock.Release();
+                OnSessionEnded(session);
             }
         }
 
@@ -434,7 +423,7 @@ namespace Emby.Server.Implementations.Session
         /// <param name="remoteEndPoint">The remote end point.</param>
         /// <param name="user">The user.</param>
         /// <returns>SessionInfo.</returns>
-        private async Task<SessionInfo> GetSessionInfo(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user)
+        private SessionInfo GetSessionInfo(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user)
         {
             CheckDisposed();
 
@@ -444,82 +433,75 @@ namespace Emby.Server.Implementations.Session
             }
             var key = GetSessionKey(appName, deviceId);
 
-            await _sessionLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
-
             var userId = user == null ? (Guid?)null : user.Id;
             var username = user == null ? null : user.Name;
 
-            try
+            CheckDisposed();
+
+            SessionInfo sessionInfo = _activeConnections.GetOrAdd(key, k =>
             {
-                CheckDisposed();
+                return CreateSession(k, appName, appVersion, deviceId, deviceName, remoteEndPoint, userId, username);
+            });
 
-                SessionInfo sessionInfo;
+            sessionInfo.UserId = userId;
+            sessionInfo.UserName = username;
+            sessionInfo.RemoteEndPoint = remoteEndPoint;
+            sessionInfo.ApplicationVersion = appVersion;
 
-                if (!_activeConnections.TryGetValue(key, out sessionInfo))
-                {
-                    DeviceInfo device = null;
-
-                    sessionInfo = new SessionInfo(this, _logger)
-                    {
-                        Client = appName,
-                        DeviceId = deviceId,
-                        ApplicationVersion = appVersion,
-                        Id = key.GetMD5().ToString("N")
-                    };
-
-                    sessionInfo.UserId = userId;
-                    sessionInfo.UserName = username;
-                    sessionInfo.RemoteEndPoint = remoteEndPoint;
-
-                    if (string.IsNullOrWhiteSpace(deviceName))
-                    {
-                        deviceName = "Network Device";
-                    }
-
-                    if (!string.IsNullOrEmpty(deviceId))
-                    {
-                        var userIdString = userId.HasValue ? userId.Value.ToString("N") : null;
-                        device = _deviceManager.RegisterDevice(deviceId, deviceName, appName, appVersion, userIdString, username);
-                    }
-
-                    if (device != null)
-                    {
-                        if (!string.IsNullOrEmpty(device.CustomName))
-                        {
-                            deviceName = device.CustomName;
-                        }
-                    }
-
-                    sessionInfo.DeviceName = deviceName;
-
-                    _activeConnections.TryAdd(key, sessionInfo);
-
-                    OnSessionStarted(sessionInfo);
-                }
-
-                sessionInfo.UserId = userId;
-                sessionInfo.UserName = username;
-                sessionInfo.RemoteEndPoint = remoteEndPoint;
-                sessionInfo.ApplicationVersion = appVersion;
-
-                if (!userId.HasValue)
-                {
-                    sessionInfo.AdditionalUsers = new SessionUserInfo[] { };
-                }
-
-                if (sessionInfo.SessionController == null)
-                {
-                    sessionInfo.SessionController = _sessionFactories
-                        .Select(i => i.GetSessionController(sessionInfo))
-                        .FirstOrDefault(i => i != null);
-                }
-
-                return sessionInfo;
-            }
-            finally
+            if (!userId.HasValue)
             {
-                _sessionLock.Release();
+                sessionInfo.AdditionalUsers = new SessionUserInfo[] { };
             }
+
+            if (sessionInfo.SessionController == null)
+            {
+                sessionInfo.SessionController = _sessionFactories
+                    .Select(i => i.GetSessionController(sessionInfo))
+                    .FirstOrDefault(i => i != null);
+            }
+
+            return sessionInfo;
+        }
+
+        private SessionInfo CreateSession(string key, string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, Guid? userId, string username)
+        {
+            DeviceInfo device = null;
+
+            var sessionInfo = new SessionInfo(this, _logger)
+            {
+                Client = appName,
+                DeviceId = deviceId,
+                ApplicationVersion = appVersion,
+                Id = key.GetMD5().ToString("N")
+            };
+
+            sessionInfo.UserId = userId;
+            sessionInfo.UserName = username;
+            sessionInfo.RemoteEndPoint = remoteEndPoint;
+
+            if (string.IsNullOrWhiteSpace(deviceName))
+            {
+                deviceName = "Network Device";
+            }
+
+            if (!string.IsNullOrEmpty(deviceId))
+            {
+                var userIdString = userId.HasValue ? userId.Value.ToString("N") : null;
+                device = _deviceManager.RegisterDevice(deviceId, deviceName, appName, appVersion, userIdString, username);
+            }
+
+            if (device != null)
+            {
+                if (!string.IsNullOrEmpty(device.CustomName))
+                {
+                    deviceName = device.CustomName;
+                }
+            }
+
+            sessionInfo.DeviceName = deviceName;
+
+            OnSessionStarted(sessionInfo);
+            return sessionInfo;
         }
 
         private List<User> GetUsers(SessionInfo session)
@@ -1488,13 +1470,12 @@ namespace Emby.Server.Implementations.Session
 
             EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
 
-            var session = await LogSessionActivity(request.App,
+            var session =  LogSessionActivity(request.App,
                 request.AppVersion,
                 request.DeviceId,
                 request.DeviceName,
                 request.RemoteEndPoint,
-                user)
-                .ConfigureAwait(false);
+                user);
 
             return new AuthenticationResult
             {
@@ -1637,14 +1618,14 @@ namespace Emby.Server.Implementations.Session
                 }
             }
 
-            EventHelper.FireEventIfNotNull(CapabilitiesChanged, this, new SessionEventArgs
-            {
-                SessionInfo = session
-
-            }, _logger);
-
             if (saveCapabilities)
             {
+                EventHelper.FireEventIfNotNull(CapabilitiesChanged, this, new SessionEventArgs
+                {
+                    SessionInfo = session
+
+                }, _logger);
+
                 try
                 {
                     SaveCapabilities(session.DeviceId, capabilities);
@@ -1833,7 +1814,7 @@ namespace Emby.Server.Implementations.Session
                 string.Equals(i.Client, client));
         }
 
-        public Task<SessionInfo> GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion)
+        public SessionInfo GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion)
         {
             if (info == null)
             {
@@ -1880,7 +1861,7 @@ namespace Emby.Server.Implementations.Session
             return LogSessionActivity(appName, appVersion, deviceId, deviceName, remoteEndpoint, user);
         }
 
-        public Task<SessionInfo> GetSessionByAuthenticationToken(string token, string deviceId, string remoteEndpoint)
+        public SessionInfo GetSessionByAuthenticationToken(string token, string deviceId, string remoteEndpoint)
         {
             var result = _authRepo.Get(new AuthenticationInfoQuery
             {
@@ -1891,7 +1872,7 @@ namespace Emby.Server.Implementations.Session
 
             if (info == null)
             {
-                return Task.FromResult<SessionInfo>(null);
+                return null;
             }
 
             return GetSessionByAuthenticationToken(info, deviceId, remoteEndpoint, null);

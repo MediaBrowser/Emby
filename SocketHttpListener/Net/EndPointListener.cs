@@ -142,7 +142,7 @@ namespace SocketHttpListener.Net
             }
         }
 
-        private async void ProcessAccept(Socket accepted)
+        private void ProcessAccept(Socket accepted)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace SocketHttpListener.Net
                     return;
                 }
 
-                HttpConnection conn = await HttpConnection.Create(_logger, accepted, listener, listener.secure, listener.cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment).ConfigureAwait(false);
+                HttpConnection conn = new HttpConnection(_logger, accepted, listener, secure, cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
 
                 //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
                 lock (listener.unregistered)

@@ -430,6 +430,7 @@ namespace Emby.Server.Implementations
             XmlSerializer = new MyXmlSerializer(fileSystem, logManager.GetLogger("XmlSerializer"));
 
             NetworkManager = networkManager;
+            networkManager.LocalSubnetsFn = GetConfiguredLocalSubnets;
             EnvironmentInfo = environmentInfo;
             SystemEvents = systemEvents;
             MemoryStreamFactory = new MemoryStreamProvider();
@@ -456,6 +457,11 @@ namespace Emby.Server.Implementations
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
 
             NetworkManager.NetworkChanged += NetworkManager_NetworkChanged;
+        }
+
+        private string[] GetConfiguredLocalSubnets()
+        {
+            return ServerConfigurationManager.Configuration.LocalNetworkSubnets;
         }
 
         private void NetworkManager_NetworkChanged(object sender, EventArgs e)

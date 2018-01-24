@@ -366,8 +366,8 @@ namespace Emby.Dlna.PlayTo
 
             if (!String.IsNullOrWhiteSpace(command.ControllingUserId))
             {
-                await _sessionManager.LogSessionActivity(_session.Client, _session.ApplicationVersion, _session.DeviceId,
-                        _session.DeviceName, _session.RemoteEndPoint, user).ConfigureAwait(false);
+                _sessionManager.LogSessionActivity(_session.Client, _session.ApplicationVersion, _session.DeviceId,
+                       _session.DeviceName, _session.RemoteEndPoint, user);
             }
 
             await PlayItems(playlist).ConfigureAwait(false);

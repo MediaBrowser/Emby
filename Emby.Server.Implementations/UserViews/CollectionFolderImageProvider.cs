@@ -31,59 +31,51 @@ namespace Emby.Server.Implementations.UserViews
         protected override List<BaseItem> GetItemsWithImages(BaseItem item)
         {
             var view = (CollectionFolder)item;
+            var viewType = view.CollectionType;
+
+            string[] includeItemTypes;
+
+            if (string.Equals(viewType, CollectionType.Movies))
+            {
+                includeItemTypes = new string[] { "Movie" };
+            }
+            else if (string.Equals(viewType, CollectionType.TvShows))
+            {
+                includeItemTypes = new string[] { "Series" };
+            }
+            else if (string.Equals(viewType, CollectionType.Music))
+            {
+                includeItemTypes = new string[] { "MusicAlbum" };
+            }
+            else if (string.Equals(viewType, CollectionType.Books))
+            {
+                includeItemTypes = new string[] { "Book", "AudioBook" };
+            }
+            else if (string.Equals(viewType, CollectionType.Games))
+            {
+                includeItemTypes = new string[] { "Game" };
+            }
+            else
+            {
+                includeItemTypes = new string[] { "Video", "Audio", "Photo", "Movie", "Series" };
+            }
 
             var recursive = !new[] { CollectionType.Playlists, CollectionType.Channels }.Contains(view.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
 
-            var result = view.GetItemList(new InternalItemsQuery
+            return view.GetItemList(new InternalItemsQuery
             {
                 CollapseBoxSetItems = false,
                 Recursive = recursive,
-                ExcludeItemTypes = new[] { "UserView", "CollectionFolder", "Playlist" },
-                DtoOptions = new DtoOptions(false)
-
-            });
-
-            var items = result.Select(i =>
-            {
-                var episode = i as Episode;
-                if (episode != null)
+                DtoOptions = new DtoOptions(false),
+                ImageTypes = new ImageType[] { ImageType.Primary },
+                Limit = 4,
+                OrderBy = new Tuple<string, SortOrder>[]
                 {
-                    var series = episode.Series;
-                    if (series != null)
-                    {
-                        return series;
-                    }
+                    new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending)
+                },
+                IncludeItemTypes = includeItemTypes
 
-                    return episode;
-                }
-
-                var season = i as Season;
-                if (season != null)
-                {
-                    var series = season.Series;
-                    if (series != null)
-                    {
-                        return series;
-                    }
-
-                    return season;
-                }
-
-                var audio = i as Audio;
-                if (audio != null)
-                {
-                    var album = audio.AlbumEntity;
-                    if (album != null && album.HasImage(ImageType.Primary))
-                    {
-                        return album;
-                    }
-                }
-
-                return i;
-
-            }).DistinctBy(i => i.Id);
-
-            return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary) || i.HasImage(ImageType.Thumb)), 8);
+            }).ToList();
         }
 
         protected override bool Supports(BaseItem item)
@@ -122,18 +114,14 @@ namespace Emby.Server.Implementations.UserViews
         {
             var view = (ManualCollectionsFolder)item;
 
-            var recursive = !new[] { CollectionType.Playlists, CollectionType.Channels }.Contains(view.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
-
-            var items = _libraryManager.GetItemList(new InternalItemsQuery
+            return _libraryManager.GetItemList(new InternalItemsQuery
             {
-                Recursive = recursive,
                 IncludeItemTypes = new[] { typeof(BoxSet).Name },
-                Limit = 20,
-                OrderBy = new [] { new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending) },
+                Limit = 4,
+                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending) },
+                ImageTypes = new ImageType[] { ImageType.Primary },
                 DtoOptions = new DtoOptions(false)
             });
-
-            return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary) || i.HasImage(ImageType.Thumb)), 8);
         }
 
         protected override bool Supports(BaseItem item)

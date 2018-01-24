@@ -60,9 +60,9 @@ namespace Emby.Server.Implementations.Session
             serverManager.WebSocketConnected += _serverManager_WebSocketConnected;
         }
 
-        async void _serverManager_WebSocketConnected(object sender, GenericEventArgs<IWebSocketConnection> e)
+        void _serverManager_WebSocketConnected(object sender, GenericEventArgs<IWebSocketConnection> e)
         {
-            var session = await GetSession(e.Argument.QueryString, e.Argument.RemoteEndPoint).ConfigureAwait(false);
+            var session = GetSession(e.Argument.QueryString, e.Argument.RemoteEndPoint);
 
             if (session != null)
             {
@@ -83,7 +83,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        private Task<SessionInfo> GetSession(QueryParamCollection queryString, string remoteEndpoint)
+        private SessionInfo GetSession(QueryParamCollection queryString, string remoteEndpoint)
         {
             if (queryString == null)
             {
@@ -93,7 +93,7 @@ namespace Emby.Server.Implementations.Session
             var token = queryString["api_key"];
             if (string.IsNullOrWhiteSpace(token))
             {
-                return Task.FromResult<SessionInfo>(null);
+                return null;
             }
             var deviceId = queryString["deviceId"];
             return _sessionManager.GetSessionByAuthenticationToken(token, deviceId, remoteEndpoint);
@@ -175,7 +175,7 @@ namespace Emby.Server.Implementations.Session
             {
                 _logger.Debug("Logging session activity");
 
-                session = await _sessionManager.LogSessionActivity(client, version, deviceId, deviceName, message.Connection.RemoteEndPoint, null).ConfigureAwait(false);
+                session = _sessionManager.LogSessionActivity(client, version, deviceId, deviceName, message.Connection.RemoteEndPoint, null);
             }
 
             if (session != null)

@@ -376,7 +376,7 @@ namespace MediaBrowser.Api.Session
 
         public void Post(SendPlaystateCommand request)
         {
-            var task = _sessionManager.SendPlaystateCommand(GetSession(_sessionContext).Result.Id, request.Id, request, CancellationToken.None);
+            var task = _sessionManager.SendPlaystateCommand(GetSession(_sessionContext).Id, request.Id, request, CancellationToken.None);
 
             Task.WaitAll(task);
         }
@@ -394,7 +394,7 @@ namespace MediaBrowser.Api.Session
                 ItemType = request.ItemType
             };
 
-            var task = _sessionManager.SendBrowseCommand(GetSession(_sessionContext).Result.Id, request.Id, command, CancellationToken.None);
+            var task = _sessionManager.SendBrowseCommand(GetSession(_sessionContext).Id, request.Id, command, CancellationToken.None);
 
             Task.WaitAll(task);
         }
@@ -413,7 +413,7 @@ namespace MediaBrowser.Api.Session
                 name = commandType.ToString();
             }
 
-            var currentSession = GetSession(_sessionContext).Result;
+            var currentSession = GetSession(_sessionContext);
 
             var command = new GeneralCommand
             {
@@ -439,7 +439,7 @@ namespace MediaBrowser.Api.Session
                 Text = request.Text
             };
 
-            var task = _sessionManager.SendMessageCommand(GetSession(_sessionContext).Result.Id, request.Id, command, CancellationToken.None);
+            var task = _sessionManager.SendMessageCommand(GetSession(_sessionContext).Id, request.Id, command, CancellationToken.None);
 
             Task.WaitAll(task);
         }
@@ -450,14 +450,14 @@ namespace MediaBrowser.Api.Session
         /// <param name="request">The request.</param>
         public void Post(Play request)
         {
-            var task = _sessionManager.SendPlayCommand(GetSession(_sessionContext).Result.Id, request.Id, request, CancellationToken.None);
+            var task = _sessionManager.SendPlayCommand(GetSession(_sessionContext).Id, request.Id, request, CancellationToken.None);
 
             Task.WaitAll(task);
         }
 
         public void Post(SendGeneralCommand request)
         {
-            var currentSession = GetSession(_sessionContext).Result;
+            var currentSession = GetSession(_sessionContext);
 
             var command = new GeneralCommand
             {
@@ -472,7 +472,7 @@ namespace MediaBrowser.Api.Session
 
         public void Post(SendFullGeneralCommand request)
         {
-            var currentSession = GetSession(_sessionContext).Result;
+            var currentSession = GetSession(_sessionContext);
 
             request.ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null;
 
@@ -495,7 +495,7 @@ namespace MediaBrowser.Api.Session
         {
             if (string.IsNullOrWhiteSpace(request.Id))
             {
-                request.Id = GetSession(_sessionContext).Result.Id;
+                request.Id = GetSession(_sessionContext).Id;
             }
             _sessionManager.ReportCapabilities(request.Id, new ClientCapabilities
             {
@@ -519,7 +519,7 @@ namespace MediaBrowser.Api.Session
         {
             if (string.IsNullOrWhiteSpace(request.Id))
             {
-                request.Id = GetSession(_sessionContext).Result.Id;
+                request.Id = GetSession(_sessionContext).Id;
             }
             _sessionManager.ReportCapabilities(request.Id, request);
         }
