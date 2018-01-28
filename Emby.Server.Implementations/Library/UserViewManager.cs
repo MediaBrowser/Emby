@@ -90,7 +90,7 @@ namespace Emby.Server.Implementations.Library
 
             foreach (var viewType in new[] { CollectionType.Movies, CollectionType.TvShows })
             {
-                var parents = groupedFolders.Where(i => string.Equals(i.CollectionType, viewType, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(i.CollectionType))
+                var parents = groupedFolders.Where(i => string.Equals(i.CollectionType, viewType, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(i.CollectionType))
                     .ToList();
 
                 if (parents.Count > 0)
@@ -119,14 +119,7 @@ namespace Emby.Server.Implementations.Library
 
                 var channels = channelResult.Items;
 
-                if (_config.Configuration.EnableChannelView && channels.Length > 0)
-                {
-                    list.Add(_channelManager.GetInternalChannelFolder(cancellationToken));
-                }
-                else
-                {
-                    list.AddRange(channels);
-                }
+                list.AddRange(channels);
 
                 if (_liveTvManager.GetEnabledUsers().Select(i => i.Id.ToString("N")).Contains(query.UserId))
                 {
@@ -246,7 +239,7 @@ namespace Emby.Server.Implementations.Library
 
             var parents = new List<BaseItem>();
 
-            if (!string.IsNullOrWhiteSpace(parentId))
+            if (!string.IsNullOrEmpty(parentId))
             {
                 var parent = _libraryManager.GetItemById(parentId) as Folder;
                 if (parent != null)

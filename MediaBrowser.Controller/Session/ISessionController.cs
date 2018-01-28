@@ -43,42 +43,6 @@ namespace MediaBrowser.Controller.Session
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken);
-        
-        /// <summary>
-        /// Sends the library update info.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendLibraryUpdateInfo(LibraryUpdateInfo info, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Sends the restart required message.
-        /// </summary>
-        Task SendRestartRequiredNotification(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Sends the user data change info.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendUserDataChangeInfo(UserDataChangeInfo info, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Sends the server shutdown notification.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendServerShutdownNotification(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Sends the session ended notification.
-        /// </summary>
-        /// <param name="sessionInfo">The session information.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendSessionEndedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken);
 
         /// <summary>
         /// Sends the playback start notification.
@@ -95,13 +59,6 @@ namespace MediaBrowser.Controller.Session
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task SendPlaybackStoppedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken);
-        
-        /// <summary>
-        /// Sends the server restart notification.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendServerRestartNotification(CancellationToken cancellationToken);
 
         /// <summary>
         /// Sends the message.

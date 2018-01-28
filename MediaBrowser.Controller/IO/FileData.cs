@@ -73,7 +73,7 @@ namespace MediaBrowser.Controller.IO
                     {
                         var newPath = fileSystem.ResolveShortcut(fullName);
 
-                        if (string.IsNullOrWhiteSpace(newPath))
+                        if (string.IsNullOrEmpty(newPath))
                         {
                             //invalid shortcut - could be old or target could just be unavailable
                             logger.Warn("Encountered invalid shortcut: " + fullName);

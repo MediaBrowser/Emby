@@ -38,7 +38,7 @@ namespace Emby.Server.Implementations.Channels
             return new List<MediaSourceInfo>();
         }
 
-        public Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> OpenMediaSource(string openToken, CancellationToken cancellationToken)
+        public Task<Tuple<MediaSourceInfo, IDirectStreamProvider, bool>> OpenMediaSource(string openToken, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

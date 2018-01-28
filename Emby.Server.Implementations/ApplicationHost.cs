@@ -2112,7 +2112,7 @@ namespace Emby.Server.Implementations
         {
             get
             {
-                return string.IsNullOrWhiteSpace(ServerConfigurationManager.Configuration.ServerName)
+                return string.IsNullOrEmpty(ServerConfigurationManager.Configuration.ServerName)
                     ? Environment.MachineName
                     : ServerConfigurationManager.Configuration.ServerName;
             }
@@ -2311,7 +2311,7 @@ namespace Emby.Server.Implementations
         /// <returns>The hostname in <paramref name="externalDns"/></returns>
         private static string GetHostnameFromExternalDns(string externalDns)
         {
-            if (string.IsNullOrWhiteSpace(externalDns))
+            if (string.IsNullOrEmpty(externalDns))
             {
                 return "localhost";
             }

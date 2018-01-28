@@ -78,7 +78,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                 return ResolveVideos<Video>(parent, files, directoryService, false, collectionType, false);
             }
 
-            if (string.IsNullOrWhiteSpace(collectionType))
+            if (string.IsNullOrEmpty(collectionType))
             {
                 // Owned items should just use the plain video type
                 if (parent == null)
@@ -113,7 +113,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
             foreach (var child in fileSystemEntries)
             {
                 // This is a hack but currently no better way to resolve a sometimes ambiguous situation
-                if (string.IsNullOrWhiteSpace(collectionType))
+                if (string.IsNullOrEmpty(collectionType))
                 {
                     if (string.Equals(child.Name, "tvshow.nfo", StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(child.Name, "season.nfo", StringComparison.OrdinalIgnoreCase))
@@ -317,7 +317,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                 //we need to only look at the name of this actual item (not parents)
                 var justName = item.IsInMixedFolder ? Path.GetFileName(item.Path) : Path.GetFileName(item.ContainingFolderPath);
 
-                if (!string.IsNullOrWhiteSpace(justName))
+                if (!string.IsNullOrEmpty(justName))
                 {
                     // check for tmdb id
                     var tmdbid = justName.GetAttributeValue("tmdbid");
@@ -328,7 +328,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(item.Path))
+                if (!string.IsNullOrEmpty(item.Path))
                 {
                     // check for imdb id - we use full media path, as we can assume, that this will match in any use case (wither id in parent dir or in file name)
                     var imdbid = item.Path.GetAttributeValue("imdbid");
@@ -532,7 +532,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(collectionType))
+            if (string.IsNullOrEmpty(collectionType))
             {
                 return false;
             }

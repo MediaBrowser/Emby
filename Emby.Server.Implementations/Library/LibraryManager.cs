@@ -484,7 +484,7 @@ namespace Emby.Server.Implementations.Library
 
         private Guid GetNewItemIdInternal(string key, Type type, bool forceCaseInsensitive)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException("key");
             }
@@ -531,7 +531,7 @@ namespace Emby.Server.Implementations.Library
 
             var fullPath = fileInfo.FullName;
 
-            if (string.IsNullOrWhiteSpace(collectionType) && parent != null)
+            if (string.IsNullOrEmpty(collectionType) && parent != null)
             {
                 collectionType = GetContentTypeOverride(fullPath, true);
             }
@@ -712,7 +712,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     if (folder.Id == Guid.Empty)
                     {
-                        if (string.IsNullOrWhiteSpace(folder.Path))
+                        if (string.IsNullOrEmpty(folder.Path))
                         {
                             folder.Id = GetNewItemId(folder.GetType().Name, folder.GetType());
                         }
@@ -785,7 +785,7 @@ namespace Emby.Server.Implementations.Library
             // If this returns multiple items it could be tricky figuring out which one is correct. 
             // In most cases, the newest one will be and the others obsolete but not yet cleaned up
 
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }
@@ -1184,7 +1184,7 @@ namespace Emby.Server.Implementations.Library
         {
             return _fileSystem.GetFilePaths(path, new[] { ".collection" }, true, false)
                 .Select(i => _fileSystem.GetFileNameWithoutExtension(i))
-                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+                .FirstOrDefault(i => !string.IsNullOrEmpty(i));
         }
 
         /// <summary>
@@ -1488,8 +1488,8 @@ namespace Emby.Server.Implementations.Library
                 !query.ParentId.HasValue &&
                 query.ChannelIds.Length == 0 &&
                 query.TopParentIds.Length == 0 &&
-                string.IsNullOrWhiteSpace(query.AncestorWithPresentationUniqueKey) &&
-                string.IsNullOrWhiteSpace(query.SeriesPresentationUniqueKey) &&
+                string.IsNullOrEmpty(query.AncestorWithPresentationUniqueKey) &&
+                string.IsNullOrEmpty(query.SeriesPresentationUniqueKey) &&
                 query.ItemIds.Length == 0)
             {
                 var userViews = _userviewManager().GetUserViews(new UserViewQuery
@@ -1546,12 +1546,12 @@ namespace Emby.Server.Implementations.Library
                 }
 
                 // Handle grouping
-                if (user != null && !string.IsNullOrWhiteSpace(view.ViewType) && UserView.IsEligibleForGrouping(view.ViewType) && user.Configuration.GroupedFolders.Length > 0)
+                if (user != null && !string.IsNullOrEmpty(view.ViewType) && UserView.IsEligibleForGrouping(view.ViewType) && user.Configuration.GroupedFolders.Length > 0)
                 {
                     return user.RootFolder
                         .GetChildren(user, true)
                         .OfType<CollectionFolder>()
-                        .Where(i => string.IsNullOrWhiteSpace(i.CollectionType) || string.Equals(i.CollectionType, view.ViewType, StringComparison.OrdinalIgnoreCase))
+                        .Where(i => string.IsNullOrEmpty(i.CollectionType) || string.Equals(i.CollectionType, view.ViewType, StringComparison.OrdinalIgnoreCase))
                         .Where(i => user.IsFolderGrouped(i.Id))
                         .SelectMany(i => GetTopParentIdsForQuery(i, user));
                 }
@@ -2008,12 +2008,12 @@ namespace Emby.Server.Implementations.Library
         public string GetContentType(BaseItem item)
         {
             string configuredContentType = GetConfiguredContentType(item, false);
-            if (!string.IsNullOrWhiteSpace(configuredContentType))
+            if (!string.IsNullOrEmpty(configuredContentType))
             {
                 return configuredContentType;
             }
             configuredContentType = GetConfiguredContentType(item, true);
-            if (!string.IsNullOrWhiteSpace(configuredContentType))
+            if (!string.IsNullOrEmpty(configuredContentType))
             {
                 return configuredContentType;
             }
@@ -2024,14 +2024,14 @@ namespace Emby.Server.Implementations.Library
         {
             var type = GetTopFolderContentType(item);
 
-            if (!string.IsNullOrWhiteSpace(type))
+            if (!string.IsNullOrEmpty(type))
             {
                 return type;
             }
 
             return item.GetParents()
                 .Select(GetConfiguredContentType)
-                .LastOrDefault(i => !string.IsNullOrWhiteSpace(i));
+                .LastOrDefault(i => !string.IsNullOrEmpty(i));
         }
 
         public string GetConfiguredContentType(BaseItem item)
@@ -2056,7 +2056,7 @@ namespace Emby.Server.Implementations.Library
 
         private string GetContentTypeOverride(string path, bool inherit)
         {
-            var nameValuePair = ConfigurationManager.Configuration.ContentTypes.FirstOrDefault(i => _fileSystem.AreEqual(i.Name, path) || (inherit && !string.IsNullOrWhiteSpace(i.Name) && _fileSystem.ContainsSubPath(i.Name, path)));
+            var nameValuePair = ConfigurationManager.Configuration.ContentTypes.FirstOrDefault(i => _fileSystem.AreEqual(i.Name, path) || (inherit && !string.IsNullOrEmpty(i.Name) && _fileSystem.ContainsSubPath(i.Name, path)));
             if (nameValuePair != null)
             {
                 return nameValuePair.Value;
@@ -2080,7 +2080,7 @@ namespace Emby.Server.Implementations.Library
                 .OfType<ICollectionFolder>()
                 .Where(i => string.Equals(i.Path, item.Path, StringComparison.OrdinalIgnoreCase) || i.PhysicalLocations.Contains(item.Path))
                 .Select(i => i.CollectionType)
-                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+                .FirstOrDefault(i => !string.IsNullOrEmpty(i));
         }
 
         private readonly TimeSpan _viewRefreshInterval = TimeSpan.FromHours(24);
@@ -2181,7 +2181,7 @@ namespace Emby.Server.Implementations.Library
                     UserId = user.Id
                 };
 
-                if (!string.IsNullOrWhiteSpace(parentId))
+                if (!string.IsNullOrEmpty(parentId))
                 {
                     item.DisplayParentId = new Guid(parentId);
                 }
@@ -2284,13 +2284,13 @@ namespace Emby.Server.Implementations.Library
             string uniqueId,
             CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
 
             var idValues = "37_namedview_" + name + (parentId ?? string.Empty) + (viewType ?? string.Empty);
-            if (!string.IsNullOrWhiteSpace(uniqueId))
+            if (!string.IsNullOrEmpty(uniqueId))
             {
                 idValues += uniqueId;
             }
@@ -2317,7 +2317,7 @@ namespace Emby.Server.Implementations.Library
                     ForcedSortName = sortName
                 };
 
-                if (!string.IsNullOrWhiteSpace(parentId))
+                if (!string.IsNullOrEmpty(parentId))
                 {
                     item.DisplayParentId = new Guid(parentId);
                 }
@@ -3164,7 +3164,7 @@ namespace Emby.Server.Implementations.Library
 
         public void RemoveMediaPath(string virtualFolderName, string mediaPath)
         {
-            if (string.IsNullOrWhiteSpace(mediaPath))
+            if (string.IsNullOrEmpty(mediaPath))
             {
                 throw new ArgumentNullException("mediaPath");
             }

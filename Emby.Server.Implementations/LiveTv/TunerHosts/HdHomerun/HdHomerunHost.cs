@@ -135,7 +135,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             lock (_modelCache)
             {
-                if (!string.IsNullOrWhiteSpace(cacheKey))
+                if (!string.IsNullOrEmpty(cacheKey))
                 {
                     DiscoverResponse response;
                     if (_modelCache.TryGetValue(cacheKey, out response))
@@ -160,7 +160,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         var discoverResponse = JsonSerializer.DeserializeFromStream<DiscoverResponse>(stream);
 
-                        if (!string.IsNullOrWhiteSpace(cacheKey))
+                        if (!string.IsNullOrEmpty(cacheKey))
                         {
                             lock (_modelCache)
                             {
@@ -181,7 +181,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         ModelNumber = defaultValue
                     };
-                    if (!string.IsNullOrWhiteSpace(cacheKey))
+                    if (!string.IsNullOrEmpty(cacheKey))
                     {
                         // HDHR4 doesn't have this api
                         lock (_modelCache)

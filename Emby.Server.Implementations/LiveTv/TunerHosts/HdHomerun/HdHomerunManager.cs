@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Logging;
+using System.Net.Sockets;
+using System.Net;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
@@ -61,7 +63,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             if (!String.IsNullOrEmpty(_channel))
             {
-                if (!string.IsNullOrWhiteSpace(_profile) && !string.Equals(_profile, "native", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(_profile) && !string.Equals(_profile, "native", StringComparison.OrdinalIgnoreCase))
                 {
                     commands.Add(Tuple.Create("vchannel", String.Format("{0} transcode={1}", _channel, _profile)));
                 }
@@ -130,7 +132,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return string.Equals(returnVal, "none", StringComparison.OrdinalIgnoreCase);
         }
 
-        public async Task StartStreaming(IpAddressInfo remoteIp, IpAddressInfo localIp, int localPort, IHdHomerunChannelCommands commands, int numTuners, CancellationToken cancellationToken)
+        public async Task StartStreaming(IpAddressInfo remoteIp, IPAddress localIp, int localPort, IHdHomerunChannelCommands commands, int numTuners, CancellationToken cancellationToken)
         {
             _remoteIp = remoteIp;
             

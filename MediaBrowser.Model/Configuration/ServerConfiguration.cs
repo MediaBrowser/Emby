@@ -180,7 +180,6 @@ namespace MediaBrowser.Model.Configuration
         public string[] LocalNetworkSubnets { get; set; }
         public string[] LocalNetworkAddresses { get; set; }
         public string[] CodecsUsed { get; set; }
-        public bool EnableChannelView { get; set; }
         public bool EnableExternalContentInSuggestions { get; set; }
         public bool RequireHttps { get; set; }
         public bool IsBehindProxy { get; set; }

@@ -224,7 +224,7 @@ namespace MediaBrowser.Controller.LiveTv
 
     public interface ISupportsDirectStreamProvider
     {
-        Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken);
+        Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken);
     }
 
     public interface ISupportsUpdatingDefaults

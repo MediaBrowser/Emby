@@ -131,6 +131,7 @@ namespace MediaBrowser.Providers.MediaInfo
                     var language = fileNameWithoutExtension
                         .Replace(".forced", string.Empty, StringComparison.OrdinalIgnoreCase)
                         .Replace(".foreign", string.Empty, StringComparison.OrdinalIgnoreCase)
+                        .Replace(".default", string.Empty, StringComparison.OrdinalIgnoreCase)
                         .Split('.')
                         .LastOrDefault();
 

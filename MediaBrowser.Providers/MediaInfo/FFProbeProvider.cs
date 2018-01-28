@@ -36,7 +36,8 @@ namespace MediaBrowser.Providers.MediaInfo
         ICustomMetadataProvider<AudioBook>,
         IHasOrder,
         IForcedProvider,
-        IPreRefreshProvider
+        IPreRefreshProvider,
+        IHasItemChangeMonitor
     {
         private readonly ILogger _logger;
         private readonly IIsoManager _isoManager;
@@ -56,6 +57,33 @@ namespace MediaBrowser.Providers.MediaInfo
         public string Name
         {
             get { return "ffprobe"; }
+        }
+
+        public bool HasChanged(BaseItem item, IDirectoryService directoryService)
+        {
+            var video = item as Video;
+            if (video == null || video.VideoType == VideoType.VideoFile || video.VideoType == VideoType.Iso)
+            {
+                if (!string.IsNullOrWhiteSpace(item.Path) && item.LocationType == LocationType.FileSystem)
+                {
+                    var file = directoryService.GetFile(item.Path);
+                    if (file != null && file.LastWriteTimeUtc != item.DateModified)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            if (item.SupportsLocalMetadata)
+            {
+                if (video != null && !video.IsPlaceHolder)
+                {
+                    return !video.SubtitleFiles
+                        .SequenceEqual(_subtitleResolver.GetExternalSubtitleFiles(video, directoryService, false), StringComparer.Ordinal);
+                }
+            }
+
+            return false;
         }
 
         public Task<ItemUpdateType> FetchAsync(Episode item, MetadataRefreshOptions options, CancellationToken cancellationToken)
@@ -108,6 +136,7 @@ namespace MediaBrowser.Providers.MediaInfo
             return FetchAudioInfo(item, cancellationToken);
         }
 
+        private SubtitleResolver _subtitleResolver;
         public FFProbeProvider(ILogger logger, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
         {
             _logger = logger;
@@ -124,6 +153,8 @@ namespace MediaBrowser.Providers.MediaInfo
             _subtitleManager = subtitleManager;
             _chapterManager = chapterManager;
             _libraryManager = libraryManager;
+
+            _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
 
         private readonly Task<ItemUpdateType> _cachedTask = Task.FromResult(ItemUpdateType.None);
@@ -160,13 +191,19 @@ namespace MediaBrowser.Providers.MediaInfo
             return prober.ProbeVideo(item, options, cancellationToken);
         }
 
-        private void FetchShortcutInfo(Video video)
+        private string NormalizeStrmLine(string line)
         {
-			video.ShortcutPath = _fileSystem.ReadAllText(video.Path)
-                .Replace("\t", string.Empty)
+            return line.Replace("\t", string.Empty)
                 .Replace("\r", string.Empty)
                 .Replace("\n", string.Empty)
                 .Trim();
+        }
+
+        private void FetchShortcutInfo(Video video)
+        {
+            video.ShortcutPath = _fileSystem.ReadAllLines(video.Path)
+                .Select(NormalizeStrmLine)
+                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i) && !i.StartsWith("#", StringComparison.OrdinalIgnoreCase));
         }
 
         public Task<ItemUpdateType> FetchAudioInfo<T>(T item, CancellationToken cancellationToken)

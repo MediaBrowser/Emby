@@ -106,7 +106,7 @@ namespace Emby.Server.Implementations.Images
             FileSystem.CreateDirectory(FileSystem.GetDirectoryName(outputPathWithoutExtension));
             string outputPath = CreateImage(item, itemsWithImages, outputPathWithoutExtension, imageType, 0);
 
-            if (string.IsNullOrWhiteSpace(outputPath))
+            if (string.IsNullOrEmpty(outputPath))
             {
                 return ItemUpdateType.None;
             }
@@ -149,7 +149,7 @@ namespace Emby.Server.Implementations.Images
                     }
                     return null;
                 })
-                .Where(i => !string.IsNullOrWhiteSpace(i));
+                .Where(i => !string.IsNullOrEmpty(i));
         }
 
         protected string CreatePosterCollage(BaseItem primaryItem, List<BaseItem> items, string outputPath)
@@ -322,7 +322,7 @@ namespace Emby.Server.Implementations.Images
                 .Select(i => i.GetImagePath(imageType))
                 .FirstOrDefault();
 
-            if (string.IsNullOrWhiteSpace(image))
+            if (string.IsNullOrEmpty(image))
             {
                 return null;
             }

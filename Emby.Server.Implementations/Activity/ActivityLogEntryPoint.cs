@@ -183,7 +183,7 @@ namespace Emby.Server.Implementations.Activity
             string name;
             var session = e.SessionInfo;
 
-            if (string.IsNullOrWhiteSpace(session.UserName))
+            if (string.IsNullOrEmpty(session.UserName))
             {
                 name = string.Format(_localization.GetLocalizedString("DeviceOfflineWithName"), session.DeviceName);
 
@@ -309,7 +309,7 @@ namespace Emby.Server.Implementations.Activity
             string name;
             var session = e.SessionInfo;
 
-            if (string.IsNullOrWhiteSpace(session.UserName))
+            if (string.IsNullOrEmpty(session.UserName))
             {
                 name = string.Format(_localization.GetLocalizedString("DeviceOnlineWithName"), session.DeviceName);
 
@@ -424,11 +424,11 @@ namespace Emby.Server.Implementations.Activity
             {
                 var vals = new List<string>();
 
-                if (!string.IsNullOrWhiteSpace(e.Result.ErrorMessage))
+                if (!string.IsNullOrEmpty(e.Result.ErrorMessage))
                 {
                     vals.Add(e.Result.ErrorMessage);
                 }
-                if (!string.IsNullOrWhiteSpace(e.Result.LongErrorMessage))
+                if (!string.IsNullOrEmpty(e.Result.LongErrorMessage))
                 {
                     vals.Add(e.Result.LongErrorMessage);
                 }

@@ -29,7 +29,7 @@ namespace MediaBrowser.Model.Dlna
 
         public static string[] SplitValue(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return EmptyStringArray;
             }

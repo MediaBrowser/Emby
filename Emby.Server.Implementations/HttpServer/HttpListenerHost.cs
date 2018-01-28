@@ -293,12 +293,27 @@ namespace Emby.Server.Implementations.HttpServer
                 httpRes.StatusCode = statusCode;
 
                 httpRes.ContentType = "text/html";
-                Write(httpRes, ex.Message);
+                Write(httpRes, NormalizeExceptionMessage(ex.Message));
             }
             catch
             {
                 //_logger.ErrorException("Error this.ProcessRequest(context)(Exception while writing error to the response)", errorEx);
             }
+        }
+
+        private string NormalizeExceptionMessage(string msg)
+        {
+            if (msg == null)
+            {
+                return string.Empty;
+            }
+
+            // Strip any information we don't want to reveal
+            
+            msg = msg.Replace(_config.ApplicationPaths.ProgramSystemPath, string.Empty, StringComparison.OrdinalIgnoreCase);
+            msg = msg.Replace(_config.ApplicationPaths.ProgramDataPath, string.Empty, StringComparison.OrdinalIgnoreCase);
+
+            return msg;
         }
 
         /// <summary>
@@ -329,9 +344,9 @@ namespace Emby.Server.Implementations.HttpServer
         {
             var extension = GetExtension(url);
 
-            if (string.IsNullOrWhiteSpace(extension) || !_skipLogExtensions.ContainsKey(extension))
+            if (string.IsNullOrEmpty(extension) || !_skipLogExtensions.ContainsKey(extension))
             {
-                if (string.IsNullOrWhiteSpace(localPath) || localPath.IndexOf("system/ping", StringComparison.OrdinalIgnoreCase) == -1)
+                if (string.IsNullOrEmpty(localPath) || localPath.IndexOf("system/ping", StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     return true;
                 }
@@ -599,7 +614,7 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(GlobalResponse))
+                if (!string.IsNullOrEmpty(GlobalResponse))
                 {
                     httpRes.StatusCode = 503;
                     httpRes.ContentType = "text/html";

@@ -149,7 +149,7 @@ namespace Emby.Dlna.PlayTo
             options.RequestHeaders["Pragma"] = "no-cache";
             options.RequestHeaders["FriendlyName.DLNA.ORG"] = FriendlyName;
 
-            if (!string.IsNullOrWhiteSpace(header))
+            if (!string.IsNullOrEmpty(header))
             {
                 options.RequestHeaders["contentFeatures.dlna.org"] = header;
             }

@@ -35,7 +35,7 @@ namespace Emby.Server.Implementations.Library
         {
             User user = null;
 
-            if (string.IsNullOrWhiteSpace(query.UserId))
+            if (string.IsNullOrEmpty(query.UserId))
             {
             }
             else
@@ -92,7 +92,7 @@ namespace Emby.Server.Implementations.Library
                 searchTerm = searchTerm.Trim().RemoveDiacritics();
             }
 
-            if (string.IsNullOrWhiteSpace(searchTerm))
+            if (string.IsNullOrEmpty(searchTerm))
             {
                 throw new ArgumentNullException("searchTerm");
             }
@@ -173,8 +173,8 @@ namespace Emby.Server.Implementations.Library
                 ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 Limit = query.Limit,
-                IncludeItemsByName = string.IsNullOrWhiteSpace(query.ParentId),
-                ParentId = string.IsNullOrWhiteSpace(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
+                IncludeItemsByName = string.IsNullOrEmpty(query.ParentId),
+                ParentId = string.IsNullOrEmpty(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
                 OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
                 Recursive = true,
 
@@ -239,7 +239,7 @@ namespace Emby.Server.Implementations.Library
         /// <returns>System.Int32.</returns>
         private Tuple<string, int> GetIndex(string input, string searchInput, List<string> searchWords)
         {
-            if (string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrEmpty(input))
             {
                 throw new ArgumentNullException("input");
             }

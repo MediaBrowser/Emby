@@ -1,14 +1,10 @@
-﻿using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.Entities.Audio;
+﻿using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Controller.Playlists;
 using MediaBrowser.Controller.TV;
-using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
 using System;
@@ -24,8 +20,6 @@ namespace MediaBrowser.Controller.Entities
 {
     public class UserViewBuilder
     {
-        private readonly IChannelManager _channelManager;
-        private readonly ILiveTvManager _liveTvManager;
         private readonly IUserViewManager _userViewManager;
         private readonly ILibraryManager _libraryManager;
         private readonly ILogger _logger;
@@ -34,11 +28,9 @@ namespace MediaBrowser.Controller.Entities
         private readonly IServerConfigurationManager _config;
         private readonly IPlaylistManager _playlistManager;
 
-        public UserViewBuilder(IUserViewManager userViewManager, ILiveTvManager liveTvManager, IChannelManager channelManager, ILibraryManager libraryManager, ILogger logger, IUserDataManager userDataManager, ITVSeriesManager tvSeriesManager, IServerConfigurationManager config, IPlaylistManager playlistManager)
+        public UserViewBuilder(IUserViewManager userViewManager, ILibraryManager libraryManager, ILogger logger, IUserDataManager userDataManager, ITVSeriesManager tvSeriesManager, IServerConfigurationManager config, IPlaylistManager playlistManager)
         {
             _userViewManager = userViewManager;
-            _liveTvManager = liveTvManager;
-            _channelManager = channelManager;
             _libraryManager = libraryManager;
             _logger = logger;
             _userDataManager = userDataManager;
@@ -47,7 +39,7 @@ namespace MediaBrowser.Controller.Entities
             _playlistManager = playlistManager;
         }
 
-        public async Task<QueryResult<BaseItem>> GetUserItems(Folder queryParent, Folder displayParent, string viewType, InternalItemsQuery query)
+        public QueryResult<BaseItem> GetUserItems(Folder queryParent, Folder displayParent, string viewType, InternalItemsQuery query)
         {
             var user = query.User;
 
@@ -63,64 +55,6 @@ namespace MediaBrowser.Controller.Entities
 
             switch (viewType)
             {
-                case CollectionType.Channels:
-                    {
-                        var result = await _channelManager.GetChannelsInternal(new ChannelQuery
-                        {
-                            UserId = user == null ? null : user.Id.ToString("N"),
-                            Limit = query.Limit,
-                            StartIndex = query.StartIndex
-
-                        }, CancellationToken.None).ConfigureAwait(false);
-
-                        return GetResult(result);
-                    }
-
-                case SpecialFolder.LiveTvChannels:
-                    {
-                        var result = _liveTvManager.GetInternalChannels(new LiveTvChannelQuery
-                        {
-                            UserId = query.User.Id.ToString("N"),
-                            Limit = query.Limit,
-                            StartIndex = query.StartIndex
-
-                        }, new DtoOptions(), CancellationToken.None);
-
-                        return GetResult(result);
-                    }
-
-                case SpecialFolder.LiveTvNowPlaying:
-                    {
-                        var result = _liveTvManager.GetRecommendedProgramsInternal(new RecommendedProgramQuery
-                        {
-                            UserId = query.User.Id.ToString("N"),
-                            Limit = query.Limit,
-                            IsAiring = true
-
-                        }, new Dto.DtoOptions(), CancellationToken.None);
-
-                        return GetResult(result);
-                    }
-
-                case SpecialFolder.LiveTvRecordingGroups:
-                    {
-                        var result = await _liveTvManager.GetInternalRecordings(new RecordingQuery
-                        {
-                            UserId = query.User.Id.ToString("N"),
-                            Status = RecordingStatus.Completed,
-                            Limit = query.Limit,
-                            StartIndex = query.StartIndex
-
-                        }, new DtoOptions(), CancellationToken.None).ConfigureAwait(false);
-
-                        return GetResult(result);
-                    }
-
-                case CollectionType.LiveTv:
-                    {
-                        return await GetLiveTvView(queryParent, user, query).ConfigureAwait(false);
-                    }
-
                 case CollectionType.Photos:
                 case CollectionType.Books:
                 case CollectionType.HomeVideos:
@@ -1622,28 +1556,6 @@ namespace MediaBrowser.Controller.Entities
             }
 
             return new List<BaseItem> { parent };
-        }
-
-        private async Task<QueryResult<BaseItem>> GetLiveTvView(Folder queryParent, User user, InternalItemsQuery query)
-        {
-            if (query.Recursive)
-            {
-                return await _liveTvManager.GetInternalRecordings(new RecordingQuery
-                {
-                    IsInProgress = false,
-                    Status = RecordingStatus.Completed,
-                    UserId = user.Id.ToString("N")
-
-                }, new DtoOptions(), CancellationToken.None).ConfigureAwait(false);
-            }
-
-            var list = new List<BaseItem>();
-
-            //list.Add(await GetUserSubView(SpecialFolder.LiveTvNowPlaying, user, "0", parent).ConfigureAwait(false));
-            list.Add(GetUserView(SpecialFolder.LiveTvChannels, "Channels", string.Empty, user.RootFolder));
-            list.Add(GetUserView(SpecialFolder.LiveTvRecordingGroups, "HeaderRecordingGroups", string.Empty, user.RootFolder));
-
-            return GetResult(list, queryParent, query);
         }
 
         private UserView GetUserViewWithName(string name, string type, string sortName, BaseItem parent)

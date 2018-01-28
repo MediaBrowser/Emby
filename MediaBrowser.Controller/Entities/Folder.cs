@@ -660,7 +660,7 @@ namespace MediaBrowser.Controller.Entities
             var originalPath = path;
 
             // Depending on whether the path is local or unc, it may return either null or '\' at the top
-            while (!string.IsNullOrWhiteSpace(path) && path.Length > 1)
+            while (!string.IsNullOrEmpty(path) && path.Length > 1)
             {
                 if (FileSystem.DirectoryExists(path))
                 {
@@ -913,7 +913,7 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(query.AdjacentTo))
+            if (!string.IsNullOrEmpty(query.AdjacentTo))
             {
                 Logger.Debug("Query requires post-filtering due to AdjacentTo");
                 return true;

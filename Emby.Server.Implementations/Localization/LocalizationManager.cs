@@ -395,11 +395,11 @@ namespace Emby.Server.Implementations.Localization
 
         public string GetLocalizedString(string phrase, string culture)
         {
-            if (string.IsNullOrWhiteSpace(culture))
+            if (string.IsNullOrEmpty(culture))
             {
                 culture = _configurationManager.Configuration.UICulture;
             }
-            if (string.IsNullOrWhiteSpace(culture))
+            if (string.IsNullOrEmpty(culture))
             {
                 culture = DefaultCulture;
             }
@@ -423,7 +423,7 @@ namespace Emby.Server.Implementations.Localization
 
         public Dictionary<string, string> GetLocalizationDictionary(string culture)
         {
-            if (string.IsNullOrWhiteSpace(culture))
+            if (string.IsNullOrEmpty(culture))
             {
                 throw new ArgumentNullException("culture");
             }
@@ -436,7 +436,7 @@ namespace Emby.Server.Implementations.Localization
 
         private Dictionary<string, string> GetDictionary(string prefix, string culture, string baseFilename)
         {
-            if (string.IsNullOrWhiteSpace(culture))
+            if (string.IsNullOrEmpty(culture))
             {
                 throw new ArgumentNullException("culture");
             }

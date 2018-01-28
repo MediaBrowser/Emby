@@ -84,8 +84,8 @@ namespace MediaBrowser.Controller.Entities
                 parent = LibraryManager.GetItemById(ParentId) as Folder ?? parent;
             }
 
-            return new UserViewBuilder(UserViewManager, LiveTvManager, ChannelManager, LibraryManager, Logger, UserDataManager, TVSeriesManager, ConfigurationManager, PlaylistManager)
-                .GetUserItems(parent, this, ViewType, query).Result;
+            return new UserViewBuilder(UserViewManager, LibraryManager, Logger, UserDataManager, TVSeriesManager, ConfigurationManager, PlaylistManager)
+                .GetUserItems(parent, this, ViewType, query);
         }
 
         public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
@@ -113,19 +113,12 @@ namespace MediaBrowser.Controller.Entities
 
         public override IEnumerable<BaseItem> GetRecursiveChildren(User user, InternalItemsQuery query)
         {
-            var result = GetItemList(new InternalItemsQuery
-            {
-                User = user,
-                Recursive = true,
-                EnableTotalRecordCount = false,
+            query.SetUser(user);
+            query.Recursive = true;
+            query.EnableTotalRecordCount = false;
+            query.ForceDirect = true;
 
-                ForceDirect = true,
-
-                DtoOptions = query.DtoOptions
-
-            });
-
-            return result.Where(i => UserViewBuilder.FilterItem(i, query));
+            return GetItemList(query);
         }
 
         protected override IEnumerable<BaseItem> GetEligibleChildrenForRecursiveChildren(User user)

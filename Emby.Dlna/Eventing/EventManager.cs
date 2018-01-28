@@ -118,7 +118,7 @@ namespace Emby.Dlna.Eventing
             };
 
             response.Headers["SID"] = subscriptionId;
-            response.Headers["TIMEOUT"] = string.IsNullOrWhiteSpace(requestedTimeoutString) ? ("SECOND-" + timeoutSeconds.ToString(_usCulture)) : requestedTimeoutString;
+            response.Headers["TIMEOUT"] = string.IsNullOrEmpty(requestedTimeoutString) ? ("SECOND-" + timeoutSeconds.ToString(_usCulture)) : requestedTimeoutString;
 
             return response;
         }

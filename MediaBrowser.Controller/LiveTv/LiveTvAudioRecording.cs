@@ -145,7 +145,7 @@ namespace MediaBrowser.Controller.LiveTv
 
             foreach (var mediaSource in list)
             {
-                if (string.IsNullOrWhiteSpace(mediaSource.Path))
+                if (string.IsNullOrEmpty(mediaSource.Path))
                 {
                     mediaSource.Type = MediaSourceType.Placeholder;
                 }

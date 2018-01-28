@@ -56,7 +56,7 @@ namespace Emby.Server.Implementations.IO
             {
                 var value = _defaultDirectory;
 
-                if (!string.IsNullOrWhiteSpace(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     try
                     {
@@ -750,7 +750,7 @@ namespace Emby.Server.Implementations.IO
 
         public bool IsPathFile(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }

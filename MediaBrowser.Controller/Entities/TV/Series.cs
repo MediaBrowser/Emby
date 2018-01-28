@@ -112,7 +112,7 @@ namespace MediaBrowser.Controller.Entities.TV
         private string AddLibrariesToPresentationUniqueKey(string key)
         {
             var lang = GetPreferredMetadataLanguage();
-            if (!string.IsNullOrWhiteSpace(lang))
+            if (!string.IsNullOrEmpty(lang))
             {
                 key += "-" + lang;
             }
@@ -188,13 +188,13 @@ namespace MediaBrowser.Controller.Entities.TV
             var list = base.GetUserDataKeys();
 
             var key = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(key))
+            if (!string.IsNullOrEmpty(key))
             {
                 list.Insert(0, key);
             }
 
             key = this.GetProviderId(MetadataProviders.Tvdb);
-            if (!string.IsNullOrWhiteSpace(key))
+            if (!string.IsNullOrEmpty(key))
             {
                 list.Insert(0, key);
             }
@@ -518,7 +518,7 @@ namespace MediaBrowser.Controller.Entities.TV
             var list = base.GetRelatedUrls();
 
             var imdbId = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(imdbId))
+            if (!string.IsNullOrEmpty(imdbId))
             {
                 list.Add(new ExternalUrl
                 {

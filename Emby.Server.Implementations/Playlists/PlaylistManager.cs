@@ -57,7 +57,7 @@ namespace Emby.Server.Implementations.Playlists
                 throw new ArgumentException();
             }
 
-            if (string.IsNullOrWhiteSpace(options.MediaType))
+            if (string.IsNullOrEmpty(options.MediaType))
             {
                 foreach (var itemId in options.ItemIdList)
                 {
@@ -68,7 +68,7 @@ namespace Emby.Server.Implementations.Playlists
                         throw new ArgumentException("No item exists with the supplied Id");
                     }
 
-                    if (!string.IsNullOrWhiteSpace(item.MediaType))
+                    if (!string.IsNullOrEmpty(item.MediaType))
                     {
                         options.MediaType = item.MediaType;
                     }
@@ -87,18 +87,18 @@ namespace Emby.Server.Implementations.Playlists
                         {
                             options.MediaType = folder.GetRecursiveChildren(i => !i.IsFolder && i.SupportsAddingToPlaylist)
                                 .Select(i => i.MediaType)
-                                .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+                                .FirstOrDefault(i => !string.IsNullOrEmpty(i));
                         }
                     }
 
-                    if (!string.IsNullOrWhiteSpace(options.MediaType))
+                    if (!string.IsNullOrEmpty(options.MediaType))
                     {
                         break;
                     }
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(options.MediaType))
+            if (string.IsNullOrEmpty(options.MediaType))
             {
                 options.MediaType = "Audio";
             }
@@ -172,7 +172,7 @@ namespace Emby.Server.Implementations.Playlists
 
         public void AddToPlaylist(string playlistId, IEnumerable<string> itemIds, string userId)
         {
-            var user = string.IsNullOrWhiteSpace(userId) ? null : _userManager.GetUserById(userId);
+            var user = string.IsNullOrEmpty(userId) ? null : _userManager.GetUserById(userId);
 
             AddToPlaylistInternal(playlistId, itemIds, user, new DtoOptions(false)
             {

@@ -27,7 +27,7 @@ namespace MediaBrowser.Controller.Entities
                 Type = LinkedChildType.Manual
             };
 
-            if (string.IsNullOrWhiteSpace(child.Path))
+            if (string.IsNullOrEmpty(child.Path))
             {
                 child.LibraryItemId = item.Id.ToString("N");
             }

@@ -85,7 +85,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public override void Add(TimerInfo item)
         {
-            if (string.IsNullOrWhiteSpace(item.Id))
+            if (string.IsNullOrEmpty(item.Id))
             {
                 throw new ArgumentException("TimerInfo.Id cannot be null or empty.");
             }

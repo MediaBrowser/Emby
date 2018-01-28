@@ -54,7 +54,7 @@ namespace Emby.Server.Implementations.IO
 
         private void AddAffectedPath(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }
@@ -67,7 +67,7 @@ namespace Emby.Server.Implementations.IO
 
         public void AddPath(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }
@@ -113,7 +113,7 @@ namespace Emby.Server.Implementations.IO
                 Path = path;
                 AddAffectedPath(path);
 
-                if (!string.IsNullOrWhiteSpace(affectedFile))
+                if (!string.IsNullOrEmpty(affectedFile))
                 {
                     AddAffectedPath(affectedFile);
                 }

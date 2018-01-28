@@ -172,7 +172,7 @@ namespace MediaBrowser.Controller.Entities.Movies
             var list = base.GetRelatedUrls();
 
             var imdbId = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(imdbId))
+            if (!string.IsNullOrEmpty(imdbId))
             {
                 list.Add(new ExternalUrl
                 {

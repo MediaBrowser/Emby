@@ -223,7 +223,7 @@ namespace Emby.Server.Implementations.ServerManager
 
         public Task SendAsync(string text, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrEmpty(text))
             {
                 throw new ArgumentNullException("text");
             }

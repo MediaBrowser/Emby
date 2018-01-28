@@ -129,95 +129,12 @@ namespace Emby.Server.Implementations.Session
             }, cancellationToken);
         }
 
-        public Task SendLibraryUpdateInfo(LibraryUpdateInfo info, CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<LibraryUpdateInfo>
-            {
-                MessageType = "LibraryChanged",
-                Data = info
-
-            }, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends the restart required message.
-        /// </summary>
-        /// <param name="info">The information.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public Task SendRestartRequiredNotification(CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<string>
-            {
-                MessageType = "RestartRequired",
-                Data = string.Empty
-
-            }, cancellationToken);
-        }
-
-
-        /// <summary>
-        /// Sends the user data change info.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public Task SendUserDataChangeInfo(UserDataChangeInfo info, CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<UserDataChangeInfo>
-            {
-                MessageType = "UserDataChanged",
-                Data = info
-
-            }, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends the server shutdown notification.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public Task SendServerShutdownNotification(CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<string>
-            {
-                MessageType = "ServerShuttingDown",
-                Data = string.Empty
-
-            }, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends the server restart notification.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public Task SendServerRestartNotification(CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<string>
-            {
-                MessageType = "ServerRestarting",
-                Data = string.Empty
-
-            }, cancellationToken);
-        }
-
         public Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
         {
             return SendMessageInternal(new WebSocketMessage<GeneralCommand>
             {
                 MessageType = "GeneralCommand",
                 Data = command
-
-            }, cancellationToken);
-        }
-
-        public Task SendSessionEndedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return SendMessagesInternal(new WebSocketMessage<SessionInfoDto>
-            {
-                MessageType = "SessionEnded",
-                Data = sessionInfo
 
             }, cancellationToken);
         }

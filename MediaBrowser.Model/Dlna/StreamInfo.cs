@@ -186,7 +186,7 @@ namespace MediaBrowser.Model.Dlna
                 return MediaSource.Path;
             }
 
-            if (string.IsNullOrWhiteSpace(PlaySessionId))
+            if (string.IsNullOrEmpty(PlaySessionId))
             {
                 PlaySessionId = Guid.NewGuid().ToString("N");
             }
@@ -375,7 +375,7 @@ namespace MediaBrowser.Model.Dlna
             {
                 foreach (var pair in item.StreamOptions)
                 {
-                    if (string.IsNullOrWhiteSpace(pair.Value))
+                    if (string.IsNullOrEmpty(pair.Value))
                     {
                         continue;
                     }
@@ -595,7 +595,7 @@ namespace MediaBrowser.Model.Dlna
 
                 var targetVideoCodecs = TargetVideoCodec;
                 var videoCodec = targetVideoCodecs.Length == 0 ? null : targetVideoCodecs[0];
-                if (!string.IsNullOrWhiteSpace(videoCodec))
+                if (!string.IsNullOrEmpty(videoCodec))
                 {
                     return GetTargetRefFrames(videoCodec);
                 }
@@ -632,7 +632,7 @@ namespace MediaBrowser.Model.Dlna
 
                 var targetVideoCodecs = TargetVideoCodec;
                 var videoCodec = targetVideoCodecs.Length == 0 ? null : targetVideoCodecs[0];
-                if (!string.IsNullOrWhiteSpace(videoCodec))
+                if (!string.IsNullOrEmpty(videoCodec))
                 {
                     return GetTargetVideoLevel(videoCodec);
                 }
@@ -644,7 +644,7 @@ namespace MediaBrowser.Model.Dlna
         public double? GetTargetVideoLevel(string codec)
         {
             var value = GetOption(codec, "level");
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return null;
             }
@@ -661,7 +661,7 @@ namespace MediaBrowser.Model.Dlna
         public int? GetTargetRefFrames(string codec)
         {
             var value = GetOption(codec, "maxrefframes");
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return null;
             }
@@ -703,7 +703,7 @@ namespace MediaBrowser.Model.Dlna
 
                 var targetVideoCodecs = TargetVideoCodec;
                 var videoCodec = targetVideoCodecs.Length == 0 ? null : targetVideoCodecs[0];
-                if (!string.IsNullOrWhiteSpace(videoCodec))
+                if (!string.IsNullOrEmpty(videoCodec))
                 {
                     return GetOption(videoCodec, "profile");
                 }
@@ -778,14 +778,14 @@ namespace MediaBrowser.Model.Dlna
 
                 if (IsDirectStream)
                 {
-                    return string.IsNullOrWhiteSpace(inputCodec) ? new string[] { } : new[] { inputCodec };
+                    return string.IsNullOrEmpty(inputCodec) ? new string[] { } : new[] { inputCodec };
                 }
 
                 foreach (string codec in AudioCodecs)
                 {
                     if (StringHelper.EqualsIgnoreCase(codec, inputCodec))
                     {
-                        return string.IsNullOrWhiteSpace(codec) ? new string[] { } : new[] { codec };
+                        return string.IsNullOrEmpty(codec) ? new string[] { } : new[] { codec };
                     }
                 }
 
@@ -803,14 +803,14 @@ namespace MediaBrowser.Model.Dlna
 
                 if (IsDirectStream)
                 {
-                    return string.IsNullOrWhiteSpace(inputCodec) ? new string[] { } : new[] { inputCodec };
+                    return string.IsNullOrEmpty(inputCodec) ? new string[] { } : new[] { inputCodec };
                 }
 
                 foreach (string codec in VideoCodecs)
                 {
                     if (StringHelper.EqualsIgnoreCase(codec, inputCodec))
                     {
-                        return string.IsNullOrWhiteSpace(codec) ? new string[] { } : new[] { codec };
+                        return string.IsNullOrEmpty(codec) ? new string[] { } : new[] { codec };
                     }
                 }
 
@@ -907,7 +907,7 @@ namespace MediaBrowser.Model.Dlna
 
                 var targetVideoCodecs = TargetVideoCodec;
                 var videoCodec = targetVideoCodecs.Length == 0 ? null : targetVideoCodecs[0];
-                if (!string.IsNullOrWhiteSpace(videoCodec))
+                if (!string.IsNullOrEmpty(videoCodec))
                 {
                     if (string.Equals(GetOption(videoCodec, "deinterlace"), "true", StringComparison.OrdinalIgnoreCase))
                     {

@@ -27,7 +27,6 @@ namespace MediaBrowser.Providers.Manager
         protected readonly IFileSystem FileSystem;
         protected readonly IUserDataManager UserDataManager;
         protected readonly ILibraryManager LibraryManager;
-        private readonly SubtitleResolver _subtitleResolver;
 
         protected MetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager)
         {
@@ -37,8 +36,6 @@ namespace MediaBrowser.Providers.Manager
             FileSystem = fileSystem;
             UserDataManager = userDataManager;
             LibraryManager = libraryManager;
-
-            _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
 
         private FileSystemMetadata TryGetFile(string path, IDirectoryService directoryService)
@@ -67,35 +64,6 @@ namespace MediaBrowser.Providers.Manager
             if (!requiresRefresh && libraryOptions.AutomaticRefreshIntervalDays > 0 && (DateTime.UtcNow - item.DateLastRefreshed).TotalDays >= libraryOptions.AutomaticRefreshIntervalDays)
             {
                 requiresRefresh = true;
-            }
-
-            DateTime? newDateModified = null;
-            if (item.LocationType == LocationType.FileSystem)
-            {
-                var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
-                if (file != null)
-                {
-                    newDateModified = file.LastWriteTimeUtc;
-                    if (item.EnableRefreshOnDateModifiedChange)
-                    {
-                        if (newDateModified != item.DateModified)
-                        {
-                            Logger.Debug("Date modified for {0}. Old date {1} new date {2} Id {3}", item.Path, item.DateModified, newDateModified, item.Id);
-                            requiresRefresh = true;
-                        }
-                    }
-
-                    if (!requiresRefresh && item.SupportsLocalMetadata)
-                    {
-                        var video = item as Video;
-
-                        if (video != null && !video.IsPlaceHolder)
-                        {
-                            requiresRefresh = !video.SubtitleFiles
-                                .SequenceEqual(_subtitleResolver.GetExternalSubtitleFiles(video, refreshOptions.DirectoryService, false), StringComparer.Ordinal);
-                        }
-                    }
-                }
             }
 
             if (!requiresRefresh && refreshOptions.MetadataRefreshMode != MetadataRefreshMode.None)
@@ -189,14 +157,18 @@ namespace MediaBrowser.Providers.Manager
             var beforeSaveResult = BeforeSave(itemOfType, isFirstRefresh || refreshOptions.ReplaceAllMetadata || refreshOptions.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || requiresRefresh || refreshOptions.ForceSave, updateType);
             updateType = updateType | beforeSaveResult;
 
-            if (newDateModified.HasValue)
-            {
-                item.DateModified = newDateModified.Value;
-            }
-
             // Save if changes were made, or it's never been saved before
             if (refreshOptions.ForceSave || updateType > ItemUpdateType.None || isFirstRefresh || refreshOptions.ReplaceAllMetadata || requiresRefresh)
             {
+                if (item.LocationType == LocationType.FileSystem)
+                {
+                    var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
+                    if (file != null)
+                    {
+                        item.DateModified = file.LastWriteTimeUtc;
+                    }
+                }
+
                 // If any of these properties are set then make sure the updateType is not None, just to force everything to save
                 if (refreshOptions.ForceSave || refreshOptions.ReplaceAllMetadata)
                 {

@@ -111,19 +111,5 @@ namespace MediaBrowser.Controller.Channels
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{IEnumerable{MediaSourceInfo}}.</returns>
         IEnumerable<MediaSourceInfo> GetStaticMediaSources(BaseItem item, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the channel folder.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>BaseItemDto.</returns>
-        Folder GetInternalChannelFolder(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the channel folder.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        BaseItemDto GetChannelFolder(string userId, CancellationToken cancellationToken);
     }
 }

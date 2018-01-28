@@ -27,10 +27,6 @@
 
     public static class SpecialFolder
     {
-        public const string LiveTvNowPlaying = "LiveTvNowPlaying";
-        public const string LiveTvChannels = "LiveTvChannels";
-        public const string LiveTvRecordingGroups = "LiveTvRecordingGroups";
-
         public const string TvShowSeries = "TvShowSeries";
         public const string TvGenres = "TvGenres";
         public const string TvGenre = "TvGenre";

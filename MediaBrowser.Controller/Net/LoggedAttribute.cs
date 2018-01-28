@@ -37,7 +37,7 @@ namespace MediaBrowser.Controller.Net
             {
                 User user = null;
 
-                if (!string.IsNullOrWhiteSpace(auth.UserId))
+                if (!string.IsNullOrEmpty(auth.UserId))
                 {
                     var userId = auth.UserId;
 
