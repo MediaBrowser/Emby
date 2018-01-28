@@ -3,6 +3,7 @@ using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Entities;
 using System;
 using System.Collections.Generic;
+using MediaBrowser.Model.Dto;
 
 namespace MediaBrowser.Controller.Channels
 {
@@ -49,7 +50,7 @@ namespace MediaBrowser.Controller.Channels
         public int? IndexNumber { get; set; }
         public int? ParentIndexNumber { get; set; }
 
-        public List<ChannelMediaInfo> MediaSources { get; set; }
+        public List<MediaSourceInfo> MediaSources { get; set; }
 
         public bool IsInfiniteStream { get; set; }
 
@@ -61,7 +62,7 @@ namespace MediaBrowser.Controller.Channels
 
         public ChannelItemInfo()
         {
-            MediaSources = new List<ChannelMediaInfo>();
+            MediaSources = new List<MediaSourceInfo>();
             TrailerTypes = new List<TrailerType>();
             Genres = new List<string>();
             Studios = new List<string>();

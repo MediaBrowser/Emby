@@ -119,7 +119,7 @@ namespace Emby.Server.Implementations.Library
             var hasMediaSources = (IHasMediaSources)item;
             User user = null;
 
-            if (!string.IsNullOrWhiteSpace(userId))
+            if (!string.IsNullOrEmpty(userId))
             {
                 user = _userManager.GetUserById(userId);
             }
@@ -201,12 +201,12 @@ namespace Emby.Server.Implementations.Library
         {
             var prefix = provider.GetType().FullName.GetMD5().ToString("N") + LiveStreamIdDelimeter;
 
-            if (!string.IsNullOrWhiteSpace(mediaSource.OpenToken) && !mediaSource.OpenToken.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(mediaSource.OpenToken) && !mediaSource.OpenToken.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             {
                 mediaSource.OpenToken = prefix + mediaSource.OpenToken;
             }
 
-            if (!string.IsNullOrWhiteSpace(mediaSource.LiveStreamId) && !mediaSource.LiveStreamId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(mediaSource.LiveStreamId) && !mediaSource.LiveStreamId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             {
                 mediaSource.LiveStreamId = prefix + mediaSource.LiveStreamId;
             }
@@ -214,7 +214,7 @@ namespace Emby.Server.Implementations.Library
 
         public async Task<MediaSourceInfo> GetMediaSource(IHasMediaSources item, string mediaSourceId, string liveStreamId, bool enablePathSubstitution, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(liveStreamId))
+            if (!string.IsNullOrEmpty(liveStreamId))
             {
                 return await GetLiveStream(liveStreamId, cancellationToken).ConfigureAwait(false);
             }
@@ -347,7 +347,7 @@ namespace Emby.Server.Implementations.Library
 
                 var mediaSource = mediaSourceTuple.Item1;
 
-                if (string.IsNullOrWhiteSpace(mediaSource.LiveStreamId))
+                if (string.IsNullOrEmpty(mediaSource.LiveStreamId))
                 {
                     throw new InvalidOperationException(string.Format("{0} returned null LiveStreamId", provider.GetType().Name));
                 }
@@ -358,7 +358,8 @@ namespace Emby.Server.Implementations.Library
                 {
                     Id = mediaSource.LiveStreamId,
                     MediaSource = mediaSource,
-                    DirectStreamProvider = mediaSourceTuple.Item2
+                    DirectStreamProvider = mediaSourceTuple.Item2,
+                    AllowLiveMediaInfoProbe = mediaSourceTuple.Item3
                 };
 
                 _openStreams[mediaSource.LiveStreamId] = info;
@@ -367,10 +368,10 @@ namespace Emby.Server.Implementations.Library
                 _logger.Debug("Live stream opened: " + json);
                 var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
                
-                if (!string.IsNullOrWhiteSpace(request.UserId))
+                if (!string.IsNullOrEmpty(request.UserId))
                 {
                     var user = _userManager.GetUserById(request.UserId);
-                    var item = string.IsNullOrWhiteSpace(request.ItemId)
+                    var item = string.IsNullOrEmpty(request.ItemId)
                         ? null
                         : _libraryManager.GetItemById(request.ItemId);
                     SetUserProperties(item, clone, user);
@@ -389,11 +390,11 @@ namespace Emby.Server.Implementations.Library
 
         public async Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken)
         {
-            var liveStreamInfo = await GetLiveStreamWithDirectStreamProvider(id, cancellationToken).ConfigureAwait(false);
+            var liveStreamInfo = await GetLiveStreamInfo(id, cancellationToken).ConfigureAwait(false);
 
-            var mediaSource = liveStreamInfo.Item1;
+            var mediaSource = liveStreamInfo.MediaSource;
 
-            if (liveStreamInfo.Item2 != null)
+            if (liveStreamInfo.AllowLiveMediaInfoProbe)
             {
                 var info = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
                 {
@@ -413,7 +414,18 @@ namespace Emby.Server.Implementations.Library
 
         public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> GetLiveStreamWithDirectStreamProvider(string id, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            var info = await GetLiveStreamInfo(id, cancellationToken).ConfigureAwait(false);
+            return new Tuple<MediaSourceInfo, IDirectStreamProvider>(info.MediaSource, info.DirectStreamProvider);
+        }
+
+        private async Task<LiveStreamInfo> GetLiveStreamInfo(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentNullException("id");
             }
@@ -425,7 +437,7 @@ namespace Emby.Server.Implementations.Library
                 LiveStreamInfo info;
                 if (_openStreams.TryGetValue(id, out info))
                 {
-                    return new Tuple<MediaSourceInfo, IDirectStreamProvider>(info.MediaSource, info.DirectStreamProvider);
+                    return info;
                 }
                 else
                 {
@@ -463,7 +475,7 @@ namespace Emby.Server.Implementations.Library
 
         public async Task CloseLiveStream(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentNullException("id");
             }
@@ -498,7 +510,7 @@ namespace Emby.Server.Implementations.Library
 
         private Tuple<IMediaSourceProvider, string> GetProvider(string key)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("key");
             }
@@ -549,6 +561,7 @@ namespace Emby.Server.Implementations.Library
             public bool Closed;
             public MediaSourceInfo MediaSource;
             public IDirectStreamProvider DirectStreamProvider;
+            public bool AllowLiveMediaInfoProbe { get; set; }
         }
     }
 }

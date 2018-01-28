@@ -86,7 +86,7 @@ namespace MediaBrowser.Controller.Entities
 
         public void SetPrimaryVersionId(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
             {
                 PrimaryVersionId = null;
             }
@@ -100,21 +100,12 @@ namespace MediaBrowser.Controller.Entities
 
         public override string CreatePresentationUniqueKey()
         {
-            if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+            if (!string.IsNullOrEmpty(PrimaryVersionId))
             {
                 return PrimaryVersionId;
             }
 
             return base.CreatePresentationUniqueKey();
-        }
-
-        [IgnoreDataMember]
-        public override bool EnableRefreshOnDateModifiedChange
-        {
-            get
-            {
-                return VideoType == VideoType.VideoFile || VideoType == VideoType.Iso;
-            }
         }
 
         [IgnoreDataMember]
@@ -225,7 +216,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+                if (!string.IsNullOrEmpty(PrimaryVersionId))
                 {
                     var item = LibraryManager.GetItemById(PrimaryVersionId) as Video;
                     if (item != null)
@@ -312,13 +303,13 @@ namespace MediaBrowser.Controller.Entities
                 if (ExtraType.HasValue)
                 {
                     var key = this.GetProviderId(MetadataProviders.Tmdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, GetUserDataKey(key));
                     }
 
                     key = this.GetProviderId(MetadataProviders.Imdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, GetUserDataKey(key));
                     }
@@ -326,13 +317,13 @@ namespace MediaBrowser.Controller.Entities
                 else
                 {
                     var key = this.GetProviderId(MetadataProviders.Imdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, key);
                     }
 
                     key = this.GetProviderId(MetadataProviders.Tmdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, key);
                     }
@@ -603,7 +594,7 @@ namespace MediaBrowser.Controller.Entities
             list.Add(new Tuple<Video, MediaSourceType>(this, MediaSourceType.Default));
             list.AddRange(GetLinkedAlternateVersions().Select(i => new Tuple<Video, MediaSourceType>(i, MediaSourceType.Grouping)));
 
-            if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+            if (!string.IsNullOrEmpty(PrimaryVersionId))
             {
                 var primary = LibraryManager.GetItemById(PrimaryVersionId) as Video;
                 if (primary != null)
@@ -711,7 +702,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 info.Path = media.ShortcutPath;
 
-                if (!string.IsNullOrWhiteSpace(info.Path))
+                if (!string.IsNullOrEmpty(info.Path))
                 {
                     if (info.Path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
                     {
@@ -739,7 +730,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (media.VideoType == VideoType.VideoFile || media.VideoType == VideoType.Iso)
                 {
-                    if (!string.IsNullOrWhiteSpace(media.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                    if (!string.IsNullOrEmpty(media.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
                     {
                         info.Container = System.IO.Path.GetExtension(media.Path).TrimStart('.');
                     }
@@ -758,7 +749,7 @@ namespace MediaBrowser.Controller.Entities
 
             var locationType = video.LocationType;
             var path = video.Path;
-            if ((locationType == LocationType.FileSystem || locationType == LocationType.Offline) && !string.IsNullOrWhiteSpace(path))
+            if ((locationType == LocationType.FileSystem || locationType == LocationType.Offline) && !string.IsNullOrEmpty(path))
             {
                 terms.Add(System.IO.Path.GetFileName(path));
             }

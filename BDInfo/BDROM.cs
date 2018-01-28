@@ -75,7 +75,7 @@ namespace BDInfo
         public BDROM(
             string path, IFileSystem fileSystem, ITextEncoding textEncoding)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }
@@ -334,7 +334,7 @@ namespace BDInfo
         private FileSystemMetadata GetDirectoryBDMV(
             string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }

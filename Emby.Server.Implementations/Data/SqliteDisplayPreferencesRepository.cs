@@ -98,7 +98,7 @@ namespace Emby.Server.Implementations.Data
             {
                 throw new ArgumentNullException("displayPreferences");
             }
-            if (string.IsNullOrWhiteSpace(displayPreferences.Id))
+            if (string.IsNullOrEmpty(displayPreferences.Id))
             {
                 throw new ArgumentNullException("displayPreferences.Id");
             }
@@ -174,7 +174,7 @@ namespace Emby.Server.Implementations.Data
         /// <exception cref="System.ArgumentNullException">item</exception>
         public DisplayPreferences GetDisplayPreferences(string displayPreferencesId, Guid userId, string client)
         {
-            if (string.IsNullOrWhiteSpace(displayPreferencesId))
+            if (string.IsNullOrEmpty(displayPreferencesId))
             {
                 throw new ArgumentNullException("displayPreferencesId");
             }

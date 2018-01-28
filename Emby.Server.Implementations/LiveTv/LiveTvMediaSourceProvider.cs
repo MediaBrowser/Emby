@@ -48,7 +48,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 var activeRecordingInfo = _liveTvManager.GetActiveRecordingInfo(item.Path);
 
-                if (string.IsNullOrWhiteSpace(baseItem.Path) || activeRecordingInfo != null)
+                if (string.IsNullOrEmpty(baseItem.Path) || activeRecordingInfo != null)
                 {
                     return GetMediaSourcesInternal(item, activeRecordingInfo, cancellationToken);
                 }
@@ -131,7 +131,7 @@ namespace Emby.Server.Implementations.LiveTv
             return list;
         }
 
-        public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> OpenMediaSource(string openToken, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider, bool>> OpenMediaSource(string openToken, CancellationToken cancellationToken)
         {
             MediaSourceInfo stream = null;
             const bool isAudio = false;
@@ -141,13 +141,15 @@ namespace Emby.Server.Implementations.LiveTv
             IDirectStreamProvider directStreamProvider = null;
 
             bool addProbeDelay = false;
+            bool allowLiveMediaProbe = false;
 
             if (string.Equals(keys[0], typeof(LiveTvChannel).Name, StringComparison.OrdinalIgnoreCase))
             {
                 var info = await _liveTvManager.GetChannelStream(keys[1], mediaSourceId, cancellationToken).ConfigureAwait(false);
                 stream = info.Item1;
-                directStreamProvider = info.Item2;
+                directStreamProvider = info.Item2 as IDirectStreamProvider;
                 addProbeDelay = true;
+                allowLiveMediaProbe = directStreamProvider != null || info.Item2 == null;
             }
             else
             {
@@ -173,7 +175,7 @@ namespace Emby.Server.Implementations.LiveTv
             }
 
             _logger.Info("Live stream info: {0}", _jsonSerializer.SerializeToString(stream));
-            return new Tuple<MediaSourceInfo, IDirectStreamProvider>(stream, directStreamProvider);
+            return new Tuple<MediaSourceInfo, IDirectStreamProvider, bool>(stream, directStreamProvider, allowLiveMediaProbe);
         }
 
         private void AddMediaInfo(MediaSourceInfo mediaSource, bool isAudio, CancellationToken cancellationToken)

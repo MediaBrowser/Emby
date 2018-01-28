@@ -231,7 +231,7 @@ namespace Emby.Server.Implementations.Dto
             }
 
             var deviceId = options.DeviceId;
-            if (string.IsNullOrWhiteSpace(deviceId))
+            if (string.IsNullOrEmpty(deviceId))
             {
                 return new Dictionary<string, SyncedItemProgress>();
             }
@@ -420,7 +420,7 @@ namespace Emby.Server.Implementations.Dto
                     dto.CanDownload = false;
                     dto.RunTimeTicks = null;
 
-                    if (!string.IsNullOrWhiteSpace(dto.SeriesName))
+                    if (!string.IsNullOrEmpty(dto.SeriesName))
                     {
                         dto.EpisodeTitle = dto.Name;
                         dto.Name = dto.SeriesName;
@@ -437,7 +437,7 @@ namespace Emby.Server.Implementations.Dto
             foreach (var mediaSource in dto.MediaSources)
             {
                 var container = mediaSource.Container;
-                if (string.IsNullOrWhiteSpace(container))
+                if (string.IsNullOrEmpty(container))
                 {
                     continue;
                 }
@@ -450,17 +450,17 @@ namespace Emby.Server.Implementations.Dto
                 var path = mediaSource.Path;
                 string fileExtensionContainer = null;
 
-                if (!string.IsNullOrWhiteSpace(path))
+                if (!string.IsNullOrEmpty(path))
                 {
                     path = Path.GetExtension(path);
-                    if (!string.IsNullOrWhiteSpace(path))
+                    if (!string.IsNullOrEmpty(path))
                     {
                         path = Path.GetExtension(path);
-                        if (!string.IsNullOrWhiteSpace(path))
+                        if (!string.IsNullOrEmpty(path))
                         {
                             path = path.TrimStart('.');
                         }
-                        if (!string.IsNullOrWhiteSpace(path) && containers.Contains(path, StringComparer.OrdinalIgnoreCase))
+                        if (!string.IsNullOrEmpty(path) && containers.Contains(path, StringComparer.OrdinalIgnoreCase))
                         {
                             fileExtensionContainer = path;
                         }
@@ -833,7 +833,7 @@ namespace Emby.Server.Implementations.Dto
         private void AttachStudios(BaseItemDto dto, BaseItem item)
         {
             dto.Studios = item.Studios
-                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Where(i => !string.IsNullOrEmpty(i))
                 .Select(i => new NameIdPair
                 {
                     Name = i,
@@ -845,7 +845,7 @@ namespace Emby.Server.Implementations.Dto
         private void AttachGenreItems(BaseItemDto dto, BaseItem item)
         {
             dto.GenreItems = item.Genres
-                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Where(i => !string.IsNullOrEmpty(i))
                 .Select(i => new NameIdPair
                 {
                     Name = i,
@@ -1102,7 +1102,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (fields.Contains(ItemFields.Taglines))
             {
-                if (!string.IsNullOrWhiteSpace(item.Tagline))
+                if (!string.IsNullOrEmpty(item.Tagline))
                 {
                     dto.Taglines = new string[] { item.Tagline };
                 }
@@ -1180,7 +1180,7 @@ namespace Emby.Server.Implementations.Dto
                     .Select(i =>
                     {
                         // This should not be necessary but we're seeing some cases of it
-                        if (string.IsNullOrWhiteSpace(i))
+                        if (string.IsNullOrEmpty(i))
                         {
                             return null;
                         }
@@ -1231,7 +1231,7 @@ namespace Emby.Server.Implementations.Dto
                     .Select(i =>
                     {
                         // This should not be necessary but we're seeing some cases of it
-                        if (string.IsNullOrWhiteSpace(i))
+                        if (string.IsNullOrEmpty(i))
                         {
                             return null;
                         }
@@ -1467,7 +1467,7 @@ namespace Emby.Server.Implementations.Dto
 
             dto.ChannelId = item.ChannelId;
 
-            if (item.SourceType == SourceType.Channel && !string.IsNullOrWhiteSpace(item.ChannelId))
+            if (item.SourceType == SourceType.Channel && !string.IsNullOrEmpty(item.ChannelId))
             {
                 var channel = _libraryManager.GetItemById(item.ChannelId);
                 if (channel != null)

@@ -22,12 +22,12 @@ namespace Emby.Dlna.Server
 
         public DescriptionXmlBuilder(DeviceProfile profile, string serverUdn, string serverAddress, string serverName, string serverId)
         {
-            if (string.IsNullOrWhiteSpace(serverUdn))
+            if (string.IsNullOrEmpty(serverUdn))
             {
                 throw new ArgumentNullException("serverUdn");
             }
 
-            if (string.IsNullOrWhiteSpace(serverAddress))
+            if (string.IsNullOrEmpty(serverAddress))
             {
                 throw new ArgumentNullException("serverAddress");
             }
@@ -186,7 +186,7 @@ namespace Emby.Dlna.Server
             builder.Append("<modelNumber>" + Escape(_profile.ModelNumber ?? string.Empty) + "</modelNumber>");
             builder.Append("<modelURL>" + Escape(_profile.ModelUrl ?? string.Empty) + "</modelURL>");
 
-            if (string.IsNullOrWhiteSpace(_profile.SerialNumber))
+            if (string.IsNullOrEmpty(_profile.SerialNumber))
             {
                 builder.Append("<serialNumber>" + Escape(_serverId) + "</serialNumber>");
             }
@@ -203,7 +203,7 @@ namespace Emby.Dlna.Server
                 //builder.Append("<URLBase>" + Escape(_serverAddress) + "</URLBase>");
             }
 
-            if (!string.IsNullOrWhiteSpace(_profile.SonyAggregationFlags))
+            if (!string.IsNullOrEmpty(_profile.SonyAggregationFlags))
             {
                 builder.Append("<av:aggregationFlags xmlns:av=\"urn:schemas-sony-com:av\">" + Escape(_profile.SonyAggregationFlags) + "</av:aggregationFlags>");
             }
@@ -211,7 +211,7 @@ namespace Emby.Dlna.Server
 
         private string GetFriendlyName()
         {
-            if (string.IsNullOrWhiteSpace(_profile.FriendlyName))
+            if (string.IsNullOrEmpty(_profile.FriendlyName))
             {
                 return "Emby - " + _serverName;
             }
@@ -277,7 +277,7 @@ namespace Emby.Dlna.Server
 
         private string BuildUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
+            if (string.IsNullOrEmpty(url))
             {
                 return string.Empty;
             }

@@ -286,7 +286,7 @@ namespace Rssdp.Infrastructure
 
                     foreach (var socket in sockets)
                     {
-                        _logger.Info("{0} disposing sendSocket", GetType().Name);
+                        _logger.Info("{0} disposing sendSocket from {1}", GetType().Name, socket.LocalIPAddress);
                         socket.Dispose();
                     }
                 }

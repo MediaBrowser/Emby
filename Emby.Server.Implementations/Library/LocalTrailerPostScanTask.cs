@@ -78,12 +78,12 @@ namespace Emby.Server.Implementations.Library
 
             var trailers = channelTrailers.Where(i =>
             {
-                if (!string.IsNullOrWhiteSpace(imdbId) &&
+                if (!string.IsNullOrEmpty(imdbId) &&
                     string.Equals(imdbId, i.GetProviderId(MetadataProviders.Imdb), StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
-                if (!string.IsNullOrWhiteSpace(tmdbId) &&
+                if (!string.IsNullOrEmpty(tmdbId) &&
                     string.Equals(tmdbId, i.GetProviderId(MetadataProviders.Tmdb), StringComparison.OrdinalIgnoreCase))
                 {
                     return true;

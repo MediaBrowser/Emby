@@ -304,12 +304,12 @@ namespace Emby.Server.Implementations.Updates
                 var versions = new List<PackageVersionInfo>();
                 foreach (var version in package.versions)
                 {
-                    if (string.IsNullOrWhiteSpace(version.sourceUrl))
+                    if (string.IsNullOrEmpty(version.sourceUrl))
                     {
                         continue;
                     }
 
-                    if (string.IsNullOrWhiteSpace(version.runtimes) || version.runtimes.IndexOf(_packageRuntime, StringComparison.OrdinalIgnoreCase) == -1)
+                    if (string.IsNullOrEmpty(version.runtimes) || version.runtimes.IndexOf(_packageRuntime, StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         continue;
                     }
@@ -339,7 +339,7 @@ namespace Emby.Server.Implementations.Updates
 
             var returnList = new List<PackageInfo>();
 
-            var filterOnPackageType = !string.IsNullOrWhiteSpace(packageType);
+            var filterOnPackageType = !string.IsNullOrEmpty(packageType);
 
             foreach (var p in packagesList)
             {
@@ -465,7 +465,7 @@ namespace Emby.Server.Implementations.Updates
                 return latestPluginInfo != null && GetPackageVersion(latestPluginInfo) > p.Version ? latestPluginInfo : null;
 
             }).Where(i => i != null)
-            .Where(p => !string.IsNullOrWhiteSpace(p.sourceUrl) && !CompletedInstallations.Any(i => string.Equals(i.AssemblyGuid, p.guid, StringComparison.OrdinalIgnoreCase)));
+            .Where(p => !string.IsNullOrEmpty(p.sourceUrl) && !CompletedInstallations.Any(i => string.Equals(i.AssemblyGuid, p.guid, StringComparison.OrdinalIgnoreCase)));
         }
 
         /// <summary>

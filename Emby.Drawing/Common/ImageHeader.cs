@@ -52,7 +52,7 @@ namespace Emby.Drawing.Common
         {
             var extension = Path.GetExtension(path);
 
-            if (string.IsNullOrWhiteSpace(extension))
+            if (string.IsNullOrEmpty(extension))
             {
                 throw new ArgumentException("ImageHeader doesn't support image file");
             }

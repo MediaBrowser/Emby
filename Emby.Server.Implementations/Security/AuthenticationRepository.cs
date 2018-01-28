@@ -106,17 +106,17 @@ namespace Emby.Server.Implementations.Security
 
         private void BindAuthenticationQueryParams(AuthenticationInfoQuery query, IStatement statement)
         {
-            if (!string.IsNullOrWhiteSpace(query.AccessToken))
+            if (!string.IsNullOrEmpty(query.AccessToken))
             {
                 statement.TryBind("@AccessToken", query.AccessToken);
             }
 
-            if (!string.IsNullOrWhiteSpace(query.UserId))
+            if (!string.IsNullOrEmpty(query.UserId))
             {
                 statement.TryBind("@UserId", query.UserId);
             }
 
-            if (!string.IsNullOrWhiteSpace(query.DeviceId))
+            if (!string.IsNullOrEmpty(query.DeviceId))
             {
                 statement.TryBind("@DeviceId", query.DeviceId);
             }
@@ -140,17 +140,17 @@ namespace Emby.Server.Implementations.Security
 
             var startIndex = query.StartIndex ?? 0;
 
-            if (!string.IsNullOrWhiteSpace(query.AccessToken))
+            if (!string.IsNullOrEmpty(query.AccessToken))
             {
                 whereClauses.Add("AccessToken=@AccessToken");
             }
 
-            if (!string.IsNullOrWhiteSpace(query.UserId))
+            if (!string.IsNullOrEmpty(query.UserId))
             {
                 whereClauses.Add("UserId=@UserId");
             }
 
-            if (!string.IsNullOrWhiteSpace(query.DeviceId))
+            if (!string.IsNullOrEmpty(query.DeviceId))
             {
                 whereClauses.Add("DeviceId=@DeviceId");
             }

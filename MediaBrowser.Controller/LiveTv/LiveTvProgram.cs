@@ -26,18 +26,18 @@ namespace MediaBrowser.Controller.LiveTv
             if (!IsSeries)
             {
                 var key = this.GetProviderId(MetadataProviders.Imdb);
-                if (!string.IsNullOrWhiteSpace(key))
+                if (!string.IsNullOrEmpty(key))
                 {
                     list.Insert(0, key);
                 }
 
                 key = this.GetProviderId(MetadataProviders.Tmdb);
-                if (!string.IsNullOrWhiteSpace(key))
+                if (!string.IsNullOrEmpty(key))
                 {
                     list.Insert(0, key);
                 }
             }
-            else if (!string.IsNullOrWhiteSpace(EpisodeTitle))
+            else if (!string.IsNullOrEmpty(EpisodeTitle))
             {
                 var name = GetClientTypeName();
 
@@ -296,7 +296,7 @@ namespace MediaBrowser.Controller.LiveTv
             {
                 var config = GetConfiguration();
 
-                return config.ListingProviders.FirstOrDefault(i => !string.IsNullOrWhiteSpace(i.MoviePrefix));
+                return config.ListingProviders.FirstOrDefault(i => !string.IsNullOrEmpty(i.MoviePrefix));
             }
 
             return null;
@@ -310,7 +310,7 @@ namespace MediaBrowser.Controller.LiveTv
 
             if (listings != null)
             {
-                if (!string.IsNullOrWhiteSpace(listings.MoviePrefix) && name.StartsWith(listings.MoviePrefix, StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(listings.MoviePrefix) && name.StartsWith(listings.MoviePrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     name = name.Substring(listings.MoviePrefix.Length).Trim();
                 }
@@ -324,7 +324,7 @@ namespace MediaBrowser.Controller.LiveTv
             var list = base.GetRelatedUrls();
 
             var imdbId = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(imdbId))
+            if (!string.IsNullOrEmpty(imdbId))
             {
                 if (IsMovie)
                 {

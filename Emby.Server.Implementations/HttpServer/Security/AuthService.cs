@@ -60,11 +60,11 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 }
             }
 
-            var user = string.IsNullOrWhiteSpace(auth.UserId)
+            var user = string.IsNullOrEmpty(auth.UserId)
                 ? null
                 : UserManager.GetUserById(auth.UserId);
 
-            if (user == null & !string.IsNullOrWhiteSpace(auth.UserId))
+            if (user == null & !string.IsNullOrEmpty(auth.UserId))
             {
                 throw new SecurityException("User with Id " + auth.UserId + " not found");
             }
@@ -83,9 +83,9 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 ValidateRoles(roles, user);
             }
 
-            if (!string.IsNullOrWhiteSpace(auth.DeviceId) &&
-                !string.IsNullOrWhiteSpace(auth.Client) &&
-                !string.IsNullOrWhiteSpace(auth.Device))
+            if (!string.IsNullOrEmpty(auth.DeviceId) &&
+                !string.IsNullOrEmpty(auth.Client) &&
+                !string.IsNullOrEmpty(auth.Device))
             {
                 SessionManager.LogSessionActivity(auth.Client,
                     auth.Version,
@@ -120,7 +120,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 };
             }
 
-            if (!string.IsNullOrWhiteSpace(auth.DeviceId))
+            if (!string.IsNullOrEmpty(auth.DeviceId))
             {
                 if (!DeviceManager.CanAccessDevice(user, auth.DeviceId))
                 {
@@ -159,12 +159,12 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 return true;
             }
 
-            if (string.IsNullOrWhiteSpace(auth.Token))
+            if (string.IsNullOrEmpty(auth.Token))
             {
                 return true;
             }
 
-            if (tokenInfo != null && string.IsNullOrWhiteSpace(tokenInfo.UserId))
+            if (tokenInfo != null && string.IsNullOrEmpty(tokenInfo.UserId))
             {
                 return true;
             }
@@ -225,7 +225,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
         private void ValidateSecurityToken(IRequest request, string token)
         {
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new SecurityException("Access token is required.");
             }
@@ -242,7 +242,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 throw new SecurityException("Access token has expired.");
             }
 
-            //if (!string.IsNullOrWhiteSpace(info.UserId))
+            //if (!string.IsNullOrEmpty(info.UserId))
             //{
             //    var user = _userManager.GetUserById(info.UserId);
 

@@ -265,33 +265,14 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 defaultContentType = serverDefaultContentType;
             }
 
-            var preferredContentTypes = new string[] {};
-
             var acceptsAnything = false;
             var hasDefaultContentType = !string.IsNullOrEmpty(defaultContentType);
             if (acceptContentTypes != null)
             {
-                var hasPreferredContentTypes = new bool[preferredContentTypes.Length];
                 foreach (var acceptsType in acceptContentTypes)
                 {
                     var contentType = HttpResultFactory.GetRealContentType(acceptsType);
                     acceptsAnything = acceptsAnything || contentType == "*/*";
-
-                    for (var i = 0; i < preferredContentTypes.Length; i++)
-                    {
-                        if (hasPreferredContentTypes[i]) continue;
-                        var preferredContentType = preferredContentTypes[i];
-                        hasPreferredContentTypes[i] = contentType.StartsWith(preferredContentType);
-
-                        //Prefer Request.ContentType if it is also a preferredContentType
-                        if (hasPreferredContentTypes[i] && preferredContentType == defaultContentType)
-                            return preferredContentType;
-                    }
-                }
-
-                for (var i = 0; i < preferredContentTypes.Length; i++)
-                {
-                    if (hasPreferredContentTypes[i]) return preferredContentTypes[i];
                 }
 
                 if (acceptsAnything)

@@ -189,16 +189,13 @@ namespace MediaBrowser.Providers.Manager
             MergeVideoInfo(source, target, lockedFields, replaceData);
             MergeDisplayOrder(source, target, lockedFields, replaceData);
 
-            //if (!lockedFields.Contains(MetadataFields.SortName))
+            if (replaceData || string.IsNullOrEmpty(target.ForcedSortName))
             {
-                if (replaceData || string.IsNullOrEmpty(target.ForcedSortName))
-                {
-                    var forcedSortName = source.ForcedSortName;
+                var forcedSortName = source.ForcedSortName;
 
-                    if (!string.IsNullOrWhiteSpace(forcedSortName))
-                    {
-                        target.ForcedSortName = forcedSortName;
-                    }
+                if (!string.IsNullOrWhiteSpace(forcedSortName))
+                {
+                    target.ForcedSortName = forcedSortName;
                 }
             }
 

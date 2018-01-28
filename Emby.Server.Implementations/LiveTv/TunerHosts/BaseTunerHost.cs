@@ -55,7 +55,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             ChannelCache cache = null;
             var key = tuner.Id;
 
-            if (enableCache && !string.IsNullOrWhiteSpace(key) && _channelCache.TryGetValue(key, out cache))
+            if (enableCache && !string.IsNullOrEmpty(key) && _channelCache.TryGetValue(key, out cache))
             {
                 if (DateTime.UtcNow - cache.Date < TimeSpan.FromMinutes(60))
                 {
@@ -67,7 +67,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var list = result.ToList();
             Logger.Info("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 
-            if (!string.IsNullOrWhiteSpace(key) && list.Count > 0)
+            if (!string.IsNullOrEmpty(key) && list.Count > 0)
             {
                 cache = cache ?? new ChannelCache();
                 cache.Date = DateTime.UtcNow;
@@ -141,7 +141,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -175,7 +175,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public async Task<ILiveStream> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -240,7 +240,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         }
         protected virtual bool IsValidChannelId(string channelId)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }

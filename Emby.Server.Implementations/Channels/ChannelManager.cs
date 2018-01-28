@@ -94,7 +94,7 @@ namespace Emby.Server.Implementations.Channels
 
         public Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -172,7 +172,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItemDto>> GetChannels(ChannelQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -240,23 +240,23 @@ namespace Emby.Server.Implementations.Channels
             return item;
         }
 
-        private List<ChannelMediaInfo> GetSavedMediaSources(BaseItem item)
+        private List<MediaSourceInfo> GetSavedMediaSources(BaseItem item)
         {
-            var path = Path.Combine(item.GetInternalMetadataPath(), "channelmediasources.json");
+            var path = Path.Combine(item.GetInternalMetadataPath(), "channelmediasourceinfos.json");
 
             try
             {
-                return _jsonSerializer.DeserializeFromFile<List<ChannelMediaInfo>>(path) ?? new List<ChannelMediaInfo>();
+                return _jsonSerializer.DeserializeFromFile<List<MediaSourceInfo>>(path) ?? new List<MediaSourceInfo>();
             }
             catch
             {
-                return new List<ChannelMediaInfo>();
+                return new List<MediaSourceInfo>();
             }
         }
 
-        private void SaveMediaSources(BaseItem item, List<ChannelMediaInfo> mediaSources)
+        private void SaveMediaSources(BaseItem item, List<MediaSourceInfo> mediaSources)
         {
-            var path = Path.Combine(item.GetInternalMetadataPath(), "channelmediasources.json");
+            var path = Path.Combine(item.GetInternalMetadataPath(), "channelmediasourceinfos.json");
 
             if (mediaSources == null || mediaSources.Count == 0)
             {
@@ -278,10 +278,10 @@ namespace Emby.Server.Implementations.Channels
 
         public IEnumerable<MediaSourceInfo> GetStaticMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
-            IEnumerable<ChannelMediaInfo> results = GetSavedMediaSources(item);
+            IEnumerable<MediaSourceInfo> results = GetSavedMediaSources(item);
 
-            return SortMediaInfoResults(results)
-                .Select(i => GetMediaSource(item, i))
+            return results
+                .Select(i => NormalizeMediaSource(item, i))
                 .ToList();
         }
 
@@ -292,7 +292,7 @@ namespace Emby.Server.Implementations.Channels
 
             var requiresCallback = channelPlugin as IRequiresMediaInfoCallback;
 
-            IEnumerable<ChannelMediaInfo> results;
+            IEnumerable<MediaSourceInfo> results;
 
             if (requiresCallback != null)
             {
@@ -301,20 +301,20 @@ namespace Emby.Server.Implementations.Channels
             }
             else
             {
-                results = new List<ChannelMediaInfo>();
+                results = new List<MediaSourceInfo>();
             }
 
-            return SortMediaInfoResults(results)
-                .Select(i => GetMediaSource(item, i))
+            return results
+                .Select(i => NormalizeMediaSource(item, i))
                 .ToList();
         }
 
-        private readonly ConcurrentDictionary<string, Tuple<DateTime, List<ChannelMediaInfo>>> _channelItemMediaInfo =
-            new ConcurrentDictionary<string, Tuple<DateTime, List<ChannelMediaInfo>>>();
+        private readonly ConcurrentDictionary<string, Tuple<DateTime, List<MediaSourceInfo>>> _channelItemMediaInfo =
+            new ConcurrentDictionary<string, Tuple<DateTime, List<MediaSourceInfo>>>();
 
-        private async Task<IEnumerable<ChannelMediaInfo>> GetChannelItemMediaSourcesInternal(IRequiresMediaInfoCallback channel, string id, CancellationToken cancellationToken)
+        private async Task<IEnumerable<MediaSourceInfo>> GetChannelItemMediaSourcesInternal(IRequiresMediaInfoCallback channel, string id, CancellationToken cancellationToken)
         {
-            Tuple<DateTime, List<ChannelMediaInfo>> cachedInfo;
+            Tuple<DateTime, List<MediaSourceInfo>> cachedInfo;
 
             if (_channelItemMediaInfo.TryGetValue(id, out cachedInfo))
             {
@@ -328,53 +328,22 @@ namespace Emby.Server.Implementations.Channels
                    .ConfigureAwait(false);
             var list = mediaInfo.ToList();
 
-            var item2 = new Tuple<DateTime, List<ChannelMediaInfo>>(DateTime.UtcNow, list);
+            var item2 = new Tuple<DateTime, List<MediaSourceInfo>>(DateTime.UtcNow, list);
             _channelItemMediaInfo.AddOrUpdate(id, item2, (key, oldValue) => item2);
 
             return list;
         }
 
-        private MediaSourceInfo GetMediaSource(BaseItem item, ChannelMediaInfo info)
+        private MediaSourceInfo NormalizeMediaSource(BaseItem item, MediaSourceInfo info)
         {
-            var source = info.ToMediaSource(item.Id);
+            info.RunTimeTicks = info.RunTimeTicks ?? item.RunTimeTicks;
 
-            source.RunTimeTicks = source.RunTimeTicks ?? item.RunTimeTicks;
-
-            return source;
-        }
-
-        private IEnumerable<ChannelMediaInfo> SortMediaInfoResults(IEnumerable<ChannelMediaInfo> channelMediaSources)
-        {
-            var list = channelMediaSources.ToList();
-
-            var options = _config.GetChannelsConfiguration();
-
-            var width = options.PreferredStreamingWidth;
-
-            if (width.HasValue)
-            {
-                var val = width.Value;
-
-                var res = list
-                    .OrderBy(i => i.Width.HasValue && i.Width.Value <= val ? 0 : 1)
-                    .ThenBy(i => Math.Abs((i.Width ?? 0) - val))
-                    .ThenByDescending(i => i.Width ?? 0)
-                    .ThenBy(list.IndexOf)
-                    .ToList();
-
-
-                return res;
-            }
-
-            return list
-                .OrderByDescending(i => i.Width ?? 0)
-                .ThenBy(list.IndexOf);
+            return info;
         }
 
         private async Task<Channel> GetChannel(IChannel channelInfo, CancellationToken cancellationToken)
         {
-            var parentFolder =  GetInternalChannelFolder(cancellationToken);
-            var parentFolderId = parentFolder.Id;
+            var parentFolderId = Guid.Empty;
 
             var id = GetInternalChannelId(channelInfo.Name);
             var idString = id.ToString("N");
@@ -475,7 +444,7 @@ namespace Emby.Server.Implementations.Channels
 
         public ChannelFeatures GetChannelFeatures(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentNullException("id");
             }
@@ -488,7 +457,7 @@ namespace Emby.Server.Implementations.Channels
 
         public bool SupportsSync(string channelId)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -525,7 +494,7 @@ namespace Emby.Server.Implementations.Channels
 
         private Guid GetInternalChannelId(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
@@ -534,7 +503,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItemDto>> GetLatestChannelItems(AllChannelMediaQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -581,11 +550,11 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItem>> GetLatestChannelItemsInternal(AllChannelMediaQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
-            if (!string.IsNullOrWhiteSpace(query.UserId) && user == null)
+            if (!string.IsNullOrEmpty(query.UserId) && user == null)
             {
                 throw new ArgumentException("User not found.");
             }
@@ -816,7 +785,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItemDto>> GetAllMedia(AllChannelMediaQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -924,7 +893,7 @@ namespace Emby.Server.Implementations.Channels
                 }
             }
 
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -968,7 +937,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItemDto>> GetChannelItems(ChannelItemQuery query, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrWhiteSpace(query.UserId)
+            var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -1064,7 +1033,7 @@ namespace Emby.Server.Implementations.Channels
                     SortDescending = sortDescending
                 };
 
-                if (!string.IsNullOrWhiteSpace(folderId))
+                if (!string.IsNullOrEmpty(folderId))
                 {
                     var categoryItem = _libraryManager.GetItemById(new Guid(folderId));
 
@@ -1121,7 +1090,7 @@ namespace Emby.Server.Implementations.Channels
                 userCacheKey = hasCacheKey.GetCacheKey(userId) ?? string.Empty;
             }
 
-            var filename = string.IsNullOrWhiteSpace(folderId) ? "root" : folderId;
+            var filename = string.IsNullOrEmpty(folderId) ? "root" : folderId;
             filename += userCacheKey;
 
             var version = (channel.DataVersion ?? string.Empty).GetMD5().ToString("N");
@@ -1363,7 +1332,7 @@ namespace Emby.Server.Implementations.Channels
                 item.Path = mediaSource == null ? null : mediaSource.Path;
             }
 
-            if (!string.IsNullOrWhiteSpace(info.ImageUrl) && !item.HasImage(ImageType.Primary))
+            if (!string.IsNullOrEmpty(info.ImageUrl) && !item.HasImage(ImageType.Primary))
             {
                 item.SetImagePath(ImageType.Primary, info.ImageUrl);
             }
@@ -1523,22 +1492,6 @@ namespace Emby.Server.Implementations.Channels
 
             return items;
         }
-
-        public BaseItemDto GetChannelFolder(string userId, CancellationToken cancellationToken)
-        {
-            var user = string.IsNullOrEmpty(userId) ? null : _userManager.GetUserById(userId);
-
-            var folder =  GetInternalChannelFolder(cancellationToken);
-
-            return _dtoService.GetBaseItemDto(folder, new DtoOptions(), user);
-        }
-
-        public Folder GetInternalChannelFolder(CancellationToken cancellationToken)
-        {
-            var name = _localization.GetLocalizedString("Channels");
-
-            return _libraryManager.GetNamedView(name, "channels", "zz_" + name, cancellationToken);
-        }
     }
 
     public class ChannelsEntryPoint : IServerEntryPoint
@@ -1593,7 +1546,7 @@ namespace Emby.Server.Implementations.Channels
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     _fileSystem.DeleteFile(DataPath);
 

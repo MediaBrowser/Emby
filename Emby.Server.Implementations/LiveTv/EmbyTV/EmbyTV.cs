@@ -408,7 +408,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     if (!string.IsNullOrWhiteSpace(epgChannel.ImageUrl))
                     {
                         tunerChannel.ImageUrl = epgChannel.ImageUrl;
-                        tunerChannel.HasImage = true;
                     }
                 }
             }
@@ -1007,11 +1006,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return result.Item1;
         }
 
-        public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken)
         {
             var result = await GetChannelStreamInternal(channelId, streamId, cancellationToken).ConfigureAwait(false);
 
-            return new Tuple<MediaSourceInfo, IDirectStreamProvider>(result.Item2, result.Item1 as IDirectStreamProvider);
+            return new Tuple<MediaSourceInfo, ILiveStream>(result.Item2, result.Item1);
         }
 
         private MediaSourceInfo CloneMediaSource(MediaSourceInfo mediaSource, bool enableStreamSharing)

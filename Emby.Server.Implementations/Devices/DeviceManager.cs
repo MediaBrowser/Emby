@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.Devices
 
         public DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId, string usedByUserName)
         {
-            if (string.IsNullOrWhiteSpace(reportedId))
+            if (string.IsNullOrEmpty(reportedId))
             {
                 throw new ArgumentNullException("reportedId");
             }
@@ -85,7 +85,7 @@ namespace Emby.Server.Implementations.Devices
                 save = true;
             }
 
-            if (!string.IsNullOrWhiteSpace(usedByUserId))
+            if (!string.IsNullOrEmpty(usedByUserId))
             {
                 if (!string.Equals(device.LastUserId, usedByUserId, StringComparison.Ordinal) ||
                     !string.Equals(device.LastUserName, usedByUserName, StringComparison.Ordinal))
@@ -149,7 +149,7 @@ namespace Emby.Server.Implementations.Devices
                 });
             }
 
-            if (!string.IsNullOrWhiteSpace(query.UserId))
+            if (!string.IsNullOrEmpty(query.UserId))
             {
                 var user = _userManager.GetUserById(query.UserId);
 
@@ -265,7 +265,7 @@ namespace Emby.Server.Implementations.Devices
             {
                 throw new ArgumentException("user not found");
             }
-            if (string.IsNullOrWhiteSpace(deviceId))
+            if (string.IsNullOrEmpty(deviceId))
             {
                 throw new ArgumentNullException("deviceId");
             }

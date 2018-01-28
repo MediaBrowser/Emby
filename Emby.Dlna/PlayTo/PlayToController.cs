@@ -364,7 +364,7 @@ namespace Emby.Dlna.PlayTo
                 Playlist.AddRange(playlist);
             }
 
-            if (!String.IsNullOrWhiteSpace(command.ControllingUserId))
+            if (!String.IsNullOrEmpty(command.ControllingUserId))
             {
                 _sessionManager.LogSessionActivity(_session.Client, _session.ApplicationVersion, _session.DeviceId,
                        _session.DeviceName, _session.RemoteEndPoint, user);
@@ -435,42 +435,12 @@ namespace Emby.Dlna.PlayTo
             return info.IsDirectStream;
         }
 
-        public Task SendUserDataChangeInfo(UserDataChangeInfo info, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendRestartRequiredNotification(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendServerRestartNotification(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendSessionEndedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
         public Task SendPlaybackStartNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
         {
             return Task.FromResult(true);
         }
 
         public Task SendPlaybackStoppedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendServerShutdownNotification(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendLibraryUpdateInfo(LibraryUpdateInfo info, CancellationToken cancellationToken)
         {
             return Task.FromResult(true);
         }
@@ -880,7 +850,7 @@ namespace Emby.Dlna.PlayTo
 
             private static string GetItemId(string url)
             {
-                if (string.IsNullOrWhiteSpace(url))
+                if (string.IsNullOrEmpty(url))
                 {
                     throw new ArgumentNullException("url");
                 }
@@ -906,7 +876,7 @@ namespace Emby.Dlna.PlayTo
 
             public static StreamParams ParseFromUrl(string url, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager)
             {
-                if (string.IsNullOrWhiteSpace(url))
+                if (string.IsNullOrEmpty(url))
                 {
                     throw new ArgumentNullException("url");
                 }
@@ -973,7 +943,7 @@ namespace Emby.Dlna.PlayTo
                     }
                 }
 
-                request.Item = string.IsNullOrWhiteSpace(request.ItemId)
+                request.Item = string.IsNullOrEmpty(request.ItemId)
                     ? null
                     : libraryManager.GetItemById(parsedId);
 

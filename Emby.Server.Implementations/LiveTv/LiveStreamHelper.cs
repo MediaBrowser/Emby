@@ -40,9 +40,9 @@ namespace Emby.Server.Implementations.LiveTv
             var now = DateTime.UtcNow;
 
             MediaInfo mediaInfo = null;
-            var cacheFilePath = string.IsNullOrWhiteSpace(cacheKey) ? null : Path.Combine(_appPaths.CachePath, "livetvmediainfo", cacheKey.GetMD5().ToString("N") + ".json");
+            var cacheFilePath = string.IsNullOrEmpty(cacheKey) ? null : Path.Combine(_appPaths.CachePath, "livetvmediainfo", cacheKey.GetMD5().ToString("N") + ".json");
 
-            if (!string.IsNullOrWhiteSpace(cacheKey))
+            if (!string.IsNullOrEmpty(cacheKey))
             {
                 try
                 {
@@ -57,7 +57,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (mediaInfo == null)
             {
-                if (addProbeDelay && (mediaSource.AnalyzeDurationMs ?? 0) > 0)
+                if (addProbeDelay)
                 {
                     var delayMs = mediaSource.AnalyzeDurationMs ?? 0;
                     delayMs = Math.Max(4000, delayMs);
@@ -85,7 +85,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             var mediaStreams = mediaInfo.MediaStreams;
 
-            if (!string.IsNullOrWhiteSpace(cacheKey))
+            if (!string.IsNullOrEmpty(cacheKey))
             {
                 var newList = new List<MediaStream>();
                 newList.AddRange(mediaStreams.Where(i => i.Type == MediaStreamType.Video).Take(1));

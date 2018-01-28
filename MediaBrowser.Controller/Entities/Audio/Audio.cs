@@ -34,12 +34,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         [IgnoreDataMember]
         public string[] AlbumArtists { get; set; }
 
-        [IgnoreDataMember]
-        public override bool EnableRefreshOnDateModifiedChange
-        {
-            get { return true; }
-        }
-
         public Audio()
         {
             Artists = EmptyStringArray;
@@ -169,13 +163,13 @@ namespace MediaBrowser.Controller.Entities.Audio
             }
             songKey += Name;
 
-            if (!string.IsNullOrWhiteSpace(Album))
+            if (!string.IsNullOrEmpty(Album))
             {
                 songKey = Album + "-" + songKey;
             }
 
             var albumArtist = AlbumArtists.Length == 0 ? null : AlbumArtists[0];
-            if (!string.IsNullOrWhiteSpace(albumArtist))
+            if (!string.IsNullOrEmpty(albumArtist))
             {
                 songKey = albumArtist + "-" + songKey;
             }
@@ -241,7 +235,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
                 foreach (var mediaSource in list)
                 {
-                    if (string.IsNullOrWhiteSpace(mediaSource.Path))
+                    if (string.IsNullOrEmpty(mediaSource.Path))
                     {
                         mediaSource.Type = MediaSourceType.Placeholder;
                     }
@@ -281,7 +275,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
             if (string.IsNullOrEmpty(info.Container))
             {
-                if (!string.IsNullOrWhiteSpace(i.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                if (!string.IsNullOrEmpty(i.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
                 {
                     info.Container = System.IO.Path.GetExtension(i.Path).TrimStart('.');
                 }

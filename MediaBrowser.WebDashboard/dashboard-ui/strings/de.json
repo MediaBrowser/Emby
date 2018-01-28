@@ -1764,6 +1764,7 @@
     "LabelUserAgent": "User-Agent:",
     "UserAgentHelp": "Stelle einen benutzerdefinierten User-Agent HTTP header zur Verf\u00fcgung, wenn n\u00f6tig.",
     "HeaderConfigureRemoteAccess": "Konfiguriere Remote-Zugriff",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
     "LabelLanNetworks": "LAN networks:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

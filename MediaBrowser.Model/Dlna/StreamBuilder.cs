@@ -248,7 +248,7 @@ namespace MediaBrowser.Model.Dlna
 
         public static string NormalizeMediaSourceFormatIntoSingleContainer(string inputContainer, DeviceProfile profile, DlnaProfileType type)
         {
-            if (string.IsNullOrWhiteSpace(inputContainer))
+            if (string.IsNullOrEmpty(inputContainer))
             {
                 return null;
             }
@@ -1290,7 +1290,7 @@ namespace MediaBrowser.Model.Dlna
 
         private static bool IsSubtitleEmbedSupported(MediaStream subtitleStream, SubtitleProfile subtitleProfile, string transcodingSubProtocol, string transcodingContainer)
         {
-            if (!string.IsNullOrWhiteSpace(transcodingContainer))
+            if (!string.IsNullOrEmpty(transcodingContainer))
             {
                 var normalizedContainers = ContainerProfile.SplitValue(transcodingContainer);
 
@@ -1542,7 +1542,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsInterlaced:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1574,7 +1574,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.RefFrames:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1624,12 +1624,12 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoProfile:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
 
-                            if (!string.IsNullOrWhiteSpace(value))
+                            if (!string.IsNullOrEmpty(value))
                             {
                                 // change from split by | to comma
 
@@ -1721,7 +1721,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoLevel:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }

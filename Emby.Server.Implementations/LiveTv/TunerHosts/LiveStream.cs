@@ -162,7 +162,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             var nextFile = nextFileInfo.Item1;
             var isLastFile = nextFileInfo.Item2;
 
-            while (!string.IsNullOrWhiteSpace(nextFile))
+            while (!string.IsNullOrEmpty(nextFile))
             {
                 var emptyReadLimit = isLastFile ? EmptyReadLimit : 1;
 
@@ -183,7 +183,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             //Logger.Info("Live stream files: {0}", string.Join(", ", files.ToArray()));
 
-            if (string.IsNullOrWhiteSpace(currentFile))
+            if (string.IsNullOrEmpty(currentFile))
             {
                 return new Tuple<string, bool>(files.Last(), true);
             }

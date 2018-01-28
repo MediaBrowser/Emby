@@ -435,7 +435,7 @@ namespace Emby.Server.Implementations.Notifications
         {
             var name = item.Name;
 
-            if (!string.IsNullOrWhiteSpace(item.SeriesName))
+            if (!string.IsNullOrEmpty(item.SeriesName))
             {
                 name = item.SeriesName + " - " + name;
             }

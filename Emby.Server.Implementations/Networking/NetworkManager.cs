@@ -277,7 +277,7 @@ namespace Emby.Server.Implementations.Networking
 
         public bool IsInLocalNetworkInternal(string endpoint, bool resolveHost)
         {
-            if (string.IsNullOrWhiteSpace(endpoint))
+            if (string.IsNullOrEmpty(endpoint))
             {
                 throw new ArgumentNullException("endpoint");
             }

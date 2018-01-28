@@ -60,16 +60,16 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 auth.TryGetValue("Token", out token);
             }
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 token = httpReq.Headers["X-Emby-Token"];
             }
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 token = httpReq.Headers["X-MediaBrowser-Token"];
             }
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 token = httpReq.QueryString["api_key"];
             }
@@ -160,7 +160,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
         {
             var auth = httpReq.Headers["X-Emby-Authorization"];
 
-            if (string.IsNullOrWhiteSpace(auth))
+            if (string.IsNullOrEmpty(auth))
             {
                 auth = httpReq.Headers["Authorization"];
             }
@@ -212,7 +212,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
         private string NormalizeValue(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return value;
             }

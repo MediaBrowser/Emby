@@ -25,7 +25,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
         {
             var authorization = _authContext.GetAuthorizationInfo(requestContext);
 
-            var user = string.IsNullOrWhiteSpace(authorization.UserId) ? null : _userManager.GetUserById(authorization.UserId);
+            var user = string.IsNullOrEmpty(authorization.UserId) ? null : _userManager.GetUserById(authorization.UserId);
             return _sessionManager.LogSessionActivity(authorization.Client, authorization.Version, authorization.DeviceId, authorization.Device, requestContext.RemoteIp, user);
         }
 

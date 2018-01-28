@@ -107,7 +107,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Audio
                     return null;
                 }
 
-                var isMixedCollectionType = string.IsNullOrWhiteSpace(collectionType);
+                var isMixedCollectionType = string.IsNullOrEmpty(collectionType);
 
                 // For conflicting extensions, give priority to videos
                 if (isMixedCollectionType && LibraryManager.IsVideoFile(args.Path, libraryOptions))
