@@ -1729,7 +1729,7 @@
     "ButtonScanAllLibraries": "Scan alle bibliotheken",
     "ScanLibrary": "Scan bibliotheek",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "Om https te vereisen voor externe verbindingen zul je een vertrouw SSL-certificaat moeten voorzien zoals Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Laatst gedownloade video's.",
     "ServerRestartNeededAfterPluginInstall": "Emby server zal heropgestart moeten worden na het installeren van een plugin.",
@@ -1764,6 +1764,7 @@
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
     "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
     "LabelLanNetworks": "LAN networks:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

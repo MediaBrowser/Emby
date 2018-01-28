@@ -1729,7 +1729,7 @@
     "ButtonScanAllLibraries": "Preh\u013eada\u0165 v\u0161etky kni\u017enice",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Naposledy prebran\u00e9 vide\u00e1",
     "ServerRestartNeededAfterPluginInstall": "Po in\u0161tal\u00e1cii roz\u0161\u00edrenia bude potrebn\u00fd re\u0161tart Emby servera.",
@@ -1764,6 +1764,7 @@
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
     "HeaderConfigureRemoteAccess": "Nastavi\u0165 vzdialen\u00fd pr\u00edstup",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
     "LabelLanNetworks": "LAN networks:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }
