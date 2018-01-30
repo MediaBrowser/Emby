@@ -158,7 +158,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             try
             {
-                if (stream.MediaStreams.Any(i => i.Index != -1))
+                if (stream.MediaStreams.Any(i => i.Index != -1) || !stream.SupportsProbing)
                 {
                     AddMediaInfo(stream, isAudio, cancellationToken);
                 }

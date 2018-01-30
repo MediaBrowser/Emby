@@ -60,11 +60,11 @@ namespace Emby.Server.Implementations.LiveTv
                 if (addProbeDelay)
                 {
                     var delayMs = mediaSource.AnalyzeDurationMs ?? 0;
-                    delayMs = Math.Max(4000, delayMs);
+                    delayMs = Math.Max(3000, delayMs);
                     await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
                 }
 
-                mediaSource.AnalyzeDurationMs = 4000;
+                mediaSource.AnalyzeDurationMs = 3000;
 
                 mediaInfo = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
                 {
@@ -163,7 +163,7 @@ namespace Emby.Server.Implementations.LiveTv
                 videoStream.IsAVC = null;
             }
 
-            mediaSource.AnalyzeDurationMs = 4000;
+            mediaSource.AnalyzeDurationMs = 3000;
 
             // Try to estimate this
             mediaSource.InferTotalBitrate(true);

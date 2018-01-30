@@ -228,7 +228,7 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public int? GetRequestedMaxRefFrames(string codec)
         {
-            if (!string.IsNullOrEmpty(BaseRequest.Level))
+            if (BaseRequest.MaxRefFrames.HasValue)
             {
                 return BaseRequest.MaxRefFrames;
             }
@@ -236,6 +236,70 @@ namespace MediaBrowser.Controller.MediaEncoding
             if (!string.IsNullOrEmpty(codec))
             {
                 var value = BaseRequest.GetOption(codec, "maxrefframes");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedVideoBitDepth(string codec)
+        {
+            if (BaseRequest.MaxVideoBitDepth.HasValue)
+            {
+                return BaseRequest.MaxVideoBitDepth;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "videobitdepth");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedAudioBitDepth(string codec)
+        {
+            if (BaseRequest.MaxAudioBitDepth.HasValue)
+            {
+                return BaseRequest.MaxAudioBitDepth;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "audiobitdepth");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedAudioChannels(string codec)
+        {
+            if (BaseRequest.MaxAudioChannels.HasValue)
+            {
+                return BaseRequest.MaxAudioChannels;
+            }
+            if (BaseRequest.AudioChannels.HasValue)
+            {
+                return BaseRequest.AudioChannels;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "audiochannels");
                 int result;
                 if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
                 {

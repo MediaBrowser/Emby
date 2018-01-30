@@ -243,7 +243,8 @@ namespace Emby.Server.Implementations.Collections
 
                 if (child == null)
                 {
-                    throw new ArgumentException("No collection title exists with the supplied Id");
+                    _logger.Warn("No collection title exists with the supplied Id");
+                    continue;
                 }
 
                 list.Add(child);

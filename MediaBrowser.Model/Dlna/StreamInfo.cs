@@ -27,7 +27,14 @@ namespace MediaBrowser.Model.Dlna
 
         public void SetOption(string qualifier, string name, string value)
         {
-            SetOption(qualifier + "-" + name, value);
+            if (string.IsNullOrEmpty(qualifier))
+            {
+                SetOption(name, value);
+            }
+            else
+            {
+                SetOption(qualifier + "-" + name, value);
+            }
         }
 
         public void SetOption(string name, string value)
@@ -37,7 +44,14 @@ namespace MediaBrowser.Model.Dlna
 
         public string GetOption(string qualifier, string name)
         {
-            return GetOption(qualifier + "-" + name);
+            var value = GetOption(qualifier + "-" + name);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                value = GetOption(name);
+            }
+
+            return value;
         }
 
         public string GetOption(string name)
@@ -80,7 +94,7 @@ namespace MediaBrowser.Model.Dlna
         public int? SubtitleStreamIndex { get; set; }
 
         public int? TranscodingMaxAudioChannels { get; set; }
-        public int? MaxAudioChannels { get; set; }
+        public int? GlobalMaxAudioChannels { get; set; }
 
         public int? AudioBitrate { get; set; }
 
@@ -88,8 +102,6 @@ namespace MediaBrowser.Model.Dlna
 
         public int? MaxWidth { get; set; }
         public int? MaxHeight { get; set; }
-
-        public int? MaxVideoBitDepth { get; set; }
 
         public float? MaxFramerate { get; set; }
 
@@ -258,7 +270,14 @@ namespace MediaBrowser.Model.Dlna
             list.Add(new NameValuePair("SubtitleStreamIndex", item.SubtitleStreamIndex.HasValue && item.SubtitleDeliveryMethod != SubtitleDeliveryMethod.External ? item.SubtitleStreamIndex.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("VideoBitrate", item.VideoBitrate.HasValue ? item.VideoBitrate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("AudioBitrate", item.AudioBitrate.HasValue ? item.AudioBitrate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            list.Add(new NameValuePair("MaxAudioChannels", item.MaxAudioChannels.HasValue ? item.MaxAudioChannels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
+
+            if (isDlna)
+            {
+                // hack alert
+                // dlna needs to be update to support the qualified params
+                list.Add(new NameValuePair("MaxAudioChannels", item.TargetAudioChannels.HasValue ? item.TargetAudioChannels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
+            }
+
             list.Add(new NameValuePair("MaxFramerate", item.MaxFramerate.HasValue ? item.MaxFramerate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("MaxWidth", item.MaxWidth.HasValue ? item.MaxWidth.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("MaxHeight", item.MaxHeight.HasValue ? item.MaxHeight.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
@@ -294,7 +313,14 @@ namespace MediaBrowser.Model.Dlna
                 list.Add(new NameValuePair("MaxRefFrames", refframes.HasValue ? refframes.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             }
 
-            list.Add(new NameValuePair("MaxVideoBitDepth", item.MaxVideoBitDepth.HasValue ? item.MaxVideoBitDepth.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
+            if (isDlna)
+            {
+                // hack alert
+                // dlna needs to be update to support the qualified params
+                var bitDepth = item.GetTargetVideoBitDepth("h264");
+
+                list.Add(new NameValuePair("MaxVideoBitDepth", bitDepth.HasValue ? bitDepth.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
+            }
 
             if (isDlna)
             {
@@ -563,8 +589,19 @@ namespace MediaBrowser.Model.Dlna
         {
             get
             {
-                MediaStream stream = TargetAudioStream;
-                return stream == null ? null : stream.BitDepth;
+                if (IsDirectStream)
+                {
+                    return TargetAudioStream == null ? (int?)null : TargetAudioStream.BitDepth;
+                }
+
+                var targetAudioCodecs = TargetAudioCodec;
+                var audioCodec = targetAudioCodecs.Length == 0 ? null : targetAudioCodecs[0];
+                if (!string.IsNullOrEmpty(audioCodec))
+                {
+                    return GetTargetAudioBitDepth(audioCodec);
+                }
+
+                return TargetAudioStream == null ? (int?)null : TargetAudioStream.BitDepth;
             }
         }
 
@@ -575,8 +612,19 @@ namespace MediaBrowser.Model.Dlna
         {
             get
             {
-                MediaStream stream = TargetVideoStream;
-                return stream == null || !IsDirectStream ? null : stream.BitDepth;
+                if (IsDirectStream)
+                {
+                    return TargetVideoStream == null ? (int?)null : TargetVideoStream.BitDepth;
+                }
+
+                var targetVideoCodecs = TargetVideoCodec;
+                var videoCodec = targetVideoCodecs.Length == 0 ? null : targetVideoCodecs[0];
+                if (!string.IsNullOrEmpty(videoCodec))
+                {
+                    return GetTargetVideoBitDepth(videoCodec);
+                }
+
+                return TargetVideoStream == null ? (int?)null : TargetVideoStream.BitDepth;
             }
         }
 
@@ -639,6 +687,40 @@ namespace MediaBrowser.Model.Dlna
 
                 return TargetVideoStream == null ? (double?)null : TargetVideoStream.Level;
             }
+        }
+
+        public int? GetTargetVideoBitDepth(string codec)
+        {
+            var value = GetOption(codec, "videobitdepth");
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            int result;
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        public int? GetTargetAudioBitDepth(string codec)
+        {
+            var value = GetOption(codec, "audiobitdepth");
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            int result;
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+            {
+                return result;
+            }
+
+            return null;
         }
 
         public double? GetTargetVideoLevel(string codec)
@@ -748,21 +830,39 @@ namespace MediaBrowser.Model.Dlna
         {
             get
             {
-                MediaStream stream = TargetAudioStream;
-                int? streamChannels = stream == null ? null : stream.Channels;
-
-                if (MaxAudioChannels.HasValue && !IsDirectStream)
+                if (IsDirectStream)
                 {
-                    if (streamChannels.HasValue)
-                    {
-                        return Math.Min(MaxAudioChannels.Value, streamChannels.Value);
-                    }
-
-                    return MaxAudioChannels.Value;
+                    return TargetAudioStream == null ? (int?)null : TargetAudioStream.Channels;
                 }
 
-                return streamChannels;
+                var targetAudioCodecs = TargetAudioCodec;
+                var codec = targetAudioCodecs.Length == 0 ? null : targetAudioCodecs[0];
+                if (!string.IsNullOrEmpty(codec))
+                {
+                    return GetTargetRefFrames(codec);
+                }
+
+                return TargetAudioStream == null ? (int?)null : TargetAudioStream.Channels;
             }
+        }
+
+        public int? GetTargetAudioChannels(string codec)
+        {
+            var defaultValue = GlobalMaxAudioChannels;
+
+            var value = GetOption(codec, "audiochannels");
+            if (string.IsNullOrEmpty(value))
+            {
+                return defaultValue;
+            }
+
+            int result;
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+            {
+                return Math.Min(result, defaultValue ?? result);
+            }
+
+            return defaultValue;
         }
 
         /// <summary>

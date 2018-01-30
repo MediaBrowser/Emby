@@ -9,13 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MediaBrowser.Providers</RootNamespace>
     <AssemblyName>MediaBrowser.Providers</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -113,6 +112,7 @@
     <Compile Include="Manager\ProviderUtils.cs" />
     <Compile Include="Studios\StudiosImageProvider.cs" />
     <Compile Include="Studios\StudioMetadataService.cs" />
+    <Compile Include="Subtitles\SubDB.cs" />
     <Compile Include="Subtitles\SubtitleManager.cs" />
     <Compile Include="TV\DummySeasonProvider.cs" />
     <Compile Include="TV\EpisodeMetadataService.cs" />
@@ -141,6 +141,18 @@
     <Compile Include="Years\YearMetadataService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DvdLib\DvdLib.csproj">
       <Project>{713f42b5-878e-499d-a878-e4c652b1d5e8}</Project>
       <Name>DvdLib</Name>
@@ -159,7 +171,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
