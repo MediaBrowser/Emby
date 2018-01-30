@@ -455,12 +455,7 @@ namespace MediaBrowser.Model.Dlna
                 ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
 
                 // Honor requested max channels
-                if (options.MaxAudioChannels.HasValue)
-                {
-                    int currentValue = playlistItem.MaxAudioChannels ?? options.MaxAudioChannels.Value;
-
-                    playlistItem.MaxAudioChannels = Math.Min(options.MaxAudioChannels.Value, currentValue);
-                }
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
 
                 long transcodingBitrate = options.AudioTranscodingBitrate ??
                     options.Profile.MusicStreamingTranscodingBitrate ??
@@ -896,15 +891,11 @@ namespace MediaBrowser.Model.Dlna
                         }
                     }
                 }
+
                 // Honor requested max channels
-                if (options.MaxAudioChannels.HasValue)
-                {
-                    int currentValue = playlistItem.MaxAudioChannels ?? options.MaxAudioChannels.Value;
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
 
-                    playlistItem.MaxAudioChannels = Math.Min(options.MaxAudioChannels.Value, currentValue);
-                }
-
-                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioChannels, playlistItem.TargetAudioCodec, audioStream);
+                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
                 playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
 
                 var maxBitrateSetting = options.GetMaxBitrate(false);
@@ -943,9 +934,11 @@ namespace MediaBrowser.Model.Dlna
             return 192000;
         }
 
-        private int GetAudioBitrate(string subProtocol, long? maxTotalBitrate, int? targetAudioChannels, string[] targetAudioCodecs, MediaStream audioStream)
+        private int GetAudioBitrate(string subProtocol, long? maxTotalBitrate, string[] targetAudioCodecs, MediaStream audioStream, StreamInfo item)
         {
             var targetAudioCodec = targetAudioCodecs.Length == 0 ? null : targetAudioCodecs[0];
+
+            var targetAudioChannels = item.GetTargetAudioChannels(targetAudioCodec);
 
             int defaultBitrate = audioStream == null ? 192000 : audioStream.BitRate ?? GetDefaultAudioBitrateIfUnknown(audioStream);
 
@@ -1475,7 +1468,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.AudioChannels:
                         {
-                            if (qualifiedOnly)
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1485,15 +1478,15 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.MaxAudioChannels = num;
+                                    item.SetOption(qualifier, "audiochannels", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.MaxAudioChannels = Math.Min(num, item.MaxAudioChannels ?? num);
+                                    item.SetOption(qualifier, "audiochannels", Math.Min(num, item.GetTargetAudioChannels(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.MaxAudioChannels = Math.Max(num, item.MaxAudioChannels ?? num);
+                                    item.SetOption(qualifier, "audiochannels", Math.Max(num, item.GetTargetAudioChannels(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;
@@ -1542,7 +1535,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsInterlaced:
                         {
-                            if (string.IsNullOrEmpty(qualifier))
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1574,7 +1567,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.RefFrames:
                         {
-                            if (string.IsNullOrEmpty(qualifier))
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1599,7 +1592,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitDepth:
                         {
-                            if (qualifiedOnly)
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1609,15 +1602,15 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.MaxVideoBitDepth = num;
+                                    item.SetOption(qualifier, "videobitdepth", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.MaxVideoBitDepth = Math.Min(num, item.MaxVideoBitDepth ?? num);
+                                    item.SetOption(qualifier, "videobitdepth", Math.Min(num, item.GetTargetVideoBitDepth(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.MaxVideoBitDepth = Math.Max(num, item.MaxVideoBitDepth ?? num);
+                                    item.SetOption(qualifier, "videobitdepth", Math.Max(num, item.GetTargetVideoBitDepth(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;

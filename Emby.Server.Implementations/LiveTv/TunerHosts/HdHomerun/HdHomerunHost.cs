@@ -559,8 +559,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
                     if (modelInfo != null && modelInfo.SupportsTranscoding)
                     {
-                        list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
-
                         if (info.AllowHWTranscoding)
                         {
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "heavy"));
@@ -571,6 +569,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "internet240"));
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "mobile"));
                         }
+
+                        list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
                     }
                 }
                 catch

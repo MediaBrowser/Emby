@@ -72,6 +72,11 @@ namespace MediaBrowser.Providers.TV
 
                 var seriesDataPath = await TvdbSeriesProvider.Current.EnsureSeriesInfo(item.ProviderIds, item.Name, item.ProductionYear, language, cancellationToken).ConfigureAwait(false);
 
+                if (string.IsNullOrEmpty(seriesDataPath))
+                {
+                    return new RemoteImageInfo[] { };
+                }
+
                 var path = Path.Combine(seriesDataPath, "banners.xml");
 
                 try

@@ -904,17 +904,19 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
-            if (request.MaxVideoBitDepth.HasValue)
+            var maxBitDepth = state.GetRequestedVideoBitDepth(videoStream.Codec);
+            if (maxBitDepth.HasValue)
             {
-                if (videoStream.BitDepth.HasValue && videoStream.BitDepth.Value > request.MaxVideoBitDepth.Value)
+                if (videoStream.BitDepth.HasValue && videoStream.BitDepth.Value > maxBitDepth.Value)
                 {
                     return false;
                 }
             }
 
-            if (request.MaxRefFrames.HasValue)
+            var maxRefFrames = state.GetRequestedMaxRefFrames(videoStream.Codec);
+            if (maxRefFrames.HasValue)
             {
-                if (videoStream.RefFrames.HasValue && videoStream.RefFrames.Value > request.MaxRefFrames.Value)
+                if (videoStream.RefFrames.HasValue && videoStream.RefFrames.Value > maxRefFrames.Value)
                 {
                     return false;
                 }
@@ -960,6 +962,15 @@ namespace MediaBrowser.Controller.MediaEncoding
                 return false;
             }
 
+            var maxBitDepth = state.GetRequestedAudioBitDepth(audioStream.Codec);
+            if (maxBitDepth.HasValue)
+            {
+                if (audioStream.BitDepth.HasValue && audioStream.BitDepth.Value > maxBitDepth.Value)
+                {
+                    return false;
+                }
+            }
+
             // Source and target codecs must match
             if (string.IsNullOrEmpty(audioStream.Codec) || !supportedAudioCodecs.Contains(audioStream.Codec, StringComparer.OrdinalIgnoreCase))
             {
@@ -967,7 +978,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
 
             // Channels must fall within requested value
-            var channels = request.AudioChannels ?? request.MaxAudioChannels;
+            var channels = state.GetRequestedAudioChannels(audioStream.Codec);
             if (channels.HasValue)
             {
                 if (!audioStream.Channels.HasValue || audioStream.Channels.Value <= 0)
@@ -1113,8 +1124,10 @@ namespace MediaBrowser.Controller.MediaEncoding
         /// <param name="audioStream">The audio stream.</param>
         /// <param name="outputAudioCodec">The output audio codec.</param>
         /// <returns>System.Nullable{System.Int32}.</returns>
-        public int? GetNumAudioChannelsParam(BaseEncodingJobOptions request, MediaStream audioStream, string outputAudioCodec)
+        public int? GetNumAudioChannelsParam(EncodingJobInfo state, MediaStream audioStream, string outputAudioCodec)
         {
+            var request = state.BaseRequest;
+
             var inputChannels = audioStream == null
                 ? null
                 : audioStream.Channels;
@@ -1146,12 +1159,11 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             var isTranscodingAudio = !string.Equals(codec, "copy", StringComparison.OrdinalIgnoreCase);
 
-            int? resultChannels = null;
+            int? resultChannels = state.GetRequestedAudioChannels(codec);
             if (isTranscodingAudio)
             {
-                resultChannels = request.TranscodingMaxAudioChannels;
+                resultChannels = GetMinValue(request.TranscodingMaxAudioChannels, resultChannels);
             }
-            resultChannels = resultChannels ?? request.MaxAudioChannels ?? request.AudioChannels;
 
             if (inputChannels.HasValue)
             {
@@ -1167,7 +1179,21 @@ namespace MediaBrowser.Controller.MediaEncoding
                     : transcoderChannelLimit.Value;
             }
 
-            return resultChannels ?? request.AudioChannels;
+            return resultChannels;
+        }
+
+        private int? GetMinValue(int? val1, int? val2)
+        {
+            if (!val1.HasValue)
+            {
+                return val2;
+            }
+            if (!val2.HasValue)
+            {
+                return val1;
+            }
+
+            return Math.Min(val1.Value, val2.Value);
         }
 
         /// <summary>

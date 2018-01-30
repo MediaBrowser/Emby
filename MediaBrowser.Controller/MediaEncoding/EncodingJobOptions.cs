@@ -43,14 +43,13 @@ namespace MediaBrowser.Controller.MediaEncoding
             ItemId = info.ItemId;
             MediaSourceId = info.MediaSourceId;
             AudioCodec = info.TargetAudioCodec.FirstOrDefault();
-            MaxAudioChannels = info.MaxAudioChannels;
+            MaxAudioChannels = info.GlobalMaxAudioChannels;
             AudioBitRate = info.AudioBitrate;
             AudioSampleRate = info.TargetAudioSampleRate;
             DeviceProfile = deviceProfile;
             VideoCodec = info.TargetVideoCodec.FirstOrDefault();
             VideoBitRate = info.VideoBitrate;
             AudioStreamIndex = info.AudioStreamIndex;
-            MaxVideoBitDepth = info.MaxVideoBitDepth;
             SubtitleMethod = info.SubtitleDeliveryMethod;
             Context = info.Context;
             TranscodingMaxAudioChannels = info.TranscodingMaxAudioChannels;
@@ -221,21 +220,18 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public EncodingContext Context { get; set; }
 
-        public void SetOption(string qualifier, string name, string value)
-        {
-            SetOption(qualifier + "-" + name, value);
-        }
-
         public Dictionary<string, string> StreamOptions { get; set; }
-
-        public void SetOption(string name, string value)
-        {
-            StreamOptions[name] = value;
-        }
 
         public string GetOption(string qualifier, string name)
         {
-            return GetOption(qualifier + "-" + name);
+            var value = GetOption(qualifier + "-" + name);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                value = GetOption(name);
+            }
+
+            return value;
         }
 
         public string GetOption(string name)
