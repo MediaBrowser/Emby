@@ -108,6 +108,7 @@
     <Compile Include="Net\ISocketFactory.cs" />
     <Compile Include="Net\ISocket.cs" />
     <Compile Include="Net\SocketReceiveResult.cs" />
+    <Compile Include="Services\HttpUtility.cs" />
     <Compile Include="Services\IHttpResult.cs" />
     <Compile Include="System\IEnvironmentInfo.cs" />
     <Compile Include="System\IPowerManagement.cs" />

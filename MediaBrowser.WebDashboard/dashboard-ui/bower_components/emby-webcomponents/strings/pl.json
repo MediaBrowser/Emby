@@ -1,6 +1,4 @@
 {
-    "HeaderFavoritePlaylists": "Listy ulubione",
-    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Odblokuj t\u0119 funkcj\u0119, za niewielk\u0105 jednorazow\u0105 op\u0142at\u0105 lub przy u\u017cyciu aktywnej subskrypcji Emby Premium.",
     "MessageUnlockAppWithSupporter": "Odblokuj t\u0119 funkcj\u0119 przy u\u017cyciu subskrypcji Emby Premium.",
     "MessageToValidateSupporter": "Je\u015bli posiadasz aktywn\u0105 subskrypcj\u0119 Emby Premium, upewnij si\u0119, \u017ce j\u0105 poprawnie skonfigurowa\u0142e\u015b przy pomocy Kokpitu serwera Emby, do kt\u00f3rego mo\u017cesz uzyska\u0107 dost\u0119p, klikaj\u0105c na pozycj\u0119 Premium menu startowego.",
@@ -459,6 +457,7 @@
     "Guide": "Przewodnik",
     "Suggestions": "Polecane",
     "HeaderFavoriteCollections": "Kolekcje ulubione",
+    "HeaderFavoritePlaylists": "Listy ulubione",
     "Collections": "Kolekcje",
     "LabelSelectFolderGroups": "Grupuj zawarto\u015b\u0107 z nast\u0119puj\u0105cych folder\u00f3w w widokach taki, jak Filmy, Muzyka i Seriale:",
     "LabelSelectFolderGroupsHelp": "Foldery, kt\u00f3re nie zosta\u0142y zaznaczone, b\u0119d\u0105 wy\u015bwietlane w swoich w\u0142asnych, osobnych widokach.",
@@ -570,6 +569,7 @@
     "RefFramesNotSupported": "Nieobs\u0142ugiwana liczba klatek referencyjnych wideo",
     "ErrorConnectServerUnreachable": "Podczas wykonywania \u017c\u0105danej operacji wyst\u0105pi\u0142 b\u0142\u0105d. Po\u0142\u0105czenie z Twojego serwera z serwerem Emby Connect z {0} by\u0142o niemo\u017cliwe. Upewnij si\u0119, \u017ce po\u0142\u0105czenie internetowe na Twoim serwerze jest aktywne i komunikacja jest dozwolona przez zapor\u0119 sieciow\u0105 i zainstalowane oprogramowanie antywirusowe.",
     "StopRecording": "Zatrzymaj nagrywanie",
+    "HeaderStopRecording": "Stop Recording",
     "ManageRecording": "Zarz\u0105dzaj nagrywaniem",
     "LabelDropImageHere": "Upu\u015b\u0107 obraz tutaj lub naci\u015bnij przycisk, aby przegl\u0105da\u0107.",
     "MessageFileReadError": "Podczas wczytywania plik\u00f3w wyst\u0105pi\u0142 b\u0142\u0105d. Spr\u00f3buj ponownie p\u00f3\u017aniej.",

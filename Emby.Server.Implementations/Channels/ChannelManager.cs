@@ -72,7 +72,7 @@ namespace Emby.Server.Implementations.Channels
         {
             get
             {
-                return TimeSpan.FromHours(6);
+                return TimeSpan.FromHours(1);
             }
         }
 
@@ -709,160 +709,6 @@ namespace Emby.Server.Implementations.Channels
             }
         }
 
-        public async Task<QueryResult<BaseItem>> GetAllMediaInternal(AllChannelMediaQuery query, CancellationToken cancellationToken)
-        {
-            var channels = GetAllChannels();
-
-            if (query.ChannelIds.Length > 0)
-            {
-                // Avoid implicitly captured closure
-                var ids = query.ChannelIds;
-                channels = channels
-                    .Where(i => ids.Contains(GetInternalChannelId(i.Name).ToString("N")))
-                    .ToArray();
-            }
-
-            var tasks = channels
-                .Select(async i =>
-                {
-                    var indexable = i as IIndexableChannel;
-
-                    if (indexable != null)
-                    {
-                        try
-                        {
-                            var result = await GetAllItems(indexable, i, new InternalAllChannelMediaQuery
-                            {
-                                UserId = query.UserId,
-                                ContentTypes = query.ContentTypes,
-                                ExtraTypes = query.ExtraTypes,
-                                TrailerTypes = query.TrailerTypes
-
-                            }, cancellationToken).ConfigureAwait(false);
-
-                            return new Tuple<IChannel, ChannelItemResult>(i, result);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.ErrorException("Error getting all media from {0}", ex, i.Name);
-                        }
-                    }
-                    return new Tuple<IChannel, ChannelItemResult>(i, new ChannelItemResult());
-                });
-
-            var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            var totalCount = results.Length;
-
-            IEnumerable<Tuple<IChannel, ChannelItemInfo>> items = results
-                .SelectMany(i => i.Item2.Items.Select(m => new Tuple<IChannel, ChannelItemInfo>(i.Item1, m)))
-                .OrderBy(i => i.Item2.Name);
-
-            if (query.StartIndex.HasValue)
-            {
-                items = items.Skip(query.StartIndex.Value);
-            }
-            if (query.Limit.HasValue)
-            {
-                items = items.Take(query.Limit.Value);
-            }
-
-            // Avoid implicitly captured closure
-            var token = cancellationToken;
-            var internalItems = items.Select(i =>
-            {
-                var channelProvider = i.Item1;
-                var internalChannelId = GetInternalChannelId(channelProvider.Name);
-                return GetChannelItemEntity(i.Item2, channelProvider, internalChannelId, token);
-            }).ToArray();
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = totalCount,
-                Items = internalItems
-            };
-        }
-
-        public async Task<QueryResult<BaseItemDto>> GetAllMedia(AllChannelMediaQuery query, CancellationToken cancellationToken)
-        {
-            var user = string.IsNullOrEmpty(query.UserId)
-                ? null
-                : _userManager.GetUserById(query.UserId);
-
-            var internalResult = await GetAllMediaInternal(query, cancellationToken).ConfigureAwait(false);
-
-            RefreshIfNeeded(internalResult.Items);
-
-            var dtoOptions = new DtoOptions()
-            {
-                Fields = query.Fields
-            };
-
-            var returnItems = _dtoService.GetBaseItemDtos(internalResult.Items, dtoOptions, user);
-
-            var result = new QueryResult<BaseItemDto>
-            {
-                Items = returnItems,
-                TotalRecordCount = internalResult.TotalRecordCount
-            };
-
-            return result;
-        }
-
-        private async Task<ChannelItemResult> GetAllItems(IIndexableChannel indexable, IChannel channel, InternalAllChannelMediaQuery query, CancellationToken cancellationToken)
-        {
-            var cacheLength = CacheLength;
-            var folderId = _jsonSerializer.SerializeToString(query).GetMD5().ToString("N");
-            var cachePath = GetChannelDataCachePath(channel, query.UserId, folderId, null, false);
-
-            try
-            {
-                if (_fileSystem.GetLastWriteTimeUtc(cachePath).Add(cacheLength) > DateTime.UtcNow)
-                {
-                    return _jsonSerializer.DeserializeFromFile<ChannelItemResult>(cachePath);
-                }
-            }
-            catch (FileNotFoundException)
-            {
-
-            }
-            catch (IOException)
-            {
-
-            }
-
-            await _resourcePool.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            try
-            {
-                try
-                {
-                    if (_fileSystem.GetLastWriteTimeUtc(cachePath).Add(cacheLength) > DateTime.UtcNow)
-                    {
-                        return _jsonSerializer.DeserializeFromFile<ChannelItemResult>(cachePath);
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-
-                }
-                catch (IOException)
-                {
-
-                }
-
-                var result = await indexable.GetAllMedia(query, cancellationToken).ConfigureAwait(false);
-
-                CacheResponse(result, cachePath);
-
-                return result;
-            }
-            finally
-            {
-                _resourcePool.Release();
-            }
-        }
-
         public async Task<QueryResult<BaseItem>> GetChannelItemsInternal(ChannelItemQuery query, IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Get the internal channel entity
@@ -1298,6 +1144,12 @@ namespace Emby.Server.Implementations.Channels
                     forceUpdate = true;
                 }
                 trailer.TrailerTypes = info.TrailerTypes;
+            }
+
+            if (info.DateModified > item.DateModified)
+            {
+                item.DateModified = info.DateModified;
+                forceUpdate = true;
             }
 
             item.ChannelId = internalChannelId.ToString("N");

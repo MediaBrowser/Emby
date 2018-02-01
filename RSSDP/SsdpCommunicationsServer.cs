@@ -393,35 +393,37 @@ namespace Rssdp.Infrastructure
         private void ListenToSocket(ISocket socket)
         {
             // Tasks are captured to local variables even if we don't use them just to avoid compiler warnings.
-            var t = Task.Run(async () =>
+            var t = Task.Run(() => ListenToSocketInternal(socket));
+        }
+
+        private async Task ListenToSocketInternal(ISocket socket)
+        {
+            var cancelled = false;
+            var receiveBuffer = new byte[8192];
+
+            while (!cancelled && !IsDisposed)
             {
-                var cancelled = false;
-                var receiveBuffer = new byte[8192];
-
-                while (!cancelled)
+                try
                 {
-                    try
-                    {
-                        var result = await socket.ReceiveAsync(receiveBuffer, 0, receiveBuffer.Length, CancellationToken.None).ConfigureAwait(false);
+                    var result = await socket.ReceiveAsync(receiveBuffer, 0, receiveBuffer.Length, CancellationToken.None).ConfigureAwait(false);
 
-                        if (result.ReceivedBytes > 0)
-                        {
-                            // Strange cannot convert compiler error here if I don't explicitly
-                            // assign or cast to Action first. Assignment is easier to read,
-                            // so went with that.
-                            ProcessMessage(System.Text.UTF8Encoding.UTF8.GetString(result.Buffer, 0, result.ReceivedBytes), result.RemoteEndPoint, result.LocalIPAddress);
-                        }
-                    }
-                    catch (ObjectDisposedException)
+                    if (result.ReceivedBytes > 0)
                     {
-                        cancelled = true;
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        cancelled = true;
+                        // Strange cannot convert compiler error here if I don't explicitly
+                        // assign or cast to Action first. Assignment is easier to read,
+                        // so went with that.
+                        ProcessMessage(System.Text.UTF8Encoding.UTF8.GetString(result.Buffer, 0, result.ReceivedBytes), result.RemoteEndPoint, result.LocalIPAddress);
                     }
                 }
-            });
+                catch (ObjectDisposedException)
+                {
+                    cancelled = true;
+                }
+                catch (TaskCanceledException)
+                {
+                    cancelled = true;
+                }
+            }
         }
 
         private void EnsureSendSocketCreated()

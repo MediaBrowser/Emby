@@ -85,6 +85,7 @@ namespace MediaBrowser.Model.Dlna
         public bool RequireAvc { get; set; }
         public bool RequireNonAnamorphic { get; set; }
         public bool CopyTimestamps { get; set; }
+        public bool EnableMpegtsM2TsMode { get; set; }
         public bool EnableSubtitlesInManifest { get; set; }
         public string[] AudioCodecs { get; set; }
         public string[] VideoCodecs { get; set; }
@@ -157,7 +158,7 @@ namespace MediaBrowser.Model.Dlna
             }
 
             List<string> list = new List<string>();
-            foreach (NameValuePair pair in BuildParams(this, accessToken, false))
+            foreach (NameValuePair pair in BuildParams(this, accessToken))
             {
                 if (string.IsNullOrEmpty(pair.Value))
                 {
@@ -191,22 +192,6 @@ namespace MediaBrowser.Model.Dlna
             return GetUrl(baseUrl, queryString);
         }
 
-        public string ToDlnaUrl(string baseUrl, string accessToken)
-        {
-            if (PlayMethod == PlayMethod.DirectPlay)
-            {
-                return MediaSource.Path;
-            }
-
-            if (string.IsNullOrEmpty(PlaySessionId))
-            {
-                PlaySessionId = Guid.NewGuid().ToString("N");
-            }
-
-            string dlnaCommand = BuildDlnaParam(this, accessToken);
-            return GetUrl(baseUrl, dlnaCommand);
-        }
-
         private string GetUrl(string baseUrl, string queryString)
         {
             if (string.IsNullOrEmpty(baseUrl))
@@ -236,19 +221,7 @@ namespace MediaBrowser.Model.Dlna
             return string.Format("{0}/videos/{1}/stream{2}?{3}", baseUrl, ItemId, extension, queryString);
         }
 
-        private static string BuildDlnaParam(StreamInfo item, string accessToken)
-        {
-            List<string> list = new List<string>();
-
-            foreach (NameValuePair pair in BuildParams(item, accessToken, true))
-            {
-                list.Add(pair.Value);
-            }
-
-            return string.Format("Params={0}", string.Join(";", list.ToArray(list.Count)));
-        }
-
-        private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken, bool isDlna)
+        private static List<NameValuePair> BuildParams(StreamInfo item, string accessToken)
         {
             List<NameValuePair> list = new List<NameValuePair>();
 
@@ -271,13 +244,6 @@ namespace MediaBrowser.Model.Dlna
             list.Add(new NameValuePair("VideoBitrate", item.VideoBitrate.HasValue ? item.VideoBitrate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("AudioBitrate", item.AudioBitrate.HasValue ? item.AudioBitrate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
 
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                list.Add(new NameValuePair("MaxAudioChannels", item.TargetAudioChannels.HasValue ? item.TargetAudioChannels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            }
-
             list.Add(new NameValuePair("MaxFramerate", item.MaxFramerate.HasValue ? item.MaxFramerate.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("MaxWidth", item.MaxWidth.HasValue ? item.MaxWidth.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
             list.Add(new NameValuePair("MaxHeight", item.MaxHeight.HasValue ? item.MaxHeight.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
@@ -295,67 +261,53 @@ namespace MediaBrowser.Model.Dlna
                 list.Add(new NameValuePair("StartTimeTicks", startPositionTicks.ToString(CultureInfo.InvariantCulture)));
             }
 
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                var level = item.GetTargetVideoLevel("h264");
-
-                list.Add(new NameValuePair("Level", level.HasValue ? level.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            }
-
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                var refframes = item.GetTargetRefFrames("h264");
-
-                list.Add(new NameValuePair("MaxRefFrames", refframes.HasValue ? refframes.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            }
-
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                var bitDepth = item.GetTargetVideoBitDepth("h264");
-
-                list.Add(new NameValuePair("MaxVideoBitDepth", bitDepth.HasValue ? bitDepth.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            }
-
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                var profile = item.GetOption("h264", "profile");
-
-                // Avoid having to encode
-                profile = (profile ?? string.Empty).Replace(" ", "");
-
-                list.Add(new NameValuePair("Profile", profile));
-            }
-
-            // no longer used
-            list.Add(new NameValuePair("Cabac", string.Empty));
-
             list.Add(new NameValuePair("PlaySessionId", item.PlaySessionId ?? string.Empty));
             list.Add(new NameValuePair("api_key", accessToken ?? string.Empty));
 
             string liveStreamId = item.MediaSource == null ? null : item.MediaSource.LiveStreamId;
             list.Add(new NameValuePair("LiveStreamId", liveStreamId ?? string.Empty));
 
-            if (isDlna)
-            {
-                list.Add(new NameValuePair("ItemId", item.ItemId));
-            }
-
-            list.Add(new NameValuePair("CopyTimestamps", item.CopyTimestamps.ToString().ToLower()));
             list.Add(new NameValuePair("SubtitleMethod", item.SubtitleStreamIndex.HasValue && item.SubtitleDeliveryMethod != SubtitleDeliveryMethod.External ? item.SubtitleDeliveryMethod.ToString() : string.Empty));
 
-            list.Add(new NameValuePair("TranscodingMaxAudioChannels", item.TranscodingMaxAudioChannels.HasValue ? item.TranscodingMaxAudioChannels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
-            list.Add(new NameValuePair("EnableSubtitlesInManifest", item.EnableSubtitlesInManifest.ToString().ToLower()));
+
+            if (!item.IsDirectStream)
+            {
+                if (item.RequireNonAnamorphic)
+                {
+                    list.Add(new NameValuePair("RequireNonAnamorphic", item.RequireNonAnamorphic.ToString().ToLower()));
+                }
+
+                list.Add(new NameValuePair("TranscodingMaxAudioChannels", item.TranscodingMaxAudioChannels.HasValue ? item.TranscodingMaxAudioChannels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty));
+
+                if (item.EnableSubtitlesInManifest)
+                {
+                    list.Add(new NameValuePair("EnableSubtitlesInManifest", item.EnableSubtitlesInManifest.ToString().ToLower()));
+                }
+
+                if (item.EnableMpegtsM2TsMode)
+                {
+                    list.Add(new NameValuePair("EnableMpegtsM2TsMode", item.EnableMpegtsM2TsMode.ToString().ToLower()));
+                }
+
+                if (item.EstimateContentLength)
+                {
+                    list.Add(new NameValuePair("EstimateContentLength", item.EstimateContentLength.ToString().ToLower()));
+                }
+
+                if (item.TranscodeSeekInfo != TranscodeSeekInfo.Auto)
+                {
+                    list.Add(new NameValuePair("TranscodeSeekInfo", item.TranscodeSeekInfo.ToString().ToLower()));
+                }
+
+                if (item.CopyTimestamps)
+                {
+                    list.Add(new NameValuePair("CopyTimestamps", item.CopyTimestamps.ToString().ToLower()));
+                }
+
+                list.Add(new NameValuePair("RequireAvc", item.RequireAvc.ToString().ToLower()));
+            }
 
             list.Add(new NameValuePair("Tag", item.MediaSource.ETag ?? string.Empty));
-            list.Add(new NameValuePair("RequireAvc", item.RequireAvc.ToString().ToLower()));
 
             string subtitleCodecs = item.SubtitleCodecs.Length == 0 ?
                string.Empty :
@@ -363,19 +315,7 @@ namespace MediaBrowser.Model.Dlna
 
             list.Add(new NameValuePair("SubtitleCodec", item.SubtitleStreamIndex.HasValue && item.SubtitleDeliveryMethod == SubtitleDeliveryMethod.Embed ? subtitleCodecs : string.Empty));
 
-            list.Add(new NameValuePair("RequireNonAnamorphic", item.RequireNonAnamorphic.ToString().ToLower()));
-
-            if (isDlna)
-            {
-                // hack alert
-                // dlna needs to be update to support the qualified params
-                var deinterlace = string.Equals(item.GetOption("h264", "deinterlace"), "true", StringComparison.OrdinalIgnoreCase) ||
-                                  string.Equals(item.GetOption("mpeg2video", "deinterlace"), "true", StringComparison.OrdinalIgnoreCase);
-
-                list.Add(new NameValuePair("DeInterlace", deinterlace.ToString().ToLower()));
-            }
-
-            if (!isDlna && isHls)
+            if (isHls)
             {
                 list.Add(new NameValuePair("SegmentContainer", item.Container ?? string.Empty));
 
@@ -392,23 +332,20 @@ namespace MediaBrowser.Model.Dlna
                 list.Add(new NameValuePair("BreakOnNonKeyFrames", item.BreakOnNonKeyFrames.ToString()));
             }
 
-            if (isDlna || !item.IsDirectStream)
+            foreach (var pair in item.StreamOptions)
             {
-                list.Add(new NameValuePair("TranscodeReasons", string.Join(",", item.TranscodeReasons.Distinct().Select(i => i.ToString()).ToArray())));
+                if (string.IsNullOrEmpty(pair.Value))
+                {
+                    continue;
+                }
+
+                // strip spaces to avoid having to encode h264 profile names
+                list.Add(new NameValuePair(pair.Key, pair.Value.Replace(" ", "")));
             }
 
-            if (!isDlna)
+            if (!item.IsDirectStream)
             {
-                foreach (var pair in item.StreamOptions)
-                {
-                    if (string.IsNullOrEmpty(pair.Value))
-                    {
-                        continue;
-                    }
-
-                    // strip spaces to avoid having to encode h264 profile names
-                    list.Add(new NameValuePair(pair.Key, pair.Value.Replace(" ", "")));
-                }
+                list.Add(new NameValuePair("TranscodeReasons", string.Join(",", item.TranscodeReasons.Distinct().Select(i => i.ToString()).ToArray())));
             }
 
             return list;

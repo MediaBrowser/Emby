@@ -402,21 +402,7 @@ namespace MediaBrowser.Model.Dlna
                     return null;
                 }
 
-                playlistItem.PlayMethod = PlayMethod.Transcode;
-                playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
-                playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
-                playlistItem.Container = transcodingProfile.Container;
-
-                if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
-                {
-                    playlistItem.AudioCodecs = new string[] { };
-                }
-                else
-                {
-                    playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
-                }
-
-                playlistItem.SubProtocol = transcodingProfile.Protocol;
+                SetStreamInfoOptionsFromTranscodingProfile(playlistItem, transcodingProfile);
 
                 var audioCodecProfiles = new List<CodecProfile>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
@@ -671,6 +657,56 @@ namespace MediaBrowser.Model.Dlna
             return item.DefaultSubtitleStreamIndex;
         }
 
+        private void SetStreamInfoOptionsFromTranscodingProfile(StreamInfo playlistItem, TranscodingProfile transcodingProfile)
+        {
+            if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
+            {
+                playlistItem.AudioCodecs = new string[] { };
+            }
+            else
+            {
+                playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
+            }
+
+            playlistItem.Container = transcodingProfile.Container;
+            playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
+            playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
+
+            if (string.IsNullOrEmpty(transcodingProfile.VideoCodec))
+            {
+                playlistItem.VideoCodecs = new string[] { };
+            }
+            else
+            {
+                playlistItem.VideoCodecs = transcodingProfile.VideoCodec.Split(',');
+            }
+
+            playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
+            playlistItem.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
+            playlistItem.EnableMpegtsM2TsMode = transcodingProfile.EnableMpegtsM2TsMode;
+
+            playlistItem.BreakOnNonKeyFrames = transcodingProfile.BreakOnNonKeyFrames;
+
+            if (transcodingProfile.MinSegments > 0)
+            {
+                playlistItem.MinSegments = transcodingProfile.MinSegments;
+            }
+            if (transcodingProfile.SegmentLength > 0)
+            {
+                playlistItem.SegmentLength = transcodingProfile.SegmentLength;
+            }
+            playlistItem.SubProtocol = transcodingProfile.Protocol;
+
+            if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
+            {
+                int transcodingMaxAudioChannels;
+                if (int.TryParse(transcodingProfile.MaxAudioChannels, NumberStyles.Any, CultureInfo.InvariantCulture, out transcodingMaxAudioChannels))
+                {
+                    playlistItem.TranscodingMaxAudioChannels = transcodingMaxAudioChannels;
+                }
+            }
+        }
+
         private StreamInfo BuildVideoItem(MediaSourceInfo item, VideoOptions options)
         {
             if (item == null)
@@ -776,36 +812,9 @@ namespace MediaBrowser.Model.Dlna
                 }
 
                 playlistItem.PlayMethod = PlayMethod.Transcode;
-                playlistItem.Container = transcodingProfile.Container;
-                playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
-                playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
 
-                playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
+                SetStreamInfoOptionsFromTranscodingProfile(playlistItem, transcodingProfile);
 
-                playlistItem.VideoCodecs = transcodingProfile.VideoCodec.Split(',');
-                playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
-                playlistItem.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
-
-                playlistItem.BreakOnNonKeyFrames = transcodingProfile.BreakOnNonKeyFrames;
-
-                if (transcodingProfile.MinSegments > 0)
-                {
-                    playlistItem.MinSegments = transcodingProfile.MinSegments;
-                }
-                if (transcodingProfile.SegmentLength > 0)
-                {
-                    playlistItem.SegmentLength = transcodingProfile.SegmentLength;
-                }
-
-                if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
-                {
-                    int transcodingMaxAudioChannels;
-                    if (int.TryParse(transcodingProfile.MaxAudioChannels, NumberStyles.Any, CultureInfo.InvariantCulture, out transcodingMaxAudioChannels))
-                    {
-                        playlistItem.TranscodingMaxAudioChannels = transcodingMaxAudioChannels;
-                    }
-                }
-                playlistItem.SubProtocol = transcodingProfile.Protocol;
                 ConditionProcessor conditionProcessor = new ConditionProcessor();
 
                 var isFirstAppliedCodecProfile = true;

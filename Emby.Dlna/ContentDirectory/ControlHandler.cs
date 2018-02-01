@@ -31,6 +31,7 @@ using MediaBrowser.Controller.TV;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Xml;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.LiveTv;
 
 namespace Emby.Dlna.ContentDirectory
 {
@@ -512,6 +513,10 @@ namespace Emby.Dlna.ContentDirectory
                 {
                     return GetFolders(item, user, stubType, sort, startIndex, limit);
                 }
+                if (userView != null && string.Equals(CollectionType.LiveTv, userView.ViewType, StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetLiveTvChannels(item, user, stubType, sort, startIndex, limit);
+                }
             }
 
             if (stubType.HasValue)
@@ -547,6 +552,22 @@ namespace Emby.Dlna.ContentDirectory
             var queryResult = folder.GetItems(query);
 
             return ToResult(queryResult);
+        }
+
+        private QueryResult<ServerItem> GetLiveTvChannels(BaseItem item, User user, StubType? stubType, SortCriteria sort, int? startIndex, int? limit)
+        {
+            var query = new InternalItemsQuery(user)
+            {
+                StartIndex = startIndex,
+                Limit = limit,
+            };
+            query.IncludeItemTypes = new[] { typeof(LiveTvChannel).Name };
+
+            SetSorting(query, sort, false);
+
+            var result = _libraryManager.GetItemsResult(query);
+
+            return ToResult(result);
         }
 
         private QueryResult<ServerItem> GetMusicFolders(BaseItem item, User user, StubType? stubType, SortCriteria sort, int? startIndex, int? limit)

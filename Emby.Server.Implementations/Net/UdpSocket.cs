@@ -118,18 +118,24 @@ namespace Emby.Server.Implementations.Net
 
         public IAsyncResult BeginReceive(byte[] buffer, int offset, int count, AsyncCallback callback)
         {
-            EndPoint receivedFromEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            ThrowIfDisposed();
 
+            EndPoint receivedFromEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            
             return _Socket.BeginReceiveFrom(buffer, offset, count, SocketFlags.None, ref receivedFromEndPoint, callback, buffer);
         }
 
         public int Receive(byte[] buffer, int offset, int count)
         {
+            ThrowIfDisposed();
+
             return _Socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
         }
 
         public SocketReceiveResult EndReceive(IAsyncResult result)
         {
+            ThrowIfDisposed();
+
             IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
             EndPoint remoteEndPoint = (EndPoint)sender;
 
@@ -148,6 +154,8 @@ namespace Emby.Server.Implementations.Net
 
         public Task<SocketReceiveResult> ReceiveAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
+            ThrowIfDisposed();
+
             var taskCompletion = new TaskCompletionSource<SocketReceiveResult>();
 
             Action<IAsyncResult> callback = callbackResult =>
@@ -167,6 +175,7 @@ namespace Emby.Server.Implementations.Net
             if (result.CompletedSynchronously)
             {
                 callback(result);
+                return taskCompletion.Task;
             }
 
             cancellationToken.Register(() => taskCompletion.TrySetCanceled());
@@ -176,6 +185,8 @@ namespace Emby.Server.Implementations.Net
 
         public Task<SocketReceiveResult> ReceiveAsync(CancellationToken cancellationToken)
         {
+            ThrowIfDisposed();
+
             var buffer = new byte[8192];
 
             return ReceiveAsync(buffer, 0, buffer.Length, cancellationToken);
@@ -183,6 +194,8 @@ namespace Emby.Server.Implementations.Net
 
         public Task SendToAsync(byte[] buffer, int offset, int size, IpEndPointInfo endPoint, CancellationToken cancellationToken)
         {
+            ThrowIfDisposed();
+
             var taskCompletion = new TaskCompletionSource<int>();
 
             Action<IAsyncResult> callback = callbackResult =>
@@ -196,12 +209,13 @@ namespace Emby.Server.Implementations.Net
                     taskCompletion.TrySetException(ex);
                 }
             };
-
+            
             var result = BeginSendTo(buffer, offset, size, endPoint, new AsyncCallback(callback), null);
 
             if (result.CompletedSynchronously)
             {
                 callback(result);
+                return taskCompletion.Task;
             }
 
             cancellationToken.Register(() => taskCompletion.TrySetCanceled());
@@ -211,6 +225,8 @@ namespace Emby.Server.Implementations.Net
 
         public IAsyncResult BeginSendTo(byte[] buffer, int offset, int size, IpEndPointInfo endPoint, AsyncCallback callback, object state)
         {
+            ThrowIfDisposed();
+
             var ipEndPoint = NetworkManager.ToIPEndPoint(endPoint);
 
             return _Socket.BeginSendTo(buffer, offset, size, SocketFlags.None, ipEndPoint, callback, state);
@@ -218,6 +234,8 @@ namespace Emby.Server.Implementations.Net
 
         public int EndSendTo(IAsyncResult result)
         {
+            ThrowIfDisposed();
+
             return _Socket.EndSendTo(result);
         }
 

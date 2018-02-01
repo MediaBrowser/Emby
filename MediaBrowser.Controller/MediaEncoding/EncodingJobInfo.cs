@@ -139,8 +139,6 @@ namespace MediaBrowser.Controller.MediaEncoding
         public string InputContainer { get; set; }
         public IsoType? IsoType { get; set; }
 
-        public bool EnableMpegtsM2TsMode { get; set; }
-
         public BaseEncodingJobOptions BaseRequest { get; set; }
 
         public long? StartTimeTicks

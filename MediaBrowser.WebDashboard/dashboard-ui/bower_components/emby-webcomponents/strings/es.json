@@ -1,6 +1,4 @@
 {
-    "HeaderFavoritePlaylists": "Favorite Playlists",
-    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Desbloquea esta caracter\u00edstica con una peque\u00f1a compra una vez o con una suscripci\u00f3n a Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Desbloquea esta caracter\u00edstica con una suscripci\u00f3n a Emby Premiere.",
     "MessageToValidateSupporter": "Si tienes una suscripci\u00f3n a Emby Premiere aseg\u00farate de que la has configurado en el Panel de Control de tu servidor Emby en Ayuda -> Emby Premiere.",
@@ -459,6 +457,7 @@
     "Guide": "Gu\u00eda",
     "Suggestions": "Sugerencias",
     "HeaderFavoriteCollections": "Favorite Collections",
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "Collections": "Colecciones",
     "LabelSelectFolderGroups": "Agrupar contenido autom\u00e1ticamente desde las siguientes carpetas en vistas como Pel\u00edculas, M\u00fasica y Series:",
     "LabelSelectFolderGroupsHelp": "Las carpetas sin seleccionar se mostrar\u00e1n ellas mismas en su propia vista.",
@@ -570,6 +569,7 @@
     "RefFramesNotSupported": "N\u00famero de cuadros de referencia de video no soportados",
     "ErrorConnectServerUnreachable": "There was an error performing the requested operation. Your server is unable to contact our Emby Connect Server at {0}. Please ensure your server has an active internet connection and that the communications are being allowed by any firewall or security software you have installed.",
     "StopRecording": "Parar grabaci\u00f3n",
+    "HeaderStopRecording": "Stop Recording",
     "ManageRecording": "Gestionar grabaci\u00f3n",
     "LabelDropImageHere": "Soltar imagen aqu\u00ed, o pulsar para navegar.",
     "MessageFileReadError": "Ha habido un error leyendo el fichero. Por favor int\u00e9ntalo m\u00e1s tarde.",
