@@ -161,5 +161,7 @@ namespace MediaBrowser.Common
         object CreateInstance(Type type);
 
         PackageVersionClass SystemUpdateLevel { get; }
+
+        string GetValue(string name);
     }
 }

@@ -97,8 +97,6 @@
     <Compile Include="HttpServer\LoggerUtils.cs" />
     <Compile Include="HttpServer\RangeRequestWriter.cs" />
     <Compile Include="HttpServer\ResponseFilter.cs" />
-    <Compile Include="HttpServer\SocketSharp\Extensions.cs" />
-    <Compile Include="HttpServer\SocketSharp\HttpUtility.cs" />
     <Compile Include="HttpServer\IHttpListener.cs" />
     <Compile Include="HttpServer\Security\AuthorizationContext.cs" />
     <Compile Include="HttpServer\Security\AuthService.cs" />
@@ -803,6 +801,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\ro.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="values.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

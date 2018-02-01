@@ -1868,7 +1868,8 @@ namespace Emby.Server.Implementations
                 "MediaBrowser.Channels.HitboxTV.dll",
                 "MediaBrowser.Channels.HockeyStreams.dll",
                 "MediaBrowser.Plugins.ITV.dll",
-                "MediaBrowser.Plugins.Lastfm.dll"
+                "MediaBrowser.Plugins.Lastfm.dll",
+                "ServerRestart.dll"
             };
 
             return !exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase);
@@ -2427,6 +2428,52 @@ namespace Emby.Server.Implementations
                     }
                 }
             }
+        }
+
+        private Dictionary<string, string> _values;
+        public string GetValue(string name)
+        {
+            if (_values == null)
+            {
+                _values = LoadValues();
+            }
+
+            string value;
+
+            if (_values.TryGetValue(name, out value))
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        private Dictionary<string, string> LoadValues()
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            using (var stream = typeof(ApplicationHost).Assembly.GetManifestResourceStream(typeof(ApplicationHost).Namespace + ".values.txt"))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            continue;
+                        }
+
+                        var index = line.IndexOf('=');
+                        if (index != -1)
+                        {
+                            values[line.Substring(0, index)] = line.Substring(index + 1);
+                        }
+                    }
+                }
+            }
+
+            return values;
         }
     }
 

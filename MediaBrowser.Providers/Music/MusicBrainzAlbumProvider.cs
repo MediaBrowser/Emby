@@ -753,9 +753,41 @@ namespace MediaBrowser.Providers.Music
 
         private async Task<List<MbzUrl>> RefreshMzbUrls(bool forceMusicBrainzProper = false)
         {
-            List<MbzUrl> list;
+            List<MbzUrl> list = null;
 
-            if (forceMusicBrainzProper)
+            if (!forceMusicBrainzProper)
+            {
+                var musicbrainzadminurl = _appHost.GetValue("musicbrainzadminurl");
+
+                if (!string.IsNullOrEmpty(musicbrainzadminurl))
+                {
+                    try
+                    {
+                        var options = new HttpRequestOptions
+                        {
+                            Url = musicbrainzadminurl,
+                            UserAgent = _appHost.Name + "/" + _appHost.ApplicationVersion
+                        };
+
+                        using (var response = await _httpClient.SendAsync(options, "GET").ConfigureAwait(false))
+                        {
+                            using (var stream = response.Content)
+                            {
+                                var results = _json.DeserializeFromStream<List<MbzUrl>>(stream);
+
+                                list = results;
+                            }
+                        }
+                        _lastMbzUrlQueryTicks = DateTime.UtcNow.Ticks;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error getting music brainz info", ex);
+                    }
+                }
+            }
+
+            if (list == null)
             {
                 list = new List<MbzUrl>
                 {
@@ -765,41 +797,6 @@ namespace MediaBrowser.Providers.Music
                         throttleMs = 1000
                     }
                 };
-            }
-            else
-            {
-                try
-                {
-                    var options = new HttpRequestOptions
-                    {
-                        Url = "https://mb3admin.com/admin/service/standards/musicBrainzUrls",
-                        UserAgent = _appHost.Name + "/" + _appHost.ApplicationVersion
-                    };
-
-                    using (var response = await _httpClient.SendAsync(options, "GET").ConfigureAwait(false))
-                    {
-                        using (var stream = response.Content)
-                        {
-                            var results = _json.DeserializeFromStream<List<MbzUrl>>(stream);
-
-                            list = results;
-                        }
-                    }
-                    _lastMbzUrlQueryTicks = DateTime.UtcNow.Ticks;
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error getting music brainz info", ex);
-
-                    list = new List<MbzUrl>
-                {
-                    new MbzUrl
-                    {
-                        url = MusicBrainzBaseUrl,
-                        throttleMs = 1000
-                    }
-                };
-                }
             }
 
             _mbzUrls = list.ToList();

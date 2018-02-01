@@ -15,6 +15,8 @@ namespace MediaBrowser.Controller.Channels
 
         public string Id { get; set; }
 
+        public DateTime DateModified { get; set; }
+
         public ChannelItemType Type { get; set; }
 
         public string OfficialRating { get; set; }
@@ -51,8 +53,6 @@ namespace MediaBrowser.Controller.Channels
         public int? ParentIndexNumber { get; set; }
 
         public List<MediaSourceInfo> MediaSources { get; set; }
-
-        public bool IsInfiniteStream { get; set; }
 
         public string HomePageUrl { get; set; }
 
