@@ -193,6 +193,8 @@ namespace MediaBrowser.Controller.MediaEncoding
         public string OutputContainer { get; set; }
         public string LiveStreamId { get; set; }
 
+        public bool EnableMpegtsM2TsMode { get; set; }
+
         /// <summary>
         /// Gets or sets the video codec.
         /// </summary>

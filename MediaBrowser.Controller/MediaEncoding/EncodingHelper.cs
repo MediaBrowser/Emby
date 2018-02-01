@@ -2108,7 +2108,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             var args = "-codec:v:0 " + videoCodec;
 
-            if (state.EnableMpegtsM2TsMode)
+            if (state.BaseRequest.EnableMpegtsM2TsMode)
             {
                 args += " -mpegts_m2ts_mode 1";
             }
