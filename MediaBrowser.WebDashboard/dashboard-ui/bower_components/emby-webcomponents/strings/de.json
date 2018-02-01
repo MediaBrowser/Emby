@@ -1,6 +1,4 @@
 {
-    "HeaderFavoritePlaylists": "Lieblingswiedergabelisten",
-    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Schalte diese Funktion mit einer kleinen einmaligen Geb\u00fchr oder einem aktiven Emby Premium Abo frei.",
     "MessageUnlockAppWithSupporter": "Schalte diese Funktion mit einem aktiven Emby Premium Abo frei.",
     "MessageToValidateSupporter": "Wenn du eine aktive Emby Premiere Mitgliedschaft hast, stelle bitte sicher, dass du diese \u00fcber das Emby Server Dashboard eingerichtet hast (Hauptmenu -> Emby Premiere).",
@@ -459,6 +457,7 @@
     "Guide": "TV Guide",
     "Suggestions": "Empfehlungen",
     "HeaderFavoriteCollections": "Lieblingssammlungen",
+    "HeaderFavoritePlaylists": "Lieblingswiedergabelisten",
     "Collections": "Sammlungen",
     "LabelSelectFolderGroups": "Gruppiere Inhalte von folgenden Verzeichnissen automatisch zu Ansichten wie beispielsweise Filme, Musik und TV:",
     "LabelSelectFolderGroupsHelp": "Verzeichnisse die nicht markiert sind werden alleine mit ihren eigenen Ansichten angezeigt.",
@@ -570,6 +569,7 @@
     "RefFramesNotSupported": "Anzahl der Videoreferenzframes nicht unterst\u00fctzt",
     "ErrorConnectServerUnreachable": "Es gab einen Fehler bei bei der Ausf\u00fchrung des Funktion. Dein Server ist nicht in der Lage unsere Emby-Connect-Server zu erreichen um {0}. Stelle bitte sicher, dass dein Server eine aktive Internetverbindung hat und die Kommunikations durch die Firewall oder andere installierte Sicherheitssoftware erlaubt wurde.",
     "StopRecording": "Aufnahme stoppen",
+    "HeaderStopRecording": "Stop Recording",
     "ManageRecording": "Aufnahme verwalten",
     "LabelDropImageHere": "Fotos hierher ziehen oder klicken im zu browsen.",
     "MessageFileReadError": "Es gab einen Fehler beim Lesen der Datei. Bitte versuche es erneut.",

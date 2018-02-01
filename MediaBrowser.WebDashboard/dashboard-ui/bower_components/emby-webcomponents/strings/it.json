@@ -1,6 +1,4 @@
 {
-    "HeaderFavoritePlaylists": "Playlist Preferite",
-    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Sblocca questa funzionalit\u00e0 con un piccolo acquisto singolo, o con un abbonamento Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Sblocca questa funzionalit\u00e0 con un abbonamento Emby Premiere",
     "MessageToValidateSupporter": "Se hai un abbonamento Emby Premiere, assicurati di averlo configurato nel Pannello di Controllo del Server, a cui puoi accedere cliccando su Emby Premiere dal menu principale.",
@@ -459,6 +457,7 @@
     "Guide": "Guida",
     "Suggestions": "Suggerimenti",
     "HeaderFavoriteCollections": "Collezioni Preferite",
+    "HeaderFavoritePlaylists": "Playlist Preferite",
     "Collections": "Collezioni",
     "LabelSelectFolderGroups": "Raggruppa i contenuti delle seguenti cartelle in viste come Film, Musica e Serie TV",
     "LabelSelectFolderGroupsHelp": "Le cartelle non selezionate verranno mostrate come se stesse nelle proprie viste",
@@ -570,6 +569,7 @@
     "RefFramesNotSupported": "Il numero di frame di riferimento video non \u00e8 supportato",
     "ErrorConnectServerUnreachable": "Si \u00e8 verificato un errore durante l'esecuzione dell'operazione richiesta. Il tuo server non \u00e8 in grado di contattare il nostro Server Emby Connect al {0}. Assicurarsi che il server disponga di una connessione Internet attiva e che le comunicazioni siano consentite da qualsiasi firewall o software di protezione installato.",
     "StopRecording": "Ferma registrazione",
+    "HeaderStopRecording": "Stop Recording",
     "ManageRecording": "Gestisci registrazione",
     "LabelDropImageHere": "Rilasciare l'immagine qui, oppure clicca per sfogliare.",
     "MessageFileReadError": "Si \u00e8 verificato un errore durante la lettura del file. Si prega di riprovare.",

@@ -1,6 +1,4 @@
 {
-    "HeaderFavoritePlaylists": "Favorite Playlists",
-    "HeaderStopRecording": "Stop Recording",
     "MessageUnlockAppWithPurchaseOrSupporter": "Ontgrendel deze functie met een kleine eenmalige aankoop, of met een actief Emby Premiere abonnement.",
     "MessageUnlockAppWithSupporter": "Ontgrendel deze functie met een actief Emby Premiere abonnement.",
     "MessageToValidateSupporter": "Als u een actieve Emby Premiere abonnement heeft, zorg er dan voor dat u deze activeert in uw Emby Server Dashboard door te klikken op Emby Premiere in het hoofdmenu.",
@@ -459,6 +457,7 @@
     "Guide": "Gids",
     "Suggestions": "Suggesties",
     "HeaderFavoriteCollections": "Favorite Collections",
+    "HeaderFavoritePlaylists": "Favorite Playlists",
     "Collections": "Collecties",
     "LabelSelectFolderGroups": "De inhoud van de volgende mappen automatisch groeperen in secties zoals Films, Muziek en TV:",
     "LabelSelectFolderGroupsHelp": "Mappen die niet aangevinkt zijn worden getoond in hun eigen weergave.",
@@ -570,6 +569,7 @@
     "RefFramesNotSupported": "Aantal video reference frames niet ondersteund",
     "ErrorConnectServerUnreachable": "Er was een probleem bij het uitvoeren van deze bewerking. Uw server kan de Emby Connect Server op {0} niet bereiken. Controleer dat uw server een actieve internetverbinding heeft en dat de communicatie toegestaan wordt door de firewall en\/of security software die u gebruikt.",
     "StopRecording": "Stop opname",
+    "HeaderStopRecording": "Stop Recording",
     "ManageRecording": "Beheren opnames",
     "LabelDropImageHere": "Sleep de afbeelding hierheen of klik om te bladeren.",
     "MessageFileReadError": "Er is een fout opgetreden bij het lezen van het bestand. Probeer het opnieuw.",

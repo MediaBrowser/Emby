@@ -192,7 +192,7 @@
   "LabelOriginalAspectRatio": "Original aspect ratio:",
   "Label3DFormat": "3D format:",
   "FormatValue": "Format: {0}",
-  "DownloadsValue": "Downloads: {0}",
+  "DownloadsValue": "{0} downloads",
   "PerfectMatch": "Perfect match",
   "EnableExternalVideoPlayers": "Enable external video players",
   "EnableExternalVideoPlayersHelp": "An external player menu will be shown when starting video playback.",
