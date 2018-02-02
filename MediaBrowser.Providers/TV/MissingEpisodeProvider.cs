@@ -302,7 +302,7 @@ namespace MediaBrowser.Providers.TV
 
             foreach (var episodeToRemove in episodesToRemove)
             {
-                episodeToRemove.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(episodeToRemove, new DeleteOptions
                 {
                     DeleteFileLocation = true
 
@@ -368,7 +368,7 @@ namespace MediaBrowser.Providers.TV
 
             foreach (var seasonToRemove in seasonsToRemove)
             {
-                seasonToRemove.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(seasonToRemove, new DeleteOptions
                 {
                     DeleteFileLocation = true
 

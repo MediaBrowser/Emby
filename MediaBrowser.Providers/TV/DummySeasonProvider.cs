@@ -181,7 +181,7 @@ namespace MediaBrowser.Providers.TV
             {
                 _logger.Info("Removing virtual season {0} {1}", series.Name, seasonToRemove.IndexNumber);
 
-                seasonToRemove.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(seasonToRemove, new DeleteOptions
                 {
                     DeleteFileLocation = true
 

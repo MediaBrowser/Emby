@@ -756,9 +756,10 @@ namespace MediaBrowser.Api.Library
                     continue;
                 }
 
-                item.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(item, new DeleteOptions
                 {
                     DeleteFileLocation = true
+
                 }, true);
             }
         }

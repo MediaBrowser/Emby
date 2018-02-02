@@ -72,13 +72,37 @@ namespace Emby.Server.Implementations.Channels
         {
             get
             {
-                return TimeSpan.FromHours(1);
+                return TimeSpan.FromHours(6);
             }
         }
 
         public void AddParts(IEnumerable<IChannel> channels)
         {
             Channels = channels.ToArray();
+        }
+
+        public bool CanDelete(BaseItem item)
+        {
+            var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
+
+            var supportsDelete = channel as ISupportsDelete;
+            return supportsDelete != null && supportsDelete.CanDelete(item);
+        }
+
+        public Task DeleteItem(BaseItem item)
+        {
+            var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
+
+            var supportsDelete = channel as ISupportsDelete;
+
+            if (supportsDelete == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return supportsDelete.DeleteItem(item.ExternalId, CancellationToken.None);
         }
 
         private IEnumerable<IChannel> GetAllChannels()

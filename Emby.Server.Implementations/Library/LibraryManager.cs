@@ -311,6 +311,11 @@ namespace Emby.Server.Implementations.Library
             LibraryItemsCache.AddOrUpdate(item.Id, item, delegate { return item; });
         }
 
+        public void DeleteItem(BaseItem item, DeleteOptions options)
+        {
+            DeleteItem(item, options, false);
+        }
+
         public void DeleteItem(BaseItem item, DeleteOptions options, bool notifyParentItem)
         {
             if (item == null)
@@ -328,6 +333,20 @@ namespace Emby.Server.Implementations.Library
             if (item == null)
             {
                 throw new ArgumentNullException("item");
+            }
+
+            if (item is ILiveTvRecording)
+            {
+                var task = BaseItem.LiveTvManager.DeleteRecording(item);
+                Task.WaitAll(task);
+                return;
+            }
+
+            if (item.SourceType == SourceType.Channel)
+            {
+                var task = BaseItem.ChannelManager.DeleteItem(item);
+                Task.WaitAll(task);
+                options.DeleteFileLocation = false;
             }
 
             if (item is LiveTvProgram)
