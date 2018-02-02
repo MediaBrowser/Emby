@@ -453,6 +453,7 @@
     "HeaderSource": "Fuente",
     "HeaderStatus": "Estado",
     "HeaderDestination": "Destino",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "Programa",
     "HeaderClients": "Clientes",
     "LabelCompleted": "Completado",
@@ -975,8 +976,6 @@
     "TitleSync": "Sincronizar",
     "OptionAllowSyncContent": "Permitir Sincronizar",
     "OptionAllowContentDownloading": "Permitir descarga de medios",
-    "NameSeasonUnknown": "Temporada Desconocida",
-    "NameSeasonNumber": "Temporada {0}",
     "LabelNewUserNameHelp": "Los nombres de usuario pueden contener letras (a-z), n\u00fameros (0-9), guiones (-), guiones bajos (_) y puntos (.)",
     "TabSyncJobs": "Trabajos de Sincronizacion",
     "HeaderThisUserIsCurrentlyDisabled": "Este usuario se encuentra actualmente deshabilitado",
@@ -1764,7 +1763,7 @@
     "LabelUserAgent": "Agente de usuario:",
     "UserAgentHelp": "Suministre un agente de encabezado http personalizado, si fuera necesario.",
     "HeaderConfigureRemoteAccess": "Configurar Acceso Remoto",
-    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
-    "LabelLanNetworks": "LAN networks:",
-    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
+    "LearnHowToCreateSynologyShares": "Aprenda como compartir carpetas en Synology.",
+    "LabelLanNetworks": "Redes LAN:",
+    "LanNetworksHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes que ser\u00e1n consideradas como locales al enforzar restricciones de ancho de banda. Si se establece, todas las dem\u00e1s direcciones IP ser\u00e1n consideradas como redes externas y estar\u00e1n sujetas a restricciones de ancho de banda. Si se deja en blanco, s\u00f3lo la subred del servidor ser\u00e1 considerada como red local."
 }
