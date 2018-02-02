@@ -469,7 +469,7 @@ namespace MediaBrowser.Controller.Entities
         {
             if (SourceType == SourceType.Channel)
             {
-                return false;
+                return ChannelManager.CanDelete(this);
             }
 
             var locationType = LocationType;
@@ -2570,16 +2570,6 @@ namespace MediaBrowser.Controller.Entities
         public virtual IEnumerable<Guid> GetIdsForAncestorQuery()
         {
             return new[] { Id };
-        }
-
-        public virtual void Delete(DeleteOptions options)
-        {
-            Delete(options, false);
-        }
-
-        public virtual void Delete(DeleteOptions options, bool notifyParentItem)
-        {
-            LibraryManager.DeleteItem(this, options, notifyParentItem);
         }
 
         public virtual List<ExternalUrl> GetRelatedUrls()

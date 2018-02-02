@@ -32,6 +32,10 @@ namespace MediaBrowser.Controller.Channels
         /// <returns>IEnumerable{ChannelFeatures}.</returns>
         ChannelFeatures[] GetAllChannelFeatures();
 
+        bool CanDelete(BaseItem item);
+
+        Task DeleteItem(BaseItem item);
+
         /// <summary>
         /// Gets the channel.
         /// </summary>

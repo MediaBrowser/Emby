@@ -159,12 +159,6 @@ namespace MediaBrowser.Controller.LiveTv
             return IsVisible(user);
         }
 
-        public override void Delete(DeleteOptions options)
-        {
-            var task = LiveTvManager.DeleteRecording(this);
-            Task.WaitAll(task);
-        }
-
         public override IEnumerable<FileSystemMetadata> GetDeletePaths()
         {
             return new[] {

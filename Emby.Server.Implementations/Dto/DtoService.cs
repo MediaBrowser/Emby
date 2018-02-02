@@ -1303,9 +1303,16 @@ namespace Emby.Server.Implementations.Dto
 
                     if (dto.MediaSources != null && dto.MediaSources.Count > 0)
                     {
-                        mediaStreams = dto.MediaSources.Where(i => new Guid(i.Id) == item.Id)
-                            .SelectMany(i => i.MediaStreams)
-                            .ToArray();
+                        if (item.SourceType == SourceType.Channel)
+                        {
+                            mediaStreams = dto.MediaSources[0].MediaStreams.ToArray();
+                        }
+                        else
+                        {
+                            mediaStreams = dto.MediaSources.Where(i => string.Equals(i.Id, item.Id.ToString("N"), StringComparison.OrdinalIgnoreCase))
+                                .SelectMany(i => i.MediaStreams)
+                                .ToArray();
+                        }
                     }
                     else
                     {
