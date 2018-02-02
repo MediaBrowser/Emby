@@ -14,6 +14,7 @@ using TagLib;
 using TagLib.IFD;
 using TagLib.IFD.Entries;
 using TagLib.IFD.Tags;
+using MediaBrowser.Model.MediaInfo;
 
 namespace Emby.Photos
 {
@@ -32,7 +33,7 @@ namespace Emby.Photos
 
         public bool HasChanged(BaseItem item, IDirectoryService directoryService)
         {
-            if (!string.IsNullOrWhiteSpace(item.Path) && item.LocationType == LocationType.FileSystem)
+            if (item.IsFileProtocol)
             {
                 var file = directoryService.GetFile(item.Path);
                 if (file != null && file.LastWriteTimeUtc != item.DateModified)

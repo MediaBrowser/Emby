@@ -135,7 +135,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var audio = item as Audio;
 
-            return item.LocationType == LocationType.FileSystem && audio != null;
+            return item.IsFileProtocol && audio != null;
         }
     }
 }

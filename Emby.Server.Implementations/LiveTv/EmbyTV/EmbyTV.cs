@@ -596,7 +596,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     timer.IsManual = true;
                 }
-                
+
                 if (string.IsNullOrWhiteSpace(timer.SeriesTimerId) || isSeriesCancelled)
                 {
                     _timerProvider.Delete(timer);
@@ -1313,7 +1313,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     recordPath = Path.Combine(recordPath, "Series");
                 }
 
-                var folderName = _fileSystem.GetValidFilename(timer.Name).Trim();
+                // trim trailing period from the folder name
+                var folderName = _fileSystem.GetValidFilename(timer.Name).Trim().TrimEnd('.').Trim();
 
                 // Can't use the year here in the folder name because it is the year of the episode, not the series.
                 recordPath = Path.Combine(recordPath, folderName);
@@ -1346,6 +1347,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     folderName += " (" + timer.ProductionYear.Value.ToString(CultureInfo.InvariantCulture) + ")";
                 }
+
+                // trim trailing period from the folder name
+                folderName = folderName.TrimEnd('.').Trim();
+
                 recordPath = Path.Combine(recordPath, folderName);
             }
             else if (timer.IsKids)
@@ -1360,6 +1365,10 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     folderName += " (" + timer.ProductionYear.Value.ToString(CultureInfo.InvariantCulture) + ")";
                 }
+
+                // trim trailing period from the folder name
+                folderName = folderName.TrimEnd('.').Trim();
+
                 recordPath = Path.Combine(recordPath, folderName);
             }
             else if (timer.IsSports)
@@ -1643,7 +1652,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     DtoOptions = new DtoOptions(true)
 
                 }))
-                    .Where(i => i.LocationType == LocationType.FileSystem && _fileSystem.FileExists(i.Path))
+                    .Where(i => i.IsFileProtocol && _fileSystem.FileExists(i.Path))
                     .Skip(seriesTimer.KeepUpTo - 1)
                     .ToList();
 

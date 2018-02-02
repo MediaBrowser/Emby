@@ -160,7 +160,7 @@ namespace MediaBrowser.Providers.Manager
             // Save if changes were made, or it's never been saved before
             if (refreshOptions.ForceSave || updateType > ItemUpdateType.None || isFirstRefresh || refreshOptions.ReplaceAllMetadata || requiresRefresh)
             {
-                if (item.LocationType == LocationType.FileSystem)
+                if (item.IsFileProtocol)
                 {
                     var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
                     if (file != null)
@@ -682,7 +682,7 @@ namespace MediaBrowser.Providers.Manager
             var item = metadata.Item;
 
             var customProviders = providers.OfType<ICustomMetadataProvider<TItemType>>().ToList();
-            var logName = item.LocationType == LocationType.Remote ? item.Name ?? item.Path : item.Path ?? item.Name;
+            var logName = !item.IsFileProtocol ? item.Name ?? item.Path : item.Path ?? item.Name;
 
             foreach (var provider in customProviders.Where(i => i is IPreRefreshProvider))
             {

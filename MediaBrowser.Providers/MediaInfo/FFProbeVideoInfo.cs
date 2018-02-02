@@ -125,9 +125,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var protocol = item.LocationType == LocationType.Remote
-                ? MediaProtocol.Http
-                : MediaProtocol.File;
+            var protocol = item.PathProtocol ?? MediaProtocol.File;
 
             return _mediaEncoder.GetMediaInfo(new MediaInfoRequest
             {

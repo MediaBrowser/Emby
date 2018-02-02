@@ -459,9 +459,15 @@ namespace Emby.Server.Implementations
             NetworkManager.NetworkChanged += NetworkManager_NetworkChanged;
         }
 
+        private string[] _localSubnets;
         private string[] GetConfiguredLocalSubnets()
         {
-            return ServerConfigurationManager.Configuration.LocalNetworkSubnets;
+            return _localSubnets;
+        }
+
+        private void RefreshLocalSubnets()
+        {
+            _localSubnets = ServerConfigurationManager.Configuration.LocalNetworkSubnets.Where(i => !string.IsNullOrWhiteSpace(i)).ToArray();
         }
 
         private void NetworkManager_NetworkChanged(object sender, EventArgs e)
@@ -692,6 +698,7 @@ namespace Emby.Server.Implementations
             Resolve<ITaskManager>().AddTasks(GetExports<IScheduledTask>(false));
 
             ConfigureAutorun();
+            RefreshLocalSubnets();
 
             ConfigurationManager.ConfigurationUpdated += OnConfigurationUpdated;
 
@@ -1663,6 +1670,7 @@ namespace Emby.Server.Implementations
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void OnConfigurationUpdated(object sender, EventArgs e)
         {
+            RefreshLocalSubnets();
             ConfigureAutorun();
 
             var requiresRestart = false;

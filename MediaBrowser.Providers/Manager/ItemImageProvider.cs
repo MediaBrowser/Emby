@@ -500,7 +500,7 @@ namespace MediaBrowser.Providers.Manager
                 return true;
             }
 
-            if (item.LocationType == LocationType.Remote || item.LocationType == LocationType.Virtual)
+            if (!item.IsFileProtocol)
             {
                 return true;
             }

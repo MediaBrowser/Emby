@@ -1143,9 +1143,10 @@ namespace MediaBrowser.Api.LiveTv
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.DeleteRecording(request.Id);
-
-            Task.WaitAll(task);
+            _libraryManager.DeleteItem(_libraryManager.GetItemById(request.Id), new DeleteOptions
+            {
+                DeleteFileLocation = false
+            });
         }
 
         public void Delete(CancelTimer request)

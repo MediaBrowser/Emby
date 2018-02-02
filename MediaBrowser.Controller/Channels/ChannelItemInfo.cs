@@ -59,6 +59,7 @@ namespace MediaBrowser.Controller.Channels
         public List<string> Artists { get; set; }
 
         public List<string> AlbumArtists { get; set; }
+        public bool EnableMediaProbe { get; set; }
 
         public ChannelItemInfo()
         {

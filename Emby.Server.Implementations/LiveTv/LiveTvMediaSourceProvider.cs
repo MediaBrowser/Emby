@@ -149,7 +149,7 @@ namespace Emby.Server.Implementations.LiveTv
                 stream = info.Item1;
                 directStreamProvider = info.Item2 as IDirectStreamProvider;
                 addProbeDelay = true;
-                allowLiveMediaProbe = directStreamProvider != null || (info.Item2 == null && stream.SupportsProbing);
+                allowLiveMediaProbe = directStreamProvider != null;
             }
             else
             {

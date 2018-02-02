@@ -92,9 +92,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         public override bool CanDownload()
         {
-            var locationType = LocationType;
-            return locationType != LocationType.Remote &&
-                   locationType != LocationType.Virtual;
+            return HasPathProtocol;
         }
 
         [IgnoreDataMember]
@@ -227,21 +225,6 @@ namespace MediaBrowser.Controller.Entities.Audio
                 {
                     return sources;
                 }
-
-                var list = new List<MediaSourceInfo>
-                {
-                    GetVersionInfo(this, enablePathSubstitution)
-                };
-
-                foreach (var mediaSource in list)
-                {
-                    if (string.IsNullOrEmpty(mediaSource.Path))
-                    {
-                        mediaSource.Type = MediaSourceType.Placeholder;
-                    }
-                }
-
-                return list;
             }
 
             var result = new List<MediaSourceInfo>
@@ -254,15 +237,15 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         private MediaSourceInfo GetVersionInfo(Audio i, bool enablePathSubstituion)
         {
-            var locationType = i.LocationType;
+            var protocol = i.PathProtocol;
 
             var info = new MediaSourceInfo
             {
                 Id = i.Id.ToString("N"),
-                Protocol = locationType == LocationType.Remote ? MediaProtocol.Http : MediaProtocol.File,
+                Protocol = protocol ?? MediaProtocol.File,
                 MediaStreams = MediaSourceManager.GetMediaStreams(i.Id),
                 Name = i.Name,
-                Path = enablePathSubstituion ? GetMappedPath(i, i.Path, locationType) : i.Path,
+                Path = enablePathSubstituion ? GetMappedPath(i, i.Path, protocol) : i.Path,
                 RunTimeTicks = i.RunTimeTicks,
                 Container = i.Container,
                 Size = i.Size
@@ -275,7 +258,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
             if (string.IsNullOrEmpty(info.Container))
             {
-                if (!string.IsNullOrEmpty(i.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                if (i.IsFileProtocol)
                 {
                     info.Container = System.IO.Path.GetExtension(i.Path).TrimStart('.');
                 }

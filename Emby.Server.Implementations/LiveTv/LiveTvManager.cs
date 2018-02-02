@@ -1473,7 +1473,8 @@ namespace Emby.Server.Implementations.LiveTv
                     {
                         _libraryManager.DeleteItem(item, new DeleteOptions
                         {
-                            DeleteFileLocation = false
+                            DeleteFileLocation = false,
+                            DeleteFromExternalProvider = false
 
                         }, false);
                     }
@@ -1708,13 +1709,26 @@ namespace Emby.Server.Implementations.LiveTv
 
             var folder = GetInternalLiveTvFolder(cancellationToken);
 
-            // TODO: Figure out how to merge emby recordings + service recordings
-            if (_services.Length == 1)
+            var result = GetEmbyRecordings(query, options, folder.Id, user);
+
+            var servicesResult = await GetInternalRecordingsFromServices(query, user, options, folder.Id, cancellationToken).ConfigureAwait(false);
+
+            if (servicesResult.TotalRecordCount == 0)
             {
-                return GetEmbyRecordings(query, options, folder.Id, user);
+                return result;
+            }
+            if (result.TotalRecordCount == 0)
+            {
+                return result;
             }
 
-            return await GetInternalRecordingsFromServices(query, user, options, folder.Id, cancellationToken).ConfigureAwait(false);
+            var list = result.Items.ToList();
+            list.AddRange(servicesResult.Items);
+
+            result.Items = list.ToArray();
+            result.TotalRecordCount += servicesResult.TotalRecordCount;
+
+            return result;
         }
 
         private async Task<QueryResult<BaseItem>> GetInternalRecordingsFromServices(RecordingQuery query, User user, DtoOptions options, Guid internalLiveTvFolderId, CancellationToken cancellationToken)
@@ -2123,18 +2137,6 @@ namespace Emby.Server.Implementations.LiveTv
             };
         }
 
-        public async Task DeleteRecording(string recordingId)
-        {
-            var recording = await GetInternalRecording(recordingId, CancellationToken.None).ConfigureAwait(false);
-
-            if (recording == null)
-            {
-                throw new ResourceNotFoundException(string.Format("Recording with Id {0} not found", recordingId));
-            }
-
-            await DeleteRecording(recording).ConfigureAwait(false);
-        }
-
         public async Task DeleteRecording(BaseItem recording)
         {
             var service = GetService(recording.ServiceName);
@@ -2151,15 +2153,6 @@ namespace Emby.Server.Implementations.LiveTv
 
                 }
             }
-
-            _lastRecordingRefreshTime = DateTime.MinValue;
-
-            // This is the responsibility of the live tv service
-            _libraryManager.DeleteItem(recording, new DeleteOptions
-            {
-                DeleteFileLocation = false
-
-            }, false);
 
             _lastRecordingRefreshTime = DateTime.MinValue;
         }

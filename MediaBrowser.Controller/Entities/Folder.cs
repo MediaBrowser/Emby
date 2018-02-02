@@ -151,7 +151,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (LocationType == LocationType.FileSystem)
+                if (IsFileProtocol)
                 {
                     return System.IO.Path.GetFileName(Path);
                 }
@@ -359,8 +359,6 @@ namespace MediaBrowser.Controller.Entities
 
         private async Task ValidateChildrenInternal2(IProgress<double> progress, CancellationToken cancellationToken, bool recursive, bool refreshChildMetadata, MetadataRefreshOptions refreshOptions, IDirectoryService directoryService)
         {
-            var locationType = LocationType;
-
             cancellationToken.ThrowIfCancellationRequested();
 
             var validChildren = new List<BaseItem>();
@@ -371,7 +369,7 @@ namespace MediaBrowser.Controller.Entities
               .SelectMany(i => i.Locations)
               .ToList();
 
-            if (locationType != LocationType.Remote && locationType != LocationType.Virtual)
+            if (IsFileProtocol)
             {
                 IEnumerable<BaseItem> nonCachedChildren;
 
@@ -433,9 +431,7 @@ namespace MediaBrowser.Controller.Entities
 
                     foreach (var item in itemsRemoved)
                     {
-                        var itemLocationType = item.LocationType;
-                        if (itemLocationType == LocationType.Virtual ||
-                            itemLocationType == LocationType.Remote)
+                        if (!item.IsFileProtocol)
                         {
                         }
 
@@ -1263,15 +1259,15 @@ namespace MediaBrowser.Controller.Entities
 
                 if (childOwner != null && !(child is IItemByName))
                 {
-                    var childLocationType = childOwner.LocationType;
-                    if (childLocationType == LocationType.Remote || childLocationType == LocationType.Virtual)
+                    var childProtocol = childOwner.PathProtocol;
+                    if (!childProtocol.HasValue || childProtocol.Value != Model.MediaInfo.MediaProtocol.File)
                     {
                         if (!childOwner.IsVisibleStandalone(user))
                         {
                             continue;
                         }
                     }
-                    else if (childLocationType == LocationType.FileSystem)
+                    else
                     {
                         var itemCollectionFolderIds =
                             LibraryManager.GetCollectionFolders(childOwner, allUserRootChildren).Select(f => f.Id);
@@ -1313,7 +1309,7 @@ namespace MediaBrowser.Controller.Entities
         {
             var changesFound = false;
 
-            if (LocationType == LocationType.FileSystem)
+            if (IsFileProtocol)
             {
                 if (RefreshLinkedChildren(fileSystemChildren))
                 {
