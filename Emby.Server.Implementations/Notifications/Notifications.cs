@@ -355,7 +355,7 @@ namespace Emby.Server.Implementations.Notifications
                 return false;
             }
 
-            if (item.LocationType == LocationType.Virtual)
+            if (!item.HasPathProtocol)
             {
                 return false;
             }

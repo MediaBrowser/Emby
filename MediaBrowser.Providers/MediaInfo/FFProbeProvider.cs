@@ -64,7 +64,7 @@ namespace MediaBrowser.Providers.MediaInfo
             var video = item as Video;
             if (video == null || video.VideoType == VideoType.VideoFile || video.VideoType == VideoType.Iso)
             {
-                if (!string.IsNullOrWhiteSpace(item.Path) && item.LocationType == LocationType.FileSystem)
+                if (!string.IsNullOrWhiteSpace(item.Path) && item.IsFileProtocol)
                 {
                     var file = directoryService.GetFile(item.Path);
                     if (file != null && file.LastWriteTimeUtc != item.DateModified)
@@ -161,11 +161,6 @@ namespace MediaBrowser.Providers.MediaInfo
         public Task<ItemUpdateType> FetchVideoInfo<T>(T item, MetadataRefreshOptions options, CancellationToken cancellationToken)
             where T : Video
         {
-            if (item.LocationType != LocationType.FileSystem)
-            {
-                return _cachedTask;
-            }
-
             if (item.VideoType == VideoType.Iso && !_isoManager.CanMount(item.Path))
             {
                 return _cachedTask;
@@ -209,11 +204,6 @@ namespace MediaBrowser.Providers.MediaInfo
         public Task<ItemUpdateType> FetchAudioInfo<T>(T item, CancellationToken cancellationToken)
             where T : Audio
         {
-            if (item.LocationType != LocationType.FileSystem)
-            {
-                return _cachedTask;
-            }
-
             var prober = new FFProbeAudioInfo(_mediaEncoder, _itemRepo, _appPaths, _json, _libraryManager);
 
             return prober.Probe(item, cancellationToken);

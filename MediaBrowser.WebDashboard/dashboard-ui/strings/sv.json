@@ -453,6 +453,7 @@
     "HeaderSource": "K\u00e4lla",
     "HeaderStatus": "Status",
     "HeaderDestination": "M\u00e5l",
+    "Subscriptions": "Prenumerationer",
     "HeaderProgram": "Program",
     "HeaderClients": "Klienter",
     "LabelCompleted": "Klar",
@@ -975,8 +976,6 @@
     "TitleSync": "Synk",
     "OptionAllowSyncContent": "Till\u00e5t synk",
     "OptionAllowContentDownloading": "Till\u00e5t nedladdning av media",
-    "NameSeasonUnknown": "Ok\u00e4nd s\u00e4song",
-    "NameSeasonNumber": "S\u00e4song {0}",
     "LabelNewUserNameHelp": "Anv\u00e4ndarnamn kan inneh\u00e5lla bokst\u00e4ver (a-\u00f6), nummer (0-9), streck (-), understreck (_), apostrof (') och punkt (.)",
     "TabSyncJobs": "Synkroniseringsjobb",
     "HeaderThisUserIsCurrentlyDisabled": "Den h\u00e4r anv\u00e4ndaren \u00e4r inaktiverad",
@@ -1763,8 +1762,8 @@
     "LaunchWebAppOnStartupHelp": "Det h\u00e4r startar webbappen i din webbl\u00e4sare n\u00e4r Emby Server startas upp. Det kommer dock inte h\u00e4nda vid en server omstart.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "HeaderConfigureRemoteAccess": "Konfigurera fj\u00e4rr\u00e5tkomst",
     "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
-    "LabelLanNetworks": "LAN networks:",
+    "LabelLanNetworks": "LAN n\u00e4tverk:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

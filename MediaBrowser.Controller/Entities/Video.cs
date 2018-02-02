@@ -200,9 +200,7 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
 
-            var locationType = LocationType;
-            return locationType != LocationType.Remote &&
-                   locationType != LocationType.Virtual;
+            return HasPathProtocol;
         }
 
         [IgnoreDataMember]
@@ -395,7 +393,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (LocationType == LocationType.FileSystem)
+                if (IsFileProtocol)
                 {
                     if (VideoType == VideoType.BluRay || VideoType == VideoType.Dvd)
                     {
@@ -497,7 +495,7 @@ namespace MediaBrowser.Controller.Entities
             // Must have a parent to have additional parts or alternate versions
             // In other words, it must be part of the Parent/Child tree
             // The additional parts won't have additional parts themselves
-            if (LocationType == LocationType.FileSystem && GetParent() != null)
+            if (IsFileProtocol && GetParent() != null)
             {
                 if (!IsStacked)
                 {
@@ -628,11 +626,6 @@ namespace MediaBrowser.Controller.Entities
                 {
                     return sources;
                 }
-
-                return new List<MediaSourceInfo>
-                {
-                    GetVersionInfo(enablePathSubstitution, this, MediaSourceType.Placeholder)
-                };
             }
 
             var list = GetAllVideosForMediaSources();
@@ -672,16 +665,16 @@ namespace MediaBrowser.Controller.Entities
                 throw new ArgumentNullException("media");
             }
 
-            var locationType = media.LocationType;
+            var protocol = media.PathProtocol;
 
             var info = new MediaSourceInfo
             {
                 Id = media.Id.ToString("N"),
                 IsoType = media.IsoType,
-                Protocol = locationType == LocationType.Remote ? MediaProtocol.Http : MediaProtocol.File,
+                Protocol = protocol ?? MediaProtocol.File,
                 MediaStreams = MediaSourceManager.GetMediaStreams(media.Id),
                 Name = GetMediaSourceName(media),
-                Path = enablePathSubstitution ? GetMappedPath(media, media.Path, locationType) : media.Path,
+                Path = enablePathSubstitution ? GetMappedPath(media, media.Path, protocol) : media.Path,
                 RunTimeTicks = media.RunTimeTicks,
                 Video3DFormat = media.Video3DFormat,
                 VideoType = media.VideoType,
@@ -730,7 +723,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (media.VideoType == VideoType.VideoFile || media.VideoType == VideoType.Iso)
                 {
-                    if (!string.IsNullOrEmpty(media.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                    if (protocol.HasValue && protocol.Value == MediaProtocol.File)
                     {
                         info.Container = System.IO.Path.GetExtension(media.Path).TrimStart('.');
                     }
@@ -747,9 +740,8 @@ namespace MediaBrowser.Controller.Entities
         {
             var terms = new List<string>();
 
-            var locationType = video.LocationType;
             var path = video.Path;
-            if ((locationType == LocationType.FileSystem || locationType == LocationType.Offline) && !string.IsNullOrEmpty(path))
+            if (video.IsFileProtocol && !string.IsNullOrEmpty(path))
             {
                 terms.Add(System.IO.Path.GetFileName(path));
             }

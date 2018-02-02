@@ -92,8 +92,7 @@ namespace MediaBrowser.Providers.Manager
                 saveLocally = false;
             }
 
-            var locationType = item.LocationType;
-            if (locationType == LocationType.Remote || locationType == LocationType.Virtual)
+            if (!item.IsFileProtocol)
             {
                 saveLocally = false;
 

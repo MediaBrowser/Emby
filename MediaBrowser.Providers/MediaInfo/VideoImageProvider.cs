@@ -62,9 +62,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public async Task<DynamicImageResponse> GetVideoImage(Video item, CancellationToken cancellationToken)
         {
-            var protocol = item.LocationType == LocationType.Remote
-                ? MediaProtocol.Http
-                : MediaProtocol.File;
+            var protocol = item.PathProtocol ?? MediaProtocol.File;
 
             var inputPath = MediaEncoderHelpers.GetInputArgument(_fileSystem, item.Path, protocol, null, item.GetPlayableStreamFileNames());
 
@@ -133,7 +131,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var video = item as Video;
 
-            if (item.LocationType == LocationType.FileSystem && video != null && !video.IsPlaceHolder && !video.IsShortcut && video.IsCompleteMedia)
+            if (item.IsFileProtocol && video != null && !video.IsPlaceHolder && !video.IsShortcut && video.IsCompleteMedia)
             {
                 return true;
             }

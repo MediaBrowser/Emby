@@ -34,6 +34,7 @@ using MediaBrowser.Model.LiveTv;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Model.MediaInfo;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -334,7 +335,7 @@ namespace MediaBrowser.Controller.Entities
                 // Local trailer, special feature, theme video, etc.
                 // An item that belongs to another item but is not part of the Parent-Child tree
                 // This is a hack for now relying on ExtraType. Eventually we may need to persist this
-                if (ParentId == Guid.Empty && !IsFolder && LocationType == LocationType.FileSystem)
+                if (ParentId == Guid.Empty && !IsFolder && IsFileProtocol)
                 {
                     return true;
                 }
@@ -363,7 +364,8 @@ namespace MediaBrowser.Controller.Entities
                 //    return LocationType.Offline;
                 //}
 
-                if (string.IsNullOrEmpty(Path))
+                var path = Path;
+                if (string.IsNullOrEmpty(path))
                 {
                     if (SourceType == SourceType.Channel)
                     {
@@ -373,7 +375,61 @@ namespace MediaBrowser.Controller.Entities
                     return LocationType.Virtual;
                 }
 
-                return FileSystem.IsPathFile(Path) ? LocationType.FileSystem : LocationType.Remote;
+                return FileSystem.IsPathFile(path) ? LocationType.FileSystem : LocationType.Remote;
+            }
+        }
+
+        [IgnoreDataMember]
+        public MediaProtocol? PathProtocol
+        {
+            get
+            {
+                var path = Path;
+                
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+
+                if (path.StartsWith("Rtsp", StringComparison.OrdinalIgnoreCase))
+                {
+                    return MediaProtocol.Rtsp;
+                }
+                if (path.StartsWith("Rtmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    return MediaProtocol.Rtmp;
+                }
+                if (path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
+                {
+                    return MediaProtocol.Http;
+                }
+
+                return FileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
+            }
+        }
+
+        public bool IsPathProtocol(MediaProtocol protocol)
+        {
+            var current = PathProtocol;
+
+            return current.HasValue && current.Value == protocol;
+        }
+
+        [IgnoreDataMember]
+        public bool IsFileProtocol
+        {
+            get
+            {
+                return IsPathProtocol(MediaProtocol.File);
+            }
+        }
+
+        [IgnoreDataMember]
+        public bool HasPathProtocol
+        {
+            get
+            {
+                return PathProtocol.HasValue;
             }
         }
 
@@ -387,9 +443,7 @@ namespace MediaBrowser.Controller.Entities
                     return false;
                 }
 
-                var locationType = LocationType;
-
-                return locationType != LocationType.Remote && locationType != LocationType.Virtual;
+                return IsFileProtocol;
             }
         }
 
@@ -398,7 +452,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (LocationType == LocationType.FileSystem)
+                if (IsFileProtocol)
                 {
                     return System.IO.Path.GetFileNameWithoutExtension(Path);
                 }
@@ -472,9 +526,7 @@ namespace MediaBrowser.Controller.Entities
                 return ChannelManager.CanDelete(this);
             }
 
-            var locationType = LocationType;
-            return locationType != LocationType.Remote &&
-                   locationType != LocationType.Virtual;
+            return IsFileProtocol;
         }
 
         public virtual bool IsAuthorizedToDelete(User user, List<Folder> allCollectionFolders)
@@ -599,9 +651,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                var locationType = LocationType;
-
-                if (locationType == LocationType.Remote || locationType == LocationType.Virtual)
+                if (!IsFileProtocol)
                 {
                     return new string[] { };
                 }
@@ -1107,15 +1157,13 @@ namespace MediaBrowser.Controller.Entities
         {
             TriggerOnRefreshStart();
 
-            var locationType = LocationType;
-
             var requiresSave = false;
 
             if (SupportsOwnedItems)
             {
                 try
                 {
-                    var files = locationType != LocationType.Remote && locationType != LocationType.Virtual ?
+                    var files = IsFileProtocol ?
                         GetFileSystemChildren(options.DirectoryService).ToList() :
                         new List<FileSystemMetadata>();
 
@@ -1183,7 +1231,7 @@ namespace MediaBrowser.Controller.Entities
 
             var localTrailersChanged = false;
 
-            if (LocationType == LocationType.FileSystem && GetParent() != null)
+            if (IsFileProtocol && GetParent() != null)
             {
                 if (SupportsThemeMedia)
                 {
@@ -2364,9 +2412,9 @@ namespace MediaBrowser.Controller.Entities
             return hasChanges;
         }
 
-        protected static string GetMappedPath(BaseItem item, string path, LocationType locationType)
+        protected static string GetMappedPath(BaseItem item, string path, MediaProtocol? protocol)
         {
-            if (locationType == LocationType.FileSystem || locationType == LocationType.Offline)
+            if (protocol.HasValue && protocol.Value == MediaProtocol.File)
             {
                 return LibraryManager.GetPathAfterNetworkSubstitution(path, item);
             }

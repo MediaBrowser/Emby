@@ -232,8 +232,7 @@ namespace MediaBrowser.Providers.Subtitles
 
         public Task<RemoteSubtitleInfo[]> SearchSubtitles(Video video, string language, bool? isPerfectMatch, CancellationToken cancellationToken)
         {
-            if (video.LocationType != LocationType.FileSystem ||
-                video.VideoType != VideoType.VideoFile)
+            if (video.VideoType != VideoType.VideoFile)
             {
                 return Task.FromResult<RemoteSubtitleInfo[]>(new RemoteSubtitleInfo[] { });
             }

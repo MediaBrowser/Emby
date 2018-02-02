@@ -386,7 +386,7 @@ namespace Emby.Server.Implementations.EntryPoints
 
         private bool FilterItem(BaseItem item)
         {
-            if (!item.IsFolder && item.LocationType == LocationType.Virtual)
+            if (!item.IsFolder && !item.HasPathProtocol)
             {
                 return false;
             }

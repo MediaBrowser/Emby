@@ -337,15 +337,21 @@ namespace Emby.Server.Implementations.Library
 
             if (item is ILiveTvRecording)
             {
-                var task = BaseItem.LiveTvManager.DeleteRecording(item);
-                Task.WaitAll(task);
-                return;
+                if (options.DeleteFromExternalProvider)
+                {
+                    var task = BaseItem.LiveTvManager.DeleteRecording(item);
+                    Task.WaitAll(task);
+                }
+                options.DeleteFileLocation = false;
             }
 
-            if (item.SourceType == SourceType.Channel)
+            else if (item.SourceType == SourceType.Channel)
             {
-                var task = BaseItem.ChannelManager.DeleteItem(item);
-                Task.WaitAll(task);
+                if (options.DeleteFromExternalProvider)
+                {
+                    var task = BaseItem.ChannelManager.DeleteItem(item);
+                    Task.WaitAll(task);
+                }
                 options.DeleteFileLocation = false;
             }
 
@@ -365,8 +371,6 @@ namespace Emby.Server.Implementations.Library
                     item.Path ?? string.Empty,
                     item.Id);
             }
-
-            var locationType = item.LocationType;
 
             var children = item.IsFolder
                 ? ((Folder)item).GetRecursiveChildren(false).ToList()
@@ -390,7 +394,7 @@ namespace Emby.Server.Implementations.Library
                 }
             }
 
-            if (options.DeleteFileLocation && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+            if (options.DeleteFileLocation && item.IsFileProtocol)
             {
                 // Assume only the first is required
                 // Add this flag to GetDeletePaths if required in the future
@@ -1870,8 +1874,7 @@ namespace Emby.Server.Implementations.Library
         {
             foreach (var item in items)
             {
-                var locationType = item.LocationType;
-                if (locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                if (item.IsFileProtocol)
                 {
                     _providerManagerFactory().SaveMetadata(item, updateReason);
                 }
@@ -2405,9 +2408,7 @@ namespace Emby.Server.Implementations.Library
 
             var isFolder = episode.VideoType == VideoType.BluRay || episode.VideoType == VideoType.Dvd;
 
-            var locationType = episode.LocationType;
-
-            var episodeInfo = locationType == LocationType.FileSystem || locationType == LocationType.Offline ?
+            var episodeInfo = episode.IsFileProtocol ?
                 resolver.Resolve(episode.Path, isFolder) :
                 new Emby.Naming.TV.EpisodeInfo();
 

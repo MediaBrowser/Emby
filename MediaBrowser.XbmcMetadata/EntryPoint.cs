@@ -52,9 +52,7 @@ namespace MediaBrowser.XbmcMetadata
 
         private void SaveMetadataForItem(BaseItem item, ItemUpdateType updateReason)
         {
-            var locationType = item.LocationType;
-            if (locationType == LocationType.Remote ||
-                locationType == LocationType.Virtual)
+            if (!item.IsFileProtocol)
             {
                 return;
             }

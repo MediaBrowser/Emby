@@ -1119,7 +1119,10 @@ namespace Emby.Server.Implementations.Channels
                 }
             }
 
-            item.RunTimeTicks = info.RunTimeTicks;
+            if (isNew || !info.EnableMediaProbe)
+            {
+                item.RunTimeTicks = info.RunTimeTicks;
+            }
 
             if (isNew)
             {
@@ -1215,11 +1218,13 @@ namespace Emby.Server.Implementations.Channels
 
             item.OnMetadataChanged();
 
+            var metadataRefreshMode = MetadataRefreshMode.Default;
+
             if (isNew)
             {
                 _libraryManager.CreateItem(item, cancellationToken);
 
-                if (info.People != null && info.People.Count > 0)
+                if (item.SupportsPeople && info.People != null && info.People.Count > 0)
                 {
                     _libraryManager.UpdatePeople(item, info.People ?? new List<PersonInfo>());
                 }
@@ -1227,9 +1232,26 @@ namespace Emby.Server.Implementations.Channels
             else if (forceUpdate)
             {
                 item.UpdateToRepository(ItemUpdateType.None, cancellationToken);
+                metadataRefreshMode = MetadataRefreshMode.FullRefresh;
             }
 
-            SaveMediaSources(item, info.MediaSources);
+            if (isNew || forceUpdate)
+            {
+                if (info.EnableMediaProbe && item.HasPathProtocol)
+                {
+                    SaveMediaSources(item, new List<MediaSourceInfo>());
+
+                    _providerManager.QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
+                    {
+                        MetadataRefreshMode = metadataRefreshMode
+
+                    }, RefreshPriority.Normal);
+                }
+                else
+                {
+                    SaveMediaSources(item, info.MediaSources);
+                }
+            }
 
             return item;
         }

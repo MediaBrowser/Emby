@@ -1597,9 +1597,7 @@ namespace Emby.Server.Implementations.Dto
         {
             var path = item.Path;
 
-            var locationType = item.LocationType;
-
-            if (locationType == LocationType.FileSystem || locationType == LocationType.Offline)
+            if (item.IsFileProtocol)
             {
                 path = _libraryManager.GetPathAfterNetworkSubstitution(path, ownerItem ?? item);
             }
