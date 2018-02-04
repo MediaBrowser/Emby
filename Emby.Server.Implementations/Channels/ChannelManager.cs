@@ -81,6 +81,14 @@ namespace Emby.Server.Implementations.Channels
             Channels = channels.ToArray();
         }
 
+        public bool EnableMediaSourceDisplay(BaseItem item)
+        {
+            var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
+
+            return !(channel is IDisableMediaSourceDisplay);
+        }
+
         public bool CanDelete(BaseItem item)
         {
             var internalChannel = _libraryManager.GetItemById(item.ChannelId);
@@ -496,7 +504,6 @@ namespace Emby.Server.Implementations.Channels
             IChannel provider,
             InternalChannelFeatures features)
         {
-            var isIndexable = provider is IIndexableChannel;
             var supportsLatest = provider is ISupportsLatestMedia;
 
             return new ChannelFeatures
@@ -511,7 +518,7 @@ namespace Emby.Server.Implementations.Channels
                 SupportsLatestMedia = supportsLatest,
                 Name = channel.Name,
                 Id = channel.Id.ToString("N"),
-                SupportsContentDownloading = features.SupportsContentDownloading && (isIndexable || supportsLatest),
+                SupportsContentDownloading = features.SupportsContentDownloading,
                 AutoRefreshLevels = features.AutoRefreshLevels
             };
         }
@@ -1024,7 +1031,7 @@ namespace Emby.Server.Implementations.Channels
             return externalId + (channelName ?? string.Empty) + "16";
         }
 
-        private T GetItemById<T>(string idString, string channelName, string channnelDataVersion, out bool isNew)
+        private T GetItemById<T>(string idString, string channelName, out bool isNew)
             where T : BaseItem, new()
         {
             var id = GetIdToHash(idString, channelName).GetMBId(typeof(T));
@@ -1040,7 +1047,7 @@ namespace Emby.Server.Implementations.Channels
                 _logger.ErrorException("Error retrieving channel item from database", ex);
             }
 
-            if (item == null || !string.Equals(item.ExternalEtag, channnelDataVersion, StringComparison.Ordinal))
+            if (item == null)
             {
                 item = new T();
                 isNew = true;
@@ -1050,7 +1057,6 @@ namespace Emby.Server.Implementations.Channels
                 isNew = false;
             }
 
-            item.ExternalEtag = channnelDataVersion;
             item.Id = id;
             return item;
         }
@@ -1065,61 +1071,66 @@ namespace Emby.Server.Implementations.Channels
             {
                 if (info.FolderType == ChannelFolderType.MusicAlbum)
                 {
-                    item = GetItemById<MusicAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<MusicAlbum>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.FolderType == ChannelFolderType.MusicArtist)
                 {
-                    item = GetItemById<MusicArtist>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<MusicArtist>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.FolderType == ChannelFolderType.PhotoAlbum)
                 {
-                    item = GetItemById<PhotoAlbum>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<PhotoAlbum>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.FolderType == ChannelFolderType.Series)
                 {
-                    item = GetItemById<Series>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Series>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.FolderType == ChannelFolderType.Season)
                 {
-                    item = GetItemById<Season>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Season>(info.Id, channelProvider.Name, out isNew);
                 }
                 else
                 {
-                    item = GetItemById<Folder>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Folder>(info.Id, channelProvider.Name, out isNew);
                 }
             }
             else if (info.MediaType == ChannelMediaType.Audio)
             {
                 if (info.ContentType == ChannelMediaContentType.Podcast)
                 {
-                    item = GetItemById<AudioPodcast>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<AudioPodcast>(info.Id, channelProvider.Name, out isNew);
                 }
                 else
                 {
-                    item = GetItemById<Audio>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Audio>(info.Id, channelProvider.Name, out isNew);
                 }
             }
             else
             {
                 if (info.ContentType == ChannelMediaContentType.Episode)
                 {
-                    item = GetItemById<Episode>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Episode>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.ContentType == ChannelMediaContentType.Movie)
                 {
-                    item = GetItemById<Movie>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Movie>(info.Id, channelProvider.Name, out isNew);
                 }
                 else if (info.ContentType == ChannelMediaContentType.Trailer || info.ExtraType == ExtraType.Trailer)
                 {
-                    item = GetItemById<Trailer>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Trailer>(info.Id, channelProvider.Name, out isNew);
                 }
                 else
                 {
-                    item = GetItemById<Video>(info.Id, channelProvider.Name, channelProvider.DataVersion, out isNew);
+                    item = GetItemById<Video>(info.Id, channelProvider.Name, out isNew);
                 }
             }
 
-            if (isNew || !info.EnableMediaProbe)
+            if (info.IsLiveStream)
+            {
+                item.RunTimeTicks = null;
+            }
+
+            else if (isNew || !info.EnableMediaProbe)
             {
                 item.RunTimeTicks = info.RunTimeTicks;
             }
@@ -1140,6 +1151,7 @@ namespace Emby.Server.Implementations.Channels
                 item.DateCreated = info.DateCreated ?? DateTime.UtcNow;
                 item.Tags = info.Tags.ToArray(info.Tags.Count);
                 item.HomePageUrl = info.HomePageUrl;
+                item.OriginalTitle = info.OriginalTitle;
             }
             else if (info.Type == ChannelItemType.Folder && info.FolderType == ChannelFolderType.Container)
             {
@@ -1176,6 +1188,12 @@ namespace Emby.Server.Implementations.Channels
             if (info.DateModified > item.DateModified)
             {
                 item.DateModified = info.DateModified;
+                forceUpdate = true;
+            }
+
+            if (!string.Equals(item.ExternalEtag ?? string.Empty, info.Etag ?? string.Empty, StringComparison.Ordinal))
+            {
+                item.ExternalEtag = info.Etag;
                 forceUpdate = true;
             }
 
@@ -1224,9 +1242,9 @@ namespace Emby.Server.Implementations.Channels
             {
                 _libraryManager.CreateItem(item, cancellationToken);
 
-                if (item.SupportsPeople && info.People != null && info.People.Count > 0)
+                if (info.People != null && info.People.Count > 0)
                 {
-                    _libraryManager.UpdatePeople(item, info.People ?? new List<PersonInfo>());
+                    _libraryManager.UpdatePeople(item, info.People);
                 }
             }
             else if (forceUpdate)
@@ -1235,9 +1253,9 @@ namespace Emby.Server.Implementations.Channels
                 metadataRefreshMode = MetadataRefreshMode.FullRefresh;
             }
 
-            if (isNew || forceUpdate)
+            if ((isNew || forceUpdate) && info.Type == ChannelItemType.Media)
             {
-                if (info.EnableMediaProbe && item.HasPathProtocol)
+                if (info.EnableMediaProbe && !info.IsLiveStream && item.HasPathProtocol)
                 {
                     SaveMediaSources(item, new List<MediaSourceInfo>());
 

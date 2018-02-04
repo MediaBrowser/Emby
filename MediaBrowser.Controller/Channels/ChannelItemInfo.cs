@@ -34,6 +34,7 @@ namespace MediaBrowser.Controller.Channels
         public long? RunTimeTicks { get; set; }
 
         public string ImageUrl { get; set; }
+        public string OriginalTitle { get; set; }
 
         public ChannelMediaType MediaType { get; set; }
         public ChannelFolderType FolderType { get; set; }
@@ -60,6 +61,8 @@ namespace MediaBrowser.Controller.Channels
 
         public List<string> AlbumArtists { get; set; }
         public bool EnableMediaProbe { get; set; }
+        public bool IsLiveStream { get; set; }
+        public string Etag { get; set; }
 
         public ChannelItemInfo()
         {

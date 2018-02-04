@@ -1080,6 +1080,11 @@ namespace Emby.Server.Implementations.Dto
                 dto.Path = GetMappedPath(item, owner);
             }
 
+            if (fields.Contains(ItemFields.EnableMediaSourceDisplay))
+            {
+                dto.EnableMediaSourceDisplay = item.EnableMediaSourceDisplay;
+            }
+
             dto.PremiereDate = item.PremiereDate;
             dto.ProductionYear = item.ProductionYear;
 

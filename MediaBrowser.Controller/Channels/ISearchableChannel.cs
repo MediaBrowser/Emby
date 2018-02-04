@@ -32,4 +32,9 @@ namespace MediaBrowser.Controller.Channels
         bool CanDelete(BaseItem item);
         Task DeleteItem(string id, CancellationToken cancellationToken);
     }
+
+    public interface IDisableMediaSourceDisplay
+    {
+
+    }
 }

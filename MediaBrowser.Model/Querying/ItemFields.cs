@@ -215,6 +215,7 @@
         DateLastRefreshed,
         DateLastSaved,
         RefreshState,
-        ChannelImage
+        ChannelImage,
+        EnableMediaSourceDisplay
     }
 }

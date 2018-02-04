@@ -169,6 +169,8 @@ namespace MediaBrowser.Model.Dto
         /// <value>The path.</value>
         public string Path { get; set; }
 
+        public bool? EnableMediaSourceDisplay { get; set; }
+
         /// <summary>
         /// Gets or sets the official rating.
         /// </summary>

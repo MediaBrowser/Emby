@@ -200,7 +200,7 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
 
-            return HasPathProtocol;
+            return IsFileProtocol;
         }
 
         [IgnoreDataMember]

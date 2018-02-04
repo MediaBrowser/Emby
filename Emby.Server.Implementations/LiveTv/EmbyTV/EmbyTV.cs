@@ -1065,9 +1065,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private async Task<Tuple<ILiveStream, MediaSourceInfo>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
         {
-            _logger.Info("Streaming Channel " + channelId);
-
             await _liveStreamsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            _logger.Info("Streaming Channel " + channelId);
 
             try
             {
