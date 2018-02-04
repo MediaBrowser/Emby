@@ -794,6 +794,20 @@ namespace MediaBrowser.Controller.Entities
         }
 
         [IgnoreDataMember]
+        public bool EnableMediaSourceDisplay
+        {
+            get
+            {
+                if (SourceType == SourceType.Channel)
+                {
+                    return ChannelManager.EnableMediaSourceDisplay(this);
+                }
+
+                return true;
+            }
+        }
+
+        [IgnoreDataMember]
         public Guid ParentId { get; set; }
 
         /// <summary>

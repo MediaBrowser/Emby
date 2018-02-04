@@ -32,6 +32,7 @@ namespace MediaBrowser.Controller.Channels
         /// <returns>IEnumerable{ChannelFeatures}.</returns>
         ChannelFeatures[] GetAllChannelFeatures();
 
+        bool EnableMediaSourceDisplay(BaseItem item);
         bool CanDelete(BaseItem item);
 
         Task DeleteItem(BaseItem item);

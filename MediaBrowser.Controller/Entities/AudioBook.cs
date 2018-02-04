@@ -58,7 +58,7 @@ namespace MediaBrowser.Controller.Entities
 
         public override bool CanDownload()
         {
-            return HasPathProtocol;
+            return IsFileProtocol;
         }
 
         public override UnratedItem GetBlockUnratedType()

@@ -181,6 +181,12 @@ namespace MediaBrowser.Providers.MediaInfo
                 FetchShortcutInfo(item);
             }
 
+            // hack alert
+            if (!item.EnableMediaSourceDisplay)
+            {
+                return _cachedTask;
+            }
+
             var prober = new FFProbeVideoInfo(_logger, _isoManager, _mediaEncoder, _itemRepo, _blurayExaminer, _localization, _appPaths, _json, _encodingManager, _fileSystem, _config, _subtitleManager, _chapterManager, _libraryManager);
 
             return prober.ProbeVideo(item, options, cancellationToken);

@@ -1382,7 +1382,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 videoSizeParam);
         }
 
-        public List<string> GetScalingFilters(MediaStream videoStream,
+        public List<string> GetScalingFilters(int? videoWidth,
+            int? videoHeight,
             string videoEncoder,
             int? requestedWidth,
             int? requestedHeight,
@@ -1399,8 +1400,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // Given the input dimensions (inputWidth, inputHeight), determine the output dimensions
                 // (outputWidth, outputHeight). The user may request precise output dimensions or maximum
                 // output dimensions. Output dimensions are guaranteed to be even.
-                decimal inputWidth = Convert.ToDecimal(videoStream.Width);
-                decimal inputHeight = Convert.ToDecimal(videoStream.Height);
+                decimal inputWidth = Convert.ToDecimal(videoWidth);
+                decimal inputHeight = Convert.ToDecimal(videoHeight);
                 decimal outputWidth = requestedWidth.HasValue ? Convert.ToDecimal(requestedWidth.Value) : inputWidth;
                 decimal outputHeight = requestedHeight.HasValue ? Convert.ToDecimal(requestedHeight.Value) : inputHeight;
                 decimal maximumWidth = requestedMaxWidth.HasValue ? Convert.ToDecimal(requestedMaxWidth.Value) : outputWidth;
@@ -1539,10 +1540,12 @@ namespace MediaBrowser.Controller.MediaEncoding
                 filters.Add(string.Format("deinterlace_vaapi"));
             }
 
+            var videoStream = state.VideoStream;
+
             if (state.DeInterlace("h264", true) && !string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
             {
                 // If it is already 60fps then it will create an output framerate that is much too high for roku and others to handle
-                if (string.Equals(options.DeinterlaceMethod, "bobandweave", StringComparison.OrdinalIgnoreCase) && (state.VideoStream.RealFrameRate ?? 60) <= 30)
+                if (string.Equals(options.DeinterlaceMethod, "bobandweave", StringComparison.OrdinalIgnoreCase) && (videoStream.RealFrameRate ?? 60) <= 30)
                 {
                     filters.Add("yadif=1:-1:0");
                 }
@@ -1552,7 +1555,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
-            filters.AddRange(GetScalingFilters(state.VideoStream, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
+            filters.AddRange(GetScalingFilters(videoStream.Width, videoStream.Height, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
 
             var output = string.Empty;
 

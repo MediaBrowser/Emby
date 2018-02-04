@@ -92,7 +92,7 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         public override bool CanDownload()
         {
-            return HasPathProtocol;
+            return IsFileProtocol;
         }
 
         [IgnoreDataMember]

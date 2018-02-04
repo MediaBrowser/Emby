@@ -84,7 +84,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             ".mpd"
         };
 
-        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
+        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, CancellationToken cancellationToken)
         {
             var tunerCount = info.TunerCount;
 
@@ -98,7 +98,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 }
             }
 
-            var sources = await GetChannelStreamMediaSources(info, channelId, cancellationToken).ConfigureAwait(false);
+            var sources = await GetChannelStreamMediaSources(info, channelInfo, cancellationToken).ConfigureAwait(false);
 
             var mediaSource = sources.First();
 
@@ -123,15 +123,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             }
         }
 
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
+        protected override Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, ChannelInfo channelInfo, CancellationToken cancellationToken)
         {
-            var channels = await GetChannels(info, true, cancellationToken).ConfigureAwait(false);
-            var channel = channels.FirstOrDefault(c => string.Equals(c.Id, channelId, StringComparison.OrdinalIgnoreCase));
-            if (channel != null)
-            {
-                return new List<MediaSourceInfo> { CreateMediaSourceInfo(info, channel) };
-            }
-            return new List<MediaSourceInfo>();
+            return Task.FromResult(new List<MediaSourceInfo> { CreateMediaSourceInfo(info, channelInfo) });
         }
 
         protected virtual MediaSourceInfo CreateMediaSourceInfo(TunerHostInfo info, ChannelInfo channel)

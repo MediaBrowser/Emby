@@ -12,6 +12,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.System;
+using System.Numerics;
 
 namespace Emby.Server.Implementations.Networking
 {
@@ -274,6 +275,15 @@ namespace Emby.Server.Implementations.Networking
                 {
                     return true;
                 }
+
+                if (normalizedSubnet.IndexOf('/') != -1)
+                {
+                    var subnetAndMask = IpAddresses.GetSubnetAndMaskFromCidr(normalizedSubnet);
+                    if (IpAddresses.IsAddressOnSubnet(address, subnetAndMask.Item1, subnetAndMask.Item2))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return IsInPrivateAddressSpace(addressString, false);
@@ -293,9 +303,13 @@ namespace Emby.Server.Implementations.Networking
                 if (localSubnetsFn != null)
                 {
                     var localSubnets = localSubnetsFn();
-                    if (localSubnets.Length > 0)
+                    foreach (var subnet in localSubnets)
                     {
-                        return IsInConfiguredLocalSubnets(address, localSubnets);
+                        // only validate if there's at least one valid entry
+                        if (!string.IsNullOrWhiteSpace(subnet))
+                        {
+                            return IsInConfiguredLocalSubnets(address, localSubnets);
+                        }
                     }
                 }
 
@@ -691,6 +705,69 @@ namespace Emby.Server.Implementations.Networking
         public virtual IEnumerable<FileSystemEntryInfo> GetNetworkDevices()
         {
             return new List<FileSystemEntryInfo>();
+        }
+    }
+
+    /// <summary>
+    /// Credit: https://stackoverflow.com/questions/1499269/how-to-check-if-an-ip-address-is-within-a-particular-subnet
+    /// </summary>
+    public static class IpAddresses
+    {
+        public static Tuple<IPAddress, IPAddress> GetSubnetAndMaskFromCidr(string cidr)
+        {
+            var delimiterIndex = cidr.IndexOf('/');
+            string ipSubnet = cidr.Substring(0, delimiterIndex);
+            string mask = cidr.Substring(delimiterIndex + 1);
+
+            var subnetAddress = IPAddress.Parse(ipSubnet);
+
+            if (subnetAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                // incorrect - no support for BigInteger in mono
+                return Tuple.Create(subnetAddress, subnetAddress);
+            }
+            else
+            {
+                // ipv4
+                uint ip = 0xFFFFFFFF << (32 - int.Parse(mask));
+
+                var maskBytes = new[]
+                {
+                (byte)((ip & 0xFF000000) >> 24),
+                (byte)((ip & 0x00FF0000) >> 16),
+                (byte)((ip & 0x0000FF00) >> 8),
+                (byte)((ip & 0x000000FF) >> 0),
+            };
+
+                return Tuple.Create(subnetAddress, new IPAddress(maskBytes));
+            }
+        }
+
+        public static bool IsAddressOnSubnet(IPAddress address, IPAddress subnet, IPAddress mask)
+        {
+            byte[] addressOctets = address.GetAddressBytes();
+            byte[] subnetOctets = mask.GetAddressBytes();
+            byte[] networkOctets = subnet.GetAddressBytes();
+
+            // ensure that IPv4 isn't mixed with IPv6
+            if (addressOctets.Length != subnetOctets.Length
+                || addressOctets.Length != networkOctets.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < addressOctets.Length; i += 1)
+            {
+                var addressOctet = addressOctets[i];
+                var subnetOctet = subnetOctets[i];
+                var networkOctet = networkOctets[i];
+
+                if (networkOctet != (addressOctet & subnetOctet))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

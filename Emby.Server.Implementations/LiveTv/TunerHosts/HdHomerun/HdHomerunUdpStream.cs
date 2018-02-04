@@ -14,7 +14,6 @@ using MediaBrowser.Model.LiveTv;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
-using Emby.Server.Implementations.Networking;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
@@ -142,15 +141,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                         }
 
                         EnableStreamSharing = false;
-
-                        try
-                        {
-                            await hdHomerunManager.StopStreaming().ConfigureAwait(false);
-                        }
-                        catch
-                        {
-
-                        }
                     }
                 }
 
