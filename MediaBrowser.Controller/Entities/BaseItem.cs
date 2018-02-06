@@ -516,6 +516,11 @@ namespace MediaBrowser.Controller.Entities
 
         public virtual bool IsInternetMetadataEnabled()
         {
+            if (SourceType == SourceType.Channel)
+            {
+                return false;
+            }
+
             return LibraryManager.GetLibraryOptions(this).EnableInternetProviders;
         }
 

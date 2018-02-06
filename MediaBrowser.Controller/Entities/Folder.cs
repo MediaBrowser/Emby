@@ -195,11 +195,6 @@ namespace MediaBrowser.Controller.Entities
                 item.Id = LibraryManager.GetNewItemId(item.Path, item.GetType());
             }
 
-            if (Children.Any(i => i.Id == item.Id))
-            {
-                throw new ArgumentException(string.Format("A child with the Id {0} already exists.", item.Id));
-            }
-
             if (item.DateCreated == DateTime.MinValue)
             {
                 item.DateCreated = DateTime.UtcNow;

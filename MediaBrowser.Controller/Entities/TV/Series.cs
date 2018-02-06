@@ -221,7 +221,6 @@ namespace MediaBrowser.Controller.Entities.TV
 
         private void SetSeasonQueryOptions(InternalItemsQuery query, User user)
         {
-            var config = user.Configuration;
 
             var seriesKey = GetUniqueSeriesKey(this);
 
@@ -230,9 +229,14 @@ namespace MediaBrowser.Controller.Entities.TV
             query.IncludeItemTypes = new[] { typeof(Season).Name };
             query.OrderBy = new[] { ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray();
 
-            if (!config.DisplayMissingEpisodes)
+            if (user != null)
             {
-                query.IsMissing = false;
+                var config = user.Configuration;
+
+                if (!config.DisplayMissingEpisodes)
+                {
+                    query.IsMissing = false;
+                }
             }
         }
 

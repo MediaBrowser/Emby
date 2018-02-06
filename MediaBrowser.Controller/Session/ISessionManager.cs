@@ -66,12 +66,6 @@ namespace MediaBrowser.Controller.Session
         IEnumerable<SessionInfo> Sessions { get; }
 
         /// <summary>
-        /// Adds the parts.
-        /// </summary>
-        /// <param name="sessionFactories">The session factories.</param>
-        void AddParts(IEnumerable<ISessionControllerFactory> sessionFactories);
-
-        /// <summary>
         /// Logs the user activity.
         /// </summary>
         /// <param name="appName">Type of the client.</param>
