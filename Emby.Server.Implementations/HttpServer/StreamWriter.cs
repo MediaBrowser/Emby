@@ -108,8 +108,6 @@ namespace Emby.Server.Implementations.HttpServer
             }
             catch (Exception ex)
             {
-                Logger.ErrorException("Error streaming data", ex);
-
                 if (OnError != null)
                 {
                     OnError();

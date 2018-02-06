@@ -1544,8 +1544,10 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             if (state.DeInterlace("h264", true) && !string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
             {
+                var inputFramerate = videoStream == null ? null : videoStream.RealFrameRate;
+
                 // If it is already 60fps then it will create an output framerate that is much too high for roku and others to handle
-                if (string.Equals(options.DeinterlaceMethod, "bobandweave", StringComparison.OrdinalIgnoreCase) && (videoStream.RealFrameRate ?? 60) <= 30)
+                if (string.Equals(options.DeinterlaceMethod, "bobandweave", StringComparison.OrdinalIgnoreCase) && (inputFramerate ?? 60) <= 30)
                 {
                     filters.Add("yadif=1:-1:0");
                 }
@@ -1555,7 +1557,9 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
-            filters.AddRange(GetScalingFilters(videoStream.Width, videoStream.Height, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
+            var inputWidth = videoStream == null ? null : videoStream.Width;
+            var inputHeight = videoStream == null ? null : videoStream.Height;
+            filters.AddRange(GetScalingFilters(inputWidth, inputHeight, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
 
             var output = string.Empty;
 

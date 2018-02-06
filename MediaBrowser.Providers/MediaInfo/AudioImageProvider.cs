@@ -96,9 +96,11 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (item.GetType() == typeof(Audio))
             {
-                if (!string.IsNullOrWhiteSpace(item.Album))
+                var albumArtist = item.AlbumArtists.FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(item.Album) && !string.IsNullOrWhiteSpace(albumArtist))
                 {
-                    filename = item.Album.GetMD5().ToString("N");
+                    filename = (item.Album + "-" + albumArtist).GetMD5().ToString("N");
                 }
                 else
                 {

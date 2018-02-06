@@ -143,7 +143,6 @@ namespace Emby.Server.Implementations.Services
 
             var rawResponse = await appHost.ServiceController.Execute(appHost, request, httpReq).ConfigureAwait(false);
 
-            //var response = await HandleResponseAsync(rawResponse).ConfigureAwait(false);
             var response = rawResponse;
 
             // Apply response filters

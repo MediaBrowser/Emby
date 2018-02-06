@@ -172,7 +172,7 @@ namespace Emby.Dlna.PlayTo
 
             var sessionInfo = _sessionManager.LogSessionActivity("DLNA", _appHost.ApplicationVersion.ToString(), uuid, deviceName, uri.OriginalString, null);
 
-            var controller = sessionInfo.SessionController as PlayToController;
+            var controller = sessionInfo.SessionControllers.OfType<PlayToController>().FirstOrDefault();
 
             if (controller == null)
             {
@@ -194,21 +194,23 @@ namespace Emby.Dlna.PlayTo
 
                 string accessToken = null;
 
-                sessionInfo.SessionController = controller = new PlayToController(sessionInfo,
-                    _sessionManager,
-                    _libraryManager,
-                    _logger,
-                    _dlnaManager,
-                    _userManager,
-                    _imageProcessor,
-                    serverAddress,
-                    accessToken,
-                    _deviceDiscovery,
-                    _userDataManager,
-                    _localization,
-                    _mediaSourceManager,
-                    _config,
-                    _mediaEncoder);
+                controller = new PlayToController(sessionInfo,
+                   _sessionManager,
+                   _libraryManager,
+                   _logger,
+                   _dlnaManager,
+                   _userManager,
+                   _imageProcessor,
+                   serverAddress,
+                   accessToken,
+                   _deviceDiscovery,
+                   _userDataManager,
+                   _localization,
+                   _mediaSourceManager,
+                   _config,
+                   _mediaEncoder);
+
+                sessionInfo.AddController(controller);
 
                 controller.Init(device);
 

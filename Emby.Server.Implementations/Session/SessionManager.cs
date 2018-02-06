@@ -91,8 +91,6 @@ namespace Emby.Server.Implementations.Session
         public event EventHandler<SessionEventArgs> SessionEnded;
         public event EventHandler<SessionEventArgs> SessionActivity;
 
-        private IEnumerable<ISessionControllerFactory> _sessionFactories = new List<ISessionControllerFactory>();
-
         public SessionManager(IUserDataManager userDataManager, ILogger logger, ILibraryManager libraryManager, IUserManager userManager, IMusicManager musicManager, IDtoService dtoService, IImageProcessor imageProcessor, IJsonSerializer jsonSerializer, IServerApplicationHost appHost, IHttpClient httpClient, IAuthenticationRepository authRepo, IDeviceManager deviceManager, IMediaSourceManager mediaSourceManager, ITimerFactory timerFactory)
         {
             _userDataManager = userDataManager;
@@ -139,15 +137,6 @@ namespace Emby.Server.Implementations.Session
         }
 
         /// <summary>
-        /// Adds the parts.
-        /// </summary>
-        /// <param name="sessionFactories">The session factories.</param>
-        public void AddParts(IEnumerable<ISessionControllerFactory> sessionFactories)
-        {
-            _sessionFactories = sessionFactories.ToList();
-        }
-
-        /// <summary>
         /// Gets all connections.
         /// </summary>
         /// <value>All connections.</value>
@@ -176,38 +165,13 @@ namespace Emby.Server.Implementations.Session
             }, _logger);
         }
 
-        private async void OnSessionEnded(SessionInfo info)
+        private void OnSessionEnded(SessionInfo info)
         {
-            try
-            {
-                await SendSessionEndedNotification(info, CancellationToken.None).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error in SendSessionEndedNotification", ex);
-            }
-
             EventHelper.QueueEventIfNotNull(SessionEnded, this, new SessionEventArgs
             {
                 SessionInfo = info
 
             }, _logger);
-
-            var disposable = info.SessionController as IDisposable;
-
-            if (disposable != null)
-            {
-                _logger.Debug("Disposing session controller {0}", disposable.GetType().Name);
-
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error disposing session controller", ex);
-                }
-            }
 
             info.Dispose();
         }
@@ -300,12 +264,6 @@ namespace Emby.Server.Implementations.Session
                     SessionInfo = session
 
                 }, _logger);
-            }
-
-            var controller = session.SessionController;
-            if (controller != null)
-            {
-                controller.OnActivity();
             }
 
             return session;
@@ -451,13 +409,6 @@ namespace Emby.Server.Implementations.Session
             if (!userId.HasValue)
             {
                 sessionInfo.AdditionalUsers = new SessionUserInfo[] { };
-            }
-
-            if (sessionInfo.SessionController == null)
-            {
-                sessionInfo.SessionController = _sessionFactories
-                    .Select(i => i.GetSessionController(sessionInfo))
-                    .FirstOrDefault(i => i != null);
             }
 
             return sessionInfo;
@@ -659,8 +610,6 @@ namespace Emby.Server.Implementations.Session
                 DeviceId = session.DeviceId
 
             }, _logger);
-
-            await SendPlaybackStartNotification(session, CancellationToken.None).ConfigureAwait(false);
 
             StartIdleCheckTimer();
         }
@@ -895,8 +844,6 @@ namespace Emby.Server.Implementations.Session
                 DeviceId = session.DeviceId
 
             }, _logger);
-
-            await SendPlaybackStoppedNotification(session, CancellationToken.None).ConfigureAwait(false);
         }
 
         private bool OnPlaybackStopped(Guid userId, BaseItem item, long? positionTicks, bool playbackFailed)
@@ -990,7 +937,17 @@ namespace Emby.Server.Implementations.Session
                 AssertCanControl(session, controllingSession);
             }
 
-            return session.SessionController.SendGeneralCommand(command, cancellationToken);
+            return SendMessageToSession(session, "GeneralCommand", command, cancellationToken);
+        }
+
+        private async Task SendMessageToSession<T>(SessionInfo session, string name, T data, CancellationToken cancellationToken)
+        {
+            var controllers = session.SessionControllers.ToArray();
+
+            foreach (var controller in controllers)
+            {
+                await controller.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public async Task SendPlayCommand(string controllingSessionId, string sessionId, PlayRequest command, CancellationToken cancellationToken)
@@ -1077,7 +1034,7 @@ namespace Emby.Server.Implementations.Session
                 }
             }
 
-            await session.SessionController.SendPlayCommand(command, cancellationToken).ConfigureAwait(false);
+            await SendMessageToSession(session, "Play", command, cancellationToken).ConfigureAwait(false);
         }
 
         private IList<BaseItem> TranslateItemForPlayback(string id, User user)
@@ -1179,7 +1136,7 @@ namespace Emby.Server.Implementations.Session
                 }
             }
 
-            return session.SessionController.SendPlaystateCommand(command, cancellationToken);
+            return SendMessageToSession(session, "Playstate", command, cancellationToken);
         }
 
         private void AssertCanControl(SessionInfo session, SessionInfo controllingSession)
@@ -1203,20 +1160,20 @@ namespace Emby.Server.Implementations.Session
         {
             CheckDisposed();
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+            var sessions = Sessions.ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
             {
                 try
                 {
-                    await session.SessionController.SendMessage("RestartRequired", string.Empty, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, "RestartRequired", string.Empty, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error in SendRestartRequiredNotification.", ex);
                 }
 
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
@@ -1230,20 +1187,20 @@ namespace Emby.Server.Implementations.Session
         {
             CheckDisposed();
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+            var sessions = Sessions.ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
             {
                 try
                 {
-                    await session.SessionController.SendMessage("ServerShuttingDown", string.Empty, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, "ServerShuttingDown", string.Empty, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error in SendServerShutdownNotification.", ex);
                 }
 
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             return Task.WhenAll(tasks);
         }
@@ -1259,83 +1216,20 @@ namespace Emby.Server.Implementations.Session
 
             _logger.Debug("Beginning SendServerRestartNotification");
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
+            var sessions = Sessions.ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
             {
                 try
                 {
-                    await session.SessionController.SendMessage("ServerRestarting", string.Empty, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, "ServerRestarting", string.Empty, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error in SendServerRestartNotification.", ex);
                 }
 
-            }, cancellationToken));
-
-            return Task.WhenAll(tasks);
-        }
-
-        private Task SendSessionEndedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
-        {
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
-            var dto = GetSessionInfoDto(sessionInfo);
-
-            var tasks = sessions.Select(session => Task.Run(async () =>
-            {
-                try
-                {
-                    await session.SessionController.SendMessage("SessionEnded", dto, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error in SendSessionEndedNotification.", ex);
-                }
-
-            }, cancellationToken));
-
-            return Task.WhenAll(tasks);
-        }
-
-        private Task SendPlaybackStartNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
-        {
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
-            var dto = GetSessionInfoDto(sessionInfo);
-
-            var tasks = sessions.Select(session => Task.Run(async () =>
-            {
-                try
-                {
-                    await session.SessionController.SendPlaybackStartNotification(dto, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error in SendPlaybackStartNotification.", ex);
-                }
-
-            }, cancellationToken));
-
-            return Task.WhenAll(tasks);
-        }
-
-        private Task SendPlaybackStoppedNotification(SessionInfo sessionInfo, CancellationToken cancellationToken)
-        {
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null).ToList();
-            var dto = GetSessionInfoDto(sessionInfo);
-
-            var tasks = sessions.Select(session => Task.Run(async () =>
-            {
-                try
-                {
-                    await session.SessionController.SendPlaybackStoppedNotification(dto, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error in SendPlaybackStoppedNotification.", ex);
-                }
-
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             return Task.WhenAll(tasks);
         }
@@ -1470,7 +1364,7 @@ namespace Emby.Server.Implementations.Session
 
             EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
 
-            var session =  LogSessionActivity(request.App,
+            var session = LogSessionActivity(request.App,
                 request.AppVersion,
                 request.DeviceId,
                 request.DeviceName,
@@ -1610,11 +1504,13 @@ namespace Emby.Server.Implementations.Session
 
             if (!string.IsNullOrEmpty(capabilities.MessageCallbackUrl))
             {
-                var controller = session.SessionController as HttpSessionController;
-
-                if (controller == null)
+                EnsureHttpController(session, capabilities.MessageCallbackUrl);
+            }
+            if (!string.IsNullOrEmpty(capabilities.PushToken))
+            {
+                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase))
                 {
-                    session.SessionController = new HttpSessionController(_httpClient, _jsonSerializer, session, capabilities.MessageCallbackUrl, this);
+                    EnsureFirebaseController(session, capabilities.PushToken);
                 }
             }
 
@@ -1635,6 +1531,16 @@ namespace Emby.Server.Implementations.Session
                     _logger.ErrorException("Error saving device capabilities", ex);
                 }
             }
+        }
+
+        private void EnsureFirebaseController(SessionInfo session, string token)
+        {
+            session.EnsureController<FirebaseSessionController>(s => new FirebaseSessionController(_httpClient, _appHost, _jsonSerializer, s, token, this));
+        }
+
+        private void EnsureHttpController(SessionInfo session, string messageCallbackUrl)
+        {
+            session.EnsureController<HttpSessionController>(s => new HttpSessionController(_httpClient, _jsonSerializer, s, messageCallbackUrl, this));
         }
 
         private ClientCapabilities GetSavedCapabilities(string deviceId)
@@ -1891,7 +1797,7 @@ namespace Emby.Server.Implementations.Session
         {
             CheckDisposed();
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && userIds.Any(i.ContainsUser)).ToList();
+            var sessions = Sessions.Where(i => userIds.Any(i.ContainsUser)).ToList();
 
             if (sessions.Count == 0)
             {
@@ -1904,14 +1810,14 @@ namespace Emby.Server.Implementations.Session
             {
                 try
                 {
-                    await session.SessionController.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, name, data, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error sending message", ex);
                 }
 
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             return Task.WhenAll(tasks);
         }
@@ -1920,20 +1826,20 @@ namespace Emby.Server.Implementations.Session
         {
             CheckDisposed();
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && userIds.Any(i.ContainsUser)).ToList();
+            var sessions = Sessions.Where(i => userIds.Any(i.ContainsUser)).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
             {
                 try
                 {
-                    await session.SessionController.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, name, data, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error sending message", ex);
                 }
 
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             return Task.WhenAll(tasks);
         }
@@ -1943,20 +1849,20 @@ namespace Emby.Server.Implementations.Session
         {
             CheckDisposed();
 
-            var sessions = Sessions.Where(i => i.IsActive && i.SessionController != null && string.Equals(i.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)).ToList();
+            var sessions = Sessions.Where(i => string.Equals(i.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)).ToList();
 
             var tasks = sessions.Select(session => Task.Run(async () =>
             {
                 try
                 {
-                    await session.SessionController.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                    await SendMessageToSession(session, name, data, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Error sending message", ex);
                 }
 
-            }, cancellationToken));
+            }, cancellationToken)).ToArray();
 
             return Task.WhenAll(tasks);
         }

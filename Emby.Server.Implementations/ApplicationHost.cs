@@ -762,7 +762,7 @@ namespace Emby.Server.Implementations
             return new JsonSerializer(FileSystemManager, LogManager.GetLogger("JsonSerializer"));
         }
 
-        public async Task Init(IProgress<double> progress)
+        public void Init()
         {
             HttpPort = ServerConfigurationManager.Configuration.HttpServerPortNumber;
             HttpsPort = ServerConfigurationManager.Configuration.HttpsPortNumber;
@@ -774,39 +774,26 @@ namespace Emby.Server.Implementations
                 HttpsPort = ServerConfiguration.DefaultHttpsPort;
             }
 
-            progress.Report(1);
-
             JsonSerializer = CreateJsonSerializer();
 
             OnLoggerLoaded(true);
             LogManager.LoggerLoaded += (s, e) => OnLoggerLoaded(false);
 
             IsFirstRun = !ConfigurationManager.CommonConfiguration.IsStartupWizardCompleted;
-            progress.Report(2);
 
             LogManager.LogSeverity = ConfigurationManager.CommonConfiguration.EnableDebugLevelLogging
                 ? LogSeverity.Debug
                 : LogSeverity.Info;
 
-            progress.Report(3);
-
             DiscoverTypes();
-            progress.Report(14);
 
             SetHttpLimit();
-            progress.Report(15);
 
-            var innerProgress = new ActionableProgress<double>();
-            innerProgress.RegisterAction(p => progress.Report(.8 * p + 15));
-
-            await RegisterResources(innerProgress).ConfigureAwait(false);
+            RegisterResources();
 
             FindParts();
-            progress.Report(95);
 
-            await InstallIsoMounters(CancellationToken.None).ConfigureAwait(false);
-
-            progress.Report(100);
+            InstallIsoMounters();
         }
 
         protected virtual void OnLoggerLoaded(bool isFirstLoad)
@@ -842,7 +829,7 @@ namespace Emby.Server.Implementations
         /// <summary>
         /// Registers resources that classes will depend on
         /// </summary>
-        protected async Task RegisterResources(IProgress<double> progress)
+        protected void RegisterResources()
         {
             RegisterSingleInstance(ConfigurationManager);
             RegisterSingleInstance<IApplicationHost>(this);
@@ -958,13 +945,9 @@ namespace Emby.Server.Implementations
             HttpServer = HttpServerFactory.CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, MemoryStreamFactory, "Emby", "web/index.html", textEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
             HttpServer.GlobalResponse = LocalizationManager.GetLocalizedString("StartupEmbyServerIsLoading");
             RegisterSingleInstance(HttpServer, false);
-            progress.Report(10);
 
             ServerManager = new ServerManager.ServerManager(this, JsonSerializer, LogManager.GetLogger("ServerManager"), ServerConfigurationManager, MemoryStreamFactory, textEncoding);
             RegisterSingleInstance(ServerManager);
-
-            var innerProgress = new ActionableProgress<double>();
-            innerProgress.RegisterAction(p => progress.Report((.75 * p) + 15));
 
             ImageProcessor = GetImageProcessor();
             RegisterSingleInstance(ImageProcessor);
@@ -992,8 +975,6 @@ namespace Emby.Server.Implementations
 
             var newsService = new Emby.Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);
             RegisterSingleInstance<INewsService>(newsService);
-
-            progress.Report(15);
 
             ChannelManager = new ChannelManager(UserManager, DtoService, LibraryManager, LogManager.GetLogger("ChannelManager"), ServerConfigurationManager, FileSystemManager, UserDataManager, JsonSerializer, LocalizationManager, HttpClient, ProviderManager);
             RegisterSingleInstance(ChannelManager);
@@ -1039,8 +1020,7 @@ namespace Emby.Server.Implementations
             ChapterManager = new ChapterManager(LibraryManager, LogManager.GetLogger("ChapterManager"), ServerConfigurationManager, ItemRepository);
             RegisterSingleInstance(ChapterManager);
 
-            await RegisterMediaEncoder(innerProgress).ConfigureAwait(false);
-            progress.Report(90);
+            RegisterMediaEncoder();
 
             EncodingManager = new EncodingManager(FileSystemManager, Logger, MediaEncoder, ChapterManager, LibraryManager);
             RegisterSingleInstance(EncodingManager);
@@ -1069,7 +1049,6 @@ namespace Emby.Server.Implementations
             itemRepo.Initialize(userDataRepo);
             ((LibraryManager)LibraryManager).ItemRepository = ItemRepository;
             ConfigureNotificationsRepository();
-            progress.Report(100);
 
             SetStaticProperties();
 
@@ -1133,9 +1112,7 @@ namespace Emby.Server.Implementations
         /// <summary>
         /// Installs the iso mounters.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task InstallIsoMounters(CancellationToken cancellationToken)
+        private void InstallIsoMounters()
         {
             var list = new List<IIsoMounter>();
 
@@ -1147,7 +1124,8 @@ namespace Emby.Server.Implementations
                     {
                         Logger.Info("Installing {0}", isoMounter.Name);
 
-                        await isoMounter.Install(cancellationToken).ConfigureAwait(false);
+                        var task = isoMounter.Install(CancellationToken.None);
+                        Task.WaitAll(task);
                     }
 
                     list.Add(isoMounter);
@@ -1276,17 +1254,22 @@ namespace Emby.Server.Implementations
             return info;
         }
 
+        protected virtual FFMpegInfo GetFFMpegInfo()
+        {
+            return new FFMpegLoader(Logger, ApplicationPaths, HttpClient, ZipClient, FileSystemManager, GetFfmpegInstallInfo())
+                .GetFFMpegInfo(StartupOptions);
+        }
+
         /// <summary>
         /// Registers the media encoder.
         /// </summary>
         /// <returns>Task.</returns>
-        private async Task RegisterMediaEncoder(IProgress<double> progress)
+        private void RegisterMediaEncoder()
         {
             string encoderPath = null;
             string probePath = null;
 
-            var info = await new FFMpegLoader(Logger, ApplicationPaths, HttpClient, ZipClient, FileSystemManager, GetFfmpegInstallInfo())
-                .GetFFMpegInfo(StartupOptions, progress).ConfigureAwait(false);
+            var info = GetFFMpegInfo();
 
             encoderPath = info.EncoderPath;
             probePath = info.ProbePath;
@@ -1431,8 +1414,6 @@ namespace Emby.Server.Implementations
             LiveTvManager.AddParts(GetExports<ILiveTvService>(), GetExports<ITunerHost>(), GetExports<IListingsProvider>());
 
             SubtitleManager.AddParts(GetExports<ISubtitleProvider>());
-
-            SessionManager.AddParts(GetExports<ISessionControllerFactory>());
 
             ChannelManager.AddParts(GetExports<IChannel>());
 

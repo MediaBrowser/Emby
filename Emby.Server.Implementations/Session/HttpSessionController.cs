@@ -36,10 +36,6 @@ namespace Emby.Server.Implementations.Session
             _sessionManager = sessionManager;
         }
 
-        public void OnActivity()
-        {
-        }
-
         private string PostUrl
         {
             get
@@ -84,17 +80,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        public Task SendPlaybackStartNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendPlaybackStoppedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendPlayCommand(PlayRequest command, CancellationToken cancellationToken)
+        private Task SendPlayCommand(PlayRequest command, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<string, string>();
 
@@ -124,7 +110,7 @@ namespace Emby.Server.Implementations.Session
             return SendMessage(command.PlayCommand.ToString(), dict, cancellationToken);
         }
 
-        public Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
+        private Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
         {
             var args = new Dictionary<string, string>();
 
@@ -141,7 +127,7 @@ namespace Emby.Server.Implementations.Session
             return SendMessage(command.Command.ToString(), args, cancellationToken);
         }
 
-        public Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
+        private Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
         {
             return SendMessage(command.Name, command.Arguments, cancellationToken);
         }
@@ -149,6 +135,24 @@ namespace Emby.Server.Implementations.Session
         private string[] _supportedMessages = new string[] { "LibraryChanged", "ServerRestarting", "ServerShuttingDown", "RestartRequired" };
         public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
         {
+            if (!IsSessionActive)
+            {
+                return Task.FromResult(true);
+            }
+
+            if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendPlayCommand(data as PlayRequest, cancellationToken);
+            }
+            if (string.Equals(name, "PlayState", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendPlaystateCommand(data as PlaystateRequest, cancellationToken);
+            }
+            if (string.Equals(name, "GeneralCommand", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendGeneralCommand(data as GeneralCommand, cancellationToken);
+            }
+
             if (!_supportedMessages.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
                 return Task.FromResult(true);

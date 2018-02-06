@@ -55,10 +55,6 @@ namespace Emby.Dlna.PlayTo
             }
         }
 
-        public void OnActivity()
-        {
-        }
-
         public bool SupportsMediaControl
         {
             get { return IsSessionActive; }
@@ -375,7 +371,7 @@ namespace Emby.Dlna.PlayTo
             await PlayItems(playlist).ConfigureAwait(false);
         }
 
-        public Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
+        private Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
         {
             switch (command.Command)
             {
@@ -435,16 +431,6 @@ namespace Emby.Dlna.PlayTo
         private bool EnableClientSideSeek(StreamInfo info)
         {
             return info.IsDirectStream;
-        }
-
-        public Task SendPlaybackStartNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SendPlaybackStoppedNotification(SessionInfoDto sessionInfo, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
         }
 
         #endregion
@@ -664,7 +650,7 @@ namespace Emby.Dlna.PlayTo
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
-        public Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
+        private Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
         {
             GeneralCommandType commandType;
 
@@ -949,6 +935,29 @@ namespace Emby.Dlna.PlayTo
 
         public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
         {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+
+            if (_device == null)
+            {
+                return Task.FromResult(true);
+            }
+
+            if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendPlayCommand(data as PlayRequest, cancellationToken);
+            }
+            if (string.Equals(name, "PlayState", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendPlaystateCommand(data as PlaystateRequest, cancellationToken);
+            }
+            if (string.Equals(name, "GeneralCommand", StringComparison.OrdinalIgnoreCase))
+            {
+                return SendGeneralCommand(data as GeneralCommand, cancellationToken);
+            }
+
             // Not supported or needed right now
             return Task.FromResult(true);
         }

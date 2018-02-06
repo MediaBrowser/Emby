@@ -149,9 +149,7 @@ namespace MediaBrowser.Common
         /// <summary>
         /// Inits this instance.
         /// </summary>
-        /// <param name="progress">The progress.</param>
-        /// <returns>Task.</returns>
-        Task Init(IProgress<double> progress);
+        void Init();
 
         /// <summary>
         /// Creates the instance.

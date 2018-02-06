@@ -25,6 +25,7 @@ using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Text;
+using System.Net.Sockets;
 
 namespace Emby.Server.Implementations.HttpServer
 {
@@ -638,13 +639,23 @@ namespace Emby.Server.Implementations.HttpServer
                 ErrorHandler(ex, httpReq, false);
             }
 
+            catch (IOException ex)
+            {
+                var logException = false;
+
+                ErrorHandler(ex, httpReq, logException);
+            }
+
+            catch (SocketException ex)
+            {
+                var logException = false;
+
+                ErrorHandler(ex, httpReq, logException);
+            }
+
             catch (Exception ex)
             {
                 var logException = !string.Equals(ex.GetType().Name, "SocketException", StringComparison.OrdinalIgnoreCase);
-
-#if DEBUG
-                logException = true;
-#endif
 
                 ErrorHandler(ex, httpReq, logException);
             }

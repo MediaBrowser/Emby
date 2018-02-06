@@ -1,10 +1,10 @@
 ﻿using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Session;
 using System;
-using System.Collections.Generic;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Threading;
+using System.Linq;
 
 namespace MediaBrowser.Controller.Session
 {
@@ -23,6 +23,7 @@ namespace MediaBrowser.Controller.Session
 
             AdditionalUsers = new SessionUserInfo[] { };
             PlayState = new PlayerStateInfo();
+            SessionControllers = new ISessionController[] { };
         }
 
         public PlayerStateInfo PlayState { get; set; }
@@ -125,7 +126,7 @@ namespace MediaBrowser.Controller.Session
         /// Gets or sets the session controller.
         /// </summary>
         /// <value>The session controller.</value>
-        public ISessionController SessionController { get; set; }
+        public ISessionController[] SessionControllers { get; set; }
 
         /// <summary>
         /// Gets or sets the application icon URL.
@@ -159,9 +160,17 @@ namespace MediaBrowser.Controller.Session
         {
             get
             {
-                if (SessionController != null)
+                var controllers = SessionControllers;
+                foreach (var controller in controllers)
                 {
-                    return SessionController.IsSessionActive;
+                    if (controller.IsSessionActive)
+                    {
+                        return true;
+                    }
+                }
+                if (controllers.Length > 0)
+                {
+                    return false;
                 }
 
                 return (DateTime.UtcNow - LastActivityDate).TotalMinutes <= 10;
@@ -177,13 +186,42 @@ namespace MediaBrowser.Controller.Session
                     return false;
                 }
 
-                if (SessionController != null)
+                var controllers = SessionControllers;
+                foreach (var controller in controllers)
                 {
-                    return SessionController.SupportsMediaControl;
+                    if (controller.SupportsMediaControl)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;
             }
+        }
+
+        public Tuple<ISessionController, bool> EnsureController<T>(Func<SessionInfo, ISessionController> factory)
+        {
+            var controllers = SessionControllers.ToList();
+            foreach (var controller in controllers)
+            {
+                if (controller is T)
+                {
+                    return new Tuple<ISessionController, bool>(controller, false);
+                }
+            }
+
+            var newController = factory(this);
+            controllers.Add(newController);
+
+            SessionControllers = controllers.ToArray();
+            return new Tuple<ISessionController, bool>(newController, true);
+        }
+
+        public void AddController(ISessionController controller)
+        {
+            var controllers = SessionControllers.ToList();
+            controllers.Add(controller);
+            SessionControllers = controllers.ToArray();
         }
 
         public bool ContainsUser(string userId)
@@ -302,6 +340,29 @@ namespace MediaBrowser.Controller.Session
             _disposed = true;
 
             StopAutomaticProgress();
+
+            var controllers = SessionControllers.ToList();
+            SessionControllers = new ISessionController[] { };
+
+            foreach (var controller in controllers)
+            {
+                var disposable = controller as IDisposable;
+
+                if (disposable != null)
+                {
+                    _logger.Debug("Disposing session controller {0}", disposable.GetType().Name);
+
+                    try
+                    {
+                        disposable.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error disposing session controller", ex);
+                    }
+                }
+            }
+
             _sessionManager = null;
             GC.SuppressFinalize(this);
         }

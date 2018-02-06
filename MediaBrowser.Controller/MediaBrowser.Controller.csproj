@@ -50,8 +50,6 @@
     <Compile Include="Channels\IChannelManager.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\IHasCacheKey.cs" />
-    <Compile Include="Channels\IIndexableChannel.cs" />
-    <Compile Include="Channels\InternalAllChannelMediaQuery.cs" />
     <Compile Include="Channels\InternalChannelFeatures.cs" />
     <Compile Include="Channels\InternalChannelItemQuery.cs" />
     <Compile Include="Channels\IRequiresMediaInfoCallback.cs" />
@@ -316,7 +314,6 @@
     <Compile Include="IO\FileData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\ISessionController.cs" />
-    <Compile Include="Session\ISessionControllerFactory.cs" />
     <Compile Include="Session\SessionEventArgs.cs" />
     <Compile Include="Session\SessionInfo.cs" />
     <Compile Include="Sorting\IBaseItemComparer.cs" />
