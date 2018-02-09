@@ -114,19 +114,20 @@ namespace Emby.Server.Implementations.Services
                 }
 
                 var bestScore = -1;
+                RestPath bestMatch = null;
                 foreach (var restPath in firstMatches)
                 {
                     var score = restPath.MatchScore(httpMethod, matchUsingPathParts, logger);
-                    if (score > bestScore) bestScore = score;
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestMatch = restPath;
+                    }
                 }
 
-                if (bestScore > 0)
+                if (bestScore > 0 && bestMatch != null)
                 {
-                    foreach (var restPath in firstMatches)
-                    {
-                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts, logger))
-                            return restPath;
-                    }
+                    return bestMatch;
                 }
             }
 
@@ -136,18 +137,20 @@ namespace Emby.Server.Implementations.Services
                 if (!this.RestPathMap.TryGetValue(potentialHashMatch, out firstMatches)) continue;
 
                 var bestScore = -1;
+                RestPath bestMatch = null;
                 foreach (var restPath in firstMatches)
                 {
                     var score = restPath.MatchScore(httpMethod, matchUsingPathParts, logger);
-                    if (score > bestScore) bestScore = score;
-                }
-                if (bestScore > 0)
-                {
-                    foreach (var restPath in firstMatches)
+                    if (score > bestScore)
                     {
-                        if (bestScore == restPath.MatchScore(httpMethod, matchUsingPathParts, logger))
-                            return restPath;
+                        bestScore = score;
+                        bestMatch = restPath;
                     }
+                }
+
+                if (bestScore > 0 && bestMatch != null)
+                {
+                    return bestMatch;
                 }
             }
 

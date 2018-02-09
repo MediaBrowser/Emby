@@ -1508,7 +1508,7 @@ namespace Emby.Server.Implementations.Session
             }
             if (!string.IsNullOrEmpty(capabilities.PushToken))
             {
-                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
                 {
                     EnsureFirebaseController(session, capabilities.PushToken);
                 }
@@ -1572,10 +1572,10 @@ namespace Emby.Server.Implementations.Session
                 SupportsRemoteControl = session.SupportsMediaControl,
                 PlayState = session.PlayState,
                 AppIconUrl = session.AppIconUrl,
-                TranscodingInfo = session.NowPlayingItem == null ? null : session.TranscodingInfo
+                TranscodingInfo = session.NowPlayingItem == null ? null : session.TranscodingInfo,
+                RemoteEndPoint = session.RemoteEndPoint,
+                ServerId = _appHost.SystemId
             };
-
-            dto.ServerId = _appHost.SystemId;
 
             if (session.UserId.HasValue)
             {
