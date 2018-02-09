@@ -40,6 +40,11 @@ namespace Emby.Server.Implementations.Session
             _senderId = _appHost.GetValue("firebase_senderid");
         }
 
+        public static bool IsSupported(IApplicationHost appHost)
+        {
+            return !string.IsNullOrEmpty(appHost.GetValue("firebase_applicationid")) && !string.IsNullOrEmpty(appHost.GetValue("firebase_senderid"));
+        }
+
         public bool IsSessionActive
         {
             get

@@ -37,7 +37,9 @@ namespace MediaBrowser.Model.Session
         /// </summary>
         /// <value>The user primary image tag.</value>
         public string UserPrimaryImageTag { get; set; }
-        
+
+        public string RemoteEndPoint { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>
