@@ -87,7 +87,8 @@ namespace Emby.Server.Implementations.Collections
                         UserId = i,
                         CanEdit = true
 
-                    }).ToList()
+                    }).ToList(),
+                    DateCreated = DateTime.UtcNow
                 };
 
                 parentFolder.AddChild(collection, CancellationToken.None);

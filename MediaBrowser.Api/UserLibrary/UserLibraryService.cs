@@ -448,7 +448,7 @@ namespace MediaBrowser.Api.UserLibrary
                     var options = new MetadataRefreshOptions(_fileSystem)
                     {
                         MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
-                        ImageRefreshMode = ImageRefreshMode.FullRefresh,
+                        ImageRefreshMode = MetadataRefreshMode.FullRefresh,
                         ForceSave = performFullRefresh
                     };
 

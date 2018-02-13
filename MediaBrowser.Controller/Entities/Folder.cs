@@ -760,7 +760,7 @@ namespace MediaBrowser.Controller.Entities
                     items = GetRecursiveChildren(user, query);
                 }
 
-                return PostFilterAndSort(items, query, true, true);
+                return PostFilterAndSort(items, query, true);
             }
 
             if (!(this is UserRootFolder) && !(this is AggregateFolder))
@@ -980,17 +980,11 @@ namespace MediaBrowser.Controller.Entities
             {
                 try
                 {
-                    // Don't blow up here because it could cause parent screens with other content to fail
-                    return ChannelManager.GetChannelItemsInternal(new ChannelItemQuery
-                    {
-                        ChannelId = ChannelId,
-                        FolderId = Id.ToString("N"),
-                        Limit = query.Limit,
-                        StartIndex = query.StartIndex,
-                        UserId = query.User.Id.ToString("N"),
-                        OrderBy = query.OrderBy
+                    query.Parent = this;
+                    query.ChannelIds = new string[] { ChannelId };
 
-                    }, new SimpleProgress<double>(), CancellationToken.None).Result;
+                    // Don't blow up here because it could cause parent screens with other content to fail
+                    return ChannelManager.GetChannelItemsInternal(query, new SimpleProgress<double>(), CancellationToken.None).Result;
                 }
                 catch
                 {
@@ -1019,14 +1013,15 @@ namespace MediaBrowser.Controller.Entities
                 items = GetChildren(user, true).Where(filter);
             }
 
-            return PostFilterAndSort(items, query, true, true);
+            return PostFilterAndSort(items, query, true);
         }
 
-        protected QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items, InternalItemsQuery query, bool collapseBoxSetItems, bool enableSorting)
+        protected QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items, InternalItemsQuery query, bool enableSorting)
         {
             var user = query.User;
 
-            if (collapseBoxSetItems && user != null)
+            // Check recursive - don't substitute in plain folder views
+            if (user != null && query.Recursive)
             {
                 items = UserViewBuilder.CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager);
             }

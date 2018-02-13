@@ -5,7 +5,7 @@ namespace MediaBrowser.Controller.Providers
 {
     public class ImageRefreshOptions
     {
-        public ImageRefreshMode ImageRefreshMode { get; set; }
+        public MetadataRefreshMode ImageRefreshMode { get; set; }
         public IDirectoryService DirectoryService { get; private set; }
 
         public bool ReplaceAllImages { get; set; }
@@ -16,7 +16,7 @@ namespace MediaBrowser.Controller.Providers
 
         public ImageRefreshOptions(IDirectoryService directoryService)
         {
-            ImageRefreshMode = ImageRefreshMode.Default;
+            ImageRefreshMode = MetadataRefreshMode.Default;
             DirectoryService = directoryService;
 
             ReplaceImages = new List<ImageType>();
@@ -25,7 +25,7 @@ namespace MediaBrowser.Controller.Providers
 
         public bool IsReplacingImage(ImageType type)
         {
-            return ImageRefreshMode == ImageRefreshMode.FullRefresh &&
+            return ImageRefreshMode == MetadataRefreshMode.FullRefresh &&
                    (ReplaceAllImages || ReplaceImages.Contains(type));
         }
     }

@@ -126,6 +126,10 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                 {
                     leftOver.Add(child);
                 }
+                else if (IsIgnored(child.Name))
+                {
+
+                }
                 else
                 {
                     files.Add(child);
@@ -170,6 +174,22 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
             result.ExtraFiles.AddRange(files.Where(i => !ContainsFile(resolverResult, i)));
 
             return result;
+        }
+
+        private bool IsIgnored(string filename)
+        {
+            // Ignore samples
+            var sampleFilename = " " + filename.Replace(".", " ", StringComparison.OrdinalIgnoreCase)
+                .Replace("-", " ", StringComparison.OrdinalIgnoreCase)
+                .Replace("_", " ", StringComparison.OrdinalIgnoreCase)
+                .Replace("!", " ", StringComparison.OrdinalIgnoreCase);
+
+            if (sampleFilename.IndexOf(" sample ", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool ContainsFile(List<VideoInfo> result, FileSystemMetadata file)

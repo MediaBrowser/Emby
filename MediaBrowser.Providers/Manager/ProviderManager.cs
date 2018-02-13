@@ -367,7 +367,7 @@ namespace MediaBrowser.Providers.Manager
                 // If locked only allow local providers
                 if (item.IsLocked && !(provider is ILocalImageProvider))
                 {
-                    if (refreshOptions.ImageRefreshMode != ImageRefreshMode.FullRefresh)
+                    if (refreshOptions.ImageRefreshMode != MetadataRefreshMode.FullRefresh)
                     {
                         return false;
                     }

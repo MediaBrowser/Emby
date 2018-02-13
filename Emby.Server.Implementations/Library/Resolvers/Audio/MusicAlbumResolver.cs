@@ -117,24 +117,22 @@ namespace Emby.Server.Implementations.Library.Resolvers.Audio
                 {
                     if (allowSubfolders)
                     {
-                        var path = fileSystemInfo.FullName;
-                        var isMultiDisc = IsMultiDiscFolder(path, libraryOptions);
-
-                        if (isMultiDisc)
+                        if (notMultiDisc)
                         {
-                            var hasMusic = ContainsMusic(directoryService.GetFileSystemEntries(path), false, directoryService, logger, fileSystem, libraryOptions, libraryManager);
+                            continue;
+                        }
 
-                            if (hasMusic)
+                        var path = fileSystemInfo.FullName;
+                        var hasMusic = ContainsMusic(directoryService.GetFileSystemEntries(path), false, directoryService, logger, fileSystem, libraryOptions, libraryManager);
+
+                        if (hasMusic)
+                        {
+                            if (IsMultiDiscFolder(path, libraryOptions))
                             {
                                 logger.Debug("Found multi-disc folder: " + path);
                                 discSubfolderCount++;
                             }
-                        }
-                        else
-                        {
-                            var hasMusic = ContainsMusic(directoryService.GetFileSystemEntries(path), false, directoryService, logger, fileSystem, libraryOptions, libraryManager);
-
-                            if (hasMusic)
+                            else
                             {
                                 // If there are folders underneath with music that are not multidisc, then this can't be a multi-disc album
                                 notMultiDisc = true;

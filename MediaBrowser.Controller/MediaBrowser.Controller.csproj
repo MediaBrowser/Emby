@@ -225,7 +225,6 @@
     <Compile Include="Providers\IImageProvider.cs" />
     <Compile Include="Providers\ILocalImageFileProvider.cs" />
     <Compile Include="Providers\ILocalMetadataProvider.cs" />
-    <Compile Include="Providers\ImageRefreshMode.cs" />
     <Compile Include="Providers\ImageRefreshOptions.cs" />
     <Compile Include="Providers\IPreRefreshProvider.cs" />
     <Compile Include="Providers\IRemoteImageProvider.cs" />
