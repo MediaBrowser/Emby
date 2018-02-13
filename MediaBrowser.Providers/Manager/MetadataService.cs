@@ -138,7 +138,7 @@ namespace MediaBrowser.Providers.Manager
             }
 
             // Next run remote image providers, but only if local image providers didn't throw an exception
-            if (!localImagesFailed && refreshOptions.ImageRefreshMode != ImageRefreshMode.ValidationOnly)
+            if (!localImagesFailed && refreshOptions.ImageRefreshMode != MetadataRefreshMode.ValidationOnly)
             {
                 var providers = GetNonLocalImageProviders(item, allImageProviders, refreshOptions).ToList();
 
@@ -635,7 +635,7 @@ namespace MediaBrowser.Providers.Manager
             var dateLastImageRefresh = item.DateLastRefreshed;
 
             // Run all if either of these flags are true
-            var runAllProviders = options.ImageRefreshMode == ImageRefreshMode.FullRefresh || dateLastImageRefresh == default(DateTime);
+            var runAllProviders = options.ImageRefreshMode == MetadataRefreshMode.FullRefresh || dateLastImageRefresh == default(DateTime);
 
             if (!runAllProviders)
             {

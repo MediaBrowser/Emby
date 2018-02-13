@@ -186,6 +186,7 @@
     "ImdbRatingHighToLow": "IMDb rating (high to low)",
     "CommunityRatingHighToLow": "Community rating (high to low)",
     "RuntimeHighToLow": "Runtime (high to low)",
+    "AirDateHighToLow": "Air date (newest to oldest)",
     "ReleaseDateHighToLow": "Release date (newest to oldest)",
     "ParentalRatingHighToLow": "Parental rating (high to low)",
     "NameHighToLow": "Name (z-a)",

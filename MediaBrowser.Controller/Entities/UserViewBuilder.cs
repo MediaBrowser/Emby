@@ -330,7 +330,7 @@ namespace MediaBrowser.Controller.Entities
 
             query.OrderBy = new Tuple<string, SortOrder>[] { };
 
-            return PostFilterAndSort(items, parent, null, query, _libraryManager, _config, false, true);
+            return PostFilterAndSort(items, parent, null, query, _libraryManager, _config);
         }
 
         private QueryResult<BaseItem> GetFavoriteSongs(Folder parent, User user, InternalItemsQuery query)
@@ -671,7 +671,7 @@ namespace MediaBrowser.Controller.Entities
         {
             items = items.Where(i => Filter(i, query.User, query, _userDataManager, _libraryManager));
 
-            return PostFilterAndSort(items, queryParent, null, query, _libraryManager, _config, true, true);
+            return PostFilterAndSort(items, queryParent, null, query, _libraryManager, _config);
         }
 
         public static bool FilterItem(BaseItem item, InternalItemsQuery query)
@@ -684,16 +684,9 @@ namespace MediaBrowser.Controller.Entities
             int? totalRecordLimit,
             InternalItemsQuery query,
             ILibraryManager libraryManager,
-            IServerConfigurationManager configurationManager,
-            bool collapseBoxSetItems,
-            bool enableSorting)
+            IServerConfigurationManager configurationManager)
         {
             var user = query.User;
-
-            if (collapseBoxSetItems && user != null)
-            {
-                items = CollapseBoxSetItemsIfNeeded(items, query, queryParent, user, configurationManager);
-            }
 
             // This must be the last filter
             if (!string.IsNullOrEmpty(query.AdjacentTo))
@@ -701,7 +694,7 @@ namespace MediaBrowser.Controller.Entities
                 items = FilterForAdjacency(items.ToList(), query.AdjacentTo);
             }
 
-            return SortAndPage(items, totalRecordLimit, query, libraryManager, enableSorting);
+            return SortAndPage(items, totalRecordLimit, query, libraryManager, true);
         }
 
         public static IEnumerable<BaseItem> CollapseBoxSetItemsIfNeeded(IEnumerable<BaseItem> items,
@@ -753,6 +746,22 @@ namespace MediaBrowser.Controller.Entities
         {
             // Could end up stuck in a loop like this
             if (queryParent is BoxSet)
+            {
+                return false;
+            }
+            if (queryParent is Series)
+            {
+                return false;
+            }
+            if (queryParent is Season)
+            {
+                return false;
+            }
+            if (queryParent is MusicAlbum)
+            {
+                return false;
+            }
+            if (queryParent is MusicArtist)
             {
                 return false;
             }
@@ -975,9 +984,12 @@ namespace MediaBrowser.Controller.Entities
             InternalItemsQuery query,
             ILibraryManager libraryManager, bool enableSorting)
         {
-            if (query.OrderBy.Length > 0)
+            if (enableSorting)
             {
-                items = libraryManager.Sort(items, query.User, query.OrderBy);
+                if (query.OrderBy.Length > 0)
+                {
+                    items = libraryManager.Sort(items, query.User, query.OrderBy);
+                }
             }
 
             var itemsArray = totalRecordLimit.HasValue ? items.Take(totalRecordLimit.Value).ToArray() : items.ToArray();

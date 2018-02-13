@@ -71,7 +71,8 @@ namespace Emby.Server.Implementations.Library.Validators
             var deadEntities = _libraryManager.GetItemList(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Studio).Name },
-                IsDeadStudio = true
+                IsDeadStudio = true,
+                IsLocked = false
             });
 
             foreach (var item in deadEntities)

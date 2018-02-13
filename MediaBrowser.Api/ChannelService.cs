@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Api.UserLibrary;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 
 namespace MediaBrowser.Api
 {
@@ -182,10 +184,12 @@ namespace MediaBrowser.Api
     public class ChannelService : BaseApiService
     {
         private readonly IChannelManager _channelManager;
+        private IUserManager _userManager;
 
-        public ChannelService(IChannelManager channelManager)
+        public ChannelService(IChannelManager channelManager, IUserManager userManager)
         {
             _channelManager = channelManager;
+            _userManager = userManager;
         }
 
         public object Get(GetAllChannelFeatures request)
@@ -219,34 +223,116 @@ namespace MediaBrowser.Api
 
         public async Task<object> Get(GetChannelItems request)
         {
-            var result = await _channelManager.GetChannelItems(new ChannelItemQuery
+            var user = string.IsNullOrEmpty(request.UserId)
+                ? null
+                : _userManager.GetUserById(request.UserId);
+
+            var query = new InternalItemsQuery(user)
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
-                UserId = request.UserId,
-                ChannelId = request.Id,
-                FolderId = request.FolderId,
+                ChannelIds = new string[] { request.Id },
+                ParentId = string.IsNullOrWhiteSpace(request.FolderId) ? (Guid?)null : new Guid(request.FolderId),
                 OrderBy = request.GetOrderBy(),
-                Filters = request.GetFilters().ToArray(),
-                Fields = request.GetItemFields()
+                DtoOptions = new Controller.Dto.DtoOptions
+                {
+                    Fields = request.GetItemFields()
+                }
 
-            }, CancellationToken.None).ConfigureAwait(false);
+            };
+
+            foreach (var filter in request.GetFilters())
+            {
+                switch (filter)
+                {
+                    case ItemFilter.Dislikes:
+                        query.IsLiked = false;
+                        break;
+                    case ItemFilter.IsFavorite:
+                        query.IsFavorite = true;
+                        break;
+                    case ItemFilter.IsFavoriteOrLikes:
+                        query.IsFavoriteOrLiked = true;
+                        break;
+                    case ItemFilter.IsFolder:
+                        query.IsFolder = true;
+                        break;
+                    case ItemFilter.IsNotFolder:
+                        query.IsFolder = false;
+                        break;
+                    case ItemFilter.IsPlayed:
+                        query.IsPlayed = true;
+                        break;
+                    case ItemFilter.IsResumable:
+                        query.IsResumable = true;
+                        break;
+                    case ItemFilter.IsUnplayed:
+                        query.IsPlayed = false;
+                        break;
+                    case ItemFilter.Likes:
+                        query.IsLiked = true;
+                        break;
+                }
+            }
+
+            var result = await _channelManager.GetChannelItems(query, CancellationToken.None).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
         }
 
         public async Task<object> Get(GetLatestChannelItems request)
         {
-            var result = await _channelManager.GetLatestChannelItems(new AllChannelMediaQuery
+            var user = string.IsNullOrEmpty(request.UserId)
+                ? null
+                : _userManager.GetUserById(request.UserId);
+
+            var query = new InternalItemsQuery(user)
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
                 ChannelIds = (request.ChannelIds ?? string.Empty).Split(',').Where(i => !string.IsNullOrWhiteSpace(i)).ToArray(),
-                UserId = request.UserId,
-                Filters = request.GetFilters().ToArray(),
-                Fields = request.GetItemFields()
+                DtoOptions = new Controller.Dto.DtoOptions
+                {
+                    Fields = request.GetItemFields()
+                }
 
-            }, CancellationToken.None).ConfigureAwait(false);
+            };
+
+            foreach (var filter in request.GetFilters())
+            {
+                switch (filter)
+                {
+                    case ItemFilter.Dislikes:
+                        query.IsLiked = false;
+                        break;
+                    case ItemFilter.IsFavorite:
+                        query.IsFavorite = true;
+                        break;
+                    case ItemFilter.IsFavoriteOrLikes:
+                        query.IsFavoriteOrLiked = true;
+                        break;
+                    case ItemFilter.IsFolder:
+                        query.IsFolder = true;
+                        break;
+                    case ItemFilter.IsNotFolder:
+                        query.IsFolder = false;
+                        break;
+                    case ItemFilter.IsPlayed:
+                        query.IsPlayed = true;
+                        break;
+                    case ItemFilter.IsResumable:
+                        query.IsResumable = true;
+                        break;
+                    case ItemFilter.IsUnplayed:
+                        query.IsPlayed = false;
+                        break;
+                    case ItemFilter.Likes:
+                        query.IsLiked = true;
+                        break;
+                }
+            }
+
+            var result = await _channelManager.GetLatestChannelItems(query, CancellationToken.None).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
         }

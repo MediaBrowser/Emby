@@ -158,14 +158,7 @@ namespace MediaBrowser.Controller.Entities.TV
 
             var items = GetEpisodes(user, query.DtoOptions).Where(filter);
 
-            var itemsArray = items.ToArray();
-            var totalCount = itemsArray.Length;
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = totalCount,
-                Items = itemsArray
-            };
+            return PostFilterAndSort(items, query, false);
         }
 
         /// <summary>

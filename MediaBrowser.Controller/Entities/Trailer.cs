@@ -15,18 +15,12 @@ namespace MediaBrowser.Controller.Entities
         public Trailer()
         {
             RemoteTrailers = new List<MediaUrl>();
-            TrailerTypes = new List<TrailerType> { TrailerType.LocalTrailer };
+            TrailerTypes = new List<TrailerType>();
         }
 
         public List<TrailerType> TrailerTypes { get; set; }
 
         public List<MediaUrl> RemoteTrailers { get; set; }
-
-        [IgnoreDataMember]
-        public bool IsLocalTrailer
-        {
-            get { return TrailerTypes.Contains(TrailerType.LocalTrailer); }
-        }
 
         public override double? GetDefaultPrimaryImageAspectRatio()
         {
@@ -44,8 +38,6 @@ namespace MediaBrowser.Controller.Entities
         public TrailerInfo GetLookupInfo()
         {
             var info = GetItemLookupInfo<TrailerInfo>();
-
-            info.IsLocalTrailer = TrailerTypes.Contains(TrailerType.LocalTrailer);
 
             if (!IsInMixedFolder && IsFileProtocol)
             {

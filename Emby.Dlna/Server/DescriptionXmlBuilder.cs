@@ -200,7 +200,7 @@ namespace Emby.Dlna.Server
 
             if (!EnableAbsoluteUrls)
             {
-                //builder.Append("<URLBase>" + Escape(_serverAddress) + "</URLBase>");
+                builder.Append("<URLBase>" + Escape(_serverAddress) + "</URLBase>");
             }
 
             if (!string.IsNullOrEmpty(_profile.SonyAggregationFlags))

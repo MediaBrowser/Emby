@@ -50,7 +50,7 @@ namespace Emby.Server.Implementations.Photos
 
         protected override bool Supports(BaseItem item)
         {
-            return item is T;
+            return item is T && item.SourceType == SourceType.Library;
         }
 
         protected override bool HasChangedByDate(BaseItem item, ItemImageInfo image)

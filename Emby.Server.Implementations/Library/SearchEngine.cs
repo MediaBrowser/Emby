@@ -87,15 +87,14 @@ namespace Emby.Server.Implementations.Library
         {
             var searchTerm = query.SearchTerm;
 
-            if (searchTerm != null)
-            {
-                searchTerm = searchTerm.Trim().RemoveDiacritics();
-            }
-
             if (string.IsNullOrEmpty(searchTerm))
             {
                 throw new ArgumentNullException("searchTerm");
             }
+
+            searchTerm = searchTerm.Trim().RemoveDiacritics();
+
+            searchTerm = this.FixQuotes(searchTerm);
 
             var terms = GetWords(searchTerm);
 
@@ -304,6 +303,14 @@ namespace Emby.Server.Implementations.Library
             return term.Split()
                 .Where(i => !string.IsNullOrWhiteSpace(i) && !stoplist.Contains(i, StringComparer.OrdinalIgnoreCase))
                 .ToList();
+        }
+
+        private string FixQuotes(string term)
+        {
+            const char SingleQuote = '\'';
+            string fixedTerm = term.Replace('`', SingleQuote);
+            fixedTerm = fixedTerm.Replace('´', SingleQuote);
+            return fixedTerm;
         }
 
         private IEnumerable<string> GetStopList()

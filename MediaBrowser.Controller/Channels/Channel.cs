@@ -51,16 +51,11 @@ namespace MediaBrowser.Controller.Channels
         {
             try
             {
-                // Don't blow up here because it could cause parent screens with other content to fail
-                return ChannelManager.GetChannelItemsInternal(new ChannelItemQuery
-                {
-                    ChannelId = Id.ToString("N"),
-                    Limit = query.Limit,
-                    StartIndex = query.StartIndex,
-                    UserId = query.User.Id.ToString("N"),
-                    OrderBy = query.OrderBy
+                query.Parent = this;
+                query.ChannelIds = new string[] { Id.ToString("N") };
 
-                }, new SimpleProgress<double>(), CancellationToken.None).Result;
+                // Don't blow up here because it could cause parent screens with other content to fail
+                return ChannelManager.GetChannelItemsInternal(query, new SimpleProgress<double>(), CancellationToken.None).Result;
             }
             catch
             {

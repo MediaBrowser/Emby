@@ -63,35 +63,17 @@ namespace MediaBrowser.Controller.Channels
         /// <summary>
         /// Gets the latest media.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{QueryResult{BaseItemDto}}.</returns>
-        Task<QueryResult<BaseItemDto>> GetLatestChannelItems(AllChannelMediaQuery query, CancellationToken cancellationToken);
+        Task<QueryResult<BaseItemDto>> GetLatestChannelItems(InternalItemsQuery query, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the latest channel items internal.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;QueryResult&lt;BaseItem&gt;&gt;.</returns>
-        Task<QueryResult<BaseItem>> GetLatestChannelItemsInternal(AllChannelMediaQuery query, CancellationToken cancellationToken);
-        
         /// <summary>
         /// Gets the channel items.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{QueryResult{BaseItemDto}}.</returns>
-        Task<QueryResult<BaseItemDto>> GetChannelItems(ChannelItemQuery query, CancellationToken cancellationToken);
+        Task<QueryResult<BaseItemDto>> GetChannelItems(InternalItemsQuery query, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the channel items internal.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;QueryResult&lt;BaseItem&gt;&gt;.</returns>
-        Task<QueryResult<BaseItem>> GetChannelItemsInternal(ChannelItemQuery query, IProgress<double> progress, CancellationToken cancellationToken);
+        Task<QueryResult<BaseItem>> GetChannelItemsInternal(InternalItemsQuery query, IProgress<double> progress, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the channel item media sources.

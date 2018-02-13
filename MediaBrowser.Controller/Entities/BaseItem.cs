@@ -518,7 +518,8 @@ namespace MediaBrowser.Controller.Entities
         {
             if (SourceType == SourceType.Channel)
             {
-                return false;
+                // hack alert
+                return !EnableMediaSourceDisplay;
             }
 
             return LibraryManager.GetLibraryOptions(this).EnableInternetProviders;

@@ -235,7 +235,7 @@ namespace MediaBrowser.Api
             var task = _providerManager.RefreshFullItem(item, new MetadataRefreshOptions(_fileSystem)
             {
                 MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
-                ImageRefreshMode = ImageRefreshMode.FullRefresh,
+                ImageRefreshMode = MetadataRefreshMode.FullRefresh,
                 ReplaceAllMetadata = true,
                 ReplaceAllImages = request.ReplaceAllImages,
                 SearchResult = request,
