@@ -43,6 +43,8 @@ namespace MediaBrowser.Api
         [ApiMember(Name = "SupportsLatestItems", Description = "Optional. Filter by channels that support getting latest items.", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
         public bool? SupportsLatestItems { get; set; }
 
+        public bool? SupportsMediaDeletion { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether this instance is favorite.
         /// </summary>
@@ -214,6 +216,7 @@ namespace MediaBrowser.Api
                 StartIndex = request.StartIndex,
                 UserId = request.UserId,
                 SupportsLatestItems = request.SupportsLatestItems,
+                SupportsMediaDeletion = request.SupportsMediaDeletion,
                 IsFavorite = request.IsFavorite
 
             }, CancellationToken.None).ConfigureAwait(false);

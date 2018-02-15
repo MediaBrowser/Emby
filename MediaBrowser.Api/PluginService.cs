@@ -103,9 +103,6 @@ namespace MediaBrowser.Api
     {
         [ApiMember(Name = "Name", Description = "Feature Name", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Name { get; set; }
-
-        [ApiMember(Name = "Mb2Equivalent", Description = "Optional. The equivalent feature name in MB2", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string Mb2Equivalent { get; set; }
     }
 
     [Route("/Registrations/{Name}", "GET", Summary = "Gets registration status for a feature", IsHidden = true)]
@@ -168,7 +165,7 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public async Task<object> Get(GetRegistrationStatus request)
         {
-            var result = await _securityManager.GetRegistrationStatus(request.Name, request.Mb2Equivalent).ConfigureAwait(false);
+            var result = await _securityManager.GetRegistrationStatus(request.Name).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
         }
@@ -256,11 +253,11 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public object Get(GetPluginSecurityInfo request)
+        public async Task<object> Get(GetPluginSecurityInfo request)
         {
             var result = new PluginSecurityInfo
             {
-                IsMBSupporter = _securityManager.IsMBSupporter,
+                IsMBSupporter = await _securityManager.IsSupporter().ConfigureAwait(false),
                 SupporterKey = _securityManager.SupporterKey
             };
 
@@ -285,9 +282,8 @@ namespace MediaBrowser.Api
         /// <param name="request">The request.</param>
         public void Post(UpdatePluginSecurityInfo request)
         {
-            var info = request;
-
-            _securityManager.SupporterKey = info.SupporterKey;
+            var task = _securityManager.UpdateSupporterKey(request.SupporterKey);
+            Task.WaitAll(task);
         }
 
         /// <summary>

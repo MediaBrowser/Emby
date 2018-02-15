@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Controller.Channels;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -53,6 +54,7 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly ISubtitleManager _subtitleManager;
         private readonly IChapterManager _chapterManager;
         private readonly ILibraryManager _libraryManager;
+        private readonly IChannelManager _channelManager;
 
         public string Name
         {
@@ -137,7 +139,7 @@ namespace MediaBrowser.Providers.MediaInfo
         }
 
         private SubtitleResolver _subtitleResolver;
-        public FFProbeProvider(ILogger logger, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
+        public FFProbeProvider(ILogger logger, IChannelManager channelManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
         {
             _logger = logger;
             _isoManager = isoManager;
@@ -153,6 +155,7 @@ namespace MediaBrowser.Providers.MediaInfo
             _subtitleManager = subtitleManager;
             _chapterManager = chapterManager;
             _libraryManager = libraryManager;
+            _channelManager = channelManager;
 
             _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
@@ -176,13 +179,18 @@ namespace MediaBrowser.Providers.MediaInfo
                 return _cachedTask;
             }
 
+            if (item.IsVirtualItem)
+            {
+                return _cachedTask;
+            }
+
             if (item.IsShortcut)
             {
                 FetchShortcutInfo(item);
             }
 
             // hack alert
-            if (!item.EnableMediaSourceDisplay)
+            if (item.SourceType == SourceType.Channel && !_channelManager.EnableMediaProbe(item))
             {
                 return _cachedTask;
             }

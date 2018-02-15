@@ -49,6 +49,12 @@ namespace MediaBrowser.Controller.Entities.Movies
 
         public override double? GetDefaultPrimaryImageAspectRatio()
         {
+            // hack for tv plugins
+            if (SourceType == SourceType.Channel)
+            {
+                return null;
+            }
+
             double value = 2;
             value /= 3;
 

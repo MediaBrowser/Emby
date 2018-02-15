@@ -543,13 +543,21 @@ namespace MediaBrowser.Controller.Entities
             }
 
             var allowed = user.Policy.EnableContentDeletionFromFolders;
-            var collectionFolders = LibraryManager.GetCollectionFolders(this, allCollectionFolders);
 
-            foreach (var folder in collectionFolders)
+            if (SourceType == SourceType.Channel)
             {
-                if (allowed.Contains(folder.Id.ToString("N"), StringComparer.OrdinalIgnoreCase))
+                return allowed.Contains(ChannelId ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+            }
+            else
+            {
+                var collectionFolders = LibraryManager.GetCollectionFolders(this, allCollectionFolders);
+
+                foreach (var folder in collectionFolders)
                 {
-                    return true;
+                    if (allowed.Contains(folder.Id.ToString("N"), StringComparer.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -564,6 +572,7 @@ namespace MediaBrowser.Controller.Entities
         public bool CanDelete(User user)
         {
             var allCollectionFolders = LibraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
+
             return CanDelete(user, allCollectionFolders);
         }
 

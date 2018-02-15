@@ -98,6 +98,14 @@ namespace Emby.Server.Implementations.Channels
             return supportsDelete != null && supportsDelete.CanDelete(item);
         }
 
+        public bool EnableMediaProbe(BaseItem item)
+        {
+            var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
+
+            return channel is ISupportsMediaProbe;
+        }
+
         public Task DeleteItem(BaseItem item)
         {
             var internalChannel = _libraryManager.GetItemById(item.ChannelId);
@@ -143,6 +151,23 @@ namespace Emby.Server.Implementations.Channels
                     try
                     {
                         return GetChannelProvider(i) is ISupportsLatestMedia == val;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                }).ToList();
+            }
+
+            if (query.SupportsMediaDeletion.HasValue)
+            {
+                var val = query.SupportsMediaDeletion.Value;
+                channels = channels.Where(i =>
+                {
+                    try
+                    {
+                        return GetChannelProvider(i) is ISupportsDelete == val;
                     }
                     catch
                     {
@@ -914,12 +939,14 @@ namespace Emby.Server.Implementations.Channels
                 }
             }
 
+            var enableMediaProbe = channelProvider is ISupportsMediaProbe;
+
             if (info.IsLiveStream)
             {
                 item.RunTimeTicks = null;
             }
 
-            else if (isNew || !info.EnableMediaProbe)
+            else if (isNew || !enableMediaProbe)
             {
                 item.RunTimeTicks = info.RunTimeTicks;
             }
@@ -1004,6 +1031,17 @@ namespace Emby.Server.Implementations.Channels
             }
             item.ParentId = parentFolderId;
 
+            var hasSeries = item as IHasSeries;
+            if (hasSeries != null)
+            {
+                if (!string.Equals(hasSeries.SeriesName, info.SeriesName, StringComparison.OrdinalIgnoreCase))
+                {
+                    forceUpdate = true;
+                    _logger.Debug("Forcing update due to SeriesName {0}", item.Name);
+                }
+                hasSeries.SeriesName = info.SeriesName;
+            }
+
             if (!string.Equals(item.ExternalId, info.Id, StringComparison.OrdinalIgnoreCase))
             {
                 forceUpdate = true;
@@ -1038,11 +1076,8 @@ namespace Emby.Server.Implementations.Channels
 
             item.OnMetadataChanged();
 
-            var metadataRefreshMode = MetadataRefreshMode.Default;
-
             if (isNew)
             {
-                _logger.Debug("New: {0}", item.Name);
                 _libraryManager.CreateItem(item, cancellationToken);
 
                 if (info.People != null && info.People.Count > 0)
@@ -1052,14 +1087,12 @@ namespace Emby.Server.Implementations.Channels
             }
             else if (forceUpdate)
             {
-                _logger.Debug("Updated: {0}", item.Name);
                 item.UpdateToRepository(ItemUpdateType.None, cancellationToken);
-                metadataRefreshMode = MetadataRefreshMode.FullRefresh;
             }
 
             if ((isNew || forceUpdate) && info.Type == ChannelItemType.Media)
             {
-                if (info.EnableMediaProbe && !info.IsLiveStream && item.HasPathProtocol)
+                if (enableMediaProbe && !info.IsLiveStream && item.HasPathProtocol)
                 {
                     SaveMediaSources(item, new List<MediaSourceInfo>());
                 }
@@ -1069,17 +1102,10 @@ namespace Emby.Server.Implementations.Channels
                 }
             }
 
-            //if (item.IsInternetMetadataEnabled() && !item.HasImage(ImageType.Primary))
-            //{
-            //    metadataRefreshMode = MetadataRefreshMode.FullRefresh;
-            //}
-
-            _providerManager.QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
+            if (isNew || forceUpdate || item.DateLastRefreshed == default(DateTime))
             {
-                MetadataRefreshMode = metadataRefreshMode,
-                ImageRefreshMode = metadataRefreshMode
-
-            }, RefreshPriority.Normal);
+                _providerManager.QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Normal);
+            }
 
             return item;
         }
