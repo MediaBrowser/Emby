@@ -18,7 +18,7 @@ namespace MediaBrowser.Controller.Entities.Audio
     /// <summary>
     /// Class MusicArtist
     /// </summary>
-    public class MusicArtist : Folder, IMetadataContainer, IItemByName, IHasMusicGenres, IHasDualAccess, IHasLookupInfo<ArtistInfo>
+    public class MusicArtist : Folder, IItemByName, IHasMusicGenres, IHasDualAccess, IHasLookupInfo<ArtistInfo>
     {
         [IgnoreDataMember]
         public bool IsAccessedByName
@@ -208,63 +208,6 @@ namespace MediaBrowser.Controller.Entities.Audio
         public override UnratedItem GetBlockUnratedType()
         {
             return UnratedItem.Music;
-        }
-
-        public async Task RefreshAllMetadata(MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
-        {
-            var items = GetRecursiveChildren();
-
-            var totalItems = items.Count;
-            var numComplete = 0;
-
-            var childUpdateType = ItemUpdateType.None;
-
-            // Refresh songs
-            foreach (var item in items)
-            {
-                if (!(item is Audio))
-                {
-                    continue;
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var updateType = await item.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
-                childUpdateType = childUpdateType | updateType;
-
-                numComplete++;
-                double percent = numComplete;
-                percent /= totalItems;
-                progress.Report(percent * 100);
-            }
-
-            var parentRefreshOptions = refreshOptions;
-            if (childUpdateType > ItemUpdateType.None)
-            {
-                parentRefreshOptions = new MetadataRefreshOptions(refreshOptions);
-                parentRefreshOptions.MetadataRefreshMode = MetadataRefreshMode.FullRefresh;
-            }
-
-            // Refresh current item
-            await RefreshMetadata(parentRefreshOptions, cancellationToken).ConfigureAwait(false);
-
-            // Refresh all non-songs
-            foreach (var item in items)
-            {
-                if (item is Audio)
-                {
-                    continue;
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var updateType = await item.RefreshMetadata(parentRefreshOptions, cancellationToken).ConfigureAwait(false);
-
-                numComplete++;
-                double percent = numComplete;
-                percent /= totalItems;
-                progress.Report(percent * 100);
-            }
         }
 
         public ArtistInfo GetLookupInfo()

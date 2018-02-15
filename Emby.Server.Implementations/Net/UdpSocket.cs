@@ -121,7 +121,7 @@ namespace Emby.Server.Implementations.Net
             ThrowIfDisposed();
 
             EndPoint receivedFromEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            
+
             return _Socket.BeginReceiveFrom(buffer, offset, count, SocketFlags.None, ref receivedFromEndPoint, callback, buffer);
         }
 
@@ -141,7 +141,7 @@ namespace Emby.Server.Implementations.Net
 
             var receivedBytes = _Socket.EndReceiveFrom(result, ref remoteEndPoint);
 
-            var buffer = (byte[]) result.AsyncState;
+            var buffer = (byte[])result.AsyncState;
 
             return new SocketReceiveResult
             {
@@ -157,12 +157,17 @@ namespace Emby.Server.Implementations.Net
             ThrowIfDisposed();
 
             var taskCompletion = new TaskCompletionSource<SocketReceiveResult>();
+            bool isResultSet = false;
 
             Action<IAsyncResult> callback = callbackResult =>
             {
                 try
                 {
-                    taskCompletion.TrySetResult(EndReceive(callbackResult));
+                    if (!isResultSet)
+                    {
+                        isResultSet = true;
+                        taskCompletion.TrySetResult(EndReceive(callbackResult));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -197,19 +202,24 @@ namespace Emby.Server.Implementations.Net
             ThrowIfDisposed();
 
             var taskCompletion = new TaskCompletionSource<int>();
+            bool isResultSet = false;
 
             Action<IAsyncResult> callback = callbackResult =>
             {
                 try
                 {
-                    taskCompletion.TrySetResult(EndSendTo(callbackResult));
+                    if (!isResultSet)
+                    {
+                        isResultSet = true;
+                        taskCompletion.TrySetResult(EndSendTo(callbackResult));
+                    }
                 }
                 catch (Exception ex)
                 {
                     taskCompletion.TrySetException(ex);
                 }
             };
-            
+
             var result = BeginSendTo(buffer, offset, size, endPoint, new AsyncCallback(callback), null);
 
             if (result.CompletedSynchronously)

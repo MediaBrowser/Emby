@@ -76,6 +76,7 @@ namespace MediaBrowser.Api
         public bool? IsKids { get; set; }
         public bool? IsNews { get; set; }
         public bool? IsSeries { get; set; }
+        public bool? Recursive { get; set; }
     }
 
     [Authenticated]
@@ -107,7 +108,6 @@ namespace MediaBrowser.Api
 
             var genreQuery = new InternalItemsQuery(user)
             {
-                AncestorIds = parentItem == null ? new string[] { } : new string[] { parentItem.Id.ToString("N") },
                 IncludeItemTypes = request.GetIncludeItemTypes(),
                 DtoOptions = new Controller.Dto.DtoOptions
                 {
@@ -122,6 +122,16 @@ namespace MediaBrowser.Api
                 IsNews = request.IsNews,
                 IsSeries = request.IsSeries
             };
+
+            // Non recursive not yet supported for library folders
+            if ((request.Recursive ?? true) || parentItem is UserView || parentItem is ICollectionFolder)
+            {
+                genreQuery.AncestorIds = parentItem == null ? new string[] { } : new string[] { parentItem.Id.ToString("N") };
+            }
+            else
+            {
+                genreQuery.Parent = parentItem;
+            }
 
             if (string.Equals(request.IncludeItemTypes, "MusicAlbum", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(request.IncludeItemTypes, "MusicVideo", StringComparison.OrdinalIgnoreCase) ||

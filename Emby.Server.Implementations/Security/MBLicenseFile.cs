@@ -22,12 +22,8 @@ namespace Emby.Server.Implementations.Security
             get { return _regKey; }
             set
             {
-                if (value != _regKey)
-                {
-                    //if key is changed - clear out our saved validations
-                    _updateRecords.Clear();
-                    _regKey = value;
-                }
+                _updateRecords.Clear();
+                _regKey = value;
             }
         }
 

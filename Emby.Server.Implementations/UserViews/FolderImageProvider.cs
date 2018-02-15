@@ -50,7 +50,7 @@ namespace Emby.Server.Implementations.Photos
 
         protected override bool Supports(BaseItem item)
         {
-            return item is T && item.SourceType == SourceType.Library;
+            return item is T;
         }
 
         protected override bool HasChangedByDate(BaseItem item, ItemImageInfo image)
@@ -87,6 +87,7 @@ namespace Emby.Server.Implementations.Photos
                 }
             }
             return true;
+            //return item.SourceType == SourceType.Library;
         }
     }
 
