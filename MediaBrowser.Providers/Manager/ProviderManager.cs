@@ -1006,15 +1006,6 @@ namespace MediaBrowser.Providers.Manager
                         // Try to throttle this a little bit.
                         await Task.Delay(100).ConfigureAwait(false);
 
-                        if (refreshItem.Item2.ValidateChildren)
-                        {
-                            var folder = item as Folder;
-                            if (folder != null)
-                            {
-                                await folder.ValidateChildren(new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
-                            }
-                        }
-
                         var artist = item as MusicArtist;
                         var task = artist == null
                             ? RefreshItem(item, refreshItem.Item2, cancellationToken)

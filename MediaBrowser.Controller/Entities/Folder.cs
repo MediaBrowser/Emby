@@ -558,16 +558,15 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
-        private Task RefreshAllMetadataForContainer(IMetadataContainer container, MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task RefreshAllMetadataForContainer(IMetadataContainer container, MetadataRefreshOptions refreshOptions, IProgress<double> progress, CancellationToken cancellationToken)
         {
-            // TODO: Move this into Series.RefreshAllMetadata
             var series = container as Series;
             if (series != null)
             {
-                return series.RefreshMetadata(refreshOptions, cancellationToken);
+                await series.RefreshMetadata(refreshOptions, cancellationToken).ConfigureAwait(false);
 
             }
-            return container.RefreshAllMetadata(refreshOptions, progress, cancellationToken);
+            await container.RefreshAllMetadata(refreshOptions, progress, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task RefreshChildMetadata(BaseItem child, MetadataRefreshOptions refreshOptions, bool recursive, IProgress<double> progress, CancellationToken cancellationToken)
@@ -1024,6 +1023,20 @@ namespace MediaBrowser.Controller.Entities
             if (user != null && query.Recursive)
             {
                 items = UserViewBuilder.CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager);
+            }
+
+            if (!string.IsNullOrEmpty(query.NameStartsWithOrGreater))
+            {
+                items = items.Where(i => string.Compare(query.NameStartsWithOrGreater, i.SortName, StringComparison.CurrentCultureIgnoreCase) < 1);
+            }
+            if (!string.IsNullOrEmpty(query.NameStartsWith))
+            {
+                items = items.Where(i => i.SortName.StartsWith(query.NameStartsWith, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(query.NameLessThan))
+            {
+                items = items.Where(i => string.Compare(query.NameLessThan, i.SortName, StringComparison.CurrentCultureIgnoreCase) == 1);
             }
 
             // This must be the last filter

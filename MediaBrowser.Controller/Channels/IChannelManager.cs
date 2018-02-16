@@ -66,6 +66,11 @@ namespace MediaBrowser.Controller.Channels
         Task<QueryResult<BaseItemDto>> GetLatestChannelItems(InternalItemsQuery query, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the latest media.
+        /// </summary>
+        Task<QueryResult<BaseItem>> GetLatestChannelItemsInternal(InternalItemsQuery query, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the channel items.
         /// </summary>
         Task<QueryResult<BaseItemDto>> GetChannelItems(InternalItemsQuery query, CancellationToken cancellationToken);

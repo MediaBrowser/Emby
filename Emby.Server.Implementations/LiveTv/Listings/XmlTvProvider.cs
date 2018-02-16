@@ -19,6 +19,7 @@ using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Common.Security;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
@@ -29,14 +30,16 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IZipClient _zipClient;
+        private ISecurityManager _securityManager;
 
-        public XmlTvProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient)
+        public XmlTvProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient, ISecurityManager securityManager)
         {
             _config = config;
             _httpClient = httpClient;
             _logger = logger;
             _fileSystem = fileSystem;
             _zipClient = zipClient;
+            _securityManager = securityManager;
         }
 
         public string Name
@@ -170,7 +173,8 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 throw new ArgumentNullException("channelId");
             }
 
-            if (!await EmbyTV.EmbyTVRegistration.Instance.EnableXmlTv().ConfigureAwait(false))
+            var regStatus = await _securityManager.GetRegistrationStatus("xmltv").ConfigureAwait(false);
+            if (!regStatus.IsValid)
             {
                 var length = endDateUtc - startDateUtc;
                 if (length.TotalDays > 1)

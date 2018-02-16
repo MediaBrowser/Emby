@@ -713,29 +713,6 @@ namespace MediaBrowser.Controller.Entities
                 items = BaseItem.CollectionManager.CollapseItemsWithinBoxSets(items, user);
             }
 
-            items = ApplyPostCollectionCollapseFilters(query, items, user);
-
-            return items;
-        }
-
-        private static IEnumerable<BaseItem> ApplyPostCollectionCollapseFilters(InternalItemsQuery request,
-            IEnumerable<BaseItem> items,
-            User user)
-        {
-            if (!string.IsNullOrEmpty(request.NameStartsWithOrGreater))
-            {
-                items = items.Where(i => string.Compare(request.NameStartsWithOrGreater, i.SortName, StringComparison.CurrentCultureIgnoreCase) < 1);
-            }
-            if (!string.IsNullOrEmpty(request.NameStartsWith))
-            {
-                items = items.Where(i => i.SortName.StartsWith(request.NameStartsWith, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(request.NameLessThan))
-            {
-                items = items.Where(i => string.Compare(request.NameLessThan, i.SortName, StringComparison.CurrentCultureIgnoreCase) == 1);
-            }
-
             return items;
         }
 

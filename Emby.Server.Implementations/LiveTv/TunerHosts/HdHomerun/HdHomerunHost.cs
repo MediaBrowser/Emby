@@ -612,10 +612,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
                 var httpUrl = channelInfo.Path;
 
+                // Unknown
+                bool? isInterlaced = null;
+
                 // If raw was used, the tuner doesn't support params
                 if (!string.IsNullOrWhiteSpace(profile) && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
                 {
                     httpUrl += "?transcode=" + profile;
+                    isInterlaced = false;
                 }
                 mediaSource.Path = httpUrl;
 

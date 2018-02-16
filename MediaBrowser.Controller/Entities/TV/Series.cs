@@ -221,7 +221,6 @@ namespace MediaBrowser.Controller.Entities.TV
 
         private void SetSeasonQueryOptions(InternalItemsQuery query, User user)
         {
-
             var seriesKey = GetUniqueSeriesKey(this);
 
             query.AncestorWithPresentationUniqueKey = null;
@@ -242,11 +241,6 @@ namespace MediaBrowser.Controller.Entities.TV
 
         protected override QueryResult<BaseItem> GetItemsInternal(InternalItemsQuery query)
         {
-            if (query.User == null)
-            {
-                return base.GetItemsInternal(query);
-            }
-
             var user = query.User;
 
             if (query.Recursive)

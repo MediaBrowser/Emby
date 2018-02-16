@@ -66,11 +66,14 @@ namespace MediaBrowser.Providers.MediaInfo
             var video = item as Video;
             if (video == null || video.VideoType == VideoType.VideoFile || video.VideoType == VideoType.Iso)
             {
-                if (!string.IsNullOrWhiteSpace(item.Path) && item.IsFileProtocol)
+                var path = item.Path;
+
+                if (!string.IsNullOrWhiteSpace(path) && item.IsFileProtocol)
                 {
-                    var file = directoryService.GetFile(item.Path);
+                    var file = directoryService.GetFile(path);
                     if (file != null && file.LastWriteTimeUtc != item.DateModified)
                     {
+                        _logger.Debug("Refreshing {0} due to date modified timestamp change.", path);
                         return true;
                     }
                 }
@@ -80,8 +83,12 @@ namespace MediaBrowser.Providers.MediaInfo
             {
                 if (video != null && !video.IsPlaceHolder)
                 {
-                    return !video.SubtitleFiles
-                        .SequenceEqual(_subtitleResolver.GetExternalSubtitleFiles(video, directoryService, false), StringComparer.Ordinal);
+                    if (!video.SubtitleFiles
+                        .SequenceEqual(_subtitleResolver.GetExternalSubtitleFiles(video, directoryService, false), StringComparer.Ordinal))
+                    {
+                        _logger.Debug("Refreshing {0} due to external subtitles change.", item.Path);
+                        return true;
+                    }
                 }
             }
 
