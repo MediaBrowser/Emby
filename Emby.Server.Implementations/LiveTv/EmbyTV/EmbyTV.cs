@@ -1421,7 +1421,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var recordPath = GetRecordingPath(timer, out seriesPath);
             var recordingStatus = RecordingStatus.New;
 
-            var recorder = await GetRecorder().ConfigureAwait(false);
+            var recorder = GetRecorder();
 
             string liveStreamId = null;
 
@@ -1763,31 +1763,24 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return false;
         }
 
-        private async Task<IRecorder> GetRecorder()
+        private IRecorder GetRecorder()
         {
             var config = GetConfiguration();
 
-            var regInfo = await _liveTvManager.GetRegistrationInfo("dvr").ConfigureAwait(false);
-
-            if (regInfo.IsValid)
+            if (config.EnableRecordingEncoding)
             {
-                if (config.EnableRecordingEncoding)
-                {
-                    return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config);
-                }
-
-                return new DirectRecorder(_logger, _httpClient, _fileSystem);
-
-                //var options = new LiveTvOptions
-                //{
-                //    EnableOriginalAudioWithEncodedRecordings = true,
-                //    RecordedVideoCodec = "copy",
-                //    RecordingEncodingFormat = "ts"
-                //};
-                //return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, options, _httpClient, _processFactory, _config);
+                return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config);
             }
 
-            throw new InvalidOperationException("Emby DVR Requires an active Emby Premiere subscription.");
+            return new DirectRecorder(_logger, _httpClient, _fileSystem);
+
+            //var options = new LiveTvOptions
+            //{
+            //    EnableOriginalAudioWithEncodedRecordings = true,
+            //    RecordedVideoCodec = "copy",
+            //    RecordingEncodingFormat = "ts"
+            //};
+            //return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, options, _httpClient, _processFactory, _config);
         }
 
         private void OnSuccessfulRecording(TimerInfo timer, string path)

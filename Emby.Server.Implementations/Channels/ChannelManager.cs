@@ -72,7 +72,7 @@ namespace Emby.Server.Implementations.Channels
         {
             get
             {
-                return TimeSpan.FromHours(6);
+                return TimeSpan.FromHours(3);
             }
         }
 
@@ -577,7 +577,7 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task<QueryResult<BaseItem>> GetLatestChannelItemsInternal(InternalItemsQuery query, CancellationToken cancellationToken)
         {
-            var channels = GetAllChannels();
+            var channels = GetAllChannels().Where(i => i is ISupportsLatestMedia).ToArray();
 
             if (query.ChannelIds.Length > 0)
             {
@@ -588,12 +588,37 @@ namespace Emby.Server.Implementations.Channels
                     .ToArray();
             }
 
+            if (channels.Length == 0)
+            {
+                return new QueryResult<BaseItem>();
+            }
+
             foreach (var channel in channels)
             {
                 await RefreshLatestChannelItems(channel, cancellationToken).ConfigureAwait(false);
             }
 
             query.IsFolder = false;
+
+            // hack for trailers, figure out a better way later
+            var sortByPremiereDate = channels.Length == 1 && channels[0].GetType().Name.IndexOf("Trailer") != -1;
+
+            if (sortByPremiereDate)
+            {
+                query.OrderBy = new Tuple<string, SortOrder>[]
+                {
+                    new Tuple<string, SortOrder>(ItemSortBy.PremiereDate, SortOrder.Descending),
+                    new Tuple<string, SortOrder>(ItemSortBy.ProductionYear, SortOrder.Descending),
+                    new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
+                };
+            }
+            else
+            {
+                query.OrderBy = new Tuple<string, SortOrder>[]
+                {
+                    new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
+                };
+            }
 
             return _libraryManager.GetItemsResult(query);
         }

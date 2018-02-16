@@ -241,7 +241,24 @@ namespace Emby.Server.Implementations.Library
 
             if (!string.IsNullOrEmpty(parentId))
             {
-                var parent = _libraryManager.GetItemById(parentId) as Folder;
+                var parentItem = _libraryManager.GetItemById(parentId);
+                var parentItemChannel = parentItem as Channel;
+                if (parentItemChannel != null)
+                {
+                    return _channelManager.GetLatestChannelItemsInternal(new InternalItemsQuery(user)
+                    {
+                        ChannelIds = new string[] { request.ParentId },
+                        IsPlayed = request.IsPlayed,
+                        StartIndex = request.StartIndex,
+                        Limit = request.Limit,
+                        IncludeItemTypes = request.IncludeItemTypes,
+                        EnableTotalRecordCount = false
+
+
+                    }, CancellationToken.None).Result.Items.ToList();
+                }
+
+                var parent = parentItem as Folder;
                 if (parent != null)
                 {
                     parents.Add(parent);

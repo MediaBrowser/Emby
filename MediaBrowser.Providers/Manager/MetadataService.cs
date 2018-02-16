@@ -70,6 +70,11 @@ namespace MediaBrowser.Providers.Manager
             {
                 // TODO: If this returns true, should we instead just change metadata refresh mode to Full?
                 requiresRefresh = item.RequiresRefresh();
+
+                if (requiresRefresh)
+                {
+                    Logger.Debug("Refreshing {0} {1} because item.RequiresRefresh() returned true", typeof(TItemType).Name, item.Path ?? item.Name);
+                }
             }
 
             var itemImageProvider = new ItemImageProvider(Logger, ProviderManager, ServerConfigurationManager, FileSystem);

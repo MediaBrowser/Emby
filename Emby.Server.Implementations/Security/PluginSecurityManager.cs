@@ -47,15 +47,6 @@ namespace Emby.Server.Implementations.Security
         private readonly IFileSystem _fileSystem;
         private readonly ICryptoProvider _cryptographyProvider;
 
-        private IEnumerable<IRequiresRegistration> _registeredEntities;
-        protected IEnumerable<IRequiresRegistration> RegisteredEntities
-        {
-            get
-            {
-                return _registeredEntities ?? (_registeredEntities = _appHost.GetExports<IRequiresRegistration>());
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginSecurityManager" /> class.
         /// </summary>
