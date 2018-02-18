@@ -14,14 +14,12 @@ namespace Emby.Dlna.Profiles
 
             ProtocolInfo = "http-get:*:video/mpeg:*,http-get:*:video/mp4:*,http-get:*:video/vnd.dlna.mpeg-tts:*,http-get:*:video/avi:*,http-get:*:video/x-matroska:*,http-get:*:video/x-ms-wmv:*,http-get:*:video/wtv:*,http-get:*:audio/mpeg:*,http-get:*:audio/mp3:*,http-get:*:audio/mp4:*,http-get:*:audio/x-ms-wma*,http-get:*:audio/wav:*,http-get:*:audio/L16:*,http-get:*image/jpeg:*,http-get:*image/png:*,http-get:*image/gif:*,http-get:*image/tiff:*";
 
-            XDlnaDoc = "DMS-1.50";
-
             Manufacturer = "Emby";
-            ModelDescription = "Emby";
+            ModelDescription = "UPnP/AV 1.0 Compliant Media Server";
             ModelName = "Emby Server";
-            ModelNumber = "Emby";
-            ModelUrl = "http://emby.media/";
-            ManufacturerUrl = "http://emby.media/";
+            ModelNumber = "01";
+            ModelUrl = "http://emby.media";
+            ManufacturerUrl = "http://emby.media";
 
             AlbumArtPn = "JPEG_SM";
 

@@ -77,6 +77,11 @@ namespace Emby.Dlna.Server
             builder.Append("<minor>0</minor>");
             builder.Append("</specVersion>");
 
+            if (!EnableAbsoluteUrls)
+            {
+                builder.Append("<URLBase>" + Escape(_serverAddress) + "</URLBase>");
+            }
+
             AppendDeviceInfo(builder);
 
             builder.Append("</root>");
@@ -90,6 +95,9 @@ namespace Emby.Dlna.Server
             AppendDeviceProperties(builder);
 
             AppendIconList(builder);
+
+            builder.Append("<presentationURL>" + Escape(_serverAddress) + "/web/index.html</presentationURL>");
+
             AppendServiceList(builder);
             builder.Append("</device>");
         }
@@ -169,12 +177,12 @@ namespace Emby.Dlna.Server
 
         private void AppendDeviceProperties(StringBuilder builder)
         {
-            builder.Append("<deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>");
+            builder.Append("<dlna:X_DLNACAP/>");
 
-            builder.Append("<dlna:X_DLNACAP>" + Escape(_profile.XDlnaCap ?? string.Empty) + "</dlna:X_DLNACAP>");
-
+            builder.Append("<dlna:X_DLNADOC xmlns:dlna=\"urn:schemas-dlna-org:device-1-0\">DMS-1.50</dlna:X_DLNADOC>");
             builder.Append("<dlna:X_DLNADOC xmlns:dlna=\"urn:schemas-dlna-org:device-1-0\">M-DMS-1.50</dlna:X_DLNADOC>");
-            builder.Append("<dlna:X_DLNADOC xmlns:dlna=\"urn:schemas-dlna-org:device-1-0\">" + Escape(_profile.XDlnaDoc ?? string.Empty) + "</dlna:X_DLNADOC>");
+
+            builder.Append("<deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>");
 
             builder.Append("<friendlyName>" + Escape(GetFriendlyName()) + "</friendlyName>");
             builder.Append("<manufacturer>" + Escape(_profile.Manufacturer ?? string.Empty) + "</manufacturer>");
@@ -195,13 +203,9 @@ namespace Emby.Dlna.Server
                 builder.Append("<serialNumber>" + Escape(_profile.SerialNumber) + "</serialNumber>");
             }
 
-            builder.Append("<UDN>uuid:" + Escape(_serverUdn) + "</UDN>");
-            builder.Append("<presentationURL>" + Escape(_serverAddress) + "</presentationURL>");
+            builder.Append("<UPC/>");
 
-            if (!EnableAbsoluteUrls)
-            {
-                builder.Append("<URLBase>" + Escape(_serverAddress) + "</URLBase>");
-            }
+            builder.Append("<UDN>uuid:" + Escape(_serverUdn) + "</UDN>");
 
             if (!string.IsNullOrEmpty(_profile.SonyAggregationFlags))
             {

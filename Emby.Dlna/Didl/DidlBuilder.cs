@@ -613,7 +613,7 @@ namespace Emby.Dlna.Didl
         {
             writer.WriteStartElement(string.Empty, "container", NS_DIDL);
 
-            writer.WriteAttributeString("restricted", "0");
+            writer.WriteAttributeString("restricted", "1");
             writer.WriteAttributeString("searchable", "1");
             writer.WriteAttributeString("childCount", childCount.ToString(_usCulture));
 
