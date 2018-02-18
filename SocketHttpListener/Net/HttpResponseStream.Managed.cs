@@ -295,56 +295,6 @@ namespace SocketHttpListener.Net
             return TransmitFileManaged(path, offset, count, fileShareMode, cancellationToken);
         }
 
-        private readonly byte[] _emptyBuffer = new byte[] { };
-        private Task TransmitFileOverSocket(string path, long offset, long count, FileShareMode fileShareMode, CancellationToken cancellationToken)
-        {
-            var ms = GetHeaders(false);
-
-            byte[] preBuffer;
-            if (ms != null)
-            {
-                using (var msCopy = new MemoryStream())
-                {
-                    ms.CopyTo(msCopy);
-                    preBuffer = msCopy.ToArray();
-                }
-            }
-            else
-            {
-                return TransmitFileManaged(path, offset, count, fileShareMode, cancellationToken);
-            }
-
-            _stream.Flush();
-
-            _logger.Info("Socket sending file {0}", path);
-
-            var taskCompletion = new TaskCompletionSource<bool>();
-
-            Action<IAsyncResult> callback = callbackResult =>
-            {
-                try
-                {
-                    _socket.EndSendFile(callbackResult);
-                    taskCompletion.TrySetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletion.TrySetException(ex);
-                }
-            };
-
-            var result = _socket.BeginSendFile(path, preBuffer, _emptyBuffer, TransmitFileOptions.UseDefaultWorkerThread, new AsyncCallback(callback), null);
-
-            if (result.CompletedSynchronously)
-            {
-                callback(result);
-            }
-
-            cancellationToken.Register(() => taskCompletion.TrySetCanceled());
-
-            return taskCompletion.Task;
-        }
-
         const int StreamCopyToBufferSize = 81920;
         private async Task TransmitFileManaged(string path, long offset, long count, FileShareMode fileShareMode, CancellationToken cancellationToken)
         {

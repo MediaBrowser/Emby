@@ -55,14 +55,6 @@ namespace MediaBrowser.Model.Dlna
         public int? MaxStaticMusicBitrate { get; set; }
 
         /// <summary>
-        /// Controls the content of the X_DLNADOC element in the urn:schemas-dlna-org:device-1-0 namespace.
-        /// </summary>
-        public string XDlnaDoc { get; set; }
-        /// <summary>
-        /// Controls the content of the X_DLNACAP element in the urn:schemas-dlna-org:device-1-0 namespace.
-        /// </summary>
-        public string XDlnaCap { get; set; }
-        /// <summary>
         /// Controls the content of the aggregationFlags element in the urn:schemas-sonycom:av namespace.
         /// </summary>
         public string SonyAggregationFlags { get; set; }

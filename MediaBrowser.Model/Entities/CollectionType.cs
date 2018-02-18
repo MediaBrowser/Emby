@@ -19,7 +19,6 @@
         public const string Books = "books";
         public const string Photos = "photos";
         public const string Games = "games";
-        public const string Channels = "channels";
         public const string LiveTv = "livetv";
         public const string Playlists = "playlists";
         public const string Folders = "folders";

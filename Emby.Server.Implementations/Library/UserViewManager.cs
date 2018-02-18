@@ -285,6 +285,24 @@ namespace Emby.Server.Implementations.Library
                 return new List<BaseItem>();
             }
 
+            if (includeItemTypes.Length == 0)
+            {
+                // Handle situations with the grouping setting, e.g. movies showing up in tv, etc. 
+                // Thanks to mixed content libraries included in the UserView
+                var hasCollectionType = parents.OfType<UserView>().ToArray();
+                if (hasCollectionType.Length > 0)
+                {
+                    if (hasCollectionType.All(i => string.Equals(i.CollectionType, CollectionType.Movies, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        includeItemTypes = new string[] { "Movie" };
+                    }
+                    else if (hasCollectionType.All(i => string.Equals(i.CollectionType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        includeItemTypes = new string[] { "Episode" };
+                    }
+                }
+            }
+
             var mediaTypes = new List<string>();
 
             if (includeItemTypes.Length == 0)
@@ -295,6 +313,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         case CollectionType.Books:
                             mediaTypes.Add(MediaType.Book);
+                            mediaTypes.Add(MediaType.Audio);
                             break;
                         case CollectionType.Games:
                             mediaTypes.Add(MediaType.Game);

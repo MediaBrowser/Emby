@@ -2604,14 +2604,10 @@ namespace MediaBrowser.Controller.Entities
                     return true;
                 }
 
-                var view = this as UserView;
+                var view = this as IHasCollectionType;
                 if (view != null)
                 {
-                    if (string.Equals(view.ViewType, CollectionType.LiveTv, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                    if (string.Equals(view.ViewType, CollectionType.Channels, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(view.CollectionType, CollectionType.LiveTv, StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
                     }

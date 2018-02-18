@@ -1537,16 +1537,6 @@ namespace Emby.Server.Implementations.Library
                 {
                     return new[] { view.Id };
                 }
-                if (string.Equals(view.ViewType, CollectionType.Channels))
-                {
-                    var channelResult = BaseItem.ChannelManager.GetChannelsInternal(new ChannelQuery
-                    {
-                        UserId = user.Id.ToString("N")
-
-                    }, CancellationToken.None).Result;
-
-                    return channelResult.Items.Select(i => i.Id);
-                }
 
                 // Translate view into folders
                 if (view.DisplayParentId != Guid.Empty)

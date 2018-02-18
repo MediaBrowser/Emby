@@ -360,19 +360,34 @@ namespace Emby.Server.Implementations.Localization
 
             ParentalRating value;
 
-            if (!ratingsDictionary.TryGetValue(rating, out value))
+            if (ratingsDictionary.TryGetValue(rating, out value))
             {
-                // If we don't find anything check all ratings systems
-                foreach (var dictionary in _allParentalRatings.Values)
+                return value.Value;
+            }
+
+            // If we don't find anything check all ratings systems
+            foreach (var dictionary in _allParentalRatings.Values)
+            {
+                if (dictionary.TryGetValue(rating, out value))
                 {
-                    if (dictionary.TryGetValue(rating, out value))
-                    {
-                        return value.Value;
-                    }
+                    return value.Value;
                 }
             }
 
-            return value == null ? (int?)null : value.Value;
+            // Try splitting by : to handle "Germany: FSK 18"
+            var index = rating.IndexOf(':');
+            if (index != -1)
+            {
+                rating = rating.Substring(index).TrimStart(':').Trim();
+
+                if (!string.IsNullOrWhiteSpace(rating))
+                {
+                    return GetRatingLevel(rating);
+                }
+            }
+
+            // TODO: Further improve by normalizing out all spaces and dashes
+            return null;
         }
 
         public bool HasUnicodeCategory(string value, UnicodeCategory category)

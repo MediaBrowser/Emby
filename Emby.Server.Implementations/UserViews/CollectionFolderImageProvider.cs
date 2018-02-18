@@ -60,7 +60,7 @@ namespace Emby.Server.Implementations.UserViews
                 includeItemTypes = new string[] { "Video", "Audio", "Photo", "Movie", "Series" };
             }
 
-            var recursive = !new[] { CollectionType.Playlists, CollectionType.Channels }.Contains(view.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+            var recursive = !new[] { CollectionType.Playlists }.Contains(view.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
 
             return view.GetItemList(new InternalItemsQuery
             {

@@ -9,11 +9,11 @@
     </Headers>
   </Identification>
   <Manufacturer>Emby</Manufacturer>
-  <ManufacturerUrl>http://emby.media/</ManufacturerUrl>
+  <ManufacturerUrl>http://emby.media</ManufacturerUrl>
   <ModelName>Emby Server</ModelName>
-  <ModelDescription>Emby</ModelDescription>
-  <ModelNumber>Emby</ModelNumber>
-  <ModelUrl>http://emby.media/</ModelUrl>
+  <ModelDescription>UPnP/AV 1.0 Compliant Media Server</ModelDescription>
+  <ModelNumber>01</ModelNumber>
+  <ModelUrl>http://emby.media</ModelUrl>
   <EnableAlbumArtInDidl>false</EnableAlbumArtInDidl>
   <EnableSingleAlbumArtLimit>false</EnableSingleAlbumArtLimit>
   <EnableSingleSubtitleLimit>false</EnableSingleSubtitleLimit>
@@ -27,7 +27,6 @@
   <MaxStaticBitrate>140000000</MaxStaticBitrate>
   <MusicStreamingTranscodingBitrate>192000</MusicStreamingTranscodingBitrate>
   <MaxStaticMusicBitrate xsi:nil="true" />
-  <XDlnaDoc>DMS-1.50</XDlnaDoc>
   <ProtocolInfo>http-get:*:video/mpeg:*,http-get:*:video/mp4:*,http-get:*:video/vnd.dlna.mpeg-tts:*,http-get:*:video/avi:*,http-get:*:video/x-matroska:*,http-get:*:video/x-ms-wmv:*,http-get:*:video/wtv:*,http-get:*:audio/mpeg:*,http-get:*:audio/mp3:*,http-get:*:audio/mp4:*,http-get:*:audio/x-ms-wma*,http-get:*:audio/wav:*,http-get:*:audio/L16:*,http-get:*image/jpeg:*,http-get:*image/png:*,http-get:*image/gif:*,http-get:*image/tiff:*</ProtocolInfo>
   <TimelineOffsetSeconds>5</TimelineOffsetSeconds>
   <RequiresPlainVideoItems>false</RequiresPlainVideoItems>

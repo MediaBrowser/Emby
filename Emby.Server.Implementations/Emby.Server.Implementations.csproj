@@ -379,7 +379,6 @@
     <Compile Include="Library\Validators\StudiosValidator.cs" />
     <Compile Include="LiveTv\EmbyTV\DirectRecorder.cs" />
     <Compile Include="LiveTv\EmbyTV\EmbyTV.cs" />
-    <Compile Include="LiveTv\EmbyTV\EmbyTVRegistration.cs" />
     <Compile Include="LiveTv\EmbyTV\EncodedRecorder.cs" />
     <Compile Include="LiveTv\EmbyTV\EntryPoint.cs" />
     <Compile Include="LiveTv\EmbyTV\IRecorder.cs" />

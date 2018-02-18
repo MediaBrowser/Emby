@@ -55,31 +55,11 @@ namespace MediaBrowser.Controller.Entities
 
             switch (viewType)
             {
-                case CollectionType.Photos:
-                case CollectionType.Books:
-                case CollectionType.HomeVideos:
-                case CollectionType.Games:
-                case CollectionType.MusicVideos:
-                    {
-                        if (query.Recursive)
-                        {
-                            query.Recursive = true;
-                            query.Parent = queryParent;
-                            query.SetUser(user);
-
-                            return _libraryManager.GetItemsResult(query);
-                        }
-                        return GetResult(queryParent.GetChildren(user, true), queryParent, query);
-                    }
-
                 case CollectionType.Folders:
                     return GetResult(user.RootFolder.GetChildren(user, true), queryParent, query);
 
                 case CollectionType.Playlists:
                     return GetPlaylistsView(queryParent, user, query);
-
-                case CollectionType.BoxSets:
-                    return GetBoxsetView(queryParent, user, query);
 
                 case CollectionType.TvShows:
                     return GetTvView(queryParent, user, query);
@@ -433,7 +413,12 @@ namespace MediaBrowser.Controller.Entities
 
         private QueryResult<BaseItem> GetMovieCollections(Folder parent, User user, InternalItemsQuery query)
         {
-            return GetBoxsetView(parent, user, query);
+            query.Parent = null;
+            query.IncludeItemTypes = new[] { typeof(BoxSet).Name };
+            query.SetUser(user);
+            query.Recursive = true;
+
+            return _libraryManager.GetItemsResult(query);
         }
 
         private QueryResult<BaseItem> GetMovieLatest(Folder parent, User user, InternalItemsQuery query)
@@ -518,16 +503,6 @@ namespace MediaBrowser.Controller.Entities
         private QueryResult<BaseItem> GetPlaylistsView(Folder parent, User user, InternalItemsQuery query)
         {
             return GetResult(_playlistManager.GetPlaylists(user.Id.ToString("N")), parent, query);
-        }
-
-        private QueryResult<BaseItem> GetBoxsetView(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Parent = null;
-            query.IncludeItemTypes = new[] { typeof(BoxSet).Name };
-            query.SetUser(user);
-            query.Recursive = true;
-
-            return _libraryManager.GetItemsResult(query);
         }
 
         private QueryResult<BaseItem> GetTvView(Folder parent, User user, InternalItemsQuery query)

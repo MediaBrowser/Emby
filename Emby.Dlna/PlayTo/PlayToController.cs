@@ -364,7 +364,7 @@ namespace Emby.Dlna.PlayTo
 
             if (!String.IsNullOrEmpty(command.ControllingUserId))
             {
-                _sessionManager.LogSessionActivity(_session.Client, _session.ApplicationVersion, _session.DeviceId,
+                _sessionManager.LogSessionActivity(_session.AppName, _session.ApplicationVersion, _session.DeviceId,
                        _session.DeviceName, _session.RemoteEndPoint, user);
             }
 

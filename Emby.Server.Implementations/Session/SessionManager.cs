@@ -180,7 +180,7 @@ namespace Emby.Server.Implementations.Session
         {
             var session = GetSession(sessionId);
 
-            var key = GetSessionKey(session.Client, session.DeviceId);
+            var key = GetSessionKey(session.AppName, session.DeviceId);
 
             if (session != null)
             {
@@ -276,7 +276,7 @@ namespace Emby.Server.Implementations.Session
 
             if (session != null)
             {
-                var key = GetSessionKey(session.Client, session.DeviceId);
+                var key = GetSessionKey(session.AppName, session.DeviceId);
 
                 SessionInfo removed;
                 _activeConnections.TryRemove(key, out removed);
@@ -420,7 +420,7 @@ namespace Emby.Server.Implementations.Session
 
             var sessionInfo = new SessionInfo(this, _logger)
             {
-                Client = appName,
+                AppName = appName,
                 DeviceId = deviceId,
                 ApplicationVersion = appVersion,
                 Id = key.GetMD5().ToString("N")
@@ -606,7 +606,7 @@ namespace Emby.Server.Implementations.Session
                 MediaSourceId = info.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client,
+                ClientName = session.AppName,
                 DeviceId = session.DeviceId
 
             }, _logger);
@@ -685,7 +685,7 @@ namespace Emby.Server.Implementations.Session
                 MediaSourceId = session.PlayState.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client,
+                ClientName = session.AppName,
                 DeviceId = session.DeviceId,
                 IsPaused = info.IsPaused,
                 PlaySessionId = info.PlaySessionId,
@@ -800,7 +800,7 @@ namespace Emby.Server.Implementations.Session
                 var msString = info.PositionTicks.HasValue ? (info.PositionTicks.Value / 10000).ToString(CultureInfo.InvariantCulture) : "unknown";
 
                 _logger.Info("Playback stopped reported by app {0} {1} playing {2}. Stopped at {3} ms",
-                    session.Client,
+                    session.AppName,
                     session.ApplicationVersion,
                     info.Item.Name,
                     msString);
@@ -840,7 +840,7 @@ namespace Emby.Server.Implementations.Session
                 MediaSourceId = info.MediaSourceId,
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
-                ClientName = session.Client,
+                ClientName = session.AppName,
                 DeviceId = session.DeviceId
 
             }, _logger);
@@ -1557,12 +1557,12 @@ namespace Emby.Server.Implementations.Session
         {
             var dto = new SessionInfoDto
             {
-                Client = session.Client,
+                Client = session.AppName,
                 DeviceId = session.DeviceId,
+                DeviceType = session.DeviceType,
                 DeviceName = session.DeviceName,
                 Id = session.Id,
                 LastActivityDate = session.LastActivityDate,
-                NowViewingItem = session.NowViewingItem,
                 ApplicationVersion = session.ApplicationVersion,
                 PlayableMediaTypes = session.PlayableMediaTypes,
                 AdditionalUsers = session.AdditionalUsers,
@@ -1717,7 +1717,7 @@ namespace Emby.Server.Implementations.Session
         public SessionInfo GetSession(string deviceId, string client, string version)
         {
             return Sessions.FirstOrDefault(i => string.Equals(i.DeviceId, deviceId) &&
-                string.Equals(i.Client, client));
+                string.Equals(i.AppName, client));
         }
 
         public SessionInfo GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion)
