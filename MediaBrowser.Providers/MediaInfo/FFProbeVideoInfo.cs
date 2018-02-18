@@ -501,7 +501,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 }
             }
 
-            video.SubtitleFiles = externalSubtitleStreams.Select(i => i.Path).OrderBy(i => i).ToArray();
+            video.SubtitleFiles = externalSubtitleStreams.Select(i => i.Path).ToArray();
 
             currentStreams.AddRange(externalSubtitleStreams);
         }

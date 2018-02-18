@@ -368,7 +368,7 @@ namespace Emby.Dlna.PlayTo
         {
             var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Play");
             if (command == null)
-                return Task.CompletedTask;
+                return Task.FromResult(true);
 
             var service = GetAvTransportService();
 

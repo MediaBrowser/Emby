@@ -381,12 +381,6 @@ namespace Emby.Server.Implementations.Dto
 
             AttachBasicFields(dto, item, owner, options);
 
-            var collectionFolder = item as ICollectionFolder;
-            if (collectionFolder != null)
-            {
-                dto.CollectionType = collectionFolder.CollectionType;
-            }
-
             if (fields.Contains(ItemFields.CanDelete))
             {
                 dto.CanDelete = user == null
@@ -1038,10 +1032,10 @@ namespace Emby.Server.Implementations.Dto
                 dto.DisplayOrder = hasDisplayOrder.DisplayOrder;
             }
 
-            var userView = item as UserView;
-            if (userView != null)
+            var hasCollectionType = item as IHasCollectionType;
+            if (hasCollectionType != null)
             {
-                dto.CollectionType = userView.ViewType;
+                dto.CollectionType = hasCollectionType.CollectionType;
             }
 
             if (fields.Contains(ItemFields.RemoteTrailers))

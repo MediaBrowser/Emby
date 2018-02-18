@@ -36,7 +36,7 @@ namespace Emby.Server.Implementations.UserViews
             var view = (UserView)item;
 
             var isUsingCollectionStrip = IsUsingCollectionStrip(view);
-            var recursive = isUsingCollectionStrip && !new[] { CollectionType.Channels, CollectionType.BoxSets, CollectionType.Playlists }.Contains(view.ViewType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+            var recursive = isUsingCollectionStrip && !new[] { CollectionType.BoxSets, CollectionType.Playlists }.Contains(view.ViewType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
 
             var result = view.GetItemList(new InternalItemsQuery
             {
