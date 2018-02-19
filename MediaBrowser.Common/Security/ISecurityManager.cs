@@ -15,15 +15,12 @@ namespace MediaBrowser.Common.Security
         /// Gets or sets the supporter key.
         /// </summary>
         /// <value>The supporter key.</value>
-        string SupporterKey { get; set; }
+        string SupporterKey { get; }
 
         /// <summary>
         /// Gets the registration status. Overload to support existing plug-ins.
         /// </summary>
         Task<MBRegistrationRecord> GetRegistrationStatus(string feature);
-
-        Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent);
-        Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version);
 
         /// <summary>
         /// Register and app store sale with our back-end

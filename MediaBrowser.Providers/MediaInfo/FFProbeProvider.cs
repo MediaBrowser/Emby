@@ -33,7 +33,6 @@ namespace MediaBrowser.Providers.MediaInfo
         ICustomMetadataProvider<Trailer>,
         ICustomMetadataProvider<Video>,
         ICustomMetadataProvider<Audio>,
-        ICustomMetadataProvider<AudioPodcast>,
         ICustomMetadataProvider<AudioBook>,
         IHasOrder,
         IForcedProvider,
@@ -131,11 +130,6 @@ namespace MediaBrowser.Providers.MediaInfo
         }
 
         public Task<ItemUpdateType> FetchAsync(LiveTvAudioRecording item, MetadataRefreshOptions options, CancellationToken cancellationToken)
-        {
-            return FetchAudioInfo(item, cancellationToken);
-        }
-
-        public Task<ItemUpdateType> FetchAsync(AudioPodcast item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
             return FetchAudioInfo(item, cancellationToken);
         }

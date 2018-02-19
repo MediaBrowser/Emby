@@ -41,7 +41,6 @@
     <Compile Include="Activity\IActivityManager.cs" />
     <Compile Include="Activity\IActivityRepository.cs" />
     <Compile Include="ApiClient\ServerDiscoveryInfo.cs" />
-    <Compile Include="ApiClient\WakeOnLanInfo.cs" />
     <Compile Include="Branding\BrandingOptions.cs" />
     <Compile Include="Channels\ChannelFeatures.cs" />
     <Compile Include="Channels\ChannelFolderType.cs" />
@@ -110,6 +109,7 @@
     <Compile Include="Services\IHttpResult.cs" />
     <Compile Include="System\IEnvironmentInfo.cs" />
     <Compile Include="System\IPowerManagement.cs" />
+    <Compile Include="System\WakeOnLanInfo.cs" />
     <Compile Include="Tasks\TaskOptions.cs" />
     <Compile Include="Text\ITextEncoding.cs" />
     <Compile Include="Extensions\LinqExtensions.cs" />

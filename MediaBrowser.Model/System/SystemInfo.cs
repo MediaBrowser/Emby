@@ -16,12 +16,6 @@ namespace MediaBrowser.Model.System
         /// <value>The display name of the operating system.</value>
         public string OperatingSystemDisplayName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the mac address.
-        /// </summary>
-        /// <value>The mac address.</value>
-        public string MacAddress { get; set; }
-
         public string PackageName { get; set; }
         
         /// <summary>

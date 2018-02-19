@@ -937,7 +937,7 @@ namespace Emby.Server.Implementations.Channels
             {
                 if (info.ContentType == ChannelMediaContentType.Podcast)
                 {
-                    item = GetItemById<AudioPodcast>(info.Id, channelProvider.Name, out isNew);
+                    item = GetItemById<AudioBook>(info.Id, channelProvider.Name, out isNew);
                 }
                 else
                 {
@@ -1169,79 +1169,6 @@ namespace Emby.Server.Implementations.Channels
             }
 
             return result;
-        }
-    }
-
-    public class ChannelsEntryPoint : IServerEntryPoint
-    {
-        private readonly IServerConfigurationManager _config;
-        private readonly IChannelManager _channelManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IFileSystem _fileSystem;
-
-        public ChannelsEntryPoint(IChannelManager channelManager, ITaskManager taskManager, IServerConfigurationManager config, IFileSystem fileSystem)
-        {
-            _channelManager = channelManager;
-            _taskManager = taskManager;
-            _config = config;
-            _fileSystem = fileSystem;
-        }
-
-        public void Run()
-        {
-            var channels = ((ChannelManager)_channelManager).Channels
-                .Select(i => i.GetType().FullName.GetMD5().ToString("N"))
-                .ToArray();
-
-            var channelsString = string.Join(",", channels);
-
-            if (!string.Equals(channelsString, GetSavedLastChannels(), StringComparison.OrdinalIgnoreCase))
-            {
-                _taskManager.QueueIfNotRunning<RefreshChannelsScheduledTask>();
-
-                SetSavedLastChannels(channelsString);
-            }
-        }
-
-        private string DataPath
-        {
-            get { return Path.Combine(_config.ApplicationPaths.DataPath, "channels.txt"); }
-        }
-
-        private string GetSavedLastChannels()
-        {
-            try
-            {
-                return _fileSystem.ReadAllText(DataPath);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        private void SetSavedLastChannels(string value)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    _fileSystem.DeleteFile(DataPath);
-
-                }
-                else
-                {
-                    _fileSystem.WriteAllText(DataPath, value);
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
         }
     }
 }

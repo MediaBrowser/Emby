@@ -1361,10 +1361,6 @@ namespace Emby.Server.Implementations.Data
             {
                 return false;
             }
-            if (type == typeof(AudioPodcast))
-            {
-                return false;
-            }
             if (type == typeof(AudioBook))
             {
                 return false;
@@ -4772,7 +4768,6 @@ namespace Emby.Server.Implementations.Data
             typeof(MusicVideo),
             typeof(Movie),
             typeof(Playlist),
-            typeof(AudioPodcast),
             typeof(AudioBook),
             typeof(Trailer),
             typeof(BoxSet),
