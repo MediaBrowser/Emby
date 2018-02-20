@@ -45,5 +45,6 @@ namespace MediaBrowser.Model.Channels
         /// </summary>
         /// <value><c>null</c> if [is favorite] contains no value, <c>true</c> if [is favorite]; otherwise, <c>false</c>.</value>
         public bool? IsFavorite { get; set; }
+        public bool? IsRecordingsFolder { get; set; }
     }
 }

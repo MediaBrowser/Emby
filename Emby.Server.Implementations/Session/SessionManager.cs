@@ -1506,13 +1506,13 @@ namespace Emby.Server.Implementations.Session
             {
                 EnsureHttpController(session, capabilities.MessageCallbackUrl);
             }
-            if (!string.IsNullOrEmpty(capabilities.PushToken))
-            {
-                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
-                {
-                    EnsureFirebaseController(session, capabilities.PushToken);
-                }
-            }
+            //if (!string.IsNullOrEmpty(capabilities.PushToken))
+            //{
+            //    if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
+            //    {
+            //        EnsureFirebaseController(session, capabilities.PushToken);
+            //    }
+            //}
 
             if (saveCapabilities)
             {

@@ -143,6 +143,25 @@ namespace Emby.Server.Implementations.Channels
                 .OrderBy(i => i.SortName)
                 .ToList();
 
+            if (query.IsRecordingsFolder.HasValue)
+            {
+                var val = query.IsRecordingsFolder.Value;
+                channels = channels.Where(i =>
+                {
+                    try
+                    {
+                        var hasAttributes = GetChannelProvider(i) as IHasFolderAttributes;
+
+                        return (hasAttributes != null && hasAttributes.Attributes.Contains("Recordings", StringComparer.OrdinalIgnoreCase)) == val;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                }).ToList();
+            }
+
             if (query.SupportsLatestItems.HasValue)
             {
                 var val = query.SupportsLatestItems.Value;

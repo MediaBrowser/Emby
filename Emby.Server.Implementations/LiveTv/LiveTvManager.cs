@@ -36,6 +36,7 @@ using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.LiveTv.Listings;
+using MediaBrowser.Controller.Channels;
 
 namespace Emby.Server.Implementations.LiveTv
 {
@@ -54,6 +55,7 @@ namespace Emby.Server.Implementations.LiveTv
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IProviderManager _providerManager;
         private readonly ISecurityManager _security;
+        private readonly Func<IChannelManager> _channelManager;
 
         private readonly IDtoService _dtoService;
         private readonly ILocalizationManager _localization;
@@ -83,7 +85,7 @@ namespace Emby.Server.Implementations.LiveTv
             return EmbyTV.EmbyTV.Current.GetLiveStream(id);
         }
 
-        public LiveTvManager(IApplicationHost appHost, IServerConfigurationManager config, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager, IFileSystem fileSystem, ISecurityManager security)
+        public LiveTvManager(IApplicationHost appHost, IServerConfigurationManager config, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager, IFileSystem fileSystem, ISecurityManager security, Func<IChannelManager> channelManager)
         {
             _config = config;
             _logger = logger;
@@ -98,6 +100,7 @@ namespace Emby.Server.Implementations.LiveTv
             _security = security;
             _dtoService = dtoService;
             _userDataManager = userDataManager;
+            _channelManager = channelManager;
 
             _tvDtoService = new LiveTvDtoService(dtoService, imageProcessor, logger, appHost, _libraryManager);
         }
@@ -3126,6 +3129,29 @@ namespace Emby.Server.Implementations.LiveTv
         public Guid GetInternalProgramId(string serviceName, string externalId)
         {
             return _tvDtoService.GetInternalProgramId(serviceName, externalId);
+        }
+
+        public List<BaseItem> GetRecordingFolders(User user)
+        {
+            var folders = EmbyTV.EmbyTV.Current.GetRecordingFolders()
+                .SelectMany(i => i.Locations)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Select(i => _libraryManager.FindByPath(i, true))
+                .Where(i => i != null)
+                .Where(i => i.IsVisibleStandalone(user))
+                .SelectMany(i => _libraryManager.GetCollectionFolders(i))
+                .DistinctBy(i => i.Id)
+                .OrderBy(i => i.SortName)
+                .ToList();
+
+            folders.AddRange(_channelManager().GetChannelsInternal(new MediaBrowser.Model.Channels.ChannelQuery
+            {
+                UserId = user.Id.ToString("N"),
+                IsRecordingsFolder = true
+
+            }, CancellationToken.None).Result.Items);
+
+            return folders.Cast<BaseItem>().ToList();
         }
     }
 }
