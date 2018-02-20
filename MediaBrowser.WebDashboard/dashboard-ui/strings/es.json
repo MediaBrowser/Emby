@@ -1,4 +1,6 @@
 {
+    "Advanced": "Avanzado",
+    "Browse": "Explorar",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Terminar",
     "LabelNext": "Siguiente",
@@ -453,7 +455,7 @@
     "HeaderSource": "Origen",
     "HeaderStatus": "Estado",
     "HeaderDestination": "Destino",
-    "Subscriptions": "Subscriptions",
+    "Subscriptions": "Suscripciones",
     "HeaderProgram": "Programa",
     "HeaderClients": "Clientes",
     "LabelCompleted": "Completado",
@@ -1763,7 +1765,7 @@
     "LabelUserAgent": "Agente de usuario:",
     "UserAgentHelp": "Proporciona una cabecera http personalizada de agente-usuario, si es necesario.",
     "HeaderConfigureRemoteAccess": "Configurar acceso remoto",
-    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
-    "LabelLanNetworks": "LAN networks:",
+    "LearnHowToCreateSynologyShares": "Aprende a compartir carpetas en Synology",
+    "LabelLanNetworks": "Redes locales:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }
