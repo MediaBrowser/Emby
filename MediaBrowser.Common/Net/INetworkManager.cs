@@ -24,7 +24,7 @@ namespace MediaBrowser.Common.Net
         /// Returns MAC Address from first Network Card in Computer
         /// </summary>
         /// <returns>[string] MAC Address</returns>
-        string GetMacAddress();
+        List<string> GetMacAddresses();
 
         /// <summary>
         /// Determines whether [is in private address space] [the specified endpoint].

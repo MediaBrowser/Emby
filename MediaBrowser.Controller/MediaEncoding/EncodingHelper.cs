@@ -1958,7 +1958,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                         case "h265":
                             if (_mediaEncoder.SupportsDecoder("hevc_qsv") && encodingOptions.HardwareDecodingCodecs.Contains("hevc", StringComparer.OrdinalIgnoreCase))
                             {
-                                return "-c:v hevc_qsv -load_plugin hevc_hw ";
+                                //return "-c:v hevc_qsv -load_plugin hevc_hw ";
+                                return "-c:v hevc_qsv ";
                             }
                             break;
                         case "mpeg2video":

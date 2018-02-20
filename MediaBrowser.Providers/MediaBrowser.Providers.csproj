@@ -38,7 +38,6 @@
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
     <Compile Include="Books\AudioBookMetadataService.cs" />
-    <Compile Include="Books\AudioPodcastMetadataService.cs" />
     <Compile Include="Books\BookMetadataService.cs" />
     <Compile Include="Books\GoogleBooksProvider.cs" />
     <Compile Include="BoxSets\BoxSetMetadataService.cs" />

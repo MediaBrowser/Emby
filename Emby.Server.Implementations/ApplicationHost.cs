@@ -987,7 +987,7 @@ namespace Emby.Server.Implementations
             PlaylistManager = new PlaylistManager(LibraryManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("PlaylistManager"), UserManager, ProviderManager);
             RegisterSingleInstance<IPlaylistManager>(PlaylistManager);
 
-            LiveTvManager = new LiveTvManager(this, ServerConfigurationManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, TaskManager, LocalizationManager, JsonSerializer, ProviderManager, FileSystemManager, SecurityManager);
+            LiveTvManager = new LiveTvManager(this, ServerConfigurationManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, TaskManager, LocalizationManager, JsonSerializer, ProviderManager, FileSystemManager, SecurityManager, () => ChannelManager);
             RegisterSingleInstance(LiveTvManager);
 
             UserViewManager = new UserViewManager(LibraryManager, LocalizationManager, UserManager, ChannelManager, LiveTvManager, ServerConfigurationManager);
@@ -1869,7 +1869,6 @@ namespace Emby.Server.Implementations
                 ItemsByNamePath = ApplicationPaths.ItemsByNamePath,
                 InternalMetadataPath = ApplicationPaths.InternalMetadataPath,
                 CachePath = ApplicationPaths.CachePath,
-                MacAddress = GetMacAddress(),
                 HttpServerPortNumber = HttpPort,
                 SupportsHttps = SupportsHttps,
                 HttpsPortNumber = HttpsPort,
@@ -1890,6 +1889,16 @@ namespace Emby.Server.Implementations
                 SystemUpdateLevel = SystemUpdateLevel,
                 PackageName = StartupOptions.GetOption("-package")
             };
+        }
+
+        public WakeOnLanInfo[] GetWakeOnLanInfo()
+        {
+            return NetworkManager.GetMacAddresses()
+                .Select(i => new WakeOnLanInfo
+                {
+                    MacAddress = i
+                })
+                .ToArray();
         }
 
         public async Task<PublicSystemInfo> GetPublicSystemInfo(CancellationToken cancellationToken)
@@ -2093,23 +2102,6 @@ namespace Emby.Server.Implementations
         public int HttpPort { get; private set; }
 
         public int HttpsPort { get; private set; }
-
-        /// <summary>
-        /// Gets the mac address.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        private string GetMacAddress()
-        {
-            try
-            {
-                return NetworkManager.GetMacAddress();
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error getting mac address", ex);
-                return null;
-            }
-        }
 
         /// <summary>
         /// Shuts down.

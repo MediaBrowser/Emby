@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "Precedente",
     "LabelFinish": "Finito",
     "LabelNext": "Prossimo",
@@ -53,7 +55,7 @@
     "LabelSyncTempPath": "Percorso file temporanei:",
     "LabelSyncTempPathHelp": "Specifica una cartella per la sincronizzazione. I media creati durante la sincronizzazione verranno memorizzati qui.",
     "LabelCustomCertificatePath": "Percorso certificato personalizzato ssl:",
-    "LabelCustomCertificatePathHelp": "Fornisci il file .pfx del tuo certificato SSL.",
+    "LabelCustomCertificatePathHelp": "Percorso del file PKCS #12 contenente il certificato e la chiave private per abilitare il supporto TLS in un dominio personalizzato.",
     "TitleNotifications": "Notifiche",
     "LabelEnterConnectUserName": "Nome utente o e-mail:",
     "LabelEnterConnectUserNameHelp": "Questo \u00e8 il tuo nome utente o e-mail Emby.",
@@ -453,7 +455,7 @@
     "HeaderSource": "Sorgente",
     "HeaderStatus": "Stato",
     "HeaderDestination": "Destinazione",
-    "Subscriptions": "Subscriptions",
+    "Subscriptions": "Sottoscrizioni",
     "HeaderProgram": "Programma",
     "HeaderClients": "Dispositivi",
     "LabelCompleted": "Completato",
@@ -1728,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scansiona Tutte le Librerie",
     "ScanLibrary": "Scansione libreria",
     "EnableStreamLooping": "Auto-loop streaming in diretta",
-    "EnableStreamLoopingHelp": "Abilita questo se gli streaming in diretta contengono solo pochi secondi di dati e devono essere costantemente richiesti.",
+    "EnableStreamLoopingHelp": "Abilita questo se gli streaming in diretta contengono solo pochi secondi di dati e devono essere costantemente richiesti. L'abilitazione di questa funzione quando non \u00e8 servita pu\u00f2 causare problemi",
     "HttpsRequiresCert": "Per richiedere https come indirizzo esterno, sar\u00e0 necessario fornire un certificato SSL attendibile, ad esempio Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Ultimi Video Scaricati",
     "ServerRestartNeededAfterPluginInstall": "Il server Emby dovr\u00e0 essere riavviato dopo l'installazione di un plugin.",
@@ -1763,7 +1765,7 @@
     "LabelUserAgent": "Agente utente:",
     "UserAgentHelp": "Fornire un'intestazione http personalizzata per utente-agente, se necessario.",
     "HeaderConfigureRemoteAccess": "Configura Accesso Remoto",
-    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
-    "LabelLanNetworks": "LAN networks:",
-    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
+    "LearnHowToCreateSynologyShares": "Scopri come condividere cartelle in Synology",
+    "LabelLanNetworks": "Reti LAN:",
+    "LanNetworksHelp": "Elenco separato da virgola di indirizzi IP o voci IP \/ maschera di rete per reti che saranno considerate sulla rete locale quando si applicano restrizioni di larghezza di banda. Se impostato, tutti gli altri indirizzi IP verranno considerati nella rete esterna e saranno soggetti alle limitazioni della larghezza di banda esterna. Se lasciato vuoto, solo la sottorete del server viene considerata nella rete locale."
 }

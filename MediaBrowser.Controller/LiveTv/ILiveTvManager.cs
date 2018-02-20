@@ -348,5 +348,7 @@ namespace MediaBrowser.Controller.LiveTv
         ActiveRecordingInfo GetActiveRecordingInfo(string path);
 
         void AddInfoToRecordingDto(BaseItem item, BaseItemDto dto, ActiveRecordingInfo activeRecordingInfo, User user = null);
+
+        List<BaseItem> GetRecordingFolders(User user);
     }
 }

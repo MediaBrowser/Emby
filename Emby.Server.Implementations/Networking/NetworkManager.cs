@@ -68,6 +68,7 @@ namespace Emby.Server.Implementations.Networking
             lock (_localIpAddressSyncLock)
             {
                 _localIpAddresses = null;
+                _macAddresses = null;
             }
             if (NetworkChanged != null)
             {
@@ -473,16 +474,33 @@ namespace Emby.Server.Implementations.Networking
             }
         }
 
-        /// <summary>
-        /// Returns MAC Address from first Network Card in Computer
-        /// </summary>
-        /// <returns>[string] MAC Address</returns>
-        public string GetMacAddress()
+        private List<string> _macAddresses;
+        public List<string> GetMacAddresses()
+        {
+            if (_macAddresses == null)
+            {
+                _macAddresses = GetMacAddressesInternal();
+            }
+            return _macAddresses;
+        }
+
+        private List<string> GetMacAddressesInternal()
         {
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(i => i.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(i => BitConverter.ToString(i.GetPhysicalAddress().GetAddressBytes()))
-                .FirstOrDefault();
+                .Select(i =>
+                {
+                    try
+                    {
+                        return BitConverter.ToString(i.GetPhysicalAddress().GetAddressBytes());
+                    }
+                    catch (Exception ex)
+                    {
+                        return null;
+                    }
+                })
+                .Where(i => i != null)
+                .ToList();
         }
 
         /// <summary>
@@ -723,6 +741,8 @@ namespace Emby.Server.Implementations.Networking
 
             if (subnetAddress.AddressFamily == AddressFamily.InterNetworkV6)
             {
+                // ipv6
+
                 // incorrect - no support for BigInteger in mono
                 return Tuple.Create(subnetAddress, subnetAddress);
             }
