@@ -280,7 +280,15 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public bool IsCompleteMedia
         {
-            get { return !IsActiveRecording(); }
+            get
+            {
+                if (SourceType == SourceType.Channel)
+                {
+                    return !Tags.Contains("livestream", StringComparer.OrdinalIgnoreCase);
+                }
+
+                return !IsActiveRecording();
+            }
         }
 
         [IgnoreDataMember]

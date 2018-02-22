@@ -9,11 +9,11 @@
     </Headers>
   </Identification>
   <Manufacturer>Emby</Manufacturer>
-  <ManufacturerUrl>http://emby.media</ManufacturerUrl>
+  <ManufacturerUrl>https://emby.media</ManufacturerUrl>
   <ModelName>Emby Server</ModelName>
   <ModelDescription>UPnP/AV 1.0 Compliant Media Server</ModelDescription>
   <ModelNumber>01</ModelNumber>
-  <ModelUrl>http://emby.media</ModelUrl>
+  <ModelUrl>https://emby.media</ModelUrl>
   <EnableAlbumArtInDidl>false</EnableAlbumArtInDidl>
   <EnableSingleAlbumArtLimit>true</EnableSingleAlbumArtLimit>
   <EnableSingleSubtitleLimit>false</EnableSingleSubtitleLimit>

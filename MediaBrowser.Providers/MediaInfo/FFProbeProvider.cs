@@ -185,15 +185,15 @@ namespace MediaBrowser.Providers.MediaInfo
                 return _cachedTask;
             }
 
-            if (item.IsShortcut)
-            {
-                FetchShortcutInfo(item);
-            }
-
             // hack alert
             if (item.SourceType == SourceType.Channel && !_channelManager.EnableMediaProbe(item))
             {
                 return _cachedTask;
+            }
+
+            if (item.IsShortcut)
+            {
+                FetchShortcutInfo(item);
             }
 
             var prober = new FFProbeVideoInfo(_logger, _isoManager, _mediaEncoder, _itemRepo, _blurayExaminer, _localization, _appPaths, _json, _encodingManager, _fileSystem, _config, _subtitleManager, _chapterManager, _libraryManager);

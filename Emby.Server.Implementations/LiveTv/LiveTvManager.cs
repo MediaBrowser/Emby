@@ -1547,28 +1547,18 @@ namespace Emby.Server.Implementations.LiveTv
             }
         }
 
-        private QueryResult<BaseItem> GetEmbyRecordings(RecordingQuery query, DtoOptions dtoOptions, Guid internalLiveTvFolderId, User user)
+        private QueryResult<BaseItem> GetEmbyRecordings(RecordingQuery query, DtoOptions dtoOptions, User user)
         {
             if (user == null)
             {
                 return new QueryResult<BaseItem>();
             }
 
-            var folderIds = EmbyTV.EmbyTV.Current.GetRecordingFolders()
-                .SelectMany(i => i.Locations)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Select(i => _libraryManager.FindByPath(i, true))
-                .Where(i => i != null)
-                .Where(i => i.IsVisibleStandalone(user))
+            var folderIds = GetRecordingFolders(user, true)
                 .Select(i => i.Id)
                 .ToList();
 
             var excludeItemTypes = new List<string>();
-
-            folderIds.Add(internalLiveTvFolderId);
-
-            excludeItemTypes.Add(typeof(LiveTvChannel).Name);
-            excludeItemTypes.Add(typeof(LiveTvProgram).Name);
 
             if (folderIds.Count == 0)
             {
@@ -1617,27 +1607,33 @@ namespace Emby.Server.Implementations.LiveTv
                 }
             }
 
+            var limit = query.Limit;
+
             if ((query.IsInProgress ?? false))
             {
-                // TODO: filter
-                var allActivePaths = EmbyTV.EmbyTV.Current.GetAllActiveRecordings().Select(i => i.Path).ToArray();
-                var items = allActivePaths.Select(i => _libraryManager.FindByPath(i, false)).Where(i => i != null).ToArray();
+                limit = (query.Limit ?? 10) * 2;
+                limit = null;
 
-                return new QueryResult<BaseItem>
-                {
-                    Items = items,
-                    TotalRecordCount = items.Length
-                };
+                //var allActivePaths = EmbyTV.EmbyTV.Current.GetAllActiveRecordings().Select(i => i.Path).ToArray();
+                //var items = allActivePaths.Select(i => _libraryManager.FindByPath(i, false)).Where(i => i != null).ToArray();
+
+                //return new QueryResult<BaseItem>
+                //{
+                //    Items = items,
+                //    TotalRecordCount = items.Length
+                //};
+
+                dtoOptions.Fields = dtoOptions.Fields.Concat(new[] { ItemFields.Tags }).Distinct().ToArray();
             }
 
-            return _libraryManager.GetItemsResult(new InternalItemsQuery(user)
+            var result = _libraryManager.GetItemsResult(new InternalItemsQuery(user)
             {
                 MediaTypes = new[] { MediaType.Video },
                 Recursive = true,
                 AncestorIds = folderIds.Select(i => i.ToString("N")).ToArray(folderIds.Count),
                 IsFolder = false,
                 IsVirtualItem = false,
-                Limit = query.Limit,
+                Limit = limit,
                 StartIndex = query.StartIndex,
                 OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
@@ -1646,6 +1642,19 @@ namespace Emby.Server.Implementations.LiveTv
                 Genres = genres.ToArray(genres.Count),
                 DtoOptions = dtoOptions
             });
+
+            if ((query.IsInProgress ?? false))
+            {
+                result.Items = result
+                    .Items
+                    .OfType<Video>()
+                    .Where(i => !i.IsCompleteMedia)
+                    .ToArray();
+
+                result.TotalRecordCount = result.Items.Length;
+            }
+
+            return result;
         }
 
         public QueryResult<BaseItemDto> GetRecordingSeries(RecordingQuery query, DtoOptions options, CancellationToken cancellationToken)
@@ -1712,7 +1721,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             var folder = GetInternalLiveTvFolder(cancellationToken);
 
-            var result = GetEmbyRecordings(query, options, folder.Id, user);
+            var result = GetEmbyRecordings(query, options, user);
 
             var servicesResult = await GetInternalRecordingsFromServices(query, user, options, folder.Id, cancellationToken).ConfigureAwait(false);
 
@@ -3133,6 +3142,11 @@ namespace Emby.Server.Implementations.LiveTv
 
         public List<BaseItem> GetRecordingFolders(User user)
         {
+            return GetRecordingFolders(user, false);
+        }
+
+        private List<BaseItem> GetRecordingFolders(User user, bool refreshChannels)
+        {
             var folders = EmbyTV.EmbyTV.Current.GetRecordingFolders()
                 .SelectMany(i => i.Locations)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -3147,7 +3161,8 @@ namespace Emby.Server.Implementations.LiveTv
             folders.AddRange(_channelManager().GetChannelsInternal(new MediaBrowser.Model.Channels.ChannelQuery
             {
                 UserId = user.Id.ToString("N"),
-                IsRecordingsFolder = true
+                IsRecordingsFolder = true,
+                RefreshLatestChannelItems = refreshChannels
 
             }, CancellationToken.None).Result.Items);
 

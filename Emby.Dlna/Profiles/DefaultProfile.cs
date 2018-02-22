@@ -18,8 +18,8 @@ namespace Emby.Dlna.Profiles
             ModelDescription = "UPnP/AV 1.0 Compliant Media Server";
             ModelName = "Emby Server";
             ModelNumber = "01";
-            ModelUrl = "http://emby.media";
-            ManufacturerUrl = "http://emby.media";
+            ModelUrl = "https://emby.media";
+            ManufacturerUrl = "https://emby.media";
 
             AlbumArtPn = "JPEG_SM";
 
