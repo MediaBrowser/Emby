@@ -25,7 +25,7 @@ namespace Emby.Server.Implementations.Browser
         /// </summary>
         public static void OpenCommunity(IServerApplicationHost appHost)
         {
-            OpenUrl(appHost, "http://emby.media/community");
+            OpenUrl(appHost, "https://emby.media/community");
         }
 
         public static void OpenEmbyPremiere(IServerApplicationHost appHost)

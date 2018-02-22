@@ -50,6 +50,9 @@ namespace MediaBrowser.Controller.Channels
 
         public DateTime? DateCreated { get; set; }
 
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
         public int? IndexNumber { get; set; }
         public int? ParentIndexNumber { get; set; }
 

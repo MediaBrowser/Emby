@@ -12,11 +12,11 @@
     </Headers>
   </Identification>
   <Manufacturer>Microsoft Corporation</Manufacturer>
-  <ManufacturerUrl>http://emby.media</ManufacturerUrl>
+  <ManufacturerUrl>https://emby.media</ManufacturerUrl>
   <ModelName>Windows Media Player Sharing</ModelName>
   <ModelDescription>UPnP/AV 1.0 Compliant Media Server</ModelDescription>
   <ModelNumber>3.0</ModelNumber>
-  <ModelUrl>http://emby.media</ModelUrl>
+  <ModelUrl>https://emby.media</ModelUrl>
   <EnableAlbumArtInDidl>false</EnableAlbumArtInDidl>
   <EnableSingleAlbumArtLimit>false</EnableSingleAlbumArtLimit>
   <EnableSingleSubtitleLimit>false</EnableSingleSubtitleLimit>

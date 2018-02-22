@@ -19,27 +19,24 @@ using MediaBrowser.Common.Progress;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Common.Security;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
-    public class XmlTvProvider : IListingsProvider
+    public class XmlTvProvider
     {
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IZipClient _zipClient;
-        private ISecurityManager _securityManager;
 
-        public XmlTvProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient, ISecurityManager securityManager)
+        public XmlTvProvider(IServerConfigurationManager config, IHttpClient httpClient, ILogger logger, IFileSystem fileSystem, IZipClient zipClient)
         {
             _config = config;
             _httpClient = httpClient;
             _logger = logger;
             _fileSystem = fileSystem;
             _zipClient = zipClient;
-            _securityManager = securityManager;
         }
 
         public string Name
@@ -171,16 +168,6 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
-            }
-
-            var regStatus = await _securityManager.GetRegistrationStatus("xmltv").ConfigureAwait(false);
-            if (!regStatus.IsValid)
-            {
-                var length = endDateUtc - startDateUtc;
-                if (length.TotalDays > 1)
-                {
-                    endDateUtc = startDateUtc.AddDays(1);
-                }
             }
 
             _logger.Debug("Getting xmltv programs for channel {0}", channelId);

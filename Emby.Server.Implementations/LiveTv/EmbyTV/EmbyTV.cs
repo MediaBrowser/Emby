@@ -272,7 +272,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public string HomePageUrl
         {
-            get { return "http://emby.media"; }
+            get { return "https://emby.media"; }
         }
 
         public async Task<LiveTvServiceStatusInfo> GetStatusInfoAsync(CancellationToken cancellationToken)

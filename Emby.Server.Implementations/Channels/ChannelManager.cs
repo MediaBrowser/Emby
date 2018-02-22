@@ -132,7 +132,7 @@ namespace Emby.Server.Implementations.Channels
             return GetAllChannels().Select(i => GetInternalChannelId(i.Name));
         }
 
-        public Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
+        public async Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
         {
             var user = string.IsNullOrEmpty(query.UserId)
                 ? null
@@ -237,13 +237,19 @@ namespace Emby.Server.Implementations.Channels
 
             var returnItems = all.ToArray(all.Count);
 
-            var result = new QueryResult<Channel>
+            if (query.RefreshLatestChannelItems)
+            {
+                foreach (var item in returnItems)
+                {
+                    await RefreshLatestChannelItems(GetChannelProvider(item), cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            return new QueryResult<Channel>
             {
                 Items = returnItems,
                 TotalRecordCount = totalCount
             };
-
-            return Task.FromResult(result);
         }
 
         public async Task<QueryResult<BaseItemDto>> GetChannels(ChannelQuery query, CancellationToken cancellationToken)
@@ -1116,6 +1122,25 @@ namespace Emby.Server.Implementations.Channels
                 item.SetImagePath(ImageType.Primary, info.ImageUrl);
                 _logger.Debug("Forcing update due to ImageUrl {0}", item.Name);
                 forceUpdate = true;
+            }
+
+            if (!info.IsLiveStream)
+            {
+                if (item.Tags.Contains("livestream", StringComparer.OrdinalIgnoreCase))
+                {
+                    item.Tags = item.Tags.Except(new[] { "livestream" }, StringComparer.OrdinalIgnoreCase).ToArray();
+                    _logger.Debug("Forcing update due to Tags {0}", item.Name);
+                    forceUpdate = true;
+                }
+            }
+            else
+            {
+                if (!item.Tags.Contains("livestream", StringComparer.OrdinalIgnoreCase))
+                {
+                    item.Tags = item.Tags.Concat(new[] { "livestream" }).ToArray();
+                    _logger.Debug("Forcing update due to Tags {0}", item.Name);
+                    forceUpdate = true;
+                }
             }
 
             item.OnMetadataChanged();
