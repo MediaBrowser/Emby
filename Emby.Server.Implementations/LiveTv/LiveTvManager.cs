@@ -1723,16 +1723,12 @@ namespace Emby.Server.Implementations.LiveTv
 
             var result = GetEmbyRecordings(query, options, user);
 
-            var servicesResult = await GetInternalRecordingsFromServices(query, user, options, folder.Id, cancellationToken).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(query.GroupId))
+            {
+                result = new QueryResult<BaseItem>();
+            }
 
-            if (servicesResult.TotalRecordCount == 0)
-            {
-                return result;
-            }
-            if (result.TotalRecordCount == 0)
-            {
-                return result;
-            }
+            var servicesResult = await GetInternalRecordingsFromServices(query, user, options, folder.Id, cancellationToken).ConfigureAwait(false);
 
             var list = result.Items.ToList();
             list.AddRange(servicesResult.Items);
