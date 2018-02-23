@@ -37,7 +37,9 @@ namespace MediaBrowser.Model.Session
         /// </summary>
         /// <value>The user primary image tag.</value>
         public string UserPrimaryImageTag { get; set; }
-        
+
+        public string RemoteEndPoint { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>
@@ -67,19 +69,15 @@ namespace MediaBrowser.Model.Session
         /// </summary>
         /// <value>The last activity date.</value>
         public DateTime LastActivityDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the now viewing item.
-        /// </summary>
-        /// <value>The now viewing item.</value>
-        public BaseItemDto NowViewingItem { get; set; }
         
         /// <summary>
         /// Gets or sets the name of the device.
         /// </summary>
         /// <value>The name of the device.</value>
         public string DeviceName { get; set; }
-        
+
+        public string DeviceType { get; set; }
+
         /// <summary>
         /// Gets or sets the now playing item.
         /// </summary>

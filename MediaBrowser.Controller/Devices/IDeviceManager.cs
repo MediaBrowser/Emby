@@ -5,6 +5,7 @@ using MediaBrowser.Model.Session;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Entities;
 
 namespace MediaBrowser.Controller.Devices
 {
@@ -22,13 +23,7 @@ namespace MediaBrowser.Controller.Devices
         /// <summary>
         /// Registers the device.
         /// </summary>
-        /// <param name="reportedId">The reported identifier.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="appName">Name of the application.</param>
-        /// <param name="appVersion">The application version.</param>
-        /// <param name="usedByUserId">The used by user identifier.</param>
-        /// <returns>Task.</returns>
-        DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId);
+        DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId, string usedByUserName);
 
         /// <summary>
         /// Saves the capabilities.
@@ -88,9 +83,6 @@ namespace MediaBrowser.Controller.Devices
         /// <summary>
         /// Determines whether this instance [can access device] the specified user identifier.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <param name="deviceId">The device identifier.</param>
-        /// <returns><c>true</c> if this instance [can access device] the specified user identifier; otherwise, <c>false</c>.</returns>
-        bool CanAccessDevice(string userId, string deviceId);
+        bool CanAccessDevice(User user, string deviceId);
     }
 }

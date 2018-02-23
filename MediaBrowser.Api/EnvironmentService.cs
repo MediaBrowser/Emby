@@ -189,18 +189,7 @@ namespace MediaBrowser.Api
         {
             var result = new DefaultDirectoryBrowserInfo();
 
-            try
-            {
-                var qnap = "/share/CACHEDEV1_DATA";
-                if (_fileSystem.DirectoryExists(qnap))
-                {
-                    result.Path = qnap;
-                }
-            }
-            catch
-            {
-
-            }
+            result.Path = _fileSystem.DefaultDirectory;
 
             return ToOptimizedResult(result);
         }

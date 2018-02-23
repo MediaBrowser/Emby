@@ -38,7 +38,7 @@ namespace Emby.Server.Implementations.TV
 
             string presentationUniqueKey = null;
             int? limit = null;
-            if (!string.IsNullOrWhiteSpace(request.SeriesId))
+            if (!string.IsNullOrEmpty(request.SeriesId))
             {
                 var series = _libraryManager.GetItemById(request.SeriesId) as Series;
 
@@ -49,12 +49,12 @@ namespace Emby.Server.Implementations.TV
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(presentationUniqueKey))
+            if (!string.IsNullOrEmpty(presentationUniqueKey))
             {
                 return GetResult(GetNextUpEpisodes(request, user, new[] { presentationUniqueKey }, dtoOptions), request);
             }
 
-            var parentIdGuid = string.IsNullOrWhiteSpace(request.ParentId) ? (Guid?)null : new Guid(request.ParentId);
+            var parentIdGuid = string.IsNullOrEmpty(request.ParentId) ? (Guid?)null : new Guid(request.ParentId);
 
             List<BaseItem> parents;
 
@@ -89,7 +89,7 @@ namespace Emby.Server.Implementations.TV
 
             string presentationUniqueKey = null;
             int? limit = null;
-            if (!string.IsNullOrWhiteSpace(request.SeriesId))
+            if (!string.IsNullOrEmpty(request.SeriesId))
             {
                 var series = _libraryManager.GetItemById(request.SeriesId) as Series;
 
@@ -100,7 +100,7 @@ namespace Emby.Server.Implementations.TV
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(presentationUniqueKey))
+            if (!string.IsNullOrEmpty(presentationUniqueKey))
             {
                 return GetResult(GetNextUpEpisodes(request, user, new[] { presentationUniqueKey }, dtoOptions), request);
             }
@@ -146,7 +146,7 @@ namespace Emby.Server.Implementations.TV
 
             // If viewing all next up for all series, remove first episodes
             // But if that returns empty, keep those first episodes (avoid completely empty view)
-            var alwaysEnableFirstEpisode = !string.IsNullOrWhiteSpace(request.SeriesId);
+            var alwaysEnableFirstEpisode = !string.IsNullOrEmpty(request.SeriesId);
             var anyFound = false;
 
             return allNextUp

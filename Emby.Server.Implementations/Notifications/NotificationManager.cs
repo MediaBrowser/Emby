@@ -45,7 +45,7 @@ namespace Emby.Server.Implementations.Notifications
         {
             var notificationType = request.NotificationType;
 
-            var options = string.IsNullOrWhiteSpace(notificationType) ?
+            var options = string.IsNullOrEmpty(notificationType) ?
                 null :
                 GetConfiguration().GetOptions(notificationType);
 
@@ -96,7 +96,7 @@ namespace Emby.Server.Implementations.Notifications
                 }
             }
 
-            if (options != null && !string.IsNullOrWhiteSpace(request.NotificationType))
+            if (options != null && !string.IsNullOrEmpty(request.NotificationType))
             {
                 var config = GetConfiguration();
 

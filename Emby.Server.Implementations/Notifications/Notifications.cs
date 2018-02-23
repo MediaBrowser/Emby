@@ -355,7 +355,7 @@ namespace Emby.Server.Implementations.Notifications
                 return false;
             }
 
-            if (item.LocationType == LocationType.Virtual)
+            if (!item.HasPathProtocol)
             {
                 return false;
             }
@@ -435,7 +435,7 @@ namespace Emby.Server.Implementations.Notifications
         {
             var name = item.Name;
 
-            if (!string.IsNullOrWhiteSpace(item.SeriesName))
+            if (!string.IsNullOrEmpty(item.SeriesName))
             {
                 name = item.SeriesName + " - " + name;
             }

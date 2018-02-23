@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "El\u0151z\u0151",
     "LabelFinish": "Befejez",
     "LabelNext": "K\u00f6vetkez\u0151",
@@ -53,7 +55,7 @@
     "LabelSyncTempPath": "Ideiglenes f\u00e1jlok \u00fatvonala:",
     "LabelSyncTempPathHelp": "Specify a custom sync working folder. Converted media created during the sync process will be stored here.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "\u00c9rtes\u00edt\u00e9sek",
     "LabelEnterConnectUserName": "Felhaszn\u00e1l\u00f3n\u00e9v vagy e-mail c\u00edm:",
     "LabelEnterConnectUserNameHelp": "Ez a Emby online fi\u00f3kod felhaszn\u00e1l\u00f3neve vagy e-mail c\u00edme",
@@ -453,6 +455,7 @@
     "HeaderSource": "Source",
     "HeaderStatus": "\u00c1llapot",
     "HeaderDestination": "Destination",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "Program",
     "HeaderClients": "Clients",
     "LabelCompleted": "Completed",
@@ -975,8 +978,6 @@
     "TitleSync": "Sync",
     "OptionAllowSyncContent": "Allow Sync",
     "OptionAllowContentDownloading": "Allow media downloading",
-    "NameSeasonUnknown": "\u00c9vad Ismeretlen",
-    "NameSeasonNumber": "\u00c9vad {0}",
     "LabelNewUserNameHelp": "Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)",
     "TabSyncJobs": "Sync Jobs",
     "HeaderThisUserIsCurrentlyDisabled": "This user is currently disabled",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scan All Libraries",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

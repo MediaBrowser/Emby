@@ -158,9 +158,7 @@ namespace MediaBrowser.Controller.Entities.TV
 
             var items = GetEpisodes(user, query.DtoOptions).Where(filter);
 
-            var result = PostFilterAndSort(items, query, false, false);
-
-            return result;
+            return PostFilterAndSort(items, query, false);
         }
 
         /// <summary>

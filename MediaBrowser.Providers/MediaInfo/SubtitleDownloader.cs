@@ -57,8 +57,7 @@ namespace MediaBrowser.Providers.MediaInfo
             string lang,
             CancellationToken cancellationToken)
         {
-            if (video.LocationType != LocationType.FileSystem ||
-                video.VideoType != VideoType.VideoFile)
+            if (video.VideoType != VideoType.VideoFile)
             {
                 return Task.FromResult(false);
             }

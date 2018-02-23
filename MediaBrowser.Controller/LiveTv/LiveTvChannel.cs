@@ -126,12 +126,10 @@ namespace MediaBrowser.Controller.LiveTv
         {
             var list = new List<MediaSourceInfo>();
 
-            var locationType = LocationType;
-
             var info = new MediaSourceInfo
             {
                 Id = Id.ToString("N"),
-                Protocol = locationType == LocationType.Remote ? MediaProtocol.Http : MediaProtocol.File,
+                Protocol = PathProtocol ?? MediaProtocol.File,
                 MediaStreams = new List<MediaStream>(),
                 Name = Name,
                 Path = Path,

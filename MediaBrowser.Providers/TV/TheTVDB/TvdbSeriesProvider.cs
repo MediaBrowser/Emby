@@ -110,7 +110,12 @@ namespace MediaBrowser.Providers.TV
 
             if (IsValidSeries(itemId.ProviderIds))
             {
-                await EnsureSeriesInfo(itemId.ProviderIds, itemId.Name, itemId.Year, itemId.MetadataLanguage, cancellationToken).ConfigureAwait(false);
+                var seriesDataPath = await EnsureSeriesInfo(itemId.ProviderIds, itemId.Name, itemId.Year, itemId.MetadataLanguage, cancellationToken).ConfigureAwait(false);
+
+                if (string.IsNullOrEmpty(seriesDataPath))
+                {
+                    return result;
+                }
 
                 result.Item = new Series();
                 result.HasMetadata = true;
@@ -423,7 +428,15 @@ namespace MediaBrowser.Providers.TV
                     // The post-scan task will take care of updates so we don't need to re-download here
                     if (!IsCacheValid(seriesDataPath, preferredMetadataLanguage))
                     {
-                        await DownloadSeriesZip(seriesId, MetadataProviders.Imdb.ToString(), seriesName, seriesYear, seriesDataPath, null, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
+                        try
+                        {
+                            await DownloadSeriesZip(seriesId, MetadataProviders.Imdb.ToString(), seriesName, seriesYear, seriesDataPath, null, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (ArgumentNullException)
+                        {
+                            // Unable to determine tvdb id based on imdb id
+                            return null;
+                        }
                     }
 
                     return seriesDataPath;

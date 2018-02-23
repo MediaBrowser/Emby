@@ -58,9 +58,7 @@ namespace MediaBrowser.Controller.Entities
 
         public override bool CanDownload()
         {
-            var locationType = LocationType;
-            return locationType != LocationType.Remote &&
-                   locationType != LocationType.Virtual;
+            return IsFileProtocol;
         }
 
         public override UnratedItem GetBlockUnratedType()

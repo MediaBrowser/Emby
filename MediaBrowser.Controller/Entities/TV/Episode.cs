@@ -122,6 +122,12 @@ namespace MediaBrowser.Controller.Entities.TV
 
         public override double? GetDefaultPrimaryImageAspectRatio()
         {
+            // hack for tv plugins
+            if (SourceType == SourceType.Channel)
+            {
+                return null;
+            }
+
             double value = 16;
             value /= 9;
 

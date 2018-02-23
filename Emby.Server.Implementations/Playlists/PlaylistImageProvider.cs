@@ -124,7 +124,6 @@ namespace Emby.Server.Implementations.Playlists
                 Recursive = true,
                 ImageTypes = new[] { ImageType.Primary },
                 DtoOptions = new DtoOptions(false)
-
             });
 
             return GetFinalItems(items);

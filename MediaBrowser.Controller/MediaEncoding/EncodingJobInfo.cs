@@ -51,7 +51,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 {
                     _transcodeReasons = (BaseRequest.TranscodeReasons ?? string.Empty)
                         .Split(',')
-                        .Where(i => !string.IsNullOrWhiteSpace(i))
+                        .Where(i => !string.IsNullOrEmpty(i))
                         .Select(v => (TranscodeReason)Enum.Parse(typeof(TranscodeReason), v, true))
                         .ToArray();
                 }
@@ -139,8 +139,6 @@ namespace MediaBrowser.Controller.MediaEncoding
         public string InputContainer { get; set; }
         public IsoType? IsoType { get; set; }
 
-        public bool EnableMpegtsM2TsMode { get; set; }
-
         public BaseEncodingJobOptions BaseRequest { get; set; }
 
         public long? StartTimeTicks
@@ -172,7 +170,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(videoCodec))
+            if (!string.IsNullOrEmpty(videoCodec))
             {
                 if (string.Equals(BaseRequest.GetOption(videoCodec, "deinterlace"), "true", StringComparison.OrdinalIgnoreCase))
                 {
@@ -193,16 +191,16 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public string[] GetRequestedProfiles(string codec)
         {
-            if (!string.IsNullOrWhiteSpace(BaseRequest.Profile))
+            if (!string.IsNullOrEmpty(BaseRequest.Profile))
             {
                 return BaseRequest.Profile.Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
-            if (!string.IsNullOrWhiteSpace(codec))
+            if (!string.IsNullOrEmpty(codec))
             {
                 var profile = BaseRequest.GetOption(codec, "profile");
 
-                if (!string.IsNullOrWhiteSpace(profile))
+                if (!string.IsNullOrEmpty(profile))
                 {
                     return profile.Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries);
                 }
@@ -213,12 +211,12 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public string GetRequestedLevel(string codec)
         {
-            if (!string.IsNullOrWhiteSpace(BaseRequest.Level))
+            if (!string.IsNullOrEmpty(BaseRequest.Level))
             {
                 return BaseRequest.Level;
             }
 
-            if (!string.IsNullOrWhiteSpace(codec))
+            if (!string.IsNullOrEmpty(codec))
             {
                 return BaseRequest.GetOption(codec, "level");
             }
@@ -228,16 +226,80 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public int? GetRequestedMaxRefFrames(string codec)
         {
-            if (!string.IsNullOrWhiteSpace(BaseRequest.Level))
+            if (BaseRequest.MaxRefFrames.HasValue)
             {
                 return BaseRequest.MaxRefFrames;
             }
 
-            if (!string.IsNullOrWhiteSpace(codec))
+            if (!string.IsNullOrEmpty(codec))
             {
                 var value = BaseRequest.GetOption(codec, "maxrefframes");
                 int result;
-                if (!string.IsNullOrWhiteSpace(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedVideoBitDepth(string codec)
+        {
+            if (BaseRequest.MaxVideoBitDepth.HasValue)
+            {
+                return BaseRequest.MaxVideoBitDepth;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "videobitdepth");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedAudioBitDepth(string codec)
+        {
+            if (BaseRequest.MaxAudioBitDepth.HasValue)
+            {
+                return BaseRequest.MaxAudioBitDepth;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "audiobitdepth");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public int? GetRequestedAudioChannels(string codec)
+        {
+            if (BaseRequest.MaxAudioChannels.HasValue)
+            {
+                return BaseRequest.MaxAudioChannels;
+            }
+            if (BaseRequest.AudioChannels.HasValue)
+            {
+                return BaseRequest.AudioChannels;
+            }
+
+            if (!string.IsNullOrEmpty(codec))
+            {
+                var value = BaseRequest.GetOption(codec, "audiochannels");
+                int result;
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
                 {
                     return result;
                 }
@@ -404,14 +466,14 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? null : VideoStream.Level;
                 }
 
                 var level = GetRequestedLevel(ActualOutputVideoCodec);
                 double result;
-                if (!string.IsNullOrWhiteSpace(level) && double.TryParse(level, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+                if (!string.IsNullOrEmpty(level) && double.TryParse(level, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
                 {
                     return result;
                 }
@@ -427,8 +489,12 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                var stream = VideoStream;
-                return stream == null || !BaseRequest.Static ? null : stream.BitDepth;
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return VideoStream == null ? null : VideoStream.BitDepth;
+                }
+
+                return null;
             }
         }
 
@@ -440,7 +506,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? null : VideoStream.RefFrames;
                 }
@@ -456,12 +522,12 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                var stream = VideoStream;
-                var requestedFramerate = BaseRequest.MaxFramerate ?? BaseRequest.Framerate;
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return VideoStream == null ? null : (VideoStream.AverageFrameRate ?? VideoStream.RealFrameRate);
+                }
 
-                return requestedFramerate.HasValue && !BaseRequest.Static
-                    ? requestedFramerate
-                    : stream == null ? null : stream.AverageFrameRate ?? stream.RealFrameRate;
+                return BaseRequest.MaxFramerate ?? BaseRequest.Framerate;
             }
         }
 
@@ -486,10 +552,12 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                var stream = VideoStream;
-                return !BaseRequest.Static
-                    ? null
-                    : stream == null ? null : stream.PacketLength;
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return VideoStream == null ? null : VideoStream.PacketLength;
+                }
+
+                return null;
             }
         }
 
@@ -500,15 +568,28 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? null : VideoStream.Profile;
                 }
 
                 var requestedProfile = GetRequestedProfiles(ActualOutputVideoCodec).FirstOrDefault();
-                if (!string.IsNullOrWhiteSpace(requestedProfile))
+                if (!string.IsNullOrEmpty(requestedProfile))
                 {
                     return requestedProfile;
+                }
+
+                return null;
+            }
+        }
+
+        public string TargetAudioProfile
+        {
+            get
+            {
+                if (BaseRequest.Static || string.Equals(OutputAudioCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return AudioStream == null ? null : AudioStream.Profile;
                 }
 
                 return null;
@@ -519,10 +600,12 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                var stream = VideoStream;
-                return !BaseRequest.Static
-                    ? null
-                    : stream == null ? null : stream.CodecTag;
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return VideoStream == null ? null : VideoStream.CodecTag;
+                }
+
+                return null;
             }
         }
 
@@ -530,7 +613,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? null : VideoStream.IsAnamorphic;
                 }
@@ -565,7 +648,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? (bool?)null : VideoStream.IsInterlaced;
                 }
@@ -583,7 +666,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             get
             {
-                if (BaseRequest.Static)
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
                 {
                     return VideoStream == null ? null : VideoStream.IsAVC;
                 }

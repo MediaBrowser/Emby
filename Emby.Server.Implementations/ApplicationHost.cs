@@ -430,6 +430,7 @@ namespace Emby.Server.Implementations
             XmlSerializer = new MyXmlSerializer(fileSystem, logManager.GetLogger("XmlSerializer"));
 
             NetworkManager = networkManager;
+            networkManager.LocalSubnetsFn = GetConfiguredLocalSubnets;
             EnvironmentInfo = environmentInfo;
             SystemEvents = systemEvents;
             MemoryStreamFactory = new MemoryStreamProvider();
@@ -456,6 +457,11 @@ namespace Emby.Server.Implementations
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
 
             NetworkManager.NetworkChanged += NetworkManager_NetworkChanged;
+        }
+
+        private string[] GetConfiguredLocalSubnets()
+        {
+            return ServerConfigurationManager.Configuration.LocalNetworkSubnets;
         }
 
         private void NetworkManager_NetworkChanged(object sender, EventArgs e)
@@ -743,20 +749,10 @@ namespace Emby.Server.Implementations
 
         private IJsonSerializer CreateJsonSerializer()
         {
-            try
-            {
-                // https://github.com/ServiceStack/ServiceStack/blob/master/tests/ServiceStack.WebHost.IntegrationTests/Web.config#L4
-                Licensing.RegisterLicense("1001-e1JlZjoxMDAxLE5hbWU6VGVzdCBCdXNpbmVzcyxUeXBlOkJ1c2luZXNzLEhhc2g6UHVNTVRPclhvT2ZIbjQ5MG5LZE1mUTd5RUMzQnBucTFEbTE3TDczVEF4QUNMT1FhNXJMOWkzVjFGL2ZkVTE3Q2pDNENqTkQyUktRWmhvUVBhYTBiekJGUUZ3ZE5aZHFDYm9hL3lydGlwUHI5K1JsaTBYbzNsUC85cjVJNHE5QVhldDN6QkE4aTlvdldrdTgyTk1relY2eis2dFFqTThYN2lmc0JveHgycFdjPSxFeHBpcnk6MjAxMy0wMS0wMX0=");
-            }
-            catch
-            {
-                // Failing under mono
-            }
-
             return new JsonSerializer(FileSystemManager, LogManager.GetLogger("JsonSerializer"));
         }
 
-        public async Task Init(IProgress<double> progress)
+        public void Init()
         {
             HttpPort = ServerConfigurationManager.Configuration.HttpServerPortNumber;
             HttpsPort = ServerConfigurationManager.Configuration.HttpsPortNumber;
@@ -768,39 +764,26 @@ namespace Emby.Server.Implementations
                 HttpsPort = ServerConfiguration.DefaultHttpsPort;
             }
 
-            progress.Report(1);
-
             JsonSerializer = CreateJsonSerializer();
 
             OnLoggerLoaded(true);
             LogManager.LoggerLoaded += (s, e) => OnLoggerLoaded(false);
 
             IsFirstRun = !ConfigurationManager.CommonConfiguration.IsStartupWizardCompleted;
-            progress.Report(2);
 
             LogManager.LogSeverity = ConfigurationManager.CommonConfiguration.EnableDebugLevelLogging
                 ? LogSeverity.Debug
                 : LogSeverity.Info;
 
-            progress.Report(3);
-
             DiscoverTypes();
-            progress.Report(14);
 
             SetHttpLimit();
-            progress.Report(15);
 
-            var innerProgress = new ActionableProgress<double>();
-            innerProgress.RegisterAction(p => progress.Report(.8 * p + 15));
-
-            await RegisterResources(innerProgress).ConfigureAwait(false);
+            RegisterResources();
 
             FindParts();
-            progress.Report(95);
 
-            await InstallIsoMounters(CancellationToken.None).ConfigureAwait(false);
-
-            progress.Report(100);
+            InstallIsoMounters();
         }
 
         protected virtual void OnLoggerLoaded(bool isFirstLoad)
@@ -836,7 +819,7 @@ namespace Emby.Server.Implementations
         /// <summary>
         /// Registers resources that classes will depend on
         /// </summary>
-        protected async Task RegisterResources(IProgress<double> progress)
+        protected void RegisterResources()
         {
             RegisterSingleInstance(ConfigurationManager);
             RegisterSingleInstance<IApplicationHost>(this);
@@ -952,13 +935,9 @@ namespace Emby.Server.Implementations
             HttpServer = HttpServerFactory.CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, MemoryStreamFactory, "Emby", "web/index.html", textEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
             HttpServer.GlobalResponse = LocalizationManager.GetLocalizedString("StartupEmbyServerIsLoading");
             RegisterSingleInstance(HttpServer, false);
-            progress.Report(10);
 
             ServerManager = new ServerManager.ServerManager(this, JsonSerializer, LogManager.GetLogger("ServerManager"), ServerConfigurationManager, MemoryStreamFactory, textEncoding);
             RegisterSingleInstance(ServerManager);
-
-            var innerProgress = new ActionableProgress<double>();
-            innerProgress.RegisterAction(p => progress.Report((.75 * p) + 15));
 
             ImageProcessor = GetImageProcessor();
             RegisterSingleInstance(ImageProcessor);
@@ -987,8 +966,6 @@ namespace Emby.Server.Implementations
             var newsService = new Emby.Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);
             RegisterSingleInstance<INewsService>(newsService);
 
-            progress.Report(15);
-
             ChannelManager = new ChannelManager(UserManager, DtoService, LibraryManager, LogManager.GetLogger("ChannelManager"), ServerConfigurationManager, FileSystemManager, UserDataManager, JsonSerializer, LocalizationManager, HttpClient, ProviderManager);
             RegisterSingleInstance(ChannelManager);
 
@@ -1010,7 +987,7 @@ namespace Emby.Server.Implementations
             PlaylistManager = new PlaylistManager(LibraryManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("PlaylistManager"), UserManager, ProviderManager);
             RegisterSingleInstance<IPlaylistManager>(PlaylistManager);
 
-            LiveTvManager = new LiveTvManager(this, ServerConfigurationManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, TaskManager, LocalizationManager, JsonSerializer, ProviderManager, FileSystemManager, SecurityManager);
+            LiveTvManager = new LiveTvManager(this, ServerConfigurationManager, Logger, ItemRepository, ImageProcessor, UserDataManager, DtoService, UserManager, LibraryManager, TaskManager, LocalizationManager, JsonSerializer, ProviderManager, FileSystemManager, SecurityManager, () => ChannelManager);
             RegisterSingleInstance(LiveTvManager);
 
             UserViewManager = new UserViewManager(LibraryManager, LocalizationManager, UserManager, ChannelManager, LiveTvManager, ServerConfigurationManager);
@@ -1025,7 +1002,7 @@ namespace Emby.Server.Implementations
             NotificationManager = new NotificationManager(LogManager, UserManager, ServerConfigurationManager);
             RegisterSingleInstance(NotificationManager);
 
-            SubtitleManager = new SubtitleManager(LogManager.GetLogger("SubtitleManager"), FileSystemManager, LibraryMonitor, LibraryManager, MediaSourceManager, ServerConfigurationManager);
+            SubtitleManager = new SubtitleManager(LogManager.GetLogger("SubtitleManager"), FileSystemManager, LibraryMonitor, LibraryManager, MediaSourceManager, ServerConfigurationManager, LocalizationManager);
             RegisterSingleInstance(SubtitleManager);
 
             RegisterSingleInstance<IDeviceDiscovery>(new DeviceDiscovery(LogManager.GetLogger("IDeviceDiscovery"), ServerConfigurationManager, SocketFactory, TimerFactory));
@@ -1033,8 +1010,7 @@ namespace Emby.Server.Implementations
             ChapterManager = new ChapterManager(LibraryManager, LogManager.GetLogger("ChapterManager"), ServerConfigurationManager, ItemRepository);
             RegisterSingleInstance(ChapterManager);
 
-            await RegisterMediaEncoder(innerProgress).ConfigureAwait(false);
-            progress.Report(90);
+            RegisterMediaEncoder();
 
             EncodingManager = new EncodingManager(FileSystemManager, Logger, MediaEncoder, ChapterManager, LibraryManager);
             RegisterSingleInstance(EncodingManager);
@@ -1063,7 +1039,6 @@ namespace Emby.Server.Implementations
             itemRepo.Initialize(userDataRepo);
             ((LibraryManager)LibraryManager).ItemRepository = ItemRepository;
             ConfigureNotificationsRepository();
-            progress.Report(100);
 
             SetStaticProperties();
 
@@ -1127,9 +1102,7 @@ namespace Emby.Server.Implementations
         /// <summary>
         /// Installs the iso mounters.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        private async Task InstallIsoMounters(CancellationToken cancellationToken)
+        private void InstallIsoMounters()
         {
             var list = new List<IIsoMounter>();
 
@@ -1141,7 +1114,8 @@ namespace Emby.Server.Implementations
                     {
                         Logger.Info("Installing {0}", isoMounter.Name);
 
-                        await isoMounter.Install(cancellationToken).ConfigureAwait(false);
+                        var task = isoMounter.Install(CancellationToken.None);
+                        Task.WaitAll(task);
                     }
 
                     list.Add(isoMounter);
@@ -1270,17 +1244,22 @@ namespace Emby.Server.Implementations
             return info;
         }
 
+        protected virtual FFMpegInfo GetFFMpegInfo()
+        {
+            return new FFMpegLoader(Logger, ApplicationPaths, HttpClient, ZipClient, FileSystemManager, GetFfmpegInstallInfo())
+                .GetFFMpegInfo(StartupOptions);
+        }
+
         /// <summary>
         /// Registers the media encoder.
         /// </summary>
         /// <returns>Task.</returns>
-        private async Task RegisterMediaEncoder(IProgress<double> progress)
+        private void RegisterMediaEncoder()
         {
             string encoderPath = null;
             string probePath = null;
 
-            var info = await new FFMpegLoader(Logger, ApplicationPaths, HttpClient, ZipClient, FileSystemManager, GetFfmpegInstallInfo())
-                .GetFFMpegInfo(StartupOptions, progress).ConfigureAwait(false);
+            var info = GetFFMpegInfo();
 
             encoderPath = info.EncoderPath;
             probePath = info.ProbePath;
@@ -1425,8 +1404,6 @@ namespace Emby.Server.Implementations
             LiveTvManager.AddParts(GetExports<ILiveTvService>(), GetExports<ITunerHost>(), GetExports<IListingsProvider>());
 
             SubtitleManager.AddParts(GetExports<ISubtitleProvider>());
-
-            SessionManager.AddParts(GetExports<ISessionControllerFactory>());
 
             ChannelManager.AddParts(GetExports<IChannel>());
 
@@ -1862,7 +1839,8 @@ namespace Emby.Server.Implementations
                 "MediaBrowser.Channels.HitboxTV.dll",
                 "MediaBrowser.Channels.HockeyStreams.dll",
                 "MediaBrowser.Plugins.ITV.dll",
-                "MediaBrowser.Plugins.Lastfm.dll"
+                "MediaBrowser.Plugins.Lastfm.dll",
+                "ServerRestart.dll"
             };
 
             return !exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase);
@@ -1891,7 +1869,6 @@ namespace Emby.Server.Implementations
                 ItemsByNamePath = ApplicationPaths.ItemsByNamePath,
                 InternalMetadataPath = ApplicationPaths.InternalMetadataPath,
                 CachePath = ApplicationPaths.CachePath,
-                MacAddress = GetMacAddress(),
                 HttpServerPortNumber = HttpPort,
                 SupportsHttps = SupportsHttps,
                 HttpsPortNumber = HttpsPort,
@@ -1912,6 +1889,16 @@ namespace Emby.Server.Implementations
                 SystemUpdateLevel = SystemUpdateLevel,
                 PackageName = StartupOptions.GetOption("-package")
             };
+        }
+
+        public WakeOnLanInfo[] GetWakeOnLanInfo()
+        {
+            return NetworkManager.GetMacAddresses()
+                .Select(i => new WakeOnLanInfo
+                {
+                    MacAddress = i
+                })
+                .ToArray();
         }
 
         public async Task<PublicSystemInfo> GetPublicSystemInfo(CancellationToken cancellationToken)
@@ -2106,7 +2093,7 @@ namespace Emby.Server.Implementations
         {
             get
             {
-                return string.IsNullOrWhiteSpace(ServerConfigurationManager.Configuration.ServerName)
+                return string.IsNullOrEmpty(ServerConfigurationManager.Configuration.ServerName)
                     ? Environment.MachineName
                     : ServerConfigurationManager.Configuration.ServerName;
             }
@@ -2115,23 +2102,6 @@ namespace Emby.Server.Implementations
         public int HttpPort { get; private set; }
 
         public int HttpsPort { get; private set; }
-
-        /// <summary>
-        /// Gets the mac address.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        private string GetMacAddress()
-        {
-            try
-            {
-                return NetworkManager.GetMacAddress();
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error getting mac address", ex);
-                return null;
-            }
-        }
 
         /// <summary>
         /// Shuts down.
@@ -2305,7 +2275,7 @@ namespace Emby.Server.Implementations
         /// <returns>The hostname in <paramref name="externalDns"/></returns>
         private static string GetHostnameFromExternalDns(string externalDns)
         {
-            if (string.IsNullOrWhiteSpace(externalDns))
+            if (string.IsNullOrEmpty(externalDns))
             {
                 return "localhost";
             }
@@ -2421,6 +2391,52 @@ namespace Emby.Server.Implementations
                     }
                 }
             }
+        }
+
+        private Dictionary<string, string> _values;
+        public string GetValue(string name)
+        {
+            if (_values == null)
+            {
+                _values = LoadValues();
+            }
+
+            string value;
+
+            if (_values.TryGetValue(name, out value))
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        private Dictionary<string, string> LoadValues()
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            using (var stream = typeof(ApplicationHost).Assembly.GetManifestResourceStream(typeof(ApplicationHost).Namespace + ".values.txt"))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            continue;
+                        }
+
+                        var index = line.IndexOf('=');
+                        if (index != -1)
+                        {
+                            values[line.Substring(0, index)] = line.Substring(index + 1);
+                        }
+                    }
+                }
+            }
+
+            return values;
         }
     }
 

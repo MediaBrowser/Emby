@@ -81,7 +81,7 @@ namespace MediaBrowser.Providers.MediaInfo
             var videoFileNameWithoutExtension = _fileSystem.GetFileNameWithoutExtension(videoPath);
             videoFileNameWithoutExtension = NormalizeFilenameForSubtitleComparison(videoFileNameWithoutExtension);
 
-            var files = directoryService.GetFilePaths(folder, clearCache);
+            var files = directoryService.GetFilePaths(folder, clearCache).OrderBy(i => i).ToArray();
 
             foreach (var fullName in files)
             {
@@ -131,6 +131,7 @@ namespace MediaBrowser.Providers.MediaInfo
                     var language = fileNameWithoutExtension
                         .Replace(".forced", string.Empty, StringComparison.OrdinalIgnoreCase)
                         .Replace(".foreign", string.Empty, StringComparison.OrdinalIgnoreCase)
+                        .Replace(".default", string.Empty, StringComparison.OrdinalIgnoreCase)
                         .Split('.')
                         .LastOrDefault();
 

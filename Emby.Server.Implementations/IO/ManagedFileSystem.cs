@@ -28,12 +28,15 @@ namespace Emby.Server.Implementations.IO
         private IEnvironmentInfo _environmentInfo;
         private bool _isEnvironmentCaseInsensitive;
 
-        public ManagedFileSystem(ILogger logger, IEnvironmentInfo environmentInfo, string tempPath)
+        private string _defaultDirectory;
+
+        public ManagedFileSystem(ILogger logger, IEnvironmentInfo environmentInfo, string defaultDirectory, string tempPath)
         {
             Logger = logger;
             _supportsAsyncFileStreams = true;
             _tempPath = tempPath;
             _environmentInfo = environmentInfo;
+            _defaultDirectory = defaultDirectory;
 
             // On Linux, this needs to be true or symbolic links are ignored
             // TODO: See if still needed under .NET Core
@@ -45,6 +48,31 @@ namespace Emby.Server.Implementations.IO
             _sharpCifsFileSystem = new SharpCifsFileSystem(environmentInfo.OperatingSystem);
 
             _isEnvironmentCaseInsensitive = environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows;
+        }
+
+        public string DefaultDirectory
+        {
+            get
+            {
+                var value = _defaultDirectory;
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    try
+                    {
+                        if (DirectoryExists(value))
+                        {
+                            return value;
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                return null;
+            }
         }
 
         public void AddShortcutHandler(IShortcutHandler handler)
@@ -722,7 +750,7 @@ namespace Emby.Server.Implementations.IO
 
         public bool IsPathFile(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException("path");
             }

@@ -533,7 +533,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         {
             public static bool StartsWith(string str1, string str2, bool ignore_case)
             {
-                if (string.IsNullOrWhiteSpace(str1))
+                if (string.IsNullOrEmpty(str1))
                 {
                     return false;
                 }

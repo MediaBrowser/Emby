@@ -9,6 +9,7 @@
                     <select is="emby-select" id="selectVideoDecoder" label="${LabelHardwareAccelerationType}">
                         <option value="">${OptionNone}</option>
                         <option value="qsv">Intel Quick Sync (experimental)</option>
+                        <option value="mediacodec">MediaCodec Android (experimental)</option>
                         <option value="omx">OpenMAX OMX (experimental)</option>
                         <option value="nvenc">Nvidia NVENC (experimental)</option>
                         <option value="vaapi">Video Acceleration API (VA API) (experimental)</option>
@@ -26,24 +27,32 @@
                         <h3 class="checkboxListLabel">${LabelEnableHardwareDecodingFor}</h3>
                         <div class="checkboxList">
                             <label>
-                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="h264" data-types="qsv,nvenc,omx" />
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="h264" data-types="qsv,nvenc,omx,mediacodec" />
                                 <span>H264</span>
                             </label>
                             <label>
-                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="hevc" data-types="qsv,nvenc" />
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="hevc" data-types="qsv,nvenc,mediacodec" />
                                 <span>HEVC</span>
                             </label>
                             <label>
-                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="mpeg2video" data-types="qsv,nvenc,omx" />
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="mpeg2video" data-types="qsv,nvenc,omx,mediacodec" />
                                 <span>MPEG2</span>
                             </label>
                             <label>
-                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="mpeg4" data-types="nvenc" />
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="mpeg4" data-types="nvenc,mediacodec" />
                                 <span>MPEG4</span>
                             </label>
                             <label>
                                 <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="vc1" data-types="qsv,nvenc" />
                                 <span>VC1</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="vp8" data-types="mediacodec" />
+                                <span>VP8</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" is="emby-checkbox" class="chkDecodeCodec" data-codec="vp9" data-types="mediacodec" />
+                                <span>VP9</span>
                             </label>
                         </div>
                     </div>
@@ -72,13 +81,6 @@
                         <option value="0">${OptionMax}</option>
                     </select>
                     <div class="fieldDescription">${LabelTranscodingThreadCountHelp}</div>
-                </div>
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input is="emby-checkbox" type="checkbox" id="chkEnableThrottle" />
-                        <span>${OptionEnableTranscodingThrottle}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${OptionEnableTranscodingThrottleHelp}</div>
                 </div>
 
                 <div class="inputContainer fldEncoderPath hide">

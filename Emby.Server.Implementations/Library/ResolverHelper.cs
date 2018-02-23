@@ -26,7 +26,7 @@ namespace Emby.Server.Implementations.Library
         public static void SetInitialItemValues(BaseItem item, Folder parent, IFileSystem fileSystem, ILibraryManager libraryManager, IDirectoryService directoryService)
         {
             // This version of the below method has no ItemResolveArgs, so we have to require the path already being set
-            if (string.IsNullOrWhiteSpace(item.Path))
+            if (string.IsNullOrEmpty(item.Path))
             {
                 throw new ArgumentException("Item must have a Path");
             }

@@ -60,22 +60,13 @@ namespace Emby.Server.Implementations.Session
             serverManager.WebSocketConnected += _serverManager_WebSocketConnected;
         }
 
-        async void _serverManager_WebSocketConnected(object sender, GenericEventArgs<IWebSocketConnection> e)
+        void _serverManager_WebSocketConnected(object sender, GenericEventArgs<IWebSocketConnection> e)
         {
-            var session = await GetSession(e.Argument.QueryString, e.Argument.RemoteEndPoint).ConfigureAwait(false);
+            var session = GetSession(e.Argument.QueryString, e.Argument.RemoteEndPoint);
 
             if (session != null)
             {
-                var controller = session.SessionController as WebSocketController;
-
-                if (controller == null)
-                {
-                    controller = new WebSocketController(session, _logger, _sessionManager);
-                }
-
-                controller.AddWebSocket(e.Argument);
-
-                session.SessionController = controller;
+                EnsureController(session, e.Argument);
             }
             else
             {
@@ -83,7 +74,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        private Task<SessionInfo> GetSession(QueryParamCollection queryString, string remoteEndpoint)
+        private SessionInfo GetSession(QueryParamCollection queryString, string remoteEndpoint)
         {
             if (queryString == null)
             {
@@ -93,7 +84,7 @@ namespace Emby.Server.Implementations.Session
             var token = queryString["api_key"];
             if (string.IsNullOrWhiteSpace(token))
             {
-                return Task.FromResult<SessionInfo>(null);
+                return null;
             }
             var deviceId = queryString["deviceId"];
             return _sessionManager.GetSessionByAuthenticationToken(token, deviceId, remoteEndpoint);
@@ -116,34 +107,6 @@ namespace Emby.Server.Implementations.Session
             {
                 ProcessIdentityMessage(message);
             }
-            else if (string.Equals(message.MessageType, "Context", StringComparison.OrdinalIgnoreCase))
-            {
-                ProcessContextMessage(message);
-            }
-            else if (string.Equals(message.MessageType, "PlaybackStart", StringComparison.OrdinalIgnoreCase))
-            {
-                OnPlaybackStart(message);
-            }
-            else if (string.Equals(message.MessageType, "PlaybackProgress", StringComparison.OrdinalIgnoreCase))
-            {
-                OnPlaybackProgress(message);
-            }
-            else if (string.Equals(message.MessageType, "PlaybackStopped", StringComparison.OrdinalIgnoreCase))
-            {
-                OnPlaybackStopped(message);
-            }
-            else if (string.Equals(message.MessageType, "ReportPlaybackStart", StringComparison.OrdinalIgnoreCase))
-            {
-                ReportPlaybackStart(message);
-            }
-            else if (string.Equals(message.MessageType, "ReportPlaybackProgress", StringComparison.OrdinalIgnoreCase))
-            {
-                ReportPlaybackProgress(message);
-            }
-            else if (string.Equals(message.MessageType, "ReportPlaybackStopped", StringComparison.OrdinalIgnoreCase))
-            {
-                ReportPlaybackStopped(message);
-            }
 
             return _trueTaskResult;
         }
@@ -152,7 +115,7 @@ namespace Emby.Server.Implementations.Session
         /// Processes the identity message.
         /// </summary>
         /// <param name="message">The message.</param>
-        private async void ProcessIdentityMessage(WebSocketMessageInfo message)
+        private void ProcessIdentityMessage(WebSocketMessageInfo message)
         {
             _logger.Debug("Received Identity message: " + message.Data);
 
@@ -175,21 +138,12 @@ namespace Emby.Server.Implementations.Session
             {
                 _logger.Debug("Logging session activity");
 
-                session = await _sessionManager.LogSessionActivity(client, version, deviceId, deviceName, message.Connection.RemoteEndPoint, null).ConfigureAwait(false);
+                session = _sessionManager.LogSessionActivity(client, version, deviceId, deviceName, message.Connection.RemoteEndPoint, null);
             }
 
             if (session != null)
             {
-                var controller = session.SessionController as WebSocketController;
-
-                if (controller == null)
-                {
-                    controller = new WebSocketController(session, _logger, _sessionManager);
-                }
-
-                controller.AddWebSocket(message.Connection);
-
-                session.SessionController = controller;
+                EnsureController(session, message.Connection);
             }
             else
             {
@@ -197,265 +151,12 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        /// <summary>
-        /// Processes the context message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private void ProcessContextMessage(WebSocketMessageInfo message)
+        private void EnsureController(SessionInfo session, IWebSocketConnection connection)
         {
-            var session = GetSessionFromMessage(message);
+            var controllerInfo = session.EnsureController<WebSocketController>(s => new WebSocketController(s, _logger, _sessionManager));
 
-            if (session != null)
-            {
-                var vals = message.Data.Split('|');
-
-                var itemId = vals[1];
-
-                if (!string.IsNullOrWhiteSpace(itemId))
-                {
-                    _sessionManager.ReportNowViewingItem(session.Id, itemId);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the session from message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>SessionInfo.</returns>
-        private SessionInfo GetSessionFromMessage(WebSocketMessageInfo message)
-        {
-            var result = _sessionManager.Sessions.FirstOrDefault(i =>
-            {
-                var controller = i.SessionController as WebSocketController;
-
-                if (controller != null)
-                {
-                    if (controller.Sockets.Any(s => s.Id == message.Connection.Id))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-
-            });
-
-            if (result == null)
-            {
-                _logger.Error("Unable to find session based on web socket message");
-            }
-
-            return result;
-        }
-
-        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
-
-        /// <summary>
-        /// Reports the playback start.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private void OnPlaybackStart(WebSocketMessageInfo message)
-        {
-            _logger.Debug("Received PlaybackStart message");
-
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var vals = message.Data.Split('|');
-
-                var itemId = vals[0];
-
-                var canSeek = true;
-
-                if (vals.Length > 1)
-                {
-                    canSeek = string.Equals(vals[1], "true", StringComparison.OrdinalIgnoreCase);
-                }
-                if (vals.Length > 2)
-                {
-                    // vals[2] used to be QueueableMediaTypes
-                }
-
-                var info = new PlaybackStartInfo
-                {
-                    CanSeek = canSeek,
-                    ItemId = itemId,
-                    SessionId = session.Id
-                };
-
-                if (vals.Length > 3)
-                {
-                    info.MediaSourceId = vals[3];
-                }
-
-                if (vals.Length > 4 && !string.IsNullOrWhiteSpace(vals[4]))
-                {
-                    info.AudioStreamIndex = int.Parse(vals[4], _usCulture);
-                }
-
-                if (vals.Length > 5 && !string.IsNullOrWhiteSpace(vals[5]))
-                {
-                    info.SubtitleStreamIndex = int.Parse(vals[5], _usCulture);
-                }
-
-                _sessionManager.OnPlaybackStart(info);
-            }
-        }
-
-        private void ReportPlaybackStart(WebSocketMessageInfo message)
-        {
-            _logger.Debug("Received ReportPlaybackStart message");
-
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var info = _json.DeserializeFromString<PlaybackStartInfo>(message.Data);
-
-                info.SessionId = session.Id;
-
-                _sessionManager.OnPlaybackStart(info);
-            }
-        }
-
-        private void ReportPlaybackProgress(WebSocketMessageInfo message)
-        {
-            //_logger.Debug("Received ReportPlaybackProgress message");
-
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var info = _json.DeserializeFromString<PlaybackProgressInfo>(message.Data);
-
-                info.SessionId = session.Id;
-
-                _sessionManager.OnPlaybackProgress(info);
-            }
-        }
-
-        /// <summary>
-        /// Reports the playback progress.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private void OnPlaybackProgress(WebSocketMessageInfo message)
-        {
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var vals = message.Data.Split('|');
-
-                var itemId = vals[0];
-
-                long? positionTicks = null;
-
-                if (vals.Length > 1)
-                {
-                    long pos;
-
-                    if (long.TryParse(vals[1], out pos))
-                    {
-                        positionTicks = pos;
-                    }
-                }
-
-                var isPaused = vals.Length > 2 && string.Equals(vals[2], "true", StringComparison.OrdinalIgnoreCase);
-                var isMuted = vals.Length > 3 && string.Equals(vals[3], "true", StringComparison.OrdinalIgnoreCase);
-
-                var info = new PlaybackProgressInfo
-                {
-                    ItemId = itemId,
-                    PositionTicks = positionTicks,
-                    IsMuted = isMuted,
-                    IsPaused = isPaused,
-                    SessionId = session.Id
-                };
-
-                if (vals.Length > 4)
-                {
-                    info.MediaSourceId = vals[4];
-                }
-
-                if (vals.Length > 5 && !string.IsNullOrWhiteSpace(vals[5]))
-                {
-                    info.VolumeLevel = int.Parse(vals[5], _usCulture);
-                }
-
-                if (vals.Length > 5 && !string.IsNullOrWhiteSpace(vals[6]))
-                {
-                    info.AudioStreamIndex = int.Parse(vals[6], _usCulture);
-                }
-
-                if (vals.Length > 7 && !string.IsNullOrWhiteSpace(vals[7]))
-                {
-                    info.SubtitleStreamIndex = int.Parse(vals[7], _usCulture);
-                }
-
-                _sessionManager.OnPlaybackProgress(info);
-            }
-        }
-
-        private void ReportPlaybackStopped(WebSocketMessageInfo message)
-        {
-            _logger.Debug("Received ReportPlaybackStopped message");
-
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var info = _json.DeserializeFromString<PlaybackStopInfo>(message.Data);
-
-                info.SessionId = session.Id;
-
-                _sessionManager.OnPlaybackStopped(info);
-            }
-        }
-
-        /// <summary>
-        /// Reports the playback stopped.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private void OnPlaybackStopped(WebSocketMessageInfo message)
-        {
-            _logger.Debug("Received PlaybackStopped message");
-
-            var session = GetSessionFromMessage(message);
-
-            if (session != null && session.UserId.HasValue)
-            {
-                var vals = message.Data.Split('|');
-
-                var itemId = vals[0];
-
-                long? positionTicks = null;
-
-                if (vals.Length > 1)
-                {
-                    long pos;
-
-                    if (long.TryParse(vals[1], out pos))
-                    {
-                        positionTicks = pos;
-                    }
-                }
-
-                var info = new PlaybackStopInfo
-                {
-                    ItemId = itemId,
-                    PositionTicks = positionTicks,
-                    SessionId = session.Id
-                };
-
-                if (vals.Length > 2)
-                {
-                    info.MediaSourceId = vals[2];
-                }
-
-                _sessionManager.OnPlaybackStopped(info);
-            }
+            var controller = (WebSocketController)controllerInfo.Item1;
+            controller.AddWebSocket(connection);
         }
     }
 }

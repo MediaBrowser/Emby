@@ -264,21 +264,19 @@ namespace MediaBrowser.Api.Library
 
             if (!string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase) && _fileSystem.DirectoryExists(newPath))
             {
-                throw new ArgumentException("There is already a media collection with the name " + newPath + ".");
+                throw new ArgumentException("Media library already exists at " + newPath + ".");
             }
 
             _libraryMonitor.Stop();
 
             try
             {
-                // Only make a two-phase move when changing capitalization
+                // Changing capitalization. Handle windows case insensitivity
                 if (string.Equals(currentPath, newPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    //Create an unique name
-                    var temporaryName = Guid.NewGuid().ToString();
-                    var temporaryPath = Path.Combine(rootFolderPath, temporaryName);
-                    _fileSystem.MoveDirectory(currentPath, temporaryPath);
-                    currentPath = temporaryPath;
+                    var tempPath = Path.Combine(rootFolderPath, Guid.NewGuid().ToString("N"));
+                    _fileSystem.MoveDirectory(currentPath, tempPath);
+                    currentPath = tempPath;
                 }
 
                 _fileSystem.MoveDirectory(currentPath, newPath);

@@ -18,7 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.IO;
+using MediaBrowser.Controller.Entities;
 
 namespace Emby.Server.Implementations.Devices
 {
@@ -50,35 +50,64 @@ namespace Emby.Server.Implementations.Devices
             _network = network;
         }
 
-        public DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId)
+        public DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId, string usedByUserName)
         {
-            if (string.IsNullOrWhiteSpace(reportedId))
+            if (string.IsNullOrEmpty(reportedId))
             {
                 throw new ArgumentNullException("reportedId");
             }
 
-            var device = GetDevice(reportedId) ?? new DeviceInfo
+            var save = false;
+            var device = GetDevice(reportedId);
+
+            if (device == null)
             {
-                Id = reportedId
-            };
-
-            device.ReportedName = name;
-            device.AppName = appName;
-            device.AppVersion = appVersion;
-
-            if (!string.IsNullOrWhiteSpace(usedByUserId))
-            {
-                var user = _userManager.GetUserById(usedByUserId);
-
-                device.LastUserId = user.Id.ToString("N");
-                device.LastUserName = user.Name;
+                device = new DeviceInfo
+                {
+                    Id = reportedId
+                };
+                save = true;
             }
 
-            device.DateLastModified = DateTime.UtcNow;
+            if (!string.Equals(device.ReportedName, name, StringComparison.Ordinal))
+            {
+                device.ReportedName = name;
+                save = true;
+            }
+            if (!string.Equals(device.AppName, appName, StringComparison.Ordinal))
+            {
+                device.AppName = appName;
+                save = true;
+            }
+            if (!string.Equals(device.AppVersion, appVersion, StringComparison.Ordinal))
+            {
+                device.AppVersion = appVersion;
+                save = true;
+            }
 
-            device.Name = string.IsNullOrWhiteSpace(device.CustomName) ? device.ReportedName : device.CustomName;
+            if (!string.IsNullOrEmpty(usedByUserId))
+            {
+                if (!string.Equals(device.LastUserId, usedByUserId, StringComparison.Ordinal) ||
+                    !string.Equals(device.LastUserName, usedByUserName, StringComparison.Ordinal))
+                {
+                    device.LastUserId = usedByUserId;
+                    device.LastUserName = usedByUserName;
+                    save = true;
+                }
+            }
 
-            _repo.SaveDevice(device);
+            var displayName = string.IsNullOrWhiteSpace(device.CustomName) ? device.ReportedName : device.CustomName;
+            if (!string.Equals(device.Name, displayName, StringComparison.Ordinal))
+            {
+                device.Name = displayName;
+                save = true;
+            }
+
+            if (save)
+            {
+                device.DateLastModified = DateTime.UtcNow;
+                _repo.SaveDevice(device);
+            }
 
             return device;
         }
@@ -120,9 +149,11 @@ namespace Emby.Server.Implementations.Devices
                 });
             }
 
-            if (!string.IsNullOrWhiteSpace(query.UserId))
+            if (!string.IsNullOrEmpty(query.UserId))
             {
-                devices = devices.Where(i => CanAccessDevice(query.UserId, i.Id));
+                var user = _userManager.GetUserById(query.UserId);
+
+                devices = devices.Where(i => CanAccessDevice(user, i.Id));
             }
 
             var array = devices.ToArray();
@@ -228,22 +259,15 @@ namespace Emby.Server.Implementations.Devices
             EventHelper.FireEventIfNotNull(DeviceOptionsUpdated, this, new GenericEventArgs<DeviceInfo>(device), _logger);
         }
 
-        public bool CanAccessDevice(string userId, string deviceId)
+        public bool CanAccessDevice(User user, string deviceId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new ArgumentNullException("userId");
-            }
-            if (string.IsNullOrWhiteSpace(deviceId))
-            {
-                throw new ArgumentNullException("deviceId");
-            }
-
-            var user = _userManager.GetUserById(userId);
-
             if (user == null)
             {
                 throw new ArgumentException("user not found");
+            }
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
             }
 
             if (!CanAccessDevice(user.Policy, deviceId))

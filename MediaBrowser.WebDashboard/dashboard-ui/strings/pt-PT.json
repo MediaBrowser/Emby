@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Terminar",
     "LabelNext": "Seguinte",
@@ -453,6 +455,7 @@
     "HeaderSource": "Origem",
     "HeaderStatus": "Estado",
     "HeaderDestination": "Destino",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "Programa",
     "HeaderClients": "Clientes",
     "LabelCompleted": "Terminado",
@@ -975,8 +978,6 @@
     "TitleSync": "Sincronizar",
     "OptionAllowSyncContent": "Permitir Sincroniza\u00e7\u00e3o",
     "OptionAllowContentDownloading": "Permitir download dos ficheiros multim\u00e9dia",
-    "NameSeasonUnknown": "Temporada Desconhecida",
-    "NameSeasonNumber": "Temporada {0}",
     "LabelNewUserNameHelp": "Nomes de utilizadores podem conter letras (a-z), n\u00fameros (0-9), tra\u00e7os (-), sublinhados (_), ap\u00f3strofes (') e pontos (.)",
     "TabSyncJobs": "Tarefas de Sincroniza\u00e7\u00e3o",
     "HeaderThisUserIsCurrentlyDisabled": "Este utilizador est\u00e1 desativado atualmente",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Analisar todas as Bibliotecas",
     "ScanLibrary": "Analisar biblioteca",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

@@ -5,7 +5,7 @@ using System.Text;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.Extensions;
 
-namespace Emby.Server.Implementations.HttpServer.SocketSharp
+namespace MediaBrowser.Model.Services
 {
     public static class MyHttpUtility
     {

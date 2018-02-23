@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "P\u0159edchoz\u00ed",
     "LabelFinish": "Dokon\u010dit",
     "LabelNext": "Dal\u0161\u00ed",
@@ -53,7 +55,7 @@
     "LabelSyncTempPath": "Slo\u017eka pro do\u010dasn\u00e9 soubory:",
     "LabelSyncTempPathHelp": "Zadejte vlastn\u00ed synchroniza\u010dn\u00ed pracovn\u00ed slo\u017eku. P\u0159eveden\u00e9 m\u00e9dia vytvo\u0159en\u00e9 b\u011bhem synchroniza\u010dn\u00edho procesu zde budou ulo\u017eeny.",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "Ozn\u00e1men\u00ed",
     "LabelEnterConnectUserName": "U\u017eivatelsk\u00e9 jm\u00e9no nebo email:",
     "LabelEnterConnectUserNameHelp": "Toto je va\u0161e u\u017eivatelsk\u00e9 jm\u00e9no nebo email pro v\u00e1\u0161 online Emby \u00fa\u010det.",
@@ -453,6 +455,7 @@
     "HeaderSource": "Zdroj",
     "HeaderStatus": "Stav",
     "HeaderDestination": "Um\u00edst\u011bn\u00ed",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "Program",
     "HeaderClients": "Klienti",
     "LabelCompleted": "Hotovo",
@@ -975,8 +978,6 @@
     "TitleSync": "Synchronizace",
     "OptionAllowSyncContent": "Povolit Synchronizaci",
     "OptionAllowContentDownloading": "Povolit stahov\u00e1n\u00ed m\u00e9di\u00ed",
-    "NameSeasonUnknown": "Nezn\u00e1m\u00e1 sez\u00f3na",
-    "NameSeasonNumber": "Sez\u00f3na {0}",
     "LabelNewUserNameHelp": "U\u017eivatelsk\u00e1 jm\u00e9na mohou obsahovat p\u00edsmena (az), \u010d\u00edslice (0-9), poml\u010dky (-), podtr\u017e\u00edtka (_), apostrofy (') a te\u010dky (.)",
     "TabSyncJobs": "Synchroniza\u010dn\u00ed \u00falohy",
     "HeaderThisUserIsCurrentlyDisabled": "Tento u\u017eivatel je aktu\u00e1ln\u011b zak\u00e1z\u00e1n",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scan All Libraries",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Nejnov\u011bj\u0161\u00ed sta\u017een\u00e1 videa",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

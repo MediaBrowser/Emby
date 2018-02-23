@@ -46,7 +46,6 @@
     <Compile Include="Archiving\ZipClient.cs" />
     <Compile Include="Branding\BrandingConfigurationFactory.cs" />
     <Compile Include="Browser\BrowserLauncher.cs" />
-    <Compile Include="Channels\ChannelConfigurations.cs" />
     <Compile Include="Channels\ChannelDynamicMediaSourceProvider.cs" />
     <Compile Include="Channels\ChannelImageProvider.cs" />
     <Compile Include="Channels\ChannelManager.cs" />
@@ -75,7 +74,6 @@
     <Compile Include="EntryPoints\ExternalPortForwarding.cs" />
     <Compile Include="EntryPoints\KeepServerAwake.cs" />
     <Compile Include="EntryPoints\LibraryChangedNotifier.cs" />
-    <Compile Include="EntryPoints\LoadRegistrations.cs" />
     <Compile Include="EntryPoints\RecordingNotifier.cs" />
     <Compile Include="EntryPoints\RefreshUsersMetadata.cs" />
     <Compile Include="EntryPoints\ServerEventNotifier.cs" />
@@ -98,8 +96,6 @@
     <Compile Include="HttpServer\LoggerUtils.cs" />
     <Compile Include="HttpServer\RangeRequestWriter.cs" />
     <Compile Include="HttpServer\ResponseFilter.cs" />
-    <Compile Include="HttpServer\SocketSharp\Extensions.cs" />
-    <Compile Include="HttpServer\SocketSharp\HttpUtility.cs" />
     <Compile Include="HttpServer\IHttpListener.cs" />
     <Compile Include="HttpServer\Security\AuthorizationContext.cs" />
     <Compile Include="HttpServer\Security\AuthService.cs" />
@@ -383,7 +379,6 @@
     <Compile Include="Library\Validators\StudiosValidator.cs" />
     <Compile Include="LiveTv\EmbyTV\DirectRecorder.cs" />
     <Compile Include="LiveTv\EmbyTV\EmbyTV.cs" />
-    <Compile Include="LiveTv\EmbyTV\EmbyTVRegistration.cs" />
     <Compile Include="LiveTv\EmbyTV\EncodedRecorder.cs" />
     <Compile Include="LiveTv\EmbyTV\EntryPoint.cs" />
     <Compile Include="LiveTv\EmbyTV\IRecorder.cs" />
@@ -416,7 +411,6 @@
     <Compile Include="Migrations\IVersionMigration.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Net\DisposableManagedObjectBase.cs" />
-    <Compile Include="Net\NetAcceptSocket.cs" />
     <Compile Include="Net\SocketFactory.cs" />
     <Compile Include="Net\UdpSocket.cs" />
     <Compile Include="News\NewsEntryPoint.cs" />
@@ -475,6 +469,7 @@
     <Compile Include="Services\StringMapTypeDeserializer.cs" />
     <Compile Include="Services\SwaggerService.cs" />
     <Compile Include="Services\UrlExtensions.cs" />
+    <Compile Include="Session\FirebaseSessionController.cs" />
     <Compile Include="Session\HttpSessionController.cs" />
     <Compile Include="Session\SessionManager.cs" />
     <Compile Include="Session\SessionWebSocketListener.cs" />
@@ -632,8 +627,8 @@
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
     </Reference>
-    <Reference Include="Emby.XmlTv, Version=1.0.6568.22123, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emby.XmlTv.1.0.13\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
+    <Reference Include="Emby.XmlTv, Version=1.0.6604.28157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emby.XmlTv.1.0.14\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
@@ -805,6 +800,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Ratings\ro.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="values.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

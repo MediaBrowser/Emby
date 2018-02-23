@@ -1,5 +1,5 @@
 {
-    "Latest": "R\u00e9cent",
+    "Latest": "Derniers",
     "ValueSpecialEpisodeName": "Sp\u00e9cial - {0}",
     "Inherit": "H\u00e9riter",
     "Books": "Livres",
@@ -24,6 +24,7 @@
     "Channels": "Cha\u00eenes",
     "Movies": "Films",
     "Albums": "Albums",
+    "NameSeasonUnknown": "Saison Inconnue",
     "Artists": "Artistes",
     "Folders": "Dossiers",
     "Songs": "Chansons",

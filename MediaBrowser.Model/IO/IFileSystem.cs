@@ -117,6 +117,8 @@ namespace MediaBrowser.Model.IO
         /// <returns>Stream.</returns>
         Stream OpenRead(String path);
 
+        string DefaultDirectory { get; }
+
         /// <summary>
         /// Swaps the files.
         /// </summary>

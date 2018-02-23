@@ -86,7 +86,7 @@ namespace MediaBrowser.Controller.Entities
 
         public void SetPrimaryVersionId(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
             {
                 PrimaryVersionId = null;
             }
@@ -100,21 +100,12 @@ namespace MediaBrowser.Controller.Entities
 
         public override string CreatePresentationUniqueKey()
         {
-            if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+            if (!string.IsNullOrEmpty(PrimaryVersionId))
             {
                 return PrimaryVersionId;
             }
 
             return base.CreatePresentationUniqueKey();
-        }
-
-        [IgnoreDataMember]
-        public override bool EnableRefreshOnDateModifiedChange
-        {
-            get
-            {
-                return VideoType == VideoType.VideoFile || VideoType == VideoType.Iso;
-            }
         }
 
         [IgnoreDataMember]
@@ -209,9 +200,7 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
 
-            var locationType = LocationType;
-            return locationType != LocationType.Remote &&
-                   locationType != LocationType.Virtual;
+            return IsFileProtocol;
         }
 
         [IgnoreDataMember]
@@ -225,7 +214,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+                if (!string.IsNullOrEmpty(PrimaryVersionId))
                 {
                     var item = LibraryManager.GetItemById(PrimaryVersionId) as Video;
                     if (item != null)
@@ -291,7 +280,15 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         public bool IsCompleteMedia
         {
-            get { return !IsActiveRecording(); }
+            get
+            {
+                if (SourceType == SourceType.Channel)
+                {
+                    return !Tags.Contains("livestream", StringComparer.OrdinalIgnoreCase);
+                }
+
+                return !IsActiveRecording();
+            }
         }
 
         [IgnoreDataMember]
@@ -312,13 +309,13 @@ namespace MediaBrowser.Controller.Entities
                 if (ExtraType.HasValue)
                 {
                     var key = this.GetProviderId(MetadataProviders.Tmdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, GetUserDataKey(key));
                     }
 
                     key = this.GetProviderId(MetadataProviders.Imdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, GetUserDataKey(key));
                     }
@@ -326,13 +323,13 @@ namespace MediaBrowser.Controller.Entities
                 else
                 {
                     var key = this.GetProviderId(MetadataProviders.Imdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, key);
                     }
 
                     key = this.GetProviderId(MetadataProviders.Tmdb);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (!string.IsNullOrEmpty(key))
                     {
                         list.Insert(0, key);
                     }
@@ -404,7 +401,7 @@ namespace MediaBrowser.Controller.Entities
         {
             get
             {
-                if (LocationType == LocationType.FileSystem)
+                if (IsFileProtocol)
                 {
                     if (VideoType == VideoType.BluRay || VideoType == VideoType.Dvd)
                     {
@@ -506,7 +503,7 @@ namespace MediaBrowser.Controller.Entities
             // Must have a parent to have additional parts or alternate versions
             // In other words, it must be part of the Parent/Child tree
             // The additional parts won't have additional parts themselves
-            if (LocationType == LocationType.FileSystem && GetParent() != null)
+            if (IsFileProtocol && GetParent() != null)
             {
                 if (!IsStacked)
                 {
@@ -603,7 +600,7 @@ namespace MediaBrowser.Controller.Entities
             list.Add(new Tuple<Video, MediaSourceType>(this, MediaSourceType.Default));
             list.AddRange(GetLinkedAlternateVersions().Select(i => new Tuple<Video, MediaSourceType>(i, MediaSourceType.Grouping)));
 
-            if (!string.IsNullOrWhiteSpace(PrimaryVersionId))
+            if (!string.IsNullOrEmpty(PrimaryVersionId))
             {
                 var primary = LibraryManager.GetItemById(PrimaryVersionId) as Video;
                 if (primary != null)
@@ -637,11 +634,6 @@ namespace MediaBrowser.Controller.Entities
                 {
                     return sources;
                 }
-
-                return new List<MediaSourceInfo>
-                {
-                    GetVersionInfo(enablePathSubstitution, this, MediaSourceType.Placeholder)
-                };
             }
 
             var list = GetAllVideosForMediaSources();
@@ -681,16 +673,16 @@ namespace MediaBrowser.Controller.Entities
                 throw new ArgumentNullException("media");
             }
 
-            var locationType = media.LocationType;
+            var protocol = media.PathProtocol;
 
             var info = new MediaSourceInfo
             {
                 Id = media.Id.ToString("N"),
                 IsoType = media.IsoType,
-                Protocol = locationType == LocationType.Remote ? MediaProtocol.Http : MediaProtocol.File,
+                Protocol = protocol ?? MediaProtocol.File,
                 MediaStreams = MediaSourceManager.GetMediaStreams(media.Id),
                 Name = GetMediaSourceName(media),
-                Path = enablePathSubstitution ? GetMappedPath(media, media.Path, locationType) : media.Path,
+                Path = enablePathSubstitution ? GetMappedPath(media, media.Path, protocol) : media.Path,
                 RunTimeTicks = media.RunTimeTicks,
                 Video3DFormat = media.Video3DFormat,
                 VideoType = media.VideoType,
@@ -711,7 +703,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 info.Path = media.ShortcutPath;
 
-                if (!string.IsNullOrWhiteSpace(info.Path))
+                if (!string.IsNullOrEmpty(info.Path))
                 {
                     if (info.Path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
                     {
@@ -739,7 +731,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (media.VideoType == VideoType.VideoFile || media.VideoType == VideoType.Iso)
                 {
-                    if (!string.IsNullOrWhiteSpace(media.Path) && locationType != LocationType.Remote && locationType != LocationType.Virtual)
+                    if (protocol.HasValue && protocol.Value == MediaProtocol.File)
                     {
                         info.Container = System.IO.Path.GetExtension(media.Path).TrimStart('.');
                     }
@@ -756,9 +748,8 @@ namespace MediaBrowser.Controller.Entities
         {
             var terms = new List<string>();
 
-            var locationType = video.LocationType;
             var path = video.Path;
-            if ((locationType == LocationType.FileSystem || locationType == LocationType.Offline) && !string.IsNullOrWhiteSpace(path))
+            if (video.IsFileProtocol && !string.IsNullOrEmpty(path))
             {
                 terms.Add(System.IO.Path.GetFileName(path));
             }

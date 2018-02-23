@@ -50,8 +50,6 @@
     <Compile Include="Channels\IChannelManager.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\IHasCacheKey.cs" />
-    <Compile Include="Channels\IIndexableChannel.cs" />
-    <Compile Include="Channels\InternalAllChannelMediaQuery.cs" />
     <Compile Include="Channels\InternalChannelFeatures.cs" />
     <Compile Include="Channels\InternalChannelItemQuery.cs" />
     <Compile Include="Channels\IRequiresMediaInfoCallback.cs" />
@@ -86,7 +84,6 @@
     <Compile Include="Dto\DtoOptions.cs" />
     <Compile Include="Dto\IDtoService.cs" />
     <Compile Include="Entities\AudioBook.cs" />
-    <Compile Include="Entities\Audio\AudioPodcast.cs" />
     <Compile Include="Entities\Audio\IHasAlbumArtist.cs" />
     <Compile Include="Entities\Audio\IHasMusicGenres.cs" />
     <Compile Include="Entities\BaseItemExtensions.cs" />
@@ -227,7 +224,6 @@
     <Compile Include="Providers\IImageProvider.cs" />
     <Compile Include="Providers\ILocalImageFileProvider.cs" />
     <Compile Include="Providers\ILocalMetadataProvider.cs" />
-    <Compile Include="Providers\ImageRefreshMode.cs" />
     <Compile Include="Providers\ImageRefreshOptions.cs" />
     <Compile Include="Providers\IPreRefreshProvider.cs" />
     <Compile Include="Providers\IRemoteImageProvider.cs" />
@@ -316,7 +312,6 @@
     <Compile Include="IO\FileData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\ISessionController.cs" />
-    <Compile Include="Session\ISessionControllerFactory.cs" />
     <Compile Include="Session\SessionEventArgs.cs" />
     <Compile Include="Session\SessionInfo.cs" />
     <Compile Include="Sorting\IBaseItemComparer.cs" />

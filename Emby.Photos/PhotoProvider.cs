@@ -14,10 +14,11 @@ using TagLib;
 using TagLib.IFD;
 using TagLib.IFD.Entries;
 using TagLib.IFD.Tags;
+using MediaBrowser.Model.MediaInfo;
 
 namespace Emby.Photos
 {
-    public class PhotoProvider : ICustomMetadataProvider<Photo>, IForcedProvider
+    public class PhotoProvider : ICustomMetadataProvider<Photo>, IForcedProvider, IHasItemChangeMonitor
     {
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
@@ -30,8 +31,22 @@ namespace Emby.Photos
             _imageProcessor = imageProcessor;
         }
 
+        public bool HasChanged(BaseItem item, IDirectoryService directoryService)
+        {
+            if (item.IsFileProtocol)
+            {
+                var file = directoryService.GetFile(item.Path);
+                if (file != null && file.LastWriteTimeUtc != item.DateModified)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // These are causing taglib to hang
-        private string[] _includextensions = new string[] { ".jpg", ".jpeg", ".png", ".tiff" };
+        private string[] _includextensions = new string[] { ".jpg", ".jpeg", ".png", ".tiff", ".cr2" };
 
         public Task<ItemUpdateType> FetchAsync(Photo item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
@@ -108,7 +123,10 @@ namespace Emby.Photos
 
                                 if (!string.IsNullOrWhiteSpace(image.ImageTag.Title))
                                 {
-                                    item.Name = image.ImageTag.Title;
+                                    if (!item.LockedFields.Contains(MetadataFields.Name))
+                                    {
+                                        item.Name = image.ImageTag.Title;
+                                    }
                                 }
 
                                 var dateTaken = image.ImageTag.DateTime;

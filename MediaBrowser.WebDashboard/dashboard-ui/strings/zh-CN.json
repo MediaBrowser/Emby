@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "\u4e0a\u4e00\u4e2a",
     "LabelFinish": "\u5b8c\u6210",
     "LabelNext": "\u4e0b\u4e00\u4e2a",
@@ -453,6 +455,7 @@
     "HeaderSource": "\u6765\u6e90",
     "HeaderStatus": "\u72b6\u6001",
     "HeaderDestination": "\u76ee\u7684\u5730",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "\u7a0b\u5e8f",
     "HeaderClients": "\u5ba2\u6237\u7aef",
     "LabelCompleted": "\u5b8c\u6210",
@@ -975,8 +978,6 @@
     "TitleSync": "\u540c\u6b65",
     "OptionAllowSyncContent": "\u5141\u8bb8\u540c\u6b65",
     "OptionAllowContentDownloading": "\u5141\u8bb8\u4e0b\u8f7d\u5a92\u4f53",
-    "NameSeasonUnknown": "\u5b63\u672a\u77e5",
-    "NameSeasonNumber": "\u5b63 {0}",
     "LabelNewUserNameHelp": "\u7528\u6237\u540d\u53ef\u4ee5\u5305\u542b\u5b57\u6bcd\uff08az\uff09\uff0c\u6570\u5b57\uff080-9\uff09\uff0c\u7834\u6298\u53f7\uff08 - \uff09\uff0c\u4e0b\u5212\u7ebf\uff08_\uff09\uff0c\u5355\u5f15\u53f7\uff08'\uff09\u548c\u53e5\u70b9\uff08.\uff09",
     "TabSyncJobs": "\u540c\u6b65\u4f5c\u4e1a",
     "HeaderThisUserIsCurrentlyDisabled": "\u6b64\u7528\u6237\u5f53\u524d\u5df2\u7981\u7528",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "\u8fd9\u5c06\u4f1a\u5728 Emby \u670d\u52a1\u5668\u6700\u521d\u542f\u52a8\u65f6\u81ea\u52a8\u4f7f\u7528\u4f60\u7684\u9ed8\u8ba4\u7f51\u9875\u6d4f\u89c8\u5668\u6253\u5f00 Emby \u7f51\u9875\u7aef\u5e94\u7528\u3002\u4f7f\u7528\u201c\u91cd\u542f\u670d\u52a1\u5668\u201d\u529f\u80fd\u5e76\u4e0d\u4f1a\u89e6\u53d1\u8fd9\u4e00\u52a8\u4f5c\u3002",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

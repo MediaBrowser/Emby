@@ -45,14 +45,14 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             var session = e.SessionInfo;
 
-            if (!string.IsNullOrEmpty(session.Client) &&
+            if (!string.IsNullOrEmpty(session.AppName) &&
                 !string.IsNullOrEmpty(session.DeviceName) &&
                 !string.IsNullOrEmpty(session.DeviceId) &&
                 !string.IsNullOrEmpty(session.ApplicationVersion))
             {
                 var keys = new List<string>
                 {
-                    session.Client,
+                    session.AppName,
                     session.DeviceName,
                     session.DeviceId,
                     session.ApplicationVersion
@@ -65,7 +65,7 @@ namespace Emby.Server.Implementations.EntryPoints
                 {
                     info = new ClientInfo
                     {
-                        AppName = session.Client,
+                        AppName = session.AppName,
                         AppVersion = session.ApplicationVersion,
                         DeviceName = session.DeviceName,
                         DeviceId = session.DeviceId
@@ -91,7 +91,7 @@ namespace Emby.Server.Implementations.EntryPoints
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Error sending anonymous usage statistics.", ex);
+                //_logger.ErrorException("Error sending anonymous usage statistics.", ex);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Emby.Server.Implementations.EntryPoints
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Error sending anonymous usage statistics.", ex);
+                //_logger.ErrorException("Error sending anonymous usage statistics.", ex);
             }
         }
 

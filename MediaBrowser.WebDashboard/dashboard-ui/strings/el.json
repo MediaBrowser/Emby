@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "\u03a0\u03c1\u03bf\u03b7\u03b3\u03bf\u03cd\u03bc\u03b5\u03bd\u03bf\u03c2",
     "LabelFinish": "\u03a4\u03ad\u03bb\u03bf\u03c2",
     "LabelNext": "\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf",
@@ -453,6 +455,7 @@
     "HeaderSource": "\u03a0\u03b7\u03b3\u03ae",
     "HeaderStatus": "\u039a\u03b1\u03c4\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7",
     "HeaderDestination": "\u0394\u03b9\u03b1\u03b4\u03c1\u03bf\u03bc\u03ae",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "\u03a0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1",
     "HeaderClients": "\u03a0\u03b5\u03bb\u03ac\u03c4\u03b5\u03c2",
     "LabelCompleted": "\u039f\u03bb\u03bf\u03ba\u03bb\u03b7\u03c1\u03ce\u03b8\u03b7\u03ba\u03b5",
@@ -975,8 +978,6 @@
     "TitleSync": "\u03a3\u03c5\u03b3\u03c7\u03c1\u03bf\u03bd\u03b9\u03c3\u03bc\u03cc\u03c2",
     "OptionAllowSyncContent": "\u0395\u03c0\u03b9\u03c4\u03c1\u03ad\u03c0\u03b5\u03c4\u03b5 \u03bf \u03a3\u03c5\u03b3\u03c7\u03c1\u03bf\u03bd\u03b9\u03c3\u03bc\u03cc\u03c2",
     "OptionAllowContentDownloading": "\u0395\u03c0\u03b9\u03c4\u03c1\u03ad\u03c0\u03b5\u03c4\u03b5 \u03b7 \u03bb\u03ae\u03c8\u03b7 \u03c0\u03bf\u03bb\u03c5\u03bc\u03ad\u03c3\u03c9\u03bd",
-    "NameSeasonUnknown": "\u0386\u03b3\u03bd\u03c9\u03c3\u03c4\u03bf\u03c2 \u039a\u03cd\u03ba\u03bb\u03bf\u03c2",
-    "NameSeasonNumber": "\u039a\u03cd\u03ba\u03bb\u03bf\u03c2 {0}",
     "LabelNewUserNameHelp": "\u03a4\u03b1 \u03bf\u03bd\u03cc\u03bc\u03b1\u03c4\u03b1 \u03c7\u03c1\u03b7\u03c3\u03c4\u03ce\u03bd \u03bc\u03c0\u03bf\u03c1\u03bf\u03cd\u03bd \u03bd\u03b1 \u03c0\u03b5\u03c1\u03b9\u03ad\u03c7\u03bf\u03c5\u03bd \u03b3\u03c1\u03ac\u03bc\u03bc\u03b1\u03c4\u03b1 (\u03b1-\u03b6), \u03b1\u03c1\u03b9\u03b8\u03bc\u03bf\u03cd\u03c2 (0-9), \u03c0\u03b1\u03cd\u03bb\u03b5\u03c2 (-), \u03c5\u03c0\u03bf\u03c3\u03b7\u03bc\u03b5\u03b9\u03ce\u03c3\u03b5\u03b9\u03c2 (_), \u03b1\u03c0\u03bf\u03c3\u03c4\u03ac\u03be\u03b5\u03b9\u03c2 (') \u03ba\u03b1\u03b9 \u03c0\u03b5\u03c1\u03b9\u03cc\u03b4\u03bf\u03c5\u03c2",
     "TabSyncJobs": "\u03a3\u03c5\u03b3\u03c7\u03c1\u03bf\u03bd\u03b9\u03c3\u03bc\u03cc\u03c2 \u0395\u03c1\u03b3\u03b1\u03c3\u03b9\u03ce\u03bd",
     "HeaderThisUserIsCurrentlyDisabled": "\u039f \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03c0\u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03b7\u03bc\u03ad\u03bd\u03bf\u03c2",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scan All Libraries",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

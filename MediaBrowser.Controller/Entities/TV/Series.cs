@@ -112,7 +112,7 @@ namespace MediaBrowser.Controller.Entities.TV
         private string AddLibrariesToPresentationUniqueKey(string key)
         {
             var lang = GetPreferredMetadataLanguage();
-            if (!string.IsNullOrWhiteSpace(lang))
+            if (!string.IsNullOrEmpty(lang))
             {
                 key += "-" + lang;
             }
@@ -188,13 +188,13 @@ namespace MediaBrowser.Controller.Entities.TV
             var list = base.GetUserDataKeys();
 
             var key = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(key))
+            if (!string.IsNullOrEmpty(key))
             {
                 list.Insert(0, key);
             }
 
             key = this.GetProviderId(MetadataProviders.Tvdb);
-            if (!string.IsNullOrWhiteSpace(key))
+            if (!string.IsNullOrEmpty(key))
             {
                 list.Insert(0, key);
             }
@@ -221,8 +221,6 @@ namespace MediaBrowser.Controller.Entities.TV
 
         private void SetSeasonQueryOptions(InternalItemsQuery query, User user)
         {
-            var config = user.Configuration;
-
             var seriesKey = GetUniqueSeriesKey(this);
 
             query.AncestorWithPresentationUniqueKey = null;
@@ -230,19 +228,19 @@ namespace MediaBrowser.Controller.Entities.TV
             query.IncludeItemTypes = new[] { typeof(Season).Name };
             query.OrderBy = new[] { ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray();
 
-            if (!config.DisplayMissingEpisodes)
+            if (user != null)
             {
-                query.IsMissing = false;
+                var config = user.Configuration;
+
+                if (!config.DisplayMissingEpisodes)
+                {
+                    query.IsMissing = false;
+                }
             }
         }
 
         protected override QueryResult<BaseItem> GetItemsInternal(InternalItemsQuery query)
         {
-            if (query.User == null)
-            {
-                return base.GetItemsInternal(query);
-            }
-
             var user = query.User;
 
             if (query.Recursive)
@@ -518,7 +516,7 @@ namespace MediaBrowser.Controller.Entities.TV
             var list = base.GetRelatedUrls();
 
             var imdbId = this.GetProviderId(MetadataProviders.Imdb);
-            if (!string.IsNullOrWhiteSpace(imdbId))
+            if (!string.IsNullOrEmpty(imdbId))
             {
                 list.Add(new ExternalUrl
                 {

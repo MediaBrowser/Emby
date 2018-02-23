@@ -53,7 +53,7 @@ namespace MediaBrowser.LocalMetadata.Images
                 {
                     var series = season.Series;
 
-                    if (series != null && series.LocationType == LocationType.FileSystem)
+                    if (series != null && series.IsFileProtocol)
                     {
                         return true;
                     }
@@ -65,7 +65,7 @@ namespace MediaBrowser.LocalMetadata.Images
 
         private IEnumerable<FileSystemMetadata> GetFiles(BaseItem item, bool includeDirectories, IDirectoryService directoryService)
         {
-            if (item.LocationType != LocationType.FileSystem)
+            if (!item.IsFileProtocol)
             {
                 return new List<FileSystemMetadata>();
             }
@@ -416,7 +416,7 @@ namespace MediaBrowser.LocalMetadata.Images
             var seasonNumber = season.IndexNumber;
 
             var series = season.Series;
-            if (!seasonNumber.HasValue || series.LocationType != LocationType.FileSystem)
+            if (!seasonNumber.HasValue || !series.IsFileProtocol)
             {
                 return;
             }

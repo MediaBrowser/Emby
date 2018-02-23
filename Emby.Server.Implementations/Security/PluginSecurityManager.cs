@@ -26,30 +26,11 @@ namespace Emby.Server.Implementations.Security
         private const string MBValidateUrl = "https://mb3admin.com/admin/service/registration/validate";
         private const string AppstoreRegUrl = /*MbAdmin.HttpsUrl*/ "https://mb3admin.com/admin/service/appstore/register";
 
-        /// <summary>
-        /// The _is MB supporter
-        /// </summary>
-        private bool? _isMbSupporter;
-        /// <summary>
-        /// The _is MB supporter initialized
-        /// </summary>
-        private bool _isMbSupporterInitialized;
-        /// <summary>
-        /// The _is MB supporter sync lock
-        /// </summary>
-        private object _isMbSupporterSyncLock = new object();
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is MB supporter.
-        /// </summary>
-        /// <value><c>true</c> if this instance is MB supporter; otherwise, <c>false</c>.</value>
-        public bool IsMBSupporter
+        public async Task<bool> IsSupporter()
         {
-            get
-            {
-                LazyInitializer.EnsureInitialized(ref _isMbSupporter, ref _isMbSupporterInitialized, ref _isMbSupporterSyncLock, () => GetSupporterRegistrationStatus().Result.IsRegistered);
-                return _isMbSupporter.Value;
-            }
+            var result = await GetRegistrationStatus("MBSupporter", _appHost.ApplicationVersion.ToString()).ConfigureAwait(false);
+
+            return result.IsRegistered;
         }
 
         private MBLicenseFile _licenseFile;
@@ -65,15 +46,6 @@ namespace Emby.Server.Implementations.Security
         private readonly IApplicationPaths _appPaths;
         private readonly IFileSystem _fileSystem;
         private readonly ICryptoProvider _cryptographyProvider;
-
-        private IEnumerable<IRequiresRegistration> _registeredEntities;
-        protected IEnumerable<IRequiresRegistration> RegisteredEntities
-        {
-            get
-            {
-                return _registeredEntities ?? (_registeredEntities = _appHost.GetExports<IRequiresRegistration>());
-            }
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginSecurityManager" /> class.
@@ -96,45 +68,38 @@ namespace Emby.Server.Implementations.Security
         }
 
         /// <summary>
-        /// Load all registration info for all entities that require registration
-        /// </summary>
-        /// <returns></returns>
-        public async Task LoadAllRegistrationInfo()
-        {
-            var tasks = new List<Task>();
-
-            ResetSupporterInfo();
-            tasks.AddRange(RegisteredEntities.Select(i => i.LoadRegistrationInfoAsync()));
-            await Task.WhenAll(tasks);
-        }
-
-        /// <summary>
         /// Gets the registration status.
         /// This overload supports existing plug-ins.
         /// </summary>
-        /// <param name="feature">The feature.</param>
-        /// <param name="mb2Equivalent">The MB2 equivalent.</param>
-        /// <returns>Task{MBRegistrationRecord}.</returns>
-        public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent = null)
+        public Task<MBRegistrationRecord> GetRegistrationStatus(string feature)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent);
+            return GetRegistrationStatus(feature, null);
         }
 
         /// <summary>
         /// Gets the registration status.
         /// </summary>
-        /// <param name="feature">The feature.</param>
-        /// <param name="mb2Equivalent">The MB2 equivalent.</param>
-        /// <param name="version">The version of this feature</param>
-        /// <returns>Task{MBRegistrationRecord}.</returns>
-        public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version)
+        public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent)
         {
-            return GetRegistrationStatusInternal(feature, mb2Equivalent, version);
+            return GetRegistrationStatus(feature, null, null);
         }
 
-        private Task<MBRegistrationRecord> GetSupporterRegistrationStatus()
+        private SemaphoreSlim _regCheckLock = new SemaphoreSlim(1, 1);
+        /// <summary>
+        /// Gets the registration status.
+        /// </summary>
+        public async Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version)
         {
-            return GetRegistrationStatusInternal("MBSupporter", null, _appHost.ApplicationVersion.ToString());
+            await _regCheckLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+
+            try
+            {
+                return await GetRegistrationStatusInternal(feature, version).ConfigureAwait(false);
+            }
+            finally
+            {
+                _regCheckLock.Release();
+            }
         }
 
         /// <summary>
@@ -149,20 +114,24 @@ namespace Emby.Server.Implementations.Security
             }
             set
             {
-                var newValue = value;
-                if (newValue != null)
-                {
-                    newValue = newValue.Trim();
-                }
+                throw new Exception("Please call UpdateSupporterKey");
+            }
+        }
 
-                if (newValue != LicenseFile.RegKey)
-                {
-                    LicenseFile.RegKey = newValue;
-                    LicenseFile.Save();
+        public async Task UpdateSupporterKey(string newValue)
+        {
+            if (newValue != null)
+            {
+                newValue = newValue.Trim();
+            }
 
-                    // re-load registration info
-                    Task.Run(() => LoadAllRegistrationInfo());
-                }
+            if (!string.Equals(newValue, LicenseFile.RegKey, StringComparison.Ordinal))
+            {
+                LicenseFile.RegKey = newValue;
+                LicenseFile.Save();
+
+                // Reset this
+                await IsSupporter().ConfigureAwait(false);
             }
         }
 
@@ -197,7 +166,7 @@ namespace Emby.Server.Implementations.Security
                     }
                     if (!String.IsNullOrEmpty(reg.key))
                     {
-                        SupporterKey = reg.key;
+                        await UpdateSupporterKey(reg.key).ConfigureAwait(false);
                     }
                 }
 
@@ -242,7 +211,6 @@ namespace Emby.Server.Implementations.Security
         }
 
         private async Task<MBRegistrationRecord> GetRegistrationStatusInternal(string feature,
-            string mb2Equivalent = null,
             string version = null)
         {
             var regInfo = LicenseFile.GetRegInfo(feature);
@@ -265,17 +233,18 @@ namespace Emby.Server.Implementations.Security
                 expDate = expDate
             };
 
+            var key = SupporterKey;
+
             var success = reg.registered;
 
-            if (!(lastChecked > DateTime.UtcNow.AddDays(-1)) || !reg.registered)
+            if (!(lastChecked > DateTime.UtcNow.AddDays(-1)) || (!reg.registered))
             {
                 var data = new Dictionary<string, string>
                 {
                     { "feature", feature }, 
-                    { "key", SupporterKey }, 
+                    { "key", key }, 
                     { "mac", _appHost.SystemId }, 
                     { "systemid", _appHost.SystemId }, 
-                    { "mb2equiv", mb2Equivalent }, 
                     { "ver", version }, 
                     { "platform", _appHost.OperatingSystemDisplayName }
                 };
@@ -345,15 +314,6 @@ namespace Emby.Server.Implementations.Security
             var isInTrial = expirationDate > DateTime.UtcNow;
 
             return isInTrial && !isRegistered;
-        }
-
-        /// <summary>
-        /// Resets the supporter info.
-        /// </summary>
-        private void ResetSupporterInfo()
-        {
-            _isMbSupporter = null;
-            _isMbSupporterInitialized = false;
         }
     }
 }

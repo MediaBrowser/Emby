@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Globalization;
 
 namespace MediaBrowser.Providers.Subtitles
 {
@@ -35,7 +36,9 @@ namespace MediaBrowser.Providers.Subtitles
         public event EventHandler<SubtitleDownloadEventArgs> SubtitlesDownloaded;
         public event EventHandler<SubtitleDownloadFailureEventArgs> SubtitleDownloadFailure;
 
-        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config)
+        private ILocalizationManager _localization;
+
+        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config, ILocalizationManager localizationManager)
         {
             _logger = logger;
             _fileSystem = fileSystem;
@@ -43,15 +46,32 @@ namespace MediaBrowser.Providers.Subtitles
             _libraryManager = libraryManager;
             _mediaSourceManager = mediaSourceManager;
             _config = config;
+            _localization = localizationManager;
         }
 
         public void AddParts(IEnumerable<ISubtitleProvider> subtitleProviders)
         {
-            _subtitleProviders = subtitleProviders.ToArray();
+            _subtitleProviders = subtitleProviders
+                .OrderBy(i =>
+                {
+                    var hasOrder = i as IHasOrder;
+                    return hasOrder == null ? 0 : hasOrder.Order;
+                })
+                .ToArray();
         }
 
         public async Task<RemoteSubtitleInfo[]> SearchSubtitles(SubtitleSearchRequest request, CancellationToken cancellationToken)
         {
+            var cultures = _localization.GetCultures();
+            foreach (var culture in cultures)
+            {
+                if (string.Equals(culture.ThreeLetterISOLanguageName, request.Language, StringComparison.OrdinalIgnoreCase))
+                {
+                    request.TwoLetterISOLanguageName = culture.TwoLetterISOLanguageName;
+                    break;
+                }
+            }
+
             var contentType = request.ContentType;
             var providers = _subtitleProviders
                 .Where(i => i.SupportedMediaTypes.Contains(contentType))
@@ -212,8 +232,7 @@ namespace MediaBrowser.Providers.Subtitles
 
         public Task<RemoteSubtitleInfo[]> SearchSubtitles(Video video, string language, bool? isPerfectMatch, CancellationToken cancellationToken)
         {
-            if (video.LocationType != LocationType.FileSystem ||
-                video.VideoType != VideoType.VideoFile)
+            if (video.VideoType != VideoType.VideoFile)
             {
                 return Task.FromResult<RemoteSubtitleInfo[]>(new RemoteSubtitleInfo[] { });
             }

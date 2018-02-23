@@ -105,50 +105,43 @@ namespace Emby.Server.Implementations.EntryPoints
             }
         }
 
-        private async Task SendNotifications(IEnumerable<KeyValuePair<Guid, List<BaseItem>>> changes, CancellationToken cancellationToken)
+        private async Task SendNotifications(List<KeyValuePair<Guid, List<BaseItem>>> changes, CancellationToken cancellationToken)
         {
             foreach (var pair in changes)
             {
-                var userId = pair.Key;
-                var userSessions = _sessionManager.Sessions
-                    .Where(u => u.ContainsUser(userId) && u.SessionController != null && u.IsActive)
-                    .ToList();
-
-                if (userSessions.Count > 0)
-                {
-                    var user = _userManager.GetUserById(userId);
-
-                    var dtoList = pair.Value
-                        .DistinctBy(i => i.Id)
-                        .Select(i =>
-                        {
-                            var dto = _userDataManager.GetUserDataDto(i, user);
-                            dto.ItemId = i.Id.ToString("N");
-                            return dto;
-                        })
-                        .ToArray();
-
-                    var info = new UserDataChangeInfo
-                    {
-                        UserId = userId.ToString("N"),
-
-                        UserDataList = dtoList
-                    };
-
-                    foreach (var userSession in userSessions)
-                    {
-                        try
-                        {
-                            await userSession.SessionController.SendUserDataChangeInfo(info, cancellationToken).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.ErrorException("Error sending UserDataChanged message", ex);
-                        }
-                    }
-                }
-
+                await SendNotifications(pair.Key, pair.Value, cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        private Task SendNotifications(Guid userId, List<BaseItem> changedItems, CancellationToken cancellationToken)
+        {
+            var userIdString = userId.ToString("N");
+
+            return _sessionManager.SendMessageToUserSessions(new List<string> { userIdString }, "UserDataChanged", () => GetUserDataChangeInfo(userId, changedItems), cancellationToken);
+        }
+
+        private UserDataChangeInfo GetUserDataChangeInfo(Guid userId, List<BaseItem> changedItems)
+        {
+            var user = _userManager.GetUserById(userId);
+
+            var dtoList = changedItems
+                .DistinctBy(i => i.Id)
+                .Select(i =>
+                {
+                    var dto = _userDataManager.GetUserDataDto(i, user);
+                    dto.ItemId = i.Id.ToString("N");
+                    return dto;
+                })
+                .ToArray();
+
+            var userIdString = userId.ToString("N");
+
+            return new UserDataChangeInfo
+            {
+                UserId = userIdString,
+
+                UserDataList = dtoList
+            };
         }
 
         public void Dispose()

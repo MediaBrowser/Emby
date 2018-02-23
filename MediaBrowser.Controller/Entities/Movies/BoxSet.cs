@@ -109,7 +109,7 @@ namespace MediaBrowser.Controller.Entities.Movies
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Path))
+                if (string.IsNullOrEmpty(Path))
                 {
                     return false;
                 }

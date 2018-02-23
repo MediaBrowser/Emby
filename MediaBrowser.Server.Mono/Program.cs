@@ -96,7 +96,7 @@ namespace MediaBrowser.Server.Mono
 
             var environmentInfo = GetEnvironmentInfo(options);
 
-            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, appPaths.TempDirectory);
+            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory);
 
             FileSystem = fileSystem;
 
@@ -119,17 +119,13 @@ namespace MediaBrowser.Server.Mono
 
                 Console.WriteLine("appHost.Init");
 
-                var initProgress = new Progress<double>();
-
-                var task = appHost.Init(initProgress);
-
-                Task.WaitAll(task);
+                appHost.Init();
 
                 appHost.ImageProcessor.ImageEncoder = ImageEncoderHelper.GetImageEncoder(_logger, logManager, fileSystem, options, () => appHost.HttpClient, appPaths, environmentInfo, appHost.LocalizationManager);
 
                 Console.WriteLine("Running startup tasks");
 
-                task = appHost.RunStartupTasks();
+                var task = appHost.RunStartupTasks();
                 Task.WaitAll(task);
 
                 task = ApplicationTaskCompletionSource.Task;

@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "\u041f\u0440\u0435\u0434\u0438\u0448\u0435\u043d",
     "LabelFinish": "\u0413\u043e\u0442\u043e\u0432\u043e",
     "LabelNext": "\u0421\u043b\u0435\u0434\u0432\u0430\u0449",
@@ -453,6 +455,7 @@
     "HeaderSource": "\u0418\u0437\u0442\u043e\u0447\u043d\u0438\u043a",
     "HeaderStatus": "\u0421\u044a\u0441\u0442\u043e\u044f\u043d\u0438\u0435:",
     "HeaderDestination": "\u041c\u0435\u0441\u0442\u043e\u043d\u0430\u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "\u041f\u0440\u043e\u0433\u0440\u0430\u043c\u0430",
     "HeaderClients": "Clients",
     "LabelCompleted": "\u0417\u0430\u0432\u044a\u0440\u0448\u0435\u043d\u043e",
@@ -975,8 +978,6 @@
     "TitleSync": "\u0421\u0438\u043d\u0445\u0440\u043e\u043d\u0438\u0437\u0438\u0440\u0430\u043d\u0435",
     "OptionAllowSyncContent": "Allow Sync",
     "OptionAllowContentDownloading": "Allow media downloading",
-    "NameSeasonUnknown": "\u041d\u0435\u043f\u043e\u0437\u043d\u0430\u0442 \u0441\u0435\u0437\u043e\u043d",
-    "NameSeasonNumber": "\u0421\u0435\u0437\u043e\u043d {0}",
     "LabelNewUserNameHelp": "Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)",
     "TabSyncJobs": "Sync Jobs",
     "HeaderThisUserIsCurrentlyDisabled": "This user is currently disabled",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "\u0421\u043a\u0430\u043d\u0438\u0440\u0430\u043d\u0435 \u043d\u0430 \u0432\u0441\u0438\u0447\u043a\u0438 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438",
     "ScanLibrary": "\u0421\u043a\u0430\u043d\u0438\u0440\u0430\u043d\u0435 \u043d\u0430 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0430\u0442\u0430",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u043e \u0438\u0437\u0442\u0435\u0433\u043b\u0435\u043d\u0438 \u0432\u0438\u0434\u0435\u043e\u043a\u043b\u0438\u043f\u043e\u0432\u0435",
     "ServerRestartNeededAfterPluginInstall": "\u0421\u043b\u0435\u0434 \u0438\u043d\u0441\u0442\u0430\u043b\u0438\u0440\u0430\u043d\u0435\u0442\u043e \u043d\u0430 \u043f\u0440\u0438\u0441\u0442\u0430\u0432\u043a\u0430, \u0441\u044a\u0440\u0432\u044a\u0440\u044a\u0442 \u0449\u0435 \u0442\u0440\u044f\u0431\u0432\u0430 \u0434\u0430 \u0431\u044a\u0434\u0435 \u043f\u0443\u0441\u043d\u0430\u0442 \u043d\u0430\u043d\u043e\u0432\u043e.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

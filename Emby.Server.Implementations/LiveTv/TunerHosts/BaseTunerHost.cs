@@ -55,7 +55,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             ChannelCache cache = null;
             var key = tuner.Id;
 
-            if (enableCache && !string.IsNullOrWhiteSpace(key) && _channelCache.TryGetValue(key, out cache))
+            if (enableCache && !string.IsNullOrEmpty(key) && _channelCache.TryGetValue(key, out cache))
             {
                 if (DateTime.UtcNow - cache.Date < TimeSpan.FromMinutes(60))
                 {
@@ -65,9 +65,9 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
             var list = result.ToList();
-            Logger.Info("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
+            //Logger.Info("Channels from {0}: {1}", tuner.Url, JsonSerializer.SerializeToString(list));
 
-            if (!string.IsNullOrWhiteSpace(key) && list.Count > 0)
+            if (!string.IsNullOrEmpty(key) && list.Count > 0)
             {
                 cache = cache ?? new ChannelCache();
                 cache.Date = DateTime.UtcNow;
@@ -137,11 +137,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             return list;
         }
 
-        protected abstract Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, string channelId, CancellationToken cancellationToken);
+        protected abstract Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo tuner, ChannelInfo channel, CancellationToken cancellationToken);
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -155,10 +155,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     try
                     {
                         var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
+                        var channelInfo = channels.FirstOrDefault(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
 
-                        if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                        if (channelInfo != null)
                         {
-                            return await GetChannelStreamMediaSources(host, channelId, cancellationToken).ConfigureAwait(false);
+                            return await GetChannelStreamMediaSources(host, channelInfo, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
@@ -171,11 +172,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             return new List<MediaSourceInfo>();
         }
 
-        protected abstract Task<ILiveStream> GetChannelStream(TunerHostInfo tuner, string channelId, string streamId, CancellationToken cancellationToken);
+        protected abstract Task<ILiveStream> GetChannelStream(TunerHostInfo tuner, ChannelInfo channel, string streamId, CancellationToken cancellationToken);
 
         public async Task<ILiveStream> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -187,17 +188,18 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             var hosts = GetTunerHosts();
 
-            var hostsWithChannel = new List<TunerHostInfo>();
+            var hostsWithChannel = new List<Tuple<TunerHostInfo, ChannelInfo>>();
 
             foreach (var host in hosts)
             {
                 try
                 {
                     var channels = await GetChannels(host, true, cancellationToken).ConfigureAwait(false);
+                    var channelInfo = channels.FirstOrDefault(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
 
-                    if (channels.Any(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase)))
+                    if (channelInfo != null)
                     {
-                        hostsWithChannel.Add(host);
+                        hostsWithChannel.Add(new Tuple<TunerHostInfo, ChannelInfo>(host, channelInfo));
                     }
                 }
                 catch (Exception ex)
@@ -206,16 +208,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                 }
             }
 
-            foreach (var host in hostsWithChannel)
+            foreach (var hostTuple in hostsWithChannel)
             {
-                if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
+                var host = hostTuple.Item1;
+                var channelInfo = hostTuple.Item2;
 
                 try
                 {
-                    var liveStream = await GetChannelStream(host, channelId, streamId, cancellationToken).ConfigureAwait(false);
+                    var liveStream = await GetChannelStream(host, channelInfo, streamId, cancellationToken).ConfigureAwait(false);
                     var startTime = DateTime.UtcNow;
                     await liveStream.Open(cancellationToken).ConfigureAwait(false);
                     var endTime = DateTime.UtcNow;
@@ -240,7 +240,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         }
         protected virtual bool IsValidChannelId(string channelId)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }

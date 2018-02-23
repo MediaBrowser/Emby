@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "\u524d\u4e00\u500b",
     "LabelFinish": "\u5b8c\u6210",
     "LabelNext": "\u4e0b\u4e00\u500b",
@@ -53,7 +55,7 @@
     "LabelSyncTempPath": "\u81e8\u6642\u6587\u4ef6\u7684\u8def\u5f91\uff1a",
     "LabelSyncTempPathHelp": "\u9078\u64c7\u81ea\u5b9a\u540c\u6b65\u5de5\u4f5c\u7684\u6587\u4ef6\u593e\u3002\u5728\u540c\u6b65\u904e\u7a0b\u4e2d\u5efa\u7acb\u7684\u8f49\u63db\u5a92\u9ad4\u5c07\u88ab\u5b58\u653e\u5230\u9019\u88e1\u3002",
     "LabelCustomCertificatePath": "Custom ssl certificate path:",
-    "LabelCustomCertificatePathHelp": "Supply your own ssl certificate .pfx file.",
+    "LabelCustomCertificatePathHelp": "Path to a PKCS #12 file containing a certificate and private key to enable TLS support on a custom domain.",
     "TitleNotifications": "\u901a\u77e5",
     "LabelEnterConnectUserName": "\u7528\u6236\u540d\u6216\u96fb\u5b50\u90f5\u4ef6\uff1a",
     "LabelEnterConnectUserNameHelp": "\u9019\u662f\u60a8 Emby \u5728\u7dda\u5e33\u6236\u7684\u7528\u6236\u540d\u6216\u96fb\u5b50\u90f5\u4ef6\u3002",
@@ -453,6 +455,7 @@
     "HeaderSource": "\u4f86\u6e90",
     "HeaderStatus": "\u72c0\u614b",
     "HeaderDestination": "\u76ee\u7684\u5730",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "\u7a0b\u5f0f",
     "HeaderClients": "\u5ba2\u6236\u7aef",
     "LabelCompleted": "\u5df2\u5b8c\u6210",
@@ -975,8 +978,6 @@
     "TitleSync": "Sync",
     "OptionAllowSyncContent": "Allow Sync",
     "OptionAllowContentDownloading": "Allow media downloading",
-    "NameSeasonUnknown": "\u672a\u77e5\u5287\u96c6\u5b63\u5ea6",
-    "NameSeasonNumber": "\u5287\u96c6\u5b63\u5ea6 {0}",
     "LabelNewUserNameHelp": "Usernames can contain letters (a-z), numbers (0-9), dashes (-), underscores (_), apostrophes ('), and periods (.)",
     "TabSyncJobs": "Sync Jobs",
     "HeaderThisUserIsCurrentlyDisabled": "This user is currently disabled",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scan All Libraries",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

@@ -73,10 +73,14 @@ namespace MediaBrowser.Controller.Entities
 
             }, CancellationToken.None).Result;
 
-            var user = query.User;
-            Func<BaseItem, bool> filter = i => UserViewBuilder.Filter(i, user, query, UserDataManager, LibraryManager);
+            var itemsArray = result;
+            var totalCount = itemsArray.Length;
 
-            return PostFilterAndSort(result.Where(filter), query, true, true);
+            return new QueryResult<BaseItem>
+            {
+                TotalRecordCount = totalCount,
+                Items = itemsArray
+            };
         }
 
         public override int GetChildCount(User user)

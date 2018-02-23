@@ -87,7 +87,8 @@ namespace Emby.Server.Implementations.Collections
                         UserId = i,
                         CanEdit = true
 
-                    }).ToList()
+                    }).ToList(),
+                    DateCreated = DateTime.UtcNow
                 };
 
                 parentFolder.AddChild(collection, CancellationToken.None);
@@ -243,7 +244,8 @@ namespace Emby.Server.Implementations.Collections
 
                 if (child == null)
                 {
-                    throw new ArgumentException("No collection title exists with the supplied Id");
+                    _logger.Warn("No collection title exists with the supplied Id");
+                    continue;
                 }
 
                 list.Add(child);

@@ -59,7 +59,7 @@ namespace Emby.Server.Implementations.Data
                 {
                     _logger.Info("Cleaning item {0} type: {1} path: {2}", item.Name, item.GetType().Name, item.Path ?? string.Empty);
 
-                    item.Delete(new DeleteOptions
+                    _libraryManager.DeleteItem(item, new DeleteOptions
                     {
                         DeleteFileLocation = false
 

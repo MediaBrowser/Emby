@@ -35,7 +35,6 @@ namespace Emby.Dlna.Profiles
             AlbumArtPn = "JPEG_TN";
 
             SonyAggregationFlags = "10";
-            XDlnaDoc = "DMS-1.50";
             EnableSingleAlbumArtLimit = true;
 
             DirectPlayProfiles = new[]

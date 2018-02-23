@@ -1,4 +1,4 @@
-namespace MediaBrowser.Model.ApiClient
+namespace MediaBrowser.Model.System
 {
     public class WakeOnLanInfo
     {

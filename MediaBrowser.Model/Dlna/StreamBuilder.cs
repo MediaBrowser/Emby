@@ -248,7 +248,7 @@ namespace MediaBrowser.Model.Dlna
 
         public static string NormalizeMediaSourceFormatIntoSingleContainer(string inputContainer, DeviceProfile profile, DlnaProfileType type)
         {
-            if (string.IsNullOrWhiteSpace(inputContainer))
+            if (string.IsNullOrEmpty(inputContainer))
             {
                 return null;
             }
@@ -402,21 +402,7 @@ namespace MediaBrowser.Model.Dlna
                     return null;
                 }
 
-                playlistItem.PlayMethod = PlayMethod.Transcode;
-                playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
-                playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
-                playlistItem.Container = transcodingProfile.Container;
-
-                if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
-                {
-                    playlistItem.AudioCodecs = new string[] { };
-                }
-                else
-                {
-                    playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
-                }
-
-                playlistItem.SubProtocol = transcodingProfile.Protocol;
+                SetStreamInfoOptionsFromTranscodingProfile(playlistItem, transcodingProfile);
 
                 var audioCodecProfiles = new List<CodecProfile>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
@@ -455,12 +441,7 @@ namespace MediaBrowser.Model.Dlna
                 ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
 
                 // Honor requested max channels
-                if (options.MaxAudioChannels.HasValue)
-                {
-                    int currentValue = playlistItem.MaxAudioChannels ?? options.MaxAudioChannels.Value;
-
-                    playlistItem.MaxAudioChannels = Math.Min(options.MaxAudioChannels.Value, currentValue);
-                }
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
 
                 long transcodingBitrate = options.AudioTranscodingBitrate ??
                     options.Profile.MusicStreamingTranscodingBitrate ??
@@ -676,6 +657,56 @@ namespace MediaBrowser.Model.Dlna
             return item.DefaultSubtitleStreamIndex;
         }
 
+        private void SetStreamInfoOptionsFromTranscodingProfile(StreamInfo playlistItem, TranscodingProfile transcodingProfile)
+        {
+            if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
+            {
+                playlistItem.AudioCodecs = new string[] { };
+            }
+            else
+            {
+                playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
+            }
+
+            playlistItem.Container = transcodingProfile.Container;
+            playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
+            playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
+
+            if (string.IsNullOrEmpty(transcodingProfile.VideoCodec))
+            {
+                playlistItem.VideoCodecs = new string[] { };
+            }
+            else
+            {
+                playlistItem.VideoCodecs = transcodingProfile.VideoCodec.Split(',');
+            }
+
+            playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
+            playlistItem.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
+            playlistItem.EnableMpegtsM2TsMode = transcodingProfile.EnableMpegtsM2TsMode;
+
+            playlistItem.BreakOnNonKeyFrames = transcodingProfile.BreakOnNonKeyFrames;
+
+            if (transcodingProfile.MinSegments > 0)
+            {
+                playlistItem.MinSegments = transcodingProfile.MinSegments;
+            }
+            if (transcodingProfile.SegmentLength > 0)
+            {
+                playlistItem.SegmentLength = transcodingProfile.SegmentLength;
+            }
+            playlistItem.SubProtocol = transcodingProfile.Protocol;
+
+            if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
+            {
+                int transcodingMaxAudioChannels;
+                if (int.TryParse(transcodingProfile.MaxAudioChannels, NumberStyles.Any, CultureInfo.InvariantCulture, out transcodingMaxAudioChannels))
+                {
+                    playlistItem.TranscodingMaxAudioChannels = transcodingMaxAudioChannels;
+                }
+            }
+        }
+
         private StreamInfo BuildVideoItem(MediaSourceInfo item, VideoOptions options)
         {
             if (item == null)
@@ -781,36 +812,9 @@ namespace MediaBrowser.Model.Dlna
                 }
 
                 playlistItem.PlayMethod = PlayMethod.Transcode;
-                playlistItem.Container = transcodingProfile.Container;
-                playlistItem.EstimateContentLength = transcodingProfile.EstimateContentLength;
-                playlistItem.TranscodeSeekInfo = transcodingProfile.TranscodeSeekInfo;
 
-                playlistItem.AudioCodecs = transcodingProfile.AudioCodec.Split(',');
+                SetStreamInfoOptionsFromTranscodingProfile(playlistItem, transcodingProfile);
 
-                playlistItem.VideoCodecs = transcodingProfile.VideoCodec.Split(',');
-                playlistItem.CopyTimestamps = transcodingProfile.CopyTimestamps;
-                playlistItem.EnableSubtitlesInManifest = transcodingProfile.EnableSubtitlesInManifest;
-
-                playlistItem.BreakOnNonKeyFrames = transcodingProfile.BreakOnNonKeyFrames;
-
-                if (transcodingProfile.MinSegments > 0)
-                {
-                    playlistItem.MinSegments = transcodingProfile.MinSegments;
-                }
-                if (transcodingProfile.SegmentLength > 0)
-                {
-                    playlistItem.SegmentLength = transcodingProfile.SegmentLength;
-                }
-
-                if (!string.IsNullOrEmpty(transcodingProfile.MaxAudioChannels))
-                {
-                    int transcodingMaxAudioChannels;
-                    if (int.TryParse(transcodingProfile.MaxAudioChannels, NumberStyles.Any, CultureInfo.InvariantCulture, out transcodingMaxAudioChannels))
-                    {
-                        playlistItem.TranscodingMaxAudioChannels = transcodingMaxAudioChannels;
-                    }
-                }
-                playlistItem.SubProtocol = transcodingProfile.Protocol;
                 ConditionProcessor conditionProcessor = new ConditionProcessor();
 
                 var isFirstAppliedCodecProfile = true;
@@ -896,15 +900,11 @@ namespace MediaBrowser.Model.Dlna
                         }
                     }
                 }
+
                 // Honor requested max channels
-                if (options.MaxAudioChannels.HasValue)
-                {
-                    int currentValue = playlistItem.MaxAudioChannels ?? options.MaxAudioChannels.Value;
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
 
-                    playlistItem.MaxAudioChannels = Math.Min(options.MaxAudioChannels.Value, currentValue);
-                }
-
-                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioChannels, playlistItem.TargetAudioCodec, audioStream);
+                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
                 playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
 
                 var maxBitrateSetting = options.GetMaxBitrate(false);
@@ -943,9 +943,11 @@ namespace MediaBrowser.Model.Dlna
             return 192000;
         }
 
-        private int GetAudioBitrate(string subProtocol, long? maxTotalBitrate, int? targetAudioChannels, string[] targetAudioCodecs, MediaStream audioStream)
+        private int GetAudioBitrate(string subProtocol, long? maxTotalBitrate, string[] targetAudioCodecs, MediaStream audioStream, StreamInfo item)
         {
             var targetAudioCodec = targetAudioCodecs.Length == 0 ? null : targetAudioCodecs[0];
+
+            var targetAudioChannels = item.GetTargetAudioChannels(targetAudioCodec);
 
             int defaultBitrate = audioStream == null ? 192000 : audioStream.BitRate ?? GetDefaultAudioBitrateIfUnknown(audioStream);
 
@@ -1290,7 +1292,7 @@ namespace MediaBrowser.Model.Dlna
 
         private static bool IsSubtitleEmbedSupported(MediaStream subtitleStream, SubtitleProfile subtitleProfile, string transcodingSubProtocol, string transcodingContainer)
         {
-            if (!string.IsNullOrWhiteSpace(transcodingContainer))
+            if (!string.IsNullOrEmpty(transcodingContainer))
             {
                 var normalizedContainers = ContainerProfile.SplitValue(transcodingContainer);
 
@@ -1475,7 +1477,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.AudioChannels:
                         {
-                            if (qualifiedOnly)
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1485,15 +1487,15 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.MaxAudioChannels = num;
+                                    item.SetOption(qualifier, "audiochannels", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.MaxAudioChannels = Math.Min(num, item.MaxAudioChannels ?? num);
+                                    item.SetOption(qualifier, "audiochannels", Math.Min(num, item.GetTargetAudioChannels(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.MaxAudioChannels = Math.Max(num, item.MaxAudioChannels ?? num);
+                                    item.SetOption(qualifier, "audiochannels", Math.Max(num, item.GetTargetAudioChannels(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;
@@ -1542,7 +1544,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsInterlaced:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1574,7 +1576,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.RefFrames:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1599,7 +1601,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitDepth:
                         {
-                            if (qualifiedOnly)
+                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
@@ -1609,27 +1611,27 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (condition.Condition == ProfileConditionType.Equals)
                                 {
-                                    item.MaxVideoBitDepth = num;
+                                    item.SetOption(qualifier, "videobitdepth", num.ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.LessThanEqual)
                                 {
-                                    item.MaxVideoBitDepth = Math.Min(num, item.MaxVideoBitDepth ?? num);
+                                    item.SetOption(qualifier, "videobitdepth", Math.Min(num, item.GetTargetVideoBitDepth(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                                 else if (condition.Condition == ProfileConditionType.GreaterThanEqual)
                                 {
-                                    item.MaxVideoBitDepth = Math.Max(num, item.MaxVideoBitDepth ?? num);
+                                    item.SetOption(qualifier, "videobitdepth", Math.Max(num, item.GetTargetVideoBitDepth(qualifier) ?? num).ToString(CultureInfo.InvariantCulture));
                                 }
                             }
                             break;
                         }
                     case ProfileConditionValue.VideoProfile:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }
 
-                            if (!string.IsNullOrWhiteSpace(value))
+                            if (!string.IsNullOrEmpty(value))
                             {
                                 // change from split by | to comma
 
@@ -1721,7 +1723,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoLevel:
                         {
-                            if (string.IsNullOrWhiteSpace(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
                                 continue;
                             }

@@ -149,9 +149,7 @@ namespace MediaBrowser.Common
         /// <summary>
         /// Inits this instance.
         /// </summary>
-        /// <param name="progress">The progress.</param>
-        /// <returns>Task.</returns>
-        Task Init(IProgress<double> progress);
+        void Init();
 
         /// <summary>
         /// Creates the instance.
@@ -161,5 +159,7 @@ namespace MediaBrowser.Common
         object CreateInstance(Type type);
 
         PackageVersionClass SystemUpdateLevel { get; }
+
+        string GetValue(string name);
     }
 }

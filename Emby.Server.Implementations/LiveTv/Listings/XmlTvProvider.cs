@@ -22,7 +22,7 @@ using MediaBrowser.Model.Logging;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
-    public class XmlTvProvider : IListingsProvider
+    public class XmlTvProvider
     {
         private readonly IServerConfigurationManager _config;
         private readonly IHttpClient _httpClient;
@@ -51,7 +51,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         private string GetLanguage(ListingsProviderInfo info)
         {
-            if (!string.IsNullOrWhiteSpace(info.PreferredLanguage))
+            if (!string.IsNullOrEmpty(info.PreferredLanguage))
             {
                 return info.PreferredLanguage;
             }
@@ -88,7 +88,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 // So we need to make sure the decompression method is set to gzip
                 EnableHttpCompression = true,
 
-                UserAgent = string.IsNullOrWhiteSpace(info.UserAgent) ? "Emby/3.0" : info.UserAgent
+                UserAgent = string.IsNullOrEmpty(info.UserAgent) ? "Emby/3.0" : info.UserAgent
 
             }).ConfigureAwait(false);
 
@@ -165,18 +165,9 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
-            }
-
-            if (!await EmbyTV.EmbyTVRegistration.Instance.EnableXmlTv().ConfigureAwait(false))
-            {
-                var length = endDateUtc - startDateUtc;
-                if (length.TotalDays > 1)
-                {
-                    endDateUtc = startDateUtc.AddDays(1);
-                }
             }
 
             _logger.Debug("Getting xmltv programs for channel {0}", channelId);

@@ -8,6 +8,7 @@ namespace MediaBrowser.Controller.Subtitles
     public class SubtitleSearchRequest : IHasProviderIds
     {
         public string Language { get; set; }
+        public string TwoLetterISOLanguageName { get; set; }
 
         public VideoContentType ContentType { get; set; }
 

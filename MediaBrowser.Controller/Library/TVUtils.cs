@@ -25,9 +25,9 @@ namespace MediaBrowser.Controller.Library
         /// <returns>List{DayOfWeek}.</returns>
         public static DayOfWeek[] GetAirDays(string day)
         {
-            if (!string.IsNullOrWhiteSpace(day))
+            if (!string.IsNullOrEmpty(day))
             {
-                if (day.Equals("Daily", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(day, "Daily", StringComparison.OrdinalIgnoreCase))
                 {
                     return new DayOfWeek[]
                                {

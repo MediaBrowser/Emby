@@ -172,7 +172,9 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
         private IHttpRequest GetRequest(HttpListenerContext httpContext)
         {
-            var operationName = httpContext.Request.GetOperationName();
+            var urlSegments = httpContext.Request.Url.Segments;
+
+            var operationName = urlSegments[urlSegments.Length - 1];
 
             var req = new WebSocketSharpRequest(httpContext, operationName, _logger, _memoryStreamProvider);
 

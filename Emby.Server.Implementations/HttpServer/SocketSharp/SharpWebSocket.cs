@@ -60,7 +60,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
         void socket_OnMessage(object sender, SocketHttpListener.MessageEventArgs e)
         {
-            //if (!string.IsNullOrWhiteSpace(e.Data))
+            //if (!string.IsNullOrEmpty(e.Data))
             //{
             //    if (OnReceive != null)
             //    {

@@ -135,7 +135,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
             lock (_modelCache)
             {
-                if (!string.IsNullOrWhiteSpace(cacheKey))
+                if (!string.IsNullOrEmpty(cacheKey))
                 {
                     DiscoverResponse response;
                     if (_modelCache.TryGetValue(cacheKey, out response))
@@ -160,7 +160,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         var discoverResponse = JsonSerializer.DeserializeFromStream<DiscoverResponse>(stream);
 
-                        if (!string.IsNullOrWhiteSpace(cacheKey))
+                        if (!string.IsNullOrEmpty(cacheKey))
                         {
                             lock (_modelCache)
                             {
@@ -181,7 +181,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     {
                         ModelNumber = defaultValue
                     };
-                    if (!string.IsNullOrWhiteSpace(cacheKey))
+                    if (!string.IsNullOrEmpty(cacheKey))
                     {
                         // HDHR4 doesn't have this api
                         lock (_modelCache)
@@ -530,18 +530,12 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return mediaSource;
         }
 
-        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, string channelId, CancellationToken cancellationToken)
+        protected override async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(TunerHostInfo info, ChannelInfo channelInfo, CancellationToken cancellationToken)
         {
             var list = new List<MediaSourceInfo>();
 
-            if (!channelId.StartsWith(ChannelIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return list;
-            }
+            var channelId = channelInfo.Id;
             var hdhrId = GetHdHrIdFromChannelId(channelId);
-
-            var channels = await GetChannels(info, true, CancellationToken.None).ConfigureAwait(false);
-            var channelInfo = channels.FirstOrDefault(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
 
             var hdHomerunChannelInfo = channelInfo as HdHomerunChannelInfo;
 
@@ -559,8 +553,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 
                     if (modelInfo != null && modelInfo.SupportsTranscoding)
                     {
-                        list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
-
                         if (info.AllowHWTranscoding)
                         {
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "heavy"));
@@ -571,6 +563,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "internet240"));
                             list.Add(GetMediaSource(info, hdhrId, channelInfo, "mobile"));
                         }
+
+                        list.Add(GetMediaSource(info, hdhrId, channelInfo, "native"));
                     }
                 }
                 catch
@@ -587,16 +581,13 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, string channelId, string streamId, CancellationToken cancellationToken)
+        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, CancellationToken cancellationToken)
         {
             var profile = streamId.Split('_')[0];
 
-            Logger.Info("GetChannelStream: channel id: {0}. stream id: {1} profile: {2}", channelId, streamId, profile);
+            Logger.Info("GetChannelStream: channel id: {0}. stream id: {1} profile: {2}", channelInfo.Id, streamId, profile);
 
-            var hdhrId = GetHdHrIdFromChannelId(channelId);
-
-            var channels = await GetChannels(info, true, CancellationToken.None).ConfigureAwait(false);
-            var channelInfo = channels.FirstOrDefault(i => string.Equals(i.Id, channelId, StringComparison.OrdinalIgnoreCase));
+            var hdhrId = GetHdHrIdFromChannelId(channelInfo.Id);
 
             var hdhomerunChannel = channelInfo as HdHomerunChannelInfo;
 
@@ -614,20 +605,21 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 return new HdHomerunUdpStream(mediaSource, info, streamId, new LegacyHdHomerunChannelCommands(hdhomerunChannel.Path), modelInfo.TunerCount, FileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _socketFactory, _networkManager, _environment);
             }
 
-            // The UDP method is not working reliably on OSX, and on BSD it hasn't been tested yet
-            var enableHttpStream = _environment.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX
-                || _environment.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.BSD;
-            enableHttpStream = true;
+            var enableHttpStream = true;
             if (enableHttpStream)
             {
                 mediaSource.Protocol = MediaProtocol.Http;
 
                 var httpUrl = channelInfo.Path;
 
+                // Unknown
+                bool? isInterlaced = null;
+
                 // If raw was used, the tuner doesn't support params
                 if (!string.IsNullOrWhiteSpace(profile) && !string.Equals(profile, "native", StringComparison.OrdinalIgnoreCase))
                 {
                     httpUrl += "?transcode=" + profile;
+                    isInterlaced = false;
                 }
                 mediaSource.Path = httpUrl;
 

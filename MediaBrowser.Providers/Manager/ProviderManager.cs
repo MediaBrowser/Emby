@@ -367,7 +367,7 @@ namespace MediaBrowser.Providers.Manager
                 // If locked only allow local providers
                 if (item.IsLocked && !(provider is ILocalImageProvider))
                 {
-                    if (refreshOptions.ImageRefreshMode != ImageRefreshMode.FullRefresh)
+                    if (refreshOptions.ImageRefreshMode != MetadataRefreshMode.FullRefresh)
                     {
                         return false;
                     }
@@ -475,7 +475,6 @@ namespace MediaBrowser.Providers.Manager
                 GetPluginSummary<MusicArtist>(),
                 GetPluginSummary<Audio>(),
                 GetPluginSummary<AudioBook>(),
-                GetPluginSummary<AudioPodcast>(),
                 GetPluginSummary<Genre>(),
                 GetPluginSummary<Studio>(),
                 GetPluginSummary<GameGenre>(),
@@ -1005,15 +1004,6 @@ namespace MediaBrowser.Providers.Manager
                     {
                         // Try to throttle this a little bit.
                         await Task.Delay(100).ConfigureAwait(false);
-
-                        if (refreshItem.Item2.ValidateChildren)
-                        {
-                            var folder = item as Folder;
-                            if (folder != null)
-                            {
-                                await folder.ValidateChildren(new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
-                            }
-                        }
 
                         var artist = item as MusicArtist;
                         var task = artist == null

@@ -63,7 +63,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         public async Task<IEnumerable<ProgramInfo>> GetProgramsAsync(ListingsProviderInfo info, string channelId, DateTime startDateUtc, DateTime endDateUtc, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
+            if (string.IsNullOrEmpty(channelId))
             {
                 throw new ArgumentNullException("channelId");
             }
@@ -75,7 +75,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
             var token = await GetToken(info, cancellationToken).ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 _logger.Warn("SchedulesDirect token is empty, returning empty program list");
                 return programsInfo;
@@ -589,7 +589,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             }
 
             var password = info.Password;
-            if (string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrEmpty(password))
             {
                 return null;
             }
@@ -607,7 +607,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 _tokens.TryAdd(username, savedToken);
             }
 
-            if (!string.IsNullOrWhiteSpace(savedToken.Name) && !string.IsNullOrWhiteSpace(savedToken.Value))
+            if (!string.IsNullOrEmpty(savedToken.Name) && !string.IsNullOrEmpty(savedToken.Value))
             {
                 long ticks;
                 if (long.TryParse(savedToken.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out ticks))
@@ -755,12 +755,12 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         {
             var token = await GetToken(info, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new ArgumentException("Authentication required.");
             }
 
-            if (string.IsNullOrWhiteSpace(info.ListingsId))
+            if (string.IsNullOrEmpty(info.ListingsId))
             {
                 throw new ArgumentException("Listings Id required");
             }
@@ -796,14 +796,14 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         private async Task<bool> HasLineup(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(info.ListingsId))
+            if (string.IsNullOrEmpty(info.ListingsId))
             {
                 throw new ArgumentException("Listings Id required");
             }
 
             var token = await GetToken(info, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new Exception("token required");
             }
@@ -848,18 +848,18 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         {
             if (validateLogin)
             {
-                if (string.IsNullOrWhiteSpace(info.Username))
+                if (string.IsNullOrEmpty(info.Username))
                 {
                     throw new ArgumentException("Username is required");
                 }
-                if (string.IsNullOrWhiteSpace(info.Password))
+                if (string.IsNullOrEmpty(info.Password))
                 {
                     throw new ArgumentException("Password is required");
                 }
             }
             if (validateListings)
             {
-                if (string.IsNullOrWhiteSpace(info.ListingsId))
+                if (string.IsNullOrEmpty(info.ListingsId))
                 {
                     throw new ArgumentException("Listings Id required");
                 }
@@ -881,14 +881,14 @@ namespace Emby.Server.Implementations.LiveTv.Listings
         public async Task<List<ChannelInfo>> GetChannels(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
             var listingsId = info.ListingsId;
-            if (string.IsNullOrWhiteSpace(listingsId))
+            if (string.IsNullOrEmpty(listingsId))
             {
                 throw new Exception("ListingsId required");
             }
 
             var token = await GetToken(info, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new Exception("token required");
             }
@@ -951,7 +951,6 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                             if (station.logo != null)
                             {
                                 channelInfo.ImageUrl = station.logo.URL;
-                                channelInfo.HasImage = true;
                             }
                         }
 

@@ -201,21 +201,6 @@ namespace MediaBrowser.Api.Library
         public string Id { get; set; }
     }
 
-    [Route("/Items/YearIndex", "GET", Summary = "Gets a year index based on an item query.")]
-    [Authenticated]
-    public class GetYearIndex : IReturn<List<ItemIndex>>
-    {
-        /// <summary>
-        /// Gets or sets the user id.
-        /// </summary>
-        /// <value>The user id.</value>
-        [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
-
-        [ApiMember(Name = "IncludeItemTypes", Description = "Optional. If specified, results will be filtered based on item type. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string IncludeItemTypes { get; set; }
-    }
-
     /// <summary>
     /// Class GetPhyscialPaths
     /// </summary>
@@ -574,8 +559,8 @@ namespace MediaBrowser.Api.Library
         public Task<object> Get(GetFile request)
         {
             var item = _libraryManager.GetItemById(request.Id);
-            var locationType = item.LocationType;
-            if (locationType == LocationType.Remote || locationType == LocationType.Virtual)
+
+            if (!item.IsFileProtocol)
             {
                 throw new ArgumentException("This command cannot be used for remote or virtual items.");
             }
@@ -756,9 +741,10 @@ namespace MediaBrowser.Api.Library
                     continue;
                 }
 
-                item.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(item, new DeleteOptions
                 {
                     DeleteFileLocation = true
+
                 }, true);
             }
         }
@@ -928,41 +914,6 @@ namespace MediaBrowser.Api.Library
                 TotalRecordCount = items.Length,
                 OwnerId = _dtoService.GetDtoId(item)
             };
-        }
-
-        private readonly CultureInfo _usCulture = new CultureInfo("en-US");
-
-        public object Get(GetYearIndex request)
-        {
-            var includeTypes = string.IsNullOrWhiteSpace(request.IncludeItemTypes)
-             ? new string[] { }
-             : request.IncludeItemTypes.Split(',');
-
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
-
-            var query = new InternalItemsQuery(user)
-            {
-                IncludeItemTypes = includeTypes,
-                Recursive = true,
-                DtoOptions = new DtoOptions(false)
-                {
-                    EnableImages = false
-                }
-            };
-
-            var items = _libraryManager.GetItemList(query);
-
-            var lookup = items
-                .ToLookup(i => i.ProductionYear ?? -1)
-                .OrderBy(i => i.Key)
-                .Select(i => new ItemIndex
-                {
-                    ItemCount = i.Count(),
-                    Name = i.Key == -1 ? string.Empty : i.Key.ToString(_usCulture)
-                })
-                .ToList();
-
-            return ToOptimizedSerializedResultUsingCache(lookup);
         }
     }
 }

@@ -210,7 +210,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var videoStream = mediaSource.VideoStream;
             var videoDecoder = videoStream == null ? null : new EncodingHelper(_mediaEncoder, _fileSystem, null).GetVideoDecoder(VideoType.VideoFile, videoStream, GetEncodingOptions());
 
-            if (!string.IsNullOrWhiteSpace(videoDecoder))
+            if (!string.IsNullOrEmpty(videoDecoder))
             {
                 inputModifier += " " + videoDecoder;
             }

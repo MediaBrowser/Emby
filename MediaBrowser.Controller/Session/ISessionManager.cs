@@ -66,12 +66,6 @@ namespace MediaBrowser.Controller.Session
         IEnumerable<SessionInfo> Sessions { get; }
 
         /// <summary>
-        /// Adds the parts.
-        /// </summary>
-        /// <param name="sessionFactories">The session factories.</param>
-        void AddParts(IEnumerable<ISessionControllerFactory> sessionFactories);
-
-        /// <summary>
         /// Logs the user activity.
         /// </summary>
         /// <param name="appName">Type of the client.</param>
@@ -80,9 +74,9 @@ namespace MediaBrowser.Controller.Session
         /// <param name="deviceName">Name of the device.</param>
         /// <param name="remoteEndPoint">The remote end point.</param>
         /// <param name="user">The user.</param>
-        /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException">user</exception>
-        Task<SessionInfo> LogSessionActivity(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user);
+        SessionInfo LogSessionActivity(string appName, string appVersion, string deviceId, string deviceName, string remoteEndPoint, User user);
+
+        void UpdateDeviceName(string sessionId, string reportedDeviceName);
 
         /// <summary>
         /// Used to report that playback has started for an item
@@ -190,6 +184,8 @@ namespace MediaBrowser.Controller.Session
         /// <returns>Task.</returns>
         Task SendMessageToUserSessions<T>(List<string> userIds, string name, T data, CancellationToken cancellationToken);
 
+        Task SendMessageToUserSessions<T>(List<string> userIds, string name, Func<T> dataFn, CancellationToken cancellationToken);
+
         /// <summary>
         /// Sends the message to user device sessions.
         /// </summary>
@@ -199,8 +195,7 @@ namespace MediaBrowser.Controller.Session
         /// <param name="data">The data.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task SendMessageToUserDeviceSessions<T>(string deviceId, string name, T data,
-            CancellationToken cancellationToken);
+        Task SendMessageToUserDeviceSessions<T>(string deviceId, string name, T data, CancellationToken cancellationToken);
         
         /// <summary>
         /// Sends the restart required message.
@@ -301,7 +296,7 @@ namespace MediaBrowser.Controller.Session
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="remoteEndpoint">The remote endpoint.</param>
         /// <returns>SessionInfo.</returns>
-        Task<SessionInfo> GetSessionByAuthenticationToken(string token, string deviceId, string remoteEndpoint);
+        SessionInfo GetSessionByAuthenticationToken(string token, string deviceId, string remoteEndpoint);
 
         /// <summary>
         /// Gets the session by authentication token.
@@ -311,7 +306,7 @@ namespace MediaBrowser.Controller.Session
         /// <param name="remoteEndpoint">The remote endpoint.</param>
         /// <param name="appVersion">The application version.</param>
         /// <returns>Task&lt;SessionInfo&gt;.</returns>
-        Task<SessionInfo> GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion);
+        SessionInfo GetSessionByAuthenticationToken(AuthenticationInfo info, string deviceId, string remoteEndpoint, string appVersion);
 
         /// <summary>
         /// Logouts the specified access token.

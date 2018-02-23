@@ -203,7 +203,7 @@ namespace Emby.Server.Implementations.Updates
             }
         }
 
-        private DateTime _lastPackageUpdateTime;
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Gets all available packages.
@@ -212,76 +212,21 @@ namespace Emby.Server.Implementations.Updates
         /// <returns>Task{List{PackageInfo}}.</returns>
         public async Task<List<PackageInfo>> GetAvailablePackagesWithoutRegistrationInfo(CancellationToken cancellationToken)
         {
-            _logger.Info("Opening {0}", PackageCachePath);
-            try
+            using (var response = await _httpClient.SendAsync(new HttpRequestOptions
             {
-                using (var stream = _fileSystem.OpenRead(PackageCachePath))
+                Url = "https://www.mb3admin.com/admin/service/EmbyPackages.json",
+                CancellationToken = cancellationToken,
+                Progress = new SimpleProgress<Double>(),
+                CacheLength = GetCacheLength(),
+                CacheMode = CacheMode.Unconditional,
+                ResourcePool = _updateSemaphore
+
+            }, "GET").ConfigureAwait(false))
+            {
+                using (var stream = response.Content)
                 {
-                    var packages = _jsonSerializer.DeserializeFromStream<PackageInfo[]>(stream);
-
-                    if (DateTime.UtcNow - _lastPackageUpdateTime > GetCacheLength())
-                    {
-                        UpdateCachedPackages(CancellationToken.None, false);
-                    }
-
-                    return FilterPackages(packages);
+                    return FilterPackages(_jsonSerializer.DeserializeFromStream<PackageInfo[]>(stream));
                 }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            _lastPackageUpdateTime = DateTime.MinValue;
-            await UpdateCachedPackages(cancellationToken, true).ConfigureAwait(false);
-            using (var stream = _fileSystem.OpenRead(PackageCachePath))
-            {
-                return FilterPackages(_jsonSerializer.DeserializeFromStream<PackageInfo[]>(stream));
-            }
-        }
-
-        private string PackageCachePath
-        {
-            get { return Path.Combine(_appPaths.CachePath, "serverpackages.json"); }
-        }
-
-        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1, 1);
-        private async Task UpdateCachedPackages(CancellationToken cancellationToken, bool throwErrors)
-        {
-            await _updateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            try
-            {
-                if (DateTime.UtcNow - _lastPackageUpdateTime < GetCacheLength())
-                {
-                    return;
-                }
-
-                var tempFile = await _httpClient.GetTempFile(new HttpRequestOptions
-                {
-                    Url = "https://www.mb3admin.com/admin/service/EmbyPackages.json",
-                    CancellationToken = cancellationToken,
-                    Progress = new SimpleProgress<Double>()
-
-                }).ConfigureAwait(false);
-
-                _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(PackageCachePath));
-
-                _fileSystem.CopyFile(tempFile, PackageCachePath, true);
-                _lastPackageUpdateTime = DateTime.UtcNow;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error updating package cache", ex);
-
-                if (throwErrors)
-                {
-                    throw;
-                }
-            }
-            finally
-            {
-                _updateSemaphore.Release();
             }
         }
 
@@ -304,12 +249,12 @@ namespace Emby.Server.Implementations.Updates
                 var versions = new List<PackageVersionInfo>();
                 foreach (var version in package.versions)
                 {
-                    if (string.IsNullOrWhiteSpace(version.sourceUrl))
+                    if (string.IsNullOrEmpty(version.sourceUrl))
                     {
                         continue;
                     }
 
-                    if (string.IsNullOrWhiteSpace(version.runtimes) || version.runtimes.IndexOf(_packageRuntime, StringComparison.OrdinalIgnoreCase) == -1)
+                    if (string.IsNullOrEmpty(version.runtimes) || version.runtimes.IndexOf(_packageRuntime, StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         continue;
                     }
@@ -339,7 +284,7 @@ namespace Emby.Server.Implementations.Updates
 
             var returnList = new List<PackageInfo>();
 
-            var filterOnPackageType = !string.IsNullOrWhiteSpace(packageType);
+            var filterOnPackageType = !string.IsNullOrEmpty(packageType);
 
             foreach (var p in packagesList)
             {
@@ -465,7 +410,7 @@ namespace Emby.Server.Implementations.Updates
                 return latestPluginInfo != null && GetPackageVersion(latestPluginInfo) > p.Version ? latestPluginInfo : null;
 
             }).Where(i => i != null)
-            .Where(p => !string.IsNullOrWhiteSpace(p.sourceUrl) && !CompletedInstallations.Any(i => string.Equals(i.AssemblyGuid, p.guid, StringComparison.OrdinalIgnoreCase)));
+            .Where(p => !string.IsNullOrEmpty(p.sourceUrl) && !CompletedInstallations.Any(i => string.Equals(i.AssemblyGuid, p.guid, StringComparison.OrdinalIgnoreCase)));
         }
 
         /// <summary>

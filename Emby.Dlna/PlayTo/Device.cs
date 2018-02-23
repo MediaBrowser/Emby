@@ -106,27 +106,17 @@ namespace Emby.Dlna.PlayTo
             _timerFactory = timerFactory;
         }
 
-        private int GetPlaybackTimerIntervalMs()
-        {
-            return 1000;
-        }
-
-        private int GetInactiveTimerIntervalMs()
-        {
-            return 60000;
-        }
-
         public void Start()
         {
-            _timer = _timerFactory.Create(TimerCallback, null, GetPlaybackTimerIntervalMs(), GetInactiveTimerIntervalMs());
-
-            _timerActive = false;
+            _logger.Debug("Dlna Device.Start");
+            _timer = _timerFactory.Create(TimerCallback, null, 1000, Timeout.Infinite);
         }
 
         private DateTime _lastVolumeRefresh;
+        private bool _volumeRefreshActive;
         private void RefreshVolumeIfNeeded()
         {
-            if (!_timerActive)
+            if (!_volumeRefreshActive)
             {
                 return;
             }
@@ -155,21 +145,17 @@ namespace Emby.Dlna.PlayTo
         }
 
         private readonly object _timerLock = new object();
-        private bool _timerActive;
-        private void RestartTimer()
+        private void RestartTimer(bool immediate = false)
         {
-            if (_disposed)
-                return;
-
             lock (_timerLock)
             {
-                if (!_timerActive)
-                {
-                    _logger.Debug("RestartTimer");
-                    _timer.Change(10, GetPlaybackTimerIntervalMs());
-                }
+                if (_disposed)
+                    return;
 
-                _timerActive = true;
+                _volumeRefreshActive = true;
+
+                var time = immediate ? 100 : 10000;
+                _timer.Change(time, Timeout.Infinite);
             }
         }
 
@@ -183,18 +169,9 @@ namespace Emby.Dlna.PlayTo
                 if (_disposed)
                     return;
 
-                if (_timerActive)
-                {
-                    _logger.Debug("RestartTimerInactive");
-                    var interval = GetInactiveTimerIntervalMs();
+                _volumeRefreshActive = false;
 
-                    if (_timer != null)
-                    {
-                        _timer.Change(interval, interval);
-                    }
-                }
-
-                _timerActive = false;
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
 
@@ -331,11 +308,15 @@ namespace Emby.Dlna.PlayTo
 
             await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, String.Format("{0:hh}:{0:mm}:{0:ss}", value), "REL_TIME"))
                 .ConfigureAwait(false);
+
+            RestartTimer(true);
         }
 
         public async Task SetAvTransport(string url, string header, string metaData, CancellationToken cancellationToken)
         {
             var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
+
+            url = url.Replace("&", "&amp;");
 
             _logger.Debug("{0} - SetAvTransport Uri: {1} DlnaHeaders: {2}", Properties.Name, url, header);
 
@@ -372,7 +353,7 @@ namespace Emby.Dlna.PlayTo
                 // Others won't
             }
 
-            RestartTimer();
+            RestartTimer(true);
         }
 
         private string CreateDidlMeta(string value)
@@ -404,6 +385,8 @@ namespace Emby.Dlna.PlayTo
             var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
 
             await SetPlay(avCommands, cancellationToken).ConfigureAwait(false);
+
+            RestartTimer(true);
         }
 
         public async Task SetStop(CancellationToken cancellationToken)
@@ -418,6 +401,8 @@ namespace Emby.Dlna.PlayTo
 
             await new SsdpHttpClient(_httpClient, _config).SendCommandAsync(Properties.BaseUrl, service, command.Name, avCommands.BuildPost(command, service.ServiceType, 1))
                 .ConfigureAwait(false);
+
+            RestartTimer(true);
         }
 
         public async Task SetPause(CancellationToken cancellationToken)
@@ -434,20 +419,19 @@ namespace Emby.Dlna.PlayTo
                 .ConfigureAwait(false);
 
             TransportState = TRANSPORTSTATE.PAUSED;
+
+            RestartTimer(true);
         }
 
         #endregion
 
         #region Get data
 
-        private int _successiveStopCount;
         private int _connectFailureCount;
         private async void TimerCallback(object sender)
         {
             if (_disposed)
                 return;
-
-            const int maxSuccessiveStopReturns = 5;
 
             try
             {
@@ -496,16 +480,10 @@ namespace Emby.Dlna.PlayTo
                     // If we're not playing anything make sure we don't get data more often than neccessry to keep the Session alive
                     if (transportState.Value == TRANSPORTSTATE.STOPPED)
                     {
-                        _successiveStopCount++;
-
-                        if (_successiveStopCount >= maxSuccessiveStopReturns)
-                        {
-                            RestartTimerInactive();
-                        }
+                        RestartTimerInactive();
                     }
                     else
                     {
-                        _successiveStopCount = 0;
                         RestartTimer();
                     }
                 }
@@ -514,14 +492,13 @@ namespace Emby.Dlna.PlayTo
                     RestartTimerInactive();
                 }
             }
-            catch (HttpException)
+            catch (Exception ex)
             {
                 if (_disposed)
                     return;
 
                 //_logger.ErrorException("Error updating device info for {0}", ex, Properties.Name);
 
-                _successiveStopCount++;
                 _connectFailureCount++;
 
                 if (_connectFailureCount >= 3)
@@ -534,24 +511,7 @@ namespace Emby.Dlna.PlayTo
                         return;
                     }
                 }
-                if (_successiveStopCount >= maxSuccessiveStopReturns)
-                {
-                    RestartTimerInactive();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (_disposed)
-                    return;
-
-                _logger.ErrorException("Error updating device info for {0}", ex, Properties.Name);
-
-                _successiveStopCount++;
-
-                if (_successiveStopCount >= maxSuccessiveStopReturns)
-                {
-                    RestartTimerInactive();
-                }
+                RestartTimerInactive();
             }
         }
 
@@ -885,6 +845,7 @@ namespace Emby.Dlna.PlayTo
             string url = NormalizeUrl(Properties.BaseUrl, avService.ScpdUrl);
 
             var httpClient = new SsdpHttpClient(_httpClient, _config);
+
             var document = await httpClient.GetDataAsync(url, cancellationToken).ConfigureAwait(false);
 
             avCommands = TransportCommands.Create(document);
@@ -916,6 +877,7 @@ namespace Emby.Dlna.PlayTo
             string url = NormalizeUrl(Properties.BaseUrl, avService.ScpdUrl);
 
             var httpClient = new SsdpHttpClient(_httpClient, _config);
+            _logger.Debug("Dlna Device.GetRenderingProtocolAsync");
             var document = await httpClient.GetDataAsync(url, cancellationToken).ConfigureAwait(false);
 
             rendererCommands = TransportCommands.Create(document);
@@ -1137,6 +1099,12 @@ namespace Emby.Dlna.PlayTo
 
         private void OnPlaybackProgress(uBaseObject mediaInfo)
         {
+            var mediaUrl = mediaInfo.Url;
+            if (string.IsNullOrWhiteSpace(mediaUrl))
+            {
+                return;
+            }
+
             if (PlaybackProgress != null)
             {
                 PlaybackProgress.Invoke(this, new PlaybackProgressEventArgs

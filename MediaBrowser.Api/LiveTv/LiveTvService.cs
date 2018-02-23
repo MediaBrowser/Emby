@@ -274,6 +274,14 @@ namespace MediaBrowser.Api.LiveTv
         public string UserId { get; set; }
     }
 
+    [Route("/LiveTv/Recordings/Folders", "GET", Summary = "Gets recording folders")]
+    [Authenticated]
+    public class GetRecordingFolders : IReturn<BaseItemDto[]>
+    {
+        [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string UserId { get; set; }
+    }
+
     [Route("/LiveTv/Recordings/{Id}", "GET", Summary = "Gets a live tv recording")]
     [Authenticated]
     public class GetRecording : IReturn<BaseItemDto>
@@ -727,6 +735,22 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedResult(list);
         }
 
+        public object Get(GetRecordingFolders request)
+        {
+            var user = string.IsNullOrEmpty(request.UserId) ? null : _userManager.GetUserById(request.UserId);
+            var folders = _liveTvManager.GetRecordingFolders(user);
+
+            var returnArray = _dtoService.GetBaseItemDtos(folders.ToArray(), new DtoOptions(), user);
+
+            var result = new QueryResult<BaseItemDto>
+            {
+                Items = returnArray,
+                TotalRecordCount = returnArray.Length
+            };
+
+            return ToOptimizedSerializedResultUsingCache(result);
+        }
+
         public object Get(GetLiveRecordingFile request)
         {
             var path = _liveTvManager.GetEmbyTvActiveRecordingPath(request.Id);
@@ -833,7 +857,7 @@ namespace MediaBrowser.Api.LiveTv
 
         private void AssertUserCanManageLiveTv()
         {
-            var user = _sessionContext.GetUser(Request).Result;
+            var user = _sessionContext.GetUser(Request);
 
             if (user == null)
             {
@@ -1143,9 +1167,10 @@ namespace MediaBrowser.Api.LiveTv
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.DeleteRecording(request.Id);
-
-            Task.WaitAll(task);
+            _libraryManager.DeleteItem(_libraryManager.GetItemById(request.Id), new DeleteOptions
+            {
+                DeleteFileLocation = false
+            });
         }
 
         public void Delete(CancelTimer request)

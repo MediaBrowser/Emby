@@ -125,9 +125,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var protocol = item.LocationType == LocationType.Remote
-                ? MediaProtocol.Http
-                : MediaProtocol.File;
+            var protocol = item.PathProtocol ?? MediaProtocol.File;
 
             return _mediaEncoder.GetMediaInfo(new MediaInfoRequest
             {
@@ -503,7 +501,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 }
             }
 
-            video.SubtitleFiles = externalSubtitleStreams.Select(i => i.Path).OrderBy(i => i).ToArray();
+            video.SubtitleFiles = externalSubtitleStreams.Select(i => i.Path).ToArray();
 
             currentStreams.AddRange(externalSubtitleStreams);
         }

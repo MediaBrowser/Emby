@@ -228,7 +228,7 @@ namespace MediaBrowser.Controller.Entities
             return RefreshMetadata(new MetadataRefreshOptions(new DirectoryService(Logger, FileSystem))
             {
                 ReplaceAllMetadata = true,
-                ImageRefreshMode = ImageRefreshMode.FullRefresh,
+                ImageRefreshMode = MetadataRefreshMode.FullRefresh,
                 MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
                 ForceSave = true
 

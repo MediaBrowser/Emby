@@ -86,6 +86,7 @@ namespace MediaBrowser.Model.Net
             dict.Add(".avi", "video/x-msvideo");
             dict.Add(".asf", "video/x-ms-asf");
             dict.Add(".m4v", "video/x-m4v");
+            dict.Add(".m4s", "video/mp4");
             dict.Add(".cbz", "application/epub+zip");
             dict.Add(".cbr", "application/epub+zip");
             dict.Add(".epub", "application/epub+zip");

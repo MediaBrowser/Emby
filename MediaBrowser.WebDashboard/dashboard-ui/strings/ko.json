@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "LabelPrevious": "\uc774\uc804",
     "LabelFinish": "\ub05d\ub0b4\uae30",
     "LabelNext": "\ub2e4\uc74c",
@@ -453,6 +455,7 @@
     "HeaderSource": "\uc18c\uc2a4",
     "HeaderStatus": "\uc0c1\ud0dc",
     "HeaderDestination": "Destination",
+    "Subscriptions": "Subscriptions",
     "HeaderProgram": "\ud504\ub85c\uadf8\ub7a8",
     "HeaderClients": "\ud074\ub77c\uc774\uc5b8\ud2b8",
     "LabelCompleted": "\uc644\ub8cc",
@@ -975,8 +978,6 @@
     "TitleSync": "\ub3d9\uae30\ud654",
     "OptionAllowSyncContent": "\ub3d9\uae30\ud654 \ud5c8\uc6a9",
     "OptionAllowContentDownloading": "\ubbf8\ub514\uc5b4 \ub2e4\uc6b4\ub85c\ub4dc \ud5c8\uc6a9",
-    "NameSeasonUnknown": "\uc2dc\uc98c \uc54c \uc218 \uc5c6\uc74c",
-    "NameSeasonNumber": "\uc2dc\uc98c {0}",
     "LabelNewUserNameHelp": "\uc0ac\uc6a9\uc790\uba85\uc5d0 \uc54c\ud30c\ubcb3 (a-z), \uc22b\uc790 (0-9), \ub300\uc2dc (-), \ubc11\uc904 (_), apostrophes ('), \ub9c8\uce68\ud45c (.) \ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
     "TabSyncJobs": "\uc791\uc5c5 \ub3d9\uae30\ud654",
     "HeaderThisUserIsCurrentlyDisabled": "\uc774 \uc0ac\uc6a9\uc790\ub294 \ud604\uc7ac \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4",
@@ -1729,7 +1730,7 @@
     "ButtonScanAllLibraries": "Scan All Libraries",
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
-    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested.",
+    "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
     "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
@@ -1763,5 +1764,8 @@
     "LaunchWebAppOnStartupHelp": "This will open the web app in your default web browser when Emby Server initially starts. This will not occur when using the restart server function.",
     "LabelUserAgent": "User agent:",
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
-    "HeaderConfigureRemoteAccess": "Configure Remote Access"
+    "HeaderConfigureRemoteAccess": "Configure Remote Access",
+    "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelLanNetworks": "LAN networks:",
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

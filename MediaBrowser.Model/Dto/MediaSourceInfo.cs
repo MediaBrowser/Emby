@@ -214,7 +214,10 @@ namespace MediaBrowser.Model.Dto
             {
                 if (currentStream.Type == MediaStreamType.Audio && currentStream.IsDefault)
                 {
-                    return currentStream.Index != stream.Index;
+                    if (currentStream.Index != stream.Index)
+                    {
+                        return true;
+                    }
                 }
             }
 

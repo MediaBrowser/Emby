@@ -27,7 +27,6 @@ namespace MediaBrowser.Providers.Manager
         protected readonly IFileSystem FileSystem;
         protected readonly IUserDataManager UserDataManager;
         protected readonly ILibraryManager LibraryManager;
-        private readonly SubtitleResolver _subtitleResolver;
 
         protected MetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager)
         {
@@ -37,8 +36,6 @@ namespace MediaBrowser.Providers.Manager
             FileSystem = fileSystem;
             UserDataManager = userDataManager;
             LibraryManager = libraryManager;
-
-            _subtitleResolver = new SubtitleResolver(BaseItem.LocalizationManager, fileSystem);
         }
 
         private FileSystemMetadata TryGetFile(string path, IDirectoryService directoryService)
@@ -69,39 +66,15 @@ namespace MediaBrowser.Providers.Manager
                 requiresRefresh = true;
             }
 
-            DateTime? newDateModified = null;
-            if (item.LocationType == LocationType.FileSystem)
-            {
-                var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
-                if (file != null)
-                {
-                    newDateModified = file.LastWriteTimeUtc;
-                    if (item.EnableRefreshOnDateModifiedChange)
-                    {
-                        if (newDateModified != item.DateModified)
-                        {
-                            Logger.Debug("Date modified for {0}. Old date {1} new date {2} Id {3}", item.Path, item.DateModified, newDateModified, item.Id);
-                            requiresRefresh = true;
-                        }
-                    }
-
-                    if (!requiresRefresh && item.SupportsLocalMetadata)
-                    {
-                        var video = item as Video;
-
-                        if (video != null && !video.IsPlaceHolder)
-                        {
-                            requiresRefresh = !video.SubtitleFiles
-                                .SequenceEqual(_subtitleResolver.GetExternalSubtitleFiles(video, refreshOptions.DirectoryService, false), StringComparer.Ordinal);
-                        }
-                    }
-                }
-            }
-
             if (!requiresRefresh && refreshOptions.MetadataRefreshMode != MetadataRefreshMode.None)
             {
                 // TODO: If this returns true, should we instead just change metadata refresh mode to Full?
                 requiresRefresh = item.RequiresRefresh();
+
+                if (requiresRefresh)
+                {
+                    Logger.Debug("Refreshing {0} {1} because item.RequiresRefresh() returned true", typeof(TItemType).Name, item.Path ?? item.Name);
+                }
             }
 
             var itemImageProvider = new ItemImageProvider(Logger, ProviderManager, ServerConfigurationManager, FileSystem);
@@ -170,7 +143,7 @@ namespace MediaBrowser.Providers.Manager
             }
 
             // Next run remote image providers, but only if local image providers didn't throw an exception
-            if (!localImagesFailed && refreshOptions.ImageRefreshMode != ImageRefreshMode.ValidationOnly)
+            if (!localImagesFailed && refreshOptions.ImageRefreshMode != MetadataRefreshMode.ValidationOnly)
             {
                 var providers = GetNonLocalImageProviders(item, allImageProviders, refreshOptions).ToList();
 
@@ -189,14 +162,18 @@ namespace MediaBrowser.Providers.Manager
             var beforeSaveResult = BeforeSave(itemOfType, isFirstRefresh || refreshOptions.ReplaceAllMetadata || refreshOptions.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || requiresRefresh || refreshOptions.ForceSave, updateType);
             updateType = updateType | beforeSaveResult;
 
-            if (newDateModified.HasValue)
-            {
-                item.DateModified = newDateModified.Value;
-            }
-
             // Save if changes were made, or it's never been saved before
             if (refreshOptions.ForceSave || updateType > ItemUpdateType.None || isFirstRefresh || refreshOptions.ReplaceAllMetadata || requiresRefresh)
             {
+                if (item.IsFileProtocol)
+                {
+                    var file = TryGetFile(item.Path, refreshOptions.DirectoryService);
+                    if (file != null)
+                    {
+                        item.DateModified = file.LastWriteTimeUtc;
+                    }
+                }
+
                 // If any of these properties are set then make sure the updateType is not None, just to force everything to save
                 if (refreshOptions.ForceSave || refreshOptions.ReplaceAllMetadata)
                 {
@@ -504,7 +481,7 @@ namespace MediaBrowser.Providers.Manager
             var originalPremiereDate = item.PremiereDate;
             var originalProductionYear = item.ProductionYear;
 
-            if (date > DateTime.MinValue)
+            if (date > DateTime.MinValue && date < DateTime.MaxValue)
             {
                 item.PremiereDate = date;
                 item.ProductionYear = date.Year;
@@ -663,7 +640,7 @@ namespace MediaBrowser.Providers.Manager
             var dateLastImageRefresh = item.DateLastRefreshed;
 
             // Run all if either of these flags are true
-            var runAllProviders = options.ImageRefreshMode == ImageRefreshMode.FullRefresh || dateLastImageRefresh == default(DateTime);
+            var runAllProviders = options.ImageRefreshMode == MetadataRefreshMode.FullRefresh || dateLastImageRefresh == default(DateTime);
 
             if (!runAllProviders)
             {
@@ -710,7 +687,7 @@ namespace MediaBrowser.Providers.Manager
             var item = metadata.Item;
 
             var customProviders = providers.OfType<ICustomMetadataProvider<TItemType>>().ToList();
-            var logName = item.LocationType == LocationType.Remote ? item.Name ?? item.Path : item.Path ?? item.Name;
+            var logName = !item.IsFileProtocol ? item.Name ?? item.Path : item.Path ?? item.Name;
 
             foreach (var provider in customProviders.Where(i => i is IPreRefreshProvider))
             {

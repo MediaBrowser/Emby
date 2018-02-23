@@ -8,8 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
+using System.Collections.Generic;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
 
@@ -62,32 +61,44 @@ namespace MediaBrowser.Providers.TV
 
             var hasChanges = false;
 
+            List<Season> seasons = null;
+
             // Loop through the unique season numbers
             foreach (var seasonNumber in episodesInSeriesFolder.Select(i => i.ParentIndexNumber ?? -1)
                 .Where(i => i >= 0)
                 .Distinct()
                 .ToList())
             {
-                var existingSeason = series.Children.OfType<Season>()
+                if (seasons == null)
+                {
+                    seasons = series.Children.OfType<Season>().ToList();
+                }
+                var existingSeason = seasons
                     .FirstOrDefault(i => i.IndexNumber.HasValue && i.IndexNumber.Value == seasonNumber);
 
                 if (existingSeason == null)
                 {
                     await AddSeason(series, seasonNumber, false, cancellationToken).ConfigureAwait(false);
-
                     hasChanges = true;
+                    seasons = null;
                 }
                 else if (existingSeason.IsVirtualItem)
                 {
                     existingSeason.IsVirtualItem = false;
                     existingSeason.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken);
+                    seasons = null;
                 }
             }
 
             // Unknown season - create a dummy season to put these under
             if (episodesInSeriesFolder.Any(i => !i.ParentIndexNumber.HasValue))
             {
-                var existingSeason = series.Children.OfType<Season>()
+                if (seasons == null)
+                {
+                    seasons = series.Children.OfType<Season>().ToList();
+                }
+
+                var existingSeason = seasons
                     .FirstOrDefault(i => !i.IndexNumber.HasValue);
 
                 if (existingSeason == null)
@@ -95,11 +106,13 @@ namespace MediaBrowser.Providers.TV
                     await AddSeason(series, null, false, cancellationToken).ConfigureAwait(false);
 
                     hasChanges = true;
+                    seasons = null;
                 }
                 else if (existingSeason.IsVirtualItem)
                 {
                     existingSeason.IsVirtualItem = false;
                     existingSeason.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken);
+                    seasons = null;
                 }
             }
 
@@ -179,9 +192,9 @@ namespace MediaBrowser.Providers.TV
 
             foreach (var seasonToRemove in seasonsToRemove)
             {
-                _logger.Info("Removing virtual season {0} {1}", seasonToRemove.Series.Name, seasonToRemove.IndexNumber);
+                _logger.Info("Removing virtual season {0} {1}", series.Name, seasonToRemove.IndexNumber);
 
-                seasonToRemove.Delete(new DeleteOptions
+                _libraryManager.DeleteItem(seasonToRemove, new DeleteOptions
                 {
                     DeleteFileLocation = true
 

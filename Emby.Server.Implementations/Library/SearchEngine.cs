@@ -35,7 +35,7 @@ namespace Emby.Server.Implementations.Library
         {
             User user = null;
 
-            if (string.IsNullOrWhiteSpace(query.UserId))
+            if (string.IsNullOrEmpty(query.UserId))
             {
             }
             else
@@ -87,15 +87,14 @@ namespace Emby.Server.Implementations.Library
         {
             var searchTerm = query.SearchTerm;
 
-            if (searchTerm != null)
-            {
-                searchTerm = searchTerm.Trim().RemoveDiacritics();
-            }
-
-            if (string.IsNullOrWhiteSpace(searchTerm))
+            if (string.IsNullOrEmpty(searchTerm))
             {
                 throw new ArgumentNullException("searchTerm");
             }
+
+            searchTerm = searchTerm.Trim().RemoveDiacritics();
+
+            searchTerm = this.FixUnicodeChars(searchTerm);
 
             var terms = GetWords(searchTerm);
 
@@ -173,8 +172,8 @@ namespace Emby.Server.Implementations.Library
                 ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 Limit = query.Limit,
-                IncludeItemsByName = string.IsNullOrWhiteSpace(query.ParentId),
-                ParentId = string.IsNullOrWhiteSpace(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
+                IncludeItemsByName = string.IsNullOrEmpty(query.ParentId),
+                ParentId = string.IsNullOrEmpty(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
                 OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
                 Recursive = true,
 
@@ -239,7 +238,7 @@ namespace Emby.Server.Implementations.Library
         /// <returns>System.Int32.</returns>
         private Tuple<string, int> GetIndex(string input, string searchInput, List<string> searchWords)
         {
-            if (string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrEmpty(input))
             {
                 throw new ArgumentNullException("input");
             }
@@ -304,6 +303,28 @@ namespace Emby.Server.Implementations.Library
             return term.Split()
                 .Where(i => !string.IsNullOrWhiteSpace(i) && !stoplist.Contains(i, StringComparer.OrdinalIgnoreCase))
                 .ToList();
+        }
+
+        private string FixUnicodeChars(string buffer)
+        {
+            if (buffer.IndexOf('\u2013') > -1) buffer = buffer.Replace('\u2013', '-'); // en dash
+            if (buffer.IndexOf('\u2014') > -1) buffer = buffer.Replace('\u2014', '-'); // em dash
+            if (buffer.IndexOf('\u2015') > -1) buffer = buffer.Replace('\u2015', '-'); // horizontal bar
+            if (buffer.IndexOf('\u2017') > -1) buffer = buffer.Replace('\u2017', '_'); // double low line
+            if (buffer.IndexOf('\u2018') > -1) buffer = buffer.Replace('\u2018', '\''); // left single quotation mark
+            if (buffer.IndexOf('\u2019') > -1) buffer = buffer.Replace('\u2019', '\''); // right single quotation mark
+            if (buffer.IndexOf('\u201a') > -1) buffer = buffer.Replace('\u201a', ','); // single low-9 quotation mark
+            if (buffer.IndexOf('\u201b') > -1) buffer = buffer.Replace('\u201b', '\''); // single high-reversed-9 quotation mark
+            if (buffer.IndexOf('\u201c') > -1) buffer = buffer.Replace('\u201c', '\"'); // left double quotation mark
+            if (buffer.IndexOf('\u201d') > -1) buffer = buffer.Replace('\u201d', '\"'); // right double quotation mark
+            if (buffer.IndexOf('\u201e') > -1) buffer = buffer.Replace('\u201e', '\"'); // double low-9 quotation mark
+            if (buffer.IndexOf('\u2026') > -1) buffer = buffer.Replace("\u2026", "..."); // horizontal ellipsis
+            if (buffer.IndexOf('\u2032') > -1) buffer = buffer.Replace('\u2032', '\''); // prime
+            if (buffer.IndexOf('\u2033') > -1) buffer = buffer.Replace('\u2033', '\"'); // double prime
+            if (buffer.IndexOf('\u0060') > -1) buffer = buffer.Replace('\u0060', '\''); // grave accent
+            if (buffer.IndexOf('\u00B4') > -1) buffer = buffer.Replace('\u00B4', '\''); // acute accent
+
+            return buffer;
         }
 
         private IEnumerable<string> GetStopList()

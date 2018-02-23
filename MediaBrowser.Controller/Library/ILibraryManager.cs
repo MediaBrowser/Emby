@@ -275,6 +275,11 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Deletes the item.
         /// </summary>
+        void DeleteItem(BaseItem item, DeleteOptions options);
+
+        /// <summary>
+        /// Deletes the item.
+        /// </summary>
         void DeleteItem(BaseItem item, DeleteOptions options, bool notifyParentItem);
 
         /// <summary>

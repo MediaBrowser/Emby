@@ -90,7 +90,7 @@ namespace Emby.Server.Implementations.Library
 
             foreach (var viewType in new[] { CollectionType.Movies, CollectionType.TvShows })
             {
-                var parents = groupedFolders.Where(i => string.Equals(i.CollectionType, viewType, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(i.CollectionType))
+                var parents = groupedFolders.Where(i => string.Equals(i.CollectionType, viewType, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(i.CollectionType))
                     .ToList();
 
                 if (parents.Count > 0)
@@ -119,14 +119,7 @@ namespace Emby.Server.Implementations.Library
 
                 var channels = channelResult.Items;
 
-                if (_config.Configuration.EnableChannelView && channels.Length > 0)
-                {
-                    list.Add(_channelManager.GetInternalChannelFolder(cancellationToken));
-                }
-                else
-                {
-                    list.AddRange(channels);
-                }
+                list.AddRange(channels);
 
                 if (_liveTvManager.GetEnabledUsers().Select(i => i.Id.ToString("N")).Contains(query.UserId))
                 {
@@ -246,9 +239,26 @@ namespace Emby.Server.Implementations.Library
 
             var parents = new List<BaseItem>();
 
-            if (!string.IsNullOrWhiteSpace(parentId))
+            if (!string.IsNullOrEmpty(parentId))
             {
-                var parent = _libraryManager.GetItemById(parentId) as Folder;
+                var parentItem = _libraryManager.GetItemById(parentId);
+                var parentItemChannel = parentItem as Channel;
+                if (parentItemChannel != null)
+                {
+                    return _channelManager.GetLatestChannelItemsInternal(new InternalItemsQuery(user)
+                    {
+                        ChannelIds = new string[] { request.ParentId },
+                        IsPlayed = request.IsPlayed,
+                        StartIndex = request.StartIndex,
+                        Limit = request.Limit,
+                        IncludeItemTypes = request.IncludeItemTypes,
+                        EnableTotalRecordCount = false
+
+
+                    }, CancellationToken.None).Result.Items.ToList();
+                }
+
+                var parent = parentItem as Folder;
                 if (parent != null)
                 {
                     parents.Add(parent);
@@ -275,6 +285,24 @@ namespace Emby.Server.Implementations.Library
                 return new List<BaseItem>();
             }
 
+            if (includeItemTypes.Length == 0)
+            {
+                // Handle situations with the grouping setting, e.g. movies showing up in tv, etc. 
+                // Thanks to mixed content libraries included in the UserView
+                var hasCollectionType = parents.OfType<UserView>().ToArray();
+                if (hasCollectionType.Length > 0)
+                {
+                    if (hasCollectionType.All(i => string.Equals(i.CollectionType, CollectionType.Movies, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        includeItemTypes = new string[] { "Movie" };
+                    }
+                    else if (hasCollectionType.All(i => string.Equals(i.CollectionType, CollectionType.TvShows, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        includeItemTypes = new string[] { "Episode" };
+                    }
+                }
+            }
+
             var mediaTypes = new List<string>();
 
             if (includeItemTypes.Length == 0)
@@ -285,6 +313,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         case CollectionType.Books:
                             mediaTypes.Add(MediaType.Book);
+                            mediaTypes.Add(MediaType.Audio);
                             break;
                         case CollectionType.Games:
                             mediaTypes.Add(MediaType.Game);

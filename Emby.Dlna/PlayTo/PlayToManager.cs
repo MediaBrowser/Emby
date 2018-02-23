@@ -19,6 +19,8 @@ using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Threading;
 using System.Threading;
+using MediaBrowser.Common.Extensions;
+using MediaBrowser.Controller.Devices;
 
 namespace Emby.Dlna.PlayTo
 {
@@ -127,19 +129,59 @@ namespace Emby.Dlna.PlayTo
             }
         }
 
+        private string GetUuid(string usn)
+        {
+            var found = false;
+            var index = usn.IndexOf("uuid:", StringComparison.OrdinalIgnoreCase);
+            if (index != -1)
+            {
+                usn = usn.Substring(index);
+                found = true;
+            }
+            index = usn.IndexOf("::", StringComparison.OrdinalIgnoreCase);
+            if (index != -1)
+            {
+                usn = usn.Substring(0, index);
+            }
+
+            if (found)
+            {
+                return usn;
+            }
+
+            return usn.GetMD5().ToString("N");
+        }
+
         private async Task AddDevice(UpnpDeviceInfo info, string location, CancellationToken cancellationToken)
         {
             var uri = info.Location;
             _logger.Debug("Attempting to create PlayToController from location {0}", location);
-            var device = await Device.CreateuPnpDeviceAsync(uri, _httpClient, _config, _logger, _timerFactory, cancellationToken).ConfigureAwait(false);
 
             _logger.Debug("Logging session activity from location {0}", location);
-            var sessionInfo = await _sessionManager.LogSessionActivity(device.Properties.ClientType, _appHost.ApplicationVersion.ToString(), device.Properties.UUID, device.Properties.Name, uri.OriginalString, null).ConfigureAwait(false);
+            string uuid;
+            if (info.Headers.TryGetValue("USN", out uuid))
+            {
+                uuid = GetUuid(uuid);
+            }
+            else
+            {
+                uuid = location.GetMD5().ToString("N");
+            }
 
-            var controller = sessionInfo.SessionController as PlayToController;
+            string deviceName = null;
+
+            var sessionInfo = _sessionManager.LogSessionActivity("DLNA", _appHost.ApplicationVersion.ToString(), uuid, deviceName, uri.OriginalString, null);
+
+            var controller = sessionInfo.SessionControllers.OfType<PlayToController>().FirstOrDefault();
 
             if (controller == null)
             {
+                var device = await Device.CreateuPnpDeviceAsync(uri, _httpClient, _config, _logger, _timerFactory, cancellationToken).ConfigureAwait(false);
+
+                deviceName = device.Properties.Name;
+
+                _sessionManager.UpdateDeviceName(sessionInfo.Id, deviceName);
+
                 string serverAddress;
                 if (info.LocalIpAddress == null || info.LocalIpAddress.Equals(IpAddressInfo.Any) || info.LocalIpAddress.Equals(IpAddressInfo.IPv6Any))
                 {
@@ -152,21 +194,23 @@ namespace Emby.Dlna.PlayTo
 
                 string accessToken = null;
 
-                sessionInfo.SessionController = controller = new PlayToController(sessionInfo,
-                    _sessionManager,
-                    _libraryManager,
-                    _logger,
-                    _dlnaManager,
-                    _userManager,
-                    _imageProcessor,
-                    serverAddress,
-                    accessToken,
-                    _deviceDiscovery,
-                    _userDataManager,
-                    _localization,
-                    _mediaSourceManager,
-                    _config,
-                    _mediaEncoder);
+                controller = new PlayToController(sessionInfo,
+                   _sessionManager,
+                   _libraryManager,
+                   _logger,
+                   _dlnaManager,
+                   _userManager,
+                   _imageProcessor,
+                   serverAddress,
+                   accessToken,
+                   _deviceDiscovery,
+                   _userDataManager,
+                   _localization,
+                   _mediaSourceManager,
+                   _config,
+                   _mediaEncoder);
+
+                sessionInfo.AddController(controller);
 
                 controller.Init(device);
 
