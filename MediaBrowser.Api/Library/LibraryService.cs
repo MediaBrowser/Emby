@@ -30,6 +30,8 @@ using MediaBrowser.Model.Services;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Progress;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Api.Library
 {
@@ -272,6 +274,24 @@ namespace MediaBrowser.Api.Library
     {
     }
 
+    [Route("/Libraries/AvailableOptions", "GET")]
+    [Authenticated]
+    public class GetLibraryOptionsInfo : IReturn<LibraryOptionsResult>
+    {
+        public string LibraryContentType { get; set; }
+    }
+
+    public class LibraryOptionInfo
+    {
+        public string Name { get; set; }
+        public bool DefaultEnabled { get; set; }
+    }
+
+    public class LibraryOptionsResult
+    {
+        public LibraryOptionInfo[] MetadataSavers { get; set; }
+    }
+
     /// <summary>
     /// Class LibraryService
     /// </summary>
@@ -295,11 +315,12 @@ namespace MediaBrowser.Api.Library
         private readonly ILibraryMonitor _libraryMonitor;
         private readonly IFileSystem _fileSystem;
         private readonly IServerConfigurationManager _config;
+        private readonly IProviderManager _providerManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryService" /> class.
         /// </summary>
-        public LibraryService(IItemRepository itemRepo, ILibraryManager libraryManager, IUserManager userManager,
+        public LibraryService(IProviderManager providerManager, IItemRepository itemRepo, ILibraryManager libraryManager, IUserManager userManager,
                               IDtoService dtoService, IUserDataManager userDataManager, IAuthorizationContext authContext, IActivityManager activityManager, ILocalizationManager localization, ILiveTvManager liveTv, ITVSeriesManager tvManager, ILibraryMonitor libraryMonitor, IFileSystem fileSystem, IServerConfigurationManager config)
         {
             _itemRepo = itemRepo;
@@ -315,6 +336,63 @@ namespace MediaBrowser.Api.Library
             _libraryMonitor = libraryMonitor;
             _fileSystem = fileSystem;
             _config = config;
+            _providerManager = providerManager;
+        }
+
+        private string[] GetRepresentativeItemTypes(string contentType)
+        {
+            switch (contentType)
+            {
+                case CollectionType.Movies:
+                    return new string[] { "Movie" };
+                case CollectionType.TvShows:
+                    return new string[] { "Series", "Season", "Episode" };
+                case CollectionType.Books:
+                    return new string[] { "Book" };
+                case CollectionType.Games:
+                    return new string[] { "Game", "GameSystem" };
+                case CollectionType.Music:
+                    return new string[] { "MusicAlbum", "MusicArtist", "Audio" };
+                case CollectionType.HomeVideos:
+                case CollectionType.Photos:
+                    return new string[] { "Video", "Photo" };
+                case CollectionType.MusicVideos:
+                    return new string[] { "MusicVideo" };
+                default:
+                    return new string[] { "Movie", "Series" };
+            }
+        }
+
+        private bool IsSaverEnabledByDefault(string name, string itemType)
+        {
+            var metadataOptions = _config.Configuration.MetadataOptions
+                .FirstOrDefault(i => string.Equals(i.ItemType, itemType, StringComparison.OrdinalIgnoreCase));
+
+            return metadataOptions == null ? true : !metadataOptions.DisabledMetadataSavers.Contains(name, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public object Get(GetLibraryOptionsInfo request)
+        {
+            var result = new LibraryOptionsResult();
+
+            var types = GetRepresentativeItemTypes(request.LibraryContentType);
+            var plugins = _providerManager.GetAllMetadataPlugins()
+                .Where(i => types.Contains(i.ItemType, StringComparer.OrdinalIgnoreCase))
+                .ToList();
+
+            var itemType = types[0];
+
+            result.MetadataSavers = plugins
+                .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.MetadataSaver))
+                .Select(i => new LibraryOptionInfo
+                {
+                    Name = i.Name,
+                    DefaultEnabled = IsSaverEnabledByDefault(i.Name, itemType)
+                })
+                .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            return result;
         }
 
         public object Get(GetSimilarItems request)

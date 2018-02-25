@@ -159,9 +159,6 @@ namespace MediaBrowser.Api.LiveTv
         [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string UserId { get; set; }
 
-        [ApiMember(Name = "GroupId", Description = "Optional filter by recording group.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string GroupId { get; set; }
-
         [ApiMember(Name = "StartIndex", Description = "Optional. The record index to start at. All items with a lower index will be dropped from the results.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? StartIndex { get; set; }
 
@@ -1088,7 +1085,6 @@ namespace MediaBrowser.Api.LiveTv
             {
                 ChannelId = request.ChannelId,
                 UserId = request.UserId,
-                GroupId = request.GroupId,
                 StartIndex = request.StartIndex,
                 Limit = request.Limit,
                 Status = request.Status,
@@ -1109,24 +1105,7 @@ namespace MediaBrowser.Api.LiveTv
 
         public object Get(GetRecordingSeries request)
         {
-            var options = GetDtoOptions(_authContext, request);
-            options.DeviceId = _authContext.GetAuthorizationInfo(Request).DeviceId;
-
-            var result = _liveTvManager.GetRecordingSeries(new RecordingQuery
-            {
-                ChannelId = request.ChannelId,
-                UserId = request.UserId,
-                GroupId = request.GroupId,
-                StartIndex = request.StartIndex,
-                Limit = request.Limit,
-                Status = request.Status,
-                SeriesTimerId = request.SeriesTimerId,
-                IsInProgress = request.IsInProgress,
-                EnableTotalRecordCount = request.EnableTotalRecordCount
-
-            }, options, CancellationToken.None);
-
-            return ToOptimizedResult(result);
+            return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
         public async Task<object> Get(GetRecording request)
@@ -1273,22 +1252,12 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Get(GetRecordingGroups request)
         {
-            var result = await _liveTvManager.GetRecordingGroups(new RecordingGroupQuery
-            {
-                UserId = request.UserId
-
-            }, CancellationToken.None).ConfigureAwait(false);
-
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
         public async Task<object> Get(GetRecordingGroup request)
         {
-            var result = await _liveTvManager.GetRecordingGroups(new RecordingGroupQuery(), CancellationToken.None).ConfigureAwait(false);
-
-            var group = result.Items.FirstOrDefault(i => string.Equals(i.Id, request.Id, StringComparison.OrdinalIgnoreCase));
-
-            return ToOptimizedSerializedResultUsingCache(group);
+            throw new FileNotFoundException();
         }
 
         public object Get(GetGuideInfo request)

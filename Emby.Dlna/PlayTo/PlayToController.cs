@@ -933,7 +933,7 @@ namespace Emby.Dlna.PlayTo
             return 0;
         }
 
-        public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (_disposed)
             {

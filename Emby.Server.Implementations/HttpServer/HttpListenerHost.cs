@@ -61,7 +61,6 @@ namespace Emby.Server.Implementations.HttpServer
         private readonly Func<Type, Func<string, object>> _funcParseFn;
         private readonly bool _enableDualModeSockets;
 
-        public Action<IRequest, IResponse, object>[] RequestFilters { get; set; }
         public Action<IRequest, IResponse, object>[] ResponseFilters { get; set; }
 
         private readonly Dictionary<Type, Type> ServiceOperationsMap = new Dictionary<Type, Type>();
@@ -93,7 +92,6 @@ namespace Emby.Server.Implementations.HttpServer
 
             _logger = logger;
 
-            RequestFilters = new Action<IRequest, IResponse, object>[] { };
             ResponseFilters = new Action<IRequest, IResponse, object>[] { };
         }
 
@@ -139,12 +137,6 @@ namespace Emby.Server.Implementations.HttpServer
             {
                 var attribute = attributes[i];
                 attribute.RequestFilter(req, res, requestDto);
-            }
-
-            //Exec global filters
-            foreach (var requestFilter in RequestFilters)
-            {
-                requestFilter(req, res, requestDto);
             }
 
             //Exec remaining RequestFilter attributes with Priority >= 0
@@ -734,14 +726,6 @@ namespace Emby.Server.Implementations.HttpServer
             var types = _restServices.Select(r => r.GetType()).ToArray();
 
             ServiceController.Init(this, types);
-
-            var list = new List<Action<IRequest, IResponse, object>>();
-            foreach (var filter in _appHost.GetExports<IRequestFilter>())
-            {
-                list.Add(filter.Filter);
-            }
-
-            RequestFilters = list.ToArray();
 
             ResponseFilters = new Action<IRequest, IResponse, object>[]
             {

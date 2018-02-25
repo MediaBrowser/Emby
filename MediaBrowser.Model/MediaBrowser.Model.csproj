@@ -153,7 +153,6 @@
     <Compile Include="Services\IHttpRequest.cs" />
     <Compile Include="Services\IHttpResponse.cs" />
     <Compile Include="Services\IRequest.cs" />
-    <Compile Include="Services\IRequestFilter.cs" />
     <Compile Include="Services\IRequiresRequestStream.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Net\MimeTypes.cs" />
@@ -230,7 +229,6 @@
     <Compile Include="LiveTv\ProgramAudio.cs" />
     <Compile Include="LiveTv\ProgramQuery.cs" />
     <Compile Include="LiveTv\RecommendedProgramQuery.cs" />
-    <Compile Include="LiveTv\RecordingGroupQuery.cs" />
     <Compile Include="LiveTv\RecordingQuery.cs" />
     <Compile Include="LiveTv\RecordingStatus.cs" />
     <Compile Include="LiveTv\SeriesTimerInfoDto.cs" />

@@ -80,7 +80,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             var socket = GetActiveSockets()
                 .FirstOrDefault();
@@ -93,7 +93,8 @@ namespace Emby.Server.Implementations.Session
             return socket.SendAsync(new WebSocketMessage<T>
             {
                 Data = data,
-                MessageType = name
+                MessageType = name,
+                MessageId = messageId
 
             }, cancellationToken);
         }

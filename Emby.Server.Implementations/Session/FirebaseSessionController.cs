@@ -58,7 +58,7 @@ namespace Emby.Server.Implementations.Session
             get { return true; }
         }
 
-        public async Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        public async Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (!IsSessionActive)
             {

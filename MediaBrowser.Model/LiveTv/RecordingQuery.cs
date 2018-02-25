@@ -27,12 +27,6 @@ namespace MediaBrowser.Model.LiveTv
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the group identifier.
-        /// </summary>
-        /// <value>The group identifier.</value>
-        public string GroupId { get; set; }
-
-        /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
         /// </summary>
         /// <value>The start index.</value>

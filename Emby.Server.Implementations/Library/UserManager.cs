@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Cryptography;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Controller.Authentication;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -72,6 +73,9 @@ namespace Emby.Server.Implementations.Library
         private readonly IFileSystem _fileSystem;
         private readonly ICryptoProvider _cryptographyProvider;
 
+        private IAuthenticationProvider[] _authenticationProviders;
+        private DefaultAuthenticationProvider _defaultAuthenticationProvider;
+
         public UserManager(ILogger logger, IServerConfigurationManager configurationManager, IUserRepository userRepository, IXmlSerializer xmlSerializer, INetworkManager networkManager, Func<IImageProcessor> imageProcessorFactory, Func<IDtoService> dtoServiceFactory, Func<IConnectManager> connectFactory, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, IFileSystem fileSystem, ICryptoProvider cryptographyProvider)
         {
             _logger = logger;
@@ -89,6 +93,13 @@ namespace Emby.Server.Implementations.Library
             Users = new List<User>();
 
             DeletePinFile();
+        }
+
+        public void AddParts(IEnumerable<IAuthenticationProvider> authenticationProviders)
+        {
+            _authenticationProviders = authenticationProviders.ToArray();
+
+            _defaultAuthenticationProvider = _authenticationProviders.OfType<DefaultAuthenticationProvider>().First();
         }
 
         #region UserUpdated Event
@@ -230,18 +241,16 @@ namespace Emby.Server.Implementations.Library
                 .FirstOrDefault(i => string.Equals(username, i.Name, StringComparison.OrdinalIgnoreCase));
 
             var success = false;
+            IAuthenticationProvider authenticationProvider = null;
 
             if (user != null)
             {
-                if (password != null)
-                {
-                    hashedPassword = GetHashedString(user, password);
-                }
-
                 // Authenticate using local credentials if not a guest
                 if (!user.ConnectLinkType.HasValue || user.ConnectLinkType.Value != UserLinkType.Guest)
                 {
-                    success = AuthenticateLocalUser(user, password, hashedPassword, remoteEndPoint);
+                    var authResult = await AuthenticateLocalUser(username, password, hashedPassword, user, remoteEndPoint).ConfigureAwait(false);
+                    authenticationProvider = authResult.Item1;
+                    success = authResult.Item2;
                 }
 
                 // Maybe user accidently entered connect credentials. let's be flexible
@@ -256,6 +265,25 @@ namespace Emby.Server.Implementations.Library
                     {
 
                     }
+                }
+            }
+            else
+            {
+                // user is null
+                var authResult = await AuthenticateLocalUser(username, password, hashedPassword, null, remoteEndPoint).ConfigureAwait(false);
+                authenticationProvider = authResult.Item1;
+                success = authResult.Item2;
+
+                user = await CreateUser(username).ConfigureAwait(false);
+            }
+
+            if (success && user != null && authenticationProvider != null)
+            {
+                var providerId = GetAuthenticationProviderId(authenticationProvider);
+                if (!string.Equals(providerId, user.AuthenticationProviderId, StringComparison.OrdinalIgnoreCase))
+                {
+                    user.AuthenticationProviderId = providerId;
+                    UpdateUser(user);
                 }
             }
 
@@ -306,34 +334,98 @@ namespace Emby.Server.Implementations.Library
             return success ? user : null;
         }
 
-        private bool AuthenticateLocalUser(User user, string password, string hashedPassword, string remoteEndPoint)
+        private string GetAuthenticationProviderId(IAuthenticationProvider provider)
         {
-            bool success;
+            return provider.GetType().FullName;
+        }
+
+        private IAuthenticationProvider GetAuthenticationProvider(User user)
+        {
+            return GetAuthenticationProviders(user).First();
+        }
+
+        private IAuthenticationProvider[] GetAuthenticationProviders(User user)
+        {
+            var authenticationProviderId = user == null ? null : user.AuthenticationProviderId;
+
+            var providers = _authenticationProviders;
+
+            if (!string.IsNullOrEmpty(authenticationProviderId))
+            {
+                providers = providers.Where(i => string.Equals(authenticationProviderId, GetAuthenticationProviderId(i), StringComparison.OrdinalIgnoreCase)).ToArray();
+            }
+
+            if (providers.Length == 0)
+            {
+                providers = new IAuthenticationProvider[] { _defaultAuthenticationProvider };
+            }
+
+            return providers;
+        }
+
+        private async Task<bool> AuthenticateWithProvider(IAuthenticationProvider provider, string username, string password, User resolvedUser)
+        {
+            try
+            {
+                await provider.Authenticate(username, password, resolvedUser).ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error authenticating with provider {0}", ex, provider.Name);
+
+                return false;
+            }
+        }
+
+        private async Task<Tuple<IAuthenticationProvider, bool>> AuthenticateLocalUser(string username, string password, string hashedPassword, User user, string remoteEndPoint)
+        {
+            bool success = false;
+            IAuthenticationProvider authenticationProvider = null;
+
+            if (password != null && user != null)
+            {
+                // Doesn't look like this is even possible to be used, because of password == null checks below
+                hashedPassword = _defaultAuthenticationProvider.GetHashedString(user, password);
+            }
 
             if (password == null)
             {
                 // legacy
-                success = string.Equals(GetPasswordHash(user), hashedPassword.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                success = string.Equals(_defaultAuthenticationProvider.GetPasswordHash(user), hashedPassword.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
             }
             else
             {
-                success = string.Equals(GetPasswordHash(user), GetHashedString(user, password), StringComparison.OrdinalIgnoreCase);
+                foreach (var provider in GetAuthenticationProviders(user))
+                {
+                    success = await AuthenticateWithProvider(provider, username, password, user).ConfigureAwait(false);
+
+                    if (success)
+                    {
+                        authenticationProvider = provider;
+                        break;
+                    }
+                }
             }
 
-            if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
+            if (user != null)
             {
-                if (password == null)
+                if (!success && _networkManager.IsInLocalNetwork(remoteEndPoint) && user.Configuration.EnableLocalPassword)
                 {
-                    // legacy
-                    success = string.Equals(GetLocalPasswordHash(user), hashedPassword.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
-                }
-                else
-                {
-                    success = string.Equals(GetLocalPasswordHash(user), GetHashedString(user, password), StringComparison.OrdinalIgnoreCase);
+                    if (password == null)
+                    {
+                        // legacy
+                        success = string.Equals(GetLocalPasswordHash(user), hashedPassword.Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        success = string.Equals(GetLocalPasswordHash(user), _defaultAuthenticationProvider.GetHashedString(user, password), StringComparison.OrdinalIgnoreCase);
+                    }
                 }
             }
 
-            return success;
+            return new Tuple<IAuthenticationProvider, bool>(authenticationProvider, success);
         }
 
         private void UpdateInvalidLoginAttemptCount(User user, int newValue)
@@ -368,43 +460,16 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        private string GetPasswordHash(User user)
-        {
-            return string.IsNullOrEmpty(user.Password)
-                ? GetEmptyHashedString(user)
-                : user.Password;
-        }
-
         private string GetLocalPasswordHash(User user)
         {
             return string.IsNullOrEmpty(user.EasyPassword)
-                ? GetEmptyHashedString(user)
+                ? _defaultAuthenticationProvider.GetEmptyHashedString(user)
                 : user.EasyPassword;
         }
 
         private bool IsPasswordEmpty(User user, string passwordHash)
         {
-            return string.Equals(passwordHash, GetEmptyHashedString(user), StringComparison.OrdinalIgnoreCase);
-        }
-
-        private string GetEmptyHashedString(User user)
-        {
-            return GetHashedString(user, string.Empty);
-        }
-
-        /// <summary>
-        /// Gets the hashed string.
-        /// </summary>
-        private string GetHashedString(User user, string str)
-        {
-            var salt = user.Salt;
-            if (salt != null)
-            {
-                // return BCrypt.HashPassword(str, salt);
-            }
-
-            // legacy
-            return BitConverter.ToString(_cryptographyProvider.ComputeSHA1(Encoding.UTF8.GetBytes(str))).Replace("-", string.Empty);
+            return string.Equals(passwordHash, _defaultAuthenticationProvider.GetEmptyHashedString(user), StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -449,9 +514,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("user");
             }
 
-            var passwordHash = GetPasswordHash(user);
-
-            var hasConfiguredPassword = !IsPasswordEmpty(user, passwordHash);
+            var hasConfiguredPassword = GetAuthenticationProvider(user).HasPassword(user).Result;
             var hasConfiguredEasyPassword = !IsPasswordEmpty(user, GetLocalPasswordHash(user));
 
             var hasPassword = user.Configuration.EnableLocalPassword && !string.IsNullOrEmpty(remoteEndPoint) && _networkManager.IsInLocalNetwork(remoteEndPoint) ?
@@ -717,9 +780,9 @@ namespace Emby.Server.Implementations.Library
         /// Resets the password by clearing it.
         /// </summary>
         /// <returns>Task.</returns>
-        public void ResetPassword(User user)
+        public Task ResetPassword(User user)
         {
-            ChangePassword(user, string.Empty, null);
+            return ChangePassword(user, string.Empty);
         }
 
         public void ResetEasyPassword(User user)
@@ -727,21 +790,11 @@ namespace Emby.Server.Implementations.Library
             ChangeEasyPassword(user, string.Empty, null);
         }
 
-        public void ChangePassword(User user, string newPassword, string newPasswordHash)
+        public async Task ChangePassword(User user, string newPassword)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
-            }
-
-            if (newPassword != null)
-            {
-                newPasswordHash = GetHashedString(user, newPassword);
-            }
-
-            if (string.IsNullOrWhiteSpace(newPasswordHash))
-            {
-                throw new ArgumentNullException("newPasswordHash");
             }
 
             if (user.ConnectLinkType.HasValue && user.ConnectLinkType.Value == UserLinkType.Guest)
@@ -749,7 +802,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentException("Passwords for guests cannot be changed.");
             }
 
-            user.Password = newPasswordHash;
+            await GetAuthenticationProvider(user).ChangePassword(user, newPassword).ConfigureAwait(false);
 
             UpdateUser(user);
 
@@ -765,7 +818,7 @@ namespace Emby.Server.Implementations.Library
 
             if (newPassword != null)
             {
-                newPasswordHash = GetHashedString(user, newPassword);
+                newPasswordHash = _defaultAuthenticationProvider.GetHashedString(user, newPassword);
             }
 
             if (string.IsNullOrWhiteSpace(newPasswordHash))
@@ -912,7 +965,8 @@ namespace Emby.Server.Implementations.Library
 
                 foreach (var user in users)
                 {
-                    ResetPassword(user);
+                    var task = ResetPassword(user);
+                    Task.WaitAll(task);
 
                     if (user.Policy.IsDisabled)
                     {

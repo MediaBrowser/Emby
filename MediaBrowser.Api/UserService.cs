@@ -156,12 +156,6 @@ namespace MediaBrowser.Api
 
         public string CurrentPw { get; set; }
 
-        /// <summary>
-        /// Gets or sets the new password.
-        /// </summary>
-        /// <value>The new password.</value>
-        public string NewPassword { get; set; }
-
         public string NewPw { get; set; }
 
         /// <summary>
@@ -469,7 +463,7 @@ namespace MediaBrowser.Api
 
             if (request.ResetPassword)
             {
-                _userManager.ResetPassword(user);
+                await _userManager.ResetPassword(user).ConfigureAwait(false);
             }
             else
             {
@@ -480,7 +474,7 @@ namespace MediaBrowser.Api
                     throw new ArgumentException("Invalid user or password entered.");
                 }
 
-                _userManager.ChangePassword(user, request.NewPw, request.NewPassword);
+                await _userManager.ChangePassword(user, request.NewPw).ConfigureAwait(false);
 
                 var currentToken = _authContext.GetAuthorizationInfo(Request).Token;
 

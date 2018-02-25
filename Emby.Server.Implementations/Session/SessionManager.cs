@@ -943,10 +943,11 @@ namespace Emby.Server.Implementations.Session
         private async Task SendMessageToSession<T>(SessionInfo session, string name, T data, CancellationToken cancellationToken)
         {
             var controllers = session.SessionControllers.ToArray();
+            var messageId = Guid.NewGuid().ToString("N");
 
             foreach (var controller in controllers)
             {
-                await controller.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                await controller.SendMessage(name, messageId, data, controllers, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -1506,13 +1507,13 @@ namespace Emby.Server.Implementations.Session
             {
                 EnsureHttpController(session, capabilities.MessageCallbackUrl);
             }
-            //if (!string.IsNullOrEmpty(capabilities.PushToken))
-            //{
-            //    if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
-            //    {
-            //        EnsureFirebaseController(session, capabilities.PushToken);
-            //    }
-            //}
+            if (!string.IsNullOrEmpty(capabilities.PushToken))
+            {
+                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
+                {
+                    EnsureFirebaseController(session, capabilities.PushToken);
+                }
+            }
 
             if (saveCapabilities)
             {

@@ -31,6 +31,7 @@
         public string MetadataCountryCode { get; set; }
 
         public string SeasonZeroDisplayName { get; set; }
+        public string[] EnabledMetadataSavers { get; set; }
 
         public LibraryOptions()
         {

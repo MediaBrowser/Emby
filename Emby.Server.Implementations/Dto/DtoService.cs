@@ -401,26 +401,19 @@ namespace Emby.Server.Implementations.Dto
             }
 
             var liveTvManager = _livetvManager();
-            if (item is ILiveTvRecording)
+            var activeRecording = liveTvManager.GetActiveRecordingInfo(item.Path);
+            if (activeRecording != null)
             {
-                liveTvManager.AddInfoToRecordingDto(item, dto, user);
-            }
-            else
-            {
-                var activeRecording = liveTvManager.GetActiveRecordingInfo(item.Path);
-                if (activeRecording != null)
-                {
-                    dto.Type = "Recording";
-                    dto.CanDownload = false;
-                    dto.RunTimeTicks = null;
+                dto.Type = "Recording";
+                dto.CanDownload = false;
+                dto.RunTimeTicks = null;
 
-                    if (!string.IsNullOrEmpty(dto.SeriesName))
-                    {
-                        dto.EpisodeTitle = dto.Name;
-                        dto.Name = dto.SeriesName;
-                    }
-                    liveTvManager.AddInfoToRecordingDto(item, dto, activeRecording, user);
+                if (!string.IsNullOrEmpty(dto.SeriesName))
+                {
+                    dto.EpisodeTitle = dto.Name;
+                    dto.Name = dto.SeriesName;
                 }
+                liveTvManager.AddInfoToRecordingDto(item, dto, activeRecording, user);
             }
 
             return dto;

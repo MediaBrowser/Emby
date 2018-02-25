@@ -335,22 +335,19 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("item");
             }
 
-            if (item is ILiveTvRecording)
+            if (item.SourceType == SourceType.Channel)
             {
                 if (options.DeleteFromExternalProvider)
                 {
-                    var task = BaseItem.LiveTvManager.DeleteRecording(item);
-                    Task.WaitAll(task);
-                }
-                options.DeleteFileLocation = false;
-            }
-
-            else if (item.SourceType == SourceType.Channel)
-            {
-                if (options.DeleteFromExternalProvider)
-                {
-                    var task = BaseItem.ChannelManager.DeleteItem(item);
-                    Task.WaitAll(task);
+                    try
+                    {
+                        var task = BaseItem.ChannelManager.DeleteItem(item);
+                        Task.WaitAll(task);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // channel no longer installed
+                    }
                 }
                 options.DeleteFileLocation = false;
             }

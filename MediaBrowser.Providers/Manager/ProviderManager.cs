@@ -482,9 +482,7 @@ namespace MediaBrowser.Providers.Manager
                 GetPluginSummary<MusicVideo>(),
                 GetPluginSummary<Video>(),
                 GetPluginSummary<LiveTvChannel>(),
-                GetPluginSummary<LiveTvProgram>(),
-                GetPluginSummary<LiveTvVideoRecording>(),
-                GetPluginSummary<LiveTvAudioRecording>()
+                GetPluginSummary<LiveTvProgram>()
             };
         }
 
@@ -509,7 +507,9 @@ namespace MediaBrowser.Providers.Manager
 
             var pluginList = summary.Plugins.ToList();
 
-            AddMetadataPlugins(pluginList, dummy, options);
+            var libraryOptions = new LibraryOptions();
+
+            AddMetadataPlugins(pluginList, dummy, libraryOptions, options);
             AddImagePlugins(pluginList, dummy, imageProviders);
 
             summary.Plugins = pluginList.ToArray(pluginList.Count);
@@ -526,7 +526,7 @@ namespace MediaBrowser.Providers.Manager
             return summary;
         }
 
-        private void AddMetadataPlugins<T>(List<MetadataPlugin> list, T item, MetadataOptions options)
+        private void AddMetadataPlugins<T>(List<MetadataPlugin> list, T item, LibraryOptions libraryOptions, MetadataOptions options)
             where T : BaseItem
         {
             var providers = GetMetadataProvidersInternal<T>(item, options, true, false, false).ToList();
@@ -546,7 +546,7 @@ namespace MediaBrowser.Providers.Manager
             }));
 
             // Savers
-            list.AddRange(_savers.Where(i => IsSaverEnabledForItem(i, item, ItemUpdateType.MetadataEdit, true)).OrderBy(i => i.Name).Select(i => new MetadataPlugin
+            list.AddRange(_savers.Where(i => IsSaverEnabledForItem(i, item, libraryOptions, ItemUpdateType.MetadataEdit, true)).OrderBy(i => i.Name).Select(i => new MetadataPlugin
             {
                 Name = i.Name,
                 Type = MetadataPluginType.MetadataSaver
@@ -608,7 +608,9 @@ namespace MediaBrowser.Providers.Manager
         /// <returns>Task.</returns>
         private void SaveMetadata(BaseItem item, ItemUpdateType updateType, IEnumerable<IMetadataSaver> savers)
         {
-            foreach (var saver in savers.Where(i => IsSaverEnabledForItem(i, item, updateType, false)))
+            var libraryOptions = _libraryManagerFactory().GetLibraryOptions(item);
+
+            foreach (var saver in savers.Where(i => IsSaverEnabledForItem(i, item, libraryOptions, updateType, false)))
             {
                 _logger.Debug("Saving {0} to {1}.", item.Path ?? item.Name, saver.Name);
 
@@ -659,12 +661,7 @@ namespace MediaBrowser.Providers.Manager
         /// <summary>
         /// Determines whether [is saver enabled for item] [the specified saver].
         /// </summary>
-        /// <param name="saver">The saver.</param>
-        /// <param name="item">The item.</param>
-        /// <param name="updateType">Type of the update.</param>
-        /// <param name="includeDisabled">if set to <c>true</c> [include disabled].</param>
-        /// <returns><c>true</c> if [is saver enabled for item] [the specified saver]; otherwise, <c>false</c>.</returns>
-        private bool IsSaverEnabledForItem(IMetadataSaver saver, BaseItem item, ItemUpdateType updateType, bool includeDisabled)
+        private bool IsSaverEnabledForItem(IMetadataSaver saver, BaseItem item, LibraryOptions libraryOptions, ItemUpdateType updateType, bool includeDisabled)
         {
             var options = GetMetadataOptions(item);
 
@@ -674,9 +671,19 @@ namespace MediaBrowser.Providers.Manager
 
                 if (!includeDisabled)
                 {
-                    if (options.DisabledMetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
+                    if (libraryOptions.EnabledMetadataSavers == null)
                     {
-                        return false;
+                        if (options.DisabledMetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!libraryOptions.EnabledMetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
                     }
 
                     if (!item.IsSaveLocalMetadataEnabled())

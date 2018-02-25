@@ -366,6 +366,7 @@ namespace MediaBrowser.Controller.Entities
 
             if (IsFileProtocol)
             {
+                var isOffline = false;
                 IEnumerable<BaseItem> nonCachedChildren;
 
                 try
@@ -377,6 +378,7 @@ namespace MediaBrowser.Controller.Entities
                     nonCachedChildren = new BaseItem[] { };
 
                     Logger.ErrorException("Error getting file system entries for {0}", ex, Path);
+                    isOffline = true;
                 }
 
                 if (nonCachedChildren == null) return; //nothing to validate
@@ -430,7 +432,7 @@ namespace MediaBrowser.Controller.Entities
                         {
                         }
 
-                        else if (!string.IsNullOrEmpty(item.Path) && IsPathOffline(item.Path, allLibraryPaths))
+                        else if (isOffline)
                         {
                         }
                         else
@@ -638,39 +640,6 @@ namespace MediaBrowser.Controller.Entities
 
                 progress.Report(percent);
             }
-        }
-
-        public bool IsPathOffline(string path, List<string> allLibraryPaths)
-        {
-            //if (FileSystem.FileExists(path))
-            //{
-            //    return false;
-            //}
-
-            var originalPath = path;
-
-            // Depending on whether the path is local or unc, it may return either null or '\' at the top
-            while (!string.IsNullOrEmpty(path) && path.Length > 1)
-            {
-                if (FileSystem.DirectoryExists(path))
-                {
-                    return false;
-                }
-
-                if (allLibraryPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-
-                path = FileSystem.GetDirectoryName(path);
-            }
-
-            return allLibraryPaths.Any(i => ContainsPath(i, originalPath));
-        }
-
-        private bool ContainsPath(string parent, string path)
-        {
-            return FileSystem.AreEqual(parent, path) || FileSystem.ContainsSubPath(parent, path);
         }
 
         /// <summary>
