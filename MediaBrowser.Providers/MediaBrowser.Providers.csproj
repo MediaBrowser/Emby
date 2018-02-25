@@ -52,9 +52,7 @@
     <Compile Include="Games\GameMetadataService.cs" />
     <Compile Include="Games\GameSystemMetadataService.cs" />
     <Compile Include="Genres\GenreMetadataService.cs" />
-    <Compile Include="LiveTv\AudioRecordingService.cs" />
     <Compile Include="LiveTv\ProgramMetadataService.cs" />
-    <Compile Include="LiveTv\VideoRecordingService.cs" />
     <Compile Include="Manager\GenericPriorityQueue.cs" />
     <Compile Include="Manager\GenericPriorityQueueNode.cs" />
     <Compile Include="Manager\IFixedSizePriorityQueue.cs" />

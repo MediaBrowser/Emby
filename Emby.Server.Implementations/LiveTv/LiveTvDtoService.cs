@@ -386,11 +386,6 @@ namespace Emby.Server.Implementations.LiveTv
                 dto.ChannelId = GetInternalChannelId(serviceName, info.ChannelId).ToString("N");
             }
 
-            if (!string.IsNullOrEmpty(info.RecordingId))
-            {
-                dto.RecordingId = GetInternalRecordingId(serviceName, info.RecordingId).ToString("N");
-            }
-
             return dto;
         }
 
@@ -436,13 +431,6 @@ namespace Emby.Server.Implementations.LiveTv
             var name = serviceName + externalId + InternalVersionNumber;
 
             return _libraryManager.GetNewItemId(name.ToLower(), typeof(LiveTvProgram));
-        }
-
-        public Guid GetInternalRecordingId(string serviceName, string externalId)
-        {
-            var name = serviceName + externalId + InternalVersionNumber + "0";
-
-            return _libraryManager.GetNewItemId(name.ToLower(), typeof(ILiveTvRecording));
         }
 
         public async Task<TimerInfo> GetTimerInfo(TimerInfoDto dto, bool isNew, LiveTvManager liveTv, CancellationToken cancellationToken)

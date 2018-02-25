@@ -69,23 +69,15 @@ namespace Emby.Server.Implementations.LiveTv
 
             try
             {
-                if (item is ILiveTvRecording)
+                if (activeRecordingInfo != null)
                 {
-                    sources = await _liveTvManager.GetRecordingMediaSources(item, cancellationToken)
+                    sources = await EmbyTV.EmbyTV.Current.GetRecordingStreamMediaSources(activeRecordingInfo, cancellationToken)
                         .ConfigureAwait(false);
                 }
                 else
                 {
-                    if (activeRecordingInfo != null)
-                    {
-                        sources = await EmbyTV.EmbyTV.Current.GetRecordingStreamMediaSources(activeRecordingInfo, cancellationToken)
-                            .ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        sources = await _liveTvManager.GetChannelMediaSources(item, cancellationToken)
-                            .ConfigureAwait(false);
-                    }
+                    sources = await _liveTvManager.GetChannelMediaSources(item, cancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (NotImplementedException)
@@ -143,18 +135,11 @@ namespace Emby.Server.Implementations.LiveTv
             bool addProbeDelay = false;
             bool allowLiveMediaProbe = false;
 
-            if (string.Equals(keys[0], typeof(LiveTvChannel).Name, StringComparison.OrdinalIgnoreCase))
-            {
-                var info = await _liveTvManager.GetChannelStream(keys[1], mediaSourceId, cancellationToken).ConfigureAwait(false);
-                stream = info.Item1;
-                directStreamProvider = info.Item2 as IDirectStreamProvider;
-                addProbeDelay = true;
-                allowLiveMediaProbe = directStreamProvider != null;
-            }
-            else
-            {
-                stream = await _liveTvManager.GetRecordingStream(keys[1], cancellationToken).ConfigureAwait(false);
-            }
+            var info = await _liveTvManager.GetChannelStream(keys[1], mediaSourceId, cancellationToken).ConfigureAwait(false);
+            stream = info.Item1;
+            directStreamProvider = info.Item2 as IDirectStreamProvider;
+            addProbeDelay = true;
+            allowLiveMediaProbe = directStreamProvider != null;
 
             try
             {

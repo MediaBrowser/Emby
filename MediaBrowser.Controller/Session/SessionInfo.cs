@@ -207,6 +207,7 @@ namespace MediaBrowser.Controller.Session
             }
 
             var newController = factory(this);
+            _logger.Debug("Creating new {0}", newController.GetType().Name);
             controllers.Add(newController);
 
             SessionControllers = controllers.ToArray();

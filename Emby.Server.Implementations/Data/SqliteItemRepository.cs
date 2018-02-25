@@ -1349,15 +1349,7 @@ namespace Emby.Server.Implementations.Data
             {
                 return false;
             }
-            if (type == typeof(RecordingGroup))
-            {
-                return false;
-            }
             if (type == typeof(LiveTvProgram))
-            {
-                return false;
-            }
-            if (type == typeof(LiveTvAudioRecording))
             {
                 return false;
             }
@@ -4758,8 +4750,6 @@ namespace Emby.Server.Implementations.Data
         {
             typeof(LiveTvProgram),
             typeof(LiveTvChannel),
-            typeof(LiveTvVideoRecording),
-            typeof(LiveTvAudioRecording),
             typeof(Series),
             typeof(Audio),
             typeof(MusicAlbum),
@@ -4833,7 +4823,6 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                 dict[t.Name] = new[] { t.FullName };
             }
 
-            dict["Recording"] = new[] { typeof(LiveTvAudioRecording).FullName, typeof(LiveTvVideoRecording).FullName };
             dict["Program"] = new[] { typeof(LiveTvProgram).FullName };
             dict["TvChannel"] = new[] { typeof(LiveTvChannel).FullName };
 

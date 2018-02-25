@@ -40,6 +40,7 @@
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="Channels\ChannelItemInfo.cs" />
     <Compile Include="Channels\ChannelItemResult.cs" />
     <Compile Include="Channels\ChannelItemType.cs" />
@@ -143,10 +144,7 @@
     <Compile Include="Library\UserDataSaveEventArgs.cs" />
     <Compile Include="LiveTv\IListingsProvider.cs" />
     <Compile Include="LiveTv\ITunerHost.cs" />
-    <Compile Include="LiveTv\RecordingGroup.cs" />
     <Compile Include="LiveTv\RecordingStatusChangedEventArgs.cs" />
-    <Compile Include="LiveTv\ILiveTvRecording.cs" />
-    <Compile Include="LiveTv\LiveTvAudioRecording.cs" />
     <Compile Include="LiveTv\LiveTvChannel.cs" />
     <Compile Include="LiveTv\ChannelInfo.cs" />
     <Compile Include="LiveTv\ILiveTvManager.cs" />
@@ -156,7 +154,6 @@
     <Compile Include="LiveTv\LiveTvServiceStatusInfo.cs" />
     <Compile Include="LiveTv\LiveTvTunerInfo.cs" />
     <Compile Include="LiveTv\LiveTvProgram.cs" />
-    <Compile Include="LiveTv\LiveTvVideoRecording.cs" />
     <Compile Include="LiveTv\ProgramInfo.cs" />
     <Compile Include="LiveTv\RecordingInfo.cs" />
     <Compile Include="LiveTv\SeriesTimerInfo.cs" />
@@ -185,7 +182,6 @@
     <Compile Include="Net\IWebSocket.cs" />
     <Compile Include="Net\IWebSocketConnection.cs" />
     <Compile Include="Net\IWebSocketListener.cs" />
-    <Compile Include="Net\LoggedAttribute.cs" />
     <Compile Include="Net\SecurityException.cs" />
     <Compile Include="Net\StaticResultOptions.cs" />
     <Compile Include="Net\WebSocketConnectEventArgs.cs" />

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Users;
+using MediaBrowser.Controller.Authentication;
 
 namespace MediaBrowser.Controller.Library
 {
@@ -107,7 +108,7 @@ namespace MediaBrowser.Controller.Library
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Task.</returns>
-        void ResetPassword(User user);
+        Task ResetPassword(User user);
 
         /// <summary>
         /// Gets the offline user dto.
@@ -126,7 +127,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Changes the password.
         /// </summary>
-        void ChangePassword(User user, string newPassword, string newPasswordSha1);
+        Task ChangePassword(User user, string newPassword);
 
         /// <summary>
         /// Changes the easy password.
@@ -198,5 +199,7 @@ namespace MediaBrowser.Controller.Library
         /// <param name="username">The username.</param>
         /// <returns>System.String.</returns>
         string MakeValidUsername(string username);
+
+        void AddParts(IEnumerable<IAuthenticationProvider> authenticationProviders);
     }
 }

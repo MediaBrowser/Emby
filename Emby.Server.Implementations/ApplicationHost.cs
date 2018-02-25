@@ -119,6 +119,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StringExtensions = MediaBrowser.Controller.Extensions.StringExtensions;
 using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
+using MediaBrowser.Controller.Authentication;
 
 namespace Emby.Server.Implementations
 {
@@ -707,13 +708,30 @@ namespace Emby.Server.Implementations
             //}
 
             Logger.Info("ServerId: {0}", SystemId);
+
+            var entryPoints = GetExports<IServerEntryPoint>().ToList();
+            RunEntryPoints(entryPoints, true);
+
             Logger.Info("Core startup complete");
             HttpServer.GlobalResponse = null;
 
             Logger.Info("Post-init migrations complete");
 
-            foreach (var entryPoint in GetExports<IServerEntryPoint>().ToList())
+            RunEntryPoints(entryPoints, false);
+            Logger.Info("All entry points have started");
+
+            LogManager.RemoveConsoleOutput();
+        }
+
+        private void RunEntryPoints(IEnumerable<IServerEntryPoint> entryPoints, bool isBeforeStartup)
+        {
+            foreach (var entryPoint in entryPoints)
             {
+                if (isBeforeStartup != (entryPoint is IRunBeforeStartup))
+                {
+                    continue;
+                }
+
                 var name = entryPoint.GetType().FullName;
                 Logger.Info("Starting entry point {0}", name);
                 var now = DateTime.UtcNow;
@@ -727,9 +745,6 @@ namespace Emby.Server.Implementations
                 }
                 Logger.Info("Entry point completed: {0}. Duration: {1} seconds", name, (DateTime.UtcNow - now).TotalSeconds.ToString(CultureInfo.InvariantCulture), "ImageInfos");
             }
-            Logger.Info("All entry points have started");
-
-            LogManager.RemoveConsoleOutput();
         }
 
         /// <summary>
@@ -1411,6 +1426,7 @@ namespace Emby.Server.Implementations
 
             NotificationManager.AddParts(GetExports<INotificationService>(), GetExports<INotificationTypeFactory>());
             SyncManager.AddParts(GetExports<ISyncProvider>());
+            UserManager.AddParts(GetExports<IAuthenticationProvider>());
         }
 
         private IPlugin LoadPlugin(IPlugin plugin)
