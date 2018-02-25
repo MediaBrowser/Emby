@@ -12,6 +12,8 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Model.Reflection;
 
 namespace MediaBrowser.Controller.MediaEncoding
 {
@@ -22,12 +24,16 @@ namespace MediaBrowser.Controller.MediaEncoding
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IFileSystem _fileSystem;
         private readonly ISubtitleEncoder _subtitleEncoder;
+        private readonly IApplicationPaths _appPaths;
+        private readonly IAssemblyInfo _assemblyInfo;
 
-        public EncodingHelper(IMediaEncoder mediaEncoder, IFileSystem fileSystem, ISubtitleEncoder subtitleEncoder)
+        public EncodingHelper(IMediaEncoder mediaEncoder, IFileSystem fileSystem, ISubtitleEncoder subtitleEncoder, IApplicationPaths appPaths, IAssemblyInfo assemblyInfo)
         {
             _mediaEncoder = mediaEncoder;
             _fileSystem = fileSystem;
             _subtitleEncoder = subtitleEncoder;
+            _appPaths = appPaths;
+            _assemblyInfo = assemblyInfo;
         }
 
         public string GetH264Encoder(EncodingJobInfo state, EncodingOptions encodingOptions)
@@ -543,6 +549,23 @@ namespace MediaBrowser.Controller.MediaEncoding
                 ? string.Empty
                 : string.Format(",setpts=PTS -{0}/TB", seconds.ToString(_usCulture));
 
+            var fallbackFontPath = Path.Combine(_appPaths.ProgramDataPath, "fonts", "DroidSansFallback.ttf");
+            string fallbackFontParam = string.Empty;
+
+            if (!_fileSystem.FileExists(fallbackFontPath))
+            {
+                _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(fallbackFontPath));
+                using (var stream = _assemblyInfo.GetManifestResourceStream(GetType(), GetType().Namespace + ".DroidSansFallback.ttf"))
+                {
+                    using (var fileStream = _fileSystem.GetFileStream(fallbackFontPath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+            }
+
+            fallbackFontParam = string.Format(":force_style='FontName=Droid Sans Fallback':fontsdir='{0}'", _mediaEncoder.EscapeSubtitleFilterPath(_fileSystem.GetDirectoryName(fallbackFontPath)));
+
             if (state.SubtitleStream.IsExternal)
             {
                 var subtitlePath = state.SubtitleStream.Path;
@@ -560,17 +583,19 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
 
                 // TODO: Perhaps also use original_size=1920x800 ??
-                return string.Format("subtitles=filename='{0}'{1}{2}",
+                return string.Format("subtitles=filename='{0}'{1}{2}{3}",
                     _mediaEncoder.EscapeSubtitleFilterPath(subtitlePath),
                     charsetParam,
+                    fallbackFontParam,
                     setPtsParam);
             }
 
             var mediaPath = state.MediaPath ?? string.Empty;
 
-            return string.Format("subtitles='{0}:si={1}'{2}",
+            return string.Format("subtitles='{0}:si={1}'{2}{3}",
                 _mediaEncoder.EscapeSubtitleFilterPath(mediaPath),
                 state.InternalSubtitleStreamOffset.ToString(_usCulture),
+                fallbackFontParam,
                 setPtsParam);
         }
 
@@ -1386,8 +1411,45 @@ namespace MediaBrowser.Controller.MediaEncoding
                 videoSizeParam);
         }
 
+        private Tuple<int?, int?> GetFixedOutputSize(int? videoWidth,
+            int? videoHeight,
+            int? requestedWidth,
+            int? requestedHeight,
+            int? requestedMaxWidth,
+            int? requestedMaxHeight)
+        {
+            if (!videoWidth.HasValue && !requestedWidth.HasValue)
+            {
+                return new Tuple<int?, int?>(null, null);
+            }
+            if (!videoHeight.HasValue && !requestedHeight.HasValue)
+            {
+                return new Tuple<int?, int?>(null, null);
+            }
+
+            decimal inputWidth = Convert.ToDecimal(videoWidth ?? requestedWidth);
+            decimal inputHeight = Convert.ToDecimal(videoHeight ?? requestedHeight);
+            decimal outputWidth = requestedWidth.HasValue ? Convert.ToDecimal(requestedWidth.Value) : inputWidth;
+            decimal outputHeight = requestedHeight.HasValue ? Convert.ToDecimal(requestedHeight.Value) : inputHeight;
+            decimal maximumWidth = requestedMaxWidth.HasValue ? Convert.ToDecimal(requestedMaxWidth.Value) : outputWidth;
+            decimal maximumHeight = requestedMaxHeight.HasValue ? Convert.ToDecimal(requestedMaxHeight.Value) : outputHeight;
+
+            if (outputWidth > maximumWidth || outputHeight > maximumHeight)
+            {
+                var scale = Math.Min(maximumWidth / outputWidth, maximumHeight / outputHeight);
+                outputWidth = Math.Min(maximumWidth, Math.Truncate(outputWidth * scale));
+                outputHeight = Math.Min(maximumHeight, Math.Truncate(outputHeight * scale));
+            }
+
+            outputWidth = 2 * Math.Truncate(outputWidth / 2);
+            outputHeight = 2 * Math.Truncate(outputHeight / 2);
+
+            return new Tuple<int?, int?>(Convert.ToInt32(outputWidth), Convert.ToInt32(outputHeight));
+        }
+
         public List<string> GetScalingFilters(int? videoWidth,
             int? videoHeight,
+            string videoDecoder,
             string videoEncoder,
             int? requestedWidth,
             int? requestedHeight,
@@ -1395,8 +1457,9 @@ namespace MediaBrowser.Controller.MediaEncoding
             int? requestedMaxHeight)
         {
             var filters = new List<string>();
+            var fixedOutputSize = GetFixedOutputSize(videoWidth, videoHeight, requestedWidth, requestedHeight, requestedMaxWidth, requestedMaxHeight);
 
-            if (string.Equals(videoEncoder, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(videoEncoder, "h264_vaapi", StringComparison.OrdinalIgnoreCase) && fixedOutputSize.Item1.HasValue && fixedOutputSize.Item2.HasValue)
             {
                 // Work around vaapi's reduced scaling features
                 var scaler = "scale_vaapi";
@@ -1404,27 +1467,17 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // Given the input dimensions (inputWidth, inputHeight), determine the output dimensions
                 // (outputWidth, outputHeight). The user may request precise output dimensions or maximum
                 // output dimensions. Output dimensions are guaranteed to be even.
-                decimal inputWidth = Convert.ToDecimal(videoWidth);
-                decimal inputHeight = Convert.ToDecimal(videoHeight);
-                decimal outputWidth = requestedWidth.HasValue ? Convert.ToDecimal(requestedWidth.Value) : inputWidth;
-                decimal outputHeight = requestedHeight.HasValue ? Convert.ToDecimal(requestedHeight.Value) : inputHeight;
-                decimal maximumWidth = requestedMaxWidth.HasValue ? Convert.ToDecimal(requestedMaxWidth.Value) : outputWidth;
-                decimal maximumHeight = requestedMaxHeight.HasValue ? Convert.ToDecimal(requestedMaxHeight.Value) : outputHeight;
+                var outputWidth = fixedOutputSize.Item1.Value;
+                var outputHeight = fixedOutputSize.Item2.Value;
 
-                if (outputWidth > maximumWidth || outputHeight > maximumHeight)
-                {
-                    var scale = Math.Min(maximumWidth / outputWidth, maximumHeight / outputHeight);
-                    outputWidth = Math.Min(maximumWidth, Math.Truncate(outputWidth * scale));
-                    outputHeight = Math.Min(maximumHeight, Math.Truncate(outputHeight * scale));
-                }
-
-                outputWidth = 2 * Math.Truncate(outputWidth / 2);
-                outputHeight = 2 * Math.Truncate(outputHeight / 2);
-
-                if (outputWidth != inputWidth || outputHeight != inputHeight)
+                if (!videoWidth.HasValue || outputWidth != videoWidth.Value || !videoHeight.HasValue || outputHeight != videoHeight.Value)
                 {
                     filters.Add(string.Format("{0}=w={1}:h={2}", scaler, outputWidth.ToString(_usCulture), outputHeight.ToString(_usCulture)));
                 }
+            }
+            else if ((videoDecoder ?? string.Empty).IndexOf("_cuvid", StringComparison.OrdinalIgnoreCase) != -1 && fixedOutputSize.Item1.HasValue && fixedOutputSize.Item2.HasValue)
+            {
+                // Nothing to do, it's handled as an input resize filter
             }
             else
             {
@@ -1563,7 +1616,10 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             var inputWidth = videoStream == null ? null : videoStream.Width;
             var inputHeight = videoStream == null ? null : videoStream.Height;
-            filters.AddRange(GetScalingFilters(inputWidth, inputHeight, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
+
+            var videoDecoder = GetVideoDecoder(state, options);
+
+            filters.AddRange(GetScalingFilters(inputWidth, inputHeight, videoDecoder, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
 
             var output = string.Empty;
 
@@ -1746,6 +1802,18 @@ namespace MediaBrowser.Controller.MediaEncoding
             if (!string.IsNullOrEmpty(videoDecoder))
             {
                 inputModifier += " " + videoDecoder;
+
+                var videoStream = state.VideoStream;
+                var inputWidth = videoStream == null ? null : videoStream.Width;
+                var inputHeight = videoStream == null ? null : videoStream.Height;
+                var request = state.BaseRequest;
+
+                var fixedOutputSize = GetFixedOutputSize(inputWidth, inputHeight, request.Width, request.Height, request.MaxWidth, request.MaxHeight);
+
+                if ((videoDecoder ?? string.Empty).IndexOf("_cuvid", StringComparison.OrdinalIgnoreCase) != -1 && fixedOutputSize.Item1.HasValue && fixedOutputSize.Item2.HasValue)
+                {
+                    inputModifier += string.Format(" -resize {0}x{1}", fixedOutputSize.Item1.Value.ToString(_usCulture), fixedOutputSize.Item2.Value.ToString(_usCulture));
+                }
             }
 
             if (state.IsVideoRequest)

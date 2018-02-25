@@ -109,7 +109,7 @@ namespace MediaBrowser.Providers.Manager
             // Next run metadata providers
             if (refreshOptions.MetadataRefreshMode != MetadataRefreshMode.None)
             {
-                var providers = GetProviders(item, refreshOptions, isFirstRefresh, requiresRefresh)
+                var providers = GetProviders(item, libraryOptions, refreshOptions, isFirstRefresh, requiresRefresh)
                     .ToList();
 
                 if (providers.Count > 0 || isFirstRefresh || requiresRefresh)
@@ -566,10 +566,10 @@ namespace MediaBrowser.Providers.Manager
         /// Gets the providers.
         /// </summary>
         /// <returns>IEnumerable{`0}.</returns>
-        protected IEnumerable<IMetadataProvider> GetProviders(BaseItem item, MetadataRefreshOptions options, bool isFirstRefresh, bool requiresRefresh)
+        protected IEnumerable<IMetadataProvider> GetProviders(BaseItem item, LibraryOptions libraryOptions, MetadataRefreshOptions options, bool isFirstRefresh, bool requiresRefresh)
         {
             // Get providers to refresh
-            var providers = ((ProviderManager)ProviderManager).GetMetadataProviders<TItemType>(item).ToList();
+            var providers = ((ProviderManager)ProviderManager).GetMetadataProviders<TItemType>(item, libraryOptions).ToList();
 
             var metadataRefreshMode = options.MetadataRefreshMode;
 

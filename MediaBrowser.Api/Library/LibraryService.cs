@@ -290,6 +290,7 @@ namespace MediaBrowser.Api.Library
     public class LibraryOptionsResult
     {
         public LibraryOptionInfo[] MetadataSavers { get; set; }
+        public LibraryOptionInfo[] MetadataReaders { get; set; }
     }
 
     /// <summary>
@@ -388,6 +389,16 @@ namespace MediaBrowser.Api.Library
                 {
                     Name = i.Name,
                     DefaultEnabled = IsSaverEnabledByDefault(i.Name, itemType)
+                })
+                .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            result.MetadataReaders = plugins
+                .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.LocalMetadataProvider))
+                .Select(i => new LibraryOptionInfo
+                {
+                    Name = i.Name,
+                    DefaultEnabled = true
                 })
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .ToArray();

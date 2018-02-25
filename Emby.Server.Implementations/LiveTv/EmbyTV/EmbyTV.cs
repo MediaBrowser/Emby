@@ -39,6 +39,7 @@ using MediaBrowser.Model.System;
 using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Querying;
+using MediaBrowser.Model.Reflection;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -62,6 +63,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IProcessFactory _processFactory;
         private readonly ISystemEvents _systemEvents;
+        private readonly IAssemblyInfo _assemblyInfo;
 
         public static EmbyTV Current;
 
@@ -71,7 +73,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private readonly ConcurrentDictionary<string, ActiveRecordingInfo> _activeRecordings =
             new ConcurrentDictionary<string, ActiveRecordingInfo>(StringComparer.OrdinalIgnoreCase);
 
-        public EmbyTV(IServerApplicationHost appHost, ILogger logger, IJsonSerializer jsonSerializer, IHttpClient httpClient, IServerConfigurationManager config, ILiveTvManager liveTvManager, IFileSystem fileSystem, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager, IMediaEncoder mediaEncoder, ITimerFactory timerFactory, IProcessFactory processFactory, ISystemEvents systemEvents)
+        public EmbyTV(IServerApplicationHost appHost, IAssemblyInfo assemblyInfo, ILogger logger, IJsonSerializer jsonSerializer, IHttpClient httpClient, IServerConfigurationManager config, ILiveTvManager liveTvManager, IFileSystem fileSystem, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager, IMediaEncoder mediaEncoder, ITimerFactory timerFactory, IProcessFactory processFactory, ISystemEvents systemEvents)
         {
             Current = this;
 
@@ -88,6 +90,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             _systemEvents = systemEvents;
             _liveTvManager = (LiveTvManager)liveTvManager;
             _jsonSerializer = jsonSerializer;
+            _assemblyInfo = assemblyInfo;
 
             _seriesTimerProvider = new SeriesTimerManager(fileSystem, jsonSerializer, _logger, Path.Combine(DataPath, "seriestimers"));
             _timerProvider = new TimerManager(fileSystem, jsonSerializer, _logger, Path.Combine(DataPath, "timers"), _logger, timerFactory);
@@ -1769,7 +1772,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (config.EnableRecordingEncoding)
             {
-                return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config);
+                return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config, _assemblyInfo);
             }
 
             return new DirectRecorder(_logger, _httpClient, _fileSystem);

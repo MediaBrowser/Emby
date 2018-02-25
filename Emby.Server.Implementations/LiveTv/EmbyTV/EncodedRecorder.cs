@@ -22,6 +22,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Reflection;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -41,8 +42,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private readonly IJsonSerializer _json;
         private readonly TaskCompletionSource<bool> _taskCompletionSource = new TaskCompletionSource<bool>();
         private readonly IServerConfigurationManager _config;
+        private readonly IAssemblyInfo _assemblyInfo;
 
-        public EncodedRecorder(ILogger logger, IFileSystem fileSystem, IMediaEncoder mediaEncoder, IServerApplicationPaths appPaths, IJsonSerializer json, LiveTvOptions liveTvOptions, IHttpClient httpClient, IProcessFactory processFactory, IServerConfigurationManager config)
+        public EncodedRecorder(ILogger logger, IFileSystem fileSystem, IMediaEncoder mediaEncoder, IServerApplicationPaths appPaths, IJsonSerializer json, LiveTvOptions liveTvOptions, IHttpClient httpClient, IProcessFactory processFactory, IServerConfigurationManager config, IAssemblyInfo assemblyInfo)
         {
             _logger = logger;
             _fileSystem = fileSystem;
@@ -53,6 +55,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             _httpClient = httpClient;
             _processFactory = processFactory;
             _config = config;
+            _assemblyInfo = assemblyInfo;
         }
 
         private string OutputFormat
@@ -208,7 +211,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
 
             var videoStream = mediaSource.VideoStream;
-            var videoDecoder = videoStream == null ? null : new EncodingHelper(_mediaEncoder, _fileSystem, null).GetVideoDecoder(VideoType.VideoFile, videoStream, GetEncodingOptions());
+            var videoDecoder = videoStream == null ? null : new EncodingHelper(_mediaEncoder, _fileSystem, null, _appPaths, _assemblyInfo).GetVideoDecoder(VideoType.VideoFile, videoStream, GetEncodingOptions());
 
             if (!string.IsNullOrEmpty(videoDecoder))
             {

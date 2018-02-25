@@ -699,8 +699,11 @@ namespace Emby.Server.Implementations.Channels
                 cancellationToken)
                 .ConfigureAwait(false);
 
-            // Not needed since there is a parentId
-            query.ChannelIds = new string[] { };
+            if (query.ParentId.HasValue)
+            {
+                // Not needed since there is a parentId
+                query.ChannelIds = new string[] { };
+            }
 
             // Not yet sure why this is causing a problem
             query.GroupByPresentationUniqueKey = false;

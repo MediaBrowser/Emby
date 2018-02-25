@@ -32,6 +32,7 @@
 
         public string SeasonZeroDisplayName { get; set; }
         public string[] EnabledMetadataSavers { get; set; }
+        public string[] LocalMetadataReaderOrder { get; set; }
 
         public LibraryOptions()
         {
