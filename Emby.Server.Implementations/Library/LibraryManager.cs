@@ -1170,7 +1170,19 @@ namespace Emby.Server.Implementations.Library
 
                 Locations = _fileSystem.GetFilePaths(dir, false)
                 .Where(i => string.Equals(ShortcutFileExtension, Path.GetExtension(i), StringComparison.OrdinalIgnoreCase))
-                    .Select(_fileSystem.ResolveShortcut)
+                    .Select(i =>
+                    {
+                        try
+                        {
+                            return _fileSystem.ResolveShortcut(i);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException("Error resolving shortcut file {0}", ex, i);
+                            return null;
+                        }
+                    })
+                    .Where(i => i != null)
                     .OrderBy(i => i)
                     .ToArray(),
 

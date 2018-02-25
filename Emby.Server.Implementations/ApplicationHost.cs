@@ -1025,7 +1025,7 @@ namespace Emby.Server.Implementations
             ChapterManager = new ChapterManager(LibraryManager, LogManager.GetLogger("ChapterManager"), ServerConfigurationManager, ItemRepository);
             RegisterSingleInstance(ChapterManager);
 
-            RegisterMediaEncoder();
+            RegisterMediaEncoder(assemblyInfo);
 
             EncodingManager = new EncodingManager(FileSystemManager, Logger, MediaEncoder, ChapterManager, LibraryManager);
             RegisterSingleInstance(EncodingManager);
@@ -1269,7 +1269,7 @@ namespace Emby.Server.Implementations
         /// Registers the media encoder.
         /// </summary>
         /// <returns>Task.</returns>
-        private void RegisterMediaEncoder()
+        private void RegisterMediaEncoder(IAssemblyInfo assemblyInfo)
         {
             string encoderPath = null;
             string probePath = null;
@@ -1301,7 +1301,8 @@ namespace Emby.Server.Implementations
                 (Environment.ProcessorCount > 2 ? 14000 : 40000),
                 EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows,
                 EnvironmentInfo,
-                BlurayExaminer);
+                BlurayExaminer,
+                assemblyInfo);
 
             MediaEncoder = mediaEncoder;
             RegisterSingleInstance(MediaEncoder);

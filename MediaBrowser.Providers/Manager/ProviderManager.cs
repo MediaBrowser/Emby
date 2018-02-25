@@ -292,23 +292,23 @@ namespace MediaBrowser.Providers.Manager
             .ThenBy(GetOrder);
         }
 
-        public IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item)
+        public IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item, LibraryOptions libraryOptions)
             where T : BaseItem
         {
-            var options = GetMetadataOptions(item);
+            var globalMetadataOptions = GetMetadataOptions(item);
 
-            return GetMetadataProvidersInternal<T>(item, options, false, false, true);
+            return GetMetadataProvidersInternal<T>(item, libraryOptions, globalMetadataOptions, false, false, true);
         }
 
-        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(BaseItem item, MetadataOptions options, bool includeDisabled, bool forceEnableInternetMetadata, bool checkIsOwnedItem)
+        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(BaseItem item, LibraryOptions libraryOptions, MetadataOptions globalMetadataOptions, bool includeDisabled, bool forceEnableInternetMetadata, bool checkIsOwnedItem)
             where T : BaseItem
         {
             // Avoid implicitly captured closure
-            var currentOptions = options;
+            var currentOptions = globalMetadataOptions;
 
             return _metadataProviders.OfType<IMetadataProvider<T>>()
                 .Where(i => CanRefresh(i, item, currentOptions, includeDisabled, forceEnableInternetMetadata, checkIsOwnedItem))
-                .OrderBy(i => GetConfiguredOrder(i, options))
+                .OrderBy(i => GetConfiguredOrder(i, libraryOptions, globalMetadataOptions))
                 .ThenBy(GetDefaultOrder);
         }
 
@@ -418,12 +418,14 @@ namespace MediaBrowser.Providers.Manager
             return hasOrder.Order;
         }
 
-        private int GetConfiguredOrder(IMetadataProvider provider, MetadataOptions options)
+        private int GetConfiguredOrder(IMetadataProvider provider, LibraryOptions libraryOptions, MetadataOptions globalMetadataOptions)
         {
             // See if there's a user-defined order
             if (provider is ILocalMetadataProvider)
             {
-                var index = Array.IndexOf(options.LocalMetadataReaderOrder, provider.Name);
+                var configuredOrder = libraryOptions.LocalMetadataReaderOrder ?? globalMetadataOptions.LocalMetadataReaderOrder;
+
+                var index = Array.IndexOf(configuredOrder, provider.Name);
 
                 if (index != -1)
                 {
@@ -434,7 +436,7 @@ namespace MediaBrowser.Providers.Manager
             // See if there's a user-defined order
             if (provider is IRemoteMetadataProvider)
             {
-                var index = Array.IndexOf(options.MetadataFetcherOrder, provider.Name);
+                var index = Array.IndexOf(globalMetadataOptions.MetadataFetcherOrder, provider.Name);
 
                 if (index != -1)
                 {
@@ -529,7 +531,7 @@ namespace MediaBrowser.Providers.Manager
         private void AddMetadataPlugins<T>(List<MetadataPlugin> list, T item, LibraryOptions libraryOptions, MetadataOptions options)
             where T : BaseItem
         {
-            var providers = GetMetadataProvidersInternal<T>(item, options, true, false, false).ToList();
+            var providers = GetMetadataProvidersInternal<T>(item, libraryOptions, options, true, false, false).ToList();
 
             // Locals
             list.AddRange(providers.Where(i => (i is ILocalMetadataProvider)).Select(i => new MetadataPlugin
@@ -732,8 +734,9 @@ namespace MediaBrowser.Providers.Manager
             dummy.SetParent(new Folder());
 
             var options = GetMetadataOptions(dummy);
+            var libraryOptions = new LibraryOptions();
 
-            var providers = GetMetadataProvidersInternal<TItemType>(dummy, options, searchInfo.IncludeDisabledProviders, false, false)
+            var providers = GetMetadataProvidersInternal<TItemType>(dummy, libraryOptions, options, searchInfo.IncludeDisabledProviders, false, false)
                 .OfType<IRemoteSearchProvider<TLookupType>>();
 
             if (!string.IsNullOrEmpty(searchInfo.SearchProviderName))
