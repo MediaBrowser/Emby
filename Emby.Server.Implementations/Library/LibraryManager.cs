@@ -3131,6 +3131,8 @@ namespace Emby.Server.Implementations.Library
             {
                 Task.Run(() =>
                 {
+                    CollectionFolder.OnCollectionFolderChange();
+
                     // No need to start if scanning the library because it will handle it
                     if (refreshLibrary)
                     {

@@ -134,6 +134,14 @@ namespace MediaBrowser.Controller.Entities
             }
         }
 
+        public static void OnCollectionFolderChange()
+        {
+            lock (LibraryOptions)
+            {
+                LibraryOptions.Clear();
+            }
+        }
+
         /// <summary>
         /// Allow different display preferences for each collection folder
         /// </summary>
