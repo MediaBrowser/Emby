@@ -274,7 +274,10 @@ namespace Emby.Server.Implementations.Library
                 authenticationProvider = authResult.Item1;
                 success = authResult.Item2;
 
-                user = await CreateUser(username).ConfigureAwait(false);
+                if (success && authenticationProvider != null && !(authenticationProvider is DefaultAuthenticationProvider))
+                {
+                    user = await CreateUser(username).ConfigureAwait(false);
+                }
             }
 
             if (success && user != null && authenticationProvider != null)

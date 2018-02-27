@@ -283,6 +283,8 @@ namespace MediaBrowser.Api.Library
             }
             finally
             {
+                CollectionFolder.OnCollectionFolderChange();
+
                 Task.Run(() =>
                 {
                     // No need to start if scanning the library because it will handle it

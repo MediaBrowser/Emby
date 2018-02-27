@@ -1373,11 +1373,19 @@ namespace MediaBrowser.Controller.MediaEncoding
 
                 if (string.Equals(outputVideoCodec, "h264_vaapi", StringComparison.OrdinalIgnoreCase))
                 {
-                    outputSizeParam = "," + outputSizeParam.Substring(outputSizeParam.IndexOf("format", StringComparison.OrdinalIgnoreCase));
+                    var index = outputSizeParam.IndexOf("format", StringComparison.OrdinalIgnoreCase);
+                    if (index != -1)
+                    {
+                        outputSizeParam = "," + outputSizeParam.Substring(index);
+                    }
                 }
                 else
                 {
-                    outputSizeParam = "," + outputSizeParam.Substring(outputSizeParam.IndexOf("scale", StringComparison.OrdinalIgnoreCase));
+                    var index = outputSizeParam.IndexOf("scale", StringComparison.OrdinalIgnoreCase);
+                    if (index != -1)
+                    {
+                        outputSizeParam = "," + outputSizeParam.Substring(index);
+                    }
                 }
             }
 

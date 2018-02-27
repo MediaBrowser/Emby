@@ -751,9 +751,26 @@ namespace MediaBrowser.Controller.Entities
             var path = video.Path;
             if (video.IsFileProtocol && !string.IsNullOrEmpty(path))
             {
-                terms.Add(System.IO.Path.GetFileName(path));
+                if (HasLocalAlternateVersions)
+                {
+                    var displayName = System.IO.Path.GetFileNameWithoutExtension(path)
+                        .Replace(System.IO.Path.GetFileName(ContainingFolderPath), string.Empty, StringComparison.OrdinalIgnoreCase)
+                        .TrimStart(new char[] { ' ', '-' });
+
+                    if (!string.IsNullOrEmpty(displayName))
+                    {
+                        terms.Add(displayName);
+                    }
+                }
+
+                if (terms.Count == 0)
+                {
+                    var displayName = System.IO.Path.GetFileNameWithoutExtension(path);
+                    terms.Add(displayName);
+                }
             }
-            else
+
+            if (terms.Count == 0)
             {
                 terms.Add(video.Name);
             }
