@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Configuration;
-using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.Collections;
 using MediaBrowser.Model.Extensions;
 
 namespace MediaBrowser.Controller.Entities
@@ -56,7 +56,7 @@ namespace MediaBrowser.Controller.Entities
             switch (viewType)
             {
                 case CollectionType.Folders:
-                    return GetResult(user.RootFolder.GetChildren(user, true), queryParent, query);
+                    return GetResult(_libraryManager.GetUserRootFolder().GetChildren(user, true), queryParent, query);
 
                 case CollectionType.Playlists:
                     return GetPlaylistsView(queryParent, user, query);
@@ -672,265 +672,6 @@ namespace MediaBrowser.Controller.Entities
             return SortAndPage(items, totalRecordLimit, query, libraryManager, true);
         }
 
-        public static IEnumerable<BaseItem> CollapseBoxSetItemsIfNeeded(IEnumerable<BaseItem> items,
-            InternalItemsQuery query,
-            BaseItem queryParent,
-            User user,
-            IServerConfigurationManager configurationManager)
-        {
-            if (items == null)
-            {
-                throw new ArgumentNullException("items");
-            }
-
-            if (CollapseBoxSetItems(query, queryParent, user, configurationManager))
-            {
-                items = BaseItem.CollectionManager.CollapseItemsWithinBoxSets(items, user);
-            }
-
-            return items;
-        }
-
-        public static bool CollapseBoxSetItems(InternalItemsQuery query,
-            BaseItem queryParent,
-            User user,
-            IServerConfigurationManager configurationManager)
-        {
-            // Could end up stuck in a loop like this
-            if (queryParent is BoxSet)
-            {
-                return false;
-            }
-            if (queryParent is Series)
-            {
-                return false;
-            }
-            if (queryParent is Season)
-            {
-                return false;
-            }
-            if (queryParent is MusicAlbum)
-            {
-                return false;
-            }
-            if (queryParent is MusicArtist)
-            {
-                return false;
-            }
-
-            var param = query.CollapseBoxSetItems;
-
-            if (!param.HasValue)
-            {
-                if (user != null && !configurationManager.Configuration.EnableGroupingIntoCollections)
-                {
-                    return false;
-                }
-
-                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains("Movie", StringComparer.OrdinalIgnoreCase))
-                {
-                    param = true;
-                }
-            }
-
-            return param.HasValue && param.Value && AllowBoxSetCollapsing(query);
-        }
-
-        private static bool AllowBoxSetCollapsing(InternalItemsQuery request)
-        {
-            if (request.IsFavorite.HasValue)
-            {
-                return false;
-            }
-            if (request.IsFavoriteOrLiked.HasValue)
-            {
-                return false;
-            }
-            if (request.IsLiked.HasValue)
-            {
-                return false;
-            }
-            if (request.IsPlayed.HasValue)
-            {
-                return false;
-            }
-            if (request.IsResumable.HasValue)
-            {
-                return false;
-            }
-            if (request.IsFolder.HasValue)
-            {
-                return false;
-            }
-
-            if (request.Genres.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.GenreIds.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.HasImdbId.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasOfficialRating.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasOverview.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasParentalRating.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasSpecialFeature.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasSubtitles.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasThemeSong.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasThemeVideo.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasTmdbId.HasValue)
-            {
-                return false;
-            }
-
-            if (request.HasTrailer.HasValue)
-            {
-                return false;
-            }
-
-            if (request.ImageTypes.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.Is3D.HasValue)
-            {
-                return false;
-            }
-
-            if (request.IsHD.HasValue)
-            {
-                return false;
-            }
-
-            if (request.IsInBoxSet.HasValue)
-            {
-                return false;
-            }
-
-            if (request.IsLocked.HasValue)
-            {
-                return false;
-            }
-
-            if (request.IsPlaceHolder.HasValue)
-            {
-                return false;
-            }
-
-            if (request.IsPlayed.HasValue)
-            {
-                return false;
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Person))
-            {
-                return false;
-            }
-
-            if (request.PersonIds.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.ItemIds.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.StudioIds.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.GenreIds.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.VideoTypes.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.Years.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.Tags.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.OfficialRatings.Length > 0)
-            {
-                return false;
-            }
-
-            if (request.MinPlayers.HasValue)
-            {
-                return false;
-            }
-
-            if (request.MaxPlayers.HasValue)
-            {
-                return false;
-            }
-
-            if (request.MinCommunityRating.HasValue)
-            {
-                return false;
-            }
-
-            if (request.MinCriticRating.HasValue)
-            {
-                return false;
-            }
-
-            if (request.MinIndexNumber.HasValue)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public static QueryResult<BaseItem> SortAndPage(IEnumerable<BaseItem> items,
             int? totalRecordLimit,
             InternalItemsQuery query,
@@ -1485,7 +1226,7 @@ namespace MediaBrowser.Controller.Entities
                     .OfType<Folder>()
                     .Where(UserView.IsEligibleForGrouping);
             }
-            return user.RootFolder
+            return _libraryManager.GetUserRootFolder()
                 .GetChildren(user, true)
                 .OfType<Folder>()
                 .Where(i => user.IsFolderGrouped(i.Id) && UserView.IsEligibleForGrouping(i));

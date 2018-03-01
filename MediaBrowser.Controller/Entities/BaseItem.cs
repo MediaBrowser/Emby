@@ -622,12 +622,8 @@ namespace MediaBrowser.Controller.Entities
         public static IItemRepository ItemRepository { get; set; }
         public static IFileSystem FileSystem { get; set; }
         public static IUserDataManager UserDataManager { get; set; }
-        public static ILiveTvManager LiveTvManager { get; set; }
         public static IChannelManager ChannelManager { get; set; }
-        public static ICollectionManager CollectionManager { get; set; }
-        public static IImageProcessor ImageProcessor { get; set; }
         public static IMediaSourceManager MediaSourceManager { get; set; }
-        public static IMediaEncoder MediaEncoder { get; set; }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -1754,7 +1750,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (itemCollectionFolders.Count > 0)
                 {
-                    var userCollectionFolders = user.RootFolder.GetChildren(user, true).Select(i => i.Id).ToList();
+                    var userCollectionFolders = LibraryManager.GetUserRootFolder().GetChildren(user, true).Select(i => i.Id).ToList();
                     if (!itemCollectionFolders.Any(userCollectionFolders.Contains))
                     {
                         return false;

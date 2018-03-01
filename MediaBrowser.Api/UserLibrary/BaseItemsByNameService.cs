@@ -59,7 +59,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 var user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {
@@ -250,7 +250,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {

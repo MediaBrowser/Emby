@@ -8,6 +8,7 @@ using System.Linq;
 using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Dto;
+using MediaBrowser.Controller.Collections;
 
 namespace MediaBrowser.Controller.Entities
 {

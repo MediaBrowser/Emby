@@ -411,7 +411,7 @@ namespace MediaBrowser.Api.Library
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                (!string.IsNullOrWhiteSpace(request.UserId) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
 
             if (item is Game)
@@ -723,7 +723,7 @@ namespace MediaBrowser.Api.Library
         {
             if (item.GetParent() is AggregateFolder)
             {
-                return user.RootFolder.GetChildren(user, true).FirstOrDefault(i => i.PhysicalLocations.Contains(item.Path));
+                return _libraryManager.GetUserRootFolder().GetChildren(user, true).FirstOrDefault(i => i.PhysicalLocations.Contains(item.Path));
             }
 
             return item;
@@ -925,7 +925,7 @@ namespace MediaBrowser.Api.Library
 
             var item = string.IsNullOrEmpty(request.Id)
                            ? (!string.IsNullOrWhiteSpace(request.UserId)
-                                  ? user.RootFolder
+                                  ? _libraryManager.GetUserRootFolder()
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
 
@@ -974,7 +974,7 @@ namespace MediaBrowser.Api.Library
 
             var item = string.IsNullOrEmpty(request.Id)
                            ? (!string.IsNullOrWhiteSpace(request.UserId)
-                                  ? user.RootFolder
+                                  ? _libraryManager.GetUserRootFolder()
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
 

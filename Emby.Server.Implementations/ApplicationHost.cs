@@ -1371,11 +1371,11 @@ namespace Emby.Server.Implementations
             BaseItem.FileSystem = FileSystemManager;
             BaseItem.UserDataManager = UserDataManager;
             BaseItem.ChannelManager = ChannelManager;
-            BaseItem.LiveTvManager = LiveTvManager;
+            Video.LiveTvManager = LiveTvManager;
             Folder.UserViewManager = UserViewManager;
             UserView.TVSeriesManager = TVSeriesManager;
             UserView.PlaylistManager = PlaylistManager;
-            BaseItem.CollectionManager = CollectionManager;
+            UserView.CollectionManager = CollectionManager;
             BaseItem.MediaSourceManager = MediaSourceManager;
             CollectionFolder.XmlSerializer = XmlSerializer;
             AuthenticatedAttribute.AuthService = AuthService;
