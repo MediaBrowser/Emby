@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Model.System;
+﻿using System;
+using MediaBrowser.Model.System;
 
 namespace MediaBrowser.ServerApplication.Native
 {
@@ -12,6 +13,10 @@ namespace MediaBrowser.ServerApplication.Native
         public void AllowSystemStandby()
         {
             MainStartup.Invoke(Standby.AllowSleep);
+        }
+
+        public void ScheduleWake(DateTime wakeTimeUtc, string displayName)
+        {
         }
     }
 }
