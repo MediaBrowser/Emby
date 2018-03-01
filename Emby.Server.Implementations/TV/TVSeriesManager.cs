@@ -69,7 +69,7 @@ namespace Emby.Server.Implementations.TV
             }
             else
             {
-                parents = user.RootFolder.GetChildren(user, true)
+                parents = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                    .Where(i => i is Folder)
                    .Where(i => !user.Configuration.LatestItemsExcludes.Contains(i.Id.ToString("N")))
                    .ToList();

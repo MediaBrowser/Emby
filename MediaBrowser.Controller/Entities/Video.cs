@@ -11,12 +11,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Extensions;
-
-using MediaBrowser.Controller.Channels;
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.MediaEncoding;
+using MediaBrowser.Controller.LiveTv;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -160,7 +159,7 @@ namespace MediaBrowser.Controller.Entities
         /// <value>The video3 D format.</value>
         public Video3DFormat? Video3DFormat { get; set; }
 
-        public string[] GetPlayableStreamFileNames()
+        public string[] GetPlayableStreamFileNames(IMediaEncoder mediaEncoder)
         {
             var videoType = VideoType;
 
@@ -176,7 +175,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 return new string[] { };
             }
-            return MediaEncoder.GetPlayableStreamFileNames(Path, videoType);
+            return mediaEncoder.GetPlayableStreamFileNames(Path, videoType);
         }
 
         /// <summary>
@@ -247,6 +246,8 @@ namespace MediaBrowser.Controller.Entities
         {
             return LocalAlternateVersions.Select(i => LibraryManager.GetNewItemId(i, typeof(Video)));
         }
+
+        public static ILiveTvManager LiveTvManager { get; set; }
 
         [IgnoreDataMember]
         public override SourceType SourceType

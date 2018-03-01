@@ -97,7 +97,7 @@ namespace MediaBrowser.Api.UserLibrary
             var excludeFolderIds = user.Configuration.LatestItemsExcludes;
             if (!parentIdGuid.HasValue && excludeFolderIds.Length > 0)
             {
-                ancestorIds = user.RootFolder.GetChildren(user, true)
+                ancestorIds = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                     .Where(i => i is Folder)
                     .Where(i => !excludeFolderIds.Contains(i.Id.ToString("N")))
                     .Select(i => i.Id.ToString("N"))
@@ -207,7 +207,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (item == null)
             {
                 item = string.IsNullOrEmpty(request.ParentId) ?
-                    user == null ? _libraryManager.RootFolder : user.RootFolder :
+                    user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder() :
                     _libraryManager.GetItemById(request.ParentId);
             }
 

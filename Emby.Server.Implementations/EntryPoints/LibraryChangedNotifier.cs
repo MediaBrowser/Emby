@@ -435,7 +435,7 @@ namespace Emby.Server.Implementations.EntryPoints
             // If the physical root changed, return the user root
             if (item is AggregateFolder)
             {
-                return new[] { user.RootFolder as T };
+                return new[] { _libraryManager.GetUserRootFolder() as T };
             }
 
             // Return it only if it's in the user's library

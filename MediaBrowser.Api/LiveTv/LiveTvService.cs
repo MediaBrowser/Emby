@@ -976,7 +976,7 @@ namespace MediaBrowser.Api.LiveTv
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
@@ -1112,7 +1112,7 @@ namespace MediaBrowser.Api.LiveTv
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 

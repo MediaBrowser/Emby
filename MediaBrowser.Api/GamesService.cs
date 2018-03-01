@@ -167,7 +167,7 @@ namespace MediaBrowser.Api
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                (!string.IsNullOrWhiteSpace(request.UserId) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
 
             var dtoOptions = GetDtoOptions(_authContext, request);

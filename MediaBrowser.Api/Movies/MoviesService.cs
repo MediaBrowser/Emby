@@ -143,7 +143,7 @@ namespace MediaBrowser.Api.Movies
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                (!string.IsNullOrWhiteSpace(request.UserId) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
 
             var itemTypes = new List<string> { typeof(Movie).Name };

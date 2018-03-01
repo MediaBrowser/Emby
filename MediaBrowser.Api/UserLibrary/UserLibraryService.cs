@@ -344,7 +344,7 @@ namespace MediaBrowser.Api.UserLibrary
             var user = _userManager.GetUserById(request.UserId);
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                user.RootFolder :
+                _libraryManager.GetUserRootFolder() :
                 _libraryManager.GetItemById(request.Id);
 
             var series = item as Series;
@@ -392,7 +392,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             List<Guid> trailerIds = null;
 
@@ -425,7 +425,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             await RefreshItemOnDemandIfNeeded(item).ConfigureAwait(false);
 
@@ -466,7 +466,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = user.RootFolder;
+            var item = _libraryManager.GetUserRootFolder();
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
@@ -484,7 +484,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             var items = await _libraryManager.GetIntros(item, user).ConfigureAwait(false);
 
@@ -533,7 +533,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(userId);
 
-            var item = string.IsNullOrEmpty(itemId) ? user.RootFolder : _libraryManager.GetItemById(itemId);
+            var item = string.IsNullOrEmpty(itemId) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(itemId);
 
             // Get the user data for this item
             var data = _userDataRepository.GetUserData(user, item);
@@ -578,7 +578,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(userId);
 
-            var item = string.IsNullOrEmpty(itemId) ? user.RootFolder : _libraryManager.GetItemById(itemId);
+            var item = string.IsNullOrEmpty(itemId) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(itemId);
 
             // Get the user data for this item
             var data = _userDataRepository.GetUserData(user, item);

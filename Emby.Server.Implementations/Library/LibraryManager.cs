@@ -1570,7 +1570,7 @@ namespace Emby.Server.Implementations.Library
                 // Handle grouping
                 if (user != null && !string.IsNullOrEmpty(view.ViewType) && UserView.IsEligibleForGrouping(view.ViewType) && user.Configuration.GroupedFolders.Length > 0)
                 {
-                    return user.RootFolder
+                    return GetUserRootFolder()
                         .GetChildren(user, true)
                         .OfType<CollectionFolder>()
                         .Where(i => string.IsNullOrEmpty(i.CollectionType) || string.Equals(i.CollectionType, view.ViewType, StringComparison.OrdinalIgnoreCase))

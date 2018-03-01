@@ -182,7 +182,7 @@ namespace MediaBrowser.Api
             }
 
             var item = string.IsNullOrEmpty(request.ParentId) ?
-               user == null ? _libraryManager.RootFolder : user.RootFolder :
+               user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder() :
                parentItem;
 
             var result = ((Folder)item).GetItemList(GetItemsQuery(request, user));

@@ -43,7 +43,7 @@ namespace Emby.Server.Implementations.Library
         {
             var user = _userManager.GetUserById(query.UserId);
 
-            var folders = user.RootFolder
+            var folders = _libraryManager.GetUserRootFolder()
                 .GetChildren(user, true)
                 .OfType<Folder>()
                 .ToList();
@@ -274,7 +274,7 @@ namespace Emby.Server.Implementations.Library
 
             if (parents.Count == 0)
             {
-                parents = user.RootFolder.GetChildren(user, true)
+                parents = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                     .Where(i => i is Folder)
                     .Where(i => !user.Configuration.LatestItemsExcludes.Contains(i.Id.ToString("N")))
                     .ToList();

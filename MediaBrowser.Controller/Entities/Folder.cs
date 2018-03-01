@@ -21,6 +21,8 @@ using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Collections;
+using MediaBrowser.Controller.Configuration;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -866,7 +868,7 @@ namespace MediaBrowser.Controller.Entities
                 return true;
             }
 
-            if (UserViewBuilder.CollapseBoxSetItems(query, this, query.User, ConfigurationManager))
+            if (CollapseBoxSetItems(query, this, query.User, ConfigurationManager))
             {
                 Logger.Debug("Query requires post-filtering due to CollapseBoxSetItems");
                 return true;
@@ -984,6 +986,8 @@ namespace MediaBrowser.Controller.Entities
             return PostFilterAndSort(items, query, true);
         }
 
+        public static ICollectionManager CollectionManager { get; set; }
+
         protected QueryResult<BaseItem> PostFilterAndSort(IEnumerable<BaseItem> items, InternalItemsQuery query, bool enableSorting)
         {
             var user = query.User;
@@ -991,7 +995,7 @@ namespace MediaBrowser.Controller.Entities
             // Check recursive - don't substitute in plain folder views
             if (user != null && query.Recursive)
             {
-                items = UserViewBuilder.CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager);
+                items = CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager, CollectionManager);
             }
 
             if (!string.IsNullOrEmpty(query.NameStartsWithOrGreater))
@@ -1017,6 +1021,265 @@ namespace MediaBrowser.Controller.Entities
             return UserViewBuilder.SortAndPage(items, null, query, LibraryManager, enableSorting);
         }
 
+        private static IEnumerable<BaseItem> CollapseBoxSetItemsIfNeeded(IEnumerable<BaseItem> items,
+            InternalItemsQuery query,
+            BaseItem queryParent,
+            User user,
+            IServerConfigurationManager configurationManager, ICollectionManager collectionManager)
+        {
+            if (items == null)
+            {
+                throw new ArgumentNullException("items");
+            }
+
+            if (CollapseBoxSetItems(query, queryParent, user, configurationManager))
+            {
+                items = collectionManager.CollapseItemsWithinBoxSets(items, user);
+            }
+
+            return items;
+        }
+
+        private static bool CollapseBoxSetItems(InternalItemsQuery query,
+            BaseItem queryParent,
+            User user,
+            IServerConfigurationManager configurationManager)
+        {
+            // Could end up stuck in a loop like this
+            if (queryParent is BoxSet)
+            {
+                return false;
+            }
+            if (queryParent is Series)
+            {
+                return false;
+            }
+            if (queryParent is Season)
+            {
+                return false;
+            }
+            if (queryParent is MusicAlbum)
+            {
+                return false;
+            }
+            if (queryParent is MusicArtist)
+            {
+                return false;
+            }
+
+            var param = query.CollapseBoxSetItems;
+
+            if (!param.HasValue)
+            {
+                if (user != null && !configurationManager.Configuration.EnableGroupingIntoCollections)
+                {
+                    return false;
+                }
+
+                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains("Movie", StringComparer.OrdinalIgnoreCase))
+                {
+                    param = true;
+                }
+            }
+
+            return param.HasValue && param.Value && AllowBoxSetCollapsing(query);
+        }
+
+        private static bool AllowBoxSetCollapsing(InternalItemsQuery request)
+        {
+            if (request.IsFavorite.HasValue)
+            {
+                return false;
+            }
+            if (request.IsFavoriteOrLiked.HasValue)
+            {
+                return false;
+            }
+            if (request.IsLiked.HasValue)
+            {
+                return false;
+            }
+            if (request.IsPlayed.HasValue)
+            {
+                return false;
+            }
+            if (request.IsResumable.HasValue)
+            {
+                return false;
+            }
+            if (request.IsFolder.HasValue)
+            {
+                return false;
+            }
+
+            if (request.Genres.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.GenreIds.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.HasImdbId.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasOfficialRating.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasOverview.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasParentalRating.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasSpecialFeature.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasSubtitles.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasThemeSong.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasThemeVideo.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasTmdbId.HasValue)
+            {
+                return false;
+            }
+
+            if (request.HasTrailer.HasValue)
+            {
+                return false;
+            }
+
+            if (request.ImageTypes.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.Is3D.HasValue)
+            {
+                return false;
+            }
+
+            if (request.IsHD.HasValue)
+            {
+                return false;
+            }
+
+            if (request.IsInBoxSet.HasValue)
+            {
+                return false;
+            }
+
+            if (request.IsLocked.HasValue)
+            {
+                return false;
+            }
+
+            if (request.IsPlaceHolder.HasValue)
+            {
+                return false;
+            }
+
+            if (request.IsPlayed.HasValue)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Person))
+            {
+                return false;
+            }
+
+            if (request.PersonIds.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.ItemIds.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.StudioIds.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.GenreIds.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.VideoTypes.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.Years.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.Tags.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.OfficialRatings.Length > 0)
+            {
+                return false;
+            }
+
+            if (request.MinPlayers.HasValue)
+            {
+                return false;
+            }
+
+            if (request.MaxPlayers.HasValue)
+            {
+                return false;
+            }
+
+            if (request.MinCommunityRating.HasValue)
+            {
+                return false;
+            }
+
+            if (request.MinCriticRating.HasValue)
+            {
+                return false;
+            }
+
+            if (request.MinIndexNumber.HasValue)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public virtual List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
         {
             if (user == null)
@@ -1025,7 +1288,7 @@ namespace MediaBrowser.Controller.Entities
             }
 
             //the true root should return our users root folder children
-            if (IsPhysicalRoot) return user.RootFolder.GetChildren(user, includeLinkedChildren);
+            if (IsPhysicalRoot) return LibraryManager.GetUserRootFolder().GetChildren(user, includeLinkedChildren);
 
             var result = new Dictionary<Guid, BaseItem>();
 
@@ -1210,7 +1473,7 @@ namespace MediaBrowser.Controller.Entities
                 return list;
             }
 
-            var allUserRootChildren = user.RootFolder.Children.OfType<Folder>().ToList();
+            var allUserRootChildren = LibraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
 
             var collectionFolderIds = allUserRootChildren
                 .OfType<CollectionFolder>()

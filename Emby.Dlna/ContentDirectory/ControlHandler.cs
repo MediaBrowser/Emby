@@ -767,7 +767,7 @@ namespace Emby.Dlna.ContentDirectory
 
         private QueryResult<ServerItem> GetFolders(BaseItem item, User user, StubType? stubType, SortCriteria sort, int? startIndex, int? limit)
         {
-            var folders = user.RootFolder.GetChildren(user, true)
+            var folders = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                 .OrderBy(i => i.SortName)
                 .Select(i => new ServerItem(i)
                 {
@@ -1319,7 +1319,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             return DidlBuilder.IsIdRoot(id)
 
-                 ? new ServerItem(user.RootFolder)
+                 ? new ServerItem(_libraryManager.GetUserRootFolder())
                  : ParseItemId(id, user);
         }
 
@@ -1363,7 +1363,7 @@ namespace Emby.Dlna.ContentDirectory
 
             Logger.Error("Error parsing item Id: {0}. Returning user root folder.", id);
 
-            return new ServerItem(user.RootFolder);
+            return new ServerItem(_libraryManager.GetUserRootFolder());
         }
     }
 

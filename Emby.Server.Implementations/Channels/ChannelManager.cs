@@ -871,7 +871,7 @@ namespace Emby.Server.Implementations.Channels
             var filename = string.IsNullOrEmpty(externalFolderId) ? "root" : externalFolderId.GetMD5().ToString("N");
             filename += userCacheKey;
 
-            var version = ((channel.DataVersion ?? string.Empty) + "1").GetMD5().ToString("N");
+            var version = ((channel.DataVersion ?? string.Empty) + "2").GetMD5().ToString("N");
 
             if (sortField.HasValue)
             {

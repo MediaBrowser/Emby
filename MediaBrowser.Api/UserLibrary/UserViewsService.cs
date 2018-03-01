@@ -49,13 +49,15 @@ namespace MediaBrowser.Api.UserLibrary
         private readonly IUserViewManager _userViewManager;
         private readonly IDtoService _dtoService;
         private readonly IAuthorizationContext _authContext;
+        private readonly ILibraryManager _libraryManager;
 
-        public UserViewsService(IUserManager userManager, IUserViewManager userViewManager, IDtoService dtoService, IAuthorizationContext authContext)
+        public UserViewsService(IUserManager userManager, IUserViewManager userViewManager, IDtoService dtoService, IAuthorizationContext authContext, ILibraryManager libraryManager)
         {
             _userManager = userManager;
             _userViewManager = userViewManager;
             _dtoService = dtoService;
             _authContext = authContext;
+            _libraryManager = libraryManager;
         }
 
         public async Task<object> Get(GetUserViews request)
@@ -111,7 +113,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var list = user.RootFolder
+            var list = _libraryManager.GetUserRootFolder()
                 .GetChildren(user, true)
                 .OfType<Folder>()
                 .Where(UserView.IsEligibleForGrouping)
