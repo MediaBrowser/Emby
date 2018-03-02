@@ -23,12 +23,16 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value>The codec tag.</value>
         public string CodecTag { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the language.
         /// </summary>
         /// <value>The language.</value>
         public string Language { get; set; }
+
+        public string ColorTransfer { get; set; }
+        public string ColorPrimaries { get; set; }
+        public string ColorSpace { get; set; }
 
         /// <summary>
         /// Gets or sets the comment.
@@ -40,6 +44,26 @@ namespace MediaBrowser.Model.Entities
         public string CodecTimeBase { get; set; }
 
         public string Title { get; set; }
+
+        public string VideoRange
+        {
+            get
+            {
+                if (Type != MediaStreamType.Video)
+                {
+                    return null;
+                }
+
+                var colorTransfer = ColorTransfer;
+
+                if (string.Equals(colorTransfer, "smpte2084", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "HDR";
+                }
+
+                return "SDR";
+            }
+        }
 
         public string DisplayTitle
         {
@@ -61,7 +85,7 @@ namespace MediaBrowser.Model.Entities
                     if (!string.IsNullOrEmpty(Codec) && !StringHelper.EqualsIgnoreCase(Codec, "dca"))
                     {
                         attributes.Add(AudioCodec.GetFriendlyName(Codec));
-                    } 
+                    }
                     else if (!string.IsNullOrEmpty(Profile) && !StringHelper.EqualsIgnoreCase(Profile, "lc"))
                     {
                         attributes.Add(Profile);
@@ -194,7 +218,7 @@ namespace MediaBrowser.Model.Entities
 
         private string AddLanguageIfNeeded(string title)
         {
-            if (!string.IsNullOrEmpty(Language) && 
+            if (!string.IsNullOrEmpty(Language) &&
                 !string.Equals(Language, "und", StringComparison.OrdinalIgnoreCase) &&
                 !IsLanguageInTitle(title, Language))
             {
@@ -253,7 +277,7 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         /// <value>The length of the packet.</value>
         public int? PacketLength { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the channels.
         /// </summary>

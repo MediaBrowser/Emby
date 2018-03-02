@@ -583,6 +583,22 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
         }
 
+        /// <summary>
+        /// Predicts the audio sample rate that will be in the output stream
+        /// </summary>
+        public string TargetVideoRange
+        {
+            get
+            {
+                if (BaseRequest.Static || string.Equals(OutputVideoCodec, "copy", StringComparison.OrdinalIgnoreCase))
+                {
+                    return VideoStream == null ? null : VideoStream.VideoRange;
+                }
+
+                return "SDR";
+            }
+        }
+
         public string TargetAudioProfile
         {
             get

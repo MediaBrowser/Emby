@@ -253,7 +253,15 @@ namespace MediaBrowser.Providers.Manager
 
             if (sourceHasDisplayOrder != null && targetHasDisplayOrder != null)
             {
-                targetHasDisplayOrder.DisplayOrder = sourceHasDisplayOrder.DisplayOrder;
+                if (replaceData || string.IsNullOrEmpty(targetHasDisplayOrder.DisplayOrder))
+                {
+                    var displayOrder = sourceHasDisplayOrder.DisplayOrder;
+
+                    if (!string.IsNullOrWhiteSpace(displayOrder))
+                    {
+                        targetHasDisplayOrder.DisplayOrder = displayOrder;
+                    }
+                }
             }
         }
 
