@@ -147,6 +147,12 @@
                         <option value="MVC">MVC</option>
                     </select>
                 </div>
+
+                <div id="fldDisplayOrder" class="fldDisplaySetting selectContainer hide">
+                    <select is="emby-select" id="selectDisplayOrder" label="${LabelDisplayOrder}"></select>
+                    <div class="fieldDescription seriesDisplayOrderDescription">${SeriesDisplayOrderHelp}</div>
+                </div>
+
             </div>
 
             <div class="detailSection hide" id="collapsibleDvdEpisodeInfo">
@@ -184,15 +190,6 @@
                     ${HeaderExternalIds}
                 </h2>
                 <div class="externalIds editorFieldset">
-                </div>
-            </div>
-
-            <div class="detailSection hide" id="collapsibleDisplaySettings">
-                <h2>
-                    ${HeaderDisplaySettings}
-                </h2>
-                <div id="fldDisplayOrder" class="fldDisplaySetting selectContainer">
-                    <select is="emby-select" id="selectDisplayOrder" label="${LabelDisplayOrder}"></select>
                 </div>
             </div>
 

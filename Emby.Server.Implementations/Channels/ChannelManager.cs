@@ -477,18 +477,18 @@ namespace Emby.Server.Implementations.Channels
                 item.Name = channelInfo.Name;
             }
 
-            item.OnMetadataChanged();
-
             if (isNew)
             {
+                item.OnMetadataChanged();
                 _libraryManager.CreateItem(item, cancellationToken);
             }
-            else if (forceUpdate)
-            {
-                item.UpdateToRepository(ItemUpdateType.None, cancellationToken);
-            }
 
-            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), cancellationToken);
+            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
+            {
+                ForceSave = !isNew && forceUpdate
+
+            }, cancellationToken);
+
             return item;
         }
 

@@ -29,7 +29,7 @@
   "RecordingScheduled": "Recording scheduled.",
   "SeriesRecordingScheduled": "Series recording scheduled.",
   "HeaderNewRecording": "New Recording",
-  "WakeServer":  "Wake server",
+  "WakeServer": "Wake server",
   "Sunday": "Sunday",
   "Monday": "Monday",
   "Tuesday": "Tuesday",
@@ -197,6 +197,7 @@
   "LabelReleaseDate": "Release date:",
   "LabelYear": "Year:",
   "LabelPlaceOfBirth": "Place of birth:",
+  "Aired": "Aired",
   "LabelAirDays": "Air days:",
   "LabelAirTime": "Air time:",
   "LabelRuntimeMinutes": "Run time (minutes):",
@@ -535,6 +536,7 @@
   "ErrorDeletingItem": "There was an error deleting the item from Emby Server. Please check that Emby Server has write access to the media folder and try again.",
   "NoSubtitles": "No subtitles",
   "Default": "Default",
+  "Absolute": "Absolute",
   "Smart": "Smart",
   "Small": "Small",
   "Medium": "Medium",
@@ -662,5 +664,10 @@
   "HeaderFavoriteAlbums": "Favorite Albums",
   "HeaderFavoriteSongs": "Favorite Songs",
   "Ascending": "Ascending",
-  "Descending": "Descending"
+  "Descending": "Descending",
+  "ColorPrimaries": "Color primaries",
+  "ColorSpace": "Color space",
+  "ColorTransfer": "Color transfer",
+  "VideoRange": "Video range",
+  "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
 }

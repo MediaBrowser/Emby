@@ -139,7 +139,7 @@ namespace Emby.Server.Implementations.Data
                 RunDefaultInitialization(connection);
 
                 var createMediaStreamsTableCommand
-                    = "create table if not exists mediastreams (ItemId GUID, StreamIndex INT, StreamType TEXT, Codec TEXT, Language TEXT, ChannelLayout TEXT, Profile TEXT, AspectRatio TEXT, Path TEXT, IsInterlaced BIT, BitRate INT NULL, Channels INT NULL, SampleRate INT NULL, IsDefault BIT, IsForced BIT, IsExternal BIT, Height INT NULL, Width INT NULL, AverageFrameRate FLOAT NULL, RealFrameRate FLOAT NULL, Level FLOAT NULL, PixelFormat TEXT, BitDepth INT NULL, IsAnamorphic BIT NULL, RefFrames INT NULL, CodecTag TEXT NULL, Comment TEXT NULL, NalLengthSize TEXT NULL, IsAvc BIT NULL, Title TEXT NULL, TimeBase TEXT NULL, CodecTimeBase TEXT NULL, PRIMARY KEY (ItemId, StreamIndex))";
+                    = "create table if not exists mediastreams (ItemId GUID, StreamIndex INT, StreamType TEXT, Codec TEXT, Language TEXT, ChannelLayout TEXT, Profile TEXT, AspectRatio TEXT, Path TEXT, IsInterlaced BIT, BitRate INT NULL, Channels INT NULL, SampleRate INT NULL, IsDefault BIT, IsForced BIT, IsExternal BIT, Height INT NULL, Width INT NULL, AverageFrameRate FLOAT NULL, RealFrameRate FLOAT NULL, Level FLOAT NULL, PixelFormat TEXT, BitDepth INT NULL, IsAnamorphic BIT NULL, RefFrames INT NULL, CodecTag TEXT NULL, Comment TEXT NULL, NalLengthSize TEXT NULL, IsAvc BIT NULL, Title TEXT NULL, TimeBase TEXT NULL, CodecTimeBase TEXT NULL, ColorPrimaries TEXT NULL, ColorSpace TEXT NULL, ColorTransfer TEXT NULL, PRIMARY KEY (ItemId, StreamIndex))";
 
                 string[] queries = {
                     "PRAGMA locking_mode=EXCLUSIVE",
@@ -272,6 +272,11 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "MediaStreams", "RefFrames", "INT", existingColumnNames);
                     AddColumn(db, "MediaStreams", "KeyFrames", "TEXT", existingColumnNames);
                     AddColumn(db, "MediaStreams", "IsAnamorphic", "BIT", existingColumnNames);
+
+                    AddColumn(db, "MediaStreams", "ColorPrimaries", "TEXT", existingColumnNames);
+                    AddColumn(db, "MediaStreams", "ColorSpace", "TEXT", existingColumnNames);
+                    AddColumn(db, "MediaStreams", "ColorTransfer", "TEXT", existingColumnNames);
+
                 }, TransactionMode);
 
                 string[] postQueries =
@@ -495,7 +500,10 @@ namespace Emby.Server.Implementations.Data
             "IsAvc",
             "Title",
             "TimeBase",
-            "CodecTimeBase"
+            "CodecTimeBase",
+            "ColorPrimaries",
+            "ColorSpace",
+            "ColorTransfer"
         };
 
         private string GetSaveItemCommandText()
@@ -5780,6 +5788,10 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                             paramList.Add(stream.TimeBase);
                             paramList.Add(stream.CodecTimeBase);
 
+                            paramList.Add(stream.ColorPrimaries);
+                            paramList.Add(stream.ColorSpace);
+                            paramList.Add(stream.ColorTransfer);
+
                             statement.Execute(paramList.ToArray());
                         }
                     }
@@ -5930,6 +5942,21 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             if (reader[31].SQLiteType != SQLiteType.Null)
             {
                 item.CodecTimeBase = reader[31].ToString();
+            }
+
+            if (reader[32].SQLiteType != SQLiteType.Null)
+            {
+                item.ColorPrimaries = reader[32].ToString();
+            }
+
+            if (reader[33].SQLiteType != SQLiteType.Null)
+            {
+                item.ColorSpace = reader[33].ToString();
+            }
+
+            if (reader[34].SQLiteType != SQLiteType.Null)
+            {
+                item.ColorTransfer = reader[34].ToString();
             }
 
             return item;

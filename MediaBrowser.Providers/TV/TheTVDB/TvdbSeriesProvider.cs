@@ -1120,26 +1120,26 @@ namespace MediaBrowser.Providers.TV
                             }
 
                         case "Airs_DayOfWeek":
-                        {
-                            var val = reader.ReadElementContentAsString();
-
-                            if (!string.IsNullOrWhiteSpace(val))
                             {
-                                item.AirDays = TVUtils.GetAirDays(val);
+                                var val = reader.ReadElementContentAsString();
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    item.AirDays = TVUtils.GetAirDays(val);
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         case "Airs_Time":
-                        {
-                            var val = reader.ReadElementContentAsString();
-
-                            if (!string.IsNullOrWhiteSpace(val))
                             {
-                                item.AirTime = val;
+                                var val = reader.ReadElementContentAsString();
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    item.AirTime = val;
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         case "ContentRating":
                             {
@@ -1389,6 +1389,9 @@ namespace MediaBrowser.Providers.TV
             var absoluteNumber = -1;
             var lastUpdateString = string.Empty;
 
+            var dvdSeasonNumber = -1;
+            var dvdEpisodeNumber = -1.0;
+
             using (var streamReader = new StringReader(xml))
             {
                 // Use XmlReader for best performance
@@ -1421,6 +1424,40 @@ namespace MediaBrowser.Providers.TV
                                                 episodeNumber = num;
                                             }
                                         }
+                                        break;
+                                    }
+
+                                case "Combined_episodenumber":
+                                    {
+                                        var val = reader.ReadElementContentAsString();
+
+                                        if (!string.IsNullOrWhiteSpace(val))
+                                        {
+                                            float num;
+
+                                            if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
+                                            {
+                                                dvdEpisodeNumber = num;
+                                            }
+                                        }
+
+                                        break;
+                                    }
+
+                                case "Combined_season":
+                                    {
+                                        var val = reader.ReadElementContentAsString();
+
+                                        if (!string.IsNullOrWhiteSpace(val))
+                                        {
+                                            float num;
+
+                                            if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
+                                            {
+                                                dvdSeasonNumber = Convert.ToInt32(num);
+                                            }
+                                        }
+
                                         break;
                                     }
 
@@ -1496,6 +1533,27 @@ namespace MediaBrowser.Providers.TV
             if (absoluteNumber != -1)
             {
                 file = Path.Combine(seriesDataPath, string.Format("episode-abs-{0}.xml", absoluteNumber));
+
+                // Only save the file if not already there, or if the episode has changed
+                if (hasEpisodeChanged || !_fileSystem.FileExists(file))
+                {
+                    using (var fileStream = _fileSystem.GetFileStream(file, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None, true))
+                    {
+                        using (var writer = XmlWriter.Create(fileStream, new XmlWriterSettings
+                        {
+                            Encoding = Encoding.UTF8,
+                            Async = true
+                        }))
+                        {
+                            await writer.WriteRawAsync(xml).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+
+            if (dvdSeasonNumber != -1 && dvdEpisodeNumber != -1 && (dvdSeasonNumber != seasonNumber || dvdEpisodeNumber != episodeNumber))
+            {
+                file = Path.Combine(seriesDataPath, string.Format("episode-dvd-{0}-{1}.xml", dvdSeasonNumber, dvdEpisodeNumber));
 
                 // Only save the file if not already there, or if the episode has changed
                 if (hasEpisodeChanged || !_fileSystem.FileExists(file))

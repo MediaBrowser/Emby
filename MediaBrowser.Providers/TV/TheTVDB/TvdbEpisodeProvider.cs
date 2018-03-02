@@ -229,7 +229,7 @@ namespace MediaBrowser.Providers.TV
 
             if (searchInfo.IndexNumber.HasValue)
             {
-                var files = GetEpisodeXmlFiles(searchInfo.ParentIndexNumber, searchInfo.IndexNumber, searchInfo.IndexNumberEnd, _fileSystem.GetDirectoryName(xmlFile));
+                var files = GetEpisodeXmlFiles(searchInfo.SeriesDisplayOrder, searchInfo.ParentIndexNumber, searchInfo.IndexNumber, searchInfo.IndexNumberEnd, _fileSystem.GetDirectoryName(xmlFile));
 
                 list = files.Select(GetXmlReader).ToList();
             }
@@ -242,7 +242,48 @@ namespace MediaBrowser.Providers.TV
             return list;
         }
 
-        private List<FileSystemMetadata> GetEpisodeXmlFiles(int? seasonNumber, int? episodeNumber, int? endingEpisodeNumber, string seriesDataPath)
+        private string GetEpisodeFileName(string seriesDisplayOrder, int? seasonNumber, int? episodeNumber)
+        {
+            if (string.Equals(seriesDisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Format("episode-abs-{0}.xml", episodeNumber);
+            }
+            else if (string.Equals(seriesDisplayOrder, "dvd", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Format("episode-dvd-{0}-{1}.xml", seasonNumber.Value, episodeNumber);
+            }
+            else
+            {
+                return string.Format("episode-{0}-{1}.xml", seasonNumber.Value, episodeNumber);
+            }
+        }
+
+        private FileSystemMetadata GetEpisodeFileInfoWithFallback(string seriesDataPath, string seriesDisplayOrder, int? seasonNumber, int? episodeNumber)
+        {
+            var file = Path.Combine(seriesDataPath, GetEpisodeFileName(seriesDisplayOrder, seasonNumber, episodeNumber));
+            var fileInfo = _fileSystem.GetFileInfo(file);
+
+            if (fileInfo.Exists)
+            {
+                return fileInfo;
+            }
+
+            if (!seasonNumber.HasValue)
+            {
+                return fileInfo;
+            }
+
+            // revert to aired order
+            if (string.Equals(seriesDisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase) || string.Equals(seriesDisplayOrder, "dvd", StringComparison.OrdinalIgnoreCase))
+            {
+                file = Path.Combine(seriesDataPath, GetEpisodeFileName(null, seasonNumber, episodeNumber));
+                return _fileSystem.GetFileInfo(file);
+            }
+
+            return fileInfo;
+        }
+
+        private List<FileSystemMetadata> GetEpisodeXmlFiles(string seriesDisplayOrder, int? seasonNumber, int? episodeNumber, int? endingEpisodeNumber, string seriesDataPath)
         {
             var files = new List<FileSystemMetadata>();
 
@@ -251,27 +292,16 @@ namespace MediaBrowser.Providers.TV
                 return files;
             }
 
-            var usingAbsoluteData = false;
-
-            if (seasonNumber.HasValue)
+            if (!seasonNumber.HasValue)
             {
-                var file = Path.Combine(seriesDataPath, string.Format("episode-{0}-{1}.xml", seasonNumber.Value, episodeNumber));
-                var fileInfo = _fileSystem.GetFileInfo(file);
-
-                if (fileInfo.Exists)
-                {
-                    files.Add(fileInfo);
-                }
+                seriesDisplayOrder = "absolute";
             }
-            else
+
+            var fileInfo = GetEpisodeFileInfoWithFallback(seriesDataPath, seriesDisplayOrder, seasonNumber, episodeNumber);
+
+            if (fileInfo.Exists)
             {
-                usingAbsoluteData = true;
-                var file = Path.Combine(seriesDataPath, string.Format("episode-abs-{0}.xml", episodeNumber));
-                var fileInfo = _fileSystem.GetFileInfo(file);
-                if (fileInfo.Exists)
-                {
-                    files.Add(fileInfo);
-                }
+                files.Add(fileInfo);
             }
 
             var end = endingEpisodeNumber ?? episodeNumber;
@@ -279,18 +309,8 @@ namespace MediaBrowser.Providers.TV
 
             while (episodeNumber <= end)
             {
-                string file;
+                fileInfo = GetEpisodeFileInfoWithFallback(seriesDataPath, seriesDisplayOrder, seasonNumber, episodeNumber);
 
-                if (usingAbsoluteData)
-                {
-                    file = Path.Combine(seriesDataPath, string.Format("episode-abs-{0}.xml", episodeNumber));
-                }
-                else
-                {
-                    file = Path.Combine(seriesDataPath, string.Format("episode-{0}-{1}.xml", seasonNumber.Value, episodeNumber));
-                }
-
-                var fileInfo = _fileSystem.GetFileInfo(file);
                 if (fileInfo.Exists)
                 {
                     files.Add(fileInfo);
@@ -483,7 +503,7 @@ namespace MediaBrowser.Providers.TV
                                     break;
                                 }
 
-                            case "DVD_episodenumber":
+                            case "Combined_episodenumber":
                                 {
                                     var val = reader.ReadElementContentAsString();
 
@@ -500,7 +520,7 @@ namespace MediaBrowser.Providers.TV
                                     break;
                                 }
 
-                            case "DVD_season":
+                            case "Combined_season":
                                 {
                                     var val = reader.ReadElementContentAsString();
 
