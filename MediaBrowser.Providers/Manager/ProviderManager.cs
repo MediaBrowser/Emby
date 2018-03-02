@@ -161,15 +161,6 @@ namespace MediaBrowser.Providers.Manager
 
             }).ConfigureAwait(false))
             {
-                //workaround for tvheadend channel icons
-                if (response.ContentType == "")
-                {
-                    if (response.ResponseUrl.Contains("/imagecache/"))
-                    {
-                        response.ContentType = "image/png";
-                    }
-
-                }
                 await SaveImage(item, response.Content, response.ContentType, type, imageIndex, cancellationToken).ConfigureAwait(false);
             }
         }
