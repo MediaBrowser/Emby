@@ -1,5 +1,12 @@
 {
     "WakeServer": "Wake server",
+    "Aired": "Aired",
+    "Absolute": "Absolute",
+    "ColorPrimaries": "Color primaries",
+    "ColorSpace": "Color space",
+    "ColorTransfer": "Color transfer",
+    "VideoRange": "Video range",
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
     "MessageUnlockAppWithPurchaseOrSupporter": "Unlock this feature with a small one-time purchase, or with an active Emby Premiere subscription.",
     "MessageUnlockAppWithSupporter": "Unlock this feature with an active Emby Premiere subscription.",
     "MessageToValidateSupporter": "If you have an active Emby Premiere subscription, ensure you've setup Emby Premiere in your Emby Server Dashboard, which you can access by clicking Emby Premiere within the main menu.",
