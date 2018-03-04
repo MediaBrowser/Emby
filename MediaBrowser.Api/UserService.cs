@@ -332,6 +332,11 @@ namespace MediaBrowser.Api
                 }
             }
 
+            if (!_networkManager.IsInLocalNetwork(Request.RemoteIp))
+            {
+                users = users.Where(i => i.Policy.EnableRemoteAccess);
+            }
+
             var result = users
                 .OrderBy(u => u.Name)
                 .Select(i => _userManager.GetUserDto(i, Request.RemoteIp))

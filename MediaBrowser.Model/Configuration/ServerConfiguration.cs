@@ -185,6 +185,9 @@ namespace MediaBrowser.Model.Configuration
         public bool IsBehindProxy { get; set; }
         public bool EnableNewOmdbSupport { get; set; }
 
+        public string[] RemoteIPFilter { get; set; }
+        public bool IsRemoteIPFilterBlacklist { get; set; }
+
         public int ImageExtractionTimeoutMs { get; set; }
 
         public PathSubstitution[] PathSubstitutions { get; set; }
@@ -195,6 +198,7 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         public ServerConfiguration()
         {
+            RemoteIPFilter = new string[] { };
             LocalNetworkSubnets = new string[] { };
             LocalNetworkAddresses = new string[] { };
             CodecsUsed = new string[] { };

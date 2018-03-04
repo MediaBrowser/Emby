@@ -1333,11 +1333,7 @@ namespace Emby.Server.Implementations.Session
 
             if (user != null)
             {
-                if (!user.IsParentalScheduleAllowed())
-                {
-                    throw new SecurityException("User is not allowed access at this time.");
-                }
-
+                // TODO: Move this to userManager?
                 if (!string.IsNullOrEmpty(request.DeviceId))
                 {
                     if (!_deviceManager.CanAccessDevice(user, request.DeviceId))
@@ -1380,7 +1376,6 @@ namespace Emby.Server.Implementations.Session
                 ServerId = _appHost.SystemId
             };
         }
-
 
         private string GetAuthorizationToken(string userId, string deviceId, string app, string appVersion, string deviceName)
         {

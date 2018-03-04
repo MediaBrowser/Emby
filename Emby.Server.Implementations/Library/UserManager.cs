@@ -317,6 +317,19 @@ namespace Emby.Server.Implementations.Library
                 throw new SecurityException(string.Format("The {0} account is currently disabled. Please consult with your administrator.", user.Name));
             }
 
+            if (user != null)
+            {
+                if (!user.Policy.EnableRemoteAccess && !_networkManager.IsInLocalNetwork(remoteEndPoint))
+                {
+                    throw new SecurityException("Forbidden.");
+                }
+
+                if (!user.IsParentalScheduleAllowed())
+                {
+                    throw new SecurityException("User is not allowed access at this time.");
+                }
+            }
+
             // Update LastActivityDate and LastLoginDate, then save
             if (success)
             {

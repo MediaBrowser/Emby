@@ -34,6 +34,7 @@ namespace MediaBrowser.Model.Users
         public UnratedItem[] BlockUnratedItems { get; set; }
         public bool EnableRemoteControlOfOtherUsers { get; set; }
         public bool EnableSharedDeviceControl { get; set; }
+        public bool EnableRemoteAccess { get; set; }
 
         public bool EnableLiveTvManagement { get; set; }
         public bool EnableLiveTvAccess { get; set; }
@@ -110,6 +111,7 @@ namespace MediaBrowser.Model.Users
 
             EnableContentDownloading = true;
             EnablePublicSharing = true;
+            EnableRemoteAccess = true;
         }
     }
 }

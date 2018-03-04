@@ -235,7 +235,7 @@ namespace MediaBrowser.Providers.Manager
         /// <returns>Task.</returns>
         private async Task SaveImageToLocation(Stream source, string path, CancellationToken cancellationToken)
         {
-            _logger.Info("Saving image to {0}", path);
+            _logger.Debug("Saving image to {0}", path);
 
             var parentFolder = _fileSystem.GetDirectoryName(path);
 
