@@ -489,6 +489,7 @@ namespace Emby.Server.Implementations.Channels
             }
 
             await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), cancellationToken);
+
             return item;
         }
 
@@ -699,7 +700,10 @@ namespace Emby.Server.Implementations.Channels
                 cancellationToken)
                 .ConfigureAwait(false);
 
-            // Not needed since there is a parentId
+            if (!query.ParentId.HasValue)
+            {
+                query.Parent = channel;
+            }
             query.ChannelIds = new string[] { };
 
             // Not yet sure why this is causing a problem
@@ -868,7 +872,7 @@ namespace Emby.Server.Implementations.Channels
             var filename = string.IsNullOrEmpty(externalFolderId) ? "root" : externalFolderId.GetMD5().ToString("N");
             filename += userCacheKey;
 
-            var version = ((channel.DataVersion ?? string.Empty) + "1").GetMD5().ToString("N");
+            var version = ((channel.DataVersion ?? string.Empty) + "2").GetMD5().ToString("N");
 
             if (sortField.HasValue)
             {
