@@ -1,6 +1,8 @@
 {
     "Advanced": "Avanc\u00e9",
     "Browse": "Parcourir",
+    "LabelAllowedRemoteAddresses": "Filtre d'adresse IP distante",
+    "AllowedRemoteAddressesHelp": "Liste d'adresses IP ou d'IP\/masque de sous-r\u00e9seau s\u00e9par\u00e9es par des virgules qui seront autoris\u00e9es \u00e0 se connecter \u00e0 distance. Si la liste est vide, toutes les adresses distantes seront autoris\u00e9es.",
     "LabelPrevious": "Pr\u00e9c\u00e9dent",
     "LabelFinish": "Terminer",
     "LabelNext": "Suivant",

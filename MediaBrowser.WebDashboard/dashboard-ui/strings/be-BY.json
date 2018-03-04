@@ -1,6 +1,8 @@
 {
     "Advanced": "Advanced",
     "Browse": "Browse",
+    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
+    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelPrevious": "\u041f\u0430\u043f\u044f\u0440\u044d\u0434\u043d\u044f\u0435",
     "LabelFinish": "\u0413\u0430\u0442\u043e\u0432\u0430",
     "LabelNext": "\u041d\u0430\u0441\u0442\u0443\u043f\u043d\u0430\u0435",
