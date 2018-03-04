@@ -87,7 +87,7 @@ namespace SocketHttpListener.Net
 
                 _stream = ssl_stream;
 
-                ssl_stream.AuthenticateAsServer(cert, true, (SslProtocols)ServicePointManager.SecurityProtocol, false);
+                ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
             }
             Init();
         }
