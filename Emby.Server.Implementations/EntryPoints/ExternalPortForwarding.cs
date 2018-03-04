@@ -177,7 +177,6 @@ namespace Emby.Server.Implementations.EntryPoints
                     return;
                 }
 
-                _logger.Debug("Calling Nat.Handle on " + identifier);
                 var natManager = _natManager;
                 if (natManager != null)
                 {
@@ -208,7 +207,6 @@ namespace Emby.Server.Implementations.EntryPoints
             try
             {
                 var device = e.Device;
-                _logger.Debug("NAT device found: {0}", device.LocalAddress.ToString());
 
                 CreateRules(device);
             }
@@ -244,34 +242,32 @@ namespace Emby.Server.Implementations.EntryPoints
                 }
             }
 
-            var success = await CreatePortMap(device, _appHost.HttpPort, _config.Configuration.PublicPort).ConfigureAwait(false);
-
-            if (success)
-            {
-                await CreatePortMap(device, _appHost.HttpsPort, _config.Configuration.PublicHttpsPort).ConfigureAwait(false);
-            }
-        }
-
-        private async Task<bool> CreatePortMap(INatDevice device, int privatePort, int publicPort)
-        {
-            _logger.Debug("Creating port map on port {0}", privatePort);
-
             try
             {
-                await device.CreatePortMap(new Mapping(Protocol.Tcp, privatePort, publicPort)
-                {
-                    Description = _appHost.Name
-
-                }).ConfigureAwait(false);
-
-                return true;
+                await CreatePortMap(device, _appHost.HttpPort, _config.Configuration.PublicPort).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.Error("Error creating port map: " + ex.Message);
-
-                return false;
+                return;
             }
+
+            try
+            {
+                await CreatePortMap(device, _appHost.HttpsPort, _config.Configuration.PublicHttpsPort).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private Task CreatePortMap(INatDevice device, int privatePort, int publicPort)
+        {
+            _logger.Debug("Creating port map on local port {0} to public port {1} with device {2}", privatePort, publicPort, device.LocalAddress.ToString());
+
+            return device.CreatePortMap(new Mapping(Protocol.Tcp, privatePort, publicPort)
+            {
+                Description = _appHost.Name
+            });
         }
 
         void NatUtility_DeviceLost(object sender, DeviceEventArgs e)

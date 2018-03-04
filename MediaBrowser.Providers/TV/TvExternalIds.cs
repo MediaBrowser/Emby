@@ -19,7 +19,7 @@ namespace MediaBrowser.Providers.TV
 
         public string UrlFormatString
         {
-            get { return "http://tvlistings.zap2it.com/tv/dexter/{0}?aid=zap2it"; }
+            get { return "http://tvlistings.zap2it.com/overview.html?programSeriesId={0}"; }
         }
 
         public bool Supports(IHasProviderIds item)

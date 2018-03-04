@@ -203,7 +203,7 @@ namespace MediaBrowser.Api
             var isLockedChanged = item.IsLocked != newLockData;
 
             var series = item as Series;
-            var displayOrderChanged = series != null && !string.Equals(series.DisplayOrder, request.DisplayOrder, StringComparison.OrdinalIgnoreCase);
+            var displayOrderChanged = series != null && !string.Equals(series.DisplayOrder ?? string.Empty, request.DisplayOrder ?? string.Empty, StringComparison.OrdinalIgnoreCase);
 
             // Do this first so that metadata savers can pull the updates from the database.
             if (request.People != null)
@@ -233,6 +233,7 @@ namespace MediaBrowser.Api
                 _providerManager.QueueRefresh(series.Id, new MetadataRefreshOptions(_fileSystem)
                 {
                     MetadataRefreshMode = MetadataRefreshMode.FullRefresh,
+                    ImageRefreshMode = MetadataRefreshMode.FullRefresh,
                     ReplaceAllMetadata = true
 
                 }, RefreshPriority.High);

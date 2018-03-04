@@ -9,6 +9,7 @@ using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Providers;
+using System.Threading;
 
 namespace MediaBrowser.Controller.Playlists
 {
@@ -87,6 +88,11 @@ namespace MediaBrowser.Controller.Playlists
         {
             // Save a trip to the database
             return new List<BaseItem>();
+        }
+
+        protected override Task ValidateChildrenInternal(IProgress<double> progress, CancellationToken cancellationToken, bool recursive, bool refreshChildMetadata, MetadataRefreshOptions refreshOptions, IDirectoryService directoryService)
+        {
+            return Task.FromResult(true);
         }
 
         public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)

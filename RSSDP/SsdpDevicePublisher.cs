@@ -580,7 +580,7 @@ namespace Rssdp.Infrastructure
             //_RebroadcastAliveNotificationsTimeSpan = rebroadCastInterval;
             _RebroadcastAliveNotificationsTimer = _timerFactory.Create(SendAllAliveNotifications, null, nextBroadcastInterval, rebroadCastInterval);
 
-            WriteTrace(String.Format("Rebroadcast Interval = {0}, Next Broadcast At = {1}", rebroadCastInterval.ToString(), nextBroadcastInterval.ToString()));
+            //WriteTrace(String.Format("Rebroadcast Interval = {0}, Next Broadcast At = {1}", rebroadCastInterval.ToString(), nextBroadcastInterval.ToString()));
         }
 
         private TimeSpan GetMinimumNonZeroCacheLifetime()

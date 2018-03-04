@@ -19,6 +19,9 @@ namespace MediaBrowser.Model.Dlna
         [XmlAttribute("language")]
         public string Language { get; set; }
 
+        [XmlAttribute("container")]
+        public string Container { get; set; }
+
         public string[] GetLanguages()
         {
             return ContainerProfile.SplitValue(Language);

@@ -78,8 +78,6 @@ namespace Mono.Nat.Upnp
 
                 this.hostEndPoint = hostEndPoint;
 
-                _logger.Debug("Parsed device as: {0}", this.hostEndPoint.ToString());
-
                 // The service description URL is the remainder of the "locationDetails" string. The bit that was originally after the ip
                 // and port information
                 this.serviceDescriptionUrl = locationDetails.Substring(locationDetails.IndexOf('/'));
@@ -141,7 +139,6 @@ namespace Mono.Nat.Upnp
                     }
                 }
 
-                _logger.Debug("{0}: Parsed services list", HostEndPoint);
                 XmlNamespaceManager ns = new XmlNamespaceManager(xmldoc.NameTable);
                 ns.AddNamespace("ns", "urn:schemas-upnp-org:device-1-0");
                 XmlNodeList nodes = xmldoc.SelectNodes("//*/ns:serviceList", ns);
@@ -161,9 +158,10 @@ namespace Mono.Nat.Upnp
                         {
                             this.controlUrl = service["controlURL"].InnerText;
                             _logger.Debug("{0}: Found upnp service at: {1}", HostEndPoint, controlUrl);
-                            try
+
+                            Uri u;
+                            if (Uri.TryCreate(controlUrl, UriKind.RelativeOrAbsolute, out u))
                             {
-                                Uri u = new Uri(controlUrl);
                                 if (u.IsAbsoluteUri)
                                 {
                                     EndPoint old = hostEndPoint;
@@ -173,11 +171,10 @@ namespace Mono.Nat.Upnp
                                     _logger.Debug("{0}: New control url: {1}", HostEndPoint, controlUrl);
                                 }
                             }
-                            catch
+                            else
                             {
                                 _logger.Debug("{0}: Assuming control Uri is relative: {1}", HostEndPoint, controlUrl);
                             }
-                            _logger.Debug("{0}: Handshake Complete", HostEndPoint);
                             return;
                         }
                     }

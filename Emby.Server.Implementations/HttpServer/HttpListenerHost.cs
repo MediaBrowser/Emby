@@ -302,7 +302,7 @@ namespace Emby.Server.Implementations.HttpServer
             }
 
             // Strip any information we don't want to reveal
-            
+
             msg = msg.Replace(_config.ApplicationPaths.ProgramSystemPath, string.Empty, StringComparison.OrdinalIgnoreCase);
             msg = msg.Replace(_config.ApplicationPaths.ProgramDataPath, string.Empty, StringComparison.OrdinalIgnoreCase);
 
@@ -439,10 +439,29 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (_config.Configuration.EnableRemoteAccess)
             {
-                return true;
+                var addressFilter = _config.Configuration.RemoteIPFilter.Where(i => !string.IsNullOrWhiteSpace(i)).ToArray();
+
+                if (addressFilter.Length > 0 && !_networkManager.IsInLocalNetwork(remoteIp))
+                {
+                    if (_config.Configuration.IsRemoteIPFilterBlacklist)
+                    {
+                        return !_networkManager.IsAddressInSubnets(remoteIp, addressFilter);
+                    }
+                    else
+                    {
+                        return _networkManager.IsAddressInSubnets(remoteIp, addressFilter);
+                    }
+                }
+            }
+            else
+            {
+                if (!_networkManager.IsInLocalNetwork(remoteIp))
+                {
+                    return false;
+                }
             }
 
-            return _networkManager.IsInLocalNetwork(remoteIp);
+            return true;
         }
 
         private bool ValidateSsl(string remoteIp, string urlString)
@@ -490,11 +509,19 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
-                if (!ValidateHost(host) || !ValidateRequest(remoteIp, httpReq.IsLocal))
+                if (!ValidateHost(host))
                 {
                     httpRes.StatusCode = 400;
                     httpRes.ContentType = "text/plain";
                     Write(httpRes, "Invalid host");
+                    return;
+                }
+
+                if (!ValidateRequest(remoteIp, httpReq.IsLocal))
+                {
+                    httpRes.StatusCode = 403;
+                    httpRes.ContentType = "text/plain";
+                    Write(httpRes, "Forbidden");
                     return;
                 }
 

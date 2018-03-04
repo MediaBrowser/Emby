@@ -60,5 +60,7 @@ namespace MediaBrowser.Common.Net
         bool TryParseIpAddress(string ipAddress, out IpAddressInfo ipAddressInfo);
 
         Task<IpAddressInfo[]> GetHostAddressesAsync(string host);
+
+        bool IsAddressInSubnets(string addressString, string[] subnets);
     }
 }
