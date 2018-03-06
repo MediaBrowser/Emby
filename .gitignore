@@ -234,3 +234,5 @@ pip-log.txt
 .mr.developer.cfg
 MediaBrowser.WebDashboard/dashboard-ui/.idea/
 /.vs/MediaBrowser/v15/Server/sqlite3
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
