@@ -3,7 +3,7 @@
     <h3 class="formDialogHeaderTitle">
         ${Edit}
     </h3>
-    <div style="margin-left: auto; display: flex; align-items: center; justify-content: center;">
+    <div style="margin-left: auto;" class="flex align-items-center justify-content-center">
         <button is="emby-button" type="button" class="btnHeaderSave button-accent-flat button-flat hide" tabindex="-1">
             <i class="md-icon">check</i>
             <span>${Save}</span>
@@ -24,7 +24,11 @@
                     <select is="emby-select" id="selectContentType" label="${LabelContentType}"></select>
                 </div>
                 <div id="fldPath" class="inputContainer">
-                    <input is="emby-input" id="txtPath" type="text" label="${LabelPath}" readonly />
+                    <div class="align-items-center flex">
+                        <div class="flex-grow">
+                            <input is="emby-input" id="txtPath" type="text" label="${LabelPath}" class="flex-grow" readonly />
+                        </div>
+                    </div>
                 </div>
                 <div class="inputContainer">
                     <input is="emby-input" id="txtName" type="text" label="${LabelTitle}" required="required" />
