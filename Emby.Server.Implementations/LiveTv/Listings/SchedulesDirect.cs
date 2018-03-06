@@ -16,6 +16,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
@@ -355,6 +358,8 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             if (info.IsSeries)
             {
                 info.SeriesId = programId.Substring(0, 10);
+
+                info.SeriesProviderIds[MetadataProviders.Zap2It.ToString()] = info.SeriesId;
 
                 if (details.metadata != null)
                 {

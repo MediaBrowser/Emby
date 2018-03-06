@@ -228,13 +228,14 @@ namespace Emby.Server.Implementations.EntryPoints
 
             // On some systems the device discovered event seems to fire repeatedly
             // This check will help ensure we're not trying to port map the same device over and over
-            var address = device.LocalAddress.ToString();
+            var address = device.LocalAddress;
+            var addressString = address.ToString();
 
             lock (_createdRules)
             {
-                if (!_createdRules.Contains(address))
+                if (!_createdRules.Contains(addressString))
                 {
-                    _createdRules.Add(address);
+                    _createdRules.Add(addressString);
                 }
                 else
                 {

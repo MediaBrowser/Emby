@@ -58,6 +58,7 @@ namespace MediaBrowser.Providers.TV
         private const string SeriesSearchUrl = TvdbBaseUrl + "api/GetSeries.php?seriesname={0}&language={1}";
         private const string SeriesGetZip = TvdbBaseUrl + "api/{0}/series/{1}/all/{2}.zip";
         private const string GetSeriesByImdbId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
+        private const string GetSeriesByZap2ItId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?zap2it={0}&language={1}";
 
         private string NormalizeLanguage(string language)
         {
@@ -147,6 +148,11 @@ namespace MediaBrowser.Providers.TV
             if (seriesProviderIds.TryGetValue(MetadataProviders.Imdb.ToString(), out id) && !string.IsNullOrEmpty(id))
             {
                 series.SetProviderId(MetadataProviders.Imdb, id);
+            }
+
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out id) && !string.IsNullOrEmpty(id))
+            {
+                series.SetProviderId(MetadataProviders.Zap2It, id);
             }
 
             var seriesDataPath = GetSeriesDataPath(_config.ApplicationPaths, seriesProviderIds);
@@ -268,7 +274,15 @@ namespace MediaBrowser.Providers.TV
 
         private async Task<string> GetSeriesByRemoteId(string id, string idType, string language, CancellationToken cancellationToken)
         {
-            var url = string.Format(GetSeriesByImdbId, id, NormalizeLanguage(language));
+            String url;
+            if (string.Equals(idType, MetadataProviders.Zap2It.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                url = string.Format(GetSeriesByZap2ItId, id, NormalizeLanguage(language));
+            }
+            else
+            {
+                url = string.Format(GetSeriesByImdbId, id, NormalizeLanguage(language));
+            }
 
             using (var response = await _httpClient.SendAsync(new HttpRequestOptions
             {
@@ -395,6 +409,15 @@ namespace MediaBrowser.Providers.TV
                     return true;
                 }
             }
+
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out id))
+            {
+                // This check should ideally never be necessary but we're seeing some cases of this and haven't tracked them down yet.
+                if (!string.IsNullOrWhiteSpace(id))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -435,6 +458,28 @@ namespace MediaBrowser.Providers.TV
                         catch (ArgumentNullException)
                         {
                             // Unable to determine tvdb id based on imdb id
+                            return null;
+                        }
+                    }
+
+                    return seriesDataPath;
+                }
+
+                if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out seriesId) && !string.IsNullOrWhiteSpace(seriesId))
+                {
+                    var seriesDataPath = GetSeriesDataPath(_config.ApplicationPaths, seriesProviderIds);
+
+                    // Only download if not already there
+                    // The post-scan task will take care of updates so we don't need to re-download here
+                    if (!IsCacheValid(seriesDataPath, preferredMetadataLanguage))
+                    {
+                        try
+                        {
+                            await DownloadSeriesZip(seriesId, MetadataProviders.Zap2It.ToString(), seriesName, seriesYear, seriesDataPath, null, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (ArgumentNullException)
+                        {
+                            // Unable to determine tvdb id based on Zap2It id
                             return null;
                         }
                     }
@@ -1590,6 +1635,13 @@ namespace MediaBrowser.Providers.TV
             }
 
             if (seriesProviderIds.TryGetValue(MetadataProviders.Imdb.ToString(), out seriesId) && !string.IsNullOrEmpty(seriesId))
+            {
+                var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
+
+                return seriesDataPath;
+            }
+
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out seriesId) && !string.IsNullOrEmpty(seriesId))
             {
                 var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
 

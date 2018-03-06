@@ -536,7 +536,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             }
 
             var playlist = item as Playlist;
-            if (playlist != null)
+            if (playlist != null && !Playlist.IsPlaylistFile(playlist.Path))
             {
                 AddLinkedChildren(playlist, writer, "PlaylistItems", "PlaylistItem");
             }
