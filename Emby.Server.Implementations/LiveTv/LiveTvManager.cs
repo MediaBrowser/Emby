@@ -584,7 +584,10 @@ namespace Emby.Server.Implementations.LiveTv
             item.RunTimeTicks = (info.EndDate - info.StartDate).Ticks;
             item.ProviderIds = info.ProviderIds;
 
-            // TODO SeriesProviderIds
+            foreach (var providerId in info.SeriesProviderIds)
+            {
+                info.ProviderIds["Series" + providerId.Key] = providerId.Value;
+            }
 
             if (item.StartDate != info.StartDate)
             {

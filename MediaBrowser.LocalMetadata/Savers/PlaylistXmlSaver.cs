@@ -46,7 +46,19 @@ namespace MediaBrowser.LocalMetadata.Savers
 
         protected override string GetLocalSavePath(BaseItem item)
         {
-            return Path.Combine(item.Path, "playlist.xml");
+            return GetSavePath(item.Path, FileSystem);
+        }
+
+        public static string GetSavePath(string itemPath, IFileSystem fileSystem)
+        {
+            var path = itemPath;
+
+            if (Playlist.IsPlaylistFile(path))
+            {
+                return Path.ChangeExtension(itemPath, ".xml");
+            }
+
+            return Path.Combine(fileSystem.GetDirectoryName(path), "playlist.xml");
         }
 
         public PlaylistXmlSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IXmlReaderSettingsFactory xmlReaderSettingsFactory) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger, xmlReaderSettingsFactory)

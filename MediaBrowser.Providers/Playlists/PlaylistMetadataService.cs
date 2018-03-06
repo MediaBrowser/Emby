@@ -28,13 +28,9 @@ namespace MediaBrowser.Providers.Playlists
             var sourceItem = source.Item;
             var targetItem = target.Item;
 
-            if (replaceData || string.IsNullOrEmpty(targetItem.PlaylistMediaType))
-            {
-                targetItem.PlaylistMediaType = sourceItem.PlaylistMediaType;
-            }
-
             if (mergeMetadataSettings)
             {
+                targetItem.PlaylistMediaType = sourceItem.PlaylistMediaType;
                 targetItem.LinkedChildren = sourceItem.LinkedChildren;
                 targetItem.Shares = sourceItem.Shares;
             }

@@ -40,6 +40,7 @@ using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Reflection;
+using MediaBrowser.Model.Providers;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -1295,7 +1296,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        private string GetRecordingPath(TimerInfo timer, out string seriesPath)
+        private string GetRecordingPath(TimerInfo timer, RemoteSearchResult metadata, out string seriesPath)
         {
             var recordPath = RecordingPath;
             var config = GetConfiguration();
@@ -1318,6 +1319,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 // trim trailing period from the folder name
                 var folderName = _fileSystem.GetValidFilename(timer.Name).Trim().TrimEnd('.').Trim();
+
+                if (metadata != null && metadata.ProductionYear.HasValue)
+                {
+                    folderName += " (" + metadata.ProductionYear.Value.ToString(CultureInfo.InvariantCulture) + ")";
+                }
 
                 // Can't use the year here in the folder name because it is the year of the episode, not the series.
                 recordPath = Path.Combine(recordPath, folderName);
@@ -1421,7 +1427,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
 
             string seriesPath = null;
-            var recordPath = GetRecordingPath(timer, out seriesPath);
+            var remoteMetadata = await FetchInternetMetadata(timer, CancellationToken.None).ConfigureAwait(false);
+            var recordPath = GetRecordingPath(timer, remoteMetadata, out seriesPath);
             var recordingStatus = RecordingStatus.New;
 
             var recorder = GetRecorder();
@@ -1525,6 +1532,34 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             {
                 _timerProvider.Delete(timer);
             }
+        }
+
+        private async Task<RemoteSearchResult> FetchInternetMetadata(TimerInfo timer, CancellationToken cancellationToken)
+        {
+            if (timer.IsSeries)
+            {
+                if (timer.SeriesProviderIds.Count == 0)
+                {
+                    return null;
+                }
+
+                var query = new RemoteSearchQuery<SeriesInfo>()
+                {
+                    SearchInfo = new SeriesInfo
+                    {
+                        ProviderIds = timer.SeriesProviderIds,
+                        Name = timer.Name,
+                        MetadataCountryCode = _config.Configuration.MetadataCountryCode,
+                        MetadataLanguage = _config.Configuration.PreferredMetadataLanguage
+                    }
+                };
+
+                var results = await _providerManager.GetRemoteSearchResults<Series, SeriesInfo>(query, cancellationToken).ConfigureAwait(false);
+
+                return results.FirstOrDefault();
+            }
+
+            return null;
         }
 
         private void DeleteFileIfEmpty(string path)
@@ -2074,13 +2109,21 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     writer.WriteStartElement("tvshow");
 
                     string id;
-                    if (timer.SeriesProviderIds.TryGetValue("tvdb", out id))
+                    if (timer.SeriesProviderIds.TryGetValue(MetadataProviders.Tvdb.ToString(), out id))
                     {
                         writer.WriteElementString("id", id);
                     }
-                    if (timer.SeriesProviderIds.TryGetValue("imdb", out id))
+                    if (timer.SeriesProviderIds.TryGetValue(MetadataProviders.Imdb.ToString(), out id))
                     {
                         writer.WriteElementString("imdb_id", id);
+                    }
+                    if (timer.SeriesProviderIds.TryGetValue(MetadataProviders.Tmdb.ToString(), out id))
+                    {
+                        writer.WriteElementString("tmdbid", id);
+                    }
+                    if (timer.SeriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out id))
+                    {
+                        writer.WriteElementString("zap2itid", id);
                     }
 
                     if (!string.IsNullOrWhiteSpace(timer.Name))
@@ -2695,7 +2738,19 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             timerInfo.IsRepeat = programInfo.IsRepeat;
             timerInfo.SeriesId = programInfo.ExternalSeriesId;
             timerInfo.ProviderIds = programInfo.ProviderIds;
-            //timerInfo.SeriesProviderIds = programInfo.SeriesProviderIds;
+
+            var seriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var providerId in timerInfo.ProviderIds)
+            {
+                var srch = "Series";
+                if (providerId.Key.StartsWith(srch, StringComparison.OrdinalIgnoreCase))
+                {
+                    seriesProviderIds[providerId.Key.Substring(srch.Length)] = providerId.Value;
+                }
+            }
+
+            timerInfo.SeriesProviderIds = seriesProviderIds;
         }
 
         private bool IsProgramAlreadyInLibrary(TimerInfo program)
