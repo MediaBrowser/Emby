@@ -58,9 +58,6 @@ namespace MediaBrowser.Controller.Entities
                 case CollectionType.Folders:
                     return GetResult(_libraryManager.GetUserRootFolder().GetChildren(user, true), queryParent, query);
 
-                case CollectionType.Playlists:
-                    return GetPlaylistsView(queryParent, user, query);
-
                 case CollectionType.TvShows:
                     return GetTvView(queryParent, user, query);
 
@@ -112,227 +109,15 @@ namespace MediaBrowser.Controller.Entities
                 case SpecialFolder.TvFavoriteSeries:
                     return GetFavoriteSeries(queryParent, user, query);
 
-                case CollectionType.Music:
-                    return GetMusicFolders(queryParent, user, query);
-
-                case SpecialFolder.MusicGenres:
-                    return GetMusicGenres(queryParent, user, query);
-
-                case SpecialFolder.MusicLatest:
-                    return GetMusicLatest(queryParent, user, query);
-
-                case SpecialFolder.MusicPlaylists:
-                    return GetMusicPlaylists(queryParent, user, query);
-
-                case SpecialFolder.MusicAlbums:
-                    return GetMusicAlbums(queryParent, user, query);
-
-                case SpecialFolder.MusicAlbumArtists:
-                    return GetMusicAlbumArtists(queryParent, user, query);
-
-                case SpecialFolder.MusicArtists:
-                    return GetMusicArtists(queryParent, user, query);
-
-                case SpecialFolder.MusicSongs:
-                    return GetMusicSongs(queryParent, user, query);
-
-                case SpecialFolder.MusicFavorites:
-                    return GetMusicFavorites(queryParent, user, query);
-
-                case SpecialFolder.MusicFavoriteAlbums:
-                    return GetFavoriteAlbums(queryParent, user, query);
-
-                case SpecialFolder.MusicFavoriteArtists:
-                    return GetFavoriteArtists(queryParent, user, query);
-
-                case SpecialFolder.MusicFavoriteSongs:
-                    return GetFavoriteSongs(queryParent, user, query);
-
                 default:
                     {
                         if (queryParent is UserView)
                         {
                             return GetResult(GetMediaFolders(user).OfType<Folder>().SelectMany(i => i.GetChildren(user, true)), queryParent, query);
                         }
-                        return GetResult(queryParent.GetChildren(user, true), queryParent, query);
+                        return queryParent.GetItems(query);
                     }
             }
-        }
-
-        private QueryResult<BaseItem> GetMusicFolders(Folder parent, User user, InternalItemsQuery query)
-        {
-            if (query.Recursive)
-            {
-                query.Recursive = true;
-                query.SetUser(user);
-
-                if (query.IncludeItemTypes.Length == 0)
-                {
-                    query.IncludeItemTypes = new[] { typeof(MusicArtist).Name, typeof(MusicAlbum).Name, typeof(Audio.Audio).Name, typeof(MusicVideo).Name };
-                }
-
-                return parent.QueryRecursive(query);
-            }
-
-            var list = new List<BaseItem>();
-
-            list.Add(GetUserView(SpecialFolder.MusicLatest, "Latest", "0", parent));
-            list.Add(GetUserView(SpecialFolder.MusicPlaylists, "Playlists", "1", parent));
-            list.Add(GetUserView(SpecialFolder.MusicAlbums, "Albums", "2", parent));
-            list.Add(GetUserView(SpecialFolder.MusicAlbumArtists, "HeaderAlbumArtists", "3", parent));
-            list.Add(GetUserView(SpecialFolder.MusicArtists, "Artists", "4", parent));
-            list.Add(GetUserView(SpecialFolder.MusicSongs, "Songs", "5", parent));
-            list.Add(GetUserView(SpecialFolder.MusicGenres, "Genres", "6", parent));
-            list.Add(GetUserView(SpecialFolder.MusicFavorites, "Favorites", "7", parent));
-
-            return GetResult(list, parent, query);
-        }
-
-        private QueryResult<BaseItem> GetMusicFavorites(Folder parent, User user, InternalItemsQuery query)
-        {
-            var list = new List<BaseItem>();
-
-            list.Add(GetUserView(SpecialFolder.MusicFavoriteAlbums, "HeaderFavoriteAlbums", "0", parent));
-            list.Add(GetUserView(SpecialFolder.MusicFavoriteArtists, "HeaderFavoriteArtists", "1", parent));
-            list.Add(GetUserView(SpecialFolder.MusicFavoriteSongs, "HeaderFavoriteSongs", "2", parent));
-
-            return GetResult(list, parent, query);
-        }
-
-        private QueryResult<BaseItem> GetMusicGenres(Folder parent, User user, InternalItemsQuery query)
-        {
-            var result = _libraryManager.GetMusicGenres(new InternalItemsQuery(user)
-            {
-                AncestorIds = new[] { parent.Id.ToString("N") },
-                StartIndex = query.StartIndex,
-                Limit = query.Limit
-            });
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = result.TotalRecordCount,
-                Items = result.Items.Select(i => i.Item1).ToArray()
-            };
-        }
-
-        private QueryResult<BaseItem> GetMusicAlbumArtists(Folder parent, User user, InternalItemsQuery query)
-        {
-            var artists = _libraryManager.GetAlbumArtists(new InternalItemsQuery(user)
-            {
-                AncestorIds = new[] { parent.Id.ToString("N") },
-                StartIndex = query.StartIndex,
-                Limit = query.Limit
-            });
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = artists.TotalRecordCount,
-                Items = artists.Items.Select(i => i.Item1).ToArray()
-            };
-        }
-
-        private QueryResult<BaseItem> GetMusicArtists(Folder parent, User user, InternalItemsQuery query)
-        {
-            var artists = _libraryManager.GetArtists(new InternalItemsQuery(user)
-            {
-                AncestorIds = new[] { parent.Id.ToString("N") },
-                StartIndex = query.StartIndex,
-                Limit = query.Limit
-            });
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = artists.TotalRecordCount,
-                Items = artists.Items.Select(i => i.Item1).ToArray()
-            };
-        }
-
-        private QueryResult<BaseItem> GetFavoriteArtists(Folder parent, User user, InternalItemsQuery query)
-        {
-            var artists = _libraryManager.GetArtists(new InternalItemsQuery(user)
-            {
-                AncestorIds = new[] { parent.Id.ToString("N") },
-                StartIndex = query.StartIndex,
-                Limit = query.Limit,
-                IsFavorite = true
-            });
-
-            return new QueryResult<BaseItem>
-            {
-                TotalRecordCount = artists.TotalRecordCount,
-                Items = artists.Items.Select(i => i.Item1).ToArray()
-            };
-        }
-
-        private QueryResult<BaseItem> GetMusicPlaylists(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Parent = null;
-            query.IncludeItemTypes = new[] { typeof(Playlist).Name };
-            query.SetUser(user);
-            query.Recursive = true;
-
-            return _libraryManager.GetItemsResult(query);
-        }
-
-        private QueryResult<BaseItem> GetMusicAlbums(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Recursive = true;
-            query.Parent = parent;
-            query.SetUser(user);
-
-            query.IncludeItemTypes = new[] { typeof(MusicAlbum).Name };
-
-            return _libraryManager.GetItemsResult(query);
-        }
-
-        private QueryResult<BaseItem> GetMusicSongs(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Recursive = true;
-            query.Parent = parent;
-            query.SetUser(user);
-
-            query.IncludeItemTypes = new[] { typeof(Audio.Audio).Name };
-
-            return _libraryManager.GetItemsResult(query);
-        }
-
-        private QueryResult<BaseItem> GetMusicLatest(Folder parent, User user, InternalItemsQuery query)
-        {
-            var items = _userViewManager.GetLatestItems(new LatestItemsQuery
-            {
-                UserId = user.Id.ToString("N"),
-                Limit = GetSpecialItemsLimit(),
-                IncludeItemTypes = new[] { typeof(Audio.Audio).Name },
-                ParentId = parent == null ? null : parent.Id.ToString("N"),
-                GroupItems = true
-
-            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null);
-
-            query.OrderBy = new Tuple<string, SortOrder>[] { };
-
-            return PostFilterAndSort(items, parent, null, query, _libraryManager, _config);
-        }
-
-        private QueryResult<BaseItem> GetFavoriteSongs(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Recursive = true;
-            query.Parent = parent;
-            query.SetUser(user);
-            query.IsFavorite = true;
-            query.IncludeItemTypes = new[] { typeof(Audio.Audio).Name };
-
-            return _libraryManager.GetItemsResult(query);
-        }
-
-        private QueryResult<BaseItem> GetFavoriteAlbums(Folder parent, User user, InternalItemsQuery query)
-        {
-            query.Recursive = true;
-            query.Parent = parent;
-            query.SetUser(user);
-            query.IsFavorite = true;
-            query.IncludeItemTypes = new[] { typeof(MusicAlbum).Name };
-
-            return _libraryManager.GetItemsResult(query);
         }
 
         private int GetSpecialItemsLimit()
@@ -498,11 +283,6 @@ namespace MediaBrowser.Controller.Entities
             query.IncludeItemTypes = new[] { typeof(Movie).Name };
 
             return _libraryManager.GetItemsResult(query);
-        }
-
-        private QueryResult<BaseItem> GetPlaylistsView(Folder parent, User user, InternalItemsQuery query)
-        {
-            return GetResult(_playlistManager.GetPlaylists(user.Id.ToString("N")), parent, query);
         }
 
         private QueryResult<BaseItem> GetTvView(Folder parent, User user, InternalItemsQuery query)

@@ -177,6 +177,12 @@ namespace Emby.Server.Implementations.EntryPoints
                     return;
                 }
 
+                // This should never happen, but the Handle method will throw ArgumentNullException if it does
+                if (localAddress == null)
+                {
+                    return;
+                }
+
                 var natManager = _natManager;
                 if (natManager != null)
                 {
@@ -229,6 +235,7 @@ namespace Emby.Server.Implementations.EntryPoints
             // On some systems the device discovered event seems to fire repeatedly
             // This check will help ensure we're not trying to port map the same device over and over
             var address = device.LocalAddress;
+
             var addressString = address.ToString();
 
             lock (_createdRules)

@@ -148,6 +148,43 @@ namespace Emby.Server.Implementations.IO
             return null;
         }
 
+        public string MakeAbsolutePath(string folderPath, string filePath)
+        {
+            if (String.IsNullOrWhiteSpace(filePath)) return filePath;
+
+            if (filePath.Contains(@"://")) return filePath; //stream
+            if (filePath.Length > 3 && filePath[1] == ':' && filePath[2] == '/') return filePath; //absolute local path
+
+            // unc path
+            if (filePath.StartsWith("\\\\"))
+            {
+                return filePath;
+            }
+
+            if (filePath[0] == '/' || filePath[0] == '\\') //relative path
+            {
+                filePath = filePath.Substring(1);
+            }
+            try
+            {
+                string path = System.IO.Path.Combine(folderPath, filePath);
+                path = System.IO.Path.GetFullPath(path);
+                return path;
+            }
+            catch (ArgumentException ex)
+            {
+                return filePath;
+            }
+            catch (PathTooLongException)
+            {
+                return filePath;
+            }
+            catch (NotSupportedException)
+            {
+                return filePath;
+            }
+        }
+
         /// <summary>
         /// Creates the shortcut.
         /// </summary>

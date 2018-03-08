@@ -148,7 +148,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is live; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsLive { get; set; }
+        public bool IsLive
+        {
+            get
+            {
+                return Tags.Contains("Live", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is news.
@@ -169,7 +175,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is premiere; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsPremiere { get; set; }
+        public bool IsPremiere
+        {
+            get
+            {
+                return Tags.Contains("Premiere", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         /// <summary>
         /// Returns the folder containing the item.

@@ -56,6 +56,11 @@ namespace Mono.Nat.Upnp
 
         internal UpnpNatDevice(IPAddress localAddress, UpnpDeviceInfo deviceInfo, IPEndPoint hostEndPoint, string serviceType, ILogger logger, IHttpClient httpClient)
         {
+            if (localAddress == null)
+            {
+                throw new ArgumentNullException("localAddress");
+            }
+
             this.LastSeen = DateTime.Now;
             this.localAddress = localAddress;
 

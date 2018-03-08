@@ -39,6 +39,22 @@ namespace MediaBrowser.Controller.Playlists
         }
 
         [IgnoreDataMember]
+        public override string ContainingFolderPath
+        {
+            get
+            {
+                var path = Path;
+
+                if (IsPlaylistFile(path))
+                {
+                    return FileSystem.GetDirectoryName(path);
+                }
+
+                return path;
+            }
+        }
+
+        [IgnoreDataMember]
         protected override bool FilterLinkedChildrenPerUser
         {
             get

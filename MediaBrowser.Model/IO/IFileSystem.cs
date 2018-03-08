@@ -33,6 +33,8 @@ namespace MediaBrowser.Model.IO
         /// <param name="target">The target.</param>
         void CreateShortcut(string shortcutPath, string target);
 
+        string MakeAbsolutePath(string folderPath, string filePath);
+
         /// <summary>
         /// Returns a <see cref="FileSystemMetadata"/> object for the specified file or directory path.
         /// </summary>

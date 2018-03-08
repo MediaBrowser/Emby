@@ -11,8 +11,6 @@ namespace MediaBrowser.Controller.Entities
         bool IsRepeat { get; set; }
         bool? IsHD { get; set; }
         bool IsSeries { get; set; }
-        bool IsLive { get; set; }
-        bool IsPremiere { get; set; }
         ProgramAudio? Audio { get; set; }
         string EpisodeTitle { get; set; }
         string ServiceName { get; set; }
