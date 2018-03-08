@@ -64,8 +64,11 @@ namespace Mono.Nat
 
         public async Task Handle(IPAddress localAddress, UpnpDeviceInfo deviceInfo, IPEndPoint endpoint)
         {
-            // No matter what, this method should never throw an exception. If something goes wrong
-            // we should still be in a position to handle the next reply correctly.
+            if (localAddress == null)
+            {
+                throw new ArgumentNullException("localAddress");
+            }
+
             try
             {
                 /* For UPnP Port Mapping we need ot find either WANPPPConnection or WANIPConnection. 

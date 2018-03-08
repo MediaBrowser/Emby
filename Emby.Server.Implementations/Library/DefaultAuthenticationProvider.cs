@@ -8,7 +8,7 @@ using MediaBrowser.Model.Cryptography;
 
 namespace Emby.Server.Implementations.Library
 {
-    public class DefaultAuthenticationProvider : IAuthenticationProvider
+    public class DefaultAuthenticationProvider : IAuthenticationProvider, IRequiresResolvedUser
     {
         private readonly ICryptoProvider _cryptographyProvider;
         public DefaultAuthenticationProvider(ICryptoProvider crypto)
@@ -18,7 +18,14 @@ namespace Emby.Server.Implementations.Library
 
         public string Name => "Default";
 
-        public Task Authenticate(string username, string password, User resolvedUser)
+        public bool IsEnabled => true;
+
+        public Task<ProviderAuthenticationResult> Authenticate(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ProviderAuthenticationResult> Authenticate(string username, string password, User resolvedUser)
         {
             if (resolvedUser == null)
             {
@@ -32,7 +39,10 @@ namespace Emby.Server.Implementations.Library
                 throw new Exception("Invalid username or password");
             }
 
-            return Task.FromResult(true);
+            return Task.FromResult(new ProviderAuthenticationResult
+            {
+                Username = username
+            });
         }
 
         public Task<bool> HasPassword(User user)

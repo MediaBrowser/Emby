@@ -80,9 +80,8 @@ namespace MediaBrowser.Api.UserLibrary
             var app = _authContext.GetAuthorizationInfo(Request).Client ?? string.Empty;
             if (app.IndexOf("emby rt", StringComparison.OrdinalIgnoreCase) != -1)
             {
-                query.PresetViews = new[] { CollectionType.Music, CollectionType.Movies, CollectionType.TvShows };
+                query.PresetViews = new[] { CollectionType.Movies, CollectionType.TvShows };
             }
-            //query.PresetViews = new[] { CollectionType.Music, CollectionType.Movies, CollectionType.TvShows };
 
             var folders = await _userViewManager.GetUserViews(query, CancellationToken.None).ConfigureAwait(false);
 

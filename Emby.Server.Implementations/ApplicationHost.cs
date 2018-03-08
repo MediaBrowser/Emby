@@ -1426,7 +1426,6 @@ namespace Emby.Server.Implementations
             MediaSourceManager.AddParts(GetExports<IMediaSourceProvider>());
 
             NotificationManager.AddParts(GetExports<INotificationService>(), GetExports<INotificationTypeFactory>());
-            SyncManager.AddParts(GetExports<ISyncProvider>());
             UserManager.AddParts(GetExports<IAuthenticationProvider>());
         }
 

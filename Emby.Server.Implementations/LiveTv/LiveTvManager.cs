@@ -568,13 +568,47 @@ namespace Emby.Server.Implementations.LiveTv
             }
             item.ExternalSeriesId = seriesId;
 
+            var tags = new List<string>();
+            if (info.IsLive)
+            {
+                tags.Add("Live");
+            }
+            if (info.IsPremiere)
+            {
+                tags.Add("Premiere");
+            }
+            if (info.IsNews)
+            {
+                tags.Add("News");
+            }
+            if (info.IsSports)
+            {
+                tags.Add("Sports");
+            }
+            if (info.IsKids)
+            {
+                tags.Add("Kids");
+            }
+            if (info.IsRepeat)
+            {
+                tags.Add("Repeat");
+            }
+            if (info.IsMovie)
+            {
+                tags.Add("Movie");
+            }
+            if (info.IsSeries)
+            {
+                tags.Add("Series");
+            }
+
+            item.Tags = tags.ToArray();
+
             item.Genres = info.Genres;
             item.IsHD = info.IsHD;
             item.IsKids = info.IsKids;
-            item.IsLive = info.IsLive;
             item.IsMovie = info.IsMovie;
             item.IsNews = info.IsNews;
-            item.IsPremiere = info.IsPremiere;
             item.IsRepeat = info.IsRepeat;
             item.IsSeries = info.IsSeries;
             item.IsSports = info.IsSports;

@@ -58,7 +58,7 @@ namespace MediaBrowser.LocalMetadata.Savers
                 return Path.ChangeExtension(itemPath, ".xml");
             }
 
-            return Path.Combine(fileSystem.GetDirectoryName(path), "playlist.xml");
+            return Path.Combine(path, "playlist.xml");
         }
 
         public PlaylistXmlSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IXmlReaderSettingsFactory xmlReaderSettingsFactory) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger, xmlReaderSettingsFactory)

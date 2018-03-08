@@ -801,8 +801,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.IsNews = updatedTimer.IsNews;
             existingTimer.IsMovie = updatedTimer.IsMovie;
             existingTimer.IsSeries = updatedTimer.IsSeries;
-            existingTimer.IsLive = updatedTimer.IsLive;
-            existingTimer.IsPremiere = updatedTimer.IsPremiere;
+            existingTimer.Tags = updatedTimer.Tags;
             existingTimer.IsProgramSeries = updatedTimer.IsProgramSeries;
             existingTimer.IsRepeat = updatedTimer.IsRepeat;
             existingTimer.IsSports = updatedTimer.IsSports;
@@ -2728,8 +2727,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             timerInfo.IsProgramSeries = programInfo.IsSeries;
 
             timerInfo.IsSeries = programInfo.IsSeries;
-            timerInfo.IsLive = programInfo.IsLive;
-            timerInfo.IsPremiere = programInfo.IsPremiere;
 
             timerInfo.HomePageUrl = programInfo.HomePageUrl;
             timerInfo.CommunityRating = programInfo.CommunityRating;
@@ -2738,6 +2735,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             timerInfo.IsRepeat = programInfo.IsRepeat;
             timerInfo.SeriesId = programInfo.ExternalSeriesId;
             timerInfo.ProviderIds = programInfo.ProviderIds;
+            timerInfo.Tags = programInfo.Tags;
 
             var seriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 

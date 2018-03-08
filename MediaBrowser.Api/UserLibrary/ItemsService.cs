@@ -219,6 +219,15 @@ namespace MediaBrowser.Api.UserLibrary
                 folder = user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder();
             }
 
+            var hasCollectionType = folder as IHasCollectionType;
+            var isPlaylistQuery = (hasCollectionType != null && string.Equals(hasCollectionType.CollectionType, CollectionType.Playlists, StringComparison.OrdinalIgnoreCase));
+
+            if (isPlaylistQuery)
+            {
+                request.Recursive = true;
+                request.IncludeItemTypes = "Playlist";
+            }
+
             if (request.Recursive || !string.IsNullOrEmpty(request.Ids) || user == null)
             {
                 return folder.GetItems(GetItemsQuery(request, dtoOptions, user));

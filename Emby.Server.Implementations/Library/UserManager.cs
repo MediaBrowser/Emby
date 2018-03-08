@@ -364,7 +364,7 @@ namespace Emby.Server.Implementations.Library
         {
             var authenticationProviderId = user == null ? null : user.AuthenticationProviderId;
 
-            var providers = _authenticationProviders;
+            var providers = _authenticationProviders.Where(i => i.IsEnabled).ToArray();
 
             if (!string.IsNullOrEmpty(authenticationProviderId))
             {
@@ -383,7 +383,15 @@ namespace Emby.Server.Implementations.Library
         {
             try
             {
-                await provider.Authenticate(username, password, resolvedUser).ConfigureAwait(false);
+                var requiresResolvedUser = provider as IRequiresResolvedUser;
+                if (requiresResolvedUser != null)
+                {
+                    await requiresResolvedUser.Authenticate(username, password, resolvedUser).ConfigureAwait(false);
+                }
+                else
+                {
+                    await provider.Authenticate(username, password).ConfigureAwait(false);
+                }
 
                 return true;
             }

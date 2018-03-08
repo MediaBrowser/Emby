@@ -44,6 +44,11 @@ namespace Mono.Nat.Pmp
 
         internal PmpNatDevice(IPAddress localAddress, IPAddress publicAddress, ILogger logger)
         {
+            if (localAddress == null)
+            {
+                throw new ArgumentNullException("localAddress");
+            }
+
             this.localAddress = localAddress;
             this.publicAddress = publicAddress;
             _logger = logger;

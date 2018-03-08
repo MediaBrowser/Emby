@@ -1835,9 +1835,13 @@ namespace MediaBrowser.Controller.Entities
 
         private BaseItem FindLinkedChild(LinkedChild info)
         {
-            if (!string.IsNullOrEmpty(info.Path))
+            var path = info.Path;
+
+            if (!string.IsNullOrEmpty(path))
             {
-                var itemByPath = LibraryManager.FindByPath(info.Path, null);
+                path = FileSystem.MakeAbsolutePath(ContainingFolderPath, path);
+
+                var itemByPath = LibraryManager.FindByPath(path, null);
 
                 if (itemByPath == null)
                 {

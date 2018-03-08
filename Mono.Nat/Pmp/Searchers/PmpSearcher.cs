@@ -214,6 +214,7 @@ namespace Mono.Nat
             IPAddress publicIp = new IPAddress(new byte[] { response[8], response[9], response[10], response[11] });
             nextSearch = DateTime.Now.AddMinutes(5);
             timeout = 250;
+
             OnDeviceFound(new DeviceEventArgs(new PmpNatDevice(endpoint.Address, publicIp, _logger)));
         }
 
