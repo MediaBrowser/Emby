@@ -28,7 +28,7 @@ namespace MediaBrowser.Controller.Connect
         /// <returns>Task.</returns>
         Task RemoveConnect(string userId);
 
-User GetUserFromExchangeToken(string token);
+        User GetUserFromExchangeToken(string token);
 
         /// <summary>
         /// Authenticates the specified username.

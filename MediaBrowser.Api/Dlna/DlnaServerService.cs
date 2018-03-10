@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Common.Extensions;
+using System.Text;
 
 namespace MediaBrowser.Api.Dlna
 {
@@ -130,7 +132,11 @@ namespace MediaBrowser.Api.Dlna
             var serverAddress = url.Substring(0, url.IndexOf("/dlna/", StringComparison.OrdinalIgnoreCase));
             var xml = _dlnaManager.GetServerDescriptionXml(Request.Headers.ToDictionary(), request.UuId, serverAddress);
 
-            return ResultFactory.GetResult(xml, XMLContentType);
+            var cacheLength = TimeSpan.FromDays(1);
+            var cacheKey = Request.RawUrl.GetMD5();
+            var bytes = Encoding.UTF8.GetBytes(xml);
+
+            return ResultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, XMLContentType, () => Task.FromResult<Stream>(new MemoryStream(bytes)));
         }
 
         public object Get(GetContentDirectory request)
@@ -198,7 +204,14 @@ namespace MediaBrowser.Api.Dlna
 
                     ms.Position = 0;
                     var bytes = ms.ToArray();
-                    return ResultFactory.GetResult(bytes, "image/" + response.Format.ToString().ToLower());
+
+                    var contentType = "image/" + response.Format.ToString().ToLower();
+
+                    var cacheLength = TimeSpan.FromDays(365);
+                    var cacheKey = Request.RawUrl.GetMD5();
+
+                    return ResultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, contentType, ()=> Task.FromResult<Stream>(new MemoryStream(bytes)));
+                    //return ResultFactory.GetResult(bytes, contentType);
                 }
             }
         }

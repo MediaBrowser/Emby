@@ -74,7 +74,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
             Model.MediaInfo.MediaInfo mediaInfoResult = null;
 
-            if (!item.IsShortcut)
+            if (!item.IsShortcut || options.EnableRemoteContentProbe)
             {
                 string[] streamFileNames = null;
 
@@ -125,7 +125,14 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            var path = item.Path;
             var protocol = item.PathProtocol ?? MediaProtocol.File;
+
+            if (item.IsShortcut)
+            {
+                path = item.ShortcutPath;
+                protocol = BaseItem.GetPathProtocol(path);
+            }
 
             return _mediaEncoder.GetMediaInfo(new MediaInfoRequest
             {
@@ -134,7 +141,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 MediaType = DlnaProfileType.Video,
                 MediaSource = new MediaSourceInfo
                 {
-                    Path = item.Path,
+                    Path = path,
                     Protocol = protocol,
                     VideoType = item.VideoType
                 }

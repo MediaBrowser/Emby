@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Users;
 
 namespace MediaBrowser.Controller.Authentication
 {
@@ -19,6 +20,11 @@ namespace MediaBrowser.Controller.Authentication
     public interface IRequiresResolvedUser
     {
         Task<ProviderAuthenticationResult> Authenticate(string username, string password, User resolvedUser);
+    }
+
+    public interface IHasNewUserPolicy
+    {
+        UserPolicy GetNewUserPolicy();
     }
 
     public class ProviderAuthenticationResult

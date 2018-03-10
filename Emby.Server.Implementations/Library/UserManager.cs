@@ -277,16 +277,24 @@ namespace Emby.Server.Implementations.Library
                 if (success && authenticationProvider != null && !(authenticationProvider is DefaultAuthenticationProvider))
                 {
                     user = await CreateUser(username).ConfigureAwait(false);
+
+                    var hasNewUserPolicy = authenticationProvider as IHasNewUserPolicy;
+                    if (hasNewUserPolicy != null)
+                    {
+                        var policy = hasNewUserPolicy.GetNewUserPolicy();
+                        UpdateUserPolicy(user, policy, true);
+                    }
                 }
             }
 
             if (success && user != null && authenticationProvider != null)
             {
                 var providerId = GetAuthenticationProviderId(authenticationProvider);
-                if (!string.Equals(providerId, user.AuthenticationProviderId, StringComparison.OrdinalIgnoreCase))
+
+                if (!string.Equals(providerId, user.Policy.AuthenticationProviderId, StringComparison.OrdinalIgnoreCase))
                 {
-                    user.AuthenticationProviderId = providerId;
-                    UpdateUser(user);
+                    user.Policy.AuthenticationProviderId = providerId;
+                    UpdateUserPolicy(user, user.Policy, true);
                 }
             }
 
@@ -362,7 +370,7 @@ namespace Emby.Server.Implementations.Library
 
         private IAuthenticationProvider[] GetAuthenticationProviders(User user)
         {
-            var authenticationProviderId = user == null ? null : user.AuthenticationProviderId;
+            var authenticationProviderId = user == null ? null : user.Policy.AuthenticationProviderId;
 
             var providers = _authenticationProviders.Where(i => i.IsEnabled).ToArray();
 
@@ -1037,7 +1045,7 @@ namespace Emby.Server.Implementations.Library
 
         public UserPolicy GetUserPolicy(User user)
         {
-            var path = GetPolifyFilePath(user);
+            var path = GetPolicyFilePath(user);
 
             try
             {
@@ -1087,7 +1095,7 @@ namespace Emby.Server.Implementations.Library
                 userPolicy = _jsonSerializer.DeserializeFromString<UserPolicy>(json);
             }
 
-            var path = GetPolifyFilePath(user);
+            var path = GetPolicyFilePath(user);
 
             _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
 
@@ -1105,7 +1113,7 @@ namespace Emby.Server.Implementations.Library
 
         private void DeleteUserPolicy(User user)
         {
-            var path = GetPolifyFilePath(user);
+            var path = GetPolicyFilePath(user);
 
             try
             {
@@ -1124,7 +1132,7 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        private string GetPolifyFilePath(User user)
+        private string GetPolicyFilePath(User user)
         {
             return Path.Combine(user.ConfigurationDirectoryPath, "policy.xml");
         }

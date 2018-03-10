@@ -410,6 +410,10 @@
     <Compile Include="Logging\UnhandledExceptionWriter.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
     <Compile Include="Migrations\IVersionMigration.cs" />
+    <Compile Include="Networking\IPNetwork\BigIntegerExt.cs" />
+    <Compile Include="Networking\IPNetwork\IPAddressCollection.cs" />
+    <Compile Include="Networking\IPNetwork\IPNetwork.cs" />
+    <Compile Include="Networking\IPNetwork\IPNetworkCollection.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Net\DisposableManagedObjectBase.cs" />
     <Compile Include="Net\SocketFactory.cs" />
@@ -653,6 +657,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

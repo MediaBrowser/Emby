@@ -25,6 +25,7 @@ namespace MediaBrowser.Controller.Providers
         public List<string> RefreshPaths { get; set; }
 
         public bool ForceSave { get; set; }
+        public bool EnableRemoteContentProbe { get; set; }
 
         public MetadataRefreshOptions(IFileSystem fileSystem)
 			: this(new DirectoryService(new NullLogger(), fileSystem))
