@@ -1,8 +1,11 @@
 {
     "Advanced": "Avan\u00e7ado",
     "Browse": "Procurar",
-    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
-    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
+    "LabelAllowedRemoteAddresses": "Filtro de endere\u00e7o IP remoto:",
+    "AllowedRemoteAddressesHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/netmask para redes que ter\u00e3o permiss\u00e3o para conectar-se remotamente. Se deixar em branco, todos os endere\u00e7os remotos ter\u00e3o permiss\u00e3o.",
+    "LabelAllowedRemoteAddressesMode": "Modo do filtro de endere\u00e7o IP remoto:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Finalizar",
     "LabelNext": "Pr\u00f3ximo",
