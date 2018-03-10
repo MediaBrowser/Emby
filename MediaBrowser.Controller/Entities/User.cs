@@ -31,7 +31,6 @@ namespace MediaBrowser.Controller.Entities
         public string Password { get; set; }
         public string EasyPassword { get; set; }
         public string Salt { get; set; }
-        public string AuthenticationProviderId { get; set; }
 
         public string ConnectUserName { get; set; }
         public string ConnectUserId { get; set; }

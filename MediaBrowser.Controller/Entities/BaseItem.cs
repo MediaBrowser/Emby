@@ -391,21 +391,26 @@ namespace MediaBrowser.Controller.Entities
                     return null;
                 }
 
-                if (path.StartsWith("Rtsp", StringComparison.OrdinalIgnoreCase))
-                {
-                    return MediaProtocol.Rtsp;
-                }
-                if (path.StartsWith("Rtmp", StringComparison.OrdinalIgnoreCase))
-                {
-                    return MediaProtocol.Rtmp;
-                }
-                if (path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
-                {
-                    return MediaProtocol.Http;
-                }
-
-                return FileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
+                return GetPathProtocol(path);
             }
+        }
+
+        public static MediaProtocol GetPathProtocol(string path)
+        {
+            if (path.StartsWith("Rtsp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Rtsp;
+            }
+            if (path.StartsWith("Rtmp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Rtmp;
+            }
+            if (path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Http;
+            }
+
+            return FileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
         }
 
         public bool IsPathProtocol(MediaProtocol protocol)

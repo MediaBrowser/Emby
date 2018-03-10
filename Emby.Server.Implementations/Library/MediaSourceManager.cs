@@ -125,6 +125,19 @@ namespace Emby.Server.Implementations.Library
             }
 
             var mediaSources = GetStaticMediaSources(hasMediaSources, enablePathSubstitution, user);
+
+            if (mediaSources.Count == 1 && mediaSources[0].MediaStreams.Count == 0 && mediaSources[0].Type != MediaSourceType.Placeholder)
+            {
+                await item.RefreshMetadata(new MediaBrowser.Controller.Providers.MetadataRefreshOptions(_fileSystem)
+                {
+                    EnableRemoteContentProbe = true,
+                    MetadataRefreshMode = MediaBrowser.Controller.Providers.MetadataRefreshMode.FullRefresh
+
+                }, cancellationToken).ConfigureAwait(false);
+
+                mediaSources = GetStaticMediaSources(hasMediaSources, enablePathSubstitution, user);
+            }
+
             var dynamicMediaSources = await GetDynamicMediaSources(hasMediaSources, cancellationToken).ConfigureAwait(false);
 
             var list = new List<MediaSourceInfo>();
@@ -272,7 +285,7 @@ namespace Emby.Server.Implementations.Library
                     return;
                 }
             }
-            
+
             var preferredSubs = string.IsNullOrEmpty(user.Configuration.SubtitleLanguagePreference)
                 ? new string[] { } : new string[] { user.Configuration.SubtitleLanguagePreference };
 
@@ -367,7 +380,7 @@ namespace Emby.Server.Implementations.Library
                 var json = _jsonSerializer.SerializeToString(mediaSource);
                 _logger.Debug("Live stream opened: " + json);
                 var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
-               
+
                 if (!string.IsNullOrEmpty(request.UserId))
                 {
                     var user = _userManager.GetUserById(request.UserId);

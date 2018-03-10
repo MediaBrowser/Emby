@@ -993,7 +993,7 @@ namespace MediaBrowser.Controller.Entities
             var user = query.User;
 
             // Check recursive - don't substitute in plain folder views
-            if (user != null && query.Recursive)
+            if (user != null)
             {
                 items = CollapseBoxSetItemsIfNeeded(items, query, this, user, ConfigurationManager, CollectionManager);
             }

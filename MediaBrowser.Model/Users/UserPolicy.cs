@@ -71,6 +71,7 @@ namespace MediaBrowser.Model.Users
         public string[] BlockedChannels { get; set; }
 
         public int RemoteClientBitrateLimit { get; set; }
+        public string AuthenticationProviderId { get; set; }
 
         public UserPolicy()
         {

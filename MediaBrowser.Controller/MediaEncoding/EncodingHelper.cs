@@ -62,6 +62,10 @@ namespace MediaBrowser.Controller.MediaEncoding
                 {
                     return GetAvailableEncoder("h264_nvenc", defaultEncoder);
                 }
+                if (string.Equals(hwType, "amf", StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetAvailableEncoder("h264_amf", defaultEncoder);
+                }
                 if (string.Equals(hwType, "omx", StringComparison.OrdinalIgnoreCase))
                 {
                     return GetAvailableEncoder("h264_omx", defaultEncoder);
@@ -2150,6 +2154,26 @@ namespace MediaBrowser.Controller.MediaEncoding
                             break;
                         case "mpeg2video":
                             if (_mediaEncoder.SupportsDecoder("mpeg2_mmal") && encodingOptions.HardwareDecodingCodecs.Contains("mpeg2video", StringComparer.OrdinalIgnoreCase))
+                            {
+                                return "-c:v mpeg2_mmal";
+                            }
+                            break;
+                    }
+                }
+
+                else if (string.Equals(encodingOptions.HardwareAccelerationType, "amf", StringComparison.OrdinalIgnoreCase))
+                {
+                    switch (videoStream.Codec.ToLower())
+                    {
+                        case "avc":
+                        case "h264":
+                            if (_mediaEncoder.SupportsDecoder("h264_amf") && encodingOptions.HardwareDecodingCodecs.Contains("h264", StringComparer.OrdinalIgnoreCase))
+                            {
+                                return "-c:v h264_amf";
+                            }
+                            break;
+                        case "mpeg2video":
+                            if (_mediaEncoder.SupportsDecoder("hevc_amf") && encodingOptions.HardwareDecodingCodecs.Contains("mpeg2video", StringComparer.OrdinalIgnoreCase))
                             {
                                 return "-c:v mpeg2_mmal";
                             }

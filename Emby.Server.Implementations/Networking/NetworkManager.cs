@@ -282,18 +282,18 @@ namespace Emby.Server.Implementations.Networking
 
                 if (normalizedSubnet.IndexOf('/') != -1)
                 {
-                    var subnetAndMask = IpAddresses.GetSubnetAndMaskFromCidr(normalizedSubnet);
-                    if (IpAddresses.IsAddressOnSubnet(address, subnetAndMask.Item1, subnetAndMask.Item2))
+                    var ipnetwork = IPNetwork.Parse(normalizedSubnet);
+                    if (ipnetwork.Contains(address))
                     {
                         return true;
                     }
                 }
             }
 
-            return IsInPrivateAddressSpace(addressString, false);
+            return false;
         }
 
-        public bool IsInLocalNetworkInternal(string endpoint, bool resolveHost)
+        private bool IsInLocalNetworkInternal(string endpoint, bool resolveHost)
         {
             if (string.IsNullOrEmpty(endpoint))
             {
@@ -303,6 +303,8 @@ namespace Emby.Server.Implementations.Networking
             IPAddress address;
             if (IPAddress.TryParse(endpoint, out address))
             {
+                var addressString = address.ToString();
+
                 var localSubnetsFn = LocalSubnetsFn;
                 if (localSubnetsFn != null)
                 {
@@ -312,12 +314,10 @@ namespace Emby.Server.Implementations.Networking
                         // only validate if there's at least one valid entry
                         if (!string.IsNullOrWhiteSpace(subnet))
                         {
-                            return IsAddressInSubnets(address, address.ToString(), localSubnets);
+                            return IsAddressInSubnets(address, addressString, localSubnets) || IsInPrivateAddressSpace(addressString, false);
                         }
                     }
                 }
-
-                var addressString = address.ToString();
 
                 int lengthMatch = 100;
                 if (address.AddressFamily == AddressFamily.InterNetwork)
@@ -422,13 +422,7 @@ namespace Emby.Server.Implementations.Networking
                         return new List<IPAddress>();
                     }
 
-                    //if (!_validNetworkInterfaceTypes.Contains(network.NetworkInterfaceType))
-                    //{
-                    //    return new List<IPAddress>();
-                    //}
-
                     return ipProperties.UnicastAddresses
-                        //.Where(i => i.IsDnsEligible)
                         .Select(i => i.Address)
                         .Where(i => i.AddressFamily == AddressFamily.InterNetwork || i.AddressFamily == AddressFamily.InterNetworkV6)
                         .ToList();
@@ -726,69 +720,6 @@ namespace Emby.Server.Implementations.Networking
         public virtual IEnumerable<FileSystemEntryInfo> GetNetworkDevices()
         {
             return new List<FileSystemEntryInfo>();
-        }
-    }
-
-    /// <summary>
-    /// Credit: https://stackoverflow.com/questions/1499269/how-to-check-if-an-ip-address-is-within-a-particular-subnet
-    /// </summary>
-    public static class IpAddresses
-    {
-        public static Tuple<IPAddress, IPAddress> GetSubnetAndMaskFromCidr(string cidr)
-        {
-            var delimiterIndex = cidr.IndexOf('/');
-            string ipSubnet = cidr.Substring(0, delimiterIndex);
-            string mask = cidr.Substring(delimiterIndex + 1);
-
-            var subnetAddress = IPAddress.Parse(ipSubnet);
-
-            if (subnetAddress.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                // ipv6
-                return Tuple.Create(subnetAddress, subnetAddress);
-            }
-            else
-            {
-                // ipv4
-                uint ip = 0xFFFFFFFF << (32 - int.Parse(mask));
-
-                var maskBytes = new[]
-                {
-                (byte)((ip & 0xFF000000) >> 24),
-                (byte)((ip & 0x00FF0000) >> 16),
-                (byte)((ip & 0x0000FF00) >> 8),
-                (byte)((ip & 0x000000FF) >> 0),
-            };
-
-                return Tuple.Create(subnetAddress, new IPAddress(maskBytes));
-            }
-        }
-
-        public static bool IsAddressOnSubnet(IPAddress address, IPAddress subnet, IPAddress mask)
-        {
-            byte[] addressOctets = address.GetAddressBytes();
-            byte[] subnetOctets = mask.GetAddressBytes();
-            byte[] networkOctets = subnet.GetAddressBytes();
-
-            // ensure that IPv4 isn't mixed with IPv6
-            if (addressOctets.Length != subnetOctets.Length
-                || addressOctets.Length != networkOctets.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < addressOctets.Length; i += 1)
-            {
-                var addressOctet = addressOctets[i];
-                var subnetOctet = subnetOctets[i];
-                var networkOctet = networkOctets[i];
-
-                if (networkOctet != (addressOctet & subnetOctet))
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }
