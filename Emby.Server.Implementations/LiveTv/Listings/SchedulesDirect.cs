@@ -249,8 +249,6 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             DateTime endAt = startAt.AddSeconds(programInfo.duration);
             ProgramAudio audioType = ProgramAudio.Stereo;
 
-            bool repeat = programInfo.@new == null;
-
             var programId = programInfo.programID ?? string.Empty;
 
             string newID = programId + "T" + startAt.Ticks + "C" + channelId;
@@ -296,14 +294,17 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 CommunityRating = null,
                 EpisodeTitle = episodeTitle,
                 Audio = audioType,
-                IsRepeat = repeat,
+                //IsNew = programInfo.@new ?? false,
+                IsRepeat = programInfo.repeat,
                 IsSeries = string.Equals(details.entityType, "episode", StringComparison.OrdinalIgnoreCase),
                 ImageUrl = details.primaryImage,
                 ThumbImageUrl = details.thumbImage,
                 IsKids = string.Equals(details.audience, "children", StringComparison.OrdinalIgnoreCase),
                 IsSports = string.Equals(details.entityType, "sports", StringComparison.OrdinalIgnoreCase),
                 IsMovie = IsMovie(details),
-                Etag = programInfo.md5
+                Etag = programInfo.md5,
+                IsLive = string.Equals(programInfo.liveTapeDelay, "live", StringComparison.OrdinalIgnoreCase),
+                IsPremiere = programInfo.premiere
             };
 
             var showId = programId;
@@ -1116,6 +1117,9 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 public List<Rating> ratings { get; set; }
                 public bool? @new { get; set; }
                 public Multipart multipart { get; set; }
+                public string liveTapeDelay { get; set; }
+                public bool premiere { get; set; }
+                public bool repeat { get; set; }
             }
 
 

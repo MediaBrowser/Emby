@@ -67,7 +67,7 @@ namespace SocketHttpListener.Net
             }
             else
             {
-                ssl_stream = new SslStream(new NetworkStream(_socket, false), false, (t, c, ch, e) =>
+                ssl_stream = new SslStream(new SocketStream(_socket, false), false, (t, c, ch, e) =>
                 {
                     if (c == null)
                     {

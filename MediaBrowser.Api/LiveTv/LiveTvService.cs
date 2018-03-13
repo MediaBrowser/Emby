@@ -23,6 +23,8 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.Cryptography;
+using System.Text;
 
 namespace MediaBrowser.Api.LiveTv
 {
@@ -605,6 +607,7 @@ namespace MediaBrowser.Api.LiveTv
     {
         public bool ValidateLogin { get; set; }
         public bool ValidateListings { get; set; }
+        public string Pw { get; set; }
     }
 
     [Route("/LiveTv/ListingProviders", "DELETE", Summary = "Deletes a listing provider")]
@@ -711,8 +714,9 @@ namespace MediaBrowser.Api.LiveTv
         private readonly IAuthorizationContext _authContext;
         private readonly ISessionContext _sessionContext;
         private readonly IEnvironmentInfo _environment;
+        private ICryptoProvider _cryptographyProvider;
 
-        public LiveTvService(ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
+        public LiveTvService(ICryptoProvider crypto, ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
         {
             _liveTvManager = liveTvManager;
             _userManager = userManager;
@@ -724,6 +728,7 @@ namespace MediaBrowser.Api.LiveTv
             _authContext = authContext;
             _sessionContext = sessionContext;
             _environment = environment;
+            _cryptographyProvider = crypto;
         }
 
         public object Get(GetTunerHostTypes request)
@@ -869,8 +874,24 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Post(AddListingProvider request)
         {
+            if (request.Pw != null)
+            {
+                request.Password = GetHashedString(request.Pw);
+            }
+
+            request.Pw = null;
+
             var result = await _liveTvManager.SaveListingProvider(request, request.ValidateLogin, request.ValidateListings).ConfigureAwait(false);
             return ToOptimizedResult(result);
+        }
+
+        /// <summary>
+        /// Gets the hashed string.
+        /// </summary>
+        private string GetHashedString(string str)
+        {
+            // legacy
+            return BitConverter.ToString(_cryptographyProvider.ComputeSHA1(Encoding.UTF8.GetBytes(str))).Replace("-", string.Empty).ToLower();
         }
 
         public void Delete(DeleteListingProvider request)

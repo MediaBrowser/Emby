@@ -438,7 +438,7 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
 
-                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
+                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, true, true);
 
                 // Honor requested max channels
                 playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
@@ -859,7 +859,7 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (i.ContainsAnyCodec(transcodingVideoCodec, transcodingProfile.Container))
                                 {
-                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingVideoCodec, !isFirstAppliedCodecProfile);
+                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingVideoCodec, true, isFirstAppliedCodecProfile);
                                     isFirstAppliedCodecProfile = false;
                                 }
                             }
@@ -867,7 +867,7 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
 
-                var audioTranscodingConditions = new List<ProfileCondition>();
+                var audioTranscodingConditions = new List<CodecProfile>();
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
                 {
                     if (i.Type == CodecType.VideoAudio && i.ContainsAnyCodec(playlistItem.TargetAudioCodec, transcodingProfile.Container))
@@ -892,10 +892,7 @@ namespace MediaBrowser.Model.Dlna
 
                         if (applyConditions)
                         {
-                            foreach (ProfileCondition c in i.Conditions)
-                            {
-                                audioTranscodingConditions.Add(c);
-                            }
+                            audioTranscodingConditions.Add(i);
                             break;
                         }
                     }
@@ -925,7 +922,7 @@ namespace MediaBrowser.Model.Dlna
                 }
 
                 // Do this after initial values are set to account for greater than/less than conditions
-                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
+                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions);
             }
 
             playlistItem.TranscodeReasons = transcodeReasons;
@@ -1441,7 +1438,33 @@ namespace MediaBrowser.Model.Dlna
             }
         }
 
-        private void ApplyTranscodingConditions(StreamInfo item, IEnumerable<ProfileCondition> conditions, string qualifier, bool qualifiedOnly)
+        private void ApplyTranscodingConditions(StreamInfo item, List<CodecProfile> codecProfiles)
+        {
+            foreach (var profile in codecProfiles)
+            {
+                ApplyTranscodingConditions(item, profile);
+            }
+        }
+
+        private void ApplyTranscodingConditions(StreamInfo item, CodecProfile codecProfile)
+        {
+            var codecs = ContainerProfile.SplitValue(codecProfile.Codec);
+            if (codecs.Length == 0)
+            {
+                ApplyTranscodingConditions(item, codecProfile.Conditions, null, true, true);
+                return;
+            }
+
+            var enableNonQualified = true;
+
+            foreach (var codec in codecs)
+            {
+                ApplyTranscodingConditions(item, codecProfile.Conditions, codec, true, enableNonQualified);
+                enableNonQualified = false;
+            }
+        }
+
+        private void ApplyTranscodingConditions(StreamInfo item, IEnumerable<ProfileCondition> conditions, string qualifier, bool enableQualifiedConditions, bool enableNonQualifiedConditions)
         {
             foreach (ProfileCondition condition in conditions)
             {
@@ -1462,7 +1485,7 @@ namespace MediaBrowser.Model.Dlna
                 {
                     case ProfileConditionValue.AudioBitrate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1487,9 +1510,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.AudioChannels:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1512,7 +1545,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsAvc:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1533,7 +1566,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsAnamorphic:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1554,9 +1587,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsInterlaced:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             bool isInterlaced;
@@ -1586,9 +1629,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.RefFrames:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1611,9 +1664,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitDepth:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1658,7 +1721,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.Height:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1683,7 +1746,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitrate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1708,7 +1771,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoFramerate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1758,7 +1821,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.Width:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }

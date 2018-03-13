@@ -669,7 +669,10 @@ namespace MediaBrowser.Providers.Manager
 
             try
             {
-                var isEnabledFor = saver.IsEnabledFor(item, updateType);
+                if (!saver.IsEnabledFor(item, updateType))
+                {
+                    return false;
+                }
 
                 if (!includeDisabled)
                 {
@@ -679,6 +682,27 @@ namespace MediaBrowser.Providers.Manager
                         {
                             return false;
                         }
+
+                        if (!item.IsSaveLocalMetadataEnabled())
+                        {
+                            if (updateType >= ItemUpdateType.MetadataEdit)
+                            {
+                                var fileSaver = saver as IMetadataFileSaver;
+
+                                // Manual edit occurred
+                                // Even if save local is off, save locally anyway if the metadata file already exists
+                                if (fileSaver == null || !_fileSystem.FileExists(fileSaver.GetSavePath(item)))
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                // Manual edit did not occur
+                                // Since local metadata saving is disabled, consider it disabled
+                                return false;
+                            }
+                        }
                     }
                     else
                     {
@@ -687,30 +711,9 @@ namespace MediaBrowser.Providers.Manager
                             return false;
                         }
                     }
-
-                    if (!item.IsSaveLocalMetadataEnabled())
-                    {
-                        if (updateType >= ItemUpdateType.MetadataEdit)
-                        {
-                            var fileSaver = saver as IMetadataFileSaver;
-
-                            // Manual edit occurred
-                            // Even if save local is off, save locally anyway if the metadata file already exists
-                            if (fileSaver == null || !isEnabledFor || !_fileSystem.FileExists(fileSaver.GetSavePath(item)))
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            // Manual edit did not occur
-                            // Since local metadata saving is disabled, consider it disabled
-                            return false;
-                        }
-                    }
                 }
 
-                return isEnabledFor;
+                return true;
             }
             catch (Exception ex)
             {
