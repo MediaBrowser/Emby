@@ -72,7 +72,7 @@ namespace Emby.Drawing.Skia
         {
             get
             {
-                return new[] { ImageFormat.Webp, ImageFormat.Gif, ImageFormat.Jpg, ImageFormat.Png, ImageFormat.Bmp };
+                return new[] { ImageFormat.Webp, ImageFormat.Jpg, ImageFormat.Png };
             }
         }
 
@@ -290,7 +290,7 @@ namespace Emby.Drawing.Skia
                         {
                             // decode
                             codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-
+                            
                             origin = codec.Origin;
                         }
                         else

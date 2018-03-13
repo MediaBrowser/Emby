@@ -169,7 +169,7 @@ namespace Emby.Drawing
             return _imageEncoder.SupportedOutputFormats;
         }
 
-        private readonly string[] TransparentImageTypes = new string[] { ".png", ".webp" };
+        private readonly string[] TransparentImageTypes = new string[] { ".png", ".webp", ".gif" };
         public bool SupportsTransparency(string path)
         {
             return TransparentImageTypes.Contains(Path.GetExtension(path) ?? string.Empty);
@@ -196,6 +196,7 @@ namespace Emby.Drawing
 
             var originalImagePath = originalImage.Path;
             var dateModified = originalImage.DateModified;
+            var originalImageSize = originalImage.Width > 0 && originalImage.Height > 0 ? new ImageSize(originalImage.Width, originalImage.Height) : (ImageSize?)null;
 
             if (!_imageEncoder.SupportsImageEncoding)
             {
@@ -225,6 +226,8 @@ namespace Emby.Drawing
                 originalImagePath = tuple.Item1;
                 dateModified = tuple.Item2;
                 requiresTransparency = tuple.Item3;
+                // TODO: Get this info
+                originalImageSize = null;
             }
 
             var photo = item as Photo;
@@ -248,7 +251,7 @@ namespace Emby.Drawing
                 }
             }
 
-            if (options.HasDefaultOptions(originalImagePath) && (!autoOrient || !options.RequiresAutoOrientation))
+            if (options.HasDefaultOptions(originalImagePath, originalImageSize) && (!autoOrient || !options.RequiresAutoOrientation))
             {
                 // Just spit out the original file if all the options are default
                 return new Tuple<string, string, DateTime>(originalImagePath, MimeTypes.GetMimeType(originalImagePath), dateModified);
@@ -329,7 +332,7 @@ namespace Emby.Drawing
             }
 
             // If transparency is needed and webp isn't supported, than png is the only option
-            if (requiresTransparency)
+            if (requiresTransparency && clientSupportedFormats.Contains(ImageFormat.Png))
             {
                 return ImageFormat.Png;
             }
