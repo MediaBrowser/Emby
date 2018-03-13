@@ -50,7 +50,7 @@ namespace MediaBrowser.Controller.Drawing
         public string ForegroundLayer { get; set; }
         public bool RequiresAutoOrientation { get; set; }
 
-        public bool HasDefaultOptions(string originalImagePath)
+        private bool HasDefaultOptions(string originalImagePath)
         {
             return HasDefaultOptionsWithoutSize(originalImagePath) &&
                 !Width.HasValue &&
@@ -59,26 +59,33 @@ namespace MediaBrowser.Controller.Drawing
                 !MaxHeight.HasValue;
         }
 
-        public bool HasDefaultOptions(string originalImagePath, ImageSize size)
+        public bool HasDefaultOptions(string originalImagePath, ImageSize? size)
         {
+            if (!size.HasValue)
+            {
+                return HasDefaultOptions(originalImagePath);
+            }
+
             if (!HasDefaultOptionsWithoutSize(originalImagePath))
             {
                 return false;
             }
 
-            if (Width.HasValue && !size.Width.Equals(Width.Value))
+            var sizeValue = size.Value;
+
+            if (Width.HasValue && !sizeValue.Width.Equals(Width.Value))
             {
                 return false;
             }
-            if (Height.HasValue && !size.Height.Equals(Height.Value))
+            if (Height.HasValue && !sizeValue.Height.Equals(Height.Value))
             {
                 return false;
             }
-            if (MaxWidth.HasValue && size.Width > MaxWidth.Value)
+            if (MaxWidth.HasValue && sizeValue.Width > MaxWidth.Value)
             {
                 return false;
             }
-            if (MaxHeight.HasValue && size.Height > MaxHeight.Value)
+            if (MaxHeight.HasValue && sizeValue.Height > MaxHeight.Value)
             {
                 return false;
             }
@@ -86,7 +93,7 @@ namespace MediaBrowser.Controller.Drawing
             return true;
         }
 
-        public bool HasDefaultOptionsWithoutSize(string originalImagePath)
+        private bool HasDefaultOptionsWithoutSize(string originalImagePath)
         {
             return (Quality >= 90) &&
                 IsFormatSupported(originalImagePath) &&

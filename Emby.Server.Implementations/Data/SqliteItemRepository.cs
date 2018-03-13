@@ -2300,6 +2300,8 @@ namespace Emby.Server.Implementations.Data
 
             switch (name)
             {
+                case ItemFields.Tags:
+                    return fields.Contains(name) || HasProgramAttributes(query);
                 case ItemFields.HomePageUrl:
                 case ItemFields.CustomRating:
                 case ItemFields.ProductionLocations:
@@ -2308,7 +2310,6 @@ namespace Emby.Server.Implementations.Data
                 case ItemFields.Taglines:
                 case ItemFields.SortName:
                 case ItemFields.Studios:
-                case ItemFields.Tags:
                 case ItemFields.ThemeSongIds:
                 case ItemFields.ThemeVideoIds:
                 case ItemFields.DateCreated:
@@ -2504,14 +2505,7 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
-            if (HasProgramAttributes(query))
-            {
-                if (!list.Contains("Tags", StringComparer.OrdinalIgnoreCase))
-                {
-                    list.Add("Tags");
-                }
-            }
-            else
+            if (!HasProgramAttributes(query))
             {
                 list.Remove("IsKids");
                 list.Remove("IsMovie");
