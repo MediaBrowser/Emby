@@ -1,5 +1,6 @@
-﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Session;
+﻿using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Net;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Threading;
@@ -70,13 +71,19 @@ namespace Emby.Server.Implementations.Session
                 return;
             }
 
-            string strData = _json.SerializeToString(data);
+            var msg = new WebSocketMessage<T>
+            {
+                Data = data,
+                MessageType = name,
+                MessageId = messageId
+            };
+
             var req = new FirebaseBody
             {
                 to = _token,
                 data = new FirebaseData
                 {
-                    msgdata = strData
+                    msgdata = _json.SerializeToString(data)
                 }
             };
 
