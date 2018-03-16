@@ -670,16 +670,16 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                 string[] valid_h264_qsv = new string [] {"veryslow", "slower", "slow", "medium", "fast", "faster", "veryfast" };
 								
-				if(Array.IndexOf(valid_h264_qsv,encodingOptions.H264Preset.ToLower()) != -1)
-				{
-					param += "-preset " +  encodingOptions.H264Preset;
-				}  
-				else 
-				{		
-					param += "-preset 7";
-				}
+		if(Array.IndexOf(valid_h264_qsv,encodingOptions.H264Preset.ToLower()) != -1)
+		{
+			param += "-preset " +  encodingOptions.H264Preset;
+		}  
+		else 
+		{		
+			param += "-preset 7";
+		}
 				
-				param += " -look_ahead 0";
+		param += " -look_ahead 0";
 
             }
 
