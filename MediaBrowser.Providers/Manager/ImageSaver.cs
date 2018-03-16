@@ -73,11 +73,48 @@ namespace MediaBrowser.Providers.Manager
             return SaveImage(item, source, mimeType, type, imageIndex, null, cancellationToken);
         }
 
+        private static string GetMimeTypeFromBinary(Stream source)
+        {
+            BinaryReader reader = new BinaryReader(source);
+            reader.BaseStream.Position = 0x0;
+            if (reader.PeekChar() == -1)
+            {
+                return null;
+            }
+            byte[] data = reader.ReadBytes(0x10);
+            string data_as_hex = BitConverter.ToString(data);
+            //Do not close reader because underlying filestream will be closed too. The reader will be disposed by garbage collection.
+            string magicNumber = data_as_hex.Substring(0, 11);
+            switch (magicNumber)
+            {
+                case "89-50-4E-47":
+                    return "image/png";
+                case "FF-D8-FF-DB":
+                case "FF-D8-FF-E0":
+                case "FF-D8-FF-E1":
+                    return "image/jpg";
+                default:
+                    return null;
+            }
+        }
+
         public async Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, bool? saveLocallyWithMedia, CancellationToken cancellationToken)
         {
+            // If there are more than one output paths, the stream will need to be seekable
+            var memoryStream = _memoryStreamProvider.CreateNew();
+            using (source)
+            {
+                await source.CopyToAsync(memoryStream).ConfigureAwait(false);
+            }
+            source = memoryStream;
+
             if (string.IsNullOrEmpty(mimeType))
             {
-                throw new ArgumentNullException("mimeType");
+                mimeType = GetMimeTypeFromBinary(source);
+                if (string.IsNullOrEmpty(mimeType))
+                {
+                    throw new ArgumentNullException("mimeType");
+                }
             }
 
             var saveLocally = item.SupportsLocalMetadata && item.IsSaveLocalMetadataEnabled() && !item.IsOwnedItem && !(item is Audio);
@@ -125,15 +162,6 @@ namespace MediaBrowser.Providers.Manager
 
             var retryPaths = GetSavePaths(item, type, imageIndex, mimeType, false);
 
-            // If there are more than one output paths, the stream will need to be seekable
-            var memoryStream = _memoryStreamProvider.CreateNew();
-            using (source)
-            {
-                await source.CopyToAsync(memoryStream).ConfigureAwait(false);
-            }
-
-            source = memoryStream;
-
             var currentImage = GetCurrentImage(item, type, index);
             var currentImageIsLocalFile = currentImage != null && currentImage.IsLocalFile;
             var currentImagePath = currentImage == null ? null : currentImage.Path;
@@ -176,7 +204,7 @@ namespace MediaBrowser.Providers.Manager
                 }
                 catch (FileNotFoundException)
                 {
-                    
+
                 }
                 finally
                 {
