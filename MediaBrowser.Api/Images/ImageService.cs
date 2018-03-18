@@ -682,15 +682,8 @@ namespace MediaBrowser.Api.Images
                 formats.Add(ImageFormat.Webp);
             }
 
-            if (SupportsFormat(supportedFormats, acceptParam, "jpg", true))
-            {
-                formats.Add(ImageFormat.Jpg);
-            }
-
-            if (SupportsFormat(supportedFormats, acceptParam, "png", true))
-            {
-                formats.Add(ImageFormat.Png);
-            }
+            formats.Add(ImageFormat.Jpg);
+            formats.Add(ImageFormat.Png);
 
             if (SupportsFormat(supportedFormats, acceptParam, "gif", true))
             {

@@ -626,8 +626,8 @@
       <Project>{1d74413b-e7cf-455b-b021-f52bdf881542}</Project>
       <Name>SocketHttpListener</Name>
     </ProjectReference>
-    <Reference Include="Emby.Naming">
-      <HintPath>..\ThirdParty\emby\Emby.Naming.dll</HintPath>
+    <Reference Include="Emby.Naming, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Naming.1.1.0\lib\netstandard1.3\Emby.Naming.dll</HintPath>
     </Reference>
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>

@@ -232,7 +232,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Audio
                 {
                     Path = firstMedia.Path,
                     IsInMixedFolder = isInMixedFolder,
-                    ProductionYear = resolvedItem.Year,
+                    //ProductionYear = resolvedItem.Year,
                     Name = parseName ?
                         resolvedItem.Name :
                         Path.GetFileNameWithoutExtension(firstMedia.Path),

@@ -126,7 +126,7 @@ namespace Emby.Server.Implementations.Session
             return SendMessage(command.Command.ToString(), messageId, args, cancellationToken);
         }
 
-        private string[] _supportedMessages = new string[] { "LibraryChanged", "ServerRestarting", "ServerShuttingDown", "RestartRequired" };
+        private string[] _supportedMessages = new string[] {  };
         public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (!IsSessionActive)

@@ -60,7 +60,6 @@ namespace MediaBrowser.Controller.Entities
 
         public bool? Is3D { get; set; }
         public bool? IsHD { get; set; }
-        public bool? IsInBoxSet { get; set; }
         public bool? IsLocked { get; set; }
         public bool? IsPlaceHolder { get; set; }
 

@@ -1936,7 +1936,7 @@ namespace Emby.Server.Implementations
         {
             get
             {
-                return SupportsHttps && (ServerConfigurationManager.Configuration.EnableHttps || ServerConfigurationManager.Configuration.RequireHttps);
+                return SupportsHttps && ServerConfigurationManager.Configuration.EnableHttps;
             }
         }
 

@@ -818,12 +818,6 @@ namespace MediaBrowser.Controller.Entities
                 }
             }
 
-            if (query.IsInBoxSet.HasValue)
-            {
-                Logger.Debug("Query requires post-filtering due to IsInBoxSet");
-                return true;
-            }
-
             // Filter by Video3DFormat
             if (query.Is3D.HasValue)
             {
@@ -1187,11 +1181,6 @@ namespace MediaBrowser.Controller.Entities
                 return false;
             }
 
-            if (request.IsInBoxSet.HasValue)
-            {
-                return false;
-            }
-
             if (request.IsLocked.HasValue)
             {
                 return false;
@@ -1456,6 +1445,26 @@ namespace MediaBrowser.Controller.Entities
             {
                 return false;
             }
+        }
+
+        public bool ContainsLinkedChildByItemId(Guid itemId)
+        {
+            var linkedChildren = LinkedChildren;
+            foreach (var i in linkedChildren)
+            {
+                if (i.ItemId.HasValue && i.ItemId.Value == itemId)
+                {
+                    return true;
+                }
+
+                var child = GetLinkedChild(i);
+
+                if (child != null && child.Id == itemId)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public List<BaseItem> GetLinkedChildren(User user)

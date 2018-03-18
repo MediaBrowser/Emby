@@ -1,11 +1,4 @@
 {
-    "Advanced": "Advanced",
-    "Browse": "Browse",
-    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
-    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
-    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
-    "Whitelist": "Whitelist",
-    "Blacklist": "Blacklist",
     "LabelPrevious": "Precedente",
     "LabelFinish": "Finito",
     "LabelNext": "Prossimo",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Notizie in Arrivo",
     "ButtonOk": "Ok",
     "ButtonCancel": "Annulla",
+    "HeaderAllRecordings": "Tutte le registrazioni",
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "ButtonExit": "Esci",
     "ButtonNew": "Nuovo",
     "All": "Tutti",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Fornire un'intestazione http personalizzata per utente-agente, se necessario.",
     "HeaderConfigureRemoteAccess": "Configura Accesso Remoto",
     "LearnHowToCreateSynologyShares": "Scopri come condividere cartelle in Synology",
+    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
+    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
+    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "Reti LAN:",
     "LanNetworksHelp": "Elenco separato da virgola di indirizzi IP o voci IP \/ maschera di rete per reti che saranno considerate sulla rete locale quando si applicano restrizioni di larghezza di banda. Se impostato, tutti gli altri indirizzi IP verranno considerati nella rete esterna e saranno soggetti alle limitazioni della larghezza di banda esterna. Se lasciato vuoto, solo la sottorete del server viene considerata nella rete locale."
 }

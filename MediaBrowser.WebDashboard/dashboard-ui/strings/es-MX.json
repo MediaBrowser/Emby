@@ -1,11 +1,4 @@
 {
-    "Advanced": "Avanzado",
-    "Browse": "Navegar",
-    "LabelAllowedRemoteAddresses": "Filtrar IP remota:",
-    "AllowedRemoteAddressesHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes a las que se les permitir\u00e1 conectarse remotamente. Si se deja en blanco, todas las IP remotas ser\u00e1n permitidas.",
-    "LabelAllowedRemoteAddressesMode": "Modo de filtrado de IP remota:",
-    "Whitelist": "Permitidos",
-    "Blacklist": "Bloqueados",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Terminar",
     "LabelNext": "Siguiente",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Noticias Recientes",
     "ButtonOk": "Ok",
     "ButtonCancel": "Cancelar",
+    "HeaderAllRecordings": "Todas las Grabaciones",
+    "Advanced": "Avanzado",
+    "Browse": "Navegar",
     "ButtonExit": "Salir",
     "ButtonNew": "Nuevo",
     "All": "Todos",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Suministre un agente de encabezado http personalizado, si fuera necesario.",
     "HeaderConfigureRemoteAccess": "Configurar Acceso Remoto",
     "LearnHowToCreateSynologyShares": "Aprenda como compartir carpetas en Synology.",
+    "LabelAllowedRemoteAddresses": "Filtrar IP remota:",
+    "LabelAllowedRemoteAddressesMode": "Modo de filtrado de IP remota:",
+    "Whitelist": "Permitidos",
+    "Blacklist": "Bloqueados",
+    "AllowedRemoteAddressesHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes a las que se les permitir\u00e1 conectarse remotamente. Si se deja en blanco, todas las IP remotas ser\u00e1n permitidas.",
     "LabelLanNetworks": "Redes LAN:",
     "LanNetworksHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes que ser\u00e1n consideradas como locales al enforzar restricciones de ancho de banda. Si se establece, todas las dem\u00e1s direcciones IP ser\u00e1n consideradas como redes externas y estar\u00e1n sujetas a restricciones de ancho de banda. Si se deja en blanco, s\u00f3lo la subred del servidor ser\u00e1 considerada como red local."
 }

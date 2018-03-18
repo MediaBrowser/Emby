@@ -1,11 +1,4 @@
 {
-    "Advanced": "Avan\u00e7ado",
-    "Browse": "Procurar",
-    "LabelAllowedRemoteAddresses": "Filtro de endere\u00e7o IP remoto:",
-    "AllowedRemoteAddressesHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/netmask para redes que ter\u00e3o permiss\u00e3o para conectar-se remotamente. Se deixar em branco, todos os endere\u00e7os remotos ter\u00e3o permiss\u00e3o.",
-    "LabelAllowedRemoteAddressesMode": "Modo do filtro de endere\u00e7o IP remoto:",
-    "Whitelist": "Whitelist",
-    "Blacklist": "Blacklist",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Finalizar",
     "LabelNext": "Pr\u00f3ximo",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Pr\u00f3ximas Not\u00edcias",
     "ButtonOk": "OK",
     "ButtonCancel": "Cancelar",
+    "HeaderAllRecordings": "Todas as Grava\u00e7\u00f5es",
+    "Advanced": "Avan\u00e7ado",
+    "Browse": "Procurar",
     "ButtonExit": "Sair",
     "ButtonNew": "Novo",
     "All": "Tudo",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Fornece um cabe\u00e7alho http personalizado para o agente-usu\u00e1rio, se necess\u00e1rio.",
     "HeaderConfigureRemoteAccess": "Configurar Acesso Remoto",
     "LearnHowToCreateSynologyShares": "Saiba como compartilhar pastas no Sinology.",
+    "LabelAllowedRemoteAddresses": "Filtro de endere\u00e7o IP remoto:",
+    "LabelAllowedRemoteAddressesMode": "Modo do filtro de endere\u00e7o IP remoto:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
+    "AllowedRemoteAddressesHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/netmask para redes que ter\u00e3o permiss\u00e3o para conectar-se remotamente. Se deixar em branco, todos os endere\u00e7os remotos ter\u00e3o permiss\u00e3o.",
     "LabelLanNetworks": "Redes LAN:",
     "LanNetworksHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/m\u00e1scara de rede para redes que ser\u00e3o consideradas como redes locais ao for\u00e7ar restri\u00e7\u00f5es de banda. Se definida, todos os outros endere\u00e7os  IP ser\u00e3o considerados como estando em uma rede externa e estar\u00e3o sujeitos a restri\u00e7\u00f5es de banda externa. Se deixada em branco, apenas a sub-rede do servidor \u00e9 considerada como rede local."
 }

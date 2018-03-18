@@ -161,6 +161,17 @@ namespace MediaBrowser.Providers.Manager
 
             }).ConfigureAwait(false))
             {
+                // Workaround for tvheadend channel icons	
+                // TODO: Isolate this hack into the tvh plugin
+                if (string.IsNullOrEmpty(response.ContentType))
+                {
+                    if (response.ResponseUrl.IndexOf("/imagecache/", StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        response.ContentType = "image/png";
+                    }
+
+                }
+
                 await SaveImage(item, response.Content, response.ContentType, type, imageIndex, cancellationToken).ConfigureAwait(false);
             }
         }

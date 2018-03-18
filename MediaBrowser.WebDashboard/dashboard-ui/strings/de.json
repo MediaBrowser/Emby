@@ -1,11 +1,4 @@
 {
-    "Advanced": "Erweitert",
-    "Browse": "Bl\u00e4ttern",
-    "LabelAllowedRemoteAddresses": "Remote-IP Adressen Filter:",
-    "AllowedRemoteAddressesHelp": "Kommaseparierte Liste von IP Adressen oder IP-Masken f\u00fcr Netzwerke, f\u00fcr die Remote-Verbindungen erlaubt sind. Wenn leer, sind alle Adressen erlaubt.",
-    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
-    "Whitelist": "Whitelist",
-    "Blacklist": "Blacklist",
     "LabelPrevious": "Vorheriges",
     "LabelFinish": "Fertig",
     "LabelNext": "N\u00e4chstes",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Bevorstehende Nachrichten",
     "ButtonOk": "Ok",
     "ButtonCancel": "Abbrechen",
+    "HeaderAllRecordings": "Alle Aufnahmen",
+    "Advanced": "Erweitert",
+    "Browse": "Bl\u00e4ttern",
     "ButtonExit": "Beenden",
     "ButtonNew": "Neu",
     "All": "Alle",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Stelle einen benutzerdefinierten User-Agent HTTP header zur Verf\u00fcgung, wenn n\u00f6tig.",
     "HeaderConfigureRemoteAccess": "Konfiguriere Remote-Zugriff",
     "LearnHowToCreateSynologyShares": "Erfahre, wie man Verzeichnisse mit Synology teilt.",
+    "LabelAllowedRemoteAddresses": "Remote-IP Adressen Filter:",
+    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
+    "AllowedRemoteAddressesHelp": "Kommaseparierte Liste von IP Adressen oder IP-Masken f\u00fcr Netzwerke, f\u00fcr die Remote-Verbindungen erlaubt sind. Wenn leer, sind alle Adressen erlaubt.",
     "LabelLanNetworks": "Lokale Netzwerke:",
     "LanNetworksHelp": "Komma separierte Liste von IP Adressen oder IP Masken die als lokale Netzwerke behandelt werden sollen um Bandbreitenlimitationen auszusetzen. Wenn bef\u00fcllt werden alle anderen IP Adressen als externe Netzwerke behandelt und unterliegen den Bandbreitenlimitationen f\u00fcr externe Verbindungen. Wenn leer, wird nur das SubNetz des Servers als Lokales Netz gesetzt-"
 }

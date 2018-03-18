@@ -1,11 +1,4 @@
 {
-    "Advanced": "Advanced",
-    "Browse": "Browse",
-    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
-    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
-    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
-    "Whitelist": "Whitelist",
-    "Blacklist": "Blacklist",
     "LabelPrevious": "P\u0159edchoz\u00ed",
     "LabelFinish": "Dokon\u010dit",
     "LabelNext": "Dal\u0161\u00ed",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Upcoming News",
     "ButtonOk": "Ok",
     "ButtonCancel": "Zru\u0161it",
+    "HeaderAllRecordings": "V\u0161echna nahr\u00e1v\u00e1n\u00ed",
+    "Advanced": "Advanced",
+    "Browse": "Browse",
     "ButtonExit": "Zav\u0159\u00edt",
     "ButtonNew": "Nov\u00e9",
     "All": "V\u0161e",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Supply a custom user-agent http header, if necessary.",
     "HeaderConfigureRemoteAccess": "Configure Remote Access",
     "LearnHowToCreateSynologyShares": "Learn how to share folders in Synology.",
+    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
+    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
+    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "LAN networks:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }

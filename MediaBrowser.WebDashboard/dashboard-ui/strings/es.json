@@ -1,11 +1,4 @@
 {
-    "Advanced": "Avanzado",
-    "Browse": "Explorar",
-    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
-    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
-    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
-    "Whitelist": "Whitelist",
-    "Blacklist": "Blacklist",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Terminar",
     "LabelNext": "Siguiente",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Pr\u00f3ximas Noticias",
     "ButtonOk": "OK",
     "ButtonCancel": "Cancelar",
+    "HeaderAllRecordings": "Todas la grabaciones",
+    "Advanced": "Avanzado",
+    "Browse": "Explorar",
     "ButtonExit": "Salir",
     "ButtonNew": "Nuevo",
     "All": "Todo",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Proporciona una cabecera http personalizada de agente-usuario, si es necesario.",
     "HeaderConfigureRemoteAccess": "Configurar acceso remoto",
     "LearnHowToCreateSynologyShares": "Aprende a compartir carpetas en Synology",
+    "LabelAllowedRemoteAddresses": "Remote IP address filter:",
+    "LabelAllowedRemoteAddressesMode": "Remote IP address filter mode:",
+    "Whitelist": "Whitelist",
+    "Blacklist": "Blacklist",
+    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "Redes locales:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }
