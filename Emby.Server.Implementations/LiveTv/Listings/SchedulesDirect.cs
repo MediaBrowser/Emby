@@ -295,7 +295,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 EpisodeTitle = episodeTitle,
                 Audio = audioType,
                 //IsNew = programInfo.@new ?? false,
-                IsRepeat = programInfo.repeat,
+                IsRepeat = programInfo.@new == null,
                 IsSeries = string.Equals(details.entityType, "episode", StringComparison.OrdinalIgnoreCase),
                 ImageUrl = details.primaryImage,
                 ThumbImageUrl = details.thumbImage,

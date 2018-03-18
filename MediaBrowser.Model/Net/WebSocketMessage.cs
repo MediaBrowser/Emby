@@ -13,6 +13,7 @@ namespace MediaBrowser.Model.Net
         /// <value>The type of the message.</value>
         public string MessageType { get; set; }
         public string MessageId { get; set; }
+        public string ServerId { get; set; }
         /// <summary>
         /// Gets or sets the data.
         /// </summary>

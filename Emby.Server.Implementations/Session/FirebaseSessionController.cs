@@ -71,20 +71,27 @@ namespace Emby.Server.Implementations.Session
                 return;
             }
 
+            foreach (var controller in allControllers)
+            {
+                // Don't send if there's an active web socket connection
+                if ((controller is WebSocketController) && controller.IsSessionActive)
+                {
+                    return;
+                }
+            }
+
             var msg = new WebSocketMessage<T>
             {
                 Data = data,
                 MessageType = name,
-                MessageId = messageId
+                MessageId = messageId,
+                ServerId = _appHost.SystemId
             };
 
-            var req = new FirebaseBody
+            var req = new FirebaseBody<T>
             {
                 to = _token,
-                data = new FirebaseData
-                {
-                    msgdata = _json.SerializeToString(data)
-                }
+                data = msg
             };
 
             var byteArray = Encoding.UTF8.GetBytes(_json.SerializeToString(req));
@@ -116,13 +123,9 @@ namespace Emby.Server.Implementations.Session
         }
     }
 
-    internal class FirebaseBody
+    internal class FirebaseBody<T>
     {
         public string to { get; set; }
-        public FirebaseData data { get; set; }
-    }
-    internal class FirebaseData
-    {
-        public string msgdata { get; set; }
+        public WebSocketMessage<T> data { get; set; }
     }
 }

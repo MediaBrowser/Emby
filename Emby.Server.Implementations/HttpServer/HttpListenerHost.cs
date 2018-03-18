@@ -466,7 +466,7 @@ namespace Emby.Server.Implementations.HttpServer
 
         private bool ValidateSsl(string remoteIp, string urlString)
         {
-            if (_config.Configuration.RequireHttps && _appHost.EnableHttps)
+            if (_config.Configuration.RequireHttps && _appHost.EnableHttps && !_config.Configuration.IsBehindProxy)
             {
                 if (urlString.IndexOf("https://", StringComparison.OrdinalIgnoreCase) == -1)
                 {

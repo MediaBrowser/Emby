@@ -134,7 +134,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (query.IncludeItemTypes.Length == 0)
                 {
-                    query.IncludeItemTypes = new[] { typeof(Movie).Name, typeof(BoxSet).Name };
+                    query.IncludeItemTypes = new[] { typeof(Movie).Name };
                 }
 
                 return parent.QueryRecursive(query);
@@ -558,15 +558,6 @@ namespace MediaBrowser.Controller.Entities
             if (query.IsPlayed.HasValue)
             {
                 if (item.IsPlayed(user) != query.IsPlayed.Value)
-                {
-                    return false;
-                }
-            }
-
-            if (query.IsInBoxSet.HasValue)
-            {
-                var val = query.IsInBoxSet.Value;
-                if (item.GetParents().OfType<BoxSet>().Any() != val)
                 {
                     return false;
                 }

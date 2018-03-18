@@ -294,7 +294,7 @@ namespace Emby.Server.Implementations.Collections
                     var itemId = item.Id;
 
                     var currentBoxSets = allBoxsets
-                        .Where(i => i.GetLinkedChildren().Any(j => j.Id == itemId))
+                        .Where(i => i.ContainsLinkedChildByItemId(itemId))
                         .ToList();
 
                     if (currentBoxSets.Count > 0)
