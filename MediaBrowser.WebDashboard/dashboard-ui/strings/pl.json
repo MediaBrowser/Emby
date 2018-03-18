@@ -1,11 +1,4 @@
 {
-    "Advanced": "Zaawansowane",
-    "Browse": "Przegl\u0105daj",
-    "LabelAllowedRemoteAddresses": "Filtr adres\u00f3w IP:",
-    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
-    "LabelAllowedRemoteAddressesMode": "Tryb filtra adres\u00f3w IP:",
-    "Whitelist": "Bia\u0142a lista",
-    "Blacklist": "Czarna lista",
     "LabelPrevious": "Wstecz",
     "LabelFinish": "Zako\u0144cz",
     "LabelNext": "Dalej",
@@ -37,6 +30,9 @@
     "HeaderUpcomingNews": "Nadchodz\u0105ce nowo\u015bci",
     "ButtonOk": "Ok",
     "ButtonCancel": "Anuluj",
+    "HeaderAllRecordings": "Wszystkie Nagrania",
+    "Advanced": "Zaawansowane",
+    "Browse": "Przegl\u0105daj",
     "ButtonExit": "Wyjd\u017a",
     "ButtonNew": "Nowe",
     "All": "Wszystko",
@@ -1771,6 +1767,11 @@
     "UserAgentHelp": "Wprowad\u017a niestandardow\u0105 warto\u015b\u0107 nag\u0142\u00f3wka HTTP user-agent, je\u015bli konieczne.",
     "HeaderConfigureRemoteAccess": "Konfiguracja dost\u0119pu zdalnego",
     "LearnHowToCreateSynologyShares": "Dowiedz si\u0119 jak udost\u0119pnia\u0107 foldery w Synology.",
+    "LabelAllowedRemoteAddresses": "Filtr adres\u00f3w IP:",
+    "LabelAllowedRemoteAddressesMode": "Tryb filtra adres\u00f3w IP:",
+    "Whitelist": "Bia\u0142a lista",
+    "Blacklist": "Czarna lista",
+    "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "Sieci lokalne:",
     "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
 }
