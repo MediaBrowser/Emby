@@ -88,6 +88,7 @@
     <Compile Include="Music\AudioDbExternalIds.cs" />
     <Compile Include="Music\AudioMetadataService.cs" />
     <Compile Include="Music\Extensions.cs" />
+    <Compile Include="Music\ImvdbProvider.cs" />
     <Compile Include="Music\MovieDbMusicVideoProvider.cs" />
     <Compile Include="Music\MusicBrainzArtistProvider.cs" />
     <Compile Include="Music\MusicExternalIds.cs" />
