@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "Pol\u00edtica de privacidade",
     "ButtonTermsOfService": "Termos de Servi\u00e7o",
     "ButtonConvertMedia": "Converter m\u00eddia",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Benef\u00edcios do Emby Premiere",
     "HeaderAddUser": "Adicionar Usu\u00e1rio",
     "LabelAddConnectSupporterHelp": "Para adicionar um usu\u00e1rio que n\u00e3o esteja listado, voc\u00ea precisar\u00e1 associar sua conta ao Emby Connect na sua p\u00e1gina de perfil.",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "Lista de reprodu\u00e7\u00e3o",
     "LabelEnabled": "Ativada",
     "LabelDisabled": "Desativada",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "Mais informa\u00e7\u00f5es",
     "LabelNoUnreadNotifications": "Nenhuma notifica\u00e7\u00e3o sem ler.",
     "MessageInvalidUser": "Nome de usu\u00e1rio ou senha inv\u00e1lidos. Por favor, tente novamente.",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Blacklist",
     "AllowedRemoteAddressesHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/netmask para redes que ter\u00e3o permiss\u00e3o para conectar-se remotamente. Se deixar em branco, todos os endere\u00e7os remotos ter\u00e3o permiss\u00e3o.",
     "LabelLanNetworks": "Redes LAN:",
-    "LanNetworksHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/m\u00e1scara de rede para redes que ser\u00e3o consideradas como redes locais ao for\u00e7ar restri\u00e7\u00f5es de banda. Se definida, todos os outros endere\u00e7os  IP ser\u00e3o considerados como estando em uma rede externa e estar\u00e3o sujeitos a restri\u00e7\u00f5es de banda externa. Se deixada em branco, apenas a sub-rede do servidor \u00e9 considerada como rede local."
+    "LanNetworksHelp": "Lista separada por v\u00edrgula de endere\u00e7os IP ou entradas IP\/m\u00e1scara de rede para redes que ser\u00e3o consideradas como redes locais ao for\u00e7ar restri\u00e7\u00f5es de banda. Se definida, todos os outros endere\u00e7os  IP ser\u00e3o considerados como estando em uma rede externa e estar\u00e3o sujeitos a restri\u00e7\u00f5es de banda externa. Se deixada em branco, apenas a sub-rede do servidor \u00e9 considerada como rede local.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

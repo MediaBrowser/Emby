@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "Informativa sulla privacy",
     "ButtonTermsOfService": "Termini di Servizio",
     "ButtonConvertMedia": "Converti media",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Benefici di Emby Premiere",
     "HeaderAddUser": "Aggiungi utente",
     "LabelAddConnectSupporterHelp": "Per aggiungere un utente non in lista, dovrai prima collegare il suo account a Emby Connect dalla pagina del suo profilo",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "Playlist",
     "LabelEnabled": "Abilitato",
     "LabelDisabled": "Disabilitato",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "Maggiori informazioni",
     "LabelNoUnreadNotifications": "Nessuna notifica non letta",
     "MessageInvalidUser": "Utente o password errato. Riprova",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Blacklist",
     "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "Reti LAN:",
-    "LanNetworksHelp": "Elenco separato da virgola di indirizzi IP o voci IP \/ maschera di rete per reti che saranno considerate sulla rete locale quando si applicano restrizioni di larghezza di banda. Se impostato, tutti gli altri indirizzi IP verranno considerati nella rete esterna e saranno soggetti alle limitazioni della larghezza di banda esterna. Se lasciato vuoto, solo la sottorete del server viene considerata nella rete locale."
+    "LanNetworksHelp": "Elenco separato da virgola di indirizzi IP o voci IP \/ maschera di rete per reti che saranno considerate sulla rete locale quando si applicano restrizioni di larghezza di banda. Se impostato, tutti gli altri indirizzi IP verranno considerati nella rete esterna e saranno soggetti alle limitazioni della larghezza di banda esterna. Se lasciato vuoto, solo la sottorete del server viene considerata nella rete locale.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

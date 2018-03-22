@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "\u03a0\u03c1\u03bf\u03c3\u03c9\u03c0\u03b9\u03ba\u03ac \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1",
     "ButtonTermsOfService": "\u038c\u03c1\u03bf\u03b9 \u03a7\u03c1\u03ae\u03c3\u03b7\u03c2",
     "ButtonConvertMedia": "\u039c\u03b5\u03c4\u03b1\u03c4\u03c1\u03bf\u03c0\u03ae \u03b1\u03c1\u03c7\u03b5\u03af\u03bf\u03c5",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "\u03a0\u03c1\u03bf\u03bd\u03cc\u03bc\u03b9\u03b1 Emby Premiere",
     "HeaderAddUser": "\u03a0\u03c1\u03bf\u03c3\u03b8\u03ae\u03ba\u03b7 \u03a7\u03c1\u03ae\u03c3\u03c4\u03b7",
     "LabelAddConnectSupporterHelp": "\u0393\u03b9\u03b1 \u03bd\u03b1 \u03c0\u03c1\u03bf\u03c3\u03b8\u03ad\u03c3\u03b5\u03c4\u03b5 \u03ad\u03bd\u03b1\u03bd \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7 \u03c0\u03bf\u03c5 \u03b4\u03b5\u03bd \u03c0\u03b5\u03c1\u03b9\u03bb\u03b1\u03bc\u03b2\u03ac\u03bd\u03b5\u03c4\u03b1\u03b9 \u03c3\u03c4\u03b7 \u03bb\u03af\u03c3\u03c4\u03b1, \u03b8\u03b1 \u03c0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03c0\u03c1\u03ce\u03c4\u03b1 \u03bd\u03b1 \u03c3\u03c5\u03bd\u03b4\u03ad\u03c3\u03b5\u03c4\u03b5 \u03c4\u03bf \u03bb\u03bf\u03b3\u03b1\u03c1\u03b9\u03b1\u03c3\u03bc\u03cc \u03c4\u03bf\u03c5 \u03bc\u03b5 \u03c4\u03bf Emby Connect \u03b1\u03c0\u03cc \u03c4\u03b7 \u03c3\u03b5\u03bb\u03af\u03b4\u03b1 \u03c4\u03bf\u03c5 \u03c0\u03c1\u03bf\u03c6\u03af\u03bb \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7.",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "\u039b\u03af\u03c3\u03c4\u03b1 \u0391\u03bd\u03b1\u03c0\u03b1\u03c1\u03b1\u03b3\u03c9\u03b3\u03ae\u03c2",
     "LabelEnabled": "\u0395\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03b7\u03bc\u03ad\u03bd\u03bf",
     "LabelDisabled": "\u0391\u03c0\u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03b7\u03bc\u03ad\u03bd\u03bf",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "\u03a0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b5\u03c2 \u03a0\u03bb\u03b7\u03c1\u03bf\u03c6\u03bf\u03c1\u03af\u03b5\u03c2",
     "LabelNoUnreadNotifications": "\u0394\u03b5\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03bc\u03b7 \u03b1\u03bd\u03b1\u03b3\u03bd\u03c9\u03c3\u03bc\u03ad\u03bd\u03b5\u03c2 \u03b5\u03b9\u03b4\u03bf\u03c0\u03bf\u03b9\u03ae\u03c3\u03b5\u03b9\u03c2.",
     "MessageInvalidUser": "\u039c\u03b7 \u03ad\u03b3\u03ba\u03c5\u03c1\u03bf \u03cc\u03bd\u03bf\u03bc\u03b1 \u03ae \u03ba\u03c9\u03b4\u03b9\u03ba\u03cc\u03c2. \u03a0\u03b1\u03c1\u03b1\u03ba\u03b1\u03bb\u03ce \u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8\u03ae\u03c3\u03c4\u03b5 \u03be\u03b1\u03bd\u03ac.",
@@ -1732,7 +1735,7 @@
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
     "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
-    "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
+    "HttpsRequiresCert": "To enable https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
     "PluginInstalledMessage": "The plugin has been successfully installed. Emby Server will need to be restarted for changes to take effect.",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Blacklist",
     "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "LAN networks:",
-    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "Politique de confidentialit\u00e9",
     "ButtonTermsOfService": "Conditions d'utilisation",
     "ButtonConvertMedia": "Convertir le m\u00e9dia",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Emby Premiere Benefits",
     "HeaderAddUser": "Add User",
     "LabelAddConnectSupporterHelp": "To add a user who isn't listed, you'll need to first link their account to Emby Connect from their user profile page.",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "Playlist",
     "LabelEnabled": "Enabled",
     "LabelDisabled": "Disabled",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "More Information",
     "LabelNoUnreadNotifications": "No unread notifications.",
     "MessageInvalidUser": "Invalid username or password. Please try again.",
@@ -1732,7 +1735,7 @@
     "ScanLibrary": "Scan library",
     "EnableStreamLooping": "Auto-loop live streams",
     "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
-    "HttpsRequiresCert": "To require https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
+    "HttpsRequiresCert": "To enable https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
     "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
     "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
     "PluginInstalledMessage": "The plugin has been successfully installed. Emby Server will need to be restarted for changes to take effect.",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Blacklist",
     "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "LAN networks:",
-    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

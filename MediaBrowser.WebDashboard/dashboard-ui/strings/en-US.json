@@ -18,6 +18,8 @@
   "ButtonPrivacyPolicy": "Privacy policy",
   "ButtonTermsOfService": "Terms of Service",
   "ButtonConvertMedia": "Convert media",
+  "LabelAuthProvider": "Authentication provider:",
+  "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
   "HeaderSupporterBenefits": "Emby Premiere Benefits",
   "HeaderAddUser": "Add User",
   "LabelAddConnectSupporterHelp": "To add a user who isn't listed, you'll need to first link their account to Emby Connect from their user profile page.",

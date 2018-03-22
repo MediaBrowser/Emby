@@ -47,23 +47,8 @@
                         <button type="button" is="paper-icon-button-light" id="btnSelectSeriesRecordingPath" title="${ButtonSelectDirectory}" class="emby-input-iconbutton"><i class="md-icon">search</i></button>
                     </div>
                 </div>
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" id="chkConvertRecordings" />
-                        <span>${OptionConvertRecordingsToStreamingFormat}</span>
-                    </label>
-                    <div class="fieldDescription paperCheckboxFieldDescription">${OptionConvertRecordingsToStreamingFormatHelp}</div>
-                    <div class="fieldDescription paperCheckboxFieldDescription btnSupporterForConverting"><a is="emby-linkbutton" class="button-link" href="https://emby.media/premiere" target="_blank">${FeatureRequiresEmbyPremiere}</a></div>
-                </div>
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" id="chkPreserveAudio" />
-                        <span>${OptionConvertRecordingPreserveAudio}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${OptionConvertRecordingPreserveAudioHelp}</div>
-                </div>
-                <div>
-                    <h1>${HeaderRecordingPostProcessing}</h1>
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">${HeaderRecordingPostProcessing}</h2>
                     <div class="inputContainer">
                         <div style="display: flex; align-items: center;">
                             <div style="flex-grow:1;">
@@ -77,8 +62,8 @@
                         <div class="fieldDescription">${LabelPostProcessorArgumentsHelp}</div>
                     </div>
                 </div>
-                <div>
-                    <h1>${HeaderDefaultRecordingSettings}</h1>
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">${HeaderDefaultRecordingSettings}</h2>
                     <div class="inputContainer">
                         <div style="display: flex; align-items: center;">
                             <div style="flex-grow: 1;">
