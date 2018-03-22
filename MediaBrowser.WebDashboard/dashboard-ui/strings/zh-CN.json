@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "\u9690\u79c1\u653f\u7b56",
     "ButtonTermsOfService": "\u670d\u52a1\u6761\u6b3e",
     "ButtonConvertMedia": "\u5a92\u4f53\u8f6c\u6362",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Emby Premiere \u7279\u6743",
     "HeaderAddUser": "\u6dfb\u52a0\u7528\u6237",
     "LabelAddConnectSupporterHelp": "\u5982\u679c\u8981\u6dfb\u52a0\u4e00\u4e2a\u4e0d\u5728\u5217\u8868\u5185\u7684\u7528\u6237\uff0c\u4f60\u9700\u8981\u5148\u5728\u4ed6\u4eec\u7684\u7528\u6237\u914d\u7f6e\u9875\u9762\u5c06\u8be5\u8d26\u6237\u8fde\u63a5\u5230 Emby Connect\u3002",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "\u64ad\u653e\u5217\u8868",
     "LabelEnabled": "\u5df2\u542f\u7528",
     "LabelDisabled": "\u5df2\u7981\u7528",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "\u66f4\u591a\u4fe1\u606f",
     "LabelNoUnreadNotifications": "\u6ca1\u6709\u672a\u8bfb\u901a\u77e5\u3002",
     "MessageInvalidUser": "\u7528\u6237\u540d\u6216\u5bc6\u7801\u4e0d\u53ef\u7528\u3002\u8bf7\u91cd\u8bd5\u3002",
@@ -1773,5 +1776,9 @@
     "Blacklist": "\u9ed1\u540d\u5355",
     "AllowedRemoteAddressesHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be allowed to connect remotely. If left blank, all remote addresses will be allowed.",
     "LabelLanNetworks": "LAN networks:",
-    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network."
+    "LanNetworksHelp": "Comma separated list of IP addresses or IP\/netmask entries for networks that will be considered on local network when enforcing bandwidth restrictions. If set, all other IP addresses will be considered to be on the external network and will be subject to the external bandwidth restrictions. If left blank, only the server's subnet is considered to be on the local network.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

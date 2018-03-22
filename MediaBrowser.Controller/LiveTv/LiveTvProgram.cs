@@ -261,11 +261,6 @@ namespace MediaBrowser.Controller.LiveTv
             return false;
         }
 
-        public override bool IsInternetMetadataEnabled()
-        {
-            return false;
-        }
-
         public LiveTvProgramLookupInfo GetLookupInfo()
         {
             var info = GetItemLookupInfo<LiveTvProgramLookupInfo>();

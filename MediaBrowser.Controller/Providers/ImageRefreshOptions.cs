@@ -12,7 +12,6 @@ namespace MediaBrowser.Controller.Providers
 
         public List<ImageType> ReplaceImages { get; set; }
         public bool IsAutomated { get; set; }
-        public bool ForceEnableInternetMetadata { get; set; }
 
         public ImageRefreshOptions(IDirectoryService directoryService)
         {

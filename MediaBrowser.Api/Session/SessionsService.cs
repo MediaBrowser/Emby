@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Controller;
+using MediaBrowser.Model.Dto;
 
 namespace MediaBrowser.Api.Session
 {
@@ -242,6 +243,12 @@ namespace MediaBrowser.Api.Session
     {
     }
 
+    [Route("/Auth/Providers", "GET")]
+    [Authenticated(Roles = "Admin")]
+    public class GetAuthProviders : IReturn<NameIdPair[]>
+    {
+    }
+
     [Route("/Auth/Keys/{Key}", "DELETE")]
     [Authenticated(Roles = "Admin")]
     public class RevokeKey
@@ -284,6 +291,11 @@ namespace MediaBrowser.Api.Session
             _deviceManager = deviceManager;
             _sessionContext = sessionContext;
             _appHost = appHost;
+        }
+
+        public object Get(GetAuthProviders request)
+        {
+            return ToOptimizedResult(_userManager.GetAuthenticationProviders());
         }
 
         public void Delete(RevokeKey request)

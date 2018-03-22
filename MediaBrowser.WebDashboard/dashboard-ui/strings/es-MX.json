@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "Pol\u00edtica de privacidad",
     "ButtonTermsOfService": "T\u00e9rminos del Servicio",
     "ButtonConvertMedia": "Convertir Medios",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Beneficios de Emby Premier",
     "HeaderAddUser": "Agregar Usuario",
     "LabelAddConnectSupporterHelp": "Para agregar un usuario que no esta listado, necesita primero enlazar su cuenta a Emby Connect desde su pagina de perfil de usuario.",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "Lista de Reprod.",
     "LabelEnabled": "Habilitado",
     "LabelDisabled": "Desactivado",
+    "Disabled": "Desactivado",
     "ButtonMoreInformation": "Mas Informaci\u00f3n",
     "LabelNoUnreadNotifications": "No hay notificaciones sin leer.",
     "MessageInvalidUser": "Nombre del usuario o contrase\u00f1a inv\u00e1lidos. Por favor intenta de nuevo.",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Bloqueados",
     "AllowedRemoteAddressesHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes a las que se les permitir\u00e1 conectarse remotamente. Si se deja en blanco, todas las IP remotas ser\u00e1n permitidas.",
     "LabelLanNetworks": "Redes LAN:",
-    "LanNetworksHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes que ser\u00e1n consideradas como locales al enforzar restricciones de ancho de banda. Si se establece, todas las dem\u00e1s direcciones IP ser\u00e1n consideradas como redes externas y estar\u00e1n sujetas a restricciones de ancho de banda. Si se deja en blanco, s\u00f3lo la subred del servidor ser\u00e1 considerada como red local."
+    "LanNetworksHelp": "Lista separada por comas de direcciones IP\/mascaras de subred para las redes que ser\u00e1n consideradas como locales al enforzar restricciones de ancho de banda. Si se establece, todas las dem\u00e1s direcciones IP ser\u00e1n consideradas como redes externas y estar\u00e1n sujetas a restricciones de ancho de banda. Si se deja en blanco, s\u00f3lo la subred del servidor ser\u00e1 considerada como red local.",
+    "LabelSecureConnectionsMode": "Modo de conexi\u00f3n segura:",
+    "PreferredNotRequired": "Preferido, m\u00e1s no es requerido.",
+    "RequiredForAllRemoteConnections": "Requerido para todas las conexiones remotas",
+    "HandledByProxy": "Manejado por un proxy inverso"
 }

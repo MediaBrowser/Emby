@@ -41,6 +41,7 @@ using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Reflection;
 using MediaBrowser.Model.Providers;
+using Emby.Server.Implementations.LiveTv.TunerHosts;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -1430,8 +1431,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var recordPath = GetRecordingPath(timer, remoteMetadata, out seriesPath);
             var recordingStatus = RecordingStatus.New;
 
-            var recorder = GetRecorder();
-
             string liveStreamId = null;
 
             try
@@ -1444,6 +1443,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 var mediaStreamInfo = liveStreamInfo.Item2;
                 liveStreamId = mediaStreamInfo.Id;
+
+                var recorder = GetRecorder(liveStreamInfo.Item1, mediaStreamInfo);
 
                 recordPath = recorder.GetOutputPath(mediaStreamInfo, recordPath);
                 recordPath = EnsureFileUnique(recordPath, timer.Id);
@@ -1800,24 +1801,14 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return false;
         }
 
-        private IRecorder GetRecorder()
+        private IRecorder GetRecorder(ILiveStream liveStream, MediaSourceInfo mediaSource)
         {
-            var config = GetConfiguration();
-
-            if (config.EnableRecordingEncoding)
+            if (mediaSource.RequiresLooping || !(mediaSource.Container ?? string.Empty).EndsWith("ts", StringComparison.OrdinalIgnoreCase))
             {
-                return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, config, _httpClient, _processFactory, _config, _assemblyInfo);
+                return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, _httpClient, _processFactory, _config, _assemblyInfo);
             }
 
             return new DirectRecorder(_logger, _httpClient, _fileSystem);
-
-            //var options = new LiveTvOptions
-            //{
-            //    EnableOriginalAudioWithEncodedRecordings = true,
-            //    RecordedVideoCodec = "copy",
-            //    RecordingEncodingFormat = "ts"
-            //};
-            //return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, options, _httpClient, _processFactory, _config);
         }
 
         private void OnSuccessfulRecording(TimerInfo timer, string path)
@@ -2422,7 +2413,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (!seriesTimer.RecordAnyTime)
             {
-                if (Math.Abs(seriesTimer.StartDate.TimeOfDay.Ticks - timer.StartDate.TimeOfDay.Ticks) >= TimeSpan.FromMinutes(5).Ticks)
+                if (Math.Abs(seriesTimer.StartDate.TimeOfDay.Ticks - timer.StartDate.TimeOfDay.Ticks) >= TimeSpan.FromMinutes(10).Ticks)
                 {
                     return true;
                 }

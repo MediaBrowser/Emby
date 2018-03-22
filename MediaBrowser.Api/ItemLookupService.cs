@@ -238,8 +238,7 @@ namespace MediaBrowser.Api
                 ImageRefreshMode = MetadataRefreshMode.FullRefresh,
                 ReplaceAllMetadata = true,
                 ReplaceAllImages = request.ReplaceAllImages,
-                SearchResult = request,
-                ForceEnableInternetMetadata = true
+                SearchResult = request
 
             }, CancellationToken.None);
             Task.WaitAll(task);

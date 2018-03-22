@@ -46,7 +46,7 @@ namespace MediaBrowser.Providers.Omdb
             get
             {
                 // After primary option
-                return 1;
+                return 2;
             }
         }
 

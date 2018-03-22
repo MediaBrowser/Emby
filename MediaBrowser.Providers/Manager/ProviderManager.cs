@@ -25,6 +25,7 @@ using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Serialization;
 using Priority_Queue;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Subtitles;
 
 namespace MediaBrowser.Providers.Manager
 {
@@ -275,31 +276,36 @@ namespace MediaBrowser.Providers.Manager
 
         public IEnumerable<IImageProvider> GetImageProviders(BaseItem item, ImageRefreshOptions refreshOptions)
         {
-            return GetImageProviders(item, GetMetadataOptions(item), refreshOptions, false);
+            return GetImageProviders(item, _libraryManagerFactory().GetLibraryOptions(item), GetMetadataOptions(item), refreshOptions, false);
         }
 
-        private IEnumerable<IImageProvider> GetImageProviders(BaseItem item, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
+        private IEnumerable<IImageProvider> GetImageProviders(BaseItem item, LibraryOptions libraryOptions, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
         {
             // Avoid implicitly captured closure
             var currentOptions = options;
 
-            return ImageProviders.Where(i => CanRefresh(i, item, options, refreshOptions, includeDisabled))
-            .OrderBy(i =>
-            {
-                // See if there's a user-defined order
-                if (!(i is ILocalImageProvider))
+            var typeOptions = libraryOptions.GetTypeOptions(item.GetType().Name);
+            var typeFetcherOrder = typeOptions == null ? null : typeOptions.ImageFetcherOrder;
+
+            return ImageProviders.Where(i => CanRefresh(i, item, libraryOptions, options, refreshOptions, includeDisabled))
+                .OrderBy(i =>
                 {
-                    var index = Array.IndexOf(currentOptions.ImageFetcherOrder, i.Name);
-
-                    if (index != -1)
+                    // See if there's a user-defined order
+                    if (!(i is ILocalImageProvider))
                     {
-                        return index;
-                    }
-                }
+                        var fetcherOrder = typeFetcherOrder ?? currentOptions.ImageFetcherOrder;
 
-                // Not configured. Just return some high number to put it at the end.
-                return 100;
-            })
+                        var index = Array.IndexOf(currentOptions.ImageFetcherOrder, i.Name);
+
+                        if (index != -1)
+                        {
+                            return index;
+                        }
+                    }
+
+                    // Not configured. Just return some high number to put it at the end.
+                    return 100;
+                })
             .ThenBy(GetOrder);
         }
 
@@ -318,19 +324,20 @@ namespace MediaBrowser.Providers.Manager
             var currentOptions = globalMetadataOptions;
 
             return _metadataProviders.OfType<IMetadataProvider<T>>()
-                .Where(i => CanRefresh(i, item, currentOptions, includeDisabled, forceEnableInternetMetadata, checkIsOwnedItem))
-                .OrderBy(i => GetConfiguredOrder(i, libraryOptions, globalMetadataOptions))
+                .Where(i => CanRefresh(i, item, libraryOptions, currentOptions, includeDisabled, forceEnableInternetMetadata, checkIsOwnedItem))
+                .OrderBy(i => GetConfiguredOrder(item, i, libraryOptions, globalMetadataOptions))
                 .ThenBy(GetDefaultOrder);
         }
 
         private IEnumerable<IRemoteImageProvider> GetRemoteImageProviders(BaseItem item, bool includeDisabled)
         {
             var options = GetMetadataOptions(item);
+            var libraryOptions = _libraryManagerFactory().GetLibraryOptions(item);
 
-            return GetImageProviders(item, options, new ImageRefreshOptions(new DirectoryService(_logger, _fileSystem)), includeDisabled).OfType<IRemoteImageProvider>();
+            return GetImageProviders(item, libraryOptions, options, new ImageRefreshOptions(new DirectoryService(_logger, _fileSystem)), includeDisabled).OfType<IRemoteImageProvider>();
         }
 
-        private bool CanRefresh(IMetadataProvider provider, BaseItem item, MetadataOptions options, bool includeDisabled, bool forceEnableInternetMetadata, bool checkIsOwnedItem)
+        private bool CanRefresh(IMetadataProvider provider, BaseItem item, LibraryOptions libraryOptions, MetadataOptions options, bool includeDisabled, bool forceEnableInternetMetadata, bool checkIsOwnedItem)
         {
             if (!includeDisabled)
             {
@@ -342,12 +349,7 @@ namespace MediaBrowser.Providers.Manager
 
                 if (provider is IRemoteMetadataProvider)
                 {
-                    if (!forceEnableInternetMetadata && !item.IsInternetMetadataEnabled())
-                    {
-                        return false;
-                    }
-
-                    if (Array.IndexOf(options.DisabledMetadataFetchers, provider.Name) != -1)
+                    if (!forceEnableInternetMetadata && !item.IsMetadataFetcherEnabled(libraryOptions, provider.Name))
                     {
                         return false;
                     }
@@ -371,7 +373,7 @@ namespace MediaBrowser.Providers.Manager
             return true;
         }
 
-        private bool CanRefresh(IImageProvider provider, BaseItem item, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
+        private bool CanRefresh(IImageProvider provider, BaseItem item, LibraryOptions libraryOptions, MetadataOptions options, ImageRefreshOptions refreshOptions, bool includeDisabled)
         {
             if (!includeDisabled)
             {
@@ -386,17 +388,9 @@ namespace MediaBrowser.Providers.Manager
 
                 if (provider is IRemoteImageProvider || provider is IDynamicImageProvider)
                 {
-                    if (Array.IndexOf(options.DisabledImageFetchers, provider.Name) != -1)
+                    if (!item.IsImageFetcherEnabled(libraryOptions, provider.Name))
                     {
                         return false;
-                    }
-
-                    if (provider is IRemoteImageProvider)
-                    {
-                        if (!refreshOptions.ForceEnableInternetMetadata && !item.IsInternetMetadataEnabled())
-                        {
-                            return false;
-                        }
                     }
                 }
             }
@@ -429,7 +423,7 @@ namespace MediaBrowser.Providers.Manager
             return hasOrder.Order;
         }
 
-        private int GetConfiguredOrder(IMetadataProvider provider, LibraryOptions libraryOptions, MetadataOptions globalMetadataOptions)
+        private int GetConfiguredOrder(BaseItem item, IMetadataProvider provider, LibraryOptions libraryOptions, MetadataOptions globalMetadataOptions)
         {
             // See if there's a user-defined order
             if (provider is ILocalMetadataProvider)
@@ -447,7 +441,12 @@ namespace MediaBrowser.Providers.Manager
             // See if there's a user-defined order
             if (provider is IRemoteMetadataProvider)
             {
-                var index = Array.IndexOf(globalMetadataOptions.MetadataFetcherOrder, provider.Name);
+                var typeOptions = libraryOptions.GetTypeOptions(item.GetType().Name);
+                var typeFetcherOrder = typeOptions == null ? null : typeOptions.MetadataFetcherOrder;
+
+                var fetcherOrder = typeFetcherOrder ?? globalMetadataOptions.MetadataFetcherOrder;
+
+                var index = Array.IndexOf(fetcherOrder, provider.Name);
 
                 if (index != -1)
                 {
@@ -516,14 +515,23 @@ namespace MediaBrowser.Providers.Manager
                 ItemType = typeof(T).Name
             };
 
-            var imageProviders = GetImageProviders(dummy, options, new ImageRefreshOptions(new DirectoryService(_logger, _fileSystem)), true).ToList();
+            var libraryOptions = new LibraryOptions();
+
+            var imageProviders = GetImageProviders(dummy, libraryOptions, options, new ImageRefreshOptions(new DirectoryService(_logger, _fileSystem)), true).ToList();
 
             var pluginList = summary.Plugins.ToList();
 
-            var libraryOptions = new LibraryOptions();
-
             AddMetadataPlugins(pluginList, dummy, libraryOptions, options);
             AddImagePlugins(pluginList, dummy, imageProviders);
+
+            var subtitleProviders = new List<ISubtitleProvider>();
+
+            // Subtitle fetchers
+            pluginList.AddRange(subtitleProviders.Select(i => new MetadataPlugin
+            {
+                Name = i.Name,
+                Type = MetadataPluginType.SubtitleFetcher
+            }));
 
             summary.Plugins = pluginList.ToArray(pluginList.Count);
 
@@ -577,10 +585,8 @@ namespace MediaBrowser.Providers.Manager
                 Type = MetadataPluginType.LocalImageProvider
             }));
 
-            var enableInternet = item.IsInternetMetadataEnabled();
-
             // Fetchers
-            list.AddRange(imageProviders.Where(i => i is IDynamicImageProvider || (enableInternet && i is IRemoteImageProvider)).Select(i => new MetadataPlugin
+            list.AddRange(imageProviders.Where(i => i is IDynamicImageProvider || (i is IRemoteImageProvider)).Select(i => new MetadataPlugin
             {
                 Name = i.Name,
                 Type = MetadataPluginType.ImageFetcher
@@ -687,7 +693,7 @@ namespace MediaBrowser.Providers.Manager
 
                 if (!includeDisabled)
                 {
-                    if (libraryOptions.EnabledMetadataSavers == null)
+                    if (libraryOptions.MetadataSavers == null)
                     {
                         if (options.DisabledMetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
                         {
@@ -717,7 +723,7 @@ namespace MediaBrowser.Providers.Manager
                     }
                     else
                     {
-                        if (!libraryOptions.EnabledMetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
+                        if (!libraryOptions.MetadataSavers.Contains(saver.Name, StringComparer.OrdinalIgnoreCase))
                         {
                             return false;
                         }

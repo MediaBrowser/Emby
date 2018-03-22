@@ -18,6 +18,8 @@
     "ButtonPrivacyPolicy": "Politique de confidentialit\u00e9",
     "ButtonTermsOfService": "Conditions d'utilisation",
     "ButtonConvertMedia": "Convertir le m\u00e9dia",
+    "LabelAuthProvider": "Authentication provider:",
+    "AuthProviderHelp": "Administrators always use the default Emby provider to ensure you're never locked out.",
     "HeaderSupporterBenefits": "Avantages apport\u00e9s par Emby Premiere",
     "HeaderAddUser": "Ajouter un utilisateur",
     "LabelAddConnectSupporterHelp": "Pour ajouter un utilisateur non list\u00e9, vous devrez d'abord lier son compte \u00e0 Emby Connect depuis sa page de profil utilisateur.",
@@ -1182,6 +1184,7 @@
     "ButtonPlaylist": "Liste de lecture",
     "LabelEnabled": "Activ\u00e9",
     "LabelDisabled": "D\u00e9sactiv\u00e9",
+    "Disabled": "Disabled",
     "ButtonMoreInformation": "Plus d'informations",
     "LabelNoUnreadNotifications": "Aucune notification non lue.",
     "MessageInvalidUser": "Nom d'utilisateur ou mot de passe incorrect. R\u00e9essayez.",
@@ -1773,5 +1776,9 @@
     "Blacklist": "Liste noire",
     "AllowedRemoteAddressesHelp": "Liste d'adresses IP ou d'IP\/masque de sous-r\u00e9seau s\u00e9par\u00e9es par des virgules qui seront autoris\u00e9es \u00e0 se connecter \u00e0 distance. Si la liste est vide, toutes les adresses distantes seront autoris\u00e9es.",
     "LabelLanNetworks": "R\u00e9seaux LAN :",
-    "LanNetworksHelp": "Liste des adresses IP ou des entr\u00e9es IP\/masque de r\u00e9seau s\u00e9par\u00e9es par des virgules pour les r\u00e9seaux qui seront consid\u00e9r\u00e9s comme locaux lors de l'application des restrictions de bande passante. Si elle est d\u00e9finie, toutes les autres adresses IP seront consid\u00e9r\u00e9es sur le r\u00e9seau externe et seront soumises aux restrictions de bande passante externe. Si elle est vide, seul le sous-r\u00e9seau du serveur est consid\u00e9r\u00e9 comme se trouvant sur le r\u00e9seau local."
+    "LanNetworksHelp": "Liste des adresses IP ou des entr\u00e9es IP\/masque de r\u00e9seau s\u00e9par\u00e9es par des virgules pour les r\u00e9seaux qui seront consid\u00e9r\u00e9s comme locaux lors de l'application des restrictions de bande passante. Si elle est d\u00e9finie, toutes les autres adresses IP seront consid\u00e9r\u00e9es sur le r\u00e9seau externe et seront soumises aux restrictions de bande passante externe. Si elle est vide, seul le sous-r\u00e9seau du serveur est consid\u00e9r\u00e9 comme se trouvant sur le r\u00e9seau local.",
+    "LabelSecureConnectionsMode": "Secure connection mode:",
+    "PreferredNotRequired": "Preferred, but not required",
+    "RequiredForAllRemoteConnections": "Required for all remote connections",
+    "HandledByProxy": "Handled by reverse proxy"
 }

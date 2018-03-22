@@ -1,23 +1,9 @@
 ﻿<h2>${HeaderLibrarySettings}</h2>
-<div class="checkboxContainer checkboxContainer-withDescription chkEnableInternetProvidersContainer hide">
-    <label>
-        <input is="emby-checkbox" type="checkbox" id="chkEnableInternetProviders" checked />
-        <span>${LabelDownloadInternetMetadata}</span>
-    </label>
-    <div class="fieldDescription checkboxFieldDescription">${LabelDownloadInternetMetadataHelp}</div>
-</div>
-<div class="selectContainer fldMetadataLanguage hide" style="margin-top:3em;">
+<div class="selectContainer fldMetadataLanguage hide">
     <select is="emby-select" id="selectLanguage" label="${LabelMetadataDownloadLanguage}"></select>
 </div>
 <div class="selectContainer fldMetadataCountry hide">
     <select is="emby-select" id="selectCountry" label="${LabelCountry}"></select>
-</div>
-<div class="checkboxContainer checkboxContainer-withDescription chkSaveLocalContainer hide">
-    <label>
-        <input is="emby-checkbox" type="checkbox" id="chkSaveLocal" />
-        <span>${LabelSaveLocalMetadata}</span>
-    </label>
-    <div class="fieldDescription checkboxFieldDescription">${LabelSaveLocalMetadataHelp}</div>
 </div>
 <div class="checkboxContainer checkboxContainer-withDescription chkEnablePhotosContainer">
     <label>
@@ -26,19 +12,6 @@
     </label>
     <div class="fieldDescription checkboxFieldDescription">${EnablePhotosHelp}</div>
 </div>
-
-<div class="checkboxContainer checkboxContainer-withDescription hide chkDownloadImagesInAdvanceContainer">
-    <label>
-        <input is="emby-checkbox" type="checkbox" id="chkDownloadImagesInAdvance" />
-        <span>${OptionDownloadImagesInAdvance}</span>
-    </label>
-    <div class="fieldDescription checkboxFieldDescription">${OptionDownloadImagesInAdvanceHelp}</div>
-</div>
-<div class="selectContainer fldAutoRefreshInterval hide" style="margin: 2em 0;">
-    <select is="emby-select" id="selectAutoRefreshInterval" label="${LabelAutomaticallyRefreshInternetMetadataEvery}"></select>
-    <div class="fieldDescription">${MessageEnablingOptionLongerScans}</div>
-</div>
-
 
 <div class="inputContainer fldSeasonZeroDisplayName hide">
     <input is="emby-input" type="text" id="txtSeasonZeroName" label="${LabelSpecialSeasonsDisplayName}" value="Specials" required />
@@ -59,11 +32,32 @@
     <div class="fieldDescription checkboxFieldDescription">${LabelEnableRealtimeMonitorHelp}</div>
 </div>
 
-<div class="metadataSection hide">
-    <div class="metadataReaders" style="margin-bottom: 2em;">
-    </div>
-    <div class="metadataSavers" style="margin-bottom: 2em;">
-    </div>
+<div class="metadataReaders hide" style="margin-bottom: 2em;">
+</div>
+<div class="metadataFetchers hide" style="margin-bottom: 2em;">
+</div>
+<div class="selectContainer fldAutoRefreshInterval hide" style="margin: 2em 0;">
+    <select is="emby-select" id="selectAutoRefreshInterval" label="${LabelAutomaticallyRefreshInternetMetadataEvery}"></select>
+    <div class="fieldDescription">${MessageEnablingOptionLongerScans}</div>
+</div>
+<div class="metadataSavers hide" style="margin-bottom: 2em;">
+</div>
+<div class="imageFetchers hide" style="margin-bottom: 2em;">
+</div>
+<div class="checkboxContainer checkboxContainer-withDescription chkSaveLocalContainer hide">
+    <label>
+        <input is="emby-checkbox" type="checkbox" id="chkSaveLocal" />
+        <span>${LabelSaveLocalMetadata}</span>
+    </label>
+    <div class="fieldDescription checkboxFieldDescription">${LabelSaveLocalMetadataHelp}</div>
+</div>
+
+<div class="checkboxContainer checkboxContainer-withDescription hide chkDownloadImagesInAdvanceContainer">
+    <label>
+        <input is="emby-checkbox" type="checkbox" id="chkDownloadImagesInAdvance" />
+        <span>${OptionDownloadImagesInAdvance}</span>
+    </label>
+    <div class="fieldDescription checkboxFieldDescription">${OptionDownloadImagesInAdvanceHelp}</div>
 </div>
 
 <div class="checkboxContainer checkboxContainer-withDescription chkAutomaticallyGroupSeriesContainer hide">

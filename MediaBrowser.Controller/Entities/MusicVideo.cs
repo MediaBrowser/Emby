@@ -32,7 +32,11 @@ namespace MediaBrowser.Controller.Entities
 
         public MusicVideoInfo GetLookupInfo()
         {
-            return GetItemLookupInfo<MusicVideoInfo>();
+            var info = GetItemLookupInfo<MusicVideoInfo>();
+
+            info.Artists = Artists;
+
+            return info;
         }
 
         public override bool BeforeMetadataRefresh()

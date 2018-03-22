@@ -95,6 +95,20 @@ namespace Emby.Server.Implementations.Library
             DeletePinFile();
         }
 
+        public NameIdPair[] GetAuthenticationProviders()
+        {
+            return _authenticationProviders
+                .Where(i => i.IsEnabled)
+                .OrderBy(i => i is DefaultAuthenticationProvider ? 0 : 1)
+                .ThenBy(i => i.Name)
+                .Select(i => new NameIdPair
+                {
+                    Name = i.Name,
+                    Id = GetAuthenticationProviderId(i)
+                })
+                .ToArray();
+        }
+
         public void AddParts(IEnumerable<IAuthenticationProvider> authenticationProviders)
         {
             _authenticationProviders = authenticationProviders.ToArray();
