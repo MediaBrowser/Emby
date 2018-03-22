@@ -66,19 +66,8 @@ namespace MediaBrowser.Providers.MediaInfo
 
             var types = new List<string>();
 
-            if (options.DownloadEpisodeSubtitles)
-            {
-                types.Add("Episode");
-            }
-            if (options.DownloadMovieSubtitles)
-            {
-                types.Add("Movie");
-            }
-
-            if (types.Count == 0)
-            {
-                return;
-            }
+            types.Add("Episode");
+            types.Add("Movie");
 
             var dict = new Dictionary<Guid, BaseItem>();
 
@@ -149,34 +138,48 @@ namespace MediaBrowser.Providers.MediaInfo
 
         private async Task<bool> DownloadSubtitles(Video video, SubtitleOptions options, CancellationToken cancellationToken)
         {
-            if ((options.DownloadEpisodeSubtitles &&
-                video is Episode) ||
-                (options.DownloadMovieSubtitles &&
-                video is Movie))
+            var mediaStreams = _mediaSourceManager.GetStaticMediaSources(video, false).First().MediaStreams;
+
+            var libraryOptions = _libraryManager.GetLibraryOptions(video);
+
+            string[] subtitleDownloadLanguages;
+            bool SkipIfEmbeddedSubtitlesPresent;
+            bool SkipIfAudioTrackMatches;
+            bool RequirePerfectMatch;
+
+            if (libraryOptions.SubtitleDownloadLanguages == null)
             {
-                var mediaStreams = _mediaSourceManager.GetStaticMediaSources(video, false).First().MediaStreams;
-
-                var downloadedLanguages = await new SubtitleDownloader(_logger,
-                    _subtitleManager)
-                    .DownloadSubtitles(video,
-                    mediaStreams,
-                    options.SkipIfEmbeddedSubtitlesPresent,
-                    options.SkipIfAudioTrackMatches,
-                    options.RequirePerfectMatch,
-                    options.DownloadLanguages,
-                    cancellationToken).ConfigureAwait(false);
-
-                // Rescan
-                if (downloadedLanguages.Count > 0)
-                {
-                    await video.RefreshMetadata(cancellationToken).ConfigureAwait(false);
-                    return false;
-                }
-
-                return true;
+                subtitleDownloadLanguages = options.DownloadLanguages;
+                SkipIfEmbeddedSubtitlesPresent = options.SkipIfEmbeddedSubtitlesPresent;
+                SkipIfAudioTrackMatches = options.SkipIfAudioTrackMatches;
+                RequirePerfectMatch = options.RequirePerfectMatch;
+            }
+            else
+            {
+                subtitleDownloadLanguages = libraryOptions.SubtitleDownloadLanguages;
+                SkipIfEmbeddedSubtitlesPresent = libraryOptions.SkipSubtitlesIfEmbeddedSubtitlesPresent;
+                SkipIfAudioTrackMatches = libraryOptions.SkipSubtitlesIfAudioTrackMatches;
+                RequirePerfectMatch = libraryOptions.RequirePerfectSubtitleMatch;
             }
 
-            return false;
+            var downloadedLanguages = await new SubtitleDownloader(_logger,
+                _subtitleManager)
+                .DownloadSubtitles(video,
+                mediaStreams,
+                SkipIfEmbeddedSubtitlesPresent,
+                SkipIfAudioTrackMatches,
+                RequirePerfectMatch,
+                subtitleDownloadLanguages,
+                cancellationToken).ConfigureAwait(false);
+
+            // Rescan
+            if (downloadedLanguages.Count > 0)
+            {
+                await video.RefreshMetadata(cancellationToken).ConfigureAwait(false);
+                return false;
+            }
+
+            return true;
         }
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()

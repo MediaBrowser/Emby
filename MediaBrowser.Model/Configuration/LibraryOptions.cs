@@ -1,4 +1,6 @@
-﻿namespace MediaBrowser.Model.Configuration
+﻿using System;
+
+namespace MediaBrowser.Model.Configuration
 {
     public class LibraryOptions
     {
@@ -31,11 +33,40 @@
         public string MetadataCountryCode { get; set; }
 
         public string SeasonZeroDisplayName { get; set; }
-        public string[] EnabledMetadataSavers { get; set; }
+        public string[] MetadataSavers { get; set; }
+        public string[] LocalMetadataReaders { get; set; }
         public string[] LocalMetadataReaderOrder { get; set; }
+
+        public string[] SubtitleFetchers { get; set; }
+        public string[] SubtitleFetcherOrder { get; set; }
+
+        public bool SkipSubtitlesIfEmbeddedSubtitlesPresent { get; set; }
+        public bool SkipSubtitlesIfAudioTrackMatches { get; set; }
+        public string[] SubtitleDownloadLanguages { get; set; }
+        public bool RequirePerfectSubtitleMatch { get; set; }
+
+        public TypeOptions[] TypeOptions { get; set; }
+
+        public TypeOptions GetTypeOptions(string type)
+        {
+            foreach (var options in TypeOptions)
+            {
+                if (string.Equals(options.Type, type, StringComparison.OrdinalIgnoreCase))
+                {
+                    return options;
+                }
+            }
+
+            return null;
+        }
 
         public LibraryOptions()
         {
+            TypeOptions = new TypeOptions[] { };
+
+            SkipSubtitlesIfAudioTrackMatches = true;
+            RequirePerfectSubtitleMatch = true;
+
             EnablePhotos = true;
             EnableRealtimeMonitor = true;
             PathInfos = new MediaPathInfo[] { };
@@ -49,5 +80,23 @@
     {
         public string Path { get; set; }
         public string NetworkPath { get; set; }
+    }
+
+    public class TypeOptions
+    {
+        public string Type { get; set; }
+        public string[] MetadataFetchers { get; set; }
+        public string[] MetadataFetcherOrder { get; set; }
+
+        public string[] ImageFetchers { get; set; }
+        public string[] ImageFetcherOrder { get; set; }
+
+        public TypeOptions()
+        {
+            MetadataFetchers = new string[] { };
+            MetadataFetcherOrder = new string[] { };
+            ImageFetchers = new string[] { };
+            ImageFetcherOrder = new string[] { };
+        }
     }
 }

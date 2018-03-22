@@ -4,11 +4,7 @@ using MediaBrowser.Controller.Net;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Serialization;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Services;
@@ -55,20 +51,6 @@ namespace MediaBrowser.Api
     [Route("/System/Configuration/MetadataOptions/Default", "GET", Summary = "Gets a default MetadataOptions object")]
     [Authenticated(Roles = "Admin")]
     public class GetDefaultMetadataOptions : IReturn<MetadataOptions>
-    {
-
-    }
-
-    [Route("/System/Configuration/MetadataPlugins", "GET", Summary = "Gets all available metadata plugins")]
-    [Authenticated(Roles = "Admin")]
-    public class GetMetadataPlugins : IReturn<MetadataPluginSummary[]>
-    {
-
-    }
-
-    [Route("/System/Configuration/MetadataPlugins/Autoset", "POST")]
-    [Authenticated(Roles = "Admin", AllowBeforeStartupWizard = true)]
-    public class AutoSetMetadataOptions : IReturnVoid
     {
 
     }
@@ -132,10 +114,6 @@ namespace MediaBrowser.Api
             return ToOptimizedResult(result);
         }
 
-        public void Post(AutoSetMetadataOptions request)
-        {
-        }
-
         /// <summary>
         /// Posts the specified configuraiton.
         /// </summary>
@@ -163,11 +141,6 @@ namespace MediaBrowser.Api
         public object Get(GetDefaultMetadataOptions request)
         {
             return ToOptimizedSerializedResultUsingCache(new MetadataOptions());
-        }
-
-        public object Get(GetMetadataPlugins request)
-        {
-            return ToOptimizedSerializedResultUsingCache(_providerManager.GetAllMetadataPlugins());
         }
     }
 }

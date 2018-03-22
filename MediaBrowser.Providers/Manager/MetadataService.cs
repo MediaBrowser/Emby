@@ -850,16 +850,17 @@ namespace MediaBrowser.Providers.Manager
         {
             var refreshResult = new RefreshResult();
 
-            var results = new List<MetadataResult<TItemType>>();
+            var tmpDataMerged = false;
 
             foreach (var provider in providers)
             {
                 var providerName = provider.GetType().Name;
                 Logger.Debug("Running {0} for {1}", providerName, logName);
 
-                if (id != null)
+                if (id != null && !tmpDataMerged)
                 {
                     MergeNewData(temp.Item, id);
+                    tmpDataMerged = true;
                 }
 
                 try
@@ -870,7 +871,8 @@ namespace MediaBrowser.Providers.Manager
                     {
                         result.Provider = provider.Name;
 
-                        results.Add(result);
+                        MergeData(result, temp, new MetadataFields[] { }, false, false);
+                        MergeNewData(temp.Item, id);
 
                         refreshResult.UpdateType = refreshResult.UpdateType | ItemUpdateType.MetadataDownload;
                     }
@@ -889,37 +891,6 @@ namespace MediaBrowser.Providers.Manager
                     refreshResult.ErrorMessage = ex.Message;
                     Logger.ErrorException("Error in {0}", ex, provider.Name);
                 }
-            }
-
-            var orderedResults = new List<MetadataResult<TItemType>>();
-            var preferredLanguage = NormalizeLanguage(id.MetadataLanguage);
-
-            // prioritize results with matching ResultLanguage
-            foreach (var result in results)
-            {
-                if (!result.QueriedById)
-                {
-                    break;
-                }
-
-                if (string.Equals(NormalizeLanguage(result.ResultLanguage), preferredLanguage, StringComparison.OrdinalIgnoreCase) && result.QueriedById)
-                {
-                    orderedResults.Add(result);
-                }
-            }
-
-            // add all other results
-            foreach (var result in results)
-            {
-                if (!orderedResults.Contains(result))
-                {
-                    orderedResults.Add(result);
-                }
-            }
-
-            foreach (var result in results)
-            {
-                MergeData(result, temp, new MetadataFields[] { }, false, false);
             }
 
             return refreshResult;

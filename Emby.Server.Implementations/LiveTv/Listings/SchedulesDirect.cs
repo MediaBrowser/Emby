@@ -382,10 +382,19 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(details.originalAirDate) && (!info.IsSeries || info.IsRepeat))
+            if (!string.IsNullOrWhiteSpace(details.originalAirDate))
             {
                 info.OriginalAirDate = DateTime.Parse(details.originalAirDate);
                 info.ProductionYear = info.OriginalAirDate.Value.Year;
+            }
+
+            if (details.movie != null)
+            {
+                int year;
+                if (!string.IsNullOrEmpty(details.movie.year) && int.TryParse(details.movie.year, out year))
+                {
+                    info.ProductionYear = year;
+                }
             }
 
             if (details.genres != null)

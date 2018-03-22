@@ -201,5 +201,7 @@ namespace MediaBrowser.Controller.Library
         string MakeValidUsername(string username);
 
         void AddParts(IEnumerable<IAuthenticationProvider> authenticationProviders);
+
+        NameIdPair[] GetAuthenticationProviders();
     }
 }

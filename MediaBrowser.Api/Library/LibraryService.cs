@@ -291,6 +291,15 @@ namespace MediaBrowser.Api.Library
     {
         public LibraryOptionInfo[] MetadataSavers { get; set; }
         public LibraryOptionInfo[] MetadataReaders { get; set; }
+        public LibraryOptionInfo[] SubtitleFetchers { get; set; }
+        public LibraryTypeOptions[] TypeOptions { get; set; }
+    }
+
+    public class LibraryTypeOptions
+    {
+        public string Type { get; set; }
+        public LibraryOptionInfo[] MetadataFetchers { get; set; }
+        public LibraryOptionInfo[] ImageFetchers { get; set; }
     }
 
     /// <summary>
@@ -353,23 +362,62 @@ namespace MediaBrowser.Api.Library
                 case CollectionType.Games:
                     return new string[] { "Game", "GameSystem" };
                 case CollectionType.Music:
-                    return new string[] { "MusicAlbum", "MusicArtist", "Audio" };
+                    return new string[] { "MusicAlbum", "MusicArtist", "Audio", "MusicVideo" };
                 case CollectionType.HomeVideos:
                 case CollectionType.Photos:
                     return new string[] { "Video", "Photo" };
                 case CollectionType.MusicVideos:
                     return new string[] { "MusicVideo" };
                 default:
-                    return new string[] { "Movie", "Series" };
+                    return new string[] { "Series", "Season", "Episode", "Movie" };
             }
         }
 
-        private bool IsSaverEnabledByDefault(string name, string itemType)
+        private bool IsSaverEnabledByDefault(string name, string[] itemTypes)
         {
             var metadataOptions = _config.Configuration.MetadataOptions
-                .FirstOrDefault(i => string.Equals(i.ItemType, itemType, StringComparison.OrdinalIgnoreCase));
+                .Where(i => itemTypes.Contains(i.ItemType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                .ToArray();
 
-            return metadataOptions == null ? true : !metadataOptions.DisabledMetadataSavers.Contains(name, StringComparer.OrdinalIgnoreCase);
+            if (metadataOptions.Length == 0)
+            {
+                return true;
+            }
+
+            return metadataOptions.Any(i => !i.DisabledMetadataSavers.Contains(name, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool IsSubtitleFetcherEnabledByDefault(string name, string[] itemTypes)
+        {
+            return false;
+        }
+
+        private bool IsMetadataFetcherEnabledByDefault(string name, string type)
+        {
+            var metadataOptions = _config.Configuration.MetadataOptions
+                .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (metadataOptions.Length == 0)
+            {
+                return true;
+            }
+
+            return metadataOptions.Any(i => !i.DisabledMetadataFetchers.Contains(name, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private bool IsImageFetcherEnabledByDefault(string name, string type)
+        {
+            var metadataOptions = _config.Configuration.MetadataOptions
+                .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (metadataOptions.Length == 0)
+            {
+                return true;
+            }
+
+            return metadataOptions.Any(i => !i.DisabledImageFetchers.Contains(name, StringComparer.OrdinalIgnoreCase));
         }
 
         public object Get(GetLibraryOptionsInfo request)
@@ -377,18 +425,19 @@ namespace MediaBrowser.Api.Library
             var result = new LibraryOptionsResult();
 
             var types = GetRepresentativeItemTypes(request.LibraryContentType);
+            var typesList = types.ToList();
+
             var plugins = _providerManager.GetAllMetadataPlugins()
                 .Where(i => types.Contains(i.ItemType, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(i => typesList.IndexOf(i.ItemType))
                 .ToList();
-
-            var itemType = types[0];
 
             result.MetadataSavers = plugins
                 .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.MetadataSaver))
                 .Select(i => new LibraryOptionInfo
                 {
                     Name = i.Name,
-                    DefaultEnabled = IsSaverEnabledByDefault(i.Name, itemType)
+                    DefaultEnabled = IsSaverEnabledByDefault(i.Name, types)
                 })
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
@@ -402,6 +451,50 @@ namespace MediaBrowser.Api.Library
                 })
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
+
+            result.SubtitleFetchers = plugins
+                .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.SubtitleFetcher))
+                .Select(i => new LibraryOptionInfo
+                {
+                    Name = i.Name,
+                    DefaultEnabled = IsSubtitleFetcherEnabledByDefault(i.Name, types)
+                })
+                .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            var typeOptions = new List<LibraryTypeOptions>();
+
+            foreach (var type in types)
+            {
+                typeOptions.Add(new LibraryTypeOptions
+                {
+                    Type = type,
+
+                    MetadataFetchers = plugins
+                    .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.MetadataFetcher))
+                    .Select(i => new LibraryOptionInfo
+                    {
+                        Name = i.Name,
+                        DefaultEnabled = IsMetadataFetcherEnabledByDefault(i.Name, type)
+                    })
+                    .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray(),
+
+                    ImageFetchers = plugins
+                    .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(i => i.Plugins.Where(p => p.Type == MetadataPluginType.ImageFetcher))
+                    .Select(i => new LibraryOptionInfo
+                    {
+                        Name = i.Name,
+                        DefaultEnabled = IsImageFetcherEnabledByDefault(i.Name, type)
+                    })
+                    .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray()
+                });
+            }
+
+            result.TypeOptions = typeOptions.ToArray();
 
             return result;
         }
