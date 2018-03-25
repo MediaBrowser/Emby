@@ -2217,7 +2217,7 @@ namespace Emby.Server.Implementations
             try
             {
                 var result = await new GithubUpdater(HttpClient, JsonSerializer).CheckForUpdateResult("MediaBrowser",
-                    "Emby",
+                    "Emby.Releases",
                     ApplicationVersion,
                     updateLevel,
                     ReleaseAssetFilename,
