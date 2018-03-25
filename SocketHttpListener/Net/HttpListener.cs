@@ -185,7 +185,7 @@ namespace SocketHttpListener.Net
         void Close(bool force)
         {
             CheckDisposed();
-            EndPointManager.RemoveListener(_logger, this);
+            HttpEndPointManager.RemoveListener(_logger, this);
             Cleanup(force);
         }
 
@@ -230,7 +230,7 @@ namespace SocketHttpListener.Net
             if (listening)
                 return;
 
-            EndPointManager.AddListener(_logger, this);
+            HttpEndPointManager.AddListener(_logger, this);
             listening = true;
         }
 

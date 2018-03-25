@@ -23,7 +23,7 @@ namespace SocketHttpListener.Net
         const int BufferSize = 8192;
         Socket _socket;
         Stream _stream;
-        EndPointListener _epl;
+        HttpEndPointListener _epl;
         MemoryStream _memoryStream;
         byte[] _buffer;
         HttpListenerContext _context;
@@ -48,7 +48,7 @@ namespace SocketHttpListener.Net
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environment;
 
-        public HttpConnection(ILogger logger, Socket socket, EndPointListener epl, bool secure, X509Certificate cert, ICryptoProvider cryptoProvider, IMemoryStreamFactory memoryStreamFactory, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
+        public HttpConnection(ILogger logger, Socket socket, HttpEndPointListener epl, bool secure, X509Certificate cert, ICryptoProvider cryptoProvider, IMemoryStreamFactory memoryStreamFactory, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
         {
             _logger = logger;
             this._socket = socket;
@@ -86,7 +86,10 @@ namespace SocketHttpListener.Net
                 });
 
                 _stream = ssl_stream;
+            }
 
+            if (ssl_stream != null)
+            {
                 ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
             }
             Init();
