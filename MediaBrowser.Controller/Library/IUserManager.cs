@@ -153,14 +153,14 @@ namespace MediaBrowser.Controller.Library
         /// <param name="enteredUsername">The entered username.</param>
         /// <param name="isInNetwork">if set to <c>true</c> [is in network].</param>
         /// <returns>ForgotPasswordResult.</returns>
-        ForgotPasswordResult StartForgotPasswordProcess(string enteredUsername, bool isInNetwork);
+        Task<ForgotPasswordResult> StartForgotPasswordProcess(string enteredUsername, bool isInNetwork);
 
         /// <summary>
         /// Redeems the password reset pin.
         /// </summary>
         /// <param name="pin">The pin.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        PinRedeemResult RedeemPasswordResetPin(string pin);
+        Task<PinRedeemResult> RedeemPasswordResetPin(string pin);
 
         /// <summary>
         /// Gets the user policy.

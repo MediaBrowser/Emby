@@ -92,7 +92,7 @@ namespace Emby.Server.Implementations.Services
                 if (taskResponse != null)
                 {
                     await taskResponse.ConfigureAwait(false);
-                    response = ServiceHandler.GetTaskResult(taskResponse);
+                    response = GetTaskResult(taskResponse);
                 }
 
                 return response;
@@ -100,6 +100,32 @@ namespace Emby.Server.Implementations.Services
 
             var expectedMethodName = actionName.Substring(0, 1) + actionName.Substring(1).ToLower();
             throw new NotImplementedException(string.Format("Could not find method named {1}({0}) or Any({0}) on Service {2}", requestDto.GetType().GetMethodName(), expectedMethodName, serviceType.GetMethodName()));
+        }
+
+        private static object GetTaskResult(Task task)
+        {
+            try
+            {
+                var taskObject = task as Task<object>;
+                if (taskObject != null)
+                {
+                    return taskObject.Result;
+                }
+
+                //task.Wait();
+
+                var type = task.GetType().GetTypeInfo();
+                if (!type.IsGenericType)
+                {
+                    return null;
+                }
+
+                return type.GetDeclaredProperty("Result").GetValue(task);
+            }
+            catch (TypeAccessException)
+            {
+                return null; //return null for void Task's
+            }
         }
 
         public static List<ServiceMethod> Reset(Type serviceType)

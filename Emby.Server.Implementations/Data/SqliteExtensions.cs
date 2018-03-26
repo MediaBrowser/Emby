@@ -4,6 +4,7 @@ using System.Globalization;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
 using SQLitePCL.pretty;
+using System.IO;
 
 namespace Emby.Server.Implementations.Data
 {
@@ -136,7 +137,7 @@ namespace Emby.Server.Implementations.Data
                 throw new ArgumentNullException("obj");
             }
 
-            using (var stream = streamProvider.CreateNew())
+            using (var stream = new MemoryStream())
             {
                 json.SerializeToStream(obj, stream);
                 return stream.ToArray();

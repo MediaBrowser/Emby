@@ -236,7 +236,7 @@ namespace Emby.Server.Implementations.Data
 
         private DisplayPreferences Get(IReadOnlyList<IResultSetValue> row)
         {
-            using (var stream = _memoryStreamProvider.CreateNew(row[0].ToBlob()))
+            using (var stream = new MemoryStream(row[0].ToBlob()))
             {
                 stream.Position = 0;
                 return _jsonSerializer.DeserializeFromStream<DisplayPreferences>(stream);

@@ -256,11 +256,9 @@ namespace MediaBrowser.Api.Subtitles
             return ToOptimizedResult(response);
         }
 
-        public void Delete(DeleteSubtitle request)
+        public Task Delete(DeleteSubtitle request)
         {
-            var task = _subtitleManager.DeleteSubtitles(request.Id, request.Index);
-
-            Task.WaitAll(task);
+            return _subtitleManager.DeleteSubtitles(request.Id, request.Index);
         }
 
         public object Get(GetSubtitleProviders request)

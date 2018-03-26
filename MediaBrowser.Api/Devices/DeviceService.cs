@@ -117,7 +117,7 @@ namespace MediaBrowser.Api.Devices
             _deviceManager.DeleteDevice(request.Id);
         }
 
-        public void Post(PostCameraUpload request)
+        public Task Post(PostCameraUpload request)
         {
             var deviceId = Request.QueryString["DeviceId"];
             var album = Request.QueryString["Album"];
@@ -126,29 +126,25 @@ namespace MediaBrowser.Api.Devices
 
             if (Request.ContentType.IndexOf("multi", StringComparison.OrdinalIgnoreCase) == -1)
             {
-                var task = _deviceManager.AcceptCameraUpload(deviceId, request.RequestStream, new LocalFileInfo
+                return _deviceManager.AcceptCameraUpload(deviceId, request.RequestStream, new LocalFileInfo
                 {
                     MimeType = Request.ContentType,
                     Album = album,
                     Name = name,
                     Id = id
                 });
-
-                Task.WaitAll(task);
             }
             else
             {
                 var file = Request.Files.Length == 0 ? null : Request.Files[0];
 
-                var task = _deviceManager.AcceptCameraUpload(deviceId, file.InputStream, new LocalFileInfo
+                return _deviceManager.AcceptCameraUpload(deviceId, file.InputStream, new LocalFileInfo
                 {
                     MimeType = file.ContentType,
                     Album = album,
                     Name = name,
                     Id = id
                 });
-
-                Task.WaitAll(task);
             }
         }
     }

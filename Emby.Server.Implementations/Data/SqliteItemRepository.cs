@@ -1390,7 +1390,7 @@ namespace Emby.Server.Implementations.Data
 
             if (TypeRequiresDeserialization(type))
             {
-                using (var stream = _memoryStreamProvider.CreateNew(reader[1].ToBlob()))
+                using (var stream = new MemoryStream(reader[1].ToBlob()))
                 {
                     stream.Position = 0;
 

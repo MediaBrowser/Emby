@@ -86,7 +86,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
                 {
                     if (args.ContainsFileSystemEntryByName("tvshow.nfo"))
                     {
-                        if (args.Parent.IsRoot)
+                        if (args.Parent != null && args.Parent.IsRoot)
                         {
                             // For now, return null, but if we want to allow this in the future then add some additional checks to guard against a misplaced tvshow.nfo
                             return null;
@@ -99,7 +99,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
                         };
                     }
 
-                    if (args.Parent.IsRoot)
+                    if (args.Parent != null && args.Parent.IsRoot)
                     {
                         return null;
                     }

@@ -87,12 +87,6 @@ namespace SocketHttpListener.Net
 
                 _stream = ssl_stream;
             }
-
-            if (ssl_stream != null)
-            {
-                ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
-            }
-            Init();
         }
 
         public Stream Stream
@@ -103,7 +97,25 @@ namespace SocketHttpListener.Net
             }
         }
 
-        void Init()
+        public async Task Init()
+        {
+            if (ssl_stream != null)
+            {
+                var enableAsync = true;
+                if (enableAsync)
+                {
+                    await ssl_stream.AuthenticateAsServerAsync(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false).ConfigureAwait(false);
+                }
+                else
+                {
+                    ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
+                }
+            }
+
+            InitInternal();
+        }
+
+        private void InitInternal()
         {
             _contextBound = false;
             _requestStream = null;
@@ -494,14 +506,14 @@ namespace SocketHttpListener.Net
                         // Don't close. Keep working.
                         _reuses++;
                         Unbind();
-                        Init();
+                        InitInternal();
                         BeginReadRequest();
                         return;
                     }
 
                     _reuses++;
                     Unbind();
-                    Init();
+                    InitInternal();
                     BeginReadRequest();
                     return;
                 }
