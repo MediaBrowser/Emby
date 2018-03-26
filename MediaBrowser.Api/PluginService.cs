@@ -269,21 +269,18 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public void Post(RegisterAppstoreSale request)
+        public Task Post(RegisterAppstoreSale request)
         {
-            var task = _securityManager.RegisterAppStoreSale(request.Parameters);
-
-            Task.WaitAll(task);
+            return _securityManager.RegisterAppStoreSale(request.Parameters);
         }
 
         /// <summary>
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(UpdatePluginSecurityInfo request)
+        public Task Post(UpdatePluginSecurityInfo request)
         {
-            var task = _securityManager.UpdateSupporterKey(request.SupporterKey);
-            Task.WaitAll(task);
+            return _securityManager.UpdateSupporterKey(request.SupporterKey);
         }
 
         /// <summary>

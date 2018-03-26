@@ -627,7 +627,7 @@
       <Name>SocketHttpListener</Name>
     </ProjectReference>
     <Reference Include="Emby.Naming, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Naming.1.1.0\lib\netstandard1.3\Emby.Naming.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Naming.1.1.1\lib\netstandard1.3\Emby.Naming.dll</HintPath>
     </Reference>
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>

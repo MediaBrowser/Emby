@@ -906,7 +906,7 @@ namespace Emby.Server.Implementations.Library
         private PasswordPinCreationResult _lastPasswordPinCreationResult;
         private int _pinAttempts;
 
-        private PasswordPinCreationResult CreatePasswordResetPin()
+        private async Task<PasswordPinCreationResult> CreatePasswordResetPin()
         {
             var num = new Random().Next(1, 9999);
 
@@ -920,7 +920,7 @@ namespace Emby.Server.Implementations.Library
 
             var text = new StringBuilder();
 
-            var localAddress = _appHost.GetLocalApiUrl(CancellationToken.None).Result ?? string.Empty;
+            var localAddress = (await _appHost.GetLocalApiUrl(CancellationToken.None).ConfigureAwait(false)) ?? string.Empty;
 
             text.AppendLine("Use your web browser to visit:");
             text.AppendLine(string.Empty);
@@ -949,7 +949,7 @@ namespace Emby.Server.Implementations.Library
             return result;
         }
 
-        public ForgotPasswordResult StartForgotPasswordProcess(string enteredUsername, bool isInNetwork)
+        public async Task<ForgotPasswordResult> StartForgotPasswordProcess(string enteredUsername, bool isInNetwork)
         {
             DeletePinFile();
 
@@ -977,7 +977,7 @@ namespace Emby.Server.Implementations.Library
                     action = ForgotPasswordAction.PinCode;
                 }
 
-                var result = CreatePasswordResetPin();
+                var result = await CreatePasswordResetPin().ConfigureAwait(false);
                 pinFile = result.PinFile;
                 expirationDate = result.ExpirationDate;
             }
@@ -990,7 +990,7 @@ namespace Emby.Server.Implementations.Library
             };
         }
 
-        public PinRedeemResult RedeemPasswordResetPin(string pin)
+        public async Task<PinRedeemResult> RedeemPasswordResetPin(string pin)
         {
             DeletePinFile();
 
@@ -1011,8 +1011,7 @@ namespace Emby.Server.Implementations.Library
 
                 foreach (var user in users)
                 {
-                    var task = ResetPassword(user);
-                    Task.WaitAll(task);
+                    await ResetPassword(user).ConfigureAwait(false);
 
                     if (user.Policy.IsDisabled)
                     {

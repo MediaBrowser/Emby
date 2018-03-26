@@ -1173,22 +1173,18 @@ namespace MediaBrowser.Api.LiveTv
             });
         }
 
-        public void Delete(CancelTimer request)
+        public Task Delete(CancelTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CancelTimer(request.Id);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CancelTimer(request.Id);
         }
 
-        public void Post(UpdateTimer request)
+        public Task Post(UpdateTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.UpdateTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.UpdateTimer(request, CancellationToken.None);
         }
 
         public async Task<object> Get(GetSeriesTimers request)
@@ -1210,22 +1206,18 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(result);
         }
 
-        public void Delete(CancelSeriesTimer request)
+        public Task Delete(CancelSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CancelSeriesTimer(request.Id);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CancelSeriesTimer(request.Id);
         }
 
-        public void Post(UpdateSeriesTimer request)
+        public Task Post(UpdateSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.UpdateSeriesTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.UpdateSeriesTimer(request, CancellationToken.None);
         }
 
         public async Task<object> Get(GetDefaultTimer request)
@@ -1253,25 +1245,21 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(result);
         }
 
-        public void Post(CreateSeriesTimer request)
+        public Task Post(CreateSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CreateSeriesTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CreateSeriesTimer(request, CancellationToken.None);
         }
 
-        public void Post(CreateTimer request)
+        public Task Post(CreateTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CreateTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CreateTimer(request, CancellationToken.None);
         }
 
-        public async Task<object> Get(GetRecordingGroups request)
+        public object Get(GetRecordingGroups request)
         {
             return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
@@ -1286,13 +1274,11 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedResult(_liveTvManager.GetGuideInfo());
         }
 
-        public void Post(ResetTuner request)
+        public Task Post(ResetTuner request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.ResetTuner(request.Id, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.ResetTuner(request.Id, CancellationToken.None);
         }
     }
 }

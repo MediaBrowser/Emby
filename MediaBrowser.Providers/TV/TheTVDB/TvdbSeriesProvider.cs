@@ -243,7 +243,7 @@ namespace MediaBrowser.Providers.TV
                     DeleteXmlFiles(seriesDataPath);
 
                     // Copy to memory stream because we need a seekable stream
-                    using (var ms = _memoryStreamProvider.CreateNew())
+                    using (var ms = new MemoryStream())
                     {
                         await zipStream.CopyToAsync(ms).ConfigureAwait(false);
 

@@ -123,6 +123,21 @@ namespace SocketHttpListener.Net
             Accept(socket, acceptEventArg, ref dummy);
         }
 
+        private static void TryCloseAndDispose(Socket socket)
+        {
+            try
+            {
+                using (socket)
+                {
+                    socket.Close();
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         private static void Accept(Socket socket, SocketAsyncEventArgs acceptEventArg, ref Socket accepted)
         {
             // acceptSocket must be cleared since the context object is being reused
@@ -137,8 +152,19 @@ namespace SocketHttpListener.Net
                     ProcessAccept(acceptEventArg);
                 }
             }
-            catch
+            catch (ObjectDisposedException)
             {
+                if (accepted != null)
+                {
+                    TryCloseAndDispose(accepted);
+                }
+            }
+            catch (Exception ex)
+            {
+                HttpEndPointListener epl = (HttpEndPointListener)acceptEventArg.UserToken;
+
+                epl._logger.ErrorException("Error in socket.AcceptAsync", ex);
+
                 if (accepted != null)
                 {
                     try
@@ -225,19 +251,7 @@ namespace SocketHttpListener.Net
             }
         }
 
-        private void TryClose(Socket accepted)
-        {
-            try
-            {
-                accepted.Close();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void ProcessAccept(Socket accepted)
+        private async void ProcessAccept(Socket accepted)
         {
             try
             {
@@ -251,6 +265,8 @@ namespace SocketHttpListener.Net
 
                 HttpConnection conn = new HttpConnection(_logger, accepted, listener, _secure, _cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
 
+                await conn.Init().ConfigureAwait(false);
+
                 //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
                 lock (listener._unregisteredConnections)
                 {
@@ -260,7 +276,6 @@ namespace SocketHttpListener.Net
             }
             catch (Exception ex)
             {
-                TryClose(accepted);
                 _logger.ErrorException("Error in ProcessAccept", ex);
             }
         }

@@ -304,6 +304,12 @@ namespace Emby.Server.Implementations.IO
                 }
             }
 
+            if (_environmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Android)
+            {
+                // causing crashing
+                return;
+            }
+
             // Already being watched
             if (_fileSystemWatchers.ContainsKey(path))
             {

@@ -462,7 +462,7 @@ namespace SocketHttpListener
 
         private bool processFragments(WebSocketFrame first)
         {
-            using (var buff = _memoryStreamFactory.CreateNew())
+            using (var buff = new MemoryStream())
             {
                 buff.WriteBytes(first.PayloadData.ApplicationData);
                 if (!concatenateFragmentsInto(buff))
@@ -840,7 +840,7 @@ namespace SocketHttpListener
                 throw new Exception(msg);
             }
 
-            return sendAsync(Opcode.Binary, _memoryStreamFactory.CreateNew(data));
+            return sendAsync(Opcode.Binary, new MemoryStream(data));
         }
 
         /// <summary>
@@ -863,7 +863,7 @@ namespace SocketHttpListener
                 throw new Exception(msg);
             }
 
-            return sendAsync(Opcode.Text, _memoryStreamFactory.CreateNew(Encoding.UTF8.GetBytes(data)));
+            return sendAsync(Opcode.Text, new MemoryStream(Encoding.UTF8.GetBytes(data)));
         }
 
         #endregion

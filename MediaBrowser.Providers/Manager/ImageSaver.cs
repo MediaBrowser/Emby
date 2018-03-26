@@ -126,7 +126,7 @@ namespace MediaBrowser.Providers.Manager
             var retryPaths = GetSavePaths(item, type, imageIndex, mimeType, false);
 
             // If there are more than one output paths, the stream will need to be seekable
-            var memoryStream = _memoryStreamProvider.CreateNew();
+            var memoryStream = new MemoryStream();
             using (source)
             {
                 await source.CopyToAsync(memoryStream).ConfigureAwait(false);

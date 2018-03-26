@@ -310,7 +310,7 @@ namespace Emby.Server.Implementations.HttpClientManager
                 {
                     using (var stream = _fileSystem.GetFileStream(responseCachePath, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read, true))
                     {
-                        var memoryStream = _memoryStreamProvider.CreateNew();
+                        var memoryStream = new MemoryStream();
 
                         await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
                         memoryStream.Position = 0;
@@ -343,7 +343,7 @@ namespace Emby.Server.Implementations.HttpClientManager
 
             using (var responseStream = response.Content)
             {
-                var memoryStream = _memoryStreamProvider.CreateNew();
+                var memoryStream = new MemoryStream();
                 await responseStream.CopyToAsync(memoryStream).ConfigureAwait(false);
                 memoryStream.Position = 0;
 
@@ -458,7 +458,7 @@ namespace Emby.Server.Implementations.HttpClientManager
 
                     using (var stream = httpResponse.GetResponseStream())
                     {
-                        var memoryStream = _memoryStreamProvider.CreateNew();
+                        var memoryStream = new MemoryStream();
 
                         await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
 

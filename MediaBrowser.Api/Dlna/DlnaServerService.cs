@@ -198,7 +198,7 @@ namespace MediaBrowser.Api.Dlna
         {
             using (var response = _dlnaManager.GetIcon(request.Filename))
             {
-                using (var ms = _memoryStreamProvider.CreateNew())
+                using (var ms = new MemoryStream())
                 {
                     response.Stream.CopyTo(ms);
 
