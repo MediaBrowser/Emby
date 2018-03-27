@@ -132,6 +132,10 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         {
             var path = channel.Path;
             MediaProtocol protocol = MediaProtocol.File;
+
+            var supportsDirectPlay = !info.EnableStreamLooping && info.TunerCount == 0;
+            var supportsDirectStream = !info.EnableStreamLooping;
+
             if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 protocol = MediaProtocol.Http;
@@ -159,8 +163,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             {
                 isRemote = !_networkManager.IsInLocalNetwork(uri.Host);
             }
-
-            var supportsDirectPlay = !info.EnableStreamLooping && info.TunerCount == 0;
 
             var httpHeaders = new Dictionary<string, string>();
 
@@ -204,6 +206,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                 IgnoreDts = true,
                 SupportsDirectPlay = supportsDirectPlay,
+                SupportsDirectStream = supportsDirectStream,
 
                 RequiredHttpHeaders = httpHeaders
             };

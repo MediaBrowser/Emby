@@ -84,12 +84,17 @@ namespace SocketHttpListener.Net
             epl.AddPrefix(lp, listener);
         }
 
+        private static IPAddress GetIpAnyAddress(HttpListener listener)
+        {
+            return listener.EnableDualMode ? IPAddress.IPv6Any : IPAddress.Any;
+        }
+
         private static HttpEndPointListener GetEPListener(ILogger logger, string host, int port, HttpListener listener, bool secure)
         {
             IPAddress addr;
             if (host == "*" || host == "+")
             {
-                addr = IPAddress.Any;
+                addr = GetIpAnyAddress(listener);
             }
             else
             {

@@ -1097,12 +1097,12 @@ namespace MediaBrowser.Api.LiveTv
             return Get(request);
         }
 
-        public async Task<object> Get(GetRecordings request)
+        public object Get(GetRecordings request)
         {
             var options = GetDtoOptions(_authContext, request);
             options.DeviceId = _authContext.GetAuthorizationInfo(Request).DeviceId;
 
-            var result = await _liveTvManager.GetRecordings(new RecordingQuery
+            var result = _liveTvManager.GetRecordings(new RecordingQuery
             {
                 ChannelId = request.ChannelId,
                 UserId = request.UserId,
@@ -1119,7 +1119,7 @@ namespace MediaBrowser.Api.LiveTv
                 IsSports = request.IsSports,
                 IsLibraryItem = request.IsLibraryItem
 
-            }, options, CancellationToken.None).ConfigureAwait(false);
+            }, options);
 
             return ToOptimizedResult(result);
         }

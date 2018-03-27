@@ -579,7 +579,26 @@ namespace Emby.Server.Implementations.Library
                 // When resolving the root, we need it's grandchildren (children of user views)
                 var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
 
-                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
+                FileSystemMetadata[] files;
+                var isVf = args.IsVf;
+
+                try
+                {
+                    files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || isVf);
+                }
+                catch (Exception ex)
+                {
+                    if (parent != null && parent.IsPhysicalRoot)
+                    {
+                        _logger.ErrorException("Error in GetFilteredFileSystemEntries isPhysicalRoot: {0} IsVf: {1}", ex, isPhysicalRoot, isVf);
+
+                        files = new FileSystemMetadata[] { };
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
                 // Need to remove subpaths that may have been resolved from shortcuts
                 // Example: if \\server\movies exists, then strip out \\server\movies\action
@@ -964,7 +983,7 @@ namespace Emby.Server.Implementations.Library
                     Path = path
                 };
 
-                CreateItem(item, CancellationToken.None);
+                CreateItem(item);
             }
 
             return item;
@@ -1529,8 +1548,7 @@ namespace Emby.Server.Implementations.Library
                     UserId = user.Id.ToString("N"),
                     IncludeHidden = true,
                     IncludeExternalContent = allowExternalContent
-
-                }, CancellationToken.None).Result;
+                });
 
                 query.TopParentIds = userViews.SelectMany(i => GetTopParentIdsForQuery(i, user)).Select(i => i.ToString("N")).ToArray();
             }
@@ -1811,9 +1829,9 @@ namespace Emby.Server.Implementations.Library
         /// <param name="item">The item.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public void CreateItem(BaseItem item, CancellationToken cancellationToken)
+        public void CreateItem(BaseItem item)
         {
-            CreateItems(new[] { item }, item.GetParent(), cancellationToken);
+            CreateItems(new[] { item }, item.GetParent(), CancellationToken.None);
         }
 
         /// <summary>
@@ -2110,16 +2128,14 @@ namespace Emby.Server.Implementations.Library
         public UserView GetNamedView(User user,
             string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
-            return GetNamedView(user, name, null, viewType, sortName, cancellationToken);
+            return GetNamedView(user, name, null, viewType, sortName);
         }
 
         public UserView GetNamedView(string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
             var path = Path.Combine(ConfigurationManager.ApplicationPaths.ItemsByNamePath, "views");
 
@@ -2145,7 +2161,7 @@ namespace Emby.Server.Implementations.Library
                     ForcedSortName = sortName
                 };
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item);
 
                 refresh = true;
             }
@@ -2174,8 +2190,7 @@ namespace Emby.Server.Implementations.Library
             string name,
             string parentId,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
             var idValues = "38_namedview_" + name + user.Id.ToString("N") + (parentId ?? string.Empty) + (viewType ?? string.Empty);
 
@@ -2207,7 +2222,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item);
 
                 isNew = true;
             }
@@ -2235,8 +2250,7 @@ namespace Emby.Server.Implementations.Library
 
         public UserView GetShadowView(BaseItem parent,
         string viewType,
-        string sortName,
-        CancellationToken cancellationToken)
+        string sortName)
         {
             if (parent == null)
             {
@@ -2272,7 +2286,7 @@ namespace Emby.Server.Implementations.Library
 
                 item.DisplayParentId = parentId;
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item);
 
                 isNew = true;
             }
@@ -2302,8 +2316,7 @@ namespace Emby.Server.Implementations.Library
             string parentId,
             string viewType,
             string sortName,
-            string uniqueId,
-            CancellationToken cancellationToken)
+            string uniqueId)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -2343,7 +2356,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item);
 
                 isNew = true;
             }
@@ -2351,7 +2364,7 @@ namespace Emby.Server.Implementations.Library
             if (!string.Equals(viewType, item.ViewType, StringComparison.OrdinalIgnoreCase))
             {
                 item.ViewType = viewType;
-                item.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken);
+                item.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
             }
 
             var refresh = isNew || DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;

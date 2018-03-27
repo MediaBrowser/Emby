@@ -195,7 +195,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Creates the item.
         /// </summary>
-        void CreateItem(BaseItem item, CancellationToken cancellationToken);
+        void CreateItem(BaseItem item);
 
         /// <summary>
         /// Creates the items.
@@ -295,14 +295,11 @@ namespace MediaBrowser.Controller.Library
         /// <param name="parentId">The parent identifier.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;UserView&gt;.</returns>
         UserView GetNamedView(User user,
             string name,
             string parentId,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken);
+            string sortNamen);
 
         /// <summary>
         /// Gets the named view.
@@ -311,13 +308,10 @@ namespace MediaBrowser.Controller.Library
         /// <param name="name">The name.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;UserView&gt;.</returns>
         UserView GetNamedView(User user,
             string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken);
+            string sortName);
 
         /// <summary>
         /// Gets the named view.
@@ -325,11 +319,9 @@ namespace MediaBrowser.Controller.Library
         /// <param name="name">The name.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         UserView GetNamedView(string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken);
+            string sortName);
 
         /// <summary>
         /// Gets the named view.
@@ -339,13 +331,11 @@ namespace MediaBrowser.Controller.Library
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
         /// <param name="uniqueId">The unique identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         UserView GetNamedView(string name,
             string parentId,
             string viewType,
             string sortName,
-            string uniqueId,
-            CancellationToken cancellationToken);
+            string uniqueId);
 
         /// <summary>
         /// Gets the shadow view.
@@ -353,12 +343,9 @@ namespace MediaBrowser.Controller.Library
         /// <param name="parent">The parent.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <param name="sortName">Name of the sort.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;UserView&gt;.</returns>
         UserView GetShadowView(BaseItem parent,
           string viewType,
-          string sortName,
-          CancellationToken cancellationToken);
+          string sortName);
 
         /// <summary>
         /// Determines whether [is video file] [the specified path].

@@ -82,9 +82,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="options">The options.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>QueryResult{RecordingInfoDto}.</returns>
-        Task<QueryResult<BaseItemDto>> GetRecordings(RecordingQuery query, DtoOptions options, CancellationToken cancellationToken);
+        QueryResult<BaseItemDto> GetRecordings(RecordingQuery query, DtoOptions options);
 
         /// <summary>
         /// Gets the timers.

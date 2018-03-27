@@ -132,7 +132,7 @@ namespace Emby.Server.Implementations.Channels
             return GetAllChannels().Select(i => GetInternalChannelId(i.Name));
         }
 
-        public async Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
+        public QueryResult<Channel> GetChannelsInternal(ChannelQuery query)
         {
             var user = string.IsNullOrEmpty(query.UserId)
                 ? null
@@ -241,7 +241,8 @@ namespace Emby.Server.Implementations.Channels
             {
                 foreach (var item in returnItems)
                 {
-                    await RefreshLatestChannelItems(GetChannelProvider(item), cancellationToken).ConfigureAwait(false);
+                    var task = RefreshLatestChannelItems(GetChannelProvider(item), CancellationToken.None);
+                    Task.WaitAll(task);
                 }
             }
 
@@ -252,13 +253,13 @@ namespace Emby.Server.Implementations.Channels
             };
         }
 
-        public async Task<QueryResult<BaseItemDto>> GetChannels(ChannelQuery query, CancellationToken cancellationToken)
+        public QueryResult<BaseItemDto> GetChannels(ChannelQuery query)
         {
             var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
-            var internalResult = await GetChannelsInternal(query, cancellationToken).ConfigureAwait(false);
+            var internalResult = GetChannelsInternal(query);
 
             var dtoOptions = new DtoOptions()
             {
@@ -480,7 +481,7 @@ namespace Emby.Server.Implementations.Channels
             if (isNew)
             {
                 item.OnMetadataChanged();
-                _libraryManager.CreateItem(item, cancellationToken);
+                _libraryManager.CreateItem(item);
             }
 
             await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
@@ -1150,7 +1151,7 @@ namespace Emby.Server.Implementations.Channels
 
             if (isNew)
             {
-                _libraryManager.CreateItem(item, cancellationToken);
+                _libraryManager.CreateItem(item);
 
                 if (info.People != null && info.People.Count > 0)
                 {

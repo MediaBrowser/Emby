@@ -150,13 +150,11 @@ namespace Emby.Server.Implementations.Library
                 {
                     SetUserProperties(hasMediaSources as BaseItem, source, user);
                 }
-                if (source.Protocol == MediaProtocol.File || source.Protocol == MediaProtocol.Http)
+                
+                // Validate that this is actually possible
+                if (source.SupportsDirectStream)
                 {
-                    // trust whatever was set by the media source provider
-                }
-                else
-                {
-                    source.SupportsDirectStream = false;
+                    source.SupportsDirectStream = SupportsDirectStream(source.Path, source.Protocol);
                 }
 
                 list.Add(source);
@@ -177,6 +175,27 @@ namespace Emby.Server.Implementations.Library
             }
 
             return SortMediaSources(list).Where(i => i.Type != MediaSourceType.Placeholder);
+        }
+
+        private bool SupportsDirectStream(string path, MediaProtocol protocol)
+        {
+            if (protocol == MediaProtocol.File)
+            {
+                return true;
+            }
+
+            if (protocol == MediaProtocol.Http)
+            {
+                if (path != null)
+                {
+                    if (path.IndexOf(".m3u", StringComparison.OrdinalIgnoreCase) == -1)
+                    {
+                        //return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
@@ -359,6 +378,12 @@ namespace Emby.Server.Implementations.Library
                 var mediaSourceTuple = await provider.OpenMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
 
                 var mediaSource = mediaSourceTuple.Item1;
+
+                // Validate that this is actually possible
+                if (mediaSource.SupportsDirectStream)
+                {
+                    mediaSource.SupportsDirectStream = SupportsDirectStream(mediaSource.Path, mediaSource.Protocol);
+                }
 
                 if (string.IsNullOrEmpty(mediaSource.LiveStreamId))
                 {

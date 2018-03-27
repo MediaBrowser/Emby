@@ -1036,12 +1036,12 @@ namespace MediaBrowser.Controller.Entities
 
         private UserView GetUserViewWithName(string name, string type, string sortName, BaseItem parent)
         {
-            return _userViewManager.GetUserSubView(name, parent.Id.ToString("N"), type, sortName, CancellationToken.None);
+            return _userViewManager.GetUserSubView(name, parent.Id.ToString("N"), type, sortName);
         }
 
         private UserView GetUserView(string type, string localizationKey, string sortName, BaseItem parent)
         {
-            return _userViewManager.GetUserSubView(parent.Id.ToString("N"), type, localizationKey, sortName, CancellationToken.None);
+            return _userViewManager.GetUserSubView(parent.Id.ToString("N"), type, localizationKey, sortName);
         }
 
         public static IEnumerable<BaseItem> FilterForAdjacency(List<BaseItem> list, string adjacentToId)

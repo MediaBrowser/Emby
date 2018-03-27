@@ -2065,14 +2065,20 @@ namespace Emby.Server.Implementations
                 return cachedResult;
             }
 
+            var logPing = false;
+
+#if DEBUG
+            logPing = true;
+#endif
+
             try
             {
                 using (var response = await HttpClient.SendAsync(new HttpRequestOptions
                 {
                     Url = apiUrl,
                     LogErrorResponseBody = false,
-                    LogErrors = false,
-                    LogRequest = false,
+                    LogErrors = logPing,
+                    LogRequest = logPing,
                     TimeoutMs = 30000,
                     BufferContent = false,
 
