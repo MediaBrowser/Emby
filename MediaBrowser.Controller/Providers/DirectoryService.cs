@@ -39,15 +39,7 @@ namespace MediaBrowser.Controller.Providers
             {
                 //_logger.Debug("Getting files for " + path);
 
-                try
-                {
-                    // using EnumerateFileSystemInfos doesn't handle reparse points (symlinks)
-                    entries = _fileSystem.GetFileSystemEntries(path).ToArray();
-                }
-                catch (IOException)
-                {
-                    entries = new FileSystemMetadata[] { };
-                }
+                entries = _fileSystem.GetFileSystemEntries(path).ToArray();
 
                 //_cache.TryAdd(path, entries);
                 _cache[path] = entries;

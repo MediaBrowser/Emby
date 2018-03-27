@@ -70,8 +70,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 UserId = query.User.Id.ToString("N"),
                 PresetViews = query.PresetViews
-
-            }, CancellationToken.None).Result;
+            });
 
             var itemsArray = result;
             var totalCount = itemsArray.Length;

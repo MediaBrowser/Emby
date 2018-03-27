@@ -206,7 +206,7 @@ namespace MediaBrowser.Controller.Entities
                 item.DateModified = DateTime.UtcNow;
             }
 
-            LibraryManager.CreateItem(item, cancellationToken);
+            LibraryManager.CreateItem(item);
         }
 
         /// <summary>
@@ -361,11 +361,6 @@ namespace MediaBrowser.Controller.Entities
             var validChildren = new List<BaseItem>();
             var validChildrenNeedGeneration = false;
 
-            var allLibraryPaths = LibraryManager
-              .GetVirtualFolders()
-              .SelectMany(i => i.Locations)
-              .ToList();
-
             if (IsFileProtocol)
             {
                 var isOffline = false;
@@ -379,7 +374,6 @@ namespace MediaBrowser.Controller.Entities
                 {
                     nonCachedChildren = new BaseItem[] { };
 
-                    Logger.ErrorException("Error getting file system entries for {0}", ex, Path);
                     isOffline = true;
                 }
 
@@ -1482,11 +1476,14 @@ namespace MediaBrowser.Controller.Entities
                 return list;
             }
 
-            var allUserRootChildren = LibraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
+            var allUserRootChildren = LibraryManager.GetUserRootFolder()
+                .GetChildren(user, true)
+                .OfType<Folder>()
+                .ToList();
+
+            //var allUserRootChildren = LibraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
 
             var collectionFolderIds = allUserRootChildren
-                .OfType<CollectionFolder>()
-                .Where(i => i.IsVisible(user))
                 .Select(i => i.Id)
                 .ToList();
 

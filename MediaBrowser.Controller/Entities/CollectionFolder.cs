@@ -288,24 +288,15 @@ namespace MediaBrowser.Controller.Entities
             // Gather child folder and files
             if (args.IsDirectory)
             {
-                var isPhysicalRoot = args.IsPhysicalRoot;
+                var flattenFolderDepth = 0;
 
-                // When resolving the root, we need it's grandchildren (children of user views)
-                var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
-
-                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, FileSystem, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
-
-                // Need to remove subpaths that may have been resolved from shortcuts
-                // Example: if \\server\movies exists, then strip out \\server\movies\action
-                if (isPhysicalRoot)
-                {
-                    files = LibraryManager.NormalizeRootPathList(files).ToArray();
-                }
+                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, FileSystem, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: true);
 
                 args.FileSystemChildren = files;
             }
 
             _requiresRefresh = _requiresRefresh || !args.PhysicalLocations.SequenceEqual(PhysicalLocations);
+
             if (setPhysicalLocations)
             {
                 PhysicalLocationsList = args.PhysicalLocations;

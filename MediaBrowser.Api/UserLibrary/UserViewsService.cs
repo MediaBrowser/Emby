@@ -60,7 +60,7 @@ namespace MediaBrowser.Api.UserLibrary
             _libraryManager = libraryManager;
         }
 
-        public async Task<object> Get(GetUserViews request)
+        public object Get(GetUserViews request)
         {
             var query = new UserViewQuery
             {
@@ -83,7 +83,7 @@ namespace MediaBrowser.Api.UserLibrary
                 query.PresetViews = new[] { CollectionType.Movies, CollectionType.TvShows };
             }
 
-            var folders = await _userViewManager.GetUserViews(query, CancellationToken.None).ConfigureAwait(false);
+            var folders = _userViewManager.GetUserViews(query);
 
             var dtoOptions = GetDtoOptions(_authContext, request);
             var fields = dtoOptions.Fields.ToList();

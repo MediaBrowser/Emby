@@ -208,9 +208,9 @@ namespace MediaBrowser.Api
             return ToOptimizedResult(result);
         }
 
-        public async Task<object> Get(GetChannels request)
+        public object Get(GetChannels request)
         {
-            var result = await _channelManager.GetChannels(new ChannelQuery
+            var result = _channelManager.GetChannels(new ChannelQuery
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
@@ -218,8 +218,7 @@ namespace MediaBrowser.Api
                 SupportsLatestItems = request.SupportsLatestItems,
                 SupportsMediaDeletion = request.SupportsMediaDeletion,
                 IsFavorite = request.IsFavorite
-
-            }, CancellationToken.None).ConfigureAwait(false);
+            });
 
             return ToOptimizedResult(result);
         }
