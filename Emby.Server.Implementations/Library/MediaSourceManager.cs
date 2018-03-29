@@ -150,7 +150,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     SetUserProperties(hasMediaSources as BaseItem, source, user);
                 }
-                
+
                 // Validate that this is actually possible
                 if (source.SupportsDirectStream)
                 {
@@ -188,10 +188,12 @@ namespace Emby.Server.Implementations.Library
             {
                 if (path != null)
                 {
-                    if (path.IndexOf(".m3u", StringComparison.OrdinalIgnoreCase) == -1)
+                    if (path.IndexOf(".m3u", StringComparison.OrdinalIgnoreCase) != -1)
                     {
-                        //return true;
+                        return false;
                     }
+
+                    return true;
                 }
             }
 

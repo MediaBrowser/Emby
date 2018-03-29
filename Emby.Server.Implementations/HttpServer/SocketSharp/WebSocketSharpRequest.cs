@@ -260,7 +260,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             var serverDefaultContentType = "application/json";
 
             var acceptContentTypes = httpReq.AcceptTypes;
-            var defaultContentType = httpReq.ContentType;
+            string defaultContentType = null;
             if (HasAnyOfContentTypes(httpReq, FormUrlEncoded, MultiPartFormData))
             {
                 defaultContentType = serverDefaultContentType;
