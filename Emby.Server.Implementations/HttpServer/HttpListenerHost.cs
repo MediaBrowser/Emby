@@ -527,11 +527,7 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (!ValidateSsl(httpReq.RemoteIp, urlString))
                 {
-                    var httpsUrl = urlString
-                        .Replace("http://", "https://", StringComparison.OrdinalIgnoreCase)
-                        .Replace(":" + _config.Configuration.PublicPort.ToString(CultureInfo.InvariantCulture), ":" + _config.Configuration.PublicHttpsPort.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase);
-
-                    RedirectToUrl(httpRes, httpsUrl);
+                    RedirectToSecureUrl(httpReq, httpRes, urlString);
                     return;
                 }
 
@@ -728,6 +724,30 @@ namespace Emby.Server.Implementations.HttpServer
 
             var outputStream = response.OutputStream;
             outputStream.Write(bOutput, 0, bOutput.Length);
+        }
+
+        private void RedirectToSecureUrl(IHttpRequest httpReq, IResponse httpRes, string url)
+        {
+            int currentPort;
+            Uri uri;
+            if (Uri.TryCreate(url, UriKind.Absolute, out uri))
+            {
+                currentPort = uri.Port;
+                var builder = new UriBuilder(uri);
+                builder.Port = _config.Configuration.PublicHttpsPort;
+                builder.Scheme = "https";
+                url = builder.Uri.ToString();
+
+                RedirectToUrl(httpRes, url);
+            }
+            else
+            {
+                var httpsUrl = url
+                    .Replace("http://", "https://", StringComparison.OrdinalIgnoreCase)
+                    .Replace(":" + _config.Configuration.PublicPort.ToString(CultureInfo.InvariantCulture), ":" + _config.Configuration.PublicHttpsPort.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase);
+
+                RedirectToUrl(httpRes, url);
+            }
         }
 
         public static void RedirectToUrl(IResponse httpRes, string url)

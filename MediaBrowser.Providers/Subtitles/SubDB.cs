@@ -127,11 +127,19 @@ namespace MediaBrowser.Providers.Subtitles
             const int readSize = 64 * 1024;
             var buffer = new byte[readSize * 2];
             _logger.Debug("Reading {0}", path);
-            using (var stream =
-                _fileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read))
+            using (var stream = _fileSystem.GetFileStream(path, FileOpenMode.Open, FileAccessMode.Read, FileShareMode.Read))
             {
                 await stream.ReadAsync(buffer, 0, readSize, cancellationToken);
-                stream.Seek(-readSize, SeekOrigin.End);
+
+                if (stream.Length > readSize)
+                {
+                    stream.Seek(-readSize, SeekOrigin.End);
+                }
+                else
+                {
+                    stream.Position = 0;
+                }
+
                 await stream.ReadAsync(buffer, readSize, readSize, cancellationToken);
             }
 

@@ -363,21 +363,16 @@ namespace MediaBrowser.Controller.Entities
 
             if (IsFileProtocol)
             {
-                var isOffline = false;
                 IEnumerable<BaseItem> nonCachedChildren;
 
                 try
                 {
                     nonCachedChildren = GetNonCachedChildren(directoryService);
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
-                    nonCachedChildren = new BaseItem[] { };
-
-                    isOffline = true;
+                    return;
                 }
-
-                if (nonCachedChildren == null) return; //nothing to validate
 
                 progress.Report(5);
 
@@ -428,9 +423,6 @@ namespace MediaBrowser.Controller.Entities
                         {
                         }
 
-                        else if (isOffline)
-                        {
-                        }
                         else
                         {
                             Logger.Debug("Removed item: " + item.Path);
@@ -1480,8 +1472,6 @@ namespace MediaBrowser.Controller.Entities
                 .GetChildren(user, true)
                 .OfType<Folder>()
                 .ToList();
-
-            //var allUserRootChildren = LibraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
 
             var collectionFolderIds = allUserRootChildren
                 .Select(i => i.Id)

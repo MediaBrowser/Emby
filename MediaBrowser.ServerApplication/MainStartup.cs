@@ -71,7 +71,9 @@ namespace MediaBrowser.ServerApplication
             {
                 _logManager = logManager;
 
-                logManager.ReloadLogger(LogSeverity.Debug);
+                var task = logManager.ReloadLogger(LogSeverity.Debug, CancellationToken.None);
+                Task.WaitAll(task);
+
                 logManager.AddConsoleOutput();
 
                 var logger = _logger = logManager.GetLogger("Main");

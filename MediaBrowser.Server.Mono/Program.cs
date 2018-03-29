@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Emby.Drawing;
 using Emby.Server.Implementations;
@@ -52,7 +53,8 @@ namespace MediaBrowser.Server.Mono
             {
                 _logManager = logManager;
 
-                logManager.ReloadLogger(LogSeverity.Info);
+                var task = logManager.ReloadLogger(LogSeverity.Debug, CancellationToken.None);
+                Task.WaitAll(task);
                 logManager.AddConsoleOutput();
 
                 var logger = _logger = logManager.GetLogger("Main");

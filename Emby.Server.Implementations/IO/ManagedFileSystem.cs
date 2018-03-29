@@ -161,7 +161,13 @@ namespace Emby.Server.Implementations.IO
                 return filePath;
             }
 
-            if (filePath[0] == '/' || filePath[0] == '\\') //relative path
+            var firstChar = filePath[0];
+            if (firstChar == '/')
+            {
+                // For this we don't really know. 
+                return filePath;
+            }
+            if (firstChar == '\\') //relative path
             {
                 filePath = filePath.Substring(1);
             }
