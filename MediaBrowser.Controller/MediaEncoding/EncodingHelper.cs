@@ -670,36 +670,35 @@ namespace MediaBrowser.Controller.MediaEncoding
             {
                  switch (encodingOptions.H264Preset)
                  {
-                  case "veryslow": 
+                 	case "veryslow": 
 						
-						param += "-preset slow"; //lossless only supported on maxwell and newer(2014+)
-						break;
+				param += "-preset slow"; //lossless only supported on maxwell and newer(2014+)
+				break;
 						
-					case "slow":
-					
-					case "slower":
+			case "slow":
+			case "slower":
 						
-						param += "-preset slow";
-						break;
+				param += "-preset slow";
+				break;
 
-					case "medium":
+			case "medium":
 						
-						param += "-preset medium";
-						break;
+				param += "-preset medium";
+				break;
 					
-					case "fast":
-					case "faster":
-					case "veryfast":
-					case "superfast":
-					case "ultrafast":
-						
-						param += "-preset fast";
-						break;
-
-					default:
+			case "fast":
+			case "faster":
+			case "veryfast":
+			case "superfast":
+			case "ultrafast":
 				
-						param += "-preset default";
-						break;       
+				param += "-preset fast";
+				break;
+
+			default:
+			
+				param += "-preset default";
+				break;       
                  }
 
             }
