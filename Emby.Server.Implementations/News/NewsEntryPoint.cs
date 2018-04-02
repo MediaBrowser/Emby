@@ -274,7 +274,6 @@ namespace Emby.Server.Implementations.News
                 _timer.Dispose();
                 _timer = null;
             }
-            GC.SuppressFinalize(this);
         }
     }
 }

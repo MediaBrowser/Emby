@@ -184,7 +184,7 @@ namespace MediaBrowser.Controller.Playlists
                 {
                     Recursive = true,
                     IncludeItemTypes = new[] { typeof(Audio).Name },
-                    GenreIds = new[] { musicGenre.Id.ToString("N") },
+                    GenreIds = new[] { musicGenre.Id },
                     OrderBy = new[] { ItemSortBy.AlbumArtist, ItemSortBy.Album, ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
                     DtoOptions = options
                 });
@@ -197,7 +197,7 @@ namespace MediaBrowser.Controller.Playlists
                 {
                     Recursive = true,
                     IncludeItemTypes = new[] { typeof(Audio).Name },
-                    ArtistIds = new[] { musicArtist.Id.ToString("N") },
+                    ArtistIds = new[] { musicArtist.Id },
                     OrderBy = new[] { ItemSortBy.AlbumArtist, ItemSortBy.Album, ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
                     DtoOptions = options
                 });

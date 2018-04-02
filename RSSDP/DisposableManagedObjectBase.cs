@@ -76,18 +76,11 @@ namespace Rssdp.Infrastructure
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification="We do exactly as asked, but CA doesn't seem to like us also setting the IsDisposed property. Too bad, it's a good idea and shouldn't cause an exception or anything likely to interfer with the dispose process.")]
 		public void Dispose()
 		{
-			try
-			{
-				IsDisposed = true;
+            IsDisposed = true;
 
-				Dispose(true);
-			}
-			finally
-			{
-				GC.SuppressFinalize(this);
-			}
-		}
+            Dispose(true);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

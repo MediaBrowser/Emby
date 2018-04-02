@@ -673,7 +673,6 @@ namespace Emby.Server.Implementations.Updates
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

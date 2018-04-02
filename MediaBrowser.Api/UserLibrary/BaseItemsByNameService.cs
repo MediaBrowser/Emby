@@ -137,11 +137,11 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 if (parentItem is Folder)
                 {
-                    query.AncestorIds = new[] { request.ParentId };
+                    query.AncestorIds = new[] { new Guid(request.ParentId) };
                 }
                 else
                 {
-                    query.ItemIds = new[] { request.ParentId };
+                    query.ItemIds = new[] { new Guid(request.ParentId) };
                 }
             }
 
@@ -158,7 +158,7 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             foreach (var filter in request.GetFilters())

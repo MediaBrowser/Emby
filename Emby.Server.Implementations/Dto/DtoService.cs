@@ -23,9 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Extensions;
 
@@ -361,14 +360,7 @@ namespace Emby.Server.Implementations.Dto
             {
                 if (fields.Contains(ItemFields.MediaSources))
                 {
-                    if (user == null)
-                    {
-                        dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(hasMediaSources, true);
-                    }
-                    else
-                    {
-                        dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(hasMediaSources, true, user);
-                    }
+                    dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(item, true, user);
 
                     NormalizeMediaSourceContainers(dto);
                 }
@@ -1308,7 +1300,7 @@ namespace Emby.Server.Implementations.Dto
                     }
                     else
                     {
-                        mediaStreams = _mediaSourceManager().GetStaticMediaSources(iHasMediaSources, true).First().MediaStreams.ToArray();
+                        mediaStreams = _mediaSourceManager().GetStaticMediaSources(item, true).First().MediaStreams.ToArray();
                     }
 
                     dto.MediaStreams = mediaStreams;

@@ -84,7 +84,7 @@ namespace MediaBrowser.Model.Sync
         /// Gets or sets the requested item ids.
         /// </summary>
         /// <value>The requested item ids.</value>
-        public string[] RequestedItemIds { get; set; }
+        public Guid[] RequestedItemIds { get; set; }
         /// <summary>
         /// Gets or sets the date created.
         /// </summary>
@@ -107,7 +107,7 @@ namespace MediaBrowser.Model.Sync
 
         public SyncJob()
         {
-            RequestedItemIds = new string[] { };
+            RequestedItemIds = new Guid[] { };
         }
     }
 }

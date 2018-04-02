@@ -112,8 +112,6 @@ namespace Emby.Server.Implementations.Services
                     return taskObject.Result;
                 }
 
-                //task.Wait();
-
                 var type = task.GetType().GetTypeInfo();
                 if (!type.IsGenericType)
                 {

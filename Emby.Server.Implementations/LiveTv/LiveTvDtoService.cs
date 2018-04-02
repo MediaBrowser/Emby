@@ -36,7 +36,7 @@ namespace Emby.Server.Implementations.LiveTv
             _libraryManager = libraryManager;
         }
 
-        public TimerInfoDto GetTimerInfoDto(TimerInfo info, ILiveTvService service, LiveTvProgram program, LiveTvChannel channel)
+        public TimerInfoDto GetTimerInfoDto(TimerInfo info, ILiveTvService service, LiveTvProgram program, BaseItem channel)
         {
             var dto = new TimerInfoDto
             {
@@ -464,7 +464,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(dto.ChannelId) && string.IsNullOrEmpty(info.ChannelId))
             {
-                var channel = liveTv.GetInternalChannel(dto.ChannelId);
+                var channel = _libraryManager.GetItemById(dto.ChannelId);
 
                 if (channel != null)
                 {
@@ -474,7 +474,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(dto.ProgramId) && string.IsNullOrEmpty(info.ProgramId))
             {
-                var program = liveTv.GetInternalProgram(dto.ProgramId);
+                var program = _libraryManager.GetItemById(dto.ProgramId);
 
                 if (program != null)
                 {
@@ -530,7 +530,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(dto.ChannelId) && string.IsNullOrEmpty(info.ChannelId))
             {
-                var channel = liveTv.GetInternalChannel(dto.ChannelId);
+                var channel = _libraryManager.GetItemById(dto.ChannelId);
 
                 if (channel != null)
                 {
@@ -540,7 +540,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(dto.ProgramId) && string.IsNullOrEmpty(info.ProgramId))
             {
-                var program = liveTv.GetInternalProgram(dto.ProgramId);
+                var program = _libraryManager.GetItemById(dto.ProgramId);
 
                 if (program != null)
                 {

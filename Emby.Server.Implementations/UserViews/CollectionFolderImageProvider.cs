@@ -55,6 +55,14 @@ namespace Emby.Server.Implementations.UserViews
             {
                 includeItemTypes = new string[] { "Game" };
             }
+            else if (string.Equals(viewType, CollectionType.BoxSets))
+            {
+                includeItemTypes = new string[] { "BoxSet" };
+            }
+            else if (string.Equals(viewType, CollectionType.HomeVideos) || string.Equals(viewType, CollectionType.Photos))
+            {
+                includeItemTypes = new string[] { "Video", "Photo" };
+            }
             else
             {
                 includeItemTypes = new string[] { "Video", "Audio", "Photo", "Movie", "Series" };
@@ -100,51 +108,4 @@ namespace Emby.Server.Implementations.UserViews
             return base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex);
         }
     }
-
-    public class ManualCollectionFolderImageProvider : BaseDynamicImageProvider<ManualCollectionsFolder>
-    {
-        private readonly ILibraryManager _libraryManager;
-
-        public ManualCollectionFolderImageProvider(IFileSystem fileSystem, IProviderManager providerManager, IApplicationPaths applicationPaths, IImageProcessor imageProcessor, ILibraryManager libraryManager) : base(fileSystem, providerManager, applicationPaths, imageProcessor)
-        {
-            _libraryManager = libraryManager;
-        }
-
-        protected override List<BaseItem> GetItemsWithImages(BaseItem item)
-        {
-            var view = (ManualCollectionsFolder)item;
-
-            return _libraryManager.GetItemList(new InternalItemsQuery
-            {
-                IncludeItemTypes = new[] { typeof(BoxSet).Name },
-                Limit = 4,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending) },
-                ImageTypes = new ImageType[] { ImageType.Primary },
-                DtoOptions = new DtoOptions(false)
-            });
-        }
-
-        protected override bool Supports(BaseItem item)
-        {
-            return item is ManualCollectionsFolder;
-        }
-
-        protected override string CreateImage(BaseItem item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
-        {
-            var outputPath = Path.ChangeExtension(outputPathWithoutExtension, ".png");
-
-            if (imageType == ImageType.Primary)
-            {
-                if (itemsWithImages.Count == 0)
-                {
-                    return null;
-                }
-
-                return CreateThumbCollage(item, itemsWithImages, outputPath, 960, 540);
-            }
-
-            return base.CreateImage(item, itemsWithImages, outputPath, imageType, imageIndex);
-        }
-    }
-
 }

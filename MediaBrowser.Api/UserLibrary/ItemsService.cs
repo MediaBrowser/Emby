@@ -92,7 +92,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var options = GetDtoOptions(_authContext, request);
 
-            var ancestorIds = new List<string>();
+            var ancestorIds = new List<Guid>();
 
             var excludeFolderIds = user.Configuration.LatestItemsExcludes;
             if (!parentIdGuid.HasValue && excludeFolderIds.Length > 0)
@@ -100,7 +100,7 @@ namespace MediaBrowser.Api.UserLibrary
                 ancestorIds = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                     .Where(i => i is Folder)
                     .Where(i => !excludeFolderIds.Contains(i.Id.ToString("N")))
-                    .Select(i => i.Id.ToString("N"))
+                    .Select(i => i.Id)
                     .ToList();
             }
 
@@ -421,18 +421,18 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             // ExcludeArtistIds
             if (!string.IsNullOrWhiteSpace(request.ExcludeArtistIds))
             {
-                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+                query.ExcludeArtistIds = request.GetGuids(request.ExcludeArtistIds);
             }
 
             if (!string.IsNullOrWhiteSpace(request.AlbumIds))
             {
-                query.AlbumIds = request.AlbumIds.Split('|');
+                query.AlbumIds = request.GetGuids(request.AlbumIds);
             }
 
             // Albums
@@ -446,7 +446,7 @@ namespace MediaBrowser.Api.UserLibrary
                         Name = i,
                         Limit = 1
 
-                    }).Select(albumId => albumId.ToString("N"));
+                    }).Select(albumId => albumId);
 
                 }).ToArray();
             }
@@ -464,7 +464,7 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             // Apply default sorting if none requested

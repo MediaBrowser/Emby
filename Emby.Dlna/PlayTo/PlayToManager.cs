@@ -258,7 +258,6 @@ namespace Emby.Dlna.PlayTo
             }
 
             _disposed = true;
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -465,7 +465,7 @@ namespace Emby.Dlna.PlayTo
 
             var hasMediaSources = item as IHasMediaSources;
             var mediaSources = hasMediaSources != null
-                ? (_mediaSourceManager.GetStaticMediaSources(hasMediaSources, true, user))
+                ? (_mediaSourceManager.GetStaticMediaSources(item, true, user))
                 : new List<MediaSourceInfo>();
 
             var playlistItem = GetPlaylistItem(item, mediaSources, profile, _session.DeviceId, mediaSourceId, audioStreamIndex, subtitleStreamIndex);
@@ -644,7 +644,6 @@ namespace Emby.Dlna.PlayTo
                 _device.OnDeviceUnavailable = null;
 
                 _device.Dispose();
-                GC.SuppressFinalize(this);
             }
         }
 
@@ -831,7 +830,7 @@ namespace Emby.Dlna.PlayTo
                     return null;
                 }
 
-                MediaSource = await _mediaSourceManager.GetMediaSource(hasMediaSources, MediaSourceId, LiveStreamId, false, cancellationToken).ConfigureAwait(false);
+                MediaSource = await _mediaSourceManager.GetMediaSource(Item, MediaSourceId, LiveStreamId, false, cancellationToken).ConfigureAwait(false);
 
                 return MediaSource;
             }

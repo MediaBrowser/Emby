@@ -1383,7 +1383,7 @@
   "ButtonChangeContentType": "Change content type",
   "HeaderMediaLocations": "Media Locations",
   "LabelContentTypeValue": "Content type: {0}",
-  "FolderTypeUnset": "Unset (mixed content)",
+  "FolderTypeUnset": "Mixed content",
   "BirthPlaceValue": "Birth place: {0}",
   "DeathDateValue": "Died: {0}",
   "BirthDateValue": "Born: {0}",

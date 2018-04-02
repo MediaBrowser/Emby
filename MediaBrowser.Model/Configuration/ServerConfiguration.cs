@@ -63,6 +63,8 @@ namespace MediaBrowser.Model.Configuration
 
         public bool AutoRunWebApp { get; set; }
         public bool EnableRemoteAccess { get; set; }
+        public bool CameraUploadUpgraded { get; set; }
+        public bool CollectionsUpgraded { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable case sensitive item ids].
@@ -176,7 +178,6 @@ namespace MediaBrowser.Model.Configuration
         public bool EnableFolderView { get; set; }
         public bool EnableGroupingIntoCollections { get; set; }
         public bool DisplaySpecialsWithinSeasons { get; set; }
-        public bool DisplayCollectionsView { get; set; }
         public string[] LocalNetworkSubnets { get; set; }
         public string[] LocalNetworkAddresses { get; set; }
         public string[] CodecsUsed { get; set; }

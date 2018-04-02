@@ -150,7 +150,6 @@ namespace Emby.Server.Implementations.Logging
             }
 
             _fileLogger = null;
-            GC.SuppressFinalize(this);
         }
     }
 
@@ -244,8 +243,6 @@ namespace Emby.Server.Implementations.Logging
                     stream.Flush(true);
                 }
             }
-
-            GC.SuppressFinalize(this);
         }
     }
 

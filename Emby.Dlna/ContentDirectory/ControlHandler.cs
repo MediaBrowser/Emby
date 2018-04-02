@@ -1024,7 +1024,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var genresResult = _libraryManager.GetGenres(new InternalItemsQuery(user)
             {
-                AncestorIds = new[] { parent.Id.ToString("N") },
+                AncestorIds = new[] { parent.Id },
                 StartIndex = query.StartIndex,
                 Limit = query.Limit
             });
@@ -1042,7 +1042,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var genresResult = _libraryManager.GetMusicGenres(new InternalItemsQuery(user)
             {
-                AncestorIds = new[] { parent.Id.ToString("N") },
+                AncestorIds = new[] { parent.Id },
                 StartIndex = query.StartIndex,
                 Limit = query.Limit
             });
@@ -1060,7 +1060,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var artists = _libraryManager.GetAlbumArtists(new InternalItemsQuery(user)
             {
-                AncestorIds = new[] { parent.Id.ToString("N") },
+                AncestorIds = new[] { parent.Id },
                 StartIndex = query.StartIndex,
                 Limit = query.Limit
             });
@@ -1078,7 +1078,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var artists = _libraryManager.GetArtists(new InternalItemsQuery(user)
             {
-                AncestorIds = new[] { parent.Id.ToString("N") },
+                AncestorIds = new[] { parent.Id },
                 StartIndex = query.StartIndex,
                 Limit = query.Limit
             });
@@ -1096,7 +1096,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var artists = _libraryManager.GetArtists(new InternalItemsQuery(user)
             {
-                AncestorIds = new[] { parent.Id.ToString("N") },
+                AncestorIds = new[] { parent.Id },
                 StartIndex = query.StartIndex,
                 Limit = query.Limit,
                 IsFavorite = true
@@ -1195,7 +1195,7 @@ namespace Emby.Dlna.ContentDirectory
             {
                 Recursive = true,
                 ParentId = parentId,
-                ArtistIds = new[] { item.Id.ToString("N") },
+                ArtistIds = new[] { item.Id },
                 IncludeItemTypes = new[] { typeof(MusicAlbum).Name },
                 Limit = limit,
                 StartIndex = startIndex,
@@ -1215,7 +1215,7 @@ namespace Emby.Dlna.ContentDirectory
             {
                 Recursive = true,
                 ParentId = parentId,
-                GenreIds = new[] { item.Id.ToString("N") },
+                GenreIds = new[] { item.Id },
                 IncludeItemTypes = new[] { typeof(Movie).Name, typeof(Series).Name },
                 Limit = limit,
                 StartIndex = startIndex,
@@ -1235,7 +1235,7 @@ namespace Emby.Dlna.ContentDirectory
             {
                 Recursive = true,
                 ParentId = parentId,
-                GenreIds = new[] { item.Id.ToString("N") },
+                GenreIds = new[] { item.Id },
                 IncludeItemTypes = new[] { typeof(MusicAlbum).Name },
                 Limit = limit,
                 StartIndex = startIndex,
@@ -1291,7 +1291,7 @@ namespace Emby.Dlna.ContentDirectory
         {
             var itemsResult = _libraryManager.GetItemsResult(new InternalItemsQuery(user)
             {
-                PersonIds = new[] { person.Id.ToString("N") },
+                PersonIds = new[] { person.Id },
                 IncludeItemTypes = new[] { typeof(Movie).Name, typeof(Series).Name, typeof(Trailer).Name },
                 OrderBy = new[] { ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
                 Limit = limit,

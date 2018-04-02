@@ -18,13 +18,11 @@ namespace Emby.Server.Implementations.Channels
             _channelManager = (ChannelManager)channelManager;
         }
 
-        public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
+        public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
-            var baseItem = (BaseItem)item;
-
-            if (baseItem.SourceType == SourceType.Channel)
+            if (item.SourceType == SourceType.Channel)
             {
-                return _channelManager.GetDynamicMediaSources(baseItem, cancellationToken);
+                return _channelManager.GetDynamicMediaSources(item, cancellationToken);
             }
 
             return Task.FromResult<IEnumerable<MediaSourceInfo>>(new List<MediaSourceInfo>());

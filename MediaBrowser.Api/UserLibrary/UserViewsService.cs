@@ -28,6 +28,7 @@ namespace MediaBrowser.Api.UserLibrary
 
         [ApiMember(Name = "IncludeExternalContent", Description = "Whether or not to include external views such as channels or live tv", IsRequired = true, DataType = "boolean", ParameterType = "query", Verb = "POST")]
         public bool? IncludeExternalContent { get; set; }
+        public bool IncludeHidden { get; set; }
 
         public string PresetViews { get; set; }
     }
@@ -71,6 +72,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 query.IncludeExternalContent = request.IncludeExternalContent.Value;
             }
+            query.IncludeHidden = request.IncludeHidden;
 
             if (!string.IsNullOrWhiteSpace(request.PresetViews))
             {

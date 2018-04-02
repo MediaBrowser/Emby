@@ -40,7 +40,7 @@ namespace Emby.Server.Implementations.LiveTv
             _appPaths = appPaths;
         }
 
-        public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
+        public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
             var baseItem = (BaseItem)item;
 
@@ -61,7 +61,7 @@ namespace Emby.Server.Implementations.LiveTv
         private const char StreamIdDelimeter = '_';
         private const string StreamIdDelimeterString = "_";
 
-        private async Task<IEnumerable<MediaSourceInfo>> GetMediaSourcesInternal(IHasMediaSources item, ActiveRecordingInfo activeRecordingInfo, CancellationToken cancellationToken)
+        private async Task<IEnumerable<MediaSourceInfo>> GetMediaSourcesInternal(BaseItem item, ActiveRecordingInfo activeRecordingInfo, CancellationToken cancellationToken)
         {
             IEnumerable<MediaSourceInfo> sources;
 
@@ -82,9 +82,7 @@ namespace Emby.Server.Implementations.LiveTv
             }
             catch (NotImplementedException)
             {
-                var hasMediaSources = (IHasMediaSources)item;
-
-                sources = _mediaSourceManager.GetStaticMediaSources(hasMediaSources, false);
+                sources = _mediaSourceManager.GetStaticMediaSources(item, false);
 
                 forceRequireOpening = true;
             }

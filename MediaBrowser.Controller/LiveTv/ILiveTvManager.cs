@@ -101,13 +101,6 @@ namespace MediaBrowser.Controller.LiveTv
         Task<QueryResult<SeriesTimerInfoDto>> GetSeriesTimers(SeriesTimerQuery query, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the channel.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Channel.</returns>
-        LiveTvChannel GetInternalChannel(string id);
-
-        /// <summary>
         /// Gets the channel stream.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -235,7 +228,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// <summary>
         /// Gets the channel media sources.
         /// </summary>
-        Task<IEnumerable<MediaSourceInfo>> GetChannelMediaSources(IHasMediaSources item, CancellationToken cancellationToken);
+        Task<IEnumerable<MediaSourceInfo>> GetChannelMediaSources(BaseItem item, CancellationToken cancellationToken);
 
         /// <summary>
         /// Adds the information to program dto.

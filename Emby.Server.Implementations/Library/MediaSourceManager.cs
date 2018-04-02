@@ -112,19 +112,9 @@ namespace Emby.Server.Implementations.Library
             return streams;
         }
 
-        public async Task<IEnumerable<MediaSourceInfo>> GetPlayackMediaSources(string id, string userId, bool enablePathSubstitution, string[] supportedLiveMediaTypes, CancellationToken cancellationToken)
+        public async Task<List<MediaSourceInfo>> GetPlayackMediaSources(BaseItem item, User user, bool enablePathSubstitution, CancellationToken cancellationToken)
         {
-            var item = _libraryManager.GetItemById(id);
-
-            var hasMediaSources = (IHasMediaSources)item;
-            User user = null;
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                user = _userManager.GetUserById(userId);
-            }
-
-            var mediaSources = GetStaticMediaSources(hasMediaSources, enablePathSubstitution, user);
+            var mediaSources = GetStaticMediaSources(item, enablePathSubstitution, user);
 
             if (mediaSources.Count == 1 && mediaSources[0].Type != MediaSourceType.Placeholder && !mediaSources[0].MediaStreams.Any(i => i.Type == MediaStreamType.Audio || i.Type == MediaStreamType.Video))
             {
@@ -135,10 +125,10 @@ namespace Emby.Server.Implementations.Library
 
                 }, cancellationToken).ConfigureAwait(false);
 
-                mediaSources = GetStaticMediaSources(hasMediaSources, enablePathSubstitution, user);
+                mediaSources = GetStaticMediaSources(item, enablePathSubstitution, user);
             }
 
-            var dynamicMediaSources = await GetDynamicMediaSources(hasMediaSources, cancellationToken).ConfigureAwait(false);
+            var dynamicMediaSources = await GetDynamicMediaSources(item, cancellationToken).ConfigureAwait(false);
 
             var list = new List<MediaSourceInfo>();
 
@@ -148,7 +138,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (user != null)
                 {
-                    SetUserProperties(hasMediaSources as BaseItem, source, user);
+                    SetUserProperties(item, source, user);
                 }
 
                 // Validate that this is actually possible
@@ -174,7 +164,7 @@ namespace Emby.Server.Implementations.Library
                 }
             }
 
-            return SortMediaSources(list).Where(i => i.Type != MediaSourceType.Placeholder);
+            return SortMediaSources(list).Where(i => i.Type != MediaSourceType.Placeholder).ToList();
         }
 
         private bool SupportsDirectStream(string path, MediaProtocol protocol)
@@ -200,7 +190,7 @@ namespace Emby.Server.Implementations.Library
             return false;
         }
 
-        private async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
+        private async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
             var tasks = _providers.Select(i => GetDynamicMediaSources(item, i, cancellationToken));
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -208,7 +198,7 @@ namespace Emby.Server.Implementations.Library
             return results.SelectMany(i => i.ToList());
         }
 
-        private async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(IHasMediaSources item, IMediaSourceProvider provider, CancellationToken cancellationToken)
+        private async Task<IEnumerable<MediaSourceInfo>> GetDynamicMediaSources(BaseItem item, IMediaSourceProvider provider, CancellationToken cancellationToken)
         {
             try
             {
@@ -246,38 +236,39 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        public async Task<MediaSourceInfo> GetMediaSource(IHasMediaSources item, string mediaSourceId, string liveStreamId, bool enablePathSubstitution, CancellationToken cancellationToken)
+        public async Task<MediaSourceInfo> GetMediaSource(BaseItem item, string mediaSourceId, string liveStreamId, bool enablePathSubstitution, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(liveStreamId))
             {
                 return await GetLiveStream(liveStreamId, cancellationToken).ConfigureAwait(false);
             }
 
-            var sources = await GetPlayackMediaSources(item.Id.ToString("N"), null, enablePathSubstitution, new[] { MediaType.Audio, MediaType.Video },
-                        CancellationToken.None).ConfigureAwait(false);
+            var sources = await GetPlayackMediaSources(item, null, enablePathSubstitution, cancellationToken).ConfigureAwait(false);
 
             return sources.FirstOrDefault(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public List<MediaSourceInfo> GetStaticMediaSources(IHasMediaSources item, bool enablePathSubstitution, User user = null)
+        public List<MediaSourceInfo> GetStaticMediaSources(BaseItem item, bool enablePathSubstitution, User user = null)
         {
             if (item == null)
             {
                 throw new ArgumentNullException("item");
             }
 
+            var hasMediaSources = (IHasMediaSources)item;
+
             if (!(item is Video))
             {
-                return item.GetMediaSources(enablePathSubstitution);
+                return hasMediaSources.GetMediaSources(enablePathSubstitution);
             }
 
-            var sources = item.GetMediaSources(enablePathSubstitution);
+            var sources = hasMediaSources.GetMediaSources(enablePathSubstitution);
 
             if (user != null)
             {
                 foreach (var source in sources)
                 {
-                    SetUserProperties(item as BaseItem, source, user);
+                    SetUserProperties(item, source, user);
                 }
             }
 
@@ -571,7 +562,6 @@ namespace Emby.Server.Implementations.Library
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         private readonly object _disposeLock = new object();

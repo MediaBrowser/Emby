@@ -53,7 +53,6 @@
     <Compile Include="Channels\RefreshChannelsScheduledTask.cs" />
     <Compile Include="Collections\CollectionImageProvider.cs" />
     <Compile Include="Collections\CollectionManager.cs" />
-    <Compile Include="Collections\CollectionsDynamicFolder.cs" />
     <Compile Include="Configuration\ServerConfigurationManager.cs" />
     <Compile Include="Cryptography\CryptographyProvider.cs" />
     <Compile Include="Data\ManagedConnection.cs" />
@@ -62,8 +61,6 @@
     <Compile Include="Data\SqliteUserDataRepository.cs" />
     <Compile Include="Data\SqliteUserRepository.cs" />
     <Compile Include="Data\TypeMapper.cs" />
-    <Compile Include="Devices\CameraUploadsDynamicFolder.cs" />
-    <Compile Include="Devices\CameraUploadsFolder.cs" />
     <Compile Include="Devices\DeviceId.cs" />
     <Compile Include="Devices\DeviceManager.cs" />
     <Compile Include="Devices\SqliteDeviceRepository.cs" />
@@ -388,7 +385,6 @@
     <Compile Include="LiveTv\EmbyTV\SeriesTimerManager.cs" />
     <Compile Include="LiveTv\EmbyTV\TimerManager.cs" />
     <Compile Include="LiveTv\Listings\SchedulesDirect.cs" />
-    <Compile Include="LiveTv\Listings\XmlTvProvider.cs" />
     <Compile Include="LiveTv\LiveStreamHelper.cs" />
     <Compile Include="LiveTv\LiveTvConfigurationFactory.cs" />
     <Compile Include="LiveTv\LiveTvDtoService.cs" />

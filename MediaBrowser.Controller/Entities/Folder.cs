@@ -895,7 +895,7 @@ namespace MediaBrowser.Controller.Entities
                     var ids = query.ItemIds.ToList();
 
                     // Try to preserve order
-                    result.Items = result.Items.OrderBy(i => ids.IndexOf(i.Id.ToString("N"))).ToArray();
+                    result.Items = result.Items.OrderBy(i => ids.IndexOf(i.Id)).ToArray();
                 }
                 return result;
             }
@@ -916,7 +916,7 @@ namespace MediaBrowser.Controller.Entities
                     var ids = query.ItemIds.ToList();
 
                     // Try to preserve order
-                    return result.OrderBy(i => ids.IndexOf(i.Id.ToString("N"))).ToArray();
+                    return result.OrderBy(i => ids.IndexOf(i.Id)).ToArray();
                 }
                 return result.ToArray(result.Count);
             }
@@ -931,7 +931,7 @@ namespace MediaBrowser.Controller.Entities
                 try
                 {
                     query.Parent = this;
-                    query.ChannelIds = new string[] { ChannelId };
+                    query.ChannelIds = new Guid[] { new Guid(ChannelId) };
 
                     // Don't blow up here because it could cause parent screens with other content to fail
                     return ChannelManager.GetChannelItemsInternal(query, new SimpleProgress<double>(), CancellationToken.None).Result;

@@ -645,7 +645,6 @@ namespace Emby.Server.Implementations.ScheduledTasks
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

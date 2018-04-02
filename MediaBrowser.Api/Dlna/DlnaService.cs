@@ -52,23 +52,17 @@ namespace MediaBrowser.Api.Dlna
 
         public object Get(GetProfileInfos request)
         {
-            var result = _dlnaManager.GetProfileInfos().ToArray();
-
-            return ToOptimizedResult(result);
+            return _dlnaManager.GetProfileInfos().ToArray();
         }
 
         public object Get(GetProfile request)
         {
-            var result = _dlnaManager.GetProfile(request.Id);
-
-            return ToOptimizedResult(result);
+            return _dlnaManager.GetProfile(request.Id);
         }
 
         public object Get(GetDefaultProfile request)
         {
-            var result = _dlnaManager.GetDefaultProfile();
-
-            return ToOptimizedResult(result);
+            return _dlnaManager.GetDefaultProfile();
         }
 
         public void Delete(DeleteProfile request)

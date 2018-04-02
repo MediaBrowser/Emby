@@ -30,7 +30,6 @@ namespace MediaBrowser.Providers.BoxSets
             if (mergeMetadataSettings)
             {
                 targetItem.LinkedChildren = sourceItem.LinkedChildren;
-                targetItem.Shares = sourceItem.Shares;
             }
         }
 

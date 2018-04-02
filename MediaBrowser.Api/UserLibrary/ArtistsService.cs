@@ -56,9 +56,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <returns>System.Object.</returns>
         public object Get(GetArtist request)
         {
-            var result = GetItem(request);
-
-            return ToOptimizedResult(result);
+            return GetItem(request);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace MediaBrowser.Api.UserLibrary
             var dtoOptions = GetDtoOptions(AuthorizationContext, request);
 
             var item = GetArtist(request.Name, LibraryManager, dtoOptions);
-            
+
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 var user = UserManager.GetUserById(request.UserId);
@@ -94,9 +92,7 @@ namespace MediaBrowser.Api.UserLibrary
                 //request.IncludeItemTypes = "Audio,MusicVideo";
             }
 
-            var result = GetResultSlim(request);
-
-            return ToOptimizedResult(result);
+           return GetResultSlim(request);
         }
 
         /// <summary>

@@ -361,7 +361,6 @@ namespace MediaBrowser.Controller.Session
             }
 
             _sessionManager = null;
-            GC.SuppressFinalize(this);
         }
     }
 }

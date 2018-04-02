@@ -28,6 +28,11 @@ namespace MediaBrowser.Api
         public string Id { get; set; }
 
         public string ExcludeArtistIds { get; set; }
+
+        public Guid[] GetGuids(string value)
+        {
+            return (value ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
+        }
     }
 
     public class BaseGetSimilarItems : IReturn<QueryResult<BaseItemDto>>, IHasDtoOptions
@@ -89,7 +94,7 @@ namespace MediaBrowser.Api
             // ExcludeArtistIds
             if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
             {
-                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+                query.ExcludeArtistIds = request.GetGuids(request.ExcludeArtistIds);
             }
 
             var inputItems = libraryManager.GetItemList(query);

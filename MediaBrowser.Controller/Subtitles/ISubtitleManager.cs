@@ -64,16 +64,11 @@ namespace MediaBrowser.Controller.Subtitles
         /// <summary>
         /// Deletes the subtitles.
         /// </summary>
-        /// <param name="itemId">The item identifier.</param>
-        /// <param name="index">The index.</param>
-        /// <returns>Task.</returns>
-        Task DeleteSubtitles(string itemId, int index);
+        Task DeleteSubtitles(BaseItem item, int index);
 
         /// <summary>
         /// Gets the providers.
         /// </summary>
-        /// <param name="itemId">The item identifier.</param>
-        /// <returns>IEnumerable{SubtitleProviderInfo}.</returns>
-        SubtitleProviderInfo[] GetProviders(string itemId);
+        SubtitleProviderInfo[] GetProviders(BaseItem item);
     }
 }

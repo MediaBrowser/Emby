@@ -595,7 +595,6 @@ namespace Emby.Dlna
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -99,23 +99,17 @@ namespace MediaBrowser.Api
 
         public object Get(GetNotificationTypes request)
         {
-            var result = _notificationManager.GetNotificationTypes();
-
-            return ToOptimizedResult(result);
+            return _notificationManager.GetNotificationTypes();
         }
 
         public object Get(GetNotificationServices request)
         {
-            var result = _notificationManager.GetNotificationServices().ToList();
-
-            return ToOptimizedResult(result);
+            return _notificationManager.GetNotificationServices().ToList();
         }
 
         public object Get(GetNotificationsSummary request)
         {
-            var result = _notificationsRepo.GetNotificationsSummary(request.UserId);
-
-            return ToOptimizedResult(result);
+            return _notificationsRepo.GetNotificationsSummary(request.UserId);
         }
 
         public Task Post(AddAdminNotification request)

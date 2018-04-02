@@ -285,7 +285,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        private Task<MediaSourceInfo> GetMediaSource(IHasMediaSources item, string mediaSourceId, string liveStreamId)
+        private Task<MediaSourceInfo> GetMediaSource(BaseItem item, string mediaSourceId, string liveStreamId)
         {
             return _mediaSourceManager.GetMediaSource(item, mediaSourceId, liveStreamId, false, CancellationToken.None);
         }
@@ -312,7 +312,7 @@ namespace Emby.Server.Implementations.Session
                     var hasMediaSources = libraryItem as IHasMediaSources;
                     if (hasMediaSources != null)
                     {
-                        mediaSource = await GetMediaSource(hasMediaSources, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
+                        mediaSource = await GetMediaSource(libraryItem, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
 
                         if (mediaSource != null)
                         {
@@ -784,7 +784,7 @@ namespace Emby.Server.Implementations.Session
                     var hasMediaSources = libraryItem as IHasMediaSources;
                     if (hasMediaSources != null)
                     {
-                        mediaSource = await GetMediaSource(hasMediaSources, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
+                        mediaSource = await GetMediaSource(libraryItem, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
                     }
 
                     info.Item = GetItemInfo(libraryItem, mediaSource);

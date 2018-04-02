@@ -31,7 +31,6 @@ namespace MediaBrowser.WebDashboard
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
         }
     }
 }

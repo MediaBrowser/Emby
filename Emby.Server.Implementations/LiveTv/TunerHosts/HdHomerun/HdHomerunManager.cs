@@ -112,8 +112,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                     var task = StopStreaming(socket);
                     Task.WaitAll(task);
                 }
-
-                GC.SuppressFinalize(this);
             }
         }
 

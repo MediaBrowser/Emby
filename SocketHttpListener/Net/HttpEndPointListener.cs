@@ -81,8 +81,10 @@ namespace SocketHttpListener.Net
             {
                 if (_enableDualMode && _endpoint.Address.Equals(IPAddress.IPv6Any) &&
                     (string.Equals(ex.ErrorCode, "AddressFamilyNotSupported", StringComparison.OrdinalIgnoreCase) ||
-                    // mono on bsd is throwing this
-                    string.Equals(ex.ErrorCode, "ProtocolNotSupported", StringComparison.OrdinalIgnoreCase)))
+                    // mono 4.8.1 and lower on bsd is throwing this
+                    string.Equals(ex.ErrorCode, "ProtocolNotSupported", StringComparison.OrdinalIgnoreCase) ||
+                    // mono 5.2 on bsd is throwing this
+                    string.Equals(ex.ErrorCode, "OperationNotSupported", StringComparison.OrdinalIgnoreCase)))
                 {
                     _endpoint = new IPEndPoint(IPAddress.Any, _endpoint.Port);
                     _enableDualMode = false;
@@ -138,6 +140,18 @@ namespace SocketHttpListener.Net
             }
         }
 
+        private static void TryClose(Socket socket)
+        {
+            try
+            {
+                socket.Close();
+            }
+            catch
+            {
+
+            }
+        }
+
         private static void Accept(Socket socket, SocketAsyncEventArgs acceptEventArg, ref Socket accepted)
         {
             // acceptSocket must be cleared since the context object is being reused
@@ -167,17 +181,7 @@ namespace SocketHttpListener.Net
 
                 if (accepted != null)
                 {
-                    try
-                    {
-#if NET46
-                        accepted.Close();
-#else
-                        accepted.Dispose();
-#endif
-                    }
-                    catch
-                    {
-                    }
+                    TryClose(accepted);
                     accepted = null;
                 }
             }
@@ -263,6 +267,8 @@ namespace SocketHttpListener.Net
                     return;
                 }
 
+                _logger.Info("HttpEndPointListener.ProcessAccept from {0} secure connection: {1}", accepted.RemoteEndPoint.ToString(), _secure);
+
                 HttpConnection conn = new HttpConnection(_logger, accepted, listener, _secure, _cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
 
                 await conn.Init().ConfigureAwait(false);
@@ -276,6 +282,8 @@ namespace SocketHttpListener.Net
             }
             catch (Exception ex)
             {
+                TryClose(accepted);
+
                 _logger.ErrorException("Error in ProcessAccept", ex);
             }
         }

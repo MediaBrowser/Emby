@@ -248,7 +248,6 @@ namespace SocketHttpListener.Net
 
             Close(true); //TODO: Should we force here or not?
             disposed = true;
-            GC.SuppressFinalize(this);
         }
 
         internal void CheckDisposed()
