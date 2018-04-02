@@ -912,8 +912,6 @@ namespace Emby.Drawing
             {
                 disposable.Dispose();
             }
-
-            GC.SuppressFinalize(this);
         }
 
         private void CheckDisposed()

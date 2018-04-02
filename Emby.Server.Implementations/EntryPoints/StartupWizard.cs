@@ -60,7 +60,6 @@ namespace Emby.Server.Implementations.EntryPoints
         /// </summary>
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -37,7 +37,6 @@ namespace Emby.Server.Implementations.TV
             }
 
             string presentationUniqueKey = null;
-            int? limit = null;
             if (!string.IsNullOrEmpty(request.SeriesId))
             {
                 var series = _libraryManager.GetItemById(request.SeriesId) as Series;
@@ -45,7 +44,6 @@ namespace Emby.Server.Implementations.TV
                 if (series != null)
                 {
                     presentationUniqueKey = GetUniqueSeriesKey(series);
-                    limit = 1;
                 }
             }
 

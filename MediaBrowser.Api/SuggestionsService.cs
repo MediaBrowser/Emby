@@ -51,9 +51,7 @@ namespace MediaBrowser.Api
 
         public object Get(GetSuggestedItems request)
         {
-            var result = GetResultItems(request);
-
-            return ToOptimizedResult(result);
+            return GetResultItems(request);
         }
 
         private QueryResult<BaseItemDto> GetResultItems(GetSuggestedItems request)

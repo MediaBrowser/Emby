@@ -53,19 +53,5 @@ namespace MediaBrowser.Controller.Collections
         /// <param name="user">The user.</param>
         /// <returns>IEnumerable{BaseItem}.</returns>
         IEnumerable<BaseItem> CollapseItemsWithinBoxSets(IEnumerable<BaseItem> items, User user);
-
-        /// <summary>
-        /// Gets the collections folder.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>Folder.</returns>
-        Folder GetCollectionsFolder(string userId);
-
-        /// <summary>
-        /// Gets the collections.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>IEnumerable&lt;BoxSet&gt;.</returns>
-        IEnumerable<BoxSet> GetCollections(User user);
     }
 }

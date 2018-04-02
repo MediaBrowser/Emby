@@ -1057,34 +1057,32 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        private async Task PerformLibraryValidation(IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task ValidateTopLibraryFolders(CancellationToken cancellationToken)
         {
-            _logger.Info("Validating media library");
-
-            // Ensure these objects are lazy loaded.
-            // Without this there is a deadlock that will need to be investigated
             var rootChildren = RootFolder.Children.ToList();
             rootChildren = GetUserRootFolder().Children.ToList();
 
             await RootFolder.RefreshMetadata(cancellationToken).ConfigureAwait(false);
 
-            progress.Report(.5);
-
             // Start by just validating the children of the root, but go no further
             await RootFolder.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false);
-
-            progress.Report(1);
 
             await GetUserRootFolder().RefreshMetadata(cancellationToken).ConfigureAwait(false);
 
             await GetUserRootFolder().ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false).ConfigureAwait(false);
-            progress.Report(2);
 
             // Quickly scan CollectionFolders for changes
             foreach (var folder in GetUserRootFolder().Children.OfType<Folder>().ToList())
             {
                 await folder.RefreshMetadata(cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        private async Task PerformLibraryValidation(IProgress<double> progress, CancellationToken cancellationToken)
+        {
+            _logger.Info("Validating media library");
+
+            await ValidateTopLibraryFolders(cancellationToken).ConfigureAwait(false);
             progress.Report(3);
 
             var innerProgress = new ActionableProgress<double>();
@@ -1429,7 +1427,7 @@ namespace Emby.Server.Implementations.Library
                 return;
             }
 
-            var parents = query.AncestorIds.Select(i => GetItemById(new Guid(i))).ToList();
+            var parents = query.AncestorIds.Select(i => GetItemById(i)).ToList();
 
             if (parents.All(i =>
             {
@@ -1444,13 +1442,13 @@ namespace Emby.Server.Implementations.Library
             }))
             {
                 // Optimize by querying against top level views
-                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).Select(i => i.ToString("N")).ToArray();
-                query.AncestorIds = new string[] { };
+                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).ToArray();
+                query.AncestorIds = new Guid[] { };
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.TopParentIds.Length == 0)
                 {
-                    query.TopParentIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.TopParentIds = new[] { Guid.NewGuid() };
                 }
             }
         }
@@ -1510,23 +1508,23 @@ namespace Emby.Server.Implementations.Library
             }))
             {
                 // Optimize by querying against top level views
-                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).Select(i => i.ToString("N")).ToArray();
+                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).ToArray();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.TopParentIds.Length == 0)
                 {
-                    query.TopParentIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.TopParentIds = new[] { Guid.NewGuid() };
                 }
             }
             else
             {
                 // We need to be able to query from any arbitrary ancestor up the tree
-                query.AncestorIds = parents.SelectMany(i => i.GetIdsForAncestorQuery()).Select(i => i.ToString("N")).ToArray();
+                query.AncestorIds = parents.SelectMany(i => i.GetIdsForAncestorQuery()).ToArray();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.AncestorIds.Length == 0)
                 {
-                    query.AncestorIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.AncestorIds = new[] { Guid.NewGuid() };
                 }
             }
 
@@ -1550,7 +1548,7 @@ namespace Emby.Server.Implementations.Library
                     IncludeExternalContent = allowExternalContent
                 });
 
-                query.TopParentIds = userViews.SelectMany(i => GetTopParentIdsForQuery(i, user)).Select(i => i.ToString("N")).ToArray();
+                query.TopParentIds = userViews.SelectMany(i => GetTopParentIdsForQuery(i, user)).ToArray();
             }
         }
 
@@ -2911,7 +2909,7 @@ namespace Emby.Server.Implementations.Library
             throw new InvalidOperationException();
         }
 
-        public void AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary)
+        public async Task AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -2964,24 +2962,28 @@ namespace Emby.Server.Implementations.Library
             }
             finally
             {
-                Task.Run(() =>
+                if (refreshLibrary)
                 {
-                    // No need to start if scanning the library because it will handle it
-                    if (refreshLibrary)
-                    {
-                        ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
-                    }
-                    else
-                    {
-                        // Need to add a delay here or directory watchers may still pick up the changes
-                        var task = Task.Delay(1000);
-                        // Have to block here to allow exceptions to bubble
-                        Task.WaitAll(task);
+                    await ValidateTopLibraryFolders(CancellationToken.None).ConfigureAwait(false);
 
-                        _libraryMonitorFactory().Start();
-                    }
-                });
+                    StartScanInBackground();
+                }
+                else
+                {
+                    // Need to add a delay here or directory watchers may still pick up the changes
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    _libraryMonitorFactory().Start();
+                }
             }
+        }
+
+        private void StartScanInBackground()
+        {
+            Task.Run(() =>
+            {
+                // No need to start if scanning the library because it will handle it
+                ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
+            });
         }
 
         private bool ValidateNetworkPath(string path)
@@ -3118,7 +3120,7 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        public void RemoveVirtualFolder(string name, bool refreshLibrary)
+        public async Task RemoveVirtualFolder(string name, bool refreshLibrary)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -3142,25 +3144,20 @@ namespace Emby.Server.Implementations.Library
             }
             finally
             {
-                Task.Run(() =>
+                CollectionFolder.OnCollectionFolderChange();
+
+                if (refreshLibrary)
                 {
-                    CollectionFolder.OnCollectionFolderChange();
+                    await ValidateTopLibraryFolders(CancellationToken.None).ConfigureAwait(false);
 
-                    // No need to start if scanning the library because it will handle it
-                    if (refreshLibrary)
-                    {
-                        ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
-                    }
-                    else
-                    {
-                        // Need to add a delay here or directory watchers may still pick up the changes
-                        var task = Task.Delay(1000);
-                        // Have to block here to allow exceptions to bubble
-                        Task.WaitAll(task);
-
-                        _libraryMonitorFactory().Start();
-                    }
-                });
+                    StartScanInBackground();
+                }
+                else
+                {
+                    // Need to add a delay here or directory watchers may still pick up the changes
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    _libraryMonitorFactory().Start();
+                }
             }
         }
 

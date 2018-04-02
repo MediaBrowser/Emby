@@ -296,12 +296,12 @@ namespace MediaBrowser.Providers.Subtitles
             return _subtitleProviders.First(i => string.Equals(id, GetProviderId(i.Name)));
         }
 
-        public Task DeleteSubtitles(string itemId, int index)
+        public Task DeleteSubtitles(BaseItem item, int index)
         {
             var stream = _mediaSourceManager.GetMediaStreams(new MediaStreamQuery
             {
                 Index = index,
-                ItemId = new Guid(itemId),
+                ItemId = item.Id,
                 Type = MediaStreamType.Subtitle
 
             }).First();
@@ -318,7 +318,7 @@ namespace MediaBrowser.Providers.Subtitles
                 _monitor.ReportFileSystemChangeComplete(path, false);
             }
 
-            return _libraryManager.GetItemById(itemId).RefreshMetadata(CancellationToken.None);
+            return item.RefreshMetadata(CancellationToken.None);
         }
 
         public Task<SubtitleResponse> GetRemoteSubtitles(string id, CancellationToken cancellationToken)
@@ -331,9 +331,8 @@ namespace MediaBrowser.Providers.Subtitles
             return provider.GetSubtitles(id, cancellationToken);
         }
 
-        public SubtitleProviderInfo[] GetProviders(string itemId)
+        public SubtitleProviderInfo[] GetProviders(BaseItem video)
         {
-            var video = _libraryManager.GetItemById(itemId) as Video;
             VideoContentType mediaType;
 
             if (video is Episode)

@@ -328,7 +328,6 @@ namespace Emby.Drawing.ImageMagick
         {
             _disposed = true;
             Wand.CloseEnvironment();
-            GC.SuppressFinalize(this);
         }
 
         private void CheckDisposed()

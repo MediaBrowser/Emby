@@ -217,7 +217,7 @@ namespace MediaBrowser.Api.Movies
                 OrderBy = new[] { ItemSortBy.Random }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Descending)).ToArray(),
                 Limit = 10,
                 IsFavoriteOrLiked = true,
-                ExcludeItemIds = recentlyPlayedMovies.Select(i => i.Id.ToString("N")).ToArray(recentlyPlayedMovies.Count),
+                ExcludeItemIds = recentlyPlayedMovies.Select(i => i.Id).ToArray(recentlyPlayedMovies.Count),
                 EnableGroupByMetadataKey = true,
                 ParentId = parentIdGuid,
                 Recursive = true,

@@ -373,11 +373,7 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Get(GetItemImage request)
         {
-            var item = string.IsNullOrEmpty(request.Id) ?
-                _libraryManager.RootFolder :
-                _libraryManager.GetItemById(request.Id);
-
-            return GetImage(request, item, false);
+            return GetImage(request, request.Id, null, false);
         }
 
         /// <summary>
@@ -387,11 +383,7 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Head(GetItemImage request)
         {
-            var item = string.IsNullOrEmpty(request.Id) ?
-                _libraryManager.RootFolder :
-                _libraryManager.GetItemById(request.Id);
-
-            return GetImage(request, item, true);
+            return GetImage(request, request.Id, null, true);
         }
 
         /// <summary>
@@ -403,14 +395,14 @@ namespace MediaBrowser.Api.Images
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, item, false);
+            return GetImage(request, null, item, false);
         }
 
         public object Head(GetUserImage request)
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, item, true);
+            return GetImage(request, null, item, true);
         }
 
         public object Get(GetItemByNameImage request)
@@ -419,7 +411,7 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item, false);
+            return GetImage(request, item.Id.ToString("N"), item, false);
         }
 
         public object Head(GetItemByNameImage request)
@@ -428,7 +420,7 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item, true);
+            return GetImage(request, item.Id.ToString("N"), item, true);
         }
 
         /// <summary>
@@ -519,7 +511,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public Task<object> GetImage(ImageRequest request, BaseItem item, bool isHeadRequest)
+        public Task<object> GetImage(ImageRequest request, string itemId, BaseItem item, bool isHeadRequest)
         {
             if (request.PercentPlayed.HasValue)
             {
@@ -545,14 +537,34 @@ namespace MediaBrowser.Api.Images
                 }
             }
 
+            if (item == null)
+            {
+                item = _libraryManager.GetItemById(itemId);
+            }
+
             var imageInfo = GetImageInfo(request, item);
 
             if (imageInfo == null)
             {
-                throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", item.Name, request.Type));
+                var displayText = item == null ? itemId : item.Name;
+                throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", displayText, request.Type));
             }
 
-            var supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : new List<IImageEnhancer>();
+            List<IImageEnhancer> supportedImageEnhancers;
+
+            if (_imageProcessor.ImageEnhancers.Length > 0)
+            {
+                if (item == null)
+                {
+                    item = _libraryManager.GetItemById(itemId);
+                }
+
+                supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : new List<IImageEnhancer>();
+            }
+            else
+            {
+                supportedImageEnhancers = new List<IImageEnhancer>();
+            }
 
             var cropwhitespace = request.Type == ImageType.Logo ||
                 request.Type == ImageType.Art;
@@ -578,6 +590,7 @@ namespace MediaBrowser.Api.Images
             };
 
             return GetImageResult(item,
+                itemId,
                 request,
                 imageInfo,
                 cropwhitespace,
@@ -589,6 +602,7 @@ namespace MediaBrowser.Api.Images
         }
 
         private async Task<object> GetImageResult(BaseItem item,
+            string itemId,
             ImageRequest request,
             ItemImageInfo image,
             bool cropwhitespace,
@@ -606,8 +620,7 @@ namespace MediaBrowser.Api.Images
                 ImageIndex = request.Index ?? 0,
                 Image = image,
                 Item = item,
-                ItemId = item.Id.ToString("N"),
-                ItemType = item.GetType().Name,
+                ItemId = itemId,
                 MaxHeight = request.MaxHeight,
                 MaxWidth = request.MaxWidth,
                 Quality = request.Quality ?? 100,

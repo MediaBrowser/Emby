@@ -88,7 +88,6 @@ namespace MediaBrowser.Api
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
         }
     }
 }

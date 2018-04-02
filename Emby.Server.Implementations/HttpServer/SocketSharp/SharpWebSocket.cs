@@ -123,7 +123,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

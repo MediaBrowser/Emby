@@ -266,7 +266,7 @@ namespace MediaBrowser.WebDashboard.Api
                 configPages = configPages.Where(p => p.EnableInMainMenu == request.EnableInMainMenu.Value).ToList();
             }
 
-            return _resultFactory.GetOptimizedResult(Request, configPages);
+            return configPages;
         }
 
         private IEnumerable<Tuple<PluginPageInfo, IPlugin>> GetPluginPages()

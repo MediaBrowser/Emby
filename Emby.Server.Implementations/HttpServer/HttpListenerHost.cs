@@ -896,7 +896,6 @@ namespace Emby.Server.Implementations.HttpServer
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public void StartServer(string[] urlPrefixes)

@@ -41,7 +41,7 @@ namespace MediaBrowser.Controller.Entities
 
         public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
-            query.PersonIds = new[] { Id.ToString("N") };
+            query.PersonIds = new[] { Id };
 
             return LibraryManager.GetItemList(query);
         }

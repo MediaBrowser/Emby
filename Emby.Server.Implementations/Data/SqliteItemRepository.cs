@@ -1320,15 +1320,6 @@ namespace Emby.Server.Implementations.Data
             {
                 return false;
             }
-
-            if (type == typeof(ManualCollectionsFolder))
-            {
-                return false;
-            }
-            if (type == typeof(CameraUploadsFolder))
-            {
-                return false;
-            }
             if (type == typeof(PlaylistsFolder))
             {
                 return false;
@@ -2594,14 +2585,14 @@ namespace Emby.Server.Implementations.Data
                 list.Add(builder.ToString());
 
                 var excludeIds = query.ExcludeItemIds.ToList();
-                excludeIds.Add(item.Id.ToString("N"));
+                excludeIds.Add(item.Id);
 
                 if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
                 {
                     var hasTrailers = item as IHasTrailers;
                     if (hasTrailers != null)
                     {
-                        excludeIds.AddRange(hasTrailers.GetTrailerIds().Select(i => i.ToString("N")));
+                        excludeIds.AddRange(hasTrailers.GetTrailerIds());
                     }
                 }
 
@@ -3701,12 +3692,12 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add("ChannelId=@ChannelId");
                 if (statement != null)
                 {
-                    statement.TryBind("@ChannelId", query.ChannelIds[0]);
+                    statement.TryBind("@ChannelId", query.ChannelIds[0].ToString("N"));
                 }
             }
             else if (query.ChannelIds.Length > 1)
             {
-                var inClause = string.Join(",", query.ChannelIds.Where(IsValidId).Select(i => "'" + i + "'").ToArray());
+                var inClause = string.Join(",", query.ChannelIds.Select(i => "'" + i.ToString("N") + "'").ToArray());
                 whereClauses.Add(string.Format("ChannelId in ({0})", inClause));
             }
 
@@ -4436,7 +4427,7 @@ namespace Emby.Server.Implementations.Data
                     includeIds.Add("Guid = @IncludeId" + index);
                     if (statement != null)
                     {
-                        statement.TryBind("@IncludeId" + index, new Guid(id));
+                        statement.TryBind("@IncludeId" + index, id);
                     }
                     index++;
                 }
@@ -4453,7 +4444,7 @@ namespace Emby.Server.Implementations.Data
                     excludeIds.Add("Guid <> @ExcludeId" + index);
                     if (statement != null)
                     {
-                        statement.TryBind("@ExcludeId" + index, new Guid(id));
+                        statement.TryBind("@ExcludeId" + index, id);
                     }
                     index++;
                 }
@@ -4528,7 +4519,7 @@ namespace Emby.Server.Implementations.Data
             var includedItemByNameTypes = GetItemByNameTypesInQuery(query).SelectMany(MapIncludeItemTypes).ToList();
             var enableItemsByName = (query.IncludeItemsByName ?? false) && includedItemByNameTypes.Count > 0;
 
-            var queryTopParentIds = query.TopParentIds.Where(IsValidId).ToArray();
+            var queryTopParentIds = query.TopParentIds;
 
             if (queryTopParentIds.Length == 1)
             {
@@ -4551,12 +4542,12 @@ namespace Emby.Server.Implementations.Data
                 }
                 if (statement != null)
                 {
-                    statement.TryBind("@TopParentId", queryTopParentIds[0]);
+                    statement.TryBind("@TopParentId", queryTopParentIds[0].ToString("N"));
                 }
             }
             else if (queryTopParentIds.Length > 1)
             {
-                var val = string.Join(",", queryTopParentIds.Select(i => "'" + i + "'").ToArray());
+                var val = string.Join(",", queryTopParentIds.Select(i => "'" + i.ToString("N") + "'").ToArray());
 
                 if (enableItemsByName && includedItemByNameTypes.Count == 1)
                 {
@@ -4583,12 +4574,12 @@ namespace Emby.Server.Implementations.Data
 
                 if (statement != null)
                 {
-                    statement.TryBind("@AncestorId", new Guid(query.AncestorIds[0]));
+                    statement.TryBind("@AncestorId", query.AncestorIds[0]);
                 }
             }
             if (query.AncestorIds.Length > 1)
             {
-                var inClause = string.Join(",", query.AncestorIds.Select(i => "'" + new Guid(i).ToString("N") + "'").ToArray());
+                var inClause = string.Join(",", query.AncestorIds.Select(i => "'" + i.ToString("N") + "'").ToArray());
                 whereClauses.Add(string.Format("Guid in (select itemId from AncestorIds where AncestorIdText in ({0}))", inClause));
             }
             if (!string.IsNullOrWhiteSpace(query.AncestorWithPresentationUniqueKey))

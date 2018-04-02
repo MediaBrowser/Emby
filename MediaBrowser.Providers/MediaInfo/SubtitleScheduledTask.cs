@@ -138,7 +138,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
         private async Task<bool> DownloadSubtitles(Video video, SubtitleOptions options, CancellationToken cancellationToken)
         {
-            var mediaStreams = _mediaSourceManager.GetStaticMediaSources(video, false).First().MediaStreams;
+            var mediaStreams = video.GetMediaStreams();
 
             var libraryOptions = _libraryManager.GetLibraryOptions(video);
 

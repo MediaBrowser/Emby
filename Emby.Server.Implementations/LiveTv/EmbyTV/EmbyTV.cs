@@ -109,12 +109,12 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        public void Start()
+        public async void Start()
         {
             _timerProvider.RestartTimers();
 
             _systemEvents.Resume += _systemEvents_Resume;
-            CreateRecordingFolders();
+            await CreateRecordingFolders().ConfigureAwait(false);
         }
 
         private void _systemEvents_Resume(object sender, EventArgs e)
@@ -122,16 +122,70 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             _timerProvider.RestartTimers();
         }
 
-        private void OnRecordingFoldersChanged()
+        private async void OnRecordingFoldersChanged()
         {
-            CreateRecordingFolders();
+            await CreateRecordingFolders().ConfigureAwait(false);
         }
 
-        internal void CreateRecordingFolders()
+        internal async Task CreateRecordingFolders()
         {
             try
             {
-                CreateRecordingFoldersInternal();
+                var recordingFolders = GetRecordingFolders();
+
+                var virtualFolders = _libraryManager.GetVirtualFolders()
+                    .ToList();
+
+                var allExistingPaths = virtualFolders.SelectMany(i => i.Locations).ToList();
+
+                var pathsAdded = new List<string>();
+
+                foreach (var recordingFolder in recordingFolders)
+                {
+                    var pathsToCreate = recordingFolder.Locations
+                        .Where(i => !allExistingPaths.Any(p => _fileSystem.AreEqual(p, i)))
+                        .ToList();
+
+                    if (pathsToCreate.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    var mediaPathInfos = pathsToCreate.Select(i => new MediaPathInfo { Path = i }).ToArray();
+
+                    var libraryOptions = new LibraryOptions
+                    {
+                        PathInfos = mediaPathInfos
+                    };
+                    try
+                    {
+                        await _libraryManager.AddVirtualFolder(recordingFolder.Name, recordingFolder.CollectionType, libraryOptions, true).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error creating virtual folder", ex);
+                    }
+
+                    pathsAdded.AddRange(pathsToCreate);
+                }
+
+                var config = GetConfiguration();
+
+                var pathsToRemove = config.MediaLocationsCreated
+                    .Except(recordingFolders.SelectMany(i => i.Locations))
+                    .ToList();
+
+                if (pathsAdded.Count > 0 || pathsToRemove.Count > 0)
+                {
+                    pathsAdded.InsertRange(0, config.MediaLocationsCreated);
+                    config.MediaLocationsCreated = pathsAdded.Except(pathsToRemove).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+                    _config.SaveConfiguration("livetv", config);
+                }
+
+                foreach (var path in pathsToRemove)
+                {
+                    await RemovePathFromLibrary(path).ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -139,66 +193,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             }
         }
 
-        internal void CreateRecordingFoldersInternal()
-        {
-            var recordingFolders = GetRecordingFolders();
-
-            var virtualFolders = _libraryManager.GetVirtualFolders()
-                .ToList();
-
-            var allExistingPaths = virtualFolders.SelectMany(i => i.Locations).ToList();
-
-            var pathsAdded = new List<string>();
-
-            foreach (var recordingFolder in recordingFolders)
-            {
-                var pathsToCreate = recordingFolder.Locations
-                    .Where(i => !allExistingPaths.Any(p => _fileSystem.AreEqual(p, i)))
-                    .ToList();
-
-                if (pathsToCreate.Count == 0)
-                {
-                    continue;
-                }
-
-                var mediaPathInfos = pathsToCreate.Select(i => new MediaPathInfo { Path = i }).ToArray();
-
-                var libraryOptions = new LibraryOptions
-                {
-                    PathInfos = mediaPathInfos
-                };
-                try
-                {
-                    _libraryManager.AddVirtualFolder(recordingFolder.Name, recordingFolder.CollectionType, libraryOptions, true);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error creating virtual folder", ex);
-                }
-
-                pathsAdded.AddRange(pathsToCreate);
-            }
-
-            var config = GetConfiguration();
-
-            var pathsToRemove = config.MediaLocationsCreated
-                .Except(recordingFolders.SelectMany(i => i.Locations))
-                .ToList();
-
-            if (pathsAdded.Count > 0 || pathsToRemove.Count > 0)
-            {
-                pathsAdded.InsertRange(0, config.MediaLocationsCreated);
-                config.MediaLocationsCreated = pathsAdded.Except(pathsToRemove).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-                _config.SaveConfiguration("livetv", config);
-            }
-
-            foreach (var path in pathsToRemove)
-            {
-                RemovePathFromLibrary(path);
-            }
-        }
-
-        private void RemovePathFromLibrary(string path)
+        private async Task RemovePathFromLibrary(string path)
         {
             _logger.Debug("Removing path from library: {0}", path);
 
@@ -218,7 +213,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     // remove entire virtual folder
                     try
                     {
-                        _libraryManager.RemoveVirtualFolder(virtualFolder.Name, true);
+                        await _libraryManager.RemoveVirtualFolder(virtualFolder.Name, true).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -2358,7 +2353,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var query = new InternalItemsQuery
             {
-                ItemIds = new[] { _liveTvManager.GetInternalProgramId(Name, programId).ToString("N") },
+                ItemIds = new[] { _liveTvManager.GetInternalProgramId(Name, programId) },
                 Limit = 1,
                 DtoOptions = new DtoOptions()
             };
@@ -2393,7 +2388,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (!string.IsNullOrWhiteSpace(channelId))
             {
-                query.ChannelIds = new[] { _liveTvManager.GetInternalChannelId(Name, channelId).ToString("N") };
+                query.ChannelIds = new[] { _liveTvManager.GetInternalChannelId(Name, channelId) };
             }
 
             return _libraryManager.GetItemList(query).Cast<LiveTvProgram>().FirstOrDefault();
@@ -2598,7 +2593,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (!seriesTimer.RecordAnyChannel)
             {
-                query.ChannelIds = new[] { _liveTvManager.GetInternalChannelId(Name, seriesTimer.ChannelId).ToString("N") };
+                query.ChannelIds = new[] { _liveTvManager.GetInternalChannelId(Name, seriesTimer.ChannelId) };
             }
 
             var tempChannelCache = new Dictionary<string, LiveTvChannel>();
@@ -2619,7 +2614,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     channel = _libraryManager.GetItemList(new InternalItemsQuery
                     {
                         IncludeItemTypes = new string[] { typeof(LiveTvChannel).Name },
-                        ItemIds = new[] { parent.ChannelId },
+                        ItemIds = new[] { new Guid(parent.ChannelId) },
                         DtoOptions = new DtoOptions()
 
                     }).Cast<LiveTvChannel>().FirstOrDefault();
@@ -2680,7 +2675,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     channel = _libraryManager.GetItemList(new InternalItemsQuery
                     {
                         IncludeItemTypes = new string[] { typeof(LiveTvChannel).Name },
-                        ItemIds = new[] { programInfo.ChannelId },
+                        ItemIds = new[] { new Guid(programInfo.ChannelId) },
                         DtoOptions = new DtoOptions()
 
                     }).Cast<LiveTvChannel>().FirstOrDefault();
@@ -2751,7 +2746,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     IncludeItemTypes = new[] { typeof(Series).Name },
                     Name = program.Name
 
-                }).Select(i => i.ToString("N")).ToArray();
+                }).ToArray();
 
                 if (seriesIds.Length == 0)
                 {
@@ -2788,7 +2783,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             {
                 pair.Value.CancellationTokenSource.Cancel();
             }
-            GC.SuppressFinalize(this);
         }
 
         public List<VirtualFolderInfo> GetRecordingFolders()

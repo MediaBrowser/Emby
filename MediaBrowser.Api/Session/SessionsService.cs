@@ -295,7 +295,7 @@ namespace MediaBrowser.Api.Session
 
         public object Get(GetAuthProviders request)
         {
-            return ToOptimizedResult(_userManager.GetAuthenticationProviders());
+            return _userManager.GetAuthenticationProviders();
         }
 
         public void Delete(RevokeKey request)
@@ -334,7 +334,7 @@ namespace MediaBrowser.Api.Session
                 HasUser = false
             });
 
-            return ToOptimizedResult(result);
+            return result;
         }
 
         /// <summary>

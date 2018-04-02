@@ -611,7 +611,7 @@ namespace MediaBrowser.Api.Library
                 Items = items.Select(i => _dtoService.GetBaseItemDto(i, dtoOptions)).ToArray()
             };
 
-            return ToOptimizedResult(result);
+            return result;
         }
 
         public void Post(PostUpdatedSeries request)

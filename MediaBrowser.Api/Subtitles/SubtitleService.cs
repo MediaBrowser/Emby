@@ -237,7 +237,9 @@ namespace MediaBrowser.Api.Subtitles
 
         private Task<Stream> GetSubtitles(GetSubtitle request)
         {
-            return _subtitleEncoder.GetSubtitles(request.Id,
+            var item = _libraryManager.GetItemById(request.Id);
+
+            return _subtitleEncoder.GetSubtitles(item,
                 request.MediaSourceId,
                 request.Index,
                 request.Format,
@@ -251,19 +253,19 @@ namespace MediaBrowser.Api.Subtitles
         {
             var video = (Video)_libraryManager.GetItemById(request.Id);
 
-            var response = await _subtitleManager.SearchSubtitles(video, request.Language, request.IsPerfectMatch, CancellationToken.None).ConfigureAwait(false);
-
-            return ToOptimizedResult(response);
+           return await _subtitleManager.SearchSubtitles(video, request.Language, request.IsPerfectMatch, CancellationToken.None).ConfigureAwait(false);
         }
 
         public Task Delete(DeleteSubtitle request)
         {
-            return _subtitleManager.DeleteSubtitles(request.Id, request.Index);
+            var item = _libraryManager.GetItemById(request.Id);
+            return _subtitleManager.DeleteSubtitles(item, request.Index);
         }
 
         public object Get(GetSubtitleProviders request)
         {
-            var result = _subtitleManager.GetProviders(request.Id);
+            var item = _libraryManager.GetItemById(request.Id);
+            var result = _subtitleManager.GetProviders(item);
 
             return ToOptimizedResult(result);
         }

@@ -30,7 +30,6 @@ namespace MediaBrowser.Common.Progress
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

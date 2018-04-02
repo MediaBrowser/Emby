@@ -264,7 +264,6 @@ namespace Emby.Server.Implementations.Data
         {
             _disposed = true;
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         private readonly object _disposeLock = new object();

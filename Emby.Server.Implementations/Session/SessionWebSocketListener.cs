@@ -93,7 +93,6 @@ namespace Emby.Server.Implementations.Session
         public void Dispose()
         {
             _serverManager.WebSocketConnected -= _serverManager_WebSocketConnected;
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

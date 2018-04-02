@@ -364,7 +364,6 @@ namespace Emby.Dlna.Main
                 _communicationsServer.Dispose();
                 _communicationsServer = null;
             }
-            GC.SuppressFinalize(this);
         }
 
         public void DisposeDevicePublisher()

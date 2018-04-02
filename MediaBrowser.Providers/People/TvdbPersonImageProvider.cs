@@ -66,7 +66,7 @@ namespace MediaBrowser.Providers.People
             var seriesWithPerson = _libraryManager.GetItemList(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Series).Name },
-                PersonIds = new[] { item.Id.ToString("N") },
+                PersonIds = new[] { item.Id },
                 DtoOptions = new DtoOptions(false)
                 {
                     EnableImages = false

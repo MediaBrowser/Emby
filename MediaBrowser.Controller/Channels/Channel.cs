@@ -52,7 +52,7 @@ namespace MediaBrowser.Controller.Channels
             try
             {
                 query.Parent = this;
-                query.ChannelIds = new string[] { Id.ToString("N") };
+                query.ChannelIds = new Guid[] { Id };
 
                 // Don't blow up here because it could cause parent screens with other content to fail
                 return ChannelManager.GetChannelItemsInternal(query, new SimpleProgress<double>(), CancellationToken.None).Result;

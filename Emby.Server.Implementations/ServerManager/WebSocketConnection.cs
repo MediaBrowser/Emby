@@ -248,7 +248,6 @@ namespace Emby.Server.Implementations.ServerManager
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

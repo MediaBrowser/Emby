@@ -530,8 +530,8 @@ namespace MediaBrowser.Controller.Library
 
         Guid GetGameGenreId(string name);
 
-        void AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary);
-        void RemoveVirtualFolder(string name, bool refreshLibrary);
+        Task AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary);
+        Task RemoveVirtualFolder(string name, bool refreshLibrary);
         void AddMediaPath(string virtualFolderName, MediaPathInfo path);
         void UpdateMediaPath(string virtualFolderName, MediaPathInfo path);
         void RemoveMediaPath(string virtualFolderName, string path);

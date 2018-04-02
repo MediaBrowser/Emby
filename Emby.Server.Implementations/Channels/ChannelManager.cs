@@ -313,7 +313,7 @@ namespace Emby.Server.Implementations.Channels
 
         private Channel GetChannelEntity(IChannel channel)
         {
-            var item = GetChannel(GetInternalChannelId(channel.Name).ToString("N"));
+            var item = GetChannel(GetInternalChannelId(channel.Name));
 
             if (item == null)
             {
@@ -510,6 +510,11 @@ namespace Emby.Server.Implementations.Channels
             }
         }
 
+        public Channel GetChannel(Guid id)
+        {
+            return _libraryManager.GetItemById(id) as Channel;
+        }
+
         public Channel GetChannel(string id)
         {
             return _libraryManager.GetItemById(id) as Channel;
@@ -610,7 +615,7 @@ namespace Emby.Server.Implementations.Channels
                 // Avoid implicitly captured closure
                 var ids = query.ChannelIds;
                 channels = channels
-                    .Where(i => ids.Contains(GetInternalChannelId(i.Name).ToString("N")))
+                    .Where(i => ids.Contains(GetInternalChannelId(i.Name)))
                     .ToArray();
             }
 
@@ -656,7 +661,7 @@ namespace Emby.Server.Implementations.Channels
             var query = new InternalItemsQuery();
             query.Parent = internalChannel;
             query.EnableTotalRecordCount = false;
-            query.ChannelIds = new string[] { internalChannel.Id.ToString("N") };
+            query.ChannelIds = new Guid[] { internalChannel.Id };
 
             var result = await GetChannelItemsInternal(query, new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
 
@@ -670,7 +675,7 @@ namespace Emby.Server.Implementations.Channels
                     {
                         Parent = folder,
                         EnableTotalRecordCount = false,
-                        ChannelIds = new string[] { internalChannel.Id.ToString("N") }
+                        ChannelIds = new Guid[] { internalChannel.Id }
 
                     }, new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
                 }
@@ -704,7 +709,7 @@ namespace Emby.Server.Implementations.Channels
             {
                 query.Parent = channel;
             }
-            query.ChannelIds = new string[] { };
+            query.ChannelIds = new Guid[] { };
 
             // Not yet sure why this is causing a problem
             query.GroupByPresentationUniqueKey = false;

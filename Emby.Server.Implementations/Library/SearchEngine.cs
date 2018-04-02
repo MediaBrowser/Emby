@@ -202,7 +202,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (searchQuery.ParentId.HasValue)
                 {
-                    searchQuery.AncestorIds = new string[] { searchQuery.ParentId.Value.ToString("N") };
+                    searchQuery.AncestorIds = new Guid[] { searchQuery.ParentId.Value };
                 }
                 searchQuery.ParentId = null;
                 searchQuery.IncludeItemsByName = true;

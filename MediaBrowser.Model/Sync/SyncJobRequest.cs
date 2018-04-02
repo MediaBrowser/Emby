@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.Sync
 {
@@ -13,7 +14,7 @@ namespace MediaBrowser.Model.Sync
         /// Gets or sets the item ids.
         /// </summary>
         /// <value>The item ids.</value>
-        public string[] ItemIds { get; set; }
+        public Guid[] ItemIds { get; set; }
         /// <summary>
         /// Gets or sets the category.
         /// </summary>
@@ -67,7 +68,7 @@ namespace MediaBrowser.Model.Sync
 
         public SyncJobRequest()
         {
-            ItemIds = new string[] { };
+            ItemIds = new Guid[] { };
             SyncNewContent = true;
         }
     }

@@ -88,5 +88,6 @@
   "User": "User",
   "System": "System",
   "Application": "Application",
-  "Plugin": "Plugin"
+  "Plugin": "Plugin",
+  "HeaderCameraUploads": "Camera Uploads"
 }

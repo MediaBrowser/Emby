@@ -48,15 +48,6 @@ namespace Emby.Server.Implementations.Library
                 .OfType<Folder>()
                 .ToList();
 
-            if (!query.IncludeHidden)
-            {
-                folders = folders.Where(i =>
-                {
-                    var hidden = i as IHiddenFromDisplay;
-                    return hidden == null || !hidden.IsHiddenFromUser(user);
-                }).ToList();
-            }
-
             var groupedFolders = new List<ICollectionFolder>();
 
             var list = new List<Folder>();
@@ -124,6 +115,11 @@ namespace Emby.Server.Implementations.Library
                 {
                     list.Add(_liveTvManager.GetInternalLiveTvFolder(CancellationToken.None));
                 }
+            }
+
+            if (!query.IncludeHidden)
+            {
+                list = list.Where(i => !user.Configuration.MyMediaExcludes.Contains(i.Id.ToString("N"))).ToList();
             }
 
             var sorted = _libraryManager.Sort(list, user, new[] { ItemSortBy.SortName }, SortOrder.Ascending).ToList();
@@ -246,7 +242,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     return _channelManager.GetLatestChannelItemsInternal(new InternalItemsQuery(user)
                     {
-                        ChannelIds = new string[] { request.ParentId },
+                        ChannelIds = new Guid[] { new Guid(request.ParentId) },
                         IsPlayed = request.IsPlayed,
                         StartIndex = request.StartIndex,
                         Limit = request.Limit,

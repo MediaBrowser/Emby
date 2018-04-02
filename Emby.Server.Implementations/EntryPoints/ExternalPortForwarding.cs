@@ -288,7 +288,6 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             _disposed = true;
             DisposeNat();
-            GC.SuppressFinalize(this);
         }
 
         private void DisposeNat()

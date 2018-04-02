@@ -277,7 +277,7 @@ namespace MediaBrowser.Controller.Entities
         {
             query.Recursive = true;
             query.Parent = queryParent;
-            query.GenreIds = new[] { displayParent.Id.ToString("N") };
+            query.GenreIds = new[] { displayParent.Id };
             query.SetUser(user);
 
             query.IncludeItemTypes = new[] { typeof(Movie).Name };
@@ -401,7 +401,7 @@ namespace MediaBrowser.Controller.Entities
         {
             query.Recursive = true;
             query.Parent = queryParent;
-            query.GenreIds = new[] { displayParent.Id.ToString("N") };
+            query.GenreIds = new[] { displayParent.Id };
             query.SetUser(user);
 
             query.IncludeItemTypes = new[] { typeof(Series).Name };
@@ -839,7 +839,7 @@ namespace MediaBrowser.Controller.Entities
 
             if (query.ItemIds.Length > 0)
             {
-                if (!query.ItemIds.Contains(item.Id.ToString("N"), StringComparer.OrdinalIgnoreCase))
+                if (!query.ItemIds.Contains(item.Id))
                 {
                     return false;
                 }

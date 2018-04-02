@@ -1102,7 +1102,7 @@ namespace MediaBrowser.Providers.Manager
                 .GetItemList(new InternalItemsQuery
                 {
                     IncludeItemTypes = new[] { typeof(MusicAlbum).Name },
-                    ArtistIds = new[] { item.Id.ToString("N") },
+                    ArtistIds = new[] { item.Id },
                     DtoOptions = new DtoOptions(false)
                     {
                         EnableImages = false
@@ -1145,7 +1145,6 @@ namespace MediaBrowser.Providers.Manager
             {
                 _disposeCancellationTokenSource.Cancel();
             }
-            GC.SuppressFinalize(this);
         }
     }
 }
