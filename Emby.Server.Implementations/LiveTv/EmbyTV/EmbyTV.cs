@@ -394,10 +394,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private async Task AddMetadata(IListingsProvider provider, ListingsProviderInfo info, List<ChannelInfo> tunerChannels, bool enableCache, CancellationToken cancellationToken)
         {
             var epgChannels = await GetEpgChannels(provider, info, enableCache, cancellationToken).ConfigureAwait(false);
+            var channelInfoDictionaries = new ChannelInfoDictionaries(epgChannels);
 
             foreach (var tunerChannel in tunerChannels)
             {
-                var epgChannel = GetEpgChannelFromTunerChannel(info, tunerChannel, epgChannels);
+                var epgChannel = GetEpgChannelFromTunerChannel(info, tunerChannel, channelInfoDictionaries);
 
                 if (epgChannel != null)
                 {
@@ -437,8 +438,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private async Task<ChannelInfo> GetEpgChannelFromTunerChannel(IListingsProvider provider, ListingsProviderInfo info, ChannelInfo tunerChannel, CancellationToken cancellationToken)
         {
             var epgChannels = await GetEpgChannels(provider, info, true, cancellationToken).ConfigureAwait(false);
-
-            return GetEpgChannelFromTunerChannel(info, tunerChannel, epgChannels);
+            var channelInfoDictionaries = new ChannelInfoDictionaries(epgChannels);
+            return GetEpgChannelFromTunerChannel(info, tunerChannel, channelInfoDictionaries);
         }
 
         private string GetMappedChannel(string channelId, NameValuePair[] mappings)
@@ -453,12 +454,12 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return channelId;
         }
 
-        private ChannelInfo GetEpgChannelFromTunerChannel(ListingsProviderInfo info, ChannelInfo tunerChannel, List<ChannelInfo> epgChannels)
+        private ChannelInfo GetEpgChannelFromTunerChannel(ListingsProviderInfo info, ChannelInfo tunerChannel, ChannelInfoDictionaries channelInfoDictionaries)
         {
-            return GetEpgChannelFromTunerChannel(info.ChannelMappings, tunerChannel, epgChannels);
+            return GetEpgChannelFromTunerChannel(info.ChannelMappings, tunerChannel, channelInfoDictionaries);
         }
 
-        public ChannelInfo GetEpgChannelFromTunerChannel(NameValuePair[] mappings, ChannelInfo tunerChannel, List<ChannelInfo> epgChannels)
+        public ChannelInfo GetEpgChannelFromTunerChannel(NameValuePair[] mappings, ChannelInfo tunerChannel, ChannelInfoDictionaries channelInfoDictionaries)
         {
             if (!string.IsNullOrWhiteSpace(tunerChannel.Id))
             {
@@ -469,9 +470,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     mappedTunerChannelId = tunerChannel.Id;
                 }
 
-                var channel = epgChannels.FirstOrDefault(i => string.Equals(mappedTunerChannelId, i.Id, StringComparison.OrdinalIgnoreCase));
-
-                if (channel != null)
+                ChannelInfo channel;
+                if (channelInfoDictionaries.ChannelsById.TryGetValue(mappedTunerChannelId.ToUpper(), out channel))
                 {
                     return channel;
                 }
@@ -492,9 +492,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     mappedTunerChannelId = tunerChannelId;
                 }
 
-                var channel = epgChannels.FirstOrDefault(i => string.Equals(mappedTunerChannelId, i.Id, StringComparison.OrdinalIgnoreCase));
-
-                if (channel != null)
+                ChannelInfo channel;
+                if (channelInfoDictionaries.ChannelsById.TryGetValue(mappedTunerChannelId.ToUpper(), out channel))
                 {
                     return channel;
                 }
@@ -509,9 +508,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     tunerChannelNumber = tunerChannel.Number;
                 }
 
-                var channel = epgChannels.FirstOrDefault(i => string.Equals(tunerChannelNumber, i.Number, StringComparison.OrdinalIgnoreCase));
-
-                if (channel != null)
+                ChannelInfo channel;
+                if (channelInfoDictionaries.ChannelsByNumber.TryGetValue(tunerChannelNumber.ToUpper(), out channel))
                 {
                     return channel;
                 }
@@ -521,9 +519,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             {
                 var normalizedName = NormalizeName(tunerChannel.Name);
 
-                var channel = epgChannels.FirstOrDefault(i => string.Equals(normalizedName, NormalizeName(i.Name ?? string.Empty), StringComparison.OrdinalIgnoreCase));
-
-                if (channel != null)
+                ChannelInfo channel;
+                if (channelInfoDictionaries.ChannelsByName.TryGetValue(normalizedName.ToUpper(), out channel))
                 {
                     return channel;
                 }
@@ -532,7 +529,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return null;
         }
 
-        private string NormalizeName(string value)
+        private static string NormalizeName(string value)
         {
             return value.Replace(" ", string.Empty).Replace("-", string.Empty);
         }

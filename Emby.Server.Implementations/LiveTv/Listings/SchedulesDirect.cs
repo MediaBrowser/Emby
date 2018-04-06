@@ -893,17 +893,17 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 throw new Exception("token required");
             }
 
-            var httpOptions = new HttpRequestOptions()
+            var httpOptions = new HttpRequestOptions
             {
                 Url = ApiUrl + "/lineups/" + listingsId,
                 UserAgent = UserAgent,
                 CancellationToken = cancellationToken,
                 LogErrorResponseBody = true,
                 // The data can be large so give it some extra time
-                TimeoutMs = 60000
+                TimeoutMs = 60000,
+                RequestHeaders = { ["token"] = token }
             };
 
-            httpOptions.RequestHeaders["token"] = token;
 
             var list = new List<ChannelInfo>();
 

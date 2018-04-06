@@ -3048,7 +3048,8 @@ namespace Emby.Server.Implementations.LiveTv
                 result.Name = tunerChannel.Number + " " + result.Name;
             }
 
-            var providerChannel = EmbyTV.EmbyTV.Current.GetEpgChannelFromTunerChannel(mappings, tunerChannel, epgChannels);
+            var channelInfoDictionaries = new ChannelInfoDictionaries(epgChannels);
+            var providerChannel = EmbyTV.EmbyTV.Current.GetEpgChannelFromTunerChannel(mappings, tunerChannel, channelInfoDictionaries);
 
             if (providerChannel != null)
             {
