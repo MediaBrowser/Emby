@@ -80,7 +80,7 @@ namespace MediaBrowser.Providers.Manager
                 throw new ArgumentNullException("mimeType");
             }
 
-            var saveLocally = item.SupportsLocalMetadata && item.IsSaveLocalMetadataEnabled() && !item.IsOwnedItem && !(item is Audio);
+            var saveLocally = item.SupportsLocalMetadata && item.IsSaveLocalMetadataEnabled() && !item.ExtraType.HasValue && !(item is Audio);
 
             if (item is User)
             {

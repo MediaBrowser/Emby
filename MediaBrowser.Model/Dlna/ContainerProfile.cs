@@ -46,27 +46,56 @@ namespace MediaBrowser.Model.Dlna
 
         public static bool ContainsContainer(string profileContainers, string inputContainer)
         {
-            return ContainsContainer(SplitValue(profileContainers), inputContainer);
+            var isNegativeList = false;
+            if (profileContainers != null && profileContainers.StartsWith("-"))
+            {
+                isNegativeList = true;
+                profileContainers = profileContainers.Substring(1);
+            }
+
+            return ContainsContainer(SplitValue(profileContainers), isNegativeList, inputContainer);
         }
 
         public static bool ContainsContainer(string[] profileContainers, string inputContainer)
+        {
+            return ContainsContainer(profileContainers, false, inputContainer);
+        }
+
+        public static bool ContainsContainer(string[] profileContainers, bool isNegativeList, string inputContainer)
         {
             if (profileContainers.Length == 0)
             {
                 return true;
             }
 
-            var allInputContainers = SplitValue(inputContainer);
-
-            foreach (var container in allInputContainers)
+            if (isNegativeList)
             {
-                if (ListHelper.ContainsIgnoreCase(profileContainers, container))
-                {
-                    return true;
-                }
-            }
+                var allInputContainers = SplitValue(inputContainer);
 
-            return false;
+                foreach (var container in allInputContainers)
+                {
+                    if (ListHelper.ContainsIgnoreCase(profileContainers, container))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                var allInputContainers = SplitValue(inputContainer);
+
+                foreach (var container in allInputContainers)
+                {
+                    if (ListHelper.ContainsIgnoreCase(profileContainers, container))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
     }
 }

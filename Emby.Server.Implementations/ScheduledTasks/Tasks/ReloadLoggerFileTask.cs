@@ -69,7 +69,7 @@ namespace Emby.Server.Implementations.ScheduledTasks.Tasks
         /// <value>The name.</value>
         public string Name
         {
-            get { return "Start new log file"; }
+            get { return "Rotate log file"; }
         }
 
         public string Key { get; }

@@ -287,7 +287,6 @@
     <Compile Include="Querying\SimilarItemsQuery.cs" />
     <Compile Include="Querying\UpcomingEpisodesQuery.cs" />
     <Compile Include="Querying\UserQuery.cs" />
-    <Compile Include="Registration\RegistrationInfo.cs" />
     <Compile Include="Search\SearchQuery.cs" />
     <Compile Include="Serialization\IgnoreDataMemberAttribute.cs" />
     <Compile Include="Services\IStreamWriter.cs" />
@@ -341,12 +340,9 @@
     <Compile Include="Session\UserDataChangeInfo.cs" />
     <Compile Include="Devices\ContentUploadHistory.cs" />
     <Compile Include="Sync\CompleteSyncJobInfo.cs" />
-    <Compile Include="Sync\DeviceFileInfo.cs" />
     <Compile Include="Sync\ItemFIleInfo.cs" />
     <Compile Include="Sync\ItemFileType.cs" />
     <Compile Include="Sync\LocalItem.cs" />
-    <Compile Include="Sync\LocalItemInfo.cs" />
-    <Compile Include="Sync\LocalItemQuery.cs" />
     <Compile Include="Sync\SyncCategory.cs" />
     <Compile Include="Sync\SyncDataRequest.cs" />
     <Compile Include="Sync\SyncDataResponse.cs" />

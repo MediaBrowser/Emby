@@ -35,23 +35,6 @@ namespace MediaBrowser.Controller.Entities.TV
         public int? AirsBeforeEpisodeNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the DVD season number.
-        /// </summary>
-        /// <value>The DVD season number.</value>
-        public int? DvdSeasonNumber { get; set; }
-        /// <summary>
-        /// Gets or sets the DVD episode number.
-        /// </summary>
-        /// <value>The DVD episode number.</value>
-        public float? DvdEpisodeNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the absolute episode number.
-        /// </summary>
-        /// <value>The absolute episode number.</value>
-        public int? AbsoluteEpisodeNumber { get; set; }
-
-        /// <summary>
         /// This is the ending episode number for double episodes.
         /// </summary>
         /// <value>The index number.</value>

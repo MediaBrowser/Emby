@@ -170,6 +170,8 @@ namespace MediaBrowser.Providers.MediaInfo
                 SkipIfAudioTrackMatches,
                 RequirePerfectMatch,
                 subtitleDownloadLanguages,
+                libraryOptions.DisabledSubtitleFetchers,
+                libraryOptions.SubtitleFetcherOrder,
                 cancellationToken).ConfigureAwait(false);
 
             // Rescan

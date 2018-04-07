@@ -136,7 +136,7 @@ namespace Emby.Server.Implementations.Library
                         var view = i as UserView;
                         if (view != null)
                         {
-                            if (view.DisplayParentId != Guid.Empty)
+                            if (!view.DisplayParentId.Equals(Guid.Empty))
                             {
                                 index = orders.IndexOf(view.DisplayParentId.ToString("N"));
                             }

@@ -144,55 +144,6 @@ namespace MediaBrowser.XbmcMetadata.Parsers
                         break;
                     }
 
-                case "absolute_number":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            int rval;
-
-                            // int.TryParse is local aware, so it can be probamatic, force us culture
-                            if (int.TryParse(val, NumberStyles.Integer, UsCulture, out rval))
-                            {
-                                item.AbsoluteEpisodeNumber = rval;
-                            }
-                        }
-
-                        break;
-                    }
-                case "DVD_episodenumber":
-                    {
-                        var number = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(number))
-                        {
-                            float num;
-
-                            if (float.TryParse(number, NumberStyles.Any, UsCulture, out num))
-                            {
-                                item.DvdEpisodeNumber = num;
-                            }
-                        }
-                        break;
-                    }
-
-                case "DVD_season":
-                    {
-                        var number = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(number))
-                        {
-                            float num;
-
-                            if (float.TryParse(number, NumberStyles.Any, UsCulture, out num))
-                            {
-                                item.DvdSeasonNumber = Convert.ToInt32(num);
-                            }
-                        }
-                        break;
-                    }
-
                 case "airsbefore_episode":
                     {
                         var val = reader.ReadElementContentAsString();

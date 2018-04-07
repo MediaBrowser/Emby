@@ -112,11 +112,11 @@ namespace Emby.Server.Implementations.Library
             return streams;
         }
 
-        public async Task<List<MediaSourceInfo>> GetPlayackMediaSources(BaseItem item, User user, bool enablePathSubstitution, CancellationToken cancellationToken)
+        public async Task<List<MediaSourceInfo>> GetPlayackMediaSources(BaseItem item, User user, bool allowMediaProbe, bool enablePathSubstitution, CancellationToken cancellationToken)
         {
             var mediaSources = GetStaticMediaSources(item, enablePathSubstitution, user);
 
-            if (mediaSources.Count == 1 && mediaSources[0].Type != MediaSourceType.Placeholder && !mediaSources[0].MediaStreams.Any(i => i.Type == MediaStreamType.Audio || i.Type == MediaStreamType.Video))
+            if (allowMediaProbe && mediaSources.Count == 1 && mediaSources[0].Type != MediaSourceType.Placeholder && !mediaSources[0].MediaStreams.Any(i => i.Type == MediaStreamType.Audio || i.Type == MediaStreamType.Video))
             {
                 await item.RefreshMetadata(new MediaBrowser.Controller.Providers.MetadataRefreshOptions(_fileSystem)
                 {
@@ -167,7 +167,33 @@ namespace Emby.Server.Implementations.Library
             return SortMediaSources(list).Where(i => i.Type != MediaSourceType.Placeholder).ToList();
         }
 
-        private bool SupportsDirectStream(string path, MediaProtocol protocol)
+        public MediaProtocol GetPathProtocol(string path)
+        {
+            if (path.StartsWith("Rtsp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Rtsp;
+            }
+            if (path.StartsWith("Rtmp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Rtmp;
+            }
+            if (path.StartsWith("Http", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Http;
+            }
+            if (path.StartsWith("rtp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Rtp;
+            }
+            if (path.StartsWith("ftp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Ftp;
+            }
+
+            return _fileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
+        }
+
+        public bool SupportsDirectStream(string path, MediaProtocol protocol)
         {
             if (protocol == MediaProtocol.File)
             {
@@ -243,7 +269,7 @@ namespace Emby.Server.Implementations.Library
                 return await GetLiveStream(liveStreamId, cancellationToken).ConfigureAwait(false);
             }
 
-            var sources = await GetPlayackMediaSources(item, null, enablePathSubstitution, cancellationToken).ConfigureAwait(false);
+            var sources = await GetPlayackMediaSources(item, null, false, enablePathSubstitution, cancellationToken).ConfigureAwait(false);
 
             return sources.FirstOrDefault(i => string.Equals(i.Id, mediaSourceId, StringComparison.OrdinalIgnoreCase));
         }
@@ -257,14 +283,9 @@ namespace Emby.Server.Implementations.Library
 
             var hasMediaSources = (IHasMediaSources)item;
 
-            if (!(item is Video))
-            {
-                return hasMediaSources.GetMediaSources(enablePathSubstitution);
-            }
-
             var sources = hasMediaSources.GetMediaSources(enablePathSubstitution);
 
-            if (user != null)
+            if (user != null && item is Video)
             {
                 foreach (var source in sources)
                 {

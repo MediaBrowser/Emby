@@ -503,40 +503,6 @@ namespace MediaBrowser.Providers.TV
                                     break;
                                 }
 
-                            case "Combined_episodenumber":
-                                {
-                                    var val = reader.ReadElementContentAsString();
-
-                                    if (!string.IsNullOrWhiteSpace(val))
-                                    {
-                                        float num;
-
-                                        if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
-                                        {
-                                            item.DvdEpisodeNumber = num;
-                                        }
-                                    }
-
-                                    break;
-                                }
-
-                            case "Combined_season":
-                                {
-                                    var val = reader.ReadElementContentAsString();
-
-                                    if (!string.IsNullOrWhiteSpace(val))
-                                    {
-                                        float num;
-
-                                        if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
-                                        {
-                                            item.DvdSeasonNumber = Convert.ToInt32(num);
-                                        }
-                                    }
-
-                                    break;
-                                }
-
                             case "EpisodeNumber":
                                 {
                                     var val = reader.ReadElementContentAsString();
@@ -573,24 +539,6 @@ namespace MediaBrowser.Providers.TV
                                             {
                                                 item.ParentIndexNumber = rval;
                                             }
-                                        }
-                                    }
-
-                                    break;
-                                }
-
-                            case "absolute_number":
-                                {
-                                    var val = reader.ReadElementContentAsString();
-
-                                    if (!string.IsNullOrWhiteSpace(val))
-                                    {
-                                        int rval;
-
-                                        // int.TryParse is local aware, so it can be probamatic, force us culture
-                                        if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
-                                        {
-                                            item.AbsoluteEpisodeNumber = rval;
                                         }
                                     }
 

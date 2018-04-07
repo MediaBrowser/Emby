@@ -1586,7 +1586,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 _providerManager.QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
                 {
-                    ValidateChildren = true,
                     RefreshPaths = new List<string>
                     {
                         path,
@@ -2243,7 +2242,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         writer.WriteElementString("website", item.HomePageUrl);
                     }
 
-                    var people = item.Id == Guid.Empty ? new List<PersonInfo>() : _libraryManager.GetPeople(item);
+                    var people = item.Id.Equals(Guid.Empty) ? new List<PersonInfo>() : _libraryManager.GetPeople(item);
 
                     var directors = people
                         .Where(i => IsPersonType(i, PersonType.Director))

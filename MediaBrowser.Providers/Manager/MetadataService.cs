@@ -193,7 +193,7 @@ namespace MediaBrowser.Providers.Manager
                 }
 
                 // Save to database
-                await SaveItem(metadataResult, libraryOptions, updateType, cancellationToken).ConfigureAwait(false);
+                SaveItem(metadataResult, libraryOptions, updateType, cancellationToken);
             }
 
             await AfterMetadataRefresh(itemOfType, refreshOptions, cancellationToken).ConfigureAwait(false);
@@ -208,19 +208,19 @@ namespace MediaBrowser.Providers.Manager
             lookupInfo.Year = result.ProductionYear;
         }
 
-        protected async Task SaveItem(MetadataResult<TItemType> result, LibraryOptions libraryOptions, ItemUpdateType reason, CancellationToken cancellationToken)
+        protected void SaveItem(MetadataResult<TItemType> result, LibraryOptions libraryOptions, ItemUpdateType reason, CancellationToken cancellationToken)
         {
             if (result.Item.SupportsPeople && result.People != null)
             {
                 var baseItem = result.Item;
 
                 LibraryManager.UpdatePeople(baseItem, result.People);
-                await SavePeopleMetadata(result.People, libraryOptions, cancellationToken).ConfigureAwait(false);
+                SavePeopleMetadata(result.People, libraryOptions, cancellationToken);
             }
             result.Item.UpdateToRepository(reason, cancellationToken);
         }
 
-        private async Task SavePeopleMetadata(List<PersonInfo> people, LibraryOptions libraryOptions, CancellationToken cancellationToken)
+        private void SavePeopleMetadata(List<PersonInfo> people, LibraryOptions libraryOptions, CancellationToken cancellationToken)
         {
             foreach (var person in people)
             {
@@ -243,7 +243,7 @@ namespace MediaBrowser.Providers.Manager
 
                     if (!string.IsNullOrWhiteSpace(person.ImageUrl) && !personEntity.HasImage(ImageType.Primary))
                     {
-                        await AddPersonImage(personEntity, libraryOptions, person.ImageUrl, cancellationToken).ConfigureAwait(false);
+                        AddPersonImage(personEntity, libraryOptions, person.ImageUrl, cancellationToken);
 
                         saveEntity = true;
                         updateType = updateType | ItemUpdateType.ImageUpdate;
@@ -257,7 +257,7 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private async Task AddPersonImage(Person personEntity, LibraryOptions libraryOptions, string imageUrl, CancellationToken cancellationToken)
+        private void AddPersonImage(Person personEntity, LibraryOptions libraryOptions, string imageUrl, CancellationToken cancellationToken)
         {
             //if (libraryOptions.DownloadImagesInAdvance)
             //{

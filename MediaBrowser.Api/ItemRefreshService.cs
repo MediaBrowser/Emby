@@ -74,8 +74,7 @@ namespace MediaBrowser.Api
                 ReplaceAllImages = request.ReplaceAllImages,
                 ReplaceAllMetadata = request.ReplaceAllMetadata,
                 ForceSave = request.MetadataRefreshMode == MetadataRefreshMode.FullRefresh || request.ImageRefreshMode == MetadataRefreshMode.FullRefresh || request.ReplaceAllImages || request.ReplaceAllMetadata,
-                IsAutomated = false,
-                ValidateChildren = request.Recursive
+                IsAutomated = false
             };
         }
     }

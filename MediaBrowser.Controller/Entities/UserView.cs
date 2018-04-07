@@ -35,11 +35,11 @@ namespace MediaBrowser.Controller.Entities
         {
             var list = new List<Guid>();
 
-            if (DisplayParentId != Guid.Empty)
+            if (!DisplayParentId.Equals(Guid.Empty))
             {
                 list.Add(DisplayParentId);
             }
-            else if (ParentId != Guid.Empty)
+            else if (!ParentId.Equals(Guid.Empty))
             {
                 list.Add(ParentId);
             }
@@ -85,11 +85,11 @@ namespace MediaBrowser.Controller.Entities
         {
             var parent = this as Folder;
 
-            if (DisplayParentId != Guid.Empty)
+            if (!DisplayParentId.Equals(Guid.Empty))
             {
                 parent = LibraryManager.GetItemById(DisplayParentId) as Folder ?? parent;
             }
-            else if (ParentId != Guid.Empty)
+            else if (!ParentId.Equals(Guid.Empty))
             {
                 parent = LibraryManager.GetItemById(ParentId) as Folder ?? parent;
             }

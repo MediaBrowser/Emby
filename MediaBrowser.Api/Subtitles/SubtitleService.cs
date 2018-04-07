@@ -48,14 +48,6 @@ namespace MediaBrowser.Api.Subtitles
         public bool? IsPerfectMatch { get; set; }
     }
 
-    [Route("/Items/{Id}/RemoteSearch/Subtitles/Providers", "GET")]
-    [Authenticated]
-    public class GetSubtitleProviders : IReturn<SubtitleProviderInfo[]>
-    {
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
-    }
-
     [Route("/Items/{Id}/RemoteSearch/Subtitles/{SubtitleId}", "POST")]
     [Authenticated]
     public class DownloadRemoteSubtitles : IReturnVoid
@@ -260,14 +252,6 @@ namespace MediaBrowser.Api.Subtitles
         {
             var item = _libraryManager.GetItemById(request.Id);
             return _subtitleManager.DeleteSubtitles(item, request.Index);
-        }
-
-        public object Get(GetSubtitleProviders request)
-        {
-            var item = _libraryManager.GetItemById(request.Id);
-            var result = _subtitleManager.GetProviders(item);
-
-            return ToOptimizedResult(result);
         }
 
         public async Task<object> Get(GetRemoteSubtitles request)

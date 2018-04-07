@@ -677,14 +677,6 @@ namespace MediaBrowser.Api.LiveTv
         public string ProviderName { get; set; }
     }
 
-    [Route("/LiveTv/Registration", "GET")]
-    [Authenticated]
-    public class GetLiveTvRegistrationInfo : IReturn<MBRegistrationRecord>
-    {
-        [ApiMember(Name = "Feature", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string Feature { get; set; }
-    }
-
     [Route("/LiveTv/LiveStreamFiles/{Id}/stream.{Container}", "GET", Summary = "Gets a live tv channel")]
     public class GetLiveStreamFile
     {
@@ -804,13 +796,6 @@ namespace MediaBrowser.Api.LiveTv
         public object Get(GetDefaultListingProvider request)
         {
             return ToOptimizedResult(new ListingsProviderInfo());
-        }
-
-        public async Task<object> Get(GetLiveTvRegistrationInfo request)
-        {
-            var result = await _liveTvManager.GetRegistrationInfo(request.Feature).ConfigureAwait(false);
-
-            return ToOptimizedResult(result);
         }
 
         public async Task<object> Post(SetChannelMapping request)

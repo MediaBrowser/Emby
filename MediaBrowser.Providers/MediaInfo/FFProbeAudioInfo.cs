@@ -46,7 +46,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 MediaSource = new MediaSourceInfo
                 {
                     Path = item.Path,
-                    Protocol = MediaProtocol.File
+                    Protocol = item.PathProtocol ?? MediaProtocol.File
                 }
 
             }, cancellationToken).ConfigureAwait(false);

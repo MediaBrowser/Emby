@@ -29,6 +29,7 @@ namespace MediaBrowser.Model.MediaInfo
         public bool EnableTranscoding { get; set; }
         public bool AllowVideoStreamCopy { get; set; }
         public bool AllowAudioStreamCopy { get; set; }
+        public bool IsPlayback { get; set; }
         public bool AutoOpenLiveStream { get; set; }
 
         public PlaybackInfoRequest()
@@ -38,6 +39,7 @@ namespace MediaBrowser.Model.MediaInfo
             EnableTranscoding = true;
             AllowVideoStreamCopy = true;
             AllowAudioStreamCopy = true;
+            IsPlayback = true;
         }
     }
 }

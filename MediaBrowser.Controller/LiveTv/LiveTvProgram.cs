@@ -12,7 +12,7 @@ using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.LiveTv
 {
-    public class LiveTvProgram : BaseItem, IHasLookupInfo<LiveTvProgramLookupInfo>, IHasStartDate, IHasProgramAttributes
+    public class LiveTvProgram : BaseItem, IHasLookupInfo<ItemLookupInfo>, IHasStartDate, IHasProgramAttributes
     {
         public LiveTvProgram()
         {
@@ -197,19 +197,6 @@ namespace MediaBrowser.Controller.LiveTv
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         //[IgnoreDataMember]
         //public override string MediaType
         //{
@@ -259,13 +246,6 @@ namespace MediaBrowser.Controller.LiveTv
         public override bool CanDelete()
         {
             return false;
-        }
-
-        public LiveTvProgramLookupInfo GetLookupInfo()
-        {
-            var info = GetItemLookupInfo<LiveTvProgramLookupInfo>();
-            info.IsMovie = IsMovie;
-            return info;
         }
 
         [IgnoreDataMember]

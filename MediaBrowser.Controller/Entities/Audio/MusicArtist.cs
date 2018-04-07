@@ -23,7 +23,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         [IgnoreDataMember]
         public bool IsAccessedByName
         {
-            get { return ParentId == Guid.Empty; }
+            get { return ParentId.Equals(Guid.Empty); }
         }
 
         [IgnoreDataMember]
@@ -162,19 +162,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             get
             {
                 return Path;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
             }
         }
 

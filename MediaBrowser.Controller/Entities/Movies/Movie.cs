@@ -67,7 +67,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
             // Must have a parent to have special features
             // In other words, it must be part of the Parent/Child tree
-            if (IsFileProtocol && GetParent() != null && !IsInMixedFolder)
+            if (IsFileProtocol && SupportsOwnedItems && !IsInMixedFolder)
             {
                 var specialFeaturesChanged = await RefreshSpecialFeatures(options, fileSystemChildren, cancellationToken).ConfigureAwait(false);
 

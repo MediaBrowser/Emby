@@ -44,6 +44,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Tasks;
+using Emby.Server.Implementations.Playlists;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -69,12 +70,6 @@ namespace Emby.Server.Implementations.Library
         /// </summary>
         /// <value>The entity resolution ignore rules.</value>
         private IResolverIgnoreRule[] EntityResolutionIgnoreRules { get; set; }
-
-        /// <summary>
-        /// Gets the list of BasePluginFolders added by plugins
-        /// </summary>
-        /// <value>The plugin folders.</value>
-        private IVirtualFolderCreator[] PluginFolderCreators { get; set; }
 
         /// <summary>
         /// Gets the list of currently registered entity resolvers
@@ -195,14 +190,12 @@ namespace Emby.Server.Implementations.Library
         /// <param name="itemComparers">The item comparers.</param>
         /// <param name="postscanTasks">The postscan tasks.</param>
         public void AddParts(IEnumerable<IResolverIgnoreRule> rules,
-            IEnumerable<IVirtualFolderCreator> pluginFolders,
             IEnumerable<IItemResolver> resolvers,
             IEnumerable<IIntroProvider> introProviders,
             IEnumerable<IBaseItemComparer> itemComparers,
             IEnumerable<ILibraryPostScanTask> postscanTasks)
         {
             EntityResolutionIgnoreRules = rules.ToArray();
-            PluginFolderCreators = pluginFolders.ToArray();
             EntityResolvers = resolvers.OrderBy(i => i.Priority).ToArray();
             MultiItemResolvers = EntityResolvers.OfType<IMultiItemResolver>().ToArray();
             IntroProviders = introProviders.ToArray();
@@ -323,7 +316,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("item");
             }
 
-            var parent = item.IsOwnedItem ? item.GetOwner() : item.GetParent();
+            var parent = item.GetOwner() ?? item.GetParent();
 
             DeleteItem(item, options, parent, notifyParentItem);
         }
@@ -741,44 +734,45 @@ namespace Emby.Server.Implementations.Library
                 _logger.Info("Resetting root folder path to {0}", rootFolderPath);
                 rootFolder.Path = rootFolderPath;
             }
-
+            
             // Add in the plug-in folders
-            foreach (var child in PluginFolderCreators)
+            var path = Path.Combine(ConfigurationManager.ApplicationPaths.DataPath, "playlists");
+
+            _fileSystem.CreateDirectory(path);
+
+            Folder folder = new PlaylistsFolder
             {
-                var folder = child.GetFolder();
+                Path = path
+            };
 
-                if (folder != null)
+            if (folder.Id.Equals(Guid.Empty))
+            {
+                if (string.IsNullOrEmpty(folder.Path))
                 {
-                    if (folder.Id == Guid.Empty)
-                    {
-                        if (string.IsNullOrEmpty(folder.Path))
-                        {
-                            folder.Id = GetNewItemId(folder.GetType().Name, folder.GetType());
-                        }
-                        else
-                        {
-                            folder.Id = GetNewItemId(folder.Path, folder.GetType());
-                        }
-                    }
-
-                    var dbItem = GetItemById(folder.Id) as BasePluginFolder;
-
-                    if (dbItem != null && string.Equals(dbItem.Path, folder.Path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        folder = dbItem;
-                    }
-
-                    if (folder.ParentId != rootFolder.Id)
-                    {
-                        folder.ParentId = rootFolder.Id;
-                        folder.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
-                    }
-
-                    rootFolder.AddVirtualChild(folder);
-
-                    RegisterItem(folder);
+                    folder.Id = GetNewItemId(folder.GetType().Name, folder.GetType());
+                }
+                else
+                {
+                    folder.Id = GetNewItemId(folder.Path, folder.GetType());
                 }
             }
+
+            var dbItem = GetItemById(folder.Id) as BasePluginFolder;
+
+            if (dbItem != null && string.Equals(dbItem.Path, folder.Path, StringComparison.OrdinalIgnoreCase))
+            {
+                folder = dbItem;
+            }
+
+            if (folder.ParentId != rootFolder.Id)
+            {
+                folder.ParentId = rootFolder.Id;
+                folder.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
+            }
+
+            rootFolder.AddVirtualChild(folder);
+
+            RegisterItem(folder);
 
             return rootFolder;
         }
@@ -983,7 +977,7 @@ namespace Emby.Server.Implementations.Library
                     Path = path
                 };
 
-                CreateItem(item);
+                CreateItem(item, null);
             }
 
             return item;
@@ -1244,7 +1238,7 @@ namespace Emby.Server.Implementations.Library
         /// <exception cref="System.ArgumentNullException">id</exception>
         public BaseItem GetItemById(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -1827,9 +1821,9 @@ namespace Emby.Server.Implementations.Library
         /// <param name="item">The item.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public void CreateItem(BaseItem item)
+        public void CreateItem(BaseItem item, BaseItem parent)
         {
-            CreateItems(new[] { item }, item.GetParent(), CancellationToken.None);
+            CreateItems(new[] { item }, parent, CancellationToken.None);
         }
 
         /// <summary>
@@ -1885,7 +1879,7 @@ namespace Emby.Server.Implementations.Library
         /// <summary>
         /// Updates the item.
         /// </summary>
-        public void UpdateItems(List<BaseItem> items, ItemUpdateType updateReason, CancellationToken cancellationToken)
+        public void UpdateItems(List<BaseItem> items, BaseItem parent, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
             foreach (var item in items)
             {
@@ -1919,7 +1913,7 @@ namespace Emby.Server.Implementations.Library
                         ItemUpdated(this, new ItemChangeEventArgs
                         {
                             Item = item,
-                            Parent = item.GetParent(),
+                            Parent = parent,
                             UpdateReason = updateReason
                         });
                     }
@@ -1938,9 +1932,9 @@ namespace Emby.Server.Implementations.Library
         /// <param name="updateReason">The update reason.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public void UpdateItem(BaseItem item, ItemUpdateType updateReason, CancellationToken cancellationToken)
+        public void UpdateItem(BaseItem item, BaseItem parent, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
-            UpdateItems(new List<BaseItem> { item }, updateReason, cancellationToken);
+            UpdateItems(new List<BaseItem> { item }, parent, updateReason, cancellationToken);
         }
 
         /// <summary>
@@ -2108,9 +2102,14 @@ namespace Emby.Server.Implementations.Library
                 return null;
             }
 
-            while (!(item.GetParent() is AggregateFolder) && item.GetParent() != null)
+            while (!item.ParentId.Equals(Guid.Empty))
             {
-                item = item.GetParent();
+                var parent = item.GetParent();
+                if (parent == null || parent is AggregateFolder)
+                {
+                    break;
+                }
+                item = parent;
             }
 
             return GetUserRootFolder().Children
@@ -2159,7 +2158,7 @@ namespace Emby.Server.Implementations.Library
                     ForcedSortName = sortName
                 };
 
-                CreateItem(item);
+                CreateItem(item, null);
 
                 refresh = true;
             }
@@ -2220,7 +2219,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2284,7 +2283,7 @@ namespace Emby.Server.Implementations.Library
 
                 item.DisplayParentId = parentId;
 
-                CreateItem(item);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2354,7 +2353,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2367,7 +2366,7 @@ namespace Emby.Server.Implementations.Library
 
             var refresh = isNew || DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;
 
-            if (!refresh && item.DisplayParentId != Guid.Empty)
+            if (!refresh && !item.DisplayParentId.Equals(Guid.Empty))
             {
                 var displayParent = GetItemById(item.DisplayParentId);
                 refresh = displayParent != null && displayParent.DateLastSaved > item.DateLastRefreshed;
@@ -2662,7 +2661,7 @@ namespace Emby.Server.Implementations.Library
         {
             var namingOptions = GetNamingOptions();
 
-            var files = fileSystemChildren.Where(i => i.IsDirectory)
+            var files = owner.IsInMixedFolder ? new List<FileSystemMetadata>() : fileSystemChildren.Where(i => i.IsDirectory)
                 .Where(i => ExtrasSubfolderNames.Contains(i.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase))
                 .SelectMany(i => _fileSystem.GetFiles(i.FullName, _videoFileExtensions, false, false))
                 .ToList();

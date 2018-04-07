@@ -158,7 +158,7 @@ namespace Emby.Server.Implementations.Library
         /// <exception cref="System.ArgumentNullException"></exception>
         public User GetUserById(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -692,7 +692,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("user");
             }
 
-            if (user.Id == Guid.Empty || !Users.Any(u => u.Id.Equals(user.Id)))
+            if (user.Id.Equals(Guid.Empty) || !Users.Any(u => u.Id.Equals(user.Id)))
             {
                 throw new ArgumentException(string.Format("User with name '{0}' and Id {1} does not exist.", user.Name, user.Id));
             }

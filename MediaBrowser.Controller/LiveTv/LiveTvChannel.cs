@@ -29,19 +29,6 @@ namespace MediaBrowser.Controller.LiveTv
             return UnratedItem.LiveTvChannel;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         [IgnoreDataMember]
         public override bool SupportsPositionTicksResume
         {
@@ -122,7 +109,7 @@ namespace MediaBrowser.Controller.LiveTv
             return new List<BaseItem>();
         }
 
-        public List<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution)
+        public override List<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution)
         {
             var list = new List<MediaSourceInfo>();
 
@@ -143,7 +130,7 @@ namespace MediaBrowser.Controller.LiveTv
             return list;
         }
 
-        public List<MediaStream> GetMediaStreams()
+        public override List<MediaStream> GetMediaStreams()
         {
             return new List<MediaStream>();
         }

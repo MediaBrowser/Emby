@@ -29,7 +29,6 @@ namespace MediaBrowser.Providers.Subtitles
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly ILibraryMonitor _monitor;
-        private readonly ILibraryManager _libraryManager;
         private readonly IMediaSourceManager _mediaSourceManager;
         private readonly IServerConfigurationManager _config;
 
@@ -38,12 +37,11 @@ namespace MediaBrowser.Providers.Subtitles
 
         private ILocalizationManager _localization;
 
-        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config, ILocalizationManager localizationManager)
+        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config, ILocalizationManager localizationManager)
         {
             _logger = logger;
             _fileSystem = fileSystem;
             _monitor = monitor;
-            _libraryManager = libraryManager;
             _mediaSourceManager = mediaSourceManager;
             _config = config;
             _localization = localizationManager;
@@ -75,6 +73,12 @@ namespace MediaBrowser.Providers.Subtitles
             var contentType = request.ContentType;
             var providers = _subtitleProviders
                 .Where(i => i.SupportedMediaTypes.Contains(contentType))
+                .Where(i => !request.DisabledSubtitleFetchers.Contains(i.Name, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(i =>
+                {
+                    var index = request.SubtitleFetcherOrder.ToList().IndexOf(i.Name);
+                    return index == -1 ? int.MaxValue : index;
+                })
                 .ToArray();
 
             // If not searching all, search one at a time until something is found
@@ -331,7 +335,7 @@ namespace MediaBrowser.Providers.Subtitles
             return provider.GetSubtitles(id, cancellationToken);
         }
 
-        public SubtitleProviderInfo[] GetProviders(BaseItem video)
+        public SubtitleProviderInfo[] GetSupportedProviders(BaseItem video)
         {
             VideoContentType mediaType;
 

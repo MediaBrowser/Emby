@@ -351,7 +351,7 @@ namespace Emby.Server.Implementations.HttpServer
         public object GetOptimizedResultUsingCache<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, IDictionary<string, string> responseHeaders = null)
                where T : class
         {
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }
@@ -394,7 +394,7 @@ namespace Emby.Server.Implementations.HttpServer
         public object GetCachedResult<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, string contentType, IDictionary<string, string> responseHeaders = null)
           where T : class
         {
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }
@@ -551,7 +551,7 @@ namespace Emby.Server.Implementations.HttpServer
             options.ResponseHeaders = options.ResponseHeaders ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var contentType = options.ContentType;
 
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }

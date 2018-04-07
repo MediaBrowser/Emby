@@ -481,7 +481,7 @@ namespace Emby.Server.Implementations.Channels
             if (isNew)
             {
                 item.OnMetadataChanged();
-                _libraryManager.CreateItem(item);
+                _libraryManager.CreateItem(item, null);
             }
 
             await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
@@ -720,7 +720,7 @@ namespace Emby.Server.Implementations.Channels
             if (itemsResult != null)
             {
                 var internalItems = itemsResult.Items
-                    .Select(i => GetChannelItemEntity(i, channelProvider, channel.Id, parentItem.Id, cancellationToken))
+                    .Select(i => GetChannelItemEntity(i, channelProvider, channel.Id, parentItem, cancellationToken))
                     .ToArray();
 
                 var existingIds = _libraryManager.GetItemIds(query);
@@ -934,8 +934,10 @@ namespace Emby.Server.Implementations.Channels
             return item;
         }
 
-        private BaseItem GetChannelItemEntity(ChannelItemInfo info, IChannel channelProvider, Guid internalChannelId, Guid parentFolderId, CancellationToken cancellationToken)
+        private BaseItem GetChannelItemEntity(ChannelItemInfo info, IChannel channelProvider, Guid internalChannelId, BaseItem parentFolder, CancellationToken cancellationToken)
         {
+            var parentFolderId = parentFolder.Id;
+
             BaseItem item;
             bool isNew;
             bool forceUpdate = false;
@@ -1156,7 +1158,7 @@ namespace Emby.Server.Implementations.Channels
 
             if (isNew)
             {
-                _libraryManager.CreateItem(item);
+                _libraryManager.CreateItem(item, parentFolder);
 
                 if (info.People != null && info.People.Count > 0)
                 {

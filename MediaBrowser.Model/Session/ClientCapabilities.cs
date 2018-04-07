@@ -18,7 +18,6 @@ namespace MediaBrowser.Model.Session
         public bool SupportsSync { get; set; }
 
         public DeviceProfile DeviceProfile { get; set; }
-        public string[] SupportedLiveMediaTypes { get; set; }
 
         public string AppStoreUrl { get; set; }
         public string IconUrl { get; set; }
@@ -28,7 +27,6 @@ namespace MediaBrowser.Model.Session
             PlayableMediaTypes = new string[] { };
             SupportedCommands = new string[] { };
             SupportsPersistentIdentifier = true;
-            SupportedLiveMediaTypes = new string[] { };
         }
     }
 }

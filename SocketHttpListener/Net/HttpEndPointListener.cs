@@ -15,6 +15,7 @@ using MediaBrowser.Model.Text;
 using SocketHttpListener.Primitives;
 using ProtocolType = MediaBrowser.Model.Net.ProtocolType;
 using SocketType = MediaBrowser.Model.Net.SocketType;
+using System.Threading.Tasks;
 
 namespace SocketHttpListener.Net
 {
@@ -195,7 +196,7 @@ namespace SocketHttpListener.Net
             ProcessAccept(e);
         }
 
-        private static void ProcessAccept(SocketAsyncEventArgs args)
+        private static async void ProcessAccept(SocketAsyncEventArgs args)
         {
             HttpEndPointListener epl = (HttpEndPointListener)args.UserToken;
 
@@ -204,20 +205,33 @@ namespace SocketHttpListener.Net
                 return;
             }
 
+            var acceptSocket = args.AcceptSocket;
+
             // http://msdn.microsoft.com/en-us/library/system.net.sockets.acceptSocket.acceptasync%28v=vs.110%29.aspx
             // Under certain conditions ConnectionReset can occur
             // Need to attept to re-accept
             if (args.SocketError == SocketError.ConnectionReset)
             {
                 epl._logger.Error("SocketError.ConnectionReset reported. Attempting to re-accept.");
+                TryClose(acceptSocket);
                 Accept(epl._socket, epl);
                 return;
             }
 
-            var acceptSocket = args.AcceptSocket;
             if (acceptSocket != null)
             {
-                epl.ProcessAccept(acceptSocket);
+                try
+                {
+                    await epl.ProcessAccept(acceptSocket).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    epl._logger.ErrorException("Error in ProcessAccept", ex);
+
+                    TryClose(acceptSocket);
+                    Accept(epl._socket, epl);
+                    return;
+                }
             }
 
             // Accept the next connection request
@@ -255,37 +269,30 @@ namespace SocketHttpListener.Net
             }
         }
 
-        private async void ProcessAccept(Socket accepted)
+        private async Task ProcessAccept(Socket accepted)
         {
-            try
+            var listener = this;
+
+            if (listener._secure && listener._cert == null)
             {
-                var listener = this;
-
-                if (listener._secure && listener._cert == null)
-                {
-                    accepted.Close();
-                    return;
-                }
-
-                _logger.Info("HttpEndPointListener.ProcessAccept from {0} secure connection: {1}", accepted.RemoteEndPoint.ToString(), _secure);
-
-                HttpConnection conn = new HttpConnection(_logger, accepted, listener, _secure, _cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
-
-                await conn.Init().ConfigureAwait(false);
-
-                //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
-                lock (listener._unregisteredConnections)
-                {
-                    listener._unregisteredConnections[conn] = conn;
-                }
-                conn.BeginReadRequest();
+                accepted.Close();
+                return;
             }
-            catch (Exception ex)
+
+            var remoteEndPointString = accepted.RemoteEndPoint == null ? string.Empty : accepted.RemoteEndPoint.ToString();
+            var localEndPointString = accepted.LocalEndPoint == null ? string.Empty : accepted.LocalEndPoint.ToString();
+            //_logger.Info("HttpEndPointListener Accepting connection from {0} to {1} secure connection requested: {2}", remoteEndPointString, localEndPointString, _secure);
+
+            HttpConnection conn = new HttpConnection(_logger, accepted, listener, _secure, _cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
+
+            await conn.Init().ConfigureAwait(false);
+
+            //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
+            lock (listener._unregisteredConnections)
             {
-                TryClose(accepted);
-
-                _logger.ErrorException("Error in ProcessAccept", ex);
+                listener._unregisteredConnections[conn] = conn;
             }
+            conn.BeginReadRequest();
         }
 
         internal void RemoveConnection(HttpConnection conn)
