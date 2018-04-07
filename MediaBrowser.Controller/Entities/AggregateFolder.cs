@@ -136,8 +136,7 @@ namespace MediaBrowser.Controller.Entities
             var args = new ItemResolveArgs(ConfigurationManager.ApplicationPaths, directoryService)
             {
                 FileInfo = FileSystem.GetDirectoryInfo(path),
-                Path = path,
-                Parent = GetParent() as Folder
+                Path = path
             };
 
             // Gather child folder and files
@@ -202,7 +201,7 @@ namespace MediaBrowser.Controller.Entities
         /// <exception cref="System.ArgumentNullException">id</exception>
         public BaseItem FindVirtualChild(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }

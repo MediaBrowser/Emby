@@ -264,12 +264,9 @@ namespace MediaBrowser.Api
             var episode = item as Episode;
             if (episode != null)
             {
-                episode.DvdSeasonNumber = request.DvdSeasonNumber;
-                episode.DvdEpisodeNumber = request.DvdEpisodeNumber;
                 episode.AirsAfterSeasonNumber = request.AirsAfterSeasonNumber;
                 episode.AirsBeforeEpisodeNumber = request.AirsBeforeEpisodeNumber;
                 episode.AirsBeforeSeasonNumber = request.AirsBeforeSeasonNumber;
-                episode.AbsoluteEpisodeNumber = request.AbsoluteEpisodeNumber;
             }
 
             item.Tags = request.Tags;

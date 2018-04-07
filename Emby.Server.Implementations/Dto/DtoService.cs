@@ -1325,13 +1325,6 @@ namespace Emby.Server.Implementations.Dto
                 dto.IndexNumberEnd = episode.IndexNumberEnd;
                 dto.SeriesName = episode.SeriesName;
 
-                if (fields.Contains(ItemFields.AlternateEpisodeNumbers))
-                {
-                    dto.DvdSeasonNumber = episode.DvdSeasonNumber;
-                    dto.DvdEpisodeNumber = episode.DvdEpisodeNumber;
-                    dto.AbsoluteEpisodeNumber = episode.AbsoluteEpisodeNumber;
-                }
-
                 if (fields.Contains(ItemFields.SpecialEpisodeNumbers))
                 {
                     dto.AirsAfterSeasonNumber = episode.AirsAfterSeasonNumber;
@@ -1480,7 +1473,7 @@ namespace Emby.Server.Implementations.Dto
                 }
             }
 
-            var parent = currentItem.DisplayParent ?? (currentItem.IsOwnedItem ? currentItem.GetOwner() : currentItem.GetParent());
+            var parent = currentItem.DisplayParent ?? currentItem.GetOwner() ?? currentItem.GetParent();
 
             if (parent == null && !(originalItem is UserRootFolder) && !(originalItem is UserView) && !(originalItem is AggregateFolder) && !(originalItem is ICollectionFolder) && !(originalItem is Channel))
             {

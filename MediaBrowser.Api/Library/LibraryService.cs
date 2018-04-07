@@ -387,11 +387,6 @@ namespace MediaBrowser.Api.Library
             return metadataOptions.Any(i => !i.DisabledMetadataSavers.Contains(name, StringComparer.OrdinalIgnoreCase));
         }
 
-        private bool IsSubtitleFetcherEnabledByDefault(string name, string[] itemTypes)
-        {
-            return false;
-        }
-
         private bool IsMetadataFetcherEnabledByDefault(string name, string type)
         {
             var metadataOptions = _config.Configuration.MetadataOptions
@@ -457,7 +452,7 @@ namespace MediaBrowser.Api.Library
                 .Select(i => new LibraryOptionInfo
                 {
                     Name = i.Name,
-                    DefaultEnabled = IsSubtitleFetcherEnabledByDefault(i.Name, types)
+                    DefaultEnabled = true
                 })
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
@@ -1027,9 +1022,17 @@ namespace MediaBrowser.Api.Library
                 throw new ResourceNotFoundException("Item not found.");
             }
 
-            while (item.ThemeSongIds.Length == 0 && request.InheritFromParent && item.GetParent() != null)
+            if (request.InheritFromParent)
             {
-                item = item.GetParent();
+                while (item.ThemeSongIds.Length == 0)
+                {
+                    var parent = item.GetParent();
+                    if (parent == null)
+                    {
+                        break;
+                    }
+                    item = parent;
+                }
             }
 
             var dtoOptions = GetDtoOptions(_authContext, request);
@@ -1076,9 +1079,17 @@ namespace MediaBrowser.Api.Library
                 throw new ResourceNotFoundException("Item not found.");
             }
 
-            while (item.ThemeVideoIds.Length == 0 && request.InheritFromParent && item.GetParent() != null)
+            if (request.InheritFromParent)
             {
-                item = item.GetParent();
+                while (item.ThemeVideoIds.Length == 0)
+                {
+                    var parent = item.GetParent();
+                    if (parent == null)
+                    {
+                        break;
+                    }
+                    item = parent;
+                }
             }
 
             var dtoOptions = GetDtoOptions(_authContext, request);

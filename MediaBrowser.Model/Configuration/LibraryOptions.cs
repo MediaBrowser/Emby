@@ -37,7 +37,7 @@ namespace MediaBrowser.Model.Configuration
         public string[] LocalMetadataReaders { get; set; }
         public string[] LocalMetadataReaderOrder { get; set; }
 
-        public string[] SubtitleFetchers { get; set; }
+        public string[] DisabledSubtitleFetchers { get; set; }
         public string[] SubtitleFetcherOrder { get; set; }
 
         public bool SkipSubtitlesIfEmbeddedSubtitlesPresent { get; set; }
@@ -63,6 +63,8 @@ namespace MediaBrowser.Model.Configuration
         public LibraryOptions()
         {
             TypeOptions = new TypeOptions[] { };
+            DisabledSubtitleFetchers = new string[] { };
+            SubtitleFetcherOrder = new string[] { };
 
             SkipSubtitlesIfAudioTrackMatches = true;
             RequirePerfectSubtitleMatch = true;

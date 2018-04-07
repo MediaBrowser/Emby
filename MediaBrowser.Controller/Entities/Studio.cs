@@ -74,19 +74,6 @@ namespace MediaBrowser.Controller.Entities
             return true;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
             query.StudioIds = new[] { Id };

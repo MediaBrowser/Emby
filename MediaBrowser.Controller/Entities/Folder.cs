@@ -192,7 +192,7 @@ namespace MediaBrowser.Controller.Entities
         {
             item.SetParent(this);
 
-            if (item.Id == Guid.Empty)
+            if (item.Id.Equals(Guid.Empty))
             {
                 item.Id = LibraryManager.GetNewItemId(item.Path, item.GetType());
             }
@@ -206,7 +206,7 @@ namespace MediaBrowser.Controller.Entities
                 item.DateModified = DateTime.UtcNow;
             }
 
-            LibraryManager.CreateItem(item);
+            LibraryManager.CreateItem(item, this);
         }
 
         /// <summary>
@@ -1486,7 +1486,7 @@ namespace MediaBrowser.Controller.Entities
                     continue;
                 }
 
-                var childOwner = child.IsOwnedItem ? (child.GetOwner() ?? child) : child;
+                var childOwner = child.GetOwner() ?? child;
 
                 if (childOwner != null && !(child is IItemByName))
                 {

@@ -10,8 +10,6 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// Gets the media sources.
         /// </summary>
-        /// <param name="enablePathSubstitution">if set to <c>true</c> [enable path substitution].</param>
-        /// <returns>Task{IEnumerable{MediaSourceInfo}}.</returns>
         List<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution);
         List<MediaStream> GetMediaStreams();
         Guid Id { get; set; }

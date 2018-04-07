@@ -75,15 +75,12 @@ namespace MediaBrowser.Providers.Manager
         public event EventHandler<GenericEventArgs<BaseItem>> RefreshCompleted;
         public event EventHandler<GenericEventArgs<Tuple<BaseItem, double>>> RefreshProgress;
 
+        private ISubtitleManager _subtitleManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProviderManager" /> class.
         /// </summary>
-        /// <param name="httpClient">The HTTP client.</param>
-        /// <param name="configurationManager">The configuration manager.</param>
-        /// <param name="libraryMonitor">The directory watchers.</param>
-        /// <param name="logManager">The log manager.</param>
-        /// <param name="fileSystem">The file system.</param>
-        public ProviderManager(IHttpClient httpClient, IServerConfigurationManager configurationManager, ILibraryMonitor libraryMonitor, ILogManager logManager, IFileSystem fileSystem, IServerApplicationPaths appPaths, Func<ILibraryManager> libraryManagerFactory, IJsonSerializer json, IMemoryStreamFactory memoryStreamProvider)
+        public ProviderManager(IHttpClient httpClient, ISubtitleManager subtitleManager, IServerConfigurationManager configurationManager, ILibraryMonitor libraryMonitor, ILogManager logManager, IFileSystem fileSystem, IServerApplicationPaths appPaths, Func<ILibraryManager> libraryManagerFactory, IJsonSerializer json, IMemoryStreamFactory memoryStreamProvider)
         {
             _logger = logManager.GetLogger("ProviderManager");
             _httpClient = httpClient;
@@ -94,6 +91,7 @@ namespace MediaBrowser.Providers.Manager
             _libraryManagerFactory = libraryManagerFactory;
             _json = json;
             _memoryStreamProvider = memoryStreamProvider;
+            _subtitleManager = subtitleManager;
         }
 
         /// <summary>
@@ -362,7 +360,7 @@ namespace MediaBrowser.Providers.Manager
             }
 
             // If this restriction is ever lifted, movie xml providers will have to be updated to prevent owned items like trailers from reading those files
-            if (checkIsOwnedItem && item.IsOwnedItem)
+            if (checkIsOwnedItem && item.ExtraType.HasValue)
             {
                 if (provider is ILocalMetadataProvider || provider is IRemoteMetadataProvider)
                 {
@@ -524,7 +522,7 @@ namespace MediaBrowser.Providers.Manager
             AddMetadataPlugins(pluginList, dummy, libraryOptions, options);
             AddImagePlugins(pluginList, dummy, imageProviders);
 
-            var subtitleProviders = new List<ISubtitleProvider>();
+            var subtitleProviders = _subtitleManager.GetSupportedProviders(dummy);
 
             // Subtitle fetchers
             pluginList.AddRange(subtitleProviders.Select(i => new MetadataPlugin

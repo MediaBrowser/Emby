@@ -401,8 +401,9 @@ namespace Emby.Server.Implementations.LiveTv
             }
         }
 
-        private LiveTvChannel GetChannel(ChannelInfo channelInfo, string serviceName, Guid parentFolderId, CancellationToken cancellationToken)
+        private LiveTvChannel GetChannel(ChannelInfo channelInfo, string serviceName, BaseItem parentFolder, CancellationToken cancellationToken)
         {
+            var parentFolderId = parentFolder.Id;
             var isNew = false;
             var forceUpdate = false;
 
@@ -416,17 +417,20 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     Name = channelInfo.Name,
                     Id = id,
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = DateTime.UtcNow
                 };
 
                 isNew = true;
             }
 
-            if (!string.Equals(channelInfo.Id, item.ExternalId, StringComparison.Ordinal))
+            if (channelInfo.Tags != null)
             {
-                isNew = true;
+                if (!channelInfo.Tags.SequenceEqual(item.Tags, StringComparer.OrdinalIgnoreCase))
+                {
+                    isNew = true;
+                }
+                item.Tags = channelInfo.Tags;
             }
-            item.ExternalId = channelInfo.Id;
 
             if (!item.ParentId.Equals(parentFolderId))
             {
@@ -436,6 +440,12 @@ namespace Emby.Server.Implementations.LiveTv
 
             item.ChannelType = channelInfo.ChannelType;
             item.ServiceName = serviceName;
+
+            if (!string.Equals(channelInfo.Id, item.ExternalId, StringComparison.Ordinal))
+            {
+                forceUpdate = true;
+            }
+            item.ExternalId = channelInfo.Id;
 
             if (!string.Equals(channelInfo.Number, item.Number, StringComparison.Ordinal))
             {
@@ -465,11 +475,11 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (isNew)
             {
-                _libraryManager.CreateItem(item);
+                _libraryManager.CreateItem(item, parentFolder);
             }
             else if (forceUpdate)
             {
-                _libraryManager.UpdateItem(item, ItemUpdateType.MetadataImport, cancellationToken);
+                _libraryManager.UpdateItem(item, parentFolder, ItemUpdateType.MetadataImport, cancellationToken);
             }
 
             return item;
@@ -1109,7 +1119,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                 try
                 {
-                    var item = GetChannel(channelInfo.Item2, channelInfo.Item1, parentFolderId, cancellationToken);
+                    var item = GetChannel(channelInfo.Item2, channelInfo.Item1, parentFolder, cancellationToken);
 
                     list.Add(item);
                 }
@@ -1222,7 +1232,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                     if (updatedPrograms.Count > 0)
                     {
-                        _libraryManager.UpdateItems(updatedPrograms, ItemUpdateType.MetadataImport, cancellationToken);
+                        _libraryManager.UpdateItems(updatedPrograms, currentChannel, ItemUpdateType.MetadataImport, cancellationToken);
                     }
 
                     currentChannel.IsMovie = isMovie;
@@ -1231,7 +1241,12 @@ namespace Emby.Server.Implementations.LiveTv
                     currentChannel.IsKids = isKids;
                     currentChannel.IsSeries = iSSeries;
 
-                    currentChannel.UpdateToRepository(ItemUpdateType.MetadataImport, cancellationToken);
+                    //currentChannel.UpdateToRepository(ItemUpdateType.MetadataImport, cancellationToken);
+                    await currentChannel.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
+                    {
+                        ForceSave = true
+
+                    }, cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -1248,8 +1263,8 @@ namespace Emby.Server.Implementations.LiveTv
 
                 progress.Report(85 * percent + 15);
             }
-            progress.Report(100);
 
+            progress.Report(100);
             return new Tuple<List<Guid>, List<Guid>>(channels, programs);
         }
 
@@ -1268,7 +1283,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (itemId == Guid.Empty)
+                if (itemId.Equals(Guid.Empty))
                 {
                     // Somehow some invalid data got into the db. It probably predates the boundary checking
                     continue;

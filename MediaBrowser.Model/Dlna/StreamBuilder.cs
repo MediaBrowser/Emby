@@ -553,6 +553,9 @@ namespace MediaBrowser.Model.Dlna
 
             foreach (var profile in directPlayProfiles)
             {
+                audioSupported = false;
+                videoSupported = false;
+
                 // Check container type
                 if (profile.SupportsContainer(item.Container))
                 {
@@ -560,17 +563,7 @@ namespace MediaBrowser.Model.Dlna
 
                     if (videoStream != null)
                     {
-                        // Check video codec
-                        var videoCodecs = profile.GetVideoCodecs();
-                        if (videoCodecs.Length > 0)
-                        {
-                            string videoCodec = videoStream.Codec;
-                            if (!string.IsNullOrEmpty(videoCodec) && ListHelper.ContainsIgnoreCase(videoCodecs, videoCodec))
-                            {
-                                videoSupported = true;
-                            }
-                        }
-                        else
+                        if (profile.SupportsVideoCodec(videoStream.Codec))
                         {
                             videoSupported = true;
                         }
@@ -578,20 +571,15 @@ namespace MediaBrowser.Model.Dlna
 
                     if (audioStream != null)
                     {
-                        // Check audio codec
-                        var audioCodecs = profile.GetAudioCodecs();
-                        if (audioCodecs.Length > 0)
-                        {
-                            string audioCodec = audioStream.Codec;
-                            if (!string.IsNullOrEmpty(audioCodec) && ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                            {
-                                audioSupported = true;
-                            }
-                        }
-                        else
+                        if (profile.SupportsAudioCodec(audioStream.Codec))
                         {
                             audioSupported = true;
                         }
+                    }
+
+                    if (videoSupported && audioSupported)
+                    {
+                        break;
                     }
                 }
             }
@@ -1859,15 +1847,10 @@ namespace MediaBrowser.Model.Dlna
             }
 
             // Check audio codec
-            var audioCodecs = profile.GetAudioCodecs();
-            if (audioCodecs.Length > 0)
+            string audioCodec = audioStream == null ? null : audioStream.Codec;
+            if (!profile.SupportsAudioCodec(audioCodec))
             {
-                // Check audio codecs
-                string audioCodec = audioStream == null ? null : audioStream.Codec;
-                if (string.IsNullOrEmpty(audioCodec) || !ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -1882,28 +1865,19 @@ namespace MediaBrowser.Model.Dlna
             }
 
             // Check video codec
-            var videoCodecs = profile.GetVideoCodecs();
-            if (videoCodecs.Length > 0)
+            string videoCodec = videoStream == null ? null : videoStream.Codec;
+            if (!profile.SupportsVideoCodec(videoCodec))
             {
-                string videoCodec = videoStream == null ? null : videoStream.Codec;
-                if (string.IsNullOrEmpty(videoCodec) || !ListHelper.ContainsIgnoreCase(videoCodecs, videoCodec))
-                {
-                    return false;
-                }
+                return false;
             }
 
             // Check audio codec
             if (audioStream != null)
             {
-                var audioCodecs = profile.GetAudioCodecs();
-                if (audioCodecs.Length > 0)
+                string audioCodec = audioStream == null ? null : audioStream.Codec;
+                if (!profile.SupportsAudioCodec(audioCodec))
                 {
-                    // Check audio codecs
-                    string audioCodec = audioStream == null ? null : audioStream.Codec;
-                    if (string.IsNullOrEmpty(audioCodec) || !ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 

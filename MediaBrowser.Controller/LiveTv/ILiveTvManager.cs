@@ -269,13 +269,6 @@ namespace MediaBrowser.Controller.LiveTv
         Task<List<NameIdPair>> GetLineups(string providerType, string providerId, string country, string location);
 
         /// <summary>
-        /// Gets the registration information.
-        /// </summary>
-        /// <param name="feature">The feature.</param>
-        /// <returns>Task&lt;MBRegistrationRecord&gt;.</returns>
-        Task<MBRegistrationRecord> GetRegistrationInfo(string feature);
-
-        /// <summary>
         /// Adds the channel information.
         /// </summary>
         /// <param name="items">The items.</param>

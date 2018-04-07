@@ -69,6 +69,6 @@ namespace MediaBrowser.Controller.Subtitles
         /// <summary>
         /// Gets the providers.
         /// </summary>
-        SubtitleProviderInfo[] GetProviders(BaseItem item);
+        SubtitleProviderInfo[] GetSupportedProviders(BaseItem item);
     }
 }

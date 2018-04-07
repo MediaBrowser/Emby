@@ -577,7 +577,7 @@ namespace Emby.Server.Implementations.Updates
 
             // Validate with a checksum
             var packageChecksum = string.IsNullOrWhiteSpace(package.checksum) ? Guid.Empty : new Guid(package.checksum);
-            if (packageChecksum != Guid.Empty) // support for legacy uploads for now
+            if (!packageChecksum.Equals(Guid.Empty)) // support for legacy uploads for now
             {
                 using (var stream = _fileSystem.OpenRead(tempFile))
                 {

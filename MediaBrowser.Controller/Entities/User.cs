@@ -103,19 +103,6 @@ namespace MediaBrowser.Controller.Entities
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets the root folder.
         /// </summary>
         /// <value>The root folder.</value>

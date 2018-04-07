@@ -80,21 +80,6 @@ namespace MediaBrowser.Providers.TV
                 targetItem.AirsBeforeEpisodeNumber = sourceItem.AirsBeforeEpisodeNumber;
             }
 
-            if (replaceData || !targetItem.DvdSeasonNumber.HasValue)
-            {
-                targetItem.DvdSeasonNumber = sourceItem.DvdSeasonNumber;
-            }
-
-            if (replaceData || !targetItem.DvdEpisodeNumber.HasValue)
-            {
-                targetItem.DvdEpisodeNumber = sourceItem.DvdEpisodeNumber;
-            }
-
-            if (replaceData || !targetItem.AbsoluteEpisodeNumber.HasValue)
-            {
-                targetItem.AbsoluteEpisodeNumber = sourceItem.AbsoluteEpisodeNumber;
-            }
-
             if (replaceData || !targetItem.IndexNumberEnd.HasValue)
             {
                 targetItem.IndexNumberEnd = sourceItem.IndexNumberEnd;

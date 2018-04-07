@@ -16,9 +16,6 @@ namespace MediaBrowser.Controller.Providers
         /// </summary>
         public bool ReplaceAllMetadata { get; set; }
 
-        public bool IsPostRecursiveRefresh { get; set; }
-        public bool ValidateChildren { get; set; }
-
         public MetadataRefreshMode MetadataRefreshMode { get; set; }
         public RemoteSearchResult SearchResult { get; set; }
 
@@ -44,6 +41,7 @@ namespace MediaBrowser.Controller.Providers
             MetadataRefreshMode = copy.MetadataRefreshMode;
             ForceSave = copy.ForceSave;
             ReplaceAllMetadata = copy.ReplaceAllMetadata;
+            EnableRemoteContentProbe = copy.EnableRemoteContentProbe;
 
             ImageRefreshMode = copy.ImageRefreshMode;
             ReplaceAllImages = copy.ReplaceAllImages;

@@ -41,7 +41,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Gets the playack media sources.
         /// </summary>
-        Task<List<MediaSourceInfo>> GetPlayackMediaSources(BaseItem item, User user, bool enablePathSubstitution, CancellationToken cancellationToken);
+        Task<List<MediaSourceInfo>> GetPlayackMediaSources(BaseItem item, User user, bool allowMediaProbe, bool enablePathSubstitution, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the static media sources.
@@ -79,6 +79,10 @@ namespace MediaBrowser.Controller.Library
         Task CloseLiveStream(string id);
 
         Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken);
+
+        bool SupportsDirectStream(string path, MediaProtocol protocol);
+
+        MediaProtocol GetPathProtocol(string path);
     }
 
     public interface IDirectStreamProvider

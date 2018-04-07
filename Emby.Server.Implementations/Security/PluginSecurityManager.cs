@@ -76,19 +76,11 @@ namespace Emby.Server.Implementations.Security
             return GetRegistrationStatus(feature, null);
         }
 
-        /// <summary>
-        /// Gets the registration status.
-        /// </summary>
-        public Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent)
-        {
-            return GetRegistrationStatus(feature, null, null);
-        }
-
         private SemaphoreSlim _regCheckLock = new SemaphoreSlim(1, 1);
         /// <summary>
         /// Gets the registration status.
         /// </summary>
-        public async Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string mb2Equivalent, string version)
+        public async Task<MBRegistrationRecord> GetRegistrationStatus(string feature, string version)
         {
             await _regCheckLock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
 

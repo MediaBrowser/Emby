@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Plugins;
-using MediaBrowser.Model.Registration;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
@@ -111,6 +110,14 @@ namespace MediaBrowser.Api
     {
         [ApiMember(Name = "Name", Description = "Feature Name", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Name { get; set; }
+    }
+
+    public class RegistrationInfo
+    {
+        public string Name { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public bool IsTrial { get; set; }
+        public bool IsRegistered { get; set; }
     }
 
     [Route("/Appstore/Register", "POST", Summary = "Registers an appstore sale", IsHidden = true)]

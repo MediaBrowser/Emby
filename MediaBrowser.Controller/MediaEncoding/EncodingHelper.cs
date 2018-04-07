@@ -686,7 +686,39 @@ namespace MediaBrowser.Controller.MediaEncoding
             // h264 (h264_nvenc)
             else if (string.Equals(videoEncoder, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
             {
-                param += "-preset default";
+                switch (encodingOptions.H264Preset)
+				{
+					case "veryslow" : 
+						
+						param += "-preset slow"; //lossless is only supported on maxwell and newer(2014+)
+						break;
+						
+					case "slow" :
+					
+					case "slower" :
+						
+						param += "-preset slow";
+						break;
+
+					case "medium" :
+						
+						param += "-preset medium";
+						break;
+					
+					case "fast" :
+					case "faster" :
+					case "veryfast" :
+					case "superfast" :
+					case "ultrafast" :
+						
+						param += "-preset fast";
+						break;
+
+					default:
+				
+						param += "-preset default";
+						break;
+				}
             }
 
             // webm

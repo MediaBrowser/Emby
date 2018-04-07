@@ -67,7 +67,6 @@ namespace MediaBrowser.Model.Dto
         public int? AirsBeforeSeasonNumber { get; set; }
         public int? AirsAfterSeasonNumber { get; set; }
         public int? AirsBeforeEpisodeNumber { get; set; }
-        public int? AbsoluteEpisodeNumber { get; set; }
         public bool? DisplaySpecialsWithSeasons { get; set; }
         public bool? CanDelete { get; set; }
         public bool? CanDownload { get; set; }
@@ -104,17 +103,6 @@ namespace MediaBrowser.Model.Dto
         public double? SyncPercent { get; set; }
 
         public string Container { get; set; }
-
-        /// <summary>
-        /// Gets or sets the DVD season number.
-        /// </summary>
-        /// <value>The DVD season number.</value>
-        public int? DvdSeasonNumber { get; set; }
-        /// <summary>
-        /// Gets or sets the DVD episode number.
-        /// </summary>
-        /// <value>The DVD episode number.</value>
-        public float? DvdEpisodeNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the sort.

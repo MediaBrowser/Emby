@@ -811,7 +811,7 @@ namespace Emby.Server.Implementations.Data
             saveItemStatement.TryBind("@ProductionYear", item.ProductionYear);
 
             var parentId = item.ParentId;
-            if (parentId == Guid.Empty)
+            if (parentId.Equals(Guid.Empty))
             {
                 saveItemStatement.TryBindNull("@ParentId");
             }
@@ -1251,7 +1251,7 @@ namespace Emby.Server.Implementations.Data
         /// <exception cref="System.ArgumentException"></exception>
         public BaseItem RetrieveItem(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -2044,7 +2044,7 @@ namespace Emby.Server.Implementations.Data
         public List<ChapterInfo> GetChapters(Guid id)
         {
             CheckDisposed();
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -2080,7 +2080,7 @@ namespace Emby.Server.Implementations.Data
         public ChapterInfo GetChapter(Guid id, int index)
         {
             CheckDisposed();
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -2141,7 +2141,7 @@ namespace Emby.Server.Implementations.Data
         {
             CheckDisposed();
 
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -4821,7 +4821,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
         public void DeleteItem(Guid id, CancellationToken cancellationToken)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -5022,7 +5022,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
         private void UpdateAncestors(Guid itemId, List<Guid> ancestorIds, IDatabaseConnection db, IStatement deleteAncestorsStatement, IStatement updateAncestorsStatement)
         {
-            if (itemId == Guid.Empty)
+            if (itemId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("itemId");
             }
@@ -5508,7 +5508,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
         private void UpdateItemValues(Guid itemId, List<Tuple<int, string>> values, IDatabaseConnection db)
         {
-            if (itemId == Guid.Empty)
+            if (itemId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("itemId");
             }
@@ -5559,7 +5559,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
         public void UpdatePeople(Guid itemId, List<PersonInfo> people)
         {
-            if (itemId == Guid.Empty)
+            if (itemId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("itemId");
             }
@@ -5691,7 +5691,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
         {
             CheckDisposed();
 
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
