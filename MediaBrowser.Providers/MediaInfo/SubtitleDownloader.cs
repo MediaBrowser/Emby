@@ -166,8 +166,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 if (result != null)
                 {
-                    await _subtitleManager.DownloadSubtitles(video, result.Id, cancellationToken)
-                            .ConfigureAwait(false);
+                    await _subtitleManager.DownloadSubtitles(video, result.Id, cancellationToken).ConfigureAwait(false);
 
                     return true;
                 }

@@ -607,7 +607,8 @@ namespace Emby.Server.Implementations.Session
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
                 ClientName = session.AppName,
-                DeviceId = session.DeviceId
+                DeviceId = session.DeviceId,
+                Session = session
 
             }, _logger);
 
@@ -689,7 +690,8 @@ namespace Emby.Server.Implementations.Session
                 DeviceId = session.DeviceId,
                 IsPaused = info.IsPaused,
                 PlaySessionId = info.PlaySessionId,
-                IsAutomated = isAutomated
+                IsAutomated = isAutomated,
+                Session = session
 
             }, _logger);
 
@@ -841,7 +843,8 @@ namespace Emby.Server.Implementations.Session
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
                 ClientName = session.AppName,
-                DeviceId = session.DeviceId
+                DeviceId = session.DeviceId,
+                Session = session
 
             }, _logger);
         }

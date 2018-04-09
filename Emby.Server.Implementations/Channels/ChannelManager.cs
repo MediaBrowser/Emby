@@ -109,6 +109,11 @@ namespace Emby.Server.Implementations.Channels
         public Task DeleteItem(BaseItem item)
         {
             var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            if (internalChannel == null)
+            {
+                throw new ArgumentException();
+            }
+
             var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
 
             var supportsDelete = channel as ISupportsDelete;

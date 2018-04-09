@@ -542,6 +542,8 @@ namespace Emby.Server.Implementations.LiveTv
             }
             item.ExternalSeriesId = seriesId;
 
+            var isSeries = info.IsSeries || !string.IsNullOrEmpty(info.EpisodeTitle);
+
             var tags = new List<string>();
             if (info.IsLive)
             {
@@ -571,7 +573,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 tags.Add("Movie");
             }
-            if (info.IsSeries)
+            if (isSeries)
             {
                 tags.Add("Series");
             }
@@ -584,7 +586,13 @@ namespace Emby.Server.Implementations.LiveTv
             item.IsMovie = info.IsMovie;
             item.IsNews = info.IsNews;
             item.IsRepeat = info.IsRepeat;
-            item.IsSeries = info.IsSeries;
+
+            if(item.IsSeries != isSeries)
+            {
+                forceUpdate = true;
+            }
+            item.IsSeries = isSeries;
+
             item.IsSports = info.IsSports;
             item.Name = info.Name;
             item.OfficialRating = item.OfficialRating ?? info.OfficialRating;
@@ -613,7 +621,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             item.ProductionYear = info.ProductionYear;
 
-            if (!info.IsSeries || info.IsRepeat)
+            if (!isSeries || info.IsRepeat)
             {
                 item.PremiereDate = info.OriginalAirDate;
             }

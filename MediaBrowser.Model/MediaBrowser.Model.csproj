@@ -129,7 +129,6 @@
     <Compile Include="Entities\ExtraType.cs" />
     <Compile Include="Entities\TrailerType.cs" />
     <Compile Include="Configuration\BaseApplicationConfiguration.cs" />
-    <Compile Include="Configuration\DlnaOptions.cs" />
     <Compile Include="Configuration\ImageOption.cs" />
     <Compile Include="Configuration\ImageSavingConvention.cs" />
     <Compile Include="LiveTv\LiveTvOptions.cs" />

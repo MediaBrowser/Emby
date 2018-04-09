@@ -1,5 +1,5 @@
 ﻿
-namespace MediaBrowser.Model.Configuration
+namespace Emby.Dlna.Configuration
 {
     public class DlnaOptions
     {

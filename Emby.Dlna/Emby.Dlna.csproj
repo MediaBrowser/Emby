@@ -40,6 +40,7 @@
     <Compile Include="Common\ServiceAction.cs" />
     <Compile Include="Common\StateVariable.cs" />
     <Compile Include="ConfigurationExtension.cs" />
+    <Compile Include="Configuration\DlnaOptions.cs" />
     <Compile Include="ConnectionManager\ConnectionManager.cs" />
     <Compile Include="ConnectionManager\ConnectionManagerXmlBuilder.cs" />
     <Compile Include="ConnectionManager\ControlHandler.cs" />

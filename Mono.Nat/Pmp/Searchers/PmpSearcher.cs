@@ -73,7 +73,7 @@ namespace Mono.Nat
         }
 
         private List<UdpClient> sockets;
-        protected Dictionary<UdpClient, List<IPEndPoint>> gatewayLists;
+        private Dictionary<UdpClient, List<IPEndPoint>> gatewayLists;
 
         private void CreateSocketsAndAddGateways()
         {

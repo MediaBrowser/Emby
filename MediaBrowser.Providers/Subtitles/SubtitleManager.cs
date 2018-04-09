@@ -20,6 +20,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Providers.Subtitles
 {
@@ -133,14 +134,22 @@ namespace MediaBrowser.Providers.Subtitles
             return _config.GetConfiguration<SubtitleOptions>("subtitles");
         }
 
+        public Task DownloadSubtitles(Video video, string subtitleId, CancellationToken cancellationToken)
+        {
+            var libraryOptions = BaseItem.LibraryManager.GetLibraryOptions(video);
+
+            return DownloadSubtitles(video, libraryOptions, subtitleId, cancellationToken);
+        }
+
         public async Task DownloadSubtitles(Video video,
+            LibraryOptions libraryOptions,
             string subtitleId,
             CancellationToken cancellationToken)
         {
             var parts = subtitleId.Split(new[] { '_' }, 2);
             var provider = GetProvider(parts.First());
 
-            var saveInMediaFolder = video.IsSaveLocalMetadataEnabled();
+            var saveInMediaFolder = libraryOptions.SaveSubtitlesWithMedia;
 
             try
             {

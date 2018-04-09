@@ -417,7 +417,7 @@ namespace Emby.Server.Implementations.Library
                 _openStreams[mediaSource.LiveStreamId] = info;
 
                 var json = _jsonSerializer.SerializeToString(mediaSource);
-                _logger.Debug("Live stream opened: " + json);
+                _logger.Info("Live stream opened: " + json);
                 var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
 
                 if (!string.IsNullOrEmpty(request.UserId))

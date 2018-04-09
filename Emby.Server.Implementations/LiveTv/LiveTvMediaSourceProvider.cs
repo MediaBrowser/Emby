@@ -155,9 +155,9 @@ namespace Emby.Server.Implementations.LiveTv
             catch (Exception ex)
             {
                 _logger.ErrorException("Error probing live tv stream", ex);
+                AddMediaInfo(stream, isAudio, cancellationToken);
             }
 
-            _logger.Info("Live stream info: {0}", _jsonSerializer.SerializeToString(stream));
             return new Tuple<MediaSourceInfo, IDirectStreamProvider, bool>(stream, directStreamProvider, allowLiveMediaProbe);
         }
 

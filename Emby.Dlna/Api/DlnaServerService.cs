@@ -1,17 +1,16 @@
 ﻿using MediaBrowser.Controller.Dlna;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Common.Extensions;
 using System.Text;
+using MediaBrowser.Controller.Net;
+using System.Linq;
 
-namespace MediaBrowser.Api.Dlna
+namespace Emby.Dlna.Api
 {
     [Route("/Dlna/{UuId}/description.xml", "GET", Summary = "Gets dlna server info")]
     [Route("/Dlna/{UuId}/description", "GET", Summary = "Gets dlna server info")]
@@ -107,7 +106,7 @@ namespace MediaBrowser.Api.Dlna
         public string Filename { get; set; }
     }
 
-    public class DlnaServerService : BaseApiService
+    public class DlnaServerService : IService, IRequiresRequest
     {
         private readonly IDlnaManager _dlnaManager;
         private readonly IContentDirectory _contentDirectory;
@@ -117,13 +116,22 @@ namespace MediaBrowser.Api.Dlna
         private const string XMLContentType = "text/xml; charset=UTF-8";
         private readonly IMemoryStreamFactory _memoryStreamProvider;
 
-        public DlnaServerService(IDlnaManager dlnaManager, IContentDirectory contentDirectory, IConnectionManager connectionManager, IMediaReceiverRegistrar mediaReceiverRegistrar, IMemoryStreamFactory memoryStreamProvider)
+        public IRequest Request { get; set; }
+        private IHttpResultFactory _resultFactory;
+
+        public DlnaServerService(IDlnaManager dlnaManager, IHttpResultFactory httpResultFactory, IContentDirectory contentDirectory, IConnectionManager connectionManager, IMediaReceiverRegistrar mediaReceiverRegistrar, IMemoryStreamFactory memoryStreamProvider)
         {
             _dlnaManager = dlnaManager;
             _contentDirectory = contentDirectory;
             _connectionManager = connectionManager;
             _mediaReceiverRegistrar = mediaReceiverRegistrar;
             _memoryStreamProvider = memoryStreamProvider;
+            _resultFactory = httpResultFactory;
+        }
+
+        private string GetHeader(string name)
+        {
+            return Request.Headers[name];
         }
 
         public object Get(GetDescriptionXml request)
@@ -136,49 +144,49 @@ namespace MediaBrowser.Api.Dlna
             var cacheKey = Request.RawUrl.GetMD5();
             var bytes = Encoding.UTF8.GetBytes(xml);
 
-            return ResultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, XMLContentType, () => Task.FromResult<Stream>(new MemoryStream(bytes)));
+            return _resultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, XMLContentType, () => Task.FromResult<Stream>(new MemoryStream(bytes)));
         }
 
         public object Get(GetContentDirectory request)
         {
             var xml = _contentDirectory.GetServiceXml(Request.Headers.ToDictionary());
 
-            return ResultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Get(GetMediaReceiverRegistrar request)
         {
             var xml = _mediaReceiverRegistrar.GetServiceXml(Request.Headers.ToDictionary());
 
-            return ResultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Get(GetConnnectionManager request)
         {
             var xml = _connectionManager.GetServiceXml(Request.Headers.ToDictionary());
 
-            return ResultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Post(ProcessMediaReceiverRegistrarControlRequest request)
         {
             var response = PostAsync(request.RequestStream, _mediaReceiverRegistrar);
 
-            return ResultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
 
         public object Post(ProcessContentDirectoryControlRequest request)
         {
             var response = PostAsync(request.RequestStream, _contentDirectory);
 
-            return ResultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
 
         public object Post(ProcessConnectionManagerControlRequest request)
         {
             var response = PostAsync(request.RequestStream, _connectionManager);
 
-            return ResultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
 
         private ControlResponse PostAsync(Stream requestStream, IUpnpService service)
@@ -192,6 +200,38 @@ namespace MediaBrowser.Api.Dlna
                 TargetServerUuId = id,
                 RequestedUrl = Request.AbsoluteUri
             });
+        }
+
+        protected string GetPathValue(int index)
+        {
+            var pathInfo = Parse(Request.PathInfo);
+            var first = pathInfo[0];
+
+            // backwards compatibility
+            if (string.Equals(first, "mediabrowser", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(first, "emby", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+            }
+
+            return pathInfo[index];
+        }
+
+        private List<string> Parse(string pathUri)
+        {
+            var actionParts = pathUri.Split(new[] { "://" }, StringSplitOptions.None);
+
+            var pathInfo = actionParts[actionParts.Length - 1];
+
+            var optionsPos = pathInfo.LastIndexOf('?');
+            if (optionsPos != -1)
+            {
+                pathInfo = pathInfo.Substring(0, optionsPos);
+            }
+
+            var args = pathInfo.Split('/');
+
+            return args.Skip(1).ToList();
         }
 
         public object Get(GetIcon request)
@@ -210,7 +250,7 @@ namespace MediaBrowser.Api.Dlna
                     var cacheLength = TimeSpan.FromDays(365);
                     var cacheKey = Request.RawUrl.GetMD5();
 
-                    return ResultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, contentType, ()=> Task.FromResult<Stream>(new MemoryStream(bytes)));
+                    return _resultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, contentType, ()=> Task.FromResult<Stream>(new MemoryStream(bytes)));
                     //return ResultFactory.GetResult(bytes, contentType);
                 }
             }
@@ -270,7 +310,7 @@ namespace MediaBrowser.Api.Dlna
 
         private object GetSubscriptionResponse(EventSubscriptionResponse response)
         {
-            return ResultFactory.GetResult(response.Content, response.ContentType, response.Headers);
+            return _resultFactory.GetResult(response.Content, response.ContentType, response.Headers);
         }
     }
 }

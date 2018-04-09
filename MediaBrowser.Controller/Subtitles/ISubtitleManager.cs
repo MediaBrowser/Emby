@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Controller.Subtitles
 {
@@ -45,13 +46,12 @@ namespace MediaBrowser.Controller.Subtitles
         /// <summary>
         /// Downloads the subtitles.
         /// </summary>
-        /// <param name="video">The video.</param>
-        /// <param name="subtitleId">The subtitle identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task DownloadSubtitles(Video video,
-            string subtitleId,
-            CancellationToken cancellationToken);
+        Task DownloadSubtitles(Video video, string subtitleId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Downloads the subtitles.
+        /// </summary>
+        Task DownloadSubtitles(Video video, LibraryOptions libraryOptions, string subtitleId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the remote subtitles.
