@@ -871,7 +871,7 @@
   "OptionSaveMetadataAsHidden": "Save metadata and images as hidden files",
   "LabelExtractChaptersDuringLibraryScan": "Extract chapter images during the library scan",
   "LabelExtractChaptersDuringLibraryScanHelp": "If enabled, chapter images will be extracted when videos are imported during the library scan. If disabled they will be extracted during the chapter images scheduled task, allowing the regular library scan to complete faster.",
-  "LabelConnectGuestUserName": "Their Emby Connect username or email address:",
+  "LabelConnectGuestUserName": "Their Emby Connect email address or username:",
   "LabelConnectUserName": "Emby Connect username or email address:",
   "LabelConnectUserNameHelp": "Connect this local user to an Emby Connect account to enable easy sign-in access from any Emby app without having to know the server ip address.",
   "ButtonLearnMoreAboutEmbyConnect": "Learn more about Emby Connect",
@@ -1783,5 +1783,9 @@
   "LabelSecureConnectionsMode": "Secure connection mode:",
   "PreferredNotRequired": "Preferred, but not required",
   "RequiredForAllRemoteConnections": "Required for all remote connections",
-  "HandledByProxy": "Handled by reverse proxy"
+  "HandledByProxy": "Handled by reverse proxy",
+  "SaveSubtitlesIntoMediaFolders": "Save subtitles into media folders",
+  "SaveSubtitlesIntoMediaFoldersHelp": "Storing subtitles next to video files will allow them to be more easily managed.",
+  "SubtitleDownloadInstructions": "To manage subtitle downloading, click on a library in Emby library setup, and edit the subtitle downloading settings.",
+  "OpenSubtitleInstructions": "You'll need to configure Open Subtitles account information on the Open Subtitles configuration screen in the Emby Server dashboard."
 }

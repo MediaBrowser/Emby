@@ -899,6 +899,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 defaults.SeriesId = program.SeriesId;
                 defaults.ProgramId = program.Id;
                 defaults.RecordNewOnly = !program.IsRepeat;
+                defaults.Name = program.Name;
             }
 
             defaults.SkipEpisodesInLibrary = defaults.RecordNewOnly;
@@ -2574,11 +2575,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 throw new ArgumentNullException("seriesTimer");
             }
 
-            if (string.IsNullOrWhiteSpace(seriesTimer.SeriesId))
-            {
-                return new List<TimerInfo>();
-            }
-
             var query = new InternalItemsQuery
             {
                 IncludeItemTypes = new string[] { typeof(LiveTvProgram).Name },
@@ -2589,6 +2585,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 },
                 MinEndDate = DateTime.UtcNow
             };
+
+            if (string.IsNullOrEmpty(seriesTimer.SeriesId))
+            {
+                query.Name = seriesTimer.Name;
+            }
 
             if (!seriesTimer.RecordAnyChannel)
             {

@@ -344,16 +344,19 @@ namespace MediaBrowser.Controller.Entities.TV
         {
             var hasChanges = base.BeforeMetadataRefresh();
 
-            try
+            if (SourceType == SourceType.Library)
             {
-                if (LibraryManager.FillMissingEpisodeNumbersFromPath(this))
+                try
                 {
-                    hasChanges = true;
+                    if (LibraryManager.FillMissingEpisodeNumbersFromPath(this))
+                    {
+                        hasChanges = true;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
+                catch (Exception ex)
+                {
+                    Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
+                }
             }
 
             if (!ParentIndexNumber.HasValue)

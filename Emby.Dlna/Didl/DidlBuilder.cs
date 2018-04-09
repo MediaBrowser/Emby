@@ -21,7 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using MediaBrowser.Controller.MediaEncoding;
-using MediaBrowser.Model.Configuration;
+using Emby.Dlna.Configuration;
 using MediaBrowser.Model.Globalization;
 
 namespace Emby.Dlna.Didl

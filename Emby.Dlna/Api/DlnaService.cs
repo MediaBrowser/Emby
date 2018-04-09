@@ -4,7 +4,7 @@ using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Services;
 
-namespace MediaBrowser.Api.Dlna
+namespace Emby.Dlna.Api
 {
     [Route("/Dlna/ProfileInfos", "GET", Summary = "Gets a list of profiles")]
     public class GetProfileInfos : IReturn<DeviceProfileInfo[]>
@@ -41,7 +41,7 @@ namespace MediaBrowser.Api.Dlna
     }
 
     [Authenticated(Roles = "Admin")]
-    public class DlnaService : BaseApiService
+    public class DlnaService : IService
     {
         private readonly IDlnaManager _dlnaManager;
 

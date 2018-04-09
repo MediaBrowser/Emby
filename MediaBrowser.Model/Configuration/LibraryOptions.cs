@@ -44,6 +44,7 @@ namespace MediaBrowser.Model.Configuration
         public bool SkipSubtitlesIfAudioTrackMatches { get; set; }
         public string[] SubtitleDownloadLanguages { get; set; }
         public bool RequirePerfectSubtitleMatch { get; set; }
+        public bool SaveSubtitlesWithMedia { get; set; }
 
         public TypeOptions[] TypeOptions { get; set; }
 
@@ -70,6 +71,7 @@ namespace MediaBrowser.Model.Configuration
             RequirePerfectSubtitleMatch = true;
 
             EnablePhotos = true;
+            SaveSubtitlesWithMedia = true;
             EnableRealtimeMonitor = true;
             PathInfos = new MediaPathInfo[] { };
             EnableInternetProviders = true;
