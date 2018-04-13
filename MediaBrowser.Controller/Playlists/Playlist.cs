@@ -24,13 +24,22 @@ namespace MediaBrowser.Controller.Playlists
             ".zpl"
         };
 
-        public string OwnerUserId { get; set; }
+        public Guid OwnerUserId { get; set; }
 
         public List<Share> Shares { get; set; }
 
         public Playlist()
         {
             Shares = new List<Share>();
+        }
+
+        [IgnoreDataMember]
+        public bool IsFile
+        {
+            get
+            {
+                return IsPlaylistFile(Path);
+            }
         }
 
         public static bool IsPlaylistFile(string path)
@@ -249,10 +258,27 @@ namespace MediaBrowser.Controller.Playlists
 
         public override bool IsVisible(User user)
         {
-            var userId = user.Id.ToString("N");
+            if (user.Id == OwnerUserId)
+            {
+                return true;
+            }
 
-            return Shares.Any(i => string.Equals(userId, i.UserId, StringComparison.OrdinalIgnoreCase)) ||
-                string.Equals(OwnerUserId, userId, StringComparison.OrdinalIgnoreCase);
+            var shares = Shares;
+            if (shares.Count == 0)
+            {
+                return base.IsVisible(user);
+            }
+
+            var userId = user.Id.ToString("N");
+            foreach (var share in shares)
+            {
+                if (string.Equals(share.UserId, userId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override bool IsVisibleStandalone(User user)

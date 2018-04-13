@@ -194,11 +194,14 @@ namespace MediaBrowser.Model.Configuration
         public PathSubstitution[] PathSubstitutions { get; set; }
         public bool EnableSimpleArtistDetection { get; set; }
 
+        public string[] UninstalledPlugins { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConfiguration" /> class.
         /// </summary>
         public ServerConfiguration()
         {
+            UninstalledPlugins = new string[] { };
             RemoteIPFilter = new string[] { };
             LocalNetworkSubnets = new string[] { };
             LocalNetworkAddresses = new string[] { };

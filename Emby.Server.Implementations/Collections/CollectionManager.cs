@@ -202,10 +202,10 @@ namespace Emby.Server.Implementations.Collections
                     throw new ArgumentException("No item exists with the supplied Id");
                 }
 
-                itemList.Add(item);
-
                 if (!currentLinkedChildrenIds.Contains(guidId))
                 {
+                    itemList.Add(item);
+
                     list.Add(LinkedChild.Create(item));
                     linkedChildrenList.Add(item);
                 }
