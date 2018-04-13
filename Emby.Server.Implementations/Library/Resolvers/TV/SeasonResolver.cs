@@ -70,7 +70,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
                     {
                         if (episodeInfo.EpisodeNumber.HasValue && episodeInfo.SeasonNumber.HasValue)
                         {
-                            _logger.Info("Found folder underneath series with episode number: {0}. Season {1}. Episode {2}", 
+                            _logger.Debug("Found folder underneath series with episode number: {0}. Season {1}. Episode {2}", 
                                 path,
                                 episodeInfo.SeasonNumber.Value,
                                 episodeInfo.EpisodeNumber.Value);

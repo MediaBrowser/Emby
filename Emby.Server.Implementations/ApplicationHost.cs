@@ -226,7 +226,7 @@ namespace Emby.Server.Implementations
         /// Gets all concrete types.
         /// </summary>
         /// <value>All concrete types.</value>
-        public Type[] AllConcreteTypes { get; protected set; }
+        public Tuple<Type, string>[] AllConcreteTypes { get; protected set; }
 
         /// <summary>
         /// The disposable parts
@@ -479,7 +479,7 @@ namespace Emby.Server.Implementations
         {
             get
             {
-                return _version ?? (_version = GetAssembly(GetType()).GetName().Version);
+                return _version ?? (_version = GetType().GetTypeInfo().Assembly.GetName().Version);
             }
         }
 
@@ -509,9 +509,12 @@ namespace Emby.Server.Implementations
             }
         }
 
-        private Assembly GetAssembly(Type type)
+        private Tuple<Assembly, string> GetAssembly(Type type)
         {
-            return type.GetTypeInfo().Assembly;
+            var assembly = type.GetTypeInfo().Assembly;
+            string path = null;
+
+            return new Tuple<Assembly, string>(assembly, path);
         }
 
         public virtual bool SupportsAutoRunAtStartup
@@ -529,16 +532,7 @@ namespace Emby.Server.Implementations
         /// <returns>System.Object.</returns>
         public object CreateInstance(Type type)
         {
-            try
-            {
-                return Container.GetInstance(type);
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error creating {0}", ex, type.FullName);
-
-                throw;
-            }
+            return Container.GetInstance(type);
         }
 
         /// <summary>
@@ -546,8 +540,10 @@ namespace Emby.Server.Implementations
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>System.Object.</returns>
-        protected object CreateInstanceSafe(Type type)
+        protected object CreateInstanceSafe(Tuple<Type, string> typeInfo)
         {
+            var type = typeInfo.Item1;
+
             try
             {
                 return Container.GetInstance(type);
@@ -624,11 +620,13 @@ namespace Emby.Server.Implementations
         /// </summary>
         /// <param name="file">The file.</param>
         /// <returns>Assembly.</returns>
-        protected Assembly LoadAssembly(string file)
+        protected Tuple<Assembly, string> LoadAssembly(string file)
         {
             try
             {
-                return Assembly.Load(File.ReadAllBytes(file));
+                var assembly = Assembly.Load(File.ReadAllBytes(file));
+
+                return new Tuple<Assembly, string>(assembly, file);
             }
             catch (Exception ex)
             {
@@ -643,11 +641,11 @@ namespace Emby.Server.Implementations
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IEnumerable{Type}.</returns>
-        public IEnumerable<Type> GetExportTypes<T>()
+        public IEnumerable<Tuple<Type, string>> GetExportTypes<T>()
         {
             var currentType = typeof(T);
 
-            return AllConcreteTypes.Where(currentType.IsAssignableFrom);
+            return AllConcreteTypes.Where(i => currentType.IsAssignableFrom(i.Item1));
         }
 
         /// <summary>
@@ -669,6 +667,33 @@ namespace Emby.Server.Implementations
                 lock (DisposableParts)
                 {
                     DisposableParts.AddRange(parts.OfType<IDisposable>());
+                }
+            }
+
+            return parts;
+        }
+
+        public List<Tuple<T, string>> GetExportsWithInfo<T>(bool manageLiftime = true)
+        {
+            var parts = GetExportTypes<T>()
+                .Select(i =>
+                {
+                    var obj = CreateInstanceSafe(i);
+
+                    if (obj == null)
+                    {
+                        return null;
+                    }
+                    return new Tuple<T, string>((T)obj, i.Item2);
+                })
+                .Where(i => i != null)
+                .ToList();
+
+            if (manageLiftime)
+            {
+                lock (DisposableParts)
+                {
+                    DisposableParts.AddRange(parts.Select(i => i.Item1).OfType<IDisposable>());
                 }
             }
 
@@ -881,7 +906,7 @@ namespace Emby.Server.Implementations
             SecurityManager = new PluginSecurityManager(this, HttpClient, JsonSerializer, ApplicationPaths, LogManager, FileSystemManager, CryptographyProvider);
             RegisterSingleInstance(SecurityManager);
 
-            InstallationManager = new InstallationManager(LogManager.GetLogger("InstallationManager"), this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, ConfigurationManager, FileSystemManager, CryptographyProvider, PackageRuntime);
+            InstallationManager = new InstallationManager(LogManager.GetLogger("InstallationManager"), this, ApplicationPaths, HttpClient, JsonSerializer, SecurityManager, ServerConfigurationManager, FileSystemManager, CryptographyProvider, PackageRuntime);
             RegisterSingleInstance(InstallationManager);
 
             ZipClient = new ZipClient(FileSystemManager);
@@ -1232,7 +1257,6 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe";
                 info.ArchiveType = "7z";
                 info.Version = "20170308";
-                info.DownloadUrls = new string[] { };
             }
             else if (EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows)
             {
@@ -1240,7 +1264,6 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe.exe";
                 info.Version = "20170308";
                 info.ArchiveType = "7z";
-                info.DownloadUrls = new string[] { };
             }
             else if (EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.OSX)
             {
@@ -1248,12 +1271,6 @@ namespace Emby.Server.Implementations
                 info.FFProbeFilename = "ffprobe";
                 info.ArchiveType = "7z";
                 info.Version = "20170308";
-                info.DownloadUrls = new string[] { };
-            }
-            else
-            {
-                // No version available - user requirement
-                info.DownloadUrls = new string[] { };
             }
 
             return info;
@@ -1394,7 +1411,7 @@ namespace Emby.Server.Implementations
             }
 
             ConfigurationManager.AddParts(GetExports<IConfigurationFactory>());
-            Plugins = GetExports<IPlugin>().Select(LoadPlugin).Where(i => i != null).ToArray();
+            Plugins = GetExportsWithInfo<IPlugin>().Select(LoadPlugin).Where(i => i != null).ToArray();
 
             HttpServer.Init(GetExports<IService>(false));
 
@@ -1428,8 +1445,11 @@ namespace Emby.Server.Implementations
             UserManager.AddParts(GetExports<IAuthenticationProvider>());
         }
 
-        private IPlugin LoadPlugin(IPlugin plugin)
+        private IPlugin LoadPlugin(Tuple<IPlugin, string> info)
         {
+            var plugin = info.Item1;
+            var assemblyFilePath = info.Item2;
+
             try
             {
                 var assemblyPlugin = plugin as IPluginAssembly;
@@ -1439,10 +1459,9 @@ namespace Emby.Server.Implementations
                     var assembly = plugin.GetType().Assembly;
                     var assemblyName = assembly.GetName();
 
-                    var assemblyFileName = assemblyName.Name + ".dll";
-                    var assemblyFilePath = Path.Combine(ApplicationPaths.PluginsPath, assemblyFileName);
+                    var dataFolderPath = Path.Combine(ApplicationPaths.PluginsPath, Path.GetFileNameWithoutExtension(assemblyFilePath));
 
-                    assemblyPlugin.SetAttributes(assemblyFilePath, assemblyFileName, assemblyName.Version);
+                    assemblyPlugin.SetAttributes(assemblyFilePath, dataFolderPath, assemblyName.Version);
 
                     try
                     {
@@ -1461,8 +1480,11 @@ namespace Emby.Server.Implementations
                     }
                 }
 
-                var isFirstRun = !File.Exists(plugin.ConfigurationFilePath);
-                plugin.SetStartupInfo(isFirstRun, File.GetLastWriteTimeUtc, s => Directory.CreateDirectory(s));
+                var hasPluginConfiguration = plugin as IHasPluginConfiguration;
+                if (hasPluginConfiguration != null)
+                {
+                    hasPluginConfiguration.SetStartupInfo(s => Directory.CreateDirectory(s));
+                }
             }
             catch (Exception ex)
             {
@@ -1482,16 +1504,30 @@ namespace Emby.Server.Implementations
 
             FailedAssemblies.Clear();
 
-            var assemblies = GetComposablePartAssemblies().ToList();
+            var assemblyInfos = GetComposablePartAssemblies();
 
-            foreach (var assembly in assemblies)
+            foreach (var assemblyInfo in assemblyInfos)
             {
-                Logger.Info("Loading {0}", assembly.FullName);
+                var assembly = assemblyInfo.Item1;
+                var path = assemblyInfo.Item2;
+
+                if (path == null)
+                {
+                    Logger.Info("Loading {0}", assembly.FullName);
+                }
+                else
+                {
+                    Logger.Info("Loading {0} from {1}", assembly.FullName, path);
+                }
             }
 
-            AllConcreteTypes = assemblies
+            AllConcreteTypes = assemblyInfos
                 .SelectMany(GetTypes)
-                .Where(t => t.IsClass && !t.IsAbstract && !t.IsInterface && !t.IsGenericType)
+                .Where(info =>
+                {
+                    var t = info.Item1;
+                    return t.IsClass && !t.IsAbstract && !t.IsInterface && !t.IsGenericType;
+                })
                 .ToArray();
         }
 
@@ -1499,22 +1535,21 @@ namespace Emby.Server.Implementations
         /// Gets a list of types within an assembly
         /// This will handle situations that would normally throw an exception - such as a type within the assembly that depends on some other non-existant reference
         /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <returns>IEnumerable{Type}.</returns>
-        /// <exception cref="System.ArgumentNullException">assembly</exception>
-        protected List<Type> GetTypes(Assembly assembly)
+        protected List<Tuple<Type, string>> GetTypes(Tuple<Assembly, string> assemblyInfo)
         {
-            if (assembly == null)
+            if (assemblyInfo == null)
             {
-                return new List<Type>();
+                return new List<Tuple<Type, string>>();
             }
+
+            var assembly = assemblyInfo.Item1;
 
             try
             {
                 // This null checking really shouldn't be needed but adding it due to some
                 // unhandled exceptions in mono 5.0 that are a little hard to hunt down
                 var types = assembly.GetTypes() ?? new Type[] { };
-                return types.Where(t => t != null).ToList();
+                return types.Where(t => t != null).Select(i => new Tuple<Type, string>(i, assemblyInfo.Item2)).ToList();
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -1531,13 +1566,13 @@ namespace Emby.Server.Implementations
 
                 // If it fails we can still get a list of the Types it was able to resolve
                 var types = ex.Types ?? new Type[] { };
-                return types.Where(t => t != null).ToList();
+                return types.Where(t => t != null).Select(i => new Tuple<Type, string>(i, assemblyInfo.Item2)).ToList();
             }
             catch (Exception ex)
             {
                 Logger.ErrorException("Error loading types from assembly", ex);
 
-                return new List<Type>();
+                return new List<Tuple<Type, string>>();
             }
         }
 
@@ -1749,10 +1784,9 @@ namespace Emby.Server.Implementations
         /// Gets the composable part assemblies.
         /// </summary>
         /// <returns>IEnumerable{Assembly}.</returns>
-        protected IEnumerable<Assembly> GetComposablePartAssemblies()
+        protected List<Tuple<Assembly, string>> GetComposablePartAssemblies()
         {
-            var list = GetPluginAssemblies()
-                .ToList();
+            var list = GetPluginAssemblies();
 
             // Gets all plugin assemblies by first reading all bytes of the .dll and calling Assembly.Load against that
             // This will prevent the .dll file from getting locked, and allow us to replace it when needed
@@ -1793,7 +1827,7 @@ namespace Emby.Server.Implementations
             // Xbmc 
             list.Add(GetAssembly(typeof(ArtistNfoProvider)));
 
-            list.AddRange(GetAssembliesWithPartsInternal());
+            list.AddRange(GetAssembliesWithPartsInternal().Select(i => new Tuple<Assembly, string>(i, null)));
 
             return list.ToList();
         }
@@ -1804,11 +1838,55 @@ namespace Emby.Server.Implementations
         /// Gets the plugin assemblies.
         /// </summary>
         /// <returns>IEnumerable{Assembly}.</returns>
-        private IEnumerable<Assembly> GetPluginAssemblies()
+        private List<Tuple<Assembly, string>> GetPluginAssemblies()
+        {
+            // Copy pre-installed plugins
+            var sourcePath = Path.Combine(ApplicationPaths.ApplicationResourcesPath, "plugins");
+            CopyPlugins(sourcePath, ApplicationPaths.PluginsPath);
+
+            return GetPluginAssemblies(ApplicationPaths.PluginsPath);
+        }
+
+        private void CopyPlugins(string source, string target)
+        {
+            List<string> files;
+
+            try
+            {
+                files = Directory.EnumerateFiles(source, "*.dll", SearchOption.TopDirectoryOnly)
+                   .ToList();
+
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return;
+            }
+
+            if (files.Count == 0)
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(target);
+
+            foreach (var file in files)
+            {
+                var filename = Path.GetFileName(file);
+                var targetFile = Path.Combine(target, filename);
+
+                if (!ServerConfigurationManager.Configuration.UninstalledPlugins.Contains(filename, StringComparer.OrdinalIgnoreCase) ||
+                    File.Exists(targetFile))
+                {
+                    File.Copy(file, targetFile, true);
+                }
+            }
+        }
+
+        private List<Tuple<Assembly, string>> GetPluginAssemblies(string path)
         {
             try
             {
-                return Directory.EnumerateFiles(ApplicationPaths.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly)
+                return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                     .Where(EnablePlugin)
                     .Select(LoadAssembly)
                     .Where(a => a != null)
@@ -1816,7 +1894,7 @@ namespace Emby.Server.Implementations
             }
             catch (DirectoryNotFoundException)
             {
-                return new List<Assembly>();
+                return new List<Tuple<Assembly, string>>();
             }
         }
 

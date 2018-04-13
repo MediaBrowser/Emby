@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Common.Plugins;
 
 namespace MediaBrowser.Api
 {
@@ -250,7 +251,7 @@ namespace MediaBrowser.Api
         public object Get(GetPluginConfiguration request)
         {
             var guid = new Guid(request.Id);
-            var plugin = _appHost.Plugins.First(p => p.Id == guid);
+            var plugin = _appHost.Plugins.First(p => p.Id == guid) as IHasPluginConfiguration;
 
             return ToOptimizedResult(plugin.Configuration);
         }
@@ -300,7 +301,12 @@ namespace MediaBrowser.Api
             // https://code.google.com/p/servicestack/source/browse/trunk/Common/ServiceStack.Text/ServiceStack.Text/Controller/PathInfo.cs
             var id = new Guid(GetPathValue(1));
 
-            var plugin = _appHost.Plugins.First(p => p.Id == id);
+            var plugin = _appHost.Plugins.First(p => p.Id == id) as IHasPluginConfiguration;
+
+            if (plugin == null)
+            {
+                throw new FileNotFoundException();
+            }
 
             var configuration = _jsonSerializer.DeserializeFromStream(request.RequestStream, plugin.ConfigurationType) as BasePluginConfiguration;
 
