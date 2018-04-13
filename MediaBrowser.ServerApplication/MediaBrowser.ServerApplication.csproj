@@ -169,18 +169,6 @@
       <Link>x86\libSkiaSharp.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Tools\Installation\MediaBrowser.InstallUtil.dll">
-      <Link>MediaBrowser.InstallUtil.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Tools\Installation\MediaBrowser.Uninstaller.exe">
-      <Link>MediaBrowser.Uninstaller.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Tools\Installation\MediaBrowser.Updater.exe">
-      <Link>MediaBrowser.Updater.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="x64\sqlite3.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
