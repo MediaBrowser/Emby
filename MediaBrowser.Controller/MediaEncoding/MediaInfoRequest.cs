@@ -4,6 +4,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
 using MediaBrowser.Model.Dto;
+using System;
 
 namespace MediaBrowser.Controller.MediaEncoding
 {
@@ -17,7 +18,7 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public MediaInfoRequest()
         {
-            PlayableStreamFileNames = new string[] { };
+            PlayableStreamFileNames = new string[] {};
         }
     }
 }

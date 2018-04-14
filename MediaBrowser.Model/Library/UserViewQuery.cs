@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace MediaBrowser.Model.Library
 {
     public class UserViewQuery
@@ -26,7 +27,7 @@ namespace MediaBrowser.Model.Library
         public UserViewQuery()
         {
             IncludeExternalContent = true;
-            PresetViews = new string[] { };
+            PresetViews = new string[] {};
         }
     }
 }

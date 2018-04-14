@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace MediaBrowser.Model.Entities
 {
     /// <summary>
@@ -42,12 +43,12 @@ namespace MediaBrowser.Model.Entities
         /// </summary>
         public LibraryUpdateInfo()
         {
-            FoldersAddedTo = new string[] { };
-            FoldersRemovedFrom = new string[] { };
-            ItemsAdded = new string[] { };
-            ItemsRemoved = new string[] { };
-            ItemsUpdated = new string[] { };
-            CollectionFolders = new string[] { };
+            FoldersAddedTo = new string[] {};
+            FoldersRemovedFrom = new string[] {};
+            ItemsAdded = new string[] {};
+            ItemsRemoved = new string[] {};
+            ItemsUpdated = new string[] {};
+            CollectionFolders = new string[] {};
         }
     }
 }

@@ -249,9 +249,9 @@ namespace MediaBrowser.Controller.Entities.TV
         /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             if (!IndexNumber.HasValue && !string.IsNullOrEmpty(Path))
             {

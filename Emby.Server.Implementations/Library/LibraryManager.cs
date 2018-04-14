@@ -734,7 +734,7 @@ namespace Emby.Server.Implementations.Library
                 _logger.Info("Resetting root folder path to {0}", rootFolderPath);
                 rootFolder.Path = rootFolderPath;
             }
-            
+
             // Add in the plug-in folders
             var path = Path.Combine(ConfigurationManager.ApplicationPaths.DataPath, "playlists");
 
@@ -1437,7 +1437,7 @@ namespace Emby.Server.Implementations.Library
             {
                 // Optimize by querying against top level views
                 query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).ToArray();
-                query.AncestorIds = new Guid[] { };
+                query.AncestorIds = Array.Empty<Guid>();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.TopParentIds.Length == 0)
@@ -1565,7 +1565,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         return GetTopParentIdsForQuery(displayParent, user);
                     }
-                    return new Guid[] { };
+                    return Array.Empty<Guid>();
                 }
                 if (view.ParentId != Guid.Empty)
                 {
@@ -1574,7 +1574,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         return GetTopParentIdsForQuery(displayParent, user);
                     }
-                    return new Guid[] { };
+                    return Array.Empty<Guid>();
                 }
 
                 // Handle grouping
@@ -1587,7 +1587,7 @@ namespace Emby.Server.Implementations.Library
                         .Where(i => user.IsFolderGrouped(i.Id))
                         .SelectMany(i => GetTopParentIdsForQuery(i, user));
                 }
-                return new Guid[] { };
+                return Array.Empty<Guid>();
             }
 
             var collectionFolder = item as CollectionFolder;
@@ -1601,7 +1601,7 @@ namespace Emby.Server.Implementations.Library
             {
                 return new[] { topParent.Id };
             }
-            return new Guid[] { };
+            return Array.Empty<Guid>();
         }
 
         /// <summary>
@@ -2408,17 +2408,20 @@ namespace Emby.Server.Implementations.Library
 
         public int? GetSeasonNumberFromPath(string path)
         {
-            return new SeasonPathParser(GetNamingOptions(), new RegexProvider()).Parse(path, true, true).SeasonNumber;
+            return new SeasonPathParser(GetNamingOptions()).Parse(path, true, true).SeasonNumber;
         }
 
-        public bool FillMissingEpisodeNumbersFromPath(Episode episode)
+        public bool FillMissingEpisodeNumbersFromPath(Episode episode, bool forceRefresh)
         {
+            var series = episode.Series;
+            var isAbsoluteNaming = series == null ? false : string.Equals(series.DisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase);
+
             var resolver = new EpisodeResolver(GetNamingOptions());
 
             var isFolder = episode.VideoType == VideoType.BluRay || episode.VideoType == VideoType.Dvd;
 
             var episodeInfo = episode.IsFileProtocol ?
-                resolver.Resolve(episode.Path, isFolder) :
+                resolver.Resolve(episode.Path, isFolder, null, null, isAbsoluteNaming) :
                 new Emby.Naming.TV.EpisodeInfo();
 
             if (episodeInfo == null)
@@ -2464,62 +2467,49 @@ namespace Emby.Server.Implementations.Library
                         changed = true;
                     }
                 }
-
-                if (!episode.ParentIndexNumber.HasValue)
-                {
-                    var season = episode.Season;
-
-                    if (season != null)
-                    {
-                        episode.ParentIndexNumber = season.IndexNumber;
-                    }
-
-                    if (episode.ParentIndexNumber.HasValue)
-                    {
-                        changed = true;
-                    }
-                }
             }
             else
             {
-                if (!episode.IndexNumber.HasValue)
+                if (!episode.IndexNumber.HasValue || forceRefresh)
                 {
+                    if (episode.IndexNumber != episodeInfo.EpisodeNumber)
+                    {
+                        changed = true;
+                    }
                     episode.IndexNumber = episodeInfo.EpisodeNumber;
+                }
 
-                    if (episode.IndexNumber.HasValue)
+                if (!episode.IndexNumberEnd.HasValue || forceRefresh)
+                {
+                    if (episode.IndexNumberEnd != episodeInfo.EndingEpsiodeNumber)
                     {
                         changed = true;
                     }
-                }
-
-                if (!episode.IndexNumberEnd.HasValue)
-                {
                     episode.IndexNumberEnd = episodeInfo.EndingEpsiodeNumber;
-
-                    if (episode.IndexNumberEnd.HasValue)
-                    {
-                        changed = true;
-                    }
                 }
 
-                if (!episode.ParentIndexNumber.HasValue)
+                if (!episode.ParentIndexNumber.HasValue || forceRefresh)
                 {
-                    episode.ParentIndexNumber = episodeInfo.SeasonNumber;
-
-                    if (!episode.ParentIndexNumber.HasValue)
-                    {
-                        var season = episode.Season;
-
-                        if (season != null)
-                        {
-                            episode.ParentIndexNumber = season.IndexNumber;
-                        }
-                    }
-
-                    if (episode.ParentIndexNumber.HasValue)
+                    if (episode.ParentIndexNumber != episodeInfo.SeasonNumber)
                     {
                         changed = true;
                     }
+                    episode.ParentIndexNumber = episodeInfo.SeasonNumber;
+                }
+            }
+
+            if (!episode.ParentIndexNumber.HasValue)
+            {
+                var season = episode.Season;
+
+                if (season != null)
+                {
+                    episode.ParentIndexNumber = season.IndexNumber;
+                }
+
+                if (episode.ParentIndexNumber.HasValue)
+                {
+                    changed = true;
                 }
             }
 
@@ -2528,68 +2518,22 @@ namespace Emby.Server.Implementations.Library
 
         public NamingOptions GetNamingOptions()
         {
-            return GetNamingOptions(true);
-        }
-
-        public NamingOptions GetNamingOptions(bool allowOptimisticEpisodeDetection)
-        {
-            if (!allowOptimisticEpisodeDetection)
-            {
-                if (_namingOptionsWithoutOptimisticEpisodeDetection == null)
-                {
-                    var namingOptions = new ExtendedNamingOptions();
-
-                    InitNamingOptions(namingOptions);
-                    namingOptions.EpisodeExpressions = namingOptions.EpisodeExpressions
-                        .Where(i => i.IsNamed && !i.IsOptimistic)
-                        .ToList();
-
-                    _namingOptionsWithoutOptimisticEpisodeDetection = namingOptions;
-                }
-
-                return _namingOptionsWithoutOptimisticEpisodeDetection;
-            }
-
             return GetNamingOptionsInternal();
         }
 
-        private NamingOptions _namingOptionsWithoutOptimisticEpisodeDetection;
         private NamingOptions _namingOptions;
         private string[] _videoFileExtensions;
         private NamingOptions GetNamingOptionsInternal()
         {
             if (_namingOptions == null)
             {
-                var options = new ExtendedNamingOptions();
-
-                InitNamingOptions(options);
+                var options = new NamingOptions();
 
                 _namingOptions = options;
                 _videoFileExtensions = _namingOptions.VideoFileExtensions.ToArray();
             }
 
             return _namingOptions;
-        }
-
-        private void InitNamingOptions(NamingOptions options)
-        {
-            // These cause apps to have problems
-            options.AudioFileExtensions.Remove(".m3u");
-            options.AudioFileExtensions.Remove(".wpl");
-
-            //if (!libraryOptions.EnableArchiveMediaFiles)
-            {
-                options.AudioFileExtensions.Remove(".rar");
-                options.AudioFileExtensions.Remove(".zip");
-            }
-
-            //if (!libraryOptions.EnableArchiveMediaFiles)
-            {
-                options.VideoFileExtensions.Remove(".rar");
-                options.VideoFileExtensions.Remove(".zip");
-            }
-
-            options.VideoFileExtensions.Add(".tp");
         }
 
         public ItemLookupInfo ParseName(string name)
@@ -2792,7 +2736,7 @@ namespace Emby.Server.Implementations.Library
 
         private void SetExtraTypeFromFilename(Video item)
         {
-            var resolver = new ExtraResolver(GetNamingOptions(), new RegexProvider());
+            var resolver = new ExtraResolver(GetNamingOptions());
 
             var result = resolver.GetExtraInfo(item.Path);
 
@@ -2946,7 +2890,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     var path = Path.Combine(virtualFolderPath, collectionType + ".collection");
 
-                    _fileSystem.WriteAllBytes(path, new byte[] { });
+                    _fileSystem.WriteAllBytes(path, Array.Empty<byte>());
                 }
 
                 CollectionFolder.SaveLibraryOptions(virtualFolderPath, options);

@@ -1093,7 +1093,7 @@ namespace Emby.Server.Implementations.Dto
 
                 if (dto.Taglines == null)
                 {
-                    dto.Taglines = new string[] { };
+                    dto.Taglines = Array.Empty<string>();
                 }
             }
 

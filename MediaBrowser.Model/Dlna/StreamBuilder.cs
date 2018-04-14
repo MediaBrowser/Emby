@@ -649,7 +649,7 @@ namespace MediaBrowser.Model.Dlna
         {
             if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
             {
-                playlistItem.AudioCodecs = new string[] { };
+                playlistItem.AudioCodecs = new string[] {};
             }
             else
             {
@@ -662,7 +662,7 @@ namespace MediaBrowser.Model.Dlna
 
             if (string.IsNullOrEmpty(transcodingProfile.VideoCodec))
             {
-                playlistItem.VideoCodecs = new string[] { };
+                playlistItem.VideoCodecs = new string[] {};
             }
             else
             {
@@ -896,17 +896,17 @@ namespace MediaBrowser.Model.Dlna
                 // Honor max rate
                 if (maxBitrateSetting.HasValue)
                 {
-                    var videoBitrate = maxBitrateSetting.Value;
+                    var availableBitrateForVideo = maxBitrateSetting.Value;
 
                     if (playlistItem.AudioBitrate.HasValue)
                     {
-                        videoBitrate -= playlistItem.AudioBitrate.Value;
+                        availableBitrateForVideo -= playlistItem.AudioBitrate.Value;
                     }
 
                     // Make sure the video bitrate is lower than bitrate settings but at least 64k
-                    long currentValue = playlistItem.VideoBitrate ?? videoBitrate;
-                    var longBitrate = Math.Max(Math.Min(videoBitrate, currentValue), 64000);
-                    playlistItem.VideoBitrate = longBitrate > int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
+                    long currentValue = playlistItem.VideoBitrate ?? availableBitrateForVideo;
+                    var longBitrate = Math.Max(Math.Min(availableBitrateForVideo, currentValue), 64000);
+                    playlistItem.VideoBitrate = longBitrate >= int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
                 }
 
                 // Do this after initial values are set to account for greater than/less than conditions
@@ -939,16 +939,7 @@ namespace MediaBrowser.Model.Dlna
             // Reduce the bitrate if we're downmixing
             if (targetAudioChannels.HasValue && audioStream != null && audioStream.Channels.HasValue && targetAudioChannels.Value < audioStream.Channels.Value)
             {
-                defaultBitrate = StringHelper.EqualsIgnoreCase(targetAudioCodec, "ac3") ? 192000 : 128000;
-            }
-
-            if (StringHelper.EqualsIgnoreCase(subProtocol, "hls"))
-            {
-                defaultBitrate = Math.Min(384000, defaultBitrate);
-            }
-            else
-            {
-                defaultBitrate = Math.Min(448000, defaultBitrate);
+                defaultBitrate = targetAudioChannels.Value <= 2 ? 128000 : 192000;
             }
 
             int encoderAudioBitrateLimit = int.MaxValue;
@@ -969,13 +960,30 @@ namespace MediaBrowser.Model.Dlna
 
             if (maxTotalBitrate.HasValue)
             {
-                if (maxTotalBitrate.Value < 640000)
-                {
-                    defaultBitrate = Math.Min(128000, defaultBitrate);
-                }
+                defaultBitrate = Math.Min(GetMaxAudioBitrateForTotalBitrate(defaultBitrate), defaultBitrate);
             }
 
             return Math.Min(defaultBitrate, encoderAudioBitrateLimit);
+        }
+
+        private int GetMaxAudioBitrateForTotalBitrate(int totalBitrate)
+        {
+            if (totalBitrate <= 640000)
+            {
+                return 128000;
+            }
+
+            if (totalBitrate <= 2000000)
+            {
+                return 384000;
+            }
+
+            if (totalBitrate <= 3000000)
+            {
+                return 448000;
+            }
+
+            return 640000;
         }
 
         private Tuple<PlayMethod?, List<TranscodeReason>> GetVideoDirectPlayProfile(VideoOptions options,

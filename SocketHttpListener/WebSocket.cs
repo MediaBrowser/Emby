@@ -11,6 +11,7 @@ using MediaBrowser.Model.IO;
 using SocketHttpListener.Net.WebSockets;
 using SocketHttpListener.Primitives;
 using HttpStatusCode = SocketHttpListener.Net.HttpStatusCode;
+using MediaBrowser.Model.Net;
 
 namespace SocketHttpListener
 {
@@ -93,14 +94,6 @@ namespace SocketHttpListener
             set
             {
                 _handshakeRequestChecker = value;
-            }
-        }
-
-        internal bool IsConnected
-        {
-            get
-            {
-                return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
             }
         }
 
@@ -192,12 +185,12 @@ namespace SocketHttpListener
         {
             lock (_forConn)
             {
-                if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed)
+                if (_readyState == WebSocketState.CloseSent || _readyState == WebSocketState.Closed)
                 {
                     return;
                 }
 
-                _readyState = WebSocketState.Closing;
+                _readyState = WebSocketState.CloseSent;
             }
 
             var e = new CloseEventArgs(payload);
@@ -727,9 +720,9 @@ namespace SocketHttpListener
         // As server
         internal void Close(HttpResponse response)
         {
-            _readyState = WebSocketState.Closing;
-
+            _readyState = WebSocketState.CloseSent;
             sendHttpResponse(response);
+
             closeServerResources();
 
             _readyState = WebSocketState.Closed;
@@ -834,7 +827,12 @@ namespace SocketHttpListener
         /// complete successfully; otherwise, <c>false</c>.
         public Task SendAsync(byte[] data)
         {
-            var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            var msg = _readyState.CheckIfOpen();
             if (msg != null)
             {
                 throw new Exception(msg);
@@ -857,7 +855,12 @@ namespace SocketHttpListener
         /// complete successfully; otherwise, <c>false</c>.
         public Task SendAsync(string data)
         {
-            var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            var msg = _readyState.CheckIfOpen();
             if (msg != null)
             {
                 throw new Exception(msg);

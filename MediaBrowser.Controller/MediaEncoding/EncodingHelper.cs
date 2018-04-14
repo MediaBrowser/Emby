@@ -687,38 +687,33 @@ namespace MediaBrowser.Controller.MediaEncoding
             else if (string.Equals(videoEncoder, "h264_nvenc", StringComparison.OrdinalIgnoreCase))
             {
                 switch (encodingOptions.H264Preset)
-				{
-					case "veryslow" : 
-						
-						param += "-preset slow"; //lossless is only supported on maxwell and newer(2014+)
-						break;
-						
-					case "slow" :
-					
-					case "slower" :
-						
-						param += "-preset slow";
-						break;
+                {
+                    case "veryslow":
 
-					case "medium" :
-						
-						param += "-preset medium";
-						break;
-					
-					case "fast" :
-					case "faster" :
-					case "veryfast" :
-					case "superfast" :
-					case "ultrafast" :
-						
-						param += "-preset fast";
-						break;
+                        param += "-preset slow"; //lossless is only supported on maxwell and newer(2014+)
+                        break;
 
-					default:
-				
-						param += "-preset default";
-						break;
-				}
+                    case "slow":
+                    case "slower":
+                        param += "-preset slow";
+                        break;
+
+                    case "medium":
+                        param += "-preset medium";
+                        break;
+
+                    case "fast":
+                    case "faster":
+                    case "veryfast":
+                    case "superfast":
+                    case "ultrafast":
+                        param += "-preset fast";
+                        break;
+
+                    default:
+                        param += "-preset default";
+                        break;
+                }
             }
 
             // webm
@@ -1950,12 +1945,12 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
                 else
                 {
-                    state.PlayableStreamFileNames = new string[] { };
+                    state.PlayableStreamFileNames = new string[] {};
                 }
             }
             else
             {
-                state.PlayableStreamFileNames = new string[] { };
+                state.PlayableStreamFileNames = new string[] {};
             }
 
             if (mediaSource.Timestamp.HasValue)

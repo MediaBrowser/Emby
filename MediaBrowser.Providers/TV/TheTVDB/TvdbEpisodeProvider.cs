@@ -507,17 +507,14 @@ namespace MediaBrowser.Providers.TV
                                 {
                                     var val = reader.ReadElementContentAsString();
 
-                                    if (!item.IndexNumber.HasValue)
+                                    if (!string.IsNullOrWhiteSpace(val))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(val))
-                                        {
-                                            int rval;
+                                        int rval;
 
-                                            // int.TryParse is local aware, so it can be probamatic, force us culture
-                                            if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
-                                            {
-                                                item.IndexNumber = rval;
-                                            }
+                                        // int.TryParse is local aware, so it can be probamatic, force us culture
+                                        if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
+                                        {
+                                            item.IndexNumber = rval;
                                         }
                                     }
 
@@ -528,17 +525,14 @@ namespace MediaBrowser.Providers.TV
                                 {
                                     var val = reader.ReadElementContentAsString();
 
-                                    if (!item.ParentIndexNumber.HasValue)
+                                    if (!string.IsNullOrWhiteSpace(val))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(val))
-                                        {
-                                            int rval;
+                                        int rval;
 
-                                            // int.TryParse is local aware, so it can be probamatic, force us culture
-                                            if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
-                                            {
-                                                item.ParentIndexNumber = rval;
-                                            }
+                                        // int.TryParse is local aware, so it can be probamatic, force us culture
+                                        if (int.TryParse(val, NumberStyles.Integer, _usCulture, out rval))
+                                        {
+                                            item.ParentIndexNumber = rval;
                                         }
                                     }
 

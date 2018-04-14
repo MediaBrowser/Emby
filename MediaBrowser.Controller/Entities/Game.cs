@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
+using System;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -12,10 +13,10 @@ namespace MediaBrowser.Controller.Entities
     {
         public Game()
         {
-            MultiPartGameFiles = EmptyStringArray;
+            MultiPartGameFiles = new string[] {};
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
         }
 
         public Guid[] LocalTrailerIds { get; set; }

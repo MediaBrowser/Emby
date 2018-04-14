@@ -113,11 +113,10 @@ namespace MediaBrowser.Controller.Entities
             return list;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
             ClearCache();
-
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             if (string.Equals("default", Name, StringComparison.OrdinalIgnoreCase))
             {

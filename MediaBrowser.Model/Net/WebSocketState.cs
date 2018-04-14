@@ -6,33 +6,12 @@ namespace MediaBrowser.Model.Net
     /// </summary>
     public enum WebSocketState
     {
-        /// <summary>
-        /// The none
-        /// </summary>
-        None,
-        /// <summary>
-        /// The connecting
-        /// </summary>
-        Connecting,
-        /// <summary>
-        /// The open
-        /// </summary>
-        Open,
-        /// <summary>
-        /// The close sent
-        /// </summary>
-        CloseSent,
-        /// <summary>
-        /// The close received
-        /// </summary>
-        CloseReceived,
-        /// <summary>
-        /// The closed
-        /// </summary>
-        Closed,
-        /// <summary>
-        /// The aborted
-        /// </summary>
-        Aborted
+        None = 0,
+        Connecting = 1,
+        Open = 2,
+        CloseSent = 3, // WebSocket close handshake started form local endpoint
+        CloseReceived = 4, // WebSocket close message received from remote endpoint. Waiting for app to call close
+        Closed = 5,
+        Aborted = 6,
     }
 }

@@ -74,8 +74,6 @@ namespace MediaBrowser.Providers.Manager
 
             var result = new RefreshResult { UpdateType = ItemUpdateType.None };
 
-            var providerIds = new List<Guid>();
-
             // In order to avoid duplicates, only download these if there are none already
             var backdropLimit = savedOptions.GetLimit(ImageType.Backdrop);
             var screenshotLimit = savedOptions.GetLimit(ImageType.Screenshot);
@@ -88,7 +86,6 @@ namespace MediaBrowser.Providers.Manager
                 if (remoteProvider != null)
                 {
                     await RefreshFromProvider(item, libraryOptions, remoteProvider, refreshOptions, savedOptions, backdropLimit, screenshotLimit, downloadedImages, result, cancellationToken).ConfigureAwait(false);
-                    providerIds.Add(provider.GetType().FullName.GetMD5());
                     continue;
                 }
 
@@ -97,11 +94,8 @@ namespace MediaBrowser.Providers.Manager
                 if (dynamicImageProvider != null)
                 {
                     await RefreshFromProvider(item, dynamicImageProvider, refreshOptions, savedOptions, downloadedImages, result, cancellationToken).ConfigureAwait(false);
-                    providerIds.Add(provider.GetType().FullName.GetMD5());
                 }
             }
-
-            result.Providers = providerIds;
 
             return result;
         }

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
 using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.Configuration
 {
@@ -39,13 +40,13 @@ namespace MediaBrowser.Model.Configuration
                 }
             };
 
-            DisabledMetadataSavers = new string[] { };
-            LocalMetadataReaderOrder = new string[] { };
+            DisabledMetadataSavers = new string[] {};
+            LocalMetadataReaderOrder = new string[] {};
 
-            DisabledMetadataFetchers = new string[] { };
-            MetadataFetcherOrder = new string[] { };
-            DisabledImageFetchers = new string[] { };
-            ImageFetcherOrder = new string[] { };
+            DisabledMetadataFetchers = new string[] {};
+            MetadataFetcherOrder = new string[] {};
+            DisabledImageFetchers = new string[] {};
+            ImageFetcherOrder = new string[] {};
         }
 
         public int GetLimit(ImageType type)

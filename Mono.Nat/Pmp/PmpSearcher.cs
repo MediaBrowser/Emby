@@ -49,7 +49,6 @@ namespace Mono.Nat
         private int timeout = 250;
         private DateTime nextSearch;
         public event EventHandler<DeviceEventArgs> DeviceFound;
-        public event EventHandler<DeviceEventArgs> DeviceLost;
 
         public PmpSearcher(ILogger logger)
         {

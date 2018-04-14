@@ -96,7 +96,6 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="WebSocketException.cs" />
     <Compile Include="WebSocketFrame.cs" />
-    <Compile Include="WebSocketState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">

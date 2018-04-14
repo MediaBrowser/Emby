@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Entities;
+using System;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -97,7 +98,7 @@ namespace MediaBrowser.Model.LiveTv
         public LiveTvChannelQuery()
         {
             EnableUserData = true;
-            SortBy = new string[] { };
+            SortBy = new string[] {};
         }
     }
 }

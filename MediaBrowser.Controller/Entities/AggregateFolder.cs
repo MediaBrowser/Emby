@@ -20,7 +20,7 @@ namespace MediaBrowser.Controller.Entities
     {
         public AggregateFolder()
         {
-            PhysicalLocationsList = EmptyStringArray;
+            PhysicalLocationsList = new string[] {};
         }
 
         [IgnoreDataMember]
@@ -118,11 +118,11 @@ namespace MediaBrowser.Controller.Entities
             return changed;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
             ClearCache();
 
-            var changed = base.BeforeMetadataRefresh() || _requiresRefresh;
+            var changed = base.BeforeMetadataRefresh(replaceAllMetdata) || _requiresRefresh;
             _requiresRefresh = false;
             return changed;
         }

@@ -117,7 +117,7 @@ namespace MediaBrowser.Providers.Manager
 
                 if (providers.Count > 0 || isFirstRefresh || requiresRefresh)
                 {
-                    if (item.BeforeMetadataRefresh())
+                    if (item.BeforeMetadataRefresh(refreshOptions.ReplaceAllMetadata))
                     {
                         updateType = updateType | ItemUpdateType.MetadataImport;
                     }
@@ -683,8 +683,7 @@ namespace MediaBrowser.Providers.Manager
         {
             var refreshResult = new RefreshResult
             {
-                UpdateType = ItemUpdateType.None,
-                Providers = providers.Select(i => i.GetType().FullName.GetMD5()).ToList()
+                UpdateType = ItemUpdateType.None
             };
 
             var item = metadata.Item;
@@ -962,7 +961,6 @@ namespace MediaBrowser.Providers.Manager
     {
         public ItemUpdateType UpdateType { get; set; }
         public string ErrorMessage { get; set; }
-        public List<Guid> Providers { get; set; }
         public int Failures { get; set; }
     }
 }

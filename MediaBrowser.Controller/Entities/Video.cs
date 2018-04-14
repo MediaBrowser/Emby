@@ -173,7 +173,7 @@ namespace MediaBrowser.Controller.Entities
             }
             else
             {
-                return new string[] { };
+                return new string[] {};
             }
             return mediaEncoder.GetPlayableStreamFileNames(Path, videoType);
         }
@@ -186,9 +186,9 @@ namespace MediaBrowser.Controller.Entities
 
         public Video()
         {
-            AdditionalParts = EmptyStringArray;
-            LocalAlternateVersions = EmptyStringArray;
-            SubtitleFiles = EmptyStringArray;
+            AdditionalParts = new string[] {};
+            LocalAlternateVersions = new string[] {};
+            SubtitleFiles = new string[] {};
             LinkedAlternateVersions = EmptyLinkedChildArray;
         }
 
@@ -463,7 +463,7 @@ namespace MediaBrowser.Controller.Entities
                     .Select(i => i.FullName)
                     .ToArray();
             }
-            return new string[] { };
+            return new string[] {};
         }
 
         /// <summary>

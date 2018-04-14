@@ -342,7 +342,7 @@ namespace Emby.Server.Implementations.Library
                 typeof(MusicGenre).Name,
                 typeof(Genre).Name
 
-            } : new string[] { };
+            } : Array.Empty<string>();
 
             var query = new InternalItemsQuery(user)
             {

@@ -64,8 +64,8 @@ namespace MediaBrowser.Model.Configuration
         public LibraryOptions()
         {
             TypeOptions = new TypeOptions[] { };
-            DisabledSubtitleFetchers = new string[] { };
-            SubtitleFetcherOrder = new string[] { };
+            DisabledSubtitleFetchers = new string[] {};
+            SubtitleFetcherOrder = new string[] {};
 
             SkipSubtitlesIfAudioTrackMatches = true;
             RequirePerfectSubtitleMatch = true;
@@ -97,10 +97,10 @@ namespace MediaBrowser.Model.Configuration
 
         public TypeOptions()
         {
-            MetadataFetchers = new string[] { };
-            MetadataFetcherOrder = new string[] { };
-            ImageFetchers = new string[] { };
-            ImageFetcherOrder = new string[] { };
+            MetadataFetchers = new string[] {};
+            MetadataFetcherOrder = new string[] {};
+            ImageFetchers = new string[] {};
+            ImageFetcherOrder = new string[] {};
         }
     }
 }

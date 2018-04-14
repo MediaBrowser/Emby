@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace MediaBrowser.Model.Search
 {
     public class SearchQuery
@@ -56,9 +57,9 @@ namespace MediaBrowser.Model.Search
             IncludePeople = true;
             IncludeStudios = true;
 
-            MediaTypes = new string[] { };
-            IncludeItemTypes = new string[] { };
-            ExcludeItemTypes = new string[] { };
+            MediaTypes = new string[] {};
+            IncludeItemTypes = new string[] {};
+            ExcludeItemTypes = new string[] {};
         }
     }
 }

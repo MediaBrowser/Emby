@@ -18,8 +18,8 @@ namespace MediaBrowser.Controller.Entities.Movies
         public BoxSet()
         {
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
 
             DisplayOrder = ItemSortBy.PremiereDate;
         }

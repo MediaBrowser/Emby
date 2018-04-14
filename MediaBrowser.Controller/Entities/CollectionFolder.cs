@@ -27,8 +27,8 @@ namespace MediaBrowser.Controller.Entities
 
         public CollectionFolder()
         {
-            PhysicalLocationsList = EmptyStringArray;
-            PhysicalFolderIds = EmptyGuidArray;
+            PhysicalLocationsList = new string[] {};
+            PhysicalFolderIds = new Guid[] {};
         }
 
         //public override double? GetDefaultPrimaryImageAspectRatio()
@@ -209,9 +209,9 @@ namespace MediaBrowser.Controller.Entities
             return changed;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var changed = base.BeforeMetadataRefresh() || _requiresRefresh;
+            var changed = base.BeforeMetadataRefresh(replaceAllMetdata) || _requiresRefresh;
             _requiresRefresh = false;
             return changed;
         }

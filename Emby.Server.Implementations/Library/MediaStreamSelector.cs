@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MediaBrowser.Controller.MediaEncoding
+namespace Emby.Server.Implementations.Library
 {
     public static class MediaStreamSelector
     {

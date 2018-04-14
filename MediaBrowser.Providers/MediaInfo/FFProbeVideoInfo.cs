@@ -108,7 +108,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 if (streamFileNames == null)
                 {
-                    streamFileNames = new string[] { };
+                    streamFileNames = Array.Empty<string>();
                 }
 
                 mediaInfoResult = await GetMediaInfo(item, streamFileNames, cancellationToken).ConfigureAwait(false);

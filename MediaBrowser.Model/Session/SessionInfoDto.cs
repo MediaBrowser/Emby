@@ -110,8 +110,8 @@ namespace MediaBrowser.Model.Session
         {
             AdditionalUsers = new SessionUserInfo[] { };
 
-            PlayableMediaTypes = new string[] { };
-            SupportedCommands = new string[] { };
+            PlayableMediaTypes = new string[] {};
+            SupportedCommands = new string[] {};
         }
     }
 }

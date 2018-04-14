@@ -206,7 +206,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
-            return new string[] { };
+            return new string[] {};
         }
 
         public string GetRequestedLevel(string codec)
@@ -316,7 +316,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             _logger = logger;
             TranscodingType = jobType;
             RemoteHttpHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            PlayableStreamFileNames = new string[] { };
+            PlayableStreamFileNames = new string[] {};
             SupportedAudioCodecs = new List<string>();
             SupportedVideoCodecs = new List<string>();
             SupportedSubtitleCodecs = new List<string>();

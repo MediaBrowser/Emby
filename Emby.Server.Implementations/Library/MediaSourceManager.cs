@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Controller.Persistence;
@@ -17,6 +18,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Dlna;
+using MediaBrowser.Model.Globalization;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -33,8 +35,9 @@ namespace Emby.Server.Implementations.Library
         private readonly IUserDataManager _userDataManager;
         private readonly ITimerFactory _timerFactory;
         private readonly Func<IMediaEncoder> _mediaEncoder;
+        private ILocalizationManager _localizationManager;
 
-        public MediaSourceManager(IItemRepository itemRepo, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory, Func<IMediaEncoder> mediaEncoder)
+        public MediaSourceManager(IItemRepository itemRepo, ILocalizationManager localizationManager, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory, Func<IMediaEncoder> mediaEncoder)
         {
             _itemRepo = itemRepo;
             _userManager = userManager;
@@ -45,6 +48,7 @@ namespace Emby.Server.Implementations.Library
             _userDataManager = userDataManager;
             _timerFactory = timerFactory;
             _mediaEncoder = mediaEncoder;
+            _localizationManager = localizationManager;
         }
 
         public void AddParts(IEnumerable<IMediaSourceProvider> providers)
@@ -138,7 +142,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (user != null)
                 {
-                    SetUserProperties(item, source, user);
+                    SetDefaultAudioAndSubtitleStreamIndexes(item, source, user);
                 }
 
                 // Validate that this is actually possible
@@ -285,25 +289,31 @@ namespace Emby.Server.Implementations.Library
 
             var sources = hasMediaSources.GetMediaSources(enablePathSubstitution);
 
-            if (user != null && item is Video)
+            if (user != null)
             {
                 foreach (var source in sources)
                 {
-                    SetUserProperties(item, source, user);
+                    SetDefaultAudioAndSubtitleStreamIndexes(item, source, user);
                 }
             }
 
             return sources;
         }
 
-        private void SetUserProperties(BaseItem item, MediaSourceInfo source, User user)
+        private string[] NormalizeLanguage(string language)
         {
-            var userData = item == null ? new UserItemData() : _userDataManager.GetUserData(user, item);
+            if (language != null)
+            {
+                var culture = _localizationManager.FindLanguageInfo(language);
+                if (culture != null)
+                {
+                    return culture.ThreeLetterISOLanguageNames;
+                }
 
-            var allowRememberingSelection = item == null || item.EnableRememberingTrackSelections;
+                return new string[] { language };
+            }
 
-            SetDefaultAudioStreamIndex(source, userData, user, allowRememberingSelection);
-            SetDefaultSubtitleStreamIndex(source, userData, user, allowRememberingSelection);
+            return Array.Empty<string>();
         }
 
         private void SetDefaultSubtitleStreamIndex(MediaSourceInfo source, UserItemData userData, User user, bool allowRememberingSelection)
@@ -320,7 +330,7 @@ namespace Emby.Server.Implementations.Library
             }
 
             var preferredSubs = string.IsNullOrEmpty(user.Configuration.SubtitleLanguagePreference)
-                ? new string[] { } : new string[] { user.Configuration.SubtitleLanguagePreference };
+                ? Array.Empty<string>() : NormalizeLanguage(user.Configuration.SubtitleLanguagePreference);
 
             var defaultAudioIndex = source.DefaultAudioStreamIndex;
             var audioLangage = defaultAudioIndex == null
@@ -350,10 +360,32 @@ namespace Emby.Server.Implementations.Library
             }
 
             var preferredAudio = string.IsNullOrEmpty(user.Configuration.AudioLanguagePreference)
-                ? new string[] { }
-                : new[] { user.Configuration.AudioLanguagePreference };
+                ? Array.Empty<string>()
+                : NormalizeLanguage(user.Configuration.SubtitleLanguagePreference);
 
             source.DefaultAudioStreamIndex = MediaStreamSelector.GetDefaultAudioStreamIndex(source.MediaStreams, preferredAudio, user.Configuration.PlayDefaultAudioTrack);
+        }
+
+        public void SetDefaultAudioAndSubtitleStreamIndexes(BaseItem item, MediaSourceInfo source, User user)
+        {
+            if (item is Video)
+            {
+                var userData = item == null ? new UserItemData() : _userDataManager.GetUserData(user, item);
+
+                var allowRememberingSelection = item == null || item.EnableRememberingTrackSelections;
+
+                SetDefaultAudioStreamIndex(source, userData, user, allowRememberingSelection);
+                SetDefaultSubtitleStreamIndex(source, userData, user, allowRememberingSelection);
+            }
+            else if (item is Audio)
+            {
+                var audio = source.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
+
+                if (audio != null)
+                {
+                    source.DefaultAudioStreamIndex = audio.Index;
+                }
+            }
         }
 
         private IEnumerable<MediaSourceInfo> SortMediaSources(IEnumerable<MediaSourceInfo> sources)
@@ -426,7 +458,7 @@ namespace Emby.Server.Implementations.Library
                     var item = string.IsNullOrEmpty(request.ItemId)
                         ? null
                         : _libraryManager.GetItemById(request.ItemId);
-                    SetUserProperties(item, clone, user);
+                    SetDefaultAudioAndSubtitleStreamIndexes(item, clone, user);
                 }
 
                 return new LiveStreamResponse

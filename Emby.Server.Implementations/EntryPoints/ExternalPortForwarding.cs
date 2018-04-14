@@ -90,7 +90,6 @@ namespace Emby.Server.Implementations.EntryPoints
             {
                 _natManager = new NatManager(_logger, _httpClient);
                 _natManager.DeviceFound += NatUtility_DeviceFound;
-                _natManager.DeviceLost += NatUtility_DeviceLost;
                 _natManager.StartDiscovery();
             }
 
@@ -277,12 +276,6 @@ namespace Emby.Server.Implementations.EntryPoints
             });
         }
 
-        void NatUtility_DeviceLost(object sender, DeviceEventArgs e)
-        {
-            var device = e.Device;
-            _logger.Debug("NAT device lost: {0}", device.LocalAddress.ToString());
-        }
-
         private bool _disposed = false;
         public void Dispose()
         {
@@ -314,7 +307,6 @@ namespace Emby.Server.Implementations.EntryPoints
                     {
                         natManager.StopDiscovery();
                         natManager.DeviceFound -= NatUtility_DeviceFound;
-                        natManager.DeviceLost -= NatUtility_DeviceLost;
                     }
                     catch (Exception ex)
                     {

@@ -227,7 +227,7 @@ namespace Emby.Server.Implementations.Services
                 var security = new List<Dictionary<string, string[]>>();
 
                 var apiKeySecurity = new Dictionary<string, string[]>();
-                apiKeySecurity["api_key"] = new string[] { };
+                apiKeySecurity["api_key"] = Array.Empty<string>();
 
                 security.Add(apiKeySecurity);
 
@@ -244,7 +244,7 @@ namespace Emby.Server.Implementations.Services
                         "application/json"
                     },
                     operationId = info.RequestType.Name,
-                    tags = new string[] { },
+                    tags = Array.Empty<string>(),
 
                     parameters = new SwaggerParam[] { },
 

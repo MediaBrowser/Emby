@@ -20,8 +20,8 @@ namespace MediaBrowser.Controller.Collections
         public CollectionCreationOptions()
         {
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            ItemIdList = new string[] { };
-            UserIds = new string[] { };
+            ItemIdList = new string[] {};
+            UserIds = new string[] {};
         }
     }
 }

@@ -25,7 +25,7 @@ namespace MediaBrowser.Model.Dlna
             return SplitValue(Container);
         }
 
-        private static readonly string[] EmptyStringArray = new string[] { };
+        private static readonly string[] EmptyStringArray = new string[] {};
 
         public static string[] SplitValue(string value)
         {

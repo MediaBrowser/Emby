@@ -714,7 +714,7 @@ namespace Emby.Server.Implementations.Channels
             {
                 query.Parent = channel;
             }
-            query.ChannelIds = new Guid[] { };
+            query.ChannelIds = Array.Empty<Guid>();
 
             // Not yet sure why this is causing a problem
             query.GroupByPresentationUniqueKey = false;

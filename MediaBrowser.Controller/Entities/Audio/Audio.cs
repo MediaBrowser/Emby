@@ -36,8 +36,8 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         public Audio()
         {
-            Artists = EmptyStringArray;
-            AlbumArtists = EmptyStringArray;
+            Artists = new string[] {};
+            AlbumArtists = new string[] {};
         }
 
         public override double? GetDefaultPrimaryImageAspectRatio()

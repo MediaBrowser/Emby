@@ -66,6 +66,8 @@ namespace Emby.Server.Implementations.Collections
                 return existingFolders[0];
             }
 
+            _fileSystem.CreateDirectory(path);
+
             var libraryOptions = new LibraryOptions
             {
                 PathInfos = new[] { new MediaPathInfo { Path = path } },

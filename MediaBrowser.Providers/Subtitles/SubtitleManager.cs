@@ -61,13 +61,13 @@ namespace MediaBrowser.Providers.Subtitles
 
         public async Task<RemoteSubtitleInfo[]> SearchSubtitles(SubtitleSearchRequest request, CancellationToken cancellationToken)
         {
-            var cultures = _localization.GetCultures();
-            foreach (var culture in cultures)
+            if (request.Language != null)
             {
-                if (string.Equals(culture.ThreeLetterISOLanguageName, request.Language, StringComparison.OrdinalIgnoreCase))
+                var culture = _localization.FindLanguageInfo(request.Language);
+
+                if (culture != null)
                 {
                     request.TwoLetterISOLanguageName = culture.TwoLetterISOLanguageName;
-                    break;
                 }
             }
 

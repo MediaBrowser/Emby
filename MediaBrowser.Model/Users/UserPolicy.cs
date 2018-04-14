@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Configuration;
+using System;
 
 namespace MediaBrowser.Model.Users
 {
@@ -76,7 +77,7 @@ namespace MediaBrowser.Model.Users
         public UserPolicy()
         {
             EnableContentDeletion = true;
-            EnableContentDeletionFromFolders = new string[] { };
+            EnableContentDeletionFromFolders = new string[] {};
 
             EnableSyncTranscoding = true;
 
@@ -94,7 +95,7 @@ namespace MediaBrowser.Model.Users
 
             EnableSharedDeviceControl = true;
 
-            BlockedTags = new string[] { };
+            BlockedTags = new string[] {};
             BlockUnratedItems = new UnratedItem[] { };
 
             EnableUserPreferenceAccess = true;
@@ -102,12 +103,12 @@ namespace MediaBrowser.Model.Users
             AccessSchedules = new AccessSchedule[] { };
 
             EnableAllChannels = true;
-            EnabledChannels = new string[] { };
+            EnabledChannels = new string[] {};
 
             EnableAllFolders = true;
-            EnabledFolders = new string[] { };
+            EnabledFolders = new string[] {};
 
-            EnabledDevices = new string[] { };
+            EnabledDevices = new string[] {};
             EnableAllDevices = true;
 
             EnableContentDownloading = true;

@@ -13,7 +13,7 @@ namespace MediaBrowser.Model.LiveTv
         {
             ChannelIds = new Guid[] { };
             OrderBy = new Tuple<string, SortOrder>[] { };
-            Genres = new string[] { };
+            Genres = new string[] {};
             GenreIds = new Guid[] { };
             EnableTotalRecordCount = true;
             EnableUserData = true;

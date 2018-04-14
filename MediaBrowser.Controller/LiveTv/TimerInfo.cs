@@ -14,7 +14,7 @@ namespace MediaBrowser.Controller.LiveTv
             KeepUntil = KeepUntil.UntilDeleted;
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             SeriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            Tags = new string[] { };
+            Tags = new string[] {};
         }
 
         public Dictionary<string, string> ProviderIds { get; set; }
