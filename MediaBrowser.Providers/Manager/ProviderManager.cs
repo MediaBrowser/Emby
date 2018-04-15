@@ -480,19 +480,13 @@ namespace MediaBrowser.Providers.Manager
                 GetPluginSummary<Series>(),
                 GetPluginSummary<Season>(),
                 GetPluginSummary<Episode>(),
-                GetPluginSummary<Person>(),
                 GetPluginSummary<MusicAlbum>(),
                 GetPluginSummary<MusicArtist>(),
                 GetPluginSummary<Audio>(),
                 GetPluginSummary<AudioBook>(),
-                GetPluginSummary<Genre>(),
                 GetPluginSummary<Studio>(),
-                GetPluginSummary<GameGenre>(),
-                GetPluginSummary<MusicGenre>(),
                 GetPluginSummary<MusicVideo>(),
-                GetPluginSummary<Video>(),
-                GetPluginSummary<LiveTvChannel>(),
-                GetPluginSummary<LiveTvProgram>()
+                GetPluginSummary<Video>()
             };
         }
 
@@ -548,7 +542,7 @@ namespace MediaBrowser.Providers.Manager
         private void AddMetadataPlugins<T>(List<MetadataPlugin> list, T item, LibraryOptions libraryOptions, MetadataOptions options)
             where T : BaseItem
         {
-            var providers = GetMetadataProvidersInternal<T>(item, libraryOptions, options, true, false, false).ToList();
+            var providers = GetMetadataProvidersInternal<T>(item, libraryOptions, options, true, true, false).ToList();
 
             // Locals
             list.AddRange(providers.Where(i => (i is ILocalMetadataProvider)).Select(i => new MetadataPlugin
@@ -737,24 +731,48 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        public async Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(RemoteSearchQuery<TLookupType> searchInfo,
-            CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(RemoteSearchQuery<TLookupType> searchInfo, CancellationToken cancellationToken)
             where TItemType : BaseItem, new()
             where TLookupType : ItemLookupInfo
         {
-            // Give it a dummy path just so that it looks like a file system item
-            var dummy = new TItemType
+            BaseItem referenceItem = null;
+
+            if (!string.IsNullOrEmpty(searchInfo.ItemId))
             {
-                Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy"),
-                ParentId = Guid.NewGuid()
-            };
+                referenceItem = _libraryManagerFactory().GetItemById(searchInfo.ItemId);
+            }
 
-            dummy.SetParent(new Folder());
+            return GetRemoteSearchResults<TItemType, TLookupType>(searchInfo, referenceItem, cancellationToken);
+        }
 
-            var options = GetMetadataOptions(dummy);
-            var libraryOptions = new LibraryOptions();
+        public async Task<IEnumerable<RemoteSearchResult>> GetRemoteSearchResults<TItemType, TLookupType>(RemoteSearchQuery<TLookupType> searchInfo, BaseItem referenceItem, CancellationToken cancellationToken)
+            where TItemType : BaseItem, new()
+            where TLookupType : ItemLookupInfo
+        {
+            LibraryOptions libraryOptions;
 
-            var providers = GetMetadataProvidersInternal<TItemType>(dummy, libraryOptions, options, searchInfo.IncludeDisabledProviders, false, false)
+            if (referenceItem == null)
+            {
+                // Give it a dummy path just so that it looks like a file system item
+                var dummy = new TItemType
+                {
+                    Path = Path.Combine(_appPaths.InternalMetadataPath, "dummy"),
+                    ParentId = Guid.NewGuid()
+                };
+
+                dummy.SetParent(new Folder());
+
+                referenceItem = dummy;
+                libraryOptions = new LibraryOptions();
+            }
+            else
+            {
+                libraryOptions = _libraryManagerFactory().GetLibraryOptions(referenceItem);
+            }
+
+            var options = GetMetadataOptions(referenceItem);
+
+            var providers = GetMetadataProvidersInternal<TItemType>(referenceItem, libraryOptions, options, searchInfo.IncludeDisabledProviders, false, false)
                 .OfType<IRemoteSearchProvider<TLookupType>>();
 
             if (!string.IsNullOrEmpty(searchInfo.SearchProviderName))

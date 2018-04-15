@@ -244,6 +244,8 @@ namespace Emby.Server.Implementations.Devices
                 return Task.CompletedTask;
             }
 
+            _fileSystem.CreateDirectory(path);
+
             var libraryOptions = new LibraryOptions
             {
                 PathInfos = new[] { new MediaPathInfo { Path = path } },

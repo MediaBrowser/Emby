@@ -1,3 +1,5 @@
+using System;
+
 namespace MediaBrowser.Model.Notifications
 {
     public class NotificationOption
@@ -46,9 +48,9 @@ namespace MediaBrowser.Model.Notifications
 
         public NotificationOption()
         {
-            DisabledServices = new string[] { };
-            DisabledMonitorUsers = new string[] { };
-            SendToUsers = new string[] { };
+            DisabledServices = new string[] {};
+            DisabledMonitorUsers = new string[] {};
+            SendToUsers = new string[] {};
         }
     }
 }

@@ -43,24 +43,22 @@ namespace MediaBrowser.Controller.Entities
     /// </summary>
     public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>
     {
-        protected static Guid[] EmptyGuidArray = new Guid[] { };
         protected static MetadataFields[] EmptyMetadataFieldsArray = new MetadataFields[] { };
-        protected static string[] EmptyStringArray = new string[] { };
         protected static MediaUrl[] EmptyMediaUrlArray = new MediaUrl[] { };
         protected static ItemImageInfo[] EmptyItemImageInfoArray = new ItemImageInfo[] { };
         public static readonly LinkedChild[] EmptyLinkedChildArray = new LinkedChild[] { };
 
         protected BaseItem()
         {
-            ThemeSongIds = EmptyGuidArray;
-            ThemeVideoIds = EmptyGuidArray;
-            Tags = EmptyStringArray;
+            ThemeSongIds = new Guid[] {};
+            ThemeVideoIds = new Guid[] {};
+            Tags = new string[] {};
             Genres = new List<string>();
-            Studios = EmptyStringArray;
+            Studios = new string[] {};
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             LockedFields = EmptyMetadataFieldsArray;
             ImageInfos = EmptyItemImageInfoArray;
-            ProductionLocations = EmptyStringArray;
+            ProductionLocations = new string[] {};
         }
 
         public static readonly char[] SlugReplaceChars = { '?', '/', '&' };
@@ -664,7 +662,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (!IsFileProtocol)
                 {
-                    return new string[] { };
+                    return new string[] {};
                 }
 
                 return new[] { Path };
@@ -2645,7 +2643,7 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
-        public virtual bool BeforeMetadataRefresh()
+        public virtual bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
             _sortName = null;
 

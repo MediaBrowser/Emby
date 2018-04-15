@@ -120,6 +120,7 @@ using System.Threading.Tasks;
 using StringExtensions = MediaBrowser.Controller.Extensions.StringExtensions;
 using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 using MediaBrowser.Controller.Authentication;
+using System.Diagnostics;
 
 namespace Emby.Server.Implementations
 {
@@ -1000,7 +1001,7 @@ namespace Emby.Server.Implementations
             var newsService = new Emby.Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);
             RegisterSingleInstance<INewsService>(newsService);
 
-            MediaSourceManager = new MediaSourceManager(ItemRepository, UserManager, LibraryManager, LogManager.GetLogger("MediaSourceManager"), JsonSerializer, FileSystemManager, UserDataManager, TimerFactory, () => MediaEncoder);
+            MediaSourceManager = new MediaSourceManager(ItemRepository, LocalizationManager, UserManager, LibraryManager, LogManager.GetLogger("MediaSourceManager"), JsonSerializer, FileSystemManager, UserDataManager, TimerFactory, () => MediaEncoder);
             RegisterSingleInstance(MediaSourceManager);
 
             SubtitleManager = new SubtitleManager(LogManager.GetLogger("SubtitleManager"), FileSystemManager, LibraryMonitor, MediaSourceManager, ServerConfigurationManager, LocalizationManager);
@@ -1867,18 +1868,43 @@ namespace Emby.Server.Implementations
                 return;
             }
 
-            Directory.CreateDirectory(target);
-
-            foreach (var file in files)
+            foreach (var sourceFile in files)
             {
-                var filename = Path.GetFileName(file);
+                var filename = Path.GetFileName(sourceFile);
                 var targetFile = Path.Combine(target, filename);
 
-                if (!ServerConfigurationManager.Configuration.UninstalledPlugins.Contains(filename, StringComparer.OrdinalIgnoreCase) ||
-                    File.Exists(targetFile))
+                var targetFileExists = File.Exists(targetFile);
+
+                if (!targetFileExists && ServerConfigurationManager.Configuration.UninstalledPlugins.Contains(filename, StringComparer.OrdinalIgnoreCase))
                 {
-                    File.Copy(file, targetFile, true);
+                    continue;
                 }
+
+                if (targetFileExists && GetDllVersion(targetFile) >= GetDllVersion(sourceFile))
+                {
+                    continue;
+                }
+
+                Directory.CreateDirectory(target);
+                File.Copy(sourceFile, targetFile, true);
+            }
+        }
+
+        private Version GetDllVersion(string path)
+        {
+            try
+            {
+                var result = Version.Parse(FileVersionInfo.GetVersionInfo(path).FileVersion);
+
+                Logger.Info("File {0} has version {1}", path, result);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error getting version number from {0}", ex, path);
+
+                return new Version(1, 0);
             }
         }
 

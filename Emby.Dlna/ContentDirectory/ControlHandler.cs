@@ -540,7 +540,7 @@ namespace Emby.Dlna.ContentDirectory
                 StartIndex = startIndex,
                 User = user,
                 IsVirtualItem = false,
-                PresetViews = new string[] { },
+                PresetViews = Array.Empty<string>(),
                 ExcludeItemTypes = new[] { typeof(Game).Name, typeof(Book).Name },
                 IsPlaceHolder = false,
                 DtoOptions = GetDtoOptions()

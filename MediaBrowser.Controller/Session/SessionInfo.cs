@@ -48,7 +48,7 @@ namespace MediaBrowser.Controller.Session
             {
                 if (Capabilities == null)
                 {
-                    return new string[] { };
+                    return new string[] {};
                 }
                 return Capabilities.PlayableMediaTypes;
             }
@@ -140,7 +140,7 @@ namespace MediaBrowser.Controller.Session
             {
                 if (Capabilities == null)
                 {
-                    return new string[] { };
+                    return new string[] {};
                 }
                 return Capabilities.SupportedCommands;
             }

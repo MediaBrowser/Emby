@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Dlna;
+using System;
 
 namespace MediaBrowser.Model.Session
 {
@@ -24,8 +25,8 @@ namespace MediaBrowser.Model.Session
 
         public ClientCapabilities()
         {
-            PlayableMediaTypes = new string[] { };
-            SupportedCommands = new string[] { };
+            PlayableMediaTypes = new string[] {};
+            SupportedCommands = new string[] {};
             SupportsPersistentIdentifier = true;
         }
     }

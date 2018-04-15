@@ -668,8 +668,8 @@ namespace MediaBrowser.Api.Images
 
         private ImageFormat[] GetClientSupportedFormats()
         {
-            //Logger.Debug("Request types: {0}", string.Join(",", Request.AcceptTypes ?? new string[] { }));
-            var supportedFormats = (Request.AcceptTypes ?? new string[] { }).Select(i => i.Split(';')[0]).ToArray();
+            //Logger.Debug("Request types: {0}", string.Join(",", Request.AcceptTypes ?? Array.Empty<string>()));
+            var supportedFormats = (Request.AcceptTypes ?? Array.Empty<string>()).Select(i => i.Split(';')[0]).ToArray();
             var acceptParam = Request.QueryString["accept"];
 
             var supportsWebP = SupportsFormat(supportedFormats, acceptParam, "webp", false);

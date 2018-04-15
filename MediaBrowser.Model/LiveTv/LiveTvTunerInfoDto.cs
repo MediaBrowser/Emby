@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -72,7 +73,7 @@ namespace MediaBrowser.Model.LiveTv
         
         public LiveTvTunerInfoDto()
         {
-            Clients = new string[] { };
+            Clients = new string[] {};
         }
     }
 }

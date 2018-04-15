@@ -83,6 +83,8 @@ namespace MediaBrowser.Controller.Library
         bool SupportsDirectStream(string path, MediaProtocol protocol);
 
         MediaProtocol GetPathProtocol(string path);
+
+        void SetDefaultAudioAndSubtitleStreamIndexes(BaseItem item, MediaSourceInfo source, User user);
     }
 
     public interface IDirectStreamProvider

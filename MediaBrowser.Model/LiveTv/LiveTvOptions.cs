@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MediaBrowser.Model.Dto;
+using System;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -29,7 +30,7 @@ namespace MediaBrowser.Model.LiveTv
         {
             TunerHosts = new TunerHostInfo[] { };
             ListingProviders = new ListingsProviderInfo[] { };
-            MediaLocationsCreated = new string[] { };
+            MediaLocationsCreated = new string[] {};
             RecordingEncodingFormat = "mkv";
             RecordingPostProcessorArguments = "\"{path}\"";
         }
@@ -85,7 +86,7 @@ namespace MediaBrowser.Model.LiveTv
             SportsCategories = new string[] { "sports", "basketball", "baseball", "football" };
             KidsCategories = new string[] { "kids", "family", "children", "childrens", "disney" };
             MovieCategories = new string[] { "movie" };
-            EnabledTuners = new string[] { };
+            EnabledTuners = new string[] {};
             EnableAllTuners = true;
             ChannelMappings = new NameValuePair[] {};
         }

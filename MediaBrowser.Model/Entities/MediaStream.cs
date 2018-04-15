@@ -172,13 +172,16 @@ namespace MediaBrowser.Model.Entities
         {
             var i = this;
 
-            if (i.Width.HasValue)
+            if (i.Width.HasValue && i.Height.HasValue)
             {
-                if (i.Width >= 3800)
+                var width = i.Width.Value;
+                var height = i.Height.Value;
+
+                if (width >= 3800 || height >= 2000)
                 {
                     return "4K";
                 }
-                if (i.Width >= 2500)
+                if (width >= 2500)
                 {
                     if (i.IsInterlaced)
                     {
@@ -186,7 +189,7 @@ namespace MediaBrowser.Model.Entities
                     }
                     return "1440P";
                 }
-                if (i.Width >= 1900)
+                if (width >= 1900 || height >= 1000)
                 {
                     if (i.IsInterlaced)
                     {
@@ -194,7 +197,7 @@ namespace MediaBrowser.Model.Entities
                     }
                     return "1080P";
                 }
-                if (i.Width >= 1260)
+                if (width >= 1260 || height >= 700)
                 {
                     if (i.IsInterlaced)
                     {
@@ -202,7 +205,7 @@ namespace MediaBrowser.Model.Entities
                     }
                     return "720P";
                 }
-                if (i.Width >= 700)
+                if (width >= 700 || height >= 440)
                 {
 
                     if (i.IsInterlaced)
@@ -212,6 +215,7 @@ namespace MediaBrowser.Model.Entities
                     return "480P";
                 }
 
+                return "SD";
             }
             return null;
         }

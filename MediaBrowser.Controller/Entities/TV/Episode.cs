@@ -18,8 +18,8 @@ namespace MediaBrowser.Controller.Entities.TV
         public Episode()
         {
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
         }
 
         public Guid[] LocalTrailerIds { get; set; }
@@ -340,34 +340,24 @@ namespace MediaBrowser.Controller.Entities.TV
             return id;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
-            if (SourceType == SourceType.Library)
+            if (!IsLocked)
             {
-                try
+                if (SourceType == SourceType.Library)
                 {
-                    if (LibraryManager.FillMissingEpisodeNumbersFromPath(this))
+                    try
                     {
-                        hasChanges = true;
+                        if (LibraryManager.FillMissingEpisodeNumbersFromPath(this, replaceAllMetdata))
+                        {
+                            hasChanges = true;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
-                }
-            }
-
-            if (!ParentIndexNumber.HasValue)
-            {
-                var season = Season;
-                if (season != null)
-                {
-                    if (season.ParentIndexNumber.HasValue)
+                    catch (Exception ex)
                     {
-                        ParentIndexNumber = season.ParentIndexNumber;
-                        hasChanges = true;
+                        Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
                     }
                 }
             }

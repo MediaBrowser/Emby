@@ -335,6 +335,11 @@ namespace Emby.Server.Implementations.EntryPoints
                     return;
                 }
 
+                if (info.IsEmpty)
+                {
+                    continue;
+                }
+
                 var userIdString = userId.ToString("N");
 
                 try

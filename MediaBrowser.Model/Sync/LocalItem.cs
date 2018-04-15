@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Dto;
 using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.Sync
 {
@@ -53,8 +54,8 @@ namespace MediaBrowser.Model.Sync
 
         public LocalItem()
         {
-            AdditionalFiles = new string[] { };
-            UserIdsWithAccess = new string[] { };
+            AdditionalFiles = new string[] {};
+            UserIdsWithAccess = new string[] {};
         }
     }
 }

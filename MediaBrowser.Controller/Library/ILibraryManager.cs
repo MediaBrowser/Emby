@@ -373,9 +373,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Fills the missing episode numbers from path.
         /// </summary>
-        /// <param name="episode">The episode.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        bool FillMissingEpisodeNumbersFromPath(Episode episode);
+        bool FillMissingEpisodeNumbersFromPath(Episode episode, bool forceRefresh);
 
         /// <summary>
         /// Parses the name.

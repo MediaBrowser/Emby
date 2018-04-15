@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using System;
 
 namespace MediaBrowser.Model.Configuration
 {
@@ -201,11 +202,11 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         public ServerConfiguration()
         {
-            UninstalledPlugins = new string[] { };
-            RemoteIPFilter = new string[] { };
-            LocalNetworkSubnets = new string[] { };
-            LocalNetworkAddresses = new string[] { };
-            CodecsUsed = new string[] { };
+            UninstalledPlugins = new string[] {};
+            RemoteIPFilter = new string[] {};
+            LocalNetworkSubnets = new string[] {};
+            LocalNetworkAddresses = new string[] {};
+            CodecsUsed = new string[] {};
             ImageExtractionTimeoutMs = 0;
             PathSubstitutions = new PathSubstitution[] { };
             EnableSimpleArtistDetection = true;

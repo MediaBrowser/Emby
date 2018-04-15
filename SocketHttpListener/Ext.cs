@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
 using HttpStatusCode = SocketHttpListener.Net.HttpStatusCode;
+using MediaBrowser.Model.Net;
 
 namespace SocketHttpListener
 {
@@ -127,7 +128,7 @@ namespace SocketHttpListener
 
         internal static string CheckIfClosable(this WebSocketState state)
         {
-            return state == WebSocketState.Closing
+            return state == WebSocketState.CloseSent
                    ? "While closing the WebSocket connection."
                    : state == WebSocketState.Closed
                      ? "The WebSocket connection has already been closed."
@@ -138,7 +139,7 @@ namespace SocketHttpListener
         {
             return state == WebSocketState.Connecting
                    ? "A WebSocket connection isn't established."
-                   : state == WebSocketState.Closing
+                   : state == WebSocketState.CloseSent
                      ? "While closing the WebSocket connection."
                      : state == WebSocketState.Closed
                        ? "The WebSocket connection has already been closed."
@@ -149,20 +150,6 @@ namespace SocketHttpListener
         {
             return data.Length > 125
                    ? String.Format("'{0}' length must be less.", paramName)
-                   : null;
-        }
-
-        internal static string CheckIfValidSendData(this byte[] data)
-        {
-            return data == null
-                   ? "'data' must not be null."
-                   : null;
-        }
-
-        internal static string CheckIfValidSendData(this string data)
-        {
-            return data == null
-                   ? "'data' must not be null."
                    : null;
         }
 

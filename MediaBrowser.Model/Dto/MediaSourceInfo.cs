@@ -73,7 +73,7 @@ namespace MediaBrowser.Model.Dto
 
         public MediaSourceInfo()
         {
-            Formats = new string[] { };
+            Formats = new string[] {};
             MediaStreams = new List<MediaStream>();
             RequiredHttpHeaders = new Dictionary<string, string>();
             SupportsTranscoding = true;

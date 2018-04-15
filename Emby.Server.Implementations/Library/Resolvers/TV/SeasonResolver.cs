@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
 
                 var season = new Season
                 {
-                    IndexNumber = new SeasonPathParser(namingOptions, new RegexProvider()).Parse(path, true, true).SeasonNumber,
+                    IndexNumber = new SeasonPathParser(namingOptions).Parse(path, true, true).SeasonNumber,
                     SeriesId = series.Id,
                     SeriesName = series.Name
                 };

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.Playlists
 {
@@ -14,7 +15,7 @@ namespace MediaBrowser.Model.Playlists
 
         public PlaylistCreationRequest()
         {
-            ItemIdList = new string[] { };
+            ItemIdList = new string[] {};
         }
    }
 }

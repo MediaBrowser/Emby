@@ -124,7 +124,7 @@ namespace MediaBrowser.Api.LiveTv
 
             if (string.IsNullOrEmpty(val))
             {
-                return new string[] { };
+                return Array.Empty<string>();
             }
 
             return val.Split(',');

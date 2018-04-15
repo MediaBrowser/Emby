@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace MediaBrowser.Model.Connect
 {
     public class ConnectAuthorizationRequest
@@ -11,8 +12,8 @@ namespace MediaBrowser.Model.Connect
 
         public ConnectAuthorizationRequest()
         {
-            EnabledLibraries = new string[] { };
-            EnabledChannels = new string[] { };
+            EnabledLibraries = new string[] {};
+            EnabledChannels = new string[] {};
         }
     }
 }

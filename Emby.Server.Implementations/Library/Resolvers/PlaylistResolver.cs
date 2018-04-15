@@ -44,6 +44,21 @@ namespace Emby.Server.Implementations.Library.Resolvers
                     };
                 }
             }
+            else
+            {
+                if (SupportedCollectionTypes.Contains(args.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                {
+                    var extension = Path.GetExtension(args.Path);
+                    if (Playlist.SupportedExtensions.Contains(extension ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                    {
+                        return new Playlist
+                        {
+                            Path = args.Path,
+                            Name = Path.GetFileNameWithoutExtension(args.Path)
+                        };
+                    }
+                }
+            }
 
             return null;
         }

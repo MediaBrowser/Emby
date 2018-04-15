@@ -5,6 +5,8 @@ namespace MediaBrowser.Controller.Providers
     {
         public T SearchInfo { get; set; }
 
+        public string ItemId { get; set; }
+
         /// <summary>
         /// If set will only search within the given provider
         /// </summary>

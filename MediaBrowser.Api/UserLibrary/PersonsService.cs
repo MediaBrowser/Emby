@@ -7,6 +7,7 @@ using MediaBrowser.Model.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Services;
+using System;
 
 namespace MediaBrowser.Api.UserLibrary
 {
@@ -99,7 +100,7 @@ namespace MediaBrowser.Api.UserLibrary
         protected override IEnumerable<BaseItem> GetAllItems(GetItemsByName request, IList<BaseItem> items)
         {
             var inputPersonTypes = ((GetPersons)request).PersonTypes;
-            var personTypes = string.IsNullOrEmpty(inputPersonTypes) ? new string[] { } : inputPersonTypes.Split(',');
+            var personTypes = string.IsNullOrEmpty(inputPersonTypes) ? Array.Empty<string>() : inputPersonTypes.Split(',');
 
             // Either get all people, or all people filtered by a specific person type
             var allPeople = GetAllPeople(items, personTypes);

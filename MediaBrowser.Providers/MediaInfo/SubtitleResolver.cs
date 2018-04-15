@@ -137,11 +137,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
                     // Try to translate to three character code
                     // Be flexible and check against both the full and three character versions
-                    var culture = _localization.GetCultures()
-                        .FirstOrDefault(i => string.Equals(i.DisplayName, language, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(i.Name, language, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(i.ThreeLetterISOLanguageName, language, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(i.TwoLetterISOLanguageName, language, StringComparison.OrdinalIgnoreCase));
+                    var culture = _localization.FindLanguageInfo(language);
 
                     if (culture != null)
                     {

@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Updates;
 using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.System
 {
@@ -149,7 +150,7 @@ namespace MediaBrowser.Model.System
 
             CompletedInstallations = new InstallationInfo[] { };
 
-            FailedPluginAssemblies = new string[] { };
+            FailedPluginAssemblies = new string[] {};
         }
     }
 }

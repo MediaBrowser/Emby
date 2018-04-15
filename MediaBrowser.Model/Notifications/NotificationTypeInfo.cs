@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.Notifications
 {
@@ -22,7 +23,7 @@ namespace MediaBrowser.Model.Notifications
 
         public NotificationTypeInfo()
         {
-            Variables = new string[] { };
+            Variables = new string[] {};
         }
     }
 }

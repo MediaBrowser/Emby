@@ -899,7 +899,7 @@ namespace MediaBrowser.Api.Library
         public void Delete(DeleteItems request)
         {
             var ids = string.IsNullOrWhiteSpace(request.Ids)
-             ? new string[] { }
+             ? Array.Empty<string>()
              : request.Ids.Split(',');
 
             foreach (var i in ids)
