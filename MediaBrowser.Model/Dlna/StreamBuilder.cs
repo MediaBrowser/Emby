@@ -649,7 +649,7 @@ namespace MediaBrowser.Model.Dlna
         {
             if (string.IsNullOrEmpty(transcodingProfile.AudioCodec))
             {
-                playlistItem.AudioCodecs = new string[] {};
+                playlistItem.AudioCodecs = new string[] { };
             }
             else
             {
@@ -662,7 +662,7 @@ namespace MediaBrowser.Model.Dlna
 
             if (string.IsNullOrEmpty(transcodingProfile.VideoCodec))
             {
-                playlistItem.VideoCodecs = new string[] {};
+                playlistItem.VideoCodecs = new string[] { };
             }
             else
             {
@@ -960,13 +960,13 @@ namespace MediaBrowser.Model.Dlna
 
             if (maxTotalBitrate.HasValue)
             {
-                defaultBitrate = Math.Min(GetMaxAudioBitrateForTotalBitrate(defaultBitrate), defaultBitrate);
+                defaultBitrate = Math.Min(GetMaxAudioBitrateForTotalBitrate(maxTotalBitrate.Value), defaultBitrate);
             }
 
             return Math.Min(defaultBitrate, encoderAudioBitrateLimit);
         }
 
-        private int GetMaxAudioBitrateForTotalBitrate(int totalBitrate)
+        private int GetMaxAudioBitrateForTotalBitrate(long totalBitrate)
         {
             if (totalBitrate <= 640000)
             {

@@ -2414,7 +2414,12 @@ namespace Emby.Server.Implementations.Library
         public bool FillMissingEpisodeNumbersFromPath(Episode episode, bool forceRefresh)
         {
             var series = episode.Series;
-            var isAbsoluteNaming = series == null ? false : string.Equals(series.DisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase);
+            bool? isAbsoluteNaming = series == null ? false : string.Equals(series.DisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase);
+            if (!isAbsoluteNaming.Value)
+            {
+                // In other words, no filter applied
+                isAbsoluteNaming = null;
+            }
 
             var resolver = new EpisodeResolver(GetNamingOptions());
 

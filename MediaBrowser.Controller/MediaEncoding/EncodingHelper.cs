@@ -1499,6 +1499,7 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public List<string> GetScalingFilters(int? videoWidth,
             int? videoHeight,
+            Video3DFormat? threedFormat,
             string videoDecoder,
             string videoEncoder,
             int? requestedWidth,
@@ -1536,16 +1537,16 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // If fixed dimensions were supplied
                 if (requestedWidth.HasValue && requestedHeight.HasValue)
                 {
-                    var widthParam = requestedWidth.Value.ToString(_usCulture);
-                    var heightParam = requestedHeight.Value.ToString(_usCulture);
-
                     if (isExynosV4L2)
                     {
+                        var widthParam = requestedWidth.Value.ToString(_usCulture);
+                        var heightParam = requestedHeight.Value.ToString(_usCulture);
+
                         filters.Add(string.Format("scale=trunc({0}/64)*64:trunc({1}/2)*2", widthParam, heightParam));
                     }
                     else
                     {
-                        filters.Add(string.Format("scale=trunc({0}/2)*2:trunc({1}/2)*2", widthParam, heightParam));
+                        filters.Add(GetFixedSizeScalingFilter(threedFormat, requestedWidth.Value, requestedHeight.Value));
                     }
                 }
 
@@ -1568,9 +1569,17 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // If a fixed width was requested
                 else if (requestedWidth.HasValue)
                 {
-                    var widthParam = requestedWidth.Value.ToString(_usCulture);
+                    if (threedFormat.HasValue)
+                    {
+                        // This method can handle 0 being passed in for the requested height
+                        filters.Add(GetFixedSizeScalingFilter(threedFormat, requestedWidth.Value, 0));
+                    }
+                    else
+                    {
+                        var widthParam = requestedWidth.Value.ToString(_usCulture);
 
-                    filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
+                        filters.Add(string.Format("scale={0}:trunc(ow/a/2)*2", widthParam));
+                    }
                 }
 
                 // If a fixed height was requested
@@ -1622,6 +1631,54 @@ namespace MediaBrowser.Controller.MediaEncoding
             return filters;
         }
 
+        private string GetFixedSizeScalingFilter(Video3DFormat? threedFormat, int requestedWidth, int requestedHeight)
+        {
+            var widthParam = requestedWidth.ToString(_usCulture);
+            var heightParam = requestedHeight.ToString(_usCulture);
+
+            string filter = null;
+
+            if (threedFormat.HasValue)
+            {
+                switch (threedFormat.Value)
+                {
+                    case Video3DFormat.HalfSideBySide:
+                        filter = "crop=iw/2:ih:0:0,scale=(iw*2):ih,setdar=dar=a,crop=min(iw\\,ih*dar):min(ih\\,iw/dar):(iw-min(iw\\,iw*sar))/2:(ih - min (ih\\,ih/sar))/2,setsar=sar=1,scale={0}:trunc({0}/dar/2)*2";
+                        // hsbs crop width in half,scale to correct size, set the display aspect,crop out any black bars we may have made the scale width to requestedWidth. Work out the correct height based on the display aspect it will maintain the aspect where -1 in this case (3d) may not.
+                        break;
+                    case Video3DFormat.FullSideBySide:
+                        filter = "crop=iw/2:ih:0:0,setdar=dar=a,crop=min(iw\\,ih*dar):min(ih\\,iw/dar):(iw-min(iw\\,iw*sar))/2:(ih - min (ih\\,ih/sar))/2,setsar=sar=1,scale={0}:trunc({0}/dar/2)*2";
+                        //fsbs crop width in half,set the display aspect,crop out any black bars we may have made the scale width to requestedWidth.
+                        break;
+                    case Video3DFormat.HalfTopAndBottom:
+                        filter = "crop=iw:ih/2:0:0,scale=(iw*2):ih),setdar=dar=a,crop=min(iw\\,ih*dar):min(ih\\,iw/dar):(iw-min(iw\\,iw*sar))/2:(ih - min (ih\\,ih/sar))/2,setsar=sar=1,scale={0}:trunc({0}/dar/2)*2";
+                        //htab crop height in half,scale to correct size, set the display aspect,crop out any black bars we may have made the scale width to requestedWidth
+                        break;
+                    case Video3DFormat.FullTopAndBottom:
+                        filter = "crop=iw:ih/2:0:0,setdar=dar=a,crop=min(iw\\,ih*dar):min(ih\\,iw/dar):(iw-min(iw\\,iw*sar))/2:(ih - min (ih\\,ih/sar))/2,setsar=sar=1,scale={0}:trunc({0}/dar/2)*2";
+                        // ftab crop height in half, set the display aspect,crop out any black bars we may have made the scale width to requestedWidth
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // default
+            if (filter == null)
+            {
+                if (requestedHeight > 0)
+                {
+                    filter = "scale=trunc({0}/2)*2:trunc({1}/2)*2";
+                }
+                else
+                {
+                    filter = "scale={0}:trunc({0}/dar/2)*2";
+                }
+            }
+
+            return string.Format(filter, widthParam, heightParam);
+        }
+
         /// <summary>
         /// If we're going to put a fixed size on the command line, this will calculate it
         /// </summary>
@@ -1666,10 +1723,11 @@ namespace MediaBrowser.Controller.MediaEncoding
 
             var inputWidth = videoStream == null ? null : videoStream.Width;
             var inputHeight = videoStream == null ? null : videoStream.Height;
+            var threeDFormat = state.MediaSource.Video3DFormat;
 
             var videoDecoder = GetVideoDecoder(state, options);
 
-            filters.AddRange(GetScalingFilters(inputWidth, inputHeight, videoDecoder, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
+            filters.AddRange(GetScalingFilters(inputWidth, inputHeight, threeDFormat, videoDecoder, outputVideoCodec, request.Width, request.Height, request.MaxWidth, request.MaxHeight));
 
             var output = string.Empty;
 
@@ -1945,12 +2003,12 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
                 else
                 {
-                    state.PlayableStreamFileNames = new string[] {};
+                    state.PlayableStreamFileNames = new string[] { };
                 }
             }
             else
             {
-                state.PlayableStreamFileNames = new string[] {};
+                state.PlayableStreamFileNames = new string[] { };
             }
 
             if (mediaSource.Timestamp.HasValue)

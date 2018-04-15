@@ -3712,7 +3712,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!string.IsNullOrWhiteSpace(query.Path))
             {
-                whereClauses.Add("Path=@Path");
+                whereClauses.Add("(Path=@Path COLLATE NOCASE)");
                 if (statement != null)
                 {
                     statement.TryBind("@Path", query.Path);

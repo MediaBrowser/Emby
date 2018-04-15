@@ -97,8 +97,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 await LoadWwwForm(form).ConfigureAwait(false);
             }
 
-            form.Protect();
-
 #if NET_4_0
 				if (validateRequestNewMode && !checked_form) {
 					// Setting this before calling the validator prevents
@@ -282,19 +280,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
         class WebROCollection : QueryParamCollection
         {
-            bool got_id;
-            int id;
-
-            public void Protect()
-            {
-                //IsReadOnly = true;
-            }
-
-            public void Unprotect()
-            {
-                //IsReadOnly = false;
-            }
-
             public override string ToString()
             {
                 StringBuilder result = new StringBuilder();
