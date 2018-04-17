@@ -26,16 +26,6 @@ namespace MediaBrowser.LocalMetadata.Savers
             return item is GameSystem && updateType >= ItemUpdateType.MetadataDownload;
         }
 
-        protected override List<string> GetTagsUsed()
-        {
-            var list = new List<string>
-            {
-                "GameSystem"
-            };
-
-            return list;
-        }
-
         protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
         {
             var gameSystem = (GameSystem)item;

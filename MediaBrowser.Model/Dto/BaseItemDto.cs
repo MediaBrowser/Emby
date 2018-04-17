@@ -15,7 +15,7 @@ namespace MediaBrowser.Model.Dto
     /// This is strictly used as a data transfer object from the api layer.
     /// This holds information about a BaseItem in a format that is convenient for the client.
     /// </summary>
-    public class BaseItemDto : IHasProviderIds, IItemDto, IHasServerId, IHasSyncInfo
+    public class BaseItemDto : IHasProviderIds, IItemDto, IHasServerId
     {
         /// <summary>
         /// Gets or sets the name.
@@ -79,28 +79,7 @@ namespace MediaBrowser.Model.Dto
         /// <summary>
         /// Gets or sets a value indicating whether [supports synchronize].
         /// </summary>
-        /// <value><c>null</c> if [supports synchronize] contains no value, <c>true</c> if [supports synchronize]; otherwise, <c>false</c>.</value>
         public bool? SupportsSync { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance has synchronize job.
-        /// </summary>
-        /// <value><c>null</c> if [has synchronize job] contains no value, <c>true</c> if [has synchronize job]; otherwise, <c>false</c>.</value>
-        public bool? HasSyncJob { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is synced.
-        /// </summary>
-        /// <value><c>null</c> if [is synced] contains no value, <c>true</c> if [is synced]; otherwise, <c>false</c>.</value>
-        public bool? IsSynced { get; set; }
-        /// <summary>
-        /// Gets or sets the synchronize status.
-        /// </summary>
-        /// <value>The synchronize status.</value>
-        public SyncJobItemStatus? SyncStatus { get; set; }
-        /// <summary>
-        /// Gets or sets the synchronize percent.
-        /// </summary>
-        /// <value>The synchronize percent.</value>
-        public double? SyncPercent { get; set; }
 
         public string Container { get; set; }
 

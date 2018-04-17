@@ -17,12 +17,5 @@ namespace MediaBrowser.Controller.Sync
         /// <param name="item">The item.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         bool SupportsSync(BaseItem item);
-
-        /// <summary>
-        /// Gets the library item ids.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <returns>QueryResult&lt;System.String&gt;.</returns>
-        Dictionary<string, SyncedItemProgress> GetSyncedItemProgresses(SyncJobItemQuery query);
     }
 }

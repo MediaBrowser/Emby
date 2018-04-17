@@ -94,7 +94,6 @@
     <Compile Include="Dlna\XmlAttribute.cs" />
     <Compile Include="Drawing\ImageOrientation.cs" />
     <Compile Include="Dto\IHasServerId.cs" />
-    <Compile Include="Dto\IHasSyncInfo.cs" />
     <Compile Include="Dto\MetadataEditorInfo.cs" />
     <Compile Include="Dto\NameIdPair.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
@@ -337,13 +336,6 @@
     <Compile Include="Session\TranscodingInfo.cs" />
     <Compile Include="Session\UserDataChangeInfo.cs" />
     <Compile Include="Devices\ContentUploadHistory.cs" />
-    <Compile Include="Sync\LocalItem.cs" />
-    <Compile Include="Sync\SyncJobItemQuery.cs" />
-    <Compile Include="Sync\SyncJobItemStatus.cs" />
-    <Compile Include="Sync\SyncJobQuery.cs" />
-    <Compile Include="Sync\SyncJobStatus.cs" />
-    <Compile Include="Sync\SyncProfileOption.cs" />
-    <Compile Include="Sync\SyncQualityOption.cs" />
     <Compile Include="Sync\SyncTarget.cs" />
     <Compile Include="System\Architecture.cs" />
     <Compile Include="System\ISystemEvents.cs" />

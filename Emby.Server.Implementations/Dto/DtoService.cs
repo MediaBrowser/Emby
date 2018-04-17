@@ -18,12 +18,10 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
-using MediaBrowser.Model.Sync;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Extensions;
@@ -108,8 +106,6 @@ namespace Emby.Server.Implementations.Dto
                 throw new ArgumentNullException("options");
             }
 
-            var syncDictionary = GetSyncedItemProgress(options);
-
             var returnItems = new BaseItemDto[itemCount];
             var programTuples = new List<Tuple<BaseItem, BaseItemDto>>();
             var channelTuples = new List<Tuple<BaseItemDto, LiveTvChannel>>();
@@ -150,8 +146,6 @@ namespace Emby.Server.Implementations.Dto
                     }
                 }
 
-                FillSyncInfo(dto, item, options, user, syncDictionary);
-
                 returnItems[index] = dto;
                 index++;
             }
@@ -172,8 +166,6 @@ namespace Emby.Server.Implementations.Dto
 
         public BaseItemDto GetBaseItemDto(BaseItem item, DtoOptions options, User user = null, BaseItem owner = null)
         {
-            var syncDictionary = GetSyncedItemProgress(options);
-
             var allCollectionFolders = _libraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
             var dto = GetBaseItemDtoInternal(item, options, allCollectionFolders, user, owner);
             var tvChannel = item as LiveTvChannel;
@@ -202,11 +194,8 @@ namespace Emby.Server.Implementations.Dto
                     }), user);
                 }
 
-                FillSyncInfo(dto, item, options, user, syncDictionary);
                 return dto;
             }
-
-            FillSyncInfo(dto, item, options, user, syncDictionary);
 
             return dto;
         }
@@ -219,88 +208,6 @@ namespace Emby.Server.Implementations.Dto
                 DtoOptions = options
 
             });
-        }
-
-        public Dictionary<string, SyncedItemProgress> GetSyncedItemProgress(DtoOptions options)
-        {
-            if (!options.Fields.Contains(ItemFields.BasicSyncInfo) &&
-                !options.Fields.Contains(ItemFields.SyncInfo))
-            {
-                return new Dictionary<string, SyncedItemProgress>();
-            }
-
-            var deviceId = options.DeviceId;
-            if (string.IsNullOrEmpty(deviceId))
-            {
-                return new Dictionary<string, SyncedItemProgress>();
-            }
-
-            var caps = _deviceManager().GetCapabilities(deviceId);
-            if (caps == null || !caps.SupportsSync)
-            {
-                return new Dictionary<string, SyncedItemProgress>();
-            }
-
-            return _syncManager.GetSyncedItemProgresses(new SyncJobItemQuery
-            {
-                TargetId = deviceId,
-                Statuses = new[]
-                {
-                    SyncJobItemStatus.Converting,
-                    SyncJobItemStatus.Queued,
-                    SyncJobItemStatus.Transferring,
-                    SyncJobItemStatus.ReadyToTransfer,
-                    SyncJobItemStatus.Synced
-                }
-            });
-        }
-
-        public void FillSyncInfo(IEnumerable<Tuple<BaseItem, BaseItemDto>> tuples, DtoOptions options, User user)
-        {
-            if (options.Fields.Contains(ItemFields.BasicSyncInfo) ||
-                options.Fields.Contains(ItemFields.SyncInfo))
-            {
-                var syncProgress = GetSyncedItemProgress(options);
-
-                foreach (var tuple in tuples)
-                {
-                    var item = tuple.Item1;
-
-                    FillSyncInfo(tuple.Item2, item, options, user, syncProgress);
-                }
-            }
-        }
-
-        private void FillSyncInfo(IHasSyncInfo dto, BaseItem item, DtoOptions options, User user, Dictionary<string, SyncedItemProgress> syncProgress)
-        {
-            var hasFullSyncInfo = options.Fields.Contains(ItemFields.SyncInfo);
-
-            if (!hasFullSyncInfo && !options.Fields.Contains(ItemFields.BasicSyncInfo))
-            {
-                return;
-            }
-
-            if (dto.SupportsSync ?? false)
-            {
-                SyncedItemProgress syncStatus;
-                if (syncProgress.TryGetValue(dto.Id, out syncStatus))
-                {
-                    if (syncStatus.Status == SyncJobItemStatus.Synced)
-                    {
-                        dto.SyncPercent = 100;
-                    }
-                    else
-                    {
-                        dto.SyncPercent = syncStatus.Progress;
-                    }
-
-                    if (hasFullSyncInfo)
-                    {
-                        dto.HasSyncJob = true;
-                        dto.SyncStatus = syncStatus.Status;
-                    }
-                }
-            }
         }
 
         private BaseItemDto GetBaseItemDtoInternal(BaseItem item, DtoOptions options, List<Folder> allCollectionFolders, User user = null, BaseItem owner = null)
@@ -450,7 +357,7 @@ namespace Emby.Server.Implementations.Dto
             }
         }
 
-        public BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, List<BaseItem> taggedItems, Dictionary<string, SyncedItemProgress> syncProgress, User user = null)
+        public BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, List<BaseItem> taggedItems, User user = null)
         {
             var allCollectionFolders = _libraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
             var dto = GetBaseItemDtoInternal(item, options, allCollectionFolders, user);
@@ -459,8 +366,6 @@ namespace Emby.Server.Implementations.Dto
             {
                 SetItemByNameInfo(item, dto, taggedItems, user);
             }
-
-            FillSyncInfo(dto, item, options, user, syncProgress);
 
             return dto;
         }

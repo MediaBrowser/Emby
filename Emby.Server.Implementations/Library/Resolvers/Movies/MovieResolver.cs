@@ -415,7 +415,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
                     Set3DFormat(movie);
                     return movie;
                 }
-                else if (supportPhotos && !child.IsHidden && PhotoResolver.IsImageFile(child.FullName, _imageProcessor))
+                else if (supportPhotos && PhotoResolver.IsImageFile(child.FullName, _imageProcessor))
                 {
                     photos.Add(child);
                 }

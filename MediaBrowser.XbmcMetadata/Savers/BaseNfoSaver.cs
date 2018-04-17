@@ -209,27 +209,15 @@ namespace MediaBrowser.XbmcMetadata.Savers
         private void SaveToFile(Stream stream, string path)
         {
             FileSystem.CreateDirectory(FileSystem.GetDirectoryName(path));
-
-            var file = FileSystem.GetFileInfo(path);
-
-            var wasHidden = false;
-
-            // This will fail if the file is hidden
-            if (file.Exists)
-            {
-                if (file.IsHidden)
-                {
-                    wasHidden = true;
-                }
-                FileSystem.SetAttributes(path, false, false);
-            }
+            // On Windows, savint the file will fail if the file is hidden or readonly
+            FileSystem.SetAttributes(path, false, false);
 
             using (var filestream = FileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
             {
                 stream.CopyTo(filestream);
             }
 
-            if (wasHidden || ConfigurationManager.Configuration.SaveMetadataHidden)
+            if (ConfigurationManager.Configuration.SaveMetadataHidden)
             {
                 SetHidden(path, true);
             }
