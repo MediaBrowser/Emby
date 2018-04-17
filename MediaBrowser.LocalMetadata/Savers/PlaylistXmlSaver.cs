@@ -23,17 +23,6 @@ namespace MediaBrowser.LocalMetadata.Savers
             return item is Playlist && updateType >= ItemUpdateType.MetadataImport;
         }
 
-        protected override List<string> GetTagsUsed()
-        {
-            var list = new List<string>
-            {
-                "OwnerUserId",
-                "PlaylistMediaType"
-            };
-
-            return list;
-        }
-
         protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
         {
             var game = (Playlist)item;

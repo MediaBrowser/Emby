@@ -1095,7 +1095,6 @@ namespace MediaBrowser.Api.LiveTv
         public object Get(GetRecordings request)
         {
             var options = GetDtoOptions(_authContext, request);
-            options.DeviceId = _authContext.GetAuthorizationInfo(Request).DeviceId;
 
             var result = _liveTvManager.GetRecordings(new RecordingQuery
             {

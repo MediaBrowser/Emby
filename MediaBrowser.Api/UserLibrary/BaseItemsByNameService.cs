@@ -197,10 +197,9 @@ namespace MediaBrowser.Api.UserLibrary
 
             var result = GetItems(request, query);
 
-            var syncProgess = DtoService.GetSyncedItemProgress(dtoOptions);
             var dtos = result.Items.Select(i =>
             {
-                var dto = DtoService.GetItemByNameDto(i.Item1, dtoOptions, null, syncProgess, user);
+                var dto = DtoService.GetItemByNameDto(i.Item1, dtoOptions, null, user);
 
                 if (!string.IsNullOrWhiteSpace(request.IncludeItemTypes))
                 {
@@ -326,8 +325,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var tuples = ibnItems.Select(i => new Tuple<BaseItem, List<BaseItem>>(i, new List<BaseItem>()));
 
-            var syncProgess = DtoService.GetSyncedItemProgress(dtoOptions);
-            var dtos = tuples.Select(i => DtoService.GetItemByNameDto(i.Item1, dtoOptions, i.Item2, syncProgess, user));
+            var dtos = tuples.Select(i => DtoService.GetItemByNameDto(i.Item1, dtoOptions, i.Item2, user));
 
             result.Items = dtos.Where(i => i != null).ToArray();
 

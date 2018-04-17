@@ -44,9 +44,9 @@ namespace MediaBrowser.Api
     {
     }
 
-    [Route("/Items/RemoteSearch/AdultVideo", "POST")]
+    [Route("/Items/RemoteSearch/MusicVideo", "POST")]
     [Authenticated]
-    public class GetAdultVideoRemoteSearchResults : RemoteSearchQuery<ItemLookupInfo>, IReturn<List<RemoteSearchResult>>
+    public class GetMusicVideoRemoteSearchResults : RemoteSearchQuery<MusicVideoInfo>, IReturn<List<RemoteSearchResult>>
     {
     }
 
@@ -182,6 +182,13 @@ namespace MediaBrowser.Api
         public async Task<object> Post(GetBoxSetRemoteSearchResults request)
         {
             var result = await _providerManager.GetRemoteSearchResults<BoxSet, BoxSetInfo>(request, CancellationToken.None).ConfigureAwait(false);
+
+            return ToOptimizedResult(result);
+        }
+
+        public async Task<object> Post(GetMusicVideoRemoteSearchResults request)
+        {
+            var result = await _providerManager.GetRemoteSearchResults<MusicVideo, MusicVideoInfo>(request, CancellationToken.None).ConfigureAwait(false);
 
             return ToOptimizedResult(result);
         }

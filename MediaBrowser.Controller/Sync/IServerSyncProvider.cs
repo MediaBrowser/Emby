@@ -22,15 +22,6 @@ namespace MediaBrowser.Controller.Sync
         Task<SyncedFileInfo> SendFile(Stream stream, string[] pathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Deletes the file.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task DeleteFile(string id, SyncTarget target, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Gets the file.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -41,7 +32,6 @@ namespace MediaBrowser.Controller.Sync
         Task<Stream> GetFile(string id, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
 
         Task<QueryResult<FileSystemMetadata>> GetFiles(string[] pathParts, SyncTarget target, CancellationToken cancellationToken);
-        Task<QueryResult<FileSystemMetadata>> GetFiles(SyncTarget target, CancellationToken cancellationToken);
     }
 
     public interface ISupportsDirectCopy
