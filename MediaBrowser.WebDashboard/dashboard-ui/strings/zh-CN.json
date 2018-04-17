@@ -1,6 +1,8 @@
 {
     "SaveSubtitlesIntoMediaFolders": "Save subtitles into media folders",
     "SaveSubtitlesIntoMediaFoldersHelp": "Storing subtitles next to video files will allow them to be more easily managed.",
+    "SubtitleDownloadInstructions": "To manage subtitle downloading, click on a library in Emby library setup, and edit the subtitle downloading settings.",
+    "OpenSubtitleInstructions": "You'll need to configure Open Subtitles account information on the Open Subtitles configuration screen in the Emby Server dashboard.",
     "LabelPrevious": "\u4e0a\u4e00\u4e2a",
     "LabelFinish": "\u5b8c\u6210",
     "LabelNext": "\u4e0b\u4e00\u4e2a",

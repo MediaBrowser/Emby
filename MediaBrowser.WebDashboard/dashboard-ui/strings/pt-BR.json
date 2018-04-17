@@ -1,6 +1,8 @@
 {
-    "SaveSubtitlesIntoMediaFolders": "Save subtitles into media folders",
-    "SaveSubtitlesIntoMediaFoldersHelp": "Storing subtitles next to video files will allow them to be more easily managed.",
+    "SaveSubtitlesIntoMediaFolders": "Guardar legendas nas pastas de m\u00eddia",
+    "SaveSubtitlesIntoMediaFoldersHelp": "Armazenar legendas junto com os arquivos de v\u00eddeo torna mais f\u00e1cil gerenci\u00e1-las.",
+    "SubtitleDownloadInstructions": "Para gerenciar a recep\u00e7\u00e3o de legendas, clique nas configura\u00e7\u00f5es de uma biblioteca Emby e altere as configura\u00e7\u00f5es de recebimento de legendas.",
+    "OpenSubtitleInstructions": "Voc\u00ea ter\u00e1 que configurar as informa\u00e7\u00f5es da conta do Open Subtitles na tela de configura\u00e7\u00f5es de Open Subtitles no painel de controle do Emby Server.",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Finalizar",
     "LabelNext": "Pr\u00f3ximo",
