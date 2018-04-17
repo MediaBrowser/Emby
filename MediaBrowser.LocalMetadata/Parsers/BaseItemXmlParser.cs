@@ -1282,7 +1282,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
 
             value = value.Trim().Trim(separator);
 
-            return string.IsNullOrWhiteSpace(value) ? Array.Empty<string>() : Split(value, separator, StringSplitOptions.RemoveEmptyEntries);
+            return string.IsNullOrWhiteSpace(value) ? new string[] { } : Split(value, separator, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
