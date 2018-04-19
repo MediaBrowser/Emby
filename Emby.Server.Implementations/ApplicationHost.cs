@@ -823,8 +823,6 @@ namespace Emby.Server.Implementations
             RegisterResources();
 
             FindParts();
-
-            InstallIsoMounters();
         }
 
         protected virtual void OnLoggerLoaded(bool isFirstLoad)
@@ -1140,36 +1138,6 @@ namespace Emby.Server.Implementations
             }
         }
 
-        /// <summary>
-        /// Installs the iso mounters.
-        /// </summary>
-        private void InstallIsoMounters()
-        {
-            var list = new List<IIsoMounter>();
-
-            foreach (var isoMounter in GetExports<IIsoMounter>())
-            {
-                try
-                {
-                    if (isoMounter.RequiresInstallation && !isoMounter.IsInstalled)
-                    {
-                        Logger.Info("Installing {0}", isoMounter.Name);
-
-                        var task = isoMounter.Install(CancellationToken.None);
-                        Task.WaitAll(task);
-                    }
-
-                    list.Add(isoMounter);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("{0} failed to load.", ex, isoMounter.Name);
-                }
-            }
-
-            IsoManager.AddParts(list);
-        }
-
         protected string GetDefaultUserAgent()
         {
             var name = FormatAttribute(Name);
@@ -1444,6 +1412,8 @@ namespace Emby.Server.Implementations
 
             NotificationManager.AddParts(GetExports<INotificationService>(), GetExports<INotificationTypeFactory>());
             UserManager.AddParts(GetExports<IAuthenticationProvider>());
+
+            IsoManager.AddParts(GetExports<IIsoMounter>());
         }
 
         private IPlugin LoadPlugin(Tuple<IPlugin, string> info)
