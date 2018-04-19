@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Controller.Entities;
 
 namespace MediaBrowser.Controller.Sync
 {
@@ -13,25 +14,9 @@ namespace MediaBrowser.Controller.Sync
         /// <summary>
         /// Transfers the file.
         /// </summary>
-        /// <param name="stream">The stream.</param>
-        /// <param name="pathParts">The path parts.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task<SyncedFileInfo> SendFile(Stream stream, string[] pathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
+        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, Stream inputStream, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the file.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;Stream&gt;.</returns>
-        Task<Stream> GetFile(string id, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
-
-        Task<QueryResult<FileSystemMetadata>> GetFiles(string[] pathParts, SyncTarget target, CancellationToken cancellationToken);
+        Task<QueryResult<FileSystemMetadata>> GetFiles(string[] directoryPathParts, SyncTarget target, CancellationToken cancellationToken);
     }
 
     public interface ISupportsDirectCopy
@@ -39,12 +24,6 @@ namespace MediaBrowser.Controller.Sync
         /// <summary>
         /// Sends the file.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="pathParts">The path parts.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;SyncedFileInfo&gt;.</returns>
-        Task<SyncedFileInfo> SendFile(string path, string[] pathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
+        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, string inputPath, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
     }
 }

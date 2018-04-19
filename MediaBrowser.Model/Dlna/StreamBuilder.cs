@@ -855,10 +855,16 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
 
-                var audioTranscodingConditions = new List<CodecProfile>();
+                // Honor requested max channels
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
+
+                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
+                playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
+
+                isFirstAppliedCodecProfile = true;
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
                 {
-                    if (i.Type == CodecType.VideoAudio && i.ContainsAnyCodec(playlistItem.TargetAudioCodec, transcodingProfile.Container))
+                    if (i.Type == CodecType.VideoAudio && i.ContainsAnyCodec(transcodingProfile.AudioCodec, transcodingProfile.Container))
                     {
                         bool applyConditions = true;
                         foreach (ProfileCondition applyCondition in i.ApplyConditions)
@@ -880,17 +886,18 @@ namespace MediaBrowser.Model.Dlna
 
                         if (applyConditions)
                         {
-                            audioTranscodingConditions.Add(i);
-                            break;
+                            var transcodingAudioCodecs = ContainerProfile.SplitValue(transcodingProfile.AudioCodec);
+                            foreach (var transcodingAudioCodec in transcodingAudioCodecs)
+                            {
+                                if (i.ContainsAnyCodec(transcodingAudioCodec, transcodingProfile.Container))
+                                {
+                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingAudioCodec, true, isFirstAppliedCodecProfile);
+                                    isFirstAppliedCodecProfile = false;
+                                }
+                            }
                         }
                     }
                 }
-
-                // Honor requested max channels
-                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
-
-                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
-                playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
 
                 var maxBitrateSetting = options.GetMaxBitrate(false);
                 // Honor max rate
@@ -908,9 +915,6 @@ namespace MediaBrowser.Model.Dlna
                     var longBitrate = Math.Max(Math.Min(availableBitrateForVideo, currentValue), 64000);
                     playlistItem.VideoBitrate = longBitrate >= int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
                 }
-
-                // Do this after initial values are set to account for greater than/less than conditions
-                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions);
             }
 
             playlistItem.TranscodeReasons = transcodeReasons;
