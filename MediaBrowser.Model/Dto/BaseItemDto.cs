@@ -112,7 +112,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the media versions.
         /// </summary>
         /// <value>The media versions.</value>
-        public List<MediaSourceInfo> MediaSources { get; set; }
+        public MediaSourceInfo[] MediaSources { get; set; }
 
         /// <summary>
         /// Gets or sets the critic rating.

@@ -66,8 +66,8 @@ namespace Emby.Server.Implementations.LiveTv
 
         private readonly SemaphoreSlim _refreshRecordingsLock = new SemaphoreSlim(1, 1);
 
-        private readonly List<ITunerHost> _tunerHosts = new List<ITunerHost>();
-        private readonly List<IListingsProvider> _listingProviders = new List<IListingsProvider>();
+        private ITunerHost[] _tunerHosts = Array.Empty<ITunerHost>();
+        private IListingsProvider[] _listingProviders = Array.Empty<IListingsProvider>();
         private readonly IFileSystem _fileSystem;
 
         public event EventHandler<GenericEventArgs<TimerEventInfo>> SeriesTimerCancelled;
@@ -128,8 +128,9 @@ namespace Emby.Server.Implementations.LiveTv
         public void AddParts(IEnumerable<ILiveTvService> services, IEnumerable<ITunerHost> tunerHosts, IEnumerable<IListingsProvider> listingProviders)
         {
             _services = services.ToArray();
-            _tunerHosts.AddRange(tunerHosts.Where(i => i.IsSupported));
-            _listingProviders.AddRange(listingProviders);
+            _tunerHosts = tunerHosts.Where(i => i.IsSupported).ToArray();
+
+            _listingProviders = listingProviders.ToArray();
 
             foreach (var service in _services)
             {
@@ -137,12 +138,12 @@ namespace Emby.Server.Implementations.LiveTv
             }
         }
 
-        public List<ITunerHost> TunerHosts
+        public ITunerHost[] TunerHosts
         {
             get { return _tunerHosts; }
         }
 
-        public List<IListingsProvider> ListingProviders
+        public IListingsProvider[] ListingProviders
         {
             get { return _listingProviders; }
         }
@@ -587,7 +588,7 @@ namespace Emby.Server.Implementations.LiveTv
             item.IsNews = info.IsNews;
             item.IsRepeat = info.IsRepeat;
 
-            if(item.IsSeries != isSeries)
+            if (item.IsSeries != isSeries)
             {
                 forceUpdate = true;
             }
@@ -2225,66 +2226,22 @@ namespace Emby.Server.Implementations.LiveTv
             }
         }
 
-        private async Task<LiveTvServiceInfo[]> GetServiceInfos(CancellationToken cancellationToken)
+        private LiveTvServiceInfo[] GetServiceInfos()
         {
-            var tasks = Services.Select(i => GetServiceInfo(i, cancellationToken));
-
-            return await Task.WhenAll(tasks).ConfigureAwait(false);
+            return Services.Select(GetServiceInfo).ToArray();
         }
 
-        private async Task<LiveTvServiceInfo> GetServiceInfo(ILiveTvService service, CancellationToken cancellationToken)
+        private LiveTvServiceInfo GetServiceInfo(ILiveTvService service)
         {
-            var info = new LiveTvServiceInfo
+            return new LiveTvServiceInfo
             {
                 Name = service.Name
             };
-
-            var tunerIdPrefix = service.GetType().FullName.GetMD5().ToString("N") + "_";
-
-            try
-            {
-                var statusInfo = await service.GetStatusInfoAsync(cancellationToken).ConfigureAwait(false);
-
-                info.Status = statusInfo.Status;
-                info.StatusMessage = statusInfo.StatusMessage;
-                info.Version = statusInfo.Version;
-                info.HasUpdateAvailable = statusInfo.HasUpdateAvailable;
-                info.HomePageUrl = service.HomePageUrl;
-                info.IsVisible = statusInfo.IsVisible;
-
-                info.Tuners = statusInfo.Tuners.Select(i =>
-                {
-                    string channelName = null;
-
-                    if (!string.IsNullOrEmpty(i.ChannelId))
-                    {
-                        var internalChannelId = _tvDtoService.GetInternalChannelId(service.Name, i.ChannelId);
-                        var channel = _libraryManager.GetItemById(internalChannelId);
-                        channelName = channel == null ? null : channel.Name;
-                    }
-
-                    var dto = _tvDtoService.GetTunerInfoDto(service.Name, i, channelName);
-
-                    dto.Id = tunerIdPrefix + dto.Id;
-
-                    return dto;
-
-                }).ToArray();
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error getting service status info from {0}", ex, service.Name ?? string.Empty);
-
-                info.Status = LiveTvServiceStatus.Unavailable;
-                info.StatusMessage = ex.Message;
-            }
-
-            return info;
         }
 
-        public async Task<LiveTvInfo> GetLiveTvInfo(CancellationToken cancellationToken)
+        public LiveTvInfo GetLiveTvInfo(CancellationToken cancellationToken)
         {
-            var services = await GetServiceInfos(CancellationToken.None).ConfigureAwait(false);
+            var services = GetServiceInfos();
 
             var info = new LiveTvInfo
             {

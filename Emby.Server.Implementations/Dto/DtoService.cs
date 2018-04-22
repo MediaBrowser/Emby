@@ -267,7 +267,7 @@ namespace Emby.Server.Implementations.Dto
             {
                 if (fields.Contains(ItemFields.MediaSources))
                 {
-                    dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(item, true, user);
+                    dto.MediaSources = _mediaSourceManager().GetStaticMediaSources(item, true, user).ToArray();
 
                     NormalizeMediaSourceContainers(dto);
                 }
@@ -1190,7 +1190,7 @@ namespace Emby.Server.Implementations.Dto
                 {
                     MediaStream[] mediaStreams;
 
-                    if (dto.MediaSources != null && dto.MediaSources.Count > 0)
+                    if (dto.MediaSources != null && dto.MediaSources.Length > 0)
                     {
                         if (item.SourceType == SourceType.Channel)
                         {
@@ -1515,7 +1515,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (defaultAspectRatio.HasValue)
             {
-                if (supportedEnhancers.Count == 0)
+                if (supportedEnhancers.Length == 0)
                 {
                     return defaultAspectRatio.Value;
                 }

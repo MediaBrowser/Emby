@@ -1552,9 +1552,7 @@ namespace Emby.Server.Implementations
 
         private IEnumerable<string> GetUrlPrefixes()
         {
-            var hosts = new List<string>();
-
-            hosts.Add("+");
+            var hosts = new[] { "+" };
 
             return hosts.SelectMany(i =>
             {

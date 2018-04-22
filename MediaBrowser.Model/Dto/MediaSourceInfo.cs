@@ -73,7 +73,7 @@ namespace MediaBrowser.Model.Dto
 
         public MediaSourceInfo()
         {
-            Formats = new string[] {};
+            Formats = new string[] { };
             MediaStreams = new List<MediaStream>();
             RequiredHttpHeaders = new Dictionary<string, string>();
             SupportsTranscoding = true;
@@ -110,7 +110,7 @@ namespace MediaBrowser.Model.Dto
         }
 
         [IgnoreDataMember]
-        public List<TranscodeReason> TranscodeReasons { get; set; }
+        public TranscodeReason[] TranscodeReasons { get; set; }
 
         public int? DefaultAudioStreamIndex { get; set; }
         public int? DefaultSubtitleStreamIndex { get; set; }

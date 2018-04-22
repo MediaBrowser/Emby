@@ -1003,7 +1003,7 @@ namespace MediaBrowser.Controller.Entities
                 .Where(i => user.IsFolderGrouped(i.Id) && UserView.IsEligibleForGrouping(i));
         }
 
-        private List<BaseItem> GetMediaFolders(User user, IEnumerable<string> viewTypes)
+        private BaseItem[] GetMediaFolders(User user, IEnumerable<string> viewTypes)
         {
             if (user == null)
             {
@@ -1013,7 +1013,7 @@ namespace MediaBrowser.Controller.Entities
                         var folder = i as ICollectionFolder;
 
                         return folder != null && viewTypes.Contains(folder.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
-                    }).ToList();
+                    }).ToArray();
             }
             return GetMediaFolders(user)
                 .Where(i =>
@@ -1021,17 +1021,17 @@ namespace MediaBrowser.Controller.Entities
                     var folder = i as ICollectionFolder;
 
                     return folder != null && viewTypes.Contains(folder.CollectionType ?? string.Empty, StringComparer.OrdinalIgnoreCase);
-                }).ToList();
+                }).ToArray();
         }
 
-        private List<BaseItem> GetMediaFolders(Folder parent, User user, IEnumerable<string> viewTypes)
+        private BaseItem[] GetMediaFolders(Folder parent, User user, IEnumerable<string> viewTypes)
         {
             if (parent == null || parent is UserView)
             {
                 return GetMediaFolders(user, viewTypes);
             }
 
-            return new List<BaseItem> { parent };
+            return new BaseItem[] { parent };
         }
 
         private UserView GetUserViewWithName(string name, string type, string sortName, BaseItem parent)

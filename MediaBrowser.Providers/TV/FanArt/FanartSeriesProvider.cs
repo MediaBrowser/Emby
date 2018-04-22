@@ -379,7 +379,7 @@ namespace MediaBrowser.Providers.TV
     {
         public IEnumerable<ConfigurationStore> GetConfigurations()
         {
-            return new List<ConfigurationStore>
+            return new ConfigurationStore[]
             {
                 new ConfigurationStore
                 {

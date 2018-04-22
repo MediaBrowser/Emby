@@ -32,7 +32,7 @@ namespace MediaBrowser.Controller.MediaEncoding
         public int? OutputVideoBitrate { get; set; }
         public MediaStream SubtitleStream { get; set; }
         public SubtitleDeliveryMethod SubtitleDeliveryMethod { get; set; }
-        public List<string> SupportedSubtitleCodecs { get; set; }
+        public string[] SupportedSubtitleCodecs { get; set; }
 
         public int InternalSubtitleStreamOffset { get; set; }
         public MediaSourceInfo MediaSource { get; set; }
@@ -134,8 +134,8 @@ namespace MediaBrowser.Controller.MediaEncoding
         public TransportStreamTimestamp InputTimestamp { get; set; }
 
         public MediaStream AudioStream { get; set; }
-        public List<string> SupportedAudioCodecs { get; set; }
-        public List<string> SupportedVideoCodecs { get; set; }
+        public string[] SupportedAudioCodecs { get; set; }
+        public string[] SupportedVideoCodecs { get; set; }
         public string InputContainer { get; set; }
         public IsoType? IsoType { get; set; }
 
@@ -206,7 +206,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
             }
 
-            return new string[] {};
+            return new string[] { };
         }
 
         public string GetRequestedLevel(string codec)
@@ -316,10 +316,10 @@ namespace MediaBrowser.Controller.MediaEncoding
             _logger = logger;
             TranscodingType = jobType;
             RemoteHttpHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            PlayableStreamFileNames = new string[] {};
-            SupportedAudioCodecs = new List<string>();
-            SupportedVideoCodecs = new List<string>();
-            SupportedSubtitleCodecs = new List<string>();
+            PlayableStreamFileNames = new string[] { };
+            SupportedAudioCodecs = new string[] { };
+            SupportedVideoCodecs = new string[] { };
+            SupportedSubtitleCodecs = new string[] { };
         }
 
         public bool IsSegmentedLiveStream

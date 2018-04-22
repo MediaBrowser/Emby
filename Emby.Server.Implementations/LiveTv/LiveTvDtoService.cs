@@ -368,29 +368,6 @@ namespace Emby.Server.Implementations.LiveTv
             return pattern;
         }
 
-        public LiveTvTunerInfoDto GetTunerInfoDto(string serviceName, LiveTvTunerInfo info, string channelName)
-        {
-            var dto = new LiveTvTunerInfoDto
-            {
-                Name = info.Name,
-                Id = info.Id,
-                Clients = info.Clients.ToArray(),
-                ProgramName = info.ProgramName,
-                SourceType = info.SourceType,
-                Status = info.Status,
-                ChannelName = channelName,
-                Url = info.Url,
-                CanReset = info.CanReset
-            };
-
-            if (!string.IsNullOrEmpty(info.ChannelId))
-            {
-                dto.ChannelId = GetInternalChannelId(serviceName, info.ChannelId).ToString("N");
-            }
-
-            return dto;
-        }
-
         internal string GetImageTag(BaseItem info)
         {
             try

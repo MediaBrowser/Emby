@@ -14,7 +14,7 @@ namespace MediaBrowser.Controller.Sync
         /// <summary>
         /// Transfers the file.
         /// </summary>
-        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, Stream inputStream, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
+        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, Stream inputStream, bool isMedia, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
 
         Task<QueryResult<FileSystemMetadata>> GetFiles(string[] directoryPathParts, SyncTarget target, CancellationToken cancellationToken);
     }
@@ -24,6 +24,6 @@ namespace MediaBrowser.Controller.Sync
         /// <summary>
         /// Sends the file.
         /// </summary>
-        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, string inputPath, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
+        Task<SyncedFileInfo> SendFile(SyncJob syncJob, string originalMediaPath, string inputPath, bool isMedia, string[] outputPathParts, SyncTarget target, IProgress<double> progress, CancellationToken cancellationToken);
     }
 }

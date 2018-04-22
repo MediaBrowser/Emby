@@ -458,7 +458,7 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.AudioBitrate = longBitrate > int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
             }
 
-            playlistItem.TranscodeReasons = transcodeReasons;
+            playlistItem.TranscodeReasons = transcodeReasons.ToArray();
             return playlistItem;
         }
 
@@ -917,7 +917,7 @@ namespace MediaBrowser.Model.Dlna
                 }
             }
 
-            playlistItem.TranscodeReasons = transcodeReasons;
+            playlistItem.TranscodeReasons = transcodeReasons.ToArray();
 
             return playlistItem;
         }

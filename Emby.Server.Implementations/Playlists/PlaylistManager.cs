@@ -117,14 +117,16 @@ namespace Emby.Server.Implementations.Playlists
                 var playlist = new Playlist
                 {
                     Name = name,
-                    Path = path
+                    Path = path,
+                    Shares = new[]
+                    {
+                        new Share
+                        {
+                            UserId = options.UserId,
+                            CanEdit = true
+                        }
+                    }
                 };
-
-                playlist.Shares.Add(new Share
-                {
-                    UserId = options.UserId,
-                    CanEdit = true
-                });
 
                 playlist.SetMediaType(options.MediaType);
 

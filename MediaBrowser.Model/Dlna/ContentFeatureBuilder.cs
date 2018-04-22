@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Model.MediaInfo;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaBrowser.Model.Dlna
 {
@@ -227,12 +228,9 @@ namespace MediaBrowser.Model.Dlna
             return format.HasValue ? format.Value.ToString() : null;
         }
 
-        private List<string> GetVideoOrgPnValue(string container, string videoCodec, string audioCodec, int? width, int? height, TransportStreamTimestamp timestamp)
+        private string[] GetVideoOrgPnValue(string container, string videoCodec, string audioCodec, int? width, int? height, TransportStreamTimestamp timestamp)
         {
-            List<string> list = new List<string>();
-            foreach (MediaFormatProfile i in new MediaFormatProfileResolver().ResolveVideoFormat(container, videoCodec, audioCodec, width, height, timestamp))
-                list.Add(i.ToString());
-            return list;
+            return new MediaFormatProfileResolver().ResolveVideoFormat(container, videoCodec, audioCodec, width, height, timestamp);
         }
     }
 }

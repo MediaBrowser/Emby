@@ -190,7 +190,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{LiveTvInfo}.</returns>
-        Task<LiveTvInfo> GetLiveTvInfo(CancellationToken cancellationToken);
+        LiveTvInfo GetLiveTvInfo(CancellationToken cancellationToken);
 
         /// <summary>
         /// Resets the tuner.
@@ -279,7 +279,7 @@ namespace MediaBrowser.Controller.LiveTv
         Task<List<ChannelInfo>> GetChannelsForListingsProvider(string id, CancellationToken cancellationToken);
         Task<List<ChannelInfo>> GetChannelsFromListingsProviderData(string id, CancellationToken cancellationToken);
 
-        List<IListingsProvider> ListingProviders { get; }
+        IListingsProvider[] ListingProviders { get; }
 
         List<NameIdPair> GetTunerHostTypes();
         Task<List<TunerHostInfo>> DiscoverTuners(bool newDevicesOnly, CancellationToken cancellationToken);

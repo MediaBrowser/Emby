@@ -640,7 +640,7 @@ namespace MediaBrowser.Providers.Movies
         {
             get
             {
-                return 0;
+                return 1;
             }
         }
 

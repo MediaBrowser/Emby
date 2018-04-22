@@ -67,9 +67,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public string GetOutputPath(MediaSourceInfo mediaSource, string targetFile)
         {
-            var extension = "ts";
-
-            return Path.ChangeExtension(targetFile, "." + extension);
+            return Path.ChangeExtension(targetFile, ".ts");
         }
 
         public async Task Record(IDirectStreamProvider directStreamProvider, MediaSourceInfo mediaSource, string targetFile, TimeSpan duration, Action onStarted, CancellationToken cancellationToken)

@@ -248,7 +248,7 @@ namespace Emby.Dlna.Main
                 SetProperies(device, fullService);
                 _Publisher.AddDevice(device);
 
-                var embeddedDevices = new List<string>
+                var embeddedDevices = new []
                 {
                     "urn:schemas-upnp-org:service:ContentDirectory:1",
                     "urn:schemas-upnp-org:service:ConnectionManager:1",

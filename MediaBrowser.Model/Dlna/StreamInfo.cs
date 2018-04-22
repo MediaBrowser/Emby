@@ -18,10 +18,10 @@ namespace MediaBrowser.Model.Dlna
     {
         public StreamInfo()
         {
-            AudioCodecs = new string[] {};
-            VideoCodecs = new string[] {};
-            SubtitleCodecs = new string[] {};
-            TranscodeReasons = new List<TranscodeReason>();
+            AudioCodecs = new string[] { };
+            VideoCodecs = new string[] { };
+            SubtitleCodecs = new string[] { };
+            TranscodeReasons = new TranscodeReason[] { };
             StreamOptions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -123,8 +123,7 @@ namespace MediaBrowser.Model.Dlna
         public string SubtitleFormat { get; set; }
 
         public string PlaySessionId { get; set; }
-        public List<MediaSourceInfo> AllMediaSources { get; set; }
-        public List<TranscodeReason> TranscodeReasons { get; set; }
+        public TranscodeReason[] TranscodeReasons { get; set; }
 
         public Dictionary<string, string> StreamOptions { get; private set; }
 
@@ -815,14 +814,14 @@ namespace MediaBrowser.Model.Dlna
 
                 if (IsDirectStream)
                 {
-                    return string.IsNullOrEmpty(inputCodec) ? new string[] {} : new[] { inputCodec };
+                    return string.IsNullOrEmpty(inputCodec) ? new string[] { } : new[] { inputCodec };
                 }
 
                 foreach (string codec in AudioCodecs)
                 {
                     if (StringHelper.EqualsIgnoreCase(codec, inputCodec))
                     {
-                        return string.IsNullOrEmpty(codec) ? new string[] {} : new[] { codec };
+                        return string.IsNullOrEmpty(codec) ? new string[] { } : new[] { codec };
                     }
                 }
 
@@ -840,14 +839,14 @@ namespace MediaBrowser.Model.Dlna
 
                 if (IsDirectStream)
                 {
-                    return string.IsNullOrEmpty(inputCodec) ? new string[] {} : new[] { inputCodec };
+                    return string.IsNullOrEmpty(inputCodec) ? new string[] { } : new[] { inputCodec };
                 }
 
                 foreach (string codec in VideoCodecs)
                 {
                     if (StringHelper.EqualsIgnoreCase(codec, inputCodec))
                     {
-                        return string.IsNullOrEmpty(codec) ? new string[] {} : new[] { codec };
+                        return string.IsNullOrEmpty(codec) ? new string[] { } : new[] { codec };
                     }
                 }
 
