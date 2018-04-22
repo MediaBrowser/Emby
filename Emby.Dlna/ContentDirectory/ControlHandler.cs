@@ -311,7 +311,7 @@ namespace Emby.Dlna.ContentDirectory
 
             var resXML = builder.ToString();
 
-            return new List<KeyValuePair<string, string>>
+            return new []
                 {
                     new KeyValuePair<string,string>("Result", resXML),
                     new KeyValuePair<string,string>("NumberReturned", provided.ToString(_usCulture)),
@@ -1135,7 +1135,7 @@ namespace Emby.Dlna.ContentDirectory
                 ParentId = parent == null ? null : parent.Id.ToString("N"),
                 GroupItems = true
 
-            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToList();
+            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
 
             return ToResult(items);
         }
@@ -1150,7 +1150,7 @@ namespace Emby.Dlna.ContentDirectory
                 StartIndex = query.StartIndex,
                 UserId = query.User.Id.ToString("N")
 
-            }, new List<BaseItem> { parent }, query.DtoOptions);
+            }, new [] { parent }, query.DtoOptions);
 
             return ToResult(result);
         }
@@ -1167,7 +1167,7 @@ namespace Emby.Dlna.ContentDirectory
                 ParentId = parent == null ? null : parent.Id.ToString("N"),
                 GroupItems = false
 
-            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToList();
+            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
 
             return ToResult(items);
         }
@@ -1184,7 +1184,7 @@ namespace Emby.Dlna.ContentDirectory
                 ParentId = parent == null ? null : parent.Id.ToString("N"),
                 GroupItems = true
 
-            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToList();
+            }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
 
             return ToResult(items);
         }
@@ -1249,15 +1249,15 @@ namespace Emby.Dlna.ContentDirectory
             return ToResult(result);
         }
 
-        private QueryResult<ServerItem> ToResult(List<BaseItem> result)
+        private QueryResult<ServerItem> ToResult(BaseItem[] result)
         {
             var serverItems = result
                 .Select(i => new ServerItem(i))
-                .ToArray(result.Count);
+                .ToArray(result.Length);
 
             return new QueryResult<ServerItem>
             {
-                TotalRecordCount = result.Count,
+                TotalRecordCount = result.Length,
                 Items = serverItems
             };
         }

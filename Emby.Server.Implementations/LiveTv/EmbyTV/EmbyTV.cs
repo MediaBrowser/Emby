@@ -41,7 +41,7 @@ using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Reflection;
 using MediaBrowser.Model.Providers;
-using Emby.Server.Implementations.LiveTv.TunerHosts;
+using MediaBrowser.Model.MediaInfo;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -273,32 +273,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         public string HomePageUrl
         {
             get { return "https://emby.media"; }
-        }
-
-        public async Task<LiveTvServiceStatusInfo> GetStatusInfoAsync(CancellationToken cancellationToken)
-        {
-            var status = new LiveTvServiceStatusInfo();
-            var list = new List<LiveTvTunerInfo>();
-
-            foreach (var hostInstance in _liveTvManager.TunerHosts)
-            {
-                try
-                {
-                    var tuners = await hostInstance.GetTunerInfos(cancellationToken).ConfigureAwait(false);
-
-                    list.AddRange(tuners);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error getting tuners", ex);
-                }
-            }
-
-            status.Tuners = list;
-            status.Status = LiveTvServiceStatus.Ok;
-            status.Version = _appHost.ApplicationVersion.ToString();
-            status.IsVisible = false;
-            return status;
         }
 
         public async Task RefreshSeriesTimers(CancellationToken cancellationToken, IProgress<double> progress)
@@ -812,11 +786,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.ShowId = updatedTimer.ShowId;
             existingTimer.ProviderIds = updatedTimer.ProviderIds;
             existingTimer.SeriesProviderIds = updatedTimer.SeriesProviderIds;
-        }
-
-        public async Task<IEnumerable<RecordingInfo>> GetRecordingsAsync(CancellationToken cancellationToken)
-        {
-            return new List<RecordingInfo>();
         }
 
         public string GetActiveRecordingPath(string id)
@@ -1587,7 +1556,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 _providerManager.QueueRefresh(item.Id, new MetadataRefreshOptions(_fileSystem)
                 {
-                    RefreshPaths = new List<string>
+                    RefreshPaths = new string[]
                     {
                         path,
                         _fileSystem.GetDirectoryName(path),
@@ -1798,7 +1767,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private IRecorder GetRecorder(ILiveStream liveStream, MediaSourceInfo mediaSource)
         {
-            if (mediaSource.RequiresLooping || !(mediaSource.Container ?? string.Empty).EndsWith("ts", StringComparison.OrdinalIgnoreCase))
+            if (mediaSource.RequiresLooping || !(mediaSource.Container ?? string.Empty).EndsWith("ts", StringComparison.OrdinalIgnoreCase) || (mediaSource.Protocol != MediaProtocol.File && mediaSource.Protocol != MediaProtocol.Http))
             {
                 return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, _httpClient, _processFactory, _config, _assemblyInfo);
             }
@@ -1808,28 +1777,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private void OnSuccessfulRecording(TimerInfo timer, string path)
         {
-            //if (timer.IsProgramSeries && GetConfiguration().EnableAutoOrganize)
-            //{
-            //    try
-            //    {
-            //        // this is to account for the library monitor holding a lock for additional time after the change is complete.
-            //        // ideally this shouldn't be hard-coded
-            //        await Task.Delay(30000).ConfigureAwait(false);
-
-            //        var organize = new EpisodeFileOrganizer(_organizationService, _config, _fileSystem, _logger, _libraryManager, _libraryMonitor, _providerManager);
-
-            //        var result = await organize.OrganizeEpisodeFile(path, _config.GetAutoOrganizeOptions(), false, CancellationToken.None).ConfigureAwait(false);
-
-            //        if (result.Status == FileSortingStatus.Success)
-            //        {
-            //            return;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _logger.ErrorException("Error processing new recording", ex);
-            //    }
-            //}
             PostProcessRecording(timer, path);
         }
 
@@ -2550,7 +2497,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     .Select(i => i.Id)
                     .ToList();
 
-                var deleteStatuses = new List<RecordingStatus>
+                var deleteStatuses = new []
                 {
                     RecordingStatus.New
                 };

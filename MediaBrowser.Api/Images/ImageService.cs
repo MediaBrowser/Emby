@@ -550,7 +550,7 @@ namespace MediaBrowser.Api.Images
                 throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", displayText, request.Type));
             }
 
-            List<IImageEnhancer> supportedImageEnhancers;
+            IImageEnhancer[] supportedImageEnhancers;
 
             if (_imageProcessor.ImageEnhancers.Length > 0)
             {
@@ -559,11 +559,11 @@ namespace MediaBrowser.Api.Images
                     item = _libraryManager.GetItemById(itemId);
                 }
 
-                supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : new List<IImageEnhancer>();
+                supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : Array.Empty<IImageEnhancer>();
             }
             else
             {
-                supportedImageEnhancers = new List<IImageEnhancer>();
+                supportedImageEnhancers = Array.Empty<IImageEnhancer>();
             }
 
             var cropwhitespace = request.Type == ImageType.Logo ||
@@ -607,7 +607,7 @@ namespace MediaBrowser.Api.Images
             ItemImageInfo image,
             bool cropwhitespace,
             ImageFormat[] supportedFormats,
-            List<IImageEnhancer> enhancers,
+            IImageEnhancer[] enhancers,
             TimeSpan? cacheDuration,
             IDictionary<string, string> headers,
             bool isHeadRequest)

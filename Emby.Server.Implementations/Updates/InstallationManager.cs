@@ -521,7 +521,6 @@ namespace Emby.Server.Implementations.Updates
             finally
             {
                 // Dispose the progress object and remove the installation from the in-progress list
-                innerProgress.Dispose();
                 tuple.Item2.Dispose();
             }
         }

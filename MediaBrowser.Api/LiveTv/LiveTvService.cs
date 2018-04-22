@@ -928,9 +928,9 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(info);
         }
 
-        public async Task<object> Get(GetLiveTvInfo request)
+        public object Get(GetLiveTvInfo request)
         {
-            var info = await _liveTvManager.GetLiveTvInfo(CancellationToken.None).ConfigureAwait(false);
+            var info = _liveTvManager.GetLiveTvInfo(CancellationToken.None);
 
             return ToOptimizedSerializedResultUsingCache(info);
         }

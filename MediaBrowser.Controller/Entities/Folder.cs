@@ -451,24 +451,23 @@ namespace MediaBrowser.Controller.Entities
 
             if (recursive)
             {
-                using (var innerProgress = new ActionableProgress<double>())
+                var innerProgress = new ActionableProgress<double>();
+
+                var folder = this;
+                innerProgress.RegisterAction(p =>
                 {
-                    var folder = this;
-                    innerProgress.RegisterAction(p =>
-                    {
-                        double newPct = .80 * p + 10;
-                        progress.Report(newPct);
-                        ProviderManager.OnRefreshProgress(folder, newPct);
-                    });
+                    double newPct = .80 * p + 10;
+                    progress.Report(newPct);
+                    ProviderManager.OnRefreshProgress(folder, newPct);
+                });
 
-                    if (validChildrenNeedGeneration)
-                    {
-                        validChildren = Children.ToList();
-                        validChildrenNeedGeneration = false;
-                    }
-
-                    await ValidateSubFolders(validChildren.OfType<Folder>().ToList(), directoryService, innerProgress, cancellationToken).ConfigureAwait(false);
+                if (validChildrenNeedGeneration)
+                {
+                    validChildren = Children.ToList();
+                    validChildrenNeedGeneration = false;
                 }
+
+                await ValidateSubFolders(validChildren.OfType<Folder>().ToList(), directoryService, innerProgress, cancellationToken).ConfigureAwait(false);
             }
 
             if (refreshChildMetadata)
@@ -482,32 +481,31 @@ namespace MediaBrowser.Controller.Entities
 
                 var container = this as IMetadataContainer;
 
-                using (var innerProgress = new ActionableProgress<double>())
+                var innerProgress = new ActionableProgress<double>();
+
+                var folder = this;
+                innerProgress.RegisterAction(p =>
                 {
-                    var folder = this;
-                    innerProgress.RegisterAction(p =>
+                    double newPct = .10 * p + 90;
+                    progress.Report(newPct);
+                    if (recursive)
                     {
-                        double newPct = .10 * p + 90;
-                        progress.Report(newPct);
-                        if (recursive)
-                        {
-                            ProviderManager.OnRefreshProgress(folder, newPct);
-                        }
-                    });
-
-                    if (container != null)
-                    {
-                        await RefreshAllMetadataForContainer(container, refreshOptions, innerProgress, cancellationToken).ConfigureAwait(false);
+                        ProviderManager.OnRefreshProgress(folder, newPct);
                     }
-                    else
-                    {
-                        if (validChildrenNeedGeneration)
-                        {
-                            validChildren = Children.ToList();
-                        }
+                });
 
-                        await RefreshMetadataRecursive(validChildren, refreshOptions, recursive, innerProgress, cancellationToken);
+                if (container != null)
+                {
+                    await RefreshAllMetadataForContainer(container, refreshOptions, innerProgress, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (validChildrenNeedGeneration)
+                    {
+                        validChildren = Children.ToList();
                     }
+
+                    await RefreshMetadataRecursive(validChildren, refreshOptions, recursive, innerProgress, cancellationToken);
                 }
             }
         }
@@ -522,21 +520,20 @@ namespace MediaBrowser.Controller.Entities
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                using (var innerProgress = new ActionableProgress<double>())
+                var innerProgress = new ActionableProgress<double>();
+
+                // Avoid implicitly captured closure
+                var currentInnerPercent = currentPercent;
+
+                innerProgress.RegisterAction(p =>
                 {
-                    // Avoid implicitly captured closure
-                    var currentInnerPercent = currentPercent;
+                    double innerPercent = currentInnerPercent;
+                    innerPercent += p / (count);
+                    progress.Report(innerPercent);
+                });
 
-                    innerProgress.RegisterAction(p =>
-                    {
-                        double innerPercent = currentInnerPercent;
-                        innerPercent += p / (count);
-                        progress.Report(innerPercent);
-                    });
-
-                    await RefreshChildMetadata(child, refreshOptions, recursive && child.IsFolder, innerProgress, cancellationToken)
-                        .ConfigureAwait(false);
-                }
+                await RefreshChildMetadata(child, refreshOptions, recursive && child.IsFolder, innerProgress, cancellationToken)
+                    .ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;
@@ -604,21 +601,20 @@ namespace MediaBrowser.Controller.Entities
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                using (var innerProgress = new ActionableProgress<double>())
+                var innerProgress = new ActionableProgress<double>();
+
+                // Avoid implicitly captured closure
+                var currentInnerPercent = currentPercent;
+
+                innerProgress.RegisterAction(p =>
                 {
-                    // Avoid implicitly captured closure
-                    var currentInnerPercent = currentPercent;
+                    double innerPercent = currentInnerPercent;
+                    innerPercent += p / (count);
+                    progress.Report(innerPercent);
+                });
 
-                    innerProgress.RegisterAction(p =>
-                    {
-                        double innerPercent = currentInnerPercent;
-                        innerPercent += p / (count);
-                        progress.Report(innerPercent);
-                    });
-
-                    await child.ValidateChildrenInternal(innerProgress, cancellationToken, true, false, null, directoryService)
-                            .ConfigureAwait(false);
-                }
+                await child.ValidateChildrenInternal(innerProgress, cancellationToken, true, false, null, directoryService)
+                        .ConfigureAwait(false);
 
                 numComplete++;
                 double percent = numComplete;

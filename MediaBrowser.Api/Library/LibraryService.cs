@@ -52,7 +52,7 @@ namespace MediaBrowser.Api.Library
     /// </summary>
     [Route("/Items/{Id}/CriticReviews", "GET", Summary = "Gets critic reviews for an item")]
     [Authenticated]
-    public class GetCriticReviews : IReturn<QueryResult<ItemReview>>
+    public class GetCriticReviews : IReturn<QueryResult<BaseItemDto>>
     {
         /// <summary>
         /// Gets or sets the id.
@@ -824,9 +824,7 @@ namespace MediaBrowser.Api.Library
         /// <returns>System.Object.</returns>
         public object Get(GetCriticReviews request)
         {
-            var result = GetCriticReviews(request);
-
-            return ToOptimizedSerializedResultUsingCache(result);
+            return new QueryResult<BaseItemDto>();
         }
 
         /// <summary>
@@ -936,36 +934,6 @@ namespace MediaBrowser.Api.Library
             {
                 Ids = request.Id
             });
-        }
-
-        /// <summary>
-        /// Gets the critic reviews async.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>Task{ItemReviewsResult}.</returns>
-        private QueryResult<ItemReview> GetCriticReviews(GetCriticReviews request)
-        {
-            var reviews = _itemRepo.GetCriticReviews(new Guid(request.Id));
-
-            var reviewsArray = reviews.ToArray(reviews.Count);
-
-            var result = new QueryResult<ItemReview>
-            {
-                TotalRecordCount = reviewsArray.Length
-            };
-
-            if (request.StartIndex.HasValue)
-            {
-                reviewsArray = reviewsArray.Skip(request.StartIndex.Value).ToArray();
-            }
-            if (request.Limit.HasValue)
-            {
-                reviewsArray = reviewsArray.Take(request.Limit.Value).ToArray();
-            }
-
-            result.Items = reviewsArray;
-
-            return result;
         }
 
         public object Get(GetThemeMedia request)

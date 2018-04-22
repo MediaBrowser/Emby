@@ -422,8 +422,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.Movies
             }
 
             // TODO: Allow GetMultiDiscMovie in here
-            var supportsMultiVersion = !string.Equals(collectionType, CollectionType.HomeVideos) &&
-                                    !string.Equals(collectionType, CollectionType.Photos);
+            var supportsMultiVersion = true;
 
             var result = ResolveVideos<T>(parent, fileSystemEntries, directoryService, supportsMultiVersion, collectionType, parseName) ??
                 new MultiItemResolverResult();

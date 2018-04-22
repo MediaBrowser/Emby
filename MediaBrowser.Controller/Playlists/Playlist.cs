@@ -26,11 +26,11 @@ namespace MediaBrowser.Controller.Playlists
 
         public Guid OwnerUserId { get; set; }
 
-        public List<Share> Shares { get; set; }
+        public Share[] Shares { get; set; }
 
         public Playlist()
         {
-            Shares = new List<Share>();
+            Shares = new Share[] { };
         }
 
         [IgnoreDataMember]
@@ -264,7 +264,7 @@ namespace MediaBrowser.Controller.Playlists
             }
 
             var shares = Shares;
-            if (shares.Count == 0)
+            if (shares.Length == 0)
             {
                 return base.IsVisible(user);
             }

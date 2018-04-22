@@ -276,11 +276,9 @@ namespace MediaBrowser.Controller.MediaEncoding
         /// <summary>
         /// Infers the audio codec based on the url
         /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <returns>System.Nullable{AudioCodecs}.</returns>
-        public string InferAudioCodec(string url)
+        public string InferAudioCodec(string container)
         {
-            var ext = Path.GetExtension(url);
+            var ext = "." + (container ?? string.Empty);
 
             if (string.Equals(ext, ".mp3", StringComparison.OrdinalIgnoreCase))
             {
@@ -349,7 +347,7 @@ namespace MediaBrowser.Controller.MediaEncoding
 
         public int GetVideoProfileScore(string profile)
         {
-            var list = new List<string>
+            var list = new []
             {
                 "Constrained Baseline",
                 "Baseline",
@@ -361,7 +359,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             };
 
             // strip spaces because they may be stripped out on the query string
-            return Array.FindIndex(list.ToArray(), t => string.Equals(t.Replace(" ", ""), profile.Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
+            return Array.FindIndex(list, t => string.Equals(t.Replace(" ", ""), profile.Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
         }
 
         public string GetInputPathArgument(EncodingJobInfo state)
@@ -1024,7 +1022,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             return request.EnableAutoStreamCopy;
         }
 
-        public bool CanStreamCopyAudio(EncodingJobInfo state, MediaStream audioStream, List<string> supportedAudioCodecs)
+        public bool CanStreamCopyAudio(EncodingJobInfo state, MediaStream audioStream, string[] supportedAudioCodecs)
         {
             var request = state.BaseRequest;
 

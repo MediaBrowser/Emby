@@ -920,7 +920,7 @@ namespace Emby.Server.Implementations.Data
             }
 
             var trailer = item as Trailer;
-            if (trailer != null && trailer.TrailerTypes.Count > 0)
+            if (trailer != null && trailer.TrailerTypes.Length > 0)
             {
                 saveItemStatement.TryBind("@TrailerTypes", string.Join("|", trailer.TrailerTypes.Select(i => i.ToString()).ToArray()));
             }
@@ -1748,7 +1748,7 @@ namespace Emby.Server.Implementations.Data
                                 }
                                 return (TrailerType?)null;
 
-                            }).Where(i => i.HasValue).Select(i => i.Value).ToList();
+                            }).Where(i => i.HasValue).Select(i => i.Value).ToArray();
                     }
                 }
                 index++;
@@ -2015,24 +2015,6 @@ namespace Emby.Server.Implementations.Data
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Gets the critic reviews.
-        /// </summary>
-        /// <param name="itemId">The item id.</param>
-        public List<ItemReview> GetCriticReviews(Guid itemId)
-        {
-            return new List<ItemReview>();
-        }
-
-        /// <summary>
-        /// Saves the critic reviews.
-        /// </summary>
-        /// <param name="itemId">The item id.</param>
-        /// <param name="criticReviews">The critic reviews.</param>
-        public void SaveCriticReviews(Guid itemId, IEnumerable<ItemReview> criticReviews)
-        {
         }
 
         /// <summary>

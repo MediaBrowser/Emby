@@ -54,7 +54,7 @@ namespace Emby.Server.Implementations.LiveTv
                 }
             }
 
-            return Task.FromResult<IEnumerable<MediaSourceInfo>>(new List<MediaSourceInfo>());
+            return Task.FromResult<IEnumerable<MediaSourceInfo>>(Array.Empty<MediaSourceInfo>());
         }
 
         // Do not use a pipe here because Roku http requests to the server will fail, without any explicit error message.

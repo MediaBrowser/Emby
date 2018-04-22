@@ -405,7 +405,7 @@ namespace MediaBrowser.Api.Movies
         {
             var people = _libraryManager.GetPeople(new InternalPeopleQuery
             {
-                ExcludePersonTypes = new List<string>
+                ExcludePersonTypes = new []
                 {
                     PersonType.Director
                 },

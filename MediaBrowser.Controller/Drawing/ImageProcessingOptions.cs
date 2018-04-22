@@ -34,7 +34,7 @@ namespace MediaBrowser.Controller.Drawing
 
         public int Quality { get; set; }
 
-        public List<IImageEnhancer> Enhancers { get; set; }
+        public IImageEnhancer[] Enhancers { get; set; }
 
         public ImageFormat[] SupportedOutputFormats { get; set; }
 

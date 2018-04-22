@@ -252,7 +252,6 @@
     <Compile Include="Providers\ImageProviderInfo.cs" />
     <Compile Include="Providers\RemoteImageInfo.cs" />
     <Compile Include="Entities\CollectionType.cs" />
-    <Compile Include="Entities\ItemReview.cs" />
     <Compile Include="Entities\MediaUrl.cs" />
     <Compile Include="Entities\MetadataFields.cs" />
     <Compile Include="Entities\UserDataSaveReason.cs" />

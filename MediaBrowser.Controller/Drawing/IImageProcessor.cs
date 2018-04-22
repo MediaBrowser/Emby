@@ -49,7 +49,7 @@ namespace MediaBrowser.Controller.Drawing
         /// <param name="item">The item.</param>
         /// <param name="imageType">Type of the image.</param>
         /// <returns>IEnumerable{IImageEnhancer}.</returns>
-        List<IImageEnhancer> GetSupportedEnhancers(BaseItem item, ImageType imageType);
+        IImageEnhancer[] GetSupportedEnhancers(BaseItem item, ImageType imageType);
 
         /// <summary>
         /// Gets the image cache tag.
@@ -66,7 +66,7 @@ namespace MediaBrowser.Controller.Drawing
         /// <param name="image">The image.</param>
         /// <param name="imageEnhancers">The image enhancers.</param>
         /// <returns>Guid.</returns>
-        string GetImageCacheTag(BaseItem item, ItemImageInfo image, List<IImageEnhancer> imageEnhancers);
+        string GetImageCacheTag(BaseItem item, ItemImageInfo image, IImageEnhancer[] imageEnhancers);
 
         /// <summary>
         /// Processes the image.

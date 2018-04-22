@@ -54,15 +54,19 @@ namespace Emby.Server.Implementations.TV
 
             var parentIdGuid = string.IsNullOrEmpty(request.ParentId) ? (Guid?)null : new Guid(request.ParentId);
 
-            List<BaseItem> parents;
+            BaseItem[] parents;
 
             if (parentIdGuid.HasValue)
             {
                 var parent = _libraryManager.GetItemById(parentIdGuid.Value);
-                parents = new List<BaseItem>();
+
                 if (parent != null)
                 {
-                    parents.Add(parent);
+                    parents = new[] { parent };
+                }
+                else
+                {
+                    parents = Array.Empty<BaseItem>();
                 }
             }
             else
@@ -70,13 +74,13 @@ namespace Emby.Server.Implementations.TV
                 parents = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                    .Where(i => i is Folder)
                    .Where(i => !user.Configuration.LatestItemsExcludes.Contains(i.Id.ToString("N")))
-                   .ToList();
+                   .ToArray();
             }
 
             return GetNextUp(request, parents, dtoOptions);
         }
 
-        public QueryResult<BaseItem> GetNextUp(NextUpQuery request, List<BaseItem> parentsFolders, DtoOptions dtoOptions)
+        public QueryResult<BaseItem> GetNextUp(NextUpQuery request, BaseItem[] parentsFolders, DtoOptions dtoOptions)
         {
             var user = _userManager.GetUserById(request.UserId);
 
@@ -124,7 +128,7 @@ namespace Emby.Server.Implementations.TV
                 },
                 GroupBySeriesPresentationUniqueKey = true
 
-            }, parentsFolders).Cast<Episode>().Select(GetUniqueSeriesKey);
+            }, parentsFolders.ToList()).Cast<Episode>().Select(GetUniqueSeriesKey);
 
             // Avoid implicitly captured closure
             var episodes = GetNextUpEpisodes(request, user, items, dtoOptions);

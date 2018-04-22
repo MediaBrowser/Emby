@@ -28,20 +28,6 @@ namespace MediaBrowser.Controller.Persistence
         void DeleteItem(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the critic reviews.
-        /// </summary>
-        /// <param name="itemId">The item id.</param>
-        /// <returns>Task{IEnumerable{ItemReview}}.</returns>
-        List<ItemReview> GetCriticReviews(Guid itemId);
-
-        /// <summary>
-        /// Saves the critic reviews.
-        /// </summary>
-        /// <param name="itemId">The item id.</param>
-        /// <param name="criticReviews">The critic reviews.</param>
-        void SaveCriticReviews(Guid itemId, IEnumerable<ItemReview> criticReviews);
-
-        /// <summary>
         /// Saves the items.
         /// </summary>
         /// <param name="items">The items.</param>

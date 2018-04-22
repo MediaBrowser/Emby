@@ -120,7 +120,7 @@ namespace Emby.Server.Implementations.Library
         {
             var mediaSources = GetStaticMediaSources(item, enablePathSubstitution, user);
 
-            if (allowMediaProbe && mediaSources.Count == 1 && mediaSources[0].Type != MediaSourceType.Placeholder && !mediaSources[0].MediaStreams.Any(i => i.Type == MediaStreamType.Audio || i.Type == MediaStreamType.Video))
+            if (allowMediaProbe && mediaSources[0].Type != MediaSourceType.Placeholder && !mediaSources[0].MediaStreams.Any(i => i.Type == MediaStreamType.Audio || i.Type == MediaStreamType.Video))
             {
                 await item.RefreshMetadata(new MediaBrowser.Controller.Providers.MetadataRefreshOptions(_fileSystem)
                 {

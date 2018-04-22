@@ -2596,7 +2596,7 @@ namespace Emby.Server.Implementations.Library
                         // item is new
                         video.ExtraType = ExtraType.Trailer;
                     }
-                    video.TrailerTypes = new List<TrailerType> { TrailerType.LocalTrailer };
+                    video.TrailerTypes = new [] { TrailerType.LocalTrailer };
 
                     return video;
 
