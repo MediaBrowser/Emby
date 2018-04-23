@@ -264,15 +264,19 @@ namespace Emby.Server.Implementations.HttpServer
             return statusCode;
         }
 
-        private void ErrorHandler(Exception ex, IRequest httpReq, bool logException = true)
+        private void ErrorHandler(Exception ex, IRequest httpReq, bool logExceptionStackTrace, bool logExceptionMessage)
         {
             try
             {
                 ex = GetActualException(ex);
 
-                if (logException)
+                if (logExceptionStackTrace)
                 {
                     _logger.ErrorException("Error processing request", ex);
+                }
+                else if (logExceptionMessage)
+                {
+                    _logger.Error(ex.Message);
                 }
 
                 var httpRes = httpReq.Response;
@@ -646,33 +650,34 @@ namespace Emby.Server.Implementations.HttpServer
                 }
                 else
                 {
-                    ErrorHandler(new FileNotFoundException(), httpReq, false);
+                    ErrorHandler(new FileNotFoundException(), httpReq, false, false);
                 }
             }
             catch (OperationCanceledException ex)
             {
-                ErrorHandler(ex, httpReq, false);
+                ErrorHandler(ex, httpReq, false, false);
             }
 
             catch (IOException ex)
             {
-                var logException = false;
-
-                ErrorHandler(ex, httpReq, logException);
+                ErrorHandler(ex, httpReq, false, false);
             }
 
             catch (SocketException ex)
             {
-                var logException = false;
+                ErrorHandler(ex, httpReq, false, false);
+            }
 
-                ErrorHandler(ex, httpReq, logException);
+            catch (SecurityException ex)
+            {
+                ErrorHandler(ex, httpReq, false, true);
             }
 
             catch (Exception ex)
             {
                 var logException = !string.Equals(ex.GetType().Name, "SocketException", StringComparison.OrdinalIgnoreCase);
 
-                ErrorHandler(ex, httpReq, logException);
+                ErrorHandler(ex, httpReq, logException, false);
             }
             finally
             {

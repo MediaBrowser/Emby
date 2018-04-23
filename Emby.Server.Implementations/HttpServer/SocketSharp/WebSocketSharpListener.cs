@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             _disposeCancellationToken = _disposeCancellationTokenSource.Token;
         }
 
-        public Action<Exception, IRequest, bool> ErrorHandler { get; set; }
+        public Action<Exception, IRequest, bool, bool> ErrorHandler { get; set; }
         public Func<IHttpRequest, string, string, string, CancellationToken, Task> RequestHandler { get; set; }
 
         public Action<WebSocketConnectingEventArgs> WebSocketConnecting { get; set; }
@@ -110,7 +110,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 _logger.ErrorException("Error processing request", ex);
 
                 httpReq = httpReq ?? GetRequest(context);
-                ErrorHandler(ex, httpReq, true);
+                ErrorHandler(ex, httpReq, true, true);
                 return Task.FromResult(true);
             }
 

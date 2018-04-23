@@ -1,4 +1,5 @@
 ﻿using System;
+using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Model.Configuration
 {
@@ -94,6 +95,42 @@ namespace MediaBrowser.Model.Configuration
 
         public string[] ImageFetchers { get; set; }
         public string[] ImageFetcherOrder { get; set; }
+        public ImageOption[] ImageOptions { get; set; }
+
+        public int GetLimit(ImageType type)
+        {
+            ImageOption option = null;
+            foreach (ImageOption i in ImageOptions)
+            {
+                if (i.Type == type)
+                {
+                    option = i;
+                    break;
+                }
+            }
+
+            return option == null ? 1 : option.Limit;
+        }
+
+        public int GetMinWidth(ImageType type)
+        {
+            ImageOption option = null;
+            foreach (ImageOption i in ImageOptions)
+            {
+                if (i.Type == type)
+                {
+                    option = i;
+                    break;
+                }
+            }
+
+            return option == null ? 0 : option.MinWidth;
+        }
+
+        public bool IsEnabled(ImageType type)
+        {
+            return GetLimit(type) > 0;
+        }
 
         public TypeOptions()
         {
@@ -101,6 +138,7 @@ namespace MediaBrowser.Model.Configuration
             MetadataFetcherOrder = new string[] {};
             ImageFetchers = new string[] {};
             ImageFetcherOrder = new string[] {};
+            ImageOptions = new ImageOption[] {};
         }
     }
 }

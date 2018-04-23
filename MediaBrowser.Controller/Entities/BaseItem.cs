@@ -68,7 +68,6 @@ namespace MediaBrowser.Controller.Entities
         /// The supported image extensions
         /// </summary>
         public static readonly string[] SupportedImageExtensions = { ".png", ".jpg", ".jpeg", ".tbn", ".gif" };
-
         public static readonly List<string> SupportedImageExtensionsList = SupportedImageExtensions.ToList();
 
         /// <summary>
@@ -501,6 +500,11 @@ namespace MediaBrowser.Controller.Entities
 
         public bool IsImageFetcherEnabled(LibraryOptions libraryOptions, string name)
         {
+            if (this is Channel)
+            {
+                // hack alert
+                return true;
+            }
             if (SourceType == SourceType.Channel)
             {
                 // hack alert
@@ -662,7 +666,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 if (!IsFileProtocol)
                 {
-                    return new string[] {};
+                    return new string[] { };
                 }
 
                 return new[] { Path };
@@ -1443,7 +1447,7 @@ namespace MediaBrowser.Controller.Entities
         [IgnoreDataMember]
         protected virtual bool SupportsOwnedItems
         {
-            get { return IsFolder || !ParentId.Equals(Guid.Empty); }
+            get { return !ParentId.Equals(Guid.Empty) && IsFileProtocol; }
         }
 
         [IgnoreDataMember]

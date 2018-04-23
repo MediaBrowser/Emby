@@ -29,6 +29,10 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.Cryptography;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Authentication;
+using MediaBrowser.Controller.Security;
+using MediaBrowser.Controller.Devices;
+using MediaBrowser.Controller.Session;
+using MediaBrowser.Controller.Plugins;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -1217,6 +1221,58 @@ namespace Emby.Server.Implementations.Library
             {
                 EventHelper.FireEventIfNotNull(UserConfigurationUpdated, this, new GenericEventArgs<User> { Argument = user }, _logger);
             }
+        }
+    }
+
+    public class DeviceAccessEntryPoint : IServerEntryPoint
+    {
+        private IUserManager _userManager;
+        private IAuthenticationRepository _authRepo;
+        private IDeviceManager _deviceManager;
+        private ISessionManager _sessionManager;
+
+        public DeviceAccessEntryPoint(IUserManager userManager, IAuthenticationRepository authRepo, IDeviceManager deviceManager, ISessionManager sessionManager)
+        {
+            _userManager = userManager;
+            _authRepo = authRepo;
+            _deviceManager = deviceManager;
+            _sessionManager = sessionManager;
+        }
+
+        public void Run()
+        {
+            _userManager.UserPolicyUpdated += _userManager_UserPolicyUpdated;
+        }
+
+        private void _userManager_UserPolicyUpdated(object sender, GenericEventArgs<User> e)
+        {
+            var user = e.Argument;
+            if (!user.Policy.EnableAllDevices)
+            {
+                UpdateDeviceAccess(user);
+            }
+        }
+
+        private void UpdateDeviceAccess(User user)
+        {
+            var existing = _authRepo.Get(new AuthenticationInfoQuery
+            {
+                UserId = user.Id.ToString("N")
+
+            }).Items;
+
+            foreach (var authInfo in existing)
+            {
+                if (!string.IsNullOrEmpty(authInfo.DeviceId) && !_deviceManager.CanAccessDevice(user, authInfo.DeviceId))
+                {
+                    _sessionManager.Logout(authInfo.AccessToken);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }
