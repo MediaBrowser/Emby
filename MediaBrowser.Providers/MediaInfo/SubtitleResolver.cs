@@ -60,9 +60,14 @@ namespace MediaBrowser.Providers.MediaInfo
           IDirectoryService directoryService,
           bool clearCache)
         {
-            var streams = GetExternalSubtitleStreams(video, 0, directoryService, clearCache);
-
             var list = new List<string>();
+
+            if (!video.SupportsLocalMetadata)
+            {
+                return list;
+            }
+
+            var streams = GetExternalSubtitleStreams(video, 0, directoryService, clearCache);
 
             foreach (var stream in streams)
             {

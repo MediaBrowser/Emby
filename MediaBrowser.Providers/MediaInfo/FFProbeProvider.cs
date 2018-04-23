@@ -120,12 +120,12 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public Task<ItemUpdateType> FetchAsync(Audio item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
-            return FetchAudioInfo(item, cancellationToken);
+            return FetchAudioInfo(item, options, cancellationToken);
         }
 
         public Task<ItemUpdateType> FetchAsync(AudioBook item, MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
-            return FetchAudioInfo(item, cancellationToken);
+            return FetchAudioInfo(item, options, cancellationToken);
         }
 
         private SubtitleResolver _subtitleResolver;
@@ -175,8 +175,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 return _cachedTask;
             }
 
-            // hack alert
-            if (item.SourceType == SourceType.Channel && !_channelManager.EnableMediaProbe(item))
+            if (!options.EnableRemoteContentProbe && !item.IsFileProtocol)
             {
                 return _cachedTask;
             }
@@ -206,7 +205,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i) && !i.StartsWith("#", StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<ItemUpdateType> FetchAudioInfo<T>(T item, CancellationToken cancellationToken)
+        public Task<ItemUpdateType> FetchAudioInfo<T>(T item, MetadataRefreshOptions options, CancellationToken cancellationToken)
             where T : Audio
         {
             if (item.IsVirtualItem)
@@ -214,8 +213,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 return _cachedTask;
             }
 
-            // hack alert
-            if (item.SourceType == SourceType.Channel && !_channelManager.EnableMediaProbe(item))
+            if (!options.EnableRemoteContentProbe && !item.IsFileProtocol)
             {
                 return _cachedTask;
             }

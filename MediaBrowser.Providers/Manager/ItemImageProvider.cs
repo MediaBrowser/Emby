@@ -24,6 +24,7 @@ using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Channels;
 
 namespace MediaBrowser.Providers.Manager
 {
@@ -93,7 +94,7 @@ namespace MediaBrowser.Providers.Manager
 
                 if (dynamicImageProvider != null)
                 {
-                    await RefreshFromProvider(item, dynamicImageProvider, refreshOptions, savedOptions, downloadedImages, result, cancellationToken).ConfigureAwait(false);
+                    await RefreshFromProvider(item, dynamicImageProvider, refreshOptions, savedOptions, libraryOptions, downloadedImages, result, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -103,18 +104,11 @@ namespace MediaBrowser.Providers.Manager
         /// <summary>
         /// Refreshes from provider.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="provider">The provider.</param>
-        /// <param name="refreshOptions">The refresh options.</param>
-        /// <param name="savedOptions">The saved options.</param>
-        /// <param name="downloadedImages">The downloaded images.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
         private async Task RefreshFromProvider(BaseItem item,
             IDynamicImageProvider provider,
             ImageRefreshOptions refreshOptions,
             MetadataOptions savedOptions,
+            LibraryOptions libraryOptions,
             ICollection<ImageType> downloadedImages,
             RefreshResult result,
             CancellationToken cancellationToken)
@@ -125,7 +119,7 @@ namespace MediaBrowser.Providers.Manager
 
                 foreach (var imageType in images)
                 {
-                    if (!IsEnabled(savedOptions, imageType, item)) continue;
+                    if (!IsEnabled(libraryOptions, savedOptions, imageType, item)) continue;
 
                     if (!HasImage(item, imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
                     {
@@ -282,7 +276,7 @@ namespace MediaBrowser.Providers.Manager
 
                 foreach (var imageType in _singularImages)
                 {
-                    if (!IsEnabled(savedOptions, imageType, item)) continue;
+                    if (!IsEnabled(libraryOptions, savedOptions, imageType, item)) continue;
 
                     if (!HasImage(item, imageType) || (refreshOptions.IsReplacingImage(imageType) && !downloadedImages.Contains(imageType)))
                     {
@@ -317,9 +311,15 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private bool IsEnabled(MetadataOptions options, ImageType type, BaseItem item)
+        private bool IsEnabled(LibraryOptions libraryOptions, MetadataOptions options, ImageType type, BaseItem item)
         {
-            return options.IsEnabled(type);
+            var typeOptions = libraryOptions.GetTypeOptions(item.GetType().Name);
+
+            if (typeOptions == null || typeOptions.ImageOptions.Length == 0)
+            {
+                return options.IsEnabled(type);
+            }
+            return typeOptions.IsEnabled(type);
         }
 
         private void ClearImages(BaseItem item, ImageType type)
@@ -342,7 +342,7 @@ namespace MediaBrowser.Providers.Manager
                 }
                 catch (FileNotFoundException)
                 {
-                    
+
                 }
             }
 

@@ -17,11 +17,10 @@ namespace Emby.Server.Implementations.HttpServer.Security
     {
         private readonly IServerConfigurationManager _config;
 
-        public AuthService(IUserManager userManager, IAuthorizationContext authorizationContext, IServerConfigurationManager config, IConnectManager connectManager, ISessionManager sessionManager, IDeviceManager deviceManager, INetworkManager networkManager)
+        public AuthService(IUserManager userManager, IAuthorizationContext authorizationContext, IServerConfigurationManager config, IConnectManager connectManager, ISessionManager sessionManager, INetworkManager networkManager)
         {
             AuthorizationContext = authorizationContext;
             _config = config;
-            DeviceManager = deviceManager;
             SessionManager = sessionManager;
             ConnectManager = connectManager;
             UserManager = userManager;
@@ -32,7 +31,6 @@ namespace Emby.Server.Implementations.HttpServer.Security
         public IAuthorizationContext AuthorizationContext { get; private set; }
         public IConnectManager ConnectManager { get; private set; }
         public ISessionManager SessionManager { get; private set; }
-        public IDeviceManager DeviceManager { get; private set; }
         public INetworkManager NetworkManager { get; private set; }
 
         /// <summary>
@@ -129,17 +127,6 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 {
                     SecurityExceptionType = SecurityExceptionType.ParentalControl
                 };
-            }
-
-            if (!string.IsNullOrEmpty(auth.DeviceId))
-            {
-                if (!DeviceManager.CanAccessDevice(user, auth.DeviceId))
-                {
-                    throw new SecurityException("User is not allowed access from this device.")
-                    {
-                        SecurityExceptionType = SecurityExceptionType.ParentalControl
-                    };
-                }
             }
         }
 
@@ -243,14 +230,9 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
             var info = GetTokenInfo(request);
 
-            if (info == null)
+            if (info == null || !info.IsActive)
             {
                 throw new SecurityException("Access token is invalid or expired.");
-            }
-
-            if (!info.IsActive)
-            {
-                throw new SecurityException("Access token has expired.");
             }
 
             //if (!string.IsNullOrEmpty(info.UserId))

@@ -108,7 +108,6 @@
     <Compile Include="Manager\ProviderUtils.cs" />
     <Compile Include="Studios\StudiosImageProvider.cs" />
     <Compile Include="Studios\StudioMetadataService.cs" />
-    <Compile Include="Subtitles\SubDB.cs" />
     <Compile Include="Subtitles\SubtitleManager.cs" />
     <Compile Include="TV\DummySeasonProvider.cs" />
     <Compile Include="TV\EpisodeMetadataService.cs" />
