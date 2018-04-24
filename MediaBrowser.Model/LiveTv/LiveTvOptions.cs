@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MediaBrowser.Model.Dto;
+﻿using MediaBrowser.Model.Dto;
 using System;
 
 namespace MediaBrowser.Model.LiveTv
@@ -10,8 +9,6 @@ namespace MediaBrowser.Model.LiveTv
         public string RecordingPath { get; set; }
         public string MovieRecordingPath { get; set; }
         public string SeriesRecordingPath { get; set; }
-        public bool EnableRecordingEncoding { get; set; }
-        public string RecordingEncodingFormat { get; set; }
         public bool EnableRecordingSubfolders { get; set; }
         public bool EnableOriginalAudioWithEncodedRecordings { get; set; }
 
@@ -30,8 +27,7 @@ namespace MediaBrowser.Model.LiveTv
         {
             TunerHosts = new TunerHostInfo[] { };
             ListingProviders = new ListingsProviderInfo[] { };
-            MediaLocationsCreated = new string[] {};
-            RecordingEncodingFormat = "mkv";
+            MediaLocationsCreated = new string[] { };
             RecordingPostProcessorArguments = "\"{path}\"";
         }
     }
@@ -86,7 +82,7 @@ namespace MediaBrowser.Model.LiveTv
             SportsCategories = new string[] { "sports", "basketball", "baseball", "football" };
             KidsCategories = new string[] { "kids", "family", "children", "childrens", "disney" };
             MovieCategories = new string[] { "movie" };
-            EnabledTuners = new string[] {};
+            EnabledTuners = new string[] { };
             EnableAllTuners = true;
             ChannelMappings = new NameValuePair[] {};
         }

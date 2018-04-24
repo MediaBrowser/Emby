@@ -40,6 +40,11 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var streams = new List<MediaStream>();
 
+            if (!video.IsFileProtocol)
+            {
+                return streams;
+            }
+
             GetExternalSubtitleStreams(streams, video.ContainingFolderPath, video.Path, startIndex, directoryService, clearCache);
 
             startIndex += streams.Count;
@@ -62,7 +67,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var list = new List<string>();
 
-            if (!video.SupportsLocalMetadata)
+            if (!video.IsFileProtocol)
             {
                 return list;
             }

@@ -224,7 +224,6 @@
     <Compile Include="LiveTv\GuideInfo.cs" />
     <Compile Include="LiveTv\LiveTvInfo.cs" />
     <Compile Include="LiveTv\LiveTvServiceStatus.cs" />
-    <Compile Include="LiveTv\LiveTvTunerInfoDto.cs" />
     <Compile Include="LiveTv\LiveTvTunerStatus.cs" />
     <Compile Include="LiveTv\ProgramAudio.cs" />
     <Compile Include="LiveTv\ProgramQuery.cs" />

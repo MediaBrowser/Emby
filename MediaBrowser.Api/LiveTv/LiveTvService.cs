@@ -413,11 +413,6 @@ namespace MediaBrowser.Api.LiveTv
         [ApiMember(Name = "Fields", Description = "Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimeted. Options: Budget, Chapters, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string Fields { get; set; }
 
-        public Guid[] GetGuids(string value)
-        {
-            return (value ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
-        }
-
         public GetPrograms()
         {
             EnableTotalRecordCount = true;
@@ -483,11 +478,6 @@ namespace MediaBrowser.Api.LiveTv
 
         [ApiMember(Name = "EnableUserData", Description = "Optional, include user data", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
         public bool? EnableUserData { get; set; }
-
-        public Guid[] GetGuids(string value)
-        {
-            return (value ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
-        }
     }
 
     [Route("/LiveTv/Programs/{Id}", "GET", Summary = "Gets a live tv program")]
@@ -1046,7 +1036,7 @@ namespace MediaBrowser.Api.LiveTv
             query.IsSports = request.IsSports;
             query.SeriesTimerId = request.SeriesTimerId;
             query.Genres = (request.Genres ?? String.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            query.GenreIds = request.GetGuids(request.GenreIds);
+            query.GenreIds = GetGuids(request.GenreIds);
 
             if (!string.IsNullOrWhiteSpace(request.LibrarySeriesId))
             {
@@ -1080,7 +1070,7 @@ namespace MediaBrowser.Api.LiveTv
                 EnableTotalRecordCount = request.EnableTotalRecordCount
             };
 
-            query.GenreIds = request.GetGuids(request.GenreIds);
+            query.GenreIds = GetGuids(request.GenreIds);
 
             var result = _liveTvManager.GetRecommendedPrograms(query, GetDtoOptions(_authContext, request), CancellationToken.None);
 

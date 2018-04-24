@@ -66,6 +66,12 @@ namespace MediaBrowser.Api
             return value.Split(new[] { delim }, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static Guid[] GetGuids(string value)
+        {
+            // Unfortunately filtermenu.js was using |. This can be deprecated after a while.
+            return (value ?? string.Empty).Split(new[] { ',', '|' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
+        }
+
         /// <summary>
         /// To the optimized result.
         /// </summary>
