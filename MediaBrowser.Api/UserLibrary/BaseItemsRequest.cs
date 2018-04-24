@@ -366,16 +366,6 @@ namespace MediaBrowser.Api.UserLibrary
             return (IncludeItemTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public Guid[] GetGuids(string value)
-        {
-            return (value ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
-        }
-
-        public Guid[] GetExcludeItemIds()
-        {
-            return GetGuids(ExcludeItemIds);
-        }
-
         public string[] GetExcludeItemTypes()
         {
             return (ExcludeItemTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -391,34 +381,9 @@ namespace MediaBrowser.Api.UserLibrary
             return (Studios ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public Guid[] GetArtistIds()
-        {
-            return GetGuids(ArtistIds);
-        }
-
-        public Guid[] GetStudioIds()
-        {
-            return GetGuids(StudioIds);
-        }
-
-        public Guid[] GetGenreIds()
-        {
-            return GetGuids(GenreIds);
-        }
-
         public string[] GetPersonTypes()
         {
             return (PersonTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public Guid[] GetPersonIds()
-        {
-            return GetGuids(PersonIds);
-        }
-
-        public Guid[] GetItemIds()
-        {
-            return GetGuids(Ids);
         }
 
         public VideoType[] GetVideoTypes()

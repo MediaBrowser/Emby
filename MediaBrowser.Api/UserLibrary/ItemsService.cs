@@ -287,17 +287,17 @@ namespace MediaBrowser.Api.UserLibrary
                 Tags = request.GetTags(),
                 OfficialRatings = request.GetOfficialRatings(),
                 Genres = request.GetGenres(),
-                ArtistIds = request.GetArtistIds(),
-                GenreIds = request.GetGenreIds(),
-                StudioIds = request.GetStudioIds(),
+                ArtistIds = GetGuids(request.ArtistIds),
+                GenreIds = GetGuids(request.GenreIds),
+                StudioIds = GetGuids(request.StudioIds),
                 Person = request.Person,
-                PersonIds = request.GetPersonIds(),
+                PersonIds = GetGuids(request.PersonIds),
                 PersonTypes = request.GetPersonTypes(),
                 Years = request.GetYears(),
                 ImageTypes = request.GetImageTypes(),
                 VideoTypes = request.GetVideoTypes(),
                 AdjacentTo = request.AdjacentTo,
-                ItemIds = request.GetItemIds(),
+                ItemIds = GetGuids(request.Ids),
                 MinPlayers = request.MinPlayers,
                 MaxPlayers = request.MaxPlayers,
                 MinCommunityRating = request.MinCommunityRating,
@@ -306,7 +306,7 @@ namespace MediaBrowser.Api.UserLibrary
                 ParentIndexNumber = request.ParentIndexNumber,
                 AiredDuringSeason = request.AiredDuringSeason,
                 EnableTotalRecordCount = request.EnableTotalRecordCount,
-                ExcludeItemIds = request.GetExcludeItemIds(),
+                ExcludeItemIds = GetGuids(request.ExcludeItemIds),
                 DtoOptions = dtoOptions
             };
 
@@ -427,12 +427,12 @@ namespace MediaBrowser.Api.UserLibrary
             // ExcludeArtistIds
             if (!string.IsNullOrWhiteSpace(request.ExcludeArtistIds))
             {
-                query.ExcludeArtistIds = request.GetGuids(request.ExcludeArtistIds);
+                query.ExcludeArtistIds = GetGuids(request.ExcludeArtistIds);
             }
 
             if (!string.IsNullOrWhiteSpace(request.AlbumIds))
             {
-                query.AlbumIds = request.GetGuids(request.AlbumIds);
+                query.AlbumIds = GetGuids(request.AlbumIds);
             }
 
             // Albums

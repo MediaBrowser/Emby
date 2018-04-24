@@ -415,7 +415,7 @@ namespace MediaBrowser.Providers.Manager
                     filename = item is MusicAlbum ? "cdart" : "disc";
                     break;
                 case ImageType.Primary:
-                    filename = item is Episode ? _fileSystem.GetFileNameWithoutExtension(item.Path) : folderName;
+                    filename = saveLocally && item is Episode ? _fileSystem.GetFileNameWithoutExtension(item.Path) : folderName;
                     break;
                 case ImageType.Backdrop:
                     filename = GetBackdropSaveFilename(item.GetImages(type), "backdrop", "backdrop", imageIndex);
