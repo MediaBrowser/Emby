@@ -35,7 +35,7 @@ namespace MediaBrowser.Model.Configuration
 
         public string SeasonZeroDisplayName { get; set; }
         public string[] MetadataSavers { get; set; }
-        public string[] LocalMetadataReaders { get; set; }
+        public string[] DisabledLocalMetadataReaders { get; set; }
         public string[] LocalMetadataReaderOrder { get; set; }
 
         public string[] DisabledSubtitleFetchers { get; set; }
@@ -64,9 +64,10 @@ namespace MediaBrowser.Model.Configuration
 
         public LibraryOptions()
         {
-            TypeOptions = new TypeOptions[] { };
+            TypeOptions = new TypeOptions[] {};
             DisabledSubtitleFetchers = new string[] {};
             SubtitleFetcherOrder = new string[] {};
+            DisabledLocalMetadataReaders = new string[] {};
 
             SkipSubtitlesIfAudioTrackMatches = true;
             RequirePerfectSubtitleMatch = true;
@@ -74,7 +75,7 @@ namespace MediaBrowser.Model.Configuration
             EnablePhotos = true;
             SaveSubtitlesWithMedia = true;
             EnableRealtimeMonitor = true;
-            PathInfos = new MediaPathInfo[] { };
+            PathInfos = new MediaPathInfo[] {};
             EnableInternetProviders = true;
             EnableAutomaticSeriesGrouping = true;
             SeasonZeroDisplayName = "Specials";
@@ -134,11 +135,11 @@ namespace MediaBrowser.Model.Configuration
 
         public TypeOptions()
         {
-            MetadataFetchers = new string[] {};
-            MetadataFetcherOrder = new string[] {};
-            ImageFetchers = new string[] {};
-            ImageFetcherOrder = new string[] {};
-            ImageOptions = new ImageOption[] {};
+            MetadataFetchers = new string[] { };
+            MetadataFetcherOrder = new string[] { };
+            ImageFetchers = new string[] { };
+            ImageFetcherOrder = new string[] { };
+            ImageOptions = new ImageOption[] { };
         }
     }
 }

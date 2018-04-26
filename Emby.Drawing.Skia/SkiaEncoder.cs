@@ -228,6 +228,7 @@ namespace Emby.Drawing.Skia
 
             var tempPath = Path.Combine(_appPaths.TempDirectory, Guid.NewGuid() + Path.GetExtension(path) ?? string.Empty);
 
+            fileSystem.CreateDirectory(fileSystem.GetDirectoryName(tempPath));
             fileSystem.CopyFile(path, tempPath, true);
 
             return tempPath;

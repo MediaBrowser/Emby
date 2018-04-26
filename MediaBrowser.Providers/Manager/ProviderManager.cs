@@ -293,7 +293,7 @@ namespace MediaBrowser.Providers.Manager
                     {
                         var fetcherOrder = typeFetcherOrder ?? currentOptions.ImageFetcherOrder;
 
-                        var index = Array.IndexOf(currentOptions.ImageFetcherOrder, i.Name);
+                        var index = Array.IndexOf(fetcherOrder, i.Name);
 
                         if (index != -1)
                         {

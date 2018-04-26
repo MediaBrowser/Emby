@@ -218,12 +218,6 @@ namespace Emby.Server.Implementations
         protected ServerApplicationPaths ApplicationPaths { get; set; }
 
         /// <summary>
-        /// Gets assemblies that failed to load
-        /// </summary>
-        /// <value>The failed assemblies.</value>
-        public List<string> FailedAssemblies { get; protected set; }
-
-        /// <summary>
         /// Gets all concrete types.
         /// </summary>
         /// <value>All concrete types.</value>
@@ -437,8 +431,6 @@ namespace Emby.Server.Implementations
             SystemEvents = systemEvents;
             MemoryStreamFactory = new MemoryStreamProvider();
 
-            FailedAssemblies = new List<string>();
-
             ApplicationPaths = applicationPaths;
             LogManager = logManager;
             FileSystemManager = fileSystem;
@@ -631,7 +623,6 @@ namespace Emby.Server.Implementations
             }
             catch (Exception ex)
             {
-                FailedAssemblies.Add(file);
                 Logger.ErrorException("Error loading assembly {0}", ex, file);
                 return null;
             }
@@ -1473,8 +1464,6 @@ namespace Emby.Server.Implementations
         {
             Logger.Info("Loading assemblies");
 
-            FailedAssemblies.Clear();
-
             var assemblyInfos = GetComposablePartAssemblies();
 
             foreach (var assemblyInfo in assemblyInfos)
@@ -1947,8 +1936,6 @@ namespace Emby.Server.Implementations
                 IsShuttingDown = IsShuttingDown,
                 Version = ApplicationVersion.ToString(),
                 WebSocketPortNumber = HttpPort,
-                FailedPluginAssemblies = FailedAssemblies.ToArray(),
-                InProgressInstallations = InstallationManager.CurrentInstallations.Select(i => i.Item1).ToArray(),
                 CompletedInstallations = InstallationManager.CompletedInstallations.ToArray(),
                 Id = SystemId,
                 ProgramDataPath = ApplicationPaths.ProgramDataPath,
