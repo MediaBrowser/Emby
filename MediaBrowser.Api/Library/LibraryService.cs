@@ -279,6 +279,7 @@ namespace MediaBrowser.Api.Library
     public class GetLibraryOptionsInfo : IReturn<LibraryOptionsResult>
     {
         public string LibraryContentType { get; set; }
+        public bool IsNewLibrary { get; set; }
     }
 
     public class LibraryOptionInfo
@@ -373,8 +374,13 @@ namespace MediaBrowser.Api.Library
             }
         }
 
-        private bool IsSaverEnabledByDefault(string name, string[] itemTypes)
+        private bool IsSaverEnabledByDefault(string name, string[] itemTypes, bool isNewLibrary)
         {
+            if (isNewLibrary)
+            {
+                return false;
+            }
+
             var metadataOptions = _config.Configuration.MetadataOptions
                 .Where(i => itemTypes.Contains(i.ItemType ?? string.Empty, StringComparer.OrdinalIgnoreCase))
                 .ToArray();
@@ -387,8 +393,50 @@ namespace MediaBrowser.Api.Library
             return metadataOptions.Any(i => !i.DisabledMetadataSavers.Contains(name, StringComparer.OrdinalIgnoreCase));
         }
 
-        private bool IsMetadataFetcherEnabledByDefault(string name, string type)
+        private bool IsMetadataFetcherEnabledByDefault(string name, string type, bool isNewLibrary)
         {
+            if (isNewLibrary)
+            {
+                if (string.Equals(name, "TheMovieDb", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.Equals(type, "Series", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "Season", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "Episode", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "MusicVideo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else if (string.Equals(name, "TheTVDB", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "The Open Movie Database", StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+                else if (string.Equals(name, "TheAudioDB", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "MusicBrainz", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
             var metadataOptions = _config.Configuration.MetadataOptions
                 .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
@@ -401,8 +449,70 @@ namespace MediaBrowser.Api.Library
             return metadataOptions.Any(i => !i.DisabledMetadataFetchers.Contains(name, StringComparer.OrdinalIgnoreCase));
         }
 
-        private bool IsImageFetcherEnabledByDefault(string name, string type)
+        private bool IsImageFetcherEnabledByDefault(string name, string type, bool isNewLibrary)
         {
+            if (isNewLibrary)
+            {
+                if (string.Equals(name, "TheMovieDb", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.Equals(type, "Series", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "Season", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "Episode", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "MusicVideo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else if (string.Equals(name, "TheTVDB", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "The Open Movie Database", StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+                else if (string.Equals(name, "FanArt", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.Equals(type, "Season", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    if (string.Equals(type, "MusicVideo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else if (string.Equals(name, "TheAudioDB", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "Emby Designs", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "Screen Grabber", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                else if (string.Equals(name, "Image Extractor", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
             var metadataOptions = _config.Configuration.MetadataOptions
                 .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
@@ -420,6 +530,7 @@ namespace MediaBrowser.Api.Library
             var result = new LibraryOptionsResult();
 
             var types = GetRepresentativeItemTypes(request.LibraryContentType);
+            var isNewLibrary = request.IsNewLibrary;
             var typesList = types.ToList();
 
             var plugins = _providerManager.GetAllMetadataPlugins()
@@ -432,7 +543,7 @@ namespace MediaBrowser.Api.Library
                 .Select(i => new LibraryOptionInfo
                 {
                     Name = i.Name,
-                    DefaultEnabled = IsSaverEnabledByDefault(i.Name, types)
+                    DefaultEnabled = IsSaverEnabledByDefault(i.Name, types, isNewLibrary)
                 })
                 .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
@@ -471,7 +582,7 @@ namespace MediaBrowser.Api.Library
                     .Select(i => new LibraryOptionInfo
                     {
                         Name = i.Name,
-                        DefaultEnabled = IsMetadataFetcherEnabledByDefault(i.Name, type)
+                        DefaultEnabled = IsMetadataFetcherEnabledByDefault(i.Name, type, isNewLibrary)
                     })
                     .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                     .ToArray(),
@@ -482,7 +593,7 @@ namespace MediaBrowser.Api.Library
                     .Select(i => new LibraryOptionInfo
                     {
                         Name = i.Name,
-                        DefaultEnabled = IsImageFetcherEnabledByDefault(i.Name, type)
+                        DefaultEnabled = IsImageFetcherEnabledByDefault(i.Name, type, isNewLibrary)
                     })
                     .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
                     .ToArray()

@@ -823,6 +823,8 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("path");
             }
 
+            //_logger.Info("FindByPath {0}", path);
+
             var query = new InternalItemsQuery
             {
                 Path = path,

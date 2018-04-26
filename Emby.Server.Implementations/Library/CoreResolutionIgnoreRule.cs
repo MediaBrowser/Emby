@@ -41,7 +41,8 @@ namespace Emby.Server.Implementations.Library
                 "#recycle",
 
                 // Qnap
-                "@Recycle"
+                "@Recycle",
+                ".@__thumb"
 
         };
         
