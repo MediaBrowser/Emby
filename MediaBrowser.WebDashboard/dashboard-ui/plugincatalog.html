@@ -1,13 +1,11 @@
 ﻿<div id="pluginCatalogPage" data-role="page" class="page type-interior pluginConfigurationPage withTabs fullWidthContent" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Plugins">
     <div>
         <div class="content-primary">
-            <div style="display: flex;align-items:center; justify-content: flex-end;">
-                <div class="selectContainer" style="margin:0;">
-                    <select is="emby-select" id="selectSystem" label="${LabelDisplayPluginsFor}">
-                        <option value="Server">${TabServer}</option>
-                        <option value="MBClassic">${PluginTabAppClassic}</option>
-                    </select>
-                </div>
+            <div class="selectContainer" style="display:inline-block;">
+                <select is="emby-select" id="selectSystem" label="${LabelDisplayPluginsFor}">
+                    <option value="Server">${HeaderEmbyServer}</option>
+                    <option value="MBClassic">${PluginTabAppClassic}</option>
+                </select>
             </div>
 
             <div id="noPlugins" class="hide">

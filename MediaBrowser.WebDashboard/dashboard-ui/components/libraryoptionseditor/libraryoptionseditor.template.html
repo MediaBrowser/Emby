@@ -1,4 +1,9 @@
-﻿<h2>${HeaderLibrarySettings}</h2>
+﻿<style>
+    .advancedHide {
+        display: none !important;
+    }
+</style>
+<h2>${HeaderLibrarySettings}</h2>
 <div class="selectContainer fldMetadataLanguage hide">
     <select is="emby-select" id="selectLanguage" label="${LabelMetadataDownloadLanguage}"></select>
 </div>
@@ -13,10 +18,10 @@
     <div class="fieldDescription checkboxFieldDescription">${EnablePhotosHelp}</div>
 </div>
 
-<div class="inputContainer fldSeasonZeroDisplayName hide">
+<div class="inputContainer fldSeasonZeroDisplayName hide advanced">
     <input is="emby-input" type="text" id="txtSeasonZeroName" label="${LabelSpecialSeasonsDisplayName}" value="Specials" required />
 </div>
-<div class="checkboxContainer checkboxContainer-withDescription chkEnableEmbeddedTitlesContainer hide">
+<div class="checkboxContainer checkboxContainer-withDescription chkEnableEmbeddedTitlesContainer hide advanced">
     <label>
         <input is="emby-checkbox" type="checkbox" id="chkEnableEmbeddedTitles" />
         <span>${PreferEmbeddedTitlesOverFileNames}</span>
@@ -32,17 +37,17 @@
     <div class="fieldDescription checkboxFieldDescription">${LabelEnableRealtimeMonitorHelp}</div>
 </div>
 
-<div class="metadataReaders hide" style="margin-bottom: 2em;">
+<div class="metadataReaders hide advanced" style="margin-bottom: 2em;">
 </div>
 <div class="metadataFetchers hide" style="margin-bottom: 2em;">
 </div>
-<div class="selectContainer fldAutoRefreshInterval hide" style="margin: 2em 0;">
+<div class="selectContainer fldAutoRefreshInterval hide advanced" style="margin: 2em 0;">
     <select is="emby-select" id="selectAutoRefreshInterval" label="${LabelAutomaticallyRefreshInternetMetadataEvery}"></select>
     <div class="fieldDescription">${MessageEnablingOptionLongerScans}</div>
 </div>
 <div class="metadataSavers hide" style="margin-bottom: 2em;">
 </div>
-<div class="imageFetchers hide" style="margin-bottom: 2em;">
+<div class="imageFetchers hide advanced" style="margin-bottom: 2em;">
 </div>
 <div class="checkboxContainer checkboxContainer-withDescription chkSaveLocalContainer hide">
     <label>
@@ -52,7 +57,7 @@
     <div class="fieldDescription checkboxFieldDescription">${LabelSaveLocalMetadataHelp}</div>
 </div>
 
-<div class="checkboxContainer checkboxContainer-withDescription hide chkDownloadImagesInAdvanceContainer">
+<div class="checkboxContainer checkboxContainer-withDescription hide chkDownloadImagesInAdvanceContainer advanced">
     <label>
         <input is="emby-checkbox" type="checkbox" id="chkDownloadImagesInAdvance" />
         <span>${OptionDownloadImagesInAdvance}</span>
@@ -60,7 +65,7 @@
     <div class="fieldDescription checkboxFieldDescription">${OptionDownloadImagesInAdvanceHelp}</div>
 </div>
 
-<div class="checkboxContainer checkboxContainer-withDescription chkAutomaticallyGroupSeriesContainer hide">
+<div class="checkboxContainer checkboxContainer-withDescription chkAutomaticallyGroupSeriesContainer hide advanced">
     <label>
         <input type="checkbox" is="emby-checkbox" class="chkAutomaticallyGroupSeries" checked />
         <span>${OptionAutomaticallyGroupSeries}</span>
@@ -68,7 +73,7 @@
     <div class="fieldDescription checkboxFieldDescription">${OptionAutomaticallyGroupSeriesHelp}</div>
 </div>
 
-<div class="checkboxContainer checkboxContainer-withDescription hide chkImportMissingEpisodesContainer">
+<div class="checkboxContainer checkboxContainer-withDescription hide chkImportMissingEpisodesContainer advanced">
     <label>
         <input is="emby-checkbox" type="checkbox" id="chkImportMissingEpisodes" />
         <span>${LabelDisplayMissingEpisodesWithinSeasons}</span>
@@ -86,7 +91,7 @@
         <div class="fieldDescription checkboxFieldDescription">${ExtractChapterImagesHelp}</div>
     </div>
 
-    <div class="checkboxContainer checkboxContainer-withDescription fldExtractChaptersDuringLibraryScan">
+    <div class="checkboxContainer checkboxContainer-withDescription fldExtractChaptersDuringLibraryScan advanced">
         <label>
             <input type="checkbox" is="emby-checkbox" class="chkExtractChaptersDuringLibraryScan" />
             <span>${LabelExtractChaptersDuringLibraryScan}</span>
@@ -105,7 +110,7 @@
     </div>
     <br />
 
-    <div class="subtitleFetchers" style="margin-bottom: 2em;">
+    <div class="subtitleFetchers advanced" style="margin-bottom: 2em;">
     </div>
 
     <div class="checkboxContainer checkboxContainer-withDescription">
@@ -115,14 +120,14 @@
         </label>
         <div class="fieldDescription checkboxFieldDescription">${OptionRequirePerfectSubtitleMatchHelp}</div>
     </div>
-    <div class="checkboxContainer checkboxContainer-withDescription">
+    <div class="checkboxContainer checkboxContainer-withDescription advanced">
         <label>
             <input is="emby-checkbox" type="checkbox" id="chkSkipIfAudioTrackPresent" checked />
             <span>${LabelSkipIfAudioTrackPresent}</span>
         </label>
         <div class="fieldDescription checkboxFieldDescription">${LabelSkipIfAudioTrackPresentHelp}</div>
     </div>
-    <div class="checkboxContainer checkboxContainer-withDescription">
+    <div class="checkboxContainer checkboxContainer-withDescription advanced">
         <label>
             <input is="emby-checkbox" type="checkbox" id="chkSkipIfGraphicalSubsPresent" />
             <span>${LabelSkipIfGraphicalSubsPresent}</span>
@@ -130,7 +135,7 @@
         <div class="fieldDescription checkboxFieldDescription">${LabelSkipIfGraphicalSubsPresentHelp}</div>
     </div>
 
-    <div class="checkboxContainer checkboxContainer-withDescription">
+    <div class="checkboxContainer checkboxContainer-withDescription advanced">
         <label>
             <input type="checkbox" is="emby-checkbox" id="chkSaveSubtitlesLocally" checked />
             <span>${SaveSubtitlesIntoMediaFolders}</span>

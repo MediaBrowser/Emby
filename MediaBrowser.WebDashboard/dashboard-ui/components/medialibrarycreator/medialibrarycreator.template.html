@@ -8,13 +8,21 @@
 <div class="formDialogContent scrollY" style="padding-top:2em;">
     <div class="dialogContentInner dialog-content-centered">
         <form style="margin:auto;">
+
+            <div class="inputContainer" style="text-align:right;">
+                <label style="width:auto;">
+                    <input is="emby-toggle" type="checkbox" class="chkAdvanced noautofocus" />
+                    <span>${ShowAdvancedSettings}</span>
+                </label>
+            </div>
+
             <div id="fldCollectionType" class="selectContainer">
                 <select is="emby-select" id="selectCollectionType" data-mini="true" required="required" label="${LabelContentType}"></select>
                 <div class="collectionTypeFieldDescription fieldDescription">
                 </div>
             </div>
             <div class="inputContainer">
-                <input is="emby-input" type="text" id="txtValue" required="required" label="${LabelDisplayName}"/>
+                <input is="emby-input" type="text" id="txtValue" required="required" label="${LabelDisplayName}" />
             </div>
             <div style="display: flex; align-items: center;">
                 <h2 style="margin: .5em 0;">${HeadersFolders}</h2>
@@ -22,9 +30,8 @@
                     <i class="md-icon">add</i>
                 </button>
             </div>
-            <div class="paperList folderList hide" style="padding: .7em 0;"></div>
+            <div class="paperList folderList hide" style="padding: .7em 0; margin-bottom:2em;"></div>
 
-            <br />
             <div class="libraryOptions"></div>
             <br />
 

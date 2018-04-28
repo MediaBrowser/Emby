@@ -4,27 +4,27 @@
         <div class="content-primary">
 
 
+            <div class="verticalSection">
 
-            <div class="flex align-items-center" style="margin:1.25em 0;">
-                <h2 style="margin:0;">${HeaderTunerDevices}</h2>
-                <button is="emby-button" type="button" class="fab btnAddDevice submit" style="margin-left:1em;" title="${ButtonAdd}">
-                    <i class="md-icon">&#xE145;</i>
-                </button>
-            </div>
-            <div is="emby-itemscontainer" class="devicesList vertical-wrap" data-hovermenu="false" data-multiselect="false">
+                <div class="sectionTitleContainer">
+                    <h2 class="sectionTitle">${HeaderTunerDevices}</h2>
+                    <button is="emby-button" type="button" class="fab btnAddDevice submit" style="margin-left:1em;" title="${ButtonAdd}">
+                        <i class="md-icon">&#xE145;</i>
+                    </button>
+                </div>
+                <div is="emby-itemscontainer" class="devicesList vertical-wrap" data-hovermenu="false" data-multiselect="false">
+                </div>
             </div>
 
             <div class="readOnlyContent">
-                <div>
-                    <br />
-                    <div class="flex align-items-center" style="margin:1.25em 0;">
-                        <h2 style="margin:0;">${HeaderGuideProviders}</h2>
+                <div class="verticalSection">
+                    <div class="sectionTitleContainer">
+                        <h2 class="sectionTitle">${HeaderGuideProviders}</h2>
                         <button is="emby-button" type="button" class="fab btnAddProvider submit" style="margin-left:1em;" title="${ButtonAdd}">
                             <i class="md-icon">&#xE145;</i>
                         </button>
                     </div>
 
-                    <p>${AddGuideProviderHelp}</p>
                     <div class="providerList">
                     </div>
                     <div>
