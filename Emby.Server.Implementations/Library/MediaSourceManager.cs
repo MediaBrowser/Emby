@@ -19,6 +19,9 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Dlna;
 using MediaBrowser.Model.Globalization;
+using System.IO;
+using System.Globalization;
+using MediaBrowser.Common.Configuration;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -36,8 +39,9 @@ namespace Emby.Server.Implementations.Library
         private readonly ITimerFactory _timerFactory;
         private readonly Func<IMediaEncoder> _mediaEncoder;
         private ILocalizationManager _localizationManager;
+        private IApplicationPaths _appPaths;
 
-        public MediaSourceManager(IItemRepository itemRepo, ILocalizationManager localizationManager, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory, Func<IMediaEncoder> mediaEncoder)
+        public MediaSourceManager(IItemRepository itemRepo, IApplicationPaths applicationPaths, ILocalizationManager localizationManager, IUserManager userManager, ILibraryManager libraryManager, ILogger logger, IJsonSerializer jsonSerializer, IFileSystem fileSystem, IUserDataManager userDataManager, ITimerFactory timerFactory, Func<IMediaEncoder> mediaEncoder)
         {
             _itemRepo = itemRepo;
             _userManager = userManager;
@@ -49,6 +53,7 @@ namespace Emby.Server.Implementations.Library
             _timerFactory = timerFactory;
             _mediaEncoder = mediaEncoder;
             _localizationManager = localizationManager;
+            _appPaths = applicationPaths;
         }
 
         public void AddParts(IEnumerable<IMediaSourceProvider> providers)
@@ -494,6 +499,151 @@ namespace Emby.Server.Implementations.Library
             }
 
             return mediaSource;
+        }
+
+        public async Task AddMediaInfoWithProbe(MediaSourceInfo mediaSource, bool isAudio, string cacheKey, bool addProbeDelay, bool isLiveStream, CancellationToken cancellationToken)
+        {
+            var originalRuntime = mediaSource.RunTimeTicks;
+
+            var now = DateTime.UtcNow;
+
+            MediaInfo mediaInfo = null;
+            var cacheFilePath = string.IsNullOrEmpty(cacheKey) ? null : Path.Combine(_appPaths.CachePath, "mediainfo", cacheKey.GetMD5().ToString("N") + ".json");
+
+            if (!string.IsNullOrEmpty(cacheKey))
+            {
+                try
+                {
+                    mediaInfo = _jsonSerializer.DeserializeFromFile<MediaInfo>(cacheFilePath);
+
+                    //_logger.Debug("Found cached media info");
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            if (mediaInfo == null)
+            {
+                if (addProbeDelay)
+                {
+                    var delayMs = mediaSource.AnalyzeDurationMs ?? 0;
+                    delayMs = Math.Max(3000, delayMs);
+                    await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                }
+
+                if (isLiveStream)
+                {
+                    mediaSource.AnalyzeDurationMs = 3000;
+                }
+
+                mediaInfo = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
+                {
+                    MediaSource = mediaSource,
+                    MediaType = isAudio ? DlnaProfileType.Audio : DlnaProfileType.Video,
+                    ExtractChapters = false
+
+                }, cancellationToken).ConfigureAwait(false);
+
+                if (cacheFilePath != null)
+                {
+                    _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(cacheFilePath));
+                    _jsonSerializer.SerializeToFile(mediaInfo, cacheFilePath);
+                    
+                    //_logger.Debug("Saved media info to {0}", cacheFilePath);
+                }
+            }
+
+            var mediaStreams = mediaInfo.MediaStreams;
+
+            if (isLiveStream && !string.IsNullOrEmpty(cacheKey))
+            {
+                var newList = new List<MediaStream>();
+                newList.AddRange(mediaStreams.Where(i => i.Type == MediaStreamType.Video).Take(1));
+                newList.AddRange(mediaStreams.Where(i => i.Type == MediaStreamType.Audio).Take(1));
+
+                foreach (var stream in newList)
+                {
+                    stream.Index = -1;
+                    stream.Language = null;
+                }
+
+                mediaStreams = newList;
+            }
+
+            _logger.Info("Live tv media info probe took {0} seconds", (DateTime.UtcNow - now).TotalSeconds.ToString(CultureInfo.InvariantCulture));
+
+            mediaSource.Bitrate = mediaInfo.Bitrate;
+            mediaSource.Container = mediaInfo.Container;
+            mediaSource.Formats = mediaInfo.Formats;
+            mediaSource.MediaStreams = mediaStreams;
+            mediaSource.RunTimeTicks = mediaInfo.RunTimeTicks;
+            mediaSource.Size = mediaInfo.Size;
+            mediaSource.Timestamp = mediaInfo.Timestamp;
+            mediaSource.Video3DFormat = mediaInfo.Video3DFormat;
+            mediaSource.VideoType = mediaInfo.VideoType;
+
+            mediaSource.DefaultSubtitleStreamIndex = null;
+
+            if (isLiveStream)
+            {
+                // Null this out so that it will be treated like a live stream
+                if (!originalRuntime.HasValue)
+                {
+                    mediaSource.RunTimeTicks = null;
+                }
+            }
+
+            var audioStream = mediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
+
+            if (audioStream == null || audioStream.Index == -1)
+            {
+                mediaSource.DefaultAudioStreamIndex = null;
+            }
+            else
+            {
+                mediaSource.DefaultAudioStreamIndex = audioStream.Index;
+            }
+
+            var videoStream = mediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Video);
+            if (videoStream != null)
+            {
+                if (!videoStream.BitRate.HasValue)
+                {
+                    var width = videoStream.Width ?? 1920;
+
+                    if (width >= 3000)
+                    {
+                        videoStream.BitRate = 30000000;
+                    }
+
+                    else if (width >= 1900)
+                    {
+                        videoStream.BitRate = 20000000;
+                    }
+
+                    else if (width >= 1200)
+                    {
+                        videoStream.BitRate = 8000000;
+                    }
+
+                    else if (width >= 700)
+                    {
+                        videoStream.BitRate = 2000000;
+                    }
+                }
+
+                // This is coming up false and preventing stream copy
+                videoStream.IsAVC = null;
+            }
+
+            if (isLiveStream)
+            {
+                mediaSource.AnalyzeDurationMs = 3000;
+            }
+
+            // Try to estimate this
+            mediaSource.InferTotalBitrate(true);
         }
 
         public async Task<Tuple<MediaSourceInfo, IDirectStreamProvider>> GetLiveStreamWithDirectStreamProvider(string id, CancellationToken cancellationToken)
