@@ -301,6 +301,8 @@ namespace MediaBrowser.Api.Library
         public string Type { get; set; }
         public LibraryOptionInfo[] MetadataFetchers { get; set; }
         public LibraryOptionInfo[] ImageFetchers { get; set; }
+        public ImageType[] SupportedImageTypes { get; set; }
+        public ImageOption[] DefaultImageOptions { get; set; }
     }
 
     /// <summary>
@@ -354,6 +356,10 @@ namespace MediaBrowser.Api.Library
         {
             switch (contentType)
             {
+                case CollectionType.BoxSets:
+                    return new string[] { "BoxSet" };
+                case CollectionType.Playlists:
+                    return new string[] { "Playlist" };
                 case CollectionType.Movies:
                     return new string[] { "Movie" };
                 case CollectionType.TvShows:
@@ -572,6 +578,9 @@ namespace MediaBrowser.Api.Library
 
             foreach (var type in types)
             {
+                ImageOption[] defaultImageOptions = null;
+                TypeOptions.DefaultImageOptions.TryGetValue(type, out defaultImageOptions);
+
                 typeOptions.Add(new LibraryTypeOptions
                 {
                     Type = type,
@@ -596,7 +605,15 @@ namespace MediaBrowser.Api.Library
                         DefaultEnabled = IsImageFetcherEnabledByDefault(i.Name, type, isNewLibrary)
                     })
                     .DistinctBy(i => i.Name, StringComparer.OrdinalIgnoreCase)
-                    .ToArray()
+                    .ToArray(),
+
+                    SupportedImageTypes = plugins
+                    .Where(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(i => i.SupportedImageTypes ?? Array.Empty<ImageType>())
+                    .Distinct()
+                    .ToArray(),
+
+                    DefaultImageOptions = defaultImageOptions ?? Array.Empty<ImageOption>()
                 });
             }
 

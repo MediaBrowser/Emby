@@ -202,11 +202,11 @@ namespace MediaBrowser.Model.Configuration
         /// </summary>
         public ServerConfiguration()
         {
-            UninstalledPlugins = new string[] {};
-            RemoteIPFilter = new string[] {};
-            LocalNetworkSubnets = new string[] {};
-            LocalNetworkAddresses = new string[] {};
-            CodecsUsed = new string[] {};
+            UninstalledPlugins = new string[] { };
+            RemoteIPFilter = new string[] { };
+            LocalNetworkSubnets = new string[] { };
+            LocalNetworkAddresses = new string[] { };
+            CodecsUsed = new string[] { };
             ImageExtractionTimeoutMs = 0;
             PathSubstitutions = new PathSubstitution[] { };
             EnableSimpleArtistDetection = true;
@@ -250,325 +250,54 @@ namespace MediaBrowser.Model.Configuration
 
             MetadataOptions = new[]
             {
-                new MetadataOptions(1, 1280) {ItemType = "Book"},
+                new MetadataOptions {ItemType = "Book"},
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
-                    ItemType = "Movie",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Art
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Disc
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Banner
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Thumb
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Logo
-                        }
-                    }
+                    ItemType = "Movie"
                 },
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
                     ItemType = "MusicVideo",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Art
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Disc
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Banner
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Thumb
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Logo
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "The Open Movie Database" },
                     DisabledImageFetchers = new []{ "The Open Movie Database", "FanArt" }
                 },
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
                     ItemType = "Series",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Art
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Banner
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Thumb
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Logo
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "TheMovieDb" },
                     DisabledImageFetchers = new []{ "TheMovieDb" }
                 },
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
                     ItemType = "MusicAlbum",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Disc
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "TheAudioDB" }
                 },
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
                     ItemType = "MusicArtist",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        // Don't download this by default
-                        // They do look great, but most artists won't have them, which means a banner view isn't really possible
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Banner
-                        },
-
-                        // Don't download this by default
-                        // Generally not used
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Art
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Logo
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "TheAudioDB" }
                 },
 
-                new MetadataOptions(1, 1280)
+                new MetadataOptions
                 {
-                    ItemType = "BoxSet",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Thumb
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Logo
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Art
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Disc
-                        },
-
-                        // Don't download this by default as it's rarely used.
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Banner
-                        }
-                    }
+                    ItemType = "BoxSet"
                 },
 
-                new MetadataOptions(0, 1280)
+                new MetadataOptions
                 {
                     ItemType = "Season",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Banner
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            Type = ImageType.Thumb
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "TheMovieDb" },
                     DisabledImageFetchers = new [] { "FanArt" }
                 },
 
-                new MetadataOptions(0, 1280)
+                new MetadataOptions
                 {
                     ItemType = "Episode",
-                    ImageOptions = new []
-                    {
-                        new ImageOption
-                        {
-                            Limit = 0,
-                            MinWidth = 1280,
-                            Type = ImageType.Backdrop
-                        },
-
-                        new ImageOption
-                        {
-                            Limit = 1,
-                            Type = ImageType.Primary
-                        }
-                    },
                     DisabledMetadataFetchers = new []{ "The Open Movie Database", "TheMovieDb" },
                     DisabledImageFetchers = new []{ "The Open Movie Database", "TheMovieDb" }
                 }

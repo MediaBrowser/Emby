@@ -1,5 +1,6 @@
 ﻿using System;
 using MediaBrowser.Model.Entities;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Model.Configuration
 {
@@ -64,10 +65,10 @@ namespace MediaBrowser.Model.Configuration
 
         public LibraryOptions()
         {
-            TypeOptions = new TypeOptions[] {};
-            DisabledSubtitleFetchers = new string[] {};
-            SubtitleFetcherOrder = new string[] {};
-            DisabledLocalMetadataReaders = new string[] {};
+            TypeOptions = new TypeOptions[] { };
+            DisabledSubtitleFetchers = new string[] { };
+            SubtitleFetcherOrder = new string[] { };
+            DisabledLocalMetadataReaders = new string[] { };
 
             SkipSubtitlesIfAudioTrackMatches = true;
             RequirePerfectSubtitleMatch = true;
@@ -75,7 +76,7 @@ namespace MediaBrowser.Model.Configuration
             EnablePhotos = true;
             SaveSubtitlesWithMedia = true;
             EnableRealtimeMonitor = true;
-            PathInfos = new MediaPathInfo[] {};
+            PathInfos = new MediaPathInfo[] { };
             EnableInternetProviders = true;
             EnableAutomaticSeriesGrouping = true;
             SeasonZeroDisplayName = "Specials";
@@ -98,34 +99,39 @@ namespace MediaBrowser.Model.Configuration
         public string[] ImageFetcherOrder { get; set; }
         public ImageOption[] ImageOptions { get; set; }
 
-        public int GetLimit(ImageType type)
+        public ImageOption GetImageOptions(ImageType type)
         {
-            ImageOption option = null;
             foreach (ImageOption i in ImageOptions)
             {
                 if (i.Type == type)
                 {
-                    option = i;
-                    break;
+                    return i;
                 }
             }
 
-            return option == null ? 1 : option.Limit;
+            ImageOption[] options;
+            if (DefaultImageOptions.TryGetValue(Type, out options))
+            {
+                foreach (ImageOption i in options)
+                {
+                    if (i.Type == type)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return DefaultInstance;
+        }
+
+        public int GetLimit(ImageType type)
+        {
+            return GetImageOptions(type).Limit;
         }
 
         public int GetMinWidth(ImageType type)
         {
-            ImageOption option = null;
-            foreach (ImageOption i in ImageOptions)
-            {
-                if (i.Type == type)
-                {
-                    option = i;
-                    break;
-                }
-            }
-
-            return option == null ? 0 : option.MinWidth;
+            return GetImageOptions(type).MinWidth;
         }
 
         public bool IsEnabled(ImageType type)
@@ -141,5 +147,298 @@ namespace MediaBrowser.Model.Configuration
             ImageFetcherOrder = new string[] { };
             ImageOptions = new ImageOption[] { };
         }
+
+        public static Dictionary<string, ImageOption[]> DefaultImageOptions = new Dictionary<string, ImageOption[]>
+        {
+            {
+                "Movie", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Art
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Disc
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Banner
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Thumb
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Logo
+                    }
+                }
+            },
+            {
+                "MusicVideo", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Art
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Disc
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Banner
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Thumb
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Logo
+                    }
+                }
+            },
+            {
+                "Series", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Art
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Banner
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Thumb
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Logo
+                    }
+                }
+            },
+            {
+                "MusicAlbum", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Disc
+                    }
+                }
+            },
+            {
+                "MusicArtist", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    // Don't download this by default
+                    // They do look great, but most artists won't have them, which means a banner view isn't really possible
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Banner
+                    },
+
+                    // Don't download this by default
+                    // Generally not used
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Art
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Logo
+                    }
+                }
+            },
+            {
+                "BoxSet", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Thumb
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Logo
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Art
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Disc
+                    },
+
+                    // Don't download this by default as it's rarely used.
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Banner
+                    }
+                }
+            },
+            {
+                "Season", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Banner
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        Type = ImageType.Thumb
+                    }
+                }
+            },
+            {
+                "Episode", new []
+                {
+                    new ImageOption
+                    {
+                        Limit = 0,
+                        MinWidth = 1280,
+                        Type = ImageType.Backdrop
+                    },
+
+                    new ImageOption
+                    {
+                        Limit = 1,
+                        Type = ImageType.Primary
+                    }
+                }
+            }
+        };
+
+        public static ImageOption DefaultInstance = new ImageOption();
     }
 }

@@ -6,14 +6,21 @@
 
 <div class="formDialogContent scrollY" style="padding-top:2em;">
     <div class="dialogContentInner dialog-content-centered">
+
+        <div class="inputContainer" style="text-align:right;">
+            <label style="width:auto;">
+                <input is="emby-toggle" type="checkbox" class="chkAdvanced noautofocus" />
+                <span>${ShowAdvancedSettings}</span>
+            </label>
+        </div>
+
         <div style="display: flex; align-items: center;">
             <h2 style="margin: .5em 0;">${HeadersFolders}</h2>
             <button is="emby-button" type="button" class="fab btnAddFolder submit" style="margin-left:1em;" title="${ButtonAdd}">
                 <i class="md-icon">add</i>
             </button>
         </div>
-        <div class="paperList folderList" style="padding:.7em 0;"></div>
-        <br />
+        <div class="paperList folderList" style="padding:.7em 0;margin-bottom:2em;"></div>
         <div class="libraryOptions"></div>
     </div>
 </div>
