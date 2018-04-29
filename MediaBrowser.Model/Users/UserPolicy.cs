@@ -54,6 +54,7 @@ namespace MediaBrowser.Model.Users
         /// </summary>
         /// <value><c>true</c> if [enable synchronize]; otherwise, <c>false</c>.</value>
         public bool EnableSyncTranscoding { get; set; }
+        public bool EnableMediaConversion { get; set; }
 
         public string[] EnabledDevices { get; set; }
         public bool EnableAllDevices { get; set; }
@@ -77,9 +78,10 @@ namespace MediaBrowser.Model.Users
         public UserPolicy()
         {
             EnableContentDeletion = true;
-            EnableContentDeletionFromFolders = new string[] {};
+            EnableContentDeletionFromFolders = Array.Empty<string>();
 
             EnableSyncTranscoding = true;
+            EnableMediaConversion = true;
 
             EnableMediaPlayback = true;
             EnableAudioPlaybackTranscoding = true;
@@ -95,7 +97,7 @@ namespace MediaBrowser.Model.Users
 
             EnableSharedDeviceControl = true;
 
-            BlockedTags = new string[] {};
+            BlockedTags = Array.Empty<string>();
             BlockUnratedItems = new UnratedItem[] { };
 
             EnableUserPreferenceAccess = true;
@@ -103,12 +105,12 @@ namespace MediaBrowser.Model.Users
             AccessSchedules = new AccessSchedule[] { };
 
             EnableAllChannels = true;
-            EnabledChannels = new string[] {};
+            EnabledChannels = Array.Empty<string>();
 
             EnableAllFolders = true;
-            EnabledFolders = new string[] {};
+            EnabledFolders = Array.Empty<string>();
 
-            EnabledDevices = new string[] {};
+            EnabledDevices = Array.Empty<string>();
             EnableAllDevices = true;
 
             EnableContentDownloading = true;

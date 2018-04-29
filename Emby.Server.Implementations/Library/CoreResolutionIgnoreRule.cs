@@ -42,7 +42,9 @@ namespace Emby.Server.Implementations.Library
 
                 // Qnap
                 "@Recycle",
-                ".@__thumb"
+                ".@__thumb",
+                "$RECYCLE.BIN",
+                "System Volume Information"
 
         };
         
