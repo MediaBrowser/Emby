@@ -520,12 +520,6 @@ namespace Emby.Dlna.ContentDirectory
 
             if (stubType.HasValue)
             {
-                var person = item as Person;
-                if (person != null)
-                {
-                    return GetItemsFromPerson(person, user, startIndex, limit);
-                }
-
                 if (stubType.Value != StubType.Folder)
                 {
                     return ApplyPaging(new QueryResult<ServerItem>(), startIndex, limit);
@@ -534,11 +528,10 @@ namespace Emby.Dlna.ContentDirectory
 
             var folder = (Folder)item;
 
-            var query = new InternalItemsQuery
+            var query = new InternalItemsQuery(user)
             {
                 Limit = limit,
                 StartIndex = startIndex,
-                User = user,
                 IsVirtualItem = false,
                 PresetViews = Array.Empty<string>(),
                 ExcludeItemTypes = new[] { typeof(Game).Name, typeof(Book).Name },
@@ -1267,7 +1260,7 @@ namespace Emby.Dlna.ContentDirectory
             var serverItems = result
                 .Items
                 .Select(i => new ServerItem(i))
-                .ToArray(result.Items.Length);
+                .ToArray();
 
             return new QueryResult<ServerItem>
             {
@@ -1285,27 +1278,6 @@ namespace Emby.Dlna.ContentDirectory
             }
 
             query.OrderBy = sortOrders.Select(i => new Tuple<string, SortOrder>(i, sort.SortOrder)).ToArray();
-        }
-
-        private QueryResult<ServerItem> GetItemsFromPerson(Person person, User user, int? startIndex, int? limit)
-        {
-            var itemsResult = _libraryManager.GetItemsResult(new InternalItemsQuery(user)
-            {
-                PersonIds = new[] { person.Id },
-                IncludeItemTypes = new[] { typeof(Movie).Name, typeof(Series).Name, typeof(Trailer).Name },
-                OrderBy = new[] { ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
-                Limit = limit,
-                StartIndex = startIndex,
-                DtoOptions = GetDtoOptions()
-            });
-
-            var serverItems = itemsResult.Items.Select(i => new ServerItem(i)).ToArray(itemsResult.Items.Length);
-
-            return new QueryResult<ServerItem>
-            {
-                TotalRecordCount = itemsResult.TotalRecordCount,
-                Items = serverItems
-            };
         }
 
         private QueryResult<ServerItem> ApplyPaging(QueryResult<ServerItem> result, int? startIndex, int? limit)

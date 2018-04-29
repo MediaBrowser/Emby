@@ -62,7 +62,6 @@ namespace MediaBrowser.Providers.Manager
             return hasChanges;
         }
 
-        private static TypeOptions _defaultTypeOptions = new TypeOptions();
         public async Task<RefreshResult> RefreshImages(BaseItem item, LibraryOptions libraryOptions, List<IImageProvider> providers, ImageRefreshOptions refreshOptions, MetadataOptions savedOptions, CancellationToken cancellationToken)
         {
             if (refreshOptions.IsReplacingImage(ImageType.Backdrop))
@@ -77,7 +76,7 @@ namespace MediaBrowser.Providers.Manager
             var result = new RefreshResult { UpdateType = ItemUpdateType.None };
 
             var typeName = item.GetType().Name;
-            var typeOptions = libraryOptions.GetTypeOptions(typeName) ?? _defaultTypeOptions;
+            var typeOptions = libraryOptions.GetTypeOptions(typeName) ?? new TypeOptions { Type = typeName };
 
             // In order to avoid duplicates, only download these if there are none already
             var backdropLimit = typeOptions.GetLimit(ImageType.Backdrop);

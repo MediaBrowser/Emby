@@ -189,7 +189,7 @@ namespace MediaBrowser.Providers.Movies
                         Width = width,
                         Height = height,
                         ProviderName = Name,
-                        Url = url.Replace("http://", "https://", StringComparison.OrdinalIgnoreCase),
+                        Url = url,
                         Language = i.lang
                     };
 
