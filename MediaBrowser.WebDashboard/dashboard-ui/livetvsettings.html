@@ -48,21 +48,6 @@
                     </div>
                 </div>
                 <div class="verticalSection">
-                    <h2 class="sectionTitle">${HeaderRecordingPostProcessing}</h2>
-                    <div class="inputContainer">
-                        <div style="display: flex; align-items: center;">
-                            <div style="flex-grow:1;">
-                                <input is="emby-input" type="text" id="txtPostProcessor" label="${LabelPostProcessor}" />
-                            </div>
-                            <button type="button" is="paper-icon-button-light" id="btnSelectPostProcessorPath" class="emby-input-iconbutton"><i class="md-icon">search</i></button>
-                        </div>
-                    </div>
-                    <div class="inputContainer">
-                        <input is="emby-input" type="text" id="txtPostProcessorArguments" label="${LabelPostProcessorArguments}" />
-                        <div class="fieldDescription">${LabelPostProcessorArgumentsHelp}</div>
-                    </div>
-                </div>
-                <div class="verticalSection">
                     <h2 class="sectionTitle">${HeaderDefaultRecordingSettings}</h2>
                     <div class="inputContainer">
                         <div style="display: flex; align-items: center;">
@@ -83,6 +68,21 @@
                                 ${MinutesAfter}
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">${HeaderRecordingPostProcessing}</h2>
+                    <div class="inputContainer">
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex-grow:1;">
+                                <input is="emby-input" type="text" id="txtPostProcessor" label="${LabelPostProcessor}" />
+                            </div>
+                            <button type="button" is="paper-icon-button-light" id="btnSelectPostProcessorPath" class="emby-input-iconbutton"><i class="md-icon">search</i></button>
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="text" id="txtPostProcessorArguments" label="${LabelPostProcessorArguments}" />
+                        <div class="fieldDescription">${LabelPostProcessorArgumentsHelp}</div>
                     </div>
                 </div>
                 <br />

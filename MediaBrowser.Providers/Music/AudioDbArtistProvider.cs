@@ -121,7 +121,6 @@ namespace MediaBrowser.Providers.Music
             get { return "TheAudioDB"; }
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureArtistInfo(string musicBrainzId, CancellationToken cancellationToken)
         {
             var xmlPath = GetArtistInfoPath(_config.ApplicationPaths, musicBrainzId);
@@ -132,7 +131,7 @@ namespace MediaBrowser.Providers.Music
             {
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 7)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 

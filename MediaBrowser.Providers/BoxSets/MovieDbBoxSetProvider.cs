@@ -225,7 +225,6 @@ namespace MediaBrowser.Providers.BoxSets
             return mainResult;
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureInfo(string tmdbId, string preferredMetadataLanguage, CancellationToken cancellationToken)
         {
             var path = GetDataFilePath(_config.ApplicationPaths, tmdbId, preferredMetadataLanguage);
@@ -237,7 +236,7 @@ namespace MediaBrowser.Providers.BoxSets
                 // If it's recent or automatic updates are enabled, don't re-download
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 

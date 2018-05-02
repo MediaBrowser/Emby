@@ -45,13 +45,13 @@ namespace MediaBrowser.Providers.MediaInfo
                 return streams;
             }
 
-            GetExternalSubtitleStreams(streams, video.ContainingFolderPath, video.Path, startIndex, directoryService, clearCache);
+            AddExternalSubtitleStreams(streams, video.ContainingFolderPath, video.Path, startIndex, directoryService, clearCache);
 
             startIndex += streams.Count;
 
             try
             {
-                GetExternalSubtitleStreams(streams, video.GetInternalMetadataPath(), video.Path, startIndex, directoryService, clearCache);
+                AddExternalSubtitleStreams(streams, video.GetInternalMetadataPath(), video.Path, startIndex, directoryService, clearCache);
             }
             catch (IOException)
             {
@@ -82,16 +82,24 @@ namespace MediaBrowser.Providers.MediaInfo
             return list;
         }
 
-        private void GetExternalSubtitleStreams(List<MediaStream> streams, string folder,
+        private void AddExternalSubtitleStreams(List<MediaStream> streams, string folder,
             string videoPath,
             int startIndex,
             IDirectoryService directoryService,
             bool clearCache)
         {
+            var files = directoryService.GetFilePaths(folder, clearCache).OrderBy(i => i).ToArray();
+
+            AddExternalSubtitleStreams(streams, videoPath, startIndex, files);
+        }
+
+        public void AddExternalSubtitleStreams(List<MediaStream> streams,
+            string videoPath,
+            int startIndex,
+            string[] files)
+        {
             var videoFileNameWithoutExtension = _fileSystem.GetFileNameWithoutExtension(videoPath);
             videoFileNameWithoutExtension = NormalizeFilenameForSubtitleComparison(videoFileNameWithoutExtension);
-
-            var files = directoryService.GetFilePaths(folder, clearCache).OrderBy(i => i).ToArray();
 
             foreach (var fullName in files)
             {

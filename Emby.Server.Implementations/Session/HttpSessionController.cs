@@ -131,7 +131,7 @@ namespace Emby.Server.Implementations.Session
         {
             if (!IsSessionActive)
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
@@ -150,7 +150,7 @@ namespace Emby.Server.Implementations.Session
 
             if (!_supportedMessages.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             var url = PostUrl + "/" + name;

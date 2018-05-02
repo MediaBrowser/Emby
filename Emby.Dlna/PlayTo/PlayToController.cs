@@ -400,7 +400,7 @@ namespace Emby.Dlna.PlayTo
                     return SetPlaylistIndex(_currentPlaylistIndex - 1);
             }
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         private async Task Seek(long newPosition)
@@ -722,11 +722,11 @@ namespace Emby.Dlna.PlayTo
                             throw new ArgumentException("Volume argument cannot be null");
                         }
                     default:
-                        return Task.FromResult(true);
+                        return Task.CompletedTask;
                 }
             }
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         private async Task SetAudioStreamIndex(int? newIndex)
@@ -941,7 +941,7 @@ namespace Emby.Dlna.PlayTo
 
             if (_device == null)
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
@@ -958,7 +958,7 @@ namespace Emby.Dlna.PlayTo
             }
 
             // Not supported or needed right now
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
     }
 }

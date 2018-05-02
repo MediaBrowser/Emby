@@ -87,7 +87,7 @@ namespace Emby.Server.Implementations.Session
 
             if (socket == null)
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             return socket.SendAsync(new WebSocketMessage<T>
