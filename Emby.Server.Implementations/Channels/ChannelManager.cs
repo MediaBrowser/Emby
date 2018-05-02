@@ -109,6 +109,11 @@ namespace Emby.Server.Implementations.Channels
         public Task DeleteItem(BaseItem item)
         {
             var internalChannel = _libraryManager.GetItemById(item.ChannelId);
+            if (internalChannel == null)
+            {
+                throw new ArgumentException();
+            }
+
             var channel = Channels.FirstOrDefault(i => GetInternalChannelId(i.Name).Equals(internalChannel.Id));
 
             var supportsDelete = channel as ISupportsDelete;
@@ -132,7 +137,7 @@ namespace Emby.Server.Implementations.Channels
             return GetAllChannels().Select(i => GetInternalChannelId(i.Name));
         }
 
-        public async Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken)
+        public QueryResult<Channel> GetChannelsInternal(ChannelQuery query)
         {
             var user = string.IsNullOrEmpty(query.UserId)
                 ? null
@@ -241,7 +246,8 @@ namespace Emby.Server.Implementations.Channels
             {
                 foreach (var item in returnItems)
                 {
-                    await RefreshLatestChannelItems(GetChannelProvider(item), cancellationToken).ConfigureAwait(false);
+                    var task = RefreshLatestChannelItems(GetChannelProvider(item), CancellationToken.None);
+                    Task.WaitAll(task);
                 }
             }
 
@@ -252,13 +258,13 @@ namespace Emby.Server.Implementations.Channels
             };
         }
 
-        public async Task<QueryResult<BaseItemDto>> GetChannels(ChannelQuery query, CancellationToken cancellationToken)
+        public QueryResult<BaseItemDto> GetChannels(ChannelQuery query)
         {
             var user = string.IsNullOrEmpty(query.UserId)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
-            var internalResult = await GetChannelsInternal(query, cancellationToken).ConfigureAwait(false);
+            var internalResult = GetChannelsInternal(query);
 
             var dtoOptions = new DtoOptions()
             {
@@ -312,7 +318,7 @@ namespace Emby.Server.Implementations.Channels
 
         private Channel GetChannelEntity(IChannel channel)
         {
-            var item = GetChannel(GetInternalChannelId(channel.Name).ToString("N"));
+            var item = GetChannel(GetInternalChannelId(channel.Name));
 
             if (item == null)
             {
@@ -477,18 +483,17 @@ namespace Emby.Server.Implementations.Channels
                 item.Name = channelInfo.Name;
             }
 
-            item.OnMetadataChanged();
-
             if (isNew)
             {
-                _libraryManager.CreateItem(item, cancellationToken);
-            }
-            else if (forceUpdate)
-            {
-                item.UpdateToRepository(ItemUpdateType.None, cancellationToken);
+                item.OnMetadataChanged();
+                _libraryManager.CreateItem(item, null);
             }
 
-            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem), cancellationToken);
+            await item.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
+            {
+                ForceSave = !isNew && forceUpdate
+
+            }, cancellationToken);
 
             return item;
         }
@@ -508,6 +513,11 @@ namespace Emby.Server.Implementations.Channels
                 default:
                     return null;
             }
+        }
+
+        public Channel GetChannel(Guid id)
+        {
+            return _libraryManager.GetItemById(id) as Channel;
         }
 
         public Channel GetChannel(string id)
@@ -610,7 +620,7 @@ namespace Emby.Server.Implementations.Channels
                 // Avoid implicitly captured closure
                 var ids = query.ChannelIds;
                 channels = channels
-                    .Where(i => ids.Contains(GetInternalChannelId(i.Name).ToString("N")))
+                    .Where(i => ids.Contains(GetInternalChannelId(i.Name)))
                     .ToArray();
             }
 
@@ -656,7 +666,7 @@ namespace Emby.Server.Implementations.Channels
             var query = new InternalItemsQuery();
             query.Parent = internalChannel;
             query.EnableTotalRecordCount = false;
-            query.ChannelIds = new string[] { internalChannel.Id.ToString("N") };
+            query.ChannelIds = new Guid[] { internalChannel.Id };
 
             var result = await GetChannelItemsInternal(query, new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
 
@@ -670,7 +680,7 @@ namespace Emby.Server.Implementations.Channels
                     {
                         Parent = folder,
                         EnableTotalRecordCount = false,
-                        ChannelIds = new string[] { internalChannel.Id.ToString("N") }
+                        ChannelIds = new Guid[] { internalChannel.Id }
 
                     }, new SimpleProgress<double>(), cancellationToken).ConfigureAwait(false);
                 }
@@ -704,7 +714,7 @@ namespace Emby.Server.Implementations.Channels
             {
                 query.Parent = channel;
             }
-            query.ChannelIds = new string[] { };
+            query.ChannelIds = Array.Empty<Guid>();
 
             // Not yet sure why this is causing a problem
             query.GroupByPresentationUniqueKey = false;
@@ -715,7 +725,7 @@ namespace Emby.Server.Implementations.Channels
             if (itemsResult != null)
             {
                 var internalItems = itemsResult.Items
-                    .Select(i => GetChannelItemEntity(i, channelProvider, channel.Id, parentItem.Id, cancellationToken))
+                    .Select(i => GetChannelItemEntity(i, channelProvider, channel.Id, parentItem, cancellationToken))
                     .ToArray();
 
                 var existingIds = _libraryManager.GetItemIds(query);
@@ -929,8 +939,10 @@ namespace Emby.Server.Implementations.Channels
             return item;
         }
 
-        private BaseItem GetChannelItemEntity(ChannelItemInfo info, IChannel channelProvider, Guid internalChannelId, Guid parentFolderId, CancellationToken cancellationToken)
+        private BaseItem GetChannelItemEntity(ChannelItemInfo info, IChannel channelProvider, Guid internalChannelId, BaseItem parentFolder, CancellationToken cancellationToken)
         {
+            var parentFolderId = parentFolder.Id;
+
             BaseItem item;
             bool isNew;
             bool forceUpdate = false;
@@ -1053,7 +1065,7 @@ namespace Emby.Server.Implementations.Channels
                     _logger.Debug("Forcing update due to TrailerTypes {0}", item.Name);
                     forceUpdate = true;
                 }
-                trailer.TrailerTypes = info.TrailerTypes;
+                trailer.TrailerTypes = info.TrailerTypes.ToArray();
             }
 
             if (info.DateModified > item.DateModified)
@@ -1151,7 +1163,7 @@ namespace Emby.Server.Implementations.Channels
 
             if (isNew)
             {
-                _libraryManager.CreateItem(item, cancellationToken);
+                _libraryManager.CreateItem(item, parentFolder);
 
                 if (info.People != null && info.People.Count > 0)
                 {

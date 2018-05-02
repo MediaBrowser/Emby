@@ -23,7 +23,7 @@ namespace SocketHttpListener.Net
         const int BufferSize = 8192;
         Socket _socket;
         Stream _stream;
-        EndPointListener _epl;
+        HttpEndPointListener _epl;
         MemoryStream _memoryStream;
         byte[] _buffer;
         HttpListenerContext _context;
@@ -48,7 +48,7 @@ namespace SocketHttpListener.Net
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environment;
 
-        public HttpConnection(ILogger logger, Socket socket, EndPointListener epl, bool secure, X509Certificate cert, ICryptoProvider cryptoProvider, IMemoryStreamFactory memoryStreamFactory, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
+        public HttpConnection(ILogger logger, Socket socket, HttpEndPointListener epl, bool secure, X509Certificate cert, ICryptoProvider cryptoProvider, IMemoryStreamFactory memoryStreamFactory, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
         {
             _logger = logger;
             this._socket = socket;
@@ -67,7 +67,7 @@ namespace SocketHttpListener.Net
             }
             else
             {
-                ssl_stream = new SslStream(new NetworkStream(_socket, false), false, (t, c, ch, e) =>
+                ssl_stream = new SslStream(new SocketStream(_socket, false), false, (t, c, ch, e) =>
                 {
                     if (c == null)
                     {
@@ -86,10 +86,7 @@ namespace SocketHttpListener.Net
                 });
 
                 _stream = ssl_stream;
-
-                ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
             }
-            Init();
         }
 
         public Stream Stream
@@ -100,7 +97,25 @@ namespace SocketHttpListener.Net
             }
         }
 
-        void Init()
+        public async Task Init()
+        {
+            if (ssl_stream != null)
+            {
+                var enableAsync = true;
+                if (enableAsync)
+                {
+                    await ssl_stream.AuthenticateAsServerAsync(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false).ConfigureAwait(false);
+                }
+                else
+                {
+                    ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
+                }
+            }
+
+            InitInternal();
+        }
+
+        private void InitInternal()
         {
             _contextBound = false;
             _requestStream = null;
@@ -491,14 +506,14 @@ namespace SocketHttpListener.Net
                         // Don't close. Keep working.
                         _reuses++;
                         Unbind();
-                        Init();
+                        InitInternal();
                         BeginReadRequest();
                         return;
                     }
 
                     _reuses++;
                     Unbind();
-                    Init();
+                    InitInternal();
                     BeginReadRequest();
                     return;
                 }

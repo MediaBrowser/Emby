@@ -44,6 +44,8 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Tasks;
+using Emby.Server.Implementations.Playlists;
+using MediaBrowser.Providers.MediaInfo;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -69,12 +71,6 @@ namespace Emby.Server.Implementations.Library
         /// </summary>
         /// <value>The entity resolution ignore rules.</value>
         private IResolverIgnoreRule[] EntityResolutionIgnoreRules { get; set; }
-
-        /// <summary>
-        /// Gets the list of BasePluginFolders added by plugins
-        /// </summary>
-        /// <value>The plugin folders.</value>
-        private IVirtualFolderCreator[] PluginFolderCreators { get; set; }
 
         /// <summary>
         /// Gets the list of currently registered entity resolvers
@@ -195,14 +191,12 @@ namespace Emby.Server.Implementations.Library
         /// <param name="itemComparers">The item comparers.</param>
         /// <param name="postscanTasks">The postscan tasks.</param>
         public void AddParts(IEnumerable<IResolverIgnoreRule> rules,
-            IEnumerable<IVirtualFolderCreator> pluginFolders,
             IEnumerable<IItemResolver> resolvers,
             IEnumerable<IIntroProvider> introProviders,
             IEnumerable<IBaseItemComparer> itemComparers,
             IEnumerable<ILibraryPostScanTask> postscanTasks)
         {
             EntityResolutionIgnoreRules = rules.ToArray();
-            PluginFolderCreators = pluginFolders.ToArray();
             EntityResolvers = resolvers.OrderBy(i => i.Priority).ToArray();
             MultiItemResolvers = EntityResolvers.OfType<IMultiItemResolver>().ToArray();
             IntroProviders = introProviders.ToArray();
@@ -323,7 +317,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("item");
             }
 
-            var parent = item.IsOwnedItem ? item.GetOwner() : item.GetParent();
+            var parent = item.GetOwner() ?? item.GetParent();
 
             DeleteItem(item, options, parent, notifyParentItem);
         }
@@ -335,7 +329,7 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("item");
             }
 
-            if (item is ILiveTvRecording)
+            if (item.SourceType == SourceType.Channel)
             {
                 if (options.DeleteFromExternalProvider)
                 {
@@ -348,16 +342,6 @@ namespace Emby.Server.Implementations.Library
                     {
                         // channel no longer installed
                     }
-                }
-                options.DeleteFileLocation = false;
-            }
-
-            else if (item.SourceType == SourceType.Channel)
-            {
-                if (options.DeleteFromExternalProvider)
-                {
-                    var task = BaseItem.ChannelManager.DeleteItem(item);
-                    Task.WaitAll(task);
                 }
                 options.DeleteFileLocation = false;
             }
@@ -589,7 +573,26 @@ namespace Emby.Server.Implementations.Library
                 // When resolving the root, we need it's grandchildren (children of user views)
                 var flattenFolderDepth = isPhysicalRoot ? 2 : 0;
 
-                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || args.IsVf);
+                FileSystemMetadata[] files;
+                var isVf = args.IsVf;
+
+                try
+                {
+                    files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || isVf);
+                }
+                catch (Exception ex)
+                {
+                    if (parent != null && parent.IsPhysicalRoot)
+                    {
+                        _logger.ErrorException("Error in GetFilteredFileSystemEntries isPhysicalRoot: {0} IsVf: {1}", ex, isPhysicalRoot, isVf);
+
+                        files = new FileSystemMetadata[] { };
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
                 // Need to remove subpaths that may have been resolved from shortcuts
                 // Example: if \\server\movies exists, then strip out \\server\movies\action
@@ -734,42 +737,43 @@ namespace Emby.Server.Implementations.Library
             }
 
             // Add in the plug-in folders
-            foreach (var child in PluginFolderCreators)
+            var path = Path.Combine(ConfigurationManager.ApplicationPaths.DataPath, "playlists");
+
+            _fileSystem.CreateDirectory(path);
+
+            Folder folder = new PlaylistsFolder
             {
-                var folder = child.GetFolder();
+                Path = path
+            };
 
-                if (folder != null)
+            if (folder.Id.Equals(Guid.Empty))
+            {
+                if (string.IsNullOrEmpty(folder.Path))
                 {
-                    if (folder.Id == Guid.Empty)
-                    {
-                        if (string.IsNullOrEmpty(folder.Path))
-                        {
-                            folder.Id = GetNewItemId(folder.GetType().Name, folder.GetType());
-                        }
-                        else
-                        {
-                            folder.Id = GetNewItemId(folder.Path, folder.GetType());
-                        }
-                    }
-
-                    var dbItem = GetItemById(folder.Id) as BasePluginFolder;
-
-                    if (dbItem != null && string.Equals(dbItem.Path, folder.Path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        folder = dbItem;
-                    }
-
-                    if (folder.ParentId != rootFolder.Id)
-                    {
-                        folder.ParentId = rootFolder.Id;
-                        folder.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
-                    }
-
-                    rootFolder.AddVirtualChild(folder);
-
-                    RegisterItem(folder);
+                    folder.Id = GetNewItemId(folder.GetType().Name, folder.GetType());
+                }
+                else
+                {
+                    folder.Id = GetNewItemId(folder.Path, folder.GetType());
                 }
             }
+
+            var dbItem = GetItemById(folder.Id) as BasePluginFolder;
+
+            if (dbItem != null && string.Equals(dbItem.Path, folder.Path, StringComparison.OrdinalIgnoreCase))
+            {
+                folder = dbItem;
+            }
+
+            if (folder.ParentId != rootFolder.Id)
+            {
+                folder.ParentId = rootFolder.Id;
+                folder.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
+            }
+
+            rootFolder.AddVirtualChild(folder);
+
+            RegisterItem(folder);
 
             return rootFolder;
         }
@@ -819,6 +823,8 @@ namespace Emby.Server.Implementations.Library
             {
                 throw new ArgumentNullException("path");
             }
+
+            //_logger.Info("FindByPath {0}", path);
 
             var query = new InternalItemsQuery
             {
@@ -974,7 +980,7 @@ namespace Emby.Server.Implementations.Library
                     Path = path
                 };
 
-                CreateItem(item, CancellationToken.None);
+                CreateItem(item, null);
             }
 
             return item;
@@ -1014,7 +1020,7 @@ namespace Emby.Server.Implementations.Library
             // Just run the scheduled task so that the user can see it
             _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -1048,34 +1054,32 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        private async Task PerformLibraryValidation(IProgress<double> progress, CancellationToken cancellationToken)
+        private async Task ValidateTopLibraryFolders(CancellationToken cancellationToken)
         {
-            _logger.Info("Validating media library");
-
-            // Ensure these objects are lazy loaded.
-            // Without this there is a deadlock that will need to be investigated
             var rootChildren = RootFolder.Children.ToList();
             rootChildren = GetUserRootFolder().Children.ToList();
 
             await RootFolder.RefreshMetadata(cancellationToken).ConfigureAwait(false);
 
-            progress.Report(.5);
-
             // Start by just validating the children of the root, but go no further
             await RootFolder.ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false);
-
-            progress.Report(1);
 
             await GetUserRootFolder().RefreshMetadata(cancellationToken).ConfigureAwait(false);
 
             await GetUserRootFolder().ValidateChildren(new SimpleProgress<double>(), cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: false).ConfigureAwait(false);
-            progress.Report(2);
 
             // Quickly scan CollectionFolders for changes
             foreach (var folder in GetUserRootFolder().Children.OfType<Folder>().ToList())
             {
                 await folder.RefreshMetadata(cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        private async Task PerformLibraryValidation(IProgress<double> progress, CancellationToken cancellationToken)
+        {
+            _logger.Info("Validating media library");
+
+            await ValidateTopLibraryFolders(cancellationToken).ConfigureAwait(false);
             progress.Report(3);
 
             var innerProgress = new ActionableProgress<double>();
@@ -1237,7 +1241,7 @@ namespace Emby.Server.Implementations.Library
         /// <exception cref="System.ArgumentNullException">id</exception>
         public BaseItem GetItemById(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("id");
             }
@@ -1420,7 +1424,7 @@ namespace Emby.Server.Implementations.Library
                 return;
             }
 
-            var parents = query.AncestorIds.Select(i => GetItemById(new Guid(i))).ToList();
+            var parents = query.AncestorIds.Select(i => GetItemById(i)).ToList();
 
             if (parents.All(i =>
             {
@@ -1435,13 +1439,13 @@ namespace Emby.Server.Implementations.Library
             }))
             {
                 // Optimize by querying against top level views
-                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).Select(i => i.ToString("N")).ToArray();
-                query.AncestorIds = new string[] { };
+                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).ToArray();
+                query.AncestorIds = Array.Empty<Guid>();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.TopParentIds.Length == 0)
                 {
-                    query.TopParentIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.TopParentIds = new[] { Guid.NewGuid() };
                 }
             }
         }
@@ -1501,23 +1505,23 @@ namespace Emby.Server.Implementations.Library
             }))
             {
                 // Optimize by querying against top level views
-                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).Select(i => i.ToString("N")).ToArray();
+                query.TopParentIds = parents.SelectMany(i => GetTopParentIdsForQuery(i, query.User)).ToArray();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.TopParentIds.Length == 0)
                 {
-                    query.TopParentIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.TopParentIds = new[] { Guid.NewGuid() };
                 }
             }
             else
             {
                 // We need to be able to query from any arbitrary ancestor up the tree
-                query.AncestorIds = parents.SelectMany(i => i.GetIdsForAncestorQuery()).Select(i => i.ToString("N")).ToArray();
+                query.AncestorIds = parents.SelectMany(i => i.GetIdsForAncestorQuery()).ToArray();
 
                 // Prevent searching in all libraries due to empty filter
                 if (query.AncestorIds.Length == 0)
                 {
-                    query.AncestorIds = new[] { Guid.NewGuid().ToString("N") };
+                    query.AncestorIds = new[] { Guid.NewGuid() };
                 }
             }
 
@@ -1539,10 +1543,9 @@ namespace Emby.Server.Implementations.Library
                     UserId = user.Id.ToString("N"),
                     IncludeHidden = true,
                     IncludeExternalContent = allowExternalContent
+                });
 
-                }, CancellationToken.None).Result;
-
-                query.TopParentIds = userViews.SelectMany(i => GetTopParentIdsForQuery(i, user)).Select(i => i.ToString("N")).ToArray();
+                query.TopParentIds = userViews.SelectMany(i => GetTopParentIdsForQuery(i, user)).ToArray();
             }
         }
 
@@ -1565,7 +1568,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         return GetTopParentIdsForQuery(displayParent, user);
                     }
-                    return new Guid[] { };
+                    return Array.Empty<Guid>();
                 }
                 if (view.ParentId != Guid.Empty)
                 {
@@ -1574,20 +1577,20 @@ namespace Emby.Server.Implementations.Library
                     {
                         return GetTopParentIdsForQuery(displayParent, user);
                     }
-                    return new Guid[] { };
+                    return Array.Empty<Guid>();
                 }
 
                 // Handle grouping
                 if (user != null && !string.IsNullOrEmpty(view.ViewType) && UserView.IsEligibleForGrouping(view.ViewType) && user.Configuration.GroupedFolders.Length > 0)
                 {
-                    return user.RootFolder
+                    return GetUserRootFolder()
                         .GetChildren(user, true)
                         .OfType<CollectionFolder>()
                         .Where(i => string.IsNullOrEmpty(i.CollectionType) || string.Equals(i.CollectionType, view.ViewType, StringComparison.OrdinalIgnoreCase))
                         .Where(i => user.IsFolderGrouped(i.Id))
                         .SelectMany(i => GetTopParentIdsForQuery(i, user));
                 }
-                return new Guid[] { };
+                return Array.Empty<Guid>();
             }
 
             var collectionFolder = item as CollectionFolder;
@@ -1601,7 +1604,7 @@ namespace Emby.Server.Implementations.Library
             {
                 return new[] { topParent.Id };
             }
-            return new Guid[] { };
+            return Array.Empty<Guid>();
         }
 
         /// <summary>
@@ -1821,9 +1824,9 @@ namespace Emby.Server.Implementations.Library
         /// <param name="item">The item.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public void CreateItem(BaseItem item, CancellationToken cancellationToken)
+        public void CreateItem(BaseItem item, BaseItem parent)
         {
-            CreateItems(new[] { item }, item.GetParent(), cancellationToken);
+            CreateItems(new[] { item }, parent, CancellationToken.None);
         }
 
         /// <summary>
@@ -1879,7 +1882,7 @@ namespace Emby.Server.Implementations.Library
         /// <summary>
         /// Updates the item.
         /// </summary>
-        public void UpdateItems(List<BaseItem> items, ItemUpdateType updateReason, CancellationToken cancellationToken)
+        public void UpdateItems(List<BaseItem> items, BaseItem parent, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
             foreach (var item in items)
             {
@@ -1913,7 +1916,7 @@ namespace Emby.Server.Implementations.Library
                         ItemUpdated(this, new ItemChangeEventArgs
                         {
                             Item = item,
-                            Parent = item.GetParent(),
+                            Parent = parent,
                             UpdateReason = updateReason
                         });
                     }
@@ -1932,9 +1935,9 @@ namespace Emby.Server.Implementations.Library
         /// <param name="updateReason">The update reason.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public void UpdateItem(BaseItem item, ItemUpdateType updateReason, CancellationToken cancellationToken)
+        public void UpdateItem(BaseItem item, BaseItem parent, ItemUpdateType updateReason, CancellationToken cancellationToken)
         {
-            UpdateItems(new List<BaseItem> { item }, updateReason, cancellationToken);
+            UpdateItems(new List<BaseItem> { item }, parent, updateReason, cancellationToken);
         }
 
         /// <summary>
@@ -2102,9 +2105,14 @@ namespace Emby.Server.Implementations.Library
                 return null;
             }
 
-            while (!(item.GetParent() is AggregateFolder) && item.GetParent() != null)
+            while (!item.ParentId.Equals(Guid.Empty))
             {
-                item = item.GetParent();
+                var parent = item.GetParent();
+                if (parent == null || parent is AggregateFolder)
+                {
+                    break;
+                }
+                item = parent;
             }
 
             return GetUserRootFolder().Children
@@ -2120,16 +2128,14 @@ namespace Emby.Server.Implementations.Library
         public UserView GetNamedView(User user,
             string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
-            return GetNamedView(user, name, null, viewType, sortName, cancellationToken);
+            return GetNamedView(user, name, null, viewType, sortName);
         }
 
         public UserView GetNamedView(string name,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
             var path = Path.Combine(ConfigurationManager.ApplicationPaths.ItemsByNamePath, "views");
 
@@ -2155,7 +2161,7 @@ namespace Emby.Server.Implementations.Library
                     ForcedSortName = sortName
                 };
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item, null);
 
                 refresh = true;
             }
@@ -2184,8 +2190,7 @@ namespace Emby.Server.Implementations.Library
             string name,
             string parentId,
             string viewType,
-            string sortName,
-            CancellationToken cancellationToken)
+            string sortName)
         {
             var idValues = "38_namedview_" + name + user.Id.ToString("N") + (parentId ?? string.Empty) + (viewType ?? string.Empty);
 
@@ -2217,7 +2222,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2245,8 +2250,7 @@ namespace Emby.Server.Implementations.Library
 
         public UserView GetShadowView(BaseItem parent,
         string viewType,
-        string sortName,
-        CancellationToken cancellationToken)
+        string sortName)
         {
             if (parent == null)
             {
@@ -2282,7 +2286,7 @@ namespace Emby.Server.Implementations.Library
 
                 item.DisplayParentId = parentId;
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2312,8 +2316,7 @@ namespace Emby.Server.Implementations.Library
             string parentId,
             string viewType,
             string sortName,
-            string uniqueId,
-            CancellationToken cancellationToken)
+            string uniqueId)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -2353,7 +2356,7 @@ namespace Emby.Server.Implementations.Library
                     item.DisplayParentId = new Guid(parentId);
                 }
 
-                CreateItem(item, cancellationToken);
+                CreateItem(item, null);
 
                 isNew = true;
             }
@@ -2361,12 +2364,12 @@ namespace Emby.Server.Implementations.Library
             if (!string.Equals(viewType, item.ViewType, StringComparison.OrdinalIgnoreCase))
             {
                 item.ViewType = viewType;
-                item.UpdateToRepository(ItemUpdateType.MetadataEdit, cancellationToken);
+                item.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
             }
 
             var refresh = isNew || DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;
 
-            if (!refresh && item.DisplayParentId != Guid.Empty)
+            if (!refresh && !item.DisplayParentId.Equals(Guid.Empty))
             {
                 var displayParent = GetItemById(item.DisplayParentId);
                 refresh = displayParent != null && displayParent.DateLastSaved > item.DateLastRefreshed;
@@ -2382,6 +2385,13 @@ namespace Emby.Server.Implementations.Library
             }
 
             return item;
+        }
+
+        public void AddExternalSubtitleStreams(List<MediaStream> streams,
+            string videoPath,
+            string[] files)
+        {
+             new SubtitleResolver(BaseItem.LocalizationManager, _fileSystem).AddExternalSubtitleStreams(streams, videoPath, streams.Count, files);
         }
 
         public bool IsVideoFile(string path, LibraryOptions libraryOptions)
@@ -2408,17 +2418,25 @@ namespace Emby.Server.Implementations.Library
 
         public int? GetSeasonNumberFromPath(string path)
         {
-            return new SeasonPathParser(GetNamingOptions(), new RegexProvider()).Parse(path, true, true).SeasonNumber;
+            return new SeasonPathParser(GetNamingOptions()).Parse(path, true, true).SeasonNumber;
         }
 
-        public bool FillMissingEpisodeNumbersFromPath(Episode episode)
+        public bool FillMissingEpisodeNumbersFromPath(Episode episode, bool forceRefresh)
         {
+            var series = episode.Series;
+            bool? isAbsoluteNaming = series == null ? false : string.Equals(series.DisplayOrder, "absolute", StringComparison.OrdinalIgnoreCase);
+            if (!isAbsoluteNaming.Value)
+            {
+                // In other words, no filter applied
+                isAbsoluteNaming = null;
+            }
+
             var resolver = new EpisodeResolver(GetNamingOptions());
 
             var isFolder = episode.VideoType == VideoType.BluRay || episode.VideoType == VideoType.Dvd;
 
             var episodeInfo = episode.IsFileProtocol ?
-                resolver.Resolve(episode.Path, isFolder) :
+                resolver.Resolve(episode.Path, isFolder, null, null, isAbsoluteNaming) :
                 new Emby.Naming.TV.EpisodeInfo();
 
             if (episodeInfo == null)
@@ -2464,62 +2482,49 @@ namespace Emby.Server.Implementations.Library
                         changed = true;
                     }
                 }
-
-                if (!episode.ParentIndexNumber.HasValue)
-                {
-                    var season = episode.Season;
-
-                    if (season != null)
-                    {
-                        episode.ParentIndexNumber = season.IndexNumber;
-                    }
-
-                    if (episode.ParentIndexNumber.HasValue)
-                    {
-                        changed = true;
-                    }
-                }
             }
             else
             {
-                if (!episode.IndexNumber.HasValue)
+                if (!episode.IndexNumber.HasValue || forceRefresh)
                 {
+                    if (episode.IndexNumber != episodeInfo.EpisodeNumber)
+                    {
+                        changed = true;
+                    }
                     episode.IndexNumber = episodeInfo.EpisodeNumber;
+                }
 
-                    if (episode.IndexNumber.HasValue)
+                if (!episode.IndexNumberEnd.HasValue || forceRefresh)
+                {
+                    if (episode.IndexNumberEnd != episodeInfo.EndingEpsiodeNumber)
                     {
                         changed = true;
                     }
-                }
-
-                if (!episode.IndexNumberEnd.HasValue)
-                {
                     episode.IndexNumberEnd = episodeInfo.EndingEpsiodeNumber;
-
-                    if (episode.IndexNumberEnd.HasValue)
-                    {
-                        changed = true;
-                    }
                 }
 
-                if (!episode.ParentIndexNumber.HasValue)
+                if (!episode.ParentIndexNumber.HasValue || forceRefresh)
                 {
-                    episode.ParentIndexNumber = episodeInfo.SeasonNumber;
-
-                    if (!episode.ParentIndexNumber.HasValue)
-                    {
-                        var season = episode.Season;
-
-                        if (season != null)
-                        {
-                            episode.ParentIndexNumber = season.IndexNumber;
-                        }
-                    }
-
-                    if (episode.ParentIndexNumber.HasValue)
+                    if (episode.ParentIndexNumber != episodeInfo.SeasonNumber)
                     {
                         changed = true;
                     }
+                    episode.ParentIndexNumber = episodeInfo.SeasonNumber;
+                }
+            }
+
+            if (!episode.ParentIndexNumber.HasValue)
+            {
+                var season = episode.Season;
+
+                if (season != null)
+                {
+                    episode.ParentIndexNumber = season.IndexNumber;
+                }
+
+                if (episode.ParentIndexNumber.HasValue)
+                {
+                    changed = true;
                 }
             }
 
@@ -2528,68 +2533,22 @@ namespace Emby.Server.Implementations.Library
 
         public NamingOptions GetNamingOptions()
         {
-            return GetNamingOptions(true);
-        }
-
-        public NamingOptions GetNamingOptions(bool allowOptimisticEpisodeDetection)
-        {
-            if (!allowOptimisticEpisodeDetection)
-            {
-                if (_namingOptionsWithoutOptimisticEpisodeDetection == null)
-                {
-                    var namingOptions = new ExtendedNamingOptions();
-
-                    InitNamingOptions(namingOptions);
-                    namingOptions.EpisodeExpressions = namingOptions.EpisodeExpressions
-                        .Where(i => i.IsNamed && !i.IsOptimistic)
-                        .ToList();
-
-                    _namingOptionsWithoutOptimisticEpisodeDetection = namingOptions;
-                }
-
-                return _namingOptionsWithoutOptimisticEpisodeDetection;
-            }
-
             return GetNamingOptionsInternal();
         }
 
-        private NamingOptions _namingOptionsWithoutOptimisticEpisodeDetection;
         private NamingOptions _namingOptions;
         private string[] _videoFileExtensions;
         private NamingOptions GetNamingOptionsInternal()
         {
             if (_namingOptions == null)
             {
-                var options = new ExtendedNamingOptions();
-
-                InitNamingOptions(options);
+                var options = new NamingOptions();
 
                 _namingOptions = options;
                 _videoFileExtensions = _namingOptions.VideoFileExtensions.ToArray();
             }
 
             return _namingOptions;
-        }
-
-        private void InitNamingOptions(NamingOptions options)
-        {
-            // These cause apps to have problems
-            options.AudioFileExtensions.Remove(".m3u");
-            options.AudioFileExtensions.Remove(".wpl");
-
-            //if (!libraryOptions.EnableArchiveMediaFiles)
-            {
-                options.AudioFileExtensions.Remove(".rar");
-                options.AudioFileExtensions.Remove(".zip");
-            }
-
-            //if (!libraryOptions.EnableArchiveMediaFiles)
-            {
-                options.VideoFileExtensions.Remove(".rar");
-                options.VideoFileExtensions.Remove(".zip");
-            }
-
-            options.VideoFileExtensions.Add(".tp");
         }
 
         public ItemLookupInfo ParseName(string name)
@@ -2647,7 +2606,7 @@ namespace Emby.Server.Implementations.Library
                         // item is new
                         video.ExtraType = ExtraType.Trailer;
                     }
-                    video.TrailerTypes = new List<TrailerType> { TrailerType.LocalTrailer };
+                    video.TrailerTypes = new [] { TrailerType.LocalTrailer };
 
                     return video;
 
@@ -2661,7 +2620,7 @@ namespace Emby.Server.Implementations.Library
         {
             var namingOptions = GetNamingOptions();
 
-            var files = fileSystemChildren.Where(i => i.IsDirectory)
+            var files = owner.IsInMixedFolder ? new List<FileSystemMetadata>() : fileSystemChildren.Where(i => i.IsDirectory)
                 .Where(i => ExtrasSubfolderNames.Contains(i.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase))
                 .SelectMany(i => _fileSystem.GetFiles(i.FullName, _videoFileExtensions, false, false))
                 .ToList();
@@ -2792,7 +2751,7 @@ namespace Emby.Server.Implementations.Library
 
         private void SetExtraTypeFromFilename(Video item)
         {
-            var resolver = new ExtraResolver(GetNamingOptions(), new RegexProvider());
+            var resolver = new ExtraResolver(GetNamingOptions());
 
             var result = resolver.GetExtraInfo(item.Path);
 
@@ -2908,7 +2867,7 @@ namespace Emby.Server.Implementations.Library
             throw new InvalidOperationException();
         }
 
-        public void AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary)
+        public async Task AddVirtualFolder(string name, string collectionType, LibraryOptions options, bool refreshLibrary)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -2946,7 +2905,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     var path = Path.Combine(virtualFolderPath, collectionType + ".collection");
 
-                    _fileSystem.WriteAllBytes(path, new byte[] { });
+                    _fileSystem.WriteAllBytes(path, Array.Empty<byte>());
                 }
 
                 CollectionFolder.SaveLibraryOptions(virtualFolderPath, options);
@@ -2961,24 +2920,28 @@ namespace Emby.Server.Implementations.Library
             }
             finally
             {
-                Task.Run(() =>
+                if (refreshLibrary)
                 {
-                    // No need to start if scanning the library because it will handle it
-                    if (refreshLibrary)
-                    {
-                        ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
-                    }
-                    else
-                    {
-                        // Need to add a delay here or directory watchers may still pick up the changes
-                        var task = Task.Delay(1000);
-                        // Have to block here to allow exceptions to bubble
-                        Task.WaitAll(task);
+                    await ValidateTopLibraryFolders(CancellationToken.None).ConfigureAwait(false);
 
-                        _libraryMonitorFactory().Start();
-                    }
-                });
+                    StartScanInBackground();
+                }
+                else
+                {
+                    // Need to add a delay here or directory watchers may still pick up the changes
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    _libraryMonitorFactory().Start();
+                }
             }
+        }
+
+        private void StartScanInBackground()
+        {
+            Task.Run(() =>
+            {
+                // No need to start if scanning the library because it will handle it
+                ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
+            });
         }
 
         private bool ValidateNetworkPath(string path)
@@ -3115,7 +3078,7 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        public void RemoveVirtualFolder(string name, bool refreshLibrary)
+        public async Task RemoveVirtualFolder(string name, bool refreshLibrary)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -3139,23 +3102,20 @@ namespace Emby.Server.Implementations.Library
             }
             finally
             {
-                Task.Run(() =>
-                {
-                    // No need to start if scanning the library because it will handle it
-                    if (refreshLibrary)
-                    {
-                        ValidateMediaLibrary(new SimpleProgress<double>(), CancellationToken.None);
-                    }
-                    else
-                    {
-                        // Need to add a delay here or directory watchers may still pick up the changes
-                        var task = Task.Delay(1000);
-                        // Have to block here to allow exceptions to bubble
-                        Task.WaitAll(task);
+                CollectionFolder.OnCollectionFolderChange();
 
-                        _libraryMonitorFactory().Start();
-                    }
-                });
+                if (refreshLibrary)
+                {
+                    await ValidateTopLibraryFolders(CancellationToken.None).ConfigureAwait(false);
+
+                    StartScanInBackground();
+                }
+                else
+                {
+                    // Need to add a delay here or directory watchers may still pick up the changes
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    _libraryMonitorFactory().Start();
+                }
             }
         }
 
