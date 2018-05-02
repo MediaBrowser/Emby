@@ -101,7 +101,15 @@ namespace SocketHttpListener.Net
         {
             if (ssl_stream != null)
             {
-                ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
+                var enableAsync = true;
+                if (enableAsync)
+                {
+                    await ssl_stream.AuthenticateAsServerAsync(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false).ConfigureAwait(false);
+                }
+                else
+                {
+                    ssl_stream.AuthenticateAsServer(cert, false, (SslProtocols)ServicePointManager.SecurityProtocol, false);
+                }
             }
 
             InitInternal();
