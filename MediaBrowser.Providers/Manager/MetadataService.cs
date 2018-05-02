@@ -279,11 +279,10 @@ namespace MediaBrowser.Providers.Manager
             }, 0);
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         protected virtual Task AfterMetadataRefresh(TItemType item, MetadataRefreshOptions refreshOptions, CancellationToken cancellationToken)
         {
             item.AfterMetadataRefresh();
-            return _cachedTask;
+            return Task.CompletedTask;
         }
 
         /// <summary>

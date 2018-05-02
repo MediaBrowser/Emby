@@ -542,5 +542,9 @@ namespace MediaBrowser.Controller.Library
         QueryResult<Tuple<BaseItem, ItemCounts>> GetAllArtists(InternalItemsQuery query);
 
         int GetCount(InternalItemsQuery query);
+
+        void AddExternalSubtitleStreams(List<MediaStream> streams,
+            string videoPath,
+            string[] files);
     }
 }

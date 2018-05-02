@@ -100,7 +100,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                     LoggerUtils.LogRequest(_logger, request);
 
                     ProcessWebSocketRequest(context);
-                    return Task.FromResult(true);
+                    return Task.CompletedTask;
                 }
 
                 httpReq = GetRequest(context);
@@ -111,7 +111,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
                 httpReq = httpReq ?? GetRequest(context);
                 ErrorHandler(ex, httpReq, true, true);
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             var uri = request.Url;
@@ -190,7 +190,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 _listener.Close();
             }
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public void Dispose()

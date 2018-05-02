@@ -209,7 +209,6 @@ namespace MediaBrowser.Providers.Music
             });
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureArtistJson(string musicBrainzId, CancellationToken cancellationToken)
         {
             var jsonPath = GetArtistJsonPath(_config.ApplicationPaths, musicBrainzId);
@@ -220,7 +219,7 @@ namespace MediaBrowser.Providers.Music
             {
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 7)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 

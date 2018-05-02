@@ -45,6 +45,7 @@ using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.Playlists;
+using MediaBrowser.Providers.MediaInfo;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -1019,7 +1020,7 @@ namespace Emby.Server.Implementations.Library
             // Just run the scheduled task so that the user can see it
             _taskManager.CancelIfRunningAndQueue<RefreshMediaLibraryTask>();
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -2384,6 +2385,13 @@ namespace Emby.Server.Implementations.Library
             }
 
             return item;
+        }
+
+        public void AddExternalSubtitleStreams(List<MediaStream> streams,
+            string videoPath,
+            string[] files)
+        {
+             new SubtitleResolver(BaseItem.LocalizationManager, _fileSystem).AddExternalSubtitleStreams(streams, videoPath, streams.Count, files);
         }
 
         public bool IsVideoFile(string path, LibraryOptions libraryOptions)
